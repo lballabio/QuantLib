@@ -25,6 +25,7 @@
 #define quantlib_risk_measures_h
 
 #include <ql/null.hpp>
+#include <ql/dataformatters.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
 
@@ -43,27 +44,42 @@ namespace QuantLib {
             double gaussianPercentile(double percentile,
                                       double mean,
                                       double std) const ;
+
+            template<class DataIterator>
+            double potentialUpside(double percentile,
+                                   DataIterator begin,
+                                   DataIterator end) const ;
             double gaussianPotentialUpside(double percentile,
                                            double mean,
                                            double std) const ;
+
+            template<class DataIterator>
+            double valueAtRisk(double percentile,
+                               DataIterator begin,
+                               DataIterator end) const ;
             double gaussianValueAtRisk(double percentile,
                                        double mean,
                                        double std) const ;
+
             double gaussianExpectedShortfall(double percentile,
                                              double mean,
                                              double std) const ;
+
             double gaussianShortfall(double target,
                                      double mean,
                                      double std) const ;
+
             double gaussianAverageShortfall(double target,
                                             double mean,
                                             double std) const ;
        };
 
         // inline definitions
+
+        
         /*! \pre percentile must be in range (0%-100%] */
         template<class DataIterator>
-        double RiskMeasures::percentile(double percentile,
+        inline double RiskMeasures::percentile(double percentile,
             DataIterator begin, DataIterator end) const{
 
             QL_REQUIRE(percentile>0.0,
@@ -113,26 +129,66 @@ namespace QuantLib {
 
         }
 
+
         /*! \pre percentile must be in range (0%-100%) extremes excluded */
         inline double RiskMeasures::gaussianPercentile(
             double percentile, double mean, double std) const {
-            QL_REQUIRE(percentile<1.0 && percentile>0.0,
-                "RiskMeasures::gaussianPercentile : percentile (" +
-                DoubleFormatter::toString(percentile) +
-                ") out of range 90%-100%");
+            QL_REQUIRE(percentile>0.0,
+                       "RiskMeasures::gaussianPercentile() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be >= 0.0");
+            QL_REQUIRE(percentile<1.0,
+                       "RiskMeasures::gaussianPercentile() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be < 1.0");
 
             Math::InverseCumulativeNormal gInverse(mean, std);
             return gInverse(percentile);
         }
 
 
-        /*! \pre percentile must be in range 90%-100% */
+
+        
+        /*! \pre y must be in range [90%-100%) */
+        template<class DataIterator>
+        inline double RiskMeasures::potentialUpside(double y,
+            DataIterator begin, DataIterator end) const{
+
+            QL_REQUIRE(percentile>=0.9,
+                       "RiskMeasures::potentialUpside() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be >= 0.90");
+            QL_REQUIRE(percentile<1.0,
+                       "RiskMeasures::potentialUpside() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be < 1.0");
+
+            double result=percentile(y, begin, end);
+
+            // VAR must be a loss
+            // this means that it has to be MIN(dist(1.0-percentile), 0.0)
+            // VAR must also be a positive quantity, so -MIN(*)
+            return -QL_MIN(result, 0.0);
+        }
+
+        /*! \pre percentile must be in range [90%-100%) */
         inline double RiskMeasures::gaussianPotentialUpside(
             double percentile, double mean, double std) const {
-            QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                "RiskMeasures::potentialUpside : percentile (" +
-                DoubleFormatter::toString(percentile) +
-                ") out of range 90%-100%");
+
+            QL_REQUIRE(percentile>0.9,
+                       "RiskMeasures::gaussianPotentialUpside() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be >= 0.0");
+            QL_REQUIRE(percentile<1.0,
+                       "RiskMeasures::gaussianPotentialUpside() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be < 1.0");
 
             Math::InverseCumulativeNormal gInverse(mean, std);
             // PotenzialUpSide must be a gain
@@ -140,13 +196,47 @@ namespace QuantLib {
             return QL_MAX(gInverse(percentile), 0.0);
         }
 
-        /*! \pre percentile must be in range 90%-100% */
+
+        
+
+        /*! \pre y must be in range [90%-100%) */
+        template<class DataIterator>
+        inline double RiskMeasures::valueAtRisk(double y,
+            DataIterator begin, DataIterator end) const{
+
+            QL_REQUIRE(percentile>=0.9,
+                       "RiskMeasures::valueAtRisk() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be >= 0.90");
+            QL_REQUIRE(percentile<1.0,
+                       "RiskMeasures::valueAtRisk() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be < 1.0");
+
+            double result=percentile(1.0-y, begin, end);
+
+            // VAR must be a loss
+            // this means that it has to be MIN(dist(1.0-percentile), 0.0)
+            // VAR must also be a positive quantity, so -MIN(*)
+            return -QL_MIN(result, 0.0);
+        }
+
+        /*! \pre percentile must be in range [90%-100%) */
         inline double RiskMeasures::gaussianValueAtRisk(
             double percentile, double mean, double std) const {
-            QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                "RiskMeasures::valueAtRisk : percentile (" +
-                DoubleFormatter::toString(percentile) +
-                ") out of range 90%-100%");
+
+            QL_REQUIRE(percentile>=0.9,
+                       "RiskMeasures::gaussianValueAtRisk() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be >= 0.90");
+            QL_REQUIRE(percentile<1.0,
+                       "RiskMeasures::gaussianValueAtRisk() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be < 1.0");
 
             Math::InverseCumulativeNormal gInverse(mean, std);
             // VAR must be a loss
@@ -154,6 +244,8 @@ namespace QuantLib {
             // VAR must also be a positive quantity, so -MIN(*)
             return -QL_MIN(gInverse(1.0-percentile), 0.0);
         }
+
+
 
         /*! \pre percentile must be in range 90%-100% */
         inline double RiskMeasures::gaussianExpectedShortfall(
@@ -173,12 +265,18 @@ namespace QuantLib {
             return -QL_MIN(result, 0.0);
         }
 
+
+
+        
         inline double RiskMeasures::gaussianShortfall(
             double target, double mean, double std) const {
             Math::CumulativeNormalDistribution gIntegral(mean, std);
             return gIntegral(target);
         }
 
+
+        
+        
         inline double RiskMeasures::gaussianAverageShortfall(
             double target, double mean, double std) const {
             Math::CumulativeNormalDistribution gIntegral(mean, std);
