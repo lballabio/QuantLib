@@ -8,6 +8,7 @@ QL_TESTS = quantlibtestsuite.cpp \
            distributions.hpp distributions.cpp \
            europeanoption.hpp europeanoption.cpp \
            instruments.hpp instruments.cpp \
+           integrals.hpp integrals.cpp \
            marketelements.hpp marketelements.cpp \
            operators.hpp operators.cpp \
            piecewiseflatforward.hpp piecewiseflatforward.cpp \

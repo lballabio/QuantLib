@@ -28,6 +28,7 @@
 #include "distributions.hpp"
 #include "europeanoption.hpp"
 #include "instruments.hpp"
+#include "integrals.hpp"
 #include "marketelements.hpp"
 #include "operators.hpp"
 #include "piecewiseflatforward.hpp"
@@ -46,6 +47,7 @@ int main() {
     runner.addTest(new DistributionTest);
     runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(InstrumentTest::suite());
+    runner.addTest(new IntegralTest);
     runner.addTest(MarketElementTest::suite());
     runner.addTest(new OperatorTest);
     runner.addTest(new PiecewiseFlatForwardTest);
