@@ -48,7 +48,7 @@ namespace QuantLib {
             const Array& dividendYield, const Math::Matrix &covariance,
             Rate riskFreeRate, double strike,
             const std::vector<Time>& times,
-            long samples, bool antitheticVariance, long seed)
+            unsigned int samples, bool antitheticVariance, long seed)
         : MultiFactorPricer(samples, seed){
             unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,

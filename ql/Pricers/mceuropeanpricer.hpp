@@ -45,10 +45,16 @@ namespace QuantLib {
         //! simple example of Monte Carlo pricer
         class McEuropeanPricer : public McPricer {
           public:
-            McEuropeanPricer(Option::Type type, double underlying,
-            double strike, Rate dividendYield, Rate riskFreeRate,
-            double residualTime, double volatility, int timesteps,
-            long samples, bool antitheticVariance = false, long seed=0);
+            McEuropeanPricer(Option::Type type, 
+                             double underlying,
+                             double strike,
+                             Rate dividendYield,
+                             Rate riskFreeRate,
+                             double residualTime,
+                             double volatility,
+                             unsigned int samples,
+                             bool antitheticVariance,
+                             long seed=0);
         };
 
     }

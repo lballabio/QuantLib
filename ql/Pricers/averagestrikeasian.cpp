@@ -52,7 +52,7 @@ namespace QuantLib {
         AverageStrikeAsian::AverageStrikeAsian(Option::Type type,
           double underlying, Rate dividendYield,
           Rate riskFreeRate, double residualTime, double volatility,
-          int timesteps, long samples, bool antitheticVariance, long seed)
+          int timesteps, unsigned int samples, bool antitheticVariance, long seed)
         : McPricer(samples, seed) {
             //! Initialize the path generator
             double mu = riskFreeRate - dividendYield

@@ -51,8 +51,8 @@ namespace QuantLib {
                                double residualTime,
                                double volatility,
                                int timesteps,
-                               long samples,
-                               bool antitheticVariance = false,
+                               unsigned int samples,
+                               bool antitheticVariance,
                                long seed = 0);
         };
 

@@ -46,7 +46,7 @@ namespace QuantLib {
 
         EverestOption::EverestOption(const Array &dividendYield,
             const Math::Matrix &covariance, Rate riskFreeRate,
-            Time residualTime, long samples, bool antitheticVariance,
+            Time residualTime, unsigned int samples, bool antitheticVariance,
             long seed)
         : MultiFactorPricer(samples, seed) {
             unsigned int  n = covariance.rows();

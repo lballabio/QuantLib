@@ -48,7 +48,7 @@ namespace QuantLib {
                               const Math::Matrix &covariance,
                               Rate riskFreeRate,
                               double residualTime,
-                              long samples,
+                              unsigned int samples,
                               bool antitheticVariance,
                               long seed=0);
         };

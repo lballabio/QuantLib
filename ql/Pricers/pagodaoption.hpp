@@ -55,7 +55,7 @@ namespace QuantLib {
                          const Math::Matrix& covariance,
                          Rate riskFreeRate,
                          const std::vector<Time>& times,
-                         long samples,
+                         unsigned int samples,
                          bool antithetic,
                          long seed = 0);
         };

@@ -46,9 +46,8 @@ namespace QuantLib {
 
         McEuropeanPricer::McEuropeanPricer(Option::Type type, 
           double underlying, double strike, Rate dividendYield, 
-          Rate riskFreeRate, double residualTime, double volatility, 
-          int timesteps, long samples, bool antitheticVariance,
-          long seed)
+          Rate riskFreeRate, double residualTime, double volatility,
+          unsigned int samples, bool antitheticVariance, long seed)
         : McPricer(samples, seed) {
             //! Initialize the path generator
             double mu = riskFreeRate - dividendYield
@@ -56,7 +55,7 @@ namespace QuantLib {
 
             Handle<GaussianPathGenerator> pathGenerator(
                 new GaussianPathGenerator(mu, volatility*volatility, 
-                    residualTime, timesteps, seed));
+                    residualTime, 1, seed));
 
             //! Initialize the pricer on the single Path
             Handle<PathPricer> euroPathPricer(new EuropeanPathPricer(type,

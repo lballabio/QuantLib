@@ -46,7 +46,7 @@ namespace QuantLib {
         PlainBasketOption::PlainBasketOption(const Array &underlying,
             const Array &dividendYield, const Math::Matrix &covariance,
             Rate riskFreeRate,  double residualTime,
-            long samples, bool antitheticVariance, long seed)
+            unsigned int samples, bool antitheticVariance, long seed)
         : MultiFactorPricer(samples, seed){
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "PlainBasketOption: covariance matrix not square");

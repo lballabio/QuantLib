@@ -52,6 +52,7 @@ namespace QuantLib {
         */
         class MultiFactorPricer {
           public:
+            MultiFactorPricer() {}
             MultiFactorPricer(unsigned int samples,
                               long seed=0);
             virtual ~MultiFactorPricer(){}
