@@ -46,7 +46,7 @@
     @{
 */
 
-//! version number
+//! version hexadecimal number
 #define QL_HEX_VERSION 0x000303a3
 
 //! version string
