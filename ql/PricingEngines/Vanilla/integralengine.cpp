@@ -16,6 +16,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/integralengine.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/segmentintegral.hpp>
 
 namespace QuantLib {
@@ -52,26 +53,31 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         Real variance =
-            arguments_.blackScholesProcess->blackVolatility()->blackVariance(
+            process->blackVolatility()->blackVariance(
                            arguments_.exercise->lastDate(), payoff->strike());
 
         DiscountFactor dividendDiscount =
-            arguments_.blackScholesProcess->dividendYield()->discount(
+            process->dividendYield()->discount(
                                              arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            arguments_.blackScholesProcess->riskFreeRate()->discount(
+            process->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());
         Rate drift = std::log(dividendDiscount/riskFreeDiscount)-0.5*variance;
 
         Integrand f(arguments_.payoff,
-                    arguments_.blackScholesProcess->stateVariable()->value(),
+                    process->stateVariable()->value(),
                     drift, variance);
         SegmentIntegral integrator(5000);
 
         Real infinity = 10.0*std::sqrt(variance);
         results_.value =
-            arguments_.blackScholesProcess->riskFreeRate()->discount(
+            process->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate()) /
             std::sqrt(2.0*M_PI*variance) *
             integrator(f, drift-infinity, drift+infinity);

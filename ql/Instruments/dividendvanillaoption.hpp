@@ -33,7 +33,7 @@ namespace QuantLib {
         class arguments;
         class engine;
         DividendVanillaOption(
-                      const boost::shared_ptr<BlackScholesProcess>&,
+                      const boost::shared_ptr<StochasticProcess>&,
                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
                       const boost::shared_ptr<Exercise>& exercise,
                       const std::vector<Date>& dividendDates,
@@ -58,7 +58,7 @@ namespace QuantLib {
     };
 
     //! Dividend vanilla option engine base class
-    class DividendVanillaOption::engine 
+    class DividendVanillaOption::engine
         : public GenericEngine<DividendVanillaOption::arguments,
                                DividendVanillaOption::results> {};
 

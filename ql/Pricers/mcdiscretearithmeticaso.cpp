@@ -17,6 +17,7 @@
 
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 

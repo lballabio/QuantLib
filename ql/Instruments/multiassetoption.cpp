@@ -23,25 +23,20 @@
 namespace QuantLib {
 
     MultiAssetOption::MultiAssetOption(
-        const std::vector<boost::shared_ptr<BlackScholesProcess> >& stochProcs,
+        const std::vector<boost::shared_ptr<StochasticProcess> >& processes,
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const Matrix& correlation,
         const boost::shared_ptr<PricingEngine>& engine)
     : Option(payoff, exercise, engine),
-      blackScholesProcesses_(stochProcs), correlation_(correlation) {
+      stochasticProcesses_(processes), correlation_(correlation) {
 
-        for (Size i=0; i<blackScholesProcesses_.size(); i++)
-            registerWith(blackScholesProcesses_[i]);
+        for (Size i=0; i<stochasticProcesses_.size(); i++)
+            registerWith(stochasticProcesses_[i]);
     }
 
     bool MultiAssetOption::isExpired() const {
-        // what to do about term structures of differnet length?
-        // we could take the max, or min
-        // we could enfore the reference date to be the same for each process??
-        return exercise_->lastDate() <
-            blackScholesProcesses_[0]->riskFreeRate()->referenceDate();
-        //return true;
+        return exercise_->lastDate() < Settings::instance().evaluationDate();
     }
 
     Real MultiAssetOption::delta() const {
@@ -91,25 +86,20 @@ namespace QuantLib {
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->payoff = payoff_;
-        arguments->blackScholesProcesses = blackScholesProcesses_;
+        arguments->stochasticProcesses = stochasticProcesses_;
         arguments->correlation = correlation_;
         arguments->exercise = exercise_;
 
-        // shouldn't be here
-        // it should be moved elsewhere
-        //
-        // just take the times from the first blackScholesProcess....
-        // Hmmmmm, not a very nice solution
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            blackScholesProcesses_[0];
+        // take the times from the first process.
+        // it might be made more robust by checking that all processes
+        // return the same times, but what the hey...
         arguments->stoppingTimes.clear();
-        DayCounter dc = process->riskFreeRate()->dayCounter();
+        const boost::shared_ptr<StochasticProcess>& process =
+            stochasticProcesses_[0];
         for (Size i=0; i<exercise_->dates().size(); i++) {
-            Time time = dc.yearFraction(
-                process->riskFreeRate()->referenceDate(), exercise_->date(i));
-            arguments->stoppingTimes.push_back(time);
+            arguments->stoppingTimes.push_back(
+                                           process->time(exercise_->date(i)));
         }
-
     }
 
     void MultiAssetOption::performCalculations() const {
@@ -145,22 +135,13 @@ namespace QuantLib {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
                    "correlation matrix is not square");
-        QL_REQUIRE(correlation.rows() == blackScholesProcesses.size(),
+        QL_REQUIRE(correlation.rows() == stochasticProcesses.size(),
                    "the size of the correlation matrix does not match "
                    "the number of underlyings");
 
-        for (Size i=0; i<blackScholesProcesses.size(); i++) {
-            QL_REQUIRE(blackScholesProcesses[i]->stateVariable(),
-                       "no underlying given");
-            QL_REQUIRE(blackScholesProcesses[i]->stateVariable()->value()
-                       > 0.0,
+        for (Size i=0; i<stochasticProcesses.size(); i++) {
+            QL_REQUIRE(stochasticProcesses[i]->x0() > 0.0,
                        "negative or zero underlying given");
-            QL_REQUIRE(blackScholesProcesses[i]->dividendYield(),
-                       "no dividend term structure given");
-            QL_REQUIRE(blackScholesProcesses[i]->riskFreeRate(),
-                       "no risk free term structure given");
-            QL_REQUIRE(blackScholesProcesses[i]->blackVolatility(),
-                       "no vol term structure given");
         }
     }
 

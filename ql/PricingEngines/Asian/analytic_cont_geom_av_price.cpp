@@ -17,14 +17,14 @@
 
 #include <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
-    void AnalyticContinuousGeometricAveragePriceAsianEngine::calculate() const {
-
+    void AnalyticContinuousGeometricAveragePriceAsianEngine::calculate()
+                                                                       const {
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
                    "not a geometric average option");
-
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
@@ -34,9 +34,10 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
-
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         Volatility volatility =
             process->blackVolatility()->blackVol(exercise, payoff->strike());

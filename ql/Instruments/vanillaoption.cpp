@@ -21,11 +21,11 @@
 namespace QuantLib {
 
     VanillaOption::VanillaOption(
-        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine) {}
+    : OneAssetStrikedOption(process, payoff, exercise, engine) {}
 
 }
 

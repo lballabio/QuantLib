@@ -26,6 +26,7 @@
 
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -160,17 +161,11 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
-
-        Date refDate = process->riskFreeRate()->referenceDate();
-        Date lastExerciseDate = this->arguments_.exercise->lastDate();
-
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        Time t = rfdc.yearFraction(refDate, lastExerciseDate);
-
-        return TimeGrid(t, Size(std::max<Real>(t * maxTimeStepsPerYear_,
-                                               1.0)));
+        Time residualTime = arguments_.stochasticProcess->time(
+                                             arguments_.exercise->lastDate());
+        return TimeGrid(residualTime,
+                        Size(std::max<Real>(residualTime*maxTimeStepsPerYear_,
+                                            1.0)));
     }
 
     template <class RNG, class S>
@@ -181,9 +176,9 @@ namespace QuantLib {
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
-        return boost::shared_ptr<path_generator_type>(new
-            path_generator_type(arguments_.blackScholesProcess,
-                                grid, gen, brownianBridge_));
+        return boost::shared_ptr<path_generator_type>(
+                         new path_generator_type(arguments_.stochasticProcess,
+                                                 grid, gen, brownianBridge_));
     }
 
 
@@ -196,7 +191,9 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         boost::shared_ptr<BlackScholesProcess> process =
-            arguments_.blackScholesProcess;
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         // do this with template parameters?
         if (isBiased_) {

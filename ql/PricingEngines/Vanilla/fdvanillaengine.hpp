@@ -27,6 +27,7 @@
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -63,8 +64,12 @@ namespace QuantLib {
         mutable std::vector<boost::shared_ptr<bc_type> > BCs_;
         // temporaries
         mutable Real sMin_, center_, sMax_;
-        const boost::shared_ptr<BlackScholesProcess>& getProcess() const {
-            return vanillaArguments_->blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> getProcess() const {
+            boost::shared_ptr<BlackScholesProcess> process =
+                boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                        vanillaArguments_->stochasticProcess);
+            QL_REQUIRE(process, "Black-Scholes process required");
+            return process;
         }
       private:
         // temporaries

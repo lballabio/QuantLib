@@ -17,6 +17,7 @@
 
 #include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -29,8 +30,10 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         Date settlementDate = process->riskFreeRate()->referenceDate();
         Real riskless = 0.0;

@@ -17,6 +17,7 @@
 
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <numeric>
 
 namespace QuantLib {
@@ -49,8 +50,11 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         Date referenceDate = process->riskFreeRate()->referenceDate();
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();

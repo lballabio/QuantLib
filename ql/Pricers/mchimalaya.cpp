@@ -17,6 +17,7 @@
 
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <ql/Pricers/mchimalaya.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 

@@ -23,11 +23,11 @@ namespace QuantLib {
                       const Handle<YieldTermStructure>& foreignRiskFreeTS,
                       const Handle<BlackVolTermStructure>& exchRateVolTS,
                       const Handle<Quote>& correlation,
-                      const boost::shared_ptr<BlackScholesProcess>& stochProc,
+                      const boost::shared_ptr<StochasticProcess>& process,
                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
                       const boost::shared_ptr<Exercise>& exercise,
                       const boost::shared_ptr<PricingEngine>& engine)
-    : VanillaOption(stochProc, payoff, exercise, engine),
+    : VanillaOption(process, payoff, exercise, engine),
       foreignRiskFreeTS_(foreignRiskFreeTS),
       exchRateVolTS_(exchRateVolTS), correlation_(correlation) {
         QL_REQUIRE(engine, "null engine or wrong engine type");

@@ -23,7 +23,7 @@
 #define quantlib_quanto_engine_hpp
 
 #include <ql/pricingengine.hpp>
-#include <ql/stochasticprocess.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/TermStructures/quantotermstructure.hpp>
 #include <ql/Instruments/payoffs.hpp>
 
@@ -132,8 +132,10 @@ namespace QuantLib {
 
         originalArguments_->payoff = this->arguments_.payoff;
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         Handle<Quote> spot(process->stateVariable());
         Handle<YieldTermStructure> riskFreeRate(process->riskFreeRate());
@@ -150,8 +152,8 @@ namespace QuantLib {
                     exchangeRateATMlevel,
                     this->arguments_.correlation)));
         Handle<BlackVolTermStructure> blackVol(process->blackVolatility());
-        originalArguments_->blackScholesProcess =
-            boost::shared_ptr<BlackScholesProcess>(
+        originalArguments_->stochasticProcess =
+            boost::shared_ptr<StochasticProcess>(
                              new BlackScholesProcess(spot, dividendYield,
                                                      riskFreeRate, blackVol));
 

@@ -23,7 +23,7 @@
 #define quantlib_bsm_operator_hpp
 
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
-#include <ql/stochasticprocess.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 

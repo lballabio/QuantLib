@@ -16,6 +16,7 @@
 */
 
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/grid.hpp>
 #include <ql/Math/svd.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
@@ -189,12 +190,13 @@ namespace QuantLib {
         Real strike = payoff_handle->strike();
         PlainVanillaPayoff payoff(payoff_handle->optionType(), strike);
 
-        Size numAssets = arguments_.blackScholesProcesses.size();
+        Size numAssets = arguments_.stochasticProcesses.size();
 
         bool brownianBridge = false;
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcesses[0];
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                           arguments_.stochasticProcesses[0]);
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         Rate r = process->riskFreeRate()->
             zeroRate(arguments_.exercise->lastDate(), rfdc,
@@ -413,27 +415,24 @@ namespace QuantLib {
             LowDiscrepancy::make_sequence_generator(
                 numAssets*(grid.size()-1),seed_);
 
-        // set up the diffuction processes
+        // set up arguments
         std::vector<Real> initialPrices(numAssets);
-        std::vector<boost::shared_ptr<StochasticProcess> > procs(numAssets);
         for (j = 0; j < numAssets; j++) {
-            initialPrices[j] = arguments_.blackScholesProcesses[j]
-                ->stateVariable()->value();
-            procs[j] = arguments_.blackScholesProcesses[j];
+            initialPrices[j] = arguments_.stochasticProcesses[j]->x0();
         }
 
         // create the MultiPathGenerator
         boost::shared_ptr<MultiPathGenerator<PseudoRandom::rsg_type> >
             multipathGenerator(
                 new MultiPathGenerator<PseudoRandom::rsg_type> (
-                                            procs,
+                                            arguments_.stochasticProcesses,
                                             arguments_.correlation, grid,
                                             gen, brownianBridge));
 
         boost::shared_ptr<MultiPathGenerator<LowDiscrepancy::rsg_type> >
             quasiMultipathGenerator(
             new MultiPathGenerator<LowDiscrepancy::rsg_type> (
-                                            procs,
+                                            arguments_.stochasticProcesses,
                                             arguments_.correlation, grid,
                                             quasiGen, brownianBridge));
 

@@ -63,8 +63,10 @@ namespace QuantLib {
 
         Array prices = arraySet[0];
         Array controlPrices = arraySet[1];
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");

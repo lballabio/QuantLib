@@ -16,6 +16,7 @@
 */
 
 #include <ql/Pricers/mcmaxbasket.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 

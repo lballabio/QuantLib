@@ -68,8 +68,10 @@ namespace QuantLib {
     void ForwardPerformanceEngine<ArgumentsType, ResultsType>::
     getOriginalResults() const {
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                          this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         DayCounter rfdc = process->riskFreeRate()->dayCounter();
         Time resetTime = rfdc.yearFraction(

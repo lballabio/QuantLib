@@ -21,6 +21,7 @@
 #include <ql/Instruments/cliquetoption.hpp>
 #include <ql/PricingEngines/Cliquet/analyticcliquetengine.hpp>
 #include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/DayCounters/actual360.hpp>
@@ -71,7 +72,7 @@ void CliquetOptionTest::testValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine);
 
-    boost::shared_ptr<BlackScholesProcess> process(
+    boost::shared_ptr<StochasticProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot),
                                        Handle<YieldTermStructure>(qTS),
                                        Handle<YieldTermStructure>(rTS),

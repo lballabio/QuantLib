@@ -30,6 +30,7 @@
 #include <ql/voltermstructure.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -133,6 +134,11 @@ namespace QuantLib {
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                          this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         TimeGrid grid = timeGrid();
         PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                             PseudoRandom::urng_type(76));
@@ -142,10 +148,9 @@ namespace QuantLib {
           new DigitalPathPricer(
             payoff,
             exercise,
-            this->arguments_.blackScholesProcess->stateVariable()->value(),
-            Handle<YieldTermStructure>(
-                this->arguments_.blackScholesProcess->riskFreeRate()),
-            this->arguments_.blackScholesProcess,
+            process->stateVariable()->value(),
+            Handle<YieldTermStructure>(process->riskFreeRate()),
+            process,
             sequenceGen));
     }
 
@@ -154,16 +159,12 @@ namespace QuantLib {
     inline
     TimeGrid MCDigitalEngine<RNG,S>::timeGrid() const {
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
-
-        Date refDate = process->riskFreeRate()->referenceDate();
-        Date lastExerciseDate = this->arguments_.exercise->lastDate();
-
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        Time t = rfdc.yearFraction(refDate, lastExerciseDate);
-        return TimeGrid(t, Size(std::max<Real>(
-            t * this->maxTimeStepsPerYear_, 1.0)));
+        Time residualTime = this->arguments_.stochasticProcess->time(
+                                       this->arguments_.exercise->lastDate());
+        return TimeGrid(
+                  residualTime,
+                  Size(std::max<Real>(residualTime*this->maxTimeStepsPerYear_,
+                                      1.0)));
     }
 
 }

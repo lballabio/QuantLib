@@ -24,8 +24,8 @@
 #define quantlib_two_factor_models_g2_h
 
 #include <ql/ShortRateModels/twofactormodel.hpp>
+#include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
 #include <ql/Instruments/swaption.hpp>
-
 
 namespace QuantLib {
 

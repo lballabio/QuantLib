@@ -39,10 +39,10 @@ namespace QuantLib {
                       const Handle<YieldTermStructure>& foreignRiskFreeTS,
                       const Handle<BlackVolTermStructure>& exchRateVolTS,
                       const Handle<Quote>& correlation,
-                      const boost::shared_ptr<BlackScholesProcess>& stochProc,
-                      const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                      const boost::shared_ptr<Exercise>& exercise,
-                      const boost::shared_ptr<PricingEngine>& engine);
+                      const boost::shared_ptr<StochasticProcess>&,
+                      const boost::shared_ptr<StrikedTypePayoff>&,
+                      const boost::shared_ptr<Exercise>&,
+                      const boost::shared_ptr<PricingEngine>&);
         //! \name greeks
         //@{
         Real qvega() const;

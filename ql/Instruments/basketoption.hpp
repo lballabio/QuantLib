@@ -36,7 +36,7 @@ namespace QuantLib {
         enum BasketType { Min, Max };
         BasketOption(
                const BasketType basketType,
-               const std::vector<boost::shared_ptr<BlackScholesProcess> >&
+               const std::vector<boost::shared_ptr<StochasticProcess> >&
                                                                   stochProcs,
                const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,

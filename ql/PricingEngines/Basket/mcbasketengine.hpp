@@ -24,6 +24,7 @@
 
 #include <ql/Instruments/basketoption.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -112,17 +113,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCBasketEngine<RNG,S>::timeGrid() const {
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcesses[0];
+        Time residualTime = this->arguments_.stochasticProcesses[0]->time(
+                                       this->arguments_.exercise->lastDate());
 
-        Date refDate = process->riskFreeRate()->referenceDate();
-        Date lastExerciseDate = this->arguments_.exercise->lastDate();
-
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-
-        Time t = rfdc.yearFraction(refDate, lastExerciseDate);
-
-        return TimeGrid(t, maxTimeStepsPerYear_);
+        return TimeGrid(residualTime, maxTimeStepsPerYear_);
     }
 
     template<class RNG, class S>
@@ -134,20 +128,16 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        Size numAssets = arguments_.blackScholesProcesses.size();
+        Size numAssets = arguments_.stochasticProcesses.size();
 
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-        std::vector<boost::shared_ptr<StochasticProcess> > diffusionProcs;
-        for (Size j = 0; j < numAssets; j++) {
-            diffusionProcs.push_back(arguments_.blackScholesProcesses[j]);
-        }
-
-        return boost::shared_ptr<path_generator_type>(new
-            path_generator_type(diffusionProcs, arguments_.correlation,
-                                grid, gen, brownianBridge_));
+        return boost::shared_ptr<path_generator_type>(
+                       new path_generator_type(arguments_.stochasticProcesses,
+                                               arguments_.correlation,
+                                               grid, gen, brownianBridge_));
     }
 
     template <class RNG, class S>
@@ -159,12 +149,16 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        Size numAssets = arguments_.blackScholesProcesses.size();
+        Size numAssets = arguments_.stochasticProcesses.size();
         Array underlying(numAssets, 0.0);
         for (Size i = 0; i < numAssets; i++) {
-            underlying[i] = arguments_.blackScholesProcesses[i]
-                ->stateVariable()->value();
+            underlying[i] = arguments_.stochasticProcesses[i]->x0();
         }
+
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                           arguments_.stochasticProcesses[0]);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         return boost::shared_ptr<
                          QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>(
@@ -173,8 +167,8 @@ namespace QuantLib {
                 payoff->optionType(),
                 payoff->strike(),
                 underlying,
-                arguments_.blackScholesProcesses[0]->riskFreeRate()
-                                ->discount(arguments_.exercise->lastDate())));
+                process->riskFreeRate()->discount(
+                                           arguments_.exercise->lastDate())));
     }
 
     /*

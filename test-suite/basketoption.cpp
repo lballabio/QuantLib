@@ -24,6 +24,7 @@
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
 #include <ql/PricingEngines/Basket/mcbasketengine.hpp>
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -250,19 +251,19 @@ void BasketOptionTest::testEuroTwoValues() {
         vol1  ->setValue(values[i].v1);
         vol2  ->setValue(values[i].v2);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess1(new
+        boost::shared_ptr<StochasticProcess> stochProcess1(new
             BlackScholesProcess(Handle<Quote>(spot1),
                                 Handle<YieldTermStructure>(qTS1),
                                 Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS1)));
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess2(new
+        boost::shared_ptr<StochasticProcess> stochProcess2(new
             BlackScholesProcess(Handle<Quote>(spot2),
                                 Handle<YieldTermStructure>(qTS2),
                                 Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
+        std::vector<boost::shared_ptr<StochasticProcess> > procs;
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
 
@@ -428,25 +429,25 @@ void BasketOptionTest::testBarraquandThreeValues() {
         vol2  ->setValue(values[i].v2);
         vol3  ->setValue(values[i].v3);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess1(new
+        boost::shared_ptr<StochasticProcess> stochProcess1(new
             BlackScholesProcess(Handle<Quote>(spot1),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS1)));
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess2(new
+        boost::shared_ptr<StochasticProcess> stochProcess2(new
             BlackScholesProcess(Handle<Quote>(spot2),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS2)));
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess3(new
+        boost::shared_ptr<StochasticProcess> stochProcess3(new
             BlackScholesProcess(Handle<Quote>(spot3),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS3)));
 
-        std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
+        std::vector<boost::shared_ptr<StochasticProcess> > procs;
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
         procs.push_back(stochProcess3);
@@ -467,7 +468,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
                                            Null<Size>(), 42));
 
         BasketOption euroBasketOption(values[i].basketType, procs, payoff,
-                                  exercise, correlation, mcQuasiEngine);
+                                      exercise, correlation, mcQuasiEngine);
 
         Real expected = values[i].euroValue;
         // std::cerr<<"\n starting euro calculation";
@@ -572,25 +573,25 @@ void BasketOptionTest::testTavellaValues() {
     vol2  ->setValue(values[0].v2);
     vol3  ->setValue(values[0].v3);
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess1(new
+    boost::shared_ptr<StochasticProcess> stochProcess1(new
         BlackScholesProcess(Handle<Quote>(spot1),
                             Handle<YieldTermStructure>(qTS),
                             Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS1)));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess2(new
+    boost::shared_ptr<StochasticProcess> stochProcess2(new
         BlackScholesProcess(Handle<Quote>(spot2),
                             Handle<YieldTermStructure>(qTS),
                             Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS2)));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess3(new
+    boost::shared_ptr<StochasticProcess> stochProcess3(new
         BlackScholesProcess(Handle<Quote>(spot3),
                             Handle<YieldTermStructure>(qTS),
                             Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS3)));
 
-    std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
+    std::vector<boost::shared_ptr<StochasticProcess> > procs;
     procs.push_back(stochProcess1);
     procs.push_back(stochProcess2);
     procs.push_back(stochProcess3);
@@ -691,13 +692,13 @@ void BasketOptionTest::testOneDAmericanValues() {
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess1(new
+    boost::shared_ptr<StochasticProcess> stochProcess1(new
         BlackScholesProcess(Handle<Quote>(spot1),
                             Handle<YieldTermStructure>(qTS),
                             Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS1)));
 
-    std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
+    std::vector<boost::shared_ptr<StochasticProcess> > procs;
     procs.push_back(stochProcess1);
 
     Matrix correlation(1, 1, 1.0);

@@ -25,6 +25,8 @@
 #include <ql/option.hpp>
 #include <ql/types.hpp>
 #include <ql/Pricers/mcpricer.hpp>
+#include <ql/yieldtermstructure.hpp>
+#include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
 

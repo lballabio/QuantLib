@@ -23,7 +23,7 @@
 #define quantlib_forward_engine_hpp
 
 #include <ql/pricingengine.hpp>
-#include <ql/stochasticprocess.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Volatilities/impliedvoltermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 #include <ql/Instruments/payoffs.hpp>
@@ -79,9 +79,8 @@ namespace QuantLib {
         QL_REQUIRE(moneyness > 0.0, "negative or zero moneyness given");
 
         QL_REQUIRE(resetDate != Null<Date>(), "null reset date given");
-        QL_REQUIRE(resetDate >= this->blackScholesProcess->riskFreeRate()
-                                                            ->referenceDate(),
-                   "reset date later than settlement");
+        QL_REQUIRE(resetDate >= Settings::instance().evaluationDate(),
+                   "reset date in the past");
         QL_REQUIRE(this->exercise->lastDate() > resetDate,
                    "reset date later or equal to maturity");
     }
@@ -109,8 +108,10 @@ namespace QuantLib {
                 this->arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                    new PlainVanillaPayoff(argumentsPayoff->optionType(),
@@ -143,8 +144,8 @@ namespace QuantLib {
                     Handle<BlackVolTermStructure>(process->blackVolatility()),
                     this->arguments_.resetDate)));
 
-        originalArguments_->blackScholesProcess =
-            boost::shared_ptr<BlackScholesProcess>(
+        originalArguments_->stochasticProcess =
+            boost::shared_ptr<StochasticProcess>(
                       new BlackScholesProcess(spot, dividendYield,
                                               riskFreeRate, blackVolatility));
 
@@ -164,9 +165,9 @@ namespace QuantLib {
     template<class ArgumentsType, class ResultsType>
     void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults()
                                                                       const {
-
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                this->arguments_.stochasticProcess);
 
         DayCounter rfdc = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();

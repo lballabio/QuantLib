@@ -20,17 +20,18 @@
     \brief Monte Carlo pricing engine for discrete average Asians
 */
 
-#ifndef quantlib_mcdiscreteasian_engine_h
-#define quantlib_mcdiscreteasian_engine_h
+#ifndef quantlib_mcdiscreteasian_engine_hpp
+#define quantlib_mcdiscreteasian_engine_hpp
 
 #include <ql/PricingEngines/mcsimulation.hpp>
 #include <ql/Instruments/asianoption.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
     //! Pricing engine for discrete average Asians using Monte Carlo simulation
     /*! \warning control-variate calculation is disabled under VC++6
-    
+
         \ingroup asianengines
     */
     template<class RNG = PseudoRandom, class S = Statistics>
@@ -104,7 +105,10 @@ namespace QuantLib {
     inline TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {
 
         boost::shared_ptr<BlackScholesProcess> process =
-            arguments_.blackScholesProcess;
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         Date referenceDate = process->riskFreeRate()->referenceDate();
         DayCounter voldc = process->blackVolatility()->dayCounter();
         std::vector<Time> fixingTimes;
@@ -129,9 +133,9 @@ namespace QuantLib {
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
-        return boost::shared_ptr<path_generator_type>(new
-            path_generator_type(arguments_.blackScholesProcess,
-                                grid, gen, brownianBridge_));
+        return boost::shared_ptr<path_generator_type>(
+                         new path_generator_type(arguments_.stochasticProcess,
+                                                 grid, gen, brownianBridge_));
     }
 
     template<class RNG, class S>

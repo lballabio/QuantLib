@@ -22,11 +22,11 @@
 namespace QuantLib {
 
     OneAssetStrikedOption::OneAssetStrikedOption(
-        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetOption(stochProc, payoff, exercise, engine) {}
+    : OneAssetOption(process, payoff, exercise, engine) {}
 
 
     Real OneAssetStrikedOption::strikeSensitivity() const {

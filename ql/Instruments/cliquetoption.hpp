@@ -42,7 +42,7 @@ namespace QuantLib {
       public:
         class arguments;
         class engine;
-        CliquetOption(const boost::shared_ptr<BlackScholesProcess>&,
+        CliquetOption(const boost::shared_ptr<StochasticProcess>&,
                       const boost::shared_ptr<PercentageStrikePayoff>&,
                       const boost::shared_ptr<EuropeanExercise>& maturity,
                       const std::vector<Date>& resetDates,

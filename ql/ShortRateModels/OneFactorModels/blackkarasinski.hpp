@@ -23,6 +23,7 @@
 #define quantlib_one_factor_models_black_karasinski_h
 
 #include <ql/ShortRateModels/onefactormodel.hpp>
+#include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
 
 namespace QuantLib {
 

@@ -18,6 +18,7 @@
 #include <ql/Pricers/mcperformanceoption.hpp>
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/TermStructures/flatforward.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 

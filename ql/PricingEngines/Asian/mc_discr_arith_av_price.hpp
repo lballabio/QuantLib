@@ -140,14 +140,18 @@ namespace QuantLib {
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                          this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         return boost::shared_ptr<QL_TYPENAME
             MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
             new ArithmeticAPOPathPricer(
               payoff->optionType(),
-              this->arguments_.blackScholesProcess->stateVariable()->value(),
+              process->stateVariable()->value(),
               payoff->strike(),
-              this->arguments_.blackScholesProcess->riskFreeRate()
-                                        ->discount(this->timeGrid().back())));
+              process->riskFreeRate()->discount(this->timeGrid().back())));
     }
 
     template <class RNG, class S>
@@ -165,6 +169,11 @@ namespace QuantLib {
                 this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                          this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         // for seasoned option the geometric strike might be rescaled
         // to obtain an equivalent arithmetic strike.
         // Any change applied here MUST be applied to the analytic engine too
@@ -172,10 +181,9 @@ namespace QuantLib {
             MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
             new GeometricAPOPathPricer(
               payoff->optionType(),
-              this->arguments_.blackScholesProcess->stateVariable()->value(),
+              process->stateVariable()->value(),
               payoff->strike(),
-              this->arguments_.blackScholesProcess->riskFreeRate()
-                                        ->discount(this->timeGrid().back())));
+              process->riskFreeRate()->discount(this->timeGrid().back())));
     }
 
     template <class RNG = PseudoRandom, class S = Statistics>

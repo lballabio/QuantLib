@@ -23,21 +23,22 @@
 #define quantlib_one_factor_models_vasicek_h
 
 #include <ql/ShortRateModels/onefactormodel.hpp>
+#include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
 
 namespace QuantLib {
 
     //! %Vasicek model class
-    /*! This class implements the Vasicek model defined by 
-        \f[ 
+    /*! This class implements the Vasicek model defined by
+        \f[
             dr_t = a(b - r_t)dt + \sigma dW_t ,
         \f]
-        where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants. 
+        where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants.
 
         \ingroup shortrate
     */
     class Vasicek : public OneFactorAffineModel {
       public:
-        Vasicek(Rate r0 = 0.05, 
+        Vasicek(Rate r0 = 0.05,
                 Real a = 0.1, Real b = 0.05, Real sigma = 0.01);
 
         virtual Real discountBondOption(Option::Type type,
@@ -91,7 +92,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics> 
+    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics>
     Vasicek::dynamics() const {
         return boost::shared_ptr<ShortRateDynamics>(
                                      new Dynamics(a(), b() , sigma(), r0_));

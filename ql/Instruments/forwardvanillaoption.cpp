@@ -22,11 +22,11 @@ namespace QuantLib {
     ForwardVanillaOption::ForwardVanillaOption(
         Real moneyness,
         Date resetDate,
-        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : VanillaOption(stochProc, payoff, exercise, engine), 
+    : VanillaOption(process, payoff, exercise, engine),
       moneyness_(moneyness), resetDate_(resetDate) {}
 
     void ForwardVanillaOption::setupArguments(Arguments* args) const {

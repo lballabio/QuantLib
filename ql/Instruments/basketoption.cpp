@@ -22,12 +22,12 @@ namespace QuantLib {
 
     BasketOption::BasketOption(
         const BasketType basketType,
-        const std::vector<boost::shared_ptr<BlackScholesProcess> >& stochProcs,
+        const std::vector<boost::shared_ptr<StochasticProcess> >& processes,
         const boost::shared_ptr<PlainVanillaPayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const Matrix& correlation,
         const boost::shared_ptr<PricingEngine>& engine)
-    : MultiAssetOption(stochProcs, payoff, exercise, correlation, engine),
+    : MultiAssetOption(processes, payoff, exercise, correlation, engine),
       basketType_(basketType) {}
 
     void BasketOption::setupArguments(Arguments* args) const {

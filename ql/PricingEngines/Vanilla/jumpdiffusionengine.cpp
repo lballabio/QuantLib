@@ -16,6 +16,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
+#include <ql/Processes/merton76process.hpp>
 #include <ql/Math/poissondistribution.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
@@ -37,7 +38,7 @@ namespace QuantLib {
 
         boost::shared_ptr<Merton76Process> jdProcess =
             boost::dynamic_pointer_cast<Merton76Process>(
-                                              arguments_.blackScholesProcess);
+                                                arguments_.stochasticProcess);
         QL_REQUIRE(jdProcess, "not a jump diffusion process");
 
         Real jumpSquareVol = jdProcess->logJumpVolatility()->value()
@@ -72,8 +73,8 @@ namespace QuantLib {
         Handle<YieldTermStructure> dividendTS(jdProcess->dividendYield());
         Handle<YieldTermStructure> riskFreeTS(jdProcess->riskFreeRate());
         Handle<BlackVolTermStructure> volTS(jdProcess->blackVolatility());
-        baseArguments->blackScholesProcess =
-            boost::shared_ptr<BlackScholesProcess>(
+        baseArguments->stochasticProcess =
+            boost::shared_ptr<StochasticProcess>(
                             new BlackScholesProcess(stateVariable, dividendTS,
                                                     riskFreeTS, volTS));
         baseArguments->validate();

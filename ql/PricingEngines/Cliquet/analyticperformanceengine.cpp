@@ -17,6 +17,7 @@
 
 #include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -39,8 +40,10 @@ namespace QuantLib {
                                                            arguments_.payoff);
         QL_REQUIRE(moneyness, "wrong payoff given");
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         std::vector<Date> resetDates = arguments_.resetDates;
         resetDates.push_back(arguments_.exercise->lastDate());

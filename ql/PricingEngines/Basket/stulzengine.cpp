@@ -18,6 +18,7 @@
 
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/bivariatenormaldistribution.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
@@ -95,14 +96,19 @@ namespace QuantLib {
 
     void StulzEngine::calculate() const {
 
-        std::vector<boost::shared_ptr<BlackScholesProcess> > procs =
-            arguments_.blackScholesProcesses;
-
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        QL_REQUIRE(procs.size() == 2,
+        QL_REQUIRE(arguments_.stochasticProcesses.size() == 2,
                    "not a basket of two stocks");
+        boost::shared_ptr<BlackScholesProcess> process1 =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                           arguments_.stochasticProcesses[0]);
+        QL_REQUIRE(process1, "Black-Scholes processes required");
+        boost::shared_ptr<BlackScholesProcess> process2 =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                           arguments_.stochasticProcesses[1]);
+        QL_REQUIRE(process2, "Black-Scholes processes required");
 
         boost::shared_ptr<EuropeanExercise> exercise =
             boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
@@ -112,29 +118,31 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
+
+
         Real strike = payoff->strike();
 
-        Real variance1 = procs[0]->blackVolatility()->blackVariance(
+        Real variance1 = process1->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
-        Real variance2 = procs[1]->blackVolatility()->blackVariance(
+        Real variance2 = process2->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
 
         Real rho = arguments_.correlation[1][0];
 
         DiscountFactor riskFreeDiscount =
-            procs[0]->riskFreeRate()->discount(exercise->lastDate());
+            process1->riskFreeRate()->discount(exercise->lastDate());
 
         // cannot handle non zero dividends, so don't believe this...
         DiscountFactor dividendDiscount1 =
-            procs[0]->dividendYield()->discount(exercise->lastDate());
+            process1->dividendYield()->discount(exercise->lastDate());
         DiscountFactor dividendDiscount2 =
-            procs[1]->dividendYield()->discount(exercise->lastDate());
+            process2->dividendYield()->discount(exercise->lastDate());
 
         BasketOption::BasketType basketType = arguments_.basketType;
 
-        Real forward1 = procs[0]->stateVariable()->value() *
+        Real forward1 = process1->stateVariable()->value() *
             dividendDiscount1 / riskFreeDiscount;
-        Real forward2 = procs[1]->stateVariable()->value() *
+        Real forward2 = process2->stateVariable()->value() *
             dividendDiscount2 / riskFreeDiscount;
 
         switch (basketType) {
@@ -142,10 +150,11 @@ namespace QuantLib {
             switch (payoff->optionType()) {
               // euro call on a two asset max basket
               case Option::Call:
-                results_.value = euroTwoAssetMaxBasketCall(forward1, forward2, strike,
-                                                           riskFreeDiscount,
-                                                           variance1, variance2,
-                                                           rho);
+                results_.value =
+                    euroTwoAssetMaxBasketCall(forward1, forward2, strike,
+                                              riskFreeDiscount,
+                                              variance1, variance2,
+                                              rho);
 
                 break;
               // euro put on a two asset max basket
@@ -166,10 +175,11 @@ namespace QuantLib {
             switch (payoff->optionType()) {
               // euro call on a two asset min basket
               case Option::Call:
-                results_.value = euroTwoAssetMinBasketCall(forward1, forward2, strike,
-                                                           riskFreeDiscount,
-                                                           variance1, variance2,
-                                                           rho);
+                results_.value =
+                    euroTwoAssetMinBasketCall(forward1, forward2, strike,
+                                              riskFreeDiscount,
+                                              variance1, variance2,
+                                              rho);
                 break;
               // euro put on a two asset min basket
               case Option::Put:
@@ -188,7 +198,6 @@ namespace QuantLib {
           default:
             QL_FAIL("unknown type");
         }
-
     }
 
 }

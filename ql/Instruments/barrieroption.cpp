@@ -27,11 +27,11 @@ namespace QuantLib {
         Barrier::Type barrierType,
         Real barrier,
         Real rebate,
-        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine),
+    : OneAssetStrikedOption(process, payoff, exercise, engine),
       barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {
 
         if (!engine)
@@ -71,34 +71,26 @@ namespace QuantLib {
 
         switch (barrierType) {
           case Barrier::DownIn:
-            QL_REQUIRE(blackScholesProcess->stateVariable()->value()
-                       >= barrier,
-                       "underlying ("
-                       << blackScholesProcess->stateVariable()->value()
+            QL_REQUIRE(stochasticProcess->x0() >= barrier,
+                       "underlying (" << stochasticProcess->x0()
                        << ") < barrier (" << barrier
                        << "): down-and-in barrier undefined");
             break;
           case Barrier::UpIn:
-            QL_REQUIRE(blackScholesProcess->stateVariable()->value()
-                       <= barrier,
-                       "underlying ("
-                       << blackScholesProcess->stateVariable()->value()
+            QL_REQUIRE(stochasticProcess->x0() <= barrier,
+                       "underlying (" << stochasticProcess->x0()
                        << ") > barrier (" << barrier
                        << "): up-and-in barrier undefined");
             break;
           case Barrier::DownOut:
-            QL_REQUIRE(blackScholesProcess->stateVariable()->value()
-                       >= barrier,
-                       "underlying ("
-                       << blackScholesProcess->stateVariable()->value()
+            QL_REQUIRE(stochasticProcess->x0() >= barrier,
+                       "underlying (" << stochasticProcess->x0()
                        << ") < barrier (" << barrier
                        << "): down-and-out barrier undefined");
             break;
           case Barrier::UpOut:
-            QL_REQUIRE(blackScholesProcess->stateVariable()->value()
-                       <= barrier,
-                       "underlying ("
-                       << blackScholesProcess->stateVariable()->value()
+            QL_REQUIRE(stochasticProcess->x0() <= barrier,
+                       "underlying (" << stochasticProcess->x0()
                        << ") > barrier (" << barrier
                        << "): up-and-out barrier undefined");
             break;

@@ -21,13 +21,13 @@
 namespace QuantLib {
 
     DividendVanillaOption::DividendVanillaOption(
-        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const std::vector<Date>& dividendDates,
         const std::vector<Real>& dividends,
         const boost::shared_ptr<PricingEngine>& engine)
-    : VanillaOption(stochProc, payoff, exercise, engine),
+    : VanillaOption(process, payoff, exercise, engine),
       dividendDates_(dividendDates), dividends_(dividends) {}
 
     void DividendVanillaOption::setupArguments(Arguments* args) const {

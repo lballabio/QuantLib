@@ -19,10 +19,16 @@
 #include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
 #include <ql/PricingEngines/americanpayoffathit.hpp>
 #include <ql/PricingEngines/americanpayoffatexpiry.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
     void AnalyticDigitalAmericanEngine::calculate() const {
+
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
@@ -30,17 +36,13 @@ namespace QuantLib {
         boost::shared_ptr<AmericanExercise> ex =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
-        QL_REQUIRE(ex->dates()[0]<=
-                   arguments_.blackScholesProcess->blackVolatility()
-                   ->referenceDate(),
+        QL_REQUIRE(ex->dates()[0] <=
+                   process->blackVolatility()->referenceDate(),
                    "American option with window exercise not handled yet");
 
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
-
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
 
         Real spot = process->stateVariable()->value();
         Real variance =

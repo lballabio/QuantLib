@@ -20,20 +20,21 @@
     \brief Option on a single asset
 */
 
-#ifndef quantlib_oneasset_option_h
-#define quantlib_oneasset_option_h
+#ifndef quantlib_oneasset_option_hpp
+#define quantlib_oneasset_option_hpp
 
 #include <ql/option.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 
     //! Base class for options on a single asset
     class OneAssetOption : public Option {
       public:
-        OneAssetOption(const boost::shared_ptr<BlackScholesProcess>&,
-                       const boost::shared_ptr<Payoff>& payoff,
-                       const boost::shared_ptr<Exercise>& exercise,
+        OneAssetOption(const boost::shared_ptr<StochasticProcess>&,
+                       const boost::shared_ptr<Payoff>&,
+                       const boost::shared_ptr<Exercise>&,
                        const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
         //! \name Instrument interface
@@ -55,14 +56,14 @@ namespace QuantLib {
         Real dividendRho() const;
         Real itmCashProbability() const;
         //@}
-        /*! \warning currently, this method returns the Black-Scholes 
-                     implied volatility. It will give unconsistent 
+        /*! \warning currently, this method returns the Black-Scholes
+                     implied volatility. It will give unconsistent
                      results if the pricing was performed with any other
                      methods (such as jump-diffusion models.)
             \warning options with a gamma that changes sign have
                      values that are <b>not</b> monotonic in the
                      volatility, e.g binary options. In these cases
-                     the calculation can fail and the result (if any) 
+                     the calculation can fail and the result (if any)
                      is almost meaningless.  Another possible source of
                      failure is to have a target value that is not
                      attainable with any volatility, e.g., a
@@ -74,7 +75,7 @@ namespace QuantLib {
                                      Real accuracy = 1.0e-4,
                                      Size maxEvaluations = 100,
                                      Volatility minVol = QL_MIN_VOLATILITY,
-                                     Volatility maxVol = QL_MAX_VOLATILITY) 
+                                     Volatility maxVol = QL_MAX_VOLATILITY)
                                                                         const;
         void setupArguments(Arguments*) const;
       protected:
@@ -84,7 +85,7 @@ namespace QuantLib {
         mutable Real delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;
         // arguments
-        boost::shared_ptr<BlackScholesProcess> blackScholesProcess_;
+        boost::shared_ptr<StochasticProcess> stochasticProcess_;
       private:
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
@@ -105,7 +106,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        boost::shared_ptr<BlackScholesProcess> blackScholesProcess;
+        boost::shared_ptr<StochasticProcess> stochasticProcess;
     };
 
     //! %Results from single-asset option calculation

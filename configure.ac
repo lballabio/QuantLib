@@ -291,6 +291,7 @@ AC_CONFIG_FILES([
     ql/PricingEngines/Quanto/Makefile
     ql/PricingEngines/Swaption/Makefile
     ql/PricingEngines/Vanilla/Makefile
+    ql/Processes/Makefile
     ql/RandomNumbers/Makefile
     ql/ShortRateModels/Makefile
     ql/ShortRateModels/CalibrationHelpers/Makefile

@@ -24,11 +24,11 @@ namespace QuantLib {
         Real runningAccumulator,
         Size pastFixings,
         std::vector<Date> fixingDates,
-        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine),
+    : OneAssetStrikedOption(process, payoff, exercise, engine),
       averageType_(averageType), runningAccumulator_(runningAccumulator),
       pastFixings_(pastFixings), fixingDates_(fixingDates) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
@@ -82,11 +82,11 @@ namespace QuantLib {
 
     ContinuousAveragingAsianOption::ContinuousAveragingAsianOption(
         Average::Type averageType,
-        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine),
+    : OneAssetStrikedOption(process, payoff, exercise, engine),
       averageType_(averageType) {}
 
     void ContinuousAveragingAsianOption::setupArguments(Arguments* args)

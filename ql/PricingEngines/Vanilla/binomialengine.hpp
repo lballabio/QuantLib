@@ -26,6 +26,7 @@
 #include <ql/Lattices/binomialtree.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 
@@ -53,8 +54,10 @@ namespace QuantLib {
     template <class T>
     void BinomialVanillaEngine<T>::calculate() const {
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                          this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();

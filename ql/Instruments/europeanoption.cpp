@@ -21,11 +21,11 @@
 namespace QuantLib {
 
     EuropeanOption::EuropeanOption(
-        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StochasticProcess>& process,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : VanillaOption(stochProc, payoff, exercise, engine) {
+    : VanillaOption(process, payoff, exercise, engine) {
         if (!engine)
             setPricingEngine(boost::shared_ptr<PricingEngine>(
                                                  new AnalyticEuropeanEngine));

@@ -25,12 +25,12 @@ namespace QuantLib {
                       const Handle<Quote>& correlation,
                       Real moneyness,
                       Date resetDate,
-                      const boost::shared_ptr<BlackScholesProcess>& stochProc,
+                      const boost::shared_ptr<StochasticProcess>& process,
                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
                       const boost::shared_ptr<Exercise>& exercise,
                       const boost::shared_ptr<PricingEngine>& engine)
     : QuantoVanillaOption(foreignRiskFreeTS, exchRateVolTS, correlation,
-                          stochProc, payoff, exercise, engine),
+                          process, payoff, exercise, engine),
       moneyness_(moneyness), resetDate_(resetDate) {
         QL_REQUIRE(engine, "null engine or wrong engine type");
     }

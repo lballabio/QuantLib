@@ -24,6 +24,7 @@
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -106,7 +107,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        boost::shared_ptr<StochasticProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
@@ -159,7 +160,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        boost::shared_ptr<StochasticProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
@@ -212,7 +213,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        boost::shared_ptr<StochasticProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
@@ -278,7 +279,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        boost::shared_ptr<StochasticProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
@@ -343,7 +344,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        boost::shared_ptr<StochasticProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
@@ -404,7 +405,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        boost::shared_ptr<StochasticProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
@@ -471,7 +472,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        boost::shared_ptr<StochasticProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),
@@ -547,7 +548,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                             new CashOrNothingPayoff(types[i1],
                                                     strikes[i6], cashPayoff));
 
-          boost::shared_ptr<BlackScholesProcess> stochProcess(new
+          boost::shared_ptr<StochasticProcess> stochProcess(new
                 BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
           VanillaOption opt(stochProcess, payoff, exercises[j], engines[j]);
@@ -697,7 +698,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        boost::shared_ptr<StochasticProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
                                 Handle<YieldTermStructure>(qTS),
                                 Handle<YieldTermStructure>(rTS),

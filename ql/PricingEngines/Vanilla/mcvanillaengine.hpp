@@ -120,9 +120,9 @@ namespace QuantLib {
         TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
-        return boost::shared_ptr<path_generator_type>(new
-            path_generator_type(arguments_.blackScholesProcess,
-                                grid, gen, brownianBridge_));
+        return boost::shared_ptr<path_generator_type>(
+                         new path_generator_type(arguments_.stochasticProcess,
+                                                 grid, gen, brownianBridge_));
     }
 
 

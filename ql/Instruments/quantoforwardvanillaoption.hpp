@@ -43,9 +43,9 @@ namespace QuantLib {
                            const Handle<Quote>& correlation,
                            Real moneyness,
                            Date resetDate,
-                           const boost::shared_ptr<BlackScholesProcess>&,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
+                           const boost::shared_ptr<StochasticProcess>&,
+                           const boost::shared_ptr<StrikedTypePayoff>&,
+                           const boost::shared_ptr<Exercise>&,
                            const boost::shared_ptr<PricingEngine>& engine);
         void setupArguments(Arguments*) const;
       private:

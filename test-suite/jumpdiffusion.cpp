@@ -21,6 +21,7 @@
 #include <ql/Instruments/europeanoption.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
+#include <ql/Processes/merton76process.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -285,7 +286,7 @@ void JumpDiffusionTest::testMerton76() {
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
+    boost::shared_ptr<StochasticProcess> stochProcess(
            new Merton76Process(Handle<Quote>(spot),
                                Handle<YieldTermStructure>(qTS),
                                Handle<YieldTermStructure>(rTS),
@@ -389,7 +390,7 @@ void JumpDiffusionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<BlackScholesProcess> stochProcess(
+    boost::shared_ptr<StochasticProcess> stochProcess(
           new Merton76Process(Handle<Quote>(spot), qTS, rTS, volTS,
                               Handle<Quote>(jumpIntensity),
                               Handle<Quote>(meanLogJump),

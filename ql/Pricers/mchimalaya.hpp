@@ -23,6 +23,8 @@
 #define quantlib_himalaya_h
 
 #include <ql/Pricers/mcpricer.hpp>
+#include <ql/yieldtermstructure.hpp>
+#include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
 

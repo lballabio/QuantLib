@@ -127,14 +127,18 @@ namespace QuantLib {
                 this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
         return boost::shared_ptr<
                        QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>(
           new EuropeanPathPricer(
               payoff->optionType(),
-              this->arguments_.blackScholesProcess->stateVariable()->value(),
+              process->stateVariable()->value(),
               payoff->strike(),
-              this->arguments_.blackScholesProcess->riskFreeRate()
-                                        ->discount(this->timeGrid().back())));
+              process->riskFreeRate()->discount(this->timeGrid().back())));
     }
 
 
@@ -171,8 +175,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                          this->arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         Date refDate = process->riskFreeRate()->referenceDate();
         Date lastExerciseDate = this->arguments_.exercise->lastDate();

@@ -19,6 +19,7 @@
 */
 
 #include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 
@@ -30,31 +31,38 @@ namespace QuantLib {
         QL_REQUIRE(payoff->strike()>0.0,
                    "strike must be positive");
 
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+
+        Real strike = payoff->strike();
+
         Barrier::Type barrierType = arguments_.barrierType;
 
         switch (payoff->optionType()) {
           case Option::Call:
             switch (barrierType) {
               case Barrier::DownIn:
-                if (strike() >= barrier())
+                if (strike >= barrier())
                     results_.value = C(1,1) + E(1);
                 else
                     results_.value = A(1) - B(1) + D(1,1) + E(1);
                 break;
               case Barrier::UpIn:
-                if (strike() >= barrier())
+                if (strike >= barrier())
                     results_.value = A(1) + E(-1);
                 else
                     results_.value = B(1) - C(-1,1) + D(-1,1) + E(-1);
                 break;
               case Barrier::DownOut:
-                if (strike() >= barrier())
+                if (strike >= barrier())
                     results_.value = A(1) - C(1,1) + F(1);
                 else
                     results_.value = B(1) - D(1,1) + F(1);
                 break;
               case Barrier::UpOut:
-                if (strike() >= barrier())
+                if (strike >= barrier())
                     results_.value = F(-1);
                 else
                     results_.value = A(1) - B(1) + C(-1,1) - D(-1,1) + F(-1);
@@ -64,25 +72,25 @@ namespace QuantLib {
           case Option::Put:
             switch (barrierType) {
               case Barrier::DownIn:
-                if (strike() >= barrier())
+                if (strike >= barrier())
                     results_.value = B(-1) - C(1,-1) + D(1,-1) + E(1);
                 else
                     results_.value = A(-1) + E(1);
                 break;
               case Barrier::UpIn:
-                if (strike() >= barrier())
+                if (strike >= barrier())
                     results_.value = A(-1) - B(-1) + D(-1,-1) + E(-1);
                 else
                     results_.value = C(-1,-1) + E(-1);
                 break;
               case Barrier::DownOut:
-                if (strike() >= barrier())
+                if (strike >= barrier())
                     results_.value = A(-1) - B(-1) + C(1,-1) - D(1,-1) + F(1);
                 else
                     results_.value = F(1);
                 break;
               case Barrier::UpOut:
-                if (strike() >= barrier())
+                if (strike >= barrier())
                     results_.value = B(-1) - D(-1,-1) + F(-1);
                 else
                     results_.value = A(-1) - C(-1,-1) + F(-1);
@@ -96,7 +104,7 @@ namespace QuantLib {
 
 
     Real AnalyticBarrierEngine::underlying() const {
-        return arguments_.blackScholesProcess->stateVariable()->value();
+        return arguments_.stochasticProcess->x0();
     }
 
     Real AnalyticBarrierEngine::strike() const {
@@ -107,19 +115,15 @@ namespace QuantLib {
     }
 
     Time AnalyticBarrierEngine::residualTime() const {
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            this->arguments_.blackScholesProcess;
-
-        Date refDate = process->riskFreeRate()->referenceDate();
-        Date lastExerciseDate = this->arguments_.exercise->lastDate();
-
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        return rfdc.yearFraction(refDate, lastExerciseDate);
+        return arguments_.stochasticProcess->time(
+                                             arguments_.exercise->lastDate());
     }
 
     Volatility AnalyticBarrierEngine::volatility() const {
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
         return process->blackVolatility()->blackVol(residualTime(), strike());
     }
 
@@ -136,23 +140,37 @@ namespace QuantLib {
     }
 
     Rate AnalyticBarrierEngine::riskFreeRate() const {
-        return arguments_.blackScholesProcess->riskFreeRate()->
-            zeroRate(residualTime(), Continuous, NoFrequency);
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+        return process->riskFreeRate()->zeroRate(residualTime(), Continuous,
+                                                 NoFrequency);
     }
 
     DiscountFactor AnalyticBarrierEngine::riskFreeDiscount() const {
-        return arguments_.blackScholesProcess->riskFreeRate()->discount(
-                                                              residualTime());
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+        return process->riskFreeRate()->discount(residualTime());
     }
 
     Rate AnalyticBarrierEngine::dividendYield() const {
-        return arguments_.blackScholesProcess->dividendYield()->
-            zeroRate(residualTime(), Continuous, NoFrequency);
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+        return process->dividendYield()->zeroRate(residualTime(),
+                                                  Continuous, NoFrequency);
     }
 
     DiscountFactor AnalyticBarrierEngine::dividendDiscount() const {
-        return arguments_.blackScholesProcess->dividendYield()->discount(
-                                                              residualTime());
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
+        return process->dividendYield()->discount(residualTime());
     }
 
     Rate AnalyticBarrierEngine::mu() const {

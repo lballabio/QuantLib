@@ -16,6 +16,7 @@
 */
 
 #include <ql/Pricers/mcpagoda.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 
 namespace QuantLib {
 

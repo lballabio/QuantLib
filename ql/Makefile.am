@@ -17,6 +17,7 @@ SUBDIRS = \
     Patterns \
     Pricers \
     PricingEngines \
+    Processes \
     RandomNumbers \
     ShortRateModels \
     Solvers1D \
@@ -100,6 +101,7 @@ libQuantLib_la_LIBADD = \
     Optimization/libOptimization.la \
     Pricers/libPricers.la \
     PricingEngines/libPricingEngines.la \
+    Processes/libProcesses.la \
     RandomNumbers/libRandomNumbers.la \
     ShortRateModels/libShortRateModels.la \
     TermStructures/libTermStructures.la \

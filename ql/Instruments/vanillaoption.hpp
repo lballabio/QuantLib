@@ -31,15 +31,15 @@ namespace QuantLib {
     class VanillaOption : public OneAssetStrikedOption {
       public:
         class engine;
-        VanillaOption(const boost::shared_ptr<BlackScholesProcess>&,
-                      const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                      const boost::shared_ptr<Exercise>& exercise,
+        VanillaOption(const boost::shared_ptr<StochasticProcess>&,
+                      const boost::shared_ptr<StrikedTypePayoff>&,
+                      const boost::shared_ptr<Exercise>&,
                       const boost::shared_ptr<PricingEngine>& engine =
                           boost::shared_ptr<PricingEngine>());
     };
 
     //! Vanilla option engine base class
-    class VanillaOption::engine 
+    class VanillaOption::engine
         : public GenericEngine<VanillaOption::arguments,
                                VanillaOption::results> {};
 

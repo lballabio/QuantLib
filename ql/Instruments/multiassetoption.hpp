@@ -33,7 +33,7 @@ namespace QuantLib {
     class MultiAssetOption : public Option {
       public:
         MultiAssetOption(
-               const std::vector<boost::shared_ptr<BlackScholesProcess> >&
+               const std::vector<boost::shared_ptr<StochasticProcess> >&
                                                                    stochProcs,
                const boost::shared_ptr<Payoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
@@ -63,8 +63,8 @@ namespace QuantLib {
         mutable Real delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
         // arguments
-        std::vector< boost::shared_ptr<BlackScholesProcess> >
-            blackScholesProcesses_;
+        std::vector< boost::shared_ptr<StochasticProcess> >
+            stochasticProcesses_;
         Matrix correlation_;
     };
 
@@ -73,8 +73,8 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        std::vector< boost::shared_ptr<BlackScholesProcess> >
-            blackScholesProcesses;
+        std::vector< boost::shared_ptr<StochasticProcess> >
+            stochasticProcesses;
         Matrix correlation;
     };
 

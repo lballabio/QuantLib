@@ -18,6 +18,7 @@
 #include <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Processes/blackscholesprocess.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
@@ -42,8 +43,10 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> process =
+            boost::dynamic_pointer_cast<BlackScholesProcess>(
+                                                arguments_.stochasticProcess);
+        QL_REQUIRE(process, "Black-Scholes process required");
 
         Real variance = process->blackVolatility()->blackVariance(
             ex->lastDate(), payoff->strike());

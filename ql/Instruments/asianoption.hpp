@@ -35,7 +35,7 @@ namespace QuantLib {
     //! Continuous-averaging Asian option
     /*! \todo add running average
 
-        \ingroup instruments 
+        \ingroup instruments
     */
     class ContinuousAveragingAsianOption : public OneAssetStrikedOption {
       public:
@@ -43,10 +43,10 @@ namespace QuantLib {
         class engine;
         ContinuousAveragingAsianOption(
                 Average::Type averageType,
-                const boost::shared_ptr<BlackScholesProcess>&,
+                const boost::shared_ptr<StochasticProcess>&,
                 const boost::shared_ptr<StrikedTypePayoff>& payoff,
                 const boost::shared_ptr<Exercise>& exercise,
-                const boost::shared_ptr<PricingEngine>& engine = 
+                const boost::shared_ptr<PricingEngine>& engine =
                                            boost::shared_ptr<PricingEngine>());
         void setupArguments(Arguments*) const;
       protected:
@@ -64,10 +64,10 @@ namespace QuantLib {
                 Real runningAccumulator,
                 Size pastFixings,
                 std::vector<Date> fixingDates,
-                const boost::shared_ptr<BlackScholesProcess>&,
+                const boost::shared_ptr<StochasticProcess>&,
                 const boost::shared_ptr<StrikedTypePayoff>& payoff,
                 const boost::shared_ptr<Exercise>& exercise,
-                const boost::shared_ptr<PricingEngine>& engine = 
+                const boost::shared_ptr<PricingEngine>& engine =
                                            boost::shared_ptr<PricingEngine>());
         void setupArguments(Arguments*) const;
       protected:
@@ -78,7 +78,7 @@ namespace QuantLib {
     };
 
     //! Extra arguments for single-asset discrete-average Asian option
-    class DiscreteAveragingAsianOption::arguments 
+    class DiscreteAveragingAsianOption::arguments
         : public OneAssetStrikedOption::arguments {
       public:
         arguments() : averageType(Average::Type(-1)),
@@ -92,7 +92,7 @@ namespace QuantLib {
     };
 
     //! Extra arguments for single-asset continuous-average Asian option
-    class ContinuousAveragingAsianOption::arguments 
+    class ContinuousAveragingAsianOption::arguments
         : public OneAssetStrikedOption::arguments {
       public:
         arguments() : averageType(Average::Type(-1)) {}
@@ -101,13 +101,13 @@ namespace QuantLib {
     };
 
     //! Discrete-averaging Asian engine base class
-    class DiscreteAveragingAsianOption::engine 
-        : public GenericEngine<DiscreteAveragingAsianOption::arguments, 
+    class DiscreteAveragingAsianOption::engine
+        : public GenericEngine<DiscreteAveragingAsianOption::arguments,
                                DiscreteAveragingAsianOption::results> {};
 
     //! Continuous-averaging Asian engine base class
-    class ContinuousAveragingAsianOption::engine 
-        : public GenericEngine<ContinuousAveragingAsianOption::arguments, 
+    class ContinuousAveragingAsianOption::engine
+        : public GenericEngine<ContinuousAveragingAsianOption::arguments,
                                ContinuousAveragingAsianOption::results> {};
 
 }

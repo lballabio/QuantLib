@@ -38,6 +38,8 @@ namespace QuantLib {
 
         \test the correctness of the returned value is tested by
               reproducing results available in literature.
+
+        \todo rework to avoid repeated casts inside utility methods
     */
     class AnalyticBarrierEngine : public BarrierOption::engine {
       public:

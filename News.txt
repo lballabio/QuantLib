@@ -40,3 +40,10 @@ Changes since release 0.3.8:
 - Migrated finite-difference pricers to pricing-engine framework (thanks
   to Joseph Wang)
 
+- Option instruments now take a generic StochasticProcess; however, most
+  pricing engines still require a BlackScholesProcess. They should be
+  checked to see whether the requirement can be relaxed.  Following this
+  change, Merton76Process no longer inherits from BlackScholesProcess.
+  This avoids erroneous upcasts.
+  
+  
