@@ -14,6 +14,16 @@ COMPILING
     Borland projects
 
 LIBRARY
+    coupon restructuring:
+        rename AccruingCoupon to Coupon
+        derive FloatingRateCoupon from Coupon
+            Index no longer a default parameter
+    swap restructuring:
+        each leg = upfront CashFlow + Coupon vector + end CashFlow
+        calculate BPS sensitivity for both legs
+            remove BPS calculation from SimpleSwap
+    have RateHelpers take a MarketElement instead of a Rate
+    make PiecewiseFlatForward an observer of its RateHelpers
     switch false/true antithetic variate
     timer class
     cash flow stream for IRR, duration
