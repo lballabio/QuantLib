@@ -2,21 +2,17 @@
 # $Id$
 # $Source$
 # $Log$
-# Revision 1.40  2001/08/23 13:07:24  nando
-# bug fixed
-#
-# Revision 1.39  2001/08/23 13:04:54  nando
+# Revision 1.41  2001/08/27 15:27:05  nando
 # typo fixed
-#
-# Revision 1.38  2001/08/23 12:59:45  nando
-# makedist now distributes examples
 #
 
 AUTOMAKE_OPTIONS=foreign
 
 SUBDIRS=Sources Include Docs
 
-EXTRA_DIST=Authors.txt \
+EXTRA_DIST=
+    Authors.txt \
+    ChangeLog.txt \
 	Contributors.txt \
 	History.txt \
 	INSTALL.txt \
