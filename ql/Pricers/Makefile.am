@@ -22,6 +22,7 @@ include_HEADERS = \
     dividendshoutoption.hpp \
     europeanengine.hpp \
     europeanoption.hpp \
+    fdeuropeanswaption.hpp \
     finitedifferenceeuropean.hpp \
     mcbasket.hpp \
     mcdiscretearithmeticapo.hpp \
@@ -55,6 +56,7 @@ libPricers_la_SOURCES = \
     dividendshoutoption.cpp \
     europeanengine.cpp \
     europeanoption.cpp \
+    fdeuropeanswaption.cpp \
     finitedifferenceeuropean.cpp \
     mcbasket.cpp \
     mcdiscretearithmeticapo.cpp \

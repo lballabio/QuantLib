@@ -62,7 +62,8 @@ namespace QuantLib {
             }
             virtual double discountBond(Time T, Time s, Rate r) const ;
 
-            virtual double discountBondOption(Option::Type type, double strike, Time maturity, Time bondMaturity) const;
+            virtual double discountBondOption(Option::Type type, double strike,
+                Time maturity, Time bondMaturity) const;
 
           private:
             inline double B(Time t) const {

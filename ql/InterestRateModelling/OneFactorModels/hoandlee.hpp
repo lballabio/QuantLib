@@ -66,7 +66,8 @@ namespace QuantLib {
                 double value = QL_EXP(lnA(T,s) - B(T,s)*r);
                 return value;
             }
-            virtual double discountBondOption(Option::Type type, double strike, Time maturity, Time bondMaturity) const;
+            virtual double discountBondOption(Option::Type type, double strike,
+                Time maturity, Time bondMaturity) const;
 
             double B(Time T, Time s) const {
                 return (s - T);

@@ -35,11 +35,11 @@
 #include "ql/InterestRateModelling/model.hpp"
 
 namespace QuantLib {
-    using Instruments::SimpleSwap;
 
     namespace InterestRateModelling {
 
-        double swapFutureValue(const Handle<SimpleSwap>& swap, const Handle<Model>& model, Rate rate, Time time);
+        double swapFutureValue(const Handle<Instruments::SimpleSwap>& swap, 
+            const Handle<Model>& model, Rate rate, Time time);
 
     }
 }

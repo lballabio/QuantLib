@@ -42,6 +42,8 @@ namespace QuantLib {
         namespace CalibrationHelpers {
 
             using CashFlows::FloatingRateCoupon;
+            using Instruments::EuropeanSwaption;
+            using Instruments::SimpleSwap;
 
             Swaption::Swaption( 
                 const Period& tenorPeriod,

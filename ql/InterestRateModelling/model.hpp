@@ -53,13 +53,14 @@ namespace QuantLib {
 
         class Model {
           public:
-            Model(unsigned nbParams, 
+            Model(unsigned nParams, 
                 const RelinkableHandle<TermStructure>& termStructure) 
-            : nbParams_(nbParams), termStructure_(termStructure) {}
+            : nParams_(nParams), termStructure_(termStructure) {}
             virtual ~Model() {}
             virtual void setParameters(const Array& params) = 0;
 
-            virtual double discountBond(Time now, Time maturity, Rate r) const { 
+            virtual double discountBond(Time now, Time maturity, Rate r) const 
+            { 
                 return Null<double>();
             }
 
@@ -82,7 +83,7 @@ namespace QuantLib {
           private:
             class CalibrationProblem;
             friend class CalibrationProblem;
-            unsigned int nbParams_;
+            unsigned int nParams_;
             const RelinkableHandle<TermStructure>& termStructure_;
         };
 

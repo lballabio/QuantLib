@@ -38,7 +38,9 @@ namespace QuantLib {
     using CashFlows::Coupon;
 
     namespace InterestRateModelling {
-        double swapFutureValue(const Handle<SimpleSwap>& swap, const Handle<Model>& model, Rate rate, Time time) {
+        double swapFutureValue(const Handle<SimpleSwap>& swap, 
+            const Handle<Model>& model, Rate rate, Time time) {
+
             Date settlement = model->termStructure()->settlementDate();
             double fixedLegValue = 0.0;
             std::vector<Handle<CashFlow> > fixedLeg = swap->fixedLeg();
@@ -46,7 +48,8 @@ namespace QuantLib {
             unsigned int i;
             for (i=0; i<fixedLeg.size(); i++) {
                 Date cashFlowDate = fixedLeg[i]->date();
-                Time t = model->termStructure()->dayCounter().yearFraction(settlement, cashFlowDate);
+                Time t = model->termStructure()->dayCounter().
+                    yearFraction(settlement, cashFlowDate);
                 if (t >= time) {
                     fixedLegValue += fixedLeg[i]->amount() *
                         model->discountBond(time, t, rate);
@@ -57,7 +60,8 @@ namespace QuantLib {
 
             for (i=0; i<floatingLeg.size(); i++) {
                 Date cashFlowDate = floatingLeg[i]->date();
-                Time t = model->termStructure()->dayCounter().yearFraction(settlement, cashFlowDate);
+                Time t = model->termStructure()->dayCounter().
+                    yearFraction(settlement, cashFlowDate);
                 if (t >= time) {
                     const Coupon * coupon = 
                         #if QL_ALLOW_TEMPLATE_METHOD_CALLS
@@ -70,10 +74,10 @@ namespace QuantLib {
                         yearFraction(settlement,  coupon->accrualStartDate());
                     Time endTime = model->termStructure()->dayCounter().
                         yearFraction(settlement,  coupon->accrualEndDate());
-                    double startDiscount = model->discountBond(time, startTime, rate);
-                    double endDiscount = model->discountBond(time, endTime, rate);
-                    floatingLegValue += (startDiscount/endDiscount - 1.0)*coupon->nominal() *
-                        model->discountBond(time, t, rate); 
+                    double sd = model->discountBond(time, startTime, rate);
+                    double ed = model->discountBond(time, endTime, rate);
+                    floatingLegValue += (sd/ed - 1.0)*
+                        coupon->nominal()*model->discountBond(time, t, rate); 
                 }
             }
             if (swap->payFixedRate())

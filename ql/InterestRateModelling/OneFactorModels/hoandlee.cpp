@@ -71,18 +71,21 @@ namespace QuantLib {
             return value;
         }
 
-        double HoAndLee::discountBondOption(Option::Type type, double strike, Time maturity, Time bondMaturity) const {
+        double HoAndLee::discountBondOption(Option::Type type, double strike, 
+            Time maturity, Time bondMaturity) const {
+
             double discountT = termStructure()->discount(maturity);
             double discountS = termStructure()->discount(bondMaturity);
             if (maturity < QL_EPSILON) {
                 switch(type) {
-                    case Option::Call: return QL_MAX(discountS - strike, 0.0);
-                    case Option::Put:  return QL_MAX(strike - discountS, 0.0);
-                    default: throw Error("unsupported option type");
+                  case Option::Call: return QL_MAX(discountS - strike, 0.0);
+                  case Option::Put:  return QL_MAX(strike - discountS, 0.0);
+                  default: throw Error("unsupported option type");
                 }
             }
             double sigmaP = sigma_*(bondMaturity - maturity)*QL_SQRT(maturity);
-            double d1 = QL_LOG(discountS/(strike*discountT))/sigmaP + 0.5*sigmaP;
+            double d1 = QL_LOG(discountS/(strike*discountT))/sigmaP + 
+                0.5*sigmaP;
             double d2 = d1 - sigmaP;
             double sFactor;
             double tFactor;

@@ -49,9 +49,10 @@ namespace QuantLib {
 
         class Grid : public Array {
           public:
-            Grid(unsigned int gridPoints, double initialCenter, double strikeCenter,
-              Time residualTime, Time timeDelay, OneFactorModel *  model) : 
-              Array(safeGridPoints(gridPoints, residualTime)) {
+            Grid(unsigned int gridPoints, double initialCenter, 
+                double strikeCenter,
+                Time residualTime, Time timeDelay, OneFactorModel *  model) 
+            : Array(safeGridPoints(gridPoints, residualTime)) {
                 double maxCenter = QL_MAX(initialCenter, strikeCenter);
                 double minCenter = QL_MIN(initialCenter, strikeCenter);
                 double yMax = model->stateVariable(0.5);
@@ -62,8 +63,8 @@ namespace QuantLib {
                 //double minMaxFactor = 4.0*volSqrtTime + 0.08;
                 double volSqrtTime = volatility*QL_SQRT(residualTime);
                 double minMaxFactor = volSqrtTime + model->stateVariable(0.08);
-                double xMin = minCenter - minMaxFactor;  // underlying grid min value
-                double xMax = maxCenter + minMaxFactor;  // underlying grid max value
+                double xMin = minCenter - minMaxFactor;
+                double xMax = maxCenter + minMaxFactor; 
                 if (xMin<model->minStateVariable())
                     xMin = model->minStateVariable();
                 if (xMax>model->maxStateVariable())

@@ -75,7 +75,7 @@ namespace QuantLib {
                 tenors_[i] = counter.yearFraction(beginDate, endDate);
                 i++;
             }
-            nbOfPeriods_ = i;
+            nPeriods_ = i;
         }
 
         void EuropeanCapFloor::performCalculations() const {
@@ -86,7 +86,7 @@ namespace QuantLib {
             else
                 optionType = Option::Call;
             NPV_ = 0.0;
-            for (unsigned i=0; i<nbOfPeriods_; i++) {
+            for (unsigned i=0; i<nPeriods_; i++) {
                 Rate exerciseRate;
                 if (i<exerciseRates_.size())
                     exerciseRate = exerciseRates_[i];

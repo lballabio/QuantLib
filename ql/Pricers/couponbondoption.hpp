@@ -42,14 +42,12 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using InterestRateModelling::Model;
-
         //! Coupon Bond Option
         class CouponBondOption {
           public:
             CouponBondOption( Time maturity, const std::vector<Time>& times,
                 const std::vector<double>& amounts, Option::Type type,
-                double strike, const Handle<Model>& model);
+                double strike, const Handle<InterestRateModelling::Model>& model);
             double value(Rate rate);
           private:
             class rStarFinder;
@@ -60,7 +58,7 @@ namespace QuantLib {
             const std::vector<double>& amounts_;
             Option::Type type_;
             double strike_;
-            const Handle<Model>& model_;
+            const Handle<InterestRateModelling::Model>& model_;
         };
 
     }

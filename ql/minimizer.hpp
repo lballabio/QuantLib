@@ -44,16 +44,14 @@ namespace QuantLib {
     /*! This is the function that must be minimized
     */
 
-    using std::vector;
-
     class CostFunction {
       public:
         CostFunction(unsigned dimensions) : dimensions_(dimensions) {};
         virtual ~CostFunction() {}
         //! returns \f$ f(x) \f$
-        virtual double operator()(const vector<double>& x) const = 0;
-        virtual void gradient(const vector<double>& x, vector<double>& grad) const {
-            vector<double> y(x);
+        virtual double operator()(const Array& x) const = 0;
+        virtual void gradient(const Array& x, Array& grad) const {
+            Array y(x);
 
             for (unsigned i=0; i<dimensions_; i++) {
                 double off = 1e-6;
@@ -75,7 +73,7 @@ namespace QuantLib {
     class Minimizer {
       public:
         Minimizer() {}
-        virtual std::vector<double> solve(
+        virtual Array solve(
           const Handle<CostFunction>& f, 
           const Handle<Constraint>& constraint) = 0;
       protected:

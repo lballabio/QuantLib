@@ -56,7 +56,8 @@ namespace QuantLib {
             DayCounter counter = termStructure_->dayCounter();
             const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
             for (unsigned i=0; i<fixedLeg.size(); i++) {
-                endTimes_.push_back(counter.yearFraction(today, fixedLeg[i]->date()));
+                endTimes_.push_back(counter.yearFraction(today, 
+                    fixedLeg[i]->date()));
                 coupons_.push_back(fixedLeg[i]->amount());
             }
             coupons_.back() += swap_->nominal();
@@ -72,7 +73,8 @@ namespace QuantLib {
                 type = Option::Call;
             Date settlement = termStructure_->settlementDate();
             Time maturity = termStructure_->dayCounter().yearFraction(settlement, maturity_);
-            CouponBondOption cbo(maturity, endTimes_, coupons_, type, swap_->nominal(), model_);
+            CouponBondOption cbo(maturity, endTimes_, coupons_, type, 
+                swap_->nominal(), model_);
             NPV_ = cbo.value(termStructure_->forward(0.0));
         }
 

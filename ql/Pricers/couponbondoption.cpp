@@ -38,6 +38,8 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        using namespace InterestRateModelling;
+
         class CouponBondOption::rStarFinder : public ObjectiveFunction {
           public:
             rStarFinder(CouponBondOption *cbo);

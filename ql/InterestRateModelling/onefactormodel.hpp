@@ -45,8 +45,9 @@ namespace QuantLib {
 
         class OneFactorModel : public Model {
           public:
-            OneFactorModel(unsigned nbParams, const RelinkableHandle<TermStructure>& termStructure) :
-                Model(nbParams, termStructure) {}
+            OneFactorModel(unsigned nParams, 
+                const RelinkableHandle<TermStructure>& termStructure) 
+            : Model(nParams, termStructure) {}
             virtual ~OneFactorModel() {}
             virtual double stateVariable(Rate r) const = 0;
             virtual Rate getRateFrom(double y) const = 0;

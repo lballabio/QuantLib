@@ -41,8 +41,6 @@ namespace QuantLib {
    
     namespace InterestRateModelling { 
 
-        using std::vector;
-
         class BlackKarasinski : public OneFactorModel {
           public:
             BlackKarasinski(const RelinkableHandle<TermStructure>& termStructure, unsigned int timeSteps = 1000);
@@ -85,7 +83,7 @@ namespace QuantLib {
             friend class PrivateFunction;
 
             unsigned int timeSteps_;
-            vector<double> theta_, u_;
+            std::vector<double> theta_, u_;
             TrinomialTree tree_;
             double alpha_;
             double sigma_;

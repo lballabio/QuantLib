@@ -44,8 +44,6 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        using InterestRateModelling::Model;
-
         class EuropeanSwaption : public Instrument{
           public:
             EuropeanSwaption( 
@@ -53,7 +51,7 @@ namespace QuantLib {
                 Date maturity,
                 RelinkableHandle<TermStructure> termStructure);
             virtual ~EuropeanSwaption() {}
-            void useModel(const Handle<Model>& model) {
+            void useModel(const Handle<InterestRateModelling::Model>& model) {
                 model_ = model;
             }
           private:
@@ -61,7 +59,7 @@ namespace QuantLib {
             const Handle<SimpleSwap>& swap_;
             Date maturity_;
             RelinkableHandle<TermStructure> termStructure_;
-            Handle<Model> model_;
+            Handle<InterestRateModelling::Model> model_;
             std::vector<Time> endTimes_;
             std::vector<double> coupons_;
         };

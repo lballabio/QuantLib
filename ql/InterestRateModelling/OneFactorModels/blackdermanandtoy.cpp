@@ -79,7 +79,9 @@ namespace QuantLib {
             calculateTree();
         }
 
-        double BlackDermanAndToy::discountBond(Time now, Time maturity, Rate r) const {
+        double BlackDermanAndToy::discountBond(Time now, Time maturity, 
+            Rate r) const {
+
             unsigned iNow = (unsigned)(now/dt_);
             unsigned iMaturity = (unsigned)(maturity/dt_);
 
@@ -89,8 +91,10 @@ namespace QuantLib {
             for (signed i=iDiff; i>=0; i--) {
                 unsigned index = 0;
                 for (signed j=-i; j<=i; j+=2) {
-                    double discountFactor = 1.0/(1.0 + u_[i+iNow]*QL_EXP(sigma_*(jr+j)*QL_SQRT(dt_))*dt_);
-                    prices[index] = 0.5*discountFactor*(prices[index] + prices[index+1]);
+                    double discountFactor = 1.0/(1.0 + u_[i+iNow]*
+                        QL_EXP(sigma_*(jr+j)*QL_SQRT(dt_))*dt_);
+                    prices[index] = 0.5*discountFactor*(prices[index] + 
+                        prices[index+1]);
                     index++;
                 }
             }
@@ -110,31 +114,39 @@ namespace QuantLib {
             std::vector<double> dbValues(iBond + 1, 1.0);
             for (signed i=(signed)(iBond-1); i>=(signed)iOption; i--) {
                 for (signed j=0; j<(i+1); j++)
-                    dbValues[j] = 0.5*discountFactors_[i][j]*(dbValues[j] + dbValues[j+1]);
+                    dbValues[j] = 0.5*discountFactors_[i][j]*
+                        (dbValues[j] + dbValues[j+1]);
             }
             dbValues.resize(iOption+1);
 
             double value = 0.0;
+
             for (unsigned j=0; j<statePrices.size(); j++) {
                 double payoff = 0.0;
+
                 switch(type) {
-                    case Option::Call:
-                        payoff = QL_MAX(0.0, dbValues[j] - strike);
-                        break;
-                    case Option::Put:
-                        payoff = QL_MAX(0.0, strike - dbValues[j]);
-                        break;
-                    default:
-                        throw Error("unsupported option type");
+                  case Option::Call:
+                    payoff = QL_MAX(0.0, dbValues[j] - strike);
+                    break;
+                    
+                  case Option::Put:
+                    payoff = QL_MAX(0.0, strike - dbValues[j]);
+                    break;
+
+                  default:
+                    throw Error("unsupported option type");
                 }
                 value += statePrices[j]*payoff;
             }
+
             return value;
         }
 
         class BlackDermanAndToy::PrivateFunction : public ObjectiveFunction {
           public:
-            PrivateFunction(BlackDermanAndToy* bdt, const std::vector<double>& statePrices, double discountBondPrice);
+            PrivateFunction(BlackDermanAndToy* bdt, 
+                const std::vector<double>& statePrices, 
+                double discountBondPrice);
             double operator()(double x) const;
           private: 
             const std::vector<double>& statePrices_;
@@ -145,8 +157,8 @@ namespace QuantLib {
             
         inline BlackDermanAndToy::PrivateFunction::PrivateFunction( 
             BlackDermanAndToy *bdt,
-            const std::vector<double>& statePrices,
-            double discountBondPrice) : statePrices_(statePrices), discountBondPrice_(discountBondPrice) {
+            const std::vector<double>& statePrices, double discountBondPrice) 
+          : statePrices_(statePrices), discountBondPrice_(discountBondPrice) {
                 nit_ = statePrices.size();
                 helper_.resize(nit_);
 
@@ -158,7 +170,8 @@ namespace QuantLib {
                     helper_[index++] = QL_EXP(sigma*j*QL_SQRT(dt))*dt;
         }
 
-        inline double BlackDermanAndToy::PrivateFunction::operator()(double x) const {
+        inline double BlackDermanAndToy::PrivateFunction::operator()(double x) 
+            const {
             double value = discountBondPrice_;
             for (unsigned k=0; k<nit_; k++)
                 value -= statePrices_[k]/(1.0 + x*helper_[k]);
@@ -187,15 +200,16 @@ namespace QuantLib {
                 u_[i] = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
                 unsigned int index = 0;
                 for (int j=-int(i); j<=int(i); j+=2) {
-                    discountFactors_[i][index] = 1.0/(1.0 + u_[i]*QL_EXP(sigma_*j*QL_SQRT(dt_))*dt_);
+                    discountFactors_[i][index] = 1.0/(1.0 + u_[i]*i
+                      QL_EXP(sigma_*j*QL_SQRT(dt_))*dt_);
                     index++;
                 }
 
                 statePrices_[i+1][0]= 0.5*statePrices_[i][0]*discountFactors_[i][0];
                 for (unsigned int k=1; k<=i; k++) {
-                        statePrices_[i+1][k] = 0.5*(
-                          statePrices_[i][k]*discountFactors_[i][k] +
-                          statePrices_[i][k-1]*discountFactors_[i][k-1]);
+                    statePrices_[i+1][k] = 0.5*
+                        (statePrices_[i][k]*discountFactors_[i][k] +
+                        statePrices_[i][k-1]*discountFactors_[i][k-1]);
                 }
                 statePrices_[i+1][i+1]= 0.5*statePrices_[i][i]*discountFactors_[i][i];
             }

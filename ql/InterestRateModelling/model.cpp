@@ -78,7 +78,7 @@ namespace QuantLib {
             std::vector<double> volatilities) {
 
             // Accuracy of the optimization method
-            double accuracy = 1e-10;// It is the square of the accuracy
+            double accuracy = 1e-8;
             // Maximum number of iterations
             int maxiter = 10000;
 
@@ -91,13 +91,13 @@ namespace QuantLib {
             CalibrationProblem problem(this, instruments, volatilities);
          
             // Set initial values
-            lsqnonlin.setInitialValue(Array(nbParams_, 0.1));
+            lsqnonlin.setInitialValue(Array(nParams_, 0.1));
             // perform fitting
             Array solution = lsqnonlin.Perform(problem);
 
             setParameters(solution);
             cout << "Model calibrated to the following values:" << endl;
-            for (unsigned i=0; i<nbParams_; i++)
+            for (unsigned i=0; i<nParams_; i++)
                 cout << i << "    " << solution[i]*100.0 << "%" << endl;
         }
 

@@ -45,9 +45,6 @@ namespace QuantLib {
 
         namespace CalibrationHelpers {
 
-            using Instruments::SimpleSwap;
-            using Instruments::EuropeanCap;
-
             class Cap : public CalibrationHelper {
               public:
                 Cap(
@@ -62,8 +59,8 @@ namespace QuantLib {
               private:
                 Rate exerciseRate_;
                 RelinkableHandle<TermStructure> termStructure_;
-                Handle<SimpleSwap> swap_;
-                Handle<EuropeanCap> cap_;
+                Handle<Instruments::SimpleSwap> swap_;
+                Handle<Instruments::EuropeanCap> cap_;
                 unsigned int nbOfPeriods_;
                 std::vector<Time> startTimes_;
                 std::vector<Time> endTimes_;

@@ -44,14 +44,16 @@ namespace QuantLib {
 
         using namespace FiniteDifferences;
 
-        typedef FiniteDifferenceModel<ImplicitEuler<TridiagonalOperator> > CustomFiniteDifferenceModel;
+        typedef FiniteDifferenceModel<ImplicitEuler<TridiagonalOperator> > 
+            CustomFiniteDifferenceModel;
 
         class OneFactorModel::FitFunction : public ObjectiveFunction {
           public:
             FitFunction(const RelinkableHandle<TermStructure>& termStructure,
-                std::vector<double>& theta,
-                CustomFiniteDifferenceModel& fd, double dt, unsigned nit, const Grid& grid)
-            : termStructure_(termStructure), theta_(theta), fd_(fd), dt_(dt), nit_(nit), grid_(grid) {}
+                std::vector<double>& theta, CustomFiniteDifferenceModel& fd, 
+                double dt, unsigned nit, const Grid& grid)
+            : termStructure_(termStructure), theta_(theta), fd_(fd), dt_(dt), 
+              nit_(nit), grid_(grid) {}
             double operator()(double x) const;
           private:
             const RelinkableHandle<TermStructure>& termStructure_;
@@ -68,7 +70,6 @@ namespace QuantLib {
             theta_[nit_ - 1] = x;
             fd_.rollback(prices, nit_*dt_, 0.0, nit_);
             double value = prices[grid_.index()] - discount;
-//            cout << x << ": " << value*1000.0 << " " << discount << " " << grid_.index() << endl;
             return value;
         }
 
@@ -100,9 +101,13 @@ namespace QuantLib {
                     finiteDifferenceModel, dt_, i+1, grid);
                 // solver
                 double forwardRate = termStructure()->forward(i*dt_);
-                double theta =  alpha_*forwardRate + sigma_*sigma_*(1.0-QL_EXP(-2.0*alpha_*i*dt_))/(2.0*alpha_);
-     
-                theta_[i] = s1d.solve(finder, 1e-10, 0.05, minStrike, maxStrike);
+                double theta =  alpha_*forwardRate + sigma_*sigma_*
+                    (1.0-QL_EXP(-2.0*alpha_*i*dt_))/(2.0*alpha_);
+    
+                double accuracy = 1e-10;
+                double initialValue = 0.05;
+                theta_[i] = s1d.solve(finder, accuracy, initialValue, 
+                    minStrike, maxStrike);
                 cout << i << " ---> " << theta_[i] << " =? " << theta << endl;
             }
             theta_[timeSteps_] = theta_[timeSteps_ - 1];

@@ -40,8 +40,6 @@
 
 namespace QuantLib {
 
-    using CashFlows::FixedRateCoupon;
-
     namespace Instruments {
 
         //! Simple fixed-rate vs Libor swap
@@ -98,21 +96,23 @@ namespace QuantLib {
                 return payFixedRate_;
             }
             double nominal() const { 
-                const FixedRateCoupon* coupon =
+                const CashFlows::FixedRateCoupon* coupon =
                 #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                    fixedLeg()[0].downcast<FixedRateCoupon>();
+                    fixedLeg()[0].downcast<CashFlows::FixedRateCoupon>();
                 #else
-                    dynamic_cast<const FixedRateCoupon*>(fixedLeg()[0].pointer());
+                    dynamic_cast<const CashFlows::FixedRateCoupon*>
+                        (fixedLeg()[0].pointer());
                 #endif
                 QL_ENSURE(coupon != 0, "not a fixed-rate coupon");
                 return coupon->nominal(); 
             }
             Rate fixedRate() const { 
-                const FixedRateCoupon* coupon =
+                const CashFlows::FixedRateCoupon* coupon =
                 #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                    fixedLeg()[0].downcast<FixedRateCoupon>();
+                    fixedLeg()[0].downcast<CashFlows::FixedRateCoupon>();
                 #else
-                    dynamic_cast<const FixedRateCoupon*>(fixedLeg()[0].pointer());
+                    dynamic_cast<const CashFlows::FixedRateCoupon*>
+                        (fixedLeg()[0].pointer());
                 #endif
                 QL_ENSURE(coupon != 0, "not a fixed-rate coupon");
                 return coupon->rate(); 

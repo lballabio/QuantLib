@@ -42,6 +42,8 @@ namespace QuantLib {
         namespace CalibrationHelpers {
 
             using CashFlows::FloatingRateCoupon;
+            using Instruments::EuropeanCap;
+            using Instruments::SimpleSwap;
 
             Cap::Cap(
                 const Period& wait,
