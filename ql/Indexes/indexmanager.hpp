@@ -35,9 +35,9 @@ namespace QuantLib {
         IndexManager() {}
       public:
         void setHistory(const std::string& name, const History&);
-        const History& getHistory(const std::string& name);
-        bool hasHistory(const std::string& name);
-        std::vector<std::string> histories();
+        const History& getHistory(const std::string& name) const;
+        bool hasHistory(const std::string& name) const;
+        std::vector<std::string> histories() const;
       private:
         std::map<std::string,History> data_;
     };

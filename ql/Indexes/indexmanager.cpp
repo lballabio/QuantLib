@@ -24,18 +24,18 @@ namespace QuantLib {
         data_[name] = history;
     }
 
-    const History& IndexManager::getHistory(const std::string& name) {
+    const History& IndexManager::getHistory(const std::string& name) const {
         std::map<std::string,History>::const_iterator i = data_.find(name);
         QL_REQUIRE(i != data_.end(),
                    name + " history not loaded");
         return i->second;
     }
 
-    bool IndexManager::hasHistory(const std::string& name) {
+    bool IndexManager::hasHistory(const std::string& name) const {
         return data_.find(name) != data_.end();
     }
 
-    std::vector<std::string> IndexManager::histories() {
+    std::vector<std::string> IndexManager::histories() const {
         std::vector<std::string> temp;
         std::map<std::string,History>::const_iterator i;
         for (i = data_.begin(); i != data_.end(); i++)
