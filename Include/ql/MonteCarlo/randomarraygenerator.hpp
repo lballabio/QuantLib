@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/06 09:15:36  nando
+// style enforced
+//
 // Revision 1.10  2001/07/06 08:08:43  aleppo
 // Bug fixed
 //
@@ -101,12 +104,12 @@ namespace QuantLib {
 
         template <class RP>
         inline RandomArrayGenerator<RP>::RandomArrayGenerator(
-                const std::vector<Time> & dates,
-                double average, double variance, long seed):
-                size_(dates.size()),
-                timeDelays_(dates.size()),
-                average_(average), rndPoint_(seed),
-                averageArray_(0),sqrtCovariance_(0,0){
+            const std::vector<Time> & dates,
+            double average,
+            double variance,
+            long seed)
+        :size_(dates.size()), timeDelays_(dates.size()),average_(average),
+         rndPoint_(seed), averageArray_(0),sqrtCovariance_(0,0) {
 
             QL_REQUIRE(variance >= 0,
                     "RandomArrayGenerator: variance is negative!");
