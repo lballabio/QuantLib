@@ -72,8 +72,12 @@ namespace QuantLib {
             cubicSum_ += temp;
             temp *= value;
             fourthPowerSum_ += temp;
-            min_=QL_MIN(value, min_);
-            max_=QL_MAX(value, max_);
+            if (oldSamples == 0) {
+                min_ = max_ = value;
+            } else {
+                min_=QL_MIN(value, min_);
+                max_=QL_MAX(value, max_);
+            }
         }
 
 
