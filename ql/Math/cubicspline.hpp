@@ -168,7 +168,8 @@ namespace QuantLib {
                         if (i==0) {
                             if (tmp[i]*S[0]>0.0) {
                                 correction = tmp[i]/QL_FABS(tmp[i]) * 
-                                    QL_MIN(QL_FABS(tmp[i]), QL_FABS(3.0*S[0]));
+                                    QL_MIN<Real>(QL_FABS(tmp[i]), 
+                                                 QL_FABS(3.0*S[0]));
                             } else {
                                 correction = 0.0;
                             }
@@ -179,7 +180,7 @@ namespace QuantLib {
                         } else if (i==n_-1) {
                             if (tmp[i]*S[n_-2]>0.0) {
                                 correction = tmp[i]/QL_FABS(tmp[i]) * 
-                                    QL_MIN(QL_FABS(tmp[i]), QL_FABS(3.0*S[n_-2]));
+                                    QL_MIN<Real>(QL_FABS(tmp[i]), QL_FABS(3.0*S[n_-2]));
                             } else {
                                 correction = 0.0;
                             }
@@ -196,7 +197,7 @@ namespace QuantLib {
                                     pd=(S[i-1]*(2.0*dx[i-1]+dx[i-2])-S[i-2]*dx[i-1])/
                                         (dx[i-2]+dx[i-1]);
                                     if (pm*pd>0.0 && pm*(S[i-1]-S[i-2])>0.0) {
-                                        M = QL_MAX(M, 1.5*QL_MIN(QL_FABS(pm),QL_FABS(pd)));
+                                        M = QL_MAX<Real>(M, 1.5*QL_MIN(QL_FABS(pm),QL_FABS(pd)));
                                     }
                                 }
                             }
@@ -205,7 +206,7 @@ namespace QuantLib {
                                     pu=(S[i]*(2.0*dx[i]+dx[i+1])-S[i+1]*dx[i])/
                                         (dx[i]+dx[i+1]);
                                     if (pm*pu>0.0 && -pm*(S[i]-S[i-1])>0.0) {
-                                        M = QL_MAX(M, 1.5*QL_MIN(QL_FABS(pm),QL_FABS(pu)));
+                                        M = QL_MAX<Real>(M, 1.5*QL_MIN(QL_FABS(pm),QL_FABS(pu)));
                                     }
                                 }
                             }

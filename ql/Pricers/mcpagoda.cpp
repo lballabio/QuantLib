@@ -46,7 +46,8 @@ namespace QuantLib {
                             (QL_EXP(multiPath[j][i]) -1.0);
                     }
                 return discountTS_->discount(multiPath[0].timeGrid().back())
-                    * fraction_ * QL_MAX(0.0, QL_MIN(roof_, averageGain));
+                    * fraction_ 
+                    * QL_MAX<Real>(0.0, QL_MIN(roof_, averageGain));
             }
 
           private:

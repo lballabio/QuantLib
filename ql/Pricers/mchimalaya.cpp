@@ -84,7 +84,7 @@ namespace QuantLib {
                     averagePrice += bestPrice;
                 }
                 averagePrice /= QL_MIN(fixings, numAssets);
-                Real optPrice = QL_MAX(averagePrice - strike_, 0.0);
+                Real optPrice = QL_MAX<Real>(averagePrice - strike_, 0.0);
 
                 return discountTS_->discount(multiPath[0].timeGrid().back())
                     * optPrice;

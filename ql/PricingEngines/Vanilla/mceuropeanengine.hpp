@@ -142,7 +142,7 @@ namespace QuantLib {
             Size size() { return result_; }
             // generic case
             void visit(BlackVolTermStructure&) {
-                result_ = Size(QL_MAX(maturity_ * stepsPerYear_, 1.0));
+                result_ = Size(QL_MAX<Real>(maturity_ * stepsPerYear_, 1.0));
             }
             // specializations
             void visit(BlackConstantVol&) {

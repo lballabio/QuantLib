@@ -56,7 +56,8 @@ namespace QuantLib {
             // salvaging algorithm:
             // negative eigenvalues set to zero
             for (i=0; i<size; i++)
-                diagonal[i][i] = QL_SQRT(QL_MAX(jd.eigenvalues()[i], 0.0));
+                diagonal[i][i] = 
+                    QL_SQRT(QL_MAX<Real>(jd.eigenvalues()[i], 0.0));
 
             result = jd.eigenvectors() * diagonal;
             // row normalization

@@ -184,7 +184,7 @@ namespace QuantLib {
             ->dayCounter().yearFraction(
             arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
             arguments_.exercise->lastDate());
-        return TimeGrid(t, Size(QL_MAX(t * maxTimeStepsPerYear_, 1.0)));
+        return TimeGrid(t, Size(QL_MAX<Real>(t * maxTimeStepsPerYear_, 1.0)));
     }
 
     template<class RNG, class S>

@@ -65,8 +65,8 @@ namespace QuantLib {
         DiscountFactor discountS = termStructure()->discount(s);
         if (t < QL_EPSILON) {
             switch(type) {
-              case Option::Call: return QL_MAX(discountS - strike, 0.0);
-              case Option::Put:  return QL_MAX(strike - discountS, 0.0);
+              case Option::Call: return QL_MAX<Real>(discountS - strike, 0.0);
+              case Option::Put:  return QL_MAX<Real>(strike - discountS, 0.0);
               default: QL_FAIL("unsupported option type");
             }
         }

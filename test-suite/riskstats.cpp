@@ -388,7 +388,7 @@ void RiskStatisticsTest::testResults() {
                  lower_tail = averages[i]-2.0*sigmas[j];
             Real twoSigma = cumulative(upper_tail);
 
-            expected = QL_MAX(upper_tail,0.0);
+            expected = QL_MAX<Real>(upper_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 : QL_FABS(expected*1.0e-3));
             calculated = igs.gaussianPotentialUpside(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
@@ -447,7 +447,7 @@ void RiskStatisticsTest::testResults() {
 
 
             // value-at-risk
-            expected = -QL_MIN(lower_tail,0.0);
+            expected = -QL_MIN<Real>(lower_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 : QL_FABS(expected*1.0e-3));
             calculated = igs.gaussianValueAtRisk(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
@@ -508,10 +508,10 @@ void RiskStatisticsTest::testResults() {
 
 
             // expected shortfall
-            expected = -QL_MIN(averages[i]
-                               - sigmas[j]*sigmas[j]
-                               * normal(lower_tail)/(1.0-twoSigma),
-                               0.0);
+            expected = -QL_MIN<Real>(averages[i]
+                                     - sigmas[j]*sigmas[j]
+                                     * normal(lower_tail)/(1.0-twoSigma),
+                                     0.0);
             tolerance = (expected == 0.0 ? 1.0e-4
                                          : QL_FABS(expected)*1.0e-2);
             calculated = igs.gaussianExpectedShortfall(twoSigma);

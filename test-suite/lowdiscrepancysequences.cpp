@@ -559,9 +559,9 @@ namespace {
         Array point;
         Size dim;
         BigNatural seed = 123456;
-        Real discr, tolerance = 1e-2;
+        Real discr, tolerance = 1.0e-2;
         // 7 loops would take too long for usual/frequent test running
-        Size sampleLoops = Size(QL_MAX(1.0, Real(minimumLoops)));
+        Size sampleLoops = Size(QL_MAX<Real>(1.0, minimumLoops));
 
         #ifdef PRINT_ONLY
         std::ofstream outStream(fileName.c_str());

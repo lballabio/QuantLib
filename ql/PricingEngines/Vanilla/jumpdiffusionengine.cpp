@@ -122,27 +122,27 @@ namespace QuantLib {
             lastContribution = QL_FABS(baseResults->value /
                 (QL_FABS(results_.value)>QL_EPSILON ? results_.value : 1.0));
 
-            lastContribution = QL_MAX(lastContribution,
+            lastContribution = QL_MAX<Real>(lastContribution,
                 QL_FABS(baseResults->delta /
                 (QL_FABS(results_.delta)>QL_EPSILON ? results_.delta : 1.0)));
 
-            lastContribution = QL_MAX(lastContribution,
+            lastContribution = QL_MAX<Real>(lastContribution,
                 QL_FABS(baseResults->gamma /
                 (QL_FABS(results_.gamma)>QL_EPSILON ? results_.gamma : 1.0)));
 /*
-            lastContribution = QL_MAX(lastContribution,
+            lastContribution = QL_MAX<Real>(lastContribution,
                 QL_FABS(baseResults->theta /
                 (QL_FABS(results_.theta)>QL_EPSILON ? results_.theta : 1.0)));
 
-            lastContribution = QL_MAX(lastContribution,
+            lastContribution = QL_MAX<Real>(lastContribution,
                 QL_FABS(baseResults->vega /
                 (QL_FABS(results_.vega)>QL_EPSILON ? results_.vega : 1.0)));
 */
-            lastContribution = QL_MAX(lastContribution,
+            lastContribution = QL_MAX<Real>(lastContribution,
                 QL_FABS(baseResults->rho /
                 (QL_FABS(results_.rho)>QL_EPSILON ? results_.rho : 1.0)));
 
-            lastContribution = QL_MAX(lastContribution,
+            lastContribution = QL_MAX<Real>(lastContribution,
                 QL_FABS(baseResults->dividendRho /
                 (QL_FABS(results_.dividendRho)>QL_EPSILON ?
                                           results_.dividendRho : 1.0)));

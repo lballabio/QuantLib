@@ -37,7 +37,7 @@ namespace QuantLib {
                     Real strike = 1.0/accrual;
                     for (Size j=0; j<values_.size(); j++)
                         values_[j] += arguments_.nominals[i]*accrual*
-                            QL_MAX(strike - bond->values()[j], 0.0);
+                            QL_MAX<Real>(strike - bond->values()[j], 0.0);
                 }
 
                 if ( (type == CapFloor::Floor) ||
@@ -47,7 +47,7 @@ namespace QuantLib {
                     Real mult = (type == CapFloor::Floor)?1.0:-1.0;
                     for (Size j=0; j<values_.size(); j++)
                         values_[j] += arguments_.nominals[i]*accrual*mult*
-                            QL_MAX(bond->values()[j] - strike, 0.0);
+                            QL_MAX<Real>(bond->values()[j] - strike, 0.0);
                 }
 
             }

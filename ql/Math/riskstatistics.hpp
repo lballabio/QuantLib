@@ -170,7 +170,7 @@ namespace QuantLib {
                    ") must be in [0.9,1.0)");
 
         // must be a gain, i.e., floored at 0.0
-        return QL_MAX(topPercentile(1.0-centile), 0.0);
+        return QL_MAX<Real>(topPercentile(1.0-centile), 0.0);
     }
 
     /*! \pre percentile must be in range [90%-100%) */
@@ -183,7 +183,7 @@ namespace QuantLib {
                    ") must be in [0.9,1.0)");
 
         // must be a loss, i.e., capped at 0.0 and negated
-        return -QL_MIN(percentile(1.0-centile), 0.0);
+        return -QL_MIN<Real>(percentile(1.0-centile), 0.0);
     }
 
     /*! \pre percentile must be in range [90%-100%) */
@@ -203,7 +203,7 @@ namespace QuantLib {
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");
         // must be a loss, i.e., capped at 0.0 and negated
-        return -QL_MIN(x, 0.0);
+        return -QL_MIN<Real>(x, 0.0);
     }
 
     template <class S>

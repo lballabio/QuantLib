@@ -107,8 +107,8 @@ namespace QuantLib {
         while (accuracy > tolerance) {
             // conservative estimate of how many samples are needed
             order = accuracy*accuracy/tolerance/tolerance;
-            nextBatch = Size(QL_MAX(sampleNumber*order*0.8-sampleNumber,
-                                    Real(minSample_)));
+            nextBatch = Size(QL_MAX<Real>(sampleNumber*order*0.8-sampleNumber,
+                                          minSample_));
 
             // do not exceed maxSamples
             nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);

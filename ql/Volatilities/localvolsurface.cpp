@@ -91,7 +91,7 @@ namespace QuantLib {
                       + DecimalFormatter::toString(t+dt));
             dwdt = (wpt-w)/dt;
         } else {
-            dt = QL_MIN(0.0001, t/2.0);
+            dt = QL_MIN<Time>(0.0001, t/2.0);
             wpt = blackTS_->blackVariance(t+dt, strike, true);
             wmt = blackTS_->blackVariance(t-dt, strike, true);
             QL_ENSURE(wpt>=w,

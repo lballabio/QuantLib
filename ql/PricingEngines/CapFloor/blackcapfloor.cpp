@@ -61,7 +61,7 @@ namespace QuantLib {
                                     Rate strike, Volatility vol) const {
         if (start <= 0.0) {
             // the rate was fixed
-            return QL_MAX(forward-strike,0.0);
+            return QL_MAX<Rate>(forward-strike,0.0);
         } else {
             // forecast
             return BlackModel::formula(forward, strike, 
@@ -73,7 +73,7 @@ namespace QuantLib {
                                       Rate strike, Volatility vol) const {
         if (start <= 0.0) {
             // the rate was fixed
-            return QL_MAX(strike-forward,0.0);
+            return QL_MAX<Rate>(strike-forward,0.0);
         } else {
             // forecast
             return BlackModel::formula(forward, strike,

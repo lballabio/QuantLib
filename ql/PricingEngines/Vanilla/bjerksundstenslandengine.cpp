@@ -46,7 +46,8 @@ namespace QuantLib {
             Real rT = QL_LOG(1.0/rfD);
 
             Real Beta = (0.5 - bT/variance) +
-                QL_SQRT(QL_POW((bT/variance - 0.5), 2.0) + 2.0 * rT/variance);
+                QL_SQRT(QL_POW((bT/variance - 0.5), Real(2.0)) 
+                        + 2.0 * rT/variance);
             Real BInfinity = Beta / (Beta - 1.0) * X;
             // Real B0 = QL_MAX(X, QL_LOG(rfD) / QL_LOG(dD) * X);
             Real B0 = QL_MAX(X, rT / (rT - bT) * X);
