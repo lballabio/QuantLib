@@ -91,14 +91,17 @@ namespace QuantLib {
           lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
 
             QL_REQUIRE(dates.size()==blackVolMatrix.columns(),
+                "BlackVarianceSurface::BlackVarianceSurface : "
                 "mismatch between date vector and vol matrix colums");
             QL_REQUIRE(strikes_.size()==blackVolMatrix.rows(),
+                "BlackVarianceSurface::BlackVarianceSurface : "
                 "mismatch between money-strike vector and vol matrix rows");
 
             // cannot have dates[0]==referenceDate, since the
             // value of the vol at dates[0] would be lost
             // (variance at referenceDate must be zero)
             QL_REQUIRE(dates[0]>referenceDate,
+                "BlackVarianceSurface::BlackVarianceSurface : "
                 "cannot have dates[0]<=referenceDate");
 
             variances_ = QuantLib::Math::Matrix(strikes_.size(), dates.size());
@@ -107,6 +110,7 @@ namespace QuantLib {
             for (j=0; j<blackVolMatrix.columns(); j++) {
                 times_[j] = dayCounter_.yearFraction(referenceDate, dates[j]);
                 QL_REQUIRE(j==0 || times_[j]>times_[j-1],
+                    "BlackVarianceSurface::BlackVarianceSurface : "
                     "dates must be sorted unique!");
                 for (i=0; i<blackVolMatrix.rows(); i++) {
                     variances_[i][j] = times_[j] *

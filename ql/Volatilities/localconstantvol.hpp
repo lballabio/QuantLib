@@ -89,7 +89,9 @@ namespace QuantLib {
 
         inline double LocalConstantVol::localVolImpl(Time t, 
                                         double, bool extrapolate) const {
-            QL_REQUIRE(t >= 0.0, "LocalConstantVol: negative time given");
+            QL_REQUIRE(t >= 0.0,
+                "LocalConstantVol::localVolImpl : "
+                "negative time given");
             return volatility_->value();
         }
     }

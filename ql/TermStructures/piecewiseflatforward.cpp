@@ -41,7 +41,9 @@ namespace QuantLib {
           referenceDate_(referenceDate), instruments_(instruments), 
           needsBootstrap_(true), accuracy_(accuracy) {
 
-            QL_REQUIRE(instruments_.size()>0, "No instrument given");
+            QL_REQUIRE(instruments_.size()>0,
+                "PiecewiseFlatForward::PiecewiseFlatForward : "
+                "No instrument given");
 
             // sort rate helpers
             Size i;
@@ -72,7 +74,9 @@ namespace QuantLib {
           discounts_(dates.size()), forwards_(forwards), 
           zeroYields_(dates.size()) {
 
-            QL_REQUIRE(dates_.size()>0, "No dates given");
+            QL_REQUIRE(dates_.size()>0,
+                "PiecewiseFlatForward::PiecewiseFlatForward : "
+                "No dates given");
             QL_REQUIRE(dates_.size()==forwards_.size(),
                 "mismatch between dates and forwards");
             times_[0]=0.0;
@@ -226,7 +230,8 @@ namespace QuantLib {
         int PiecewiseFlatForward::referenceNode(
             Time t, bool extrapolate) const {
                 QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                    "PiecewiseFlatForward: time (" +
+                    "PiecewiseFlatForward::referenceNode : "
+                    "time (" +
                     DoubleFormatter::toString(t) +
                     ") outside curve definition [" +
                     DoubleFormatter::toString(0.0) + ", " +

@@ -102,7 +102,8 @@ namespace QuantLib {
         inline Rate FlatForward::zeroYieldImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: zero yield undefined for time (" +
+                "FlatForward::zeroYieldImpl : "
+                "zero yield undefined for time (" +
                 DoubleFormatter::toString(t) + ")");
             return forward_->value();
         }
@@ -110,7 +111,8 @@ namespace QuantLib {
         inline DiscountFactor FlatForward::discountImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: discount undefined for time (" +
+                "FlatForward::discountImpl : "
+                "discount undefined for time (" +
                 DoubleFormatter::toString(t) + ")");
             return DiscountFactor(QL_EXP(-forward_->value()*t));
         }
@@ -118,7 +120,8 @@ namespace QuantLib {
         inline Rate FlatForward::forwardImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: forward undefined for time (" +
+                "FlatForward::forwardImpl : "
+                "forward undefined for time (" +
                 DoubleFormatter::toString(t) + ")");
             return forward_->value();
         }

@@ -77,12 +77,14 @@ namespace QuantLib {
           maxDate_(dates.back()) {
 
             QL_REQUIRE(dates.size()==blackVolCurve.size(),
+                "BlackVarianceCurve::BlackVarianceCurve : "
                 "mismatch between date vector and black vol vector");
 
             // cannot have dates[0]==referenceDate, since the
             // value of the vol at dates[0] would be lost
             // (variance at referenceDate must be zero)
             QL_REQUIRE(dates[0]>referenceDate,
+                "BlackVarianceCurve::BlackVarianceCurve : "
                 "cannot have dates[0]<=referenceDate");
 
             variances_ = std::vector<double>(dates.size());
@@ -91,6 +93,7 @@ namespace QuantLib {
             for (j=0; j<blackVolCurve.size(); j++) {
                 times_[j] = dayCounter_.yearFraction(referenceDate, dates[j]);
                 QL_REQUIRE(j==0 || times_[j]>times_[j-1],
+                    "BlackVarianceCurve::BlackVarianceCurve : "
                     "dates must be sorted unique!");
                 variances_[j] = times_[j] *
                     blackVolCurve[j]*blackVolCurve[j];

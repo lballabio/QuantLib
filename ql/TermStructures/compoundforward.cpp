@@ -141,8 +141,9 @@ namespace QuantLib {
                         double tempD = 0.0, prev;
 
                         QL_REQUIRE(discounts_.size() > 0,
-                                 "Needs forward on at least "
-                                 "compounding start");
+                            "CompoundForward::bootstrap : "
+                             "Needs forward on at least "
+                             "compounding start");
                         for (a = discounts_.size() - 1; a > ci; a--) {
                             prev = discounts_[a];
                             aDate = dates_[a];
@@ -233,7 +234,8 @@ namespace QuantLib {
 
         int CompoundForward::referenceNode(Time t, bool extrapolate) const {
             QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                       "CompoundForward: time (" +
+                       "CompoundForward:referenceNode : "
+                       "time (" +
                        DoubleFormatter::toString(t) +
                        ") outside curve definition [" +
                        DoubleFormatter::toString(0.0) + ", " +
