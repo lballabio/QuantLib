@@ -1,6 +1,8 @@
 includedir = $(prefix)/include/QuantLib/Utilities
-include_HEADERS = steppingiterator.h \
-	filteringiterator.h	\
-	combiningiterator.h     \
-	processingiterator.h 
+include_HEADERS = steppingiterator.h   \
+                  filteringiterator.h  \
+                  combiningiterator.h  \
+                  couplingiterator.h   \
+                  processingiterator.h \
+                  iteratorcategories.h
 

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/14 18:43:07  lballabio
+    Added coupling iterators
+
     Revision 1.8  2001/02/14 12:36:46  lballabio
     Bug fixed in operator-
 
@@ -89,8 +92,8 @@ namespace QuantLib {
             // construct a combining iterator from a collection of iterators
             template <class IteratorCollectionIterator>
             combining_iterator(IteratorCollectionIterator it1, 
-                IteratorCollectionIterator it2, Function func)
-            : iteratorVector_(it1,it2), f_(func) {}
+                IteratorCollectionIterator it2, Function f)
+            : iteratorVector_(it1,it2), f_(f) {}
             //! \name Dereferencing
             //@{
             reference operator*()  const;
@@ -119,11 +122,9 @@ namespace QuantLib {
             //! \name Comparisons
             //@{
             bool operator==(
-                const combining_iterator<Iterator,Function>& rhs) const {
-                    return iteratorVector_ == rhs.iteratorVector_; }
+                const combining_iterator<Iterator,Function>& rhs) const;
             bool operator !=(
-                const combining_iterator<Iterator,Function>& rhs) const {
-                    return iteratorVector_ != rhs.iteratorVector_; }
+                const combining_iterator<Iterator,Function>& rhs) const;
             //@}
           private:
             std::vector<Iterator> iteratorVector_;
@@ -137,7 +138,7 @@ namespace QuantLib {
         template <class It, class Function>
         combining_iterator<typename std::iterator_traits<It>::value_type, 
             Function>
-        make_combining_iterator(It it1, It it2, Function func);
+        make_combining_iterator(It it1, It it2, Function f);
             
 
         // inline definitions
@@ -215,41 +216,51 @@ namespace QuantLib {
 
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>
-        combining_iterator<Iterator, Function>::operator+(
-          combining_iterator<Iterator, Function>::difference_type n) const 
-          {
-            combining_iterator<Iterator,Function> Tmp(*this);
-            Tmp += n;
-            return Tmp;
-          }
+        combining_iterator<Iterator,Function>::operator+(
+            combining_iterator<Iterator,Function>::difference_type n) const {
+                combining_iterator<Iterator,Function> tmp(*this);
+                tmp += n;
+                return tmp;
+        }
 
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>
-        combining_iterator<Iterator, Function>::operator-(
-          combining_iterator<Iterator, Function>::difference_type n) const 
-          {
-            combining_iterator<Iterator,Function> Tmp(*this);
-            Tmp -= n;
-            return Tmp;
-          }
+        combining_iterator<Iterator,Function>::operator-(
+            combining_iterator<Iterator,Function>::difference_type n) const {
+                combining_iterator<Iterator,Function> tmp(*this);
+                tmp -= n;
+                return tmp;
+        }
 
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>::difference_type 
-        combining_iterator<Iterator, Function>::operator-(
-          const combining_iterator<Iterator, Function>& rhs) const {
-            if( iteratorVector_.size() > 0 && rhs.iteratorVector_.size() > 0)
-                return iteratorVector_[0] - rhs.iteratorVector_[0];
-            else 
-                return 0;     
-            
+        combining_iterator<Iterator,Function>::operator-(
+            const combining_iterator<Iterator,Function>& rhs) const {
+                if (iteratorVector_.size()>0 && rhs.iteratorVector_.size()>0)
+                    return iteratorVector_[0] - rhs.iteratorVector_[0];
+                else 
+                    return 0;     
         }
+
+        template <class Iterator, class Function>
+        inline bool combining_iterator<Iterator,Function>::operator==(
+            const combining_iterator<Iterator,Function>& rhs) const {
+                return iteratorVector_ == rhs.iteratorVector_;
+        }
+
+        template <class Iterator, class Function>
+        inline bool combining_iterator<Iterator,Function>::operator!=(
+            const combining_iterator<Iterator,Function>& rhs) const {
+                return iteratorVector_ != rhs.iteratorVector_;
+        }
+
 
         template <class It, class Function>
         inline combining_iterator<
             typename std::iterator_traits<It>::value_type, Function>
-        make_combining_iterator(It it1, It it2, Function func) {
+        make_combining_iterator(It it1, It it2, Function f) {
             typedef std::iterator_traits<It>::value_type Iterator;
-            return combining_iterator<Iterator,Function>(it1,it2,func);
+            return combining_iterator<Iterator,Function>(it1,it2,f);
         }
         
     }

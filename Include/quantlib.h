@@ -18,13 +18,17 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*
     $Source$
     $Name$
     $Log$
+    Revision 1.21  2001/02/14 18:43:06  lballabio
+    Added coupling iterators
+
     Revision 1.20  2001/01/25 11:57:32  lballabio
     Included outer product and sqrt into matrix.h
 
@@ -37,42 +41,6 @@
     Revision 1.17  2001/01/23 18:12:50  lballabio
     Added matrix.h to Include/Math
 
-    Revision 1.16  2001/01/23 11:08:51  lballabio
-    Renamed iterators in Include\Utilities and related files
-
-    Revision 1.15  2001/01/17 14:37:55  nando
-    tabs removed
-
-    Revision 1.14  2001/01/15 17:06:20  lballabio
-    Added MappingIterator class
-
-    Revision 1.13  2001/01/15 13:40:32  lballabio
-    Added new files
-
-    Revision 1.12  2001/01/11 11:51:58  lballabio
-    Added QLUTL alias for QuantLib::Utilities::
-
-    Revision 1.11  2001/01/04 11:58:10  lballabio
-    Differential operators added
-
-    Revision 1.10  2000/12/28 15:25:38  marmar
-    QLMNT QuantLib::MonteCarlo::
-
-    Revision 1.9  2000/12/27 17:18:35  lballabio
-    Changes for compiling under Linux and Alpha Linux
-
-    Revision 1.8  2000/12/27 15:23:38  marmar
-    Random number generators has been updated and documented.
-    Now the Sample Generator idea is fully implemented
-
-    Revision 1.7  2000/12/15 12:17:58  marmar
-    Adding uniform and gaussian random number generators
-
-    Revision 1.6  2000/12/14 12:57:55  lballabio
-    Removed Doxygen file documentation block
-
-    Revision 1.5  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 */
 
 #ifndef quantlib_h
@@ -228,9 +196,12 @@
 #include "handle.h"
 #include "null.h"
 #include "dataformatters.h"
+#include "combiningiterator.h"
+#include "couplingiterator.h"
 #include "steppingiterator.h"
 #include "filteringiterator.h"
 #include "processingiterator.h"
+#include "iteratorcategories.h"
 
 
 /*** shortcuts for the full namespaces

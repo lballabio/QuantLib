@@ -6,13 +6,15 @@ INCLUDES = -I$(top_srcdir)/Include \
 	-I$(top_srcdir)/Include/MonteCarlo \
 	-I$(top_srcdir)/Include/Utilities
 
-libPricers_la_SOURCES = averagepriceasian.cpp \
+libPricers_la_SOURCES = \
+    averagepriceasian.cpp \
     averagestrikeasian.cpp \
     bsmamericanoption.cpp \
     bsmeuropeanoption.cpp \
     bsmnumericaloption.cpp \
     bsmoption.cpp \
     dividendamericanoption.cpp \
+    dividendeuropeanoption.cpp \
     himalaya.cpp \
     mceuropeanpricer.cpp \
     plainbasketoption.cpp
