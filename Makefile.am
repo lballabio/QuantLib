@@ -9,6 +9,10 @@ CFLAGS=-Wall
 
 bin_SCRIPTS = quantlib-config
 
+# M4 macro file for inclusion with autoconf
+m4datadir = $(datadir)/aclocal
+m4data_DATA = quantlib.m4
+
 EXTRA_DIST = \
 	Authors.txt \
 	ChangeLog.txt \
