@@ -25,28 +25,25 @@
 #ifndef quantlib_optimization_constraint_h
 #define quantlib_optimization_constraint_h
 
-#include "ql/array.hpp"
+#include <ql/array.hpp>
 
 namespace QuantLib {
 
     namespace Optimization {
 
 
-        //! Abstract constraint class
+        //! Base constraint class
         class Constraint {
           public:
-
             //! Actual implementation class
             class ConstraintImpl {
               public:
                 //! Tests if params satisfy the constraint
                 virtual bool test(const Array& params) const = 0;
             };
-
             Constraint(const Handle<ConstraintImpl>& impl) : impl_(impl) {}
-            bool test(const Array& params) const { return impl_->test(params); }
-            double update(Array& params, const Array& direction, double beta);
-
+            bool test(const Array& p) const { return impl_->test(p); }
+            double update(Array& p, const Array& direction, double beta);
           private:
             Handle<ConstraintImpl> impl_;
         };
