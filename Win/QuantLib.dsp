@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob0 /I "..\Include" /I "..\Include\Calendars" /I "..\Include\Currencies" /I "..\Include\FiniteDifferences" /I "..\Include\Instruments" /I "..\Include\Math" /I "..\Include\Patterns" /I "..\Include\Pricers" /I "..\Include\Solvers1D" /I "..\Include\TermStructures" /I "..\Include\DayCounters" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "QL_RELEASE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /Od /I "..\Include" /I "..\Include\Calendars" /I "..\Include\Currencies" /I "..\Include\FiniteDifferences" /I "..\Include\Instruments" /I "..\Include\Math" /I "..\Include\Patterns" /I "..\Include\Pricers" /I "..\Include\Solvers1D" /I "..\Include\TermStructures" /I "..\Include\DayCounters" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "QL_RELEASE" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -474,14 +474,6 @@ SOURCE=..\Include\calendar.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\calendars.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\currencies.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Include\currency.h
 # End Source File
 # Begin Source File
@@ -506,10 +498,6 @@ SOURCE=..\Include\daycounter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\daycounters.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Include\deposit.h
 # End Source File
 # Begin Source File
@@ -519,10 +507,6 @@ SOURCE=..\Include\discountfactor.h
 # Begin Source File
 
 SOURCE=..\Include\expressiontemplates.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\finitedifferences.h
 # End Source File
 # Begin Source File
 
@@ -538,27 +522,11 @@ SOURCE=..\Include\instrument.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\instruments.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\mathtools.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Include\null.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\Include\options.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\patterns.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\pricers.h
 # End Source File
 # Begin Source File
 
@@ -586,10 +554,6 @@ SOURCE=..\Include\solver1d.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\solvers1d.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Include\spread.h
 # End Source File
 # Begin Source File
@@ -599,10 +563,6 @@ SOURCE=..\Include\swaptionvolsurface.h
 # Begin Source File
 
 SOURCE=..\Include\termstructure.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Include\termstructures.h
 # End Source File
 # End Target
 # End Project
