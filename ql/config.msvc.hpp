@@ -27,14 +27,12 @@
 
 #if _MSC_VER == 1200
 // move inside here configs specific to VC++ 6.0
-
 #define GARBLED_REVERSE_ITERATOR
-
 
 
 #elif _MSC_VER == 1300
 // move inside here configs specific to VC++ .Net
-
+#define QL_ITERATOR_TRAITS  std::iterator_traits
 
 
 #endif
