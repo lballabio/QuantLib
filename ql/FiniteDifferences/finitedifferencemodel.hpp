@@ -48,8 +48,9 @@ namespace QuantLib {
             typedef BoundaryCondition<operatorType> bcType;
             // constructor
             FiniteDifferenceModel(const operatorType& L,
-                                  const std::vector<Handle<bcType> >& bcs) 
-            : evolver_(L,bcs) {}
+                                  const std::vector<Handle<bcType> >& bcs,
+                                  const std::vector<Time>& stoppingTimes=std::vector<Time>()) 
+            : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {}
             // methods
             // arrayType grid() const { return evolver.xGrid(); }
             /*! solves the problem between the given times, possibly
@@ -63,6 +64,7 @@ namespace QuantLib {
                 Handle<StepCondition<arrayType> >());
           private:
             Evolver evolver_;
+            std::vector<Time> stoppingTimes_;
         };
 
         // template definitions
@@ -73,10 +75,35 @@ namespace QuantLib {
             Handle<StepCondition<arrayType> > condition) {
                 Time dt = (from-to)/steps, t = from;
                 evolver_.setStep(dt);
+
                 for (Size i=0; i<steps; i++, t -= dt) {
-                    evolver_.step(a,t);
-                    if (!condition.isNull())
-                        condition->applyTo(a,t);
+                    Size j;
+                    for(j=0; j < stoppingTimes_.size(); j++)
+                        if(t-dt <= stoppingTimes_[j] && stoppingTimes_[j] < t)
+                            break;
+                    if(j == stoppingTimes_.size())
+                    {   // No stopping time was hit
+                        evolver_.step(a,t);
+                        if (!condition.isNull())
+                            condition->applyTo(a,t-dt);
+                    }
+                    else  
+                    {   // A stopping time was hit
+
+                        // First baby step from t to stoppingTimes_[j]
+                        evolver_.setStep(t-stoppingTimes_[j]);
+                        evolver_.step(a,t);
+                        if (!condition.isNull())
+                            condition->applyTo(a,stoppingTimes_[j]);
+
+                        // Second baby step from stoppingTimes_[j] to t-dt
+                        evolver_.setStep(stoppingTimes_[j] - (t-dt));
+                        evolver_.step(a,stoppingTimes_[j]);
+                        if (!condition.isNull())
+                            condition->applyTo(a,t-dt);
+
+                        evolver_.setStep(dt);
+                    }
             }
         }
     }
