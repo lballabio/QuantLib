@@ -8,7 +8,7 @@ EXTRA_DIST = \
              quantlibfooter.html \
              quantlibfooteronline.html \
              quantlibheader.html \
-	     qlintro.tex \
+             qlintro.tex \
              quantlibheader.tex \
              README.txt
 
@@ -116,7 +116,8 @@ tex-files: .time-stamp-tex
 	$(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
-           -e "/input{group}/d" \
+           -e "/input{faq}/d" \
+           -e "/include{group}/d" \
            -e "/include{history}/d" \
            -e "/include{index}/d" \
            -e "/include{install}/d" \

@@ -75,7 +75,8 @@ tex-files:: html
     $(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
-           -e "/input{group}/d" \
+           -e "/input{faq}/d" \
+           -e "/include{group}/d" \
            -e "/include{history}/d" \
            -e "/include{index}/d" \
            -e "/include{install}/d" \

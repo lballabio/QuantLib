@@ -1,0 +1,70 @@
+
+/*
+ Copyright (C) 2004 StatPro Italia srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email quantlib-dev@lists.sf.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
+
+/*! \page faq Frequently asked questions
+
+    \section generic Generic questions
+
+    <strong>
+    Is it OK to email a QuantLib developer to ask questions, or seek
+    help, or report a bug?
+    </strong>
+
+    Yes, it is.  However, we urge you to consider posting to the
+    QuantLib mailing list instead.  This is for two reasons.  The
+    first is that messages on the list are stored: the next one with
+    your problem will be able to find the answer by searching the
+    archives.  The second is that you might get your answer sooner.
+    For instance, it just so happens that I am writing this entry in
+    the middle of a two-weeks period without an Internet connection.
+    If anybody wrote me last Monday, the poor soul will wait two weeks
+    for an answer which could have been given already by someone else
+    on the list.
+
+    However, if your intent in writing was to call the developer
+    names, disregard the above.  By all means write personally to the
+    developer.  And possibly, add the line:
+    \code
+    X-Bogosity: Yes
+    \endcode
+    to the mail headers, so that our filters---I mean, WE can take
+    immediate care of it.
+    
+
+    \section contributing Contributing to the project
+    
+    <strong>
+    I'm interested in getting involved with the project. What should
+    I do?
+    </strong>
+
+    Contact either project administrator. Before doing this, please
+    read the generic information at
+    <http://cvs.sourceforge.net/viewcvs.py/quantlib/QuantLib/dev_tools/newdeveloperintro.txt?view=markup>.
+    Also, you might want to specify an area of the library you are
+    particularly interested to, or which would be most useful to you.
+    Asking the administrators to choose a task for you is appreciated,
+    but it increases the odds that the chosen task will bore you or
+    otherwise discourage you from completing it.
+    
+*/
