@@ -23,7 +23,7 @@
 #define quantlib_instruments_capfloor_h
 
 #include <ql/numericalmethod.hpp>
-#include <ql/option.hpp>
+#include <ql/instrument.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 
 namespace QuantLib {
@@ -31,7 +31,7 @@ namespace QuantLib {
     namespace Instruments {
 
         //! Base class for cap-like instruments
-        class VanillaCapFloor : public Option {
+        class VanillaCapFloor : public Instrument {
           public:
             enum Type { Cap, Floor, Collar };
             VanillaCapFloor(Type type,

@@ -35,9 +35,10 @@ namespace QuantLib {
                 const std::vector<Rate>& floorRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<PricingEngine>& engine)
-        : Option(engine), type_(type), floatingLeg_(floatingLeg),
+        : type_(type), floatingLeg_(floatingLeg),
           capRates_(capRates), floorRates_(floorRates),
           termStructure_(termStructure) {
+            setPricingEngine(engine);
             if (type_ == Cap || type_ == Collar) {
                 QL_REQUIRE(!capRates_.empty(),
                            "VanillaCapFloor: no cap rates given");
