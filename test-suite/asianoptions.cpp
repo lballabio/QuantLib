@@ -22,8 +22,10 @@
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/asianoption.hpp>
 #include <ql/Instruments/europeanoption.hpp>
-#include <ql/PricingEngines/Asian/analyticcontinuousasianengine.hpp>
-#include <ql/PricingEngines/Asian/analyticdiscreteasianengine.hpp>
+#include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
+#include <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
+#include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
+#include <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <map>
@@ -31,15 +33,15 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
-#define REPORT_FAILURE(greekName, averageType, runningProduct, pastFixings, \
+#define REPORT_FAILURE(greekName, averageType, runningAccumulator, pastFixings, \
                        fixingDates, payoff, exercise, s, q, r, today, v, \
                        expected, calculated, tolerance) \
     BOOST_FAIL(exerciseTypeToString(exercise) + \
                " Asian option with " \
                + averageTypeToString(averageType) + " and " \
                + payoffTypeToString(payoff) + " payoff:\n" \
-               "    running product:  " \
-               + DecimalFormatter::toString(runningProduct) + "\n" \
+               "    running variable:  " \
+               + DecimalFormatter::toString(runningAccumulator) + "\n" \
                "    past fixings:     " \
                + SizeFormatter::toString(pastFixings) + "\n" \
                "    future fixings:   " \
@@ -83,9 +85,10 @@ namespace {
 
 }
 
-void AsianOptionTest::testGeometricContinuousAverage() {
+void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
-    BOOST_MESSAGE("Testing continuous-averaging geometric Asian options...");
+    BOOST_MESSAGE("Testing analytic continuous geometric average price "
+                  "Asians...");
 
     // data from "Option Pricing Formulas", Haug, pag.96-97
 
@@ -106,8 +109,8 @@ void AsianOptionTest::testGeometricContinuousAverage() {
                             Handle<TermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS)));
 
-    boost::shared_ptr<PricingEngine> engine(
-                                  new AnalyticContinuousAveragingAsianEngine);
+    boost::shared_ptr<PricingEngine> engine(new
+        AnalyticContinuousGeometricAveragePriceAsianEngine);
 
     Average::Type averageType = Average::Geometric;
     Option::Type type = Option::Put;
@@ -131,12 +134,36 @@ void AsianOptionTest::testGeometricContinuousAverage() {
                        qRate->value(), rRate->value(), today, 
                        vol->value(), expected, calculated, tolerance);
     }
+
+    // trying to approximate the continuous version with the discrete version
+    Real runningAccumulator = 1.0;
+    Size pastFixings = 0;
+    std::vector<Date> fixingDates(exerciseDate-today+1);
+    for (Size i=0; i<fixingDates.size(); i++) {
+        fixingDates[i]=today.plusDays(i);
+    }
+    boost::shared_ptr<PricingEngine> engine2(new
+        AnalyticDiscreteGeometricAveragePriceAsianEngine);
+    DiscreteAveragingAsianOption option2(averageType,
+                                         runningAccumulator, pastFixings, fixingDates,
+                                         stochProcess, payoff,
+                                         exercise, engine2);
+    calculated = option2.NPV();
+    tolerance = 1.3e-3;
+    if (QL_FABS(calculated-expected) > tolerance) {
+        REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
+                       fixingDates, payoff, exercise, spot->value(),
+                       qRate->value(), rRate->value(), today, 
+                       vol->value(), expected, calculated, tolerance);
+    }
+
 }
 
 
-void AsianOptionTest::testGeometricContinuousGreeks() {
+void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
 
-    BOOST_MESSAGE("Testing continuous-averaging geometric Asian greeks...");
+    BOOST_MESSAGE("Testing analytic continuous geometric average price Asian "
+                  "greeks...");
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
@@ -177,8 +204,8 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
             boost::shared_ptr<PlainVanillaPayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
-            boost::shared_ptr<PricingEngine> engine(
-                                  new AnalyticContinuousAveragingAsianEngine);
+            boost::shared_ptr<PricingEngine> engine(new
+                AnalyticContinuousGeometricAveragePriceAsianEngine);
 
             ContinuousAveragingAsianOption option(Average::Geometric,
                                                   process, payoff, 
@@ -289,9 +316,10 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
 }
 
 
-void AsianOptionTest::testGeometricDiscreteAverage() {
+void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
-    BOOST_MESSAGE("Testing discrete-averaging geometric Asian options...");
+    BOOST_MESSAGE("Testing analytic discrete geometric average price "
+                  "Asians...");
 
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
@@ -313,11 +341,11 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
                             Handle<TermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS)));
 
-    boost::shared_ptr<PricingEngine> engine(
-                                    new AnalyticDiscreteAveragingAsianEngine);
+    boost::shared_ptr<PricingEngine> engine(new
+        AnalyticDiscreteGeometricAveragePriceAsianEngine);
 
     Average::Type averageType = Average::Geometric;
-    Real runningProduct = 1.0;
+    Real runningAccumulator = 1.0;
     Size pastFixings = 0;
     Size futureFixings = 10;
     Option::Type type = Option::Call;
@@ -334,7 +362,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j]=fixingDates[j-1].plusDays(dt);
 
-    DiscreteAveragingAsianOption option(averageType, runningProduct,
+    DiscreteAveragingAsianOption option(averageType, runningAccumulator,
                                         pastFixings, fixingDates,
                                         stochProcess, payoff,
                                         exercise, engine);
@@ -343,7 +371,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     Real expected = 5.3425606635;
     Real tolerance = 1e-10;
     if (QL_FABS(calculated-expected) > tolerance) {
-        REPORT_FAILURE("value", averageType, runningProduct, pastFixings,
+        REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
                        qRate->value(), rRate->value(), today, 
                        vol->value(), expected, calculated, tolerance);
@@ -351,7 +379,230 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
 }
 
 
-void AsianOptionTest::testGeometricDiscreteGreeks() {
+void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
+
+    BOOST_MESSAGE("Testing Monte Carlo discrete geometric average price "
+                  "Asians...");
+
+    // data from "Implementing Derivatives Model",
+    // Clewlow, Strickland, p.118-123
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        BlackScholesProcess(Handle<Quote>(spot),
+                            Handle<TermStructure>(qTS),
+                            Handle<TermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS)));
+
+    boost::shared_ptr<PricingEngine> engine =
+//        MakeMCDiscreteGeometricAPEngine<PseudoRandom>().withStepsPerYear(1)
+//                                            .withTolerance(0.003)
+//                                            .withSeed(42);
+        MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>().withStepsPerYear(1)
+                                                         .withSamples(8191);
+    Average::Type averageType = Average::Geometric;
+    Real runningAccumulator = 1.0;
+    Size pastFixings = 0;
+    Size futureFixings = 10;
+    Option::Type type = Option::Call;
+    Real strike = 100.0;
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                        new PlainVanillaPayoff(type, strike));
+
+    Date exerciseDate = today.plusDays(360);
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+
+    std::vector<Date> fixingDates(futureFixings);
+    Integer dt = Integer(360/futureFixings+0.5);
+    fixingDates[0]=today.plusDays(dt);
+    for (Size j=1; j<futureFixings; j++)
+        fixingDates[j]=fixingDates[j-1].plusDays(dt);
+
+    DiscreteAveragingAsianOption option(averageType, runningAccumulator,
+                                        pastFixings, fixingDates,
+                                        stochProcess, payoff,
+                                        exercise, engine);
+
+    Real calculated = option.NPV();
+    Real expected = 5.3425606635;
+    Real tolerance = 4.0e-3;
+    if (QL_FABS(calculated-expected) > tolerance) {
+        REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
+                       fixingDates, payoff, exercise, spot->value(),
+                       qRate->value(), rRate->value(), today, 
+                       vol->value(), expected, calculated, tolerance);
+    }
+}
+
+namespace {
+
+    struct DiscreteAverageData {
+        Option::Type type;
+        Real underlying;
+        Real strike;
+        Rate dividendYield;
+        Rate riskFreeRate;
+        Time first;
+        Time length;
+        Size fixings;
+        Volatility volatility;
+        bool controlVariate;
+        Real result;
+    };
+
+}
+
+void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
+
+    BOOST_MESSAGE("Testing Monte Carlo discrete arithmetic average price "
+                  "Asians...");
+
+    // data from "Asian Option", Levy, 1997
+    // in "Exotic Options: The State of the Art",
+    // edited by Clewlow, Strickland
+    DiscreteAverageData cases4[] = {
+         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
+          0.13, true, 1.3942835683 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
+          0.13, true, 1.5852442983 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8,
+          0.13, true, 1.66970673 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12,
+          0.13, true, 1.6980019214 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26,
+          0.13, true, 1.7255070456 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52,
+          0.13, true, 1.7401553533 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100,
+          0.13, true, 1.7478303712 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250,
+          0.13, true, 1.7490291943 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500,
+          0.13, true, 1.7515113291 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000,
+          0.13, true, 1.7537344885 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2,
+          0.13, true, 1.8496053697 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4,
+          0.13, true, 2.0111495205 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8,
+          0.13, true, 2.0852138818 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 12,
+          0.13, true, 2.1105094397 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26,
+          0.13, true, 2.1346526695 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52,
+          0.13, true, 2.147489651 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100,
+          0.13, true, 2.154728109 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250,
+          0.13, true, 2.1564276565 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500,
+          0.13, true, 2.1594238588 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000,
+          0.13, true, 2.1595367326 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2,
+          0.13, true, 2.63315092584 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4,
+          0.13, true, 2.76723962361 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 8,
+          0.13, true, 2.83124836881 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 12,
+          0.13, true, 2.84290301412 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 26,
+          0.13, true, 2.88179560417 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 52,
+          0.13, true, 2.88447044543 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 100,
+          0.13, true, 2.89985329603 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 250,
+          0.13, true, 2.90047296063 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 500,
+          0.13, true, 2.89813412160 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 1000,
+          0.13, true, 2.89703362437 }
+   };
+
+    DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+
+    boost::shared_ptr<PricingEngine> engine =
+/*
+        MakeMCDiscreteArithmeticAPEngine<PseudoRandom>().withStepsPerYear(1)
+                                                        .withTolerance(0.005)
+                                                        .withSeed(42);
+*/
+        MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>().withStepsPerYear(1)
+                                                          .withSamples(2047);
+
+    Average::Type averageType = Average::Arithmetic;
+    Real runningSum = 0.0;
+    Size pastFixings = 0;
+    for (Size l=0; l<LENGTH(cases4); l++) {
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(cases4[l].type, cases4[l].strike));
+
+        Time dt = cases4[l].length/(cases4[l].fixings-1);
+        std::vector<Time> timeIncrements(cases4[l].fixings);
+        std::vector<Date> fixingDates(cases4[l].fixings);
+        timeIncrements[0] = cases4[l].first;
+        fixingDates[0]=today.plusDays(Integer(timeIncrements[0]*360+0.5));
+        for (Size i=1; i<cases4[l].fixings; i++) {
+            timeIncrements[i] = i*dt + cases4[l].first;
+            fixingDates[i]=today.plusDays(Integer(timeIncrements[i]*360+0.5));
+        }
+        boost::shared_ptr<Exercise> exercise(new
+            EuropeanExercise(fixingDates[cases4[l].fixings-1]));
+
+        spot ->setValue(cases4[l].underlying);
+        qRate->setValue(cases4[l].dividendYield);
+        rRate->setValue(cases4[l].riskFreeRate);
+        vol  ->setValue(cases4[l].volatility);
+
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
+
+        DiscreteAveragingAsianOption option(averageType, runningSum,
+                                            pastFixings, fixingDates,
+                                            stochProcess, payoff,
+                                            exercise, engine);
+
+        Real calculated = option.NPV();
+        Real expected = cases4[l].result;
+        Real tolerance = 2.0e-2;
+        if (QL_FABS(calculated-expected) > tolerance) {
+            REPORT_FAILURE("value", averageType, runningSum, pastFixings,
+                        fixingDates, payoff, exercise, spot->value(),
+                        qRate->value(), rRate->value(), today, 
+                        vol->value(), expected, calculated, tolerance);
+        }
+    }
+        
+}
+
+void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
     BOOST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
 
@@ -404,8 +655,8 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
                 fixingDates.push_back(d);
 
 
-            boost::shared_ptr<PricingEngine> engine(
-                                    new AnalyticDiscreteAveragingAsianEngine);
+            boost::shared_ptr<PricingEngine> engine(new
+                AnalyticDiscreteGeometricAveragePriceAsianEngine);
 
             DiscreteAveragingAsianOption option(Average::Geometric, 
                                                 runningAverage, pastFixings,
@@ -518,15 +769,19 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
 
 test_suite* AsianOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
-    suite->add(
-          BOOST_TEST_CASE(&AsianOptionTest::testGeometricContinuousAverage));
-    suite->add(
-          BOOST_TEST_CASE(&AsianOptionTest::testGeometricContinuousGreeks));
-    suite->add(
-          BOOST_TEST_CASE(&AsianOptionTest::testGeometricDiscreteAverage));
+    suite->add(BOOST_TEST_CASE(
+        &AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
+    suite->add(BOOST_TEST_CASE(
+        &AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks));
+    suite->add(BOOST_TEST_CASE(
+        &AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice));
+    suite->add(BOOST_TEST_CASE(
+        &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
+    suite->add(BOOST_TEST_CASE(
+        &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
     /* broken 
-    suite->add(
-          BOOST_TEST_CASE(&AsianOptionTest::testGeometricDiscreteGreeks));
+    suite->add(BOOST_TEST_CASE(
+        &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
     */
     return suite;
 }
