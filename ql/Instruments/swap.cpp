@@ -80,15 +80,10 @@ namespace QuantLib {
                                          // effort
                     NPV_ -= firstLeg_[i]->amount() *
                         termStructure_->discount(cashFlowDate);
-                    const Coupon* coupon =
-                    #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                        firstLeg_[i].downcast<Coupon>();
-                    #else
-                        dynamic_cast<const Coupon*>(firstLeg_[i].pointer());
-                    #endif
+                    Handle<Coupon> coupon = firstLeg_[i];
                     // check that the downcast succeeded
                     // and subtract coupon sensitivity
-                    if (coupon != 0) {
+                    if (!coupon.isNull()) {
                         firstLegBPS_ -= coupon->accrualPeriod() *
                             coupon->nominal() *
                             termStructure_->discount(coupon->date());
@@ -102,15 +97,10 @@ namespace QuantLib {
                     isExpired_ = false;
                     NPV_ += secondLeg_[j]->amount() *
                         termStructure_->discount(cashFlowDate);
-                    const Coupon* coupon =
-                    #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                        secondLeg_[j].downcast<Coupon>();
-                    #else
-                        dynamic_cast<const Coupon*>(secondLeg_[j].pointer());
-                    #endif
+                    Handle<Coupon> coupon = secondLeg_[j];
                     // check that the downcast succeeded
                     // and add coupon sensitivity
-                    if (coupon != 0) {
+                    if (!coupon.isNull()) {
                         secondLegBPS_ += coupon->accrualPeriod() *
                             coupon->nominal() *
                             termStructure_->discount(coupon->date());

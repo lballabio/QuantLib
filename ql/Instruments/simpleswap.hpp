@@ -96,25 +96,13 @@ namespace QuantLib {
                 return payFixedRate_;
             }
             double nominal() const { 
-                const CashFlows::FixedRateCoupon* coupon =
-                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                    fixedLeg()[0].downcast<CashFlows::FixedRateCoupon>();
-                #else
-                    dynamic_cast<const CashFlows::FixedRateCoupon*>
-                        (fixedLeg()[0].pointer());
-                #endif
-                QL_ENSURE(coupon != 0, "not a fixed-rate coupon");
+                Handle<CashFlows::FixedRateCoupon> coupon = fixedLeg()[0];
+                QL_ENSURE(!coupon.isNull(), "not a fixed-rate coupon");
                 return coupon->nominal(); 
             }
             Rate fixedRate() const { 
-                const CashFlows::FixedRateCoupon* coupon =
-                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                    fixedLeg()[0].downcast<CashFlows::FixedRateCoupon>();
-                #else
-                    dynamic_cast<const CashFlows::FixedRateCoupon*>
-                        (fixedLeg()[0].pointer());
-                #endif
-                QL_ENSURE(coupon != 0, "not a fixed-rate coupon");
+                Handle<CashFlows::FixedRateCoupon> coupon = fixedLeg()[0];
+                QL_ENSURE(!coupon.isNull(), "not a fixed-rate coupon");
                 return coupon->rate(); 
             }
           private:

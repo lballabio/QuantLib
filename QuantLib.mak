@@ -112,6 +112,8 @@ CLEAN :
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
 	-@erase "$(INTDIR)\falseposition.sbr"
+	-@erase "$(INTDIR)\fdeuropeanswaption.obj"
+	-@erase "$(INTDIR)\fdeuropeanswaption.sbr"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.obj"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.sbr"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
@@ -265,6 +267,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanswaption.sbr" \
 	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
@@ -291,6 +295,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\couponbondoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
@@ -341,9 +346,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\couponbondoption.sbr" \
-	"$(INTDIR)\europeanswaption.sbr" \
-	"$(INTDIR)\capfloor.sbr"
+	"$(INTDIR)\fdeuropeanswaption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -371,6 +374,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanswaption.obj" \
 	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -397,6 +402,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\couponbondoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
@@ -447,9 +453,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\couponbondoption.obj" \
-	"$(INTDIR)\europeanswaption.obj" \
-	"$(INTDIR)\capfloor.obj"
+	"$(INTDIR)\fdeuropeanswaption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -538,6 +542,8 @@ CLEAN :
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
 	-@erase "$(INTDIR)\falseposition.sbr"
+	-@erase "$(INTDIR)\fdeuropeanswaption.obj"
+	-@erase "$(INTDIR)\fdeuropeanswaption.sbr"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.obj"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.sbr"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
@@ -692,6 +698,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanswaption.sbr" \
 	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
@@ -718,6 +726,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\couponbondoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
@@ -768,9 +777,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\couponbondoption.sbr" \
-	"$(INTDIR)\europeanswaption.sbr" \
-	"$(INTDIR)\capfloor.sbr"
+	"$(INTDIR)\fdeuropeanswaption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -798,6 +805,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanswaption.obj" \
 	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -824,6 +833,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\couponbondoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
@@ -874,9 +884,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\couponbondoption.obj" \
-	"$(INTDIR)\europeanswaption.obj" \
-	"$(INTDIR)\capfloor.obj"
+	"$(INTDIR)\fdeuropeanswaption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -965,6 +973,8 @@ CLEAN :
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
 	-@erase "$(INTDIR)\falseposition.sbr"
+	-@erase "$(INTDIR)\fdeuropeanswaption.obj"
+	-@erase "$(INTDIR)\fdeuropeanswaption.sbr"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.obj"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.sbr"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
@@ -1118,6 +1128,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanswaption.sbr" \
 	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
@@ -1144,6 +1156,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\couponbondoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
@@ -1194,9 +1207,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\couponbondoption.sbr" \
-	"$(INTDIR)\europeanswaption.sbr" \
-	"$(INTDIR)\capfloor.sbr"
+	"$(INTDIR)\fdeuropeanswaption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1224,6 +1235,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanswaption.obj" \
 	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -1250,6 +1263,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\couponbondoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
@@ -1300,9 +1314,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\couponbondoption.obj" \
-	"$(INTDIR)\europeanswaption.obj" \
-	"$(INTDIR)\capfloor.obj"
+	"$(INTDIR)\fdeuropeanswaption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1391,6 +1403,8 @@ CLEAN :
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
 	-@erase "$(INTDIR)\falseposition.sbr"
+	-@erase "$(INTDIR)\fdeuropeanswaption.obj"
+	-@erase "$(INTDIR)\fdeuropeanswaption.sbr"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.obj"
 	-@erase "$(INTDIR)\finitedifferenceeuropean.sbr"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
@@ -1545,6 +1559,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanswaption.sbr" \
 	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
@@ -1571,6 +1587,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\couponbondoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
@@ -1621,9 +1638,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\couponbondoption.sbr" \
-	"$(INTDIR)\europeanswaption.sbr" \
-	"$(INTDIR)\capfloor.sbr"
+	"$(INTDIR)\fdeuropeanswaption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1651,6 +1666,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanswaption.obj" \
 	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -1677,6 +1694,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\couponbondoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
@@ -1727,9 +1745,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\couponbondoption.obj" \
-	"$(INTDIR)\europeanswaption.obj" \
-	"$(INTDIR)\capfloor.obj"
+	"$(INTDIR)\fdeuropeanswaption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2106,6 +2122,12 @@ SOURCE=.\ql\Pricers\europeanengine.cpp
 SOURCE=.\ql\Pricers\europeanoption.cpp
 
 "$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\fdeuropeanswaption.cpp
+
+"$(INTDIR)\fdeuropeanswaption.obj"	"$(INTDIR)\fdeuropeanswaption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

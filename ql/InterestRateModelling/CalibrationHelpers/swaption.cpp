@@ -87,7 +87,8 @@ namespace QuantLib {
                   startDate,
                   termStructure));
 
-                std::vector<Handle<CashFlow> > floatingLeg = swap_->floatingLeg();
+                std::vector<Handle<CashFlow> > floatingLeg = 
+                    swap_->floatingLeg();
                 std::vector<Handle<CashFlow> >::const_iterator begin, end;
                 begin = floatingLeg.begin();
                 end   = floatingLeg.end();
@@ -95,13 +96,9 @@ namespace QuantLib {
                 DayCounter counter = termStructure_->dayCounter();
                 unsigned int i=0;
                 for (; begin != end; ++begin) {
-                    const FloatingRateCoupon* coupon = 
-                        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                            begin->downcast<FloatingRateCoupon>();
-                        #else
-                            dynamic_cast<const FloatingRateCoupon*>(begin->pointer());
-                        #endif
-                    QL_ENSURE(coupon != 0, "not a floating rate coupon");
+                    Handle<FloatingRateCoupon> coupon = *begin;
+                    QL_ENSURE(!coupon.isNull(), 
+                        "not a floating rate coupon");
                     Date beginDate = coupon->accrualStartDate();
                     Date endDate = coupon->date();
                     startTimes_.resize(i+1);

@@ -48,22 +48,21 @@ namespace QuantLib {
         using namespace InterestRateModelling;
 
         FDEuropeanSwaption::FDEuropeanSwaption(
-          const Handle<SimpleSwap>& swap,
-          Time maturity,
-          const Handle<Model>& model) :
-          swap_(swap),
-          maturity_(maturity),
-          model_(model)
-          {}
+            const Handle<SimpleSwap>& swap,
+            Time maturity,
+            const Handle<Model>& model) 
+        : swap_(swap), maturity_(maturity), model_(model) {}
 
         double FDEuropeanSwaption::value(Rate rate, 
           unsigned int timeSteps, unsigned int gridPoints) {
 
-            OneFactorModel * model = model_.downcast<OneFactorModel>();
-            QL_REQUIRE(model!=0, "This pricer requires a single-factor model!");
+            Handle<OneFactorModel> model = model_;
+            QL_REQUIRE(!model.isNull(), 
+                "This pricer requires a single-factor model!");
             double dt = maturity_/timeSteps;
             double initialCenter = model->stateVariable(rate);
-            Grid grid(gridPoints, initialCenter, initialCenter, maturity_, dt, model);
+            Grid grid(gridPoints, initialCenter, initialCenter, 
+                maturity_, dt, model);
 
             unsigned int size = grid.size();
             std::vector<double> rateGrid(size);
@@ -71,17 +70,21 @@ namespace QuantLib {
                 rateGrid[i] = model->getRateFrom(grid[i]);
 
             OneFactorOperator op(grid, model->process());
-            op.setLowerBC( BoundaryCondition(BoundaryCondition::Neumann, grid[1] - grid[0]));
-            op.setUpperBC( BoundaryCondition(BoundaryCondition::Neumann, grid[size-1] - grid[size-2]));
+            op.setLowerBC( BoundaryCondition(BoundaryCondition::Neumann, 
+                grid[1] - grid[0]));
+            op.setUpperBC( BoundaryCondition(BoundaryCondition::Neumann, 
+                grid[size-1] - grid[size-2]));
             FiniteDifferences::StandardFiniteDifferenceModel
                                 finiteDifferenceModel(op);
 
             Array prices(size);
             for(unsigned j = 0; j < size; j++) {
-                prices[j] = QL_MAX(swapFutureValue(swap_, model_, rateGrid[j], maturity_), 0.0);
+                prices[j] = QL_MAX(swapFutureValue(swap_, model_, 
+                    rateGrid[j], maturity_), 0.0);
             }
 
-            finiteDifferenceModel.rollback(prices, maturity_, 0.0, timeSteps);
+            finiteDifferenceModel.rollback(prices, maturity_, 0.0, 
+                timeSteps);
             return prices[grid.index()];
         }
 

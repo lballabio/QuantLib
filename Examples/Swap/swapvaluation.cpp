@@ -598,19 +598,13 @@ int main(int argc, char* argv[])
         // now let's say that the 5-years swap rate goes up to 4.60%.
         // A smarter market element--say, connected to a data source-- would 
         // notice the change itself. Since we're using SimpleMarketElements,
-        // we'll have to change the value manually--which forces us to use
-        // some ugly syntax to downcast and use the SimpleMarketElement 
+        // we'll have to change the value manually--which forces us to 
+        // downcast the handle and use the SimpleMarketElement 
         // interface. In any case, the point here is that a change in the
         // value contained in the MarketElement triggers a new bootstrapping
         // of the curve and a repricing of the swap.
 
-        SimpleMarketElement* fiveYearsRate = 
-        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-            // Borland C++ and gcc
-            s5yRate.downcast<SimpleMarketElement>();
-        #else
-            dynamic_cast<SimpleMarketElement*>(s5yRate.pointer());
-        #endif
+        Handle<SimpleMarketElement> fiveYearsRate = s5yRate;
         fiveYearsRate->setValue(0.0460);
         std::cout <<  "*** 5Y swap goes up to 4.60%" << std::endl;
         

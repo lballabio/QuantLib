@@ -63,15 +63,11 @@ namespace QuantLib {
                 Time t = model->termStructure()->dayCounter().
                     yearFraction(settlement, cashFlowDate);
                 if (t >= time) {
-                    const Coupon * coupon = 
-                        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                            floatingLeg[i].downcast<Coupon>();
-                        #else
-                            dynamic_cast<const Coupon*>(floatingLeg[i].pointer());
-                        #endif
-                    QL_ENSURE(coupon != 0, "not a coupon");
-                    Time startTime = model->termStructure()->dayCounter().
-                        yearFraction(settlement,  coupon->accrualStartDate());
+                    Handle<Coupon> coupon = floatingLeg[i];
+                    QL_ENSURE(!coupon.isNull(), "not a coupon");
+                    Time startTime = 
+                        model->termStructure()->dayCounter().yearFraction(
+                            settlement, coupon->accrualStartDate());
                     Time endTime = model->termStructure()->dayCounter().
                         yearFraction(settlement,  coupon->accrualEndDate());
                     double sd = model->discountBond(time, startTime, rate);

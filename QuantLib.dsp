@@ -755,6 +755,14 @@ SOURCE=.\ql\Pricers\europeanoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\fdeuropeanswaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\fdeuropeanswaption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\finitedifferenceeuropean.cpp
 # End Source File
 # Begin Source File

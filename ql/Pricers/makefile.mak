@@ -30,6 +30,7 @@ OBJS = \
        dividendshoutoption.obj$(_D) \
        europeanengine.obj$(_D) \
        europeanoption.obj$(_D) \
+       fdeuropeanswaption.obj$(_D) \
        finitedifferenceeuropean.obj$(_D) \
        mcbasket.obj$(_D) \
        mcdiscretearithmeticapo.obj$(_D) \
