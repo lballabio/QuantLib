@@ -22,6 +22,7 @@
 #ifndef quantlib_indexed_coupon_hpp
 #define quantlib_indexed_coupon_hpp
 
+#include <ql/index.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Indexes/xibor.hpp>
 
@@ -37,7 +38,7 @@ namespace QuantLib {
       public:
         IndexedCoupon(Real nominal,
                       const Date& paymentDate,
-                      const boost::shared_ptr<Xibor>& index,
+                      const boost::shared_ptr<Index>& index,
                       const Date& startDate, const Date& endDate,
                       Integer fixingDays,
                       Spread spread = 0.0,
@@ -59,7 +60,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        const boost::shared_ptr<Xibor>& index() const;
+        const boost::shared_ptr<Index>& index() const;
         //@}
         //! \name Observer interface
         //@{
@@ -70,7 +71,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        boost::shared_ptr<Xibor> index_;
+        boost::shared_ptr<Index> index_;
         DayCounter dayCounter_;
     };
 
@@ -78,7 +79,7 @@ namespace QuantLib {
     // inline definitions
     inline IndexedCoupon::IndexedCoupon(Real nominal,
                                         const Date& paymentDate,
-                                        const boost::shared_ptr<Xibor>& index,
+                                        const boost::shared_ptr<Index>& index,
                                         const Date& startDate,
                                         const Date& endDate,
                                         Integer fixingDays, Spread spread,
@@ -88,13 +89,20 @@ namespace QuantLib {
     : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
                          fixingDays, spread, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter) {
-        if (dayCounter_.isNull())
-            dayCounter_ = index_->dayCounter();
+        if (dayCounter_.isNull()) {
+            boost::shared_ptr<Xibor> xibor =
+                boost::dynamic_pointer_cast<Xibor>(index);
+            if (xibor)
+                dayCounter_ = xibor->dayCounter();
+            else
+                QL_FAIL("day counter not specified and not retrievable "
+                        "from index");
+        }
         registerWith(index_);
     }
 
 
-    inline const boost::shared_ptr<Xibor>&
+    inline const boost::shared_ptr<Index>&
     IndexedCoupon::index() const {
         return index_;
     }

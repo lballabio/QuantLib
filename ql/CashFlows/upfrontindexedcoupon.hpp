@@ -43,8 +43,10 @@ namespace QuantLib {
                              const Date& refPeriodEnd = Date(),
                              const DayCounter& dayCounter = DayCounter())
         : IndexedCoupon(nominal, paymentDate, index, startDate, endDate,
-                        fixingDays, spread, refPeriodStart, refPeriodEnd, 
-                        dayCounter) {}
+                        fixingDays, spread, refPeriodStart, refPeriodEnd,
+                        dayCounter) {
+            calendar_ = index->calendar();
+        }
         //! \name FloatingRateCoupon interface
         //@{
         Date fixingDate() const;
@@ -53,6 +55,8 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
+      protected:
+        Calendar calendar_;
     };
 
 
@@ -60,9 +64,9 @@ namespace QuantLib {
 
     inline Date UpFrontIndexedCoupon::fixingDate() const {
         // fix at the beginning of period
-        return index()->calendar().advance(accrualStartDate_, 
-                                           -fixingDays_, Days,
-                                           Preceding);
+        return calendar_.advance(accrualStartDate_,
+                                 -fixingDays_, Days,
+                                 Preceding);
     }
 
     inline void UpFrontIndexedCoupon::accept(AcyclicVisitor& v) {
