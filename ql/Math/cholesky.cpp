@@ -23,14 +23,13 @@
 
 namespace QuantLib {
 
-    CholeskyDecomposition::CholeskyDecomposition(const Matrix &S,
-        bool flexible)
+    Cholesky::Cholesky(const Matrix &S, bool flexible)
     : decomposition_(S.rows(), S.rows(), 0.0) {
         Size i, j, size = S.rows();
         // should check for simmetry too: the algorithm will only use
         // the upper triangular part of S anyway...
         QL_REQUIRE(size == S.columns(),
-            "CholeskyDecomposition::CholeskyDecomposition : "
+            "Cholesky::Cholesky : "
             "input matrix is not a square matrix");
 
         double sum;
@@ -42,7 +41,7 @@ namespace QuantLib {
                 }
                 if (i == j) {
                     QL_REQUIRE(flexible || sum > 0.0,
-                        "CholeskyDecomposition::CholeskyDecomposition : "
+                        "Cholesky::Cholesky : "
                         "input matrix is not positive definite");
                     // To handle positive semi-definite matrices take the
                     // square root of sum if positive, else zero.

@@ -43,10 +43,11 @@ namespace QuantLib {
         University Press
     */
 
-    class CholeskyDecomposition {
+    class Cholesky {
       public:
         /* \pre S must be positive (semi)-definite symmetric */
-        CholeskyDecomposition(const Matrix& S, bool flexible = false);
+        Cholesky(const Matrix &S,
+                 bool flexible = false);
         const Matrix& decomposition() const { return decomposition_; }
       private:
         Matrix decomposition_;
