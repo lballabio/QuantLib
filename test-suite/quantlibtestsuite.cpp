@@ -23,7 +23,7 @@
    suite, not the whole library! 1.30.x is fine for the latter) while
    we just skip the inclusion for Unixen since it's not needed.
 */
-#if defined(__BORLANDC__) || defined(_MSC_VER)
+#ifdef _MSC_VER
 #if BOOST_VERSION < 103100
     #error Boost 1.31 or later is required for the test suite.
 #endif
