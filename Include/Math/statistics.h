@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/01/15 16:57:07  lballabio
+    Documentation fixed
+
     Revision 1.10  2001/01/12 17:33:34  nando
     minor changes (better error messages)
 
@@ -69,10 +72,10 @@ namespace QuantLib {
             //@{
             //! size of data set
             double samples() const;
-            //! sum_ of data weights
+            //! sum of data weights
             double weightSum() const;
             /*! returns the mean, defined as
-                \f[ \langle x \rangle = \frac{\sum_ w_i x_i}{\sum_ w_i}. \f]
+                \f[ \langle x \rangle = \frac{\sum w_i x_i}{\sum w_i}. \f]
             */
             double mean() const;
             /*! returns the variance, defined as
@@ -102,9 +105,9 @@ namespace QuantLib {
                 The above evaluates to 0 for a Gaussian distribution.
             */
             double kurtosis() const;
-            /*! returns the min_imum sample value */
+            /*! returns the minimum sample value */
             double min() const;
-            /*! returns the max_imum sample value */
+            /*! returns the maximum sample value */
             double max() const;
             //@}
             
