@@ -24,6 +24,7 @@
 class EuropeanOptionTest : public CppUnit::TestFixture {
   public:
     void testValues();
+    void testGreekValues();
     void testGreeks();
     void testImpliedVol();
     void testBinomialEngines();

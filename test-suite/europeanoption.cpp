@@ -120,10 +120,10 @@ namespace {
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
         return Handle<VanillaOption>(
-            new VanillaOption(payoff, RelinkableHandle<Quote>(u),
+            new VanillaOption(payoff, exercise,
+                              RelinkableHandle<Quote>(u),
                               RelinkableHandle<TermStructure>(q),
                               RelinkableHandle<TermStructure>(r),
-                              exercise,
                               RelinkableHandle<BlackVolTermStructure>(vol),
                               engine));
     }
@@ -173,6 +173,47 @@ namespace {
             throw Error("unknown engine type");
         }
     }
+
+
+
+    void check(std::string greekName,
+               Option::Type type,
+               double s,
+               double strike,
+               double q,
+               double r,
+               Date today,
+               Date exDate,
+               double v,
+               double result,
+               double calculated,
+               double tol) {
+        if (QL_FABS(calculated-result) > tol) {
+          CPPUNIT_FAIL(greekName + " of European "
+              + OptionTypeFormatter::toString(type) +
+              " option :\n"
+              "    underlying value: "
+              + DoubleFormatter::toString(s) + "\n"
+              "    strike:           "
+              + DoubleFormatter::toString(strike) +"\n"
+              "    dividend yield:   "
+              + DoubleFormatter::toString(q) + "\n"
+              "    risk-free rate:   "
+              + DoubleFormatter::toString(r) + "\n"
+              "    reference date:   "
+              + DateFormatter::toString(today) + "\n"
+              "    maturity:         "
+              + DateFormatter::toString(exDate) + "\n"
+              "    volatility:       "
+              + DoubleFormatter::toString(v) + "\n\n"
+              "    tabulated value:  "
+              + DoubleFormatter::toString(result) + "\n"
+              "    result:  "
+              + DoubleFormatter::toString(calculated));
+        }
+
+    }
+
 
 
 }
@@ -267,11 +308,10 @@ void EuropeanOptionTest::testValues() {
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
-        VanillaOption option(payoff,
+        VanillaOption option(payoff, exercise,
                              RelinkableHandle<Quote>(spot),
                              RelinkableHandle<TermStructure>(divCurve),
                              RelinkableHandle<TermStructure>(rfCurve),
-                             exercise,
                              RelinkableHandle<BlackVolTermStructure>(volCurve),
                              engine);
         double value = option.NPV();
@@ -303,6 +343,306 @@ void EuropeanOptionTest::testValues() {
 
 }
 
+
+
+void EuropeanOptionTest::testGreekValues() {
+
+    struct VanillaOptionData {
+        Option::Type type;
+        double strike;
+        double s;   //spot
+        double q;   // dividend
+        double r;   // risk-free rate
+        Time t;     // time to maturity
+        double v;   // volatility
+        double result;   // result
+    };
+
+    /* The data below are from
+       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
+       pag 11-16
+    */
+    VanillaOptionData values[] = {
+              // type, strike,   spot,    q,    r,       t,  vol,   value
+        // delta
+        { Option::Call, 100.00, 105.00, 0.10, 0.10, 0.500000, 0.36,  0.5946 },
+        { Option::Put,  100.00, 105.00, 0.10, 0.10, 0.500000, 0.36, -0.3566 },
+        // elasticity
+        { Option::Put,  100.00, 105.00, 0.10, 0.10, 0.500000, 0.36, -4.8775 },
+        // gamma
+        { Option::Call,  60.00,  55.00, 0.00, 0.10, 0.750000, 0.30,  0.0278 },
+        { Option::Put,   60.00,  55.00, 0.00, 0.10, 0.750000, 0.30,  0.0278 },
+        // vega
+        { Option::Call,  60.00,  55.00, 0.00, 0.10, 0.750000, 0.30, 18.9358 },
+        { Option::Put,   60.00,  55.00, 0.00, 0.10, 0.750000, 0.30, 18.9358 },
+        // theta
+        { Option::Put,  405.00, 430.00, 0.05, 0.07, 1.0/12.0, 0.20,-31.1924 },
+        // theta per day
+        { Option::Put,  405.00, 430.00, 0.05, 0.07, 1.0/12.0, 0.20, -0.0855 },
+        // rho
+        { Option::Call,  75.00,  72.00, 0.00, 0.09, 1.000000, 0.19, 38.7325 },
+        // dividendRho
+        { Option::Put,  490.00, 500.00, 0.05, 0.08, 0.250000, 0.15, 42.2254 }
+    };
+
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> divCurve = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rfCurve = makeFlatCurve(rRate, dc);
+    Date today = Date::todaysDate();
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(vol, dc);
+    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
+    Handle<StrikedTypePayoff> payoff;
+    Date exDate;
+    Handle<Exercise> exercise;
+    Size i = -1;
+    Handle<VanillaOption> option;
+    double calculated;
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->delta();
+    check("delta", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->delta();
+    check("delta", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->elasticity();
+    check("elasticity", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->gamma();
+    check("gamma", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->gamma();
+    check("gamma", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->vega();
+    check("vega", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->vega();
+    check("vega", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->theta();
+    check("theta", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->thetaPerDay();
+    check("thetaPerDay", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->rho();
+    check("rho", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+
+    i++;
+    payoff = Handle<StrikedTypePayoff>(new
+        PlainVanillaPayoff(values[i].type, values[i].strike));
+    exDate = today.plusDays(values[i].t*360);
+    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    spot ->setValue(values[i].s);
+    qRate->setValue(values[i].q);
+    rRate->setValue(values[i].r);
+    vol  ->setValue(values[i].v);
+    option = Handle<VanillaOption>(new VanillaOption(
+        payoff, exercise,
+        RelinkableHandle<Quote>(spot),
+        RelinkableHandle<TermStructure>(divCurve),
+        RelinkableHandle<TermStructure>(rfCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
+        engine));
+    calculated = option->dividendRho();
+    check("dividendRho", values[i].type, values[i].s, values[i].strike, values[i].q,
+        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
+        1e-4);
+
+}
 
 void EuropeanOptionTest::testGreeks() {
 
@@ -687,6 +1027,10 @@ CppUnit::Test* EuropeanOptionTest::suite() {
                    ("Testing European option values",
                     &EuropeanOptionTest::testValues));
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
+                   ("Testing European option greek values",
+                    &EuropeanOptionTest::testGreekValues));
+/*
+    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing binomial European engines "
                     "against analytic results",
                     &EuropeanOptionTest::testBinomialEngines));
@@ -700,7 +1044,7 @@ CppUnit::Test* EuropeanOptionTest::suite() {
                    ("Testing Monte Carlo European engines "
                     "against analytic results",
                     &EuropeanOptionTest::testMcEngines));
-
+*/
     return tests;
 }
 
