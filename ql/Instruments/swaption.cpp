@@ -30,8 +30,6 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        using CashFlows::FixedRateCouponVector;
-        using CashFlows::FloatingRateCouponVector;
         using CashFlows::FloatingRateCoupon;
 
         Swaption::Swaption(
@@ -54,10 +52,10 @@ namespace QuantLib {
             DayCounter counter = termStructure_->dayCounter();
             Size i;
 
-            const FixedRateCouponVector& fixedLeg = swap_->fixedLeg();
+            const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
             parameters->payFixed = swap_->payFixedRate();
 
-            Handle<VanillaSwap> vanilla(swap_);
+            Handle<SimpleSwap> vanilla(swap_);
             if (!vanilla.isNull()) {
                 parameters->isVanilla = true;
                 parameters->fixedRate = vanilla->fixedRate();
@@ -77,7 +75,8 @@ namespace QuantLib {
             parameters->floatingResetTimes.clear();
             parameters->floatingPayTimes.clear();
             parameters->nominals.clear();
-            const FloatingRateCouponVector& floatingLeg = swap_->floatingLeg();
+            const std::vector<Handle<CashFlow> >& floatingLeg = 
+                swap_->floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
             begin = floatingLeg.begin();
             end   = floatingLeg.end();

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -27,7 +28,6 @@
 
 #include <ql/Instruments/swap.hpp>
 #include <ql/Indexes/xibor.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
 
 namespace QuantLib {
 
@@ -41,49 +41,47 @@ namespace QuantLib {
                 const Date& startDate, int n, TimeUnit units,
                 const Calendar& calendar,
                 RollingConvention rollingConvention,
-                /* nominals (if the vector length is lower than the number
-                   of coupons, the last nominal will prevail for the
-                   remaining coupons)
-                */
-                const std::vector<double>& nominals,
+                double nominal,
                 // fixed leg
                 int fixedFrequency,
-                /* fixed coupon rates (if the vector length is lower than
-                   the number of coupons, the last rate will prevail for
+                /* fixed coupon rates (if the vector length is less than
+                   the number of coupons, the last rate will be used for
                    the remaining coupons)
                 */
-                const std::vector<Rate>& couponRates,
+                Rate fixedRate,
                 bool fixedIsAdjusted,
                 const DayCounter& fixedDayCount,
                 // floating leg
                 int floatingFrequency,
                 const Handle<Indexes::Xibor>& index,
                 int indexFixingDays,
-                const std::vector<Spread>& spreads,
+                Spread spread,
                 // hook to term structure
                 const RelinkableHandle<TermStructure>& termStructure,
                 // description
                 const std::string& isinCode = "",
                 const std::string& description = "");
+            // results
+            Rate fairRate() const;
             double fixedLegBPS() const;
             double floatingLegBPS() const;
-            const Date& maturity() const { return maturity_; }
-            //added by Sad
-            bool payFixedRate() const {
-                return payFixedRate_;
-            }
-            const CashFlows::FixedRateCouponVector& fixedLeg() const {
-                return fixedLeg_;
-            }
-            const CashFlows::FloatingRateCouponVector& floatingLeg() const {
-                return floatingLeg_;
-            }   
+            // inspectors
+            Rate fixedRate() const;
+            double nominal() const;
+            const Date& maturity() const;
+            bool payFixedRate() const;
+            const std::vector<Handle<CashFlow> >& fixedLeg() const;
+            const std::vector<Handle<CashFlow> >& floatingLeg() const;
           private:
             bool payFixedRate_;
+            Rate fixedRate_;
+            double nominal_;
             Date maturity_;
-            CashFlows::FixedRateCouponVector fixedLeg_;
-            CashFlows::FloatingRateCouponVector floatingLeg_;
         };
+
+        inline Rate SimpleSwap::fairRate() const {
+            return fixedRate_ - NPV()/fixedLegBPS();
+        }
 
         inline double SimpleSwap::fixedLegBPS() const {
             return (payFixedRate_ ? firstLegBPS() : secondLegBPS());
@@ -93,48 +91,32 @@ namespace QuantLib {
             return (payFixedRate_ ? secondLegBPS() : firstLegBPS());
         }
 
-        class VanillaSwap : public SimpleSwap {
-          public:
-            VanillaSwap(
-                bool payFixedRate,
-                // dates
-                const Date& startDate, int n, TimeUnit units,
-                const Calendar& calendar,
-                RollingConvention rollingConvention,
-                double nominal,
-                // fixed leg
-                int fixedFrequency,
-                Rate couponRate,
-                bool fixedIsAdjusted,
-                const DayCounter& fixedDayCount,
-                // floating leg
-                int floatingFrequency,
-                const Handle<Indexes::Xibor>& index,
-                int indexFixingDays,
-                const std::vector<Spread>& spreads,
-                // hook to term structure
-                const RelinkableHandle<TermStructure>& termStructure,
-                // description
-                const std::string& isinCode = "",
-                const std::string& description = "")
-            : SimpleSwap(payFixedRate, startDate, n, units, calendar,
-                         rollingConvention, std::vector<double>(1, nominal), 
-                         fixedFrequency, std::vector<Rate>(1, couponRate),
-                         fixedIsAdjusted, fixedDayCount, floatingFrequency,
-                         index, indexFixingDays, spreads, termStructure, 
-                         isinCode, description),
-              fixedRate_(couponRate), nominal_(nominal) {}
+        inline Rate SimpleSwap::fixedRate() const {
+            return fixedRate_;
+        }
+        
+        inline double SimpleSwap::nominal() const {
+            return nominal_;
+        }
+        
+        inline const Date& SimpleSwap::maturity() const {
+            return maturity_;
+        }
+        
+        inline bool SimpleSwap::payFixedRate() const {
+            return payFixedRate_;
+        }
+        
+        inline const std::vector<Handle<CashFlow> >& 
+        SimpleSwap::fixedLeg() const {
+            return (payFixedRate_ ? firstLeg_ : secondLeg_);
+        }
+        
+        inline const std::vector<Handle<CashFlow> >& 
+        SimpleSwap::floatingLeg() const {
+            return (payFixedRate_ ? secondLeg_ : firstLeg_);
+        }
 
-            Rate fixedRate() const { return fixedRate_; }
-            Rate fairRate() const {
-                return fixedRate_ - NPV()/fixedLegBPS();
-            }
-            double nominal() const { return nominal_; }
-
-          private:
-            Rate fixedRate_;
-            double nominal_;
-        };
     }
 
 }

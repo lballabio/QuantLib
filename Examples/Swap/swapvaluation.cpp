@@ -190,39 +190,33 @@ int main(int argc, char* argv[])
         Date spotDate = calendar.advance(todaysDate, settlementDays, Days,
             Following);
         // constant nominal 1,000,000 Euro
-        std::vector<double> nominals;
-        nominals.push_back(1000000);
+        double nominal = 1000000.0;
         // fixed leg
         int fixedLegFrequency = 1; // annual
         bool fixedLegIsAdjusted = false;
         RollingConvention roll = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Rate fixedRate = 0.04;
-        // constant coupon
-        std::vector<double> couponRates;
-        couponRates.push_back(fixedRate);
 
         // floating leg
         int floatingLegFrequency = 2;
         Handle<Xibor> euriborIndex(new Euribor(6, Months,
             forecastingTermStructure)); // using the forecasting curve
-        // constant null spread
-        std::vector<double> spreads;
-        spreads.push_back(0.0);
+        Spread spread = 0.0;
 
         int lenghtInYears = 5;
         bool payFixedRate = true;
         SimpleSwap spot5YearSwap(payFixedRate, spotDate, lenghtInYears,
-            Years, calendar, roll, nominals, fixedLegFrequency, couponRates,
+            Years, calendar, roll, nominal, fixedLegFrequency, fixedRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, fixingDays, spreads,
+            euriborIndex, fixingDays, spread,
             discountingTermStructure); // using the discounting curve
         SimpleSwap oneYearForward5YearSwap(payFixedRate,
             calendar.advance(spotDate, 1, Years, ModifiedFollowing),
             lenghtInYears, Years,
-            calendar, roll, nominals, fixedLegFrequency, couponRates,
+            calendar, roll, nominal, fixedLegFrequency, fixedRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, fixingDays, spreads,
+            euriborIndex, fixingDays, spread,
             discountingTermStructure); // using the discounting curve
 
 

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -25,11 +24,10 @@
 // $Id$
 
 #include <ql/Instruments/simpleswap.hpp>
-#include <ql/CashFlows/fixedratecoupon.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
 
 namespace QuantLib {
 
-    using CashFlows::FixedRateCoupon;
     using CashFlows::FixedRateCouponVector;
     using CashFlows::FloatingRateCouponVector;
     using Indexes::Xibor;
@@ -40,34 +38,50 @@ namespace QuantLib {
           const Date& startDate, int n, TimeUnit units,
           const Calendar& calendar,
           RollingConvention rollingConvention,
-          const std::vector<double>& nominals,
+          double nominal,
           int fixedFrequency,
-          const std::vector<Rate>& couponRates,
+          Rate fixedRate,
           bool fixedIsAdjusted,
           const DayCounter& fixedDayCount,
           int floatingFrequency,
           const Handle<Xibor>& index,
           int indexFixingDays,
-          const std::vector<Spread>& spreads,
+          Spread spread,
           const RelinkableHandle<TermStructure>& termStructure,
           const std::string& isinCode, const std::string& description)
         : Swap(std::vector<Handle<CashFlow> >(),
                std::vector<Handle<CashFlow> >(),
                termStructure, isinCode, description),
-          payFixedRate_(payFixedRate),
-          maturity_(calendar.advance(startDate,n,units,rollingConvention)),
-          fixedLeg_(nominals, couponRates, startDate, maturity_, fixedFrequency,
-                    calendar, rollingConvention,fixedIsAdjusted, fixedDayCount, 
-                    fixedDayCount),
-          floatingLeg_(nominals, startDate, maturity_, floatingFrequency,
-                       calendar, rollingConvention, termStructure, index, 
-                       indexFixingDays, spreads) {
+          payFixedRate_(payFixedRate), fixedRate_(fixedRate), 
+          nominal_(nominal), 
+          maturity_(calendar.advance(startDate,n,units,rollingConvention)) {
+                        
+            maturity_ = calendar.advance(startDate,n,units,rollingConvention);
+            
             if (payFixedRate_) {
-                firstLeg_ = fixedLeg_;
-                secondLeg_ = floatingLeg_;
+                firstLeg_ = FixedRateCouponVector(
+                    std::vector<double>(1,nominal), 
+                    std::vector<Rate>(1,fixedRate), startDate, maturity_, 
+                    fixedFrequency, calendar, rollingConvention, 
+                    fixedIsAdjusted, fixedDayCount, fixedDayCount);
+                secondLeg_ = FloatingRateCouponVector(
+                    std::vector<double>(1,nominal), startDate, maturity_, 
+                    floatingFrequency, calendar, rollingConvention, 
+                    termStructure, index, indexFixingDays, 
+                    std::vector<Spread>(1,spread));
             } else {
-                firstLeg_ = floatingLeg_;
-                secondLeg_ = fixedLeg_;
+                // I know I'm duplicating the initializations, but the 
+                // alternative is duplicating data
+                firstLeg_ = FloatingRateCouponVector(
+                    std::vector<double>(1,nominal), startDate, maturity_, 
+                    floatingFrequency, calendar, rollingConvention, 
+                    termStructure, index, indexFixingDays, 
+                    std::vector<Spread>(1,spread));
+                secondLeg_ = FixedRateCouponVector(
+                    std::vector<double>(1,nominal), 
+                    std::vector<Rate>(1,fixedRate), startDate, maturity_, 
+                    fixedFrequency, calendar, rollingConvention, 
+                    fixedIsAdjusted, fixedDayCount, fixedDayCount);
             }
             // we should register as observer with the cash flows. However,
             // the base Swap class already registers as observer with

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -65,18 +66,17 @@ namespace QuantLib {
                   length.units(),
                   index->calendar(),
                   index->rollingConvention(),
-                  std::vector<double>(1, 1.0),
+                  1.0,
                   frequency,
-                  std::vector<double>(1, fixedRate),
+                  fixedRate,
                   false,
                   index->dayCounter(),
                   frequency,
                   index,
                   0,//FIXME
-                  std::vector<double>(1, 0.0),
+                  0.0,
                   termStructure));
-                Rate fairFixedRate = fixedRate -
-                    swap_->NPV()/swap_->fixedLegBPS();
+                Rate fairFixedRate = swap_->fairRate();
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
                   false,
                   startDate,
@@ -84,15 +84,15 @@ namespace QuantLib {
                   length.units(),
                   index->calendar(),
                   index->rollingConvention(),
-                  std::vector<double>(1, 1.0),
+                  1.0,
                   frequency,
-                  std::vector<double>(1, fairFixedRate),
+                  fairFixedRate,
                   false,
                   index->dayCounter(),
                   frequency,
                   index,
                   0,//FIXME
-                  std::vector<double>(1, 0.0),
+                  0.0,
                   termStructure));
                 exerciseRate_ = fairFixedRate;
                 engine_  = Handle<OptionPricingEngine>( 

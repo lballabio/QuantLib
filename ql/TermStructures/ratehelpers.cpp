@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -249,12 +248,12 @@ namespace QuantLib {
                 new SimpleSwap(true,                // pay fixed rate
                     settlement_, lengthInYears_, Years, calendar_,
                     convention_,
-                    std::vector<double>(1,100.0),   // nominal
+                    100.0,
                     fixedFrequency_,
-                    std::vector<Rate>(1,0.0),       // coupon rate
+                    0.0,
                     fixedIsAdjusted_, fixedDayCount_,
                     floatingFrequency_, dummyIndex, settlementDays_,
-                    std::vector<Spread>(),       // null spread
+                    0.0,
                     termStructureHandle_));
         }
 
