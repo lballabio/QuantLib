@@ -498,16 +498,17 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_DayCounterHandle swig_types[8] 
 #define  SWIGTYPE_p_CalendarHandle swig_types[9] 
 #define  SWIGTYPE_p_Bisection swig_types[10] 
-#define  SWIGTYPE_p_Function swig_types[11] 
-#define  SWIGTYPE_p_Date swig_types[12] 
-#define  SWIGTYPE_p_BoundaryCondition swig_types[13] 
-#define  SWIGTYPE_p_FalsePosition swig_types[14] 
-#define  SWIGTYPE_p_BSMAmericanOption swig_types[15] 
-#define  SWIGTYPE_p_BSMEuropeanOption swig_types[16] 
-#define  SWIGTYPE_p_Brent swig_types[17] 
-#define  SWIGTYPE_p_NewtonSafe swig_types[18] 
-#define  SWIGTYPE_p_TridiagonalOperator swig_types[19] 
-static swig_type_info *swig_types[21];
+#define  SWIGTYPE_p_Statistics swig_types[11] 
+#define  SWIGTYPE_p_Function swig_types[12] 
+#define  SWIGTYPE_p_Date swig_types[13] 
+#define  SWIGTYPE_p_BoundaryCondition swig_types[14] 
+#define  SWIGTYPE_p_FalsePosition swig_types[15] 
+#define  SWIGTYPE_p_BSMAmericanOption swig_types[16] 
+#define  SWIGTYPE_p_BSMEuropeanOption swig_types[17] 
+#define  SWIGTYPE_p_Brent swig_types[18] 
+#define  SWIGTYPE_p_NewtonSafe swig_types[19] 
+#define  SWIGTYPE_p_TridiagonalOperator swig_types[20] 
+static swig_type_info *swig_types[22];
 
 /* -------- TYPES TABLE (END) -------- */
 
@@ -771,6 +772,9 @@ QL_USING(QuantLib::Solvers1D,Newton)
 QL_USING(QuantLib::Solvers1D,NewtonSafe)
 QL_USING(QuantLib::Solvers1D,Ridder)
 QL_USING(QuantLib::Solvers1D,Secant)
+
+#include "statistics.h"
+QL_USING(QuantLib,Statistics)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -5127,6 +5131,547 @@ static PyObject *_wrap_delete_Secant(PyObject *self, PyObject *args, PyObject *k
 }
 
 
+static PyObject *_wrap_new_Statistics(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    char *kwnames[] = {
+        NULL 
+    };
+    Statistics *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,":new_Statistics",kwnames)) return NULL;
+    {
+        try {
+            result = (Statistics *)new Statistics();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Statistics);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_Statistics(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_Statistics",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_samples(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_samples",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (int )arg0->samples();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_sampleWeight(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_sampleWeight",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->sampleWeight();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_mean(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_mean",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->mean();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_variance(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_variance",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->variance();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_standardDeviation(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_standardDeviation",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->standardDeviation();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_skewness(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_skewness",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->skewness();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_kurtosis(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_kurtosis",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->kurtosis();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_min(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_min",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->min();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_max(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_max",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->max();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_add(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    double arg1 ;
+    double arg2 = 1.0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","value","weight", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od|d:Statistics_add",kwnames,&argo0,&arg1,&arg2)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            arg0->add(arg1,arg2);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_Statistics_reset(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_reset",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        try {
+            arg0->reset();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+void  Statistics_addSequence(Statistics *self,DoubleVector values) {
+    {
+        self->addSequence(values.begin(), values.end());
+    }
+}
+
+
+static PyObject *_wrap_Statistics_addSequence(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    DoubleVector *arg1 ;
+    PyObject * argo0 =0 ;
+    PyObject * obj1  = 0 ;
+    char *kwnames[] = {
+        "self","values", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:Statistics_addSequence",kwnames,&argo0,&obj1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        if (PyTuple_Check(obj1)) {
+            int size = PyTuple_Size(obj1);
+            arg1 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyTuple_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
+                    delete arg1;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj1)) {
+            int size = PyList_Size(obj1);
+            arg1 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyList_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
+                    delete arg1;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            Statistics_addSequence(arg0,*arg1);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    {
+        delete arg1;
+    }
+    return resultobj;
+}
+
+
+void  Statistics_addWeightedSequence(Statistics *self,DoubleVector values,DoubleVector weights) {
+    {
+        self->addSequence(values.begin(), values.end(), weights.begin());
+    }
+}
+
+
+static PyObject *_wrap_Statistics_addWeightedSequence(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Statistics *arg0 ;
+    DoubleVector *arg1 ;
+    DoubleVector *arg2 ;
+    PyObject * argo0 =0 ;
+    PyObject * obj1  = 0 ;
+    PyObject * obj2  = 0 ;
+    char *kwnames[] = {
+        "self","values","weights", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:Statistics_addWeightedSequence",kwnames,&argo0,&obj1,&obj2)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
+    {
+        if (PyTuple_Check(obj1)) {
+            int size = PyTuple_Size(obj1);
+            arg1 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyTuple_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
+                    delete arg1;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj1)) {
+            int size = PyList_Size(obj1);
+            arg1 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyList_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
+                    delete arg1;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        if (PyTuple_Check(obj2)) {
+            int size = PyTuple_Size(obj2);
+            arg2 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyTuple_GetItem(obj2,i);
+                if (PyFloat_Check(o)) {
+                    (*arg2)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg2)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
+                    delete arg2;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj2)) {
+            int size = PyList_Size(obj2);
+            arg2 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyList_GetItem(obj2,i);
+                if (PyFloat_Check(o)) {
+                    (*arg2)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg2)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
+                    delete arg2;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            Statistics_addWeightedSequence(arg0,*arg1,*arg2);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    {
+        delete arg1;
+    }
+    {
+        delete arg2;
+    }
+    return resultobj;
+}
+
+
 static PyMethodDef QuantLibcMethods[] = {
 	 { "DateFromSerialNumber", (PyCFunction) _wrap_DateFromSerialNumber, METH_VARARGS | METH_KEYWORDS },
 	 { "TARGET", (PyCFunction) _wrap_TARGET, METH_VARARGS | METH_KEYWORDS },
@@ -5259,6 +5804,21 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "delete_Ridder", (PyCFunction) _wrap_delete_Ridder, METH_VARARGS | METH_KEYWORDS },
 	 { "new_Secant", (PyCFunction) _wrap_new_Secant, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_Secant", (PyCFunction) _wrap_delete_Secant, METH_VARARGS | METH_KEYWORDS },
+	 { "new_Statistics", (PyCFunction) _wrap_new_Statistics, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_Statistics", (PyCFunction) _wrap_delete_Statistics, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_samples", (PyCFunction) _wrap_Statistics_samples, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_sampleWeight", (PyCFunction) _wrap_Statistics_sampleWeight, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_mean", (PyCFunction) _wrap_Statistics_mean, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_variance", (PyCFunction) _wrap_Statistics_variance, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_standardDeviation", (PyCFunction) _wrap_Statistics_standardDeviation, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_skewness", (PyCFunction) _wrap_Statistics_skewness, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_kurtosis", (PyCFunction) _wrap_Statistics_kurtosis, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_min", (PyCFunction) _wrap_Statistics_min, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_max", (PyCFunction) _wrap_Statistics_max, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_add", (PyCFunction) _wrap_Statistics_add, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_reset", (PyCFunction) _wrap_Statistics_reset, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_addSequence", (PyCFunction) _wrap_Statistics_addSequence, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_addWeightedSequence", (PyCFunction) _wrap_Statistics_addWeightedSequence, METH_VARARGS | METH_KEYWORDS },
 	 { NULL, NULL }
 };
 
@@ -5300,6 +5860,7 @@ static swig_type_info _swigt__p_InstrumentHandle[] = {{"_p_InstrumentHandle", 0,
 static swig_type_info _swigt__p_DayCounterHandle[] = {{"_p_DayCounterHandle", 0, "DayCounterHandle *"},{"_p_DayCounterHandle"},{0}};
 static swig_type_info _swigt__p_CalendarHandle[] = {{"_p_CalendarHandle", 0, "CalendarHandle *"},{"_p_CalendarHandle"},{0}};
 static swig_type_info _swigt__p_Bisection[] = {{"_p_Bisection", 0, "Bisection *"},{"_p_Bisection"},{0}};
+static swig_type_info _swigt__p_Statistics[] = {{"_p_Statistics", 0, "Statistics *"},{"_p_Statistics"},{0}};
 static swig_type_info _swigt__p_Function[] = {{"_p_Function", 0, "Function *"},{"_p_Function"},{0}};
 static swig_type_info _swigt__p_Date[] = {{"_p_Date", 0, "Date *"},{"_p_Date"},{0}};
 static swig_type_info _swigt__p_BoundaryCondition[] = {{"_p_BoundaryCondition", 0, "BoundaryCondition *"},{"_p_BoundaryCondition"},{0}};
@@ -5322,6 +5883,7 @@ _swigt__p_InstrumentHandle,
 _swigt__p_DayCounterHandle, 
 _swigt__p_CalendarHandle, 
 _swigt__p_Bisection, 
+_swigt__p_Statistics, 
 _swigt__p_Function, 
 _swigt__p_Date, 
 _swigt__p_BoundaryCondition, 

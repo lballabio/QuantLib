@@ -470,6 +470,37 @@ class SecantPtr(Secant):
 
 
 
+class Statistics:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_Statistics,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_Statistics(self)
+    def __repr__(self):
+        return "<C Statistics instance at %s>" % (self.this,)
+class StatisticsPtr(Statistics):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = Statistics
+
+
+Statistics.samples = new.instancemethod(QuantLibc.Statistics_samples, None, Statistics)
+Statistics.sampleWeight = new.instancemethod(QuantLibc.Statistics_sampleWeight, None, Statistics)
+Statistics.mean = new.instancemethod(QuantLibc.Statistics_mean, None, Statistics)
+Statistics.variance = new.instancemethod(QuantLibc.Statistics_variance, None, Statistics)
+Statistics.standardDeviation = new.instancemethod(QuantLibc.Statistics_standardDeviation, None, Statistics)
+Statistics.skewness = new.instancemethod(QuantLibc.Statistics_skewness, None, Statistics)
+Statistics.kurtosis = new.instancemethod(QuantLibc.Statistics_kurtosis, None, Statistics)
+Statistics.min = new.instancemethod(QuantLibc.Statistics_min, None, Statistics)
+Statistics.max = new.instancemethod(QuantLibc.Statistics_max, None, Statistics)
+Statistics.add = new.instancemethod(QuantLibc.Statistics_add, None, Statistics)
+Statistics.reset = new.instancemethod(QuantLibc.Statistics_reset, None, Statistics)
+Statistics.addSequence = new.instancemethod(QuantLibc.Statistics_addSequence, None, Statistics)
+Statistics.addWeightedSequence = new.instancemethod(QuantLibc.Statistics_addWeightedSequence, None, Statistics)
+
 
 
 #-------------- FUNCTION WRAPPERS ------------------
