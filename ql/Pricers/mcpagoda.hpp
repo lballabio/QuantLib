@@ -21,39 +21,47 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-
-/*! \file everest.hpp
-    \brief Everest-type option pricer
+/*! \file mcpagoda.hpp
+    \brief roofed Asian option
 
     \fullpath
-    ql/Pricers/%everest.hpp
+    ql/Pricers/%mcpagoda.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_everest_pricer_h
-#define quantlib_pricers_everest_pricer_h
+#ifndef quantlib_pagoda_pricer_h
+#define quantlib_pagoda_pricer_h
 
+#include "ql/MonteCarlo/mctypedefs.hpp"
 #include "ql/Pricers/mcpricer.hpp"
 #include "ql/Math/matrix.hpp"
+#include <vector>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! Everest-type option pricer
-        /*! The payoff of an Everest option is simply given by the
-            final price / initial price ratio of the worst performer
+        //! roofed Asian option
+        /*! Given a certain portfolio of assets at the end of the period
+            it is returned the minimum of a given roof and a certain fraction
+            of the positive portfolio performance.
+            If the performance of the portfolio is below then the payoff
+            is null.
         */
-        class Everest : public McPricer<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
+        class McPagoda : public McPricer<Math::Statistics,
+            MonteCarlo::GaussianMultiPathGenerator,
+            MonteCarlo::MultiPathPricer> {
           public:
-            Everest(const Array& dividendYield,
-                    const Math::Matrix& covariance,
-                    Rate riskFreeRate,
-                    Time residualTime,
-                    unsigned int samples,
-                    bool antitheticVariance,
-                    long seed = 0);
+            McPagoda(const Array& portfolio,
+                     double fraction,
+                     double roof,
+                     const Array& dividendYield,
+                     const Math::Matrix& covariance,
+                     Rate riskFreeRate,
+                     const std::vector<Time>& times,
+                     bool antithetic,
+                     long seed = 0);
         };
 
     }

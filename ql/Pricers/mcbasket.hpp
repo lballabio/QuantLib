@@ -21,42 +21,37 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-
-/*! \file averagepriceasian.hpp
-    \brief example of Monte Carlo pricer using a control variate
+/*! \file mcbasket.hpp
+    \brief simple example of multi-factor Monte Carlo pricer
 
     \fullpath
-    ql/Pricers/%averagepriceasian.hpp
+    ql/Pricers/%mcbasket.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_average_price_asian_h
-#define quantlib_pricers_average_price_asian_h
+#ifndef quantlib_basket_pricer_h
+#define quantlib_basket_pricer_h
 
-#include "ql/option.hpp"
 #include "ql/types.hpp"
-#include "ql/MonteCarlo/mctypedefs.hpp"
 #include "ql/Pricers/mcpricer.hpp"
-#include <vector>
+#include "ql/Math/matrix.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! example of Monte Carlo pricer using a control variate
-        class AveragePriceAsian : public McPricer<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
+        //! simple example of multi-factor Monte Carlo pricer
+        class McBasket : public McPricer<Math::Statistics,
+            MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
           public:
-            AveragePriceAsian(Option::Type type,
-                              double underlying,
-                              double strike,
-                              Rate dividendYield,
-                              Rate riskFreeRate,
-                              const std::vector<Time>& times,
-                              double volatility,
-                              unsigned int samples,
-                              bool antitheticVariance,
-                              long seed=0);
+            McBasket(const Array& underlying,
+                     const Array& dividendYield,
+                     const Math::Matrix& covariance,
+                     Rate riskFreeRate,
+                     double residualTime,
+                     bool antitheticVariance,
+                     long seed=0);
         };
 
     }

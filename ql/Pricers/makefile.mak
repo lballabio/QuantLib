@@ -16,10 +16,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-       averagepriceasian.obj$(_D) \
-       averagestrikeasian.obj$(_D) \
        barrieroption.obj$(_D) \
-       basket.obj$(_D) \
        bermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
        bsmnumericaloption.obj$(_D) \
@@ -30,12 +27,15 @@ OBJS = \
        dividendshoutoption.obj$(_D) \
        europeanengine.obj$(_D) \
        europeanoption.obj$(_D) \
-       everest.obj$(_D) \
        finitedifferenceeuropean.obj$(_D) \
-       himalaya.obj$(_D) \
+       mcaveragepriceasian.obj$(_D) \
+       mcaveragestrikeasian.obj$(_D) \
+       mcbasket.obj$(_D) \
        mceuropean.obj$(_D) \
+       mceverest.obj$(_D) \
+       mchimalaya.obj$(_D) \
+       mcpagoda.obj$(_D) \
        multiperiodoption.obj$(_D) \
-       pagoda.obj$(_D) \
        singleassetoption.obj$(_D) \
        stepconditionoption.obj$(_D)
 

@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file pagoda.cpp
+/*! \file mcpagoda.cpp
     \brief roofed Asian option
 
     \fullpath
-    ql/Pricers/%pagoda.cpp
+    ql/Pricers/%mcpagoda.cpp
 */
 
 // $Id$
 
 #include "ql/handle.hpp"
-#include "ql/Pricers/pagoda.hpp"
+#include "ql/Pricers/mcpagoda.hpp"
 #include "ql/MonteCarlo/pagodapathpricer.hpp"
 #include "ql/MonteCarlo/mctypedefs.hpp"
 
@@ -46,27 +46,25 @@ namespace QuantLib {
         using MonteCarlo::MultiFactorMonteCarloOption;
         using Math::Matrix;
 
-        Pagoda::Pagoda(const Array& portfolio, double fraction, double roof,
-                       const Array& dividendYield, const Matrix& covariance,
-                       Rate riskFreeRate, const std::vector<Time>& times,
-                       unsigned int samples, bool antitheticVariance,
-                       long seed) {
-            QL_REQUIRE(samples >= 30,
-                "Pagoda: less than 30 samples. Are you joking?");
+        McPagoda::McPagoda(const Array& portfolio, double fraction,
+            double roof, const Array& dividendYield, const Matrix& covariance,
+            Rate riskFreeRate, const std::vector<Time>& times,
+            bool antitheticVariance, long seed) {
+
             QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "Pagoda: covariance matrix not square");
+                "McPagoda: covariance matrix not square");
             QL_REQUIRE(covariance.rows() == portfolio.size(),
-                "Pagoda: underlying size does not match that of"
+                "McPagoda: underlying size does not match that of"
                 " covariance matrix");
             QL_REQUIRE(covariance.rows() == dividendYield.size(),
-                "Pagoda: dividendYield size does not match"
+                "McPagoda: dividendYield size does not match"
                 " that of covariance matrix");
             QL_REQUIRE(fraction > 0,
-                "Pagoda: option fraction must be positive");
+                "McPagoda: option fraction must be positive");
             QL_REQUIRE(roof > 0,
-                "Pagoda: roof must be positive");
+                "McPagoda: roof must be positive");
             QL_REQUIRE(times.size() >= 1,
-                "Pagoda: you must have at least one time-step");
+                "McPagoda: you must have at least one time-step");
 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
@@ -91,7 +89,6 @@ namespace QuantLib {
                                         pathGenerator, pathPricer,
                                         Math::Statistics()));
 
-            mcModel_->addSamples(samples);
         }
 
     }

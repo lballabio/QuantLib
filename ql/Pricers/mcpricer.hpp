@@ -43,38 +43,59 @@ namespace QuantLib {
         //! base class for Monte Carlo pricers
         /*! Eventually this class might be linked to the general tree of 
             pricers, in order to have tools like impliedVolatility available.
-            Also, it will, eventually, offer greeks methods.
+            Also, it could, eventually, offer greeks methods.
             Deriving a class from McPricer gives an easy way to write
             a Monte Carlo Pricer.
-            See McEuropeanPricer as an example of one factor pricer,
-            EverestOption as an example of multi factor pricer.
+            See McEuropean as example of one factor pricer,
+            Basket as example of multi factor pricer.
         */
+
         template<class S, class PG, class PP>
         class McPricer {
           public:
             virtual ~McPricer() {}
-            virtual double value() const;
-            virtual double errorEstimate() const;
+            double value(double tolerance,
+                         unsigned int maxSample = QL_MAX_INT) const;
           protected:
-            McPricer() {};
+            McPricer() {}
             mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
+            static const unsigned int minSample_;
         };
 
 
-        // inline definitions
-        
         template<class S, class PG, class PP>
-        inline double McPricer<S, PG, PP>::value() const {
-            QL_REQUIRE(mcModel_->sampleAccumulator().samples()>0, 
-                "No simulated samples yet");
-            return mcModel_->sampleAccumulator().mean();
-        }
+        const unsigned int McPricer<S, PG, PP>::minSample_ = 10000;
 
+        // inline definitions
         template<class S, class PG, class PP>
-        inline double McPricer<S, PG, PP>::errorEstimate() const {
-            QL_REQUIRE(mcModel_->sampleAccumulator().samples()>0, 
-                "No simulated samples yet");
-            return mcModel_->sampleAccumulator().errorEstimate();
+        inline double McPricer<S, PG, PP>::value(double tolerance,
+            unsigned int maxSamples) const {
+
+            unsigned int sampleNumber =
+                mcModel_->sampleAccumulator().samples();
+            if (sampleNumber<minSample_) {
+                mcModel_->addSamples(minSample_-sampleNumber);
+                sampleNumber = mcModel_->sampleAccumulator().samples();
+            }
+
+            unsigned int nextBatch;
+            double order;
+            double result = mcModel_->sampleAccumulator().mean();
+            double accuracy = mcModel_->sampleAccumulator().errorEstimate()/
+                result;
+            while (accuracy > tolerance) {
+                order = accuracy*accuracy/tolerance/tolerance;
+                nextBatch = sampleNumber*order-sampleNumber+10.0;
+                sampleNumber += nextBatch;
+                QL_REQUIRE(sampleNumber<maxSamples,
+                    "max number of samples exceeded");
+                mcModel_->addSamples(nextBatch);
+                result = mcModel_->sampleAccumulator().mean();
+                accuracy = mcModel_->sampleAccumulator().errorEstimate()/
+                    result;
+            }
+
+            return result;
         }
 
     }

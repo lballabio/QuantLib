@@ -206,6 +206,34 @@ SOURCE=.\ql\Calendars\zurich.cpp
 SOURCE=.\ql\Calendars\zurich.hpp
 # End Source File
 # End Group
+# Begin Group "CashFlows"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\cashflowvectors.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\cashflowvectors.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\fixedratecoupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\simplecashflow.hpp
+# End Source File
+# End Group
 # Begin Group "Day Counters"
 
 # PROP Default_Filter ""
@@ -304,6 +332,38 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
+# End Source File
+# End Group
+# Begin Group "Indexes"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Indexes\euribor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\gbplibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\usdlibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\xibor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\xibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\xibormanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\xibormanager.hpp
 # End Source File
 # End Group
 # Begin Group "Instruments"
@@ -563,35 +623,11 @@ SOURCE=.\ql\Pricers\americanoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\averagepriceasian.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\averagepriceasian.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\averagestrikeasian.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\averagestrikeasian.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\barrieroption.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Pricers\barrieroption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\basket.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\basket.hpp
 # End Source File
 # Begin Source File
 
@@ -675,14 +711,6 @@ SOURCE=.\ql\Pricers\europeanoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\everest.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\everest.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\finitedifferenceeuropean.cpp
 # End Source File
 # Begin Source File
@@ -695,11 +723,27 @@ SOURCE=.\ql\Pricers\geometricasianoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\himalaya.cpp
+SOURCE=.\ql\Pricers\mcaveragepriceasian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\himalaya.hpp
+SOURCE=.\ql\Pricers\mcaveragepriceasian.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcaveragestrikeasian.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcaveragestrikeasian.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcbasket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcbasket.hpp
 # End Source File
 # Begin Source File
 
@@ -708,6 +752,30 @@ SOURCE=.\ql\Pricers\mceuropean.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mceuropean.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mceverest.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mceverest.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mchimalaya.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mchimalaya.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcpagoda.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcpagoda.hpp
 # End Source File
 # Begin Source File
 
@@ -720,14 +788,6 @@ SOURCE=.\ql\Pricers\multiperiodoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\multiperiodoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\pagoda.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\pagoda.hpp
 # End Source File
 # Begin Source File
 
@@ -752,6 +812,46 @@ SOURCE=.\ql\Pricers\stepconditionoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\stepconditionoption.hpp
+# End Source File
+# End Group
+# Begin Group "RandomNumbers"
+
+# PROP Default_Filter "cpp,hpp"
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\boxmullergaussianrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\centrallimitgaussianrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\inversecumulativegaussianrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\knuthuniformrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\randomarraygenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\rngtypedefs.hpp
 # End Source File
 # End Group
 # Begin Group "Solvers 1D"
@@ -864,106 +964,6 @@ SOURCE=.\ql\Utilities\processingiterator.hpp
 # Begin Source File
 
 SOURCE=.\ql\Utilities\steppingiterator.hpp
-# End Source File
-# End Group
-# Begin Group "Indexes"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\Indexes\euribor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\gbplibor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\usdlibor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\xibor.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\xibor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\xibormanager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Indexes\xibormanager.hpp
-# End Source File
-# End Group
-# Begin Group "CashFlows"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\cashflowvectors.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\cashflowvectors.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\fixedratecoupon.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\CashFlows\simplecashflow.hpp
-# End Source File
-# End Group
-# Begin Group "RandomNumbers"
-
-# PROP Default_Filter "cpp,hpp"
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\boxmullergaussianrng.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\centrallimitgaussianrng.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\inversecumulativegaussianrng.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\knuthuniformrng.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\randomarraygenerator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\rngtypedefs.hpp
 # End Source File
 # End Group
 # Begin Source File

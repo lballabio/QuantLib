@@ -22,18 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file averagepriceasian.cpp
+/*! \file mcaveragestrikeasian.cpp
     \brief example of Monte Carlo pricer using a control variate
 
     \fullpath
-    ql/Pricers/%averagepriceasian.cpp
+    ql/Pricers/%mcaveragestrikeasian.cpp
 */
 
 // $Id$
 
-#include "ql/Pricers/averagepriceasian.hpp"
+#include "ql/Pricers/mcaveragestrikeasian.hpp"
 #include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
+#include "ql/MonteCarlo/avgstrikeasianpathpricer.hpp"
 #include "ql/MonteCarlo/geometricasianpathpricer.hpp"
 #include "ql/Pricers/geometricasianoption.hpp"
 
@@ -44,21 +44,16 @@ namespace QuantLib {
         using MonteCarlo::OneFactorMonteCarloOption;
         using MonteCarlo::PathPricer;
         using MonteCarlo::GaussianPathGenerator;
-        using MonteCarlo::AveragePriceAsianPathPricer;
+        using MonteCarlo::AverageStrikeAsianPathPricer;
         using MonteCarlo::GeometricAsianPathPricer;
 
-        AveragePriceAsian::AveragePriceAsian(Option::Type type,
-            double underlying, double strike, Rate dividendYield,
-            Rate riskFreeRate, const std::vector<Time>& times,
-            double volatility, unsigned int samples,
-            bool antitheticVariance, long seed) {
-
-            QL_REQUIRE(samples >= 30,
-                "AveragePriceAsian: less than 30 samples. Are you joking?");
-
+        McAverageStrikeAsian::McAverageStrikeAsian(Option::Type type,
+          double underlying, Rate dividendYield, Rate riskFreeRate,
+          const std::vector<Time>& times, double volatility,
+          bool antitheticVariance, long seed) {
 
             QL_REQUIRE(times.size() >= 2,
-                "AveragePriceAsian: you must have at least 2 time-steps");
+                "McAveragePriceAsian: you must have at least 2 time-steps");
             //! Initialize the path generator
             double mu = riskFreeRate - dividendYield
                                      - 0.5 * volatility * volatility;
@@ -69,27 +64,25 @@ namespace QuantLib {
 
             double residualTime = times[times.size()-1];
 
-
             //! Initialize the pricer on the single Path
             Handle<PathPricer> spPricer(
-                new AveragePriceAsianPathPricer(type, underlying, strike,
+                new AverageStrikeAsianPathPricer(type, underlying,
                     QL_EXP(-riskFreeRate*residualTime), antitheticVariance));
 
             Handle<PathPricer> controlVariateSpPricer(
-                new GeometricAsianPathPricer(type, underlying, strike,
+                new GeometricAsianPathPricer(type, underlying, underlying,
                     QL_EXP(-riskFreeRate*residualTime), antitheticVariance));
 
             double controlVariatePrice = GeometricAsianOption(type, 
-                underlying, strike, dividendYield, riskFreeRate, 
+                underlying, underlying, dividendYield, riskFreeRate, 
                 residualTime, volatility).value();
 
-            //! Initialize the Monte Carlo model
+            //! Initialize the one-dimensional Monte Carlo
             mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> > (
                 new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> (
                 pathGenerator, spPricer, Math::Statistics(),
                 controlVariateSpPricer, controlVariatePrice));
 
-            mcModel_->addSamples(samples);
         }
 
     }

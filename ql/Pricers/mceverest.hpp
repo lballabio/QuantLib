@@ -22,40 +22,39 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file averagestrikeasian.hpp
-    \brief example of Monte Carlo pricer using a control variate
+/*! \file mceverest.hpp
+    \brief Everest-type option pricer
 
     \fullpath
-    ql/Pricers/%averagestrikeasian.hpp
+    ql/Pricers/%mceverest.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_average_strike_asian_pricer_h
-#define quantlib_pricers_average_strike_asian_pricer_h
+#ifndef quantlib_pricers_everest_pricer_h
+#define quantlib_pricers_everest_pricer_h
 
-#include "ql/option.hpp"
-#include "ql/types.hpp"
-#include "ql/MonteCarlo/mctypedefs.hpp"
 #include "ql/Pricers/mcpricer.hpp"
-#include <vector>
+#include "ql/Math/matrix.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! example of Monte Carlo pricer using a control variate.
-        class AverageStrikeAsian : public McPricer<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
+        //! Everest-type option pricer
+        /*! The payoff of an Everest option is simply given by the
+            final price / initial price ratio of the worst performer
+        */
+        class McEverest : public McPricer<Math::Statistics,
+            MonteCarlo::GaussianMultiPathGenerator,
+            MonteCarlo::MultiPathPricer> {
           public:
-            AverageStrikeAsian(Option::Type type,
-                               double underlying,
-                               Rate dividendYield,
-                               Rate riskFreeRate,
-                               const std::vector<Time>& times,
-                               double volatility,
-                               unsigned int samples,
-                               bool antitheticVariance,
-                               long seed = 0);
+            McEverest(const Array& dividendYield,
+                      const Math::Matrix& covariance,
+                      Rate riskFreeRate,
+                      Time residualTime,
+                      bool antitheticVariance,
+                      long seed = 0);
         };
 
     }

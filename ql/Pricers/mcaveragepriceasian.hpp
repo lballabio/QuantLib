@@ -21,46 +21,42 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-/*! \file pagoda.hpp
-    \brief roofed Asian option
+
+/*! \file mcaveragepriceasian.hpp
+    \brief example of Monte Carlo pricer using a control variate
 
     \fullpath
-    ql/Pricers/%pagoda.hpp
+    ql/Pricers/%mcaveragepriceasian.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pagoda_pricer_h
-#define quantlib_pagoda_pricer_h
+#ifndef quantlib_pricers_average_price_asian_h
+#define quantlib_pricers_average_price_asian_h
 
+#include "ql/option.hpp"
+#include "ql/types.hpp"
 #include "ql/MonteCarlo/mctypedefs.hpp"
 #include "ql/Pricers/mcpricer.hpp"
-#include "ql/Math/matrix.hpp"
 #include <vector>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! roofed Asian option
-        /*! Given a certain portfolio of assets at the end of the period
-            it is returned the minimum of a given roof and a certain fraction
-            of the positive portfolio performance.
-            If the performance of the portfolio is below then the payoff
-            is null.
-        */
-        class Pagoda : public McPricer<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
+        //! example of Monte Carlo pricer using a control variate
+        class McAveragePriceAsian : public McPricer<Math::Statistics,
+            MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
           public:
-            Pagoda(const Array& portfolio,
-                   double fraction,
-                   double roof,
-                   const Array& dividendYield,
-                   const Math::Matrix& covariance,
-                   Rate riskFreeRate,
-                   const std::vector<Time>& times,
-                   unsigned int samples,
-                   bool antithetic,
-                   long seed = 0);
+            McAveragePriceAsian(Option::Type type,
+                                double underlying,
+                                double strike,
+                                Rate dividendYield,
+                                Rate riskFreeRate,
+                                const std::vector<Time>& times,
+                                double volatility,
+                                bool antitheticVariance,
+                                long seed=0);
         };
 
     }

@@ -1,4 +1,6 @@
 
+asian continous and/or discrete
+geometric continous and/or discrete
 MonteCarloModel refactoring (remove old classes)
 
 DISTRIBUTING

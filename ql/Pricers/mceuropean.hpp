@@ -53,7 +53,6 @@ namespace QuantLib {
                              Rate riskFreeRate,
                              double residualTime,
                              double volatility,
-                             unsigned int samples,
                              bool antitheticVariance,
                              long seed=0);
         };

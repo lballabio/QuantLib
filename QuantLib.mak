@@ -44,18 +44,12 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\averagepriceasian.obj"
-	-@erase "$(INTDIR)\averagepriceasian.sbr"
-	-@erase "$(INTDIR)\averagestrikeasian.obj"
-	-@erase "$(INTDIR)\averagestrikeasian.sbr"
 	-@erase "$(INTDIR)\avgpriceasianpathpricer.obj"
 	-@erase "$(INTDIR)\avgpriceasianpathpricer.sbr"
 	-@erase "$(INTDIR)\avgstrikeasianpathpricer.obj"
 	-@erase "$(INTDIR)\avgstrikeasianpathpricer.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\basket.obj"
-	-@erase "$(INTDIR)\basket.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\bermudanoption.obj"
@@ -96,8 +90,6 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
-	-@erase "$(INTDIR)\everest.obj"
-	-@erase "$(INTDIR)\everest.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -114,8 +106,6 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
-	-@erase "$(INTDIR)\himalaya.obj"
-	-@erase "$(INTDIR)\himalaya.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
@@ -126,8 +116,20 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
+	-@erase "$(INTDIR)\mcaveragepriceasian.obj"
+	-@erase "$(INTDIR)\mcaveragepriceasian.sbr"
+	-@erase "$(INTDIR)\mcaveragestrikeasian.obj"
+	-@erase "$(INTDIR)\mcaveragestrikeasian.sbr"
+	-@erase "$(INTDIR)\mcbasket.obj"
+	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mceuropean.obj"
 	-@erase "$(INTDIR)\mceuropean.sbr"
+	-@erase "$(INTDIR)\mceverest.obj"
+	-@erase "$(INTDIR)\mceverest.sbr"
+	-@erase "$(INTDIR)\mchimalaya.obj"
+	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcpagoda.obj"
+	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\multiperiodoption.obj"
@@ -144,8 +146,6 @@ CLEAN :
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\option.obj"
 	-@erase "$(INTDIR)\option.sbr"
-	-@erase "$(INTDIR)\pagoda.obj"
-	-@erase "$(INTDIR)\pagoda.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
@@ -218,11 +218,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\xibor.sbr" \
+	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
@@ -244,10 +248,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\singleassetpathpricer.sbr" \
-	"$(INTDIR)\averagepriceasian.sbr" \
-	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\basket.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
@@ -258,14 +259,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendshoutoption.sbr" \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
-	"$(INTDIR)\everest.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
-	"$(INTDIR)\himalaya.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
-	"$(INTDIR)\pagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
 	"$(INTDIR)\falseposition.sbr" \
@@ -275,18 +275,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
-	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
-	"$(INTDIR)\cashflowvectors.sbr" \
-	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\lecuyeruniformrng.sbr" \
-	"$(INTDIR)\knuthuniformrng.sbr"
+	"$(INTDIR)\mcaveragepriceasian.sbr" \
+	"$(INTDIR)\mcaveragestrikeasian.sbr" \
+	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mceverest.sbr" \
+	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcpagoda.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -305,11 +305,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -331,10 +335,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\singleassetpathpricer.obj" \
-	"$(INTDIR)\averagepriceasian.obj" \
-	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\basket.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
@@ -345,14 +346,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendshoutoption.obj" \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
-	"$(INTDIR)\everest.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
-	"$(INTDIR)\himalaya.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
-	"$(INTDIR)\pagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
+	"$(INTDIR)\knuthuniformrng.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
 	"$(INTDIR)\falseposition.obj" \
@@ -362,18 +362,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
-	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
-	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\lecuyeruniformrng.obj" \
-	"$(INTDIR)\knuthuniformrng.obj"
+	"$(INTDIR)\mcaveragepriceasian.obj" \
+	"$(INTDIR)\mcaveragestrikeasian.obj" \
+	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mceverest.obj" \
+	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcpagoda.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -394,18 +394,12 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\averagepriceasian.obj"
-	-@erase "$(INTDIR)\averagepriceasian.sbr"
-	-@erase "$(INTDIR)\averagestrikeasian.obj"
-	-@erase "$(INTDIR)\averagestrikeasian.sbr"
 	-@erase "$(INTDIR)\avgpriceasianpathpricer.obj"
 	-@erase "$(INTDIR)\avgpriceasianpathpricer.sbr"
 	-@erase "$(INTDIR)\avgstrikeasianpathpricer.obj"
 	-@erase "$(INTDIR)\avgstrikeasianpathpricer.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\basket.obj"
-	-@erase "$(INTDIR)\basket.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\bermudanoption.obj"
@@ -446,8 +440,6 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
-	-@erase "$(INTDIR)\everest.obj"
-	-@erase "$(INTDIR)\everest.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -464,8 +456,6 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
-	-@erase "$(INTDIR)\himalaya.obj"
-	-@erase "$(INTDIR)\himalaya.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
@@ -476,8 +466,20 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
+	-@erase "$(INTDIR)\mcaveragepriceasian.obj"
+	-@erase "$(INTDIR)\mcaveragepriceasian.sbr"
+	-@erase "$(INTDIR)\mcaveragestrikeasian.obj"
+	-@erase "$(INTDIR)\mcaveragestrikeasian.sbr"
+	-@erase "$(INTDIR)\mcbasket.obj"
+	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mceuropean.obj"
 	-@erase "$(INTDIR)\mceuropean.sbr"
+	-@erase "$(INTDIR)\mceverest.obj"
+	-@erase "$(INTDIR)\mceverest.sbr"
+	-@erase "$(INTDIR)\mchimalaya.obj"
+	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcpagoda.obj"
+	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\multiperiodoption.obj"
@@ -494,8 +496,6 @@ CLEAN :
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\option.obj"
 	-@erase "$(INTDIR)\option.sbr"
-	-@erase "$(INTDIR)\pagoda.obj"
-	-@erase "$(INTDIR)\pagoda.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
@@ -569,11 +569,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\xibor.sbr" \
+	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
@@ -595,10 +599,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\singleassetpathpricer.sbr" \
-	"$(INTDIR)\averagepriceasian.sbr" \
-	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\basket.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
@@ -609,14 +610,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendshoutoption.sbr" \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
-	"$(INTDIR)\everest.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
-	"$(INTDIR)\himalaya.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
-	"$(INTDIR)\pagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
 	"$(INTDIR)\falseposition.sbr" \
@@ -626,18 +626,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
-	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
-	"$(INTDIR)\cashflowvectors.sbr" \
-	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\lecuyeruniformrng.sbr" \
-	"$(INTDIR)\knuthuniformrng.sbr"
+	"$(INTDIR)\mcaveragepriceasian.sbr" \
+	"$(INTDIR)\mcaveragestrikeasian.sbr" \
+	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mceverest.sbr" \
+	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcpagoda.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -656,11 +656,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -682,10 +686,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\singleassetpathpricer.obj" \
-	"$(INTDIR)\averagepriceasian.obj" \
-	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\basket.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
@@ -696,14 +697,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendshoutoption.obj" \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
-	"$(INTDIR)\everest.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
-	"$(INTDIR)\himalaya.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
-	"$(INTDIR)\pagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
+	"$(INTDIR)\knuthuniformrng.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
 	"$(INTDIR)\falseposition.obj" \
@@ -713,18 +713,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
-	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
-	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\lecuyeruniformrng.obj" \
-	"$(INTDIR)\knuthuniformrng.obj"
+	"$(INTDIR)\mcaveragepriceasian.obj" \
+	"$(INTDIR)\mcaveragestrikeasian.obj" \
+	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mceverest.obj" \
+	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcpagoda.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -745,18 +745,12 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\averagepriceasian.obj"
-	-@erase "$(INTDIR)\averagepriceasian.sbr"
-	-@erase "$(INTDIR)\averagestrikeasian.obj"
-	-@erase "$(INTDIR)\averagestrikeasian.sbr"
 	-@erase "$(INTDIR)\avgpriceasianpathpricer.obj"
 	-@erase "$(INTDIR)\avgpriceasianpathpricer.sbr"
 	-@erase "$(INTDIR)\avgstrikeasianpathpricer.obj"
 	-@erase "$(INTDIR)\avgstrikeasianpathpricer.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\basket.obj"
-	-@erase "$(INTDIR)\basket.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\bermudanoption.obj"
@@ -797,8 +791,6 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
-	-@erase "$(INTDIR)\everest.obj"
-	-@erase "$(INTDIR)\everest.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -815,8 +807,6 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
-	-@erase "$(INTDIR)\himalaya.obj"
-	-@erase "$(INTDIR)\himalaya.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
@@ -827,8 +817,20 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
+	-@erase "$(INTDIR)\mcaveragepriceasian.obj"
+	-@erase "$(INTDIR)\mcaveragepriceasian.sbr"
+	-@erase "$(INTDIR)\mcaveragestrikeasian.obj"
+	-@erase "$(INTDIR)\mcaveragestrikeasian.sbr"
+	-@erase "$(INTDIR)\mcbasket.obj"
+	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mceuropean.obj"
 	-@erase "$(INTDIR)\mceuropean.sbr"
+	-@erase "$(INTDIR)\mceverest.obj"
+	-@erase "$(INTDIR)\mceverest.sbr"
+	-@erase "$(INTDIR)\mchimalaya.obj"
+	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcpagoda.obj"
+	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\multiperiodoption.obj"
@@ -845,8 +847,6 @@ CLEAN :
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\option.obj"
 	-@erase "$(INTDIR)\option.sbr"
-	-@erase "$(INTDIR)\pagoda.obj"
-	-@erase "$(INTDIR)\pagoda.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
@@ -919,11 +919,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\xibor.sbr" \
+	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
@@ -945,10 +949,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\singleassetpathpricer.sbr" \
-	"$(INTDIR)\averagepriceasian.sbr" \
-	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\basket.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
@@ -959,14 +960,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendshoutoption.sbr" \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
-	"$(INTDIR)\everest.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
-	"$(INTDIR)\himalaya.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
-	"$(INTDIR)\pagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
 	"$(INTDIR)\falseposition.sbr" \
@@ -976,18 +976,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
-	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
-	"$(INTDIR)\cashflowvectors.sbr" \
-	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\lecuyeruniformrng.sbr" \
-	"$(INTDIR)\knuthuniformrng.sbr"
+	"$(INTDIR)\mcaveragepriceasian.sbr" \
+	"$(INTDIR)\mcaveragestrikeasian.sbr" \
+	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mceverest.sbr" \
+	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcpagoda.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1006,11 +1006,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -1032,10 +1036,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\singleassetpathpricer.obj" \
-	"$(INTDIR)\averagepriceasian.obj" \
-	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\basket.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
@@ -1046,14 +1047,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendshoutoption.obj" \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
-	"$(INTDIR)\everest.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
-	"$(INTDIR)\himalaya.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
-	"$(INTDIR)\pagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
+	"$(INTDIR)\knuthuniformrng.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
 	"$(INTDIR)\falseposition.obj" \
@@ -1063,18 +1063,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
-	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
-	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\lecuyeruniformrng.obj" \
-	"$(INTDIR)\knuthuniformrng.obj"
+	"$(INTDIR)\mcaveragepriceasian.obj" \
+	"$(INTDIR)\mcaveragestrikeasian.obj" \
+	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mceverest.obj" \
+	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcpagoda.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1095,18 +1095,12 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\averagepriceasian.obj"
-	-@erase "$(INTDIR)\averagepriceasian.sbr"
-	-@erase "$(INTDIR)\averagestrikeasian.obj"
-	-@erase "$(INTDIR)\averagestrikeasian.sbr"
 	-@erase "$(INTDIR)\avgpriceasianpathpricer.obj"
 	-@erase "$(INTDIR)\avgpriceasianpathpricer.sbr"
 	-@erase "$(INTDIR)\avgstrikeasianpathpricer.obj"
 	-@erase "$(INTDIR)\avgstrikeasianpathpricer.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\basket.obj"
-	-@erase "$(INTDIR)\basket.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\bermudanoption.obj"
@@ -1147,8 +1141,6 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
-	-@erase "$(INTDIR)\everest.obj"
-	-@erase "$(INTDIR)\everest.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -1165,8 +1157,6 @@ CLEAN :
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\helsinki.sbr"
-	-@erase "$(INTDIR)\himalaya.obj"
-	-@erase "$(INTDIR)\himalaya.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
@@ -1177,8 +1167,20 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
+	-@erase "$(INTDIR)\mcaveragepriceasian.obj"
+	-@erase "$(INTDIR)\mcaveragepriceasian.sbr"
+	-@erase "$(INTDIR)\mcaveragestrikeasian.obj"
+	-@erase "$(INTDIR)\mcaveragestrikeasian.sbr"
+	-@erase "$(INTDIR)\mcbasket.obj"
+	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mceuropean.obj"
 	-@erase "$(INTDIR)\mceuropean.sbr"
+	-@erase "$(INTDIR)\mceverest.obj"
+	-@erase "$(INTDIR)\mceverest.sbr"
+	-@erase "$(INTDIR)\mchimalaya.obj"
+	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcpagoda.obj"
+	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\multiperiodoption.obj"
@@ -1195,8 +1197,6 @@ CLEAN :
 	-@erase "$(INTDIR)\normaldistribution.sbr"
 	-@erase "$(INTDIR)\option.obj"
 	-@erase "$(INTDIR)\option.sbr"
-	-@erase "$(INTDIR)\pagoda.obj"
-	-@erase "$(INTDIR)\pagoda.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
@@ -1270,11 +1270,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\xibor.sbr" \
+	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
@@ -1296,10 +1300,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\singleassetpathpricer.sbr" \
-	"$(INTDIR)\averagepriceasian.sbr" \
-	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\basket.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
@@ -1310,14 +1311,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendshoutoption.sbr" \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
-	"$(INTDIR)\everest.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
-	"$(INTDIR)\himalaya.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
-	"$(INTDIR)\pagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
 	"$(INTDIR)\falseposition.sbr" \
@@ -1327,18 +1327,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
-	"$(INTDIR)\xibor.sbr" \
-	"$(INTDIR)\xibormanager.sbr" \
-	"$(INTDIR)\cashflowvectors.sbr" \
-	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\lecuyeruniformrng.sbr" \
-	"$(INTDIR)\knuthuniformrng.sbr"
+	"$(INTDIR)\mcaveragepriceasian.sbr" \
+	"$(INTDIR)\mcaveragestrikeasian.sbr" \
+	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mceverest.sbr" \
+	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcpagoda.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1357,11 +1357,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -1383,10 +1387,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\singleassetpathpricer.obj" \
-	"$(INTDIR)\averagepriceasian.obj" \
-	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\basket.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
@@ -1397,14 +1398,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendshoutoption.obj" \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
-	"$(INTDIR)\everest.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
-	"$(INTDIR)\himalaya.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
-	"$(INTDIR)\pagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
+	"$(INTDIR)\knuthuniformrng.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
 	"$(INTDIR)\falseposition.obj" \
@@ -1414,18 +1414,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
-	"$(INTDIR)\xibor.obj" \
-	"$(INTDIR)\xibormanager.obj" \
-	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\lecuyeruniformrng.obj" \
-	"$(INTDIR)\knuthuniformrng.obj"
+	"$(INTDIR)\mcaveragepriceasian.obj" \
+	"$(INTDIR)\mcaveragestrikeasian.obj" \
+	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mceverest.obj" \
+	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcpagoda.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1529,6 +1529,18 @@ SOURCE=.\ql\Calendars\zurich.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\CashFlows\cashflowvectors.cpp
+
+"$(INTDIR)\cashflowvectors.obj"	"$(INTDIR)\cashflowvectors.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
+
+"$(INTDIR)\floatingratecoupon.obj"	"$(INTDIR)\floatingratecoupon.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\DayCounters\actualactual.cpp
 
 "$(INTDIR)\actualactual.obj"	"$(INTDIR)\actualactual.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1556,6 +1568,18 @@ SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
 SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 
 "$(INTDIR)\valueatcenter.obj"	"$(INTDIR)\valueatcenter.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Indexes\xibor.cpp
+
+"$(INTDIR)\xibor.obj"	"$(INTDIR)\xibor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Indexes\xibormanager.cpp
+
+"$(INTDIR)\xibormanager.obj"	"$(INTDIR)\xibormanager.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1685,27 +1709,9 @@ SOURCE=.\ql\MonteCarlo\singleassetpathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\averagepriceasian.cpp
-
-"$(INTDIR)\averagepriceasian.obj"	"$(INTDIR)\averagepriceasian.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\averagestrikeasian.cpp
-
-"$(INTDIR)\averagestrikeasian.obj"	"$(INTDIR)\averagestrikeasian.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Pricers\barrieroption.cpp
 
 "$(INTDIR)\barrieroption.obj"	"$(INTDIR)\barrieroption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\basket.cpp
-
-"$(INTDIR)\basket.obj"	"$(INTDIR)\basket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1769,21 +1775,27 @@ SOURCE=.\ql\Pricers\europeanoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\everest.cpp
-
-"$(INTDIR)\everest.obj"	"$(INTDIR)\everest.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Pricers\finitedifferenceeuropean.cpp
 
 "$(INTDIR)\finitedifferenceeuropean.obj"	"$(INTDIR)\finitedifferenceeuropean.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\himalaya.cpp
+SOURCE=.\ql\Pricers\mcaveragepriceasian.cpp
 
-"$(INTDIR)\himalaya.obj"	"$(INTDIR)\himalaya.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\mcaveragepriceasian.obj"	"$(INTDIR)\mcaveragepriceasian.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\mcaveragestrikeasian.cpp
+
+"$(INTDIR)\mcaveragestrikeasian.obj"	"$(INTDIR)\mcaveragestrikeasian.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\mcbasket.cpp
+
+"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1793,15 +1805,27 @@ SOURCE=.\ql\Pricers\mceuropean.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\multiperiodoption.cpp
+SOURCE=.\ql\Pricers\mceverest.cpp
 
-"$(INTDIR)\multiperiodoption.obj"	"$(INTDIR)\multiperiodoption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\mceverest.obj"	"$(INTDIR)\mceverest.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\pagoda.cpp
+SOURCE=.\ql\Pricers\mchimalaya.cpp
 
-"$(INTDIR)\pagoda.obj"	"$(INTDIR)\pagoda.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\mchimalaya.obj"	"$(INTDIR)\mchimalaya.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\mcpagoda.cpp
+
+"$(INTDIR)\mcpagoda.obj"	"$(INTDIR)\mcpagoda.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\multiperiodoption.cpp
+
+"$(INTDIR)\multiperiodoption.obj"	"$(INTDIR)\multiperiodoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1814,6 +1838,18 @@ SOURCE=.\ql\Pricers\singleassetoption.cpp
 SOURCE=.\ql\Pricers\stepconditionoption.cpp
 
 "$(INTDIR)\stepconditionoption.obj"	"$(INTDIR)\stepconditionoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
+
+"$(INTDIR)\knuthuniformrng.obj"	"$(INTDIR)\knuthuniformrng.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
+
+"$(INTDIR)\lecuyeruniformrng.obj"	"$(INTDIR)\lecuyeruniformrng.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1868,42 +1904,6 @@ SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
 SOURCE=.\ql\TermStructures\ratehelpers.cpp
 
 "$(INTDIR)\ratehelpers.obj"	"$(INTDIR)\ratehelpers.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Indexes\xibor.cpp
-
-"$(INTDIR)\xibor.obj"	"$(INTDIR)\xibor.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Indexes\xibormanager.cpp
-
-"$(INTDIR)\xibormanager.obj"	"$(INTDIR)\xibormanager.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\CashFlows\cashflowvectors.cpp
-
-"$(INTDIR)\cashflowvectors.obj"	"$(INTDIR)\cashflowvectors.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
-
-"$(INTDIR)\floatingratecoupon.obj"	"$(INTDIR)\floatingratecoupon.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
-
-"$(INTDIR)\knuthuniformrng.obj"	"$(INTDIR)\knuthuniformrng.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
-
-"$(INTDIR)\lecuyeruniformrng.obj"	"$(INTDIR)\lecuyeruniformrng.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

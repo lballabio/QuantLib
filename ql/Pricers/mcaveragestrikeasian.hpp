@@ -21,37 +21,41 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-/*! \file basket.hpp
-    \brief simple example of multi-factor Monte Carlo pricer
+
+/*! \file mcaveragestrikeasian.hpp
+    \brief example of Monte Carlo pricer using a control variate
 
     \fullpath
-    ql/Pricers/%basket.hpp
+    ql/Pricers/%mcaveragestrikeasian.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_basket_pricer_h
-#define quantlib_basket_pricer_h
+#ifndef quantlib_pricers_average_strike_asian_pricer_h
+#define quantlib_pricers_average_strike_asian_pricer_h
 
+#include "ql/option.hpp"
 #include "ql/types.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
 #include "ql/Pricers/mcpricer.hpp"
-#include "ql/Math/matrix.hpp"
+#include <vector>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! simple example of multi-factor Monte Carlo pricer
-        class Basket : public McPricer<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
+        //! example of Monte Carlo pricer using a control variate.
+        class McAverageStrikeAsian : public McPricer<Math::Statistics,
+            MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
           public:
-            Basket(const Array& underlying,
-                   const Array& dividendYield,
-                   const Math::Matrix &covariance,
-                   Rate riskFreeRate,
-                   double residualTime,
-                   unsigned int samples,
-                   bool antitheticVariance,
-                   long seed=0);
+            McAverageStrikeAsian(Option::Type type,
+                                 double underlying,
+                                 Rate dividendYield,
+                                 Rate riskFreeRate,
+                                 const std::vector<Time>& times,
+                                 double volatility,
+                                 bool antitheticVariance,
+                                 long seed = 0);
         };
 
     }

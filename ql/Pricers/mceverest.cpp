@@ -22,11 +22,11 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file everest.cpp
+/*! \file mceverest.cpp
     \brief Everest-type option pricer
 
     \fullpath
-    ql/Pricers/%everest.cpp
+    ql/Pricers/%mceverest.cpp
 */
 
 // $Id$
@@ -34,7 +34,7 @@
 #include "ql/handle.hpp"
 #include "ql/MonteCarlo/everestpathpricer.hpp"
 #include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/Pricers/everest.hpp"
+#include "ql/Pricers/mceverest.hpp"
 
 
 namespace QuantLib {
@@ -46,22 +46,19 @@ namespace QuantLib {
         using MonteCarlo::EverestPathPricer;
         using Math::Matrix;
 
-        Everest::Everest(const Array &dividendYield, const Matrix& covariance,
-            Rate riskFreeRate, Time residualTime, unsigned int samples,
+        McEverest::McEverest(const Array &dividendYield,
+            const Matrix& covariance,
+            Rate riskFreeRate, Time residualTime,
             bool antitheticVariance, long seed) {
-
-            QL_REQUIRE(samples >= 30,
-                "Everest: less than 30 samples. Are you joking?");
-
 
             unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
-                "Everest: covariance matrix not square");
+                "McEverest: covariance matrix not square");
             QL_REQUIRE(dividendYield.size() == n,
-                "Everest: dividendYield size does not match"
+                "McEverest: dividendYield size does not match"
                 " that of covariance matrix");
             QL_REQUIRE(residualTime > 0,
-                "Everest: residualTime must be positive");
+                "McEverest: residualTime must be positive");
 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
@@ -82,7 +79,6 @@ namespace QuantLib {
                                     pathGenerator, pathPricer,
                                     Math::Statistics()));
 
-            mcModel_->addSamples(samples);
         }
 
     }

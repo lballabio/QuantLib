@@ -46,10 +46,7 @@ namespace QuantLib {
         McEuropean::McEuropean(Option::Type type, 
           double underlying, double strike, Rate dividendYield, 
           Rate riskFreeRate, double residualTime, double volatility,
-          unsigned int samples, bool antitheticVariance, long seed) {
-
-           QL_REQUIRE(samples >= 30,
-                "McEuropean: less than 30 samples. Are you joking?");
+          bool antitheticVariance, long seed) {
 
 
             //! Initialize the path generator
@@ -71,7 +68,6 @@ namespace QuantLib {
                     pathGenerator, euroPathPricer,
                     Math::Statistics()));
 
-            mcModel_->addSamples(samples);
         }
 
     }

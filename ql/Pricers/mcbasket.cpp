@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2001 QuantLib Group
  *
@@ -22,19 +21,19 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file himalaya.cpp
-    \brief Himalayan-type option pricer
+/*! \file mcbasket.cpp
+    \brief simple example of multi-factor Monte Carlo pricer
 
     \fullpath
-    ql/Pricers/%himalaya.cpp
+    ql/Pricers/%mcbasket.cpp
 */
 
 // $Id$
 
 #include "ql/handle.hpp"
-#include "ql/MonteCarlo/himalayapathpricer.hpp"
+#include "ql/MonteCarlo/basketpathpricer.hpp"
 #include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/Pricers/himalaya.hpp"
+#include "ql/Pricers/mcbasket.hpp"
 
 namespace QuantLib {
 
@@ -42,44 +41,36 @@ namespace QuantLib {
 
         using MonteCarlo::MultiPathPricer;
         using MonteCarlo::GaussianMultiPathGenerator;
-        using MonteCarlo::HimalayaPathPricer;
+        using MonteCarlo::BasketPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
 
-        Himalaya::Himalaya(const Array& underlying,
-            const Array& dividendYield, const Math::Matrix &covariance,
-            Rate riskFreeRate, double strike,
-            const std::vector<Time>& times,
-            unsigned int samples, bool antitheticVariance, long seed) {
+        McBasket::McBasket(const Array &underlying,
+            const Array &dividendYield, const Math::Matrix &covariance,
+            Rate riskFreeRate,  double residualTime,
+            bool antitheticVariance, long seed) {
 
-            QL_REQUIRE(samples >= 30,
-                "Himalaya: less than 30 samples. Are you joking?");
-
-            unsigned int  n = covariance.rows();
-            QL_REQUIRE(covariance.columns() == n,
-                "Himalaya: covariance matrix not square");
-            QL_REQUIRE(underlying.size() == n,
-                "Himalaya: underlying size does not match that of"
+            QL_REQUIRE(covariance.rows() == covariance.columns(),
+                "McBasket: covariance matrix not square");
+            QL_REQUIRE(covariance.rows() == underlying.size(),
+                "McBasket: underlying size does not match that of"
                 " covariance matrix");
-            QL_REQUIRE(dividendYield.size() == n,
-                "Himalaya: dividendYield size does not match"
+            QL_REQUIRE(covariance.rows() == dividendYield.size(),
+                "McBasket: dividendYield size does not match"
                 " that of covariance matrix");
-            QL_REQUIRE(times.size() >= 1,
-                "Himalaya: you must have at least one time-step");
+            QL_REQUIRE(residualTime > 0,
+                "McBasket: residual time must be positive");
 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
-                                    - 0.5 * covariance.diagonal());
+                - 0.5 * covariance.diagonal());
 
             Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(mu,
-                                               covariance,
-                                               times,
-                                               seed));
-            double residualTime = times[times.size()-1];
+                new GaussianMultiPathGenerator(mu, covariance,
+                std::vector<Time>(1, residualTime), seed));
 
             //! Initialize the pricer on the path pricer
-            Handle<MultiPathPricer> pathPricer(new HimalayaPathPricer(
-                underlying, strike, QL_EXP(-riskFreeRate*residualTime),
+            Handle<MultiPathPricer> pathPricer(new BasketPathPricer(
+                underlying, QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
@@ -88,7 +79,6 @@ namespace QuantLib {
                                         pathGenerator, pathPricer,
                                         Math::Statistics()));
 
-            mcModel_->addSamples(samples);
         }
 
     }

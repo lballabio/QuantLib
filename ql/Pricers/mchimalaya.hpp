@@ -21,11 +21,11 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-/*! \file himalaya.hpp
+/*! \file mchimalaya.hpp
     \brief Himalayan-type option pricer
 
     \fullpath
-    ql/Pricers/%himalaya.hpp
+    ql/Pricers/%mchimalaya.hpp
 */
 
 // $Id$
@@ -49,17 +49,18 @@ namespace QuantLib {
             N periods the option pays the max between the strike and the
             average of the best performers.
         */
-        class Himalaya : public McPricer<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
+        class McHimalaya : public McPricer<Math::Statistics,
+            MonteCarlo::GaussianMultiPathGenerator,
+            MonteCarlo::MultiPathPricer> {
         public:
-            Himalaya(const Array& underlying,
-                     const Array& dividendYield,
-                     const Math::Matrix& covariance,
-                     Rate riskFreeRate,
-                     double strike,
-                     const std::vector<Time>& times,
-                     unsigned int samples,
-                     bool antitheticVariance,
-                     long seed = 0);
+            McHimalaya(const Array& underlying,
+                       const Array& dividendYield,
+                       const Math::Matrix& covariance,
+                       Rate riskFreeRate,
+                       double strike,
+                       const std::vector<Time>& times,
+                       bool antitheticVariance,
+                       long seed = 0);
         };
 
     }
