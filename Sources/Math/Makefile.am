@@ -4,7 +4,10 @@
 
 EXTRA_DIST=makefile.mak
 
-libMath_la_SOURCES = normaldistribution.cpp statistics.cpp matrix.cpp \
-    multivariateaccumulator.cpp symmetricschurdecomposition.cpp
+libMath_la_SOURCES = normaldistribution.cpp \
+    matrix.cpp \
+    multivariateaccumulator.cpp \
+    statistics.cpp \
+    symmetricschurdecomposition.cpp
 
 noinst_LTLIBRARIES = libMath.la

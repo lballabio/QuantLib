@@ -6,7 +6,7 @@ SUBDIRS = Calendars \
 	DayCounters \
     FiniteDifferences \
 	Math \
-	MonteCarlo
+	MonteCarlo \
 	Pricers \
     Solvers1D \
     TermStructures
