@@ -42,15 +42,12 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Black-Scholes-Merton European option
-        /*! \ingroup deprecated
-            \deprecated use the PlainOption class with EuropeanEngine instead.
-        */
         class EuropeanOption : public SingleAssetOption {
           public:
             // constructor
-            EuropeanOption(Option::Type type, double underlying, double strike,
-                      Rate dividendYield, Rate riskFreeRate,
-                      Time residualTime, double volatility);
+            EuropeanOption(Option::Type type, double underlying, 
+                double strike, Rate dividendYield, Rate riskFreeRate,
+                Time residualTime, double volatility);
             // accessors
             double value() const;
             double delta() const;
@@ -77,7 +74,8 @@ namespace QuantLib {
             DiscountFactor riskFreeDiscount() const;
             // declared as mutable to preserve
             // the logical constness (does this word exist?) of value()
-            mutable double alpha_, beta_, standardDeviation_, D1_, D2_, NID1_;
+            mutable double alpha_, beta_, standardDeviation_, 
+                D1_, D2_, NID1_;
             mutable DiscountFactor dividendDiscount_, riskFreeDiscount_;
         };
 
@@ -130,7 +128,8 @@ namespace QuantLib {
         inline double EuropeanOption::D1() const {
             if (D1_==Null<double>())
                 D1_ = QL_LOG(underlying_/strike_)/standardDeviation() +
-                    standardDeviation()/2.0 + (riskFreeRate_ - dividendYield_)*
+                    standardDeviation()/2.0 + 
+                    (riskFreeRate_ - dividendYield_) *
                     residualTime_/standardDeviation();
             return D1_;
         }
