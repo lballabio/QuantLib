@@ -105,40 +105,39 @@ namespace QuantLib {
                 (dividendTS_->discount(t, extrapolate)/
                  riskFreeTS_->discount(t, extrapolate));
 
-            double strike = underlyingLevel;
-            double y = QL_LOG(strike/forwardValue);
-            double dy = (y*0.0001 ? y*0.0001 : 0.0001);
-            double yp = y+dy;
-            double ym = y-dy;
-            double strikep=QL_EXP(yp)*forwardValue;
-            double strikem=QL_EXP(ym)*forwardValue;
+            if (t==0.0) t=0.000001;
 
-            double w  = blackTS_->blackVariance(t, strike,  extrapolate);
-            double wp = blackTS_->blackVariance(t, strikep, extrapolate);
-            double wm = blackTS_->blackVariance(t, strikem, extrapolate);
-            double dwdy = (wp-wm)/(2.0*dy);
-            double d2wdy2 = (wp-2.0*w+wm)/(dy*dy);
 
+            // strike derivatives
+            double strike, y, dy, strikep, strikem;
+            double w, wp, wm, dwdy, d2wdy2;
+            strike = underlyingLevel;
+            y = QL_LOG(strike/forwardValue);
+            dy = (y*0.000001 ? y*0.000001 : 0.000001);
+//            double yp = y+dy;
+//            double ym = y-dy;
+//            double strikep=QL_EXP(yp)*forwardValue;
+//            double strikem=QL_EXP(ym)*forwardValue;
+            strikep=strike*QL_EXP(dy);
+            strikem=strike/QL_EXP(dy);
+            w  = blackTS_->blackVariance(t, strike,  extrapolate);
+            wp = blackTS_->blackVariance(t, strikep, extrapolate);
+            wm = blackTS_->blackVariance(t, strikem, extrapolate);
+            dwdy = (wp-wm)/(2.0*dy);
+            d2wdy2 = (wp-2.0*w+wm)/(dy*dy);
+
+            // time derivative
             double dt, wpt, wmt, dwdt;
-            if (t==0.0) {
-                dt = 0.0001;
-                wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
-                QL_REQUIRE(wpt>=w,
-                    "LocalVolSurface::localVolImpl : "
-                    "decreasing variance");
-                dwdt = (wpt-w)/dt;
-            } else {
-                dt = QL_MIN(0.0001, t);
-                wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
-                wmt = blackTS_->blackVariance(t-dt, strike, extrapolate);
-                QL_REQUIRE(wpt>=w,
-                    "LocalVolSurface::localVolImpl : "
-                    "decreasing variance");
-                QL_REQUIRE(w>=wmt,
-                    "LocalVolSurface::localVolImpl : "
-                    "decreasing variance");
-                dwdt = (wpt-wmt)/(2.0*dt);
-            }
+            dt = QL_MIN(0.0001, t/2.0);
+            wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
+            wmt = blackTS_->blackVariance(t-dt, strike, extrapolate);
+            QL_REQUIRE(wpt>=w,
+                "LocalVolSurface::localVolImpl : "
+                "decreasing variance");
+            QL_REQUIRE(w>=wmt,
+                "LocalVolSurface::localVolImpl : "
+                "decreasing variance");
+            dwdt = (wpt-wmt)/(2.0*dt);
 
             if (dwdy==0.0 && d2wdy2==0.0) { // avoid /w where w might be 0.0
                 return QL_SQRT(dwdt);

@@ -251,23 +251,26 @@ int main(int argc, char* argv[])
             Handle<BlackVolTermStructure>(
                 new BlackConstantVol(settlementDate, volatility)));
 
-        std::vector<Date> dates(3);
+        std::vector<Date> dates(4);
         dates[0] = settlementDate.plusMonths(1);
         dates[1] = exerciseDate;
         dates[2] = exerciseDate.plusMonths(6);
-        std::vector<double> strikes(3);
+        dates[3] = exerciseDate.plusMonths(12);
+        std::vector<double> strikes(4);
         strikes[0] = underlying*0.9;
         strikes[1] = underlying;
         strikes[2] = underlying*1.1;
+        strikes[3] = underlying*1.2;
 
-        Matrix vols(3,3);
-        vols[0][0] = volatility*1.1; vols[0][1] = volatility*1.1; vols[0][2] = volatility*1.0;
-        vols[1][0] = volatility;     vols[1][1] = volatility;     vols[1][2] = volatility*0.9;
-        vols[2][0] = volatility*0.8; vols[2][1] = volatility*0.8; vols[2][2] = volatility*0.7;
+        Matrix vols(4,4);
+        vols[0][0] = volatility*1.1; vols[0][1] = volatility; vols[0][2] = volatility*0.9; vols[0][3] = volatility*0.8;
+        vols[1][0] = volatility*1.1; vols[1][1] = volatility; vols[1][2] = volatility*0.9; vols[1][3] = volatility*0.8;
+        vols[2][0] = volatility*1.1; vols[2][1] = volatility; vols[2][2] = volatility*0.9; vols[2][3] = volatility*0.8;
+        vols[3][0] = volatility*1.1; vols[3][1] = volatility; vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
         RelinkableHandle<BlackVolTermStructure> blackSurface(
             Handle<BlackVolTermStructure> (new
             VolTermStructures::BlackVarianceSurface<
-            Math::BilinearInterpolation<
+            Math::BicubicSplineInterpolation<
             std::vector<double>::const_iterator,
 			std::vector<double>::const_iterator,
             Math::Matrix> >(settlementDate, dates, strikes, vols)));
@@ -280,7 +283,8 @@ int main(int argc, char* argv[])
             flatDividendTS,
             flatTermStructure,
             exercise,
-            flatVolTS,
+//            flatVolTS,
+            blackSurface,
             Handle<PricingEngine>(
                 new AnalyticalVanillaEngine()));
 
@@ -299,7 +303,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
-        Size timeSteps=2000;
+        Size timeSteps=800;
 
         // Binomial Method (JR)
         method = "Binomial (JR)";
@@ -394,12 +398,13 @@ int main(int argc, char* argv[])
 
 
         // Monte Carlo Method
+        timeSteps = 365;
         method = "MC (crude)";
         Handle<RandomNumbers::GaussianRandomGenerator> rng(new
             RandomNumbers::GaussianRandomGenerator(123456));
         option.setPricingEngine(Handle<PricingEngine>(
             new MCEuropeanVanillaEngine<Statistics, GaussianPathGenerator2,
-                PathPricer<Path> >(false, false, rng)));
+                PathPricer<Path> >(false, false, timeSteps, rng)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
