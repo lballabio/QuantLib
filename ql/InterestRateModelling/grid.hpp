@@ -95,15 +95,15 @@ namespace QuantLib {
           const Handle<OneFactorModel>& model) {
             double maxCenter = QL_MAX(initialCenter, strikeCenter);
             double minCenter = QL_MIN(initialCenter, strikeCenter);
-            double yMax = model->stateVariable(0.5);
+            double yMax = model->process()->variable(0.5, 0.0);
             double volatility = QL_MAX(
-              model->process()->diffusion(initialCenter, 0.0),
-              model->process()->diffusion(yMax, 0));
+              model->process()->diffusion(0.0, initialCenter),
+              model->process()->diffusion(0.0, yMax));
             //double volSqrtTime = volatility*QL_SQRT(timeDelay);
             //double minMaxFactor = 4.0*volSqrtTime + 0.08;
             double volSqrtTime = volatility*QL_SQRT(residualTime);
             double minMaxFactor = volSqrtTime +
-                model->stateVariable(0.08);
+                model->process()->variable(0.08, 0.0);
             double xMin = minCenter - minMaxFactor;
             double xMax = maxCenter + minMaxFactor;
             if (xMin<model->minStateVariable())

@@ -34,54 +34,90 @@
 #ifndef quantlib_interest_rate_modelling_model_h
 #define quantlib_interest_rate_modelling_model_h
 
-#include "ql/array.hpp"
-#include "ql/minimizer.hpp"
-#include "ql/option.hpp"
-#include "ql/termstructure.hpp"
+#include <ql/array.hpp>
+#include <ql/minimizer.hpp>
+#include <ql/option.hpp>
+#include <ql/termstructure.hpp>
 
 #include <iostream>
+#include <list>
+#include <vector>
 
 namespace QuantLib {
 
     namespace InterestRateModelling {
 
         class CalibrationHelper;
+/*
+        class TermStructureConsistentModel {
+          public:
+            TermStructureConsistentModel(
+                double dt,
+                const RelinkableHandle<TermStructure>& termStructure)
+            : dt_(dt), termStructure_(termStructure) {}
+            virtual ~TermStructureConsistentModel() {}
 
+            virtual void setCalibrationParameters() {}
+            void calibrate(
+                const Handle<Minimizer>& minimizer,
+                std::vector<Handle<CalibrationHelper> > instruments,
+                std::vector<double> volatilities) {}
+
+            const RelinkableHandle<TermStructure>& termStructure() const {
+                return termStructure_;
+
+            virtual double theta(Time t) = 0;
+        };
+*/
         class Model {
           public:
-            Model(unsigned nParams,
+
+            enum Type { OneFactor, TwoFactor, Market };
+
+            Model(unsigned nParams, Type type,
                   const RelinkableHandle<TermStructure>& termStructure)
-            : nParams_(nParams), termStructure_(termStructure) {}
+            : params_(nParams), termStructure_(termStructure) {}
             virtual ~Model() {}
-            virtual void setParameters(const Array& params) = 0;
 
-            virtual double discountBond(Time now, Time maturity, Rate r) = 0;
+            virtual double discountBondOption(Option::Type type, 
+                                              double strike,
+                                              Time maturity, 
+                                              Time bondMaturity) {
+                return Null<double>();
+            }
 
-            virtual double discountBondOption(Option::Type type, double strike,
-                Time maturity, Time bondMaturity) = 0;
+            virtual void reconfigure(const std::list<Time>& times_) = 0;
 
-            void calibrate(const Handle<Minimizer>& minimizer,
-                std::vector<Handle<CalibrationHelper> > instruments,
-                std::vector<double> volatilities);
+            void calibrate(
+                const Handle<Minimizer>& minimizer,
+                std::vector<Handle<CalibrationHelper> >& instruments);
 
             const RelinkableHandle<TermStructure>& termStructure() const {
                 return termStructure_;
             }
 
+            Type type() { return type_; }
+
+            const Array& params() { return params_; }
+            void setParams(const Array& params) { params_ = params; }
+
+            virtual std::string name() = 0;
+
           protected:
             Handle<Constraint> constraint_;
+            Array params_;
 
           private:
             class CalibrationProblem;
             friend class CalibrationProblem;
-            size_t nParams_;
             const RelinkableHandle<TermStructure>& termStructure_;
+            Type type_;
         };
 
         class CalibrationHelper {
           public:
-            virtual double value(const Handle<Model>& model) = 0;
-            virtual double blackPrice(double volatility) const = 0;
+            virtual double marketValue() = 0;
+            virtual double modelValue(const Handle<Model>& model) = 0;
         };
 
     }

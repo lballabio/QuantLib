@@ -16,13 +16,11 @@ namespace QuantLib {
         class Model::CalibrationProblem : public LeastSquareProblem {
           public:
             CalibrationProblem(Model* model, 
-                std::vector<Handle<CalibrationHelper> >& instruments,
-                const std::vector<double>& volatilities)
+                std::vector<Handle<CalibrationHelper> >& instruments)
             : model_(model, false), instruments_(instruments), 
               prices_(instruments.size()) {
                 for (unsigned i=0; i<instruments_.size(); i++)
-                    prices_[i] = 
-                        instruments_[i]->blackPrice(volatilities[i]);
+                    prices_[i] = instruments_[i]->marketValue();
             }
             //! Destructor
             virtual ~CalibrationProblem() {}
@@ -34,9 +32,9 @@ namespace QuantLib {
             virtual void targetAndValue(const Array& params, Array& target, 
                 Array& fct2fit) {
                 target = prices_;
-                model_->setParameters(params);
+                model_->setParams(params);
                 for (signed i=0; i<size(); i++) {
-                    fct2fit[i] = instruments_[i]->value(model_);
+                    fct2fit[i] = instruments_[i]->modelValue(model_);
                 }
             }
 
@@ -44,23 +42,23 @@ namespace QuantLib {
             virtual void targetValueAndfirstDerivative(const Array& params, 
                 Matrix& grad_fct2fit, Array& target, Array& fct2fit) { 
                 target = prices_;
-                model_->setParameters(params);
+                model_->setParams(params);
                 Array newParams(params);
                 for (signed i=0; i<size(); i++)
-                    fct2fit[i] = instruments_[i]->value(model_);
+                    fct2fit[i] = instruments_[i]->modelValue(model_);
 
                 for (unsigned j=0; j<params.size(); j++) {
                     double off = 1e-6;
                     newParams[j] -= off;
-                    model_->setParameters(newParams);
+                    model_->setParams(newParams);
                     Array newValues(size());
                     int i;
                     for (i=0; i<size(); i++) 
-                        newValues[i] = instruments_[i]->value(model_);
+                        newValues[i] = instruments_[i]->modelValue(model_);
                     newParams[j] += 2.0*off;
-                    model_->setParameters(newParams);
+                    model_->setParams(newParams);
                     for (i=0; i<size(); i++) {
-                        double diffValue = instruments_[i]->value(model_);
+                        double diffValue = instruments_[i]->modelValue(model_);
                         diffValue -= newValues[i];
                         grad_fct2fit[i][j] = diffValue/(2.0*off);
                     }
@@ -76,30 +74,29 @@ namespace QuantLib {
 
         void Model::calibrate( 
             const Handle<Minimizer>&,
-            std::vector<Handle<CalibrationHelper> > instruments,
-            std::vector<double> volatilities) {
+            std::vector<Handle<CalibrationHelper> >& instruments) {
 
             // Accuracy of the optimization method
-            double accuracy = 1e-8;
+            double accuracy = 1e-5;
             // Maximum number of iterations
             int maxiter = 10000;
 
-            Array initialValue(4, 0.1);
-            
             // Least square optimizer
             NonLinearLeastSquare lsqnonlin(accuracy,maxiter);
 
             // Define the least square problem
-            CalibrationProblem problem(this, instruments, volatilities);
+            CalibrationProblem problem(this, instruments);
          
             // Set initial values
-            lsqnonlin.setInitialValue(Array(nParams_, 0.1));
+            std::cout << "param size " << params_.size() << endl;
+            lsqnonlin.setInitialValue(Array(params_.size(), 0.1));
             // perform fitting
             Array solution = lsqnonlin.Perform(problem);
 
-            setParameters(solution);
+            setParams(solution);
+
             cout << "Model calibrated to the following values:" << endl;
-            for (unsigned i=0; i<nParams_; i++)
+            for (unsigned i=0; i<params_.size(); i++)
                 cout << i << "    " << solution[i]*100.0 << "%" << endl;
         }
 

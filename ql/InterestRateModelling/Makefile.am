@@ -9,13 +9,15 @@ include_HEADERS = \
     grid.hpp \
     model.hpp \
     onefactormodel.hpp \
-    swapfuturevalue.hpp
+    shortrateprocess.hpp \
+    timefunction.hpp \
+    trinomialtree.hpp
 
 EXTRA_DIST=makefile.mak
 
 libInterestRateModelling_la_SOURCES = \
     model.cpp \
     onefactormodel.cpp \
-    swapfuturevalue.cpp
+    trinomialtree.cpp
 
 noinst_LTLIBRARIES = libInterestRateModelling.la

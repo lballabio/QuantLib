@@ -42,7 +42,7 @@ using std::endl;
 namespace QuantLib {
 
     namespace InterestRateModelling {
-
+/*
         using namespace FiniteDifferences;
 
         typedef FiniteDifferenceModel<ExplicitEuler<TridiagonalOperator> > 
@@ -86,14 +86,13 @@ namespace QuantLib {
             return value;
         }
 
-        void OneFactorModel::fitToTermStructure(std::vector<double>& theta_) {
-            unsigned timeSteps_ = theta_.size() - 1;
-            unsigned gridPoints = timeSteps_;
-            double dt_ = termStructure()->maxTime()/timeSteps_;
+        void OneFactorModel::fitToTermStructure(Handle <TimeFunction>& theta, 
+                                                unsigned int timeSteps) {
+            double dt_ = termStructure()->maxTime()/timeSteps;
 
             Rate r0 = termStructure()->forward(0.0);
-            double center = stateVariable(r0);
-            Grid grid(gridPoints, center, center, timeSteps_*dt_, dt_, this);
+            double center = process()->variable(r0);
+            Grid grid(timeSteps, center, center, timeSteps*dt_, dt_, this);
 
             Array statePrices(grid.size(), 0.0);
             statePrices[grid.index()] = 1.0;
@@ -113,7 +112,7 @@ namespace QuantLib {
             double alpha_ = -0.2994;
             double sigma_ = 0.0087;
 
-            for (unsigned i=0; i<timeSteps_; i++) {
+            for (unsigned i=0; i<timeSteps; i++) {
                 FitFunction finder(termStructure(), statePrices, theta_, 
                     finiteDifferenceModel, dt_, i+1, grid);
 
@@ -123,14 +122,16 @@ namespace QuantLib {
 
                 double accuracy = 1e-10;
                 double initialValue = 0.05;
-                theta_[i] = s1d.solve(finder, accuracy, initialValue,
+                double value = s1d.solve(finder, accuracy, initialValue,
                     minStrike, maxStrike);
+                theta->set(i*dt_, value);
                 finiteDifferenceModel.
                     rollback(statePrices, i*dt_, (i+1)*dt_, 1);
-                cout << i << " ---> " << theta_[i] << " =? " << theta << endl;
+                cout << i << " ---> " << (*theta)(i*dt_) << " =? " << theta << endl;
             }
-            theta_[timeSteps_] = theta_[timeSteps_ - 1];
+            theta_[timeSteps_] = theta_[timeSteps - 1];
         }
+*/
 
     }
 

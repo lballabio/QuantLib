@@ -34,33 +34,43 @@
 #ifndef quantlib_interest_rate_modelling_one_factor_model_h
 #define quantlib_interest_rate_modelling_one_factor_model_h
 
-#include "ql/stochasticprocess.hpp"
-#include "ql/InterestRateModelling/model.hpp"
+#include <ql/InterestRateModelling/model.hpp>
+#include <ql/InterestRateModelling/shortrateprocess.hpp>
+#include <ql/InterestRateModelling/timefunction.hpp>
+#include <ql/InterestRateModelling/trinomialtree.hpp>
 
 namespace QuantLib {
 
     namespace InterestRateModelling {
-
-        class CalibrationHelper;
 
         class OneFactorModel : public Model {
           public:
             OneFactorModel(
                 unsigned nParams,
                 const RelinkableHandle<TermStructure>& termStructure)
-            : Model(nParams, termStructure) {}
+            : Model(nParams, OneFactor, termStructure) {}
             virtual ~OneFactorModel() {}
-            virtual double stateVariable(Rate r) const = 0;
-            virtual Rate getRateFrom(double y) const = 0;
             virtual double minStateVariable() const { return -QL_MAX_DOUBLE;}
             virtual double maxStateVariable() const { return QL_MAX_DOUBLE;}
 
-            void fitToTermStructure(std::vector<double>& theta);
-            const Handle<StochasticProcess>& process() const {
+            const Handle<ShortRateProcess>& process() const {
                 return process_;
             }
+
+            virtual Handle<Lattices::Tree> tree(
+                const Lattices::TimeGrid& timeGrid) const {
+                return Handle<Lattices::Tree>(
+                    new TrinomialTree(process(), timeGrid));
+            }
+
+            //!Used by Jamshidian's decomposition pricing
+            virtual double discountBond(Time now, Time maturity, Rate r) {
+                return Null<double>();
+            }
+
           protected:
-            Handle<StochasticProcess> process_;
+            Handle<ShortRateProcess> process_;
+
           private:
             class FitFunction;
             friend class FitFunction;
