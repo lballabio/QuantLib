@@ -17,42 +17,42 @@ QL_BEGIN_NAMESPACE(QuantLib)
 
 #ifdef QL_DEBUG
 
-	class Yield {
+	class Rate {
 		// arithmetic operators
-		friend Yield operator+(Yield y1, Yield y2) { return Yield(y1.yield+y2.yield); }
-		friend Yield operator+(Yield y, Spread s) { return Yield(y.yield+double(s)); }
-		friend Yield operator+(Spread s, Yield y) { return Yield(double(s)+y.yield); }
-		friend double operator+(Yield y, double x) { return y.yield+x; }
-		friend double operator+(double x, Yield y) { return x+y.yield; }
-		friend Spread operator-(Yield y1, Yield y2) { return Spread(y1.yield-y2.yield); }
-		friend Yield operator-(Yield y, Spread s) { return Yield(y.yield-double(s)); }
-		friend double operator-(Yield y, double x) { return y.yield-x; }
-		friend double operator-(double x, Yield y) { return x-y.yield; }
-		friend double operator*(Yield y, double x) { return y.yield*x; }
-		friend double operator*(double x, Yield y) { return y.yield*x; }
-		friend Yield operator/(Yield y, double x) { return Yield(y.yield/x); }
+		friend Rate operator+(Rate y1, Rate y2) { return Rate(y1.yield+y2.yield); }
+		friend Rate operator+(Rate y, Spread s) { return Rate(y.yield+double(s)); }
+		friend Rate operator+(Spread s, Rate y) { return Rate(double(s)+y.yield); }
+		friend double operator+(Rate y, double x) { return y.yield+x; }
+		friend double operator+(double x, Rate y) { return x+y.yield; }
+		friend Spread operator-(Rate y1, Rate y2) { return Spread(y1.yield-y2.yield); }
+		friend Rate operator-(Rate y, Spread s) { return Rate(y.yield-double(s)); }
+		friend double operator-(Rate y, double x) { return y.yield-x; }
+		friend double operator-(double x, Rate y) { return x-y.yield; }
+		friend double operator*(Rate y, double x) { return y.yield*x; }
+		friend double operator*(double x, Rate y) { return y.yield*x; }
+		friend Rate operator/(Rate y, double x) { return Rate(y.yield/x); }
 		// comparison operators
-		friend bool operator==(Yield y1, Yield y2) { return (y1.yield==y2.yield); }
-		friend bool operator!=(Yield y1, Yield y2) { return (y1.yield!=y2.yield); }
-		friend bool operator<(Yield y1, Yield y2) { return (y1.yield<y2.yield); }
-		friend bool operator<=(Yield y1, Yield y2) { return (y1.yield<=y2.yield); }
-		friend bool operator>(Yield y1, Yield y2) { return (y1.yield>y2.yield); }
-		friend bool operator>=(Yield y1, Yield y2) { return (y1.yield>=y2.yield); }
+		friend bool operator==(Rate y1, Rate y2) { return (y1.yield==y2.yield); }
+		friend bool operator!=(Rate y1, Rate y2) { return (y1.yield!=y2.yield); }
+		friend bool operator<(Rate y1, Rate y2) { return (y1.yield<y2.yield); }
+		friend bool operator<=(Rate y1, Rate y2) { return (y1.yield<=y2.yield); }
+		friend bool operator>(Rate y1, Rate y2) { return (y1.yield>y2.yield); }
+		friend bool operator>=(Rate y1, Rate y2) { return (y1.yield>=y2.yield); }
 	  public:
 		// constructor
-		Yield(double y = 0.0);
+		Rate(double y = 0.0);
 		// assignment
-		Yield& operator=(double y);
-		Yield& operator=(const Yield&);
+		Rate& operator=(double y);
+		Rate& operator=(const Rate&);
 		// cast
 		operator double() const { return yield; }
 		// computed assignment
-		Yield& operator+=(Yield y) { return (*this = Yield(yield+y.yield)); }
-		Yield& operator+=(Spread s) { return (*this = Yield(yield+double(s))); }
-		Yield& operator-=(Yield y) { return (*this = Yield(yield-y.yield)); }
-		Yield& operator-=(Spread s) { return (*this = Yield(yield-double(s))); }
-		Yield& operator*=(double x) { return (*this = Yield(yield*x)); }
-		Yield& operator/=(double x) { return (*this = Yield(yield/x)); }
+		Rate& operator+=(Rate y) { return (*this = Rate(yield+y.yield)); }
+		Rate& operator+=(Spread s) { return (*this = Rate(yield+double(s))); }
+		Rate& operator-=(Rate y) { return (*this = Rate(yield-y.yield)); }
+		Rate& operator-=(Spread s) { return (*this = Rate(yield-double(s))); }
+		Rate& operator*=(double x) { return (*this = Rate(yield*x)); }
+		Rate& operator/=(double x) { return (*this = Rate(yield/x)); }
 	  private:
 		double yield;
 	};
@@ -60,27 +60,27 @@ QL_BEGIN_NAMESPACE(QuantLib)
 
 	// inline definitions
 
-	inline Yield::Yield(double y) {
+	inline Rate::Rate(double y) {
 		Require(y >= 0.0 && y <= 1.0,
 			"invalid yield value ("+RateFormat(y)+"). Value must be between 0 and 1");
 		yield = y;
 	}
 
-	inline Yield& Yield::operator=(double y) {
+	inline Rate& Rate::operator=(double y) {
 		Require(y >= 0.0 && y <= 1.0,
 			"invalid yield value ("+RateFormat(y)+"). Value must be between 0 and 1");
 		yield = y;
 		return *this;
 	}
 
-	inline Yield& Yield::operator=(const Yield& y) {
+	inline Rate& Rate::operator=(const Rate& y) {
 		yield = y.yield;
 		return *this;
 	}
 
 #else
 
-	typedef double Yield;
+	typedef double Rate;
 
 #endif
 

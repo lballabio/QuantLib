@@ -36,14 +36,14 @@ class TermStructure : public Observable {
 	virtual Date maxDate() const = 0;
 	virtual Date minDate() const = 0;
 	// zero yield
-	virtual Yield zeroYield(const Date&) const = 0;
-	std::vector<Yield> zeroYield(const std::vector<Date>&) const;
+	virtual Rate zeroYield(const Date&) const = 0;
+	std::vector<Rate> zeroYield(const std::vector<Date>&) const;
 	// discount
 	virtual DiscountFactor discount(const Date&) const = 0;
 	std::vector<DiscountFactor> discount(const std::vector<Date>&) const;
 	// forward
-	virtual Yield forward(const Date&) const = 0;
-	std::vector<Yield> forward(const std::vector<Date>&) const;
+	virtual Rate forward(const Date&) const = 0;
+	std::vector<Rate> forward(const std::vector<Date>&) const;
 };
 
 class ZeroYieldStructure : public TermStructure {
@@ -52,7 +52,7 @@ class ZeroYieldStructure : public TermStructure {
 	ZeroYieldStructure() {}
 	virtual ~ZeroYieldStructure() {}
 	DiscountFactor discount(const Date&) const;
-	Yield forward(const Date&) const;
+	Rate forward(const Date&) const;
 };
 
 class DiscountStructure : public TermStructure {
@@ -60,8 +60,8 @@ class DiscountStructure : public TermStructure {
 	// constructor
 	DiscountStructure() {}
 	virtual ~DiscountStructure() {}
-	Yield zeroYield(const Date&) const;
-	Yield forward(const Date&) const;
+	Rate zeroYield(const Date&) const;
+	Rate forward(const Date&) const;
 };
 
 class ForwardRateStructure : public TermStructure {
@@ -69,7 +69,7 @@ class ForwardRateStructure : public TermStructure {
 	// constructor
 	ForwardRateStructure() {}
 	virtual ~ForwardRateStructure() {}
-	Yield zeroYield(const Date&) const;
+	Rate zeroYield(const Date&) const;
 	DiscountFactor discount(const Date&) const;
 };
 
@@ -113,7 +113,7 @@ class SpreadedTermStructure : public ZeroYieldStructure {
 	Date maxDate() const;
 	Date minDate() const;
 	// discount
-	Yield zeroYield(const Date&) const;
+	Rate zeroYield(const Date&) const;
 	// observers of this curve are actually observers of the original curve
 	void registerObserver(Observer*);
 	void unregisterObserver(Observer*);
@@ -126,10 +126,10 @@ class SpreadedTermStructure : public ZeroYieldStructure {
 
 // inline definitions
 
-inline std::vector<Yield> TermStructure::zeroYield(const std::vector<Date>& x) const {
-	std::vector<Yield> y(x.size());
+inline std::vector<Rate> TermStructure::zeroYield(const std::vector<Date>& x) const {
+	std::vector<Rate> y(x.size());
 	std::vector<Date>::const_iterator j=x.begin();
-	for (std::vector<Yield>::iterator i=y.begin(); i!=y.end(); ++i,++j)
+	for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
 		*i = zeroYield(*j);
 	return y;
 }
@@ -142,10 +142,10 @@ inline std::vector<DiscountFactor> TermStructure::discount(const std::vector<Dat
 	return y;
 }
 
-inline std::vector<Yield> TermStructure::forward(const std::vector<Date>& x) const {
-	std::vector<Yield> y(x.size());
+inline std::vector<Rate> TermStructure::forward(const std::vector<Date>& x) const {
+	std::vector<Rate> y(x.size());
 	std::vector<Date>::const_iterator j=x.begin();
-	for (std::vector<Yield>::iterator i=y.begin(); i!=y.end(); ++i,++j)
+	for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
 		*i = forward(*j);
 	return y;
 }
@@ -154,34 +154,34 @@ inline std::vector<Yield> TermStructure::forward(const std::vector<Date>& x) con
 // curve deriving discount and forward from zero yield
 
 inline DiscountFactor ZeroYieldStructure::discount(const Date& d) const {
-	Yield r = zeroYield(d);
+	Rate r = zeroYield(d);
 	double t = double(d-settlementDate())/365;
 	return DiscountFactor(QL_EXP(-r*t));
 }
 
-inline Yield ZeroYieldStructure::forward(const Date& d) const {
-	Yield r1 = zeroYield(d), r2 = zeroYield(d+1);
+inline Rate ZeroYieldStructure::forward(const Date& d) const {
+	Rate r1 = zeroYield(d), r2 = zeroYield(d+1);
 	return r1+(d-settlementDate())*double(r2-r1);			// r1+t*(r2-r1)/dt = r1+(days/365)*(r2-r1)/(1 day/365)
 }
 
 
 // curve deriving zero yield and forward from discount
 
-inline Yield DiscountStructure::zeroYield(const Date& d) const {
+inline Rate DiscountStructure::zeroYield(const Date& d) const {
 	DiscountFactor f = discount(d);
 	double t = double(d-settlementDate())/365;
-	return Yield(-QL_LOG(f)/t);
+	return Rate(-QL_LOG(f)/t);
 }
 
-inline Yield DiscountStructure::forward(const Date& d) const {
+inline Rate DiscountStructure::forward(const Date& d) const {
 	DiscountFactor f1 = discount(d), f2 = discount(d+1);
-	return Yield(QL_LOG(f1/f2)*365);					// log(f1/f2)/dt = log(f1/f2)/(1/365)
+	return Rate(QL_LOG(f1/f2)*365);					// log(f1/f2)/dt = log(f1/f2)/(1/365)
 }
 
 
 // curve deriving zero yield and discount from forward
 
-inline Yield ForwardRateStructure::zeroYield(const Date& d) const {
+inline Rate ForwardRateStructure::zeroYield(const Date& d) const {
 	// This is just a default, highly inefficient implementation.
 	// Derived classes should implement their own zeroYield method.
 	if (d == settlementDate())
@@ -190,11 +190,11 @@ inline Yield ForwardRateStructure::zeroYield(const Date& d) const {
 	for (Date i=settlementDate()+1; i<d; i++)
 		sum += forward(i);
 	sum += 0.5*forward(d);
-	return Yield(sum/(d-settlementDate()));
+	return Rate(sum/(d-settlementDate()));
 }
 
 inline DiscountFactor ForwardRateStructure::discount(const Date& d) const {
-	Yield r = zeroYield(d);
+	Rate r = zeroYield(d);
 	double t = double(d-settlementDate())/365;
 	return DiscountFactor(QL_EXP(-r*t));
 }
@@ -283,7 +283,7 @@ inline Date SpreadedTermStructure::minDate() const {
 	return theOriginalCurve->minDate();
 }
 
-inline Yield SpreadedTermStructure::zeroYield(const Date& d) const {
+inline Rate SpreadedTermStructure::zeroYield(const Date& d) const {
 	return theOriginalCurve->zeroYield(d)+theSpread;
 }
 

@@ -18,8 +18,8 @@ QL_BEGIN_NAMESPACE(Pricers)
 class BSMEuropeanOption : public BSMOption {
   public:
 	// constructor
-	BSMEuropeanOption(Type type, double underlying, double strike, Yield underlyingGrowthRate, 
-	  Yield riskFreeRate, Time residualTime, double volatility)
+	BSMEuropeanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
+	  Rate riskFreeRate, Time residualTime, double volatility)
 	  : BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility) {}
 	// accessors
 	double value() const;

@@ -17,9 +17,9 @@ QL_BEGIN_NAMESPACE(QuantLib)
 
 QL_BEGIN_NAMESPACE(Pricers)
 
-class BMSAmericanCondition : public QL_ADD_NAMESPACE(PDE,StepCondition)<Array> {
+class BSMAmericanCondition : public QL_ADD_NAMESPACE(PDE,StepCondition)<Array> {
   public:
-	BMSAmericanCondition(const Array& initialPrices) : initialPrices(initialPrices) {}
+	BSMAmericanCondition(const Array& initialPrices) : initialPrices(initialPrices) {}
 	void applyTo(Array& a, Time t) const {
 		for (int i=0; i<a.size(); i++)
 			a[i] = QL_MAX(a[i],initialPrices[i]);

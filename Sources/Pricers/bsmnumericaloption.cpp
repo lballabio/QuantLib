@@ -16,7 +16,7 @@ QL_USING(PDE,BoundaryCondition)
 QL_USING(Operators,BSMOperator)
 
 BSMNumericalOption::BSMNumericalOption(BSMOption::Type type, double underlying, double strike, 
-  Yield underlyingGrowthRate, Yield riskFreeRate, Time residualTime, double volatility, int gridPoints)
+  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility, int gridPoints)
 : BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility), 
   theGridPoints(gridPoints) {
 	// common setup

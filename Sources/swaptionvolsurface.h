@@ -23,7 +23,7 @@ class SwaptionVolatilitySurface : public Observable {
 	// copy of this surface with no observers registered
 	virtual Handle<SwaptionVolatilitySurface> clone() const = 0;
 	// volatility
-	virtual Yield vol(const Date& start, Time length) const = 0;
+	virtual Rate vol(const Date& start, Time length) const = 0;
 };
 
 // spreaded surface 
@@ -35,7 +35,7 @@ class SpreadedSwaptionVolatilitySurface : public SwaptionVolatilitySurface {
 	// clone
 	Handle<SwaptionVolatilitySurface> clone() const;
 	// volatility
-	Yield vol(const Date& start, Time length) const;
+	Rate vol(const Date& start, Time length) const;
 	// observers of this curve are also observers of the original curve
 	void registerObserver(Observer*);
 	void unregisterObserver(Observer*);
@@ -57,7 +57,7 @@ inline Handle<SwaptionVolatilitySurface> SpreadedSwaptionVolatilitySurface::clon
 		theOriginalSurface->clone(),theSpread));
 }
 
-inline Yield SpreadedSwaptionVolatilitySurface::vol(const Date& start, Time length) const {
+inline Rate SpreadedSwaptionVolatilitySurface::vol(const Date& start, Time length) const {
 	return theOriginalSurface->vol(start,length)+theSpread;
 }
 

@@ -31,15 +31,15 @@ QL_USING(QuantLib::Pricers,BSMAmericanOption)
 
 class BSMEuropeanOption {
   public:
-	BSMEuropeanOption(OptionType type, double underlying, double strike, Yield underlyingGrowthRate, 
-	  Yield riskFreeRate, Time residualTime, double volatility);
+	BSMEuropeanOption(OptionType type, double underlying, double strike, Rate underlyingGrowthRate, 
+	  Rate riskFreeRate, Time residualTime, double volatility);
 	double value() const;
 };
 
 class BSMAmericanOption {
   public:
-	BSMAmericanOption(OptionType type, double underlying, double strike, Yield underlyingGrowthRate, 
-	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints);
+	BSMAmericanOption(OptionType type, double underlying, double strike, Rate underlyingGrowthRate, 
+	  Rate riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints);
 	double value() const;
 };
 

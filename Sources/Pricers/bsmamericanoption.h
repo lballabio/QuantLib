@@ -22,8 +22,8 @@ QL_BEGIN_NAMESPACE(Pricers)
 class BSMAmericanOption : public BSMNumericalOption {
   public:
 	// constructor
-	BSMAmericanOption(Type type, double underlying, double strike, Yield underlyingGrowthRate, 
-	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
+	BSMAmericanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
+	  Rate riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
 	: BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
 	  gridPoints), theTimeSteps(timeSteps) {}
 	// accessors

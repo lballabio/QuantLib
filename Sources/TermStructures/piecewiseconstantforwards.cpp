@@ -39,7 +39,7 @@ PiecewiseConstantForwards::PiecewiseConstantForwards(Handle<Currency> currency, 
 	theForwards[0] = theZeroYields[0] = theForwards[1];
 }
 
-Yield PiecewiseConstantForwards::zeroYield(const Date& d) const {
+Rate PiecewiseConstantForwards::zeroYield(const Date& d) const {
 	if (d == settlementDate()) {
 		return theZeroYields[0];
 	} else {
@@ -51,7 +51,7 @@ Yield PiecewiseConstantForwards::zeroYield(const Date& d) const {
 			return (theZeroYields[n-1]*tn+theForwards[n]*(t-tn))/t;
 		}
 	}
-	QL_DUMMY_RETURN(Yield());
+	QL_DUMMY_RETURN(Rate());
 }
 
 DiscountFactor PiecewiseConstantForwards::discount(const Date& d) const {
@@ -69,13 +69,13 @@ DiscountFactor PiecewiseConstantForwards::discount(const Date& d) const {
 	QL_DUMMY_RETURN(DiscountFactor());
 }
 
-Yield PiecewiseConstantForwards::forward(const Date& d) const {
+Rate PiecewiseConstantForwards::forward(const Date& d) const {
 	if (d == settlementDate()) {
 		return theForwards[0];
 	} else {
 		return theForwards[nextNode(d)];
 	}
-	QL_DUMMY_RETURN(Yield());
+	QL_DUMMY_RETURN(Rate());
 }
 
 int PiecewiseConstantForwards::nextNode(const Date& d) const {

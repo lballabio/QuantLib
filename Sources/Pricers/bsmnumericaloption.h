@@ -19,8 +19,8 @@ QL_BEGIN_NAMESPACE(Pricers)
 
 class BSMNumericalOption : public BSMOption {
   public:
-	BSMNumericalOption(Type type, double underlying, double strike, Yield underlyingGrowthRate, 
-	  Yield riskFreeRate, Time residualTime, double volatility, int gridPoints);
+	BSMNumericalOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
+	  Rate riskFreeRate, Time residualTime, double volatility, int gridPoints);
 	// accessors
 	virtual double value() const = 0;
   protected:

@@ -6,6 +6,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 */
 
 #include "bsmamericanoption.h"
+#include "americancondition.h"
 #include "bsmeuropeanoption.h"
 #include "finitedifferencemodel.h"
 #include "cranknicolson.h"

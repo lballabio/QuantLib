@@ -19,8 +19,8 @@ QL_BEGIN_NAMESPACE(Pricers)
 
 class BSMOption : public Option {
   public:
-	BSMOption(Type type, double underlying, double strike, Yield underlyingGrowthRate, 
-	  Yield riskFreeRate, Time residualTime, double volatility) 
+	BSMOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
+	  Rate riskFreeRate, Time residualTime, double volatility) 
 	: theType(type), theUnderlying(underlying), theStrike(strike), theUnderlyingGrowthRate(underlyingGrowthRate), 
 	  theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), theVolatility(volatility),
 	  hasBeenCalculated(false) {}
@@ -31,7 +31,7 @@ class BSMOption : public Option {
 	// input data
 	Type theType;
 	double theUnderlying, theStrike;
-	Yield theUnderlyingGrowthRate, theRiskFreeRate;
+	Rate theUnderlyingGrowthRate, theRiskFreeRate;
 	Time theResidualTime;
 	double theVolatility;
 	// results

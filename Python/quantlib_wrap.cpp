@@ -648,7 +648,7 @@ CurrencyHandle NewITL()		{ return CurrencyHandle(new ITL); }
 #include "spread.h"
 #include "discountfactor.h"
 
-QL_USING(QuantLib,Yield)
+QL_USING(QuantLib,Rate)
 QL_USING(QuantLib,Spread)
 QL_USING(QuantLib,DiscountFactor)
 
@@ -2991,7 +2991,7 @@ static PyObject *_wrap_TermStructure_minDate(PyObject *self, PyObject *args, PyO
 }
 
 
-Yield  TermStructureHandle_zeroYield(TermStructureHandle *self,Date const &d) {
+Rate  TermStructureHandle_zeroYield(TermStructureHandle *self,Date const &d) {
     {
         return (*self)->zeroYield(d);
     }
@@ -3007,14 +3007,14 @@ static PyObject *_wrap_TermStructure_zeroYield(PyObject *self, PyObject *args, P
     char *kwnames[] = {
         "self","d", NULL 
     };
-    Yield result ;
+    Rate result ;
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:TermStructure_zeroYield",kwnames,&argo0,&argo1)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TermStructureHandle,1)) == -1) return NULL;
     if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Date,1)) == -1) return NULL;
     {
         try {
-            result = (Yield )TermStructureHandle_zeroYield(arg0,(Date const &)*arg1);
+            result = (Rate )TermStructureHandle_zeroYield(arg0,(Date const &)*arg1);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -3065,7 +3065,7 @@ static PyObject *_wrap_TermStructure_discount(PyObject *self, PyObject *args, Py
 }
 
 
-Yield  TermStructureHandle_forward(TermStructureHandle *self,Date const &d) {
+Rate  TermStructureHandle_forward(TermStructureHandle *self,Date const &d) {
     {
         return (*self)->forward(d);
     }
@@ -3081,14 +3081,14 @@ static PyObject *_wrap_TermStructure_forward(PyObject *self, PyObject *args, PyO
     char *kwnames[] = {
         "self","d", NULL 
     };
-    Yield result ;
+    Rate result ;
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:TermStructure_forward",kwnames,&argo0,&argo1)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TermStructureHandle,1)) == -1) return NULL;
     if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Date,1)) == -1) return NULL;
     {
         try {
-            result = (Yield )TermStructureHandle_forward(arg0,(Date const &)*arg1);
+            result = (Rate )TermStructureHandle_forward(arg0,(Date const &)*arg1);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -3211,7 +3211,7 @@ static PyObject *_wrap_TermStructure___nonzero__(PyObject *self, PyObject *args,
 static PyObject *_wrap_new_Deposit(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     Date *arg0 ;
-    Yield arg1 ;
+    Rate arg1 ;
     DayCounterHandle *arg2 ;
     PyObject * argo0 =0 ;
     PyObject * argo2 =0 ;
@@ -3299,13 +3299,13 @@ static PyObject *_wrap_Deposit_rate(PyObject *self, PyObject *args, PyObject *kw
     char *kwnames[] = {
         "self", NULL 
     };
-    Yield result ;
+    Rate result ;
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Deposit_rate",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Deposit,1)) == -1) return NULL;
     {
         try {
-            result = (Yield )arg0->rate();
+            result = (Rate )arg0->rate();
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -4375,8 +4375,8 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
     OptionType *arg0 ;
     double arg1 ;
     double arg2 ;
-    Yield arg3 ;
-    Yield arg4 ;
+    Rate arg3 ;
+    Rate arg4 ;
     Time arg5 ;
     double arg6 ;
     PyObject * obj0  = 0 ;
@@ -4455,8 +4455,8 @@ static PyObject *_wrap_new_BSMAmericanOption(PyObject *self, PyObject *args, PyO
     OptionType *arg0 ;
     double arg1 ;
     double arg2 ;
-    Yield arg3 ;
-    Yield arg4 ;
+    Rate arg3 ;
+    Rate arg4 ;
     Time arg5 ;
     double arg6 ;
     int arg7 ;

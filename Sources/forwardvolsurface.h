@@ -23,7 +23,7 @@ class ForwardVolatilitySurface : public Observable {
 	// copy of this curve with no observers registered
 	virtual Handle<ForwardVolatilitySurface> clone() const = 0;
 	// volatility
-	virtual Yield vol(const Date& d, Yield strike) const = 0;
+	virtual Rate vol(const Date& d, Rate strike) const = 0;
 };
 
 // curve, i.e., no smile
@@ -35,21 +35,21 @@ class ForwardVolatilityCurve : public ForwardVolatilitySurface {
 	// copy of this curve with no observers registered
 	virtual Handle<ForwardVolatilitySurface> clone() const = 0;
 	// volatility
-	virtual Yield vol(const Date& d, Yield strike) const;
+	virtual Rate vol(const Date& d, Rate strike) const;
 	// independent of strike
-	virtual Yield vol(const Date& d) const = 0;
+	virtual Rate vol(const Date& d) const = 0;
 };
 
 class ConstantForwardVolatilitySurface : public ForwardVolatilitySurface {
   public:
 	// constructors
-	ConstantForwardVolatilitySurface(Yield volatility);
+	ConstantForwardVolatilitySurface(Rate volatility);
 	// copy of this curve with no observers registered
 	Handle<ForwardVolatilitySurface> clone() const;
 	// volatility
-	Yield vol(const Date& d, Yield strike) const;
+	Rate vol(const Date& d, Rate strike) const;
   private:
-	Yield theVolatility;
+	Rate theVolatility;
 };
 
 class SpreadedForwardVolatilitySurface : public ForwardVolatilitySurface {
@@ -59,7 +59,7 @@ class SpreadedForwardVolatilitySurface : public ForwardVolatilitySurface {
 	// clone
 	Handle<ForwardVolatilitySurface> clone() const;
 	// volatility
-	Yield vol(const Date& d, Yield strike) const;
+	Rate vol(const Date& d, Rate strike) const;
 	// observers of this curve are also observers of the original curve
 	void registerObserver(Observer*);
 	void unregisterObserver(Observer*);
@@ -74,20 +74,20 @@ class SpreadedForwardVolatilitySurface : public ForwardVolatilitySurface {
 
 // curve without smile
 
-inline Yield ForwardVolatilityCurve::vol(const Date& d, Yield strike) const {
+inline Rate ForwardVolatilityCurve::vol(const Date& d, Rate strike) const {
 	return vol(d);
 }
 
 // constant surface
 
-inline ConstantForwardVolatilitySurface::ConstantForwardVolatilitySurface(Yield volatility)
+inline ConstantForwardVolatilitySurface::ConstantForwardVolatilitySurface(Rate volatility)
 : theVolatility(volatility) {}
 
 inline Handle<ForwardVolatilitySurface> ConstantForwardVolatilitySurface::clone() const {
 	return Handle<ForwardVolatilitySurface>(new ConstantForwardVolatilitySurface(theVolatility));
 }
 
-inline Yield ConstantForwardVolatilitySurface::vol(const Date& d, Yield strike) const {
+inline Rate ConstantForwardVolatilitySurface::vol(const Date& d, Rate strike) const {
 	return theVolatility;
 }
 
@@ -102,7 +102,7 @@ inline Handle<ForwardVolatilitySurface> SpreadedForwardVolatilitySurface::clone(
 		theOriginalCurve->clone(),theSpread));
 }
 
-inline Yield SpreadedForwardVolatilitySurface::vol(const Date& d, Yield strike) const {
+inline Rate SpreadedForwardVolatilitySurface::vol(const Date& d, Rate strike) const {
 	return theOriginalCurve->vol(d,strike)+theSpread;
 }
 

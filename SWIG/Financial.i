@@ -23,12 +23,12 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "spread.h"
 #include "discountfactor.h"
 
-QL_USING(QuantLib,Yield)
+QL_USING(QuantLib,Rate)
 QL_USING(QuantLib,Spread)
 QL_USING(QuantLib,DiscountFactor)
 %}
 
-typedef double Yield;
+typedef double Rate;
 typedef double Spread;
 typedef double DiscountFactor;
 

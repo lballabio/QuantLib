@@ -33,11 +33,11 @@ class PiecewiseConstantForwards : public TermStructure {
 	Date maxDate() const;
 	Date minDate() const;
 	// zero yield
-	Yield zeroYield(const Date&) const;
+	Rate zeroYield(const Date&) const;
 	// discount
 	DiscountFactor discount(const Date&) const;
 	// forward (instantaneous)
-	Yield forward(const Date&) const;
+	Rate forward(const Date&) const;
   private:
 	// methods
 	Time timeFromSettlement(const Date& d) const;
@@ -49,7 +49,7 @@ class PiecewiseConstantForwards : public TermStructure {
 	std::vector<Date> theNodes;
 	std::vector<Time> theTimes;
 	std::vector<DiscountFactor> theDiscounts;
-	std::vector<Yield> theForwards, theZeroYields;
+	std::vector<Rate> theForwards, theZeroYields;
 	std::vector<Deposit> theDeposits;
 };
 

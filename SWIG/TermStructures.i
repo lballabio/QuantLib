@@ -63,13 +63,13 @@ typedef Handle<TermStructure> TermStructureHandle;
 	Date minDate() {
 		return (*self)->minDate();
 	}
-	Yield zeroYield(const Date& d) {
+	Rate zeroYield(const Date& d) {
 		return (*self)->zeroYield(d);
 	}
 	DiscountFactor discount(const Date& d) {
 		return (*self)->discount(d);
 	}
-	Yield forward(const Date& d) {
+	Rate forward(const Date& d) {
 		return (*self)->forward(d);
 	}
 	#if defined (SWIGPYTHON)
@@ -102,10 +102,10 @@ QL_USING(QuantLib,Deposit)
 
 class Deposit {
   public:
-	Deposit(Date maturity, Yield rate, DayCounterHandle dayCounter);
+	Deposit(Date maturity, Rate rate, DayCounterHandle dayCounter);
 	~Deposit();
 	Date maturity() const;
-	Yield rate() const;
+	Rate rate() const;
 	DayCounterHandle dayCounter();
 };
 
