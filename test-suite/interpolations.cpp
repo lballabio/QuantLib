@@ -654,7 +654,7 @@ CppUnit::Test* InterpolationTest::suite() {
                    ("Testing spline interpolation on generic values",
                     &InterpolationTest::testSplineOnGenericValues));
     tests->addTest(new CppUnit::TestCaller<InterpolationTest>
-                   ("Testing simmetry of spline interpolation end conditions",
+                   ("Testing symmetry of spline interpolation end conditions",
                     &InterpolationTest::testingSimmetricEndConditions));
     tests->addTest(new CppUnit::TestCaller<InterpolationTest>
                    ("Testing spline interpolation on RPN15A data set",
