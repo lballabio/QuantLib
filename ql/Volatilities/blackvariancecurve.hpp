@@ -52,7 +52,6 @@ namespace QuantLib {
                                const DayCounter& dayCounter = DayCounters::Actual365());
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
-            Date minDate() const { return referenceDate_; }
             Date maxDate() const { return maxDate_; }
             // Observer interface
             void update();

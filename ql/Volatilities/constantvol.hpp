@@ -44,14 +44,13 @@ namespace QuantLib {
             // constructors
             ConstantVol(const Date& referenceDate,
                         double volatility,
-                        const DayCounter& dayCounter = DayCounters::Actual365());
+                        const DayCounter& dayCounter=DayCounters::Actual365());
             ConstantVol(const Date& referenceDate,
                         const RelinkableHandle<MarketElement>& volatility,
-                        const DayCounter& dayCounter = DayCounters::Actual365());
+                        const DayCounter& dayCounter=DayCounters::Actual365());
             // inspectors
             Date referenceDate() const;
             DayCounter dayCounter() const;
-            Date minDate() const;
             Date maxDate() const;
             // Observer interface
             void update();
@@ -60,8 +59,8 @@ namespace QuantLib {
                 bool extrapolate = false) const;
           private:
             Date referenceDate_;
-            DayCounter dayCounter_;
             RelinkableHandle<MarketElement> volatility_;
+            DayCounter dayCounter_;
         };
 
         // inline definitions
@@ -94,10 +93,6 @@ namespace QuantLib {
             return Date::maxDate();
         }
 
-        inline Date ConstantVol::minDate() const {
-            return referenceDate_;
-        }
-
         inline void ConstantVol::update() {
             notifyObservers();
         }
@@ -113,6 +108,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

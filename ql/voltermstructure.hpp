@@ -92,8 +92,6 @@ namespace QuantLib {
         virtual Date referenceDate() const = 0;
         //! returns the day counter
         virtual DayCounter dayCounter() const = 0;
-        //! the earliest date for which the term structure can return vols
-        virtual Date minDate() const = 0;
         //! the latest date for which the term structure can return vols
         virtual Date maxDate() const = 0;
         //! the latest time for which the term structure can return vols
