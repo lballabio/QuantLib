@@ -92,10 +92,10 @@ namespace QuantLib {
             // objective function for solver
             class FFObjFunction;
             friend class FFObjFunction;
-            class FFObjFunction : public ObjectiveFunction {
+            class FFObjFunction {
               public:
                 FFObjFunction(const PiecewiseFlatForward*,
-                    const Handle<RateHelper>&, int segment);
+                              const Handle<RateHelper>&, int segment);
                 double operator()(double discountGuess) const;
               private:
                 const PiecewiseFlatForward* curve_;

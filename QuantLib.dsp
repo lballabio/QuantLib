@@ -1616,15 +1616,7 @@ SOURCE=.\ql\ShortRateModels\twofactormodel.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\Solvers1D\bisection.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Solvers1D\bisection.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Solvers1D\brent.cpp
 # End Source File
 # Begin Source File
 
@@ -1632,15 +1624,7 @@ SOURCE=.\ql\Solvers1D\brent.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Solvers1D\falseposition.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Solvers1D\falseposition.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Solvers1D\newton.cpp
 # End Source File
 # Begin Source File
 
@@ -1648,23 +1632,11 @@ SOURCE=.\ql\Solvers1D\newton.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Solvers1D\newtonsafe.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Solvers1D\newtonsafe.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Solvers1D\ridder.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Solvers1D\ridder.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Solvers1D\secant.cpp
 # End Source File
 # Begin Source File
 
@@ -1990,10 +1962,6 @@ SOURCE=.\ql\scheduler.cpp
 # Begin Source File
 
 SOURCE=.\ql\scheduler.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\solver1d.cpp
 # End Source File
 # Begin Source File
 

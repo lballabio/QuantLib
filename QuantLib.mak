@@ -66,8 +66,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
 	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
-	-@erase "$(INTDIR)\bisection.obj"
-	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -76,8 +74,6 @@ CLEAN :
 	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
-	-@erase "$(INTDIR)\brent.obj"
-	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -140,8 +136,6 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
-	-@erase "$(INTDIR)\falseposition.obj"
-	-@erase "$(INTDIR)\falseposition.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -240,10 +234,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
 	-@erase "$(INTDIR)\multivariateaccumulator.sbr"
-	-@erase "$(INTDIR)\newton.obj"
-	-@erase "$(INTDIR)\newton.sbr"
-	-@erase "$(INTDIR)\newtonsafe.obj"
-	-@erase "$(INTDIR)\newtonsafe.sbr"
 	-@erase "$(INTDIR)\newyork.obj"
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
@@ -276,12 +266,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
-	-@erase "$(INTDIR)\ridder.obj"
-	-@erase "$(INTDIR)\ridder.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
-	-@erase "$(INTDIR)\secant.obj"
-	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
@@ -292,8 +278,6 @@ CLEAN :
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
-	-@erase "$(INTDIR)\solver1d.obj"
-	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -494,13 +478,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\model.sbr" \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\twofactormodel.sbr" \
-	"$(INTDIR)\bisection.sbr" \
-	"$(INTDIR)\brent.sbr" \
-	"$(INTDIR)\falseposition.sbr" \
-	"$(INTDIR)\newton.sbr" \
-	"$(INTDIR)\newtonsafe.sbr" \
-	"$(INTDIR)\ridder.sbr" \
-	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
@@ -516,7 +493,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
@@ -658,13 +634,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\model.obj" \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\twofactormodel.obj" \
-	"$(INTDIR)\bisection.obj" \
-	"$(INTDIR)\brent.obj" \
-	"$(INTDIR)\falseposition.obj" \
-	"$(INTDIR)\newton.obj" \
-	"$(INTDIR)\newtonsafe.obj" \
-	"$(INTDIR)\ridder.obj" \
-	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
@@ -680,7 +649,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -724,8 +692,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
 	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
-	-@erase "$(INTDIR)\bisection.obj"
-	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -734,8 +700,6 @@ CLEAN :
 	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
-	-@erase "$(INTDIR)\brent.obj"
-	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -798,8 +762,6 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
-	-@erase "$(INTDIR)\falseposition.obj"
-	-@erase "$(INTDIR)\falseposition.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -898,10 +860,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
 	-@erase "$(INTDIR)\multivariateaccumulator.sbr"
-	-@erase "$(INTDIR)\newton.obj"
-	-@erase "$(INTDIR)\newton.sbr"
-	-@erase "$(INTDIR)\newtonsafe.obj"
-	-@erase "$(INTDIR)\newtonsafe.sbr"
 	-@erase "$(INTDIR)\newyork.obj"
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
@@ -934,12 +892,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
-	-@erase "$(INTDIR)\ridder.obj"
-	-@erase "$(INTDIR)\ridder.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
-	-@erase "$(INTDIR)\secant.obj"
-	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
@@ -950,8 +904,6 @@ CLEAN :
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
-	-@erase "$(INTDIR)\solver1d.obj"
-	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -1153,13 +1105,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\model.sbr" \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\twofactormodel.sbr" \
-	"$(INTDIR)\bisection.sbr" \
-	"$(INTDIR)\brent.sbr" \
-	"$(INTDIR)\falseposition.sbr" \
-	"$(INTDIR)\newton.sbr" \
-	"$(INTDIR)\newtonsafe.sbr" \
-	"$(INTDIR)\ridder.sbr" \
-	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
@@ -1175,7 +1120,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
@@ -1317,13 +1261,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\model.obj" \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\twofactormodel.obj" \
-	"$(INTDIR)\bisection.obj" \
-	"$(INTDIR)\brent.obj" \
-	"$(INTDIR)\falseposition.obj" \
-	"$(INTDIR)\newton.obj" \
-	"$(INTDIR)\newtonsafe.obj" \
-	"$(INTDIR)\ridder.obj" \
-	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
@@ -1339,7 +1276,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1383,8 +1319,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
 	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
-	-@erase "$(INTDIR)\bisection.obj"
-	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -1393,8 +1327,6 @@ CLEAN :
 	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
-	-@erase "$(INTDIR)\brent.obj"
-	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -1457,8 +1389,6 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
-	-@erase "$(INTDIR)\falseposition.obj"
-	-@erase "$(INTDIR)\falseposition.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -1557,10 +1487,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
 	-@erase "$(INTDIR)\multivariateaccumulator.sbr"
-	-@erase "$(INTDIR)\newton.obj"
-	-@erase "$(INTDIR)\newton.sbr"
-	-@erase "$(INTDIR)\newtonsafe.obj"
-	-@erase "$(INTDIR)\newtonsafe.sbr"
 	-@erase "$(INTDIR)\newyork.obj"
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
@@ -1593,12 +1519,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
-	-@erase "$(INTDIR)\ridder.obj"
-	-@erase "$(INTDIR)\ridder.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
-	-@erase "$(INTDIR)\secant.obj"
-	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
@@ -1609,8 +1531,6 @@ CLEAN :
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
-	-@erase "$(INTDIR)\solver1d.obj"
-	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -1811,13 +1731,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\model.sbr" \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\twofactormodel.sbr" \
-	"$(INTDIR)\bisection.sbr" \
-	"$(INTDIR)\brent.sbr" \
-	"$(INTDIR)\falseposition.sbr" \
-	"$(INTDIR)\newton.sbr" \
-	"$(INTDIR)\newtonsafe.sbr" \
-	"$(INTDIR)\ridder.sbr" \
-	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
@@ -1833,7 +1746,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
@@ -1975,13 +1887,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\model.obj" \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\twofactormodel.obj" \
-	"$(INTDIR)\bisection.obj" \
-	"$(INTDIR)\brent.obj" \
-	"$(INTDIR)\falseposition.obj" \
-	"$(INTDIR)\newton.obj" \
-	"$(INTDIR)\newtonsafe.obj" \
-	"$(INTDIR)\ridder.obj" \
-	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
@@ -1997,7 +1902,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2041,8 +1945,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
 	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
-	-@erase "$(INTDIR)\bisection.obj"
-	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -2051,8 +1953,6 @@ CLEAN :
 	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
-	-@erase "$(INTDIR)\brent.obj"
-	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -2115,8 +2015,6 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
-	-@erase "$(INTDIR)\falseposition.obj"
-	-@erase "$(INTDIR)\falseposition.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -2215,10 +2113,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
 	-@erase "$(INTDIR)\multivariateaccumulator.sbr"
-	-@erase "$(INTDIR)\newton.obj"
-	-@erase "$(INTDIR)\newton.sbr"
-	-@erase "$(INTDIR)\newtonsafe.obj"
-	-@erase "$(INTDIR)\newtonsafe.sbr"
 	-@erase "$(INTDIR)\newyork.obj"
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
@@ -2251,12 +2145,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
-	-@erase "$(INTDIR)\ridder.obj"
-	-@erase "$(INTDIR)\ridder.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
-	-@erase "$(INTDIR)\secant.obj"
-	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
@@ -2267,8 +2157,6 @@ CLEAN :
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\sobolrsg.obj"
 	-@erase "$(INTDIR)\sobolrsg.sbr"
-	-@erase "$(INTDIR)\solver1d.obj"
-	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -2470,13 +2358,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\model.sbr" \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\twofactormodel.sbr" \
-	"$(INTDIR)\bisection.sbr" \
-	"$(INTDIR)\brent.sbr" \
-	"$(INTDIR)\falseposition.sbr" \
-	"$(INTDIR)\newton.sbr" \
-	"$(INTDIR)\newtonsafe.sbr" \
-	"$(INTDIR)\ridder.sbr" \
-	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
@@ -2492,7 +2373,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
@@ -2634,13 +2514,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\model.obj" \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\twofactormodel.obj" \
-	"$(INTDIR)\bisection.obj" \
-	"$(INTDIR)\brent.obj" \
-	"$(INTDIR)\falseposition.obj" \
-	"$(INTDIR)\newton.obj" \
-	"$(INTDIR)\newtonsafe.obj" \
-	"$(INTDIR)\ridder.obj" \
-	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
@@ -2656,7 +2529,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3531,48 +3403,6 @@ SOURCE=.\ql\ShortRateModels\twofactormodel.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Solvers1D\bisection.cpp
-
-"$(INTDIR)\bisection.obj"	"$(INTDIR)\bisection.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Solvers1D\brent.cpp
-
-"$(INTDIR)\brent.obj"	"$(INTDIR)\brent.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Solvers1D\falseposition.cpp
-
-"$(INTDIR)\falseposition.obj"	"$(INTDIR)\falseposition.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Solvers1D\newton.cpp
-
-"$(INTDIR)\newton.obj"	"$(INTDIR)\newton.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Solvers1D\newtonsafe.cpp
-
-"$(INTDIR)\newtonsafe.obj"	"$(INTDIR)\newtonsafe.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Solvers1D\ridder.cpp
-
-"$(INTDIR)\ridder.obj"	"$(INTDIR)\ridder.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Solvers1D\secant.cpp
-
-"$(INTDIR)\secant.obj"	"$(INTDIR)\secant.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\TermStructures\affinetermstructure.cpp
 
 "$(INTDIR)\affinetermstructure.obj"	"$(INTDIR)\affinetermstructure.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3660,12 +3490,6 @@ SOURCE=.\ql\option.cpp
 SOURCE=.\ql\scheduler.cpp
 
 "$(INTDIR)\scheduler.obj"	"$(INTDIR)\scheduler.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\solver1d.cpp
-
-"$(INTDIR)\solver1d.obj"	"$(INTDIR)\solver1d.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

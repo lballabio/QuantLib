@@ -100,7 +100,6 @@ libQuantLib_la_LIBADD = \
     ShortRateModels/CalibrationHelpers/libCalibrationHelpers.la \
     ShortRateModels/OneFactorModels/libOneFactorModels.la \
     ShortRateModels/TwoFactorModels/libTwoFactorModels.la \
-    Solvers1D/libSolvers1D.la \
     TermStructures/libTermStructures.la
 
 libQuantLib_la_SOURCES = \
@@ -113,7 +112,6 @@ libQuantLib_la_SOURCES = \
     grid.cpp \
     option.cpp \
     scheduler.cpp \
-    solver1d.cpp \
     voltermstructure.cpp
 
 lib_LTLIBRARIES = libQuantLib.la

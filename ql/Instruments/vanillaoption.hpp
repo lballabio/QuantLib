@@ -25,7 +25,6 @@
 
 #include <ql/option.hpp>
 #include <ql/termstructure.hpp>
-#include <ql/solver1d.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
@@ -83,7 +82,7 @@ namespace QuantLib {
             RelinkableHandle<BlackVolTermStructure> volTS_;
           private:
             // helper class for implied volatility calculation
-            class ImpliedVolHelper : public ObjectiveFunction {
+            class ImpliedVolHelper {
               public:
                 ImpliedVolHelper(const Handle<PricingEngine>& engine,
                                  double targetValue);

@@ -22,7 +22,6 @@ CORE_OBJS        = calendar.obj$(_D) \
                    grid.obj$(_D) \
                    option.obj$(_D) \
                    scheduler.obj$(_D) \
-                   solver1d.obj$(_D) \
 		           voltermstructure.obj$(_D)
 
 CALENDAR_LIB        = Calendars\Calendars$(_D).lib
@@ -42,7 +41,6 @@ OPTIMIZATION_LIB    = Optimization\Optimization$(_D).lib
 PRICER_LIB          = Pricers\Pricers$(_D).lib
 PRICING_ENGINES_LIB = PricingEngines\PricingEngines$(_D).lib
 RNG_LIB             = RandomNumbers\RandomNumbers$(_D).lib
-SOLVER1D_LIB        = Solvers1D\Solvers1D$(_D).lib
 TERMSTRUCT_LIB      = TermStructures\TermStructures$(_D).lib
 TWOFACTOR_LIB       = ShortRateModels\TwoFactorModels\TwoFactorModels$(_D).lib
 
@@ -65,7 +63,6 @@ QUANTLIB_OBJS    = \
                    $(PRICER_LIB) \
                    $(PRICING_ENGINES_LIB) \
                    $(RNG_LIB) \
-                   $(SOLVER1D_LIB) \
                    $(TERMSTRUCT_LIB) \
                    $(TWOFACTOR_LIB)
 
@@ -132,8 +129,6 @@ SubLibraries:
     $(MAKE)
     cd ..\Lattices
     $(MAKE)
-    cd ..\Solvers1D
-    $(MAKE)
     cd ..\TermStructures
     $(MAKE)
     cd ..\FiniteDifferences
@@ -187,8 +182,6 @@ clean::
     cd ..\PricingEngines
     $(MAKE) clean
     cd ..\RandomNumbers
-    $(MAKE) clean
-    cd ..\Solvers1D
     $(MAKE) clean
     cd ..\TermStructures
     $(MAKE) clean

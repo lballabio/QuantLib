@@ -23,7 +23,6 @@
 #define BSM_option_pricer_h
 
 #include <ql/option.hpp>
-#include <ql/solver1d.hpp>
 #include <ql/exercise.hpp>
 #include <ql/payoff.hpp>
 
@@ -100,8 +99,7 @@ namespace QuantLib {
             friend class DivYieldFunction;
         };
 
-        class SingleAssetOption::VolatilityFunction 
-        : public ObjectiveFunction {
+        class SingleAssetOption::VolatilityFunction {
           public:
             VolatilityFunction(const Handle<SingleAssetOption>& tempBSM,
                                double targetPrice);
@@ -111,8 +109,7 @@ namespace QuantLib {
             double targetPrice_;
         };
 
-        class SingleAssetOption::DivYieldFunction 
-        : public ObjectiveFunction {
+        class SingleAssetOption::DivYieldFunction {
           public:
            DivYieldFunction(const Handle<SingleAssetOption>& tempBSM,
                             double targetPrice);
@@ -130,7 +127,8 @@ namespace QuantLib {
             targetPrice_ = targetPrice;
         }
 
-        inline double SingleAssetOption::VolatilityFunction::operator()(double x) const {
+        inline double 
+        SingleAssetOption::VolatilityFunction::operator()(double x) const {
             bsm -> setVolatility(x);
             return (bsm -> value() - targetPrice_);
         }
@@ -143,7 +141,8 @@ namespace QuantLib {
             targetPrice_ = targetPrice;
         }
 
-        inline double SingleAssetOption::DivYieldFunction::operator()(double x) const {
+        inline double 
+        SingleAssetOption::DivYieldFunction::operator()(double x) const {
             bsm -> setDividendYield(x);
             return (bsm -> value() - targetPrice_);
         }

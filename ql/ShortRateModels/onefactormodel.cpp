@@ -30,7 +30,7 @@ namespace QuantLib {
         using namespace Lattices;
 
         //Private function used by solver to determine time-dependent parameter
-        class OneFactorModel::ShortRateTree::Helper : public ObjectiveFunction {
+        class OneFactorModel::ShortRateTree::Helper {
           public:
             Helper(
                 Size i,

@@ -106,7 +106,7 @@ namespace QuantLib {
             return (1.0 - QL_EXP(-x*t))/x;
         }
 
-        class G2::SwaptionPricingFunction : public ObjectiveFunction {
+        class G2::SwaptionPricingFunction {
           public:
             SwaptionPricingFunction(
                 double a, double sigma, double b, double eta, double rho, 
@@ -168,7 +168,7 @@ namespace QuantLib {
 
 
           private:
-            class SolvingFunction : public ObjectiveFunction {
+            class SolvingFunction {
               public:
                 SolvingFunction(const Array& lambda, const Array& Bb) 
                 : lambda_(lambda), Bb_(Bb) {}

@@ -29,7 +29,7 @@ namespace QuantLib {
         using namespace ShortRateModels;
         using Instruments::SwaptionArguments;
 
-        class JamshidianSwaption::rStarFinder : public ObjectiveFunction {
+        class JamshidianSwaption::rStarFinder {
           public:
             rStarFinder(const SwaptionArguments &params,
                         const Handle<OneFactorAffineModel>& model,

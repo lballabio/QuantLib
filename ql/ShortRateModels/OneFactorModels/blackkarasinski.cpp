@@ -30,7 +30,7 @@ namespace QuantLib {
         using namespace Lattices;
 
         //Private function used by solver to determine time-dependent parameter
-        class BlackKarasinski::Helper : public ObjectiveFunction {
+        class BlackKarasinski::Helper {
           public:
             Helper(Size i, double xMin, double dx,
                    double discountBondPrice, 

@@ -29,13 +29,51 @@ namespace QuantLib {
     namespace Solvers1D {
 
         //! %bisection 1-D solver
-        class Bisection : public Solver1D {
-          protected:
-            double solve_(const ObjectiveFunction& f, double xAccuracy) const;
+        class Bisection : public Solver1D<Bisection> {
+          public:
+            template <class F>
+            double solveImpl(const F& f, double xAccuracy) const {
+
+                /* The implementation of the algorithm was inspired by
+                   Press, Teukolsky, Vetterling, and Flannery,
+                   "Numerical Recipes in C", 2nd edition, Cambridge
+                   University Press
+                */
+
+                double dx, xMid, fMid;
+
+                // Orient the search so that f>0 lies at root_+dx
+                if (fxMin_ < 0.0) {
+                    dx = xMax_-xMin_;
+                    root_ = xMin_;
+                } else {
+                    dx = xMin_-xMax_;
+                    root_ = xMax_;
+                }
+
+                while (evaluationNumber_<=maxEvaluations_) {
+                    dx /= 2.0;
+                    xMid=root_+dx;
+                    fMid=f(xMid);
+                    evaluationNumber_++;
+                    if (fMid <= 0.0)
+                        root_=xMid;
+                    if (QL_FABS(dx) < xAccuracy || fMid == 0.0) {
+                        return root_;
+                    }
+                }
+                throw Error("Bisection::solveImpl: "
+                            "maximum number of function evaluations (" +
+                            IntegerFormatter::toString(maxEvaluations_) +
+                            ") exceeded");
+
+                QL_DUMMY_RETURN(0.0);
+            }
         };
 
     }
 
 }
+
 
 #endif

@@ -28,7 +28,7 @@ using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 
 // This will be included in the library after a bit of redesign
-class WeightedPayoff : public QL::ObjectiveFunction{
+class WeightedPayoff {
     public:
         WeightedPayoff(Option::Type type,
                Time maturity,

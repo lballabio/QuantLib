@@ -31,7 +31,7 @@ using namespace QuantLib::Solvers1D;
 
 namespace {
 
-    class Foo : public ObjectiveFunction {
+    class Foo {
       public:
         double operator()(double x) const { return x*x-1.0; }
         double derivative(double x) const { return 2.0*x; }

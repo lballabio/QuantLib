@@ -26,8 +26,7 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
-        class CalibrationHelper::ImpliedVolatilityHelper
-        : public ObjectiveFunction {
+        class CalibrationHelper::ImpliedVolatilityHelper {
           public:
             ImpliedVolatilityHelper(const CalibrationHelper& helper,
                                     double value)
