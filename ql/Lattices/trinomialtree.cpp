@@ -53,7 +53,7 @@ namespace QuantLib {
                 for (j=jMin(i); j<=jMax(i); j++) {
                     double x = x0 + j*dx(i);
                     double m = process->expectation(t(i), x, dt(i));
-                    int temp = (int)std::floor((m-x0)/dx(i+1) + 0.5);
+                    int temp = (int)QL_FLOOR((m-x0)/dx(i+1) + 0.5);
                     if (isPositive) {
                         while (x0+(temp-1)*dx(i+1)<=0) {
                             temp++;

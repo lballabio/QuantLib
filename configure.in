@@ -22,7 +22,7 @@ AC_LANG_CPLUSPLUS
 AM_PROG_LIBTOOL
 
 if test "$GXX" = yes; then
-    CXXFLAGS="-g -Wall -O2"
+    CXXFLAGS="-g -O2 -pedantic -Wall"
 else
     CXXFLAGS=""
 fi
@@ -97,6 +97,7 @@ QL_CHECK_FUNCTION([sin],[$ql_math],[2])
 QL_CHECK_FUNCTION([cos],[$ql_math],[2])
 QL_CHECK_FUNCTION([pow],[$ql_math],[2,2])
 QL_CHECK_FUNCTION([modf],[$ql_math],[2,&x])
+QL_CHECK_FUNCTION([floor],[$ql_math],[2])
 
 if test $ac_cv_header_cctype = yes ; then
   ql_ctype=cctype

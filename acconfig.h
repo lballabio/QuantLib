@@ -7,6 +7,7 @@
 #undef QL_COS
 #undef QL_POW
 #undef QL_MODF
+#undef QL_FLOOR
 #undef QL_STRLEN
 #undef QL_TOLOWER
 #undef QL_TOUPPER
