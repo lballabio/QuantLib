@@ -92,7 +92,7 @@ namespace QuantLib {
             void add(const sequence_type& sample,
                      double weight = 1.0);
 
-            template <class SequenceType,class StatisticsType, class Iterator>
+            template <class Iterator>
             void iteratorAdd(Iterator begin,
                              Iterator end,
                              double weight = 1.0) {
@@ -112,12 +112,12 @@ namespace QuantLib {
         // macros for the implementation of the "inherited" methods
 
         // N-D methods' definition with void argument list
-        #define DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(method) \
+        #define DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(METHOD) \
         template <class Seq, class Stat> \
         SequenceStatistics<Seq, Stat>::sequence_type \
-        SequenceStatistics<Seq, Stat>::##method() const { \
+        SequenceStatistics<Seq, Stat>::METHOD() const { \
             for (Size i=0; i<dimension_; i++) \
-                results_[i] = stats_[i].##method(); \
+                results_[i] = stats_[i].METHOD(); \
             return results_; \
         }
         DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(mean)
@@ -134,12 +134,12 @@ namespace QuantLib {
 
 
         // N-D methods' definition with single double argument list
-        #define DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(method) \
+        #define DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(METHOD) \
         template <class Seq, class Stat> \
         SequenceStatistics<Seq, Stat>::sequence_type \
-        SequenceStatistics<Seq, Stat>::##method(double x) const { \
+        SequenceStatistics<Seq, Stat>::METHOD(double x) const { \
             for (Size i=0; i<dimension_; i++) \
-                results_[i] = stats_[i].##method(double x); \
+                results_[i] = stats_[i].METHOD(x); \
             return results_; \
         }
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(percentile)
