@@ -99,7 +99,6 @@ namespace QuantLib {
     }
 
 
-
     double Solver1D::solve(const ObjectiveFunction& f,
                            double xAccuracy,
                            double guess,
@@ -131,9 +130,10 @@ namespace QuantLib {
 
         evaluationNumber_ = 2;
 
+
         QL_REQUIRE((fxMin_*fxMax_ < 0.0),  "root not bracketed: f[" +
-                    DoubleFormatter::toString(xMin_) + "," +
-                    DoubleFormatter::toString(xMax_) + "] -> [" +
+                    DoubleFormatter::toString(xMin_,10) + "," +
+                    DoubleFormatter::toString(xMax_,10) + "] -> [" +
                     DoubleFormatter::toString(fxMin_,20) + "," +
                     DoubleFormatter::toString(fxMax_,20) + "]");
 
