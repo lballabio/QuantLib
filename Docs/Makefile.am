@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.16  2001/07/26 08:27:00  nando
+# wrong path bug fixed
+#
 # Revision 1.15  2001/07/24 16:59:33  nando
 # documentation revised
 #
@@ -27,9 +30,9 @@ EXTRA_DIST = makefile.mak \
 
 docs-html:
 	$(DOXYGEN) quantlib.linux.doxy
-	cp *.jpg html
-	cp *.eps latex
-	cp *.pdf latex
+	cp images/*.jpg html
+	cp images/*.eps latex
+	cp images/*.pdf latex
 docs-ps: docs-html
 	$(MAKE) -C latex ps
 docs-pdf: docs-html
@@ -39,4 +42,3 @@ docs-clean:
 	rm -Rf man
 	rm -Rf html
 	rm -Rf latex
-
