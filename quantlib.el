@@ -44,9 +44,10 @@
                 "Integer" "BigInteger" "Natural" "BigNatural" "Real" "Decimal"
                 "Time" "Rate" "Spread" "DiscountFactor" "Size" "Volatility"
                 "Date" "Day" "Month" "Year" "Weekday"
-                "TimeUnit" "Frequency" "Period" "DayCounter"
+                "TimeUnit" "Frequency" "Compounding" "Period" "DayCounter"
                 "Calendar" "BusinessDayConvention" "RollingConvention"
                 "Currency" "ExchangeRate" "Money" "Rounding"
+                "InterestRate"
                 "History"
                 "Handle" "RelinkableHandle")))
 ; from Boost:
