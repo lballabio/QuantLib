@@ -174,7 +174,14 @@ namespace QuantLib {
                 }
             }
             // bracket
-            DiscountFactor min = accuracy_*1.0e-3, max = discounts_[i-1];
+            DiscountFactor min = accuracy_*1.0e-3;
+            #if defined(QL_NEGATIVE_RATES)
+            // discount are not required to be decreasing--all bets are off.
+            // We choose as max a value very unlikely to be exceeded.
+            DiscountFactor max = 3.0;
+            #else
+            DiscountFactor max = discounts_[i-1];
+            #endif
             solver.solve(FFObjFunction(this,instrument,i),
                          accuracy_,guess,min,max);
         }
