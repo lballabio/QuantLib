@@ -25,6 +25,9 @@
 /*! \file riskmeasures.hpp
     $Source$
     $Log$
+    Revision 1.6  2001/06/11 16:42:49  aleppo
+    Changed name Front to Side
+
     Revision 1.5  2001/06/11 16:40:24  aleppo
     Changed name Front to SIde
 
@@ -81,7 +84,7 @@ namespace QuantLib {
 
         // inline definitions
         /*! \pre percentile must be in range 90%-100% */
-        inline double RiskMeasures::potentialUpside(double percentile,
+        inline double RiskMeasures::potentialUpSide(double percentile,
                                                      double mean,
                                                      double std) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
