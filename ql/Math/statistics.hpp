@@ -133,57 +133,63 @@ namespace QuantLib {
             QL_REQUIRE(weight>=0.0,
                 "Statistics::add : negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
-          sampleNumber_ += 1;
-          sampleWeight_ += weight;
-          double temp = weight*value;
-          sum_ += temp;
-          temp *= value;
-          quadraticSum_ += temp;
-          downsideQuadraticSum_ += value < 0.0 ? temp : 0.0;
-          temp *= value;
-          cubicSum_ += temp;
-          temp *= value;
-          fourthPowerSum_ += temp;
-          min_=QL_MIN(value, min_);
-          max_=QL_MAX(value, max_);
+
+            size_t oldSamples = sampleNumber_;
+            sampleNumber_++;
+            QL_ENSURE(sampleNumber_ > oldSamples,
+                      "Statistics::add : maximum number of samples reached");
+
+            sampleWeight_ += weight;
+
+            double temp = weight*value;
+            sum_ += temp;
+            temp *= value;
+            quadraticSum_ += temp;
+            downsideQuadraticSum_ += value < 0.0 ? temp : 0.0;
+            temp *= value;
+            cubicSum_ += temp;
+            temp *= value;
+            fourthPowerSum_ += temp;
+            min_=QL_MIN(value, min_);
+            max_=QL_MAX(value, max_);
         }
 
         inline size_t Statistics::samples() const {
-          return sampleNumber_;
+            return sampleNumber_;
         }
 
         inline double Statistics::weightSum() const {
-          return sampleWeight_;
+            return sampleWeight_;
         }
 
         inline double Statistics::mean() const {
-          QL_REQUIRE(sampleWeight_>0.0,
-            "Stat::mean() : sampleWeight_=0, unsufficient");
-          return sum_/sampleWeight_;
+            QL_REQUIRE(sampleWeight_>0.0,
+                       "Stat::mean() : sampleWeight_=0, unsufficient");
+            return sum_/sampleWeight_;
         }
 
         inline double Statistics::variance() const {
-          QL_REQUIRE(sampleWeight_>0.0,
-            "Stat::variance() : sampleWeight_=0, unsufficient");
-          QL_REQUIRE(sampleNumber_>1,
-            "Stat::variance() : sample number <=1, unsufficient");
+            QL_REQUIRE(sampleWeight_>0.0,
+                       "Stat::variance() : sampleWeight_=0, unsufficient");
+            QL_REQUIRE(sampleNumber_>1,
+                       "Stat::variance() : sample number <=1, unsufficient");
 
-          return (sampleNumber_/(sampleNumber_-1.0))*
-            (quadraticSum_ - sum_*sum_/sampleWeight_)/sampleWeight_;
+            return (sampleNumber_/(sampleNumber_-1.0))*
+                (quadraticSum_ - sum_*sum_/sampleWeight_)/sampleWeight_;
         }
 
         inline double Statistics::standardDeviation() const {
-          return QL_SQRT(variance());
+            return QL_SQRT(variance());
         }
 
         inline double Statistics::downsideDeviation() const {
-          QL_REQUIRE(sampleWeight_>0.0,
-            "Stat::variance() : sampleWeight_=0, unsufficient");
-          QL_REQUIRE(sampleNumber_>1,
-            "Stat::variance() : sample number <=1, unsufficient");
+            QL_REQUIRE(sampleWeight_>0.0,
+                       "Stat::variance() : sampleWeight_=0, unsufficient");
+            QL_REQUIRE(sampleNumber_>1,
+                       "Stat::variance() : sample number <=1, unsufficient");
 
-          return QL_SQRT(sampleNumber_/(sampleNumber_-1.0)*
-                                 downsideQuadraticSum_ /sampleWeight_);
+            return QL_SQRT(sampleNumber_/(sampleNumber_-1.0)*
+                           downsideQuadraticSum_ /sampleWeight_);
         }
 
         inline double Statistics::errorEstimate() const {
@@ -195,47 +201,47 @@ namespace QuantLib {
                        "Statistics: variance, " +
                        DoubleFormatter::toString(var,20)
                        +" is NEGATIVE");
-          return QL_SQRT(var/samples());
+            return QL_SQRT(var/samples());
         }
 
         inline double Statistics::skewness() const {
-          QL_REQUIRE(sampleNumber_>2,
-            "Stat::skewness() : sample number <=2, unsufficient");
-          double s = standardDeviation();
-          QL_ENSURE(s>0.0,
-            "Stat::skewness() : standard_dev=0.0, skew undefined");
-          double m = mean();
+            QL_REQUIRE(sampleNumber_>2,
+                       "Stat::skewness() : sample number <=2, unsufficient");
+            double s = standardDeviation();
+            QL_ENSURE(s>0.0,
+                      "Stat::skewness() : standard_dev=0.0, skew undefined");
+            double m = mean();
 
-          return sampleNumber_*sampleNumber_/
-            ((sampleNumber_-1.0)*(sampleNumber_-2.0)*s*s*s)*
-            (cubicSum_-3.0*m*quadraticSum_+2.0*m*m*sum_)/sampleWeight_;
+            return sampleNumber_*sampleNumber_/
+                ((sampleNumber_-1.0)*(sampleNumber_-2.0)*s*s*s)*
+                (cubicSum_-3.0*m*quadraticSum_+2.0*m*m*sum_)/sampleWeight_;
         }
 
         inline double Statistics::kurtosis() const {
-          QL_REQUIRE(sampleNumber_>3,
-            "Stat::kurtosis() : sample number <=3, unsufficient");
-          double m = mean();
-          double v = variance();
-          QL_ENSURE(v>0.0,
-            "Stat::kurtosis() : variance=0.0, kurtosis undefined");
+            QL_REQUIRE(sampleNumber_>3,
+                       "Stat::kurtosis() : sample number <=3, unsufficient");
+            double m = mean();
+            double v = variance();
+            QL_ENSURE(v>0.0,
+                      "Stat::kurtosis() : variance=0.0, kurtosis undefined");
 
-          return sampleNumber_*sampleNumber_*(sampleNumber_+1.0) /
-            ((sampleNumber_-1.0)*(sampleNumber_-2.0) *
-            (sampleNumber_-3.0)*v*v) *
-            (fourthPowerSum_ - 4.0*m*cubicSum_ + 6.0*m*m*quadraticSum_ -
-            3.0*m*m*m*sum_)/sampleWeight_ -
-            3.0*(sampleNumber_-1.0)*(sampleNumber_-1.0) /
-            ((sampleNumber_-2.0)*(sampleNumber_-3.0));
+            return sampleNumber_*sampleNumber_*(sampleNumber_+1.0) /
+                ((sampleNumber_-1.0)*(sampleNumber_-2.0) *
+                 (sampleNumber_-3.0)*v*v) *
+                (fourthPowerSum_ - 4.0*m*cubicSum_ + 6.0*m*m*quadraticSum_ -
+                 3.0*m*m*m*sum_)/sampleWeight_ -
+                3.0*(sampleNumber_-1.0)*(sampleNumber_-1.0) /
+                ((sampleNumber_-2.0)*(sampleNumber_-3.0));
         }
 
         inline double Statistics::min() const {
-          QL_REQUIRE(sampleNumber_>0, "Stat::min_() : empty sample");
-          return min_;
+            QL_REQUIRE(sampleNumber_>0, "Stat::min_() : empty sample");
+            return min_;
         }
 
         inline double Statistics::max() const {
-          QL_REQUIRE(sampleNumber_>0, "Stat::max_() : empty sample");
-          return max_;
+            QL_REQUIRE(sampleNumber_>0, "Stat::max_() : empty sample");
+            return max_;
         }
 
     }
