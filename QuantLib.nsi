@@ -15,13 +15,13 @@
     Name "QuantLib Light"
     Caption "QuantLib Light - Setup"
     #do not change the name below
-    OutFile "..\QuantLib-0.2.1a2-light-inst.exe"
+    OutFile "..\QuantLib-0.2.1a3-light-inst.exe"
     ComponentText "This will install QuantLib Light on your computer.$\n A more complete version including documentation, examples, source code, etc. can be downloaded from http://quantlib.org"
 !else
     Name "QuantLib"
     Caption "QuantLib - Setup"
     #do not change the name below
-    OutFile "..\QuantLib-0.2.1a2-full-inst.exe"
+    OutFile "..\QuantLib-0.2.1a3-full-inst.exe"
 
     InstType "Full (w/ Source Code)"
     InstType Typical
