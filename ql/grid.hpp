@@ -49,6 +49,34 @@ namespace QuantLib {
         TimeGrid(Time end, Size steps);
         //! Time grid with mandatory time points
         /*! Mandatory points are guaranteed to belong to the grid.
+            No additional points are added.
+        */
+        template <class Iterator>
+        TimeGrid(Iterator begin, Iterator end)
+        #if defined(QL_FULL_ITERATOR_SUPPORT)
+        : mandatoryTimes_(begin, end) {
+        #else
+        {
+            while (begin != end)
+                mandatoryTimes_.push_back(*(begin++));
+        #endif
+            std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
+            std::vector<Time>::iterator e = 
+                std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
+            mandatoryTimes_.resize(e - mandatoryTimes_.begin());
+
+            if (mandatoryTimes_[0] > 0.0)
+                push_back(0.0);
+
+            std::copy(mandatoryTimes_.begin(),mandatoryTimes_.end(),
+                      std::back_inserter(*this));
+
+            std::adjacent_difference(this->begin()+1,this->end(),
+                                     std::back_inserter(dt_));
+
+        }
+        //! Time grid with mandatory time points
+        /*! Mandatory points are guaranteed to belong to the grid.
             Additional points are then added with regular spacing
             between pairs of mandatory times in order to reach the
             desired number of steps.
@@ -91,25 +119,25 @@ namespace QuantLib {
                                                    t++) {
                 Time periodEnd = *t;
                 if (periodEnd != 0.0) {
-                    Size nSteps = Size((periodEnd - periodBegin)/dtMax + 1.0);
+                    // the nearest integer
+                    Size nSteps = Size((periodEnd - periodBegin)/dtMax+0.5);
+                    // at least one time step!
+                    nSteps = (nSteps!=0 ? nSteps : 1);
                     double dt = (periodEnd - periodBegin)/nSteps;
                     for (Size n=1; n<=nSteps; n++)
                         push_back(periodBegin + n*dt);
                 }
-                mandatoryTimeIndex_.push_back(size()-1);
                 periodBegin = periodEnd;
             }
 
             std::adjacent_difference(this->begin()+1,this->end(),
                                      std::back_inserter(dt_));
         }
-
         Size findIndex(Time t) const;
-
+        const std::vector<Time>& mandatoryTimes() const { return mandatoryTimes_; }
         Time dt(Size i) const;
       private:
         std::vector<Time> dt_;
-        std::vector<Size> mandatoryTimeIndex_;
         std::vector<Time> mandatoryTimes_;
     };
 
@@ -127,8 +155,6 @@ namespace QuantLib {
 
         mandatoryTimes_ = std::vector<Time>(1);
         mandatoryTimes_[0] = end;
-        mandatoryTimeIndex_ = std::vector<Size>(1);
-        mandatoryTimeIndex_[0] = steps;
 
         dt_ = std::vector<Time>(steps,dt);
     }
