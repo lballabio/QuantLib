@@ -1,13 +1,15 @@
 
+DISTRIBUTING
+    QuantLib-docs Win32 NSIS installer
+    RPM package
+
 COMPILING
     borland compiler build tree indipendent from source tree
     gnu compiler (make) build tree indipendent from source tree
-    reduce compiler warnings as much as possible
     understand why updateproject.sh does not work under cygwin
     check compile success/failure on cygwin
     check compile success/failure on (SourceForge compile farm)
     check compile success/failure on other platforms/compilers
-    RPM package
 
 LIBRARY
     QuantLib dynamic Win32 library (QuantLib.dll)
@@ -21,7 +23,7 @@ LIBRARY
     revisite model/slice interface
     add historicalvolatility to RiskMeasures
     handle library versioning to allow multiple installed versions
-    rename all files/dirs to lowercase no spaces
+    rename all files/dirs to lowercase no spaces (except INSTALL, TODO?)
 
 DOCUMENTATION
     enforce file&classes DoxyGen requirements
@@ -33,6 +35,6 @@ DOCUMENTATION
     add CVS reference to DoxyGen
     add Coding standards reference to DoxyGen
     add status.html content into DoxyGen documentation
-    add Debian mention to DoxyGen
+    add Debian package mention to DoxyGen
     insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
     add mailing list reference to DoxyGen
