@@ -2230,6 +2230,12 @@
 				RelativePath="ql\Indexes\gbplibor.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Indexes\indexmanager.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Indexes\indexmanager.hpp">
+			</File>
+			<File
 				RelativePath="ql\Indexes\jpylibor.hpp">
 			</File>
 			<File
@@ -5243,6 +5249,9 @@
 			</File>
 			<File
 				RelativePath="ql\Patterns\observable.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Patterns\singleton.hpp">
 			</File>
 			<File
 				RelativePath="ql\Patterns\visitor.hpp">
@@ -9492,6 +9501,34 @@
 				RelativePath="ql\Volatilities\swaptionvolmatrix.hpp">
 			</File>
 		</Filter>
+		<Filter
+			Name="Currencies"
+			Filter="">
+			<File
+				RelativePath=".\ql\Currencies\africa.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Currencies\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Currencies\america.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Currencies\asia.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Currencies\europe.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Currencies\exchangeratemanager.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\Currencies\exchangeratemanager.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Currencies\oceania.hpp">
+			</File>
+		</Filter>
 		<File
 			RelativePath="ql\argsandresults.hpp">
 		</File>
@@ -9641,6 +9678,9 @@
 		</File>
 		<File
 			RelativePath="ql\core.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\currency.cpp">
 		</File>
 		<File
 			RelativePath="ql\currency.hpp">
@@ -9967,6 +10007,12 @@
 			RelativePath="ql\errors.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\exchangerate.cpp">
+		</File>
+		<File
+			RelativePath=".\ql\exchangerate.hpp">
+		</File>
+		<File
 			RelativePath="ql\exercise.cpp">
 			<FileConfiguration
 				Name="Debug MTDLL|Win32">
@@ -10100,6 +10146,12 @@
 		</File>
 		<File
 			RelativePath="ql\instrument.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\money.cpp">
+		</File>
+		<File
+			RelativePath=".\ql\money.hpp">
 		</File>
 		<File
 			RelativePath="ql\null.hpp">
