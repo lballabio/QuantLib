@@ -36,7 +36,6 @@ namespace QuantLib {
 
         //! base class for libor indexes
         class Xibor : public Index,
-                      public Patterns::Observable,
                       public Patterns::Observer {
           public:
             Xibor(const std::string& familyName,
@@ -51,7 +50,9 @@ namespace QuantLib {
               currency_(currency), calendar_(calendar),
               isAdjusted_(isAdjusted),
               rollingConvention_(rollingConvention),
-              dayCounter_(dayCounter), termStructure_(h) {}
+              dayCounter_(dayCounter), termStructure_(h) {
+                registerWith(h);
+            }
             //! \name Index interface
             //@{
             Rate fixing(const Date& fixingDate) const;

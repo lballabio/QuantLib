@@ -30,6 +30,7 @@
 #include <ql/calendar.hpp>
 #include <ql/currency.hpp>
 #include <ql/daycounter.hpp>
+#include <ql/Patterns/observable.hpp>
 
 /*! \namespace QuantLib::Indexes
     \brief Concrete implementations of the Index interface
@@ -40,7 +41,7 @@
 namespace QuantLib {
 
     //! purely virtual base class for indexes
-    class Index {
+    class Index : public Patterns::Observable {
       public:
         virtual ~Index() {}
         //! Returns the name of the index.
