@@ -106,6 +106,7 @@ libQuantLib_la_LIBADD = \
     RandomNumbers/libRandomNumbers.la \
     ShortRateModels/libShortRateModels.la \
     TermStructures/libTermStructures.la \
+    Utilities/libUtilities.la \
     Volatilities/libVolatilities.la
 
 libQuantLib_la_SOURCES = \
@@ -122,6 +123,5 @@ libQuantLib_la_SOURCES = \
     interestrate.cpp \
     money.cpp \
     schedule.cpp \
-    settings.cpp \
 	stochasticprocess.cpp \
     voltermstructure.cpp

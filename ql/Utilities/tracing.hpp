@@ -22,14 +22,20 @@
 #ifndef quantlib_tracing_hpp
 #define quantlib_tracing_hpp
 
-#include <ql/qldefines.hpp>
-#include <boost/noncopyable.hpp>
+#include <ql/Patterns/singleton.hpp>
 #include <iosfwd>
 
 namespace QuantLib {
 
-    //! placeholder for tracing level enumeration
-    struct Tracing {
+    //! tracing class
+    /*! \test the facility is tested by comparing actual output
+              against expected traces.
+    */
+    class Tracing : public Singleton<Tracing> {
+        friend class Singleton<Tracing>;
+      private:
+        Tracing();
+      public:
         //! trace level
         enum Level { Severe,   //!< Trace a possible error
                      Warning,  //!< Trace something fishy
@@ -39,36 +45,25 @@ namespace QuantLib {
                      Finest,   //!< Detailed tracing information
                      All       //!< Trace everything
         };
-    };
-
-    //! tracing class
-    /*! \test the facility is tested by comparing actual output
-              against expected traces.
-    */
-    class Tracer : public boost::noncopyable {
-        friend class Settings;
-      private:
-        Tracer() {}
-      public:
         //! \name Modifiers
         //@{
         void enable() { enabled_ = true; }
         void disable() { enabled_ = false; }
-        void setLevel(Tracing::Level level) { level_ = level; }
+        void setLevel(Level level) { level_ = level; }
         void setStream(std::ostream& stream) { out_ = &stream; }
         //@}
         /*! \name Inspectors
             \warning Do not use these methods directly; use the
-                     QL_TRACE macro instead
+                     provided QL_TRACE* macros instead
         */
         //@{
         bool enabled() const { return enabled_; }
-        Tracing::Level level() const { return level_; }
+        Level level() const { return level_; }
         std::ostream& stream() { return *out_; }
         //@}
       private:
         std::ostream* out_;
-        Tracing::Level level_;
+        Level level_;
         bool enabled_;
     };
 
@@ -97,7 +92,7 @@ namespace QuantLib {
     tracing was disabled during configuration, such statements are
     removed by the preprocessor for maximum performance; if it was
     enabled, whether and where the message is output depends on the
-    current settings (see the Settings class.)
+    current settings.
 */
 
 /*! @} */
@@ -106,7 +101,7 @@ namespace QuantLib {
 
 #if defined(QL_ENABLE_TRACING)
 
-#define QL_DEFAULT_TRACER   QuantLib::Settings::instance().tracing()
+#define QL_DEFAULT_TRACER   QuantLib::Tracing::instance()
 
 #define QL_TRACE(traceLevel,message) \
 if (QL_DEFAULT_TRACER.enabled() && traceLevel <= QL_DEFAULT_TRACER.level()) \

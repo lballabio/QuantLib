@@ -17,7 +17,7 @@
 
 #include "tracing.hpp"
 #include "utilities.hpp"
-#include <ql/settings.hpp>
+#include <ql/Utilities/tracing.hpp>
 #include <sstream>
 
 using namespace QuantLib;
@@ -28,22 +28,22 @@ namespace {
     std::ostream* original;
 
     void setup() {
-        original = &(Settings::instance().tracing().stream());
+        original = &(Tracing::instance().stream());
     }
 
     void teardown() {
-        Settings::instance().tracing().setStream(*original);
+        Tracing::instance().setStream(*original);
     }
 
     void testTraceOutput(bool enable, Tracing::Level level,
                          const std::string& result) {
         std::ostringstream output;
         if (enable)
-            Settings::instance().tracing().enable();
+            Tracing::instance().enable();
         else
-            Settings::instance().tracing().disable();
-        Settings::instance().tracing().setLevel(level);
-        Settings::instance().tracing().setStream(output);
+            Tracing::instance().disable();
+        Tracing::instance().setLevel(level);
+        Tracing::instance().setStream(output);
         QL_TRACE(Tracing::Warning, "W");
         QL_TRACE(Tracing::Info,    "I");
         QL_TRACE(Tracing::Finest,  "F");

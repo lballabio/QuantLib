@@ -15,18 +15,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/settings.hpp>
+#include <ql/Utilities/tracing.hpp>
 #include <iostream>
 
 namespace QuantLib {
 
-    Settings::Settings() {
-        evaluationDateGuard_ = boost::shared_ptr<Observable>(new Observable);
-        tracing_.enable();
-        tracing_.setLevel(Tracing::Info);
-        tracing_.setStream(std::cerr);
-    }
+    // defined here in order not to include the full <iostream> in the header
+
+    Tracing::Tracing()
+    : out_(&std::cerr), level_(Tracing::Info), enabled_(false) {}
 
 }
-
 
