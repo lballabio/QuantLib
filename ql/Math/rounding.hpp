@@ -30,26 +30,27 @@ namespace QuantLib {
     class Rounding {
       public:
         //! rounding methods
-        /*! The rounding methods follow the OMG specification available 
+        /*! The rounding methods follow the OMG specification available
             at ftp://ftp.omg.org/pub/docs/formal/00-06-29.pdf
 
-            \warning the names of the Floor and Ceiling methods might 
+            \warning the names of the Floor and Ceiling methods might
                      be misleading
         */
         enum Type {
             None,    /*!< do not round: return the number unmodified */
-            Up,      /*!< the first decimal place past the precision will be 
+            Up,      /*!< the first decimal place past the precision will be
                           rounded up. This differs from the OMG rule which
                           rounds up only if the decimal to be rounded is
-                          greater than the rounding digit */
-            Down,    /*!< all decimal places past the precision will be 
+                          greater than or equal to the rounding digit */
+            Down,    /*!< all decimal places past the precision will be
                           truncated */
-            Closest, /*!< the first decimal place past the precision will be 
-                          rounded up if greater than the rounding digit;
-                          this corresponds to the OMG round-up rule.
-                          When the rounding digit is 5, the result will be
-                          the one closest to the original number, hence
-                          the name. */
+            Closest, /*!< the first decimal place past the precision
+                          will be rounded up if greater than or equal
+                          to the rounding digit; this corresponds to
+                          the OMG round-up rule.  When the rounding
+                          digit is 5, the result will be the one
+                          closest to the original number, hence the
+                          name. */
             Floor,   /*!< positive numbers will be rounded up and negative
                           numbers will be rounded down using the OMG round up
                           and round down rules */
@@ -57,18 +58,53 @@ namespace QuantLib {
                           numbers will be rounded up using the OMG round up
                           and round down rules */
         };
-        Rounding() {}
+        //! default constructor
+        /*! Instances built through this constructor don't perform
+            any rounding.
+        */
+        Rounding()
+        : type_(None) {}
         Rounding(Integer precision,
                  Type type = Closest,
                  Integer digit = 5)
         : precision_(precision), type_(type), digit_(digit) {}
+        //! perform rounding
         Decimal operator()(Decimal value) const;
+        //! \name Inspectors
+        //@{
+        Integer precision() const { return precision_; }
+        Type type() const { return type_; }
+        Integer roundingDigit() const { return digit_; }
       private:
         Integer precision_;
         Type type_;
         Integer digit_;
     };
 
+
+    //! Up-rounding.
+    class UpRounding : public Rounding {
+      public:
+        UpRounding(Integer precision,
+                   Integer digit = 5)
+        : Rounding(precision,Up,digit) {}
+    };
+
+    //! Down-rounding.
+    class DownRounding : public Rounding {
+      public:
+        DownRounding(Integer precision,
+                     Integer digit = 5)
+        : Rounding(precision,Down,digit) {}
+    };
+
+    //! Closest rounding.
+    class ClosestRounding : public Rounding {
+      public:
+        ClosestRounding(Integer precision,
+                        Integer digit = 5)
+        : Rounding(precision,Closest,digit) {}
+    };
 
     //! Ceiling truncation.
     class CeilingTruncation : public Rounding {

@@ -66,11 +66,11 @@ void RoundingTest::testClosest() {
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
-        Rounding closest(digits, Rounding::Closest);
+        ClosestRounding closest(digits);
         Real calculated = closest(testData[i].x);
         Real expected = testData[i].closest;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " + 
+            BOOST_FAIL("Original number: " +
                        DecimalFormatter::toString(testData[i].x,8) + "\n"
                        "Expected:        " +
                        DecimalFormatter::toString(expected,digits) + "\n"
@@ -85,11 +85,11 @@ void RoundingTest::testUp() {
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
-        Rounding up(digits, Rounding::Up);
+        UpRounding up(digits);
         Real calculated = up(testData[i].x);
         Real expected = testData[i].up;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " + 
+            BOOST_FAIL("Original number: " +
                        DecimalFormatter::toString(testData[i].x,8) + "\n"
                        "Expected:        " +
                        DecimalFormatter::toString(expected,digits) + "\n"
@@ -104,11 +104,11 @@ void RoundingTest::testDown() {
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
-        Rounding down(digits, Rounding::Down);
+        DownRounding down(digits);
         Real calculated = down(testData[i].x);
         Real expected = testData[i].down;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " + 
+            BOOST_FAIL("Original number: " +
                        DecimalFormatter::toString(testData[i].x,8) + "\n"
                        "Expected:        " +
                        DecimalFormatter::toString(expected,digits) + "\n"
@@ -123,11 +123,11 @@ void RoundingTest::testFloor() {
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
-        Rounding floor(digits, Rounding::Floor);
+        FloorTruncation floor(digits);
         Real calculated = floor(testData[i].x);
         Real expected = testData[i].floor;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " + 
+            BOOST_FAIL("Original number: " +
                        DecimalFormatter::toString(testData[i].x,8) + "\n"
                        "Expected:        " +
                        DecimalFormatter::toString(expected,digits) + "\n"
@@ -142,11 +142,11 @@ void RoundingTest::testCeiling() {
 
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
-        Rounding ceiling(digits, Rounding::Ceiling);
+        CeilingTruncation ceiling(digits);
         Real calculated = ceiling(testData[i].x);
         Real expected = testData[i].ceiling;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " + 
+            BOOST_FAIL("Original number: " +
                        DecimalFormatter::toString(testData[i].x,8) + "\n"
                        "Expected:        " +
                        DecimalFormatter::toString(expected,digits) + "\n"

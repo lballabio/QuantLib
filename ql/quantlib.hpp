@@ -25,6 +25,7 @@
 
 #include <ql/Calendars/all.hpp>
 #include <ql/CashFlows/all.hpp>
+#include <ql/Currencies/all.hpp>
 #include <ql/DayCounters/all.hpp>
 #include <ql/FiniteDifferences/all.hpp>
 #include <ql/Indexes/all.hpp>

@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql
 SUBDIRS = \
     Calendars \
     CashFlows \
+    Currencies \
     DayCounters \
     FiniteDifferences \
     Indexes \

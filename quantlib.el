@@ -40,13 +40,14 @@
 ; from QuantLib:
 (setq c++-font-lock-extra-types
       (append c++-font-lock-extra-types
-              '("QuantLib" 
-                "Integer" "BigInteger" "Natural" "BigNatural" "Real" "Decimal" 
+              '("QuantLib"
+                "Integer" "BigInteger" "Natural" "BigNatural" "Real" "Decimal"
                 "Time" "Rate" "Spread" "DiscountFactor" "Size" "Volatility"
                 "Date" "Day" "Month" "Year" "Weekday"
-                "TimeUnit" "Frequency" "Period" 
-                "DayCounter" 
+                "TimeUnit" "Frequency" "Period"
+                "DayCounter"
                 "Calendar" "BusinessDayConvention" "RollingConvention"
+                "Currency" "Rounding"
                 "Handle" "RelinkableHandle")))
 ; from Boost:
 (setq c++-font-lock-extra-types
@@ -59,7 +60,7 @@
 
 (defun ql-add-license ()
   (let ((holder (read-from-minibuffer "Copyright holder? ")))
-    (let ((copyright-notice 
+    (let ((copyright-notice
            (apply 'string (append " Copyright (C) "
                                   (substring (current-time-string) -4)
                                   " "
@@ -88,7 +89,7 @@
 
 (defun ql-add-sample-header ()
   (insert "#include <ql/qldefines.hpp>\n"))
-  
+
 
 (defun ql-add-namespace ()
   (insert "namespace QuantLib {\n"

@@ -25,7 +25,10 @@
 namespace QuantLib {
 
     Decimal Rounding::operator()(Decimal value) const {
-        if (type_ == None) return value;
+
+        if (type_ == None)
+            return value;
+
         Real mult = QL_POW(10.0,precision_);
         bool neg = (value < 0.0);
         Real lvalue = QL_FABS(value)*mult;

@@ -253,6 +253,7 @@ AC_CONFIG_FILES([
     ql/Makefile
     ql/Calendars/Makefile
     ql/CashFlows/Makefile
+    ql/Currencies/Makefile
     ql/DayCounters/Makefile
     ql/FiniteDifferences/Makefile
     ql/Indexes/Makefile
