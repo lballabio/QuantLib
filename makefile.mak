@@ -41,7 +41,7 @@ tests:: quantlib
     cd ..
 
 # functions
-functions:: quantlib
+functions::
     cd functions\ql\Functions
     $(MAKE) -DQL_DIR="..\..\.."
     cd ..\..\..
