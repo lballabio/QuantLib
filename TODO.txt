@@ -1,4 +1,4 @@
-
+future convexity adjustment
 make unit test to work under Borland
 
 clean up FDMultiPeriodOption
@@ -30,6 +30,7 @@ LIBRARY
         deprecate old pricers
         fix quantotermstructure problem
         MC path generator time dependant
+        MC with both tolerance and/or fixed number of samples
 
     MONTE CARLO FRAMEWORK
         allow for time dependant parameters

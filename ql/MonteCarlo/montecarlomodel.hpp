@@ -96,8 +96,7 @@ namespace QuantLib {
         }
 
         template<class S, class PG, class PP>
-        inline void 
-	MonteCarloModel<S, PG, PP>::addSamples(Size samples) {
+        inline void MonteCarloModel<S, PG, PP>::addSamples(Size samples) {
             for(Size j = 1; j <= samples; j++) {
                 sample_type path = pathGenerator_->next();
                 result_type price = (*pathPricer_)(path.value);
