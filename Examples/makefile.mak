@@ -5,8 +5,14 @@
 .silent
 
 # MAKE Options
-!ifdef DEBUG
-    MAKE = $(MAKE) -DDEBUG
+!ifdef __MT__
+    MAKE = $(MAKE) -D__MT__
+!endif
+!ifdef _RTLDLL
+    MAKE = $(MAKE) -D_RTLDLL
+!endif
+!ifdef _DEBUG
+    MAKE = $(MAKE) -D_DEBUG
 !endif
 !ifdef SAFE
     MAKE = $(MAKE) -DSAFE
