@@ -2,21 +2,13 @@
 # $Id$
 # $Source$
 # $Log$
-# Revision 1.37  2001/08/23 08:42:57  lballabio
-# A few fixes for making docs on Linux
+# Revision 1.38  2001/08/23 12:59:45  nando
+# makedist now distributes examples
 #
-# Revision 1.36  2001/07/25 07:42:29  nando
-# updated
-#
-# Revision 1.35  2001/07/25 07:36:08  nando
-# updated
-#
-# Revision 1.34  2001/07/24 16:59:33  nando
-# documentation revised
 
 AUTOMAKE_OPTIONS=foreign
 
-SUBDIRS=Sources Include Docs Examples
+SUBDIRS=Sources Include Docs
 
 EXTRA_DIST=Authors.txt \
 	Contributors.txt \
@@ -42,7 +34,19 @@ dist-hook:
 	cp -p $(srcdir)/lib/Win32/Borland/README.txt $(distdir)/lib/Win32/Borland/README.txt
 	cp -p $(srcdir)/lib/Win32/VisualStudio/README.txt $(distdir)/lib/Win32/VisualStudio/README.txt
 	mkdir $(distdir)/Docs/Examples
-	cp $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/
+	cp $(srcdir)/Docs/Examples/*.dsw $(distdir)/Docs/Examples/
+	cp $(srcdir)/Docs/Examples/*.mak $(distdir)/Docs/Examples/
+	cp $(srcdir)/Docs/Examples/*.txt $(distdir)/Docs/Examples/
+	mkdir $(distdir)/Docs/Examples/HedgingError
+	cp $(srcdir)/Docs/Examples/HedgingError/*.cpp $(distdir)/Docs/Examples/HedgingError/
+	cp $(srcdir)/Docs/Examples/HedgingError/*.dsw $(distdir)/Docs/Examples/HedgingError/
+	cp $(srcdir)/Docs/Examples/HedgingError/*.mak $(distdir)/Docs/Examples/HedgingError/
+	cp $(srcdir)/Docs/Examples/HedgingError/*.txt $(distdir)/Docs/Examples/HedgingError/
+	mkdir $(distdir)/Docs/Examples/Parities
+	cp $(srcdir)/Docs/Examples/Parities/*.cpp $(distdir)/Docs/Examples/Parities/
+	cp $(srcdir)/Docs/Examples/Parities/*.dsw $(distdir)/Docs/Examples/Parities/
+	cp $(srcdir)/Docs/Examples/Parities/*.mak $(distdir)/Docs/Examples/Parities/
+	cp $(srcdir)/Docs/Examples/Parities/*.txt $(distdir)/Docs/Examples/Parities/
 	mkdir $(distdir)/Docs/images
 	cp $(srcdir)/Docs/images/QL-largish.jpg $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-small-notitle.jpg $(distdir)/Docs/images/

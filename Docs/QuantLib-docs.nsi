@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.2  2001/08/23 12:59:45  nando
+# makedist now distributes examples
+#
 # Revision 1.1  2001/08/23 11:21:21  nando
 # Win32 documentation installer
 #
@@ -34,5 +37,6 @@ File "latex\*refman.pdf"
 File "latex\*refman.ps"
 SetOutPath "$INSTDIR\Docs\html"
 File "html\*.*"
+CreateShortCut "$INSTDIR\Docs\refman.lnk" "$INSTDIR\Docs\html\index.html"
 SectionEnd
 
