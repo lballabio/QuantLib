@@ -615,6 +615,14 @@ SOURCE=.\ql\Pricers\barrieroption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\basket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\basket.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\bermudanoption.cpp
 # End Source File
 # Begin Source File
@@ -695,11 +703,11 @@ SOURCE=.\ql\Pricers\europeanoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\everestoption.cpp
+SOURCE=.\ql\Pricers\everest.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\everestoption.hpp
+SOURCE=.\ql\Pricers\everest.hpp
 # End Source File
 # Begin Source File
 
@@ -723,11 +731,11 @@ SOURCE=.\ql\Pricers\himalaya.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\mceuropeanpricer.cpp
+SOURCE=.\ql\Pricers\mceuropean.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\mceuropeanpricer.hpp
+SOURCE=.\ql\Pricers\mceuropean.hpp
 # End Source File
 # Begin Source File
 
@@ -743,19 +751,11 @@ SOURCE=.\ql\Pricers\multiperiodoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\pagodaoption.cpp
+SOURCE=.\ql\Pricers\pagoda.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\pagodaoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\plainbasketoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\plainbasketoption.hpp
+SOURCE=.\ql\Pricers\pagoda.hpp
 # End Source File
 # Begin Source File
 
