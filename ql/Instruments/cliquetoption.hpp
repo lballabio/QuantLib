@@ -54,7 +54,13 @@ namespace QuantLib {
 
         
         inline void CliquetOption::arguments::validate() const {
+            #if defined(QL_PATCH_MICROSOFT)
+            VanillaOption::arguments copy = *this;
+            copy.validate();
+            #else
             VanillaOption::arguments::validate();
+            #endif
+
             QL_REQUIRE(moneyness != Null<double>(),
                        "CliquetOption::arguments::validate() : "
                        "null moneyness given");
