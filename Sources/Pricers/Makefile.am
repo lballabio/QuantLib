@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.24  2001/08/07 07:10:21  nando
+# trying to understand what is wrong ....
+#
 # Revision 1.23  2001/08/06 15:43:34  nando
 # BSMOption now is SingleAssetOption
 # BSMEuropeanOption now is EuropeanOption
@@ -18,14 +21,13 @@ libPricers_la_SOURCES = \
     barrieroption.cpp \
     binaryoption.cpp \
     bermudanoption.cpp \
-    europeanoption.cpp \
     bsmnumericaloption.cpp \
-    singleassetoption.cpp \
     cliquetoption.cpp \
     dividendoption.cpp \
     dividendshoutoption.cpp \
     dividendamericanoption.cpp \
     dividendeuropeanoption.cpp \
+    europeanoption.cpp \
     everestoption.cpp \
     finitedifferenceeuropean.cpp \
     himalaya.cpp \
@@ -33,6 +35,7 @@ libPricers_la_SOURCES = \
     multiperiodoption.cpp \
     plainbasketoption.cpp \
     pagodaoption.cpp \
+    singleassetoption.cpp \
     stepconditionoption.cpp
 
 noinst_LTLIBRARIES = libPricers.la
