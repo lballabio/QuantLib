@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.15  2001/03/27 16:16:13  marmar
+   Functions SymmetricEigenvalues and SymmetricEigenvectors added
+
    Revision 1.14  2001/03/21 10:48:31  marmar
    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
    are no longer methods of BSMNumericalOption but separate
@@ -151,6 +154,15 @@ double valueAtCenter(const Array& a);
 double firstDerivativeAtCenter(const Array& a, const Array& g);
 
 double secondDerivativeAtCenter(const Array& a, const Array& g);        
+
+%{
+using QuantLib::Math::SymmetricEigenvalues;
+using QuantLib::Math::SymmetricEigenvectors;
+%}
+
+Array SymmetricEigenvalues(Matrix &s);
+
+Matrix SymmetricEigenvectors(Matrix &s);
 
 #endif
 
