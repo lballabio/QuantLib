@@ -195,4 +195,32 @@
 
     See the section '\ref faq_contributing' above.
 
+
+    \section faq_lists QuantLib mailing lists
+
+    <strong>
+    \anchor faq_lists_disable
+    How do I prevent my auto-responder to post to the list when I'm away?
+    </strong>
+
+    It might be possible to configure the auto-responder so that it
+    ignores posts to the mailing list. However, this depends on the
+    particular software you are using.
+
+    If that is not possible, you can temporarily prevent the list from
+    posting to your account. It is a bit more of a hassle, but the other
+    list members will appreciate.
+
+    Go to your mailing-list configuration page (its direct address is
+    sent to you monthly by SourceForge; alternatively, go to
+    <http://lists.sourceforge.net/lists/listinfo/quantlib-users>
+    and insert your mail address in the last form in the page.)
+
+    From there you can enable the "Disable mail delivery" option,
+    causing the posts to the list not to be forwarded to your account.
+
+    The mail delivery can be re-enabled later in the same way; you'll
+    have to check the list archives at
+    <http://sourceforge.net/mailarchive/forum.php?forum=quantlib-users>
+    to catch up on the posts you missed.
 */
