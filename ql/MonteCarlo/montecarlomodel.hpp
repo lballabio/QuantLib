@@ -22,55 +22,24 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file montecarlomodel.hpp
+    \brief Create a sample generator from a path generator and a path pricer
 
     \fullpath
-    Include/ql/MonteCarlo/%montecarlomodel.hpp
-    \brief Create a sample generator from a path generator and a path pricer
+    ql/MonteCarlo/%montecarlomodel.hpp
 
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.4  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.3  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.2  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.1  2001/08/07 17:33:03  nando
-// 1) StandardPathGenerator now is GaussianPathGenerator;
-// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
-// 3) PathMonteCarlo now is MonteCarloModel;
-// 4) added ICGaussian, a Gaussian distribution that use
-//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
-//    distribution extractions into gaussian distribution extractions;
-// 5) added a few trailing underscore to private members
-// 6) style enforced here and there ....
-//
-// Revision 1.13  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.12  2001/07/27 14:45:23  marmar
-// Method  void ddSamples(long n) added to GeneralMonteCarlo
 
 #ifndef quantlib_montecarlo_model_h
 #define quantlib_montecarlo_model_h
-
-#include "ql/MonteCarlo/mcoptionsample.hpp"
-#include "ql/MonteCarlo/generalmontecarlo.hpp"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
         //! General purpose Monte Carlo model for path samples
-        /*! Any Monte Carlo which uses a path samples has three main components,
+        /*! Any Monte Carlo which uses path samples has three main components,
             namely,
                 - S, a sample accumulator,
                 - PG, a path generator,
@@ -78,7 +47,6 @@ namespace QuantLib {
             MonteCarloModel<S, PG, PP> puts together these three elements.
             The constructor accepts two safe references, i.e. two smart
             pointers, one to a path generator and the other to a path pricer.
-            The GeneralMonteCarlo is used to fill the statistic accumulator.
 
             The minimal interfaces for the classes S, PG, and PP are:
 
@@ -100,49 +68,48 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         class MonteCarloModel {
           public:
-            MonteCarloModel();
-            MonteCarloModel(Handle<PG> pathGenerator,
-                           Handle<PP> pathPricer,
-                           S sampleAccumulator);
+            MonteCarloModel(const Handle<PG>& pathGenerator,
+                            const Handle<PP>& pathPricer,
+			    const S& sampleAccumulator);
             void addSamples(long samples);
             const S& sampleAccumulator(void) const;
           private:
-            S sampleAccumulator_;
-            OptionSample<PG,PP> optionSample_;
-            GeneralMonteCarlo<S, OptionSample<PG,PP> > monteCarlo_;
-            bool isInitialized_;
+	    Handle<PG> pathGenerator_;
+            Handle<PP> pathPricer_;
+	    S sampleAccumulator_;
         };
 
         // inline definitions
         template<class S, class PG, class PP>
-        inline MonteCarloModel<S, PG, PP>::MonteCarloModel()
-            : isInitialized_(false) {}
-
-        template<class S, class PG, class PP>
         inline MonteCarloModel<S, PG, PP>::MonteCarloModel(
-                Handle<PG> pathGenerator,
-                Handle<PP> pathPricer,
-                S sampleAccumulator) :
-                sampleAccumulator_(sampleAccumulator),
-                optionSample_(pathGenerator, pathPricer),
-                monteCarlo_(sampleAccumulator_, optionSample_),
-                isInitialized_(true){}
+                const Handle<PG>& pathGenerator,
+                const Handle<PP>& pathPricer,
+		const S& sampleAccumulator) :
+	        pathGenerator_(pathGenerator),
+		pathPricer_(pathPricer),
+		sampleAccumulator_(sampleAccumulator)
+	        {}
 
         template<class S, class PG, class PP>
         inline void MonteCarloModel<S, PG, PP>::
                     addSamples(long samples){
-            QL_REQUIRE(isInitialized_ == true,
-                       "MonteCarloModel must be initialized");
-            monteCarlo_.addSamples(samples);
+            for(long j = 1; j <= samples; j++) {
+                // .next() updates weight_, so it has to be called before
+                // otherways you're not guaranteed that next() will be called
+                // before weight() and you could add a new value with the weight
+                // of the previous value
+                typename PG::SampleType a = pathGenerator_->next();
+                double price = pathPricer_->value(a);
+                double weight = pathGenerator_->weight();
+                sampleAccumulator_.add(price, weight);
+            }
         }
 
         template<class S, class PG, class PP>
         inline const S& MonteCarloModel<S, PG, PP>::
                     sampleAccumulator() const{
-            return monteCarlo_.sampleAccumulator();
+            return sampleAccumulator_;
         }
-
     }
-
 }
 #endif

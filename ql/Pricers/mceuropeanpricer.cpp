@@ -62,9 +62,10 @@ namespace QuantLib {
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime)));
 
             //! Initialize the one-factor Monte Carlo
-            montecarloPricer_ = OneFactorMonteCarloOption(
-                pathGenerator, euroPathPricer,
-                Math::Statistics());
+            montecarloPricer_ = Handle<OneFactorMonteCarloOption>(
+		new OneFactorMonteCarloOption(
+                    pathGenerator, euroPathPricer,
+                    Math::Statistics()));
         }
 
     }
