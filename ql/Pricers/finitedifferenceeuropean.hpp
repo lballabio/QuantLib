@@ -35,7 +35,7 @@
 #define quantlib_pricers_finite_difference_european_option_h
 
 #include "ql/Pricers/bsmnumericaloption.hpp"
-#include "ql/FiniteDifferences/standardfdmodel.hpp"
+#include "ql/FiniteDifferences/fdtypedefs.hpp"
 
 namespace QuantLib {
 
@@ -55,7 +55,8 @@ namespace QuantLib {
                                      unsigned int gridPoints = 800);
                    Array getPrices() const;
             Handle<SingleAssetOption> clone() const{
-                return Handle<SingleAssetOption>(new FiniteDifferenceEuropean(*this));
+                return Handle<SingleAssetOption>(
+                    new FiniteDifferenceEuropean(*this));
             }
           protected:
             void calculate() const;

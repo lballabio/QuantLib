@@ -23,53 +23,20 @@
 */
 
 /*! \file stepconditionoption.cpp
-
-    \fullpath
-    Sources/Pricers/%stepconditionoption.cpp
     \brief Option requiring additional code to be executed at each time step
 
+    \fullpath
+    Pricers/%stepconditionoption.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.21  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.20  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.19  2001/08/08 11:07:50  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.18  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.17  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.16  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.15  2001/06/05 09:35:14  lballabio
-// Updated docs to use Doxygen 1.2.8
-//
-// Revision 1.14  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.13  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/Pricers/stepconditionoption.hpp"
 #include "ql/Pricers/europeanoption.hpp"
-#include "ql/FiniteDifferences/standardfdmodel.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
 
 namespace QuantLib {
+
     namespace Pricers {
 
         using FiniteDifferences::StandardStepCondition;
@@ -78,13 +45,12 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        StepConditionOption::StepConditionOption(Type type, double underlying,
-                 double strike, Rate dividendYield, Rate riskFreeRate,
-                 Time residualTime, double volatility, int timeSteps,
-                 int gridPoints)
-            : BSMNumericalOption(type, underlying, strike, dividendYield,
-                                 riskFreeRate, residualTime, volatility,
-                                 gridPoints),
+        StepConditionOption::StepConditionOption(Type type, 
+            double underlying, double strike, Rate dividendYield, 
+            Rate riskFreeRate, Time residualTime, double volatility, 
+            int timeSteps, int gridPoints)
+        : BSMNumericalOption(type, underlying, strike, dividendYield,
+            riskFreeRate, residualTime, volatility, gridPoints),
             timeSteps_(timeSteps) {}
 
         void StepConditionOption::calculate() const {

@@ -35,7 +35,7 @@
 #ifndef quantlib_montecarlo_multi_factor_pricer_h
 #define quantlib_montecarlo_multi_factor_pricer_h
 
-#include "ql/MonteCarlo/multifactormontecarlooption.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
 
 namespace QuantLib {
 
@@ -46,8 +46,8 @@ namespace QuantLib {
             pricers, in order to have tools like impliedVolatility available. 
             Also, it will, eventually, implement the calculation of greeks in 
             Monte Carlo methods.
-            Deriving a class from MultiFactorPricer gives an easy way to write
-            a multi-factor Monte Carlo Pricer.
+            Deriving a class from MultiFactorPricer gives an easy way to 
+            write a multi-factor Monte Carlo Pricer.
             See PlainBasketOption for an example.
         */
         class MultiFactorPricer {

@@ -45,8 +45,7 @@ namespace QuantLib {
         template <class RNG>
         class RandomArrayGenerator {
           public:
-            typedef Array SampleType;
-
+            typedef Array sample_type;
             // equal average, equal variance, no covariance
             RandomArrayGenerator(unsigned int dimension,
                                  double average,

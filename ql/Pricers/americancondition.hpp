@@ -23,47 +23,18 @@
 */
 
 /*! \file americancondition.hpp
-
-    \fullpath
-    Include/ql/Pricers/%americancondition.hpp
     \brief american option exercise condition
 
+    \fullpath
+    ql/Pricers/%americancondition.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.11  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.10  2001/08/28 13:37:35  nando
-// unsigned int instead of int
-//
-// Revision 1.9  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.8  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.7  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.6  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.5  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.4  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
-#ifndef BSM_american_condition_h
-#define BSM_american_condition_h
+#ifndef bsm_american_condition_h
+#define bsm_american_condition_h
 
-#include "ql/FiniteDifferences/standardstepcondition.hpp"
+#include "ql/FiniteDifferences/fdtypedefs.hpp"
 
 namespace QuantLib {
 

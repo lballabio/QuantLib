@@ -36,8 +36,7 @@
 
 #include "ql/handle.hpp"
 #include "ql/Pricers/bsmnumericaloption.hpp"
-#include "ql/FiniteDifferences/standardstepcondition.hpp"
-#include "ql/FiniteDifferences/standardfdmodel.hpp"
+#include "ql/FiniteDifferences/fdtypedefs.hpp"
 #include <vector>
 
 namespace QuantLib {

@@ -23,42 +23,13 @@
 */
 
 /*! \file knuthrandomgenerator.hpp
-
-    \fullpath
-    Include/ql/MonteCarlo/%knuthrandomgenerator.hpp
     \brief Knuth uniform random number generator
 
+    \fullpath
+    ql/MonteCarlo/%knuthrandomgenerator.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.8  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.7  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.6  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.5  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.4  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.3  2001/07/19 16:40:10  lballabio
-// Improved docs a bit
-//
-// Revision 1.2  2001/07/04 08:05:15  uid37043
-// Worked around Visual C++ being off-standard again
-//
-// Revision 1.1  2001/07/03 13:19:38  lballabio
-// Added Knuth random generator after doubts were casted on the NR one
-//
 
 #ifndef quantlib_knuth_random_generator_h
 #define quantlib_knuth_random_generator_h
@@ -87,7 +58,7 @@ namespace QuantLib {
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit KnuthRandomGenerator(long seed = 0);
-            typedef double SampleType;
+            typedef double sample_type;
             //! returns a random number uniformly chosen from (0.0,1.0)
             double next() const;
             //! uniformly returns 1.0

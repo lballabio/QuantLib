@@ -23,37 +23,13 @@
 */
 
 /*! \file inversecumulativegaussian.hpp
-
-    \fullpath
-    Include/ql/MonteCarlo/%inversecumulativegaussian.hpp
     \brief Inverse Cumulative Gaussian random-number generator
 
+    \fullpath
+    ql/MonteCarlo/%inversecumulativegaussian.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.4  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.3  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.2  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.1  2001/08/08 07:11:12  nando
-// 1) StandardPathGenerator now is GaussianPathGenerator;
-// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
-// 3) PathMonteCarlo now is MonteCarloModel;
-// 4) added ICGaussian, a Gaussian distribution that use
-//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
-//    distribution extractions into gaussian distribution extractions;
-// 5) added a few trailing underscore to private members
-// 6) style enforced here and there ....
-//
 
 #ifndef quantlib_inversecumulative_gaussian_h
 #define quantlib_inversecumulative_gaussian_h
@@ -84,8 +60,8 @@ namespace QuantLib {
         template <class U>
         class ICGaussian {
           public:
-            typedef double SampleType;
-            ICGaussian(long seed=0);
+            typedef double sample_type;
+            explicit ICGaussian(long seed=0);
             //! returns next sample from the Gaussian distribution
             double next() const;
             //! returns the weight of the last extracted sample

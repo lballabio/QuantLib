@@ -25,50 +25,11 @@
 /*! \file bermudanoption.cpp
     \brief Finite-difference evaluation of Bermudan option
 
-
     \fullpath
-    Sources/Pricers/%bermudanoption.cpp
+    ql/Pricers/%bermudanoption.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.21  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.20  2001/08/28 12:14:41  nando
-// nothing relevant (spaces added)
-//
-// Revision 1.19  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.18  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.17  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.16  2001/07/27 07:46:01  nando
-// pruned warnings
-//
-// Revision 1.15  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.14  2001/07/19 16:40:11  lballabio
-// Improved docs a bit
-//
-// Revision 1.13  2001/07/19 14:27:27  sigmud
-// warnings purged
-//
-// Revision 1.12  2001/06/05 09:35:14  lballabio
-// Updated docs to use Doxygen 1.2.8
-//
-// Revision 1.11  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/Pricers/bermudanoption.hpp"
 #include "ql/Pricers/europeanoption.hpp"
@@ -83,7 +44,8 @@ namespace QuantLib {
             const std::vector<Time>& dates,
             int timeSteps, int gridPoints)
         : MultiPeriodOption(type, underlying, strike, dividendYield,
-          riskFreeRate, residualTime, volatility, gridPoints, dates, timeSteps) {}
+          riskFreeRate, residualTime, volatility, gridPoints, dates, 
+          timeSteps) {}
 
         using FiniteDifferences::StandardStepCondition;
 
@@ -99,9 +61,10 @@ namespace QuantLib {
         }
 
         Handle<SingleAssetOption> BermudanOption::clone() const {
-            return Handle<SingleAssetOption>(new BermudanOption(type_, underlying_,
-                strike_, dividendYield_, riskFreeRate_, residualTime_,
-                volatility_, dates_, timeStepPerPeriod_, gridPoints_));
+            return Handle<SingleAssetOption>(new BermudanOption(type_, 
+                underlying_, strike_, dividendYield_, riskFreeRate_, 
+                residualTime_, volatility_, dates_, timeStepPerPeriod_, 
+                gridPoints_));
         }
 
     }

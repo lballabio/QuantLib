@@ -23,11 +23,10 @@
 */
 
 /*! \file boxmuller.hpp
-
-    \fullpath
-    Include/ql/MonteCarlo/%boxmuller.hpp
     \brief Box-Muller Gaussian random-number generator
 
+    \fullpath
+    ql/MonteCarlo/%boxmuller.hpp
 */
 
 // $Id$
@@ -56,8 +55,8 @@ namespace QuantLib {
         template <class U>
         class BoxMuller {
           public:
-            BoxMuller(long seed=0);
-            typedef double SampleType;
+            explicit BoxMuller(long seed=0);
+            typedef double sample_type;
             //! returns next sample from the Gaussian distribution
             double next() const;
             //! returns the weight of the last extracted sample

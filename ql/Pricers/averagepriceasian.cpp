@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/MonteCarlo/gaussianpathgenerator.hpp"
 #include "ql/Pricers/averagepriceasian.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
 #include "ql/MonteCarlo/controlvariatedpathpricer.hpp"
 #include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
 #include "ql/MonteCarlo/geometricasianpathpricer.hpp"

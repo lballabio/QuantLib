@@ -13,9 +13,6 @@ include_HEADERS = \
 	controlvariatedpathpricer.hpp \
 	europeanpathpricer.hpp \
 	everestpathpricer.hpp \
-	gaussianmultipathgenerator.hpp \
-	gaussianpathgenerator.hpp \
-	gaussianrandomgenerator.hpp \
 	geometricasianpathpricer.hpp \
 	getcovariance.hpp \
 	himalayapathpricer.hpp \
@@ -23,19 +20,17 @@ include_HEADERS = \
 	knuthrandomgenerator.hpp \
 	lecuyerrandomgenerator.hpp \
 	mcpricer.hpp \
+	mctypedefs.hpp \
 	montecarlomodel.hpp \
-	multifactormontecarlooption.hpp \
 	multifactorpricer.hpp \
 	multipath.hpp \
 	multipathgenerator.hpp \
 	multipathpricer.hpp \
-	onefactormontecarlooption.hpp \
 	pagodapathpricer.hpp \
 	path.hpp \
 	pathgenerator.hpp \
 	pathpricer.hpp \
-	randomarraygenerator.hpp \
-	uniformrandomgenerator.hpp
+	randomarraygenerator.hpp
 
 EXTRA_DIST=makefile.mak
 

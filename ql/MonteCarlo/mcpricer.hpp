@@ -34,7 +34,7 @@
 #ifndef quantlib_montecarlo_pricer_h
 #define quantlib_montecarlo_pricer_h
 
-#include "ql/MonteCarlo/onefactormontecarlooption.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
 
 namespace QuantLib {
 

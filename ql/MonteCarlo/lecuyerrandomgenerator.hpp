@@ -26,7 +26,7 @@
     \brief L'Ecuyer uniform random number generator
 
     \fullpath
-    Include/ql/MonteCarlo/%lecuyerrandomgenerator.hpp
+    ql/MonteCarlo/%lecuyerrandomgenerator.hpp
 */
 
 // $Id$
@@ -54,7 +54,7 @@ namespace QuantLib {
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit LecuyerRandomGenerator(long seed = 0);
-            typedef double SampleType;
+            typedef double sample_type;
             //! returns a random number uniformly chosen from (0.0,1.0)
             double next() const;
             //! uniformly returns 1.0

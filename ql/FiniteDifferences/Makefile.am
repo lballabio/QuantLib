@@ -12,13 +12,12 @@ include_HEADERS = \
 	dplus.hpp \
 	dplusdminus.hpp \
 	dzero.hpp \
+	fdtypedefs.hpp \
 	finitedifferencemodel.hpp \
 	forwardeuler.hpp \
 	identity.hpp \
 	operator.hpp \
 	operatortraits.hpp \
-	standardfdmodel.hpp \
-	standardstepcondition.hpp \
 	stepcondition.hpp \
 	tridiagonaloperator.hpp \
 	valueatcenter.hpp

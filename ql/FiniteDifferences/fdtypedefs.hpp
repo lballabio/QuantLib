@@ -22,35 +22,34 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file uniformrandomgenerator.hpp
-    \brief Default choice for uniform random number generator
+/*! \file fdtypedefs.hpp 
+    \brief default choices for template instantiations
 
     \fullpath
-    Include/ql/MonteCarlo/%uniformrandomgenerator.hpp
+    ql/FiniteDifferences/%fdtypedefs.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_uniform_random_generator_h
-#define quantlib_uniform_random_generator_h
+#ifndef quantlib_fd_typedefs_h
+#define quantlib_fd_typedefs_h
 
-#include "ql/MonteCarlo/lecuyerrandomgenerator.hpp"
-#include "ql/MonteCarlo/knuthrandomgenerator.hpp"
+#include "ql/FiniteDifferences/finitedifferencemodel.hpp"
+#include "ql/FiniteDifferences/cranknicolson.hpp"
+#include "ql/FiniteDifferences/tridiagonaloperator.hpp"
+#include "ql/FiniteDifferences/stepcondition.hpp"
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace FiniteDifferences {
 
-        /*! \typedef UniformRandomGenerator
-            The following is the default choice for the uniform random number
-            generator. See the corresponding class for documentation.
+        //! default choice for finite-difference model
+        typedef FiniteDifferenceModel<
+                    CrankNicolson<TridiagonalOperator>  >
+                        StandardFiniteDifferenceModel;
 
-            It could have been
-               typedef KnuthRandomGenerator UniformRandomGenerator;
-            using Knuth algorithms.
-        */
-        typedef LecuyerRandomGenerator UniformRandomGenerator;
-//        typedef KnuthRandomGenerator UniformRandomGenerator;
+        //! default choice for step condition
+        typedef StepCondition<Array> StandardStepCondition;
 
     }
 
