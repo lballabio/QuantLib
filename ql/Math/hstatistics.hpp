@@ -46,6 +46,8 @@ namespace QuantLib {
         class HStatistics : public Statistics {
           public:
             HStatistics() { reset(); }
+            double skewness() const;
+            double kurtosis() const;
             double percentile(double percentile) const;
             double potentialUpside(double percentile) const;
             double valueAtRisk(double percentile)  const;

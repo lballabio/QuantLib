@@ -30,6 +30,74 @@ namespace QuantLib {
 
     namespace Math {
 
+/*
+        double HStatistics::variance() const {
+            QL_REQUIRE(sampleWeight_>0.0,
+                       "Statistics::variance() : "
+                       "sampleWeight_=0, unsufficient");
+            QL_REQUIRE(sampleNumber_>1,
+                       "Statistics::variance() : "
+                       "sample number <=1, unsufficient");
+
+            double m = mean();
+            double result = 0.0;
+            for (Size i = 0; i<sampleNumber_; i++) {
+                double temp = samples_[i].first;
+                temp = temp*temp;
+                result += samples_[i].second*temp;
+            }
+            result /= sampleWeight_;
+            result -= m*m;
+            result = sampleNumber_/(sampleNumber_-1.0);
+            return result;
+        }
+*/
+        double HStatistics::skewness() const{
+            QL_REQUIRE(sampleNumber_>2,
+                       "HStatistics::skewness() : "
+                       "sample number <=2, unsufficient");
+            double m = mean();
+            double s = standardDeviation();
+            double result = 0.0;
+            for (Size i = 0; i<sampleNumber_; i++) {
+                double temp = (samples_[i].first-m)/s;
+                temp = temp*temp*temp;
+                result += samples_[i].second*temp;
+            }
+            result *= sampleNumber_/sampleWeight_;
+
+            result *= sampleNumber_/(sampleNumber_-2.0);
+            result /= (sampleNumber_-1.0);
+
+            return result;
+        }
+
+        double HStatistics::kurtosis() const{
+            QL_REQUIRE(sampleNumber_>3,
+                       "HStatistics::kurtosis() : sample number <=3, unsufficient");
+
+
+            double c = (sampleNumber_-1.0)/(sampleNumber_-2.0);
+            c *= (sampleNumber_-1.0)/(sampleNumber_-3.0);
+            c *= 3.0;
+
+            double m = mean();
+            double s = standardDeviation();
+            double result = 0.0;
+            for (Size i = 0; i<sampleNumber_; i++) {
+                double temp = (samples_[i].first-m)/s;
+                temp = temp*temp*temp*temp;
+                result += samples_[i].second*temp;
+            }
+            result *= sampleNumber_/sampleWeight_;
+
+            result *= (sampleNumber_+1.0)/(sampleNumber_-3.0);
+            result *= sampleNumber_/(sampleNumber_-2.0);
+            result /= (sampleNumber_-1.0);
+
+            return result-c;
+        }
+
         double HStatistics::percentile(double percentile) const{
             std::sort(samples_.begin(), samples_.end());
 
