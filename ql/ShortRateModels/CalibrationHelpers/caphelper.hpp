@@ -32,7 +32,7 @@ namespace QuantLib {
       public:
         //Constructor for ATM cap
         CapHelper(const Period& length,
-                  const RelinkableHandle<MarketElement>& volatility,
+                  const RelinkableHandle<Quote>& volatility,
                   const Handle<Xibor>& index,
                   const RelinkableHandle<TermStructure>& termStructure);
 

@@ -39,7 +39,7 @@ namespace QuantLib {
 
     class RateHelper : public Observer, public Observable {
       public:
-        RateHelper(const RelinkableHandle<MarketElement>& quote);
+        RateHelper(const RelinkableHandle<Quote>& quote);
         RateHelper(double quote);
         virtual ~RateHelper() {}
         //! \name RateHelper interface
@@ -69,7 +69,7 @@ namespace QuantLib {
         void update() { notifyObservers(); }
         //@}
       protected:
-        RelinkableHandle<MarketElement> quote_;
+        RelinkableHandle<Quote> quote_;
         TermStructure* termStructure_;
     };
 
@@ -80,7 +80,7 @@ namespace QuantLib {
     */
     class DepositRateHelper : public RateHelper {
       public:
-        DepositRateHelper(const RelinkableHandle<MarketElement>& rate,
+        DepositRateHelper(const RelinkableHandle<Quote>& rate,
                           int n, TimeUnit units,
                           int settlementDays,
                           const Calendar& calendar,
@@ -116,7 +116,7 @@ namespace QuantLib {
     */
     class FraRateHelper : public RateHelper {
       public:
-        FraRateHelper(const RelinkableHandle<MarketElement>& rate,
+        FraRateHelper(const RelinkableHandle<Quote>& rate,
                       int monthsToStart, int monthsToEnd,
                       int settlementDays,
                       const Calendar& calendar,
@@ -149,13 +149,13 @@ namespace QuantLib {
     */
     class FuturesRateHelper : public RateHelper {
       public:
-        FuturesRateHelper(const RelinkableHandle<MarketElement>& price,
+        FuturesRateHelper(const RelinkableHandle<Quote>& price,
                           const Date& ImmDate,
                           int nMonths,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
-	    FuturesRateHelper(const RelinkableHandle<MarketElement>& price,
+	    FuturesRateHelper(const RelinkableHandle<Quote>& price,
                           const Date& ImmDate,
                           const Date& MatDate,
                           const Calendar& calendar,
@@ -187,7 +187,7 @@ namespace QuantLib {
     */
     class SwapRateHelper : public RateHelper {
       public:
-        SwapRateHelper(const RelinkableHandle<MarketElement>& rate,
+        SwapRateHelper(const RelinkableHandle<Quote>& rate,
                        int n, TimeUnit units,
                        int settlementDays,
                        const Calendar& calendar,

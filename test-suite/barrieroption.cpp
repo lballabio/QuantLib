@@ -33,26 +33,26 @@ using namespace QuantLib;
 
 namespace {
 
-    Handle<TermStructure> makeFlatCurve(const Handle<MarketElement>& forward) {
+    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward) {
         Date today = Date::todaysDate();
         Calendar calendar = NullCalendar();
         //Date reference = calendar.advance(today,2,Days);        
         Date reference = today;
         return Handle<TermStructure>(
             new FlatForward(today,reference,
-                            RelinkableHandle<MarketElement>(forward),
+                            RelinkableHandle<Quote>(forward),
                             SimpleDayCounter()));
     }
 
     Handle<BlackVolTermStructure> makeFlatVolatility(
-                                     const Handle<MarketElement>& volatility) {
+                                     const Handle<Quote>& volatility) {
         Date today = Date::todaysDate();
         Calendar calendar = NullCalendar();
         //Date reference = calendar.advance(today,2,Days);        
-        Date reference = today;        
+        Date reference = today;
         return Handle<BlackVolTermStructure>(
             new BlackConstantVol(reference,
-                                 RelinkableHandle<MarketElement>(volatility),
+                                 RelinkableHandle<Quote>(volatility),
                                  SimpleDayCounter()));
     }
 
@@ -125,14 +125,13 @@ void BarrierOptionTest::testHaugValues() {
     };
 
 
-    Handle<SimpleMarketElement> underlying(
-        new SimpleMarketElement(underlyingPrice));
-    Handle<SimpleMarketElement> qH_SME(new SimpleMarketElement(q));
+    Handle<SimpleQuote> underlying(new SimpleQuote(underlyingPrice));
+    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
     Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
-    Handle<SimpleMarketElement> rH_SME(new SimpleMarketElement(r));
+    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
     Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
 
-    Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.25));
+    Handle<SimpleQuote> volatility(new SimpleQuote(0.25));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility);
 
     Date today = Date::todaysDate();
@@ -148,7 +147,7 @@ void BarrierOptionTest::testHaugValues() {
                 values[i].barrier, 
                 rebate, 
                 Option::Call, 
-                RelinkableHandle<MarketElement>(underlying), 
+                RelinkableHandle<Quote>(underlying), 
                 values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
@@ -171,7 +170,7 @@ void BarrierOptionTest::testHaugValues() {
                 values[i].barrier, 
                 rebate, 
                 Option::Put, 
-                RelinkableHandle<MarketElement>(underlying), 
+                RelinkableHandle<Quote>(underlying), 
                 values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
@@ -194,7 +193,7 @@ void BarrierOptionTest::testHaugValues() {
                 values[i].barrier, 
                 rebate, 
                 Option::Straddle, 
-                RelinkableHandle<MarketElement>(underlying), 
+                RelinkableHandle<Quote>(underlying), 
                 values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
@@ -251,16 +250,15 @@ void BarrierOptionTest::testBabsiriValues() {
         { Barrier::UpIn,   0.30,   100,      110,  12.98351,  0.0 }
     };
 
-    Handle<SimpleMarketElement> underlying(
-        new SimpleMarketElement(underlyingPrice));
+    Handle<SimpleQuote> underlying(new SimpleQuote(underlyingPrice));
 
-    Handle<SimpleMarketElement> qH_SME(new SimpleMarketElement(q));
+    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
     Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
 
-    Handle<SimpleMarketElement> rH_SME(new SimpleMarketElement(r));
+    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
     Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
 
-    Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.10));
+    Handle<SimpleQuote> volatility(new SimpleQuote(0.10));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility);
 
     Handle<PricingEngine> engine(new AnalyticBarrierEngine);
@@ -284,7 +282,7 @@ void BarrierOptionTest::testBabsiriValues() {
                 values[i].barrier, 
                 rebate, 
                 Option::Call, 
-                RelinkableHandle<MarketElement>(underlying), 
+                RelinkableHandle<Quote>(underlying), 
                 values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
@@ -347,16 +345,15 @@ void BarrierOptionTest::testBeagleholeValues() {
         { Barrier::DownOut, 0.50,   50,      45,  5.477,  0.0 }
     };
 
-    Handle<SimpleMarketElement> underlying(
-        new SimpleMarketElement(underlyingPrice));
+    Handle<SimpleQuote> underlying(new SimpleQuote(underlyingPrice));
 
-    Handle<SimpleMarketElement> qH_SME(new SimpleMarketElement(q));
+    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
     Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
 
-    Handle<SimpleMarketElement> rH_SME(new SimpleMarketElement(r));
+    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
     Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
 
-    Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.10));
+    Handle<SimpleQuote> volatility(new SimpleQuote(0.10));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility);
 
     Handle<PricingEngine> engine(new AnalyticBarrierEngine);
@@ -380,7 +377,7 @@ void BarrierOptionTest::testBeagleholeValues() {
                 values[i].barrier, 
                 rebate, 
                 Option::Call, 
-                RelinkableHandle<MarketElement>(underlying), 
+                RelinkableHandle<Quote>(underlying), 
                 values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),

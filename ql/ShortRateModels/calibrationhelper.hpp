@@ -31,7 +31,7 @@ namespace QuantLib {
     //! liquid market instrument used during calibration
     class CalibrationHelper : public Observer, public Observable {
       public:
-        CalibrationHelper(const RelinkableHandle<MarketElement>& volatility,
+        CalibrationHelper(const RelinkableHandle<Quote>& volatility,
                           const RelinkableHandle<TermStructure>& termStructure)
         : volatility_(volatility), termStructure_(termStructure) {
             blackModel_ = Handle<BlackModel>(
@@ -73,7 +73,7 @@ namespace QuantLib {
 
       protected:
         double marketValue_;
-        RelinkableHandle<MarketElement> volatility_;
+        RelinkableHandle<Quote> volatility_;
         RelinkableHandle<TermStructure> termStructure_;
         Handle<BlackModel> blackModel_;
         Handle<PricingEngine> engine_;

@@ -173,8 +173,8 @@ namespace QuantLib {
                          double targetValue)
     : termStructure_(termStructure), targetValue_(targetValue) {
 
-        vol_ = Handle<SimpleMarketElement>(new SimpleMarketElement(0.0));
-        RelinkableHandle<MarketElement> h(vol_);
+        vol_ = Handle<SimpleQuote>(new SimpleQuote(0.0));
+        RelinkableHandle<Quote> h(vol_);
         Handle<BlackModel> model(new BlackModel(h,termStructure_));
         engine_ = Handle<PricingEngine>(new BlackCapFloor(model));
 

@@ -47,7 +47,7 @@ namespace {
 
     Handle<VanillaOption> 
     makeEuropeanOption(Option::Type type,
-                       const Handle<MarketElement>& u,
+                       const Handle<Quote>& u,
                        double k,
                        const Handle<TermStructure>& q,
                        const Handle<TermStructure>& r,
@@ -107,7 +107,7 @@ namespace {
         }
 
         return Handle<VanillaOption>(
-            new VanillaOption(type, RelinkableHandle<MarketElement>(u), k,
+            new VanillaOption(type, RelinkableHandle<Quote>(u), k,
                               RelinkableHandle<TermStructure>(q),
                               RelinkableHandle<TermStructure>(r),
                               EuropeanExercise(exDate),
@@ -115,24 +115,24 @@ namespace {
                               engine));
     }
 
-    Handle<TermStructure> makeFlatCurve(const Handle<MarketElement>& forward) {
+    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward) {
         Date today = Date::todaysDate();
         Calendar calendar = TARGET();
         Date reference = calendar.advance(today,2,Days);
         return Handle<TermStructure>(
             new FlatForward(today,reference,
-                            RelinkableHandle<MarketElement>(forward),
+                            RelinkableHandle<Quote>(forward),
                             Actual365()));
     }
 
     Handle<BlackVolTermStructure> makeFlatVolatility(
-                                     const Handle<MarketElement>& volatility) {
+                                     const Handle<Quote>& volatility) {
         Date today = Date::todaysDate();
         Calendar calendar = TARGET();
         Date reference = calendar.advance(today,2,Days);
         return Handle<BlackVolTermStructure>(
             new BlackConstantVol(reference,
-                                 RelinkableHandle<MarketElement>(volatility),
+                                 RelinkableHandle<Quote>(volatility),
                                  Actual365()));
     }
 
@@ -197,12 +197,12 @@ void EuropeanOptionTest::testGreeks() {
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     double vols[] = { 0.11, 0.50, 1.20 };
 
-    Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
-    Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> underlying(new SimpleQuote(0.0));
+    Handle<SimpleQuote> volatility(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
-    Handle<SimpleMarketElement> qRate(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<TermStructure> divCurve = makeFlatCurve(qRate);
-    Handle<SimpleMarketElement> rRate(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
 
     Date today = Date::todaysDate();
@@ -344,12 +344,12 @@ void EuropeanOptionTest::testImpliedVol() {
     Rate rRates[] = { 0.01, 0.05, 0.10 };
     double vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
-    Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
-    Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> underlying(new SimpleQuote(0.0));
+    Handle<SimpleQuote> volatility(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
-    Handle<SimpleMarketElement> qRate(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<TermStructure> divCurve = makeFlatCurve(qRate);
-    Handle<SimpleMarketElement> rRate(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
 
     Date today = Date::todaysDate();
@@ -444,7 +444,7 @@ void EuropeanOptionTest::testImpliedVol() {
 namespace {
 
     void testEngines(EngineType *engines, Size N) {
-        
+
         double tolerance = 0.1;
 
         // test options
@@ -458,13 +458,13 @@ namespace {
         Rate rRates[] = { 0.01, 0.05, 0.15 };
         double vols[] = { 0.11, 0.50, 1.20 };
 
-        Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
-        Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
+        Handle<SimpleQuote> underlying(new SimpleQuote(0.0));
+        Handle<SimpleQuote> volatility(new SimpleQuote(0.0));
         Handle<BlackVolTermStructure> volCurve = 
             makeFlatVolatility(volatility);
-        Handle<SimpleMarketElement> qRate(new SimpleMarketElement(0.0));
+        Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
         Handle<TermStructure> divCurve = makeFlatCurve(qRate);
-        Handle<SimpleMarketElement> rRate(new SimpleMarketElement(0.0));
+        Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
         Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
 
         Date today = Date::todaysDate();

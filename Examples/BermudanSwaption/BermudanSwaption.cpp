@@ -92,9 +92,8 @@ int main(int argc, char* argv[])
         Rate weekRates[3] = {3.295, 3.3, 3.3};
         Size i;
         for (i=0; i<3; i++) {
-            RelinkableHandle<MarketElement> depositRate(
-                Handle<MarketElement>(
-                    new SimpleMarketElement(weekRates[i]*0.01)));
+            RelinkableHandle<Quote> depositRate(
+                Handle<Quote>(new SimpleQuote(weekRates[i]*0.01)));
             Handle<RateHelper> depositHelper(new DepositRateHelper(
                 depositRate, i+1, Weeks, settlementDays, calendar,
                 ModifiedFollowing, depositDayCounter));
@@ -106,9 +105,8 @@ int main(int argc, char* argv[])
             3.395, 3.41, 3.41, 3.49, 3.54, 3.53};
 
         for (i=0; i<11; i++) {
-            RelinkableHandle<MarketElement> depositRate(
-                Handle<MarketElement>(
-                    new SimpleMarketElement(depositRates[i]*0.01)));
+            RelinkableHandle<Quote> depositRate(
+                Handle<Quote>(new SimpleQuote(depositRates[i]*0.01)));
             Handle<RateHelper> depositHelper(new DepositRateHelper(
                 depositRate, i+1, Months, settlementDays, calendar,
                 ModifiedFollowing, depositDayCounter));
@@ -127,10 +125,9 @@ int main(int argc, char* argv[])
         int swFloatingLegFrequency = 2;
 
         for (i=0; i<13; i++) {
-            Handle<MarketElement> swapRate(
-                new SimpleMarketElement(swapRates[i]*0.01));
+            Handle<Quote> swapRate(new SimpleQuote(swapRates[i]*0.01));
             Handle<RateHelper> swapHelper(new SwapRateHelper(
-                RelinkableHandle<MarketElement>(swapRate),
+                RelinkableHandle<Quote>(swapRate),
                 swapYears[i], Years, settlementDays, 
                 calendar, ModifiedFollowing,
                 swFixedLegFrequency,
@@ -202,12 +199,11 @@ int main(int argc, char* argv[])
         for (i=0; i<numRows; i++) {
             for (unsigned int j=0; j<numCols; j++) {
                 unsigned int k = i*10 + j;
-                Handle<MarketElement> vol(
-                    new SimpleMarketElement(swaptionVols[k]*0.01));
+                Handle<Quote> vol(new SimpleQuote(swaptionVols[k]*0.01));
                 swaptions.push_back(Handle<CalibrationHelper>(
                     new SwaptionHelper(swaptionMaturities[j],
                                        Period(swaptionLengths[i], Years),
-                                       RelinkableHandle<MarketElement>(vol),
+                                       RelinkableHandle<Quote>(vol),
                                        indexSixMonths,
                                        rhTermStructure)));
                 swaptions.back()->addTimesTo(times);

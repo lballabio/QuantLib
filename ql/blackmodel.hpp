@@ -30,7 +30,7 @@ namespace QuantLib {
     //! Black-model for vanilla interest-rate derivatives
     class BlackModel : public Observable, public Observer {
       public:
-        BlackModel(const RelinkableHandle<MarketElement>& volatility,
+        BlackModel(const RelinkableHandle<Quote>& volatility,
                    const RelinkableHandle<TermStructure>& termStructure);
 
         void update() { notifyObservers(); }
@@ -43,14 +43,14 @@ namespace QuantLib {
         //! General Black formula
         static double formula(double f, double k, double v, double w);
       private:
-        RelinkableHandle<MarketElement> volatility_;
+        RelinkableHandle<Quote> volatility_;
         RelinkableHandle<TermStructure> termStructure_;
     };
 
     // inline definitions
-    
+
     inline BlackModel::BlackModel(
-        const RelinkableHandle<MarketElement>& volatility,
+        const RelinkableHandle<Quote>& volatility,
         const RelinkableHandle<TermStructure>& termStructure)
     : volatility_(volatility), termStructure_(termStructure) {
         registerWith(volatility_);

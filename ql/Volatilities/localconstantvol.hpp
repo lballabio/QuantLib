@@ -40,7 +40,7 @@ namespace QuantLib {
                          double volatility,
                          const DayCounter& dayCounter = Actual365());
         LocalConstantVol(const Date& referenceDate,
-                         const RelinkableHandle<MarketElement>& volatility,
+                         const RelinkableHandle<Quote>& volatility,
                          const DayCounter& dayCounter = Actual365());
         //! \name LocalVolTermStructure interface
         //@{
@@ -59,7 +59,7 @@ namespace QuantLib {
       private:
         double localVolImpl(Time,double,bool extrapolate) const;
         Date referenceDate_;
-        RelinkableHandle<MarketElement> volatility_;
+        RelinkableHandle<Quote> volatility_;
         DayCounter dayCounter_;
     };
 
@@ -69,13 +69,12 @@ namespace QuantLib {
                                               double volatility, 
                                               const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter) {
-        volatility_.linkTo(
-                  Handle<MarketElement>(new SimpleMarketElement(volatility)));
+        volatility_.linkTo(Handle<Quote>(new SimpleQuote(volatility)));
     }
 
     inline LocalConstantVol::LocalConstantVol(
                             const Date& referenceDate, 
-                            const RelinkableHandle<MarketElement>& volatility, 
+                            const RelinkableHandle<Quote>& volatility, 
                             const DayCounter& dayCounter)
     : referenceDate_(referenceDate), volatility_(volatility), 
       dayCounter_(dayCounter) {

@@ -78,8 +78,8 @@ int main(int argc, char* argv[])
         BermudanExercise berExercise(exDates);
 
 
-        RelinkableHandle<MarketElement> underlyingH(
-            Handle<MarketElement>(new SimpleMarketElement(underlying)));
+        RelinkableHandle<Quote> underlyingH(
+            Handle<Quote>(new SimpleQuote(underlying)));
 
         // bootstrap the yield/dividend/vol curves
         RelinkableHandle<TermStructure> flatTermStructure(

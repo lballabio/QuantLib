@@ -28,18 +28,22 @@
 namespace QuantLib {
 
     //! purely virtual base class for market observables
-    class MarketElement : public Observable {
+    class Quote : public Observable {
       public:
-        virtual ~MarketElement() {}
+        virtual ~Quote() {}
         //! returns the current value
         virtual double value() const = 0;
     };
 
+    //! \deprecated use Quote
+    typedef Quote MarketElement;
+
+
     //! market element returning a stored value
-    class SimpleMarketElement : public MarketElement {
+    class SimpleQuote : public Quote {
       public:
-        SimpleMarketElement(double value);
-        //! \name Market element interface
+        SimpleQuote(double value);
+        //! \name Quote interface
         //@{
         double value() const;
         //@}
@@ -51,13 +55,16 @@ namespace QuantLib {
         double value_;
     };
 
+    //! \deprecated use SimpleQuote
+    typedef SimpleQuote SimpleMarketElement;
+
+
     //! market element whose value depends on another market element
     template <class UnaryFunction>
-    class DerivedMarketElement : public MarketElement,
-                                 public Observer {
+    class DerivedQuote : public Quote, public Observer {
       public:
-        DerivedMarketElement(const RelinkableHandle<MarketElement>& element,
-                             const UnaryFunction& f);
+        DerivedQuote(const RelinkableHandle<Quote>& element,
+                     const UnaryFunction& f);
         //! \name Market element interface
         //@{
         double value() const;
@@ -67,20 +74,23 @@ namespace QuantLib {
         void update();
         //@}
       private:
-        RelinkableHandle<MarketElement> element_;
+        RelinkableHandle<Quote> element_;
         UnaryFunction f_;
     };
 
+    //! \deprecated use DerivedQuote
+    typedef DerivedQuote DerivedMarketElement;
+
+
     //! market element whose value depends on two other market element
     template <class BinaryFunction>
-    class CompositeMarketElement : public MarketElement,
-                                   public Observer {
+    class CompositeQuote : public Quote, public Observer {
       public:
-        CompositeMarketElement(
-            const RelinkableHandle<MarketElement>& element1,
-            const RelinkableHandle<MarketElement>& element2,
+        CompositeQuote(
+            const RelinkableHandle<Quote>& element1,
+            const RelinkableHandle<Quote>& element2,
             const BinaryFunction& f);
-        //! \name Market element interface
+        //! \name Quote interface
         //@{
         double value() const;
         //@}
@@ -89,73 +99,77 @@ namespace QuantLib {
         void update();
         //@}
       private:
-        RelinkableHandle<MarketElement> element1_, element2_;
+        RelinkableHandle<Quote> element1_, element2_;
         BinaryFunction f_;
     };
+
+    //! \deprecated use CompositeQuote
+    typedef CompositeQuote CompositeMarketElement;
 
 
     // inline definitions
 
-    // simple market element
+    // simple quote
 
-    inline SimpleMarketElement::SimpleMarketElement(double value)
+    inline SimpleQuote::SimpleQuote(double value)
     : value_(value) {}
 
-    inline double SimpleMarketElement::value() const {
+    inline double SimpleQuote::value() const {
         return value_;
     }
 
-    inline void SimpleMarketElement::setValue(double value) {
-       if (value_ == value)
-	  return;
+    inline void SimpleQuote::setValue(double value) {
+        if (value_ == value)
+            return;
         value_ = value;
         notifyObservers();
     }
 
 
-    // derived market element
+    // derived quote
 
     template <class UnaryFunction>
-    inline DerivedMarketElement<UnaryFunction>::DerivedMarketElement(
-        const RelinkableHandle<MarketElement>& element,
-        const UnaryFunction& f)
+    inline DerivedQuote<UnaryFunction>::DerivedQuote(
+                                       const RelinkableHandle<Quote>& element,
+                                       const UnaryFunction& f)
     : element_(element), f_(f) {
         registerWith(element_);
     }
 
     template <class UnaryFunction>
-    inline double DerivedMarketElement<UnaryFunction>::value() const {
+    inline double DerivedQuote<UnaryFunction>::value() const {
         QL_REQUIRE(!element_.isNull(),
-            "DerivedMarketElement: null market element set");
+                   "DerivedQuote: null market element set");
         return f_(element_->value());
     }
 
     template <class UnaryFunction>
-    inline void DerivedMarketElement<UnaryFunction>::update() {
+    inline void DerivedQuote<UnaryFunction>::update() {
         notifyObservers();
     }
 
-    // composite market element
+
+    // composite quote
 
     template <class BinaryFunction>
-    inline CompositeMarketElement<BinaryFunction>::CompositeMarketElement(
-        const RelinkableHandle<MarketElement>& element1,
-        const RelinkableHandle<MarketElement>& element2,
-        const BinaryFunction& f)
+    inline CompositeQuote<BinaryFunction>::CompositeQuote(
+                                      const RelinkableHandle<Quote>& element1,
+                                      const RelinkableHandle<Quote>& element2,
+                                      const BinaryFunction& f)
     : element1_(element1), element2_(element2), f_(f) {
         registerWith(element1_);
         registerWith(element2_);
     }
 
     template <class BinaryFunction>
-    inline double CompositeMarketElement<BinaryFunction>::value() const {
+    inline double CompositeQuote<BinaryFunction>::value() const {
         QL_REQUIRE(!element1_.isNull() && !element2_.isNull(),
-            "null market element set");
+                   "CompositeQuote: null quote set");
         return f_(element1_->value(),element2_->value());
     }
 
     template <class BinaryFunction>
-    inline void CompositeMarketElement<BinaryFunction>::update() {
+    inline void CompositeQuote<BinaryFunction>::update() {
         notifyObservers();
     }
 

@@ -34,7 +34,7 @@ namespace QuantLib {
     class VanillaOption : public Option {
       public:
         VanillaOption(Option::Type type,
-                      const RelinkableHandle<MarketElement>& underlying,
+                      const RelinkableHandle<Quote>& underlying,
                       double strike,
                       const RelinkableHandle<TermStructure>& dividendTS,
                       const RelinkableHandle<TermStructure>& riskFreeTS,
@@ -83,7 +83,7 @@ namespace QuantLib {
                        vega_, rho_, dividendRho_, strikeSensitivity_;
         // arguments
         Option::Type type_;
-        RelinkableHandle<MarketElement> underlying_;
+        RelinkableHandle<Quote> underlying_;
         double strike_;
         Exercise exercise_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
@@ -98,7 +98,7 @@ namespace QuantLib {
           private:
             Handle<PricingEngine> engine_;
             double targetValue_;
-            Handle<SimpleMarketElement> vol_;
+            Handle<SimpleQuote> vol_;
             const Value* results_;
         };
     };

@@ -82,7 +82,7 @@ namespace QuantLib {
             Handle<PricingEngine> engine_;
             RelinkableHandle<TermStructure> termStructure_;
             double targetValue_;
-            Handle<SimpleMarketElement> vol_;
+            Handle<SimpleQuote> vol_;
             const Value* results_;
         };
     };

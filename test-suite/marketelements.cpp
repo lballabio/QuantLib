@@ -38,7 +38,7 @@ namespace {
 
 void MarketElementTest::testObservable() {
 
-    Handle<SimpleMarketElement> me(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> me(new SimpleQuote(0.0));
     Flag f;
     f.registerWith(me);
     me->setValue(3.14);
@@ -50,8 +50,8 @@ void MarketElementTest::testObservable() {
 
 void MarketElementTest::testObservableHandle() {
 
-    Handle<SimpleMarketElement> me1(new SimpleMarketElement(0.0));
-    RelinkableHandle<MarketElement> h(me1);
+    Handle<SimpleQuote> me1(new SimpleQuote(0.0));
+    RelinkableHandle<Quote> h(me1);
     Flag f;
     f.registerWith(h);
 
@@ -60,7 +60,7 @@ void MarketElementTest::testObservableHandle() {
         CPPUNIT_FAIL("Observer was not notified of market element change");
 
     f.lower();
-    Handle<SimpleMarketElement> me2(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
     if (!f.isUp())
         CPPUNIT_FAIL("Observer was not notified of market element change");
@@ -72,11 +72,11 @@ void MarketElementTest::testDerived() {
     typedef double (*unary_f)(double);
     unary_f funcs[3] = { add10, mul10, sub10 };
 
-    Handle<MarketElement> me(new SimpleMarketElement(17.0));
-    RelinkableHandle<MarketElement> h(me);
+    Handle<Quote> me(new SimpleQuote(17.0));
+    RelinkableHandle<Quote> h(me);
 
     for (int i=0; i<3; i++) {
-        DerivedMarketElement<unary_f> derived(h,funcs[i]);
+        DerivedQuote<unary_f> derived(h,funcs[i]);
         double x = derived.value(),
                y = funcs[i](me->value());
         if (QL_FABS(x-y) > 1.0e-10)
@@ -93,12 +93,12 @@ void MarketElementTest::testComposite() {
     typedef double (*binary_f)(double,double);
     binary_f funcs[3] = { add, mul, sub };
 
-    Handle<MarketElement> me1(new SimpleMarketElement(12.0)),
-                          me2(new SimpleMarketElement(13.0));
-    RelinkableHandle<MarketElement> h1(me1), h2(me2);
+    Handle<Quote> me1(new SimpleQuote(12.0)),
+                  me2(new SimpleQuote(13.0));
+    RelinkableHandle<Quote> h1(me1), h2(me2);
 
     for (int i=0; i<3; i++) {
-        CompositeMarketElement<binary_f> composite(h1,h2,funcs[i]);
+        CompositeQuote<binary_f> composite(h1,h2,funcs[i]);
         double x = composite.value(),
                y = funcs[i](me1->value(),me2->value());
         if (QL_FABS(x-y) > 1.0e-10)

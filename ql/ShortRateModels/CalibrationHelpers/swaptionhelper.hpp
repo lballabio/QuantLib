@@ -33,7 +33,7 @@ namespace QuantLib {
         //!Constructor for ATM swaption
         SwaptionHelper(const Period& maturity,
                        const Period& length,
-                       const RelinkableHandle<MarketElement>& volatility,
+                       const RelinkableHandle<Quote>& volatility,
                        const Handle<Xibor>& index,
                        const RelinkableHandle<TermStructure>& termStructure);
 

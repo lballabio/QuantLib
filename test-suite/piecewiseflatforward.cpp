@@ -78,7 +78,7 @@ namespace {
     int floatingLegFrequency;
 
     Size deposits, swaps;
-    std::vector<Handle<SimpleMarketElement> > rates;
+    std::vector<Handle<SimpleQuote> > rates;
     Handle<TermStructure> termStructure;
 }
 
@@ -102,28 +102,28 @@ void PiecewiseFlatForwardTest::setUp() {
     swaps = LENGTH(swapData);
 
     // market elements
-    rates = std::vector<Handle<SimpleMarketElement> >(deposits+swaps);
+    rates = std::vector<Handle<SimpleQuote> >(deposits+swaps);
     Size i;
     for (i=0; i<deposits; i++) {
-        rates[i] = Handle<SimpleMarketElement>(
-            new SimpleMarketElement(depositData[i].rate/100));
+        rates[i] = Handle<SimpleQuote>(
+            new SimpleQuote(depositData[i].rate/100));
     }
     for (i=0; i<swaps; i++) {
-        rates[i+deposits] = Handle<SimpleMarketElement>(
-            new SimpleMarketElement(swapData[i].rate/100));
+        rates[i+deposits] = Handle<SimpleQuote>(
+            new SimpleQuote(swapData[i].rate/100));
     }
 
     // rate helpers
     std::vector<Handle<RateHelper> > instruments(deposits+swaps);
     for (i=0; i<deposits; i++) {
-        RelinkableHandle<MarketElement> r(rates[i]);
+        RelinkableHandle<Quote> r(rates[i]);
         instruments[i] = Handle<RateHelper>(
             new DepositRateHelper(r, depositData[i].n, depositData[i].units,
                                   settlementDays, calendar,
                                   depoRollingConvention, depoDayCounter));
     }
     for (i=0; i<swaps; i++) {
-        RelinkableHandle<MarketElement> r(rates[i+deposits]);
+        RelinkableHandle<Quote> r(rates[i+deposits]);
         instruments[i+deposits] = Handle<RateHelper>(
             new SwapRateHelper(r, swapData[i].n, swapData[i].units,
                                settlementDays, calendar,

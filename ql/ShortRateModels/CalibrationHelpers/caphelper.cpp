@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     CapHelper::CapHelper(const Period& length,
-                         const RelinkableHandle<MarketElement>& volatility,
+                         const RelinkableHandle<Quote>& volatility,
                          const Handle<Xibor>& index,
                          const RelinkableHandle<TermStructure>& termStructure)
     : CalibrationHelper(volatility,termStructure) {
@@ -103,9 +103,9 @@ namespace QuantLib {
     }
 
     double CapHelper::blackPrice(double sigma) const {
-        Handle<MarketElement> vol(new SimpleMarketElement(sigma));
+        Handle<Quote> vol(new SimpleQuote(sigma));
         Handle<BlackModel> blackModel(
-                         new BlackModel(RelinkableHandle<MarketElement>(vol), 
+                         new BlackModel(RelinkableHandle<Quote>(vol), 
                                         termStructure_));
         Handle<PricingEngine> black(new BlackCapFloor(blackModel));
         cap_->setPricingEngine(black);

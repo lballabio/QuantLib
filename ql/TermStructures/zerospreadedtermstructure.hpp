@@ -35,7 +35,7 @@ namespace QuantLib {
                                       public Observer {
       public:
         ZeroSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
-                                  const RelinkableHandle<MarketElement>& spread);
+                                  const RelinkableHandle<Quote>& spread);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
@@ -58,12 +58,12 @@ namespace QuantLib {
         Rate forwardImpl(Time, bool extrapolate = false) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
-        RelinkableHandle<MarketElement> spread_;
+        RelinkableHandle<Quote> spread_;
     };
 
     inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(
                                 const RelinkableHandle<TermStructure>& h,
-                                const RelinkableHandle<MarketElement>& spread)
+                                const RelinkableHandle<Quote>& spread)
     : originalCurve_(h), spread_(spread) {
         registerWith(originalCurve_);
         registerWith(spread_);

@@ -45,7 +45,7 @@ namespace QuantLib {
                      double barrier,
                      double cashPayoff,
                      Option::Type type,
-                     const RelinkableHandle<MarketElement>& underlying,
+                     const RelinkableHandle<Quote>& underlying,
                      const RelinkableHandle<TermStructure>& dividendTS,
                      const RelinkableHandle<TermStructure>& riskFreeTS,
                      const Exercise& exercise,
@@ -77,7 +77,7 @@ namespace QuantLib {
         double barrier_;
         double cashPayoff_;
         Option::Type type_;
-        RelinkableHandle<MarketElement> underlying_;
+        RelinkableHandle<Quote> underlying_;
         Exercise exercise_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
         RelinkableHandle<BlackVolTermStructure> volTS_;

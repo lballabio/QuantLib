@@ -27,7 +27,7 @@ namespace QuantLib {
                        const RelinkableHandle<BlackVolTermStructure>& blackTS,
                        const RelinkableHandle<TermStructure>& riskFreeTS,
                        const RelinkableHandle<TermStructure>& dividendTS,
-                       const RelinkableHandle<MarketElement>& underlying)
+                       const RelinkableHandle<Quote>& underlying)
     : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS), underlying_(underlying) {
         registerWith(blackTS_);
@@ -47,8 +47,7 @@ namespace QuantLib {
         registerWith(blackTS_);
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);
-        underlying_.linkTo(
-                  Handle<MarketElement>(new SimpleMarketElement(underlying)));
+        underlying_.linkTo(Handle<Quote>(new SimpleQuote(underlying)));
     }
 
     void LocalVolSurface::accept(AcyclicVisitor& v) {

@@ -55,8 +55,8 @@ namespace {
     }
 
     Handle<PricingEngine> makeEngine(double volatility) {
-        RelinkableHandle<MarketElement> vol(
-            Handle<MarketElement>(new SimpleMarketElement(volatility)));
+        RelinkableHandle<Quote> vol(
+            Handle<Quote>(new SimpleQuote(volatility)));
         Handle<BlackModel> model(new BlackModel(vol,termStructure_));
         return Handle<PricingEngine>(new BlackCapFloor(model));
     }

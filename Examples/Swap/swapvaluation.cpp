@@ -269,37 +269,36 @@ int main(int argc, char* argv[])
          ***  MARKET DATA  ***
          *********************/
 
-        // market elements are containers for quotes.
-        // SimpleMarketElement stores a value which can be manually changed;
-        // other MarketElement subclasses could read the value from a
+        // SimpleQuote stores a value which can be manually changed;
+        // other Quote subclasses could read the value from a
         // database or some kind of data feed.
 
         // deposits
-        Handle<MarketElement> d1wRate(new SimpleMarketElement(d1wQuote));
-        Handle<MarketElement> d1mRate(new SimpleMarketElement(d1mQuote));
-        Handle<MarketElement> d3mRate(new SimpleMarketElement(d3mQuote));
-        Handle<MarketElement> d6mRate(new SimpleMarketElement(d6mQuote));
-        Handle<MarketElement> d9mRate(new SimpleMarketElement(d9mQuote));
-        Handle<MarketElement> d1yRate(new SimpleMarketElement(d1yQuote));
+        Handle<Quote> d1wRate(new SimpleQuote(d1wQuote));
+        Handle<Quote> d1mRate(new SimpleQuote(d1mQuote));
+        Handle<Quote> d3mRate(new SimpleQuote(d3mQuote));
+        Handle<Quote> d6mRate(new SimpleQuote(d6mQuote));
+        Handle<Quote> d9mRate(new SimpleQuote(d9mQuote));
+        Handle<Quote> d1yRate(new SimpleQuote(d1yQuote));
         // FRAs
-        Handle<MarketElement> fra3x6Rate(new SimpleMarketElement(fra3x6Quote));
-        Handle<MarketElement> fra6x9Rate(new SimpleMarketElement(fra6x9Quote));
-        Handle<MarketElement> fra6x12Rate(new SimpleMarketElement(fra6x12Quote));
+        Handle<Quote> fra3x6Rate(new SimpleQuote(fra3x6Quote));
+        Handle<Quote> fra6x9Rate(new SimpleQuote(fra6x9Quote));
+        Handle<Quote> fra6x12Rate(new SimpleQuote(fra6x12Quote));
         // futures
-        Handle<MarketElement> fut1Price(new SimpleMarketElement(fut1Quote));
-        Handle<MarketElement> fut2Price(new SimpleMarketElement(fut2Quote));
-        Handle<MarketElement> fut3Price(new SimpleMarketElement(fut3Quote));
-        Handle<MarketElement> fut4Price(new SimpleMarketElement(fut4Quote));
-        Handle<MarketElement> fut5Price(new SimpleMarketElement(fut5Quote));
-        Handle<MarketElement> fut6Price(new SimpleMarketElement(fut6Quote));
-        Handle<MarketElement> fut7Price(new SimpleMarketElement(fut7Quote));
-        Handle<MarketElement> fut8Price(new SimpleMarketElement(fut8Quote));
+        Handle<Quote> fut1Price(new SimpleQuote(fut1Quote));
+        Handle<Quote> fut2Price(new SimpleQuote(fut2Quote));
+        Handle<Quote> fut3Price(new SimpleQuote(fut3Quote));
+        Handle<Quote> fut4Price(new SimpleQuote(fut4Quote));
+        Handle<Quote> fut5Price(new SimpleQuote(fut5Quote));
+        Handle<Quote> fut6Price(new SimpleQuote(fut6Quote));
+        Handle<Quote> fut7Price(new SimpleQuote(fut7Quote));
+        Handle<Quote> fut8Price(new SimpleQuote(fut8Quote));
         // swaps
-        Handle<MarketElement> s2yRate(new SimpleMarketElement(s2yQuote));
-        Handle<MarketElement> s3yRate(new SimpleMarketElement(s3yQuote));
-        Handle<MarketElement> s5yRate(new SimpleMarketElement(s5yQuote));
-        Handle<MarketElement> s10yRate(new SimpleMarketElement(s10yQuote));
-        Handle<MarketElement> s15yRate(new SimpleMarketElement(s15yQuote));
+        Handle<Quote> s2yRate(new SimpleQuote(s2yQuote));
+        Handle<Quote> s3yRate(new SimpleQuote(s3yQuote));
+        Handle<Quote> s5yRate(new SimpleQuote(s5yQuote));
+        Handle<Quote> s10yRate(new SimpleQuote(s10yQuote));
+        Handle<Quote> s15yRate(new SimpleQuote(s15yQuote));
 
 
 
@@ -317,57 +316,57 @@ int main(int argc, char* argv[])
 
         // setup deposits
         d1w =Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d1wRate),
+            RelinkableHandle<Quote>(d1wRate),
             1, Weeks, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
         d1m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d1mRate),
+            RelinkableHandle<Quote>(d1mRate),
             1, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
         d3m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d3mRate),
+            RelinkableHandle<Quote>(d3mRate),
             3, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
         d6m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d6mRate),
+            RelinkableHandle<Quote>(d6mRate),
             6, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
         d9m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d9mRate),
+            RelinkableHandle<Quote>(d9mRate),
             9, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
         d1y=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d1yRate),
+            RelinkableHandle<Quote>(d1yRate),
             1, Years, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
 
         // setup swaps
         s2y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s2yRate),
+            RelinkableHandle<Quote>(s2yRate),
             2, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s3y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s3yRate),
+            RelinkableHandle<Quote>(s3yRate),
             3, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s5y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s5yRate),
+            RelinkableHandle<Quote>(s5yRate),
             5, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s10y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s10yRate),
+            RelinkableHandle<Quote>(s10yRate),
             10, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s15y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s15yRate),
+            RelinkableHandle<Quote>(s15yRate),
             15, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
@@ -378,57 +377,57 @@ int main(int argc, char* argv[])
 
         // setup FRAs
         Handle<RateHelper> fra3x6(new FraRateHelper(
-            RelinkableHandle<MarketElement>(fra3x6Rate),
+            RelinkableHandle<Quote>(fra3x6Rate),
             3, 6, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fra6x9(new FraRateHelper(
-            RelinkableHandle<MarketElement>(fra6x9Rate),
+            RelinkableHandle<Quote>(fra6x9Rate),
             6, 9, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fra6x12(new FraRateHelper(
-            RelinkableHandle<MarketElement>(fra6x12Rate),
+            RelinkableHandle<Quote>(fra6x12Rate),
             6, 12, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
 
         // setup futures
         int futMonths = 3;
         Handle<RateHelper> fut1(new FuturesRateHelper(
-            RelinkableHandle<MarketElement>(fut1Price),
+            RelinkableHandle<Quote>(fut1Price),
             Date(19, December, 2001),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut2(new FuturesRateHelper(
-            RelinkableHandle<MarketElement>(fut1Price),
+            RelinkableHandle<Quote>(fut1Price),
             Date(20, March, 2002),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut3(new FuturesRateHelper(
-            RelinkableHandle<MarketElement>(fut1Price),
+            RelinkableHandle<Quote>(fut1Price),
             Date(19, June, 2002),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut4(new FuturesRateHelper(
-            RelinkableHandle<MarketElement>(fut1Price),
+            RelinkableHandle<Quote>(fut1Price),
             Date(18, September, 2002),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut5(new FuturesRateHelper(
-            RelinkableHandle<MarketElement>(fut1Price),
+            RelinkableHandle<Quote>(fut1Price),
             Date(18, December, 2002),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut6(new FuturesRateHelper(
-            RelinkableHandle<MarketElement>(fut1Price),
+            RelinkableHandle<Quote>(fut1Price),
             Date(19, March, 2003),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut7(new FuturesRateHelper(
-            RelinkableHandle<MarketElement>(fut1Price),
+            RelinkableHandle<Quote>(fut1Price),
             Date(18, June, 2003),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut8(new FuturesRateHelper(
-            RelinkableHandle<MarketElement>(fut1Price),
+            RelinkableHandle<Quote>(fut1Price),
             Date(17, September, 2003),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
@@ -581,18 +580,18 @@ int main(int argc, char* argv[])
 
         // now let's say that the 5-years swap rate goes up to 4.60%.
         // A smarter market element--say, connected to a data source-- would
-        // notice the change itself. Since we're using SimpleMarketElements,
+        // notice the change itself. Since we're using SimpleQuotes,
         // we'll have to change the value manually--which forces us to
-        // downcast the handle and use the SimpleMarketElement
+        // downcast the handle and use the SimpleQuote
         // interface. In any case, the point here is that a change in the
-        // value contained in the MarketElement triggers a new bootstrapping
+        // value contained in the Quote triggers a new bootstrapping
         // of the curve and a repricing of the swap.
 
         #if defined(HAVE_BOOST)
-        Handle<SimpleMarketElement> fiveYearsRate = 
-            boost::dynamic_pointer_cast<SimpleMarketElement>(s5yRate);
+        Handle<SimpleQuote> fiveYearsRate = 
+            boost::dynamic_pointer_cast<SimpleQuote>(s5yRate);
         #else
-        Handle<SimpleMarketElement> fiveYearsRate = s5yRate;
+        Handle<SimpleQuote> fiveYearsRate = s5yRate;
         #endif
         fiveYearsRate->setValue(0.0460);
         std::cout << std::endl <<  "*** 5Y swap goes up to 4.60%" << std::endl;

@@ -195,8 +195,8 @@ int main(int argc, char* argv[])
         BermudanExercise berExercise(exDates);
 
 
-        RelinkableHandle<MarketElement> underlyingH(
-            Handle<MarketElement>(new SimpleMarketElement(underlying)));
+        RelinkableHandle<Quote> underlyingH(
+            Handle<Quote>(new SimpleQuote(underlying)));
 
         // bootstrap the yield/dividend/vol curves
         RelinkableHandle<TermStructure> flatTermStructure(
@@ -486,8 +486,8 @@ int main(int argc, char* argv[])
             quantoEngine,
             flatTermStructure,
             flatVolTS,
-            RelinkableHandle<MarketElement>(
-                Handle<MarketElement>(new SimpleMarketElement(correlation))));
+            RelinkableHandle<Quote>(
+                Handle<Quote>(new SimpleQuote(correlation))));
 
         value = quantoOption.NPV();
         double delta = quantoOption.delta();
@@ -635,8 +635,8 @@ int main(int argc, char* argv[])
             quantoForwardEngine,
             flatTermStructure,
             flatVolTS,
-            RelinkableHandle<MarketElement>(
-                Handle<MarketElement>(new SimpleMarketElement(correlation))),
+            RelinkableHandle<Quote>(
+                Handle<Quote>(new SimpleQuote(correlation))),
             1.1, // moneyness
             settlementDate.plusMonths(1) // reset Date
         );

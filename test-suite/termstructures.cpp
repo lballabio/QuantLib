@@ -128,8 +128,8 @@ void TermStructureTest::testImpliedObs() {
 
 void TermStructureTest::testFSpreaded() {
     double tolerance = 1.0e-10;
-    Handle<MarketElement> me(new SimpleMarketElement(0.01));
-    RelinkableHandle<MarketElement> mh(me);
+    Handle<Quote> me(new SimpleQuote(0.01));
+    RelinkableHandle<Quote> mh(me);
     Handle<TermStructure> spreaded(
         new ForwardSpreadedTermStructure(
             RelinkableHandle<TermStructure>(termStructure_),mh));
@@ -146,8 +146,8 @@ void TermStructureTest::testFSpreaded() {
 }
 
 void TermStructureTest::testFSpreadedObs() {
-    Handle<SimpleMarketElement> me(new SimpleMarketElement(0.01));
-    RelinkableHandle<MarketElement> mh(me);
+    Handle<SimpleQuote> me(new SimpleQuote(0.01));
+    RelinkableHandle<Quote> mh(me);
     RelinkableHandle<TermStructure> h;
     Handle<TermStructure> spreaded(
         new ForwardSpreadedTermStructure(h,mh));
@@ -164,8 +164,8 @@ void TermStructureTest::testFSpreadedObs() {
 
 void TermStructureTest::testZSpreaded() {
     double tolerance = 1.0e-10;
-    Handle<MarketElement> me(new SimpleMarketElement(0.01));
-    RelinkableHandle<MarketElement> mh(me);
+    Handle<Quote> me(new SimpleQuote(0.01));
+    RelinkableHandle<Quote> mh(me);
     Handle<TermStructure> spreaded(
         new ZeroSpreadedTermStructure(
             RelinkableHandle<TermStructure>(termStructure_),mh));
@@ -182,8 +182,8 @@ void TermStructureTest::testZSpreaded() {
 }
 
 void TermStructureTest::testZSpreadedObs() {
-    Handle<SimpleMarketElement> me(new SimpleMarketElement(0.01));
-    RelinkableHandle<MarketElement> mh(me);
+    Handle<SimpleQuote> me(new SimpleQuote(0.01));
+    RelinkableHandle<Quote> mh(me);
     RelinkableHandle<TermStructure> h;
     Handle<TermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));

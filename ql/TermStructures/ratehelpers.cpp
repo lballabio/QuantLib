@@ -33,14 +33,13 @@ namespace QuantLib {
     }
     #endif
 
-    RateHelper::RateHelper(const RelinkableHandle<MarketElement>& quote)
+    RateHelper::RateHelper(const RelinkableHandle<Quote>& quote)
     : quote_(quote), termStructure_(0) {
         registerWith(quote_);
     }
 
     RateHelper::RateHelper(double quote)
-    : quote_(RelinkableHandle<MarketElement>(
-                      Handle<MarketElement>(new SimpleMarketElement(quote)))),
+    : quote_(RelinkableHandle<Quote>(Handle<Quote>(new SimpleQuote(quote)))),
       termStructure_(0) {
         registerWith(quote_);
     }
@@ -59,7 +58,7 @@ namespace QuantLib {
 
 
     DepositRateHelper::DepositRateHelper(
-                       const RelinkableHandle<MarketElement>& rate,
+                       const RelinkableHandle<Quote>& rate,
                        int n, TimeUnit units, int settlementDays,
                        const Calendar& calendar, RollingConvention convention,
                        const DayCounter& dayCounter)
@@ -115,7 +114,7 @@ namespace QuantLib {
 
 
 
-    FraRateHelper::FraRateHelper(const RelinkableHandle<MarketElement>& rate,
+    FraRateHelper::FraRateHelper(const RelinkableHandle<Quote>& rate,
                                  int monthsToStart, int monthsToEnd,
                                  int settlementDays,
                                  const Calendar& calendar, 
@@ -178,7 +177,7 @@ namespace QuantLib {
 
 
     FuturesRateHelper::FuturesRateHelper(
-                       const RelinkableHandle<MarketElement>& price,
+                       const RelinkableHandle<Quote>& price,
                        const Date& ImmDate, int nMonths,
                        const Calendar& calendar, RollingConvention convention,
                        const DayCounter& dayCounter)
@@ -191,7 +190,7 @@ namespace QuantLib {
     }
 
     FuturesRateHelper::FuturesRateHelper(
-                       const RelinkableHandle<MarketElement>& price,
+                       const RelinkableHandle<Quote>& price,
                        const Date& ImmDate, const Date& MatDate,
                        const Calendar& calendar, RollingConvention convention,
                        const DayCounter& dayCounter)
@@ -239,7 +238,7 @@ namespace QuantLib {
     }
 
     SwapRateHelper::SwapRateHelper(
-                                   const RelinkableHandle<MarketElement>& rate,
+                                   const RelinkableHandle<Quote>& rate,
                                    int n, TimeUnit units, int settlementDays,
                                    const Calendar& calendar, 
                                    RollingConvention convention,

@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         ForwardSpreadedTermStructure(
                                const RelinkableHandle<TermStructure>&,
-                               const RelinkableHandle<MarketElement>& spread);
+                               const RelinkableHandle<Quote>& spread);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
@@ -59,12 +59,12 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time, bool extrapolate = false) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
-        RelinkableHandle<MarketElement> spread_;
+        RelinkableHandle<Quote> spread_;
     };
 
     inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
                                 const RelinkableHandle<TermStructure>& h,
-                                const RelinkableHandle<MarketElement>& spread)
+                                const RelinkableHandle<Quote>& spread)
     : originalCurve_(h), spread_(spread) {
         registerWith(originalCurve_);
         registerWith(spread_);

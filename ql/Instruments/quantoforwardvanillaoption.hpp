@@ -36,7 +36,7 @@ namespace QuantLib {
         results;
         QuantoForwardVanillaOption(
                  Option::Type type,
-                 const RelinkableHandle<MarketElement>& underlying,
+                 const RelinkableHandle<Quote>& underlying,
                  double strike,
                  const RelinkableHandle<TermStructure>& dividendTS,
                  const RelinkableHandle<TermStructure>& riskFreeTS,
@@ -45,7 +45,7 @@ namespace QuantLib {
                  const Handle<PricingEngine>& engine,
                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
                  const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
-                 const RelinkableHandle<MarketElement>& correlation,
+                 const RelinkableHandle<Quote>& correlation,
                  double moneyness,
                  Date resetDate,
                  const std::string& isinCode = "",

@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    Stock::Stock(const RelinkableHandle<MarketElement>& quote,
+    Stock::Stock(const RelinkableHandle<Quote>& quote,
                  const std::string& isinCode, const std::string& description)
     : Instrument(isinCode,description), quote_(quote) {
         registerWith(quote_);

@@ -30,13 +30,13 @@ namespace QuantLib {
     //! Simple stock class
     class Stock : public Instrument {
       public:
-        Stock(const RelinkableHandle<MarketElement>& quote,
+        Stock(const RelinkableHandle<Quote>& quote,
               const std::string& isinCode, const std::string& description);
         bool isExpired() const { return false; }
       protected:
         void performCalculations() const;
       private:
-        RelinkableHandle<MarketElement> quote_;
+        RelinkableHandle<Quote> quote_;
     };
 
 }

@@ -41,7 +41,7 @@ namespace QuantLib {
                          double volatility,
                          const DayCounter& dayCounter = Actual365());
         BlackConstantVol(const Date& referenceDate,
-                         const RelinkableHandle<MarketElement>& volatility,
+                         const RelinkableHandle<Quote>& volatility,
                          const DayCounter& dayCounter = Actual365());
         //! \name BlackVolTermStructure interface
         //@{
@@ -64,7 +64,7 @@ namespace QuantLib {
                                     bool extrapolate = false) const;
       private:
         Date referenceDate_;
-        RelinkableHandle<MarketElement> volatility_;
+        RelinkableHandle<Quote> volatility_;
         DayCounter dayCounter_;
     };
 
@@ -75,14 +75,13 @@ namespace QuantLib {
                                               double volatility, 
                                               const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter) {
-        volatility_.linkTo(Handle<MarketElement>(
-                                        new SimpleMarketElement(volatility)));
+        volatility_.linkTo(Handle<Quote>(new SimpleQuote(volatility)));
         registerWith(volatility_);
     }
 
     inline BlackConstantVol::BlackConstantVol(
                             const Date& referenceDate,
-                            const RelinkableHandle<MarketElement>& volatility,
+                            const RelinkableHandle<Quote>& volatility,
                             const DayCounter& dayCounter)
     : referenceDate_(referenceDate), volatility_(volatility),
       dayCounter_(dayCounter) {

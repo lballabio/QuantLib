@@ -38,7 +38,7 @@ namespace QuantLib {
         LocalVolSurface(const RelinkableHandle<BlackVolTermStructure>& blackTS,
                         const RelinkableHandle<TermStructure>& riskFreeTS,
                         const RelinkableHandle<TermStructure>& dividendTS,
-                        const RelinkableHandle<MarketElement>& underlying);
+                        const RelinkableHandle<Quote>& underlying);
         LocalVolSurface(const RelinkableHandle<BlackVolTermStructure>& blackTS,
                         const RelinkableHandle<TermStructure>& riskFreeTS,
                         const RelinkableHandle<TermStructure>& dividendTS,
@@ -66,7 +66,7 @@ namespace QuantLib {
       private:
         RelinkableHandle<BlackVolTermStructure> blackTS_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
-        RelinkableHandle<MarketElement> underlying_;
+        RelinkableHandle<Quote> underlying_;
     };
 
 }

@@ -65,8 +65,8 @@ namespace {
     Handle<Swaption> makeSwaption(const Handle<SimpleSwap>& swap,
                                   const Date& exercise, 
                                   double volatility) {
-        Handle<MarketElement> vol_me(new SimpleMarketElement(volatility));
-        RelinkableHandle<MarketElement> vol_rh(vol_me);
+        Handle<Quote> vol_me(new SimpleQuote(volatility));
+        RelinkableHandle<Quote> vol_rh(vol_me);
         Handle<BlackModel> model(new BlackModel(vol_rh,termStructure_));
         Handle<PricingEngine> engine(new BlackSwaption(model));
         return Handle<Swaption>(new Swaption(swap,EuropeanExercise(exercise),

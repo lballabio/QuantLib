@@ -28,7 +28,7 @@ namespace QuantLib {
 
     VanillaOption::VanillaOption(
                          Option::Type type,
-                         const RelinkableHandle<MarketElement>& underlying,
+                         const RelinkableHandle<Quote>& underlying,
                          double strike,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
@@ -224,11 +224,11 @@ namespace QuantLib {
         QL_REQUIRE(arguments_ != 0,
                    "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
                    "pricing engine does not supply needed arguments");
-        vol_ = Handle<SimpleMarketElement>(new SimpleMarketElement(0.0));
+        vol_ = Handle<SimpleQuote>(new SimpleQuote(0.0));
         arguments_->volTS = RelinkableHandle<BlackVolTermStructure>(
             Handle<BlackVolTermStructure>(
                 new BlackConstantVol(arguments_->volTS->referenceDate(), 
-                                     RelinkableHandle<MarketElement>(vol_))));
+                                     RelinkableHandle<Quote>(vol_))));
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,
                    "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "

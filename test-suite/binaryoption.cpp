@@ -35,24 +35,24 @@ using namespace QuantLib;
 
 namespace {
 
-    Handle<TermStructure> makeFlatCurve(const Handle<MarketElement>& forward) {
+    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward) {
         Date today = Date::todaysDate();
         Calendar calendar = NullCalendar();
         Date reference = today;
         return Handle<TermStructure>(
             new FlatForward(today,reference,
-                            RelinkableHandle<MarketElement>(forward),
+                            RelinkableHandle<Quote>(forward),
                             SimpleDayCounter()));
     }
 
     Handle<BlackVolTermStructure> makeFlatVolatility(
-                                     const Handle<MarketElement>& volatility) {
+                                     const Handle<Quote>& volatility) {
         Date today = Date::todaysDate();
         Calendar calendar = NullCalendar();
         Date reference = today;
         return Handle<BlackVolTermStructure>(
             new BlackConstantVol(reference,
-                                 RelinkableHandle<MarketElement>(volatility),
+                                 RelinkableHandle<Quote>(volatility),
                                  SimpleDayCounter()));
     }
 
@@ -103,17 +103,16 @@ void BinaryOptionTest::testValues() {
           0.2, 0.05, 0.02, 110, 100.0, 35.283179 }
     };
 
-    Handle<SimpleMarketElement> underlyingH_SME(
-        new SimpleMarketElement(underlyingPrice));
-    Handle<SimpleMarketElement> qH_SME(new SimpleMarketElement(q));
+    Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyingPrice));
+    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
     Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
-    Handle<SimpleMarketElement> rH_SME(new SimpleMarketElement(r));
+    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
     Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
 
-    Handle<SimpleMarketElement> volatilityH_SME(new SimpleMarketElement(0.25));
+    Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.25));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
 
-    Handle<MarketElement> underlyingH = underlyingH_SME;
+    Handle<Quote> underlyingH = underlyingH_SME;
 
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
@@ -129,7 +128,7 @@ void BinaryOptionTest::testValues() {
                 values[i].barrier, 
                 values[i].rebate, 
                 Option::Call, 
-                RelinkableHandle<MarketElement>(underlyingH),
+                RelinkableHandle<Quote>(underlyingH),
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
@@ -185,17 +184,16 @@ void BinaryOptionTest::testAmericanValues() {
           0.11, 0.01, 0.04, 99.5,  100, 98.7776 }
     };
 
-    Handle<SimpleMarketElement> underlyingH_SME(
-        new SimpleMarketElement(underlyingPrice));
-    Handle<SimpleMarketElement> qH_SME(new SimpleMarketElement(q));
+    Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyingPrice));
+    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
     Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
-    Handle<SimpleMarketElement> rH_SME(new SimpleMarketElement(r));
+    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
     Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
 
-    Handle<SimpleMarketElement> volatilityH_SME(new SimpleMarketElement(0.25));
+    Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.25));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
 
-    Handle<MarketElement> underlyingH = underlyingH_SME;
+    Handle<Quote> underlyingH = underlyingH_SME;
 
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
@@ -213,7 +211,7 @@ void BinaryOptionTest::testAmericanValues() {
                 values[i].barrier, 
                 values[i].rebate, 
                 values[i].optionType, 
-                RelinkableHandle<MarketElement>(underlyingH),
+                RelinkableHandle<Quote>(underlyingH),
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 amExercise, 
@@ -253,17 +251,16 @@ void BinaryOptionTest::testSelfConsistency() {
     double strikes[] = { 50.0, 99.5, 100.5, 150.0 };
     double volatilities[] = { 0.11, 0.5, 1.2 };
 
-    Handle<SimpleMarketElement> underlyingH_SME(
-        new SimpleMarketElement(underlyings[0]));
-    Handle<SimpleMarketElement> rH_SME(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyings[0]));
+    Handle<SimpleQuote> rH_SME(new SimpleQuote(0.0));
     Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
-    Handle<SimpleMarketElement> qH_SME(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> qH_SME(new SimpleQuote(0.0));
     Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
 
-    Handle<SimpleMarketElement> volatilityH_SME(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
 
-    Handle<MarketElement> underlyingH = underlyingH_SME;
+    Handle<Quote> underlyingH = underlyingH_SME;
 
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
@@ -315,7 +312,7 @@ void BinaryOptionTest::testSelfConsistency() {
                       k, 
                       rebate, 
                       type, 
-                      RelinkableHandle<MarketElement>(underlyingH),
+                      RelinkableHandle<Quote>(underlyingH),
                       RelinkableHandle<TermStructure>(qTS), 
                       RelinkableHandle<TermStructure>(rTS),
                       exercises[j], 
@@ -450,17 +447,16 @@ void BinaryOptionTest::testEngineConsistency() {
     //double strikes[] = { 50, 99.5 };
     double volatilities[] = { 0.11, 0.5, 1.2 };
 
-    Handle<SimpleMarketElement> underlyingH_SME(
-        new SimpleMarketElement(underlyings[0]));
-    Handle<SimpleMarketElement> rH_SME(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyings[0]));
+    Handle<SimpleQuote> rH_SME(new SimpleQuote(0.0));
     Handle<TermStructure> rTS = makeFlatCurve(rH_SME);
-    Handle<SimpleMarketElement> qH_SME(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> qH_SME(new SimpleQuote(0.0));
     Handle<TermStructure> qTS = makeFlatCurve(qH_SME);
 
-    Handle<SimpleMarketElement> volatilityH_SME(new SimpleMarketElement(0.0));
+    Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
 
-    Handle<MarketElement> underlyingH = underlyingH_SME;
+    Handle<Quote> underlyingH = underlyingH_SME;
 
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
@@ -513,7 +509,7 @@ void BinaryOptionTest::testEngineConsistency() {
                       barrier, 
                       cashPayoff, 
                       type, 
-                      RelinkableHandle<MarketElement>(underlyingH),
+                      RelinkableHandle<Quote>(underlyingH),
                       RelinkableHandle<TermStructure>(qTS), 
                       RelinkableHandle<TermStructure>(rTS),
                       exercises[j], 

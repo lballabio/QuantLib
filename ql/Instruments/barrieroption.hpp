@@ -43,7 +43,7 @@ namespace QuantLib {
                       double barrier,
                       double rebate,
                       Option::Type type,
-                      const RelinkableHandle<MarketElement>& underlying,
+                      const RelinkableHandle<Quote>& underlying,
                       double strike,
                       const RelinkableHandle<TermStructure>& dividendTS,
                       const RelinkableHandle<TermStructure>& riskFreeTS,
@@ -76,7 +76,7 @@ namespace QuantLib {
         double barrier_;
         double rebate_;
         Option::Type type_;
-        RelinkableHandle<MarketElement> underlying_;
+        RelinkableHandle<Quote> underlying_;
         double strike_;
         Exercise exercise_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;

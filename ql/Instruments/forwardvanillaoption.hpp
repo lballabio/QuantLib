@@ -44,7 +44,7 @@ namespace QuantLib {
         typedef VanillaOption::results results;
         ForwardVanillaOption(
                          Option::Type type,
-                         const RelinkableHandle<MarketElement>& underlying,
+                         const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const Exercise& exercise,

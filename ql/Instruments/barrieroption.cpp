@@ -32,7 +32,7 @@ namespace QuantLib {
                          double barrier,
                          double rebate,
                          Option::Type type,
-                         const RelinkableHandle<MarketElement>& underlying,
+                         const RelinkableHandle<Quote>& underlying,
                          double strike,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
