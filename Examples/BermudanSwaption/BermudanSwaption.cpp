@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
 
         calibrateModel(modelHW, swaptions, 0.25);
         std::cout << "calibrated to "
-                  << ArrayFormatter::toString(modelHW->params(),6)
+                  << modelHW->params()
                   << std::endl
                   << std::endl;
 
@@ -255,7 +255,7 @@ int main(int argc, char* argv[])
 
         calibrateModel(modelHW2, swaptions, 0.25);
         std::cout << "calibrated to "
-                  << ArrayFormatter::toString(modelHW2->params(),6)
+                  << modelHW2->params()
                   << std::endl
                   << std::endl;
 
@@ -264,7 +264,7 @@ int main(int argc, char* argv[])
             Handle<PricingEngine>(new TreeSwaption(modelBK, grid)));
         calibrateModel(modelBK, swaptions, 0.25);
         std::cout << "calibrated to "
-                  << ArrayFormatter::toString(modelBK->params())
+                  << modelBK->params()
                   << std::endl
                   << std::endl;
 
