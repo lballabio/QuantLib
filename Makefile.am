@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.39  2001/08/23 13:04:54  nando
+# typo fixed
+#
 # Revision 1.38  2001/08/23 12:59:45  nando
 # makedist now distributes examples
 #
@@ -39,12 +42,12 @@ dist-hook:
 	cp $(srcdir)/Docs/Examples/*.txt $(distdir)/Docs/Examples/
 	mkdir $(distdir)/Docs/Examples/HedgingError
 	cp $(srcdir)/Docs/Examples/HedgingError/*.cpp $(distdir)/Docs/Examples/HedgingError/
-	cp $(srcdir)/Docs/Examples/HedgingError/*.dsw $(distdir)/Docs/Examples/HedgingError/
+	cp $(srcdir)/Docs/Examples/HedgingError/*.dsp $(distdir)/Docs/Examples/HedgingError/
 	cp $(srcdir)/Docs/Examples/HedgingError/*.mak $(distdir)/Docs/Examples/HedgingError/
 	cp $(srcdir)/Docs/Examples/HedgingError/*.txt $(distdir)/Docs/Examples/HedgingError/
 	mkdir $(distdir)/Docs/Examples/Parities
 	cp $(srcdir)/Docs/Examples/Parities/*.cpp $(distdir)/Docs/Examples/Parities/
-	cp $(srcdir)/Docs/Examples/Parities/*.dsw $(distdir)/Docs/Examples/Parities/
+	cp $(srcdir)/Docs/Examples/Parities/*.dsp $(distdir)/Docs/Examples/Parities/
 	cp $(srcdir)/Docs/Examples/Parities/*.mak $(distdir)/Docs/Examples/Parities/
 	cp $(srcdir)/Docs/Examples/Parities/*.txt $(distdir)/Docs/Examples/Parities/
 	mkdir $(distdir)/Docs/images
