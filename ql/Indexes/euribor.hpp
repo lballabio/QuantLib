@@ -29,6 +29,7 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/target.hpp>
+#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -38,10 +39,11 @@ namespace QuantLib {
         class Euribor : public Xibor {
           public:
             Euribor(int n, TimeUnit units,
-                const RelinkableHandle<TermStructure>& h)
+                const RelinkableHandle<TermStructure>& h,
+                const DayCounter& dc = DayCounters::Actual360())
             : Xibor("Euribor", n, units, 2, EUR,
                 Calendar(Calendars::TARGET()), true, 
-                ModifiedFollowing, h) {}
+                ModifiedFollowing, dc, h) {}
         };
 
     }

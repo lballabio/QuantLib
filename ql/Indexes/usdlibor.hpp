@@ -29,6 +29,7 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/newyork.hpp>
+#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -38,10 +39,11 @@ namespace QuantLib {
         class USDLibor : public Xibor {
           public:
             USDLibor(int n, TimeUnit units,
-                const RelinkableHandle<TermStructure>& h)
+                const RelinkableHandle<TermStructure>& h,
+                const DayCounter& dc = DayCounters::Actual360())
             : Xibor("USDLibor", n, units, 2, USD,
                 Calendar(Calendars::NewYork()), true, 
-                ModifiedFollowing, h) {}
+                ModifiedFollowing, dc, h) {}
         };
 
     }

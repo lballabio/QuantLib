@@ -74,6 +74,7 @@ namespace QuantLib {
                     index->currency(),
                     index->calendar(),index->isAdjusted(),
                     index->rollingConvention(),
+                    termStructure->dayCounter(),
                     termStructure));
 
                 std::vector<double> nominals(1,1.0);

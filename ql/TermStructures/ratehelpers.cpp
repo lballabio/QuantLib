@@ -241,6 +241,7 @@ namespace QuantLib {
                 12/floatingFrequency_,Months,settlementDays_,
                 EUR, // any would do
                 calendar_,true,convention_,
+                t->dayCounter(),
                 termStructureHandle_));
             swap_ = Handle<SimpleSwap>(
                 new SimpleSwap(true,                // pay fixed rate

@@ -16,7 +16,7 @@
 */
 
 /*! \file cadlibor.hpp
-    \brief %CAD %Libor index (Also known as CDOR, check settlement days)
+    \brief %CAD %Libor index (Also known as CDOR)
 
     \fullpath
     ql/Indexes/%cadlibor.hpp
@@ -29,19 +29,22 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/toronto.hpp>
+#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
     namespace Indexes {
 
-        //! %CAD %Libor index (Also known as CDOR, check settlement days)
+        //! %CAD %Libor index (Also known as CDOR)
+        /*! \todo check settlement days */
         class CADLibor : public Xibor {
           public:
             CADLibor(int n, TimeUnit units,
-                const RelinkableHandle<TermStructure>& h)
+                const RelinkableHandle<TermStructure>& h,
+                const DayCounter& dc = DayCounters::Actual365())
             : Xibor("CADLibor", n, units, 2, CAD,
                 Calendar(Calendars::Toronto()), true, 
-                ModifiedFollowing, h) {}
+                ModifiedFollowing, dc, h) {}
         };
 
     }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file xibor.cpp
     \brief purely virtual base class for libor indexes
 
@@ -32,19 +32,24 @@ namespace QuantLib {
     namespace Indexes {
 
         std::string Xibor::name() const {
+            std::string tenor;
             switch (units_) {
               case Days:
-                return familyName_+IntegerFormatter::toString(n_)+"d";
+                tenor = IntegerFormatter::toString(n_)+"d";
+                break;
               case Weeks:
-                return familyName_+IntegerFormatter::toString(n_)+"w";
+                tenor = IntegerFormatter::toString(n_)+"w";
+                break;
               case Months:
-                return familyName_+IntegerFormatter::toString(n_)+"m";
+                tenor = IntegerFormatter::toString(n_)+"m";
+                break;
               case Years:
-                return familyName_+IntegerFormatter::toString(n_)+"y";
+                tenor = IntegerFormatter::toString(n_)+"y";
+                break;
               default:
                 throw Error("invalid time unit");
             }
-            QL_DUMMY_RETURN(std::string());
+            return familyName_+tenor+" "+dayCounter_.name();
         }
 
         Rate Xibor::fixing(const Date& fixingDate) const {
@@ -81,7 +86,7 @@ namespace QuantLib {
             DiscountFactor endDiscount =
                 termStructure_->discount(endDate);
             double fixingPeriod =
-                dayCounter().yearFraction(fixingDate, endDate);
+                dayCounter_.yearFraction(fixingDate, endDate);
             return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
         }
 

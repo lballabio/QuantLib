@@ -16,7 +16,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 /*! \file chflibor.hpp
-    \brief %CHF %Libor index (Also known as ZIBOR, check settlement days and day-count)
+    \brief %CHF %Libor index (Also known as ZIBOR)
 
     \fullpath
     ql/Indexes/%chflibor.hpp
@@ -29,19 +29,22 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/zurich.hpp>
+#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
     namespace Indexes {
 
-        //! %CHF %Libor index (Also known as ZIBOR, check settlement days and day-count)
+        //! %CHF %Libor index (Also known as ZIBOR)
+        /*! \todo check settlement days and day-count */
         class CHFLibor : public Xibor {
           public:
             CHFLibor(int n, TimeUnit units,
-                const RelinkableHandle<TermStructure>& h)
+                const RelinkableHandle<TermStructure>& h,
+                const DayCounter& dc = DayCounters::Actual360())
             : Xibor("CHFLibor", n, units, 2, CHF,
                 Calendar(Calendars::Zurich()), true, 
-                ModifiedFollowing, h) {}
+                ModifiedFollowing, dc, h) {}
         };
 
     }

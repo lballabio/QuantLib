@@ -25,6 +25,22 @@
 //                name was truncated in debug info
 #pragma warning(disable: 4786)
 
+#if _MSC_VER == 1200
+// move inside here configs specific to VC++ 6.0
+
+#define GARBLED_REVERSE_ITERATOR
+
+
+
+#elif _MSC_VER == 1300
+// move inside here configs specific to VC++ .Net
+
+
+
+#endif
+// leave outside here common configs
+
+
 // force undefining min and max macros
 #ifndef NOMINMAX
     #error Add NOMINMAX to preprocessor definitions
@@ -69,7 +85,6 @@
 #define HAVE_TEMPLATE_METAPROGRAMMING
 
 #define HAVE_INCOMPLETE_ITERATOR_SUPPORT
-#define GARBLED_REVERSE_ITERATOR
 
 #define QL_PATCH_MICROSOFT_BUGS
 

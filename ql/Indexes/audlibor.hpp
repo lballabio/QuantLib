@@ -29,6 +29,7 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/sydney.hpp>
+#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
@@ -38,10 +39,11 @@ namespace QuantLib {
         class AUDLibor : public Xibor {
           public:
             AUDLibor(int n, TimeUnit units,
-                const RelinkableHandle<TermStructure>& h)
+                const RelinkableHandle<TermStructure>& h,
+                const DayCounter& dc = DayCounters::Actual365())
             : Xibor("AUDLibor", n, units, 2, AUD,
                 Calendar(Calendars::Sydney()), true, 
-                ModifiedFollowing, h) {}
+                ModifiedFollowing, dc, h) {}
         };
 
     }

@@ -410,7 +410,7 @@
         std::reverse_iterator< iterator >
 #endif
 
-/*! \def QL_ITERATOR
+/*! \def QL_FULL_ITERATOR_SUPPORT
     Some compilers (most notably, Visual C++) still do not fully support
     iterators in their STL implementation.
     This macro can be used to select between alternate implementations of

@@ -16,7 +16,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 /*! \file zarlibor.hpp
-    \brief %ZAR %Libor index (also known as JIBAR, check settlement days)
+    \brief %ZAR %Libor index (also known as JIBAR)
 
     \fullpath
     ql/Indexes/%zarlibor.hpp
@@ -29,19 +29,22 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/johannesburg.hpp>
+#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
     namespace Indexes {
 
-        //! %ZAR %Libor index (also known as JIBAR, check settlement days)
+        //! %ZAR %Libor index (also known as JIBAR)
+        /*! \todo check settlement days */
         class ZARLibor : public Xibor {
           public:
             ZARLibor(int n, TimeUnit units,
-                const RelinkableHandle<TermStructure>& h)
+                     const RelinkableHandle<TermStructure>& h,
+                     const DayCounter& dc = DayCounters::Actual365())
             : Xibor("ZARLibor", n, units, 0, ZAR,
                 Calendar(Calendars::Johannesburg()), true, 
-                ModifiedFollowing, h) {}
+                ModifiedFollowing, dc, h) {}
         };
 
     }

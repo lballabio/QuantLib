@@ -100,7 +100,7 @@ namespace QuantLib {
         }
 
         inline DayCounter FloatingRateCoupon::dayCounter() const {
-            return index_->dayCounter();
+            return index_->termStructure()->dayCounter();
         }
 
         inline double FloatingRateCoupon::accruedAmount(const Date& d) const {

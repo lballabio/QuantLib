@@ -44,13 +44,14 @@ namespace QuantLib {
                 Currency currency,
                 const Calendar& calendar, bool isAdjusted,
                 RollingConvention rollingConvention,
+                const DayCounter& dayCounter, 
                 const RelinkableHandle<TermStructure>& h)
             : familyName_(familyName), n_(n), units_(units),
               settlementDays_(settlementDays),
               currency_(currency), calendar_(calendar),
               isAdjusted_(isAdjusted),
               rollingConvention_(rollingConvention),
-              termStructure_(h) {}
+              dayCounter_(dayCounter), termStructure_(h) {}
             //! \name Index interface
             //@{
             Rate fixing(const Date& fixingDate) const;
@@ -80,6 +81,7 @@ namespace QuantLib {
             Calendar calendar_;
             bool isAdjusted_;
             RollingConvention rollingConvention_;
+            DayCounter dayCounter_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 
@@ -115,7 +117,7 @@ namespace QuantLib {
         }
         
         inline DayCounter Xibor::dayCounter() const { 
-            return termStructure_->dayCounter(); 
+            return dayCounter_; 
         }
         
         inline Handle<TermStructure> Xibor::termStructure() const {
