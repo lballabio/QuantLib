@@ -29,7 +29,6 @@ namespace QuantLib {
                 return Money(amount.value()/rate_, source_);
             else
                 QL_FAIL("exchange rate not applicable");
-            break;
           case Derived:
             if (amount.currency() == rateChain_.first->source() ||
                 amount.currency() == rateChain_.first->target()) {
@@ -42,7 +41,6 @@ namespace QuantLib {
             } else {
                 QL_FAIL("exchange rate not applicable");
             }
-            break;
           default:
             QL_FAIL("unknown exchange-rate type");
         }
