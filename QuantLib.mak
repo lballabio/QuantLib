@@ -88,6 +88,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendoption.sbr"
 	-@erase "$(INTDIR)\dividendshoutoption.obj"
 	-@erase "$(INTDIR)\dividendshoutoption.sbr"
+	-@erase "$(INTDIR)\europeanengine.obj"
+	-@erase "$(INTDIR)\europeanengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -138,6 +140,8 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\option.obj"
+	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodaoption.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -146,6 +150,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
 	-@erase "$(INTDIR)\plainbasketoption.sbr"
+	-@erase "$(INTDIR)\plainoption.obj"
+	-@erase "$(INTDIR)\plainoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -274,7 +280,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\option.sbr" \
+	"$(INTDIR)\plainoption.sbr" \
+	"$(INTDIR)\europeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -357,7 +366,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\option.obj" \
+	"$(INTDIR)\plainoption.obj" \
+	"$(INTDIR)\europeanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -422,6 +434,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendoption.sbr"
 	-@erase "$(INTDIR)\dividendshoutoption.obj"
 	-@erase "$(INTDIR)\dividendshoutoption.sbr"
+	-@erase "$(INTDIR)\europeanengine.obj"
+	-@erase "$(INTDIR)\europeanengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -472,6 +486,8 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\option.obj"
+	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodaoption.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -480,6 +496,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
 	-@erase "$(INTDIR)\plainbasketoption.sbr"
+	-@erase "$(INTDIR)\plainoption.obj"
+	-@erase "$(INTDIR)\plainoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -609,7 +627,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\option.sbr" \
+	"$(INTDIR)\plainoption.sbr" \
+	"$(INTDIR)\europeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -692,7 +713,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\option.obj" \
+	"$(INTDIR)\plainoption.obj" \
+	"$(INTDIR)\europeanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -757,6 +781,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendoption.sbr"
 	-@erase "$(INTDIR)\dividendshoutoption.obj"
 	-@erase "$(INTDIR)\dividendshoutoption.sbr"
+	-@erase "$(INTDIR)\europeanengine.obj"
+	-@erase "$(INTDIR)\europeanengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -807,6 +833,8 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\option.obj"
+	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodaoption.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -815,6 +843,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
 	-@erase "$(INTDIR)\plainbasketoption.sbr"
+	-@erase "$(INTDIR)\plainoption.obj"
+	-@erase "$(INTDIR)\plainoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -943,7 +973,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\option.sbr" \
+	"$(INTDIR)\plainoption.sbr" \
+	"$(INTDIR)\europeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1026,7 +1059,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\option.obj" \
+	"$(INTDIR)\plainoption.obj" \
+	"$(INTDIR)\europeanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1091,6 +1127,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendoption.sbr"
 	-@erase "$(INTDIR)\dividendshoutoption.obj"
 	-@erase "$(INTDIR)\dividendshoutoption.sbr"
+	-@erase "$(INTDIR)\europeanengine.obj"
+	-@erase "$(INTDIR)\europeanengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -1141,6 +1179,8 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\option.obj"
+	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodaoption.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -1149,6 +1189,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
 	-@erase "$(INTDIR)\plainbasketoption.sbr"
+	-@erase "$(INTDIR)\plainoption.obj"
+	-@erase "$(INTDIR)\plainoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -1278,7 +1320,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\option.sbr" \
+	"$(INTDIR)\plainoption.sbr" \
+	"$(INTDIR)\europeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1361,7 +1406,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\option.obj" \
+	"$(INTDIR)\plainoption.obj" \
+	"$(INTDIR)\europeanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1492,6 +1540,12 @@ SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
 SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 
 "$(INTDIR)\valueatcenter.obj"	"$(INTDIR)\valueatcenter.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\plainoption.cpp
+
+"$(INTDIR)\plainoption.obj"	"$(INTDIR)\plainoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1687,6 +1741,12 @@ SOURCE=.\ql\Pricers\dividendshoutoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Pricers\europeanengine.cpp
+
+"$(INTDIR)\europeanengine.obj"	"$(INTDIR)\europeanengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Pricers\europeanoption.cpp
 
 "$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1840,6 +1900,12 @@ SOURCE=.\ql\dataformatters.cpp
 SOURCE=.\ql\date.cpp
 
 "$(INTDIR)\date.obj"	"$(INTDIR)\date.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\option.cpp
+
+"$(INTDIR)\option.obj"	"$(INTDIR)\option.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

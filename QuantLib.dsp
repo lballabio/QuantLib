@@ -355,6 +355,14 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Instruments\plainoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\plainoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\simpleswap.cpp
 # End Source File
 # Begin Source File
@@ -763,6 +771,14 @@ SOURCE=.\ql\Pricers\dividendshoutoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\europeanengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\europeanengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\europeanoption.cpp
 # End Source File
 # Begin Source File
@@ -796,14 +812,6 @@ SOURCE=.\ql\Pricers\himalaya.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\himalaya.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\makefile.mak
 # End Source File
 # Begin Source File
 
@@ -1068,6 +1076,10 @@ SOURCE=.\ql\CashFlows\simplecashflow.hpp
 # End Group
 # Begin Source File
 
+SOURCE=.\ql\argsandresults.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\array.hpp
 # End Source File
 # Begin Source File
@@ -1176,7 +1188,11 @@ SOURCE=.\ql\null.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\options.hpp
+SOURCE=.\ql\option.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\option.hpp
 # End Source File
 # Begin Source File
 
