@@ -77,20 +77,29 @@ namespace QuantLib {
                 2.0*temp
                 );
 
-            double x1 = (muG-QL_LOG(strike_)+sigmaG_2)/QL_SQRT(sigmaG_2);
-            double x2 = x1-QL_SQRT(sigmaG_2);
+            double covarianceTerm = volatility_*volatility_/N *
+                std::accumulate(times_.begin(), times_.end(), 0.0);
+            double sigmaSum_2 = sigmaG_2+
+                volatility_*volatility_*residualTime_-
+                2.0*covarianceTerm;
+            double y1 = (QL_LOG(underlying_)+
+                (riskFreeRate_-dividendYield_)*residualTime_-
+                muG - sigmaG_2/2.0 + sigmaSum_2/2.0)
+                /QL_SQRT(sigmaSum_2);
+            double y2=y1-QL_SQRT(sigmaSum_2);
 
             switch (type_) {
                 case Option::Call:
-                    return QL_EXP(-riskFreeRate_*residualTime_)*
-                (QL_EXP(muG + sigmaG_2 / 2.0) * f_(x1) -
-                strike_ * f_(x2));
+                    return underlying_*QL_EXP(-dividendYield_*residualTime_)
+                        *f_(y1)-
+                        QL_EXP(muG+sigmaG_2/2.0-riskFreeRate_*residualTime_)
+                        *f_(y2);
                     break;
                 case Option::Put:
-                    return QL_EXP(-riskFreeRate_*residualTime_)*
-                        (strike_ * f_(-x2) -
-                        QL_EXP(muG + sigmaG_2 / 2.0) * f_(-x1)
-                        );
+                    return -underlying_*QL_EXP(-dividendYield_*residualTime_)
+                        *f_(-y1)+
+                        QL_EXP(muG+sigmaG_2/2.0-riskFreeRate_*residualTime_)
+                        *f_(-y2);
                     break;
                 default:
                     throw IllegalArgumentError(

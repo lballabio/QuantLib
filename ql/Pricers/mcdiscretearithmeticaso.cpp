@@ -78,15 +78,23 @@ namespace QuantLib {
                     times, volatility).value();
 
                 //! Initialize the one-dimensional Monte Carlo
-                mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> > (
-                    new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> (
-                    pathGenerator, spPricer, Math::Statistics(),
+                mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics,
+                    MonteCarlo::GaussianPathGenerator,
+                    MonteCarlo::PathPricer> > (
+                    new MonteCarlo::MonteCarloModel<Math::Statistics,
+                    MonteCarlo::GaussianPathGenerator,
+                    MonteCarlo::PathPricer> (pathGenerator, spPricer,
+                    Math::Statistics(),
                     controlVariateSpPricer, controlVariatePrice));
             } else {
                 //! Initialize the one-dimensional Monte Carlo
-                mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> > (
-                    new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> (
-                    pathGenerator, spPricer, Math::Statistics()));
+                mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics,
+                    MonteCarlo::GaussianPathGenerator,
+                    MonteCarlo::PathPricer> > (
+                    new MonteCarlo::MonteCarloModel<Math::Statistics,
+                    MonteCarlo::GaussianPathGenerator,
+                    MonteCarlo::PathPricer> (pathGenerator, spPricer,
+                    Math::Statistics()));
             }
 
         }

@@ -24,7 +24,7 @@
 
 /*! \file mcpricer.hpp
     \brief base class for Monte Carlo pricers
-     
+
     \fullpath
     ql/Pricers/%mcpricer.hpp
 */
@@ -41,7 +41,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! base class for Monte Carlo pricers
-        /*! Eventually this class might be linked to the general tree of 
+        /*! Eventually this class might be linked to the general tree of
             pricers, in order to have tools like impliedVolatility available.
             Also, it could, eventually, offer greeks methods.
             Deriving a class from McPricer gives an easy way to write
@@ -56,6 +56,8 @@ namespace QuantLib {
             virtual ~McPricer() {}
             double value(double tolerance,
                          size_t maxSample = QL_MAX_INT) const;
+            double value(size_t samples) const;
+            double errorEstimate() const;
           protected:
             McPricer() {}
             mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
@@ -98,8 +100,39 @@ namespace QuantLib {
             return result;
         }
 
-    }
 
+        template<class S, class PG, class PP>
+        inline double McPricer<S, PG, PP>::value(size_t samples) const {
+
+            QL_REQUIRE(samples>=minSample_,
+                "number of requested samples lower than minSample_");
+
+            size_t sampleNumber =
+                mcModel_->sampleAccumulator().samples();
+
+            QL_REQUIRE(samples>=sampleNumber,
+                "number of already simulated samples greater than"
+                "requested samples");
+
+            mcModel_->addSamples(samples-sampleNumber);
+
+            return mcModel_->sampleAccumulator().mean();
+        }
+
+
+        template<class S, class PG, class PP>
+        inline double McPricer<S, PG, PP>::errorEstimate() const {
+
+            size_t sampleNumber =
+                mcModel_->sampleAccumulator().samples();
+
+            QL_REQUIRE(samples>=minSample_,
+                "number of simulated samples lower than minSample_");
+
+            return mcModel_->sampleAccumulator().errorEstimate();
+        }
+
+    }
 }
 
 #endif

@@ -54,27 +54,37 @@ namespace QuantLib {
             QL_REQUIRE(n>0,"GeometricASOPathPricer: the path cannot be empty");
 
             double price1 = underlying_;
-            double averageStrike1 = 1.0;
+            double averageStrike1 = 0.0;
+            double log_drift = 0.0, log_random = 0.0;
             int i;
             for (i=0; i<n; i++) {
+                log_drift += path.drift()[i];
+                log_random += path.diffusion()[i];
                 price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
-                averageStrike1 *= price1;
+                averageStrike1 += QL_LOG(price1);
+//                averageStrike1 += log_drift+log_random;
             }
-            averageStrike1 = QL_POW(averageStrike1, 1.0/n);
+            averageStrike1 /= n;
+            averageStrike1 = QL_EXP(averageStrike1);
+//            averageStrike1 = QL_EXP(averageStrike1)*(QL_POW(n*underlying_,1.0/n));
 
             if (antitheticVariance_) {
                 double price2 = underlying_;
-                double averageStrike2 = 1.0;
+                double averageStrike2 = 0.0;
 
                 for (i=0; i<n; i++) {
                     price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
-                    averageStrike2 *= price2;
+                    averageStrike2 += QL_LOG(price2);
                 }
-                averageStrike2 = QL_POW(averageStrike2, 1.0/n);
-                return discount_/2.0*(ExercisePayoff(type_, price1, averageStrike1)
-                    +ExercisePayoff(type_, price2, averageStrike2));
+                averageStrike2 /= n;
+                averageStrike2 = QL_EXP(averageStrike2);
+                return discount_/2.0*(ExercisePayoff(type_, underlying_ * 
+                        QL_EXP(log_drift+log_random), averageStrike1)
+                    +ExercisePayoff(type_, underlying_ * 
+                        QL_EXP(log_drift-log_random), averageStrike2));
             } else
-                return discount_*ExercisePayoff(type_, price1, averageStrike1);
+                return discount_*ExercisePayoff(type_, underlying_ * 
+                        QL_EXP(log_drift+log_random), averageStrike1);
         }
 
     }

@@ -55,12 +55,10 @@ namespace QuantLib {
                 pastFixings.end(), 1.0, std::multiplies<double>());
             size_t m = pastFixings.size();
             double runningLogAverage = QL_LOG(runningAverage);
-            QL_REQUIRE(runningLogAverage==0.0, "not zero");
 
             double N = double(times_.size()+m);
             double pastWeight = m/N;
             double futureWeight = 1-pastWeight;
-            QL_REQUIRE(futureWeight==1.0, "not one");
 
             double nu = riskFreeRate_ - dividendYield_ -
                 0.5*volatility_*volatility_;
