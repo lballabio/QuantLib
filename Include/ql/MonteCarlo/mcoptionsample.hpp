@@ -29,6 +29,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/22 11:18:06  nando
+// removed unused default constructor
+// added a few typedef for argument type and value type
+//
 // Revision 1.13  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -73,17 +77,20 @@ namespace QuantLib {
             at each next(), a value for the option price.
     
             Minimal interfaces for PG and PP:
-    
             \code
-            class PG{
-                PATH_TYPE next() const;
+            class PG {
+                typedef ... SampleType;
+                SampleType next() const;
                 double weight() const;
             };
         
-            class PP{
-                ValueType value(PATH_TYPE &) const;
+            class PP {
+                typedef ... ValueType;
+                typedef ... PathType;
+                ValueType value(PathType &) const;
             };
             \endcode
+            Also, PG::SampleType must be equal or convertible into PP::PathType.
         */
         template<class PG, class PP>
         class OptionSample {
@@ -108,9 +115,10 @@ namespace QuantLib {
                pathPricer_(pathPricer), weight_(0){}
 
         template<class PG, class PP>
-            inline OptionSample<PG, PP>::SampleType OptionSample<PG, PP>::next() const{
-            double price = pathPricer_ -> value(samplePath_ -> next());
-            weight_ = samplePath_ -> weight();
+        inline OptionSample<PG, PP>::SampleType OptionSample<PG, PP>::next() const {
+            typename PG::SampleType a = samplePath_->next();
+            double price = pathPricer_->value(a);
+            weight_ = samplePath_->weight();
             return price;
         }
 

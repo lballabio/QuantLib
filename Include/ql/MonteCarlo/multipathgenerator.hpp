@@ -29,6 +29,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/22 11:18:06  nando
+// removed unused default constructor
+// added a few typedef for argument type and value type
+//
 // Revision 1.12  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -79,10 +83,7 @@ namespace QuantLib {
         template <class RAG>
         class MultiPathGenerator {
           public:
-            // typedef MultiPath SampleType;
-            // this typedef would make MultiPathGenerator into a sample 
-            // generator
-            MultiPathGenerator();
+            typedef MultiPath SampleType;
             MultiPathGenerator(int timeDimension,
                                const Math::Matrix &covariance,
                                const Array &average = Array(),
@@ -96,15 +97,11 @@ namespace QuantLib {
         private:
             int timeDimension_;
             std::vector<Time> timeDelays_;
-	    int numAssets_;
+	        int numAssets_;
             mutable double weight_;
             Array average_;
             RAG rndArray_;
         };
-
-        template <class RAG>
-        inline MultiPathGenerator<RAG >::MultiPathGenerator():
-                numAssets_(0), timeDimension_(0), weight_(0) {}
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(

@@ -29,6 +29,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.19  2001/08/22 11:18:06  nando
+// removed unused default constructor
+// added a few typedef for argument type and value type
+//
 // Revision 1.18  2001/08/22 11:02:09  nando
 // removed unused default constructor
 //
@@ -47,9 +51,7 @@ namespace QuantLib {
         template <class RP>
         class RandomArrayGenerator {
           public:
-            // typedef Array SampleType;
-            // this typedef would make RandomArrayGenerator into a sample
-            // generator
+            typedef Array SampleType;
 
             RandomArrayGenerator(int dimension,
                                  double average = 0.0,

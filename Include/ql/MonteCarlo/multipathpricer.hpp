@@ -30,6 +30,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/22 11:18:06  nando
+// removed unused default constructor
+// added a few typedef for argument type and value type
+//
 // Revision 1.12  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -71,6 +75,7 @@ namespace QuantLib {
         class MultiPathPricer {
           public:
             typedef double ValueType;
+            typedef MultiPath PathType;
             MultiPathPricer() : isInitialized_(false) {}
             virtual ~MultiPathPricer() {}
             virtual double value(const MultiPath &multiPath) const = 0;

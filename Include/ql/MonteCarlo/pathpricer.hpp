@@ -30,6 +30,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/22 11:18:06  nando
+// removed unused default constructor
+// added a few typedef for argument type and value type
+//
 // Revision 1.13  2001/08/21 14:21:22  nando
 // removed default constructors and useless isInitialized_ private member
 //
@@ -75,6 +79,7 @@ namespace QuantLib {
         class PathPricer {
           public:
             typedef double ValueType;
+            typedef Path PathType;
             virtual ~PathPricer() {}
             virtual double value(const Path &path) const=0;
         };
