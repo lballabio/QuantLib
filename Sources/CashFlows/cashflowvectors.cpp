@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.8  2001/07/13 14:23:11  sigmud
+//  removed a few gcc compile warnings
+//
 //  Revision 1.7  2001/06/19 10:25:18  lballabio
 //  Disabled short/long floating coupons
 //
@@ -41,16 +44,6 @@
 //
 //  Revision 1.4  2001/06/15 13:52:07  lballabio
 //  Reworked indexes
-//
-//  Revision 1.3  2001/06/05 09:35:14  lballabio
-//  Updated docs to use Doxygen 1.2.8
-//
-//  Revision 1.2  2001/06/01 16:50:16  lballabio
-//  Term structure on deposits and swaps
-//
-//  Revision 1.1  2001/05/31 08:56:40  lballabio
-//  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
-//
 
 #include "ql/CashFlows/cashflowvectors.hpp"
 #include "ql/CashFlows/fixedratecoupon.hpp"
@@ -99,7 +92,7 @@ namespace QuantLib {
                         start, end, reference, end)));
             }
             // regular periods
-            for (int i=2; i<scheduler.size()-1; i++) {
+            for (unsigned int i=2; i<scheduler.size()-1; i++) {
                 start = end; end = scheduler.date(i);
                 if ((i-1) < couponRates.size())
                     rate = couponRates[i-1];
@@ -116,7 +109,7 @@ namespace QuantLib {
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
-                int N = scheduler.size();
+                unsigned int N = scheduler.size();
                 start = end; end = scheduler.date(N-1);
                 if ((N-2) < couponRates.size())
                     rate = couponRates[N-2];
@@ -185,7 +178,7 @@ namespace QuantLib {
                         index, spread)));
             }
             // regular periods
-            for (int i=2; i<scheduler.size()-1; i++) {
+            for (unsigned int i=2; i<scheduler.size()-1; i++) {
                 start = end; end = scheduler.date(i);
                 if ((i-1) < spreads.size())
                     spread = spreads[i-1];
@@ -204,7 +197,7 @@ namespace QuantLib {
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
-                int N = scheduler.size();
+                unsigned int N = scheduler.size();
                 start = end; end = scheduler.date(N-1);
                 if ((N-2) < spreads.size())
                     spread = spreads[N-2];

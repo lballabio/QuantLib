@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/13 14:23:11  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.9  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -52,7 +55,7 @@ namespace QuantLib {
 
                 QL_REQUIRE(dividends_.size() == exDivDates_.size(),
                     "the number of dividends is different from that of dates");
-                for(int j = 0; j < dividends_.size(); j++){
+                for(unsigned int j = 0; j < dividends_.size(); j++){
 
                     QL_REQUIRE(exDivDates_[j] >= 0, "The "+
                          IntegerFormatter::toString(j)+ "-th" +
@@ -76,7 +79,7 @@ namespace QuantLib {
 
             double tmp_theta = BSMEuropeanOption::theta();
             double delta_theta = 0.0;
-            for(int j = 0; j < dividends_.size(); j++)
+            for(unsigned int j = 0; j < dividends_.size(); j++)
                 delta_theta -= dividends_[j] * riskFreeRate_ *
                                QL_EXP(-riskFreeRate_ * exDivDates_[j]);
             return tmp_theta + delta_theta * BSMEuropeanOption::delta();
@@ -86,7 +89,7 @@ namespace QuantLib {
 
             double tmp_rho = BSMEuropeanOption::rho();
             double delta_rho = 0.0;
-            for(int j = 0; j < dividends_.size(); j++)
+            for(unsigned int j = 0; j < dividends_.size(); j++)
                 delta_rho += dividends_[j] * exDivDates_[j] *
                              QL_EXP(-riskFreeRate_ * exDivDates_[j]);
             return tmp_rho + delta_rho * BSMEuropeanOption::delta();

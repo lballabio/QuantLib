@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.23  2001/07/13 14:23:11  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.22  2001/05/24 15:40:09  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -63,7 +66,6 @@ namespace QuantLib {
                                 refPeriodStart,d2,refPeriodStart,refPeriodEnd);
                 }
             } else {
-                Date nextRef = refPeriodEnd.plusMonths(months);
                 double sum =
                     yearFraction(d1,refPeriodEnd,refPeriodStart,refPeriodEnd);
                 int i=0;

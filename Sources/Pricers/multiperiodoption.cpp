@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.18  2001/07/13 14:23:11  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.17  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -54,15 +57,15 @@ namespace QuantLib {
         : dates_(dates),
           dateNumber_(dates.size()),
           timeStepPerPeriod_(timeSteps),
-          BSMNumericalOption(type, underlying, strike,
-                             dividendYield, riskFreeRate,
-                             residualTime, volatility,
-                             gridPoints),
           lastDateIsResTime_(false),
           lastIndex_(dateNumber_ - 1),
           firstDateIsZero_(false),
           firstNonZeroDate_(residualTime),
-          firstIndex_(-1){
+          firstIndex_(-1),
+          BSMNumericalOption(type, underlying, strike,
+                             dividendYield, riskFreeRate,
+                             residualTime, volatility,
+                             gridPoints) {
 
             double dateTollerance = 1e-6;
 
@@ -125,7 +128,7 @@ namespace QuantLib {
             if (firstNonZeroDate_ <= dt)
                 dt = firstNonZeroDate_/2.0;
 
-            int j = lastIndex_;
+            unsigned int j = lastIndex_;
             do{
                 if (j == dateNumber_ - 1)
                     beginDate = residualTime_;

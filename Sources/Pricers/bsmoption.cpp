@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.37  2001/07/13 14:23:11  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.36  2001/06/05 12:45:27  nando
 // R019-branch-merge4 merged into trunk
 //
@@ -46,10 +49,11 @@ namespace QuantLib {
 
         BSMOption::BSMOption(Type type, double underlying, double strike,
             Rate dividendYield, Rate riskFreeRate, Time residualTime,
-            double volatility): type_(type), underlying_(underlying),
+            double volatility)
+	    : type_(type), underlying_(underlying),
             strike_(strike), dividendYield_(dividendYield),
-            rhoComputed_(false), vegaComputed_(false),
-            residualTime_(residualTime), hasBeenCalculated_(false) {
+            residualTime_(residualTime), hasBeenCalculated_(false),
+            rhoComputed_(false), vegaComputed_(false) {
             QL_REQUIRE(strike > 0.0,
                 "BSMOption::BSMOption : strike must be positive");
             QL_REQUIRE(underlying > 0.0,

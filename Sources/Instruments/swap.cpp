@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.3  2001/07/13 14:23:11  sigmud
+//  removed a few gcc compile warnings
+//
 //  Revision 1.2  2001/06/21 14:30:43  lballabio
 //  Observability is back
 //
@@ -63,7 +66,7 @@ namespace QuantLib {
             NPV_ = 0.0;
             isExpired_ = true;
             // subtract first leg cash flows
-            for (int i=0; i<firstLeg_.size(); i++) {
+            for (unsigned int i=0; i<firstLeg_.size(); i++) {
                 Date cashFlowDate = firstLeg_[i]->date();
                 if (cashFlowDate >= settlement) {
                     isExpired_ = false;  // keeping track of whether it was set 
@@ -73,7 +76,7 @@ namespace QuantLib {
                 }
             }
             // add second leg cash flows
-            for (int j=0; j<secondLeg_.size(); j++) {
+            for (unsigned int j=0; j<secondLeg_.size(); j++) {
                 Date cashFlowDate = secondLeg_[j]->date();
                 if (cashFlowDate >= settlement) {
                     isExpired_ = false;

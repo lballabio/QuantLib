@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/07/13 14:23:11  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.13  2001/07/02 12:36:18  sigmud
 // pruned redundant header inclusions
 //
@@ -93,7 +96,7 @@ namespace QuantLib {
             Brent solver;
             // sort risk helpers
             std::vector<Handle<RateHelper> > sortedInstruments = instruments;
-			int i;
+			unsigned int i;
             for (i=0; i<sortedInstruments.size(); i++)
                 sortedInstruments[i]->setTermStructure(this);
             std::sort(sortedInstruments.begin(),sortedInstruments.end(),

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/13 14:23:11  sigmud
+// removed a few gcc compile warnings
+//
 // Revision 1.10  2001/06/05 09:35:14  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -49,9 +52,9 @@ namespace QuantLib {
   namespace Math {
 
     SymmetricSchurDecomposition::SymmetricSchurDecomposition(Matrix & s)
-          : s_(s), hasBeenComputed_(false), size_(s.rows()),
-          diagonal_(s.rows()), maxIterations_(100), epsPrec_(1e-15),
-          eigenVectors_(s.rows(),s.columns(),0){
+          : s_(s), size_(s.rows()), diagonal_(s.rows()),
+	  eigenVectors_(s.rows(),s.columns(),0), hasBeenComputed_(false),
+	  maxIterations_(100), epsPrec_(1e-15) {
 
       QL_REQUIRE(s.rows() == s.columns(),
         "SymmetricSchurDecomposition: input matrix must be square");
