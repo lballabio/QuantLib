@@ -224,6 +224,10 @@ SOURCE=.\ql\Calendars\newyork.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\nullcalendar.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\oslo.cpp
 # End Source File
 # Begin Source File
@@ -381,6 +385,14 @@ SOURCE=.\ql\DayCounters\actualactual.cpp
 # Begin Source File
 
 SOURCE=.\ql\DayCounters\actualactual.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\DayCounters\simpledaycounter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\DayCounters\simpledaycounter.hpp
 # End Source File
 # Begin Source File
 

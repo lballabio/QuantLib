@@ -280,6 +280,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
+	-@erase "$(INTDIR)\simpledaycounter.obj"
+	-@erase "$(INTDIR)\simpledaycounter.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
@@ -393,6 +395,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -421,7 +424,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -436,7 +441,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroption.sbr" \
+	".\build\Release\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -475,6 +480,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -510,10 +516,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	".\build\Release\old\barrieroption.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr"
+	"$(INTDIR)\simpledaycounter.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -555,6 +558,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -583,7 +587,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -598,7 +604,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	".\build\Release\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -637,6 +643,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -672,10 +679,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\build\Release\old\barrieroption.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\mcbarrierengine.obj"
+	"$(INTDIR)\simpledaycounter.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -930,6 +934,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
+	-@erase "$(INTDIR)\simpledaycounter.obj"
+	-@erase "$(INTDIR)\simpledaycounter.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
@@ -1044,6 +1050,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -1072,7 +1079,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -1087,7 +1096,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroption.sbr" \
+	".\build\Debug\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -1126,6 +1135,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1161,10 +1171,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	".\build\Debug\old\barrieroption.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr"
+	"$(INTDIR)\simpledaycounter.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1206,6 +1213,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -1234,7 +1242,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -1249,7 +1259,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	".\build\Debug\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -1288,6 +1298,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1323,10 +1334,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\build\Debug\old\barrieroption.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\mcbarrierengine.obj"
+	"$(INTDIR)\simpledaycounter.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1582,6 +1590,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
+	-@erase "$(INTDIR)\simpledaycounter.obj"
+	-@erase "$(INTDIR)\simpledaycounter.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
@@ -1695,6 +1705,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -1723,7 +1734,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -1738,7 +1751,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroption.sbr" \
+	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -1777,6 +1790,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1812,10 +1826,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr"
+	"$(INTDIR)\simpledaycounter.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1857,6 +1868,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -1885,7 +1897,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -1900,7 +1914,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -1939,6 +1953,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1974,10 +1989,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\mcbarrierengine.obj"
+	"$(INTDIR)\simpledaycounter.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2232,6 +2244,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
+	-@erase "$(INTDIR)\simpledaycounter.obj"
+	-@erase "$(INTDIR)\simpledaycounter.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
@@ -2346,6 +2360,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -2374,7 +2389,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -2389,7 +2406,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroption.sbr" \
+	".\build\OnTheEdgeDebug\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -2428,6 +2445,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2463,10 +2481,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	".\build\OnTheEdgeDebug\old\barrieroption.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr"
+	"$(INTDIR)\simpledaycounter.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2508,6 +2523,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -2536,7 +2552,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -2551,7 +2569,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	".\build\OnTheEdgeDebug\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -2590,6 +2608,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2625,10 +2644,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\build\OnTheEdgeDebug\old\barrieroption.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\mcbarrierengine.obj"
+	"$(INTDIR)\simpledaycounter.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2884,6 +2900,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
+	-@erase "$(INTDIR)\simpledaycounter.obj"
+	-@erase "$(INTDIR)\simpledaycounter.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
@@ -2997,6 +3015,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -3025,7 +3044,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
 	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
@@ -3040,7 +3061,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroption.sbr" \
+	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -3079,6 +3100,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -3114,10 +3136,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
-	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
-	"$(INTDIR)\barrierpathpricer.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr"
+	"$(INTDIR)\simpledaycounter.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3159,6 +3178,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -3187,7 +3207,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
 	"$(INTDIR)\cliquetoptionpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
@@ -3202,7 +3224,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -3241,6 +3263,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -3276,10 +3299,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
-	"$(INTDIR)\biasedbarrierpathpricer.obj" \
-	"$(INTDIR)\barrierpathpricer.obj" \
-	"$(INTDIR)\mcbarrierengine.obj"
+	"$(INTDIR)\simpledaycounter.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3452,6 +3472,12 @@ SOURCE=.\ql\CashFlows\shortfloatingcoupon.cpp
 SOURCE=.\ql\DayCounters\actualactual.cpp
 
 "$(INTDIR)\actualactual.obj"	"$(INTDIR)\actualactual.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\DayCounters\simpledaycounter.cpp
+
+"$(INTDIR)\simpledaycounter.obj"	"$(INTDIR)\simpledaycounter.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
