@@ -81,8 +81,9 @@ namespace {
           case PseudoMonteCarlo:
             #if defined(QL_PATCH_MICROSOFT)
             engine = Handle<PricingEngine>(
-                            new MCEuropeanEngine(1, false, false, Null<int>(),
-                                                 0.05, Null<int>(), 42));
+                        new MCEuropeanEngine<PseudoRandom>(1, false, false,
+                                                           Null<int>(), 0.05,
+                                                           Null<int>(), 42));
             #else
             engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
                                                          .withTolerance(0.05)
@@ -92,8 +93,10 @@ namespace {
           case QuasiMonteCarlo:
             #if defined(QL_PATCH_MICROSOFT)
             engine = Handle<PricingEngine>(
-                            new MCEuropeanEngine(1, false, false, 1023,
-                                                 Null<double>(), Null<int>()));
+                        new MCEuropeanEngine<LowDiscrepancy>(1, false, false,
+                                                             1023, 
+                                                             Null<double>(), 
+                                                             Null<int>()));
             #else
             engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
                                                            .withSamples(1023);
