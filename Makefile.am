@@ -16,10 +16,16 @@ EXTRA_DIST=Authors.txt \
 	Readme.txt \
 	README-win.txt \
 	README-mac.txt \
-	updateproject.sh \
-	lib/README.txt \
-	lib/Win32/Borland/README.txt \
-	lib/Win32/VisualStudio/README.txt 
+	updateproject.sh 
+
+dist-hook:
+	mkdir $(distdir)/lib
+	mkdir $(distdir)/lib/Win32
+	mkdir $(distdir)/lib/Win32/Borland
+	mkdir $(distdir)/lib/Win32/VisualStudio
+	cp -p $(srcdir)/lib/README.txt $(distdir)/lib/README.txt
+	cp -p $(srcdir)/lib/Win32/Borland/README.txt $(distdir)/lib/Win32/Borland/README.txt
+	cp -p $(srcdir)/lib/Win32/VisualStudio/README.txt $(distdir)/lib/Win32/VisualStudio/README.txt
 
 if PYTHON_FOUND
 if SWIG_FOUND

@@ -26,6 +26,8 @@ python: quantlib_wrap.cpp
 python-install:
 	$(PYTHON) setup.py install
 
+QuantLib.py: quantlib_wrap.cpp
+
 quantlib_wrap.cpp:  $(SWIG_INCLUDEDIR)/QuantLib.i \
 	$(SWIG_INCLUDEDIR)/Date.i \
 	$(SWIG_INCLUDEDIR)/Calendars.i \
