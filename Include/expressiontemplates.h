@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file expressiontemplates.h
@@ -27,8 +28,12 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/01/09 12:08:42  lballabio
+    Cleaned up style in a few files
+
     Revision 1.7  2001/01/08 11:44:16  lballabio
-    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
+    Array back into QuantLib namespace - Math namespace broke expression 
+    templates, go figure
 
     Revision 1.6  2000/12/14 12:32:29  lballabio
     Added CVS tags in Doxygen file documentation blocks
@@ -95,9 +100,11 @@ namespace QuantLib {
     template <class Iter1, class Iter2, class Operation> 
     class BinaryVectorialExpression {
       public:
-        BinaryVectorialExpression(const Iter1& i, const Iter2& j, int size) : i(i), j(j), n(size) {}
+        BinaryVectorialExpression(const Iter1& i, const Iter2& j, int size)
+        : i(i), j(j), n(size) {}
         double operator*() const { return Operation::apply(*i,*j); }
-        const BinaryVectorialExpression& operator++() const { ++i; ++j; return *this; }
+        const BinaryVectorialExpression& operator++() const { 
+            ++i; ++j; return *this; }
         // pre-increment operator not defined - inefficient
         int size() const { return n; }
       private:

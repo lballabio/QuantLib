@@ -695,6 +695,98 @@ class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
 GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
 GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
 
+class HistoryIterator:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_HistoryIterator(self)
+    def date(*args, **kwargs):
+        val = apply(QuantLibc.HistoryIterator_date,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C HistoryIterator instance at %s>" % (self.this,)
+class HistoryIteratorPtr(HistoryIterator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = HistoryIterator
+
+
+HistoryIterator.value = new.instancemethod(QuantLibc.HistoryIterator_value, None, HistoryIterator)
+HistoryIterator.advance = new.instancemethod(QuantLibc.HistoryIterator_advance, None, HistoryIterator)
+HistoryIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryIterator___cmp__, None, HistoryIterator)
+HistoryIterator.__str__ = new.instancemethod(QuantLibc.HistoryIterator___str__, None, HistoryIterator)
+
+class HistoryValidIterator:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_HistoryValidIterator(self)
+    def date(*args, **kwargs):
+        val = apply(QuantLibc.HistoryValidIterator_date,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C HistoryValidIterator instance at %s>" % (self.this,)
+class HistoryValidIteratorPtr(HistoryValidIterator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = HistoryValidIterator
+
+
+HistoryValidIterator.value = new.instancemethod(QuantLibc.HistoryValidIterator_value, None, HistoryValidIterator)
+HistoryValidIterator.advance = new.instancemethod(QuantLibc.HistoryValidIterator_advance, None, HistoryValidIterator)
+HistoryValidIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidIterator___cmp__, None, HistoryValidIterator)
+HistoryValidIterator.__str__ = new.instancemethod(QuantLibc.HistoryValidIterator___str__, None, HistoryValidIterator)
+
+class HistoryDataIterator:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_HistoryDataIterator(self)
+    def __repr__(self):
+        return "<C HistoryDataIterator instance at %s>" % (self.this,)
+class HistoryDataIteratorPtr(HistoryDataIterator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = HistoryDataIterator
+
+
+HistoryDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryDataIterator___float__, None, HistoryDataIterator)
+HistoryDataIterator.advance = new.instancemethod(QuantLibc.HistoryDataIterator_advance, None, HistoryDataIterator)
+HistoryDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryDataIterator___cmp__, None, HistoryDataIterator)
+HistoryDataIterator.__str__ = new.instancemethod(QuantLibc.HistoryDataIterator___str__, None, HistoryDataIterator)
+
+class HistoryValidDataIterator:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_HistoryValidDataIterator(self)
+    def __repr__(self):
+        return "<C HistoryValidDataIterator instance at %s>" % (self.this,)
+class HistoryValidDataIteratorPtr(HistoryValidDataIterator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = HistoryValidDataIterator
+
+
+HistoryValidDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___float__, None, HistoryValidDataIterator)
+HistoryValidDataIterator.advance = new.instancemethod(QuantLibc.HistoryValidDataIterator_advance, None, HistoryValidDataIterator)
+HistoryValidDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___cmp__, None, HistoryValidDataIterator)
+HistoryValidDataIterator.__str__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___str__, None, HistoryValidDataIterator)
+
 class History:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_History,args,kwargs)
@@ -711,6 +803,54 @@ class History:
         val = apply(QuantLibc.History_lastDate,args, kwargs)
         if val: val = DatePtr(val) ; val.thisown = 1
         return val
+    def begin(*args, **kwargs):
+        val = apply(QuantLibc.History_begin,args, kwargs)
+        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
+        return val
+    def end(*args, **kwargs):
+        val = apply(QuantLibc.History_end,args, kwargs)
+        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
+        return val
+    def iterator(*args, **kwargs):
+        val = apply(QuantLibc.History_iterator,args, kwargs)
+        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
+        return val
+    def vbegin(*args, **kwargs):
+        val = apply(QuantLibc.History_vbegin,args, kwargs)
+        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
+        return val
+    def vend(*args, **kwargs):
+        val = apply(QuantLibc.History_vend,args, kwargs)
+        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
+        return val
+    def valid_iterator(*args, **kwargs):
+        val = apply(QuantLibc.History_valid_iterator,args, kwargs)
+        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
+        return val
+    def dbegin(*args, **kwargs):
+        val = apply(QuantLibc.History_dbegin,args, kwargs)
+        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def dend(*args, **kwargs):
+        val = apply(QuantLibc.History_dend,args, kwargs)
+        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def data_iterator(*args, **kwargs):
+        val = apply(QuantLibc.History_data_iterator,args, kwargs)
+        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def vdbegin(*args, **kwargs):
+        val = apply(QuantLibc.History_vdbegin,args, kwargs)
+        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def vdend(*args, **kwargs):
+        val = apply(QuantLibc.History_vdend,args, kwargs)
+        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def valid_data_iterator(*args, **kwargs):
+        val = apply(QuantLibc.History_valid_data_iterator,args, kwargs)
+        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
+        return val
 class HistoryPtr(History):
     def __init__(self,this):
         self.this = this
@@ -719,9 +859,9 @@ class HistoryPtr(History):
 
 
 History.size = new.instancemethod(QuantLibc.History_size, None, History)
+History.__getitem__ = new.instancemethod(QuantLibc.History___getitem__, None, History)
 History.__str__ = new.instancemethod(QuantLibc.History___str__, None, History)
 History.__repr__ = new.instancemethod(QuantLibc.History___repr__, None, History)
-History.__getitem__ = new.instancemethod(QuantLibc.History___getitem__, None, History)
 
 class NormalDistribution:
     def __init__(self,*args,**kwargs):

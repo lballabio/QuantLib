@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file statistics.h
@@ -27,9 +28,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2001/01/09 12:08:42  lballabio
+	Cleaned up style in a few files
+
 	Revision 1.8  2000/12/27 14:05:56  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
+	
 	Revision 1.7  2000/12/15 09:17:56  nando
 	removed unnecessary variable token
 	
@@ -64,29 +68,34 @@ namespace QuantLib {
 		    //! sum of data weights
 		    double weightSum() const;
 		    /*! returns the mean, defined as
-		    \f[ \langle x \rangle = \frac{\sum w_i x_i}{\sum w_i}. \f]
+		        \f[ \langle x \rangle = \frac{\sum w_i x_i}{\sum w_i}. \f]
 		    */
 		    double mean() const;
 		    /*! returns the variance, defined as
-		    \f[ \frac{N}{N-1} \left\langle \left( x-\langle x \rangle \right)^2 \right\rangle. \f]
+		        \f[ \frac{N}{N-1} \left\langle \left( 
+		        x-\langle x \rangle \right)^2 \right\rangle. \f]
 		    */
 		    double variance() const;
-		    /*! returns the standard deviation \f$ \sigma \f$, defined as the square root of the variance. */
+		    /*! returns the standard deviation \f$ \sigma \f$, defined as the 
+		        square root of the variance.
+		    */
 		    double standardDeviation() const;
-		    /*! returns the error estimate \f$ \epsilon \f$, defined as the square root
-            of the ratio of the variance to the number of samples. */
+		    /*! returns the error estimate \f$ \epsilon \f$, defined as the 
+		        square root of the ratio of the variance to the number of 
+		        samples.
+		    */
 		    double errorEstimate() const;
 		    /*! returns the skewness, defined as
-		    \f[ \frac{N^2}{(N-1)(N-2)}
-		    \frac{\left\langle \left( x-\langle x \rangle \right)^3 \right\rangle}{\sigma^3}. \f]
-		    The above evaluates to 0 for a Gaussian distribution.
+		        \f[ \frac{N^2}{(N-1)(N-2)} \frac{\left\langle \left( 
+		        x-\langle x \rangle \right)^3 \right\rangle}{\sigma^3}. \f]
+		        The above evaluates to 0 for a Gaussian distribution.
 		    */
 		    double skewness() const;
 		    /*! returns the excess kurtosis, defined as
-		    \f[ \frac{N(N+1)}{(N-1)(N-2)(N-3)}
-		    \frac{\left\langle \left( x-\langle x \rangle \right)^4 \right\rangle}{\sigma^4}
-		    -\frac{3(N-1)^2}{(N-2)(N-3)}. \f]
-		    The above evaluates to 0 for a Gaussian distribution.
+		        \f[ \frac{N(N+1)}{(N-1)(N-2)(N-3)}
+		        \frac{\left\langle \left( x-\langle x \rangle \right)^4 
+		        \right\rangle}{\sigma^4} - \frac{3(N-1)^2}{(N-2)(N-3)}. \f]
+		        The above evaluates to 0 for a Gaussian distribution.
 		    */
 		    double kurtosis() const;
 		    /*! returns the minimum sample value */
@@ -107,9 +116,10 @@ namespace QuantLib {
 		    }
 		    //! adds a sequence of data to the set, each with its weight
 		    template <class DataIterator, class WeightIterator>
-		    void addSequence(DataIterator begin, DataIterator end, WeightIterator wbegin) {
-		      for (;begin!=end;++begin,++wbegin)
-		        add(*begin, *wbegin);
+		    void addSequence(DataIterator begin, DataIterator end, 
+		      WeightIterator wbegin) {
+		        for (;begin!=end;++begin,++wbegin)
+		            add(*begin, *wbegin);
 		    }
 		    //! resets the data to a null set
 		    void reset();
@@ -125,7 +135,8 @@ namespace QuantLib {
 		
 		/*! \pre weights must be positive or null */
 		inline void Statistics::add(double value, double weight) {
-		  QL_REQUIRE(weight>=0.0, "Statistics::add : negative weight not allowed");
+		  QL_REQUIRE(weight>=0.0, 
+		    "Statistics::add : negative weight not allowed");
 		  theSampleNumber += 1;
 		  theSampleWeight += weight;
 		  double temp = weight*value;		  
@@ -149,13 +160,16 @@ namespace QuantLib {
 		}
 		
 		inline double Statistics::mean() const {
-		  QL_REQUIRE(theSampleWeight>0.0, "Stat::mean() : theSampleWeight=0, unsufficient");
+		  QL_REQUIRE(theSampleWeight>0.0, 
+		    "Stat::mean() : theSampleWeight=0, unsufficient");
 		  return theSum/theSampleWeight;
 		}
 		
 		inline double Statistics::variance() const {
-		  QL_REQUIRE(theSampleWeight>0.0, "Stat::variance() : theSampleWeight=0, unsufficient");
-		  QL_REQUIRE(theSampleNumber>1, "Stat::variance() : sample number <=1, unsufficient");
+		  QL_REQUIRE(theSampleWeight>0.0, 
+		    "Stat::variance() : theSampleWeight=0, unsufficient");
+		  QL_REQUIRE(theSampleNumber>1, 
+		    "Stat::variance() : sample number <=1, unsufficient");
 		  double m = mean();
 		
 		  return (theSampleNumber/(theSampleNumber-1.0))*
@@ -172,9 +186,11 @@ namespace QuantLib {
 		}
 		
 		inline double Statistics::skewness() const {
-		  QL_REQUIRE(theSampleNumber>2, "Stat::skewness() : sample number <=2, unsufficient");
+		  QL_REQUIRE(theSampleNumber>2, 
+		    "Stat::skewness() : sample number <=2, unsufficient");
 		  double s = standardDeviation();
-		  QL_ENSURE(s>0.0, "Stat::skewness() : standard_dev=0.0, skew undefined");
+		  QL_ENSURE(s>0.0, 
+		    "Stat::skewness() : standard_dev=0.0, skew undefined");
 		  double m = mean();
 		
 		  return theSampleNumber*theSampleNumber/
@@ -183,15 +199,19 @@ namespace QuantLib {
 		}
 		
 		inline double Statistics::kurtosis() const {
-		  QL_REQUIRE(theSampleNumber>3, "Stat::kurtosis() : sample number <=3, unsufficient");
+		  QL_REQUIRE(theSampleNumber>3, 
+		    "Stat::kurtosis() : sample number <=3, unsufficient");
 		  double m = mean();
 		  double v = variance();
-		  QL_ENSURE(v>0.0, "Stat::kurtosis() : variance=0.0, kurtosis undefined");
+		  QL_ENSURE(v>0.0, 
+		    "Stat::kurtosis() : variance=0.0, kurtosis undefined");
 		
-		  return theSampleNumber*theSampleNumber*(theSampleNumber+1.0)/
-		    ((theSampleNumber-1.0)*(theSampleNumber-2.0)*(theSampleNumber-3.0)*v*v)*
-		    (theFourthPowerSum-4.0*m*theCubicSum+6.0*m*m*theQuadraticSum-3.0*m*m*m*theSum)/theSampleWeight-
-		    3.0*(theSampleNumber-1.0)*(theSampleNumber-1.0)/
+		  return theSampleNumber*theSampleNumber*(theSampleNumber+1.0) / 
+		    ((theSampleNumber-1.0)*(theSampleNumber-2.0) * 
+		    (theSampleNumber-3.0)*v*v) * 
+		    (theFourthPowerSum - 4.0*m*theCubicSum + 6.0*m*m*theQuadraticSum - 
+		    3.0*m*m*m*theSum)/theSampleWeight - 
+		    3.0*(theSampleNumber-1.0)*(theSampleNumber-1.0) / 
 		    ((theSampleNumber-2.0)*(theSampleNumber-3.0));
 		}
 		

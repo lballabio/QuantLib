@@ -290,8 +290,6 @@ class Date {
 	static Date maxDate();
 };
 
-#if defined(SWIGPYTHON)
-
 %addmethods Date {
 	int monthNumber() {
 		return int(self->month());
@@ -299,6 +297,11 @@ class Date {
 	int weekdayNumber() {
 		return int(self->weekday());
 	}
+}
+    
+#if defined(SWIGPYTHON)
+
+%addmethods Date {
 	Date __add__(int days) {
 		return self->plusDays(days);
 	}
