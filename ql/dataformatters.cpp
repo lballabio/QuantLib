@@ -57,7 +57,7 @@ namespace QuantLib {
         return stream << DateFormatter::toString(date, DateFormatter::Short);
     }
 
-    #ifndef QL_PATCH_MICROSOFT
+    #ifndef QL_PATCH_MSVC6
     std::ostream& operator<<(std::ostream& stream, const Array& a) {
         return stream << ArrayFormatter::toString(a);
     }

@@ -72,7 +72,7 @@ namespace QuantLib {
     }
 
     void Swaption::arguments::validate() const {
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         SimpleSwap::arguments copy = *this;
         copy.validate();
         #else

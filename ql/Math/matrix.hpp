@@ -168,7 +168,7 @@ namespace QuantLib {
                                           Iterator2 v2begin, Iterator2 v2end);
 
 
-    #ifndef QL_PATCH_MICROSOFT
+    #ifndef QL_PATCH_MSVC6
     //! format matrices for output
     class MatrixFormatter {
       public:

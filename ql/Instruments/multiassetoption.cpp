@@ -137,7 +137,7 @@ namespace QuantLib {
 
 
     void MultiAssetOption::arguments::validate() const {
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         Option::arguments copy = *this;
         copy.validate();
         #else

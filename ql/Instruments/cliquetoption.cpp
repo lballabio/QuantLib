@@ -40,7 +40,7 @@ namespace QuantLib {
     }
 
     void CliquetOption::arguments::validate() const {
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         OneAssetStrikedOption::arguments copy = *this;
         copy.validate();
         #else

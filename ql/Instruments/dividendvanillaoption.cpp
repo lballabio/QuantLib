@@ -42,7 +42,7 @@ namespace QuantLib {
 
 
     void DividendVanillaOption::arguments::validate() const {
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         VanillaOption::arguments copy = *this;
         copy.validate();
         #else

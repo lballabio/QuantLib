@@ -49,7 +49,7 @@ namespace QuantLib {
 
     void DiscreteAveragingAsianOption::arguments::validate() const {
 
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         OneAssetStrikedOption::arguments copy = *this;
         copy.validate();
         #else
@@ -88,7 +88,7 @@ namespace QuantLib {
 
     void ContinuousAveragingAsianOption::arguments::validate() const {
 
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         OneAssetStrikedOption::arguments copy = *this;
         copy.validate();
         #else

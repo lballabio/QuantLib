@@ -164,7 +164,7 @@ namespace QuantLib {
     const Disposable<Array> Exp(const Array&);
 
 
-    #ifndef QL_PATCH_MICROSOFT
+    #ifndef QL_PATCH_MSVC6
     //! format arrays for output
     class ArrayFormatter {
       public:

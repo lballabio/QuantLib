@@ -64,7 +64,7 @@ namespace QuantLib {
         static std::string toUppercase(const std::string& s);
     };
 
-    #ifndef QL_PATCH_MICROSOFT
+    #ifndef QL_PATCH_MSVC6
     //! Formats numeric sequences for output
     class SequenceFormatter {
       public:

@@ -48,7 +48,7 @@ namespace QuantLib {
     std::ostream& operator<<(std::ostream&, const Date&);
 
 
-    #ifndef QL_PATCH_MICROSOFT
+    #ifndef QL_PATCH_MSVC6
     /*! \relates Array
         \deprecated send to the stream the output of ArrayFormatter
     */

@@ -77,7 +77,7 @@ namespace QuantLib {
         //! \name Modifiers
         //@{
         template <class Traits>
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         void setInterpolation(const Traits&) {
         #else
         void setInterpolation() {

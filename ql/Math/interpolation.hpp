@@ -51,7 +51,7 @@ namespace QuantLib {
       public:
         typedef Real argument_type;
         typedef Real result_type;
-      #if defined(QL_PATCH_MICROSOFT)
+      #if defined(QL_PATCH_MSVC6)
       public:
       #else
       protected:

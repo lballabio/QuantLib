@@ -60,7 +60,7 @@ namespace QuantLib {
             }
         }
         // default: bilinear interpolation
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         setInterpolation(Linear());
         #else
         setInterpolation<Linear>();

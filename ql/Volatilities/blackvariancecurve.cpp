@@ -54,7 +54,7 @@ namespace QuantLib {
         }
 
         // default: linear interpolation
-        #if defined(QL_PATCH_MICROSOFT)
+        #if defined(QL_PATCH_MSVC6)
         setInterpolation(Linear());
         #else
         setInterpolation<Linear>();
