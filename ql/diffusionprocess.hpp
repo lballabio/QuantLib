@@ -83,16 +83,10 @@ namespace QuantLib {
         : DiffusionProcess(s0), r_(rate), sigma_(volatility)  {}
 
         double drift(Time t, double x) const {
-            return - r_*x;
+            return r_ - 0.5*sigma_*sigma_;
         }
         double diffusion(Time t, double x) const {
             return sigma_;
-        }
-        double expectation(Time t0, double x0, Time dt) const {
-            return x0 + r_*dt;
-        }
-        double variance(Time t0, double x0, Time dt) const {
-            return sigma_*sigma_*dt;
         }
       private:
         double r_, sigma_;
