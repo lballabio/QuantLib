@@ -174,6 +174,22 @@ int main(int argc, char* argv[])
 
 
 
+        // third (2) method: Integral
+        method ="KronrodIntegral";
+
+        KronrodIntegral kintegrator(0.000001);
+
+        value = kintegrator(po, nuT-infinity, nuT+infinity);
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+
 
         // fourth method: Finite Differences
         method ="Finite Diff.";
