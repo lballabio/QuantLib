@@ -90,4 +90,6 @@ Changes since release 0.3.7:
   ActualActual class instead, or the Actual365Fixed class.
 
 - added dayCounterFromString(std::string)
-  
+
+- added CovarianceDecomposition class (decompose a covariance matrix into
+  standard deviations and correlations)
