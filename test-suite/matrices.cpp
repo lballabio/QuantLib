@@ -106,8 +106,18 @@ void MatricesTest::testEigenvectors() {
 void MatricesTest::testSqrt() {
 
     Matrix m = pseudoSqrt(M1, SalvagingAlgorithm::None);
-    if (norm(m*m - M1) > 1.0e-12)
-        CPPUNIT_FAIL("Matrix square root calculation failed");
+    Matrix temp = m*m;
+    double error = norm(temp - M1);
+    double tolerance = 1.0e-12;
+    if (error>tolerance) {
+        CPPUNIT_FAIL("Matrix square root calculation failed"
+        "\noriginal matrix:\n" + ArrayFormatter::toString(M1.begin(), M1.end(), 6, 0, M1.columns()) +
+        "\npseudoSqrt:\n" + ArrayFormatter::toString(m.begin(), m.end(), 6, 0, M1.columns()) +
+        "\npseudoSqrt*pseudoSqrt:\n" + ArrayFormatter::toString(temp.begin(), temp.end(), 6, 0, M1.columns()) +
+        "\nerror:     " + DoubleFormatter::toString(error) +
+        "\ntolerance: " + DoubleFormatter::toString(tolerance)
+        );
+    }
 
 }
 
