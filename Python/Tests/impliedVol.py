@@ -92,5 +92,5 @@ for typ in typRange:
                     raise RuntimeError, "out of tolerance"
 print 'time elapsed', time.time() - startTime
 
-print 'Press return to end the test'
+print 'Press return to end this test'
 raw_input()

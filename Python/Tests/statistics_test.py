@@ -87,5 +87,5 @@ if (abs(s.kurtosis()+0.151799637209)<tol):
 else:
   print 'wrong'
 
-print 'Press return to end the test'
+print 'Press return to end this test'
 raw_input()
