@@ -787,7 +787,7 @@ test_suite* AsianOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
 
-     /* broken
+    /* broken
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
     */
