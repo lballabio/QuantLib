@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,9 +28,9 @@
 #ifndef quantlib_sequence_statistics_hpp
 #define quantlib_sequence_statistics_hpp
 
-#include <ql/Math/hstatistics.hpp>
 #include <ql/Math/statistics.hpp>
 #include <algorithm>
+#include <iterator>
 #include <vector>
 
 namespace QuantLib {
@@ -43,78 +44,107 @@ namespace QuantLib {
             dimension of the sample space.
 
             For most of the statistics quantities this class relies on
-            the StatisticssType underlying class to provide 1-D methods that
+            the StatisticsType underlying class to provide 1-D methods that
             will be iterated for all the components of the N-D data. These
             "inherited" methods are the union of all the methods that might be
-            requested to the 1-D underlying StatisticssType class, with the
+            requested to the 1-D underlying StatisticsType class, with the
             usual compile-time checks provided by the template approach.
         */
-        template <class SequenceType, class StatisticssType>
+        template <class StatisticsType = Statistics>
         class SequenceStatistics {
           public:
             // typedefs
-            typedef SequenceType   sequence_type;
-            typedef StatisticssType statisticss_type;
-            virtual ~SequenceStatistics() {}
+            typedef StatisticsType statistics_type;
             // constructor
-            SequenceStatistics(Size dimension) { reset(dimension); }
-            //! \name 1-D inspectors "inherited" by underlying statistics class
+            SequenceStatistics(Size dimension);
+            //! \name 1-D inspectors lifted from underlying statistics class
             //@{
             Size samples() const;
             double weightSum() const;
             //@}
-            //! \name N-D inspectors "inherited" by underlying statistics class
+            //! \name N-D inspectors lifted from underlying statistics class
             //@{
             // void argument list
-            sequence_type mean() const;
-            sequence_type variance() const;
-            sequence_type standardDeviation() const;
-            sequence_type downsideVariance() const;
-            sequence_type downsideDeviation() const;
-            sequence_type errorEstimate() const;
-            sequence_type skewness() const;
-            sequence_type kurtosis() const;
-            sequence_type min() const;
-            sequence_type max() const;
+            std::vector<double> mean() const;
+            std::vector<double> variance() const;
+            std::vector<double> standardDeviation() const;
+            std::vector<double> downsideVariance() const;
+            std::vector<double> downsideDeviation() const;
+            std::vector<double> errorEstimate() const;
+            std::vector<double> skewness() const;
+            std::vector<double> kurtosis() const;
+            std::vector<double> min() const;
+            std::vector<double> max() const;
 
             // single double argument list
-            sequence_type gaussianPercentile(double y) const;
-            sequence_type gaussianPotentialUpside(double percentile) const;
-            sequence_type gaussianValueAtRisk(double percentile) const;
-            sequence_type gaussianExpectedShortfall(double percentile) const;
-            sequence_type gaussianShortfall(double target) const;
-            sequence_type gaussianAverageShortfall(double target) const;
-            sequence_type percentile(double y) const;
-            sequence_type potentialUpside(double percentile) const;
-            sequence_type valueAtRisk(double percentile) const;
-            sequence_type expectedShortfall(double percentile) const;
-            sequence_type shortfall(double target) const;
-            sequence_type averageShortfall(double target) const;
+            std::vector<double> gaussianPercentile(double y) const;
+            std::vector<double> gaussianPotentialUpside(double percentile) 
+                const;
+            std::vector<double> gaussianValueAtRisk(double percentile) const;
+            std::vector<double> gaussianExpectedShortfall(double percentile) 
+                const;
+            std::vector<double> gaussianShortfall(double target) const;
+            std::vector<double> gaussianAverageShortfall(double target) const;
+            std::vector<double> percentile(double y) const;
+            std::vector<double> potentialUpside(double percentile) const;
+            std::vector<double> valueAtRisk(double percentile) const;
+            std::vector<double> expectedShortfall(double percentile) const;
+            std::vector<double> shortfall(double target) const;
+            std::vector<double> averageShortfall(double target) const;
             //@}
             //! \name Modifiers
             //@{
-
-            // to be implemented
-            virtual void reset(Size dimension);
-
-            virtual void add(const sequence_type& sample,
-                     double weight = 1.0);
-
+            void reset(Size dimension = 0);
+            template <class Sequence>
+            void add(const Sequence& sample,
+                     double weight = 1.0) {
+                add(sample.begin(),sample.end(),weight);
+            }
+            template <class Iterator>
+            void add(Iterator begin,
+                     Iterator end,
+                     double weight = 1.0) {
+                QL_REQUIRE(std::distance(begin,end) == int(dimension_),
+                           "SequenceStatistics::add : "
+                           "sample size mismatch");
+                Size i;
+                for (i=0; i<dimension_; ++begin, ++i)
+                    stats_[i].add(*begin, weight);
+            }
             //@}
           protected:
             Size dimension_;
-            std::vector<statisticss_type> stats_;
-          private:
-            mutable sequence_type results_;
+            std::vector<statistics_type> stats_;
+            mutable std::vector<double> results_;
         };
 
-        // macros for the implementation of the "inherited" methods
+
+        // inline definitions
+
+        template <class Stat>
+        inline SequenceStatistics<Stat>::SequenceStatistics(Size dimension)
+        : dimension_(0) {
+            reset(dimension); 
+        }
+
+        template <class Stat>
+        inline Size SequenceStatistics<Stat>::samples() const {
+            return stats_[0].samples();
+        }
+
+        template <class Stat>
+        inline double SequenceStatistics<Stat>::weightSum() const {
+            return stats_[0].weightSum();
+        }
+
+
+        // macros for the implementation of the lifted methods
 
         // N-D methods' definition with void argument list
         #define DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(METHOD) \
-        template <class Seq, class Stat> \
-        SequenceStatistics<Seq, Stat>::sequence_type \
-        SequenceStatistics<Seq, Stat>::METHOD() const { \
+        template <class Stat> \
+        std::vector<double> \
+        SequenceStatistics<Stat>::METHOD() const { \
             for (Size i=0; i<dimension_; i++) \
                 results_[i] = stats_[i].METHOD(); \
             return results_; \
@@ -132,11 +162,11 @@ namespace QuantLib {
         #undef DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID
 
 
-        // N-D methods' definition with single double argument list
+        // N-D methods' definition with single double argument
         #define DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(METHOD) \
-        template <class Seq, class Stat> \
-        SequenceStatistics<Seq, Stat>::sequence_type \
-        SequenceStatistics<Seq, Stat>::METHOD(double x) const { \
+        template <class Stat> \
+        std::vector<double> \
+        SequenceStatistics<Stat>::METHOD(double x) const { \
             for (Size i=0; i<dimension_; i++) \
                 results_[i] = stats_[i].METHOD(x); \
             return results_; \
@@ -157,46 +187,23 @@ namespace QuantLib {
         #undef DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE
 
 
-        template <class Seq, class Stat>
-        void SequenceStatistics<Seq, Stat>::reset(Size dimension) {
+        template <class Stat>
+        void SequenceStatistics<Stat>::reset(Size dimension) {
+            if (dimension == 0)           // if no size given,
+                dimension = dimension_;   // keep the current one
             QL_REQUIRE(dimension > 0,
                 "SequenceStatistics::SequenceStatistics : "
                 "null dimension for sequence statistics");
-            dimension_ = dimension;
-            stats_ = std::vector<Stat>(dimension, statisticss_type());
-            for (Size i=0; i<dimension_; i++)
-                stats_[i].reset();
-            results_ = sequence_type(dimension);
+            if (dimension == dimension_) {
+                for (Size i=0; i<dimension_; i++)
+                    stats_[i].reset();
+            } else {
+                dimension_ = dimension;
+                stats_ = std::vector<Stat>(dimension);
+                results_ = std::vector<double>(dimension);
+            }
         }
 
-        template <class Seq, class Stat>
-        Size SequenceStatistics<Seq, Stat>::samples() const {
-            return stats_[0].samples();
-        }
-
-        template <class Seq, class Stat>
-        double SequenceStatistics<Seq, Stat>::weightSum() const {
-            return stats_[0].weightSum();
-        }
-
-        template <class Seq, class Stat>
-        void SequenceStatistics<Seq, Stat>::add(
-          const SequenceStatistics<Seq, Stat>::sequence_type& sample,
-          double weight) {
-            QL_REQUIRE(sample.size() == dimension_,
-                   "SequenceStatistics::add : "
-                   "sample size mismatch");
-            Size k;
-            for (k=0; k<dimension_; k++)
-                stats_[k].add(sample[k], weight);
-
-        }
-
-
-        typedef SequenceStatistics<std::vector<double>, Statistics> VectorStatistics;
-        typedef SequenceStatistics<Array, Statistics> ArrayStatistics;
-        typedef SequenceStatistics<std::vector<double>, HStatistics> VectorHStatistics;
-        typedef SequenceStatistics<Array, HStatistics> ArrayHStatistics;
     }
 
 }

@@ -102,18 +102,18 @@ void LDSTest::testSobol() {
     dimensionality = 33;
     seed = 123456;
     rsg = SobolRsg(dimensionality, seed);
-    ArrayStatistics stat(dimensionality);
-    Array mean, stdev, variance, skewness, kurtosis;
+    SequenceStatistics<> stat(dimensionality);
+    std::vector<double> mean, stdev, variance, skewness, kurtosis;
     Size k = 0;
     for (int j=1; j<5; j++) { // five cycle
-        points = Size(QL_POW(2, j))-1; // base 2
+        points = Size(QL_POW(2.0, j))-1; // base 2
         for (; k<points; k++) {
             point = rsg.nextSequence().value;
             stat.add(point);
         }
-        mean        = stat.mean();
+        mean = stat.mean();
         for (i=0; i<dimensionality; i++) {
-            if (mean[i]!=0.5) {
+            if (mean[i] != 0.5) {
                 CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
                              " dimension mean (" +
                              DoubleFormatter::toString(mean[i]) +
@@ -260,17 +260,18 @@ void LDSTest::testHalton() {
     dimensionality = 33;
     seed = 123456;
     rsg = HaltonRsg(dimensionality);
-    ArrayStatistics stat(dimensionality);
-    Array mean, stdev, variance, skewness, kurtosis;
+    SequenceStatistics<> stat(dimensionality);
+    std::vector<double> mean, stdev, variance, skewness, kurtosis;
     k = 0;
-    for (int j=1; j<5; j++) { // five cycle
-        points = Size(QL_POW(2, j))-1; // base 2
+    int j;
+    for (j=1; j<5; j++) { // five cycle
+        points = Size(QL_POW(2.0, j))-1; // base 2
         for (; k<points; k++) {
             point = rsg.nextSequence().value;
             stat.add(point);
         }
-        mean        = stat.mean();
-        if (mean[0]!=0.5) {
+        mean = stat.mean();
+        if (mean[0] != 0.5) {
             CPPUNIT_FAIL("First dimension mean (" +
                          DoubleFormatter::toString(mean[0]) +
                          ") at the end of the " +
@@ -282,15 +283,15 @@ void LDSTest::testHalton() {
 
     // reset generator and statistics
     rsg  = HaltonRsg(dimensionality);
-    stat = ArrayStatistics(dimensionality);
+    stat.reset(dimensionality);
     k = 0;
     for (j=1; j<3; j++) { // three cycle
-        points = Size(QL_POW(3, j))-1; // base 3
+        points = Size(QL_POW(3.0, j))-1; // base 3
         for (; k<points; k++) {
             point = rsg.nextSequence().value;
             stat.add(point);
         }
-        mean        = stat.mean();
+        mean = stat.mean();
         if (QL_FABS(mean[1]-0.5)>1e-16) {
             CPPUNIT_FAIL("Second dimension mean (" +
                          DoubleFormatter::toString(mean[1]) +
@@ -317,14 +318,14 @@ void LDSTest::testDiscrepancy() {
         HaltonRsg                 hal(dim);
         SobolRsg                  sob(dim, seed);
 
-        DiscrepancyArrayStatistics merStat(dim);
-        DiscrepancyArrayStatistics halStat(dim);
-        DiscrepancyArrayStatistics sobStat(dim);
+        DiscrepancyStatistics merStat(dim);
+        DiscrepancyStatistics halStat(dim);
+        DiscrepancyStatistics sobStat(dim);
         std::cout << "dim " << dim << std::endl;
 
         Size k = 0;
         for (int j=10; j<17; j++) {
-            Size points = Size(QL_POW(2, j))-1;
+            Size points = Size(QL_POW(2.0, j))-1;
             for (; k<points; k++) {
                 point = mer.nextSequence().value;
                 merStat.add(point);
@@ -334,7 +335,9 @@ void LDSTest::testDiscrepancy() {
                 sobStat.add(point);
             }
             std::cout << points << ": "
-                "r " << QL_SQRT((1.0/QL_POW(2, dim)-1.0/QL_POW(3, dim))/points) <<
+                "r " << QL_SQRT((1.0/QL_POW(2.0, int(dim))
+                                 -1.0/QL_POW(3.0, int(dim)))
+                                /points) <<
                 ", Mers. " << merStat.discrepancy() <<
                 ", Halt. " << halStat.discrepancy() <<
                 ", Sobol " << sobStat.discrepancy() <<

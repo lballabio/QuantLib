@@ -16,15 +16,15 @@
 */
 // $Id$
 
-#ifndef quantlib_test_statisticss_hpp
-#define quantlib_test_statisticss_hpp
+#ifndef quantlib_test_statistics_hpp
+#define quantlib_test_statistics_hpp
 
 #include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
-class StatisticssTest : public CppUnit::TestCase {
+class StatisticsTest : public CppUnit::TestCase {
   public:
-    StatisticssTest() : CppUnit::TestCase("Testing statistics") {}
+    StatisticsTest() : CppUnit::TestCase("Testing statistics") {}
     void runTest();
 };
 

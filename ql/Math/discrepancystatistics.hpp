@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +29,7 @@
 #define quantlib_dicrepancy_statistics_hpp
 
 #include <ql/Math/sequencestatistics.hpp>
+#include <ql/Math/hstatistics.hpp>
 
 namespace QuantLib {
 
@@ -37,118 +39,86 @@ namespace QuantLib {
         /*! It inherit from SequenceStatistics<HStatistics> and adds
             \f$ L^2 \f$ discrepancy calculation
         */
-        template <class SequenceType>
-        class DiscrepancyStatistics : public SequenceStatistics<SequenceType,
-                                                                HStatistics> {
+        class DiscrepancyStatistics : public SequenceStatistics<HStatistics> {
           public:
-            // typedefs
-            typedef SequenceType   sequence_type;
             // constructor
-            DiscrepancyStatistics(Size dimension)
-            : SequenceStatistics<SequenceType, HStatistics>(dimension) {
-                reset(dimension); }
+            DiscrepancyStatistics(Size dimension);
             //! \name 1-dimensional inspectors
             //@{
             double discrepancy() const;
             //@}
-            void add(const DiscrepancyStatistics<SequenceType>::sequence_type& sample,
-                     double weight = 1.0);
-          void reset(Size dimension);
+            template <class Sequence>
+            void add(const Sequence& sample,
+                     double weight = 1.0) {
+                add(sample.begin(),sample.end(),weight);
+            }
+            template <class Iterator>
+            void add(Iterator begin,
+                     Iterator end,
+                     double weight = 1.0) {
+                SequenceStatistics<HStatistics>::add(begin,end,weight);
+
+                Size k, m, N = samples();
+
+                double r_ik, r_jk, temp = 1.0;
+                Iterator it;
+                for (k=0, it=begin; k<dimension_; ++it, ++k) {
+                    r_ik = *it; //i=N
+                    temp *= (1.0 - r_ik*r_ik);
+                }
+                cdiscr_ += temp;
+
+                for (m=0; m<N-1; m++) {
+                    temp = 1.0;
+                    for (k=0, it=begin; k<dimension_; ++it, ++k) {
+                        // running i=1..(N-1)
+                        r_ik = stats_[k].sampleData()[m].first;
+                        // fixed j=N
+                        r_jk = *it;
+                        temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                    }
+                    adiscr_ += temp;
+
+                    temp = 1.0;
+                    for (k=0, it=begin; k<dimension_; ++it, ++k) {
+                        // fixed i=N
+                        r_ik = *it;
+                        // running j=1..(N-1)
+                        r_jk = stats_[k].sampleData()[m].first;
+                        temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                    }
+                    adiscr_ += temp;
+                }
+                temp = 1.0;
+                for (k=0, it=begin; k<dimension_; ++it, ++k) {
+                    // fixed i=N, j=N
+                    r_ik = r_jk = *it;
+                    temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                }
+                adiscr_ += temp;
+            }
+            void reset(Size dimension = 0);
           private:
             mutable double adiscr_, cdiscr_;
             double bdiscr_, ddiscr_;
         };
 
-        template <class Seq>
-        void DiscrepancyStatistics<Seq>::reset(Size dimension) {
-            SequenceStatistics<Seq, HStatistics>::reset(dimension);
+
+        // inline definitions
+
+        inline DiscrepancyStatistics::DiscrepancyStatistics(Size dimension)
+        : SequenceStatistics<HStatistics>(dimension) {
+            reset(dimension); 
+        }
+
+        inline void DiscrepancyStatistics::reset(Size dimension) {
+            SequenceStatistics<HStatistics>::reset(dimension);
             adiscr_ = 0.0;
-            bdiscr_ = 1.0/QL_POW(2, dimension-1);
+            bdiscr_ = 1.0/QL_POW(2.0, int(dimension-1));
             cdiscr_ = 0.0;
-            ddiscr_ = 1.0/QL_POW(3, dimension);
+            ddiscr_ = 1.0/QL_POW(3.0, int(dimension));
         }
 
-        template <class Seq>
-        void DiscrepancyStatistics<Seq>::add(
-          const DiscrepancyStatistics<Seq>::sequence_type& sample,
-          double weight) {
-            SequenceStatistics<Seq, HStatistics>::add(sample, weight);
-
-            Size k, m, N = samples();
-
-            double r_ik, r_jk, temp = 1.0;
-            for (k=0; k<dimension_; k++) {
-                r_ik = sample[k]; //i=N
-                temp *= (1.0 - r_ik*r_ik);
-            }
-            cdiscr_ += temp;
-
-            for (m=0; m<N-1; m++) {
-                temp = 1.0;
-                for (k=0; k<dimension_; k++) {
-                    // running i=1..(N-1)
-                    r_ik = stats_[k].sampleData()[m].first;
-                    // fixed j=N
-                    r_jk = sample[k];
-                    temp *= (1.0 - QL_MAX(r_ik, r_jk));
-                }
-                adiscr_ += temp;
-
-                temp = 1.0;
-                for (k=0; k<dimension_; k++) {
-                    // fixed i=N
-                    r_ik = sample[k];
-                    // running j=1..(N-1)
-                    r_jk = stats_[k].sampleData()[m].first;
-                    temp *= (1.0 - QL_MAX(r_ik, r_jk));
-                }
-                adiscr_ += temp;
-            }
-            temp = 1.0;
-            for (k=0; k<dimension_; k++) {
-                // fixed i=N
-                r_ik = sample[k];
-                // fixed j=N
-                r_jk = sample[k];
-                temp *= (1.0 - QL_MAX(r_ik, r_jk));
-            }
-            adiscr_ += temp;
-        }
-
-        template <class Seq>
-        double DiscrepancyStatistics<Seq>::discrepancy() const {
-            Size N = samples();
-/*
-            Size i;
-            double r_ik, r_jk, cdiscr = adiscr = 0.0, temp = 1.0;
-
-            for (i=0; i<N; i++) {
-                double temp = 1.0;
-                for (Size k=0; k<dimension_; k++) {
-                    r_ik = stats_[k].sampleData()[i].first;
-                    temp *= (1.0 - r_ik*r_ik);
-                }
-                cdiscr += temp;
-            }
-
-            for (i=0; i<N; i++) {
-                for (Size j=0; j<N; j++) {
-                    double temp = 1.0;
-                    for (Size k=0; k<dimension_; k++) {
-                        r_jk = stats_[k].sampleData()[j].first;
-                        r_ik = stats_[k].sampleData()[i].first;
-                        temp *= (1.0 - QL_MAX(r_ik, r_jk));
-                    }
-                    adiscr += temp;
-                }
-            }
-*/
-
-            return QL_SQRT(adiscr_/(N*N)-bdiscr_/N*cdiscr_+ddiscr_);
-        }
-
-        typedef DiscrepancyStatistics<std::vector<double> > DiscrepancyVectorStatistics;
-        typedef DiscrepancyStatistics<Array> DiscrepancyArrayStatistics;
     }
 
 }

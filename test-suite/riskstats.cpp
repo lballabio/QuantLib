@@ -23,7 +23,7 @@ using namespace QuantLib::Math;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
-void RiskStatisticssTest::runTest() {
+void RiskStatisticsTest::runTest() {
 
     Statistics s;
 

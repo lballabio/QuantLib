@@ -23,7 +23,7 @@ using QuantLib::Math::Statistics;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
-void StatisticssTest::runTest() {
+void StatisticsTest::runTest() {
 
     double data[] = { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
     std::vector<double> weights(LENGTH(data),1.0);

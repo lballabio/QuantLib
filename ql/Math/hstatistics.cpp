@@ -15,16 +15,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file hstatisticss.hpp
+/*! \file hstatistics.hpp
     \brief historical distribution statistics tool with risk measures
 
     \fullpath
-    ql/Math/%hstatisticss.hpp
+    ql/Math/%hstatistics.hpp
 */
 
 // $Id$
 
-#include "ql/math/hstatistics.hpp"
+#include "ql/Math/hstatistics.hpp"
 
 namespace QuantLib {
 
