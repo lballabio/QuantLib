@@ -22,78 +22,69 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file parcoupon.cpp
+/*! \file floatingratecoupon.cpp
     \brief Coupon at par on a term structure
 
     $Id$
     $Source$
     $Log$
-    Revision 1.4  2001/06/15 13:52:07  lballabio
-    Reworked indexes
-
-    Revision 1.3  2001/06/12 15:05:33  lballabio
-    Renamed Libor to GBPLibor and LiborManager to XiborManager
-
-    Revision 1.2  2001/06/05 09:35:14  lballabio
-    Updated docs to use Doxygen 1.2.8
-
-    Revision 1.1  2001/06/01 16:50:16  lballabio
-    Term structure on deposits and swaps
+    Revision 1.1  2001/06/18 08:11:06  lballabio
+    Reworked indexes and floating rate coupon
 
 */
 
-#include "ql/CashFlows/parcoupon.hpp"
+#include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/dataformatters.hpp"
 #include "ql/Indexes/xibormanager.hpp"
 
 namespace QuantLib {
 
+    using Indexes::Xibor;
     using Indexes::XiborManager;
     
     namespace CashFlows {
         
-        ParCoupon::ParCoupon(double nominal, const Indexes::Xibor& index, 
-            int n, TimeUnit unit, Spread spread, 
-            const Handle<Calendar>& calendar, 
-            const Handle<DayCounter>& dayCounter,
-            const RelinkableHandle<TermStructure>& termStructure,
-            const Date& startDate, const Date& endDate, 
-            const Date& refPeriodStart, const Date& refPeriodEnd)
-        : AccruingCoupon(calendar, Following, dayCounter, 
-          startDate, endDate, refPeriodStart, refPeriodEnd), 
-          nominal_(nominal), spread_(spread), index_(index), 
-          n_(n), unit_(unit), termStructure_(termStructure) {
-            QL_REQUIRE(calendar->isBusinessDay(startDate),
-                "Start date for par coupon (" + 
-                DateFormatter::toString(startDate) +
-                ") is holiday for " +
-                calendar->name() + " calendar");
-            QL_REQUIRE(calendar->isBusinessDay(endDate),
-                "End date for par coupon (" + 
-                DateFormatter::toString(endDate) +
-                ") is holiday for " +
-                calendar->name() + " calendar");
+        FloatingRateCoupon::FloatingRateCoupon(double nominal, 
+          const RelinkableHandle<TermStructure>& termStructure,
+          const Date& startDate, const Date& endDate, 
+          const Date& refPeriodStart, const Date& refPeriodEnd,
+          const Handle<Index>& index, Spread spread) 
+        : nominal_(nominal), termStructure_(termStructure),
+          startDate_(startDate), endDate_(endDate), 
+          refPeriodStart_(refPeriodStart), 
+          refPeriodEnd_(refPeriodEnd), spread_(spread) {
+            if (!index.isNull())
+                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+                index_ = index.downcast<Xibor>();
+                #else
+                index_ = dynamic_cast<const Xibor*>(index.pointer());
+                #endif
+            else
+                index_ = 0;
         }
 
-        double ParCoupon::amount() const {
+        double FloatingRateCoupon::amount() const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set to par coupon");
-
             Date settlementDate = termStructure_->settlementDate();
             if (startDate_ < settlementDate) {
                 // must have been fixed
+                QL_REQUIRE(index_ != 0,
+                    "null or non-libor index given");
                 Rate pastFixing = XiborManager::getHistory(
-                    index_.name())[startDate_];
+                    index_->name())[startDate_];
                 QL_REQUIRE(pastFixing != Null<double>(),
-                    "Missing " + index_.name() + " fixing for " +
+                    "Missing " + index_->name() + " fixing for " +
                         DateFormatter::toString(startDate_));
                 return (pastFixing+spread_)*accrualPeriod()*nominal_;
             }
             if (startDate_ == settlementDate) {
                 // might have been fixed
                 try {
+                    QL_REQUIRE(index_ != 0,
+                        "null or non-libor index given");
                     Rate pastFixing = XiborManager::getHistory(
-                        index_.name())[startDate_];
+                        index_->name())[startDate_];
                     if (pastFixing != Null<double>())
                         return (pastFixing+spread_)*accrualPeriod()*nominal_;
                     else
@@ -106,10 +97,21 @@ namespace QuantLib {
                 termStructure_->discount(startDate_);
             DiscountFactor endDiscount =
                 termStructure_->discount(endDate_);
-            return ((startDiscount/endDiscount-1.0) + 
+            if (spread_ == 0.0)
+                return (startDiscount/endDiscount-1.0) * nominal_;
+            else
+                return ((startDiscount/endDiscount-1.0) +
                     spread_*accrualPeriod()) * nominal_;
+        }
+
+        double FloatingRateCoupon::accrualPeriod() const {
+            QL_REQUIRE(index_ != 0,
+                "null or non-libor index given");
+            return index_->dayCounter()->yearFraction(
+                startDate_,endDate_,refPeriodStart_,refPeriodEnd_);
         }
 
     }
 
 }
+

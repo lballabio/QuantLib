@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.4  2001/06/18 08:05:59  lballabio
+//  Reworked indexes and floating rate coupon
+//
 //  Revision 1.3  2001/06/15 13:52:07  lballabio
 //  Reworked indexes
 //
@@ -44,8 +47,12 @@
 #define quantlib_cash_flow_vectors_hpp
 
 #include "ql/cashflow.hpp"
-#include "ql/CashFlows/fixedratecoupon.hpp"
-#include "ql/CashFlows/parcoupon.hpp"
+#include "ql/rate.hpp"
+#include "ql/calendar.hpp"
+#include "ql/daycounter.hpp"
+#include "ql/index.hpp"
+#include "ql/termstructure.hpp"
+#include "ql/handle.hpp"
 #include <vector>
 
 namespace QuantLib {
@@ -66,20 +73,18 @@ namespace QuantLib {
                     Handle<DayCounter>());
         };
 
-        class ParCouponVector : public std::vector<Handle<CashFlow> > {
+        class FloatingRateCouponVector 
+        : public std::vector<Handle<CashFlow> > {
           public:
-            ParCouponVector(
+            FloatingRateCouponVector(
                 const std::vector<double>& nominals, 
-                const Indexes::Xibor& index, 
-                const std::vector<Spread>& spreads, 
                 const Date& startDate, const Date& endDate, 
                 int frequency, const Handle<Calendar>& calendar, 
                 RollingConvention rollingConvention, 
-                const Handle<DayCounter>& dayCount, 
                 const RelinkableHandle<TermStructure>& termStructure,
-                const Date& stubDate = Date(), 
-                const Handle<DayCounter>& firstPeriodDayCount =
-                    Handle<DayCounter>());
+                const Handle<Index>& index = Handle<Index>(), 
+                const std::vector<Spread>& spreads = std::vector<Spread>(), 
+                const Date& stubDate = Date());
         };
 
     }

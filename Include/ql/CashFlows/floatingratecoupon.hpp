@@ -22,48 +22,56 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file parcoupon.hpp
+/*! \file floatingratecoupon.hpp
     \brief Coupon at par on a term structure
 
     $Id$
     $Source$
     $Log$
-    Revision 1.1  2001/06/01 16:50:16  lballabio
-    Term structure on deposits and swaps
+    Revision 1.1  2001/06/18 08:10:00  lballabio
+    Reworked indexes and floating rate coupon
 
 */
 
-#ifndef quantlib_par_coupon_hpp
-#define quantlib_par_coupon_hpp
+#ifndef quantlib_floating_rate_coupon_hpp
+#define quantlib_floating_rate_coupon_hpp
 
-#include "ql/CashFlows/accruingcoupon.hpp"
+#include "ql/cashflow.hpp"
 #include "ql/index.hpp"
+#include "ql/termstructure.hpp"
+#include "ql/handle.hpp"
 #include "ql/Indexes/xibor.hpp"
-#include "ql/spread.hpp"
 
 namespace QuantLib {
 
     namespace CashFlows {
         
         //! Coupon at par on a term structure
-        class ParCoupon : public AccruingCoupon {
+        /*! \warning This class does not perform any date adjustment, 
+            i.e., the start and end date passed upon construction
+            should be already rolled to a business day.
+	*/
+        class FloatingRateCoupon : public CashFlow {
           public:
-            ParCoupon(double nominal, const Indexes::Xibor& index, 
-                int n, TimeUnit unit, Spread spread, 
-                const Handle<Calendar>& calendar, 
-                const Handle<DayCounter>& dayCounter,
+            FloatingRateCoupon(double nominal,  
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Date& startDate, const Date& endDate, 
                 const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date());
-            // CashFlow interface
+                const Date& refPeriodEnd = Date(),
+                const Handle<Index>& index = Handle<Index>(),
+                Spread spread = 0.0);
+            //! \name CashFlow interface
+            //@{
+            Date date() const { return startDate_; }
             double amount() const;
+            //@}
           private:
+            double accrualPeriod() const;
             double nominal_;
+            Date startDate_, endDate_;
+            Date refPeriodStart_, refPeriodEnd_;
+            const Indexes::Xibor* index_;
             Spread spread_;
-            Indexes::Xibor index_;
-            int n_;
-            TimeUnit unit_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 

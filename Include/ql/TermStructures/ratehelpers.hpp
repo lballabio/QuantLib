@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/06/18 08:05:59  lballabio
+// Reworked indexes and floating rate coupon
+//
 // Revision 1.12  2001/06/13 16:18:23  lballabio
 // Polished rate helper interfaces
 //
@@ -51,7 +54,6 @@
 #include "ql/calendar.hpp"
 #include "ql/daycounter.hpp"
 #include "ql/Instruments/simpleswap.hpp"
-#include "ql/Indexes/xibor.hpp"
 
 namespace QuantLib {
 
@@ -160,9 +162,7 @@ namespace QuantLib {
                 bool fixedIsAdjusted, 
                 const Handle<DayCounter>& fixedDayCount, 
                 // floating leg
-                int floatingFrequency, 
-                const Indexes::Xibor& index, 
-                const Handle<DayCounter>& floatingDayCount);
+                int floatingFrequency);
             double rateError() const;
             // double discountGuess() const; // null for the time being
             Date maturity() const;
@@ -175,8 +175,7 @@ namespace QuantLib {
             RollingConvention rollingConvention_;
             int fixedFrequency_, floatingFrequency_;
             bool fixedIsAdjusted_;
-            Handle<DayCounter> fixedDayCount_, floatingDayCount_;
-            Indexes::Xibor index_;
+            Handle<DayCounter> fixedDayCount_;
             Date settlement_;
             Handle<Instruments::SimpleSwap> swap_;
             RelinkableHandle<TermStructure> termStructureHandle_;

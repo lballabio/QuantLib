@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/06/18 08:05:59  lballabio
+// Reworked indexes and floating rate coupon
+//
 // Revision 1.14  2001/06/13 16:18:23  lballabio
 // Polished rate helper interfaces
 //
@@ -152,16 +155,14 @@ namespace QuantLib {
             int fixedFrequency, 
             bool fixedIsAdjusted, 
             const Handle<DayCounter>& fixedDayCount, 
-            int floatingFrequency, 
-            const Indexes::Xibor& index, 
-            const Handle<DayCounter>& floatingDayCount)
+            int floatingFrequency)
         : rate_(rate), settlementDays_(settlementDays), 
           lengthInYears_(lengthInYears), calendar_(calendar), 
           rollingConvention_(rollingConvention), 
           fixedFrequency_(fixedFrequency), 
-          floatingFrequency_(floatingFrequency), 
-          fixedIsAdjusted_(fixedIsAdjusted), fixedDayCount_(fixedDayCount), 
-          floatingDayCount_(floatingDayCount), index_(index) {}
+          floatingFrequency_(floatingFrequency),
+          fixedIsAdjusted_(fixedIsAdjusted), 
+          fixedDayCount_(fixedDayCount) {}
         
         void SwapRateHelper::setTermStructure(TermStructure* t) {
             termStructureHandle_.linkTo(Handle<TermStructure>(t,false));
@@ -180,9 +181,8 @@ namespace QuantLib {
                     fixedFrequency_, 
                     std::vector<Rate>(1,0.0),       // coupon rate
                     fixedIsAdjusted_, fixedDayCount_, 
-                    floatingFrequency_, index_, 
+                    floatingFrequency_, Handle<Index>(), 
                     std::vector<Spread>(),       // null spread
-                    floatingDayCount_, 
                     termStructureHandle_));
         }
         

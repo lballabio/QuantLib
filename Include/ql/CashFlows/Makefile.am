@@ -8,6 +8,6 @@ include_HEADERS = \
         accruingcoupon.hpp \
         cashflowvectors.hpp \
         fixedratecoupon.hpp \
-        parcoupon.hpp \
+        floatingratecoupon.hpp \
         simplecashflow.hpp
         

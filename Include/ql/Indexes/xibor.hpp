@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/18 08:05:59  lballabio
+// Reworked indexes and floating rate coupon
+//
 // Revision 1.6  2001/06/15 13:52:07  lballabio
 // Reworked indexes
 //
@@ -62,8 +65,9 @@ namespace QuantLib {
                 RollingConvention rollingConvention,
                 const Handle<DayCounter>& dayCounter,
                 const RelinkableHandle<TermStructure>& h)
-            : name_(name), currency_(currency), calendar_(calendar), 
-              isAdjusted_(isAdjusted), rollingConvention_(rollingConvention), 
+            : name_(name), n_(n), units_(units), currency_(currency), 
+              calendar_(calendar), isAdjusted_(isAdjusted), 
+              rollingConvention_(rollingConvention), 
               dayCounter_(dayCounter), termStructure_(h) {}
             //! \name Index interface
             //@{

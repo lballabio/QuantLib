@@ -34,7 +34,7 @@
 #include "ql/Instruments/swap.hpp"
 #include "ql/calendar.hpp"
 #include "ql/daycounter.hpp"
-#include "ql/Indexes/xibor.hpp"
+#include "ql/index.hpp"
 
 namespace QuantLib {
 
@@ -57,9 +57,8 @@ namespace QuantLib {
                 const Handle<DayCounter>& fixedDayCount, 
                 // floating leg
                 int floatingFrequency, 
-                const Indexes::Xibor& index, 
+                const Handle<Index>& index, 
                 const std::vector<Spread>& spreads, 
-                const Handle<DayCounter>& floatingDayCount, 
                 // hook to term structure
                 const RelinkableHandle<TermStructure>& termStructure, 
                 // description

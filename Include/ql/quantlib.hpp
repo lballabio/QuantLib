@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/06/18 08:05:59  lballabio
+// Reworked indexes and floating rate coupon
+//
 // Revision 1.16  2001/06/15 13:52:06  lballabio
 // Reworked indexes
 //
@@ -94,6 +97,7 @@
 #include "ql/CashFlows/accruingcoupon.hpp"
 #include "ql/CashFlows/cashflowvectors.hpp"
 #include "ql/CashFlows/fixedratecoupon.hpp"
+#include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/CashFlows/simplecashflow.hpp"
 
 #include "ql/DayCounters/actual360.hpp"

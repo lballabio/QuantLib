@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.3  2001/06/18 08:05:59  lballabio
+# Reworked indexes and floating rate coupon
+#
 # Revision 1.2  2001/06/01 16:50:16  lballabio
 # Term structure on deposits and swaps
 #
@@ -27,7 +30,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = cashflowvectors.obj$(_D) \
-       parcoupon.obj$(_D)
+       floatingratecoupon.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

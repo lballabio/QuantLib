@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.5  2001/06/18 08:05:59  lballabio
+//  Reworked indexes and floating rate coupon
+//
 //  Revision 1.4  2001/06/15 13:52:07  lballabio
 //  Reworked indexes
 //
@@ -44,6 +47,8 @@
 //
 
 #include "ql/CashFlows/cashflowvectors.hpp"
+#include "ql/CashFlows/fixedratecoupon.hpp"
+#include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/scheduler.hpp"
 
 namespace QuantLib {
@@ -133,16 +138,14 @@ namespace QuantLib {
         }
 
 
-        ParCouponVector::ParCouponVector(
+        FloatingRateCouponVector::FloatingRateCouponVector(
           const std::vector<double>& nominals, 
-          const Indexes::Xibor& index, const std::vector<Spread>& spreads, 
           const Date& startDate, const Date& endDate, 
           int frequency, const Handle<Calendar>& calendar, 
           RollingConvention rollingConvention, 
-          const Handle<DayCounter>& dayCount, 
           const RelinkableHandle<TermStructure>& termStructure, 
-          const Date& stubDate, 
-          const Handle<DayCounter>& firstPeriodDayCount) {
+          const Handle<Index>& index, const std::vector<Spread>& spreads, 
+          const Date& stubDate) {
             QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
             Scheduler scheduler(calendar, startDate, endDate, frequency, 
                 rollingConvention, true, stubDate);
@@ -154,24 +157,19 @@ namespace QuantLib {
             else
                 spread = 0.0;
             double nominal = nominals[0];
-            Handle<DayCounter> firstDC;
-            if (firstPeriodDayCount.isNull())
-                firstDC = dayCount;
-            else
-                firstDC = firstPeriodDayCount;
             if (scheduler.isRegular(1)) {
                 push_back(Handle<CashFlow>(
-                    new ParCoupon(nominal, index, 12/frequency, Months, 
-                        spread, calendar, firstDC, termStructure, 
-                        start, end, start, end)));
+                    new FloatingRateCoupon(nominal, termStructure,
+                        start, end, start, end, index,  
+                        spread)));
             } else {
                 Date reference = end.plusMonths(-12/frequency);
                 reference = 
                     calendar->roll(reference,rollingConvention);
                 push_back(Handle<CashFlow>(
-                    new ParCoupon(nominal, index, 12/frequency, Months, 
-                        spread, calendar, firstDC, termStructure, 
-                        start, end, reference, end)));
+                    new FloatingRateCoupon(nominal, termStructure, 
+                        start, end, reference, end, 
+                        index, spread)));
             }
             // regular periods
             for (int i=2; i<scheduler.size()-1; i++) {
@@ -187,9 +185,9 @@ namespace QuantLib {
                 else 
                     nominal = nominals.back();
                 push_back(Handle<CashFlow>(
-                    new ParCoupon(nominal, index, 12/frequency, Months, 
-                        spread, calendar, dayCount, termStructure, 
-                        start, end, start, end)));
+                    new FloatingRateCoupon(nominal, termStructure, 
+                        start, end, start, end, 
+                        index, spread)));
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
@@ -207,17 +205,17 @@ namespace QuantLib {
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
                     push_back(Handle<CashFlow>(
-                        new ParCoupon(nominal, index, 12/frequency, Months, 
-                            spread, calendar, dayCount, termStructure, 
-                            start, end, start, end)));
+                        new FloatingRateCoupon(nominal, termStructure,
+                            start, end, start, end, 
+                            index, spread)));
                 } else {
                     Date reference = start.plusMonths(12/frequency);
                     reference = 
                         calendar->roll(reference,rollingConvention);
                     push_back(Handle<CashFlow>(
-                        new ParCoupon(nominal, index, 12/frequency, Months, 
-                            spread, calendar, dayCount, termStructure, 
-                            start, end, start, reference)));
+                        new FloatingRateCoupon(nominal, termStructure, 
+                            start, end, start, reference, 
+                            index, spread)));
                 }
             }
         }

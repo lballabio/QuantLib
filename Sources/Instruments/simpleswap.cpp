@@ -29,13 +29,14 @@
 */
 
 #include "ql/Instruments/simpleswap.hpp"
+#include "ql/CashFlows/fixedratecoupon.hpp"
 #include "ql/CashFlows/cashflowvectors.hpp"
 
 namespace QuantLib {
 
     using CashFlows::FixedRateCoupon;
     using CashFlows::FixedRateCouponVector;
-    using CashFlows::ParCouponVector;
+    using CashFlows::FloatingRateCouponVector;
     
     namespace Instruments {
 
@@ -49,9 +50,8 @@ namespace QuantLib {
           bool fixedIsAdjusted, 
           const Handle<DayCounter>& fixedDayCount, 
           int floatingFrequency, 
-          const Indexes::Xibor& index, 
+          const Handle<Index>& index, 
           const std::vector<Spread>& spreads, 
-          const Handle<DayCounter>& floatingDayCount, 
           const RelinkableHandle<TermStructure>& termStructure, 
           const std::string& isinCode, const std::string& description)
         : Swap(std::vector<Handle<CashFlow> >(), 
@@ -65,15 +65,15 @@ namespace QuantLib {
                     couponRates, startDate, maturity_, 
                     fixedFrequency, calendar, rollingConvention, 
                     fixedIsAdjusted, fixedDayCount);
-                secondLeg_ = ParCouponVector(nominals, 
-                    index, spreads, startDate, maturity_, floatingFrequency, 
-                    calendar, rollingConvention, floatingDayCount,
-                    termStructure);
+                secondLeg_ = FloatingRateCouponVector(nominals, 
+                    startDate, maturity_, floatingFrequency, 
+                    calendar, rollingConvention, termStructure,
+                    index, spreads);
             } else {
-                firstLeg_ = ParCouponVector(nominals, 
-                    index, spreads, startDate, maturity_, floatingFrequency, 
-                    calendar, rollingConvention, floatingDayCount,
-                    termStructure);
+                firstLeg_ = FloatingRateCouponVector(nominals, 
+                    startDate, maturity_, floatingFrequency, 
+                    calendar, rollingConvention, termStructure,
+                    index, spreads);
                 secondLeg_ = FixedRateCouponVector(nominals, 
                     couponRates, startDate, maturity_, 
                     fixedFrequency, calendar, rollingConvention, 
