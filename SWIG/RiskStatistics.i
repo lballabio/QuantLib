@@ -51,7 +51,8 @@ using QuantLib::Math::VarTool;
 
 class VarTool {
   public:
-    VarTool() {}
+    VarTool();
+    ~VarTool();
     double valueAtRisk(double percentile,
                        double mean,
                        double std) const ;

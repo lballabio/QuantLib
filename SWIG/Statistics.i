@@ -48,7 +48,7 @@ using QuantLib::Math::Statistics;
 class Statistics {
   public:
     Statistics();
-    virtual ~Statistics();
+    ~Statistics();
     // Accessors
     int samples() const;
     double weightSum() const;
