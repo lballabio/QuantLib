@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/21 09:47:20  lballabio
+    Worked around bug in Visual C++
+
     Revision 1.10  2001/02/08 17:25:23  lballabio
     Fixed wrapping
 
@@ -118,6 +121,27 @@ namespace QuantLib {
             TridiagonalOperator(const Array& low, const Array& mid, 
                 const Array& high)
             : TridiagonalOperatorCommon(low,mid,high) {}
+            #if defined(QL_PATCH_MICROSOFT_BUGS)
+            /* This copy constructor and assignment operator are here because 
+               somehow Visual C++ is not able to generate working ones. They are 
+               _not_ to be defined for other compilers which are able to 
+               generate correct ones.   */
+                TridiagonalOperator(const TridiagonalOperator& op)
+                : TridiagonalOperatorCommon(op.belowDiagonal, op.diagonal, 
+                    op.aboveDiagonal) {
+                        theLowerBC = op.theLowerBC;
+                        theHigherBC = op.theHigherBC;
+                }
+                TridiagonalOperator& operator=(const TridiagonalOperator& op) {
+                    belowDiagonal = op.belowDiagonal;
+                    diagonal = op.diagonal;
+                    aboveDiagonal = op.aboveDiagonal;
+                    theLowerBC = op.theLowerBC;
+                    theHigherBC = op.theHigherBC;
+                    theSize = op.theSize;
+                    return *this;
+                }
+            #endif
         };
 
         // time-dependent
