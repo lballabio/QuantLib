@@ -5,9 +5,9 @@ dnl This is QuantLib's configure.in
 dnl Process this file with autoconf to produce a configure script.
 dnl
 
-AC_INIT(Include/qldefines.h)
+AC_INIT(Include/qldefines.hpp)
 
-AM_CONFIG_HEADER(Include/config.h)
+AM_CONFIG_HEADER(Include/config.hpp)
 AM_INIT_AUTOMAKE(QuantLib, 0.1.1)
 
 dnl Check for programs
@@ -29,13 +29,13 @@ AM_CONDITIONAL(DOXYGEN_FOUND, test x$DOXYGEN != xnotfound)
 
 dnl Check for Libraries
 dnl Testing for Python 1.5
-AC_CHECK_LIB(python1.5,PyArg_Parse, 
+AC_CHECK_LIB(python1.5,PyArg_Parse,
 				[PYLIB=-lpython1.5
 				 py15_found=yes]
-	) 
+	)
 
 dnl Testing for Python 2.0
-AC_CHECK_LIB(python2.0,PyArg_Parse, 
+AC_CHECK_LIB(python2.0,PyArg_Parse,
 				[PYLIB=-lpython2.0
 				 py20_found=yes]
 	)
@@ -78,20 +78,20 @@ using namespace std;
   ql_string_ok=yes
 ],[
   ql_string_ok=no
-  config_error=yes 
+  config_error=yes
   AC_ERROR(C++ compilers string support does not work)
 ])
 AC_MSG_RESULT([$ql_string_ok])
 
-AC_CHECK_HEADERS(math.h cmath ctype.h cctype ctime time.h)
-AC_CHECK_HEADERS(limits climits limits.h float.h)
+AC_CHECK_HEADERS(math.hpp cmath ctype.hpp cctype ctime time.hpp)
+AC_CHECK_HEADERS(limits climits limits.hpp float.hpp)
 
 if test $ac_cv_header_cmath = yes ; then
   ql_math=cmath
 elif test $ac_cv_header_math_h = yes ; then
-  ql_math=math.h
+  ql_math=math.hpp
 else
-  AC_ERROR(Could not find cmath nor math.h)
+  AC_ERROR(Could not find cmath nor math.hpp)
 fi
 QL_CHECK_FUNCTION([sqrt],[$ql_math],[2])
 QL_CHECK_FUNCTION([fabs],[$ql_math],[2])
@@ -105,9 +105,9 @@ QL_CHECK_FUNCTION([modf],[$ql_math],[2,&x])
 if test $ac_cv_header_cctype = yes ; then
   ql_ctype=cctype
 elif test $ac_cv_header_ctype_h = yes ; then
-  ql_ctype=ctype.h
+  ql_ctype=ctype.hpp
 else
-  AC_ERROR(Could not find cctype nor ctype.h)
+  AC_ERROR(Could not find cctype nor ctype.hpp)
 fi
 QL_CHECK_FUNCTION([toupper],[$ql_ctype],['c'])
 QL_CHECK_FUNCTION([strlen],[$ql_ctype],["foo"])
@@ -116,9 +116,9 @@ QL_CHECK_FUNCTION([tolower],[$ql_ctype],['c'])
 if test $ac_cv_header_ctime = yes ; then
   ql_time=ctime
 elif test $ac_cv_header_time_h = yes ; then
-  ql_time=time.h
+  ql_time=time.hpp
 else
-  AC_ERROR(Could not find ctime nor time.h)
+  AC_ERROR(Could not find ctime nor time.hpp)
 fi
 QL_CHECK_FUNCTION([clock],[$ql_time],[])
 
