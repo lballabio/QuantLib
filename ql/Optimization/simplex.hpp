@@ -24,8 +24,8 @@
  * Chapter 10
  */
 
-#ifndef quantlib_optimization_simplex_h
-#define quantlib_optimization_simplex_h
+#ifndef quantlib_optimization_simplex_hpp
+#define quantlib_optimization_simplex_hpp
 
 #include <ql/Optimization/problem.hpp>
 #include <vector>
@@ -38,13 +38,13 @@ namespace QuantLib {
         /*! Constructor taking as input the characteristic length and
             tolerance
         */
-        Simplex(Real lambda, Real tol) 
+        Simplex(Real lambda, Real tol)
         : lambda_(lambda), tol_(tol) {}
         virtual ~Simplex() {}
 
         virtual void minimize(const Problem& P) const;
       private:
-        Real extrapolate(const Problem& P, Size iHighest, 
+        Real extrapolate(const Problem& P, Size iHighest,
                          Real& factor) const;
         Real lambda_;
         Real tol_;

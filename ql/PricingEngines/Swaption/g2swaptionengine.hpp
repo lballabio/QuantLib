@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file g2.hpp
+/*! \file g2swaptionengine.hpp
     \brief Swaption pricing engine for two-factor additive Gaussian Model G2++
 */
 
-#ifndef quantlib_pricers_G2_swaption_h
-#define quantlib_pricers_G2_swaption_h
+#ifndef quantlib_pricers_G2_swaption_hpp
+#define quantlib_pricers_G2_swaption_hpp
 
 #include <ql/Instruments/swaption.hpp>
 #include <ql/PricingEngines/blackmodel.hpp>

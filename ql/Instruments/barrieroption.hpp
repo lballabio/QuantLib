@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file barrieroption.hpp
+/*! \file Instruments/barrieroption.hpp
     \brief Barrier option on a single asset
 */
 
@@ -69,7 +69,7 @@ namespace QuantLib {
     };
 
     //! %Barrier engine base class
-    class BarrierOption::engine 
+    class BarrierOption::engine
         : public GenericEngine<BarrierOption::arguments,
                                BarrierOption::results> {};
 

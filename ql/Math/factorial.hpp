@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file factorial.hpp
+/*! \file Math/factorial.hpp
     \brief Factorial numbers calculator
 */
 
-#ifndef quantlib_factorial_h
-#define quantlib_factorial_h
+#ifndef quantlib_factorial_hpp
+#define quantlib_factorial_hpp
 
 #include <ql/types.hpp>
 

@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file money.hpp
+/*! \file ql/money.hpp
     \brief cash amount in a given currency
 */
 

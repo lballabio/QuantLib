@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file europeanoption.hpp
+/*! \file Instruments/europeanoption.hpp
     \brief European option on a single asset
 */
 

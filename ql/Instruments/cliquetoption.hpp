@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cliquetoption.hpp
+/*! \file Instruments/cliquetoption.hpp
     \brief Cliquet option
 */
 
@@ -69,7 +69,7 @@ namespace QuantLib {
     };
 
     //! Cliquet engine base class
-    class CliquetOption::engine 
+    class CliquetOption::engine
         : public GenericEngine<CliquetOption::arguments,
                                CliquetOption::results> {};
 

@@ -19,8 +19,8 @@
     \brief Sobol low-discrepancy sequence generator
 */
 
-#ifndef quantlib_sobol_ld_rsg_h
-#define quantlib_sobol_ld_rsg_h
+#ifndef quantlib_sobol_ld_rsg_hpp
+#define quantlib_sobol_ld_rsg_hpp
 
 #include <ql/Math/array.hpp>
 #include <ql/MonteCarlo/sample.hpp>
@@ -29,58 +29,65 @@
 namespace QuantLib {
 
     //! Sobol low-discrepancy sequence generator
-    /*! A Gray code counter and bitwise operations are used for very fast
-        sequence generation.
+    /*! A Gray code counter and bitwise operations are used for very
+        fast sequence generation.
 
-        The implementation relies on primitive polynomials modulo two from the
-        book "Monte Carlo Methods in Finance" by Peter Jäckel.
+        The implementation relies on primitive polynomials modulo two
+        from the book "Monte Carlo Methods in Finance" by Peter
+        Jäckel.
 
-        21 200 primitive polynomials modulo two are provided by default in
-        QuantLib. Jäckel has calculated 8 129 334 polynomials, also available in
-        a different file that can be downloaded from http://quantlib.org. If you
-        need that many dimensions you must replace the default version of the
+        21 200 primitive polynomials modulo two are provided by
+        default in QuantLib. Jäckel has calculated 8 129 334
+        polynomials, also available in a different file that can be
+        downloaded from http://quantlib.org. If you need that many
+        dimensions you must replace the default version of the
         primitivepolynomials.c file with the extended one.
 
-        The choice of initialization numbers is crucial for the homogeneity
-        properties of the sequence. Sobol defines two uniformity properties:
-        Property A and Property A'.
+        The choice of initialization numbers is crucial for the
+        homogeneity properties of the sequence. Sobol defines two
+        uniformity properties: Property A and Property A'.
 
-        Bratley and Fox published coefficients of the free direction integers up
-        to dimension 40, crediting unpublished work of Sobol' and Levitan. See
-        Bratley, P., Fox, B.L. (1988) "Algorithm 659: Implementing Sobol's
-        quasirandom sequence generator," ACM Transactions on Mathematical
-        Software 14:88-100. These values satisfy Property A for d<=20 and
-        d = 23, 31, 33, 34, 37; Property A' holds for d<=6.
+        Bratley and Fox published coefficients of the free direction
+        integers up to dimension 40, crediting unpublished work of
+        Sobol' and Levitan. See Bratley, P., Fox, B.L. (1988)
+        "Algorithm 659: Implementing Sobol's quasirandom sequence
+        generator," ACM Transactions on Mathematical Software
+        14:88-100. These values satisfy Property A for d<=20 and d =
+        23, 31, 33, 34, 37; Property A' holds for d<=6.
 
-        Jäckel provides in his book (section 8.3) initialization numbers up to
-        dimension 32. Coefficients for d<=8 are the same as in Bradley-Fox, so
-        Property A' holds for d<=6 but Property A holds for d<=32.
+        Jäckel provides in his book (section 8.3) initialization
+        numbers up to dimension 32. Coefficients for d<=8 are the same
+        as in Bradley-Fox, so Property A' holds for d<=6 but Property
+        A holds for d<=32.
 
-        The unit initialization numbers suggested in "Numerical Recipes in C",
-        2nd edition, by Press, Teukolsky, Vetterling, and Flannery (section 7.7)
-        fail the test for Property A even for low dimensions.
+        The unit initialization numbers suggested in "Numerical
+        Recipes in C", 2nd edition, by Press, Teukolsky, Vetterling,
+        and Flannery (section 7.7) fail the test for Property A even
+        for low dimensions.
 
         The implementation of Lemieux, Cieslak, and Luttmer includes
-        coefficients of the free direction integers up to dimension 360.
-        Coefficients for d<=40 are the same as in Bradley-Fox. For dimension
-        40<d<=360 the coefficients have been calculated as optimal values based
-        on the "resolution" criterion. See "RandQMC user's guide - A package for
-        randomized quasi-Monte Carlo methods in C," by C. Lemieux, M. Cieslak,
-        and K. Luttmer, version January 13 2004, and references cited there
-        (http://www.math.ucalgary.ca/~lemieux/randqmc.html).
-        The values up to d<=360 has been provided by Christiane Lemieux, private
-        communication, September 2004.
+        coefficients of the free direction integers up to dimension
+        360.  Coefficients for d<=40 are the same as in
+        Bradley-Fox. For dimension 40<d<=360 the coefficients have
+        been calculated as optimal values based on the "resolution"
+        criterion. See "RandQMC user's guide - A package for
+        randomized quasi-Monte Carlo methods in C," by C. Lemieux,
+        M. Cieslak, and K. Luttmer, version January 13 2004, and
+        references cited there
+        (http://www.math.ucalgary.ca/~lemieux/randqmc.html).  The
+        values up to d<=360 has been provided by Christiane Lemieux,
+        private communication, September 2004.
 
-        For more info on Sobol' sequences see also "Monte Carlo Methods in
-        Financial Engineering," by P. Glasserman, 2004, Springer, section 5.2.3
-
+        For more info on Sobol' sequences see also "Monte Carlo
+        Methods in Financial Engineering," by P. Glasserman, 2004,
+        Springer, section 5.2.3
     */
     class SobolRsg {
       public:
         typedef Sample<Array> sample_type;
         enum DirectionIntegers {
             Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux };
-        //! \pre dimensionality must be <= PPMT_MAX_DIM
+        /*! \pre dimensionality must be <= PPMT_MAX_DIM */
         SobolRsg(Size dimensionality,
                  unsigned long seed = 0,
                  DirectionIntegers directionIntegers = Jaeckel);

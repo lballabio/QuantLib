@@ -19,8 +19,8 @@
     \brief Least square cost function
 */
 
-#ifndef quantlib_optimization_least_square_h
-#define quantlib_optimization_least_square_h
+#ifndef quantlib_least_square_hpp
+#define quantlib_least_square_hpp
 
 #include <ql/Math/matrix.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
@@ -31,16 +31,17 @@ namespace QuantLib {
     class LeastSquareProblem {
       public:
         //! size of the problem ie size of target vector
-        virtual Size size () = 0;
-        //! compute the target vector and the values of the fonction to fit
+        virtual Size size() = 0;
+        //! compute the target vector and the values of the function to fit
         virtual void targetAndValue(const Array& x, Array& target,
                                     Array& fct2fit) = 0;
-        //! compute the target vector, the values of the fonction to fit 
-        //! and the matrix of derivatives
-        virtual void targetValueAndGradient (const Array& x,
-                                             Matrix& grad_fct2fit, 
-                                             Array& target, 
-                                             Array& fct2fit) = 0;
+        /*! compute the target vector, the values of the function to fit
+            and the matrix of derivatives
+        */
+        virtual void targetValueAndGradient(const Array& x,
+                                            Matrix& grad_fct2fit,
+                                            Array& target,
+                                            Array& fct2fit) = 0;
     };
 
     //! Cost function for least-square problems
@@ -50,17 +51,17 @@ namespace QuantLib {
     class LeastSquareFunction : public CostFunction {
       public:
         //! Default constructor
-        LeastSquareFunction (LeastSquareProblem& lsp) : lsp_(lsp) {}
+        LeastSquareFunction(LeastSquareProblem& lsp) : lsp_(lsp) {}
         //! Destructor
-        virtual ~LeastSquareFunction () {}
+        virtual ~LeastSquareFunction() {}
 
         //! compute value of the least square function
-        virtual Real value (const Array& x) const;
+        virtual Real value(const Array& x) const;
         //! compute vector of derivatives of the least square function
-        virtual void gradient (Array& grad_f, const Array& x) const;
+        virtual void gradient(Array& grad_f, const Array& x) const;
         //! compute value and gradient of the least square function
-        virtual Real valueAndGradient (Array& grad_f,
-                                       const Array& x) const;
+        virtual Real valueAndGradient(Array& grad_f,
+                                      const Array& x) const;
       protected:
         //! least square problem
         LeastSquareProblem &lsp_;
@@ -73,14 +74,14 @@ namespace QuantLib {
         \f[ min \{ r(x) : x in R^n \} \f]
 
         where \f$ r(x) = |f(x)|^2 \f$ is the Euclidean norm of \f$
-        f(x) \f$ for some vector-valued function \f$ f \f$ from 
-        \f$ R^n \f$ to \f$ R^m \f$, 
+        f(x) \f$ for some vector-valued function \f$ f \f$ from
+        \f$ R^n \f$ to \f$ R^m \f$,
         \f[ f = (f_1, ..., f_m) \f]
         with \f$ f_i(x) = b_i - \phi(x,t_i) \f$ where \f$ b \f$ is the
         vector of target data and \f$ phi \f$ is a scalar function.
 
-        Assuming the differentiability of \f$ f \f$, the gradient of 
-        \f$ r \d$ is defined by
+        Assuming the differentiability of \f$ f \f$, the gradient of
+        \f$ r \f$ is defined by
         \f[ grad r(x) = f'(x)^t.f(x) \f]
     */
     class NonLinearLeastSquare {
@@ -95,7 +96,7 @@ namespace QuantLib {
                                     Size maxiter,
                                     boost::shared_ptr<OptimizationMethod> om);
         //! Destructor
-        inline ~NonLinearLeastSquare () {}
+        inline ~NonLinearLeastSquare() {}
 
         //! Solve least square problem using numerix solver
         inline Array& perform(LeastSquareProblem& lsProblem);
@@ -105,7 +106,7 @@ namespace QuantLib {
         }
 
         //! return the results
-        inline Array& results () { return results_; }
+        inline Array& results() { return results_; }
 
         //! return the least square residual norm
         inline Real residualNorm() { return resnorm_; }
@@ -138,7 +139,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Real LeastSquareFunction::value (const Array & x) const {
+    inline Real LeastSquareFunction::value(const Array & x) const {
         // size of target and function to fit vectors
         Array target(lsp_.size()), fct2fit(lsp_.size());
         // compute its values
@@ -149,8 +150,8 @@ namespace QuantLib {
         return DotProduct(diff, diff);
     }
 
-    inline void LeastSquareFunction::gradient (Array& grad_f,
-                                               const Array& x) const {
+    inline void LeastSquareFunction::gradient(Array& grad_f,
+                                              const Array& x) const {
         // size of target and function to fit vectors
         Array target (lsp_.size ()), fct2fit (lsp_.size ());
         // size of gradient matrix
@@ -163,7 +164,7 @@ namespace QuantLib {
         grad_f = -2.0*(transpose(grad_fct2fit)*diff);
     }
 
-    inline Real LeastSquareFunction::valueAndGradient(Array& grad_f, 
+    inline Real LeastSquareFunction::valueAndGradient(Array& grad_f,
                                                       const Array& x) const {
         // size of target and function to fit vectors
         Array target(lsp_.size()), fct2fit(lsp_.size());
@@ -179,23 +180,23 @@ namespace QuantLib {
         return DotProduct(diff, diff);
     }
 
-    inline NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c, 
-                                                      Real accuracy, 
+    inline NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c,
+                                                      Real accuracy,
                                                       Size maxiter)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (boost::shared_ptr<OptimizationMethod>(new ConjugateGradient())), 
+      om_ (boost::shared_ptr<OptimizationMethod>(new ConjugateGradient())),
       c_(c)
     {}
 
     inline NonLinearLeastSquare::NonLinearLeastSquare(
-                                     Constraint& c, 
-                                     Real accuracy, 
-                                     Size maxiter, 
+                                     Constraint& c,
+                                     Real accuracy,
+                                     Size maxiter,
                                      boost::shared_ptr<OptimizationMethod> om)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
       om_ (om), c_(c) {}
 
-    inline 
+    inline
     Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {
         Real eps = accuracy_;
 
