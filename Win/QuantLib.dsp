@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob2 /I "..\Sources" /I "..\Sources\PDE" /I "..\Sources\Operators" /I "..\Sources\Solvers1D" /I "..\Sources\Patterns" /I "..\Sources\Pricers" /I "..\Sources\Math" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "QL_RELEASE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob2 /I "..\Include" /I "..\Sources\Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "QL_RELEASE" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\Sources" /I "..\Sources\PDE" /I "..\Sources\Operators" /I "..\Sources\Solvers1D" /I "..\Sources\Patterns" /I "..\Sources\Pricers" /I "..\Sources\Math" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -200,15 +200,7 @@ SOURCE=..\Sources\Operators\blackscholesmerton.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Operators\blackscholesmerton.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Sources\Operators\tridiagonaloperator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\Operators\tridiagonaloperator.h
 # End Source File
 # End Group
 # Begin Group "Pricers"
@@ -240,10 +232,6 @@ SOURCE=..\Sources\Pricers\bsmnumericaloption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\bsmnumericaloption.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Sources\Pricers\bsmoption.cpp
 # End Source File
 # Begin Source File
@@ -265,10 +253,6 @@ SOURCE=..\Sources\Solvers1D\bisection.h
 # Begin Source File
 
 SOURCE=..\Sources\Solvers1D\brent.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\Solvers1D\brent.h
 # End Source File
 # Begin Source File
 
@@ -318,10 +302,6 @@ SOURCE=..\Sources\Solvers1D\secant.h
 
 SOURCE=..\Sources\Math\normaldistribution.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\Sources\Math\normaldistribution.h
-# End Source File
 # End Group
 # Begin Group "Currencies"
 
@@ -355,14 +335,6 @@ SOURCE=..\Sources\Currencies\usd.h
 SOURCE=..\Sources\Instruments\stock.h
 # End Source File
 # End Group
-# Begin Group "Patterns"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\Sources\Patterns\observable.h
-# End Source File
-# End Group
 # Begin Group "PDE"
 
 # PROP Default_Filter ""
@@ -372,7 +344,31 @@ SOURCE=..\Sources\PDE\backwardeuler.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\PDE\evolver.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\PDE\forwardeuler.h
+# End Source File
+# End Group
+# Begin Group "Include2"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Sources\Operators\blackscholesmerton.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\PDE\boundarycondition.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Solvers1D\brent.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Pricers\bsmnumericaloption.h
 # End Source File
 # Begin Source File
 
@@ -380,19 +376,19 @@ SOURCE=..\Sources\PDE\cranknicolson.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\PDE\evolver.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Sources\PDE\finitedifferencemodel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\PDE\forwardeuler.h
+SOURCE=..\Sources\PDE\identity.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\PDE\identity.h
+SOURCE=..\Sources\Math\normaldistribution.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Patterns\observable.h
 # End Source File
 # Begin Source File
 
@@ -406,22 +402,14 @@ SOURCE=..\Sources\PDE\operatortraits.h
 
 SOURCE=..\Sources\PDE\stepcondition.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Operators\tridiagonaloperator.h
+# End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\Sources\array.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Sources\calendar.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\calendar.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\currency.h
 # End Source File
 # Begin Source File
 
@@ -429,63 +417,7 @@ SOURCE=..\Sources\dataformatters.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\dataformatters.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Sources\date.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\date.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\daycounter.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\deposit.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\discountfactor.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\expressiontemplates.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\forwardvolsurface.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\handle.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\instrument.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\null.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\options.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\qldefines.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\qlerrors.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\rate.h
 # End Source File
 # Begin Source File
 
@@ -493,27 +425,99 @@ SOURCE=..\Sources\solver1d.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\solver1d.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\spread.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\Sources\statistics.cpp
 # End Source File
+# End Group
+# Begin Group "Include"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Sources\statistics.h
+SOURCE=..\Include\array.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\swaptionvolsurface.h
+SOURCE=..\Include\calendar.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\termstructure.h
+SOURCE=..\Include\currency.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\dataformatters.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\date.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\daycounter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\deposit.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\discountfactor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\expressiontemplates.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\forwardvolsurface.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\handle.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\instrument.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\null.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\options.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\qldefines.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\qlerrors.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\rate.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\solver1d.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\spread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\statistics.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\swaptionvolsurface.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\termstructure.h
 # End Source File
 # End Group
 # End Target
