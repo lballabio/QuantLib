@@ -11,7 +11,7 @@
     Caption "QuantLib Light - Setup"
     #do not change the name below
     OutFile "..\QuantLib-light-inst.exe"
-    ComponentText "This will install QuantLib Light on your computer. A more complete version including documentation, examples, source code, etc. can be downloaded from http://quantlib.org"
+    ComponentText "This will install QuantLib Light on your computer.$\n A more complete version including documentation, examples, source code, etc. can be downloaded from http://quantlib.org"
 !else
     Name "QuantLib"
     Caption "QuantLib - Setup"
@@ -19,10 +19,10 @@
     OutFile "..\QuantLib-full-inst.exe"
 
     InstType "Full (w/ Source Code)"
-    InstType Normal
+    InstType Typical
     InstType Minimal
 
-    ComponentText "This will install QuantLib on your computer:"
+    ComponentText "This will install QuantLib on your computer"
 !endif
 
 SilentInstall normal
@@ -40,20 +40,17 @@ ShowInstDetails hide
 SetDateSave on
 
 # INSTALLATION EXECUTION COMMANDS
+
 Section "-QuantLib"
 SectionIn 1 2 3
-    CreateDirectory "$SMPROGRAMS\QuantLib"
+#    CreateDirectory "$SMPROGRAMS\QuantLib"
     SetOutPath $INSTDIR
     File "Authors.txt"
     File "Contributors.txt"
     File "History.txt"
-    File "README.txt"
     File "LICENSE.txt"
     File "News.txt"
     File "TODO.txt"
-# it doesn't work
-#    CreateShortCut "$SMPROGRAMS\QuantLib\README.txt.lnk" \
-#                 "$INSTDIR\README.txt"
 
     SetOutPath $INSTDIR\lib\Win32\VisualStudio
     File "lib\Win32\VisualStudio\QuantLib.lib"
@@ -115,16 +112,36 @@ SectionIn 1 2 3
     WriteRegStr HKEY_CURRENT_USER \
                 "Environment" \
                 "QL_DIR" "$INSTDIR"
-    CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" \
+    CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall QuantLib.lnk" \
                    "$INSTDIR\QuantLibUninstall.exe" \
                    "" "$INSTDIR\QuantLibUninstall.exe" 0
 SectionEnd
 
 !ifndef LIGHT
 
+#Function .onInit
+#  SetOutPath $TEMP
+#  File /oname=spltmp.dat "Docs\images\QL-largish.bmp"
+#  ReadRegStr $0 HKLM SOFTWARE\NSIS "Default"
+#  File /oname=spltmp.exe $0\splash.exe
+#  ExecWait '"$TEMP\spltmp.exe" 2000 $HWNDPARENT spltmp.dat'
+#  Delete $TEMP\spltmp.exe
+#  Delete $TEMP\spltmp.dat
+#FunctionEnd
+
+#it doesn't work
+#Function .onInstSuccess
+#  MessageBox MB_YESNO|MB_ICONQUESTION \
+#             "Setup has completed. View Readme.txt now?" \
+#             IDNO NoReadme
+#    ExecShell open '$INSTDIR\Readme.txt'
+#  NoReadme:
+#FunctionEnd
+
 Section "Source Code"
-SectionIn 2
+SectionIn 1
   SetOutPath $INSTDIR
+  File "README.txt"
   File ChangeLog.txt
   File makefile.mak
   File QuantLib.dep
@@ -181,10 +198,11 @@ SectionIn 2
   File /r "Sources\TermStructures\*.cpp"
   File /r "Sources\TermStructures\makefile.mak"
 
-  IfFileExists $SMPROGRAMS\QuantLib 0 NoSourceShortCuts
-    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
-                   "$INSTDIR\QuantLib.dsw"
-  NoSourceShortCuts:
+  CreateShortCut "$SMPROGRAMS\QuantLib\README.txt.lnk" \
+                 "$INSTDIR\README.txt"
+  CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
+                 "$INSTDIR\QuantLib.dsw"
+
 SectionEnd
 
 Section "Examples"
@@ -229,7 +247,7 @@ SectionIn 1 2
 SectionEnd
 
 Section "PDF documentation"
-SectionIn 2
+SectionIn 1
   SetOutPath "$INSTDIR\Docs"
   File "Docs\latex\*refman.pdf"
   CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (PDF).lnk" \
@@ -237,33 +255,32 @@ SectionIn 2
 SectionEnd
 
 Section "PS documentation"
-SectionIn 2
+SectionIn 1
   SetOutPath "$INSTDIR\Docs"
   File "Docs\latex\*refman.ps"
   CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (PS).lnk" \
                  "$INSTDIR\Docs\refman.ps"
 SectionEnd
 
-!endif
 
 Section "Start Menu Group"
 SectionIn 1 2 3
   SetOutPath $SMPROGRAMS\QuantLib
+
 #it doesn't work
 #  CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib Home Page.lnk" \
 #                 "http://quantlib.org/index.html"
+#this works
+  WriteINIStr "$SMPROGRAMS\QuantLib\QuantLib Home Page.url" \
+              "InternetShortcut" "URL" "http://quantlib.org/"
+
   CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib Directory.lnk" \
                  "$INSTDIR"
 SectionEnd
 
-#it doesn't work
-#Function .onInstSuccess
-#  MessageBox MB_YESNO|MB_ICONQUESTION \
-#             "Setup has completed. View Readme.txt now?" \
-#             IDNO NoReadme
-#    ExecShell open '$INSTDIR\Readme.txt'
-#  NoReadme:
-#FunctionEnd
+!endif
+
+
 
 
 Section "Uninstall"
