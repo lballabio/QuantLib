@@ -21,6 +21,7 @@ BCC_LIBS            = $(MAKEDIR)\..\lib
 
 # Object files
 QL_TESTS = \
+    americanoption.obj$(_D) \
     asianoptions.obj$(_D) \
     barrieroption.obj$(_D) \
     binarybarrieroption.obj$(_D) \

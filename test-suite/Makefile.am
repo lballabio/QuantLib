@@ -1,5 +1,6 @@
 
 QL_TESTS = \
+           americanoption.hpp americanoption.cpp \
            asianoptions.hpp asianoptions.cpp \
            barrieroption.hpp barrieroption.cpp \
            binarybarrieroption.hpp binarybarrieroption.cpp \
