@@ -1,4 +1,9 @@
-/*
+/*! \file config.ansi.hpp
+    \brief macro definitions according to ANSI/ISO C++ standard
+
+    The automatic configuration process on Linux or tailored configuration 
+    files on other platforms might define these macros otherwise in order
+    to overcome a compiler's lack of compliance with the standard.
 */
 
 // $Id$

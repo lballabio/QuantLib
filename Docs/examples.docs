@@ -8,7 +8,7 @@
     while testing call-put parity.
 */
 
-/*! \example svapvaluation.cpp
-    This example shows how to set up a Term Structure and then price a simple
+/*! \example swapvaluation.cpp
+    This example shows how to set up a term structure and price a simple
     swap.
 */
