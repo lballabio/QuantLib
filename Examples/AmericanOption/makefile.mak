@@ -10,7 +10,6 @@
 !endif
 
 # Directories
-BOOST_INCLUDE_DIR   = "$(BOOST_INCLUDE_DIR)"
 QL_INCLUDE_DIR      = "$(QL_DIR)"
 QL_LIB_DIR          = "$(QL_DIR)\lib\Win32\Borland"
 
@@ -18,7 +17,6 @@ QL_LIB_DIR          = "$(QL_DIR)\lib\Win32\Borland"
 
 # Options
 CC_OPTS = -vi- -w-8057 \
-    -I$(BOOST_INCLUDE_DIR) \
     -I$(QL_INCLUDE_DIR)
 
 !ifdef DEBUG
@@ -32,10 +30,8 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 
 # Primary target:
 AmericanOption$(_D).exe: AmericanOption.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -o"AmericanOption$(_D).obj" -eAmericanOption$(_D).exe AmericanOption.cpp QuantLib$(_D).lib
-
-
-
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -o"AmericanOption$(_D).obj" \
+    -eAmericanOption$(_D).exe AmericanOption.cpp QuantLib$(_D).lib
 
 
 # Clean up

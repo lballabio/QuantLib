@@ -10,7 +10,6 @@
 !endif
 
 # Directories
-BOOST_INCLUDE_DIR   = "$(BOOST_INCLUDE_DIR)"
 QL_INCLUDE_DIR   = "$(QL_DIR)"
 QL_LIB_DIR       = "$(QL_DIR)\lib\Win32\Borland"
 
@@ -18,7 +17,6 @@ QL_LIB_DIR       = "$(QL_DIR)\lib\Win32\Borland"
 
 # Options
 CC_OPTS = -vi- -w-8057 \
-    -I$(BOOST_INCLUDE_DIR) \
     -I$(QL_INCLUDE_DIR)
 
 !ifdef DEBUG

@@ -8,7 +8,6 @@
 !endif
 
 # Directories
-BOOST_INCLUDE_DIR   = "$(BOOST_INCLUDE_DIR)"
 INCLUDE_DIR    = ..
 OUTPUT_DIR     = ..\lib\Win32\Borland
 
@@ -95,7 +94,6 @@ TLIB      = tlib
 
 # Options
 CC_OPTS = -vi- -q -c -tWM \
-    -I$(BOOST_INCLUDE_DIR) \
     -I$(INCLUDE_DIR)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG

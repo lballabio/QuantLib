@@ -11,8 +11,6 @@
 !endif
 
 # Directories
-BOOST_INCLUDE_DIR = "$(BOOST_INCLUDE_DIR)"
-BOOST_LIB_DIR     = "$(BOOST_LIB_DIR)"
 QL_INCLUDE_DIR    = "$(QL_DIR)"
 QL_LIB_DIR        = "$(QL_DIR)\lib\Win32\Borland"
 
@@ -57,8 +55,8 @@ CC        = bcc32
 
 # Options
 CC_OPTS = -vi- \
-    -I$(BOOST_INCLUDE_DIR) \
     -I$(QL_INCLUDE_DIR)
+
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !else
@@ -77,8 +75,7 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 
 # Primary target:
 test-suite$(_D).exe: $(QL_TESTS)
-    $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BOOST_LIB_DIR) \
-    -etest-suite$(_D).exe $(QL_TESTS) \
+    $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -etest-suite$(_D).exe $(QL_TESTS) \
     QuantLib$(_D).lib libboost_unit_test_framework-bcb-s$(_bc5D)-1_31.lib
 
 # Clean up

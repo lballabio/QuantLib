@@ -8,7 +8,6 @@
 !endif
 
 # Directories
-BOOST_INCLUDE_DIR   = "$(BOOST_INCLUDE_DIR)"
 INCLUDE_DIR    = ..\..\..
 
 
@@ -22,7 +21,6 @@ TLIB      = tlib
 
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
-    -I$(BOOST_INCLUDE_DIR) \
     -I$(INCLUDE_DIR)
 
 !ifdef DEBUG
