@@ -93,7 +93,7 @@ $(QUANTLIB_DLL):: quantlib_wrap$(_D).obj \
     if exist QuantLibc.ild     del QuantLibc.ild
     if exist QuantLibc_d.ild   del QuantLibc_d.ild
     if exist QuantLibc.ilf     del QuantLibc.ilf
-    if exist QuantLibc_d.ilf   del QuantKitc_d.ilf
+    if exist QuantLibc_d.ilf   del QuantLibc_d.ilf
     if exist QuantLibc.ils     del QuantLibc.ils
     if exist QuantLibc_d.ils   del QuantLibc_d.ils
     if exist QuantLibc.tds del QuantLibc.tds
