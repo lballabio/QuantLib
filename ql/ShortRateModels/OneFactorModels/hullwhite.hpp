@@ -109,7 +109,7 @@ namespace QuantLib {
                 virtual ~HullWhiteImpl() {}
 
                 double value(const Array& params, Time t) const {
-                    double forwardRate = termStructure_->forward(t);
+                    double forwardRate = termStructure_->instantaneousForward(t);
                     double temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
                     return (forwardRate + 0.5*temp*temp);
                 }

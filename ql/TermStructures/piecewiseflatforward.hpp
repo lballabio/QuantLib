@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -60,24 +59,25 @@ namespace QuantLib {
           public:
             // constructor
             PiecewiseFlatForward(
-                Currency currency,
-                const DayCounter& dayCounter,
-                const Date& todaysDate,
-                const Date& settlementDate,
-                const std::vector<Handle<RateHelper> >& instruments,
-                double accuracy=1.0e-12);
+                         const Date& todaysDate,
+                         const Date& settlementDate,
+                         const std::vector<Handle<RateHelper> >& instruments,
+                         const DayCounter& dayCounter,
+                         double accuracy=1.0e-12);
+           PiecewiseFlatForward(
+                         const Date& todaysDate,
+                         const std::vector<Date>& dates,
+                         const std::vector<Rate>& forwards,
+                         const DayCounter& dayCounter);
             //! \name TermStructure interface
             //@{
-            Currency currency() const;
             DayCounter dayCounter() const;
-            Date todaysDate() const;
+            Date todaysDate() const {return todaysDate_; }
             Date settlementDate() const;
             const std::vector<Date>& dates() const;
             Date maxDate() const;
-            Date minDate() const;
             const std::vector<Time>& times() const;
             Time maxTime() const;
-            Time minTime() const;
             //@}
             //! \name Observer interface
             //@{
@@ -113,10 +113,8 @@ namespace QuantLib {
             int referenceNode(Time t, bool extrapolate) const;
             void bootstrap() const;
             // data members
-            Currency currency_;
             DayCounter dayCounter_;
-            Date todaysDate_;
-            Date settlementDate_;
+            Date todaysDate_, settlementDate_;
             std::vector<Handle<RateHelper> > instruments_;
             mutable bool needsBootstrap_;
             mutable std::vector<Time> times_;
@@ -128,16 +126,8 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Currency PiecewiseFlatForward::currency() const {
-            return currency_;
-        }
-
         inline DayCounter PiecewiseFlatForward::dayCounter() const {
             return dayCounter_;
-        }
-
-        inline Date PiecewiseFlatForward::todaysDate() const {
-            return todaysDate_;
         }
 
         inline Date PiecewiseFlatForward::settlementDate() const {
@@ -154,10 +144,6 @@ namespace QuantLib {
             return dates_.back();
         }
 
-        inline Date PiecewiseFlatForward::minDate() const {
-            return settlementDate_;
-        }
-
         inline const std::vector<Time>& PiecewiseFlatForward::times() const {
             if (needsBootstrap_) bootstrap();
             return times_;
@@ -168,10 +154,6 @@ namespace QuantLib {
             return times_.back();
         }
 
-        inline Time PiecewiseFlatForward::minTime() const {
-            return 0.0;
-        }
-
         inline void PiecewiseFlatForward::update() {
             needsBootstrap_ = true;
             notifyObservers();
@@ -180,6 +162,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

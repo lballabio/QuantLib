@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -38,23 +37,19 @@ namespace QuantLib {
                             public Patterns::Observer {
           public:
             // constructors
-            FlatForward(Currency currency,
-                const DayCounter& dayCounter,
-                const Date& todaysDate, const Date& settlementDate,
-                Rate forward);
-            FlatForward(Currency currency,
-                const DayCounter& dayCounter,
-                const Date& todaysDate, const Date& settlementDate,
-                const RelinkableHandle<MarketElement>& forward);
+            FlatForward(const Date& todaysDate,
+                        const Date& settlementDate,
+                        Rate forward,
+                        const DayCounter& dayCounter);
+            FlatForward(const Date& todaysDate,
+                        const Date& settlementDate,
+                        const RelinkableHandle<MarketElement>& forward,
+                        const DayCounter& dayCounter);
             // inspectors
-            Currency currency() const;
             DayCounter dayCounter() const;
-            Date todaysDate() const;
+            Date todaysDate() const {return todaysDate_; }
             Date settlementDate() const;
             Date maxDate() const;
-            Date minDate() const;
-            Time maxTime() const;
-            Time minTime() const;
             // Observer interface
             void update();
           protected:
@@ -63,45 +58,31 @@ namespace QuantLib {
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
           private:
-            Currency currency_;
             DayCounter dayCounter_;
-            Date todaysDate_;
             Date settlementDate_;
             RelinkableHandle<MarketElement> forward_;
         };
 
         // inline definitions
 
-        inline FlatForward::FlatForward(Currency currency,
-            const DayCounter& dayCounter, const Date& todaysDate,
-            const Date& settlementDate, Rate forward)
-        : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), settlementDate_(settlementDate) {
+        inline FlatForward::FlatForward(const Date& settlementDate,
+            Rate forward, const DayCounter& dayCounter)
+        : settlementDate_(settlementDate), dayCounter_(dayCounter) {
             forward_.linkTo(
                 Handle<MarketElement>(new SimpleMarketElement(forward)));
             registerWith(forward_);
         }
 
-        inline FlatForward::FlatForward(Currency currency,
-            const DayCounter& dayCounter, const Date& todaysDate,
-            const Date& settlementDate, 
-            const RelinkableHandle<MarketElement>& forward)
-        : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), settlementDate_(settlementDate),
-          forward_(forward) {
+        inline FlatForward::FlatForward(const Date& settlementDate,
+            const RelinkableHandle<MarketElement>& forward,
+            const DayCounter& dayCounter)
+        : settlementDate_(settlementDate), forward_(forward),
+          dayCounter_(dayCounter) {
             registerWith(forward_);
-        }
-
-        inline Currency FlatForward::currency() const {
-            return currency_;
         }
 
         inline DayCounter FlatForward::dayCounter() const {
             return dayCounter_;
-        }
-
-        inline Date FlatForward::todaysDate() const {
-            return todaysDate_;
         }
 
         inline Date FlatForward::settlementDate() const {
@@ -112,19 +93,6 @@ namespace QuantLib {
             return Date::maxDate();
         }
 
-        inline Date FlatForward::minDate() const {
-            return settlementDate_;
-        }
-
-        inline Time FlatForward::maxTime() const {
-            return dayCounter().yearFraction(
-                settlementDate(), Date::maxDate());
-        }
-
-        inline Time FlatForward::minTime() const {
-            return 0.0;
-        }
-
         inline void FlatForward::update() {
             notifyObservers();
         }
@@ -132,7 +100,7 @@ namespace QuantLib {
         inline Rate FlatForward::zeroYieldImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: zero yield requested for negative time (" +
+                "FlatForward: zero yield undefined for time (" +
                 DoubleFormatter::toString(t) + ")");
             return forward_->value();
         }
@@ -140,7 +108,7 @@ namespace QuantLib {
         inline DiscountFactor FlatForward::discountImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: discount requested for negative time (" +
+                "FlatForward: discount undefined for time (" +
                 DoubleFormatter::toString(t) + ")");
             return DiscountFactor(QL_EXP(-forward_->value()*t));
         }
@@ -148,15 +116,13 @@ namespace QuantLib {
         inline Rate FlatForward::forwardImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: forward requested for negative time (" +
+                "FlatForward: forward undefined for time (" +
                 DoubleFormatter::toString(t) + ")");
             return forward_->value();
         }
 
-
     }
 
 }
-
 
 #endif

@@ -120,7 +120,7 @@ namespace QuantLib {
                 virtual ~CIRImpl() {}
 
                 double value(const Array& params, Time t) const {
-                    double forwardRate = termStructure_->forward(t);
+                    double forwardRate = termStructure_->instantaneousForward(t);
                     double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
                     double expth = QL_EXP(t*h);
                     double temp = 2.0*h + (k_+h)*(expth-1.0);

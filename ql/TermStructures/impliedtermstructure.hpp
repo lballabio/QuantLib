@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -40,18 +41,15 @@ namespace QuantLib {
                                      public Patterns::Observer {
           public:
             ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
-                const Date& todaysDate,
-                const Date& newSettlementDate);
+                                 const Date& newTodaysDate,
+                                 const Date& newSettlementDate);
             //! \name TermStructure interface
             //@{
-            Currency currency() const;
             DayCounter dayCounter() const;
             Date todaysDate() const;
             Date settlementDate() const;
             Date maxDate() const;
-            Date minDate() const;
             Time maxTime() const;
-            Time minTime() const;
             //@}
             //! \name Observer interface
             //@{
@@ -62,23 +60,17 @@ namespace QuantLib {
             DiscountFactor discountImpl(Time, bool extrapolate = false) const;
           private:
             RelinkableHandle<TermStructure> originalCurve_;
-            Date todaysDate_;
-            Date newSettlementDate_;
+            Date newTodaysDate_, newSettlementDate_;
         };
 
 
 
         inline ImpliedTermStructure::ImpliedTermStructure(
             const RelinkableHandle<TermStructure>& h,
-            const Date& todaysDate,
-            const Date& newSettlementDate)
-        : originalCurve_(h), todaysDate_(todaysDate_),
+            const Date& newTodaysDate, const Date& newSettlementDate)
+        : originalCurve_(h), newTodaysDate_(newTodaysDate),
           newSettlementDate_(newSettlementDate) {
             registerWith(originalCurve_);
-        }
-
-        inline Currency ImpliedTermStructure::currency() const {
-            return originalCurve_->currency();
         }
 
         inline DayCounter ImpliedTermStructure::dayCounter() const {
@@ -86,7 +78,7 @@ namespace QuantLib {
         }
 
         inline Date ImpliedTermStructure::todaysDate() const {
-            return todaysDate_;
+            return newTodaysDate_;
         }
 
         inline Date ImpliedTermStructure::settlementDate() const {
@@ -97,17 +89,9 @@ namespace QuantLib {
             return originalCurve_->maxDate();
         }
 
-        inline Date ImpliedTermStructure::minDate() const {
-            return newSettlementDate_;
-        }
-
         inline Time ImpliedTermStructure::maxTime() const {
             return dayCounter().yearFraction(
                 newSettlementDate_,originalCurve_->maxDate());
-        }
-
-        inline Time ImpliedTermStructure::minTime() const {
-            return 0.0;
         }
 
         inline void ImpliedTermStructure::update() {

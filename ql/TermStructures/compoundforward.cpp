@@ -33,55 +33,46 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        CompoundForward::CompoundForward(const std::vector < Date > &dates,
+        CompoundForward::CompoundForward(const Date  & todaysDate,
+                                         const Date  & settlementDate,
+                                         const Calendar& calendar,
+                                         const std::vector < Date > &dates,
                                          const std::vector < Rate > &forwards,
-                                         const Currency currency,
-                                         const DayCounter & dayCounter,
-                                         const Date & todaysDate,
-                                         const Calendar & calendar,
-                                         const int settlementDays,
                                          const RollingConvention roll,
-                                         const int compoundFrequency)
-        : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), calendar_(calendar),
-          settlementDays_(settlementDays), roll_(roll),
-          compoundFrequency_(compoundFrequency),
-          needsBootstrap_(true), inputDates_(dates),
-          dates_(dates), forwards_(forwards) {
+                                         const int compoundFrequency,
+                                         const DayCounter & dayCounter)
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+          calendar_(calendar), dates_(dates), forwards_(forwards), roll_(roll),
+          compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
+          needsBootstrap_(true), inputDates_(dates) {
 
             QL_REQUIRE(dates_.size() > 0, "No input Dates given");
             QL_REQUIRE(forwards_.size() > 0, "No input rates given");
             QL_REQUIRE(dates_.size() == forwards_.size(),
                     "Inconsistent number of Dates/Forward Rates");
-            settlementDate_ = calendar.advance(todaysDate_,
-                                            settlementDays_, Days);
             discounts_ = std::vector<DiscountFactor>();
 
             validateInputs();
         }
 
         CompoundForward::CompoundForward(
-            const std::vector<std::string>& identifiers,
-            const std::vector<Rate>& forwards,
-            const Currency currency,
-            const DayCounter& dayCounter,
-            const Date& todaysDate,
-            const Calendar& calendar,
-            const int settlementDays,
-            const RollingConvention roll,
-            const int compoundFrequency)
-        : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), calendar_(calendar),
-          settlementDays_(settlementDays), roll_(roll),
-          compoundFrequency_(compoundFrequency),
-          needsBootstrap_(true), forwards_(forwards) {
+                                 const Date  & todaysDate,
+                                 const Date  & settlementDate,
+                                 const Calendar& calendar,
+                                 const std::vector<std::string>& identifiers,
+                                 const std::vector<Rate>& forwards,
+                                 const RollingConvention roll,
+                                 const int compoundFrequency,
+                                 const DayCounter& dayCounter)
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+          calendar_(calendar), forwards_(forwards), roll_(roll),
+          compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
+          needsBootstrap_(true) {
 
             QL_REQUIRE(identifiers.size() > 0, "No input Identifiers given");
             QL_REQUIRE(forwards_.size() > 0, "No input rates given");
             QL_REQUIRE(identifiers.size() == forwards_.size(),
                     "Inconsistent number of Identifiers/Forward Rates");
-            settlementDate_ = calendar.advance(todaysDate_,
-                                            settlementDays_, Days);
             discounts_ = std::vector < DiscountFactor > ();
 
             for(Size i = 0; i < identifiers.size(); i++)
@@ -94,27 +85,23 @@ namespace QuantLib {
         }
 
         CompoundForward::CompoundForward(
-            const std::vector<Period>& inpPeriods,
-            const std::vector<Rate>& forwards,
-            const Currency currency,
-            const DayCounter& dayCounter,
-            const Date& todaysDate,
-            const Calendar& calendar,
-            const int settlementDays,
-            const RollingConvention roll,
-            const int compoundFrequency)
-        : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), calendar_(calendar),
-          settlementDays_(settlementDays), roll_(roll),
-          compoundFrequency_(compoundFrequency),
-          needsBootstrap_(true), forwards_(forwards) {
+                                      const Date  & todaysDate,
+                                      const Date  & settlementDate,
+                                      const Calendar& calendar,
+                                      const std::vector<Period>& inpPeriods,
+                                      const std::vector<Rate>& forwards,
+                                      const RollingConvention roll,
+                                      const int compoundFrequency,
+                                      const DayCounter& dayCounter)
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+          calendar_(calendar), forwards_(forwards), roll_(roll),
+          compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
+          needsBootstrap_(true) {
 
             QL_REQUIRE(inpPeriods.size() > 0, "No input Periods given");
             QL_REQUIRE(forwards_.size() > 0, "No input rates given");
             QL_REQUIRE(inpPeriods.size() == forwards_.size(),
                        "Inconsistent number of Periods/Forward Rates");
-            settlementDate_ = calendar.advance(todaysDate_,
-                                               settlementDays_, Days);
             discounts_ = std::vector < DiscountFactor > ();
 
             for(Size i = 0; i < inpPeriods.size(); i++)
@@ -144,7 +131,8 @@ namespace QuantLib {
                     if (compoundDate >= rateDate) {
                         t = dayCounter_.yearFraction(settlementDate_,
                                                      rateDate,
-                                                     settlementDate_, rateDate);
+                                                     settlementDate_,
+                                                     rateDate);
                         df = 1.0 / (1.0 + fwd * t);
                         ci = i;
                     } else {
@@ -159,7 +147,8 @@ namespace QuantLib {
                             prev = discounts_[a];
                             aDate = dates_[a];
                             pDate = dates_[a-1];
-                            t = dayCounter_.yearFraction(pDate, aDate, pDate, aDate);
+                            t = dayCounter_.yearFraction(pDate, aDate, pDate,
+                                aDate);
                             tempD += fwd * prev * t;
                         }
                         prev = discounts_[a];
@@ -170,7 +159,8 @@ namespace QuantLib {
 
                         aDate = dates_[discounts_.size()];
                         pDate = dates_[discounts_.size()-1];
-                        t = dayCounter_.yearFraction(pDate, aDate, pDate, aDate);
+                        t = dayCounter_.yearFraction(pDate, aDate, pDate,
+                            aDate);
                         df = (1.0 - tempD) / (1.0 + fwd * t);
                     }
                     discounts_.push_back(df);

@@ -208,7 +208,7 @@ namespace QuantLib {
             int floatingFrequency)
         : RateHelper(rate), settlementDays_(settlementDays),
           numberOfUnits_(lengthInYears), units_(Years),
-	  calendar_(calendar),
+          calendar_(calendar),
           convention_(convention),
           fixedFrequency_(fixedFrequency),
           floatingFrequency_(floatingFrequency),
@@ -223,8 +223,7 @@ namespace QuantLib {
             const DayCounter& fixedDayCount,
             int floatingFrequency)
         : RateHelper(rate), settlementDays_(settlementDays),
-          numberOfUnits_(numberOfUnits), units_(units),
-	  calendar_(calendar),
+          numberOfUnits_(numberOfUnits), units_(units), calendar_(calendar),
           convention_(convention),
           fixedFrequency_(fixedFrequency),
           floatingFrequency_(floatingFrequency),
@@ -238,8 +237,7 @@ namespace QuantLib {
             const DayCounter& fixedDayCount,
             int floatingFrequency)
         : RateHelper(rate), settlementDays_(settlementDays),
-          numberOfUnits_(lengthInYears), units_(Years),
-	  calendar_(calendar),
+          numberOfUnits_(lengthInYears), units_(Years), calendar_(calendar),
           convention_(convention),
           fixedFrequency_(fixedFrequency),
           floatingFrequency_(floatingFrequency),
@@ -253,8 +251,7 @@ namespace QuantLib {
             const DayCounter& fixedDayCount,
             int floatingFrequency)
         : RateHelper(rate), settlementDays_(settlementDays),
-          numberOfUnits_(numberOfUnits), units_(units),
-	  calendar_(calendar),
+          numberOfUnits_(numberOfUnits), units_(units), calendar_(calendar),
           convention_(convention),
           fixedFrequency_(fixedFrequency),
           floatingFrequency_(floatingFrequency),

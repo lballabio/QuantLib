@@ -91,7 +91,6 @@ int main(int argc, char* argv[])
         int settlementDays = 2;
         Date settlementDate=calendar.advance(todaysDate, settlementDays, Days,
             Following);
-        Currency currency = EUR;
 
         //Instruments used to bootstrap the yield curve:
         std::vector<Handle<RateHelper> > instruments;
@@ -149,7 +148,7 @@ int main(int argc, char* argv[])
 
         // bootstrapping the yield curve
         Handle<PiecewiseFlatForward> myTermStructure(new
-            PiecewiseFlatForward(currency, depositDayCounter,
+            PiecewiseFlatForward(depositDayCounter,
             todaysDate, settlementDate, instruments));
 
         RelinkableHandle<TermStructure > rhTermStructure;

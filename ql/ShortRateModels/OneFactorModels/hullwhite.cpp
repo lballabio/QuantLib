@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -35,7 +36,7 @@ namespace QuantLib {
         HullWhite::HullWhite(
             const RelinkableHandle<TermStructure>& termStructure, 
             double a, double sigma)
-        : Vasicek(termStructure->forward(0.0), a, 0.0, sigma), 
+        : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma), 
           TermStructureConsistentModel(termStructure) {
             parameters_[1] = NullParameter();
             generateParameters();
@@ -78,7 +79,7 @@ namespace QuantLib {
         double HullWhite::A(Time t, Time T) const {
             double discount1 = termStructure()->discount(t);
             double discount2 = termStructure()->discount(T);
-            double forward = termStructure()->forward(t);
+            double forward = termStructure()->instantaneousForward(t);
             double temp = sigma()*B(t,T);
             double value = B(t,T)*forward - 0.5*temp*temp*B(0.0,2.0*t);
             return QL_EXP(value)*discount2/discount1;

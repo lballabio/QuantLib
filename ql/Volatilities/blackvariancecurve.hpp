@@ -111,10 +111,10 @@ namespace QuantLib {
         double BlackVarianceCurve<Interpolator1D>::
             blackVarianceImpl(Time t, double, bool extrapolate) const {
 
-            QL_REQUIRE(t>=minTime(),
-                "evaluation time (" + DoubleFormatter::toString(t) +
-                ") < minTime (" + DoubleFormatter::toString(minTime()) +
-                ")");
+            QL_REQUIRE(t>=0.0,
+                "BlackVarianceCurve::blackVarianceImpl :"
+                "negative time (" + DoubleFormatter::toString(t) +
+                ") not allowed");
 
             if (t<=times_[0])
                 return (*varianceSurface_)(times_[0], extrapolate)*

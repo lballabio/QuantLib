@@ -27,8 +27,8 @@
 #define quantlib_term_structure_hpp
 
 #include <ql/calendar.hpp>
-#include <ql/currency.hpp>
 #include <ql/daycounter.hpp>
+#include <ql/dataformatters.hpp>
 #include <ql/marketelement.hpp>
 #include <vector>
 
@@ -66,9 +66,9 @@ namespace QuantLib {
         //! discount factor at a given time from settlement
         DiscountFactor discount(Time, bool extrapolate = false) const;
         //! instantaneous forward rate at a given date
-        Rate forward(const Date&, bool extrapolate = false) const;
+        Rate instantaneousForward(const Date&, bool extrapolate = false) const;
         //! instantaneous forward rate at a given time from settlement
-        Rate forward(Time, bool extrapolate = false) const;
+        Rate instantaneousForward(Time, bool extrapolate = false) const;
         //! discrete forward rate between two dates
         Rate forward(const Date&, const Date&, bool extrapolate = false) const;
         //! discrete forward rate between two times
@@ -83,21 +83,12 @@ namespace QuantLib {
         virtual Date settlementDate() const = 0;
         //! returns the day counter
         virtual DayCounter dayCounter() const = 0;
-        //! returns the earliest date for which the curve can return rates
-        virtual Date minDate() const = 0;
         //! returns the latest date for which the curve can return rates
         virtual Date maxDate() const = 0;
-        //! returns the earliest time for which the curve can return rates
-        virtual Time minTime() const = 0;
         //! returns the latest date for which the curve can return rates
-        virtual Time maxTime() const = 0;
+        virtual Time maxTime() const;
         //@}
 
-        //! \name Other inspectors
-        //@{
-        //! returns the currency upon which the term structure is defined
-        virtual Currency currency() const = 0;
-        //@}
       protected:
         //! implements the actual zero yield calculation in derived classes
         virtual Rate zeroYieldImpl(Time,
@@ -202,13 +193,14 @@ namespace QuantLib {
             return discountImpl(t,extrapolate);
     }
 
-    inline Rate TermStructure::forward(const Date& d,
+    inline Rate TermStructure::instantaneousForward(const Date& d,
         bool extrapolate) const {
             Time t = dayCounter().yearFraction(settlementDate(),d);
             return forwardImpl(t,extrapolate);
     }
 
-    inline Rate TermStructure::forward(Time t, bool extrapolate) const {
+    inline Rate TermStructure::instantaneousForward(Time t,
+        bool extrapolate) const {
         return forwardImpl(t,extrapolate);
     }
 
@@ -224,6 +216,10 @@ namespace QuantLib {
         bool extrapolate) const {
             return QL_LOG( discountImpl(t1,extrapolate)/
                            discountImpl(t2,extrapolate)  ) / (t2-t1);
+    }
+
+    inline Time TermStructure::maxTime() const {
+            return dayCounter().yearFraction(settlementDate(), maxDate());
     }
 
     // curve deriving discount and forward from zero yield
@@ -266,6 +262,9 @@ namespace QuantLib {
 
     inline Rate ForwardRateStructure::zeroYieldImpl(Time t,
         bool extrapolate) const {
+            QL_REQUIRE(t >= 0.0,
+                "negative time (" + DoubleFormatter::toString(t) +
+                ") not allowed");
             if (t == 0.0)
                 return forwardImpl(0.0);
             double sum = 0.5*forwardImpl(0.0);

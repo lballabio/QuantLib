@@ -208,12 +208,11 @@ int main(int argc, char* argv[])
         std::cout << "\nNew Pricing engine framework" << std::endl;
 
         Date todaysDate(17, February, 1999);
-        Currency currency = EUR;
         DayCounter depositDayCounter = DayCounters::Thirty360();
 
         // bootstrap the curve
         Handle<TermStructure> flatTermStructure(new
-            TermStructures::FlatForward(currency, depositDayCounter, todaysDate,
+            TermStructures::FlatForward(depositDayCounter, todaysDate,
                                    todaysDate, riskFreeRate));
 
         Instruments::VanillaOption option(
@@ -276,7 +275,7 @@ int main(int argc, char* argv[])
         Handle<PricingEngines::QuantoVanillaAnalyticEngine> quantoEngine(new
             PricingEngines::QuantoVanillaAnalyticEngine(baseEngine));
 
-        double correlation = 0.5;
+        double correlation = 0.0;
         Instruments::QuantoVanillaOption quantoOption(
             Option::Call,
             Handle<MarketElement>(new SimpleMarketElement(underlying)),
@@ -286,14 +285,50 @@ int main(int argc, char* argv[])
             todaysDate.plus(3, Months),
             Handle<MarketElement>(new SimpleMarketElement(volatility)),
             quantoEngine,
-            Handle<TermStructure>(),
+            flatTermStructure,
             Handle<MarketElement>(new SimpleMarketElement(volatility)),
             Handle<MarketElement>(new SimpleMarketElement(correlation))
             );
             
         value = quantoOption.NPV();
+        double delta = quantoOption.delta();
+        double gamma = quantoOption.gamma();
+        double theta = quantoOption.theta();
+        double vega = quantoOption.vega();
+        double rho = quantoOption.rho();
+        double divRho = quantoOption.dividendRho();
+        double qvega = quantoOption.qvega();
+        double qrho = quantoOption.qrho();
+        double qlambda = quantoOption.qlambda();
         std::cout << std::endl << std::endl << "quanto: "
              << DoubleFormatter::toString(value, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto delta: "
+             << DoubleFormatter::toString(delta, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto gamma: "
+             << DoubleFormatter::toString(gamma, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto theta: "
+             << DoubleFormatter::toString(theta, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto vega: "
+             << DoubleFormatter::toString(vega, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto rho: "
+             << DoubleFormatter::toString(rho, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto divRho: "
+             << DoubleFormatter::toString(divRho, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto qvega: "
+             << DoubleFormatter::toString(qvega, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto qrho: "
+             << DoubleFormatter::toString(qrho, 4)
+             << std::endl;
+        std::cout << std::endl << "quanto qlambda: "
+             << DoubleFormatter::toString(qlambda, 4)
              << std::endl;
 
 

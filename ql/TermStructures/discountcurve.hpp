@@ -49,30 +49,25 @@ namespace QuantLib
         {
          public:
            // constructor
-           DiscountCurve(const Date & todaysDate,
-                         const DayCounter & dayCounter,
-                         Currency currency,
+           DiscountCurve(const Date& todaysDate,
                          const std::vector < Date > &dates,
-                         const std::vector < DiscountFactor > &discounts);
+                         const std::vector < DiscountFactor > &discounts,
+                         const DayCounter & dayCounter);
 
-           Currency currency() const;
            DayCounter dayCounter() const;
-           Date todaysDate() const;
+           Date todaysDate() const {return todaysDate_; }
            Date settlementDate() const;
            const std::vector<Date>& dates() const;
            Date maxDate() const;
-           Date minDate() const;
            const std::vector<Time>& times() const;
            Time maxTime() const;
-           Time minTime() const;
          protected:
            DiscountFactor discountImpl(Time t, bool extrapolate = false) const;
          private:
-           Currency currency_;
-           const DayCounter dayCounter_;
-           const Date todaysDate_;
+           Date todaysDate_;
            const std::vector < Date > dates_;
            const std::vector < DiscountFactor > discounts_;
+           const DayCounter dayCounter_;
            std::vector < Time > times_;
            typedef Math::LogLinearInterpolation <
               std::vector < Time >::const_iterator,
@@ -82,10 +77,6 @@ namespace QuantLib
 
         // inline definitions
 
-        inline Date DiscountCurve::todaysDate() const
-        {
-           return todaysDate_;
-        }
         inline Date DiscountCurve::settlementDate() const
         {
            return dates_[0];
@@ -94,16 +85,8 @@ namespace QuantLib
         {
            return dayCounter_;
         }
-        inline Currency DiscountCurve::currency() const
-        {
-           return currency_;
-        }
         inline const std::vector<Date>& DiscountCurve::dates() const {
             return dates_;
-        }
-        inline Date DiscountCurve::minDate() const
-        {
-           return dates_[0];
         }
         inline Date DiscountCurve::maxDate() const
         {
@@ -111,10 +94,6 @@ namespace QuantLib
         }
         inline const std::vector<Time>& DiscountCurve::times() const {
             return times_;
-        }
-        inline Time DiscountCurve::minTime() const
-        {
-           return 0.0;
         }
         inline Time DiscountCurve::maxTime() const
         {

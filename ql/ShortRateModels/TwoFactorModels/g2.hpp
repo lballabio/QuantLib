@@ -141,7 +141,7 @@ namespace QuantLib {
                 virtual ~G2Impl() {}
 
                 double value(const Array& params, Time t) const {
-                    double forward = termStructure_->forward(t);
+                    double forward = termStructure_->instantaneousForward(t);
                     double temp1 = sigma_*(1.0-QL_EXP(-a_*t))/a_;
                     double temp2 = eta_*(1.0-QL_EXP(-b_*t))/b_;
                     double value = 0.5*temp1*temp1 + 0.5*temp2*temp2 +

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -77,7 +78,7 @@ namespace QuantLib {
 
             double sigma2 = sigma()*sigma();
             double h = QL_SQRT(k()*k() + 2.0*sigma2);
-            double r0 = termStructure()->forward(0.0);
+            double r0 = termStructure()->instantaneousForward(0.0);
             double b = B(t,s);
 
             double rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));

@@ -29,13 +29,14 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        DiscountCurve::DiscountCurve(const Date & todaysDate,
-            const DayCounter & dayCounter, Currency currency,
-            const std::vector < Date > &dates,
-            const std::vector < DiscountFactor > &discounts)
-        : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), dates_(dates), discounts_(discounts) {
-            
+        DiscountCurve::DiscountCurve(
+                             const Date &todaysDate,
+                             const std::vector < Date > &dates,
+                             const std::vector < DiscountFactor > &discounts,
+                             const DayCounter & dayCounter)
+        : todaysDate_(todaysDate), dates_(dates), discounts_(discounts),
+          dayCounter_(dayCounter) {
+
             QL_REQUIRE(dates_.size()>1, "DiscountCurve::DiscountCurve : "
                 "too few dates");
             QL_REQUIRE(discounts_.size()==dates_.size(),
@@ -62,15 +63,14 @@ namespace QuantLib {
                 discounts_.begin()));
       }
 
+
       DiscountFactor DiscountCurve::discountImpl(Time t,
         bool extrapolate) const
       {
          QL_REQUIRE(t >= 0.0,
-                    "DiscountCurve: invalid negative time (" +
-                    DoubleFormatter::toString(t) +
-                    ") outside curve definition [" +
-                    DoubleFormatter::toString(0.0) + ", " +
-                    DoubleFormatter::toString(times_.back()) + "]");
+             "DiscountCurve::discountImpl "
+             "negative time (" + DoubleFormatter::toString(t) +
+             ") not allowed");
          return (*interpolation_) (t, extrapolate);
       }
 

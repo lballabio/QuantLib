@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
@@ -28,15 +29,15 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        class AffineTermStructure::CalibrationFunction 
+        class AffineTermStructure::CalibrationFunction
             : public Optimization::CostFunction {
           public:
-            CalibrationFunction( 
+            CalibrationFunction(
               const Handle<ShortRateModels::Model>& model,
-              const std::vector<Handle<RateHelper> >& instruments) 
+              const std::vector<Handle<RateHelper> >& instruments)
             : model_(model), instruments_(instruments) {}
             virtual ~CalibrationFunction() {}
-            
+
             virtual double value(const Array& params) {
                 model_->setParams(params);
 
@@ -54,25 +55,25 @@ namespace QuantLib {
         };
 
         AffineTermStructure::AffineTermStructure(
-            Currency currency,
-            const DayCounter& dayCounter, const Date& todaysDate,
+            const Date& todaysDate,
             const Date& settlementDate,
-            const Handle<ShortRateModels::AffineModel>& model)
-        : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), settlementDate_(settlementDate),
-          needsRecalibration_(false), model_(model) { }
+            const Handle<ShortRateModels::AffineModel>& model,
+            const DayCounter& dayCounter)
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+          needsRecalibration_(false), model_(model),
+          dayCounter_(dayCounter) { }
 
         AffineTermStructure::AffineTermStructure(
-            Currency currency,
-            const DayCounter& dayCounter, const Date& todaysDate,
+            const Date& todaysDate,
             const Date& settlementDate,
             const Handle<ShortRateModels::AffineModel>& model,
             const std::vector<Handle<RateHelper> >& instruments,
-            const Handle<Optimization::Method>& method)
-        : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), settlementDate_(settlementDate),
+            const Handle<Optimization::Method>& method,
+            const DayCounter& dayCounter)
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
           needsRecalibration_(true), model_(model),
-          instruments_(instruments), method_(method) {
+          instruments_(instruments), method_(method),
+          dayCounter_(dayCounter) {
             for (Size i=0; i<instruments_.size(); i++)
                 registerWith(instruments_[i]);
         }

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -41,16 +42,12 @@ namespace QuantLib {
                 const RelinkableHandle<MarketElement>& spread);
             //! \name TermStructure interface
             //@{
-            Currency currency() const;
-            Date todaysDate() const;
-//            int settlementDays() const;
             Calendar calendar() const;
             DayCounter dayCounter() const;
             Date settlementDate() const;
+            Date todaysDate() const;
             Date maxDate() const;
-            Date minDate() const;
             Time maxTime() const;
-            Time minTime() const;
             //@}
             //! \name Observer interface
             //@{
@@ -60,7 +57,9 @@ namespace QuantLib {
             //! returns the spreaded zero yield rate
             Rate zeroYieldImpl(Time, bool extrapolate = false) const;
             //! returns the spreaded forward rate
-            /*! \warning This method must disappear should the spread become a curve */
+            /*! \warning This method must disappear should the spread become a
+                         curve
+            */
             Rate forwardImpl(Time, bool extrapolate = false) const;
           private:
             RelinkableHandle<TermStructure> originalCurve_;
@@ -75,16 +74,12 @@ namespace QuantLib {
             registerWith(spread_);
         }
 
-        inline Currency ZeroSpreadedTermStructure::currency() const {
-            return originalCurve_->currency();
+        inline DayCounter ZeroSpreadedTermStructure::dayCounter() const {
+            return originalCurve_->dayCounter();
         }
 
         inline Date ZeroSpreadedTermStructure::todaysDate() const {
             return originalCurve_->todaysDate();
-        }
-
-        inline DayCounter ZeroSpreadedTermStructure::dayCounter() const {
-            return originalCurve_->dayCounter();
         }
 
         inline Date ZeroSpreadedTermStructure::settlementDate() const {
@@ -95,16 +90,8 @@ namespace QuantLib {
             return originalCurve_->maxDate();
         }
 
-        inline Date ZeroSpreadedTermStructure::minDate() const {
-            return originalCurve_->minDate();
-        }
-
         inline Time ZeroSpreadedTermStructure::maxTime() const {
             return originalCurve_->maxTime();
-        }
-
-        inline Time ZeroSpreadedTermStructure::minTime() const {
-            return originalCurve_->minTime();
         }
 
         inline void ZeroSpreadedTermStructure::update() {
@@ -113,12 +100,14 @@ namespace QuantLib {
 
         inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t,
             bool extrapolate) const {
-                return originalCurve_->zeroYield(t, extrapolate) + spread_->value();
+                return originalCurve_->zeroYield(t, extrapolate) +
+                    spread_->value();
         }
 
         inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t,
             bool extrapolate) const {
-                return originalCurve_->forward(t, extrapolate) + spread_->value();
+                return originalCurve_->forward(t, extrapolate) +
+                    spread_->value();
         }
     }
 }
