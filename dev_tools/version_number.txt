@@ -8,7 +8,7 @@ l  can be a,b,f for alpha, beta, final respectively
 n  is an ordinal number; 0 is only allowed when l equals f
 
 e.g. R000300a2 stands for Release 0.3.1a2
-e.g. R000301f0 stands for Release 0.3.1f0
+e.g. R000301f0 stands for Release 0.3.1
 
 The current version number is 0.3.3a1 - 000303a1
 
