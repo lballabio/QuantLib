@@ -1,0 +1,8 @@
+
+ssh port: 22
+cvs.quantlib.org aka cvs.quantlib.sf.net aka cvs.quantlib.sourceforge.net aka 216.136.171.202
+upload.sf.net aka upload.sourceforge.net aka 216.136.171.195
+shell.sf.net aka shell.sourceforge.net aka 216.136.171.203
+
+cvs port: 2401
+quantlib.org aka quantlib.sf.net aka quantlib.sourceforge.net aka 216.136.171.204
