@@ -21,7 +21,7 @@ QL_USING(Operators,TridiagonalOperator)
 double BSMAmericanOption::value() const {
 	if (!hasBeenCalculated) {
 		FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> > model(theOperator);
-		// uncomment for variance reduction:
+		// uncomment for control-variate variance reduction:
 		// Array theEuroPrices = thePrices;
 		model.rollback(thePrices,theResidualTime,0.0,theTimeSteps,
 		  Handle<StepCondition<Array> >(new BMSAmericanCondition(thePrices)));
