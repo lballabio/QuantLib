@@ -87,8 +87,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "QuantLibFunctions___Win32_Release_MTDLL"
-# PROP Intermediate_Dir "QuantLibFunctions___Win32_Release_MTDLL"
+# PROP Output_Dir "build\ReleaseMTDLL"
+# PROP Intermediate_Dir "build\ReleaseMTDLL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
@@ -110,8 +110,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "QuantLibFunctions___Win32_Debug_MTDLL"
-# PROP Intermediate_Dir "QuantLibFunctions___Win32_Debug_MTDLL"
+# PROP Output_Dir "build\DebugMTDLL"
+# PROP Intermediate_Dir "build\DebugMTDLL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
@@ -133,8 +133,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "QuantLibFunctions___Win32_Release_SingleThread"
-# PROP Intermediate_Dir "QuantLibFunctions___Win32_Release_SingleThread"
+# PROP Output_Dir "build\ReleaseST"
+# PROP Intermediate_Dir "build\ReleaseST"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD CPP /nologo /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
@@ -156,8 +156,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "QuantLibFunctions___Win32_Debug_SingleThread"
-# PROP Intermediate_Dir "QuantLibFunctions___Win32_Debug_SingleThread"
+# PROP Output_Dir "build\DebugST"
+# PROP Intermediate_Dir "build\DebugST"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD CPP /nologo /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c

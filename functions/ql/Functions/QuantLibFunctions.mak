@@ -105,8 +105,8 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release MTDLL"
 
-OUTDIR=.\QuantLibFunctions___Win32_Release_MTDLL
-INTDIR=.\QuantLibFunctions___Win32_Release_MTDLL
+OUTDIR=.\build\ReleaseMTDLL
+INTDIR=.\build\ReleaseMTDLL
 
 ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_6.lib"
 
@@ -140,8 +140,8 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug MTDLL"
 
-OUTDIR=.\QuantLibFunctions___Win32_Debug_MTDLL
-INTDIR=.\QuantLibFunctions___Win32_Debug_MTDLL
+OUTDIR=.\build\DebugMTDLL
+INTDIR=.\build\DebugMTDLL
 
 ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_6.lib"
 
@@ -176,8 +176,8 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release SingleThread"
 
-OUTDIR=.\QuantLibFunctions___Win32_Release_SingleThread
-INTDIR=.\QuantLibFunctions___Win32_Release_SingleThread
+OUTDIR=.\build\ReleaseST
+INTDIR=.\build\ReleaseST
 
 ALL : "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_6.lib"
 
@@ -211,8 +211,8 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug SingleThread"
 
-OUTDIR=.\QuantLibFunctions___Win32_Debug_SingleThread
-INTDIR=.\QuantLibFunctions___Win32_Debug_SingleThread
+OUTDIR=.\build\DebugST
+INTDIR=.\build\DebugST
 
 ALL : "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_6.lib"
 
