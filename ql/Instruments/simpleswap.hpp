@@ -33,6 +33,8 @@ namespace QuantLib {
         //! Simple fixed-rate vs Libor swap
         class SimpleSwap : public Swap {
           public:
+            class arguments;
+            class results;
             SimpleSwap(bool payFixedRate,
                        // dates
                        const Date& startDate, int n, TimeUnit units,
@@ -105,6 +107,8 @@ namespace QuantLib {
             bool payFixedRate() const;
             const std::vector<Handle<CashFlow> >& fixedLeg() const;
             const std::vector<Handle<CashFlow> >& floatingLeg() const;
+            // other
+            void setupArguments(Arguments* args) const;
           private:
             bool payFixedRate_;
             Rate fixedRate_;
@@ -112,6 +116,29 @@ namespace QuantLib {
             double nominal_;
             Date maturity_;
         };
+
+        //! arguments for simple swap calculation
+        class SimpleSwap::arguments : public virtual Arguments {
+          public:
+            arguments() : payFixed(false),
+                          nominal(Null<double>()) {}
+            bool payFixed;
+            double nominal;
+            std::vector<Time> fixedResetTimes;
+            std::vector<Time> fixedPayTimes;
+            std::vector<double> fixedCoupons;
+            std::vector<Time> floatingAccrualTimes;
+            std::vector<Time> floatingResetTimes;
+            std::vector<Time> floatingPayTimes;
+            std::vector<Spread> floatingSpreads;
+            void validate() const;
+        };
+
+        //! %results from swaption calculation
+        class SimpleSwap::results : public Value {};
+
+
+        // inline definitions
 
         inline Rate SimpleSwap::fairRate() const {
             return fixedRate_ - NPV()/fixedLegBPS();

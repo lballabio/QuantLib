@@ -51,25 +51,15 @@ namespace QuantLib {
         };
 
         //! arguments for swaption calculation
-        class Swaption::arguments : public virtual Arguments {
+        class Swaption::arguments : public SimpleSwap::arguments {
           public:
-            arguments() : payFixed(false),
-                          fairRate(0.0),
-                          fixedRate(0.0),
-                          fixedBPS(0.0),
-                          nominal(0.0),
+            arguments() : fairRate(Null<double>()),
+                          fixedRate(Null<double>()),
+                          fixedBPS(Null<double>()),
                           exerciseType(Exercise::Type(-1)) {}
-            bool payFixed;
             Rate fairRate;
             Rate fixedRate;
             double fixedBPS;
-            std::vector<Time> fixedResetTimes;
-            std::vector<Time> fixedPayTimes;
-            std::vector<double> fixedCoupons;
-            std::vector<Time> floatingAccrualTimes;
-            std::vector<Time> floatingResetTimes;
-            std::vector<Time> floatingPayTimes;
-            double nominal;
             Exercise::Type exerciseType;
             std::vector<Time> exerciseTimes;
             void validate() const;

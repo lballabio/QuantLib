@@ -45,6 +45,9 @@ namespace QuantLib {
         }
 
         void Swaption::setupArguments(Arguments* args) const {
+
+            swap_->setupArguments(args);
+
             Swaption::arguments* arguments =
                 dynamic_cast<Swaption::arguments*>(args);
                 
@@ -54,9 +57,7 @@ namespace QuantLib {
 
             Date settlement = termStructure_->referenceDate();
             DayCounter counter = termStructure_->dayCounter();
-            Size i;
 
-            arguments->payFixed = swap_->payFixedRate();
             // volatilities are calculated for zero-spreaded swaps.
             // Therefore, the spread on the floating leg is removed
             // and a corresponding correction is made on the fixed leg.
@@ -70,48 +71,10 @@ namespace QuantLib {
             // this is passed explicitly for precision
             arguments->fixedBPS = QL_FABS(swap_->fixedLegBPS());
 
-            arguments->nominal = swap_->nominal();
-
-            const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
-
-            arguments->fixedResetTimes.clear();
-            arguments->fixedPayTimes.clear();
-            arguments->fixedCoupons.clear();
-            for (i=0; i<fixedLeg.size(); i++) {
-                Handle<FixedRateCoupon> coupon = fixedLeg[i];
-
-                Time time = counter.yearFraction(settlement, coupon->date());
-                arguments->fixedPayTimes.push_back(time);
-                time = counter.yearFraction(settlement, 
-                                            coupon->accrualStartDate());
-                arguments->fixedResetTimes.push_back(time);
-                arguments->fixedCoupons.push_back(coupon->amount());
-            }
-
-            arguments->floatingResetTimes.clear();
-            arguments->floatingPayTimes.clear();
-            arguments->floatingAccrualTimes.clear();
-
-            const std::vector<Handle<CashFlow> >& floatingLeg = 
-                swap_->floatingLeg();
-            std::vector<Handle<CashFlow> >::const_iterator begin, end;
-            begin = floatingLeg.begin();
-            end   = floatingLeg.end();
-
-            for (; begin != end; ++begin) {
-                Handle<Coupon> coupon = *begin;
-                Date resetDate = coupon->accrualStartDate(); // already rolled
-                Time time = counter.yearFraction(settlement, resetDate);
-                arguments->floatingResetTimes.push_back(time);
-                time = counter.yearFraction(settlement, coupon->date());
-                arguments->floatingPayTimes.push_back(time);
-                arguments->floatingAccrualTimes.push_back(
-                                               coupon->accrualPeriod());
-            }
             arguments->exerciseType = exercise_.type();
             arguments->exerciseTimes.clear();
             const std::vector<Date> dates = exercise_.dates();
-            for (i=0; i<dates.size(); i++) {
+            for (Size i=0; i<dates.size(); i++) {
                 Time time = counter.yearFraction(settlement, dates[i]);
                 arguments->exerciseTimes.push_back(time);
             }
@@ -124,8 +87,22 @@ namespace QuantLib {
         }
 
         void Swaption::arguments::validate() const {
-            QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(), 
-                       "Swaption::arguments: Invalid pricing arguments");
+            #if defined(QL_PATCH_MICROSOFT)
+            SimpleSwap::arguments copy = *this;
+            copy.validate();
+            #else
+            SimpleSwap::arguments::validate();
+            #endif
+
+            QL_REQUIRE(fixedRate != Null<double>(), 
+                       "Swaption::arguments: "
+                       "fixed swap rate null or not set");
+            QL_REQUIRE(fairRate != Null<double>(), 
+                       "Swaption::arguments: "
+                       "fair swap rate null or not set");
+            QL_REQUIRE(fixedBPS != Null<double>(), 
+                       "Swaption::arguments: "
+                       "fixed swap BPS null or not set");
         }
     
     }
