@@ -13,6 +13,7 @@ include_HEADERS = \
     bsmnumericaloption.hpp \
     cliquetoption.hpp \
     continuousgeometricapo.hpp \
+    couponbondoption.hpp \
     discretegeometricaso.hpp \
     discretegeometricapo.hpp \
     dividendamericanoption.hpp \
@@ -45,6 +46,7 @@ libPricers_la_SOURCES = \
     binaryoption.cpp \
     bsmnumericaloption.cpp \
     cliquetoption.cpp \
+    couponbondoption.cpp \
     discretegeometricaso.cpp \
     discretegeometricapo.cpp \
     dividendamericanoption.cpp \
