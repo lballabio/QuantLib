@@ -14,11 +14,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file riskstatisticss.hpp
+/*! \file riskstatistics.hpp
     \brief Normal distribution risk analysis tool: VAR, (average) shortfall
 
     \fullpath
-    ql/%riskstatisticss.hpp
+    ql/%riskstatistics.hpp
 */
 
 // $Id$
@@ -40,7 +40,7 @@ namespace QuantLib {
         \deprecated use Statistics instead (or even take a look at
                     HStatisticss)
     */
-    class RiskStatisticss {
+    class RiskStatistics {
       public:
         //! \name Inspectors
         //@{
@@ -111,11 +111,11 @@ namespace QuantLib {
     // inline definitions
 
     /*! \pre weights must be positive or null */
-    inline void RiskStatisticss::add(double value, double weight) {
+    inline void RiskStatistics::add(double value, double weight) {
         statistics_.add( value , weight );
     }
 
-    inline void RiskStatisticss::reset() {
+    inline void RiskStatistics::reset() {
         statistics_.reset();
     }
 
