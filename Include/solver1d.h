@@ -21,15 +21,15 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
-
-// $Log$
-// Revision 1.6  2000/12/13 18:09:52  nando
-// CVS keyword added
-//
-
 /*! \file solver1d.h
 	\brief Abstract 1-D solver class
+
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.7  2000/12/14 12:32:29  lballabio
+	Added CVS tags in Doxygen file documentation blocks
+
 */
 
 /*! \namespace QuantLib::Solvers1D

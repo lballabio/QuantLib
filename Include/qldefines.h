@@ -21,15 +21,20 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file qldefines.h
+	\brief Global definitions and compiler switches.
+	
+	This file contains a few global definitions and quite a few macros 
+	which help porting the code to different compilers (each with its own
+	non-standard behaviors and implementations).
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.17  2000/12/14 12:32:29  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.16  2000/12/13 17:57:19  nando
-// CVS keyword modified
-//
-
-
-
+*/
 
 /*! \mainpage
 
@@ -57,14 +62,6 @@
     \section download Download
     If you want to download the documentation, source code, modules, etc. go to
     http://sourceforge.net/project/showfiles.php?group_id=12740
-*/
-
-/*! \file qldefines.h
-	\brief Global definitions and compiler switches.
-	
-	This file contains a few global definitions and quite a few macros 
-	which help porting the code to different compilers (each with its own
-	non-standard behaviors and implementations).
 */
 
 /*! \namespace QuantLib

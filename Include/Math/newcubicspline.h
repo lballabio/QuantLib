@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file newcubicspline.h
+	\brief cubic spline interpolation
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.3  2000/12/14 12:32:30  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.2  2000/12/13 18:09:53  nando
-// CVS keyword added
-//
+*/
 
 #ifndef ql_cubic_spline_h
 #define ql_cubic_spline_h

@@ -21,6 +21,17 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/*! \file flatforward
+	\brief flat forward rate term structure
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.2  2000/12/14 12:32:31  lballabio
+	Added CVS tags in Doxygen file documentation blocks
+
+*/
+
 #ifndef quantlib_flat_forward_curve_h
 #define quantlib_flat_forward_curve_h
 

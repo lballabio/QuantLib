@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file operator.h
+	\brief base classes for differential operators
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.3  2000/12/14 12:32:30  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.2  2000/12/13 18:09:53  nando
-// CVS keyword added
-//
+*/
 
 #ifndef quantlib_operator_h
 #define quantlib_operator_h

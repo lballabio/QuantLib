@@ -21,16 +21,15 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
-
-// $Log$
-// Revision 1.7  2000/12/13 18:09:52  nando
-// CVS keyword added
-//
-
-
 /*! \file termstructure.h
 	\brief Term structure
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.8  2000/12/14 12:32:29  lballabio
+	Added CVS tags in Doxygen file documentation blocks
+
 */
 
 #ifndef quantlib_term_structure_h

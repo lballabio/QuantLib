@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file thirty360italian.cpp
+	\brief 30/360 italian day counter
 
-// $Log$
-// Revision 1.8  2000/12/13 18:10:41  nando
-// CVS keyword added
-//
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.9  2000/12/14 12:32:31  lballabio
+	Added CVS tags in Doxygen file documentation blocks
+
+*/
 
 #include "thirty360italian.h"
 

@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file bsmnumericaloption.h
+	\brief common code for numerical option evaluation
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.6  2000/12/14 12:32:30  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.5  2000/12/13 18:09:53  nando
-// CVS keyword added
-//
+*/
 
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h

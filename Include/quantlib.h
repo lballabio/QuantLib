@@ -21,28 +21,32 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file quantlib.h
+	\brief global include file for @QuantLib
 
-// $Log$
-// Revision 1.4  2000/12/13 18:09:52  nando
-// CVS keyword added
-//
+	This file includes all the @QuantLib headers. Developers which want to link @QuantLib
+	to their own projects can simply include this file to have all @QuantLib classes
+	available.
+	
+	However, this file should <b>not</b> be used inside @QuantLib itself. 
+	Developers which want to extend @QuantLib should include the specific files needed
+	for their code.
+	
+	Even though this file includes all the @QuantLib headers, it cannot set
+	the include path for a compiler. The developer must take care himself of adding the
+	@QuantLib/Include directory and <i>all its subdirectories</i> to its include path.
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.5  2000/12/14 12:32:29  lballabio
+	Added CVS tags in Doxygen file documentation blocks
+
+*/
 
 #ifndef quantlib_h
 #define quantlib_h
 
-/*  This file includes all the QuantLib headers. Developers which want to link QuantLib
-	to their own projects can simply include this file to have all QuantLib classes
-	available.
-	
-	However, this file should not be used inside QuantLib itself. 
-	Developers which want to extend QuantLib should include the specific files needed
-	for their code.
-	
-	Even though this file includes all the QuantLib headers, it cannot set
-	the include path for a compiler. The developer must take care himself of adding the
-	QuantLib/Include directory and all its subdirectories to its include path.
-*/
 
 /*** global defines ***/
 

@@ -23,14 +23,14 @@
 
 /*! \file array.h
 	\brief 1-D array used in linear algebra.
+
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.8  2000/12/14 12:32:28  lballabio
+	Added CVS tags in Doxygen file documentation blocks
+
 */
-
-// $Source$
-
-// $Log$
-// Revision 1.7  2000/12/13 18:09:52  nando
-// CVS keyword added
-//
 
 #ifndef quantlib_array_h
 #define quantlib_array_h

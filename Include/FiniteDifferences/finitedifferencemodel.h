@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file finitedifferencemodel.h
+	\brief generic finite difference model
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.3  2000/12/14 12:32:30  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.2  2000/12/13 18:09:53  nando
-// CVS keyword added
-//
+*/
 
 #ifndef quantlib_finite_difference_model_h
 #define quantlib_finite_difference_model_h
@@ -39,7 +43,23 @@
 namespace QuantLib {
 
 	namespace FiniteDifferences {
-	
+
+		/*	Evolvers do not need to inherit from any base class.
+			However, they must implement the following interface:
+		
+			class Evolver {
+			  public:
+				typedef ... arrayType;
+				typedef ... operatorType;
+				// constructors
+				Evolver(const operatorType& D);
+				// member functions
+				void step(arrayType& a. Time t) const;	// The differential operator D could be time-dependent
+				void setStep(Time dt);
+			};
+		
+		*/
+
 		template<class Evolver>
 		class FiniteDifferenceModel {
 		  public:

@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file dividendamericanoption.cpp
+	\brief american option with discrete dividends
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.8  2000/12/14 12:32:31  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.7  2000/12/13 18:10:41  nando
-// CVS keyword added
-//
+*/
 
 #include "dividendamericanoption.h"
 #include "dividendeuropeanoption.h"

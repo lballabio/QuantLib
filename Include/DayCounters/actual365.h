@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file actual365.h
+	\brief act/365 day counter
 
-// $Log$
-// Revision 1.2  2000/12/13 18:09:53  nando
-// CVS keyword added
-//
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.3  2000/12/14 12:32:30  lballabio
+	Added CVS tags in Doxygen file documentation blocks
+
+*/
 
 #ifndef quantlib_actual365_day_counter_h
 #define quantlib_actual365_day_counter_h

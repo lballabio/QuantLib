@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file piecewiseconstantforwards.cpp
+	\brief piecewise constant forward rate term structure
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.11  2000/12/14 12:32:31  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.10  2000/12/13 18:10:42  nando
-// CVS keyword added
-//
+*/
 
 #include "piecewiseconstantforwards.h"
 

@@ -53,8 +53,8 @@ WARN_LOGFILE           =
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 
-INPUT                  = ..\Include
-FILE_PATTERNS          = *.h
+INPUT                  = ..\Include ..\Sources
+FILE_PATTERNS          = *.h *.cpp
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_PATTERNS       = 

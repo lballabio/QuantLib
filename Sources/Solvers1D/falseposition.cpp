@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file falseposition.cpp
+	\brief false-position 1-D solver
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.13  2000/12/14 12:32:31  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.12  2000/12/13 18:10:42  nando
-// CVS keyword added
-//
+*/
 
 // The implementation of the algorithm was inspired by
 // "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery

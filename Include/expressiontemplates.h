@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file expressiontemplates.h
+	\brief expression template implementation
+		
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.6  2000/12/14 12:32:29  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.5  2000/12/13 18:09:52  nando
-// CVS keyword added
-//
+*/
 
 #ifndef quantlib_expression_templates_h
 #define quantlib_expression_templates_h

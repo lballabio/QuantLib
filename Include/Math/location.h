@@ -21,12 +21,16 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-// $Source$
+/*! \file location.h
+	\brief location of a value in an ordered sequence
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.4  2000/12/14 12:32:30  lballabio
+	Added CVS tags in Doxygen file documentation blocks
 
-// $Log$
-// Revision 1.3  2000/12/13 18:09:53  nando
-// CVS keyword added
-//
+*/
 
 #ifndef ql_location_h
 #define ql_location_h
