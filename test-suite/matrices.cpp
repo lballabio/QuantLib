@@ -106,7 +106,7 @@ void MatricesTest::testEigenvectors() {
 void MatricesTest::testSqrt() {
 
     Matrix m = pseudoSqrt(M1, SalvagingAlgorithm::None);
-    Matrix temp = m*m;
+    Matrix temp = m*transpose(m);
     double error = norm(temp - M1);
     double tolerance = 1.0e-12;
     if (error>tolerance) {
