@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.25  2001/03/21 15:04:06  lballabio
+   Started playing with Ruby
+
    Revision 1.24  2001/03/19 17:30:28  nando
    refactored *.i files inclusion.
    The files are sorted by SWIG debug problem
@@ -32,20 +35,15 @@
 
 */
 
+#if defined(SWIGRUBY)
+%module QuantLibc
+#else
 %module QuantLib
+#endif
 
 %{
 #include "quantlib.h"
 %}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: QuantLib is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %{
 using QuantLib::Error;
@@ -70,6 +68,24 @@ using QuantLib::IndexError;
     }
 }
 
+%except(ruby) {
+    try {
+        $function
+    } catch (IndexError& e) {
+        rb_raise(rb_eIndexError,e.what());
+    } catch (Error& e) {
+        rb_raise(rb_eStandardError,e.what());
+    } catch (std::exception& e) {
+        rb_raise(rb_eStandardError,e.what());
+    } catch (...) {
+        rb_raise(rb_eStandardError,"unknown error");
+    }
+}
+
+#if defined(SWIGRUBY)
+%include Date.i
+%include String.i
+#else
 // PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE
 // the following files have no problem with SWIG in debug mode
 %include Barrier.i
@@ -105,3 +121,7 @@ using QuantLib::IndexError;
 %include TermStructures.i
 
 // PLEASE ADD ANY NEW *.i FILE HERE
+
+
+#endif
+

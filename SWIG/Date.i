@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.25  2001/03/21 15:04:06  lballabio
+   Started playing with Ruby
+
    Revision 1.24  2001/03/15 10:30:48  lballabio
    Added dummy returns to avoid warnings
 
@@ -125,6 +128,53 @@ using QuantLib::DateFormatter;
 }
 
 
+%typemap(ruby,in) Weekday, const Weekday & {
+    if (TYPE($source) == T_STRING) {
+        std::string s(STR2CSTR($source));
+        s = StringFormatter::toLowercase(s);
+        if (s == "sun" || s == "sunday")
+            $target = new Weekday(Sunday);
+        else if (s == "mon" || s == "monday")
+            $target = new Weekday(Monday);
+        else if (s == "tue" || s == "tuesday")
+            $target = new Weekday(Tuesday);
+        else if (s == "wed" || s == "wednesday")
+            $target = new Weekday(Wednesday);
+        else if (s == "thu" || s == "thursday")
+            $target = new Weekday(Thursday);
+        else if (s == "fri" || s == "friday")
+            $target = new Weekday(Friday);
+        else if (s == "sat" || s == "saturday")
+            $target = new Weekday(Saturday);
+        else 
+            rb_raise(rb_eTypeError,"not a weekday");
+    } else {
+        rb_raise(rb_eTypeError,"not a weekday");
+    }
+};
+
+%typemap(ruby,freearg) Weekday, const Weekday & {
+    delete $source;
+};
+
+%typemap(ruby,out) Weekday, const Weekday & {
+    switch (*$source) {
+      case Sunday:      $target = rb_str_new2("Sunday");     break;
+      case Monday:      $target = rb_str_new2("Monday");     break;
+      case Tuesday:     $target = rb_str_new2("Tuesday");    break;
+      case Wednesday:   $target = rb_str_new2("Wednesday");  break;
+      case Thursday:    $target = rb_str_new2("Thursday");   break;
+      case Friday:      $target = rb_str_new2("Friday");     break;
+      case Saturday:    $target = rb_str_new2("Saturday");   break;
+    }
+};
+
+%typemap(ruby,ret) Weekday {
+    delete $source;
+};
+
+
+
 // typemap months to corresponding strings or numbers
 
 %{
@@ -215,6 +265,72 @@ using QuantLib::December;
 }
 
 
+%typemap(ruby,in) Month, const Month & {
+    if (TYPE($source) == T_STRING) {
+        std::string s(STR2CSTR($source));
+        s = StringFormatter::toLowercase(s);
+        if (s == "jan" || s == "january")
+            $target = new Month(January);
+        else if (s == "feb" || s == "february")
+            $target = new Month(February);
+        else if (s == "mar" || s == "march")
+            $target = new Month(March);
+        else if (s == "apr" || s == "april")
+            $target = new Month(April);
+	else if (s == "may")
+            $target = new Month(May);
+        else if (s == "jun" || s == "june")
+            $target = new Month(June);
+        else if (s == "jul" || s == "july")
+            $target = new Month(July);
+        else if (s == "aug" || s == "august")
+            $target = new Month(August);
+        else if (s == "sep" || s == "september")
+            $target = new Month(September);
+        else if (s == "oct" || s == "october")
+            $target = new Month(October);
+        else if (s == "nov" || s == "november")
+            $target = new Month(November);
+        else if (s == "dec" || s == "december")
+            $target = new Month(December);
+        else 
+            rb_raise(rb_eTypeError,"not a month");
+    } else if (TYPE($source) == T_FIXNUM) {
+        int i = NUM2INT($source);
+        if (i>=1 && i<=12)
+            $target = new Month(Month(i));
+        else 
+            rb_raise(rb_eTypeError,"not a month");
+    } else {
+        rb_raise(rb_eTypeError,"not a month");
+    }
+};
+
+%typemap(ruby,freearg) Month, const Month & {
+    delete $source;
+};
+
+%typemap(ruby,out) Month, const Month & {
+    switch (*$source) {
+      case January:     $target = rb_str_new2("January");    break;
+      case February:    $target = rb_str_new2("February");   break;
+      case March:       $target = rb_str_new2("March");      break;
+      case April:       $target = rb_str_new2("April");      break;
+      case May:         $target = rb_str_new2("May");        break;
+      case June:        $target = rb_str_new2("June");       break;
+      case July:        $target = rb_str_new2("July");       break;
+      case August:      $target = rb_str_new2("August");     break;
+      case September:   $target = rb_str_new2("September");  break;
+      case October:     $target = rb_str_new2("October");    break;
+      case November:    $target = rb_str_new2("November");   break;
+      case December:    $target = rb_str_new2("December");   break;
+    }
+};
+
+%typemap(ruby,ret) Month {
+    delete $source;
+};
+
 // typemap time units to corresponding strings
 
 %{
@@ -238,7 +354,7 @@ using QuantLib::Years;
         else if (s == "y" || s == "year" || s == "years")
             $target = new TimeUnit(Years);
         else {
-            PyErr_SetString(PyExc_TypeError,"unknown time unit");
+            PyErr_SetString(PyExc_TypeError,"not a time unit");
             return NULL;
         }
     } else {
@@ -264,6 +380,42 @@ using QuantLib::Years;
     delete $source;
 }
 
+
+%typemap(ruby,in) TimeUnit, const TimeUnit & {
+    if (TYPE($source) == T_STRING) {
+        std::string s(STR2CSTR($source));
+        s = StringFormatter::toLowercase(s);
+        if (s == "d" || s == "day" || s == "days")
+            $target = new TimeUnit(Days);
+        else if (s == "w" || s == "week" || s == "weeks")
+            $target = new TimeUnit(Weeks);
+        else if (s == "m" || s == "month" || s == "months")
+            $target = new TimeUnit(Months);
+        else if (s == "y" || s == "year" || s == "years")
+            $target = new TimeUnit(Years);
+        else 
+            rb_raise(rb_eTypeError,"not a time unit");
+    } else {
+        rb_raise(rb_eTypeError,"not a time unit");
+    }
+};
+
+%typemap(ruby,freearg) TimeUnit, const TimeUnit & {
+    delete $source;
+};
+
+%typemap(ruby,out) TimeUnit, const TimeUnit & {
+    switch (*$source) {
+      case Days:    $target = rb_str_new2("days");   break;
+      case Weeks:   $target = rb_str_new2("weeks");  break;
+      case Months:  $target = rb_str_new2("months"); break;
+      case Years:   $target = rb_str_new2("years");  break;
+    }
+};
+
+%typemap(ruby,ret) TimeUnit {
+    delete $source;
+}
 
 // and finally, the Date class
 
@@ -292,6 +444,11 @@ class Date {
 };
 
 %addmethods Date {
+
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+
     int monthNumber() {
         return int(self->month());
     }
@@ -299,17 +456,11 @@ class Date {
         return int(self->weekday());
     }
 
-    #if defined(SWIGPYTHON)
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     Date __add__(int days) {
         return self->plusDays(days);
     }
-    Date __iadd__(int days) {
-        return self->plusDays(days);
-    }
     Date __sub__(int days) {
-        return self->plusDays(-days);
-    }
-    Date __isub__(int days) {
         return self->plusDays(-days);
     }
     int __cmp__(const Date& other) {
@@ -322,8 +473,23 @@ class Date {
     String __str__() {
         return DateFormatter::toString(*self);
     }
+    #endif
+    
+    #if defined(SWIGPYTHON)
+    Date __iadd__(int days) {
+        return self->plusDays(days);
+    }
+    Date __isub__(int days) {
+        return self->plusDays(-days);
+    }
     int __nonzero__() {
         return (*self == Date() ? 0 : 1);
+    }
+    #endif
+    
+    #if defined(SWIGRUBY)
+    Date succ() {
+        return self->plusDays(1);
     }
     #endif
 }
@@ -358,6 +524,10 @@ class DateVector {
 };
 
 %addmethods DateVector {
+
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
 
     DateVector(const DateVector& v) {
         return new DateVector(v);
@@ -476,3 +646,4 @@ class DateVector {
 
 
 #endif
+

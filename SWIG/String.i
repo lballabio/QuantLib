@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.8  2001/03/21 15:04:06  lballabio
+   Started playing with Ruby
+
    Revision 1.7  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -33,28 +36,48 @@
 #define quantlib_string_i
 
 %{
-	typedef std::string String;
+typedef std::string String;
 %}
 
 %typemap(python,in) String, const String & {
-	if (PyString_Check($source)) {
-		$target = new std::string(PyString_AsString($source));
-	} else {
-		PyErr_SetString(PyExc_TypeError,"not a string");
-		return NULL;
-	}
+    if (PyString_Check($source)) {
+        $target = new std::string(PyString_AsString($source));
+    } else {
+        PyErr_SetString(PyExc_TypeError,"not a string");
+        return NULL;
+    }
 };
 
 %typemap(python,freearg) String, const String & {
-	delete $source;
+    delete $source;
 };
 
 %typemap(python,out) String, const String & {
-	$target = PyString_FromString($source->c_str());
+    $target = PyString_FromString($source->c_str());
 };
 
 %typemap(python,ret) String, const String & {
-	delete $source;
+    delete $source;
+};
+
+
+%typemap(ruby,in) String, const String & {
+    if (TYPE($source) == T_STRING)
+        $target = new std::string(STR2CSTR($source));
+    else
+        rb_raise(rb_eTypeError, "not a string");
+};
+
+%typemap(ruby,freearg) String, const String & {
+    delete $source;
+};
+
+%typemap(ruby,out) String, const String & {
+    $target = rb_str_new2($source->c_str());
+};
+
+%typemap(ruby,ret) String, const String & {
+    delete $source;
 };
 
 // typemap Python list of strings to std::vector<std::string>
