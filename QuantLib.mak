@@ -29,6 +29,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -207,6 +210,8 @@ CLEAN :
 	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\germany.obj"
 	-@erase "$(INTDIR)\germany.sbr"
+	-@erase "$(INTDIR)\getcovariance.obj"
+	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -217,6 +222,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.obj"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
@@ -410,40 +417,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -627,7 +601,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -817,7 +793,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1005,6 +983,8 @@ CLEAN :
 	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\germany.obj"
 	-@erase "$(INTDIR)\germany.sbr"
+	-@erase "$(INTDIR)\getcovariance.obj"
+	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -1015,6 +995,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.obj"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
@@ -1209,40 +1191,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_8" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1426,7 +1375,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1616,7 +1567,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1804,6 +1757,8 @@ CLEAN :
 	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\germany.obj"
 	-@erase "$(INTDIR)\germany.sbr"
+	-@erase "$(INTDIR)\getcovariance.obj"
+	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -1814,6 +1769,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.obj"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
@@ -2007,40 +1964,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2224,7 +2148,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2414,7 +2340,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2602,6 +2530,8 @@ CLEAN :
 	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\germany.obj"
 	-@erase "$(INTDIR)\germany.sbr"
+	-@erase "$(INTDIR)\getcovariance.obj"
+	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -2612,6 +2542,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.obj"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
@@ -2806,40 +2738,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_8" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -3023,7 +2922,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3213,7 +3114,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3401,6 +3304,8 @@ CLEAN :
 	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\germany.obj"
 	-@erase "$(INTDIR)\germany.sbr"
+	-@erase "$(INTDIR)\getcovariance.obj"
+	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -3411,6 +3316,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.obj"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
@@ -3604,40 +3511,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -3821,7 +3695,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4011,7 +3887,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4199,6 +4077,8 @@ CLEAN :
 	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\germany.obj"
 	-@erase "$(INTDIR)\germany.sbr"
+	-@erase "$(INTDIR)\getcovariance.obj"
+	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -4209,6 +4089,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hongkong.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.obj"
+	-@erase "$(INTDIR)\inarrearindexedcoupon.sbr"
 	-@erase "$(INTDIR)\incompletegamma.obj"
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
@@ -4403,40 +4285,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_8" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -4620,7 +4469,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4810,7 +4661,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4821,6 +4674,36 @@ LIB32_OBJS= \
 SOURCE="$(InputPath)"
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -4986,6 +4869,12 @@ SOURCE=.\ql\CashFlows\basispointsensitivity.cpp
 SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 
 "$(INTDIR)\cashflowvectors.obj"	"$(INTDIR)\cashflowvectors.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\CashFlows\inarrearindexedcoupon.cpp
+
+"$(INTDIR)\inarrearindexedcoupon.obj"	"$(INTDIR)\inarrearindexedcoupon.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -5310,6 +5199,12 @@ SOURCE=.\ql\Math\svd.cpp
 SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
 
 "$(INTDIR)\symmetricschurdecomposition.obj"	"$(INTDIR)\symmetricschurdecomposition.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\MonteCarlo\getcovariance.cpp
+
+"$(INTDIR)\getcovariance.obj"	"$(INTDIR)\getcovariance.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

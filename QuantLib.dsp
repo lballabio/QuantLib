@@ -419,6 +419,10 @@ SOURCE=.\ql\Calendars\zurich.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\basispointsensitivity.cpp
 # End Source File
 # Begin Source File
@@ -435,6 +439,10 @@ SOURCE=.\ql\CashFlows\cashflowvectors.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\core.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\coupon.hpp
 # End Source File
 # Begin Source File
@@ -444,6 +452,10 @@ SOURCE=.\ql\CashFlows\fixedratecoupon.hpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\inarrearindexedcoupon.cpp
 # End Source File
 # Begin Source File
 
@@ -507,11 +519,23 @@ SOURCE=.\ql\DayCounters\actual365.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\DayCounters\actual365fixed.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\DayCounters\actualactual.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\DayCounters\actualactual.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\DayCounters\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\DayCounters\one.hpp
 # End Source File
 # Begin Source File
 
@@ -535,6 +559,10 @@ SOURCE=.\ql\DayCounters\thirty360.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\americancondition.hpp
 # End Source File
 # Begin Source File
@@ -552,6 +580,10 @@ SOURCE=.\ql\FiniteDifferences\bsmoperator.cpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\bsmoperator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\core.hpp
 # End Source File
 # Begin Source File
 
@@ -631,6 +663,10 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Indexes\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\audlibor.hpp
 # End Source File
 # Begin Source File
@@ -640,6 +676,10 @@ SOURCE=.\ql\Indexes\cadlibor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\chflibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\core.hpp
 # End Source File
 # Begin Source File
 
@@ -851,6 +891,10 @@ SOURCE=.\ql\Instruments\vanillaoption.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Lattices\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Lattices\binomialtree.cpp
 # End Source File
 # Begin Source File
@@ -864,6 +908,10 @@ SOURCE=.\ql\Lattices\bsmlattice.cpp
 # Begin Source File
 
 SOURCE=.\ql\Lattices\bsmlattice.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\core.hpp
 # End Source File
 # Begin Source File
 
@@ -1155,7 +1203,19 @@ SOURCE=.\ql\Math\trapezoidintegral.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\brownianbridge.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\core.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\getcovariance.cpp
 # End Source File
 # Begin Source File
 
@@ -1203,6 +1263,10 @@ SOURCE=.\ql\MonteCarlo\sample.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Optimization\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Optimization\armijo.cpp
 # End Source File
 # Begin Source File
@@ -1220,6 +1284,10 @@ SOURCE=.\ql\Optimization\conjugategradient.hpp
 # Begin Source File
 
 SOURCE=.\ql\Optimization\constraint.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\core.hpp
 # End Source File
 # Begin Source File
 
@@ -1267,7 +1335,15 @@ SOURCE=.\ql\Optimization\steepestdescent.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Patterns\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Patterns\bridge.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Patterns\composite.hpp
 # End Source File
 # Begin Source File
 
@@ -1791,6 +1867,10 @@ SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp
 # End Group
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\americanpayoffatexpiry.cpp
 # End Source File
 # Begin Source File
@@ -1816,6 +1896,10 @@ SOURCE=.\ql\PricingEngines\blackformula.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\blackmodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\core.hpp
 # End Source File
 # Begin Source File
 
@@ -2212,6 +2296,10 @@ SOURCE=.\ql\Volatilities\blackvariancesurface.hpp
 # Begin Source File
 
 SOURCE=.\ql\Volatilities\capflatvolvector.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\capletconstantvol.hpp
 # End Source File
 # Begin Source File
 
