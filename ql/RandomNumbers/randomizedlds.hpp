@@ -36,7 +36,7 @@ namespace QuantLib {
         It is used for implementing Randomized Quasi Monte Carlo.
 
         The uniform low discrepancy sequence is supplied by LDS, the uniform
-        pseudo-random sequance is supplied by PRS.
+        pseudo-random sequence is supplied by PRS.
 
         Both class LDS and PRS must implement the following interface:
         \code

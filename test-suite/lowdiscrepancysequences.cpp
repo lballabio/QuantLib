@@ -71,7 +71,7 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
 void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
 
-    BOOST_MESSAGE("Testing Randomized low discrepancy sequances up to "
+    BOOST_MESSAGE("Testing Randomized low discrepancy sequences up to "
                   "dimension " + IntegerFormatter::toString(PPMT_MAX_DIM) +
                   "...");
 
