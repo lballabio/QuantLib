@@ -31,9 +31,10 @@ namespace QuantLib {
     class Scheduler {
       public:
         Scheduler(const Calendar& calendar,
-            const Date& startDate, const Date& endDate,
-            int frequency, RollingConvention rollingConvention,
-            bool isAdjusted, const Date& stubDate = Date());
+	    const Date& startDate, const Date& endDate,
+	    int frequency, RollingConvention rollingConvention,
+	    bool isAdjusted, const Date& stubDate = Date(),
+	    bool startFromEnd = 0, bool longFinal = 0);
         // inspectors
         Size size() const { return dates_.size(); }
         const Date& date(int i) const;
@@ -42,6 +43,7 @@ namespace QuantLib {
         typedef std::vector<Date>::const_iterator const_iterator;
         const_iterator begin() const { return dates_.begin(); }
         const_iterator end() const { return dates_.end(); }
+        const Date& operator[] (Size i) const;
       private:
         Calendar calendar_;
         Date startDate_, endDate_;
@@ -49,7 +51,9 @@ namespace QuantLib {
         RollingConvention rollingConvention_;
         bool isAdjusted_;
         Date stubDate_;
-        bool lastIsRegular_;
+        bool startFromEnd_;
+        bool longFinal_;
+        bool finalIsRegular_;
         std::vector<Date> dates_;
         bool isEndOfMonth(const Date&) const;
     };
@@ -58,6 +62,14 @@ namespace QuantLib {
     inline const Date& Scheduler::date(int i) const {
         QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
                    "date index out of bounds");
+        return dates_[i];
+    }
+
+    inline const Date& Scheduler::operator[] (Size i) const {
+        #if defined(QL_DEBUG)
+            QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
+                "date index out of bounds");
+        #endif
         return dates_[i];
     }
 

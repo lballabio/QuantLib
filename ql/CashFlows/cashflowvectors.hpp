@@ -38,8 +38,17 @@ namespace QuantLib {
             RollingConvention rollingConvention, bool isAdjusted,
             const DayCounter& dayCount,
             const DayCounter& firstPeriodDayCount,
-            const Date& stubDate = Date());
+            const Date& stubDate = Date(),
+	    bool startFromEnd = 0,
+	    bool longFinal = 0);
 
+        std::vector<Handle<CashFlow> > FixedRateCouponVector(
+          const std::vector<double>& nominals,
+          const std::vector<Rate>& couponRates,
+	  const std::vector<Date>& dates,
+          const Calendar& calendar,
+          RollingConvention roll,
+          const DayCounter& dayCounter);
         //! helper function building a sequence of par coupons
         /*! \warning The passing of a non-null stub date - i.e., the creation
             of a short/long first coupon - is currently disabled.
@@ -55,8 +64,18 @@ namespace QuantLib {
             const Handle<Indexes::Xibor>& index,
             int fixingDays,
             const std::vector<Spread>& spreads, 
-            const Date& stubDate = Date());
+            const Date& stubDate = Date(),
+	    bool startFromEnd = 0,
+	    bool longFinal = 0);
 
+        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
+          const std::vector<double>& nominals,
+          const std::vector<Spread>& spreads,
+	  const std::vector<Date>& dates,
+          const Handle<Indexes::Xibor>& index, int fixingDays,
+          const Calendar& calendar,
+          RollingConvention roll);
+       
     }
 
 }
