@@ -37,7 +37,6 @@
 
 namespace QuantLib {
 
-    using CashFlows::Coupon;
     using CashFlows::FixedRateCoupon;
     using CashFlows::FixedRateCouponVector;
     using CashFlows::FloatingRateCouponVector;

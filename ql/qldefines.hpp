@@ -40,10 +40,6 @@
 #ifndef quantlib_defines_h
 #define quantlib_defines_h
 
-#include <iostream>
-using std::cout;
-using std::cerr;
-using std::endl;
 /*! \defgroup macros Global QuantLib macros
     Global definitions and quite a few macros which help porting the code to
     different compilers
@@ -409,5 +405,3 @@ using std::endl;
 
 
 #endif
-
-
