@@ -40,8 +40,8 @@
 
     \section resources Resources
     The main %QuantLib resources are the %QuantLib home page at
-    <http://quantlib.org> and the %QuantLib mailing lists at
-    <http://sourceforge.net/mail/?group_id=12740>.
+    http://quantlib.org and the %QuantLib mailing lists at
+    http://sourceforge.net/mail/?group_id=12740.
 
     \section download Download
     Source code, documentation, modules, etc. of current and previous %QuantLib
@@ -75,14 +75,14 @@
     contains more detailed instructions.
 
     \subsection win32 Win32
-    A binary installer is available at
+    A binary installer is available at <br>
     http://sourceforge.net/project/showfiles.php?group_id=12740
 
     Visual C++ 6.0 projects files and Borland C++ makefiles are supplied in case
     one wants to rebuild the library.
 
-    The free Borland C++ compiler is available at
-    <http://www.borland.com/bcppbuilder/freecompiler/>
+    The free Borland C++ compiler is available at <br>
+    http://www.borland.com/bcppbuilder/freecompiler/
 
     \subsection mac Macintosh
     Codewarrior support is currently broken.
@@ -106,9 +106,9 @@
     category.
     You'll have to check the "Use RTTI" option under the "C++ Language"
     category, too.
-    -# as long as you include ql/quantlib.hpp you don't have to explicitly link
-    QuantLib.lib (or QuantLib_d.lib). This is automatically done by quantlib.hpp
-    using the pragma statement:
+    -# as long as you include ql/quantlib.hpp, you won't have to explicitly link
+    your application to QuantLib.lib (or QuantLib_d.lib). This is automatically 
+    done by quantlib.hpp using the pragma statement:
     \code
     #pragma comment(lib,"QuantLib.lib")
     \endcode
