@@ -384,8 +384,6 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
         
-        return 0;
-
         Handle<AnalyticalVanillaEngine> baseEngine(new
             AnalyticalVanillaEngine);
 

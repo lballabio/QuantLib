@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -127,6 +130,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
+	-@erase "$(INTDIR)\exercise.obj"
+	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -336,40 +341,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -400,6 +372,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
@@ -411,6 +386,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\vanillaoption.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
@@ -431,6 +411,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\performanceoptionpathpricer.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
@@ -466,8 +450,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticalvanillaengine.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
+	"$(INTDIR)\discretizedvanillaoption.sbr" \
+	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
+	"$(INTDIR)\extendedcoxingersollross.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\vasicek.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
 	"$(INTDIR)\falseposition.sbr" \
@@ -481,38 +481,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
-	"$(INTDIR)\armijo.sbr" \
-	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\binomialtree.sbr" \
-	"$(INTDIR)\bsmlattice.sbr" \
-	"$(INTDIR)\lattice.sbr" \
-	"$(INTDIR)\lattice2d.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
-	"$(INTDIR)\caphelper.sbr" \
-	"$(INTDIR)\swaptionhelper.sbr" \
-	"$(INTDIR)\blackkarasinski.sbr" \
-	"$(INTDIR)\coxingersollross.sbr" \
-	"$(INTDIR)\extendedcoxingersollross.sbr" \
-	"$(INTDIR)\hullwhite.sbr" \
-	"$(INTDIR)\vasicek.sbr" \
-	"$(INTDIR)\g2.sbr" \
-	"$(INTDIR)\calibrationhelper.sbr" \
-	"$(INTDIR)\model.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\twofactormodel.sbr" \
-	"$(INTDIR)\analyticalvanillaengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
-	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
@@ -554,6 +527,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
@@ -565,6 +541,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\vanillaoption.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
@@ -585,6 +566,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\performanceoptionpathpricer.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -620,8 +605,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticalvanillaengine.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
+	"$(INTDIR)\discretizedvanillaoption.obj" \
+	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
+	"$(INTDIR)\extendedcoxingersollross.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\vasicek.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
 	"$(INTDIR)\falseposition.obj" \
@@ -635,38 +636,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
-	"$(INTDIR)\armijo.obj" \
-	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\binomialtree.obj" \
-	"$(INTDIR)\bsmlattice.obj" \
-	"$(INTDIR)\lattice.obj" \
-	"$(INTDIR)\lattice2d.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
-	"$(INTDIR)\caphelper.obj" \
-	"$(INTDIR)\swaptionhelper.obj" \
-	"$(INTDIR)\blackkarasinski.obj" \
-	"$(INTDIR)\coxingersollross.obj" \
-	"$(INTDIR)\extendedcoxingersollross.obj" \
-	"$(INTDIR)\hullwhite.obj" \
-	"$(INTDIR)\vasicek.obj" \
-	"$(INTDIR)\g2.obj" \
-	"$(INTDIR)\calibrationhelper.obj" \
-	"$(INTDIR)\model.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\twofactormodel.obj" \
-	"$(INTDIR)\analyticalvanillaengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
-	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
@@ -778,6 +752,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
+	-@erase "$(INTDIR)\exercise.obj"
+	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -988,40 +964,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1052,6 +995,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
@@ -1063,6 +1009,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\vanillaoption.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
@@ -1083,6 +1034,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\performanceoptionpathpricer.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
@@ -1118,8 +1073,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticalvanillaengine.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
+	"$(INTDIR)\discretizedvanillaoption.sbr" \
+	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
+	"$(INTDIR)\extendedcoxingersollross.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\vasicek.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
 	"$(INTDIR)\falseposition.sbr" \
@@ -1133,38 +1104,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
-	"$(INTDIR)\armijo.sbr" \
-	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\binomialtree.sbr" \
-	"$(INTDIR)\bsmlattice.sbr" \
-	"$(INTDIR)\lattice.sbr" \
-	"$(INTDIR)\lattice2d.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
-	"$(INTDIR)\caphelper.sbr" \
-	"$(INTDIR)\swaptionhelper.sbr" \
-	"$(INTDIR)\blackkarasinski.sbr" \
-	"$(INTDIR)\coxingersollross.sbr" \
-	"$(INTDIR)\extendedcoxingersollross.sbr" \
-	"$(INTDIR)\hullwhite.sbr" \
-	"$(INTDIR)\vasicek.sbr" \
-	"$(INTDIR)\g2.sbr" \
-	"$(INTDIR)\calibrationhelper.sbr" \
-	"$(INTDIR)\model.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\twofactormodel.sbr" \
-	"$(INTDIR)\analyticalvanillaengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
-	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
@@ -1206,6 +1150,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
@@ -1217,6 +1164,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\vanillaoption.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
@@ -1237,6 +1189,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\performanceoptionpathpricer.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -1272,8 +1228,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticalvanillaengine.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
+	"$(INTDIR)\discretizedvanillaoption.obj" \
+	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
+	"$(INTDIR)\extendedcoxingersollross.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\vasicek.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
 	"$(INTDIR)\falseposition.obj" \
@@ -1287,38 +1259,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
-	"$(INTDIR)\armijo.obj" \
-	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\binomialtree.obj" \
-	"$(INTDIR)\bsmlattice.obj" \
-	"$(INTDIR)\lattice.obj" \
-	"$(INTDIR)\lattice2d.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
-	"$(INTDIR)\caphelper.obj" \
-	"$(INTDIR)\swaptionhelper.obj" \
-	"$(INTDIR)\blackkarasinski.obj" \
-	"$(INTDIR)\coxingersollross.obj" \
-	"$(INTDIR)\extendedcoxingersollross.obj" \
-	"$(INTDIR)\hullwhite.obj" \
-	"$(INTDIR)\vasicek.obj" \
-	"$(INTDIR)\g2.obj" \
-	"$(INTDIR)\calibrationhelper.obj" \
-	"$(INTDIR)\model.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\twofactormodel.obj" \
-	"$(INTDIR)\analyticalvanillaengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
-	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
@@ -1430,6 +1375,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
+	-@erase "$(INTDIR)\exercise.obj"
+	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -1639,40 +1586,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1703,6 +1617,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
@@ -1714,6 +1631,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\vanillaoption.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
@@ -1734,6 +1656,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\performanceoptionpathpricer.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
@@ -1769,8 +1695,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticalvanillaengine.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
+	"$(INTDIR)\discretizedvanillaoption.sbr" \
+	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
+	"$(INTDIR)\extendedcoxingersollross.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\vasicek.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
 	"$(INTDIR)\falseposition.sbr" \
@@ -1784,38 +1726,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
-	"$(INTDIR)\armijo.sbr" \
-	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\binomialtree.sbr" \
-	"$(INTDIR)\bsmlattice.sbr" \
-	"$(INTDIR)\lattice.sbr" \
-	"$(INTDIR)\lattice2d.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
-	"$(INTDIR)\caphelper.sbr" \
-	"$(INTDIR)\swaptionhelper.sbr" \
-	"$(INTDIR)\blackkarasinski.sbr" \
-	"$(INTDIR)\coxingersollross.sbr" \
-	"$(INTDIR)\extendedcoxingersollross.sbr" \
-	"$(INTDIR)\hullwhite.sbr" \
-	"$(INTDIR)\vasicek.sbr" \
-	"$(INTDIR)\g2.sbr" \
-	"$(INTDIR)\calibrationhelper.sbr" \
-	"$(INTDIR)\model.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\twofactormodel.sbr" \
-	"$(INTDIR)\analyticalvanillaengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
-	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
@@ -1857,6 +1772,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
@@ -1868,6 +1786,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\vanillaoption.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
@@ -1888,6 +1811,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\performanceoptionpathpricer.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -1923,8 +1850,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticalvanillaengine.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
+	"$(INTDIR)\discretizedvanillaoption.obj" \
+	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
+	"$(INTDIR)\extendedcoxingersollross.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\vasicek.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
 	"$(INTDIR)\falseposition.obj" \
@@ -1938,38 +1881,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
-	"$(INTDIR)\armijo.obj" \
-	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\binomialtree.obj" \
-	"$(INTDIR)\bsmlattice.obj" \
-	"$(INTDIR)\lattice.obj" \
-	"$(INTDIR)\lattice2d.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
-	"$(INTDIR)\caphelper.obj" \
-	"$(INTDIR)\swaptionhelper.obj" \
-	"$(INTDIR)\blackkarasinski.obj" \
-	"$(INTDIR)\coxingersollross.obj" \
-	"$(INTDIR)\extendedcoxingersollross.obj" \
-	"$(INTDIR)\hullwhite.obj" \
-	"$(INTDIR)\vasicek.obj" \
-	"$(INTDIR)\g2.obj" \
-	"$(INTDIR)\calibrationhelper.obj" \
-	"$(INTDIR)\model.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\twofactormodel.obj" \
-	"$(INTDIR)\analyticalvanillaengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
-	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
@@ -2081,6 +1997,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
+	-@erase "$(INTDIR)\exercise.obj"
+	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -2291,40 +2209,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2355,6 +2240,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
@@ -2366,6 +2254,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\vanillaoption.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
@@ -2386,6 +2279,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\performanceoptionpathpricer.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
@@ -2421,8 +2318,24 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticalvanillaengine.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
+	"$(INTDIR)\discretizedvanillaoption.sbr" \
+	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
+	"$(INTDIR)\extendedcoxingersollross.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\vasicek.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\bisection.sbr" \
 	"$(INTDIR)\brent.sbr" \
 	"$(INTDIR)\falseposition.sbr" \
@@ -2436,38 +2349,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
-	"$(INTDIR)\armijo.sbr" \
-	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\binomialtree.sbr" \
-	"$(INTDIR)\bsmlattice.sbr" \
-	"$(INTDIR)\lattice.sbr" \
-	"$(INTDIR)\lattice2d.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
-	"$(INTDIR)\caphelper.sbr" \
-	"$(INTDIR)\swaptionhelper.sbr" \
-	"$(INTDIR)\blackkarasinski.sbr" \
-	"$(INTDIR)\coxingersollross.sbr" \
-	"$(INTDIR)\extendedcoxingersollross.sbr" \
-	"$(INTDIR)\hullwhite.sbr" \
-	"$(INTDIR)\vasicek.sbr" \
-	"$(INTDIR)\g2.sbr" \
-	"$(INTDIR)\calibrationhelper.sbr" \
-	"$(INTDIR)\model.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\twofactormodel.sbr" \
-	"$(INTDIR)\analyticalvanillaengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
-	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
@@ -2509,6 +2395,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
@@ -2520,6 +2409,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\vanillaoption.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
@@ -2540,6 +2434,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\performanceoptionpathpricer.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -2575,8 +2473,24 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticalvanillaengine.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
+	"$(INTDIR)\discretizedvanillaoption.obj" \
+	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
+	"$(INTDIR)\extendedcoxingersollross.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\vasicek.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\bisection.obj" \
 	"$(INTDIR)\brent.obj" \
 	"$(INTDIR)\falseposition.obj" \
@@ -2590,38 +2504,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
-	"$(INTDIR)\armijo.obj" \
-	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\binomialtree.obj" \
-	"$(INTDIR)\bsmlattice.obj" \
-	"$(INTDIR)\lattice.obj" \
-	"$(INTDIR)\lattice2d.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
-	"$(INTDIR)\caphelper.obj" \
-	"$(INTDIR)\swaptionhelper.obj" \
-	"$(INTDIR)\blackkarasinski.obj" \
-	"$(INTDIR)\coxingersollross.obj" \
-	"$(INTDIR)\extendedcoxingersollross.obj" \
-	"$(INTDIR)\hullwhite.obj" \
-	"$(INTDIR)\vasicek.obj" \
-	"$(INTDIR)\g2.obj" \
-	"$(INTDIR)\calibrationhelper.obj" \
-	"$(INTDIR)\model.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\twofactormodel.obj" \
-	"$(INTDIR)\analyticalvanillaengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
-	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
@@ -2634,6 +2521,36 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -2808,6 +2725,24 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\functions\daycounters.cpp
+
+"$(INTDIR)\daycounters.obj"	"$(INTDIR)\daycounters.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\functions\mathf.cpp
+
+"$(INTDIR)\mathf.obj"	"$(INTDIR)\mathf.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\functions\vols.cpp
+
+"$(INTDIR)\vols.obj"	"$(INTDIR)\vols.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Indexes\xibor.cpp
 
 "$(INTDIR)\xibor.obj"	"$(INTDIR)\xibor.sbr" : $(SOURCE) "$(INTDIR)"
@@ -2871,6 +2806,36 @@ SOURCE=.\ql\Instruments\swaption.cpp
 SOURCE=.\ql\Instruments\vanillaoption.cpp
 
 "$(INTDIR)\vanillaoption.obj"	"$(INTDIR)\vanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\binomialtree.cpp
+
+"$(INTDIR)\binomialtree.obj"	"$(INTDIR)\binomialtree.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\bsmlattice.cpp
+
+"$(INTDIR)\bsmlattice.obj"	"$(INTDIR)\bsmlattice.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\lattice.cpp
+
+"$(INTDIR)\lattice.obj"	"$(INTDIR)\lattice.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\lattice2d.cpp
+
+"$(INTDIR)\lattice2d.obj"	"$(INTDIR)\lattice2d.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\trinomialtree.cpp
+
+"$(INTDIR)\trinomialtree.obj"	"$(INTDIR)\trinomialtree.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2991,6 +2956,30 @@ SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
 SOURCE=.\ql\MonteCarlo\performanceoptionpathpricer.cpp
 
 "$(INTDIR)\performanceoptionpathpricer.obj"	"$(INTDIR)\performanceoptionpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Optimization\armijo.cpp
+
+"$(INTDIR)\armijo.obj"	"$(INTDIR)\armijo.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Optimization\conjugategradient.cpp
+
+"$(INTDIR)\conjugategradient.obj"	"$(INTDIR)\conjugategradient.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Optimization\simplex.cpp
+
+"$(INTDIR)\simplex.obj"	"$(INTDIR)\simplex.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Optimization\steepestdescent.cpp
+
+"$(INTDIR)\steepestdescent.obj"	"$(INTDIR)\steepestdescent.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3204,6 +3193,30 @@ SOURCE=.\ql\Pricers\treeswaption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\PricingEngines\analyticalvanillaengine.cpp
+
+"$(INTDIR)\analyticalvanillaengine.obj"	"$(INTDIR)\analyticalvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
+
+"$(INTDIR)\binomialvanillaengine.obj"	"$(INTDIR)\binomialvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
+
+"$(INTDIR)\discretizedvanillaoption.obj"	"$(INTDIR)\discretizedvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
+
+"$(INTDIR)\fdvanillaengine.obj"	"$(INTDIR)\fdvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
 
 "$(INTDIR)\knuthuniformrng.obj"	"$(INTDIR)\knuthuniformrng.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3213,6 +3226,78 @@ SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
 SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
 
 "$(INTDIR)\lecuyeruniformrng.obj"	"$(INTDIR)\lecuyeruniformrng.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.cpp
+
+"$(INTDIR)\caphelper.obj"	"$(INTDIR)\caphelper.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp
+
+"$(INTDIR)\swaptionhelper.obj"	"$(INTDIR)\swaptionhelper.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp
+
+"$(INTDIR)\blackkarasinski.obj"	"$(INTDIR)\blackkarasinski.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\coxingersollross.cpp
+
+"$(INTDIR)\coxingersollross.obj"	"$(INTDIR)\coxingersollross.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.cpp
+
+"$(INTDIR)\extendedcoxingersollross.obj"	"$(INTDIR)\extendedcoxingersollross.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\hullwhite.cpp
+
+"$(INTDIR)\hullwhite.obj"	"$(INTDIR)\hullwhite.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.cpp
+
+"$(INTDIR)\vasicek.obj"	"$(INTDIR)\vasicek.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.cpp
+
+"$(INTDIR)\g2.obj"	"$(INTDIR)\g2.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\calibrationhelper.cpp
+
+"$(INTDIR)\calibrationhelper.obj"	"$(INTDIR)\calibrationhelper.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\model.cpp
+
+"$(INTDIR)\model.obj"	"$(INTDIR)\model.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\onefactormodel.cpp
+
+"$(INTDIR)\onefactormodel.obj"	"$(INTDIR)\onefactormodel.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\ShortRateModels\twofactormodel.cpp
+
+"$(INTDIR)\twofactormodel.obj"	"$(INTDIR)\twofactormodel.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3294,174 +3379,6 @@ SOURCE=.\ql\TermStructures\zerocurve.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Optimization\armijo.cpp
-
-"$(INTDIR)\armijo.obj"	"$(INTDIR)\armijo.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Optimization\conjugategradient.cpp
-
-"$(INTDIR)\conjugategradient.obj"	"$(INTDIR)\conjugategradient.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Optimization\simplex.cpp
-
-"$(INTDIR)\simplex.obj"	"$(INTDIR)\simplex.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Optimization\steepestdescent.cpp
-
-"$(INTDIR)\steepestdescent.obj"	"$(INTDIR)\steepestdescent.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Lattices\binomialtree.cpp
-
-"$(INTDIR)\binomialtree.obj"	"$(INTDIR)\binomialtree.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Lattices\bsmlattice.cpp
-
-"$(INTDIR)\bsmlattice.obj"	"$(INTDIR)\bsmlattice.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Lattices\lattice.cpp
-
-"$(INTDIR)\lattice.obj"	"$(INTDIR)\lattice.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Lattices\lattice2d.cpp
-
-"$(INTDIR)\lattice2d.obj"	"$(INTDIR)\lattice2d.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Lattices\trinomialtree.cpp
-
-"$(INTDIR)\trinomialtree.obj"	"$(INTDIR)\trinomialtree.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\functions\daycounters.cpp
-
-"$(INTDIR)\daycounters.obj"	"$(INTDIR)\daycounters.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\functions\mathf.cpp
-
-"$(INTDIR)\mathf.obj"	"$(INTDIR)\mathf.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\functions\vols.cpp
-
-"$(INTDIR)\vols.obj"	"$(INTDIR)\vols.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.cpp
-
-"$(INTDIR)\caphelper.obj"	"$(INTDIR)\caphelper.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp
-
-"$(INTDIR)\swaptionhelper.obj"	"$(INTDIR)\swaptionhelper.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp
-
-"$(INTDIR)\blackkarasinski.obj"	"$(INTDIR)\blackkarasinski.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\coxingersollross.cpp
-
-"$(INTDIR)\coxingersollross.obj"	"$(INTDIR)\coxingersollross.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.cpp
-
-"$(INTDIR)\extendedcoxingersollross.obj"	"$(INTDIR)\extendedcoxingersollross.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\hullwhite.cpp
-
-"$(INTDIR)\hullwhite.obj"	"$(INTDIR)\hullwhite.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.cpp
-
-"$(INTDIR)\vasicek.obj"	"$(INTDIR)\vasicek.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.cpp
-
-"$(INTDIR)\g2.obj"	"$(INTDIR)\g2.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\calibrationhelper.cpp
-
-"$(INTDIR)\calibrationhelper.obj"	"$(INTDIR)\calibrationhelper.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\model.cpp
-
-"$(INTDIR)\model.obj"	"$(INTDIR)\model.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\onefactormodel.cpp
-
-"$(INTDIR)\onefactormodel.obj"	"$(INTDIR)\onefactormodel.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\ShortRateModels\twofactormodel.cpp
-
-"$(INTDIR)\twofactormodel.obj"	"$(INTDIR)\twofactormodel.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\analyticalvanillaengine.cpp
-
-"$(INTDIR)\analyticalvanillaengine.obj"	"$(INTDIR)\analyticalvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
-
-"$(INTDIR)\binomialvanillaengine.obj"	"$(INTDIR)\binomialvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
-
-"$(INTDIR)\discretizedvanillaoption.obj"	"$(INTDIR)\discretizedvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
-
-"$(INTDIR)\fdvanillaengine.obj"	"$(INTDIR)\fdvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\calendar.cpp
 
 "$(INTDIR)\calendar.obj"	"$(INTDIR)\calendar.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3483,6 +3400,12 @@ SOURCE=.\ql\dataparsers.cpp
 SOURCE=.\ql\date.cpp
 
 "$(INTDIR)\date.obj"	"$(INTDIR)\date.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\exercise.cpp
+
+"$(INTDIR)\exercise.obj"	"$(INTDIR)\exercise.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

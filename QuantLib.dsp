@@ -1679,6 +1679,10 @@ SOURCE=.\ql\Volatilities\capflatvolvector.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\impliedvoltermstructure.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\localconstantvol.hpp
 # End Source File
 # Begin Source File
