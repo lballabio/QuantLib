@@ -29,7 +29,7 @@ subscribe before posting
 
 If you are interested in participating in QuantLib development, please
 send mail to Ferdinando Ametrano -- nando AT ametrano DOT net --
-and/or Luigi Ballabio -- luigi DOT ballabio AT fastwebnet DOT it --
+and/or Luigi Ballabio -- luigi DOT ballabio AT gmail DOT com --
 describing your experience and interests.
 
 
