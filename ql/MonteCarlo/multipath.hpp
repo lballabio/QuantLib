@@ -46,7 +46,7 @@ namespace QuantLib {
         class MultiPath {
           public:
             MultiPath(Size nAsset,
-                      Size pathSize);
+                      const TimeGrid& timeGrid);
             MultiPath(const std::vector<Path>& multiPath);
             //! \name inspectors
             //@{
@@ -64,12 +64,10 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline MultiPath::MultiPath(Size nAsset, Size pathSize)
-            : multiPath_(nAsset,Path(pathSize)) {
+        inline MultiPath::MultiPath(Size nAsset, const TimeGrid& timeGrid)
+            : multiPath_(nAsset,Path(timeGrid)) {
             QL_REQUIRE(nAsset > 0,
                 "MultiPath: number of asset must be > zero");
-            QL_REQUIRE(pathSize > 0,
-                "MultiPath: pathSize must be > zero");
         }
 
         inline MultiPath::MultiPath(const std::vector<Path>& multiPath)
