@@ -37,14 +37,23 @@ docs-html-online:
 	cp images/*.png html
 	cp images/*.eps latex
 	cp images/*.pdf latex
+# the targets below have somehow to work around a bug in Doxygen
 docs-pdf: tex-files
-	cd latex && $(TEX_PARAMETERS) $(PDFLATEX) refman
+	cd latex && \
+	    $(TEX_PARAMETERS) $(PDFLATEX) '\scrollmode\input refman' || \
+	    echo Recovering from failed LaTeX run
 	cd latex && $(MAKEINDEX) refman
-	cd latex && $(TEX_PARAMETERS) $(PDFLATEX) refman
+	cd latex && \
+	    $(TEX_PARAMETERS) $(PDFLATEX) '\scrollmode\input refman' || \
+	    echo Recovering from failed LaTeX run
 docs-ps: tex-files
-	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
+	cd latex && \
+	    $(TEX_PARAMETERS) $(LATEX) '\scrollmode\input refman' || \
+	    echo Recovering from failed LaTeX run
 	cd latex && $(MAKEINDEX) refman
-	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
+	cd latex && \
+	    $(TEX_PARAMETERS) $(LATEX) '\scrollmode\input refman' || \
+	    echo Recovering from failed LaTeX run
 	cd latex && $(DVIPS) refman
 docs-man: docs-html
 docs-clean:
