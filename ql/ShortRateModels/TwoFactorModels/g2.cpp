@@ -31,16 +31,8 @@ namespace QuantLib {
       rho_(arguments_[4]) {
         a_ = ConstantParameter(a, PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
-		b_ = ConstantParameter(b, PositiveConstraint());
+        b_ = ConstantParameter(b, PositiveConstraint());
         eta_ = ConstantParameter(eta, PositiveConstraint());
-
-        /*
-        a_ = ConstantParameter(a, BoundaryConstraint(0.0, 0.1));
-        sigma_ = ConstantParameter(sigma, BoundaryConstraint(0.015, 1.0));
-        b_ = ConstantParameter(b, BoundaryConstraint(0.0, 0.1));
-        eta_ = ConstantParameter(eta, BoundaryConstraint(0.01, 1.0));
-		*/
-
         rho_ = ConstantParameter(rho, BoundaryConstraint(-1.0, -0.65));
         generateArguments();
     }
@@ -51,7 +43,7 @@ namespace QuantLib {
     }
 
     void G2::generateArguments() {
-		
+        
         phi_ = FittingParameter(termStructure(), 
                                 a(), sigma(), b(), eta(), rho());
     }
@@ -124,20 +116,16 @@ namespace QuantLib {
                 ((a_+b_)*sigmax_*sigmay_);
 
             Real temp = sigma_*sigma_/(a_*a_);
-            mux_ = -(
-				(temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-a*T_)) -
-                0.5*temp*(1.0 - QL_EXP(-2.0*a_*T_)) -
-                rho_*sigma_*eta_/(b_*(a_+b_))*
-                (1.0- QL_EXP(-(b_+a_)*T_))
-				);
+            mux_ = -((temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-a*T_)) -
+                     0.5*temp*(1.0 - QL_EXP(-2.0*a_*T_)) -
+                     rho_*sigma_*eta_/(b_*(a_+b_))*
+                     (1.0- QL_EXP(-(b_+a_)*T_)));
 
             temp = eta_*eta_/(b_*b_);
-            muy_ = -(
-				(temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-b*T_)) -
-                0.5*temp*(1.0 - QL_EXP(-2.0*b_*T_)) -
-                rho_*sigma_*eta_/(a_*(a_+b_))*
-                (1.0- QL_EXP(-(b_+a_)*T_))
-				);
+            muy_ = -((temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-b*T_)) -
+                     0.5*temp*(1.0 - QL_EXP(-2.0*b_*T_)) -
+                     rho_*sigma_*eta_/(a_*(a_+b_))*
+                     (1.0- QL_EXP(-(b_+a_)*T_)));
 
             for (Size i=0; i<size_; i++) {
                 A_[i] = model.A(T_, t_[i]);
@@ -146,11 +134,9 @@ namespace QuantLib {
             }
         }
 
-		Real mux() const { return mux_;}
-		Real sigmax() const { return sigmax_;}
-
+        Real mux() const { return mux_; }
+        Real sigmax() const { return sigmax_; }
         Real operator()(Real x) const {
-			
             CumulativeNormalDistribution phi;
             Real temp = (x - mux_)/sigmax_;
             Real txy = QL_SQRT(1.0 - rhoxy_*rhoxy_);
@@ -159,9 +145,9 @@ namespace QuantLib {
             Size i;
             for (i=0; i<size_; i++) {
                 Real tau = (i==0 ? t_[0] - T_ : t_[i] - t_[i-1]);
-				Real c = (i==size_-1 ? (1.0+rate_*tau) : rate_*tau);
+                Real c = (i==size_-1 ? (1.0+rate_*tau) : rate_*tau);
                 lambda[i] = c*A_[i]*QL_EXP(-Ba_[i]*x);
-			}
+            }
 
             SolvingFunction function(lambda, Bb_) ;
             Brent s1d;
@@ -172,7 +158,7 @@ namespace QuantLib {
                 rhoxy_*(x  - mux_)/(sigmax_*txy);
             Real value = phi(-w_*h1);
 
-			
+            
             for (i=0; i<size_; i++) {
                 Real h2 = h1 + 
                     Bb_[i]*sigmay_*QL_SQRT(1.0-rhoxy_*rhoxy_);
@@ -213,20 +199,20 @@ namespace QuantLib {
         Real mux_, muy_, sigmax_, sigmay_, rhoxy_;
     };
 
-    Real G2::swaption(const Swaption::arguments& arguments, Real range, Size intervals) const {
- 		
-		
-		Time start = arguments.floatingResetTimes[0];
+    Real G2::swaption(const Swaption::arguments& arguments,
+                      Real range, Size intervals) const {
+
+        Time start = arguments.floatingResetTimes[0];
         Real w = (arguments.payFixed ? 1 : -1 );
         SwaptionPricingFunction function(a(), sigma(), b(), eta(), rho(), 
                                          w, start, 
                                          arguments.floatingPayTimes, 
                                          arguments.fixedRate, (*this));
 
-		Real upper = function.mux() + range*function.sigmax();
-		Real lower = function.mux() - range*function.sigmax();
+        Real upper = function.mux() + range*function.sigmax();
+        Real lower = function.mux() - range*function.sigmax();
 
-		SegmentIntegral integrator(intervals);
+        SegmentIntegral integrator(intervals);
 
         return arguments.nominal*w*termStructure()->discount(start)*
             integrator(function, lower, upper);
