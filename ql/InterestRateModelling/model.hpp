@@ -86,8 +86,6 @@ namespace QuantLib {
                 return Null<double>();
             }
 
-            virtual void reconfigure(const std::list<Time>& times_) = 0;
-
             void calibrate(
                 const Handle<Minimizer>& minimizer,
                 std::vector<Handle<CalibrationHelper> >& instruments);
