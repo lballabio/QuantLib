@@ -24,9 +24,13 @@
 
 class DigitalOptionTest : public CppUnit::TestFixture {
   public:
-    void testValues();    
-    void testAmericanValues();    
-    void testSelfConsistency();
+    void testCashOrNothingValues();    
+    void testAssetOrNothingValues();    
+    void testGapValues();
+    
+    void testCashOrNothingAmericanValues();    
+    void testCashOrNothingAmericanGreeks();
+
     void testEngineConsistency();
     static CppUnit::Test* suite();
 };

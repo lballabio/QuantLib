@@ -18,8 +18,7 @@
 */
 
 #include "digitaloption.hpp"
-#include <ql/Calendars/nullcalendar.hpp>
-#include <ql/DayCounters/actual360.hpp>
+#include <ql/DayCounters/Actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
@@ -50,158 +49,402 @@ namespace {
             BlackConstantVol(today, RelinkableHandle<Quote>(volatility), dc));
     }
 
+    std::string payoffTypeToString(const Handle<Payoff>& payoff) {
+
+        // PlainVanillaPayoff?
+        Handle<PlainVanillaPayoff> pv;
+        #if defined(HAVE_BOOST)
+        pv = boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
+        #else
+        try {
+            pv = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(pv)) {
+            // ok, the payoff is PlainVanillaPayoff
+            return "PlainVanillaPayoff";
+        }
+
+        // CashOrNothingPayoff?
+        Handle<CashOrNothingPayoff> coo;
+        #if defined(HAVE_BOOST)
+        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
+        #else
+        try {
+            coo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(coo)) {
+            // ok, the payoff is CashOrNothingPayoff
+            return "Cash ("
+                + DoubleFormatter::toString(coo->cashPayoff())
+                + ") or Nothing Payoff";
+        }
+
+        // AssetOrNothingPayoff?
+        Handle<AssetOrNothingPayoff> aoo;
+        #if defined(HAVE_BOOST)
+        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
+        #else
+        try {
+            aoo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(aoo)) {
+            // ok, the payoff is AssetOrNothingPayoff
+            return "AssetOrNothingPayoff";
+        }
+
+        // GapPayoff?
+        Handle<GapPayoff> gap;
+        #if defined(HAVE_BOOST)
+        gap = boost::dynamic_pointer_cast<GapPayoff>(payoff);
+        #else
+        try {
+            gap = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(gap)) {
+            // ok, the payoff is GapPayoff
+            return "Gap ("
+                + DoubleFormatter::toString(gap->strikePayoff())
+                + " strike) Payoff";
+        }
+
+        // SuperSharePayoff?
+        Handle<SuperSharePayoff> ss;
+        #if defined(HAVE_BOOST)
+        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
+        #else
+        try {
+            ss = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(ss)) {
+            // ok, the payoff is SuperSharePayoff
+            return "SuperSharePayoff";
+        }
+
+        throw Error("payoffTypeToString : unknown payoff type");
+    }
+
+
+    std::string exerciseTypeToString(const Handle<Exercise>& exercise) {
+
+        // EuropeanExercise?
+        Handle<EuropeanExercise> european;
+        #if defined(HAVE_BOOST)
+        european = boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        #else
+        try {
+            european = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(european)) {
+            return "European";
+        }
+
+        // AmericanExercise?
+        Handle<AmericanExercise> american;
+        #if defined(HAVE_BOOST)
+        american = boost::dynamic_pointer_cast<AmericanExercise>(exercise);
+        #else
+        try {
+            american = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(american)) {
+            return "American";
+        }
+
+        // BermudanExercise?
+        Handle<BermudanExercise> bermudan;
+        #if defined(HAVE_BOOST)
+        bermudan = boost::dynamic_pointer_cast<BermudanExercise>(exercise);
+        #else
+        try {
+            bermudan = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(bermudan)) {
+            return "Bermudan";
+        }
+
+        throw Error("exerciseTypeToString : unknown exercise type");
+    }
+
+    void vanillaOptionTestFailed(std::string greekName,
+               const Handle<StrikedTypePayoff>& payoff,
+               const Handle<Exercise>& exercise,
+               double s,
+               double q,
+               double r,
+               Date today,
+               double v,
+               double expected,
+               double calculated,
+               double tolerance = Null<double>()) {
+      CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+          + OptionTypeFormatter::toString(payoff->optionType()) +
+          " option with "
+          + payoffTypeToString(payoff) + ":\n"
+          "    underlying value: "
+          + DoubleFormatter::toString(s) + "\n"
+          "    strike:           "
+          + DoubleFormatter::toString(payoff->strike()) +"\n"
+          "    dividend yield:   "
+          + DoubleFormatter::toString(q) + "\n"
+          "    risk-free rate:   "
+          + DoubleFormatter::toString(r) + "\n"
+          "    reference date:   "
+          + DateFormatter::toString(today) + "\n"
+          "    maturity:         "
+          + DateFormatter::toString(exercise->lastDate()) + "\n"
+          "    volatility:       "
+          + DoubleFormatter::toString(v) + "\n\n"
+          "    expected   " + greekName + ": "
+          + DoubleFormatter::toString(expected) + "\n"
+          "    calculated " + greekName + ": "
+          + DoubleFormatter::toString(calculated) + "\n"
+          "    error:            "
+          + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
+          + (tolerance==Null<double>() ? "" :
+          "    tolerance:        " + DoubleFormatter::toString(tolerance)));
+    }
+
     struct DigitalOptionData {
-        Option::Type optionType;
-        int years;
-        double volatility;
-        Rate rate;
-        Rate dividendYield;
+        Option::Type type;
         double strike;
-        double cashPayoff;
-        double value;
+        double extraParameter;
+        double s;      // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
+        Time t;        // time to maturity
+        double v;      // volatility
+        double result; // expected result
+        double tol;    // tolerance
     };
 
-    double relError(double x1, double x2, double ref) {
-        if (ref != 0.0)
-            return QL_FABS((x1-x2)/ref);
+    double relativeError(double x1, double x2, double reference) {
+        if (reference != 0.0)
+            return QL_FABS((x1-x2)/reference);
         else
             return 1.0e+10;
     }
 
 }
 
-void DigitalOptionTest::testValues() {
-
-    double maxErrorAllowed = 1.0e-4;
-    double underlyingPrice = 100.0;
-    Rate r = QL_LOG(1.09);
-    Rate q = QL_LOG(1.03);
-
+void DigitalOptionTest::testCashOrNothingValues() {
 
     DigitalOptionData values[] = {
-        { Option::Call, 1, 0.2, 0.05, 0.02, 110, 100.0, 35.283179 }
+        //        type, strike, payoff,  spot,            q,            r,    t,  vol,     value, tol
+        // unknow source
+        { Option::Call, 110.00, 100.00, 100.0,     0.029559,     0.086178, 1.00, 0.20, 35.283179, 1e-4 },
+        { Option::Call, 110.00, 100.00, 100.0, QL_LOG(1.03), QL_LOG(1.09), 1.00, 0.20, 35.283179, 1e-4 },
+        // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
+        { Option::Put,   80.00,  10.00, 100.0,         0.06,         0.06, 0.75, 0.35,    2.6710, 1e-4 }
     };
 
-    Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyingPrice));
-    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, Actual360());
-    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, Actual360());
-
-    Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.25));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME,
-        Actual360());
-
-    Handle<Quote> underlyingH = underlyingH_SME;
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     Date today = Date::todaysDate();
-//    Calendar calendar = NullCalendar();
 
     for (Size i=0; i<LENGTH(values); i++) {
-        volatilityH_SME->setValue(values[i].volatility);
 
-        Date exDate = today.plusDays(values[i].years*360);
+        Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
+            values[i].type, values[i].strike, values[i].extraParameter));
+
+        Date exDate = today.plusDays(values[i].t*360);
         Handle<Exercise> exercise(new EuropeanExercise(exDate));
-        Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
 
-        Handle<Payoff> payoff(new CashOrNothingPayoff(
-            Option::Call, values[i].strike, values[i].cashPayoff));
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
 
-        VanillaOption opt(payoff,
-                          exercise,
-                          RelinkableHandle<Quote>(underlyingH),
+        VanillaOption opt(payoff, exercise,
+                          RelinkableHandle<Quote>(spot),
                           RelinkableHandle<TermStructure>(qTS),
                           RelinkableHandle<TermStructure>(rTS),
                           RelinkableHandle<BlackVolTermStructure>(volTS),
                           engine);
 
         double calculated = opt.NPV();
-        double expected = values[i].value;
-        if (QL_FABS(calculated-expected) > maxErrorAllowed) {
-            CPPUNIT_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
-                "Call option:\n"
-                    "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DoubleFormatter::toString(expected));
+        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
+                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].tol);
         }
     }
 }
 
-void DigitalOptionTest::testAmericanValues() {
+void DigitalOptionTest::testAssetOrNothingValues() {
 
-    double maxErrorAllowed = 1.0e-4;
-
-    double underlyingPrice = 100.0;
-    Rate r = 0.01;
-    Rate q = 0.04;
-
+    // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 90
     DigitalOptionData values[] = {
-        { Option::Call, 1, 0.11, 0.01, 0.04, 100.5, 100, 94.8825 },
-        { Option::Call, 1, 0.11, 0.01, 0.00, 100.5, 100, 96.5042 },
-        { Option::Call, 1, 0.11, 0.01, 0.04, 120.0, 100,  5.5676 },
-        { Option::Call, 1, 0.20, 0.01, 0.04, 100.5, 100, 97.3989 },
-        { Option::Call, 1, 0.11, 0.10, 0.04, 100.5, 100, 97.9405 },
-        { Option::Call, 2, 0.11, 0.01, 0.04, 100.5, 100, 95.8913 },
-        { Option::Put,  1, 0.11, 0.01, 0.04,  99.5, 100, 97.7331 },
-        { Option::Put,  1, 0.11, 0.01, 0.00,  99.5, 100, 96.1715 },
-        { Option::Put,  1, 0.11, 0.01, 0.04,  80.0, 100,  8.1172 },
-        { Option::Put,  1, 0.20, 0.01, 0.04,  99.5, 100, 98.6140 },
-        { Option::Put,  1, 0.11, 0.10, 0.04,  99.5, 100, 93.6491 },
-        { Option::Put,  2, 0.11, 0.01, 0.04,  99.5, 100, 98.7776 }
+        //        type, strike, unused,  spot,    q,    r,    t,  vol,   value, tol
+        { Option::Put,   65.00,   0.00,  70.0, 0.05, 0.07, 0.50, 0.27, 20.2069, 1e-4 }
     };
 
-    Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyingPrice));
-    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, Actual360());
-    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, Actual360());
-
-    Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.25));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME,
-        Actual360());
-
-    Handle<Quote> underlyingH = underlyingH_SME;
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     Date today = Date::todaysDate();
-//    Calendar calendar = NullCalendar();
 
     for (Size i=0; i<LENGTH(values); i++) {
-        volatilityH_SME->setValue(values[i].volatility);
-        rH_SME->setValue(values[i].rate);
-        qH_SME->setValue(values[i].dividendYield);
 
-        Date exDate = today.plusDays(values[i].years*360);
-        Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
-        Handle<PricingEngine> engine(new AnalyticAmericanEngine);
+        Handle<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
+            values[i].type, values[i].strike));
 
-        Handle<Payoff> payoff(new CashOrNothingPayoff(
-            values[i].optionType, values[i].strike, values[i].cashPayoff));
+        Date exDate = today.plusDays(values[i].t*360);
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
-        VanillaOption opt(payoff,
-                          amExercise,
-                          RelinkableHandle<Quote>(underlyingH),
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        VanillaOption opt(payoff, exercise,
+                          RelinkableHandle<Quote>(spot),
                           RelinkableHandle<TermStructure>(qTS),
                           RelinkableHandle<TermStructure>(rTS),
                           RelinkableHandle<BlackVolTermStructure>(volTS),
                           engine);
 
         double calculated = opt.NPV();
-        double expected = values[i].value;
-        if (QL_FABS(calculated-expected) > maxErrorAllowed) {
-            CPPUNIT_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
-                "Call option:\n"
-                    "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DoubleFormatter::toString(expected));
+        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
+                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].tol);
         }
     }
 }
 
-void DigitalOptionTest::testSelfConsistency() {
+void DigitalOptionTest::testGapValues() {
+
+    // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
+    DigitalOptionData values[] = {
+        //        type, strike, strikePayoff,  spot,    q,    r,    t,  vol,   value, tol
+        { Option::Call,  50.00,        57.00,  50.0, 0.00, 0.09, 0.50, 0.20, -0.0053, 1e-4 }
+    };
+
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
+
+    Date today = Date::todaysDate();
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        Handle<StrikedTypePayoff> payoff(new GapPayoff(
+            values[i].type, values[i].strike, values[i].extraParameter));
+
+        Date exDate = today.plusDays(values[i].t*360);
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        VanillaOption opt(payoff, exercise,
+                          RelinkableHandle<Quote>(spot),
+                          RelinkableHandle<TermStructure>(qTS),
+                          RelinkableHandle<TermStructure>(rTS),
+                          RelinkableHandle<BlackVolTermStructure>(volTS),
+                          engine);
+
+        double calculated = opt.NPV();
+        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
+                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].tol);
+        }
+    }
+}
+
+void DigitalOptionTest::testCashOrNothingAmericanValues() {
+
+    // unknown source
+    DigitalOptionData values[] = {
+        //        type, strike, payoff,   spot,    q,    r,   t,  vol,   value, tol
+        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11, 94.8825, 1e-4 },
+        { Option::Call, 100.50, 100.00, 100.00, 0.00, 0.01, 1.0, 0.11, 96.5042, 1e-4 },
+        { Option::Call, 120.00, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11,  5.5676, 1e-4 },
+        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.20, 97.3989, 1e-4 },
+        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.10, 1.0, 0.11, 97.9405, 1e-4 },
+        { Option::Call, 100.50, 100.00, 100.00, 0.04, 0.01, 2.0, 0.11, 95.8913, 1e-4 },
+        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11, 97.7331, 1e-4 },
+        { Option::Put,   99.50, 100.00, 100.00, 0.00, 0.01, 1.0, 0.11, 96.1715, 1e-4 },
+        { Option::Put,   80.00, 100.00, 100.00, 0.04, 0.01, 1.0, 0.11,  8.1172, 1e-4 },
+        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 1.0, 0.20, 98.6140, 1e-4 },
+        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.10, 1.0, 0.11, 93.6491, 1e-4 },
+        { Option::Put,   99.50, 100.00, 100.00, 0.04, 0.01, 2.0, 0.11, 98.7776, 1e-4 }
+    };
+
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(100.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.04));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.01));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.25));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    Handle<PricingEngine> engine(new AnalyticAmericanEngine);
+
+    Date today = Date::todaysDate();
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
+            values[i].type, values[i].strike, values[i].extraParameter));
+
+        Date exDate = today.plusDays(values[i].t*360);
+        Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        VanillaOption opt(payoff, amExercise,
+                          RelinkableHandle<Quote>(spot),
+                          RelinkableHandle<TermStructure>(qTS),
+                          RelinkableHandle<TermStructure>(rTS),
+                          RelinkableHandle<BlackVolTermStructure>(volTS),
+                          engine);
+
+        double calculated = opt.NPV();
+        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+            vanillaOptionTestFailed("value", payoff, amExercise, values[i].s, values[i].q,
+                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].tol);
+        }
+    }
+}
+
+void DigitalOptionTest::testCashOrNothingAmericanGreeks() {
 
     std::map<std::string,double> calculated, expected, tolerance;
     tolerance["delta"]  = 5.0e-5;
@@ -211,29 +454,26 @@ void DigitalOptionTest::testSelfConsistency() {
     tolerance["divRho"] = 5.0e-5;
     tolerance["vega"]   = 5.0e-5;
 
-    double cashPayoff = 100.0;
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-    double underlyings[] = { 100 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Rate qRates[] = { 0.04, 0.05, 0.06 };
-    Time residualTimes[] = { 1.0, 2.0 };
     double strikes[] = { 50.0, 99.5, 100.5, 150.0 };
-    double volatilities[] = { 0.11, 0.5, 1.2 };
+    double cashPayoff = 100.0;
+    double underlyings[] = { 100 };
+    Rate qRates[] = { 0.04, 0.05, 0.06 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    double vols[] = { 0.11, 0.5, 1.2 };
 
-    Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyings[0]));
-    Handle<SimpleQuote> rH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, Actual360());
-    Handle<SimpleQuote> qH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, Actual360());
-
-    Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME,
-        Actual360());
-
-    Handle<Quote> underlyingH = underlyingH_SME;
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
 
     Date today = Date::todaysDate();
-//    Calendar calendar = NullCalendar();
+
+    // there is no cycling on different residual times
     Date exDate = today.plusDays(360);
     Handle<Exercise> exercise(new EuropeanExercise(exDate));
     Handle<Exercise> amExercise(new AmericanExercise(today, exDate, false));
@@ -260,145 +500,109 @@ void DigitalOptionTest::testSelfConsistency() {
 
     for (Size j=0; j<LENGTH(engines); j++) {
       for (Size i1=0; i1<LENGTH(types); i1++) {
-        for (Size i2=0; i2<LENGTH(underlyings); i2++) {
-          for (Size i3=0; i3<LENGTH(rRates); i3++) {
+        for (Size i6=0; i6<LENGTH(strikes); i6++) {
+            Handle<Payoff> payoff(new CashOrNothingPayoff(types[i1],
+              strikes[i6], cashPayoff));
+
+            // reference option
+            VanillaOption opt(payoff, exercises[j],
+                              RelinkableHandle<Quote>(spot),
+                              RelinkableHandle<TermStructure>(qTS),
+                              RelinkableHandle<TermStructure>(rTS),
+                              RelinkableHandle<BlackVolTermStructure>(volTS),
+                              engines[j]);
+            // reference option with shifted exercise date 
+            VanillaOption optP(payoff, exercisesP[j],
+                               RelinkableHandle<Quote>(spot),
+                               RelinkableHandle<TermStructure>(qTS),
+                               RelinkableHandle<TermStructure>(rTS),
+                               RelinkableHandle<BlackVolTermStructure>(volTS),
+                               engines[j]);
+            // reference option with shifted exercise date 
+            VanillaOption optM(payoff, exercisesM[j],
+                               RelinkableHandle<Quote>(spot),
+                               RelinkableHandle<TermStructure>(qTS),
+                               RelinkableHandle<TermStructure>(rTS),
+                               RelinkableHandle<BlackVolTermStructure>(volTS),
+                               engines[j]);
+          for (Size i2=0; i2<LENGTH(underlyings); i2++) {
             for (Size i4=0; i4<LENGTH(qRates); i4++) {
-              for (Size i6=0; i6<LENGTH(strikes); i6++) {
-                for (Size i7=0; i7<LENGTH(volatilities); i7++) {
+              for (Size i3=0; i3<LENGTH(rRates); i3++) {
+                for (Size i7=0; i7<LENGTH(vols); i7++) {
                   // test data
-                  Option::Type type = types[i1];
                   double u = underlyings[i2];
-                  Rate r = rRates[i3];
-                  rH_SME->setValue(r);
-
                   Rate q = qRates[i4];
-                  qH_SME->setValue(q);
+                  Rate r = rRates[i3];
+                  double v = vols[i7];
+                  spot->setValue(u);
+                  qRate->setValue(q);
+                  rRate->setValue(r);
+                  vol->setValue(v);
 
-                  Time T = residualTimes[0];
-                  double k = strikes[i6];
+                  // just delta and rho are available for digital option with
+                  // american exercise. Greeks of digital options with european
+                  // payoff are tested in the europeanoption.cpp test
+                  double value         = opt.NPV();
+                  calculated["delta"]  = opt.delta();
+                  //calculated["gamma"]  = opt.gamma();
+                  //calculated["theta"]  = opt.theta();
+                  calculated["rho"]    = opt.rho();
+                  //calculated["divRho"] = opt.dividendRho();
+                  //calculated["vega"]   = opt.vega();
 
-                  double v = volatilities[i7];
-                  volatilityH_SME->setValue(v);
-
-                  // increments
-                  double dS = u*1.0e-4;
-                  double dV = v*1.0e-4;
-                  Spread dR = r*1.0e-4;
-                  Spread dQ = q*1.0e-4;
-
-                  Handle<Payoff> payoff(new CashOrNothingPayoff(type,
-                      k, cashPayoff));
-
-                  // reference option
-                  VanillaOption opt(payoff,
-                                    exercises[j],
-                                    RelinkableHandle<Quote>(underlyingH),
-                                    RelinkableHandle<TermStructure>(qTS),
-                                    RelinkableHandle<TermStructure>(rTS),
-                                    RelinkableHandle<BlackVolTermStructure>(
-                                                                       volTS),
-                                    engines[j]);
-                  // reference option with shifted exercise date 
-                  VanillaOption optP(payoff,
-                                    exercisesP[j],
-                                    RelinkableHandle<Quote>(underlyingH),
-                                    RelinkableHandle<TermStructure>(qTS),
-                                    RelinkableHandle<TermStructure>(rTS),
-                                    RelinkableHandle<BlackVolTermStructure>(
-                                                                       volTS),
-                                    engines[j]);
-                  // reference option with shifted exercise date 
-                  VanillaOption optM(payoff,
-                                    exercisesM[j],
-                                    RelinkableHandle<Quote>(underlyingH),
-                                    RelinkableHandle<TermStructure>(qTS),
-                                    RelinkableHandle<TermStructure>(rTS),
-                                    RelinkableHandle<BlackVolTermStructure>(
-                                                                       volTS),
-                                    engines[j]);
                   if (opt.NPV() > 1.0e-6) {
+                      // perturb spot and get delta and gamma
+                      double du = u*1.0e-4;
+                      spot->setValue(u+du);
+                      double value_p = opt.NPV(),
+                             delta_p = opt.delta();
+                      spot->setValue(u-du);
+                      double value_m = opt.NPV(),
+                             delta_m = opt.delta();
+                      spot->setValue(u);
+                      expected["delta"] = (value_p - value_m)/(2*du);
+                      expected["gamma"] = (delta_p - delta_m)/(2*du);
 
-                      // bump r up
-                      rH_SME->setValue(r+dR);
-                      double optPrValue = opt.NPV();
-                      // bump r down
-                      rH_SME->setValue(r-dR);
-                      double optMrValue = opt.NPV();
-                      rH_SME->setValue(r);
-                      expected["rho"]   =  (optPrValue-optMrValue)/(2*dR);
-                      calculated["rho"] = opt.rho();
+                      // perturb rates and get rho and dividend rho
+                      double dr = r*1.0e-4;
+                      rRate->setValue(r+dr);
+                      value_p = opt.NPV();
+                      rRate->setValue(r-dr);
+                      value_m = opt.NPV();
+                      rRate->setValue(r);
+                      expected["rho"] = (value_p - value_m)/(2*dr);
 
-                      // bump u up
-                      underlyingH_SME->setValue(u+dS);
-                      double optPsValue = opt.NPV();
-                      double optPsDelta = opt.delta();
-                      // bump u down
-                      underlyingH_SME->setValue(u-dS);
-                      double optMsValue = opt.NPV();
-                      double optMsDelta = opt.delta();
-                      underlyingH_SME->setValue(u);
-                      expected["delta"]   = (optPsValue-optMsValue)/(2*dS);
-                      calculated["delta"] = opt.delta();
+                      double dq = q*1.0e-4;
+                      qRate->setValue(q+dq);
+                      value_p = opt.NPV();
+                      qRate->setValue(q-dq);
+                      value_m = opt.NPV();
+                      qRate->setValue(q);
+                      expected["divRho"] = (value_p - value_m)/(2*dq);
 
-                      // just delta and rho are available for american exercise
-/*
-                      expected["gamma"]   = (optPsDelta-optMsDelta)/(2*dS);
-                      calculated["gamma"] = opt.gamma();
+                      // perturb volatility and get vega
+                      double dv = v*1.0e-4;
+                      vol->setValue(v+dv);
+                      value_p = opt.NPV();
+                      vol->setValue(v-dv);
+                      value_m = opt.NPV();
+                      vol->setValue(v);
+                      expected["vega"] = (value_p - value_m)/(2*dv);
 
-                      // bump q up
-                      qH_SME->setValue(q+dQ);
-                      double optPqValue = opt.NPV();
-                      // bump q down
-                      qH_SME->setValue(q-dQ);
-                      double optMqValue = opt.NPV();
-                      qH_SME->setValue(q);
-                      expected["divRho"]   =  (optPqValue-optMqValue)/(2*dQ);
-                      calculated["divRho"] = opt.dividendRho();
-
-                      // bump v up
-                      volatilityH_SME->setValue(v+dV);
-                      double optPvValue = opt.NPV();
-                      // bump v down
-                      volatilityH_SME->setValue(v-dV);
-                      double optMvValue = opt.NPV();
-                      volatilityH_SME->setValue(v);
-                      expected["vega"]   =  (optPvValue-optMvValue)/(2*dV);
-                      calculated["vega"]   = opt.vega();
-
-
-                      expected["theta"]  = (optM.NPV()-optP.NPV())/dT;
-                      calculated["theta"]  = opt.theta();
-*/
+                      // get theta from time-shifted options
+                      expected["theta"] = (optM.NPV() - optP.NPV())/dT;
 
                       // check
                       std::map<std::string,double>::iterator it;
-                      for (it = expected.begin(); it != expected.end(); ++it) {
+                      for (it = calculated.begin(); it != calculated.end(); ++it) {
                           std::string greek = it->first;
-                          double expct = expected[greek];
-                          double calcl = calculated[greek];
-                          double tol = tolerance[greek];
-                          if (relError(expct,calcl,u) > tol)
-                              CPPUNIT_FAIL(
-                                  "Option details: \n"
-                                  "    type:           " +
-                                  OptionTypeFormatter::toString(type) + "\n"
-                                  "    underlying:     " +
-                                  DoubleFormatter::toString(u) + "\n"
-                                  "    strike:         " +
-                                  DoubleFormatter::toString(k) + "\n"
-                                  "    dividend yield: " +
-                                  RateFormatter::toString(q) + "\n"
-                                  "    risk-free rate: " +
-                                  RateFormatter::toString(r) + "\n"
-                                  "    residual time:  " +
-                                  DoubleFormatter::toString(T) + "\n"
-                                  "    volatility:     " +
-                                  RateFormatter::toString(v) + "\n\n"
-                                  "    calculated " + greek + ": " +
-                                  DoubleFormatter::toString(calcl) + "\n"
-                                  "    expected:    " +
-                                  std::string(greek.size(),' ') +
-                                  DoubleFormatter::toString(expct));
+                          double expct = expected  [greek],
+                                 calcl = calculated[greek],
+                                 tol   = tolerance [greek];
+                          if (relativeError(expct,calcl,u) > tol) {
+                              vanillaOptionTestFailed(greek, payoff, exercise, u, q, r, today,
+                                  v, expct, calcl, tol);
+                          }
                       }
                   }
                 }
@@ -410,6 +614,7 @@ void DigitalOptionTest::testSelfConsistency() {
     }
 }
 
+// should be refactored as testEngineConsistency in europeanoption.cpp
 void DigitalOptionTest::testEngineConsistency() {
 
     double calcAnalytic, calcMC;
@@ -435,20 +640,19 @@ void DigitalOptionTest::testEngineConsistency() {
     //double strikes[] = { 50, 99.5 };
     double volatilities[] = { 0.11, 0.5, 1.2 };
 
-    Handle<SimpleQuote> underlyingH_SME(new SimpleQuote(underlyings[0]));
-    Handle<SimpleQuote> rH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, Actual360());
-    Handle<SimpleQuote> qH_SME(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, Actual360());
+    Handle<SimpleQuote> spot(new SimpleQuote(underlyings[0]));
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, Actual360());
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, Actual360());
 
-    Handle<SimpleQuote> volatilityH_SME(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME,
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol,
         Actual360());
 
-    Handle<Quote> underlyingH = underlyingH_SME;
+    Handle<Quote> underlyingH = spot;
 
     Date today = Date::todaysDate();
-//    Calendar calendar = NullCalendar();
     Date exDate = today.plusDays(360);
     Handle<Exercise> exercise(new EuropeanExercise(exDate));
     Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
@@ -480,16 +684,16 @@ void DigitalOptionTest::testEngineConsistency() {
                   Option::Type type = types[i1];
                   double u = underlyings[i2];
                   Rate r = rRates[i3];
-                  rH_SME->setValue(r);
+                  rRate->setValue(r);
 
                   Rate q = qRates[i4];
-                  qH_SME->setValue(q);
+                  qRate->setValue(q);
 
                   Time T = residualTimes[0];
                   double strike = strikes[i6];
 
                   double v = volatilities[i7];
-                  volatilityH_SME->setValue(v);
+                  vol->setValue(v);
 
                   Handle<Payoff> payoff(new CashOrNothingPayoff(
                       type, strike, cashPayoff));
@@ -514,7 +718,7 @@ void DigitalOptionTest::testEngineConsistency() {
                   //    << std::endl;
 
                   // check
-                  if (relError(calcAnalytic,calcMC,u) > tolerance) {
+                  if (relativeError(calcAnalytic,calcMC,u) > tolerance) {
                       CPPUNIT_FAIL(
                           "Option details: \n"
                           "    type:           " +
@@ -552,14 +756,22 @@ CppUnit::Test* DigitalOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Digital option tests");
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing European digital option",
-                    &DigitalOptionTest::testValues));
+                   ("Testing European Cash-or-Nothing digital option",
+                    &DigitalOptionTest::testCashOrNothingValues));
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing American digital option",
-                    &DigitalOptionTest::testAmericanValues));
+                   ("Testing European Asset-or-Nothing digital option",
+                    &DigitalOptionTest::testAssetOrNothingValues));
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing digital option greeks",
-                    &DigitalOptionTest::testSelfConsistency));
+                   ("Testing European Gap digital option",
+                    &DigitalOptionTest::testGapValues));
+
+    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
+                   ("Testing American Cash-or-Nothing digital option greeks",
+                    &DigitalOptionTest::testCashOrNothingAmericanGreeks));
+
+    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
+                   ("Testing American Cash-or-Nothing digital option",
+                    &DigitalOptionTest::testCashOrNothingAmericanValues));
 
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
                    ("Testing Monte Carlo pricing engine for digital options",
