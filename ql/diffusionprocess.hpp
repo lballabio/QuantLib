@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 

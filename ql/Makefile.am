@@ -38,7 +38,6 @@ include_HEADERS = \
 	calendar.hpp \
 	cashflow.hpp \
 	config.hpp \
-    constraint.hpp \
 	currency.hpp \
 	dataformatters.hpp \
 	date.hpp \
@@ -53,7 +52,6 @@ include_HEADERS = \
 	index.hpp \
 	instrument.hpp \
 	marketelement.hpp \
-    minimizer.hpp \
 	null.hpp \
 	option.hpp \
 	qldefines.hpp \

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -30,25 +28,26 @@
 #include <ql/array.hpp>
 
 namespace QuantLib {
-
+  
+    namespace Lattices {
+        class Tree;
+    }
     class Asset {
       public:
         virtual ~Asset() {}
 
         Time time() const { return time_; }
-        void setTime(Time t) { time_ = t; }
-
-        virtual void reset(Size size) = 0;
-
         const Array& values() { return values_; }
-        Array& newValues() { return newValues_; }
-
-        virtual void applyCondition() {
-            values_ = newValues_;
-        }
 
       protected:
-        Array newValues_;
+        friend class Lattices::Tree;
+        virtual void reset(Size size) = 0;
+        void setTime(Time t) { time_ = t; }
+        void setValues(const Array& values) { values_ = values; }
+
+        virtual void applyCondition() {}
+
+
         Array values_;
         Time time_;
     };

@@ -27,7 +27,6 @@
 #include <ql/asset.hpp>
 #include <ql/calendar.hpp>
 #include <ql/cashflow.hpp>
-#include <ql/constraint.hpp>
 #include <ql/currency.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/date.hpp>
@@ -42,7 +41,6 @@
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
 #include <ql/marketelement.hpp>
-#include <ql/minimizer.hpp>
 #include <ql/null.hpp>
 #include <ql/option.hpp>
 #include <ql/relinkablehandle.hpp>
@@ -106,19 +104,17 @@
 #include <ql/Instruments/swaption.hpp>
 
 #include <ql/InterestRateModelling/calibrationhelper.hpp>
-#include <ql/InterestRateModelling/grid.hpp>
 #include <ql/InterestRateModelling/model.hpp>
 #include <ql/InterestRateModelling/onefactormodel.hpp>
 #include <ql/InterestRateModelling/shortrateprocess.hpp>
 #include <ql/InterestRateModelling/timefunction.hpp>
-#include <ql/InterestRateModelling/trinomialtree.hpp>
 #include <ql/InterestRateModelling/twofactormodel.hpp>
 
 #include <ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp>
 #include <ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp>
 
 #include <ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp>
-#include <ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/coxingersollross.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/hullwhite.hpp>
 
 #include <ql/InterestRateModelling/TwoFactorModels/g2.hpp>
@@ -126,8 +122,11 @@
 #include <ql/Lattices/node.hpp>
 #include <ql/Lattices/timegrid.hpp>
 #include <ql/Lattices/tree.hpp>
+#include <ql/Lattices/trinomialtree.hpp>
 
+#include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Math/gammafunction.hpp>
 #include <ql/Math/interpolation.hpp>
 #include <ql/Math/lexicographicalview.hpp>
 #include <ql/Math/linearinterpolation.hpp>
@@ -162,11 +161,17 @@
 
 #include <ql/Optimization/armijo.hpp>
 #include <ql/Optimization/conjugategradient.hpp>
+#include <ql/Optimization/constraint.hpp>
 #include <ql/Optimization/costfunction.hpp>
 #include <ql/Optimization/criteria.hpp>
+#include <ql/Optimization/cubic.hpp>
+#include <ql/Optimization/genetic.hpp>
 #include <ql/Optimization/leastsquare.hpp>
 #include <ql/Optimization/linesearch.hpp>
 #include <ql/Optimization/optimizer.hpp>
+#include <ql/Optimization/powell.hpp>
+#include <ql/Optimization/simplex.hpp>
+#include <ql/Optimization/simulatedannealing.hpp>
 #include <ql/Optimization/steepestdescent.hpp>
 
 #include <ql/Patterns/observable.hpp>

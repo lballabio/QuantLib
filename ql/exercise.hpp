@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -27,8 +25,10 @@
 #ifndef quantlib_exercise_type_h
 #define quantlib_exercise_type_h
 
-#include <ql/qldefines.hpp>
+#include <ql/calendar.hpp>
 #include <ql/date.hpp>
+
+#include <ql/Calendars/target.hpp>
 
 #include <vector>
 
@@ -39,21 +39,32 @@ namespace QuantLib {
         enum Type { American, Bermudan, European };
 
         Exercise(Type type, const std::vector<Date>& dates)
-        : type_(type), dates_(dates) {}
+        : type_(type), dates_(dates), calendar_(Calendars::TARGET()), 
+          convention_(ModifiedFollowing), settlementDays_(0) {}
 
         Type type() const { return type_; }
 
         Date date(Size index = 0) const { return dates_[index]; }
         const std::vector<Date>& dates() const { return dates_; }
-      private:
+
+        RollingConvention rollingConvention() const { return convention_; }
+        Calendar calendar() const { return calendar_; }
+        int settlementDays() const { return settlementDays_; }
+      protected:
         Type type_;
         std::vector<Date> dates_;
+        Calendar calendar_;
+        RollingConvention convention_;
+        int settlementDays_;
     };
 
     class AmericanExercise : public Exercise {
       public:
-        AmericanExercise( Date date)
-        : Exercise(American, std::vector<Date>(1,date)) {}
+        AmericanExercise(Date earliestDate, Date latestDate)
+        : Exercise(American, std::vector<Date>(2)) {
+            dates_[0] = earliestDate;
+            dates_[1] = latestDate;
+        }
     };
 
     class BermudanExercise : public Exercise {
