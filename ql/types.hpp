@@ -52,7 +52,9 @@ namespace QuantLib {
     /*! \ingroup types */
     typedef double Spread;
 
-
+    //! decimal number
+    typedef double Decimal;
+    
 }
 
 
