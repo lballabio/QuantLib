@@ -200,6 +200,8 @@ CLEAN :
 	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\segmentintegral.obj"
 	-@erase "$(INTDIR)\segmentintegral.sbr"
+	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
+	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
@@ -358,7 +360,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -469,7 +472,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -646,6 +650,8 @@ CLEAN :
 	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\segmentintegral.obj"
 	-@erase "$(INTDIR)\segmentintegral.sbr"
+	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
+	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
@@ -805,7 +811,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -916,7 +923,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1093,6 +1101,8 @@ CLEAN :
 	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\segmentintegral.obj"
 	-@erase "$(INTDIR)\segmentintegral.sbr"
+	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
+	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
@@ -1251,7 +1261,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1362,7 +1373,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1539,6 +1551,8 @@ CLEAN :
 	-@erase "$(INTDIR)\secant.sbr"
 	-@erase "$(INTDIR)\segmentintegral.obj"
 	-@erase "$(INTDIR)\segmentintegral.sbr"
+	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
+	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
@@ -1698,7 +1712,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1809,7 +1824,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1916,6 +1932,12 @@ SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
 
 "$(INTDIR)\floatingratecoupon.obj"	"$(INTDIR)\floatingratecoupon.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\CashFlows\shortfloatingcoupon.cpp
+
+"$(INTDIR)\shortfloatingcoupon.obj"	"$(INTDIR)\shortfloatingcoupon.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

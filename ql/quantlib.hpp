@@ -66,6 +66,7 @@
 #include <ql/CashFlows/coupon.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 
 #include <ql/DayCounters/actual360.hpp>

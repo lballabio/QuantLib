@@ -17,7 +17,8 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = cashflowvectors.obj$(_D) \
-       floatingratecoupon.obj$(_D)
+       floatingratecoupon.obj$(_D) \
+       shortfloatingcoupon.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

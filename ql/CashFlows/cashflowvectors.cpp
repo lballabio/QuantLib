@@ -27,6 +27,7 @@
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/scheduler.hpp>
 
 namespace QuantLib {
@@ -127,11 +128,6 @@ namespace QuantLib {
           const Date& stubDate) {
             QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
 
-            /* the following precondition is to be removed when an
-               algorithm for the fixing of the short coupon is implemented */
-            QL_REQUIRE(stubDate == Date(),
-                "short/long floating coupons are currently disabled");
-
             Scheduler scheduler(calendar, startDate, endDate, frequency,
                 rollingConvention, true, stubDate);
             // first period might be short or long
@@ -151,7 +147,7 @@ namespace QuantLib {
                 reference =
                     calendar.roll(reference,rollingConvention);
                 push_back(Handle<CashFlow>(
-                    new FloatingRateCoupon(nominal, index, termStructure,
+                    new ShortFloatingRateCoupon(nominal, index, termStructure,
                         start, end, fixingDays, spread, reference, end)));
             }
             // regular periods
@@ -194,8 +190,9 @@ namespace QuantLib {
                     reference =
                         calendar.roll(reference,rollingConvention);
                     push_back(Handle<CashFlow>(
-                        new FloatingRateCoupon(nominal, index, termStructure,
-                            start, end, fixingDays, spread, start, reference)));
+                        new ShortFloatingRateCoupon(nominal, index, 
+                            termStructure, start, end, fixingDays, spread, 
+                            start, reference)));
                 }
             }
         }

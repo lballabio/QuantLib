@@ -223,6 +223,14 @@ SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\shortfloatingcoupon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\shortfloatingcoupon.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\simplecashflow.hpp
 # End Source File
 # End Group
