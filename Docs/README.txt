@@ -1,24 +1,5 @@
 
-******************************************************
- $Source$
- $Log$
- Revision 1.11  2001/07/24 16:59:33  nando
- documentation revised
-
- Revision 1.10  2001/07/11 16:43:38  benin
- added a note about MikTek on Win32
-
- Revision 1.9  2001/05/16 16:55:19  nando
- improved doc
-
- Revision 1.8  2001/03/28 13:08:50  nando
- better numbering
-
- Revision 1.7  2001/03/15 16:08:15  nando
- doxy config file renamed and unified (Win32 and Linux)
- html doc footer modified
-
-******************************************************
+$Id$
 
 The documentation is automatically extracted from the source code using
 DoxyGen (http://www.stack.nl/~dimitri/doxygen/).
@@ -47,7 +28,7 @@ To produce HTML documentation:
 1) Install Doxygen. You will also need to add to your PATH doxygen-x.x.x\bin.
 2) Install Graphviz. Add to your PATH Graphviz\bin
 3) Install Ghostscript. Add to your path gs\gsx.xx\bin
-4) a) Borland user: type 'make html'
+4) a) Borland user: type 'make html' in the QuantLib\Docs directory
    b) VC user: go to the QuantLib\Docs directory and type:
         doxygen quantlib.win32.doxy
 
@@ -62,7 +43,7 @@ downloaded from http://toocool.calpoly.edu/latex/fancy_header.html)
 and copy it into a directory on your path
 8) Open MikTeX Option panel from Programs/MiKTeX 2 list and click on the
 "Refresh Now" button in the "General" folder.
-9) a) Borland users: type 'make ps' or 'make pdf'
+9) a) Borland users: type 'make ps' or 'make pdf' in the QuantLib\Docs directory
    b) VC user: go to the QuantLib\Docs\latex directory and type:
         latex refman
         makeindex refman.idx
@@ -73,3 +54,22 @@ and copy it into a directory on your path
         pdflatex refman
       for PDF output.
 Just ignore TeX/LaTeX warning/error.
+
+*********
+* Win32 *
+*********
+
+From the QuantLib base directory, you'll have to do
+
+cd Docs
+./bootstrap
+./configure
+make docs-all
+
+You'll end up with:
+- a directory Docs/html containing the HTML docs
+- a directory Docs/latex containing a lot of latex files you can ignore,
+  plus refman.pdf and refman.ps which are their final result
+- and a directory Docs/man containing the man pages.
+
+Look in MAkefile.am for additional directives
