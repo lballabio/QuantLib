@@ -96,8 +96,6 @@ namespace QuantLib {
             } else {
                 mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
                 lambda_ = QL_SQRT(mu_*mu_-2.0*QL_LOG(discount_)/variance_);
-                // the old (probably wrong) lambda value was
-                // lambda_ = QL_SQRT(mu_*mu_+2.0*QL_LOG(dividendDiscount_/discount_)/variance_);
             }
             D1_ = log_H_S_/stdDev_ + lambda_*stdDev_;
             D2_ = D1_ - 2.0*lambda_*stdDev_; 
@@ -109,7 +107,7 @@ namespace QuantLib {
         } else {
             // not tested yet
             mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
-            lambda_ = QL_SQRT(mu_*mu_+2.0*QL_LOG(dividendDiscount_/discount_)/variance_);
+            lambda_ = QL_SQRT(mu_*mu_-2.0*QL_LOG(discount_)/variance_);
             if (log_H_S_>0) {
                 cum_d1_= 1.0;
                 cum_d2_= 1.0;
