@@ -19,7 +19,6 @@ OBJS = \
     analyticbarrierengine.obj$(_D) \
     analyticeuropeanbinaryengine.obj$(_D) \
     analyticeuropeanengine.obj$(_D) \
-    binomialvanillaengine.obj$(_D) \
     discretizedvanillaoption.obj$(_D) \
     integralengines.obj$(_D)
 
