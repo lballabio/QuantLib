@@ -27,7 +27,7 @@ namespace QuantLib {
 
     bool Seoul::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
-        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
 
@@ -54,7 +54,7 @@ namespace QuantLib {
             || (d == 25 && m == December)
 
             // Lunar New Year 2004
-            || ((d == 21 || d==22 || d==23 || d==24 || d==26 ) 
+            || ((d == 21 || d==22 || d==23 || d==24 || d==26 )
                 && m == January && y==2004)
             // Lunar New Year 2005
             || ((d == 8 || d==9 || d==10) && m == February && y==2005)

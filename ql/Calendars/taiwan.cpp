@@ -27,7 +27,7 @@ namespace QuantLib {
 
     bool Taiwan::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
-        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
 
@@ -42,13 +42,13 @@ namespace QuantLib {
             || (d == 10 && m == October)
 
             // Lunar New Year 2004
-            || ((d == 21 || d==22 || d==23 || d==24 || d==26 ) 
+            || ((d == 21 || d==22 || d==23 || d==24 || d==26 )
                 && m == January && y==2004)
             // Lunar New Year 2005
-            || ((d == 8 || d==9 || d==10 || d==11 ) 
+            || ((d == 8 || d==9 || d==10 || d==11 )
                 && m == February && y==2005)
             // Lunar New Year 2006
-            || ((d == 28 || d==29 || d==30 || d==31 ) 
+            || ((d == 28 || d==29 || d==30 || d==31 )
                 && m == January && y==2006)
             // Tomb Sweeping Day 2004
             || (d == 4 && m == April && y==2004)

@@ -27,7 +27,7 @@ namespace QuantLib {
 
     bool Beijing::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
-        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
 

@@ -29,12 +29,12 @@ CORE_OBJS = \
     "dataformatters.obj$(_mt)$(_D)" \
     "dataparsers.obj$(_mt)$(_D)" \
     "date.obj$(_mt)$(_D)" \
-    "diffusionprocess.obj$(_mt)$(_D)" \
     "discretizedasset.obj$(_mt)$(_D)" \
     "errors.obj$(_mt)$(_D)" \
     "exercise.obj$(_mt)$(_D)" \
     "grid.obj$(_mt)$(_D)" \
     "scheduler.obj$(_mt)$(_D)" \
+    "stochasticprocess.obj$(_mt)$(_D)" \
     "voltermstructure.obj$(_mt)$(_D)"
 
 CALENDAR_LIB         = "Calendars\Calendars$(_mt)$(_D).lib"
@@ -52,6 +52,7 @@ ASIAN_ENGINES_LIB    = "PricingEngines\Asian\AsianEngines$(_mt)$(_D).lib"
 BARRIER_ENGINES_LIB  = "PricingEngines\Barrier\BarrierEngines$(_mt)$(_D).lib"
 BASKET_ENGINES_LIB   = "PricingEngines\Basket\BasketEngines$(_mt)$(_D).lib"
 CAPFLOOR_ENGINES_LIB = "PricingEngines\CapFloor\CapFloorEngines$(_mt)$(_D).lib"
+CLIQUET_ENGINES_LIB  = "PricingEngines\Cliquet\CliquetEngines$(_mt)$(_D).lib"
 SWAPTION_ENGINES_LIB = "PricingEngines\Swaption\SwaptionEngines$(_mt)$(_D).lib"
 VANILLA_ENGINES_LIB  = "PricingEngines\Vanilla\VanillaEngines$(_mt)$(_D).lib"
 RNG_LIB              = "RandomNumbers\RandomNumbers$(_mt)$(_D).lib"
@@ -85,6 +86,7 @@ QUANTLIB_OBJS = \
     $(BARRIER_ENGINES_LIB) \
     $(BASKET_ENGINES_LIB) \
     $(CAPFLOOR_ENGINES_LIB) \
+    $(CLIQUET_ENGINES_LIB) \
     $(SWAPTION_ENGINES_LIB) \
     $(VANILLA_ENGINES_LIB) \
     $(RNG_LIB) \
@@ -185,6 +187,8 @@ SubLibraries:
     cd ..\Basket
     $(MAKE)
     cd ..\CapFloor
+    $(MAKE)
+    cd ..\Cliquet
     $(MAKE)
     cd ..\Swaption
     $(MAKE)

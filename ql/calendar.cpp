@@ -17,7 +17,7 @@
 */
 
 #include <ql/calendar.hpp>
-#if !defined(QL_PATCH_MICROSOFT)
+#if !(defined(QL_PATCH_MICROSOFT) || defined(QL_PATCH_BORLAND))
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <fstream>
@@ -43,7 +43,7 @@ namespace QuantLib {
             impl_->removedHolidays.insert(d);
     }
 
-    #if !defined(QL_PATCH_MICROSOFT)
+    #if !(defined(QL_PATCH_MICROSOFT) || defined(QL_PATCH_BORLAND))
 
     void Calendar::load(const std::string& filename) {
         std::ifstream file(filename.c_str());

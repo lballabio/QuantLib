@@ -28,7 +28,7 @@ namespace QuantLib {
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine), 
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine),
       averageType_(averageType), runningProduct_(runningProduct),
       pastFixings_(pastFixings), fixingDates_(fixingDates) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
@@ -73,10 +73,10 @@ namespace QuantLib {
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine), 
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine),
       averageType_(averageType) {}
 
-    void ContinuousAveragingAsianOption::setupArguments(Arguments* args) 
+    void ContinuousAveragingAsianOption::setupArguments(Arguments* args)
                                                                      const {
         OneAssetStrikedOption::setupArguments(args);
 

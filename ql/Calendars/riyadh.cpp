@@ -27,7 +27,7 @@ namespace QuantLib {
 
     bool Riyadh::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
-        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Day d = date.dayOfMonth();
         Month m = date.month();
         Year y = date.year();
 
@@ -38,7 +38,7 @@ namespace QuantLib {
             || (d >= 1 && d <= 6 && m == February && y==2004)
             // eid al-adha 2005
             || (d >= 21 && d <= 25 && m == January && y==2005)
-				
+
             // eid al-fitr 2004
             || (d >= 25 && d <= 29 && m == November && y==2004)
             // eid al-fitr 2005
