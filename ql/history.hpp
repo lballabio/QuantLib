@@ -29,6 +29,11 @@
 
 namespace QuantLib {
 
+    /*! \example history_iterators.cpp
+        This code exemplifies how to use History iterators to perform
+        Gaussian statistic analyses on historical data.
+    */
+
     //! Container for historical data
     /*! This class acts as a generic repository for a set of historical data.
         Single data can be accessed through their date, while sets of
@@ -266,12 +271,6 @@ namespace QuantLib {
             }
         };
     };
-
-
-    /*! \example history_iterators.cpp
-        This code exemplifies how to use History iterators to perform
-        gaussianstatistics analyses on historical data.
-    */
 
 
     // inline definitions
