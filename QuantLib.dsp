@@ -855,6 +855,22 @@ SOURCE=.\Sources\TermStructures\piecewiseconstantforwards.cpp
 
 SOURCE=.\Include\ql\TermStructures\piecewiseconstantforwards.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\Sources\TermStructures\piecewiseflatforward.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\TermStructures\piecewiseflatforward.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\TermStructures\ratehelpers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\TermStructures\ratehelpers.hpp
+# End Source File
 # End Group
 # Begin Group "Utilities"
 
@@ -882,6 +898,34 @@ SOURCE=.\Include\ql\Utilities\processingiterator.hpp
 # Begin Source File
 
 SOURCE=.\Include\ql\Utilities\steppingiterator.hpp
+# End Source File
+# End Group
+# Begin Group "Indexes"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Include\ql\Indexes\euribor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Indexes\libor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Indexes\libormanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Indexes\libormanager.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Indexes\xibor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Indexes\xibor.hpp
 # End Source File
 # End Group
 # Begin Source File
