@@ -19,8 +19,10 @@ include_HEADERS = \
 	inversecumulativegaussian.hpp \
 	knuthrandomgenerator.hpp \
 	lecuyerrandomgenerator.hpp \
+	mccontrolvariatepricer.hpp \
 	mcpricer.hpp \
 	mctypedefs.hpp \
+	montecarlocontrolvariatemodel.hpp \
 	montecarlomodel.hpp \
 	multifactorpricer.hpp \
 	multipath.hpp \
