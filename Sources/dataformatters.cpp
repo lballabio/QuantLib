@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.17  2001/04/10 07:54:33  lballabio
+    Ruby histories (the Ruby way)
+
     Revision 1.16  2001/04/09 14:13:33  nando
     all the *.hpp moved below the Include/ql level
 
@@ -56,17 +59,22 @@
 */
 
 #include "ql/dataformatters.hpp"
+#include "ql/null.hpp"
 #include <stdio.h>
 
 namespace QuantLib {
 
     std::string IntegerFormatter::toString(int i, int digits) {
+        if (i == Null<int>())
+	    return std::string("null");
         char s[64];
         sprintf(s,"%*d",(digits>64?64:digits),i);
         return std::string(s);
     }
 
     std::string DoubleFormatter::toString(double x, int precision, int digits) {
+        if (x == Null<double>())
+	    return std::string("null");
         char s[64];
         sprintf(s,"%*.*lf",(digits>64?64:digits),(precision>64?64:precision),x);
         return std::string(s);

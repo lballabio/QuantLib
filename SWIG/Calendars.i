@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.22  2001/04/10 07:54:33  lballabio
+    Ruby histories (the Ruby way)
+
     Revision 1.21  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -53,6 +56,7 @@ using QuantLib::Calendars::Wellington;
 
 // export Handle<Calendar>
 %name(Calendar) class CalendarHandle {
+    %pragma(ruby) include = "Comparable";
   public:
     // constructor redefined below as string-based factory
     ~CalendarHandle();

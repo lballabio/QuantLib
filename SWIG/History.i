@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.16  2001/04/10 07:54:33  lballabio
+    Ruby histories (the Ruby way)
+
     Revision 1.15  2001/04/09 15:51:16  lballabio
     Compiling again under Linux
 
@@ -80,23 +83,26 @@ class HistoryValidDataIterator {
 
 #if defined(SWIGRUBY)
 class HistoryEntry {
+    %pragma(ruby) include = "Comparable";
   public:
     ~HistoryEntry();
 };
 
 class HistoryValidEntry {
+    %pragma(ruby) include = "Comparable";
   public:
     ~HistoryValidEntry();
 };
 #endif
 
 class History {
+    %pragma(ruby) include = "Enumerable";
   public:
     History(DateVector dates, DoubleVector values);
     ~History();
+    #if defined(SWIGPYTHON)
     Date firstDate() const;
     Date lastDate() const;
-    int size() const;
     HistoryIterator begin() const;
     HistoryIterator end() const;
     HistoryIterator iterator(Date d) const;
@@ -109,11 +115,18 @@ class History {
     HistoryValidDataIterator vdbegin() const;
     HistoryValidDataIterator vdend() const;
     HistoryValidDataIterator valid_data_iterator(Date d) const;
+    #endif
 };
 
 
 %addmethods History {
-    #if defined(SWIGPYTHON)
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    int __len__() {
+        return self->size();
+    }
     double __getitem__(Date d) {
         return (*self)[d];
     }
@@ -123,8 +136,39 @@ class History {
             " to " + DateFormatter::toString(self->lastDate());
     }
     #endif
+    #if defined(SWIGRUBY)
+    HistoryEntry first() {
+        return self->begin();
+    }
+    HistoryEntry last() {
+        return self->end()-1;
+    }
+    HistoryEntry entry(Date d) {
+        QL_REQUIRE(d >= self->firstDate() && d <= self->lastDate(),
+            "date outside history range");
+        return self->iterator(d);
+    }
+    HistoryValidEntry firstValid() {
+        return self->vbegin();
+    }
+    HistoryValidEntry lastValid() {
+        return --(self->vend());
+    }
+    HistoryValidEntry validEntry(Date d) {
+        QL_REQUIRE(d >= self->firstDate() && d <= self->lastDate(),
+            "date outside history range");
+        return self->valid_iterator(d);
+    }
+    void each() {
+        for (HistoryEntry i=self->begin(); i!=self->end(); i++) {
+            HistoryEntry* e = new HistoryEntry(i);
+            rb_yield(Wrap_HistoryEntry(cHistoryEntry,e));
+        }
+    }
+    #endif
 }
 
+#if defined(SWIGPYTHON)
 %addmethods HistoryIterator {
     Date date() {
         return (*self)->date();
@@ -135,7 +179,6 @@ class History {
     void advance() {
         (*self)++;
     }
-    #if defined(SWIGPYTHON)
     int __cmp__(const HistoryIterator& other) {
         return (*self == other ? 0 : -1);
     }
@@ -144,7 +187,6 @@ class History {
         "\t" + ((*self)->value() == Null<double>() ? String("Null") :
         DoubleFormatter::toString((*self)->value()));
     }
-    #endif
 }
 
 %addmethods HistoryValidIterator {
@@ -157,7 +199,6 @@ class History {
     void advance() {
         (*self)++;
     }
-    #if defined(SWIGPYTHON)
     int __cmp__(const HistoryValidIterator& other) {
         return (*self == other ? 0 : -1);
     }
@@ -166,14 +207,12 @@ class History {
         "\t" + ((*self)->value() == Null<double>() ? String("Null") :
         DoubleFormatter::toString((*self)->value()));
     }
-    #endif
 }
 
 %addmethods HistoryDataIterator {
     void advance() {
         (*self)++;
     }
-    #if defined(SWIGPYTHON)
     double __float__() {
         return **self;
     }
@@ -184,14 +223,12 @@ class History {
         return (**self == Null<double>() ? String("Null") :
             DoubleFormatter::toString(**self));
     }
-    #endif
 }
 
 %addmethods HistoryValidDataIterator {
     void advance() {
         (*self)++;
     }
-    #if defined(SWIGPYTHON)
     double __float__() {
         return **self;
     }
@@ -202,8 +239,58 @@ class History {
         return (**self == Null<double>() ? String("Null") :
             DoubleFormatter::toString(**self));
     }
-    #endif
 }
+#endif
+
+#if defined(SWIGRUBY)
+%addmethods HistoryEntry {
+    void crash() {}
+    Date date() {
+        return (*self)->date();
+    }
+    double value() {
+        return (*self)->value();
+    }
+    HistoryEntry succ() {
+        return (*self)+1;
+    }
+    int __cmp__(const HistoryEntry& other) {
+        return (*self == other ? 0 : (*self < other ? -1 : 1));
+    }
+    String __str__() {
+        return DateFormatter::toString((*self)->date()) +
+        "\t" + ((*self)->value() == Null<double>() ? String("Null") :
+        DoubleFormatter::toString((*self)->value()));
+    }
+    bool isValid() {
+        return (*self)->value() != Null<double>();
+    }
+    %pragma(ruby) pred = "isValid";
+}
+
+%addmethods HistoryValidEntry {
+    void crash() {}
+    Date date() {
+        return (*self)->date();
+    }
+    double value() {
+        return (*self)->value();
+    }
+    HistoryValidEntry succ() {
+        HistoryValidEntry temp = *self;
+        return ++temp;
+    }
+    int __cmp__(const HistoryValidEntry& other) {
+        return ((*self)->date() == other->date() ? 0 : 
+               ((*self)->date() < other->date() ? -1 : 1));
+    }
+    String __str__() {
+        return DateFormatter::toString((*self)->date()) +
+        "\t" + ((*self)->value() == Null<double>() ? String("Null") :
+        DoubleFormatter::toString((*self)->value()));
+    }
+}
+#endif
 
 
 #endif

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.38  2001/04/10 07:54:33  lballabio
+    Ruby histories (the Ruby way)
+
     Revision 1.37  2001/04/09 15:51:16  lballabio
     Compiling again under Linux
 
@@ -87,6 +90,7 @@ using QuantLib::IndexError;
 %include DayCounters.i
 %include Distributions.i
 %include Financial.i
+%include History.i
 %include RandomGenerators.i
 %include Statistics.i
 %include Solvers1D.i
@@ -97,7 +101,6 @@ using QuantLib::IndexError;
 #if defined(SWIGPYTHON)
 %include Barrier.i
 %include BoundaryConditions.i
-%include History.i
 %include Instruments.i
 %include Interpolation.i
 %include Matrix.i

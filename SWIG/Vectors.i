@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.25  2001/04/10 07:54:33  lballabio
+    Ruby histories (the Ruby way)
+
     Revision 1.24  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -50,6 +53,7 @@ using QuantLib::DoubleFormatter;
 };
 
 class IntVector {
+    %pragma(ruby) include = "Enumerable";
   public:
     ~IntVector();
 };
@@ -188,6 +192,7 @@ class IntVector {
 
 
 class DoubleVector {
+    %pragma(ruby) include = "Enumerable";
   public:
     ~DoubleVector();
 };
@@ -202,7 +207,7 @@ class DoubleVector {
             for (int i=0; i<size; i++) {
                 VALUE o = RARRAY(v)->ptr[i];
                 if (o == Qnil)
-                    (*temp)[i] = Null<int>();
+                    (*temp)[i] = Null<double>();
                 else if (FIXNUM_P(o))
                     (*temp)[i] = double(FIX2INT(o));
                 else if (TYPE(o) == T_FLOAT)

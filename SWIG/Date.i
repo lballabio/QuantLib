@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.30  2001/04/10 07:54:33  lballabio
+    Ruby histories (the Ruby way)
+
     Revision 1.29  2001/04/09 15:51:16  lballabio
     Compiling again under Linux
 
@@ -409,6 +412,7 @@ using QuantLib::Years;
 // and finally, the Date class
 
 class Date {
+    %pragma(ruby) include = "Comparable";
   public:
     Date(Day d, Month m, Year y);
     ~Date();
@@ -506,8 +510,13 @@ using QuantLib::Null;
 %}
 
 class DateVector {
+    %pragma(ruby) include = "Enumerable";
   public:
     ~DateVector();
+};
+
+%typemap(ruby,in) VALUE {
+    $target = $source;
 };
 
 %addmethods DateVector {
@@ -602,6 +611,14 @@ class DateVector {
     }
     int __nonzero__() {
         return (self->size() == 0 ? 0 : 1);
+    }
+    #endif
+    #if defined(SWIGRUBY)
+    void each() {
+        for (int i=0; i<self->size(); i++) {
+            Date* d = new Date((*self)[i]);
+            rb_yield(Wrap_Date(cDate,d));
+        }
     }
     #endif
 }; 
