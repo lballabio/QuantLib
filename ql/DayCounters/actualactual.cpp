@@ -139,8 +139,8 @@ namespace QuantLib {
              dib2 = (Date::isLeap(y2) ? 366.0 : 365.0);
 
         Time sum = y2 - y1 - 1;
-        sum += dayCount(d1, Date(1,(Month)1,y1+1))/dib1;
-        sum += dayCount(Date(1,(Month)1,y2),d2)/dib2;
+        sum += dayCount(d1, Date(1,January,y1+1))/dib1;
+        sum += dayCount(Date(1,January,y2),d2)/dib2;
         return sum;
     }
 
@@ -168,11 +168,11 @@ namespace QuantLib {
         Real den = 365.0;
 
         if (Date::isLeap(newD2.year())) {
-            temp = Date(29, (Month)2, newD2.year());
+            temp = Date(29, February, newD2.year());
             if (newD2>temp && d1<=temp)
                 den += 1.0;
         } else if (Date::isLeap(d1.year())) {
-            temp = Date(29, (Month)2, d1.year());
+            temp = Date(29, February, d1.year());
             if (newD2>temp && d1<=temp)
                 den += 1.0;
         }
