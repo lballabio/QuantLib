@@ -434,6 +434,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
             "    expected:         "
             + DoubleFormatter::toString(storedValue,10));
 
+    Time residualTime;
 #ifndef QL_DISABLE_DEPRECATED
 
     // "batch" 2
@@ -444,7 +445,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
     strike = 85.0;
     dividendYield = -0.03;
     riskFreeRate = 0.05;
-    Time residualTime = 0.25;
+    residualTime = 0.25;
     volatility = 0.2;
 
     ContinuousGeometricAPO pricer2(type,underlying,strike,dividendYield,
@@ -871,8 +872,8 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testCliquetPricer));
 #ifndef QL_DISABLE_DEPRECATED
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testCliquetPricer));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testDividendEuropeanPricer));
 #endif
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdEuropeanPricer));
