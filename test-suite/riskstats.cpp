@@ -437,7 +437,7 @@ void RiskStatisticsTest::runTest() {
             GaussianStatistics<StatsHolder> test(h);
             expected = s.gaussianPotentialUpside(twoSigma);
             calculated = test.gaussianPotentialUpside(twoSigma);
-            if (QL_FABS(calculated-expected) > tolerance)
+            if (calculated!=expected)
                 CPPUNIT_FAIL("GaussianStatistics<StatsHolder> fails");
 
 
