@@ -37,14 +37,13 @@ namespace QuantLib {
         The calculation is performed interpolating on the variance curve.
         Linear interpolation is used as default; this can be changed
         by the setInterpolation() method.
-            
+
         For strike dependence, see BlackVarianceSurface.
 
         \todo check time extrapolation
 
     */
-    class BlackVarianceCurve : public BlackVarianceTermStructure,
-                               public Observer {
+    class BlackVarianceCurve : public BlackVarianceTermStructure {
       public:
         BlackVarianceCurve(const Date& referenceDate,
                            const std::vector<Date>& dates,
@@ -52,7 +51,6 @@ namespace QuantLib {
                            const DayCounter& dayCounter = Actual365());
         //! \name BlackVolTermStructure interface
         //@{
-        Date referenceDate() const;
         DayCounter dayCounter() const;
         Date maxDate() const;
         Real minStrike() const;
@@ -66,15 +64,11 @@ namespace QuantLib {
         #else
         void setInterpolation() {
         #endif
-            varianceCurve_ = 
+            varianceCurve_ =
                 Traits::make_interpolation(times_.begin(), times_.end(),
                                            variances_.begin());
             notifyObservers();
         }
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
         //! \name Visitability
         //@{
@@ -83,7 +77,6 @@ namespace QuantLib {
       protected:
         virtual Real blackVarianceImpl(Time t, Real) const;
       private:
-        Date referenceDate_;
         DayCounter dayCounter_;
         Date maxDate_;
         std::vector<Time> times_;
@@ -94,16 +87,12 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Date BlackVarianceCurve::referenceDate() const { 
-        return referenceDate_; 
+    inline DayCounter BlackVarianceCurve::dayCounter() const {
+        return dayCounter_;
     }
 
-    inline DayCounter BlackVarianceCurve::dayCounter() const { 
-        return dayCounter_; 
-    }
-
-    inline Date BlackVarianceCurve::maxDate() const { 
-        return maxDate_; 
+    inline Date BlackVarianceCurve::maxDate() const {
+        return maxDate_;
     }
 
     inline Real BlackVarianceCurve::minStrike() const {
@@ -114,12 +103,8 @@ namespace QuantLib {
         return QL_MAX_REAL;
     }
 
-    inline void BlackVarianceCurve::update() {
-        notifyObservers();
-    }
-
     inline void BlackVarianceCurve::accept(AcyclicVisitor& v) {
-        Visitor<BlackVarianceCurve>* v1 = 
+        Visitor<BlackVarianceCurve>* v1 =
             dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

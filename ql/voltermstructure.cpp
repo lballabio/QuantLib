@@ -22,20 +22,20 @@ namespace QuantLib {
 	const Time BlackVolTermStructure::dT = 1.0/365.0;
 
     Volatility BlackVolTermStructure::blackForwardVol(const Date& date1,
-                                                      const Date& date2, 
-                                                      Real strike, 
+                                                      const Date& date2,
+                                                      Real strike,
                                                       bool extrapolate) const {
         QL_REQUIRE(date1 <= date2,
                    DateFormatter::toString(date1) +
                    " later than " +
                    DateFormatter::toString(date2));
-        Time time1 = dayCounter().yearFraction(referenceDate(), date1);
-        Time time2 = dayCounter().yearFraction(referenceDate(), date2);
+        Time time1 = timeFromReference(date1);
+        Time time2 = timeFromReference(date2);
         return blackForwardVol(time1, time2, strike, extrapolate);
     }
 
     Volatility BlackVolTermStructure::blackForwardVol(Time time1, Time time2,
-                                                      Real strike, 
+                                                      Real strike,
                                                       bool extrapolate) const {
         QL_REQUIRE(time1 <= time2,
                    DecimalFormatter::toString(time1) +
@@ -65,21 +65,21 @@ namespace QuantLib {
     }
 
     Real BlackVolTermStructure::blackForwardVariance(const Date& date1,
-                                                     const Date& date2, 
+                                                     const Date& date2,
                                                      Real strike,
-                                                     bool extrapolate) 
+                                                     bool extrapolate)
                                                                       const {
         QL_REQUIRE(date1 <= date2,
                    DateFormatter::toString(date1) +
                    " later than " +
                    DateFormatter::toString(date2));
-        Time time1 = dayCounter().yearFraction(referenceDate(), date1);
-        Time time2 = dayCounter().yearFraction(referenceDate(), date2);
+        Time time1 = timeFromReference(date1);
+        Time time2 = timeFromReference(date2);
         return blackForwardVariance(time1, time2, strike, extrapolate);
     }
 
 
-    Real BlackVolTermStructure::blackForwardVariance(Time time1, Time time2, 
+    Real BlackVolTermStructure::blackForwardVariance(Time time1, Time time2,
                                                      Real strike,
                                                      bool extrapolate) const {
         QL_REQUIRE(time1 <= time2,

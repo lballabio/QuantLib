@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,7 +29,7 @@ namespace QuantLib {
         BlackVarianceSurface::Extrapolation lowerEx,
         BlackVarianceSurface::Extrapolation upperEx,
         const DayCounter& dayCounter)
-    : referenceDate_(referenceDate), dayCounter_(dayCounter),
+    : BlackVarianceTermStructure(referenceDate), dayCounter_(dayCounter),
       maxDate_(dates.back()), strikes_(strikes),
       lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
 
@@ -49,7 +49,7 @@ namespace QuantLib {
             variances_[i][0] = 0.0;
         }
         for (j=1; j<=blackVolMatrix.columns(); j++) {
-            times_[j] = dayCounter_.yearFraction(referenceDate, dates[j-1]);
+            times_[j] = timeFromReference(dates[j-1]);
             QL_REQUIRE(times_[j]>times_[j-1],
                        "dates must be sorted unique!");
             for (i=0; i<blackVolMatrix.rows(); i++) {

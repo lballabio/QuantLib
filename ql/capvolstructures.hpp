@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,11 +19,10 @@
     \brief Cap/Floor volatility structures
 */
 
-#ifndef quantlib_cap_volatility_structures_h
-#define quantlib_cap_volatility_structures_h
+#ifndef quantlib_cap_volatility_structures_hpp
+#define quantlib_cap_volatility_structures_hpp
 
-#include <ql/daycounter.hpp>
-#include <ql/Patterns/observable.hpp>
+#include <ql/basetermstructure.hpp>
 
 namespace QuantLib {
 
@@ -31,43 +30,80 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapFlatVolatilityStructure : public Observable {
+    class CapFlatVolatilityStructure : public BaseTermStructure {
       public:
+        /*! \name Constructors
+            See the BaseTermStructure documentation for issues regarding
+            constructors.
+        */
+        //@{
+        //! default constructor
+        /*! \warning term structures initialized by means of this
+                     constructor must manage their own reference date
+                     by overriding the referenceDate() method.
+        */
+        CapFlatVolatilityStructure();
+        #ifndef QL_DISABLE_DEPRECATED
+        //! initialize with a fixed today and reference date
+        CapFlatVolatilityStructure(const Date& today,
+                                   const Date& referenceDate);
+        #endif
+        //! initialize with a fixed reference date
+        CapFlatVolatilityStructure(const Date& referenceDate);
+        //! calculate the reference date based on the global evaluation date
+        CapFlatVolatilityStructure(Integer settlementDays, const Calendar&);
+        //@}
         virtual ~CapFlatVolatilityStructure() {}
-        //! returns today's date
-        virtual Date todaysDate() const = 0;
-        //! returns the settlement date
-        virtual Date settlementDate() const = 0;
-        //! returns the day counter used for internal date/time conversions
-        virtual DayCounter dayCounter() const = 0;
-        //! returns the volatility for a given end date and strike rate
+        //! \name Volatility
+        //@{
         Volatility volatility(const Date& end, Rate strike) const;
         //! returns the volatility for a given cap/floor length and strike rate
         Volatility volatility(const Period& length, Rate strike) const;
         //! returns the volatility for a given end time and strike rate
         Volatility volatility(Time t, Rate strike) const;
+        //@}
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
     };
 
+
     //! Caplet/floorlet forward volatility structure
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapletForwardVolatilityStructure : public Observable {
+    class CapletForwardVolatilityStructure : public BaseTermStructure {
       public:
+        /*! \name Constructors
+            See the BaseTermStructure documentation for issues regarding
+            constructors.
+        */
+        //@{
+        //! default constructor
+        /*! \warning term structures initialized by means of this
+                     constructor must manage their own reference date
+                     by overriding the referenceDate() method.
+        */
+        CapletForwardVolatilityStructure();
+        #ifndef QL_DISABLE_DEPRECATED
+        //! initialize with a fixed today and reference date
+        CapletForwardVolatilityStructure(const Date& today,
+                                         const Date& referenceDate);
+        #endif
+        //! initialize with a fixed reference date
+        CapletForwardVolatilityStructure(const Date& referenceDate);
+        //! calculate the reference date based on the global evaluation date
+        CapletForwardVolatilityStructure(Integer settlementDays,
+                                         const Calendar&);
+        //@}
         virtual ~CapletForwardVolatilityStructure() {}
-        //! returns today's date
-        virtual Date todaysDate() const = 0;
-        //! returns the settlement date
-        virtual Date settlementDate() const = 0;
-        //! returns the day counter used for internal date/time conversions
-        virtual DayCounter dayCounter() const = 0;
+        //! \name Volatility
+        //@{
         //! returns the volatility for a given start date and strike rate
         Volatility volatility(const Date& start, Rate strike) const ;
         //! returns the volatility for a given start time and strike rate
         Volatility volatility(Time t, Rate strike) const;
+        //@}
       protected:
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
@@ -75,40 +111,71 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Volatility CapFlatVolatilityStructure::volatility(const Date& end, 
-                                                             Rate strike) 
+    inline CapFlatVolatilityStructure::CapFlatVolatilityStructure() {}
+
+    inline CapFlatVolatilityStructure::CapFlatVolatilityStructure(
+                                                   const Date& referenceDate)
+    : BaseTermStructure(referenceDate) {}
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline CapFlatVolatilityStructure::CapFlatVolatilityStructure(
+                                 const Date& today, const Date& referenceDate)
+    : BaseTermStructure(today,referenceDate) {}
+    #endif
+
+    inline CapFlatVolatilityStructure::CapFlatVolatilityStructure(
+                             Integer settlementDays, const Calendar& calendar)
+    : BaseTermStructure(settlementDays,calendar) {}
+
+    inline Volatility CapFlatVolatilityStructure::volatility(const Date& end,
+                                                             Rate strike)
                                                                      const {
-        Date start = settlementDate();
-        Time t = dayCounter().yearFraction(start,end,start,end);
-        return volatilityImpl(t,strike);
+        return volatilityImpl(timeFromReference(end),strike);
     }
 
     inline Volatility CapFlatVolatilityStructure::volatility(
-                                                        const Period& length, 
+                                                        const Period& length,
                                                         Rate strike) const {
-        Date start = settlementDate();
-        Date end = start.plus(length);
-        Time t = dayCounter().yearFraction(start,end,start,end);
-        return volatilityImpl(t,strike);
+        Date end = referenceDate().plus(length);
+        return volatilityImpl(timeFromReference(end),strike);
     }
 
-    inline Volatility CapFlatVolatilityStructure::volatility(Time t, 
+    inline Volatility CapFlatVolatilityStructure::volatility(Time t,
                                                              Rate strike)
                                                                      const {
         return volatilityImpl(t,strike);
     }
 
 
+
+    inline
+    CapletForwardVolatilityStructure::CapletForwardVolatilityStructure() {}
+
+    inline
+    CapletForwardVolatilityStructure::CapletForwardVolatilityStructure(
+                                                   const Date& referenceDate)
+    : BaseTermStructure(referenceDate) {}
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline
+    CapletForwardVolatilityStructure::CapletForwardVolatilityStructure(
+                                 const Date& today, const Date& referenceDate)
+    : BaseTermStructure(today,referenceDate) {}
+    #endif
+
+    inline
+    CapletForwardVolatilityStructure::CapletForwardVolatilityStructure(
+                             Integer settlementDays, const Calendar& calendar)
+    : BaseTermStructure(settlementDays,calendar) {}
+
     inline Volatility CapletForwardVolatilityStructure::volatility(
-                                                        const Date& start, 
+                                                        const Date& start,
                                                         Rate strike) const {
-        Date settl = settlementDate();
-        Time t = dayCounter().yearFraction(settl,start,settl,start);
-        return volatilityImpl(t,strike);
+        return volatilityImpl(timeFromReference(start),strike);
     }
 
     inline Volatility CapletForwardVolatilityStructure::volatility(
-                                                        Time t, 
+                                                        Time t,
                                                         Rate strike) const {
         return volatilityImpl(t,strike);
     }

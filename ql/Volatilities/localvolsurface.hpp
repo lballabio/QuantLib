@@ -37,8 +37,7 @@ namespace QuantLib {
 
         \bug this class is untested, probably unreliable.
     */
-    class LocalVolSurface : public LocalVolTermStructure,
-                            public Observer {
+    class LocalVolSurface : public LocalVolTermStructure {
       public:
         LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
                         const Handle<YieldTermStructure>& riskFreeTS,
@@ -50,7 +49,7 @@ namespace QuantLib {
                         Real underlying);
         //! \name LocalVolTermStructure interface
         //@{
-        Date referenceDate() const {
+        const Date& referenceDate() const {
             return blackTS_->referenceDate();
         }
         DayCounter dayCounter() const {
@@ -59,10 +58,6 @@ namespace QuantLib {
         Date maxDate() const { return blackTS_->maxDate(); }
         Real minStrike() const { return blackTS_->minStrike(); }
         Real maxStrike() const { return blackTS_->maxStrike(); }
-        //@}
-        //! \name Observer interface
-        //@{
-        void update() { notifyObservers(); }
         //@}
         //! \name Visitability
         //@{

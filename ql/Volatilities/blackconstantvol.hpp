@@ -33,8 +33,7 @@ namespace QuantLib {
         interface for a constant Black volatility (no time/strike
         dependence).
     */
-    class BlackConstantVol : public BlackVolatilityTermStructure,
-                             public Observer {
+    class BlackConstantVol : public BlackVolatilityTermStructure {
       public:
         BlackConstantVol(const Date& referenceDate,
                          Volatility volatility,
@@ -42,17 +41,18 @@ namespace QuantLib {
         BlackConstantVol(const Date& referenceDate,
                          const Handle<Quote>& volatility,
                          const DayCounter& dayCounter = Actual365());
+        BlackConstantVol(Integer settlementDays, const Calendar&,
+                         Volatility volatility,
+                         const DayCounter& dayCounter = Actual365());
+        BlackConstantVol(Integer settlementDays, const Calendar&,
+                         const Handle<Quote>& volatility,
+                         const DayCounter& dayCounter = Actual365());
         //! \name BlackVolTermStructure interface
         //@{
-        Date referenceDate() const;
         DayCounter dayCounter() const;
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
         //! \name Visitability
         //@{
@@ -61,7 +61,6 @@ namespace QuantLib {
       protected:
         virtual Volatility blackVolImpl(Time t, Real) const;
       private:
-        Date referenceDate_;
         Handle<Quote> volatility_;
         DayCounter dayCounter_;
     };
@@ -72,7 +71,7 @@ namespace QuantLib {
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
                                               Volatility volatility,
                                               const DayCounter& dayCounter)
-    : referenceDate_(referenceDate), dayCounter_(dayCounter) {
+    : BlackVolatilityTermStructure(referenceDate), dayCounter_(dayCounter) {
         volatility_.linkTo(
                        boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
         registerWith(volatility_);
@@ -81,17 +80,33 @@ namespace QuantLib {
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
                                               const Handle<Quote>& volatility,
                                               const DayCounter& dayCounter)
-    : referenceDate_(referenceDate), volatility_(volatility),
+    : BlackVolatilityTermStructure(referenceDate), volatility_(volatility),
       dayCounter_(dayCounter) {
+        registerWith(volatility_);
+    }
+
+    inline BlackConstantVol::BlackConstantVol(Integer settlementDays,
+                                              const Calendar& calendar,
+                                              Volatility volatility,
+                                              const DayCounter& dayCounter)
+    : BlackVolatilityTermStructure(settlementDays,calendar),
+      dayCounter_(dayCounter) {
+        volatility_.linkTo(
+                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        registerWith(volatility_);
+    }
+
+    inline BlackConstantVol::BlackConstantVol(Integer settlementDays,
+                                              const Calendar& calendar,
+                                              const Handle<Quote>& volatility,
+                                              const DayCounter& dayCounter)
+    : BlackVolatilityTermStructure(settlementDays,calendar),
+      volatility_(volatility), dayCounter_(dayCounter) {
         registerWith(volatility_);
     }
 
     inline DayCounter BlackConstantVol::dayCounter() const {
         return dayCounter_;
-    }
-
-    inline Date BlackConstantVol::referenceDate() const {
-        return referenceDate_;
     }
 
     inline Date BlackConstantVol::maxDate() const {
@@ -104,10 +119,6 @@ namespace QuantLib {
 
     inline Real BlackConstantVol::maxStrike() const {
         return QL_MAX_REAL;
-    }
-
-    inline void BlackConstantVol::update() {
-        notifyObservers();
     }
 
     inline void BlackConstantVol::accept(AcyclicVisitor& v) {

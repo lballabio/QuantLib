@@ -27,8 +27,7 @@
 namespace QuantLib {
 
     //! Local volatility curve derived from a Black curve
-    class LocalVolCurve : public LocalVolTermStructure,
-                          public Observer {
+    class LocalVolCurve : public LocalVolTermStructure {
       public:
         LocalVolCurve(const Handle<BlackVarianceCurve>& curve)
         : blackVarianceCurve_(curve) {
@@ -36,26 +35,20 @@ namespace QuantLib {
         }
         //! \name LocalVolTermStructure interface
         //@{
-        Date referenceDate() const {
+        const Date& referenceDate() const {
             return blackVarianceCurve_->referenceDate();
         }
         DayCounter dayCounter() const {
             return blackVarianceCurve_->dayCounter();
         }
-        Date maxDate() const { 
-            return blackVarianceCurve_->maxDate(); 
+        Date maxDate() const {
+            return blackVarianceCurve_->maxDate();
         }
-        Real minStrike() const { 
+        Real minStrike() const {
             return QL_MIN_REAL;
         }
-        Real maxStrike() const { 
+        Real maxStrike() const {
             return QL_MAX_REAL;
-        }
-        //@}
-        //! \name Observer interface
-        //@{
-        void update() {
-            notifyObservers();
         }
         //@}
         //! \name Visitability
@@ -73,7 +66,7 @@ namespace QuantLib {
     // inline definitions
 
     inline void LocalVolCurve::accept(AcyclicVisitor& v) {
-        Visitor<LocalVolCurve>* v1 = 
+        Visitor<LocalVolCurve>* v1 =
             dynamic_cast<Visitor<LocalVolCurve>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

@@ -24,8 +24,8 @@ namespace QuantLib {
                                  const Handle<YieldTermStructure>& riskFreeTS,
                                  const Handle<YieldTermStructure>& dividendTS,
                                  const Handle<Quote>& underlying)
-    : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
-      dividendTS_(dividendTS), underlying_(underlying) {
+    : blackTS_(blackTS), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
+      underlying_(underlying) {
         registerWith(blackTS_);
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);
@@ -38,8 +38,7 @@ namespace QuantLib {
                                  const Handle<YieldTermStructure>& riskFreeTS,
                                  const Handle<YieldTermStructure>& dividendTS,
                                  Real underlying)
-    : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
-      dividendTS_(dividendTS) {
+    : blackTS_(blackTS), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS) {
         registerWith(blackTS_);
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);

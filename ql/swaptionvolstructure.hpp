@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,11 +19,10 @@
     \brief Swaption volatility structure
 */
 
-#ifndef quantlib_swaption_volatility_structure_h
-#define quantlib_swaption_volatility_structure_h
+#ifndef quantlib_swaption_volatility_structure_hpp
+#define quantlib_swaption_volatility_structure_hpp
 
-#include <ql/daycounter.hpp>
-#include <ql/Patterns/observable.hpp>
+#include <ql/basetermstructure.hpp>
 
 namespace QuantLib {
 
@@ -31,53 +30,88 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
     */
-    class SwaptionVolatilityStructure : public Observable {
+    class SwaptionVolatilityStructure : public BaseTermStructure {
       public:
+        /*! \name Constructors
+            See the BaseTermStructure documentation for issues regarding
+            constructors.
+        */
+        //@{
+        //! default constructor
+        /*! \warning term structures initialized by means of this
+                     constructor must manage their own reference date
+                     by overriding the referenceDate() method.
+        */
+        SwaptionVolatilityStructure();
+        #ifndef QL_DISABLE_DEPRECATED
+        //! initialize with a fixed reference date
+        SwaptionVolatilityStructure(const Date& today,
+                                    const Date& referenceDate);
+        #endif
+        //! initialize with a fixed reference date
+        SwaptionVolatilityStructure(const Date& referenceDate);
+        //! calculate the reference date based on the global evaluation date
+        SwaptionVolatilityStructure(Integer settlementDays, const Calendar&);
+        //@}
         virtual ~SwaptionVolatilityStructure() {}
-        //! returns today's date
-        virtual Date todaysDate() const = 0;
-        //! returns the day counter used for internal date/time conversions
-        virtual DayCounter dayCounter() const = 0;
+        //! \name Volatility
+        //@{
         //! returns the volatility for a given starting date and length
-        Volatility volatility(const Date& start, const Period& length, 
+        Volatility volatility(const Date& start, const Period& length,
                               Rate strike) const;
         //! returns the volatility for a given starting time and length
         Volatility volatility(Time start, Time length, Rate strike) const;
+        //@}
       protected:
         //! implements the actual volatility calculation in derived classes
-        virtual Volatility volatilityImpl(Time start, Time length, 
+        virtual Volatility volatilityImpl(Time start, Time length,
                                           Rate strike) const = 0;
         //! implements the conversion between dates and times
-        virtual std::pair<Time,Time> convertDates(const Date& start, 
+        virtual std::pair<Time,Time> convertDates(const Date& start,
                                                   const Period& length) const;
     };
 
 
     // inline definitions
 
+    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure() {}
+
+    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
+                                                   const Date& referenceDate)
+    : BaseTermStructure(referenceDate) {}
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
+                                 const Date& today, const Date& referenceDate)
+    : BaseTermStructure(today,referenceDate) {}
+    #endif
+
+    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
+                             Integer settlementDays, const Calendar& calendar)
+    : BaseTermStructure(settlementDays,calendar) {}
+
     inline Volatility SwaptionVolatilityStructure::volatility(
-                                                        const Date& start, 
-                                                        const Period& length, 
+                                                        const Date& start,
+                                                        const Period& length,
                                                         Rate strike) const {
         std::pair<Time,Time> times = convertDates(start,length);
         return volatilityImpl(times.first,times.second,strike);
     }
 
-    inline Volatility SwaptionVolatilityStructure::volatility(Time start, 
-                                                              Time length, 
+    inline Volatility SwaptionVolatilityStructure::volatility(Time start,
+                                                              Time length,
                                                               Rate strike)
                                                                      const {
         return volatilityImpl(start,length,strike);
     }
 
-    inline std::pair<Time,Time> 
-    SwaptionVolatilityStructure::convertDates(const Date& start, 
+    inline std::pair<Time,Time>
+    SwaptionVolatilityStructure::convertDates(const Date& start,
                                               const Period& length) const {
-        Time startTime = dayCounter().yearFraction(todaysDate(),start,
-                                                   todaysDate(),start);
+        Time startTime = timeFromReference(start);
         Date end = start.plus(length);
-        Time timeLength = dayCounter().yearFraction(start,end,start,end);
-        return std::pair<Time,Time>(startTime,timeLength);
+        Time timeLength = dayCounter().yearFraction(start,end);
+        return std::make_pair(startTime,timeLength);
     }
 
 }

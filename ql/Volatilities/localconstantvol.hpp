@@ -33,8 +33,7 @@ namespace QuantLib {
         same when volatility is at most time dependent, so this class
         is basically a proxy for BlackVolatilityTermStructure.
     */
-    class LocalConstantVol : public LocalVolTermStructure,
-                             public Observer {
+    class LocalConstantVol : public LocalVolTermStructure {
       public:
         LocalConstantVol(const Date& referenceDate,
                          Volatility volatility,
@@ -42,17 +41,18 @@ namespace QuantLib {
         LocalConstantVol(const Date& referenceDate,
                          const Handle<Quote>& volatility,
                          const DayCounter& dayCounter = Actual365());
+        LocalConstantVol(Integer settlementDays, const Calendar&,
+                         Volatility volatility,
+                         const DayCounter& dayCounter = Actual365());
+        LocalConstantVol(Integer settlementDays, const Calendar&,
+                         const Handle<Quote>& volatility,
+                         const DayCounter& dayCounter = Actual365());
         //! \name LocalVolTermStructure interface
         //@{
-        Date referenceDate() const { return referenceDate_; }
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const { return Date::maxDate(); }
         Real minStrike() const { return QL_MIN_REAL; }
         Real maxStrike() const { return QL_MAX_REAL; }
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
         //! \name Visitability
         //@{
@@ -60,35 +60,48 @@ namespace QuantLib {
         //@}
       private:
         Volatility localVolImpl(Time, Real) const;
-        Date referenceDate_;
         Handle<Quote> volatility_;
         DayCounter dayCounter_;
     };
 
     // inline definitions
 
-    inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
-                                              Volatility volatility, 
+    inline LocalConstantVol::LocalConstantVol(const Date& referenceDate,
+                                              Volatility volatility,
                                               const DayCounter& dayCounter)
-    : referenceDate_(referenceDate), dayCounter_(dayCounter) {
+    : LocalVolTermStructure(referenceDate), dayCounter_(dayCounter) {
         volatility_.linkTo(
                        boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
     }
 
-    inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
-                                              const Handle<Quote>& volatility, 
+    inline LocalConstantVol::LocalConstantVol(const Date& referenceDate,
+                                              const Handle<Quote>& volatility,
                                               const DayCounter& dayCounter)
-    : referenceDate_(referenceDate), volatility_(volatility), 
+    : LocalVolTermStructure(referenceDate), volatility_(volatility),
       dayCounter_(dayCounter) {
         registerWith(volatility_);
     }
 
-    inline void LocalConstantVol::update() {
-        notifyObservers();
+    inline LocalConstantVol::LocalConstantVol(Integer settlementDays,
+                                              const Calendar& calendar,
+                                              Volatility volatility,
+                                              const DayCounter& dayCounter)
+    : LocalVolTermStructure(settlementDays,calendar), dayCounter_(dayCounter) {
+        volatility_.linkTo(
+                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
+    }
+
+    inline LocalConstantVol::LocalConstantVol(Integer settlementDays,
+                                              const Calendar& calendar,
+                                              const Handle<Quote>& volatility,
+                                              const DayCounter& dayCounter)
+    : LocalVolTermStructure(settlementDays,calendar), volatility_(volatility),
+      dayCounter_(dayCounter) {
+        registerWith(volatility_);
     }
 
     inline void LocalConstantVol::accept(AcyclicVisitor& v) {
-        Visitor<LocalConstantVol>* v1 = 
+        Visitor<LocalConstantVol>* v1 =
             dynamic_cast<Visitor<LocalConstantVol>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

@@ -34,7 +34,7 @@ namespace QuantLib {
         cap by interpolating a volatility vector whose elements are
         the market volatilities of a set of caps/floors with given
         length.
-            
+
         \todo either add correct copy behavior or inhibit copy. Right
               now, a copied instance would end up with its own copy of
               the length vector but an interpolation pointing to the
@@ -42,71 +42,113 @@ namespace QuantLib {
     */
     class CapFlatVolatilityVector : public CapFlatVolatilityStructure {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use one of the other constructors */
         CapFlatVolatilityVector(const Date& todaysDate,
                                 const Calendar& calendar,
                                 Integer settlementDays,
                                 const std::vector<Period>& lengths,
                                 const std::vector<Volatility>& volatilities,
                                 const DayCounter& dayCounter = Thirty360());
+        #endif
+        CapFlatVolatilityVector(const Date& settlementDate,
+                                const std::vector<Period>& lengths,
+                                const std::vector<Volatility>& volatilities,
+                                const DayCounter& dayCounter = Thirty360());
+        CapFlatVolatilityVector(Integer settlementDays,
+                                const Calendar& calendar,
+                                const std::vector<Period>& lengths,
+                                const std::vector<Volatility>& volatilities,
+                                const DayCounter& dayCounter = Thirty360());
         // inspectors
-        Date todaysDate() const;
-        Date settlementDate() const;
         DayCounter dayCounter() const;
+        // observability
+        void update();
       private:
-        Date todaysDate_;
-        Date settlementDate_;
-        Calendar calendar_;
-        Integer settlementDays_;
         DayCounter dayCounter_;
         std::vector<Period> lengths_;
         std::vector<Time> timeLengths_;
         std::vector<Volatility> volatilities_;
-        // interpolation
         Interpolation interpolation_;
+        void interpolate();
         Volatility volatilityImpl(Time length, Rate strike) const;
     };
 
 
     // inline definitions
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline CapFlatVolatilityVector::CapFlatVolatilityVector(
-                            const Date& today, 
-                            const Calendar& calendar, Integer settlementDays, 
-                            const std::vector<Period>& lengths, 
+                            const Date& today,
+                            const Calendar& calendar, Integer settlementDays,
+                            const std::vector<Period>& lengths,
                             const std::vector<Volatility>& vols,
                             const DayCounter& dayCounter)
-    : todaysDate_(today), calendar_(calendar), 
-      settlementDays_(settlementDays), dayCounter_(dayCounter), 
-      lengths_(lengths), timeLengths_(lengths.size()+1), 
-      volatilities_(vols.size()+1) {
+    : CapFlatVolatilityStructure(today,
+                                 calendar.advance(today,settlementDays,Days)),
+      dayCounter_(dayCounter), lengths_(lengths),
+      timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
         QL_REQUIRE(lengths.size() == vols.size(),
                    "mismatch between number of cap lengths "
                    "and cap volatilities");
-        settlementDate_ = calendar_.advance(today,settlementDays,Days);
-        timeLengths_[0] = 0.0;
         volatilities_[0] = vols[0];
-        for (Size i=0; i<lengths_.size(); i++) {
-            Date endDate = settlementDate_.plus(lengths_[i]);
-            timeLengths_[i+1] = dayCounter_.yearFraction(
-                             settlementDate_,endDate,settlementDate_,endDate);
-            volatilities_[i+1] = vols[i];
-        }
-        interpolation_ = 
-            Linear::make_interpolation(timeLengths_.begin(),
-                                       timeLengths_.end(),
-                                       volatilities_.begin());
+        std::copy(vols.begin(),vols.end(),volatilities_.begin()+1);
+        interpolate();
+    }
+    #endif
+
+    inline CapFlatVolatilityVector::CapFlatVolatilityVector(
+                                          const Date& settlementDate,
+                                          const std::vector<Period>& lengths,
+                                          const std::vector<Volatility>& vols,
+                                          const DayCounter& dayCounter)
+    : CapFlatVolatilityStructure(settlementDate),
+      dayCounter_(dayCounter), lengths_(lengths),
+      timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
+        QL_REQUIRE(lengths.size() == vols.size(),
+                   "mismatch between number of cap lengths "
+                   "and cap volatilities");
+        volatilities_[0] = vols[0];
+        std::copy(vols.begin(),vols.end(),volatilities_.begin()+1);
+        interpolate();
     }
 
-    inline Date CapFlatVolatilityVector::todaysDate() const {
-        return todaysDate_;
-    }
-
-    inline Date CapFlatVolatilityVector::settlementDate() const {
-        return settlementDate_;
+    inline CapFlatVolatilityVector::CapFlatVolatilityVector(
+                                          Integer settlementDays,
+                                          const Calendar& calendar,
+                                          const std::vector<Period>& lengths,
+                                          const std::vector<Volatility>& vols,
+                                          const DayCounter& dayCounter)
+    : CapFlatVolatilityStructure(settlementDays,calendar),
+      dayCounter_(dayCounter), lengths_(lengths),
+      timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
+        QL_REQUIRE(lengths.size() == vols.size(),
+                   "mismatch between number of cap lengths "
+                   "and cap volatilities");
+        volatilities_[0] = vols[0];
+        std::copy(vols.begin(),vols.end(),volatilities_.begin()+1);
+        interpolate();
     }
 
     inline DayCounter CapFlatVolatilityVector::dayCounter() const {
         return dayCounter_;
+    }
+
+    inline void CapFlatVolatilityVector::update() {
+        CapFlatVolatilityStructure::update();
+        interpolate();
+    }
+
+    inline void CapFlatVolatilityVector::interpolate() {
+        timeLengths_[0] = 0.0;
+        for (Size i=0; i<lengths_.size(); i++) {
+            Date endDate = referenceDate().plus(lengths_[i]);
+            timeLengths_[i+1] = timeFromReference(endDate);
+        }
+        interpolation_ =
+            Linear::make_interpolation(timeLengths_.begin(),
+                                       timeLengths_.end(),
+                                       volatilities_.begin());
     }
 
     inline Volatility CapFlatVolatilityVector::volatilityImpl(

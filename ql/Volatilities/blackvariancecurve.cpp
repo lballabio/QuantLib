@@ -22,11 +22,11 @@
 namespace QuantLib {
 
     BlackVarianceCurve::BlackVarianceCurve(
-        const Date& referenceDate,
-        const std::vector<Date>& dates,
-        const std::vector<Volatility>& blackVolCurve,
-        const DayCounter& dayCounter)
-    : referenceDate_(referenceDate), dayCounter_(dayCounter),
+                                 const Date& referenceDate,
+                                 const std::vector<Date>& dates,
+                                 const std::vector<Volatility>& blackVolCurve,
+                                 const DayCounter& dayCounter)
+    : BlackVarianceTermStructure(referenceDate), dayCounter_(dayCounter),
       maxDate_(dates.back()) {
 
         QL_REQUIRE(dates.size()==blackVolCurve.size(),
@@ -44,7 +44,7 @@ namespace QuantLib {
         times_[0] = 0.0;
         Size j;
         for (j=1; j<=blackVolCurve.size(); j++) {
-            times_[j] = dayCounter_.yearFraction(referenceDate, dates[j-1]);
+            times_[j] = timeFromReference(dates[j-1]);
             QL_REQUIRE(times_[j]>times_[j-1],
                        "dates must be sorted unique!");
             variances_[j] = times_[j] *

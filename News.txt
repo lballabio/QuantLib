@@ -55,10 +55,12 @@ Changes since release 0.3.7:
 - Global evaluation date added through Settings class.  Used for
   index-fixing and exchange-rate lookup.
 
-- New base class BaseTermStructure which can calculate its reference
-  date based on the global evaluation date:
-
 - TermStructure renamed to YieldTermStructure (the former name was
-  deprecated) and derived from BaseTermStructure so that it inherits
-  its functionality; tests provided.
+  deprecated)
 
+- New base class BaseTermStructure which can calculate its reference
+  date based on the global evaluation date.
+  YieldTermStructure, BlackVolTermStructure, LocalVolTermStructure,
+  CapFlatVolatilityStructure, CapletForwardVolatilityStructure, and
+  SwaptionVolatilityStructure are now derived from BaseTermStructure
+  so that they inherit its functionality.

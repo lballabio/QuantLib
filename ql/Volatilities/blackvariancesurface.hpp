@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,8 +42,7 @@ namespace QuantLib {
         \todo check time extrapolation
 
     */
-    class BlackVarianceSurface : public BlackVarianceTermStructure,
-                                 public Observer {
+    class BlackVarianceSurface : public BlackVarianceTermStructure {
       public:
         enum Extrapolation { ConstantExtrapolation,
                              InterpolatorDefaultExtrapolation };
@@ -58,20 +57,17 @@ namespace QuantLib {
                              const DayCounter& dayCounter = Actual365());
         //! \name BlackVolTermStructure interface
         //@{
-        Date referenceDate() const { 
-            return referenceDate_; 
+        DayCounter dayCounter() const {
+            return dayCounter_;
         }
-        DayCounter dayCounter() const { 
-            return dayCounter_; 
+        Date maxDate() const {
+            return maxDate_;
         }
-        Date maxDate() const { 
-            return maxDate_; 
+        Real minStrike() const {
+            return strikes_.front();
         }
-        Real minStrike() const { 
-            return strikes_.front(); 
-        }
-        Real maxStrike() const { 
-            return strikes_.back(); 
+        Real maxStrike() const {
+            return strikes_.back();
         }
         //@}
         //! \name Modifiers
@@ -82,16 +78,10 @@ namespace QuantLib {
         #else
         void setInterpolation() {
         #endif
-            varianceSurface_ = 
+            varianceSurface_ =
                 Traits::make_interpolation(times_.begin(), times_.end(),
                                            strikes_.begin(), strikes_.end(),
                                            variances_);
-            notifyObservers();
-        }
-        //@}
-        //! \name Observer interface
-        //@{
-        void update() {
             notifyObservers();
         }
         //@}
@@ -102,7 +92,6 @@ namespace QuantLib {
       protected:
         virtual Real blackVarianceImpl(Time t, Real strike) const;
       private:
-        Date referenceDate_;
         DayCounter dayCounter_;
         Date maxDate_;
         std::vector<Real> strikes_;
@@ -116,7 +105,7 @@ namespace QuantLib {
     // inline definitions
 
     inline void BlackVarianceSurface::accept(AcyclicVisitor& v) {
-        Visitor<BlackVarianceSurface>* v1 = 
+        Visitor<BlackVarianceSurface>* v1 =
             dynamic_cast<Visitor<BlackVarianceSurface>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

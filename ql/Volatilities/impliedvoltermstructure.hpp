@@ -37,25 +37,17 @@ namespace QuantLib {
                  class should be used with term structures that are
                  time dependant only
     */
-    class ImpliedVolTermStructure : public BlackVarianceTermStructure,
-                                    public Observer {
+    class ImpliedVolTermStructure : public BlackVarianceTermStructure {
       public:
         ImpliedVolTermStructure(
                               const Handle<BlackVolTermStructure>& originalTS,
-                              const Date& newReferenceDate);
+                              const Date& referenceDate);
         //! \name BlackVolTermStructure interface
         //@{
-        Date referenceDate() const { 
-            return newReferenceDate_; 
-        }
         DayCounter dayCounter() const;
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
         //! \name Visitability
         //@{
@@ -65,15 +57,15 @@ namespace QuantLib {
         virtual Real blackVarianceImpl(Time t, Real strike) const;
       private:
         Handle<BlackVolTermStructure> originalTS_;
-        Date newReferenceDate_;
     };
 
 
+    // inline definitions
 
     inline ImpliedVolTermStructure::ImpliedVolTermStructure(
                               const Handle<BlackVolTermStructure>& originalTS,
-                              const Date& newReferenceDate)
-    : originalTS_(originalTS), newReferenceDate_(newReferenceDate) {
+                              const Date& referenceDate)
+    : BlackVarianceTermStructure(referenceDate), originalTS_(originalTS) {
         registerWith(originalTS_);
     }
 
@@ -93,12 +85,8 @@ namespace QuantLib {
         return originalTS_->maxStrike();
     }
 
-    inline void ImpliedVolTermStructure::update() {
-        notifyObservers();
-    }
-
     inline void ImpliedVolTermStructure::accept(AcyclicVisitor& v) {
-        Visitor<ImpliedVolTermStructure>* v1 = 
+        Visitor<ImpliedVolTermStructure>* v1 =
             dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
@@ -111,14 +99,14 @@ namespace QuantLib {
         /* timeShift (and/or variance) variance at evaluation date
            cannot be cached since the original curve could change
            between invocations of this method */
-        Time timeShift = 
-            dayCounter().yearFraction(originalTS_->referenceDate(), 
-                                      newReferenceDate_);
+        Time timeShift =
+            dayCounter().yearFraction(originalTS_->referenceDate(),
+                                      referenceDate());
         /* t is relative to the current reference date
            and needs to be converted to the time relative
            to the reference date of the original curve */
         return originalTS_->blackForwardVariance(timeShift,
-                                                 timeShift+t, 
+                                                 timeShift+t,
                                                  strike, true);
     }
 
