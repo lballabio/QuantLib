@@ -67,6 +67,7 @@ namespace QuantLib {
     };
 
     //! Discretized option on another asset
+    /*! \pre The underlying asset must be initialized */
     class DiscretizedOption : public DiscretizedAsset {
       public:
         DiscretizedOption(const Handle<DiscretizedAsset>& underlying,

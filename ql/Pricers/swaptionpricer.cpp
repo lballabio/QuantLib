@@ -69,6 +69,29 @@ namespace QuantLib {
             }
         }
 
+
+        void DiscretizedSwaption::adjustValues() {
+            /* After rolling back to t, DiscretizedSwap::adjustValues()
+               adds payments to be made at the end of the coupon periods
+               starting at t. Therefore, the general approach taken in
+               DiscretizedOption must be overridden.
+            */
+            method()->rollback(underlying_, time());
+            switch (exerciseType_) {
+              case Exercise::American:
+                if (time_ >= exerciseTimes_[0] && time_ <= exerciseTimes_[1])
+                    applyExerciseCondition();
+                break;
+              default:
+                for (Size i=0; i<exerciseTimes_.size(); i++) {
+                    Time t = exerciseTimes_[i];
+                    if (t >= 0.0 && isOnTime(t))
+                        applyExerciseCondition();
+                }
+            }
+        }
+
+
     }
     
 }

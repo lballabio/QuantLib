@@ -85,10 +85,17 @@ namespace QuantLib {
                 lattice = lattice_;
             }
 
-            Handle<DiscretizedAsset> swaption(
-                new DiscretizedSwaption(lattice,arguments_));
 
+            Handle<DiscretizedAsset> swap(
+                new DiscretizedSwap(lattice, arguments_));
+            Time lastFixedPay = arguments_.fixedPayTimes.back();
+            Time lastFloatPay = arguments_.floatingPayTimes.back();
+            lattice->initialize(swap,QL_MAX(lastFixedPay,lastFloatPay));
+
+            Handle<DiscretizedAsset> swaption(
+                new DiscretizedSwaption(swap, arguments_));
             lattice->initialize(swaption, arguments_.exerciseTimes.back());
+
             Time nextExercise = 
                 *std::find_if(arguments_.exerciseTimes.begin(), 
                               arguments_.exerciseTimes.end(),

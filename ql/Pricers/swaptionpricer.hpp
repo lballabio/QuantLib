@@ -69,35 +69,12 @@ namespace QuantLib {
         class DiscretizedSwaption : public DiscretizedOption {
           public:
             DiscretizedSwaption(
-                const Handle<NumericalMethod>& method,
+                const Handle<DiscretizedSwap>& swap,
                 const Instruments::SwaptionArguments& params)
-            : DiscretizedOption(Handle<DiscretizedAsset>(
-                                    new DiscretizedSwap(method, params)),
+            : DiscretizedOption(swap,
                                 params.exerciseType,
-                                params.exerciseTimes) {
-                Time lastFixedPay = params.fixedPayTimes.back();
-                Time lastFloatPay = params.floatingPayTimes.back();
-                Time start = QL_MAX(lastFixedPay, lastFloatPay);
-                method->initialize(underlying_,start);
-            }
-        };
-
-        template<class ModelType>
-        class SpecificSwaptionPricer :
-            public PricingEngines::GenericModelEngine<
-                    ModelType,
-                    Instruments::SwaptionArguments,
-                    Instruments::SwaptionResults > {
-          public:
-            SpecificSwaptionPricer(const Handle<ModelType>& model)
-            : PricingEngines::GenericModelEngine<
-                    ModelType,
-                    Instruments::SwaptionArguments,
-                    Instruments::SwaptionResults >(model) {}
-
-            void calculate() const {
-                results_.value = model_->swaption(arguments_);
-            }
+                                params.exerciseTimes) {}
+            void adjustValues();
         };
 
     }
