@@ -4,6 +4,7 @@ includedir = $(prefix)/include/ql/Calendars
 
 include_HEADERS = \
 	all.hpp \
+	beijing.hpp \
 	budapest.hpp \
 	copenhagen.hpp \
 	frankfurt.hpp \
@@ -16,6 +17,7 @@ include_HEADERS = \
 	newyork.hpp \
 	nullcalendar.hpp \
 	oslo.hpp \
+	riyadh.hpp \
 	seoul.hpp \
 	singapore.hpp \
 	stockholm.hpp \
@@ -31,6 +33,7 @@ include_HEADERS = \
 EXTRA_DIST = makefile.mak
 
 libCalendars_la_SOURCES = \
+	beijing.cpp \
 	budapest.cpp \
 	copenhagen.cpp \
 	frankfurt.cpp \
@@ -42,6 +45,7 @@ libCalendars_la_SOURCES = \
 	milan.cpp \
 	newyork.cpp \
 	oslo.cpp \
+	riyadh.cpp \
 	seoul.cpp \
 	singapore.cpp \
 	stockholm.cpp \

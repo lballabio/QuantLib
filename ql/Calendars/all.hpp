@@ -20,6 +20,7 @@
 
 #include <ql/qldefines.hpp>
 
+#include <ql/Calendars/beijing.hpp>
 #include <ql/Calendars/budapest.hpp>
 #include <ql/Calendars/copenhagen.hpp>
 #include <ql/Calendars/frankfurt.hpp>
@@ -31,6 +32,7 @@
 #include <ql/Calendars/milan.hpp>
 #include <ql/Calendars/newyork.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
+#include <ql/Calendars/riyadh.hpp>
 #include <ql/Calendars/oslo.hpp>
 #include <ql/Calendars/seoul.hpp>
 #include <ql/Calendars/singapore.hpp>
