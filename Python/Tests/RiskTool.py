@@ -2,21 +2,9 @@
 """
     $Source$
     $Log$
-    Revision 1.4  2001/01/17 16:34:31  nando
-    new improved version
+    Revision 1.5  2001/01/18 09:12:12  nando
+    improved RiskTool test
 
-    Revision 1.3  2001/01/16 11:33:23  nando
-    updated RiskTool.
-    now constructor doesn't require target, while
-    shortfall and averageShortfall require target as input parameter
-
-    Revision 1.2  2001/01/15 13:27:07  aleppo
-    improved Python test
-
-    Revision 1.1  2001/01/12 17:35:17  nando
-    added RiskTool.
-    It offres VAR, shortfall, average shortfall methods.
-    It still needs test
 
 """
 
@@ -61,22 +49,35 @@ weights = map(lambda x: gaussian(x,average,sigma), data)
 
 s.addWeightedSequence(data, weights)
 
-print 'samples .......... %9d' % s.samples(),
-if (s.samples()==N):
+samples = s.samples()
+print 'samples .......... %9d' % samples,
+if (samples==N):
     print 'OK'
 else:
+    print
+    print 'wrong number of samples %f should be %f' % (samples, N)
+    print 'error %e' % (abs(samples-N))
     raise 'wrong number of sample'
 
-print 'Sum of the weights %9.2f' % s.weightSum(),
-if (s.weightSum()==reduce(lambda x,y: x+y, weights)):
+rightWeightSum = reduce(lambda x,y: x+y, weights)
+weightSum = s.weightSum()
+print 'Sum of the weights %9.2f' % weightSum,
+if (weightSum==rightWeightSum):
     print 'OK'
 else:
+    print
+    print 'wrong weigth sum %f should be %f' % (weightSum, rightWeightSum)
+    print 'error %e' % (abs(weightSum-rightWeightSum))
     raise 'wrong weigth sum'
 
-print 'min .............. %9.3g' % s.min(),
+minDist = s.min()
+print 'min .............. %9.3g' % minDist,
 if (s.min()==dataMin):
     print 'OK'
 else:
+    print
+    print 'wrong min value %f should be %f' % (minDist, dataMin)
+    print 'error %e' % (abs(minDist-dataMin))
     raise 'wrong min value'
 
 maxDist = s.max()
@@ -89,48 +90,61 @@ else:
     print 'error %e' % (abs(maxDist-dataMax))
     raise 'wrong max value'
 
-print 'mean ............. %9.3f' % s.mean(),
-if (abs(s.mean()-average)<1e-3):
+mean = s.mean()
+print 'mean ............. %9.3f' % mean,
+if (abs(mean-average)<1e-3):
     print 'OK'
 else:
+    print
+    print 'wrong mean value %f should be %f' % (mean, average)
+    print 'error %e' % (abs(mean-average))
     raise 'wrong mean value'
-
-print 'variance ......... %9.3f' % s.variance(),
-if (abs(s.variance()-sigma*sigma)<1e-3):
-    print 'OK'
-else:
-    raise 'wrong variance'
-
-print 'standard Deviation %9.3f' % s.standardDeviation(),
-if (abs(s.standardDeviation()-sigma)<1e-3):
-    print 'OK'
-else:
-    print
-    print 'wrong standard deviation %f should be %f' % (s.standardDeviation(), \
-                                                                         sigma)
-    print 'error %e' % (abs(s.standardDeviation()))
-    raise 'wrong standard deviation'
-
-print 'skewness ......... %+9.1e' % s.skewness(),
-if abs(s.skewness())<1e-7:
-    print 'OK'
-else:
-    print
-    print 'wrong skewness %f should be %f' % (s.skewness(), 0.0)
-    print 'error %e' % (abs(s.skewness()))
-    raise 'wrong skewness'
-
-print 'excess kurtosis .. %+9.1e' % s.kurtosis(),
-if (abs(s.kurtosis())<1e-3):
-    print 'OK'
-else:
-    raise 'wrong kurtosis'
 
 print 'error estimate ... %9.3g' % s.errorEstimate(),
 if (1):
     print 'not checked'
 else:
     raise 'wrong'
+
+variance = s.variance()
+print 'variance ......... %9.3f' % variance,
+if (abs(variance-sigma*sigma)<1e-3):
+    print 'OK'
+else:
+    print
+    print 'wrong variance %f should be %f' % (variance, sigma*sigma)
+    print 'error %e' % (abs(variance-sigma*sigma))
+    raise 'wrong variance'
+
+stdev = s.standardDeviation()
+print 'standard Deviation %9.3f' % stdev,
+if (abs(stdev-sigma)<1e-3):
+    print 'OK'
+else:
+    print
+    print 'wrong standard deviation %f should be %f' % (stdev, sigma)
+    print 'error %e' % abs(stdev-sigma)
+    raise 'wrong standard deviation'
+
+skew = s.skewness()
+print 'skewness ......... %+9.1e' % skew,
+if abs(skew)<1e-7:
+    print 'OK'
+else:
+    print
+    print 'wrong skewness %f should be %f' % (skew, 0.0)
+    print 'error %e' % (abs(skew))
+    raise 'wrong skewness'
+
+kurt = s.kurtosis()
+print 'excess kurtosis .. %+9.1e' % kurt,
+if (abs(kurt)<1e-3):
+    print 'OK'
+else:
+    print
+    print 'wrong kurtosis %f should be %f' % (kurt, 0.0)
+    print 'error %e' % (abs(kurt))
+    raise 'wrong kurtosis'
 
 rightVAR = -min(average-2.0*sigma, 0.0)
 VAR = s.valueAtRisk(0.9772)
@@ -170,6 +184,12 @@ else:
 
 
 s.reset()
+
+
+
+
+
+
 
 print
 print 'Test passed (elapsed time', time.time() - startTime, ')'
