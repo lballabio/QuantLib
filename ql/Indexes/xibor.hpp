@@ -32,10 +32,10 @@ namespace QuantLib {
       public:
         Xibor(const std::string& familyName,
               Integer n, TimeUnit units, Integer settlementDays,
-              CurrencyTag currency,
+              const Currency& currency,
               const Calendar& calendar,
               BusinessDayConvention convention,
-              const DayCounter& dayCounter, 
+              const DayCounter& dayCounter,
               const Handle<TermStructure>& h)
         : familyName_(familyName), n_(n), units_(units),
           settlementDays_(settlementDays),
@@ -44,6 +44,23 @@ namespace QuantLib {
           dayCounter_(dayCounter), termStructure_(h) {
             registerWith(termStructure_);
         }
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor taking a Currency instance */
+        Xibor(const std::string& familyName,
+              Integer n, TimeUnit units, Integer settlementDays,
+              CurrencyTag currency,
+              const Calendar& calendar,
+              BusinessDayConvention convention,
+              const DayCounter& dayCounter,
+              const Handle<TermStructure>& h)
+        : familyName_(familyName), n_(n), units_(units),
+          settlementDays_(settlementDays),
+          currency_(make_currency(currency)), calendar_(calendar),
+          convention_(convention),
+          dayCounter_(dayCounter), termStructure_(h) {
+            registerWith(termStructure_);
+        }
+        #endif
         //! \name Index interface
         //@{
         Rate fixing(const Date& fixingDate) const;
@@ -58,7 +75,7 @@ namespace QuantLib {
         Period tenor() const;
         Frequency frequency() const;
         Integer settlementDays() const;
-        CurrencyTag currency() const;
+        const Currency& currency() const;
         Calendar calendar() const;
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
@@ -70,7 +87,7 @@ namespace QuantLib {
         Integer n_;
         TimeUnit units_;
         Integer settlementDays_;
-        CurrencyTag currency_;
+        Currency currency_;
         Calendar calendar_;
         BusinessDayConvention convention_;
         DayCounter dayCounter_;
@@ -84,32 +101,32 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline Period Xibor::tenor() const { 
-        return Period(n_,units_); 
+    inline Period Xibor::tenor() const {
+        return Period(n_,units_);
     }
 
-    inline Integer Xibor::settlementDays() const { 
-        return settlementDays_; 
+    inline Integer Xibor::settlementDays() const {
+        return settlementDays_;
     }
 
-    inline CurrencyTag Xibor::currency() const { 
-        return currency_; 
+    inline const Currency& Xibor::currency() const {
+        return currency_;
     }
 
-    inline Calendar Xibor::calendar() const { 
-        return calendar_; 
+    inline Calendar Xibor::calendar() const {
+        return calendar_;
     }
 
-    inline bool Xibor::isAdjusted() const { 
-        return (convention_ != Unadjusted); 
+    inline bool Xibor::isAdjusted() const {
+        return (convention_ != Unadjusted);
     }
 
     inline BusinessDayConvention Xibor::businessDayConvention() const {
-        return convention_; 
+        return convention_;
     }
 
-    inline DayCounter Xibor::dayCounter() const { 
-        return dayCounter_; 
+    inline DayCounter Xibor::dayCounter() const {
+        return dayCounter_;
     }
 
     inline boost::shared_ptr<TermStructure> Xibor::termStructure() const {

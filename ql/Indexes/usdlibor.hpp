@@ -25,6 +25,7 @@
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/unitedstates.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/Currencies/america.hpp>
 
 namespace QuantLib {
 
@@ -34,7 +35,7 @@ namespace QuantLib {
         USDLibor(Integer n, TimeUnit units,
                  const Handle<TermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("USDLibor", n, units, 2, USD,
+        : Xibor("USDLibor", n, units, 2, USDCurrency(),
                 UnitedStates(UnitedStates::Exchange),
                 ModifiedFollowing, dc, h) {}
     };

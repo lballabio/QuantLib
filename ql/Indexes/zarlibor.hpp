@@ -25,6 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/johannesburg.hpp>
 #include <ql/DayCounters/actual365.hpp>
+#include <ql/Currencies/africa.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +36,7 @@ namespace QuantLib {
         ZARLibor(Integer n, TimeUnit units,
                  const Handle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
-        : Xibor("ZARLibor", n, units, 0, ZAR,
+        : Xibor("ZARLibor", n, units, 0, ZARCurrency(),
                 Johannesburg(), ModifiedFollowing, dc, h) {}
     };
 
