@@ -41,6 +41,8 @@
 namespace QuantLib {
 
     //! Day number
+    // turning Day into unsigned int would affect day algebra:
+    // BE CAREFUL!
     typedef int Day;
 
     /*! Day's serial number MOD 7;
@@ -92,7 +94,7 @@ namespace QuantLib {
 
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
-        operators which implement a limited date algebra (increasing and 
+        operators which implement a limited date algebra (increasing and
         decreasing dates, and calculating their difference).
     */
     class Date {
@@ -160,7 +162,7 @@ namespace QuantLib {
         static unsigned int monthLength(Month m, bool leapYear);
         static unsigned int monthOffset(Month m, bool leapYear);
         static unsigned int yearOffset(Year y);
-        
+
     };
 
     /*! \relates Date

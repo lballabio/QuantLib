@@ -36,7 +36,7 @@
 namespace QuantLib {
 
     namespace { // hide implementation in an anonymous namespace
-        
+
         // valid date interval definition
         const unsigned int MinimumSerialNumber = 367;       // Jan 1st, 1901
         const unsigned int MaximumSerialNumber = 73050;    // Dec 31st, 2099
@@ -56,11 +56,11 @@ namespace QuantLib {
         };
 
         const unsigned int MonthLength[]     = {
-            31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 
+            31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
         };
 
         const unsigned int MonthLeapLength[] = {
-            31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 
+            31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
         };
 
         // yearOffset and yearIsLeap enforce the 1900-2100 limit
@@ -109,7 +109,7 @@ namespace QuantLib {
             // 2090-2099
             69398,69763,70128,70494,70859,71224,71589,71955,72320,72685,
             // 2100
-            73050 
+            73050
         };
 
         const bool YearIsLeap[] = {
@@ -156,7 +156,7 @@ namespace QuantLib {
             // 2090-2099
             false,false, true,false,false,false, true,false,false,false,
             // 2100
-            false 
+            false
         };
 
     }
@@ -168,7 +168,7 @@ namespace QuantLib {
     Date::Date(int serialNumber)
     : serialNumber_(serialNumber) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(serialNumber >= MinimumSerialNumber && 
+            QL_REQUIRE(serialNumber >= MinimumSerialNumber &&
                        serialNumber <= MaximumSerialNumber,
                 "Date " + IntegerFormatter::toString(serialNumber) +
                 "outside allowed range [" +
@@ -215,9 +215,9 @@ namespace QuantLib {
         Day d = dayOfYear(); // dayOfYear is 1 based
         int m = d/30 + 1;
         bool leap = isLeap(year());
-        while (d <= monthOffset(Month(m),leap))
+        while (d <= int(monthOffset(Month(m),leap)))
             m--;
-        while (d > monthOffset(Month(m+1),leap))
+        while (d > int(monthOffset(Month(m+1),leap)))
             m++;
         return Month(m);
     }
@@ -225,7 +225,7 @@ namespace QuantLib {
     Year Date::year() const {
         Year y = (serialNumber_ / 365)+1900;
         // yearOffset(y) is December 31st of the preceding year
-        if (serialNumber_ <= yearOffset(y))
+        if (serialNumber_ <= int(yearOffset(y)))
             y--;
         return y;
     }

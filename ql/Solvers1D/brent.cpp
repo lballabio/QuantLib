@@ -47,8 +47,11 @@ namespace QuantLib {
 
         double Brent::solve_(const ObjectiveFunction& f,
                              double xAccuracy) const {
-            double d, e, min1, min2;
+            double min1, min2;
             double froot, p, q, r, s, xAcc1, xMid;
+            // dummy assignements to avoid compiler warning
+            double d = 0.0;
+            double e = 0.0;
 
             root_ = xMax_;
             froot = fxMax_;

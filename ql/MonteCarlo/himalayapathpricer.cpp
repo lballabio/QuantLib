@@ -63,7 +63,8 @@ namespace QuantLib {
 
             for(unsigned int j = 0; j < numSteps; j++) {
                 double bestPrice = 0.0;
-                unsigned int removeAsset;
+                // dummy assignement to avoid compiler warning
+                unsigned int removeAsset=0;
                 for(unsigned int i = 0; i < numAssets; i++) {
                     if(remainingAssets[i]) {
                         prices[i] *= QL_EXP(path[i][j]);
