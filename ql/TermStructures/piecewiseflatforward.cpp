@@ -240,6 +240,7 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Rate());
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     Rate PiecewiseFlatForward::compoundForwardImpl(Time t, Integer compFreq)
                                                                       const {
 		Rate zy = zeroYieldImpl(t);
@@ -249,6 +250,7 @@ namespace QuantLib {
             return (QL_EXP(zy*t)-1.0)/t;
 		return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
 	}
+    #endif
 
     Size PiecewiseFlatForward::referenceNode(Time t) const {
         if (t>=times_.back())

@@ -69,7 +69,9 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time) const;
         DiscountFactor discountImpl(Time) const;
         Rate forwardImpl(Time) const;
+#ifndef QL_DISABLE_DEPRECATED
         Rate compoundForwardImpl(Time t, Integer compFreq) const;
+#endif
       private:
         DayCounter dayCounter_;
         Handle<Quote> forward_;
@@ -145,6 +147,7 @@ namespace QuantLib {
         return forward_->value();
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline Rate FlatForward::compoundForwardImpl(Time t,
                                                  Integer compFreq) const {
         Rate zy = zeroYieldImpl(t);
@@ -154,8 +157,9 @@ namespace QuantLib {
             return (QL_EXP(zy*t)-1.0)/t;
         return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
     }
-
+    #endif
 }
 
 
 #endif
+

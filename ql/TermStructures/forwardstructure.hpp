@@ -70,10 +70,12 @@ namespace QuantLib {
             from the instantaneous forward rate.
         */
         DiscountFactor discountImpl(Time) const;
+#ifndef QL_DISABLE_DEPRECATED
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
         Rate compoundForwardImpl(Time, Integer) const;
+#endif
         //@}
     };
 
@@ -114,6 +116,7 @@ namespace QuantLib {
         return DiscountFactor(QL_EXP(-r*t));
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline Rate ForwardRateStructure::compoundForwardImpl(Time t,
                                                           Integer f) const {
         Rate zy = zeroYieldImpl(t);
@@ -123,6 +126,7 @@ namespace QuantLib {
             return (QL_EXP(zy*t)-1.0)/t;
         return (QL_EXP(zy*(1.0/f))-1.0)*f;
     }
+    #endif
 
 }
 

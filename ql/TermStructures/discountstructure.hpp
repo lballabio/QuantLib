@@ -69,7 +69,7 @@ namespace QuantLib {
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
-        Rate compoundForwardImpl(Time, Integer) const;
+        virtual Rate compoundForwardImpl(Time, Integer) const;
         //@}
     };
 
