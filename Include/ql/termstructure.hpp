@@ -26,11 +26,13 @@
     \fullpath Include/ql/%termstructure.hpp
     \brief Term structure
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.18  2001/08/09 14:59:45  sigmud
+// header modification
+//
 // Revision 1.17  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

@@ -26,11 +26,13 @@
     \fullpath Include/ql/MonteCarlo/%gaussianrandomgenerator.hpp
     \brief Default choice for Gaussian random number generator
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.12  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.11  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

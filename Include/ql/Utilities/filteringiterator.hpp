@@ -26,11 +26,13 @@
     \fullpath Include/ql/Utilities/%filteringiterator.hpp
     \brief Iterator filtering undesired data
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.9  2001/08/09 14:59:47  sigmud
+// header modification
+//
 // Revision 1.8  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

@@ -29,8 +29,11 @@
     Include/ql/Pricers/%singleassetoption.hpp
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.3  2001/08/09 14:59:47  sigmud
+// header modification
+//
 // Revision 1.2  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

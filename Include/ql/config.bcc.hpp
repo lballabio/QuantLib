@@ -1,9 +1,11 @@
 /*
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.3  2001/08/09 14:59:45  sigmud
+// header modification
+//
 // Revision 1.2  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //

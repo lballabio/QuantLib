@@ -26,11 +26,13 @@
     \fullpath Include/ql/Pricers/%americancondition.hpp
     \brief american option exercise condition
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.9  2001/08/09 14:59:47  sigmud
+// header modification
+//
 // Revision 1.8  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

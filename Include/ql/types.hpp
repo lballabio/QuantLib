@@ -26,11 +26,13 @@
     \fullpath Include/ql/%types.hpp
     \brief Custom types
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.6  2001/08/09 14:59:45  sigmud
+// header modification
+//
 // Revision 1.5  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

@@ -29,8 +29,11 @@
     Sources/Pricers/%barrieroption.cpp
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.20  2001/08/09 14:59:48  sigmud
+// header modification
+//
 // Revision 1.19  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //

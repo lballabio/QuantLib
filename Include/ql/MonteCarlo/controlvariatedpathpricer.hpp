@@ -26,11 +26,13 @@
     \fullpath Include/ql/MonteCarlo/%controlvariatedpathpricer.hpp
     \brief generic control variated path pricer
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.11  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.10  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

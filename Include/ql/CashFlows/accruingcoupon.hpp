@@ -28,7 +28,11 @@
     \fullpath Include/ql/CashFlows/%accruingcoupon.hpp
 */
 
+// $Id$
 // $Log$
+// Revision 1.9  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.8  2001/08/07 11:25:53  sigmud
 // copyright header maintenance
 //

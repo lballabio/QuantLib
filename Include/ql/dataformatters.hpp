@@ -26,11 +26,13 @@
     \fullpath Include/ql/%dataformatters.hpp
     \brief Classes used to format data for output
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.8  2001/08/09 14:59:45  sigmud
+// header modification
+//
 // Revision 1.7  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

@@ -27,11 +27,13 @@
     \fullpath Include/ql/FiniteDifferences/%operator.hpp
     \brief base classes for differential operators
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.8  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.7  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

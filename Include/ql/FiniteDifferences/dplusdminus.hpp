@@ -26,11 +26,13 @@
     \fullpath Include/ql/FiniteDifferences/%dplusdminus.hpp
     \brief \f$ D_{+}D_{-} \f$ matricial representation
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.7  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.6  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

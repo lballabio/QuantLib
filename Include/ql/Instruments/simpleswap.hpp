@@ -26,7 +26,6 @@
     \fullpath Include/ql/Instruments/%simpleswap.hpp
     \brief Simple fixed-rate vs Libor swap
 
-    $Id$
 */
 
 #ifndef quantlib_simple_swap_h

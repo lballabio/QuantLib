@@ -26,11 +26,13 @@
     \fullpath Include/ql/Pricers/%multiperiodoption.hpp
     \brief base class for option with events happening at different periods
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.18  2001/08/09 14:59:47  sigmud
+// header modification
+//
 // Revision 1.17  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

@@ -26,11 +26,13 @@
     \fullpath Sources/Indexes/%xibormanager.cpp
     \brief global repository for %Xibor histories
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.6  2001/08/09 14:59:48  sigmud
+// header modification
+//
 // Revision 1.5  2001/08/08 11:07:50  sigmud
 // inserting \fullpath for doxygen
 //

@@ -26,11 +26,13 @@
     \fullpath Sources/FiniteDifferences/%valueatcenter.cpp
     \brief compute value, first, and second derivatives at grid center
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.12  2001/08/09 14:59:48  sigmud
+// header modification
+//
 // Revision 1.11  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

@@ -26,8 +26,12 @@
     \fullpath Sources/Instruments/%simpleswap.cpp
     \brief Simple fixed-rate vs Libor swap
 
-    $Id$
 */
+// $Id$
+// $Log$
+// Revision 1.13  2001/08/09 14:59:48  sigmud
+// header modification
+//
 
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/CashFlows/fixedratecoupon.hpp"

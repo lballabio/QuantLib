@@ -25,11 +25,13 @@
     \fullpath Include/ql/MonteCarlo/%montecarlomodel.hpp
     \brief Create a sample generator from a path generator and a path pricer
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.3  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.2  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

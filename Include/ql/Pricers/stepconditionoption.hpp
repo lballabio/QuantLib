@@ -26,11 +26,13 @@
     \fullpath Include/ql/Pricers/%stepconditionoption.hpp
     \brief Option requiring additional code to be executed at each time step
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.12  2001/08/09 14:59:47  sigmud
+// header modification
+//
 // Revision 1.11  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

@@ -26,11 +26,13 @@
     \fullpath Include/ql/MonteCarlo/%knuthrandomgenerator.hpp
     \brief Knuth uniform random number generator
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.7  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.6  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

@@ -26,11 +26,13 @@
     \fullpath Sources/Pricers/%himalaya.cpp
     \brief Himalayan-type option pricer
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.18  2001/08/09 14:59:48  sigmud
+// header modification
+//
 // Revision 1.17  2001/08/08 11:07:50  sigmud
 // inserting \fullpath for doxygen
 //

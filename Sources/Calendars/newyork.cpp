@@ -26,11 +26,13 @@
     \fullpath Sources/Calendars/%newyork.cpp
 	\brief New York calendar
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.24  2001/08/09 14:59:47  sigmud
+// header modification
+//
 // Revision 1.23  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

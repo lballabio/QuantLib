@@ -26,11 +26,13 @@
     \fullpath Include/ql/MonteCarlo/%multifactormontecarlooption.hpp
     \brief basic Monte Carlo pricer based on a multi-factor model
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.12  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.11  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

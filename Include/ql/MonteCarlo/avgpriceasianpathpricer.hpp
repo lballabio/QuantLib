@@ -26,11 +26,13 @@
     \fullpath Include/ql/MonteCarlo/%avgpriceasianpathpricer.hpp
     \brief path pricer for average price Asian option
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.11  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.10  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

@@ -26,11 +26,13 @@
     \fullpath Sources/Math/%segmentintegral.cpp
     \brief Integral of a function over a segment
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.2  2001/08/09 14:59:48  sigmud
+// header modification
+//
 // Revision 1.1  2001/08/08 15:47:11  marmar
 // Class SegmentIntegral computes the integral of a function over an interval
 //

@@ -26,11 +26,13 @@
     \fullpath Sources/FiniteDifferences/%bsmoperator.cpp
     \brief differential operator for Black-Scholes-Merton equation
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.15  2001/08/09 14:59:47  sigmud
+// header modification
+//
 // Revision 1.14  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //

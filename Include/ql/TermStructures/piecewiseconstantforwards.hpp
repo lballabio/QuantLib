@@ -29,8 +29,11 @@
     Include/ql/TermStructures/%piecewiseconstantforwards.hpp
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.13  2001/08/09 14:59:47  sigmud
+// header modification
+//
 // Revision 1.12  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

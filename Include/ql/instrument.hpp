@@ -26,11 +26,13 @@
     \fullpath Include/ql/%instrument.hpp
     \brief Abstract instrument class
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.13  2001/08/09 14:59:45  sigmud
+// header modification
+//
 // Revision 1.12  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

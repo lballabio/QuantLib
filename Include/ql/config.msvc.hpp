@@ -1,9 +1,11 @@
 /*
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.11  2001/08/09 14:59:45  sigmud
+// header modification
+//
 // Revision 1.10  2001/07/06 18:24:17  nando
 // slight modifications to avoid VisualStudio warnings
 //

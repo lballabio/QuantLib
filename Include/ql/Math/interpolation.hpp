@@ -26,11 +26,13 @@
     \fullpath Include/ql/Math/%interpolation.hpp
     \brief abstract base classes for interpolations
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.10  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.9  2001/08/08 11:07:48  sigmud
 // inserting \fullpath for doxygen
 //

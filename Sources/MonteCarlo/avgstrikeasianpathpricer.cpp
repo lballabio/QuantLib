@@ -26,11 +26,13 @@
     \fullpath Sources/MonteCarlo/%avgstrikeasianpathpricer.cpp
     \brief path pricer for average strike Asian options
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.15  2001/08/09 14:59:48  sigmud
+// header modification
+//
 // Revision 1.14  2001/08/08 11:07:50  sigmud
 // inserting \fullpath for doxygen
 //

@@ -25,11 +25,13 @@
     \fullpath Include/ql/MonteCarlo/%generalmontecarlo.hpp
     \brief Generic model for Monte Carlo simulations
 
-    $Id$
 */
 
-// $Source$
+// $Id$
 // $Log$
+// Revision 1.17  2001/08/09 14:59:46  sigmud
+// header modification
+//
 // Revision 1.16  2001/08/08 11:07:49  sigmud
 // inserting \fullpath for doxygen
 //
