@@ -19,11 +19,13 @@
 #define quantlib_test_statistics_hpp
 
 #include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
 
-class StatisticsTest : public CppUnit::TestCase {
+class StatisticsTest : public CppUnit::TestFixture {
   public:
-    StatisticsTest() : CppUnit::TestCase("Testing statistics") {}
-    void runTest();
+    void testStatistics();
+    void testSequenceStatistics();
+    static CppUnit::Test* suite();
 };
 
 

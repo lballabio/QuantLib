@@ -81,7 +81,7 @@ int main() {
     runner.addTest(new RiskStatisticsTest);
     runner.addTest(SimpleSwapTest::suite());
     runner.addTest(new Solver1DTest);
-    runner.addTest(new StatisticsTest);
+    runner.addTest(StatisticsTest::suite());
     runner.addTest(SwaptionTest::suite());
     runner.addTest(TermStructureTest::suite());
 
