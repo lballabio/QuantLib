@@ -166,6 +166,20 @@ if test "$ql_error_lines" = "yes" ; then
               information.])
 fi
 
+AC_ARG_ENABLE([indexed-coupon],
+              AC_HELP_STRING([--enable-indexed-coupons],
+                             [If enabled, indexed coupons (see the
+                              documentation) are used in floating legs.
+                              If disabled (the default), par coupons
+                              are used.]),
+              [ql_indexed_coupon=$enableval],
+              [ql_indexed_coupon=no])
+if test "$ql_indexed_coupon" = "yes" ; then
+   AC_DEFINE([QL_USE_INDEXED_COUPON],[1],
+             [Define this to use indexed coupons instead of par coupons in
+              floating legs.])
+fi
+
 AC_ARG_ENABLE([negative-rates],
               AC_HELP_STRING([--enable-negative-rates],
                              [If enabled, negative yield rates are allowed

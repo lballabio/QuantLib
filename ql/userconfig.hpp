@@ -46,7 +46,9 @@
 /* Define this if you want to disable deprecated code. */
 // #define QL_DISABLE_DEPRECATED
 
-/* Define this if you want to use UpFrontIndexedCoupon in SimpleSwap. Otherwise 
-ParCoupon will be used.*/
+/* Define this to use indexed coupons instead of par coupons in floating
+   legs. */
 //#define QL_USE_INDEXED_COUPON
+
+
 #endif
