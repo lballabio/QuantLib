@@ -26,16 +26,14 @@
     \brief base class for options with dividends
 
     $Id$
-*/
 
+*/
 // $Source$
 // $Log$
-// Revision 1.16  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.17  2001/05/25 15:58:05  nando
+// R019-branch-merge2 merged into trunk
 //
-// Revision 1.15  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
+
 
 #include "ql/Pricers/dividendoption.hpp"
 #include "ql/Math/cubicspline.hpp"
@@ -114,7 +112,11 @@ namespace QuantLib {
             initializeOperator();
             initializeModel();
             initializeStepCondition();
+<<<<<<< dividendoption.cpp
 
+=======
+
+>>>>>>> 1.12.2.1
             stepCondition_ -> applyTo(prices_, dates_[step]);
 
            }
