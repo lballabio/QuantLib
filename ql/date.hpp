@@ -78,12 +78,14 @@ namespace QuantLib {
 
     //! Frequency of events
     /*! \ingroup datetime */
-    enum Frequency { Once = 0,          //!< only once, e.g., a zero-coupon
-                     Annual = 1,        //!< once a year
-                     Semiannual = 2,    //!< twice a year
-                     Quarterly = 4,     //!< every third month
-                     Bimonthly = 6,     //!< every second month
-                     Monthly = 12       //!< once a month
+    enum Frequency { NoFrequency = -1,     //!< null frequency
+                     Once = 0,             //!< only once, e.g., a zero-coupon
+                     Annual = 1,           //!< once a year
+                     Semiannual = 2,       //!< twice a year
+                     EveryFourthMonth = 3, //!< every fourth month
+                     Quarterly = 4,        //!< every third month
+                     Bimonthly = 6,        //!< every second month
+                     Monthly = 12          //!< once a month
     };
 
     //! Units used to describe time periods
@@ -149,7 +151,7 @@ namespace QuantLib {
         explicit Date(BigInteger serialNumber);
         //! More traditional constructor.
         Date(Day d, Month m, Year y);
-
+        //@}
         //! \name inspectors
         //@{
         Weekday weekday() const;
