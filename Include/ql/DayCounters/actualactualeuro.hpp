@@ -54,8 +54,8 @@ namespace QuantLib {
                             return (d2-d1); }
             Time yearFraction(const Date& d1,
                               const Date& d2,
-                              const Date& refPeriodStart,
-                              const Date& refPeriodEnd) const;
+                              const Date& refPeriodStart = Date(),
+                              const Date& refPeriodEnd = Date()) const;
         };
 
     }

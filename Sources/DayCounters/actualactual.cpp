@@ -30,6 +30,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.29  2001/08/30 12:32:24  nando
+// daycounters works with Python test suite
+// step 1
+//
 // Revision 1.28  2001/08/29 15:18:04  nando
 // _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
 //
@@ -48,7 +52,7 @@ namespace QuantLib {
                 "Invalid reference period");
             // estimate roughly the length in months of a period
             int months = int(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
-            QL_REQUIRE(months != 0 && 12%months == 0,
+            QL_REQUIRE(months != 0,
                 "number of months does not divide 12 exactly");
             double period = double(months)/12.0;
             if (d2 <= refPeriodEnd) {

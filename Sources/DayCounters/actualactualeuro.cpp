@@ -40,8 +40,7 @@ namespace QuantLib {
         Time ActualActualEuro::yearFraction(const Date& d1, const Date& d2,
             const Date& refPeriodStart, const Date& refPeriodEnd) const {
 
-            QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
-                refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
+            QL_REQUIRE(d1<d2,
                 "Invalid reference period");
 
             Date newD2=d2;
@@ -50,7 +49,7 @@ namespace QuantLib {
             while (temp>d1) {
                 temp = newD2.plusYears(-1);
                 if (temp.dayOfMonth()==28 && temp.month()==2
-                    && temp.isLeap(temp.year())) {
+                    && Date::isLeap(temp.year())) {
                     temp.plusDays(1);
                 }
                 
@@ -61,9 +60,9 @@ namespace QuantLib {
             }
 
             double den = 365.0;
-            if ((newD2.isLeap(newD2.year()) &&
+            if ((Date::isLeap(newD2.year()) &&
                 newD2>Date(29, (Month)2, newD2.year()))
-                || (d1.isLeap(d1.year()) &&
+                || (Date::isLeap(d1.year()) &&
                 d1<=Date(29, (Month)2, d1.year()))) {
 
                 den += 1.0;

@@ -43,24 +43,17 @@ namespace QuantLib {
             QL_REQUIRE(d2>=d1,
                 "Invalid reference period");
 
-            if (d2.year()==d1.year()) {
-                if (d2.isLeap(d2.year()))
-                    return dayCount(d1,d2)/366;
-                else
-                    return dayCount(d1,d2)/365;
-            } else {
-                double sum = 0.0;
-                if (d2.isLeap(d2.year()))
-                    sum += dayCount(Date(1, (Month)1, d2.year()), d2)/366;
-                else
-                    sum += dayCount(Date(1, (Month)1, d2.year()), d2)/365;
-                if (d1.isLeap(d1.year()))
-                    sum += dayCount(d1, Date(1, (Month)1, d1.year()+1))/366;
-                else
-                    sum += dayCount(d1, Date(1, (Month)1, d1.year()+1))/365;
-                return sum + (d2.year() - d1.year() - 1);
-            }
+	        int y1 = d1.year(), y2 = d2.year();
+	        double leap1 = (Date::isLeap(y1)?1.:0.),
+		        leap2 = (Date::isLeap(y2)?1.:0.);
+	        double dib1 = 365 + leap1, dib2 = 365 + leap2;//
 
+	        double sum = y2 - y1 - 1;
+
+	        sum += dayCount(d1, Date(1,(Month)1,y1+1))/dib1;
+	        sum += dayCount(Date(1,(Month)1,y2),d2)/dib2;
+
+	        return sum;
         } // Time ActualActualHistorical::yearFraction
 
     } // namespace DayCounters
