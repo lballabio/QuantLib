@@ -7,21 +7,21 @@
 CFG=BermudanSwaption - Win32 OnTheEdgeDebug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "BermudanSwaption.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "BermudanSwaption.mak" CFG="BermudanSwaption - Win32 OnTheEdgeDebug"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "BermudanSwaption - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "BermudanSwaption - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "BermudanSwaption - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Console Application")
 !MESSAGE "BermudanSwaption - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Console Application")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -122,7 +122,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX"quantlib.hpp" /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\..\\" /I "..\..\..\..\PrimitivePolynomialsModuloTwo" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR /YX"quantlib.hpp" /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\..\\" /I "..\..\..\PrimitivePolynomialsModuloTwo" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR /YX"quantlib.hpp" /FD /GZ /c
 # ADD BASE RSC /l 0x419 /d "_DEBUG"
 # ADD RSC /l 0x419 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -134,7 +134,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"..\..\lib\Win32\VisualStudio\\" /libpath:"..\..\..\PrimitivePolynomialsModuloTwo\lib\Win32\VisualStudio\\"
 # SUBTRACT LINK32 /profile
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
