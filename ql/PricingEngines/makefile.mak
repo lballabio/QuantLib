@@ -18,8 +18,7 @@ OBJS = \
        analyticalvanillaengine.obj$(_D) \
        binomialvanillaengine.obj$(_D) \
        discretizedvanillaoption.obj$(_D) \
-       fdvanillaengine.obj$(_D) \
-       mcvanillaengine.obj$(_D)
+       fdvanillaengine.obj$(_D)
 
 
 # Tools to be used

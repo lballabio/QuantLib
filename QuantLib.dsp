@@ -1651,10 +1651,6 @@ SOURCE=.\ql\PricingEngines\mcengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\mcvanillaengine.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\quantoengines.hpp
 # End Source File
 # Begin Source File
