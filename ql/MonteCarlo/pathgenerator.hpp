@@ -52,7 +52,7 @@ namespace QuantLib {
             PathGenerator(double drift,
                           double variance,
                           Time length,
-                          size_t steps,
+                          size_t timeSteps,
                           long seed = 0);
             /*! \warning the initial time is assumed to be zero
                 and must <b>not</b> be included in the passed vector */
@@ -72,23 +72,24 @@ namespace QuantLib {
 
         template <class RNG>
         PathGenerator<RNG>::PathGenerator(double drift, double variance,
-            Time length, size_t steps, long seed)
-        : next_(Path(steps),1.0) {
-            QL_REQUIRE(steps > 0, "PathGenerator: Time steps(" +
-                IntegerFormatter::toString(steps) +
+            Time length, size_t timeSteps, long seed)
+        : next_(Path(timeSteps),1.0) {
+            QL_REQUIRE(timeSteps > 0, "PathGenerator: Time steps(" +
+                IntegerFormatter::toString(timeSteps) +
                 ") must be greater than zero");
             QL_REQUIRE(length > 0, "PathGenerator: length must be > 0");
-            Time dt = length/steps;
-            for (size_t i = 0; i< steps; i++) {
+            Time dt = length/timeSteps;
+            // timeDelays_ = std::vector<Time>(timeSteps, dt);
+            for (size_t i=0; i<timeSteps; i++) {
                 next_.value.times()[i] = (i+1)*dt;
             }
 
-            next_.value.drift() = Array(steps, drift*dt);
+            next_.value.drift() = Array(timeSteps, drift*dt);
 
             QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
             generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
                 new RandomNumbers::RandomArrayGenerator<RNG>(
-                    Array(steps, variance*dt), seed));
+                    Array(timeSteps, variance*dt), seed));
         }
 
         template <class RNG>
@@ -98,26 +99,36 @@ namespace QuantLib {
             QL_REQUIRE(times.size() > 0, "PathGenerator: no times given");
             QL_REQUIRE(times[0] >= 0.0, "PathGenerator: first time(" +
                  DoubleFormatter::toString(times[0]) + ") must be non negative");
+            size_t i;
+            for(i = 1; i < times.size(); i++) {
+                QL_REQUIRE(times[i] >= times[i-1],
+                    "MultiPathGenerator: time(" +
+                    IntegerFormatter::toString(i-1)+")=" +
+                    DoubleFormatter::toString(times[i-1]) +
+                    " is later than time(" +
+                    IntegerFormatter::toString(i) + ")=" +
+                    DoubleFormatter::toString(times[i]));
+            }
             next_.value.times() = times;
 
-            Array vrnc(times.size());
             Time dt = times[0];
             next_.value.drift()[0] = drift*dt;
-
-            QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
-            vrnc[0] = variance*dt;
-            for (size_t i=1; i<times.size(); i++) {
-                QL_REQUIRE(times[i] > times[i-1],
-                    "PathGenerator: time[" +
-                    IntegerFormatter::toString(i-1)+"]="+
-                    DoubleFormatter::toString(times[i-1])+
-                    " is greater than time["+
-                    IntegerFormatter::toString(i)+"]="+
-                    DoubleFormatter::toString(times[i]));
+            for (i=1; i<times.size(); i++) {
                 dt = times[i] - times[i-1];
                 next_.value.drift()[i] = drift*dt;
+            }
+
+
+            Array vrnc(times.size());
+            dt = times[0];
+            next_.value.drift()[0] = drift*dt;
+            QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
+            vrnc[0] = variance*dt;
+            for (i=1; i<times.size(); i++) {
+                dt = times[i] - times[i-1];
                 vrnc[i] = variance*dt;
             }
+
             generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
                 new RandomNumbers::RandomArrayGenerator<RNG>(vrnc,seed));
         }
@@ -126,8 +137,8 @@ namespace QuantLib {
         inline const PathGenerator<RNG>::sample_type&
         PathGenerator<RNG>::next() const {
             const Sample<Array>& sample = generator_->next();
-            next_.value.diffusion() = sample.value;
             next_.weight = sample.weight;
+            next_.value.diffusion() = sample.value;
             return next_;
         }
 

@@ -90,25 +90,28 @@ namespace QuantLib {
             QL_REQUIRE(length > 0, "MultiPathGenerator: length must be > 0");
             Time dt = length/timeSteps;
             timeDelays_ = std::vector<Time>(timeSteps, dt);
-            for (size_t j = 0; j< numAssets_; j++) {
-                for (size_t i = 0; i< timeSteps; i++) {
+            size_t i,j;
+            for (j=0; j<numAssets_; j++) {
+                for (i=0; i<timeSteps; i++) {
                     next_.value[j].times()[i] = (i+1)*dt;
                 }
             }
 
 
-            if(drifts.size() != 0) {
-                QL_REQUIRE(drifts.size() == numAssets_,
-                           "MultiPathGenerator covariance and average "
-                           "do not have the same size");
-                for (size_t j=0; j<numAssets_; j++) {
-                    for (size_t i = 0; i< timeSteps; i++) {
-                        next_.value[j].drift()[i] =drifts_[j]*timeDelays_[i];
-                    }
+//          if(drifts.size()!=0) {
+            QL_REQUIRE(drifts.size() == numAssets_,
+                       "MultiPathGenerator covariance and average "
+                       "do not have the same size");
+            for (j=0; j<numAssets_; j++) {
+                for (i=0; i<timeSteps; i++) {
+                    next_.value[j].drift()[i]=drifts_[j]*timeDelays_[i];
                 }
             }
 
-            // QL_REQUIRE(covariance.diagonal()[i]>0)
+            double vols = covariance.diagonal();
+            for (j=0; j<numAssets_; j++)
+                QL_REQUIRE(vols[j]>=0, "MultiPathGenerator: negative variance");
+
             // random generator here
 
         }
@@ -128,7 +131,8 @@ namespace QuantLib {
                  DoubleFormatter::toString(times[0]) +
                  ") must be non negative");
             timeDelays_[0] = times[0];
-            for(size_t i = 1; i < times.size(); i++) {
+            size_t i,j;
+            for(i = 1; i < times.size(); i++) {
                 QL_REQUIRE(times[i] >= times[i-1],
                     "MultiPathGenerator: time(" +
                     IntegerFormatter::toString(i-1)+")=" +
@@ -138,26 +142,28 @@ namespace QuantLib {
                     DoubleFormatter::toString(times[i]));
                 timeDelays_[i] = times[i] - times[i-1];
             }
-            for (size_t j = 0; j< numAssets_; j++) {
+            for (j = 0; j< numAssets_; j++) {
                 next_.value[j].times() = times;
             }
 
 
 
-            if(drifts.size() != 0) {
-                QL_REQUIRE(drifts.size() == numAssets_,
-                           "MultiPathGenerator covariance and average "
-                           "do not have the same size");
-                for (size_t j=0; j<numAssets_; j++) {
-                    for (size_t i = 0; i< times.size(); i++) {
-                        next_.value[j].drift()[i] = drifts[j] * timeDelays_[i];
-                    }
+//            if(drifts.size() != 0) {
+            QL_REQUIRE(drifts.size() == numAssets_,
+                       "MultiPathGenerator covariance and average "
+                       "do not have the same size");
+            for (j=0; j<numAssets_; j++) {
+                for (i = 0; i< times.size(); i++) {
+                    next_.value[j].drift()[i] = drifts[j] * timeDelays_[i];
                 }
             }
 
-            // QL_REQUIRE(covariance.diagonal()[i]>0)
+            Array variances = covariance.diagonal();
+            for (j=0; j<numAssets_; j++)
+                QL_REQUIRE(variances[j]>=0, "MultiPathGenerator: negative variance");
+
             // random generator here
-            
+
         }
 
         template <class RAG>
