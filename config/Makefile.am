@@ -1,8 +1,6 @@
 
 # $Id$
 
-SUBDIRS=macosx
-
 bin_SCRIPTS = config.guess \
 			  config.sub \
 			  install-sh \

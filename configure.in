@@ -178,7 +178,6 @@ AC_SUBST(QUANTLIB_CXXFLAGS)
 
 AC_OUTPUT(Makefile \
     config/Makefile \
-    config/macosx/Makefile \
     ql/Makefile \
     ql/Calendars/Makefile \
     ql/CashFlows/Makefile \
@@ -219,6 +218,7 @@ AC_OUTPUT(Makefile \
     Examples/DiscreteHedging/Makefile \
     Examples/EuropeanOption/Makefile \
     Examples/Swap/Makefile \
+    patches/Makefile \
     quantlib-config \
     )
 

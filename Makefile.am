@@ -4,7 +4,7 @@
 #AUTOMAKE_OPTIONS=foreign dist-bzip2
 
 AUTOMAKE_OPTIONS=foreign
-SUBDIRS=config ql man lib Docs Examples
+SUBDIRS=config ql man lib Docs Examples patches
 CFLAGS=-Wall
 
 bin_SCRIPTS = quantlib-config
