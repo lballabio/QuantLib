@@ -30,23 +30,8 @@
 
 // $Id$
 // $Log$
-// Revision 1.10  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.9  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.8  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.6  2001/07/19 16:40:10  lballabio
-// Improved docs a bit
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.11  2001/08/28 12:30:14  nando
+// unsigned int instead of int
 //
 
 #ifndef quantlib_matrix_h
@@ -72,9 +57,9 @@ namespace QuantLib {
             //! creates a null matrix
             Matrix();
             //! creates a matrix with the given dimensions
-            Matrix(int rows, int columns);
+            Matrix(unsigned int rows, unsigned int columns);
             //! creates the matrix and fills it with <tt>value</tt>
-            Matrix(int rows, int columns, double value);
+            Matrix(unsigned int rows, unsigned int columns, double value);
             Matrix(const Matrix&);
             ~Matrix();
             Matrix& operator=(const Matrix&);
@@ -119,43 +104,43 @@ namespace QuantLib {
             reverse_iterator rbegin();
             const_reverse_iterator rend() const;
             reverse_iterator rend();
-            const_row_iterator row_begin(int i) const;
-            row_iterator row_begin(int i);
-            const_row_iterator row_end(int i) const;
-            row_iterator row_end(int i);
-            const_reverse_row_iterator row_rbegin(int i) const;
-            reverse_row_iterator row_rbegin(int i);
-            const_reverse_row_iterator row_rend(int i) const;
-            reverse_row_iterator row_rend(int i);
-            const_column_iterator column_begin(int i) const;
-            column_iterator column_begin(int i);
-            const_column_iterator column_end(int i) const;
-            column_iterator column_end(int i);
-            const_reverse_column_iterator column_rbegin(int i) const;
-            reverse_column_iterator column_rbegin(int i);
-            const_reverse_column_iterator column_rend(int i) const;
-            reverse_column_iterator column_rend(int i);
+            const_row_iterator row_begin(unsigned int i) const;
+            row_iterator row_begin(unsigned int i);
+            const_row_iterator row_end(unsigned int i) const;
+            row_iterator row_end(unsigned int i);
+            const_reverse_row_iterator row_rbegin(unsigned int i) const;
+            reverse_row_iterator row_rbegin(unsigned int i);
+            const_reverse_row_iterator row_rend(unsigned int i) const;
+            reverse_row_iterator row_rend(unsigned int i);
+            const_column_iterator column_begin(unsigned int i) const;
+            column_iterator column_begin(unsigned int i);
+            const_column_iterator column_end(unsigned int i) const;
+            column_iterator column_end(unsigned int i);
+            const_reverse_column_iterator column_rbegin(unsigned int i) const;
+            reverse_column_iterator column_rbegin(unsigned int i);
+            const_reverse_column_iterator column_rend(unsigned int i) const;
+            reverse_column_iterator column_rend(unsigned int i);
             //@}
 
             //! \name Element access
             //@{
-            const_row_iterator operator[](int) const;
-            row_iterator operator[](int);
+            const_row_iterator operator[](unsigned int) const;
+            row_iterator operator[](unsigned int);
             Array diagonal(void) const;
             //@}
 
             //! \name Inspectors
             //@{
-            int rows() const;
-            int columns() const;
+            unsigned int rows() const;
+            unsigned int columns() const;
             //@}
 
           private:
-            void allocate(int rows, int columns);
-            void copy(const Matrix&);
+            void allocate_(unsigned int rows, unsigned int columns);
+            void copy_(const Matrix&);
           private:
             double* pointer_;
-            int rows_, columns_;
+            unsigned int rows_, columns_;
         };
 
         // algebraic operators
@@ -198,23 +183,25 @@ namespace QuantLib {
         inline Matrix::Matrix()
         : pointer_(0), rows_(0), columns_(0) {}
 
-        inline Matrix::Matrix(int rows, int columns)
+        inline Matrix::Matrix(unsigned int rows, unsigned int columns)
         : pointer_(0), rows_(0), columns_(0) {
             if (rows > 0 && columns > 0)
-                allocate(rows,columns);
+                allocate_(rows,columns);
         }
 
-        inline Matrix::Matrix(int rows, int columns, double value)
+        inline Matrix::Matrix(unsigned int rows,
+                              unsigned int columns,
+                              double value)
         : pointer_(0), rows_(0), columns_(0) {
             if (rows > 0 && columns > 0)
-                allocate(rows,columns);
+                allocate_(rows,columns);
             std::fill(begin(),end(),value);
         }
 
         inline Matrix::Matrix(const Matrix& from)
         : pointer_(0), rows_(0), columns_(0) {
-            allocate(from.rows(), from.columns());
-            copy(from);
+            allocate_(from.rows(), from.columns());
+            copy_(from);
         }
 
         inline Matrix::~Matrix() {
@@ -226,13 +213,13 @@ namespace QuantLib {
 
         inline Matrix& Matrix::operator=(const Matrix& from) {
             if (this != &from) {
-                allocate(from.rows(),from.columns());
-                copy(from);
+                allocate_(from.rows(),from.columns());
+                copy_(from);
             }
             return *this;
         }
 
-        inline void Matrix::allocate(int rows, int columns) {
+        inline void Matrix::allocate_(unsigned int rows, unsigned int columns) {
             if (rows_ == rows && columns_ == columns)
                 return;
             if (pointer_ != 0 && rows_ != 0 && columns_ != 0)
@@ -247,7 +234,7 @@ namespace QuantLib {
             }
         }
 
-        inline void Matrix::copy(const Matrix& from) {
+        inline void Matrix::copy_(const Matrix& from) {
             std::copy(from.begin(),from.end(),begin());
         }
 
@@ -314,95 +301,101 @@ namespace QuantLib {
             return reverse_iterator(begin());
         }
 
-        inline Matrix::const_row_iterator Matrix::row_begin(int i) const {
+        inline Matrix::const_row_iterator
+        Matrix::row_begin(unsigned int i) const {
+             return pointer_+columns_*i;
+        }
+
+        inline Matrix::row_iterator Matrix::row_begin(unsigned int i) {
             return pointer_+columns_*i;
         }
 
-        inline Matrix::row_iterator Matrix::row_begin(int i) {
-            return pointer_+columns_*i;
-        }
-
-        inline Matrix::const_row_iterator Matrix::row_end(int i) const {
+        inline Matrix::const_row_iterator Matrix::row_end(unsigned int i) const{
             return pointer_+columns_*(i+1);
         }
 
-        inline Matrix::row_iterator Matrix::row_end(int i) {
+        inline Matrix::row_iterator Matrix::row_end(unsigned int i) {
             return pointer_+columns_*(i+1);
         }
 
         inline Matrix::const_reverse_row_iterator
-        Matrix::row_rbegin(int i) const {
+        Matrix::row_rbegin(unsigned int i) const {
             return const_reverse_row_iterator(row_end(i));
         }
 
-        inline Matrix::reverse_row_iterator Matrix::row_rbegin(int i) {
+        inline Matrix::reverse_row_iterator Matrix::row_rbegin(unsigned int i) {
             return reverse_row_iterator(row_end(i));
         }
 
         inline Matrix::const_reverse_row_iterator
-        Matrix::row_rend(int i) const {
+        Matrix::row_rend(unsigned int i) const {
             return const_reverse_row_iterator(row_begin(i));
         }
 
-        inline Matrix::reverse_row_iterator Matrix::row_rend(int i) {
+        inline Matrix::reverse_row_iterator Matrix::row_rend(unsigned int i) {
             return reverse_row_iterator(row_begin(i));
         }
 
-        inline Matrix::const_column_iterator Matrix::column_begin(int i) const {
+        inline Matrix::const_column_iterator
+        Matrix::column_begin(unsigned int i) const {
             return const_column_iterator(pointer_+i,columns_);
         }
 
-        inline Matrix::column_iterator Matrix::column_begin(int i) {
+        inline Matrix::column_iterator Matrix::column_begin(unsigned int i) {
             return column_iterator(pointer_+i,columns_);
         }
 
-        inline Matrix::const_column_iterator Matrix::column_end(int i) const {
+        inline Matrix::const_column_iterator
+        Matrix::column_end(unsigned int i) const {
             return column_begin(i)+rows_;
         }
 
-        inline Matrix::column_iterator Matrix::column_end(int i) {
+        inline Matrix::column_iterator Matrix::column_end(unsigned int i) {
             return column_begin(i)+rows_;
         }
 
         inline Matrix::const_reverse_column_iterator
-        Matrix::column_rbegin(int i) const {
+        Matrix::column_rbegin(unsigned int i) const {
             return const_reverse_column_iterator(column_end(i));
         }
 
-        inline Matrix::reverse_column_iterator Matrix::column_rbegin(int i) {
+        inline Matrix::reverse_column_iterator
+        Matrix::column_rbegin(unsigned int i) {
             return reverse_column_iterator(column_end(i));
         }
 
         inline Matrix::const_reverse_column_iterator
-        Matrix::column_rend(int i) const {
+        Matrix::column_rend(unsigned int i) const {
             return const_reverse_column_iterator(column_begin(i));
         }
 
-        inline Matrix::reverse_column_iterator Matrix::column_rend(int i) {
+        inline Matrix::reverse_column_iterator
+        Matrix::column_rend(unsigned int i) {
             return reverse_column_iterator(column_begin(i));
         }
 
-        inline Matrix::const_row_iterator Matrix::operator[](int i) const {
+        inline Matrix::const_row_iterator
+        Matrix::operator[](unsigned int i) const {
             return row_begin(i);
         }
 
-        inline Matrix::row_iterator Matrix::operator[](int i) {
+        inline Matrix::row_iterator Matrix::operator[](unsigned int i) {
             return row_begin(i);
         }
 
         inline Array Matrix::diagonal(void) const{
-            int arraySize = QL_MIN(rows(),columns());
+            unsigned int arraySize = QL_MIN(rows(),columns());
             Array tmp(arraySize);
-            for(int i = 0; i < arraySize; i++)
+            for(unsigned int i = 0; i < arraySize; i++)
                 tmp[i] = (*this)[i][i];
             return tmp;
         }
 
-        inline int Matrix::rows() const {
+        inline unsigned int Matrix::rows() const {
             return rows_;
         }
 
-        inline int Matrix::columns() const {
+        inline unsigned int Matrix::columns() const {
             return columns_;
         }
 
@@ -458,7 +451,7 @@ namespace QuantLib {
                     "cannot be multiplied");
             #endif
             Array result(m.columns());
-            for (int i=0; i<result.size(); i++)
+            for (unsigned int i=0; i<result.size(); i++)
                 result[i] =
                     std::inner_product(v.begin(),v.end(),m.column_begin(i),0.0);
             return result;
@@ -471,7 +464,7 @@ namespace QuantLib {
                     "cannot be multiplied");
             #endif
             Array result(m.rows());
-            for (int i=0; i<result.size(); i++)
+            for (unsigned int i=0; i<result.size(); i++)
                 result[i] =
                     std::inner_product(v.begin(),v.end(),m.row_begin(i),0.0);
             return result;
@@ -483,8 +476,8 @@ namespace QuantLib {
                     "matrices with different sizes cannot be multiplied");
             #endif
             Matrix result(m1.rows(),m2.columns());
-            for (int i=0; i<result.rows(); i++)
-                for (int j=0; j<result.columns(); j++)
+            for (unsigned int i=0; i<result.rows(); i++)
+                for (unsigned int j=0; j<result.columns(); j++)
                     result[i][j] =
                         std::inner_product(m1.row_begin(i), m1.row_end(i),
                             m2.column_begin(j), 0.0);
@@ -493,7 +486,7 @@ namespace QuantLib {
 
         inline Matrix transpose(const Matrix& m) {
             Matrix result(m.columns(),m.rows());
-            for (int i=0; i<m.rows(); i++)
+            for (unsigned int i=0; i<m.rows(); i++)
                 std::copy(m.row_begin(i),m.row_end(i),result.column_begin(i));
             return result;
         }
@@ -502,7 +495,7 @@ namespace QuantLib {
             QL_REQUIRE(v1.size() > 0 && v2.size() > 0,
                     "outerProduct: vectors must have non-null dimension");
             Matrix result(v1.size(),v2.size());
-            for(int i = 0; i < v1.size(); i++)
+            for(unsigned int i = 0; i < v1.size(); i++)
                 std::transform(v2.begin(),v2.end(),result.row_begin(i),
                     std::bind1st(std::multiplies<double>(),v1[i]));
             return result;

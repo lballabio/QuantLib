@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.16  2001/08/28 12:31:33  nando
+// unsigned int instead of int
+//
 // Revision 1.15  2001/08/21 10:47:26  nando
 // "dividendRho not implemented yet" moved up in the class hierarchy
 //
@@ -104,7 +107,7 @@ namespace QuantLib {
             std::vector<double> divs, std::vector<Time> divDates) const{
 
             double tmp_riskless = 0.0;
-            for(int j = 0; j < static_cast<int>(divs.size()); j++)
+            for(unsigned int j = 0; j < divs.size(); j++)
                 tmp_riskless += divs[j]*QL_EXP(-r*divDates[j]);
             return tmp_riskless;
         }

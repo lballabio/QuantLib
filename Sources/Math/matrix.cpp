@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/28 12:30:51  nando
+// unsigned int instead of int
+//
 // Revision 1.14  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -62,7 +65,7 @@ namespace QuantLib {
           const double tolerance = 1e-15;
 
           Matrix inputMatrix(realSymmMatrix);
-          int size = inputMatrix.rows();
+          unsigned int size = inputMatrix.rows();
 
           QL_REQUIRE(size == inputMatrix.columns(),
               "sqrt input matrix must be square");
@@ -72,7 +75,7 @@ namespace QuantLib {
           Array evalues(jd.eigenvalues());
 
           double maxEv=0;
-		  int i;
+		  unsigned int i;
           for(i = 0; i < size;i++)
               if(evalues[i] >= maxEv)
                   maxEv = evalues[i];
