@@ -52,15 +52,15 @@ namespace QuantLib {
                 rollingConvention, isAdjusted, stubDate);
             // first period might be short or long
             Date start = scheduler.date(0), end = scheduler.date(1);
+            Date paymentDate = calendar.roll(end,rollingConvention);
             Rate rate = couponRates[0];
             double nominal = nominals[0];
             if (scheduler.isRegular(1)) {
                 QL_REQUIRE(dayCount == firstPeriodDayCount,
-                    "regular first bond coupon "
+                    "regular first coupon "
                     "does not allow a first period day count");
                 leg.push_back(Handle<CashFlow>(
-                    new FixedRateCoupon(nominal, rate, calendar,
-                        rollingConvention, dayCount,
+                    new FixedRateCoupon(nominal, paymentDate, rate, dayCount,
                         start, end, start, end)));
             } else {
                 Date reference = end.plusMonths(-12/frequency);
@@ -68,13 +68,13 @@ namespace QuantLib {
                     reference =
                         calendar.roll(reference,rollingConvention);
                 leg.push_back(Handle<CashFlow>(
-                    new FixedRateCoupon(nominal, rate, calendar,
-                        rollingConvention, firstPeriodDayCount,
-                        start, end, reference, end)));
+                    new FixedRateCoupon(nominal, paymentDate, rate, 
+                        firstPeriodDayCount, start, end, reference, end)));
             }
             // regular periods
             for (Size i=2; i<scheduler.size()-1; i++) {
                 start = end; end = scheduler.date(i);
+                paymentDate = calendar.roll(end,rollingConvention);
                 if ((i-1) < couponRates.size())
                     rate = couponRates[i-1];
                 else
@@ -84,14 +84,14 @@ namespace QuantLib {
                 else
                     nominal = nominals.back();
                 leg.push_back(Handle<CashFlow>(
-                    new FixedRateCoupon(nominal, rate, calendar,
-                        rollingConvention, dayCount, start, end,
-                        start, end)));
+                    new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
+                        start, end, start, end)));
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
                 Size N = scheduler.size();
                 start = end; end = scheduler.date(N-1);
+                paymentDate = calendar.roll(end,rollingConvention);
                 if ((N-2) < couponRates.size())
                     rate = couponRates[N-2];
                 else
@@ -102,18 +102,16 @@ namespace QuantLib {
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
                     leg.push_back(Handle<CashFlow>(
-                        new FixedRateCoupon(nominal, rate, calendar,
-                            rollingConvention, dayCount, start, end,
-                            start, end)));
+                        new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
+                            start, end, start, end)));
                 } else {
                     Date reference = start.plusMonths(12/frequency);
                     if (isAdjusted)
                         reference =
                             calendar.roll(reference,rollingConvention);
                     leg.push_back(Handle<CashFlow>(
-                        new FixedRateCoupon(nominal, rate, calendar,
-                            rollingConvention, dayCount, start, end,
-                            start, reference)));
+                        new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
+                            start, end, start, reference)));
                 }
             }
             return leg;
@@ -135,6 +133,7 @@ namespace QuantLib {
                 rollingConvention, true, stubDate);
             // first period might be short or long
             Date start = scheduler.date(0), end = scheduler.date(1);
+            Date paymentDate = calendar.roll(end,rollingConvention);
             Spread spread;
             if (spreads.size() > 0)
                 spread = spreads[0];
@@ -143,20 +142,21 @@ namespace QuantLib {
             double nominal = nominals[0];
             if (scheduler.isRegular(1)) {
                 leg.push_back(Handle<CashFlow>(
-                    new FloatingRateCoupon(nominal, index, start, end, 
+                    new FloatingRateCoupon(nominal, paymentDate, index, start, end, 
                                            fixingDays, spread, start, end)));
             } else {
                 Date reference = end.plusMonths(-12/frequency);
                 reference =
                     calendar.roll(reference,rollingConvention);
                 leg.push_back(Handle<CashFlow>(
-                    new ShortFloatingRateCoupon(nominal, index, start, end, 
+                    new ShortFloatingRateCoupon(nominal, paymentDate, index, start, end, 
                                                 fixingDays, spread, 
                                                 reference, end)));
             }
             // regular periods
             for (Size i=2; i<scheduler.size()-1; i++) {
                 start = end; end = scheduler.date(i);
+                paymentDate = calendar.roll(end,rollingConvention);
                 if ((i-1) < spreads.size())
                     spread = spreads[i-1];
                 else if (spreads.size() > 0)
@@ -168,13 +168,14 @@ namespace QuantLib {
                 else
                     nominal = nominals.back();
                 leg.push_back(Handle<CashFlow>(
-                    new FloatingRateCoupon(nominal, index, start, end, 
+                    new FloatingRateCoupon(nominal, paymentDate, index, start, end, 
                                            fixingDays, spread, start, end)));
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
                 Size N = scheduler.size();
                 start = end; end = scheduler.date(N-1);
+                paymentDate = calendar.roll(end,rollingConvention);
                 if ((N-2) < spreads.size())
                     spread = spreads[N-2];
                 else if (spreads.size() > 0)
@@ -187,7 +188,7 @@ namespace QuantLib {
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
                     leg.push_back(Handle<CashFlow>(
-                        new FloatingRateCoupon(nominal, index, start, end, 
+                        new FloatingRateCoupon(nominal, paymentDate, index, start, end, 
                                                fixingDays, spread, 
                                                start, end)));
                 } else {
@@ -195,7 +196,7 @@ namespace QuantLib {
                     reference =
                         calendar.roll(reference,rollingConvention);
                     leg.push_back(Handle<CashFlow>(
-                        new ShortFloatingRateCoupon(nominal, index, start, end, 
+                        new ShortFloatingRateCoupon(nominal, paymentDate, index, start, end, 
                                                     fixingDays, spread, 
                                                     start, reference)));
                 }
