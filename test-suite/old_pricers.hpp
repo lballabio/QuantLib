@@ -32,7 +32,7 @@ class OldPricerTest : public CppUnit::TestFixture {
     void testFdEuropeanPricer();
     void testAmericanPricers();
     void testMcSingleFactorPricers();
-    // void testMcMultiFactorPricers();
+    void testMcMultiFactorPricers();
     static CppUnit::Test* suite();
 };
 

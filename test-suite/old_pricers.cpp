@@ -40,7 +40,15 @@ using QuantLib::Pricers::ContinuousGeometricAPO;
 using QuantLib::Pricers::McEuropean;
 using QuantLib::Pricers::McDiscreteArithmeticAPO;
 using QuantLib::Pricers::McDiscreteArithmeticASO;
+using QuantLib::Pricers::McEverest;
+using QuantLib::Pricers::McBasket;
+using QuantLib::Pricers::McMaxBasket;
+using QuantLib::Pricers::McPagoda;
+using QuantLib::Pricers::McHimalaya;
 using QuantLib::RandomNumbers::UniformRandomGenerator;
+using QuantLib::Math::Matrix;
+using QuantLib::MonteCarlo::getCovariance;
+
 
 namespace {
 
@@ -90,11 +98,9 @@ CppUnit::Test* OldPricerTest::suite() {
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style Monte Carlo single-factor pricers",
                     &OldPricerTest::testMcSingleFactorPricers));
-    /*
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style Monte Carlo multi-factor pricers",
                     &OldPricerTest::testMcMultiFactorPricers));
-    */
     return tests;
 }
 
@@ -1017,3 +1023,160 @@ void OldPricerTest::testMcSingleFactorPricers() {
     }
 
 }
+
+namespace {
+
+    template <class P>
+    void testMcMFPricer(const P& pricer, double storedValue, 
+                        double tolerance, const std::string& name) {
+
+        Size fixedSamples = 100;
+        double minimumTol = 1.0e-2;
+
+        double value = pricer.valueWithSamples(fixedSamples);
+        if (QL_FABS(value-storedValue) > tolerance)
+            CPPUNIT_FAIL(
+                name + ":\n"
+                "    calculated value: "
+                + DoubleFormatter::toString(value,10) + "\n"
+                "    expected:         "
+                + DoubleFormatter::toString(storedValue,10));
+
+        tolerance = pricer.errorEstimate()/value;
+        tolerance = QL_MIN(tolerance/2.0, minimumTol);
+        value = pricer.value(tolerance);
+        double accuracy = pricer.errorEstimate()/value;
+        if (accuracy > tolerance)
+            CPPUNIT_FAIL(
+                name + ":\n"
+                "    reached accuracy: "
+                + DoubleFormatter::toString(accuracy,10) + "\n"
+                "    expected:         "
+                + DoubleFormatter::toString(tolerance,10));
+
+    }
+
+}
+
+void OldPricerTest::testMcMultiFactorPricers() {
+
+    Matrix cor(4,4);
+    cor[0][0] = 1.00; cor[0][1] = 0.50; cor[0][2] = 0.30; cor[0][3] = 0.10; 
+    cor[1][0] = 0.50; cor[1][1] = 1.00; cor[1][2] = 0.20; cor[1][3] = 0.40; 
+    cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00; cor[2][3] = 0.60; 
+    cor[3][0] = 0.10; cor[3][1] = 0.40; cor[3][2] = 0.60; cor[3][3] = 1.00; 
+
+    Array volatilities(4);
+    volatilities[0] = 0.30;
+    volatilities[1] = 0.35;
+    volatilities[2] = 0.25;
+    volatilities[3] = 0.20;
+
+    Matrix covariance = getCovariance(volatilities,cor);
+
+    Array dividendYields(4);
+    dividendYields[0] = 0.01;
+    dividendYields[1] = 0.05;
+    dividendYields[2] = 0.04;
+    dividendYields[3] = 0.03;
+
+    Rate riskFreeRate = 0.05;
+    Time resTime = 1.0;
+
+    // degenerate portfolio
+    Matrix perfectCorrelation(4,4,1.0);
+    Array sameAssetVols(4,0.3);
+    Matrix sameAssetCovariance = getCovariance(sameAssetVols,
+                                               perfectCorrelation);
+    Array sameAssetDividend(4,0.03);
+
+    Size seed = 86421;
+
+    // McEverest
+    testMcMFPricer(McEverest(dividendYields, covariance,
+                             riskFreeRate, resTime, false, seed),
+                   0.7434481,
+                   1.0e-5,
+                   "McEverest");
+    testMcMFPricer(McEverest(dividendYields, covariance,
+                             riskFreeRate, resTime, true, seed),
+                   0.7569787,
+                   1.0e-5,
+                   "McEverest");
+
+    // McBasket
+    Array sameAssetValues(4,25.0);
+    Option::Type type = Option::Call;
+    double strike = 100.0;
+    testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
+                            sameAssetCovariance, riskFreeRate, resTime, 
+                            false, seed),
+                   10.4484452,
+                   1.0e-3,
+                   "McBasket");
+    testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
+                            sameAssetCovariance, riskFreeRate, resTime, 
+                            true, seed),
+                   12.2946771,
+                   1.0e-3,
+                   "McBasket");
+    
+    // McMaxBasket
+    Array assetValues(4);
+    assetValues[0] = 100.0;
+    assetValues[1] = 110.0;
+    assetValues[2] =  90.0;
+    assetValues[3] = 105.0;
+    testMcMFPricer(McMaxBasket(assetValues, dividendYields, covariance,
+                               riskFreeRate, resTime, false, seed),
+                   120.7337797,
+                   1.0e-5,
+                   "McMaxBasket");
+    testMcMFPricer(McMaxBasket(assetValues, dividendYields, covariance,
+                               riskFreeRate, resTime, true, seed),
+                   123.5209095,
+                   1.0e-5,
+                   "McMaxBasket");
+
+    // McPagoda
+    Array portfolio(4);
+    portfolio[0] = 0.15;
+    portfolio[1] = 0.20;
+    portfolio[2] = 0.35;
+    portfolio[3] = 0.30;
+    double fraction = 0.62;
+    double roof = 0.20;
+    std::vector<Time> timeIncrements(4);
+    timeIncrements[0] = 0.25;
+    timeIncrements[1] = 0.50;
+    timeIncrements[2] = 0.75;
+    timeIncrements[3] = 1.00;
+    testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields, 
+                            covariance, riskFreeRate, timeIncrements, 
+                            false, seed),
+                   0.03438975,
+                   1.0e-5,
+                   "McPagoda");
+    testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields, 
+                            covariance, riskFreeRate, timeIncrements, 
+                            true, seed),
+                   0.03860954,
+                   1.0e-5,
+                   "McPagoda");
+
+    // McHimalaya
+    strike = 101.0;
+    testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance, 
+                              riskFreeRate, strike, timeIncrements, 
+                              false, seed),
+                   5.0768499,
+                   1.0e-5,
+                   "McHimalaya");
+    testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance, 
+                              riskFreeRate, strike, timeIncrements, 
+                              true, seed),
+                   6.2478050,
+                   1.0e-5,
+                   "McHimalaya");
+}
+
