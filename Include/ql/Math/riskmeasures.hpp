@@ -25,6 +25,9 @@
 /*! \file riskmeasures.hpp
     $Source$
     $Log$
+    Revision 1.7  2001/06/11 16:45:39  aleppo
+    Changed name Front to Side
+
     Revision 1.6  2001/06/11 16:42:49  aleppo
     Changed name Front to Side
 
@@ -65,7 +68,7 @@ namespace QuantLib {
         class RiskMeasures {
           public:
             RiskMeasures() {}
-            double potentialUpside(double percentile,
+            double potentialUpSide(double percentile,
                                     double mean,
                                     double std) const ;
             double valueAtRisk(double percentile,
