@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.9  2001/04/23 07:48:21  marmar
+    Control variate changed back, error messages modified
+
     Revision 1.8  2001/04/23 07:34:23  marmar
     Changed control variate
 
@@ -66,6 +69,7 @@
 #include "ql/Math/cubicspline.hpp"
 #include "ql/Pricers/dividendeuropeanoption.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
+#include "ql/dataformatters.hpp"
 
 namespace QuantLib {
 
@@ -85,24 +89,31 @@ namespace QuantLib {
           exdivdates, timeSteps, gridPoints) {
 
             QL_REQUIRE(dateNumber_ == dividends_.size(),
-                       "the number of dividends is different "
-                       "from the number of dates");
+                       "the number of dividends(" +
+                       IntegerFormatter::toString(dividends_.size()) +
+                       ") is different from the number of dates(" +
+                       IntegerFormatter::toString(dateNumber_) +
+                       ")");
 
             QL_REQUIRE(underlying > addElements(dividends),
-                       "Dividends cannot exceed underlying");
+                       "Dividends(" +
+                       DoubleFormatter::toString(underlying - underlying_) +
+                       ") cannot exceed underlying(" +
+                       DoubleFormatter::toString(underlying) +
+                       ")");
         }
 
         void DividendOption::initializeControlVariate() const{
             analytic_ = Handle<BSMOption> (new 
                             DividendEuropeanOption (type_,
-                                                    underlying_, 
-                                                    strike_,
-                                                    dividendYield_, 
-                                                    riskFreeRate_, 
-                                                    residualTime_,
-                                                    volatility_, 
-                                                    dividends_, 
-                                                    dates_));
+                                underlying_ + addElements(dividends_), 
+                                strike_,
+                                dividendYield_, 
+                                riskFreeRate_, 
+                                residualTime_,
+                                volatility_, 
+                                dividends_, 
+                                dates_));
         }
 
         void DividendOption::executeIntermediateStep(int step) const{
