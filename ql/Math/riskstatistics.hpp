@@ -167,7 +167,7 @@ namespace QuantLib {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
                    DecimalFormatter::toString(centile) +
-                   ") must be in [0.9,1.0)");
+                   ") out of range [0.9, 1.0)");
 
         // must be a gain, i.e., floored at 0.0
         return QL_MAX<Real>(topPercentile(1.0-centile), 0.0);
@@ -180,7 +180,7 @@ namespace QuantLib {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
                    DecimalFormatter::toString(centile) +
-                   ") must be in [0.9,1.0)");
+                   ") out of range [0.9, 1.0)");
 
         // must be a loss, i.e., capped at 0.0 and negated
         return -QL_MIN<Real>(percentile(1.0-centile), 0.0);
@@ -192,7 +192,8 @@ namespace QuantLib {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
                    DecimalFormatter::toString(centile) +
-                   ") must be in [0.9,1.0)");
+                   ") out of range [0.9, 1.0)");
+
         QL_ENSURE(samples() != 0, "empty sample set");
         Real target = -valueAtRisk(centile);
         std::pair<Real,Size> result = 

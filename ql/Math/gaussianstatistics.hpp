@@ -77,6 +77,19 @@ namespace QuantLib {
         Real gaussianValueAtRisk(Real percentile) const;
 
         //! gaussian-assumption Expected Shortfall at a given percentile
+        /*! Assuming a gaussian distribution it
+            returns the expected loss in case that the loss exceeded
+            a VaR threshold,
+
+            \f[ \mathrm{E}\left[ x \;|\; x < \mathrm{VaR}(p) \right], \f]
+                
+            that is the average of observations below the
+            given percentile \f$ p \f$.
+            Also know as conditional value-at-risk.
+
+            See Artzner, Delbaen, Eber and Heath,
+            "Coherent measures of risk", Mathematical Finance 9 (1999)
+        */
         Real gaussianExpectedShortfall(Real percentile) const;
 
         //! gaussian-assumption Shortfall (observations below target)
@@ -128,7 +141,7 @@ namespace QuantLib {
         QL_REQUIRE(percentile>0.0,
                    "percentile (" +
                    DecimalFormatter::toString(percentile) +
-                   ") must be >= 0.0");
+                   ") must be > 0.0");
         QL_REQUIRE(percentile<1.0,
                    "percentile (" +
                    DecimalFormatter::toString(percentile) +
@@ -145,14 +158,10 @@ namespace QuantLib {
     inline Real GaussianStatistics<Stat>::gaussianPotentialUpside(
                                                     Real percentile) const {
 
-        QL_REQUIRE(percentile>=0.9,
+        QL_REQUIRE(percentile<1.0 && percentile>=0.9,
                    "percentile (" +
                    DecimalFormatter::toString(percentile) +
-                   ") must be >= 0.90");
-        QL_REQUIRE(percentile<1.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(percentile) +
-                   ") must be < 1.0");
+                   ") out of range [0.9, 1.0)");
 
         Real result = gaussianPercentile(percentile);
         // PotenzialUpSide must be a gain
@@ -166,14 +175,10 @@ namespace QuantLib {
     inline Real GaussianStatistics<Stat>::gaussianValueAtRisk(
                                                     Real percentile) const {
 
-        QL_REQUIRE(percentile>=0.9,
+        QL_REQUIRE(percentile<1.0 && percentile>=0.9,
                    "percentile (" +
                    DecimalFormatter::toString(percentile) +
-                   ") must be >= 0.90");
-        QL_REQUIRE(percentile<1.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(percentile) +
-                   ") must be < 1.0");
+                   ") out of range [0.9, 1.0)");
 
         Real result = gaussianPercentile(1.0-percentile);
         // VAR must be a loss
@@ -183,14 +188,14 @@ namespace QuantLib {
     }
 
 
-    /*! \pre percentile must be in range 90%-100% */
+    /*! \pre percentile must be in range [90%-100%) */
     template<class Stat>
     inline Real GaussianStatistics<Stat>::gaussianExpectedShortfall(
                                                     Real percentile) const {
         QL_REQUIRE(percentile<1.0 && percentile>=0.9,
                    "percentile (" +
                    DecimalFormatter::toString(percentile) +
-                   ") out of range 90%-100%");
+                   ") out of range [0.9, 1.0)");
 
         Real m = mean();
         Real std = standardDeviation();
