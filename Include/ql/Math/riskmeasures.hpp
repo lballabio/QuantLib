@@ -25,12 +25,15 @@
 /*! \file riskmeasures.hpp
     $Source$
     $Log$
+    Revision 1.5  2001/06/11 16:40:24  aleppo
+    Changed name Front to SIde
+
     Revision 1.4  2001/06/11 16:00:23  nando
-    potentialUpFront is now potentialUpside.
+    potentialUpSide is now potentialUpside.
     Few typos fixed
 
     Revision 1.3  2001/06/11 13:51:34  aleppo
-    Potential  Up Front added
+    Potential  Up Side added
 
     Revision 1.2  2001/05/28 13:09:55  nando
     R019-branch-merge3 merged into trunk
@@ -87,7 +90,7 @@ namespace QuantLib {
                 ") out of range 90%-100%");
 
             Math::InvCumulativeNormalDistribution gInverse(mean, std);
-            // PotenzialUpFront must be a gain
+            // PotenzialUpSide must be a gain
             // this means that it has to be MAX(dist(percentile), 0.0)
             return QL_MAX(gInverse(percentile), 0.0);
         }
