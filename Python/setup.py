@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.16  2001/05/16 15:01:24  nando
+    QuantLibSuite renamed into QuantLibTestSuite
+
     Revision 1.15  2001/04/23 15:54:07  nando
     fixed linux setup bug
 
@@ -51,7 +54,7 @@ sys.path.append("./Tests")
 from distutils.core import setup, Extension
 from distutils.cmd import Command
 from distutils import sysconfig
-import QuantLibSuite
+import QuantLibTestSuite
 
 if sys.platform == 'win32':
     import win32api
@@ -106,7 +109,7 @@ class test(Command):
         # these are decided only after 'build_base' has its final value
         # (unless overridden by the user or client)
         self.test_dir = 'Tests'
-        self.test_prefix = 'QuantLibSuite'
+        self.test_prefix = 'QuantLibTestSuite'
         self.test_suffixes = None
 
     # initialize_options()

@@ -184,6 +184,6 @@ install::
 # Test Python module
 test::
     cd Tests
-    python QuantLibSuite.py
+    python QuantLibTestSuite.py
     cd ..
 

@@ -27,6 +27,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.1  2001/05/16 15:01:24  nando
+    QuantLibSuite renamed into QuantLibTestSuite
+
     Revision 1.9  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
