@@ -76,10 +76,10 @@ namespace QuantLib {
 
             dx_ = QL_SQRT(process->variance(0.0, x0_, dt_));
             pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
-            QL_REQUIRE(pu_<1,
+            QL_REQUIRE(pu_<=1.0,
                 "CoxRossRubinstein::CoxRossRubinstein : "
                 "negative probability");
-            QL_REQUIRE(pu_<1,
+            QL_REQUIRE(pu_>=0.0,
                 "CoxRossRubinstein::CoxRossRubinstein : "
                 "negative probability");
             pd_ = 1.0 - pu_;
@@ -93,10 +93,10 @@ namespace QuantLib {
             dx_ = QL_SQRT(process->variance(0.0, x0_, dt_)+
                           driftPerStep_*driftPerStep_);
             pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
-            QL_REQUIRE(pu_<1,
+            QL_REQUIRE(pu_<=1.0,
                 "CoxRossRubinstein::CoxRossRubinstein : "
                 "negative probability");
-            QL_REQUIRE(pu_<1,
+            QL_REQUIRE(pu_>=0.0,
                 "CoxRossRubinstein::CoxRossRubinstein : "
                 "negative probability");
             pd_ = 1.0 - pu_;
