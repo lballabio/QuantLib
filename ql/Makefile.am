@@ -22,7 +22,8 @@ SUBDIRS = \
     RandomNumbers \
     Solvers1D \
     TermStructures \
-    Utilities
+    Utilities \
+    Volatilities
 
 EXTRA_DIST= \
 	config.ansi.hpp \

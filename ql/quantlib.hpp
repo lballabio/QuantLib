@@ -249,6 +249,8 @@
 #include <ql/Utilities/processingiterator.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
+#include <ql/Volatilities/swaptionvolmatrix.hpp>
+
 
 /*** shortcuts for the full namespaces ***/
 

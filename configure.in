@@ -164,6 +164,7 @@ AC_OUTPUT(Makefile \
     ql/Solvers1D/Makefile \
     ql/TermStructures/Makefile \
     ql/Utilities/Makefile \
+    ql/Volatilities/Makefile \
     man/Makefile \
     Examples/Makefile \
     Examples/DiscreteHedging/Makefile \

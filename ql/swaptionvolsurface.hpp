@@ -40,8 +40,22 @@ namespace QuantLib {
     class SwaptionVolatilitySurface : public Patterns::Observable {
       public:
         virtual ~SwaptionVolatilitySurface() {}
+        //! returns today's date
+        virtual Date todaysDate() const = 0;
+        //! This method could disappear. <b>Do not use it</b>.
+        virtual Time dateToTime(const Date&) const = 0;
         //! returns the volatility for a given starting date and length
-        virtual Rate volatility(const Date& start, Time length) const = 0;
+        double volatility(const Date& start, Time length) {
+            Time startTime = dateToTime(start);
+            return volatilityImpl(startTime,length);
+        }
+        //! returns the volatility for a given starting time and length
+        double volatility(Time start, Time length) {
+            return volatilityImpl(start,length);
+        }
+      protected:
+        //! implements the actual volatility calculation in derived classes
+        virtual double volatilityImpl(Time start, Time length) const = 0;
     };
 
     //! Swaption volatility surface with an added spread
@@ -54,13 +68,14 @@ namespace QuantLib {
         SpreadedSwaptionVolatilitySurface(
             const RelinkableHandle<SwaptionVolatilitySurface>&, 
             const RelinkableHandle<MarketElement>& spread);
-        //! volatility of the original surface plus the given spread
-        Rate volatility(const Date& start, Time length) const;
         //! Observer interface
         void update() { notifyObservers(); }
+        Time dateToTime(const Date&) const;
       private:
         RelinkableHandle<SwaptionVolatilitySurface> originalSurface_;
         RelinkableHandle<MarketElement> spread_;
+        //! volatility of the original surface plus the given spread
+        double volatilityImpl(Time start, Time length) const;
     };
 
 
@@ -75,10 +90,15 @@ namespace QuantLib {
         registerWith(spread_);
     }
 
-    inline Rate SpreadedSwaptionVolatilitySurface::volatility(
-        const Date& start, Time length) const {
+    inline double SpreadedSwaptionVolatilitySurface::volatilityImpl(
+        Time start, Time length) const {
             return originalSurface_->volatility(start,length) + 
                    spread_->value();
+    }
+
+    inline Time SpreadedSwaptionVolatilitySurface::dateToTime(
+        const Date& d) const {
+            return originalSurface_->dateToTime(d);
     }
 
 }
