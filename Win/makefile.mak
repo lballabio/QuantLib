@@ -34,6 +34,9 @@ CC			= bcc32
 LINK		= ilink32
 COFF2OMF	= coff2omf
 SWIG		= swig1.3a5
+DOXYGEN		= doxygen
+LATEX		= pdflatex
+MAKEINDEX	= makeindex
 
 # Options
 CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -I"..\Include" -I$(PYTHON_INCLUDE) -I$(BCC_INCLUDE) -w-8027
@@ -395,3 +398,13 @@ $(INCLUDE_DIR)\deposit.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\calendar.h $
 	@touch $<
 $(INCLUDE_DIR)\TermStructures\piecewiseconstantforwards.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\deposit.h
 	@touch $<
+
+# Documentation
+Docs::
+	@cd ..\Docs
+	@$(DOXYGEN) doxygen.bcc
+	@cd latex
+	@$(LATEX) refman
+	@$(MAKEINDEX) refman.idx
+	@$(LATEX) refman
+	@cd ..\..\Win
