@@ -25,6 +25,9 @@
    modify the following definitions to suit your preferences.
  *************************************************************/
 
+/* Define this if error messages should include file and line information. */
+// #define QL_ERROR_LINES
+
 /* Define this if payments occurring today should not enter the NPV of an
    instrument. */
 // #define QL_EARLY_PAYMENTS

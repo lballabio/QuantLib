@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file errors.hpp
     \brief Classes and functions for error handling.
 
@@ -37,9 +37,19 @@ namespace QuantLib {
     class Error : public std::exception {
       public:
         explicit Error(const std::string& what = "") : message(what) {}
-    ~Error() throw() {}
+        ~Error() throw() {}
         //! returns the error message.
         const char* what() const throw () { return message.c_str(); }
+        // formats file and line information
+        static std::string where(const char* file, int line) {
+            #if QL_ERROR_LINES
+            char s[100];
+            QL_SPRINTF(s,"%s:%d: ",file,line);
+            return std::string(s);
+            #else
+            return std::string();
+            #endif
+        }
       private:
         std::string message;
     };
@@ -116,10 +126,10 @@ namespace QuantLib {
     \relates Error
 */
 #define QL_ASSERT(condition,description) \
-    do { \
-        if (!(condition)) \
-            throw QuantLib::AssertionFailedError(description); \
-    } while (false)
+if (!(condition)) \
+    throw QuantLib::AssertionFailedError(\
+        QuantLib::Error::where(__FILE__,__LINE__) +  description); \
+else
 
 
 /*! \def QL_REQUIRE
@@ -127,10 +137,10 @@ namespace QuantLib {
     \relates Error
 */
 #define QL_REQUIRE(condition,description) \
-    do { \
-        if (!(condition)) \
-            throw QuantLib::PreconditionNotSatisfiedError(description); \
-    } while (false)
+if (!(condition)) \
+    throw QuantLib::PreconditionNotSatisfiedError(\
+        QuantLib::Error::where(__FILE__,__LINE__) +  description); \
+else
 
 
 /*! \def QL_ENSURE
@@ -138,11 +148,10 @@ namespace QuantLib {
     \relates Error
 */
 #define QL_ENSURE(condition,description) \
-    do { \
-        if (!(condition)) \
-            throw QuantLib::PostconditionNotSatisfiedError(description); \
-    } while (false)
-
+if (!(condition)) \
+    throw QuantLib::PostconditionNotSatisfiedError(\
+        QuantLib::Error::where(__FILE__,__LINE__) +  description); \
+else
 
 
 #endif
