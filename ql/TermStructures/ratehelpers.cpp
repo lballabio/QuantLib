@@ -83,10 +83,12 @@ namespace QuantLib {
             QL_REQUIRE(termStructure_ != 0,
                 "DepositRateHelper::discountGuess : "
                 "term structure not set");
-            // extrapolation shouldn't be needed if the input makes sense
-            // but we'll play it safe
-            return termStructure_->discount(settlement_,true) /
-                   (1.0+quote_->value()*yearFraction_);
+            // we'll play it safe - no extrapolation
+            if (termStructure_->maxDate() < settlement_)
+                return Null<double>();
+            else
+                return termStructure_->discount(settlement_) /
+                       (1.0+quote_->value()*yearFraction_);
         }
 
         void DepositRateHelper::setTermStructure(TermStructure* t) {
