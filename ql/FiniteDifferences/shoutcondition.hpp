@@ -28,33 +28,83 @@
 #define quantlib_fd_shout_condition_h
 
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
     namespace FiniteDifferences {
 
+        //! Shout option condition
+        /*! A shout option is an option where the holder has the right to
+            lock in a minimum value for the payoff at one (shout) time
+            during the option's life. The minimum value is the option's
+            intrinsic value at the shout time.
+        */
         class ShoutCondition
         : public FiniteDifferences::StandardStepCondition {
           public:
-            ShoutCondition(const Array& initialPrices,
+            ShoutCondition(Option::Type type,
+                           double strike,
+                           Time resTime,
+                           Rate rate);
+            ShoutCondition(const Array& intrinsicValues,
                            Time resTime,
                            Rate rate);
             void applyTo(Array& a,
                          Time t) const;
+            void applyTo(Handle<DiscretizedAsset> asset) const;
           private:
-            Array initialPrices_;
+            Array intrinsicValues_;
+            Option::Type type_;
+            double strike_;
             Time resTime_;
             Rate rate_;
         };
 
+        inline ShoutCondition::ShoutCondition(Option::Type type,
+            double strike, Time resTime, Rate rate)
+            : type_(type), strike_(strike), resTime_(resTime), rate_(rate) {}
+
         inline ShoutCondition::ShoutCondition(
-            const Array& initialPrices, Time resTime, Rate rate)
-            : initialPrices_(initialPrices), resTime_(resTime), rate_(rate) {}
+            const Array& intrinsicValues, Time resTime, Rate rate)
+        : intrinsicValues_(intrinsicValues), resTime_(resTime), rate_(rate) {}
 
         inline void ShoutCondition::applyTo(Array& a, Time t) const {
-            for (Size i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) *
-                                           initialPrices_[i] );
+
+            DiscountFactor disc = QL_EXP(-rate_ * (t - resTime_));
+
+            if (intrinsicValues_.size()!=0) {
+                QL_REQUIRE(intrinsicValues_.size() == a.size(),
+                    "AmericanCondition::applyTo : "
+                    " size mismatch");
+                for (Size i = 0; i < a.size(); i++)
+                    a[i] = QL_MAX(a[i],
+                        disc * intrinsicValues_[i] );
+            } else {
+                for (Size i = 0; i < a.size(); i++)
+                    a[i] = QL_MAX(a[i],
+                        ExercisePayoff(type_, a[i], strike_) * disc);
+            }
+        }
+
+        inline void ShoutCondition::applyTo(
+            Handle<DiscretizedAsset> asset) const {
+            DiscountFactor disc = QL_EXP(-rate_ * (asset->time() - resTime_));
+
+            if (intrinsicValues_.size()!=0) {
+                QL_REQUIRE(intrinsicValues_.size() == asset->values().size(),
+                    "AmericanCondition::applyTo : "
+                    " size mismatch");
+                for (Size i = 0; i < asset->values().size(); i++)
+                    asset->values()[i] = QL_MAX(asset->values()[i],
+                        disc * intrinsicValues_[i] );
+            } else {
+                for (Size i = 0; i < asset->values().size(); i++)
+                    asset->values()[i] = QL_MAX(asset->values()[i],
+                        ExercisePayoff(type_, asset->values()[i], strike_)
+                            * disc);
+            }
+
         }
 
     }

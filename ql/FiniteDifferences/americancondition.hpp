@@ -28,6 +28,7 @@
 #define quantlib_fd_american_condition_h
 
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
@@ -36,25 +37,60 @@ namespace QuantLib {
         class AmericanCondition
         : public FiniteDifferences::StandardStepCondition {
           public:
-            AmericanCondition(const Array& initialPrices);
+            AmericanCondition(Option::Type type,
+                              double strike);
+            AmericanCondition(const Array& intrinsicValues);
             void applyTo(Array& a,
                          Time t) const;
+            void applyTo(Handle<DiscretizedAsset> asset) const;
           private:
-            Array initialPrices_;
+            Array intrinsicValues_;
+            Option::Type type_;
+            double strike_;
         };
 
 
         // inline definitions
 
+        inline AmericanCondition::AmericanCondition(Option::Type type,
+            double strike)
+        : intrinsicValues_(), type_(type), strike_(strike) {}
+
         inline AmericanCondition::AmericanCondition(
-            const Array& initialPrices)
-            : initialPrices_(initialPrices) {}
+            const Array& intrinsicValues)
+        : intrinsicValues_(intrinsicValues) {}
 
         inline void AmericanCondition::applyTo(Array& a, Time t) const {
-            for (Size i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i], initialPrices_[i]);
+
+            if (intrinsicValues_.size()!=0) {
+                QL_REQUIRE(intrinsicValues_.size() == a.size(),
+                    "AmericanCondition::applyTo : "
+                    " size mismatch");
+                for (Size i = 0; i < a.size(); i++)
+                    a[i] = QL_MAX(a[i], intrinsicValues_[i]);
+            } else {
+                for (Size i = 0; i < a.size(); i++)
+                    a[i] = QL_MAX(a[i], ExercisePayoff(type_, a[i], strike_));
+            }
+       
         }
 
+        inline void AmericanCondition::applyTo(
+            Handle<DiscretizedAsset> asset) const {
+
+            if (intrinsicValues_.size()!=0) {
+                QL_REQUIRE(intrinsicValues_.size() == asset->values().size(),
+                    "AmericanCondition::applyTo : "
+                    " size mismatch");
+                for (Size i = 0; i < asset->values().size(); i++)
+                    asset->values()[i] = QL_MAX(asset->values()[i],
+                        intrinsicValues_[i]);
+            } else {
+                for (Size i = 0; i < asset->values().size(); i++)
+                    asset->values()[i] = QL_MAX(asset->values()[i],
+                        ExercisePayoff(type_, asset->values()[i], strike_));
+            }
+        }
     }
 
 }

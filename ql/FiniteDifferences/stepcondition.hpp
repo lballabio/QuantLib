@@ -28,6 +28,7 @@
 #define quantlib_step_condition_h
 
 #include <ql/date.hpp>
+#include <ql/numericalmethod.hpp>
 
 namespace QuantLib {
 
@@ -38,7 +39,9 @@ namespace QuantLib {
         class StepCondition {
           public:
             virtual ~StepCondition() {}
-            virtual void applyTo(arrayType& a, Time t) const = 0;
+            virtual void applyTo(arrayType& a,
+                                 Time t) const = 0;
+            virtual void applyTo(Handle<DiscretizedAsset> asset) const = 0;
         };
 
     }
