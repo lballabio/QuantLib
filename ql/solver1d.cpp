@@ -103,14 +103,14 @@ namespace QuantLib {
                 DoubleFormatter::toString(xMin_) +
                 ") >= xMax_ (" + DoubleFormatter::toString(xMax_) + ")");
 
-        QL_REQUIRE(!lowBoundEnforced_ || xMin_ >= lowBound_, "xMin_ (" +
+        QL_REQUIRE(!lowerBoundEnforced_ || xMin_ >= lowerBound_, "xMin_ (" +
                 DoubleFormatter::toString(xMin_) + ") < enforced low bound (" +
-                DoubleFormatter::toString(lowBound_) + ")");
+                DoubleFormatter::toString(lowerBound_) + ")");
 
-        QL_REQUIRE(!hiBoundEnforced_ || xMax_ <= hiBound_, "xMax_ (" +
+        QL_REQUIRE(!upperBoundEnforced_ || xMax_ <= upperBound_, "xMax_ (" +
                 DoubleFormatter::toString(xMax_) +
                 ") > enforced hi bound (" +
-                DoubleFormatter::toString(hiBound_) + ")");
+                DoubleFormatter::toString(upperBound_) + ")");
 
         fxMin_ = f(xMin_);
         if (QL_FABS(fxMin_) < xAccuracy)

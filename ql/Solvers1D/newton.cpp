@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file newton.cpp
     \brief Newton 1-D solver
 
@@ -25,9 +25,10 @@
 // $Id$
 
 /* The implementation of the algorithm was inspired by
- * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
- * Chapter 9
- */
+   Press, Teukolsky, Vetterling, and Flannery,
+   "Numerical Recipes in C", 2nd edition, 
+   Cambridge University Press
+*/
 
 
 #include <ql/Solvers1D/newton.hpp>
@@ -52,9 +53,9 @@ namespace QuantLib {
                 root_ -= dx;
                 // jumped out of brackets, switch to NewtonSafe
                 if ((xMin_-root_)*(root_-xMax_) < 0.0) {
-                    NewtonSafe helper;
-                    helper.setMaxEvaluations(maxEvaluations_-evaluationNumber_);
-                    return helper.solve(f, xAccuracy, root_+dx, xMin_, xMax_);
+                    NewtonSafe s;
+                    s.setMaxEvaluations(maxEvaluations_-evaluationNumber_);
+                    return s.solve(f, xAccuracy, root_+dx, xMin_, xMax_);
                 }
                 if (QL_FABS(dx) < xAccuracy)
                     return root_;

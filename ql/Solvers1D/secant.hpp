@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file secant.hpp
     \brief secant 1-D solver
 

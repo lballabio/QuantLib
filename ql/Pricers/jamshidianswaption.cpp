@@ -76,8 +76,8 @@ namespace QuantLib {
             double minStrike = -10.0;
             double maxStrike = 10.0;
             s1d.setMaxEvaluations(10000);
-            s1d.setLowBound(minStrike);
-            s1d.setHiBound(maxStrike);
+            s1d.setLowerBound(minStrike);
+            s1d.setUpperBound(maxStrike);
             double rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
             Option::Type type = parameters_.payFixed?Option::Put:Option::Call;

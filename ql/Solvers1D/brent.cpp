@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file brent.cpp
     \brief Brent 1-D solver
 
@@ -25,9 +25,10 @@
 // $Id$
 
 /* The implementation of the algorithm was inspired by
- * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
- * Chapter 9
- */
+   Press, Teukolsky, Vetterling, and Flannery,
+   "Numerical Recipes in C", 2nd edition, 
+   Cambridge University Press
+*/
 
 
 #include <ql/Solvers1D/brent.hpp>
@@ -67,7 +68,8 @@ namespace QuantLib {
                 // Convergence check
                 xAcc1=2.0*QL_EPSILON*QL_FABS(root_)+0.5*xAccuracy;
                 xMid=(xMax_-root_)/2.0;
-                if (QL_FABS(xMid) <= xAcc1 || froot == 0.0)        return root_;
+                if (QL_FABS(xMid) <= xAcc1 || froot == 0.0)
+                    return root_;
                 if (QL_FABS(e) >= xAcc1 && QL_FABS(fxMin_) > QL_FABS(froot)) {
                     s=froot/fxMin_;  // Attempt inverse quadratic interpolation
                     if (xMin_ == xMax_) {

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file falseposition.cpp
     \brief false-position 1-D solver
 
@@ -25,9 +25,10 @@
 // $Id$
 
 /* The implementation of the algorithm was inspired by
- * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
- * Chapter 9
- */
+   Press, Teukolsky, Vetterling, and Flannery,
+   "Numerical Recipes in C", 2nd edition, 
+   Cambridge University Press
+*/
 
 
 #include <ql/Solvers1D/falseposition.hpp>
@@ -54,7 +55,7 @@ namespace QuantLib {
                 fh = fxMin_;
             }
             dx=xh-xl;
-            while (evaluationNumber_<=maxEvaluations_) {  // False position loop
+            while (evaluationNumber_<=maxEvaluations_) { // False position loop
                 // Increment with respect to latest value
                 root_=xl+dx*fl/(fl-fh);
                 froot=f(root_);

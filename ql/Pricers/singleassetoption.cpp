@@ -170,8 +170,8 @@ namespace QuantLib {
             // solver
             Solvers1D::Brent s1d = Solvers1D::Brent();
             s1d.setMaxEvaluations(maxEvaluations);
-            s1d.setLowBound(minVol);
-            s1d.setHiBound(maxVol);
+            s1d.setLowerBound(minVol);
+            s1d.setUpperBound(maxVol);
 
             return s1d.solve(bsmf, accuracy, volatility_, minVol, maxVol);
         }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file solver1d.hpp
     \brief Abstract 1-D solver class
 
@@ -28,6 +28,7 @@
 #define quantlib_solver1d_h
 
 #include <ql/null.hpp>
+#include <ql/types.hpp>
 #include <ql/dataformatters.hpp>
 
 namespace QuantLib {
@@ -57,7 +58,7 @@ namespace QuantLib {
       public:
         Solver1D()
         : maxEvaluations_(MAX_FUNCTION_EVALUATIONS),
-          lowBoundEnforced_(false), hiBoundEnforced_(false) {}
+          lowerBoundEnforced_(false), upperBoundEnforced_(false) {}
         virtual ~Solver1D() {}
         //! \name Modifiers
         //@{
@@ -89,16 +90,16 @@ namespace QuantLib {
             the bracketing routine. An Error is thrown if a bracket is not
             found after this number of evaluations.
         */
-        void setMaxEvaluations(int evaluations);
+        void setMaxEvaluations(Size evaluations);
         //! sets the lower bound for the function domain
-        void setLowBound(double lowBound) {
-            lowBound_ = lowBound;
-            lowBoundEnforced_ = true;
+        void setLowerBound(double lowerBound) {
+            lowerBound_ = lowerBound;
+            lowerBoundEnforced_ = true;
         }
         //! sets the upper bound for the function domain
-        void setHiBound(double hiBound) {
-            hiBound_ = hiBound;
-            hiBoundEnforced_ = true;
+        void setUpperBound(double upperBound) {
+            upperBound_ = upperBound;
+            upperBoundEnforced_ = true;
         }
         //@}
       protected:
@@ -113,28 +114,27 @@ namespace QuantLib {
         virtual double solve_(const ObjectiveFunction& f,
                               double xAccuracy) const = 0;
         mutable double root_, xMin_, xMax_, fxMin_, fxMax_;
-        int maxEvaluations_;
-        mutable int evaluationNumber_;
+        Size maxEvaluations_;
+        mutable Size evaluationNumber_;
       private:
         double enforceBounds_(double x) const;
-        double lowBound_, hiBound_;
-        bool lowBoundEnforced_, hiBoundEnforced_;
+        double lowerBound_, upperBound_;
+        bool lowerBoundEnforced_, upperBoundEnforced_;
     };
 
 
     // inline definitions
 
-    inline void Solver1D::setMaxEvaluations(int evaluations) {
-        QL_REQUIRE(evaluations > 0, "negative or null evaluations number");
+    inline void Solver1D::setMaxEvaluations(Size evaluations) {
         maxEvaluations_ = evaluations;
     }
 
     inline double Solver1D::enforceBounds_(double x) const {
-        if (lowBoundEnforced_ && x < lowBound_)
-        return lowBound_;
+        if (lowerBoundEnforced_ && x < lowerBound_)
+        return lowerBound_;
 
-        if (hiBoundEnforced_ && x > hiBound_)
-        return hiBound_;
+        if (upperBoundEnforced_ && x > upperBound_)
+        return upperBound_;
 
         return x;
     }
