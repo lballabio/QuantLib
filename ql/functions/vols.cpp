@@ -24,10 +24,10 @@
 // $Id$
 
 #include <ql/functions/vols.hpp>
-#include <ql/Math/matrix.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Volatilities/interpolatedblackvol.hpp>
 
+using QuantLib::Date;
 using QuantLib::Math::Matrix;
 using QuantLib::Math::Interpolation2D;
 using QuantLib::Math::BilinearInterpolation;
@@ -40,7 +40,7 @@ namespace QuantLib {
 		double blackVol(const Date& refDate,
                         const std::vector<double>& dates,
                         const std::vector<double>& strikes,
-                        const Matrix& blackVolSurface,
+                        const QuantLib::Math::Matrix& blackVolSurface,
                         const DayCounter& dc,
                         const Date& date,
                         double strike,
@@ -53,9 +53,9 @@ namespace QuantLib {
                 case 1:
                     result = InterpolatedBlackVolStructure<
                         BilinearInterpolation<
-                        std::vector<Date>::const_iterator,
+                        std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
-                        QuantLib::Math::Matrix> >(refDate, dates, strikes, blackVolSurface,
+                        Matrix> >(refDate, dates, strikes, blackVolSurface,
                         dc).blackVol(date,strike,allowExtrapolation);
                     break;
                 default:

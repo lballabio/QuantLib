@@ -50,10 +50,18 @@ namespace QuantLib {
                                 const QuantLib::Math::Matrix& blackVolMatrix,
                                 const DayCounter& dayCounter,
                                 const std::string& underlying = "");
-            double blackVol(const Date& maturity, double strike, bool extrapolate = false) const;
-            double blackVol(Time maturity, double strike, bool extrapolate = false) const;
-            double localVol(const Date& evaluationDate, double strike, bool extrapolate = false) const;
-            double localVol(Time evaluationTime, double strike, bool extrapolate = false) const;
+            double blackVol(const Date& maturity,
+                            double strike,
+                            bool extrapolate = false) const;
+            double blackVol(Time maturity,
+                            double strike,
+                            bool extrapolate = false) const;
+            double localVol(const Date& evaluationDate,
+                            double strike,
+                            bool extrapolate = false) const;
+            double localVol(Time evaluationTime,
+                            double strike,
+                            bool extrapolate = false) const;
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date maxDate() const { return dates_.back(); }
@@ -70,15 +78,16 @@ namespace QuantLib {
 
 
         template<class Interpolator2D>
-        InterpolatedBlackVolStructure<Interpolator2D>::InterpolatedBlackVolStructure(
+        InterpolatedBlackVolStructure<Interpolator2D
+                                              >::InterpolatedBlackVolStructure(
             const Date& referenceDate,
             const std::vector<Date>& dates,
             const std::vector<double>& moneyStrikes,
             const QuantLib::Math::Matrix& blackVolMatrix,
             const DayCounter& dayCounter,
             const std::string& underlying)
-        : referenceDate_(referenceDate), dates_(dates), dayCounter_(dayCounter),
-          underlying_(underlying) {
+        : referenceDate_(referenceDate), dates_(dates),
+          dayCounter_(dayCounter), underlying_(underlying) {
 
             QL_REQUIRE(dates.size()==blackVolMatrix.colums(),
                 "mismatch between date vector and vol matrix colums");
@@ -92,7 +101,8 @@ namespace QuantLib {
             QL_REQUIRE(times[0]>=0.0,
                 "minimum date previous than reference date");
             for (i=0; i<blackVolMatrix.rows(); i++) {
-                variances[i][0]=times_[0]*blackVolMatrix[i][0]*blackVolMatrix[i][0];
+                variances[i][0] = times_[0] *
+                    blackVolMatrix[i][0]*blackVolMatrix[i][0];
             }
 
             for (j=1; j<blackVolMatrix.colums(); j++) {
@@ -100,7 +110,8 @@ namespace QuantLib {
                 QL_REQUIRE(times[j]>=times[j-1],
                     "dates not sorted!");
                 for (i=0; i<blackVolMatrix.rows(); i++) {
-                    variances[i][j]=times_[j]*blackVolMatrix[i][j]*blackVolMatrix[i][j];
+                    variances[i][j] = times_[j] *
+                        blackVolMatrix[i][j]*blackVolMatrix[i][j];
                 }
             }
             varianceSurface_ = Interpolator2D<
@@ -112,33 +123,33 @@ namespace QuantLib {
 
 
         template<class Interpolator2D>
-            double InterpolatedBlackVolStructure<Interpolator2D>::blackVol(
-                const Date& evaluationDate, double strike,
-                bool extrapolate) const {
-            return blackVol(dayCounter_.yearFraction(referenceDate, evaluationDate),
-                strike,extrapolate)
+        double InterpolatedBlackVolStructure<Interpolator2D>::blackVol(
+            const Date& evaluationDate,double strike,bool extrapolate) const {
+
+                return blackVol(dayCounter_.yearFraction(referenceDate,
+                    evaluationDate), strike, extrapolate);
+        }
 
         template<class Interpolator2D>
         double InterpolatedBlackVolStructure<Interpolator2D>::blackVol(
-            Time evaluationTime, double strike,
-            bool extrapolate) const {
+            Time evaluationTime, double strike, bool extrapolate) const {
+
             QL_REQUIRE(evaluationTime>=0.0, "negative time not allowed");
-            douvle variance = varianceSurface_(evaluationTime, strike, extrapolate);
+            double variance = varianceSurface_(evaluationTime, strike,
+                extrapolate);
             return QL_SQRT(variance/evaluationTime);
         }
 
         template<class Interpolator2D>
         double InterpolatedBlackVolStructure<Interpolator2D>::localVol(
-            const Date& evaluationDate, double strike,
-            bool extrapolate) const {
-            return localVol(dayCounter_.yearFraction(referenceDate, evaluationDate),
-                strike,extrapolate)
+            const Date& evaluationDate, double strike,bool extrapolate) const {
+            return localVol(dayCounter_.yearFraction(referenceDate,
+                evaluationDate), strike, extrapolate);
         }
 
         template<class Interpolator2D>
         double InterpolatedBlackVolStructure<Interpolator2D>::localVol(
-            Time evaluationTime, double strike,
-            bool extrapolate) const {
+            Time evaluationTime, double strike, bool extrapolate) const {
             QL_REQUIRE(evaluationTime>=0.0, "negative time not allowed");
             return 0.0;
         }
