@@ -100,19 +100,20 @@ AM_CONDITIONAL(CPPUNIT_FOUND, test "x${CPPUNIT_LIBS}" != "x")
 AC_C_CONST
 AC_C_INLINE
 
-# manual configurations for specific hosts
-case $host in
-  powerpc-apple-darwin*)
-    AC_DEFINE([QL_PATCH_DARWIN],[1],
-              [Define if running on a Mac OS X machine.])
-    ;;
-  sparc-sun-solaris*)
-    AC_DEFINE([QL_PATCH_SOLARIS],[1],
-              [Define if running on a Sun Solaris machine.])
-    ;;
-esac
-
 # site configuration
+AC_ARG_ENABLE([extra-safety-checks],
+              AC_HELP_STRING([--enable-extra-safety-checks],
+                             [If enabled, extra run-time checks are added
+                              to a few functions. This can prevent their 
+                              inlining and degrade performance.]),
+              [ql_belt_and_braces=$enableval],
+              [ql_belt_and_braces=no])
+if test "$ql_belt_and_braces" = "yes" ; then
+   AC_DEFINE([QL_EXTRA_SAFETY_CHECKS],[1],
+             [Define this if extra safety checks should be performed.
+              This can degrade performance.])
+fi
+
 AC_ARG_ENABLE([error-lines],
               AC_HELP_STRING([--enable-error-lines],
                              [If enabled, file and line information is
@@ -162,6 +163,20 @@ if test "$ql_early_swap_payments" = "yes" ; then
               of a swap.])
 fi
 fi
+
+
+# manual configurations for specific hosts
+case $host in
+  powerpc-apple-darwin*)
+    AC_DEFINE([QL_PATCH_DARWIN],[1],
+              [Define if running on a Mac OS X machine.])
+    ;;
+  sparc-sun-solaris*)
+    AC_DEFINE([QL_PATCH_SOLARIS],[1],
+              [Define if running on a Sun Solaris machine.])
+    ;;
+esac
+
 
 # done, output the configured files
 AC_CONFIG_FILES([

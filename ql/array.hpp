@@ -272,14 +272,18 @@ namespace QuantLib {
     }
 
     inline double Array::operator[](Size i) const {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<n_,
                    "array cannot be accessed out of range");
+        #endif
         return pointer_[i];
     }
 
     inline double& Array::operator[](Size i) {
+        #if defined(QL_EXTRA_SAFETY_CHECKS)
         QL_REQUIRE(i<n_,
                    "array cannot be accessed out of range");
+        #endif
         return pointer_[i];
     }
 

@@ -26,6 +26,10 @@
 /* Define this if error messages should include file and line information. */
 // #define QL_ERROR_LINES
 
+/* Define this if extra safety checks should be performed. This can degrade
+   performance. */
+// #define QL_EXTRA_SAFETY_CHECKS
+
 /* Define this if payments occurring today should not enter the NPV of an
    instrument. */
 // #define QL_EARLY_PAYMENTS
