@@ -45,6 +45,8 @@ libPricers_la_SOURCES = \
     binaryoption.cpp \
     bsmnumericaloption.cpp \
     cliquetoption.cpp \
+    discretegeometricaso.cpp \
+    discretegeometricapo.cpp \
     dividendamericanoption.cpp \
     dividendeuropeanoption.cpp \
     dividendoption.cpp \
@@ -52,9 +54,9 @@ libPricers_la_SOURCES = \
     europeanengine.cpp \
     europeanoption.cpp \
     finitedifferenceeuropean.cpp \
-    mcaveragepriceasian.cpp \
-    mcaveragestrikeasian.cpp \
     mcbasket.cpp \
+    mcdiscretearithmeticapo.cpp \
+    mcdiscretearithmeticaso.cpp \
     mceuropean.cpp \
     mceverest.cpp \
     mchimalaya.cpp \

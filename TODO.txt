@@ -16,7 +16,8 @@ LIBRARY
         continuous geometric APO backward starting instead of forward starting
         continuous geometric ASO
         discrete geometric ASO
-
+        handle mid-life asian
+http://www.iisec.com/
     example of european Martingale control variate
 
     ******
