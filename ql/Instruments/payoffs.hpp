@@ -83,7 +83,7 @@ namespace QuantLib {
     class PercentageStrikePayoff : public StrikedTypePayoff {
       public:
         PercentageStrikePayoff(Option::Type type,
-                           double moneyness)
+                               double moneyness)
         : StrikedTypePayoff(type, moneyness) {
             QL_REQUIRE(moneyness>=0.0,
             "PercentageStrikePayoff::PercentageStrikePayoff :"
