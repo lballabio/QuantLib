@@ -65,8 +65,8 @@ namespace QuantLib {
             Math::Matrix volatilities_;
             // interpolation
             typedef Math::Interpolation2D<
-                std::vector<Time>::const_iterator,
-                std::vector<Time>::const_iterator,
+                std::vector<Time>::iterator,
+                std::vector<Time>::iterator,
                 Math::Matrix> VolInterpolation;
             Handle<VolInterpolation> interpolation_;
             double volatilityImpl(Time start, Time length, Rate strike) const;

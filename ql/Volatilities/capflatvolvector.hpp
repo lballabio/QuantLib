@@ -64,8 +64,8 @@ namespace QuantLib {
             std::vector<double> volatilities_;
             // interpolation
             typedef Math::Interpolation<
-                std::vector<Time>::const_iterator,
-                std::vector<double>::const_iterator> VolInterpolation;
+                std::vector<Time>::iterator,
+                std::vector<double>::iterator> VolInterpolation;
             Handle<VolInterpolation> interpolation_;
             double volatilityImpl(Time length, Rate strike) const;
         };
