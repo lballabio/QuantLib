@@ -23,6 +23,7 @@
 #ifndef quantlib_montecarlo_multi_path_generator_h
 #define quantlib_montecarlo_multi_path_generator_h
 
+#include <ql/diffusionprocess.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 
@@ -38,79 +39,55 @@ namespace QuantLib {
             RAG(Matrix& covariance,
                 long seed);
             Sample<Array> next();
-        };
+        };        
         \endcode
     */
     template <class SG>
     class MultiPathGenerator {
       public:
-        typedef Sample<MultiPath> sample_type;
-        MultiPathGenerator(const Array& drifts,
-                           const Matrix& covariance,
-                           Time length,
-                           Size timeSteps,
-                           SG generator);
-        MultiPathGenerator(const Array& drifts,
+        typedef Sample<MultiPath> sample_type;        
+        MultiPathGenerator(const std::vector<Handle<DiffusionProcess> >& diffusionProcs,
+                           const Array& drifts,
                            const Matrix& covariance,
                            const TimeGrid& timeGrid,
                            SG generator);
         const sample_type& next() const;
         const sample_type& antithetic() const;
       private:
+        std::vector<Handle<DiffusionProcess> > diffusionProcs_;
         Size numAssets_;
         Matrix sqrtCovariance_;
-        SG generator_;
-        mutable sample_type next_;
+        SG generator_;        
+        mutable sample_type next_;        
     };
 
-
+    
+    // constructor
     template <class SG>
     inline MultiPathGenerator<SG>::MultiPathGenerator(
-                                const Array& drifts, const Matrix& covariance,
-                                Time length, Size timeSteps, SG generator)
-    : numAssets_(covariance.rows()),
-      sqrtCovariance_(matrixSqrt(covariance)),
-      generator_(generator),
-      next_(MultiPath(covariance.rows(),TimeGrid(length,timeSteps)),1.0) {
-
-        QL_REQUIRE(generator_.dimension() == numAssets_*timeSteps,
-                   "generator's dimension is not equal to "
-                   "the number of assets time the number of time steps");
-        QL_REQUIRE(drifts.size() == numAssets_,
-                   "MultiPathGenerator covariance and average "
-                   "do not have the same size");
-        QL_REQUIRE(sqrtCovariance_.cols() == numAssets_,
-                   "MultiPathGenerator covariance is not "
-                   "a square matrix");
-        QL_REQUIRE(timeSteps > 0, "MultiPathGenerator: Time steps(" +
-                   IntegerFormatter::toString(timeSteps) +
-                   ") must be greater than zero");
-        QL_REQUIRE(length > 0, "MultiPathGenerator: length must be > 0");
-
-        for (Size j=0; j<numAssets_; j++) {
-            for (Size i=0; i<timeSteps; i++) {
-                next_.value[j].drift()[i]=drifts[j] *
-                    next_.value[j].timeGrid().dt(i);
-            }
-        }
-
-    }
-
-    template <class SG>
-    inline MultiPathGenerator<SG>::MultiPathGenerator(
-                                const Array& drifts, const Matrix& covariance,
-                                const TimeGrid& times, SG generator)
-    : numAssets_(covariance.rows()), sqrtCovariance_(matrixSqrt(covariance)),
-      generator_(generator),
-      next_(MultiPath(covariance.rows(), times), 1.0) {
+                                const std::vector<Handle<DiffusionProcess> >& diffusionProcs,
+                                const Array& drifts, 
+                                const Matrix& covariance,
+                                const TimeGrid& times, 
+                                SG generator)
+    :   diffusionProcs_(diffusionProcs),
+        numAssets_(covariance.rows()), 
+        sqrtCovariance_(matrixSqrt(covariance)),
+        generator_(generator),
+        next_(MultiPath(covariance.rows(), times), 1.0) {
 
         QL_REQUIRE(generator_.dimension() == numAssets_*(times.size()-1),
-                   "generator's dimension is not equal to "
-                   "the number of assets time the number of time steps");
+                   "(2) MultiPathGenerator's dimension (" +
+                   IntegerFormatter::toString(generator_.dimension()) + 
+                   ") is not equal to (" +
+                   IntegerFormatter::toString(numAssets_) + 
+                   " * " +
+                   IntegerFormatter::toString(times.size()-1) + 
+                   ") the number of assets times the number of time steps");
         QL_REQUIRE(drifts.size() == numAssets_,
                    "MultiPathGenerator covariance and average "
                    "do not have the same size");
-        QL_REQUIRE(sqrtCovariance_.cols() == numAssets_,
+        QL_REQUIRE(sqrtCovariance_.columns() == numAssets_,
                    "MultiPathGenerator covariance is not "
                    "a square matrix");
         QL_REQUIRE(times.size() > 1,
@@ -125,28 +102,62 @@ namespace QuantLib {
     }
 
 
+    // next()
     template <class SG>
-    inline  const typename MultiPathGenerator<SG>::sample_type&
+    inline const typename MultiPathGenerator<SG>::sample_type&
     MultiPathGenerator<SG>::next() const {
-
         typedef typename SG::sample_type sequence_type;
+        const sequence_type& sequence_ = generator_.nextSequence();
+
+        Array asset(numAssets_);
         Array temp(numAssets_);
-        const sequence_type& randomExtraction = generator_.nextSequence();
-        next_.weight = randomExtraction.weight;
+        next_.weight = sequence_.weight;
+
+        for (Size j = 0; j < numAssets_; j++) {
+            asset[j] = diffusionProcs_[j]->x0();
+        }
+
+        TimeGrid timeGrid = next_.value[0].timeGrid();
+        double dt;
+        double sqrt_dt;
+        Time t;            
         for (Size i = 0; i < next_.value[0].size(); i++) {
             Size offset = i*numAssets_;
-            std::copy(randomExtraction_.begin()+offset,
-                      randomExtraction_.begin()+offset+numAssets,
+            t = timeGrid[i+1];
+            dt = timeGrid.dt(i);            
+            sqrt_dt = QL_SQRT(dt);
+            std::copy(sequence_.value.begin()+offset,
+                      sequence_.value.begin()+offset+numAssets_,
                       temp.begin());
+            // this needs to just be a rotation, as the time 
+            // and covariance are in the diffusion process
             temp = sqrtCovariance_ * temp;
-            double sqrtDt = QL_SQRT(next_.value[j].timeGrid().dt(i));
+            temp[0] = temp[0]/ QL_SQRT(sqrtCovariance_[0][0]*sqrtCovariance_[0][0] + 
+                                    sqrtCovariance_[0][1]*sqrtCovariance_[0][1]);
+            temp[1] = temp[1]/ QL_SQRT(sqrtCovariance_[1][0]*sqrtCovariance_[1][0] + 
+                                    sqrtCovariance_[1][1]*sqrtCovariance_[1][1]);
             for (Size j=0; j<numAssets_; j++) {
-                next_.value[j].diffusion()[i] =
-                    temp[j] * sqrtDt;
+                next_.value[j].drift()[i] = dt * diffusionProcs_[j]->drift(t, asset[j]);
+                next_.value[j].diffusion()[i] = - temp[j] * QL_SQRT(diffusionProcs_[j]->variance(t, asset[j], dt));
+                //next_.value[j].diffusion()[i] = - sqrt_dt * temp[j];
+                asset[j] *= QL_EXP(next_.value[j].drift()[i] + next_.value[j].diffusion()[i]);                    
             }
         }
+        
         return next_;
     }
+
+    // antithetic()
+    template <class SG>
+    inline const typename MultiPathGenerator<SG>::sample_type&
+    MultiPathGenerator<SG>::antithetic() const {
+
+        // brownian bridge?
+                
+        return next();
+        
+    }
+
 
 
 
