@@ -62,6 +62,39 @@ void CovarianceTest::testSalvagingCorrelation() {
                            + DecimalFormatter::toString(expected,16));
         }
     }
+
+
+    Matrix badCov(n, n);
+    badCov[0][0] = 1.0; badCov[0][1] = 0.9; badCov[0][2] = 0.7;
+    badCov[1][0] = 0.9; badCov[1][1] = 1.0; badCov[1][2] = 0.3;
+    badCov[2][0] = 0.7; badCov[2][1] = 0.3; badCov[2][2] = 1.0;
+
+    Matrix goodCov(n, n);
+    goodCov[0][0] = goodCov[1][1] = goodCov[2][2] = 1.00000000000;
+    goodCov[0][1] = goodCov[1][0] = 0.894024408508599;
+    goodCov[0][2] = goodCov[2][0] = 0.696319066114392;
+    goodCov[1][2] = goodCov[2][1] = 0.300969036104592;
+
+    b = pseudoSqrt(badCov, SalvagingAlgorithm::Spectral);
+    Matrix calcCov = b * transpose(b);
+
+    for (Size i=0; i<n; i++) {
+        for (Size j=0; j<n; j++) {
+            expected   = goodCov[i][j];
+            calculated = calcCov[i][j];
+            if (QL_FABS(calculated-expected) > 1.0e-10)
+                BOOST_FAIL("SalvagingCorrelation with spectral alg"
+                           "cov[" + SizeFormatter::toString(i) + "]"
+                           "[" + SizeFormatter::toString(j) + "]:\n"
+                           "    calculated: "
+                           + DecimalFormatter::toString(calculated,16) + "\n"
+                           "    expected:   "
+                           + DecimalFormatter::toString(expected,16));
+        }
+    }
+
+
+
 }
 
 void CovarianceTest::testCovariance() {
