@@ -26,7 +26,7 @@
     \brief Knuth uniform random number generator
 
     \fullpath
-    ql/MonteCarlo/%knuthrandomgenerator.hpp
+    ql/RandomNumbers/%knuthrandomgenerator.hpp
 */
 
 // $Id$
@@ -39,18 +39,18 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace RandomNumbers {
 
         //! Uniform random number generator
         /*! Random number generator by Knuth.
-            For more details see Knuth, Seminumerical Algorithms, 3rd edition, 
+            For more details see Knuth, Seminumerical Algorithms, 3rd edition,
             Section 3.6.
-            \note This is <b>not</b> Knuth's original implementation which 
-            is available at 
-            http://www-cs-faculty.stanford.edu/~knuth/programs.html, 
+            \note This is <b>not</b> Knuth's original implementation which
+            is available at
+            http://www-cs-faculty.stanford.edu/~knuth/programs.html,
             but rather a slightly modified version wrapped in a C++ class.
-            Such modifications did not affect the code but only the data 
-            structures used, which were converted in their C++/STL 
+            Such modifications did not affect the code but only the data
+            structures used, which were converted in their C++/STL
             equivalents.
         */
         class KnuthRandomGenerator {
@@ -68,7 +68,7 @@ namespace QuantLib {
                while changing the data structures to more modern ones. */
             static const int KK, LL, TT, QUALITY;
             mutable std::vector<double> ranf_arr_buf;
-            mutable std::vector<double>::const_iterator ranf_arr_ptr, 
+            mutable std::vector<double>::const_iterator ranf_arr_ptr,
                                                         ranf_arr_sentinel;
             mutable std::vector<double> ran_u;
             double mod_sum(double x, double y) const;
@@ -80,10 +80,10 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline double KnuthRandomGenerator::next() const {
-            return (ranf_arr_ptr != ranf_arr_sentinel ? 
-                    *ranf_arr_ptr++ : 
+            return (ranf_arr_ptr != ranf_arr_sentinel ?
+                    *ranf_arr_ptr++ :
                     ranf_arr_cycle());
         }
 
@@ -94,11 +94,11 @@ namespace QuantLib {
         inline double KnuthRandomGenerator::mod_sum(double x, double y) const {
             return (x+y)-int(x+y);
         }
-        
+
         inline bool KnuthRandomGenerator::is_odd(int s) const {
             return (s&1) != 0;
         }
-        
+
     }
 
 }

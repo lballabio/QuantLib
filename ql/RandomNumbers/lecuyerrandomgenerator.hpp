@@ -26,7 +26,7 @@
     \brief L'Ecuyer uniform random number generator
 
     \fullpath
-    ql/MonteCarlo/%lecuyerrandomgenerator.hpp
+    ql/RandomNumbers/%lecuyerrandomgenerator.hpp
 */
 
 // $Id$
@@ -41,7 +41,7 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace RandomNumbers {
 
         //! Uniform random number generator
         /*! Random number generator of L'Ecuyer with added Bays-Durham shuffle.

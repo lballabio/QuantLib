@@ -26,7 +26,7 @@
     \brief Inverse Cumulative Gaussian random-number generator
 
     \fullpath
-    ql/MonteCarlo/%inversecumulativegaussian.hpp
+    ql/RandomNumbers/%inversecumulativegaussian.hpp
 */
 
 // $Id$
@@ -38,7 +38,7 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace RandomNumbers {
 
         //! Inverse Cumulative Gaussian random number generator
         /*! It uses a uniform deviate in (0, 1) as the source of cumulative
@@ -46,7 +46,7 @@ namespace QuantLib {
             Then an Inverse Cumulative Normal Distribution is used as it is
             approximately a Gaussian deviate with average 0.0 and standard
             deviation 1.0,
-            
+
             The uniform deviate is supplied by U.
 
             Class U should satisfies

@@ -34,7 +34,7 @@
 #define quantlib_montecarlo_path_generator_h
 
 #include "ql/MonteCarlo/path.hpp"
-#include "ql/MonteCarlo/randomarraygenerator.hpp"
+#include "ql/RandomNumbers/randomarraygenerator.hpp"
 
 namespace QuantLib {
 
@@ -66,7 +66,7 @@ namespace QuantLib {
           private:
             mutable Path next_;
             mutable double weight_;
-            Handle<RandomArrayGenerator<RNG> > generator_;
+            Handle<RandomNumbers::RandomArrayGenerator<RNG> > generator_;
         };
 
         template <class RNG>
@@ -75,8 +75,8 @@ namespace QuantLib {
         : next_(steps) {
             QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
             next_.drift() = Array(steps, drift*length/steps);
-            generator_ = Handle<RandomArrayGenerator<RNG> >(
-                new RandomArrayGenerator<RNG>(
+            generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
+                new RandomNumbers::RandomArrayGenerator<RNG>(
                 Array(steps, variance*length/steps), seed));
         }
 
@@ -103,8 +103,8 @@ namespace QuantLib {
                 next_.drift()[i] = drift*dt;
                 vrnc[i] = variance*dt;
             }
-            generator_ = Handle<RandomArrayGenerator<RNG> >(
-                new RandomArrayGenerator<RNG>(vrnc,seed));
+            generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
+                new RandomNumbers::RandomArrayGenerator<RNG>(vrnc,seed));
         }
 
         template <class RNG>

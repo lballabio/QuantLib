@@ -26,7 +26,7 @@
     \brief Default choices for template instantiations
 
     \fullpath
-    ql/MonteCarlo/%uniformrandomgenerator.hpp
+    ql/MonteCarlo/%mctypedefs.hpp
 */
 
 // $Id$
@@ -34,8 +34,7 @@
 #ifndef quantlib_mc_typedefs_h
 #define quantlib_mc_typedefs_h
 
-#include "ql/MonteCarlo/lecuyerrandomgenerator.hpp"
-#include "ql/MonteCarlo/boxmuller.hpp"
+#include "ql/RandomNumbers/rngtypedefs.hpp"
 #include "ql/MonteCarlo/pathgenerator.hpp"
 #include "ql/MonteCarlo/multipathgenerator.hpp"
 #include "ql/MonteCarlo/montecarlomodel.hpp"
@@ -47,18 +46,12 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! default choice for uniform random number generator.
-        typedef LecuyerRandomGenerator UniformRandomGenerator;
-
-        //! default choice for Gaussian random number generator.
-        typedef BoxMuller<UniformRandomGenerator> GaussianRandomGenerator;
-
         //! default choice for Gaussian path generator.
-        typedef PathGenerator<GaussianRandomGenerator> GaussianPathGenerator;
+        typedef PathGenerator<RandomNumbers::GaussianRandomGenerator> GaussianPathGenerator;
 
         //! default choice for Gaussian multi-path generator.
         typedef 
-        MultiPathGenerator<RandomArrayGenerator<GaussianRandomGenerator> >
+        MultiPathGenerator<RandomNumbers::RandomArrayGenerator<RandomNumbers::GaussianRandomGenerator> >
             GaussianMultiPathGenerator;
 
         //! default choice for one-factor Monte Carlo model.

@@ -32,6 +32,7 @@ INSTRUMENTS_LIB  = Instruments\Instruments$(_D).lib
 MATH_LIB         = Math\Math$(_D).lib
 MONTECARLO_LIB   = MonteCarlo\MonteCarlo$(_D).lib
 PRICER_LIB       = Pricers\Pricers$(_D).lib
+RNG_LIB          = RandomNumbers\RandomNumbers$(_D).lib
 SOLVER1D_LIB     = Solvers1D\Solvers1D$(_D).lib
 TERMSTRUCT_LIB   = TermStructures\TermStructures$(_D).lib
 
@@ -45,6 +46,7 @@ QUANTLIB_OBJS    = $(CORE_OBJS) \
                    $(MATH_LIB) \
                    $(MONTECARLO_LIB) \
                    $(PRICER_LIB) \
+                   $(RNG_LIB) \
                    $(SOLVER1D_LIB) \
                    $(TERMSTRUCT_LIB)
 
@@ -103,6 +105,8 @@ SubLibraries:
     $(MAKE)
     cd ..\Pricers
     $(MAKE)
+    cd ..\RandomNumbers
+    $(MAKE)
     cd ..\Solvers1D
     $(MAKE)
     cd ..\TermStructures
@@ -129,6 +133,8 @@ clean::
     cd ..\MonteCarlo
     $(MAKE) clean
     cd ..\Pricers
+    $(MAKE) clean
+    cd ..\RandomNumbers
     $(MAKE) clean
     cd ..\Solvers1D
     $(MAKE) clean

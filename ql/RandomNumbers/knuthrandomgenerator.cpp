@@ -26,16 +26,16 @@
     \brief Knuth uniform random number generator
 
     \fullpath
-    ql/MonteCarlo/%knuthrandomgenerator.cpp
+    ql/RandomNumbers/%knuthrandomgenerator.cpp
 */
 
 // $Id$
 
-#include "ql/MonteCarlo/knuthrandomgenerator.hpp"
+#include "ql/RandomNumbers/knuthrandomgenerator.hpp"
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace RandomNumbers {
 
         const int KnuthRandomGenerator::KK = 100;
         const int KnuthRandomGenerator::LL = 37;
@@ -47,13 +47,13 @@ namespace QuantLib {
             ranf_arr_ptr = ranf_arr_sentinel = ranf_arr_buf.end();
             ranf_start(seed != 0 ? seed : long(QL_TIME(0)));
         }
-        
+
         void KnuthRandomGenerator::ranf_start(long seed) {
             int t,s,j;
             std::vector<double> u(KK+KK-1),ul(KK+KK-1);
             double ulp=(1.0/(1L<<30))/(1L<<22);                // 2 to the -52
             double ss=2.0*ulp*((seed&0x3fffffff)+2);
-            
+
             for (j=0;j<KK;j++) {
                 u[j]=ss; ul[j]=0.0;                    // bootstrap the buffer
                 ss+=ss; if (ss>=1.0) ss-=1.0-2*ulp; // cyclic shift of 51 bits
@@ -80,8 +80,8 @@ namespace QuantLib {
             for (j=0;j<LL;j++) ran_u[j+KK-LL]=u[j];
             for (;j<KK;j++) ran_u[j-LL]=u[j];
         }
-        
-        void KnuthRandomGenerator::ranf_array(std::vector<double>& aa, 
+
+        void KnuthRandomGenerator::ranf_array(std::vector<double>& aa,
           int n) const {
             int i,j;
             for (j=0;j<KK;j++) aa[j]=ran_u[j];
@@ -89,13 +89,13 @@ namespace QuantLib {
             for (i=0;i<LL;i++,j++) ran_u[i]=mod_sum(aa[j-KK],aa[j-LL]);
             for (;i<KK;i++,j++) ran_u[i]=mod_sum(aa[j-KK],ran_u[i-LL]);
         }
-        
+
         double KnuthRandomGenerator::ranf_arr_cycle() const {
             ranf_array(ranf_arr_buf,QUALITY);
             ranf_arr_ptr=ranf_arr_buf.begin()+1;
             return ranf_arr_buf[0];
         }
-        
+
     }
 
 }

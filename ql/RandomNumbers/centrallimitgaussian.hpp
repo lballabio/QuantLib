@@ -26,7 +26,7 @@
     \brief Central limit Gaussian random-number generator
 
     \fullpath
-    ql/MonteCarlo/%centrallimitgaussian.hpp
+    ql/RandomNumbers/%centrallimitgaussian.hpp
 */
 
 // $Id$
@@ -38,7 +38,7 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace RandomNumbers {
 
         //! Gaussian random number generator
         /*! It uses the well-known fact that the sum of 12 uniform deviate

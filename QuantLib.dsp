@@ -443,14 +443,6 @@ SOURCE=.\ql\MonteCarlo\basketpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\boxmuller.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\centrallimitgaussian.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\controlvariatedpathpricer.cpp
 # End Source File
 # Begin Source File
@@ -499,26 +491,6 @@ SOURCE=.\ql\MonteCarlo\himalayapathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\inversecumulativegaussian.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\knuthrandomgenerator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\knuthrandomgenerator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\mctypedefs.hpp
 # End Source File
 # Begin Source File
@@ -556,10 +528,6 @@ SOURCE=.\ql\MonteCarlo\pathgenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\pathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\randomarraygenerator.hpp
 # End Source File
 # Begin Source File
 
@@ -952,6 +920,46 @@ SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\simplecashflow.hpp
+# End Source File
+# End Group
+# Begin Group "RandomNumbers"
+
+# PROP Default_Filter "cpp,hpp"
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\boxmuller.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\centrallimitgaussian.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\inversecumulativegaussian.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\knuthrandomgenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\knuthrandomgenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\lecuyerrandomgenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\lecuyerrandomgenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\randomarraygenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\rngtypedefs.hpp
 # End Source File
 # End Group
 # Begin Source File

@@ -26,7 +26,7 @@
     \brief Generates random arrays from a random number generator
 
     \fullpath
-    ql/MonteCarlo/%randomarraygenerator.hpp
+    ql/RandomNumbers/%randomarraygenerator.hpp
 */
 
 // $Id$
@@ -39,7 +39,7 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace RandomNumbers {
 
         //! Generates random arrays from a random number generator
         template <class RNG>

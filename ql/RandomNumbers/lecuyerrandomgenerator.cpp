@@ -26,16 +26,16 @@
     \brief L'Ecuyer uniform random number generator
 
     \fullpath
-    ql/MonteCarlo/%lecuyerrandomgenerator.cpp
+    ql/RandomNumbers/%lecuyerrandomgenerator.cpp
 */
 
 // $Id$
 
-#include "ql/MonteCarlo/lecuyerrandomgenerator.hpp"
+#include "ql/RandomNumbers/lecuyerrandomgenerator.hpp"
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace RandomNumbers {
 
         const long LecuyerRandomGenerator::m1 = 2147483563L;
         const long LecuyerRandomGenerator::a1 = 40014L;

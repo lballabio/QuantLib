@@ -242,13 +242,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\geometricasianpathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basket.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
@@ -259,9 +258,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendshoutoption.sbr" \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\everest.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\himalaya.sbr" \
+	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
+	"$(INTDIR)\pagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -283,10 +285,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
-	"$(INTDIR)\basket.sbr" \
-	"$(INTDIR)\pagoda.sbr" \
-	"$(INTDIR)\everest.sbr"
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -329,13 +329,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basket.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
@@ -346,9 +345,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendshoutoption.obj" \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\everest.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\himalaya.obj" \
+	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
+	"$(INTDIR)\pagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -370,10 +372,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\mceuropean.obj" \
-	"$(INTDIR)\basket.obj" \
-	"$(INTDIR)\pagoda.obj" \
-	"$(INTDIR)\everest.obj"
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -593,13 +593,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\geometricasianpathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basket.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
@@ -610,9 +609,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendshoutoption.sbr" \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\everest.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\himalaya.sbr" \
+	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
+	"$(INTDIR)\pagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -634,10 +636,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
-	"$(INTDIR)\basket.sbr" \
-	"$(INTDIR)\pagoda.sbr" \
-	"$(INTDIR)\everest.sbr"
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -680,13 +680,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basket.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
@@ -697,9 +696,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendshoutoption.obj" \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\everest.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\himalaya.obj" \
+	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
+	"$(INTDIR)\pagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -721,10 +723,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\mceuropean.obj" \
-	"$(INTDIR)\basket.obj" \
-	"$(INTDIR)\pagoda.obj" \
-	"$(INTDIR)\everest.obj"
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -943,13 +943,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\geometricasianpathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basket.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
@@ -960,9 +959,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendshoutoption.sbr" \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\everest.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\himalaya.sbr" \
+	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
+	"$(INTDIR)\pagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -984,10 +986,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
-	"$(INTDIR)\basket.sbr" \
-	"$(INTDIR)\pagoda.sbr" \
-	"$(INTDIR)\everest.sbr"
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1030,13 +1030,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basket.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
@@ -1047,9 +1046,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendshoutoption.obj" \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\everest.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\himalaya.obj" \
+	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
+	"$(INTDIR)\pagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -1071,10 +1073,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\mceuropean.obj" \
-	"$(INTDIR)\basket.obj" \
-	"$(INTDIR)\pagoda.obj" \
-	"$(INTDIR)\everest.obj"
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1294,13 +1294,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\geometricasianpathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basket.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
@@ -1311,9 +1310,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendshoutoption.sbr" \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\everest.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\himalaya.sbr" \
+	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
+	"$(INTDIR)\pagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\stepconditionoption.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -1335,10 +1337,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
-	"$(INTDIR)\basket.sbr" \
-	"$(INTDIR)\pagoda.sbr" \
-	"$(INTDIR)\everest.sbr"
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1381,13 +1381,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basket.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
@@ -1398,9 +1397,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendshoutoption.obj" \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\everest.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\himalaya.obj" \
+	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
+	"$(INTDIR)\pagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\stepconditionoption.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -1422,10 +1424,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\mceuropean.obj" \
-	"$(INTDIR)\basket.obj" \
-	"$(INTDIR)\pagoda.obj" \
-	"$(INTDIR)\everest.obj"
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1673,18 +1673,6 @@ SOURCE=.\ql\MonteCarlo\himalayapathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\MonteCarlo\knuthrandomgenerator.cpp
-
-"$(INTDIR)\knuthrandomgenerator.obj"	"$(INTDIR)\knuthrandomgenerator.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.cpp
-
-"$(INTDIR)\lecuyerrandomgenerator.obj"	"$(INTDIR)\lecuyerrandomgenerator.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
 
 "$(INTDIR)\pagodapathpricer.obj"	"$(INTDIR)\pagodapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1904,6 +1892,18 @@ SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
 
 "$(INTDIR)\floatingratecoupon.obj"	"$(INTDIR)\floatingratecoupon.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\knuthrandomgenerator.cpp
+
+"$(INTDIR)\knuthrandomgenerator.obj"	"$(INTDIR)\knuthrandomgenerator.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\lecuyerrandomgenerator.cpp
+
+"$(INTDIR)\lecuyerrandomgenerator.obj"	"$(INTDIR)\lecuyerrandomgenerator.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

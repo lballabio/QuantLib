@@ -15,6 +15,7 @@ SUBDIRS = \
     MonteCarlo \
     Patterns \
     Pricers \
+    RandomNumbers \
     Solvers1D \
     TermStructures \
     Utilities
@@ -75,6 +76,7 @@ libQuantLib_la_LIBADD = \
 	Math/libMath.la \
 	MonteCarlo/libMonteCarlo.la \
 	Pricers/libPricers.la \
+	RandomNumbers/libRandomNumbers.la \
 	Solvers1D/libSolvers1D.la \
 	TermStructures/libTermStructures.la
 

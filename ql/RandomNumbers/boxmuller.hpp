@@ -26,7 +26,7 @@
     \brief Box-Muller Gaussian random-number generator
 
     \fullpath
-    ql/MonteCarlo/%boxmuller.hpp
+    ql/RandomNumbers/%boxmuller.hpp
 */
 
 // $Id$
@@ -38,7 +38,7 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace RandomNumbers {
 
         //! Gaussian random number generator
         /*! It uses the well-known Box-Muller transformation to return a normal
