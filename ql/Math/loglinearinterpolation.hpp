@@ -48,10 +48,15 @@ namespace QuantLib {
             typedef
               typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
                 result_type;
-             LogLinearInterpolation(const RandomAccessIterator1& xBegin,
-                                    const RandomAccessIterator1& xEnd,
-                                    const RandomAccessIterator2& yBegin)
-             : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
+          private:
+            typedef LinearInterpolation<RandomAccessIterator1,
+              typename std::vector<result_type>::const_iterator>
+                inner_interpolation;
+          public:
+            LogLinearInterpolation(const RandomAccessIterator1& xBegin,
+                                   const RandomAccessIterator1& xEnd,
+                                   const RandomAccessIterator2& yBegin)
+            : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
 		xBegin, xEnd, yBegin),
 	       logY_(xEnd-xBegin) {
 		 int i;
@@ -62,11 +67,8 @@ namespace QuantLib {
                      logY_[i]=QL_LOG(*(yBegin+i));
                  }
                  linearInterpolation_ =
-                     Handle<LinearInterpolation<RandomAccessIterator1,
-                     typename std::vector<result_type>::const_iterator> >(
-                     new LinearInterpolation<RandomAccessIterator1,
-                     typename std::vector<result_type>::const_iterator>(xBegin,
-                     xEnd, logY_.begin()));
+                     Handle<inner_interpolation>(
+                     new inner_interpolation(xBegin, xEnd, logY_.begin()));
              }
             result_type operator()(const argument_type& x,
                 bool allowExtrapolation = false) const;
