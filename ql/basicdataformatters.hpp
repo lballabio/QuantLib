@@ -23,6 +23,7 @@
 #ifndef quantlib_basic_data_formatters_hpp
 #define quantlib_basic_data_formatters_hpp
 
+#include <string>
 #include <ql/types.hpp>
 
 namespace QuantLib {
