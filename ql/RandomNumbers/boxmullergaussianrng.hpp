@@ -34,33 +34,30 @@
 #ifndef quantlib_box_muller_gaussian_rng_h
 #define quantlib_box_muller_gaussian_rng_h
 
-#include "ql/qldefines.hpp"
+#include "ql/MonteCarlo/sample.hpp"
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
         //! Gaussian random number generator
-        /*! It uses the well-known Box-Muller transformation to return a normal
-            distributed Gaussian deviate with average 0.0 and standard deviation
-            of 1.0, from a uniform deviate in (0,1) supplied by U.
+        /*! It uses the well-known Box-Muller transformation to return a 
+            normal distributed Gaussian deviate with average 0.0 and standard 
+            deviation of 1.0, from a uniform deviate in (0,1) supplied by U.
 
-            Class U must have, at least, the following interface:
+            Class U must implement the following interface:
             \code
                 U::U(long seed);
-                double U::next() const;
-                double U::weight() const;
+                U::sample_type U::next() const;
             \endcode
         */
         template <class U>
         class BoxMullerGaussianRng {
           public:
+            typedef MonteCarlo::Sample<double> sample_type;
             explicit BoxMullerGaussianRng(long seed=0);
-            typedef double sample_type;
             //! returns next sample from the Gaussian distribution
-            double next() const;
-            //! returns the weight of the last extracted sample
-            double weight() const;
+            sample_type next() const;
           private:
             U basicGenerator_;
             mutable bool returnFirst_;
@@ -74,14 +71,17 @@ namespace QuantLib {
             basicGenerator_(seed), returnFirst_(true), weight_(0.0){}
 
         template <class U>
-        inline double BoxMullerGaussianRng<U>::next() const {
+        inline BoxMullerGaussianRng<U>::sample_type
+        BoxMullerGaussianRng<U>::next() const {
             if(returnFirst_) {
                 double x1,x2,r,ratio;
                 do {
-                    x1 = basicGenerator_.next()*2.0-1.0;
-                    firstWeight_ = basicGenerator_.weight();
-                    x2 = basicGenerator_.next()*2.0-1.0;
-                    secondWeight_ = basicGenerator_.weight();
+                    typename U::sample_type s1 = basicGenerator_.next();
+                    x1 = s1.value*2.0-1.0;
+                    firstWeight_ = s1.weight;
+                    typename U::sample_type s2 = basicGenerator_.next();
+                    x2 = s2.value*2.0-1.0;
+                    secondWeight_ = s2.weight;
                     r = x1*x1+x2*x2;
                 } while(r>=1.0 || r==0.0);
 
@@ -91,16 +91,11 @@ namespace QuantLib {
                 weight_ = firstWeight_*secondWeight_;
 
                 returnFirst_ = false;
-                return firstValue_;
+                return sample_type(firstValue_,weight_);
             } else {
                 returnFirst_ = true;
-                return secondValue_;
+                return sample_type(secondValue_,weight_);
             }
-        }
-
-        template <class U>
-        inline double BoxMullerGaussianRng<U>::weight() const {
-            return weight_;
         }
 
     }

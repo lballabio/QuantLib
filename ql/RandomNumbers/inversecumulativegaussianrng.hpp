@@ -35,6 +35,7 @@
 #define quantlib_inversecumulative_gaussian_rng_h
 
 #include "ql/Math/normaldistribution.hpp"
+#include "ql/MonteCarlo/sample.hpp"
 
 namespace QuantLib {
 
@@ -45,48 +46,36 @@ namespace QuantLib {
             normal distribution values.
             Then an Inverse Cumulative Normal Distribution is used as it is
             approximately a Gaussian deviate with average 0.0 and standard
-            deviation 1.0,
+            deviation 1.0.
 
             The uniform deviate is supplied by U.
 
-            Class U should satisfies
+            Class U must implement the following interface:
             \code
                 U::U(long seed);
-                double U::next() const;
-                double U::weight() const;
+                U::sample_type U::next() const;
             \endcode
         */
         template <class U>
         class ICGaussianRng {
           public:
-            typedef double sample_type;
+            typedef MonteCarlo::Sample<double> sample_type;
             explicit ICGaussianRng(long seed=0);
             //! returns next sample from the Gaussian distribution
-            double next() const;
-            //! returns the weight of the last extracted sample
-            double weight() const;
+            sample_type next() const;
           private:
             U basicGenerator_;
-            mutable double gaussWeight_;
             QuantLib::Math::InvCumulativeNormalDistribution ICND_;
         };
 
         template <class U>
-        ICGaussianRng<U>::ICGaussianRng(long seed):
-            basicGenerator_(seed), gaussWeight_(0.0), ICND_() {}
+        ICGaussianRng<U>::ICGaussianRng(long seed)
+        : basicGenerator_(seed) {}
 
         template <class U>
-        inline double ICGaussianRng<U>::next() const {
-
-            double gaussPoint = ICND_(basicGenerator_.next());
-            gaussWeight_ = basicGenerator_.weight();
-
-            return gaussPoint;
-        }
-
-        template <class U>
-        inline double ICGaussianRng<U>::weight() const {
-            return gaussWeight_;
+        inline ICGaussianRng<U>::sample_type ICGaussianRng<U>::next() const {
+            typename U::sample_type sample = basicGenerator_.next();
+            return sample_type(ICND_(sample.value),sample.weight);
         }
 
     }

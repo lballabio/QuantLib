@@ -44,7 +44,7 @@ namespace QuantLib {
         template <class RNG>
         class PathGenerator {
           public:
-            typedef Path sample_type;
+            typedef Sample<Path> sample_type;
             // constructors
             PathGenerator(double drift,
                           double variance,
@@ -59,37 +59,35 @@ namespace QuantLib {
                           long seed = 0);
             //! \name inspectors
             //@{
-            Path next() const;
-            double weight() const { return weight_; }
+            const sample_type& next() const;
             size_t size() const { return next_.size(); }
             //@}
           private:
-            mutable Path next_;
-            mutable double weight_;
+            mutable Sample<Path> next_;
             Handle<RandomNumbers::RandomArrayGenerator<RNG> > generator_;
         };
 
         template <class RNG>
         PathGenerator<RNG>::PathGenerator(double drift, double variance, 
             Time length, size_t steps, long seed)
-        : next_(steps) {
+        : next_(Path(steps),1.0) {
             QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
-            next_.drift() = Array(steps, drift*length/steps);
+            next_.value.drift() = Array(steps, drift*length/steps);
             generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
                 new RandomNumbers::RandomArrayGenerator<RNG>(
-                Array(steps, variance*length/steps), seed));
+                    Array(steps, variance*length/steps), seed));
         }
 
         template <class RNG>
         PathGenerator<RNG>::PathGenerator(double drift, double variance, 
             const std::vector<Time>& times, long seed)
-        : next_(times.size()) {
+        : next_(Path(times.size()),1.0) {
             QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
             QL_REQUIRE(times.size() > 0, "PathGenerator: no times given");
             QL_REQUIRE(times[0] > 0.0, "PathGenerator: negative time given");
             Array vrnc(times.size());
             Time dt = times[0];
-            next_.drift()[0] = drift*dt;
+            next_.value.drift()[0] = drift*dt;
             vrnc[0] = variance*dt;
             for (size_t i=1; i<times.size(); i++) {
                 QL_REQUIRE(times[i] > times[i-1],
@@ -100,7 +98,7 @@ namespace QuantLib {
                     IntegerFormatter::toString(i)+"]="+
                     DoubleFormatter::toString(times[i]));
                 dt = times[i] - times[i-1];
-                next_.drift()[i] = drift*dt;
+                next_.value.drift()[i] = drift*dt;
                 vrnc[i] = variance*dt;
             }
             generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
@@ -108,10 +106,11 @@ namespace QuantLib {
         }
 
         template <class RNG>
-        inline Path PathGenerator<RNG>::next() const {
-            next_.diffusion() = generator_->next();
-            // always call weight() _after_ next()
-            weight_ = generator_->weight();
+        inline const PathGenerator<RNG>::sample_type& 
+        PathGenerator<RNG>::next() const {
+            const Sample<Array>& sample = generator_->next();
+            next_.value.diffusion() = sample.value;
+            next_.weight = sample.weight;
             return next_;
         }
 

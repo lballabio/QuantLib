@@ -34,7 +34,7 @@
 #ifndef quantlib_lecuyer_uniform_rng_h
 #define quantlib_lecuyer_uniform_rng_h
 
-#include "ql/qldefines.hpp"
+#include "ql/MonteCarlo/sample.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -44,21 +44,21 @@ namespace QuantLib {
     namespace RandomNumbers {
 
         //! Uniform random number generator
-        /*! Random number generator of L'Ecuyer with added Bays-Durham shuffle.
+        /*! Random number generator of L'Ecuyer with added Bays-Durham 
+            shuffle.
             For more details see Section 7.1 of Numerical Recipes in C, 2nd
             Edition, Cambridge University Press (available at
             http://www.nr.com/)
         */
         class LecuyerUniformRng {
           public:
+            typedef MonteCarlo::Sample<double> sample_type;
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit LecuyerUniformRng(long seed = 0);
-            typedef double sample_type;
-            //! returns a random number uniformly chosen from (0.0,1.0)
-            double next() const;
-            //! uniformly returns 1.0
-            double weight() const;
+            /*! returns a sample with weight 1.0 containing a random number 
+                uniformly chosen from (0.0,1.0) */
+            sample_type next() const;
           private:
             mutable long temp1, temp2;
             mutable long y;
@@ -76,7 +76,8 @@ namespace QuantLib {
             static const long double maxRandom;
         };
 
-        inline LecuyerUniformRng::LecuyerUniformRng(long seed) : buffer(LecuyerUniformRng::bufferSize) {
+        inline LecuyerUniformRng::LecuyerUniformRng(long seed) 
+        : buffer(LecuyerUniformRng::bufferSize) {
             temp2 = temp1 = (seed != 0 ? seed : long(QL_TIME(0)));
             for (int j=bufferSize+7; j>=0; j--) {
                 long k = temp1/q1;
@@ -89,7 +90,8 @@ namespace QuantLib {
             y = buffer[0];
         }
 
-        inline double LecuyerUniformRng::next() const {
+        inline LecuyerUniformRng::sample_type 
+        LecuyerUniformRng::next() const {
             long k = temp1/q1;
             temp1 = a1*(temp1-k*q1)-k*r1;
             if (temp1 < 0)
@@ -104,12 +106,11 @@ namespace QuantLib {
             if (y < 1)
                 y += m1-1;
             double result = y/double(m1);
-            return (result > maxRandom ? maxRandom : result);
+            if (result > maxRandom)
+                result = maxRandom;
+            return sample_type(result,1.0);
         }
 
-        inline double LecuyerUniformRng::weight() const {
-            return 1.0;
-        }
     }
 
 }

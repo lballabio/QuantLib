@@ -34,7 +34,7 @@
 #ifndef quantlib_knuth_uniform_rng_h
 #define quantlib_knuth_uniform_rng_h
 
-#include "ql/qldefines.hpp"
+#include "ql/MonteCarlo/sample.hpp"
 #include <vector>
 
 namespace QuantLib {
@@ -45,8 +45,8 @@ namespace QuantLib {
 
         //! Uniform random number generator
         /*! Random number generator by Knuth.
-            For more details see Knuth, Seminumerical Algorithms, 3rd edition,
-            Section 3.6.
+            For more details see Knuth, Seminumerical Algorithms, 
+            3rd edition, Section 3.6.
             \note This is <b>not</b> Knuth's original implementation which
             is available at
             http://www-cs-faculty.stanford.edu/~knuth/programs.html,
@@ -57,14 +57,13 @@ namespace QuantLib {
         */
         class KnuthUniformRng {
           public:
+            typedef MonteCarlo::Sample<double> sample_type;
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit KnuthUniformRng(long seed = 0);
-            typedef double sample_type;
-            //! returns a random number uniformly chosen from (0.0,1.0)
-            double next() const;
-            //! uniformly returns 1.0
-            double weight() const;
+            /*! returns a sample with weight 1.0 containing a random number 
+                uniformly chosen from (0.0,1.0) */
+            sample_type next() const;
           private:
             /* Knuth's names and routines were preserved as much as possible
                while changing the data structures to more modern ones. */
@@ -83,14 +82,11 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline double KnuthUniformRng::next() const {
-            return (ranf_arr_ptr != ranf_arr_sentinel ?
-                    *ranf_arr_ptr++ :
-                    ranf_arr_cycle());
-        }
-
-        inline double KnuthUniformRng::weight() const {
-            return 1.0;
+        inline KnuthUniformRng::sample_type KnuthUniformRng::next() const {
+            double result = (ranf_arr_ptr != ranf_arr_sentinel ?
+                             *ranf_arr_ptr++ :
+                             ranf_arr_cycle());
+            return sample_type(result,1.0);
         }
 
         inline double KnuthUniformRng::mod_sum(double x, double y) const {

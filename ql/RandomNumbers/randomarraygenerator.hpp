@@ -35,6 +35,7 @@
 #define quantlib_montecarlo_random_array_generator_h
 
 #include "ql/Math/matrix.hpp"
+#include "ql/MonteCarlo/sample.hpp"
 #include "ql/dataformatters.hpp"
 
 namespace QuantLib {
@@ -45,7 +46,7 @@ namespace QuantLib {
         template <class RNG>
         class RandomArrayGenerator {
           public:
-            typedef Array sample_type;
+            typedef MonteCarlo::Sample<Array> sample_type;
             // equal average, equal variance, no covariance
             RandomArrayGenerator(size_t dimension,
                                  double variance,
@@ -56,12 +57,10 @@ namespace QuantLib {
             // different averages, different variances, covariance
             RandomArrayGenerator(const Math::Matrix& covariance,
                                  long seed = 0);
-            const Array& next() const;
-            double weight() const { return weight_; }
+            const sample_type& next() const;
             int size() const { return average_.size(); }
           private:
-            mutable Array next_;
-            mutable double weight_;
+            mutable sample_type next_;
             RNG generator_;
             Array sqrtVariance_;
             Math::Matrix sqrtCovariance_;
@@ -71,7 +70,7 @@ namespace QuantLib {
         inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
             size_t dimension, double variance,
             long seed)
-        : next_(dimension), generator_(seed) {
+        : next_(Array(dimension),1.0), generator_(seed) {
             QL_REQUIRE(variance >= 0,
                 "RandomArrayGenerator: negative variance");
             sqrtVariance_ = Array(dimension, QL_SQRT(variance));
@@ -80,7 +79,7 @@ namespace QuantLib {
         template <class RNG>
         inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
             const Array& variance, long seed)
-        : next_(variance.size()), generator_(seed),
+        : next_(Array(variance.size()),1.0), generator_(seed),
           sqrtVariance_(variance.size()) {
             for (size_t i=0; i<variance.size(); i++) {
                 QL_REQUIRE(variance[i] >= 0,
@@ -95,7 +94,7 @@ namespace QuantLib {
         template <class RNG>
         inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
             const Math::Matrix& covariance, long seed)
-        : next_(covariance.rows()), generator_(seed) {
+        : next_(Array(covariance.rows()),1.0), generator_(seed) {
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "Covariance matrix must be square (is "+
                 IntegerFormatter::toString(covariance.rows())+ " x "+
@@ -107,21 +106,22 @@ namespace QuantLib {
 
 
         template <class RNG>
-        inline const Array& RandomArrayGenerator<RNG>::next() const{
-
+        inline const RandomArrayGenerator<RNG>::sample_type& 
+        RandomArrayGenerator<RNG>::next() const{
             // starting point for product
-            weight_ = 1.0;
+            next_.weight = 1.0;
 
-            for (size_t j=0; j<next_.size(); j++) {
-                next_[j] = generator_.next();
-                weight_ *= generator_.weight();
+            for (size_t j=0; j<next_.value.size(); j++) {
+                typename RNG::sample_type sample = generator_.next();
+                next_.value[j] = sample.value;
+                next_.weight *= sample.weight;
             }
 
             if (sqrtCovariance_.rows() != 0) {  // general case
-                next_ = sqrtCovariance_ * next_;
+                next_.value = sqrtCovariance_ * next_.value;
             } else {                            // degenerate case
-                for (size_t j=0; j<next_.size(); j++)
-                    next_[j] *= sqrtVariance_[j];
+                for (size_t j=0; j<next_.value.size(); j++)
+                    next_.value[j] *= sqrtVariance_[j];
             }
             return next_;
         }
@@ -129,5 +129,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

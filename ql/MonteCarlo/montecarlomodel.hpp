@@ -63,8 +63,7 @@ namespace QuantLib {
             };
 
             class PG{
-                PATH_TYPE next() const;
-                double weight() const;
+                Sample<PATH_TYPE> next() const;
             };
 
             class PP :: unary_function<PATH_TYPE, VALUE_TYPE> {
@@ -111,10 +110,10 @@ namespace QuantLib {
                     addSamples(size_t samples) {
             for(size_t j = 1; j <= samples; j++) {
                 typename PG::sample_type path = pathGenerator_->next();
-                typename PP::result_type price = (*pathPricer_)(path);
+                typename PP::result_type price = (*pathPricer_)(path.value);
                 if (isControlVariate_)
-                    price += cvOptionValue_-(*cvPathPricer_)(path);
-                sampleAccumulator_.add(price, pathGenerator_->weight());
+                    price += cvOptionValue_-(*cvPathPricer_)(path.value);
+                sampleAccumulator_.add(price, path.weight);
             }
         }
 

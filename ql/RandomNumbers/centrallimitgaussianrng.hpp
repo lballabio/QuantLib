@@ -34,7 +34,7 @@
 #ifndef quantlib_central_limit_gaussian_rng_h
 #define quantlib_central_limit_gaussian_rng_h
 
-#include "ql/qldefines.hpp"
+#include "ql/MonteCarlo/sample.hpp"
 
 namespace QuantLib {
 
@@ -46,50 +46,41 @@ namespace QuantLib {
             and standard deviation 1.
             The uniform deviate is supplied by U.
 
-            Class U should satisfies
+            Class U must implement the following interface:
             \code
                 U::U(long seed);
-                double U::next() const;
-                double U::weight() const;
+                U::sample_type U::next() const;
             \endcode
         */
         template <class U>
         class CLGaussianRng {
           public:
-            typedef double sample_type;
+            typedef MonteCarlo::Sample<double> sample_type;
             explicit CLGaussianRng(long seed=0);
             //! returns next sample from the Gaussian distribution
-            double next() const;
-            //! returns the weight of the last extracted sample
-            double weight() const;
+            sample_type next() const;
           private:
             U basicGenerator_;
-            mutable double gaussWeight_;
         };
 
         template <class U>
-        CLGaussianRng<U>::CLGaussianRng(long seed):
-            basicGenerator_(seed), gaussWeight_(0.0) {}
+        CLGaussianRng<U>::CLGaussianRng(long seed)
+        : basicGenerator_(seed) {}
 
         template <class U>
-        inline double CLGaussianRng<U>::next() const {
-
-            double gaussPoint = -6.0;
-            gaussWeight_ = 1.0;
+        inline CLGaussianRng<U>::sample_type CLGaussianRng<U>::next() const {
+            double gaussPoint = -6.0, gaussWeight = 1.0;
             for(int i=1;i<=12;i++){
-                gaussPoint += basicGenerator_.next();
-                gaussWeight_ *= basicGenerator_.weight();
+                typename U::sample_type sample = basicGenerator_.next();
+                gaussPoint  += sample.value;
+                gaussWeight *= sample.weight;
             }
-            return gaussPoint;
-        }
-
-        template <class U>
-        inline double CLGaussianRng<U>::weight() const {
-            return gaussWeight_;
+            return sample_type(gaussPoint,gaussWeight);
         }
 
     }
 
 }
+
 
 #endif

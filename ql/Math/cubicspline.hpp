@@ -46,9 +46,6 @@ namespace QuantLib {
         class CubicSpline
         : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {
           public:
-            /*  these typedefs are repeated because Borland C++ won't inherit
-                them from Interpolation - they shouldn't hurt, though.
-            */
             typedef
               typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
                 argument_type;

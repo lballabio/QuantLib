@@ -132,6 +132,7 @@
 #include "ql/MonteCarlo/path.hpp"
 #include "ql/MonteCarlo/pathgenerator.hpp"
 #include "ql/MonteCarlo/pathpricer.hpp"
+#include "ql/MonteCarlo/sample.hpp"
 #include "ql/MonteCarlo/singleassetpathpricer.hpp"
 
 #include "ql/Patterns/factory.hpp"

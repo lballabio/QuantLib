@@ -23,6 +23,7 @@ include_HEADERS = \
 	path.hpp \
 	pathgenerator.hpp \
 	pathpricer.hpp \
+	sample.hpp \
 	singleassetpathpricer.hpp
 
 EXTRA_DIST=makefile.mak
