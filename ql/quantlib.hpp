@@ -150,6 +150,7 @@
 #include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Math/discrepancystatistic.hpp>
 #include <ql/Math/errorfunction.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/Math/interpolation.hpp>
@@ -163,8 +164,8 @@
 #include <ql/Math/primenumbers.hpp>
 #include <ql/Math/riskmeasures.hpp>
 #include <ql/Math/segmentintegral.hpp>
-#include <ql/Math/sequencestatistics.hpp>
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/sequencestatistic.hpp>
+#include <ql/Math/statistic.hpp>
 #include <ql/Math/symmetriceigenvalues.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 

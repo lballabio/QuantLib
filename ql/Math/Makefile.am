@@ -9,10 +9,12 @@ include_HEADERS = \
 	bicubicsplineinterpolation.hpp \
     chisquaredistribution.hpp \
 	cubicspline.hpp \
+	discrepancystatistic.hpp \
 	errorfunction.hpp \
 	interpolation.hpp \
 	interpolation2D.hpp \
     gammadistribution.hpp \
+	hstatistic.hpp \
 	lexicographicalview.hpp \
 	linearinterpolation.hpp \
 	loglinearinterpolation.hpp \
@@ -22,8 +24,8 @@ include_HEADERS = \
 	primenumbers.hpp \
 	riskmeasures.hpp \
 	segmentintegral.hpp \
-	sequencestatistics.hpp \
-	statistics.hpp \
+	sequencestatistic.hpp \
+	statistic.hpp \
 	symmetriceigenvalues.hpp \
 	symmetricschurdecomposition.hpp
 
@@ -33,11 +35,12 @@ libMath_la_SOURCES = \
     chisquaredistribution.cpp \
 	errorfunction.cpp \
     gammadistribution.cpp \
+	hstatistic.cpp \
     matrix.cpp \
     multivariateaccumulator.cpp \
     normaldistribution.cpp \
 	primenumbers.cpp \
-    statistics.cpp \
+    statistic.cpp \
     symmetricschurdecomposition.cpp
 
 noinst_LTLIBRARIES = libMath.la

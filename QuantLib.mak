@@ -182,6 +182,8 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
+	-@erase "$(INTDIR)\hstatistic.obj"
+	-@erase "$(INTDIR)\hstatistic.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
@@ -290,8 +292,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
-	-@erase "$(INTDIR)\statistics.obj"
-	-@erase "$(INTDIR)\statistics.sbr"
+	-@erase "$(INTDIR)\statistic.obj"
+	-@erase "$(INTDIR)\statistic.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -410,11 +412,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\hstatistic.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
-	"$(INTDIR)\statistics.sbr" \
+	"$(INTDIR)\statistic.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -573,11 +576,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\hstatistic.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
-	"$(INTDIR)\statistics.obj" \
+	"$(INTDIR)\statistic.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -836,6 +840,8 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
+	-@erase "$(INTDIR)\hstatistic.obj"
+	-@erase "$(INTDIR)\hstatistic.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
@@ -944,8 +950,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
-	-@erase "$(INTDIR)\statistics.obj"
-	-@erase "$(INTDIR)\statistics.sbr"
+	-@erase "$(INTDIR)\statistic.obj"
+	-@erase "$(INTDIR)\statistic.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -1065,11 +1071,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\hstatistic.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
-	"$(INTDIR)\statistics.sbr" \
+	"$(INTDIR)\statistic.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -1228,11 +1235,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\hstatistic.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
-	"$(INTDIR)\statistics.obj" \
+	"$(INTDIR)\statistic.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -1491,6 +1499,8 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
+	-@erase "$(INTDIR)\hstatistic.obj"
+	-@erase "$(INTDIR)\hstatistic.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
@@ -1599,8 +1609,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
-	-@erase "$(INTDIR)\statistics.obj"
-	-@erase "$(INTDIR)\statistics.sbr"
+	-@erase "$(INTDIR)\statistic.obj"
+	-@erase "$(INTDIR)\statistic.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -1719,11 +1729,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\hstatistic.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
-	"$(INTDIR)\statistics.sbr" \
+	"$(INTDIR)\statistic.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -1882,11 +1893,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\hstatistic.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
-	"$(INTDIR)\statistics.obj" \
+	"$(INTDIR)\statistic.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -2145,6 +2157,8 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
+	-@erase "$(INTDIR)\hstatistic.obj"
+	-@erase "$(INTDIR)\hstatistic.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
@@ -2253,8 +2267,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
-	-@erase "$(INTDIR)\statistics.obj"
-	-@erase "$(INTDIR)\statistics.sbr"
+	-@erase "$(INTDIR)\statistic.obj"
+	-@erase "$(INTDIR)\statistic.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -2374,11 +2388,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\hstatistic.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
-	"$(INTDIR)\statistics.sbr" \
+	"$(INTDIR)\statistic.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -2537,11 +2552,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\hstatistic.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
-	"$(INTDIR)\statistics.obj" \
+	"$(INTDIR)\statistic.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -2985,6 +3001,12 @@ SOURCE=.\ql\Math\gammadistribution.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Math\hstatistic.cpp
+
+"$(INTDIR)\hstatistic.obj"	"$(INTDIR)\hstatistic.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Math\matrix.cpp
 
 "$(INTDIR)\matrix.obj"	"$(INTDIR)\matrix.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3009,9 +3031,9 @@ SOURCE=.\ql\Math\primenumbers.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Math\statistics.cpp
+SOURCE=.\ql\Math\statistic.cpp
 
-"$(INTDIR)\statistics.obj"	"$(INTDIR)\statistics.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\statistic.obj"	"$(INTDIR)\statistic.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
