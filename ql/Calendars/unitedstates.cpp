@@ -47,10 +47,8 @@ namespace QuantLib {
 
     bool UnitedStates::SettlementImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
-        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Day d = date.dayOfMonth();
         Month m = date.month();
-        Year y = date.year();
-//        Day em = easterMonday(y);
         if ((w == Saturday || w == Sunday)
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
