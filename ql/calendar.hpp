@@ -103,15 +103,14 @@ namespace QuantLib {
         Date advance(const Date&, int n, TimeUnit unit,
                      RollingConvention convention = Following) const;
         //@}
-      protected:
+
         //! abstract base class for calendar factories
         class CalendarFactory {
           public:
             virtual Calendar create() const = 0;
         };
-      public:
         typedef CalendarFactory factory;
-      protected:
+
         //! abstract base class for calendar implementations
         class CalendarImpl {
           public:
@@ -125,6 +124,7 @@ namespace QuantLib {
             //! expressed relative to first day of year
             static Day easterMonday(Year y);
         };
+      protected:
         /*! this protected constructor will only be invoked by derived 
             classes which define a given Calendar implementation */
         Calendar(const Handle<CalendarImpl>& impl) : impl_(impl) {}

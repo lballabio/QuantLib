@@ -71,15 +71,14 @@ namespace QuantLib {
           const Date& refPeriodStart = Date(),
           const Date& refPeriodEnd = Date()) const;
         //@}
-      protected:
+
         //! abstract base class for calendar factories
         class DayCounterFactory {
           public:
             virtual DayCounter create() const = 0;
         };
-      public:
         typedef DayCounterFactory factory;
-      protected:
+
         //! abstract base class for day counter implementations
         class DayCounterImpl {
           public:
@@ -89,6 +88,7 @@ namespace QuantLib {
                 const Date& refPeriodStart,
                 const Date& refPeriodEnd) const = 0;
         };
+      protected:
         /*! this protected constructor will only be invoked by derived 
             classes which define a given Calendar implementation */
         DayCounter(const Handle<DayCounterImpl>& impl) : impl_(impl) {}
