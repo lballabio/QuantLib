@@ -118,8 +118,10 @@ CLEAN :
 	-@erase "$(INTDIR)\himalaya.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
-	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
-	-@erase "$(INTDIR)\lecuyerrandomgenerator.sbr"
+	-@erase "$(INTDIR)\knuthuniformrng.obj"
+	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
+	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
@@ -277,13 +279,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -363,13 +366,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\knuthuniformrng.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -464,8 +468,10 @@ CLEAN :
 	-@erase "$(INTDIR)\himalaya.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
-	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
-	-@erase "$(INTDIR)\lecuyerrandomgenerator.sbr"
+	-@erase "$(INTDIR)\knuthuniformrng.obj"
+	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
+	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
@@ -624,13 +630,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -710,13 +717,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\knuthuniformrng.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -811,8 +819,10 @@ CLEAN :
 	-@erase "$(INTDIR)\himalaya.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
-	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
-	-@erase "$(INTDIR)\lecuyerrandomgenerator.sbr"
+	-@erase "$(INTDIR)\knuthuniformrng.obj"
+	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
+	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
@@ -970,13 +980,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1056,13 +1067,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\knuthuniformrng.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1157,8 +1169,10 @@ CLEAN :
 	-@erase "$(INTDIR)\himalaya.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
-	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
-	-@erase "$(INTDIR)\lecuyerrandomgenerator.sbr"
+	-@erase "$(INTDIR)\knuthuniformrng.obj"
+	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
+	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
@@ -1317,13 +1331,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\knuthuniformrng.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1403,13 +1418,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\knuthuniformrng.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1879,9 +1895,15 @@ SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\RandomNumbers\lecuyerrandomgenerator.cpp
+SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
 
-"$(INTDIR)\lecuyerrandomgenerator.obj"	"$(INTDIR)\lecuyerrandomgenerator.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\knuthuniformrng.obj"	"$(INTDIR)\knuthuniformrng.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
+
+"$(INTDIR)\lecuyeruniformrng.obj"	"$(INTDIR)\lecuyeruniformrng.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -275,6 +275,10 @@ SOURCE=.\ql\FiniteDifferences\dzero.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\fdtypedefs.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\finitedifferencemodel.hpp
 # End Source File
 # Begin Source File
@@ -927,23 +931,31 @@ SOURCE=.\ql\CashFlows\simplecashflow.hpp
 # PROP Default_Filter "cpp,hpp"
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\boxmuller.hpp
+SOURCE=.\ql\RandomNumbers\boxmullergaussianrng.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\centrallimitgaussian.hpp
+SOURCE=.\ql\RandomNumbers\centrallimitgaussianrng.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\inversecumulativegaussian.hpp
+SOURCE=.\ql\RandomNumbers\inversecumulativegaussianrng.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\lecuyerrandomgenerator.cpp
+SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\lecuyerrandomgenerator.hpp
+SOURCE=.\ql\RandomNumbers\knuthuniformrng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.hpp
 # End Source File
 # Begin Source File
 
