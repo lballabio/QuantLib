@@ -44,9 +44,7 @@ namespace QuantLib {
 
         double CumulativeNormalDistribution::operator()(double x) const {
             QL_REQUIRE(!(x >= average_ && 2.0*average_-x > average_),
-                "CumulativeNormalDistribution: not a real number. "
-                "Cannot process x = " +
-                DoubleFormatter::toString(x));
+                "CumulativeNormalDistribution: not a real number. ");
             if (x >= average_) {
                 double xn = (x - average_) / sigma_;
                 double k = 1.0/(1.0+gamma_*xn);
