@@ -29,11 +29,12 @@ CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\sol
 CALENDAR_OBJS	= $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj $(OUTPUT_DIR)\zurich.obj 
 DAYCOUNT_OBJS	= $(OUTPUT_DIR)\actualactual.obj $(OUTPUT_DIR)\thirty360.obj $(OUTPUT_DIR)\thirty360italian.obj
 MATH_OBJS		= $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj  $(OUTPUT_DIR)\newcubicspline.obj
+MONTECARLO_OBJS	= $(OUTPUT_DIR)\lecuyerrandomgenerator.obj
 FDM_OBJS		= $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
 PRICER_OBJS		= $(OUTPUT_DIR)\bsmoption.obj $(OUTPUT_DIR)\bsmnumericaloption.obj $(OUTPUT_DIR)\bsmeuropeanoption.obj $(OUTPUT_DIR)\bsmamericanoption.obj $(OUTPUT_DIR)\dividendamericanoption.obj 
 SOLVER1D_OBJS	= $(OUTPUT_DIR)\bisection.obj $(OUTPUT_DIR)\brent.obj $(OUTPUT_DIR)\falseposition.obj $(OUTPUT_DIR)\newton.obj $(OUTPUT_DIR)\newtonsafe.obj $(OUTPUT_DIR)\ridder.obj $(OUTPUT_DIR)\secant.obj
 TERMSTRUC_OBJS	= $(OUTPUT_DIR)\piecewiseconstantforwards.obj 
-QUANTLIB_OBJS	= $(CORE_OBJS) $(CALENDAR_OBJS) $(DAYCOUNT_OBJS) $(MATH_OBJS) $(FDM_OBJS) $(PRICER_OBJS) $(SOLVER1D_OBJS) $(TERMSTRUC_OBJS) 
+QUANTLIB_OBJS	= $(CORE_OBJS) $(CALENDAR_OBJS) $(DAYCOUNT_OBJS) $(MATH_OBJS) $(MONTECARLO_OBJS) $(FDM_OBJS) $(PRICER_OBJS) $(SOLVER1D_OBJS) $(TERMSTRUC_OBJS) 
 WIN_OBJS		= c0d32.obj 
 
 # Libraries
@@ -61,6 +62,7 @@ CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 -w-8012 \
 	-I$(INCLUDE_DIR)\FiniteDifferences \
 	-I$(INCLUDE_DIR)\Instruments \
 	-I$(INCLUDE_DIR)\Math \
+	-I$(INCLUDE_DIR)\MonteCarlo \
 	-I$(INCLUDE_DIR)\Patterns \
 	-I$(INCLUDE_DIR)\Pricers \
 	-I$(INCLUDE_DIR)\Solvers1D \
@@ -124,7 +126,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i $(SWIG_DIR)\Date.i $(SW
 	del .\QuantLib.py
 
 # QuantLib library
-$(OUTPUT_DIR)\QuantLib.lib:: Core Calendars DayCounters FiniteDifferences Math Pricers Solvers1D TermStructures
+$(OUTPUT_DIR)\QuantLib.lib:: Core Calendars DayCounters FiniteDifferences Math MonteCarlo Pricers Solvers1D TermStructures
 	if exist $(OUTPUT_DIR)\QuantLib.lib del $(OUTPUT_DIR)\QuantLib.lib
 	$(TLIB) $(TLIB_OPTS) $(OUTPUT_DIR)\QuantLib.lib /a $(QUANTLIB_OBJS)
 
@@ -166,6 +168,9 @@ $(OUTPUT_DIR)\normaldistribution.obj: $(SOURCES_DIR)\Math\normaldistribution.cpp
 $(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\Math\statistics.cpp
 $(OUTPUT_DIR)\newcubicspline.obj: $(SOURCES_DIR)\Math\newcubicspline.cpp
 
+# Monte Carlo
+MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
+$(OUTPUT_DIR)\lecuyerrandomgenerator.obj: $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
 
 # Pricers
 Pricers: $(OUTPUT_DIR) $(PRICER_OBJS)
