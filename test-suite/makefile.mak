@@ -99,7 +99,8 @@ test-suite$(_mt)$(_D).exe: $(QL_TESTS)
 
 
 check: test-suite$(_mt)$(_D).exe
-    test-suite$(_mt)$(_D) --log_level=messages --build_info=yes
+    test-suite$(_mt)$(_D) --log_level=messages --build_info=yes \
+                          --report_level=short
     cd ..
 
 

@@ -11,6 +11,71 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
+			Name="Debug SingleThread|Win32"
+			OutputDirectory=".\build\DebugST"
+			IntermediateDirectory=".\build\DebugST"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\.."
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;NOMINMAX"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="5"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="quantlib.hpp"
+				PrecompiledHeaderFile=".\build\DebugST/BermudanSwaption.pch"
+				AssemblerListingLocation=".\build\DebugST/"
+				ObjectFile=".\build\DebugST/"
+				ProgramDataBaseFileName=".\build\DebugST/"
+				BrowseInformation="1"
+				BrowseInformationFile=".\build\DebugST/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile=".\build\DebugST/BermudanSwaption.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\build\DebugST/BermudanSwaption.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\build\DebugST/BermudanSwaption.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
 			Name="Release MTDLL|Win32"
 			OutputDirectory=".\build\ReleaseMTDLL"
 			IntermediateDirectory=".\build\ReleaseMTDLL"
@@ -46,7 +111,7 @@
 				OutputFile=".\build\ReleaseMTDLL/BermudanSwaption.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib\Win32\VisualStudio\"
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\build\ReleaseMTDLL/BermudanSwaption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
@@ -111,13 +176,78 @@
 				OutputFile=".\build\Release/BermudanSwaption.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib\Win32\VisualStudio\"
+				AdditionalLibraryDirectories="..\..\lib"
 				ProgramDatabaseFile=".\build\Release/BermudanSwaption.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
 				TypeLibraryName=".\build\Release/BermudanSwaption.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release SingleThread|Win32"
+			OutputDirectory=".\build\ReleaseST"
+			IntermediateDirectory=".\build\ReleaseST"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories="..\.."
+				PreprocessorDefinitions="NDEBUG;WIN32;_CONSOLE;NOMINMAX"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="quantlib.hpp"
+				PrecompiledHeaderFile=".\build\ReleaseST/BermudanSwaption.pch"
+				AssemblerListingLocation=".\build\ReleaseST/"
+				ObjectFile=".\build\ReleaseST/"
+				ProgramDataBaseFileName=".\build\ReleaseST/"
+				BrowseInformation="1"
+				BrowseInformationFile=".\build\ReleaseST/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile=".\build\ReleaseST/BermudanSwaption.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\lib"
+				ProgramDatabaseFile=".\build\ReleaseST/BermudanSwaption.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\build\ReleaseST/BermudanSwaption.tlb"
 				HeaderFileName=""/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
@@ -175,7 +305,7 @@
 				OutputFile=".\build\DebugMTDLL/BermudanSwaption.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib\Win32\VisualStudio\"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\build\DebugMTDLL/BermudanSwaption.pdb"
 				SubSystem="1"
@@ -240,7 +370,7 @@
 				OutputFile=".\build\Debug/BermudanSwaption.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib\Win32\VisualStudio\"
+				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\build\Debug/BermudanSwaption.pdb"
 				SubSystem="1"
@@ -280,6 +410,16 @@
 			<File
 				RelativePath="BermudanSwaption.cpp">
 				<FileConfiguration
+					Name="Debug SingleThread|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release MTDLL|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
@@ -290,6 +430,15 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BrowseInformation="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release SingleThread|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
