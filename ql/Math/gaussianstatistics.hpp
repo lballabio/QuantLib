@@ -69,6 +69,7 @@ namespace QuantLib {
                                       \int_{-\infty}^{x} \exp (-u^2/2) du \f]
         */
         Real gaussianPercentile(Real percentile) const;
+        Real gaussianTopPercentile(Real percentile) const;
 
         //! gaussian-assumption Potential-Upside at a given percentile
         Real gaussianPotentialUpside(Real percentile) const;
@@ -152,6 +153,13 @@ namespace QuantLib {
         return gInverse(percentile);
     }
 
+    /*! \pre percentile must be in range (0%-100%) extremes excluded */
+    template<class Stat>
+    inline Real GaussianStatistics<Stat>::gaussianTopPercentile(
+                                                     Real percentile) const {
+
+        return gaussianPercentile(1.0-percentile);
+    }
 
     /*! \pre percentile must be in range [90%-100%) */
     template<class Stat>
