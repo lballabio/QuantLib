@@ -28,9 +28,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2001/01/11 12:20:26  lballabio
+	Fixed constructor calls with wrong arguments
+
 	Revision 1.1  2001/01/11 11:43:52  lballabio
 	Renamed StepIterator to SteppingIterator
-
+	
 	Revision 1.1  2001/01/09 11:51:10  lballabio
 	Added a couple of smart iterators
 	
@@ -176,14 +179,14 @@ namespace QuantLib {
 		inline SteppingIterator<RandomAccessIterator> 
 		SteppingIterator<RandomAccessIterator>::operator+(
 		  SteppingIterator<RandomAccessIterator>::difference_type i) {
-			return SteppingIterator<RandomAccessIterator>(dn_,it_+dn_*i);
+			return SteppingIterator<RandomAccessIterator>(it_+dn_*i,dn_);
 		}
 		
 		template<class RandomAccessIterator>
 		inline SteppingIterator<RandomAccessIterator> 
 		SteppingIterator<RandomAccessIterator>::operator-(
 		  SteppingIterator<RandomAccessIterator>::difference_type i) {
-			return SteppingIterator<RandomAccessIterator>(dn_,it_-dn_*i);
+			return SteppingIterator<RandomAccessIterator>(it_-dn_*i,dn_);
 		}
 		
 		template<class RandomAccessIterator>
