@@ -48,7 +48,7 @@ namespace QuantLib {
           private:
             class ActActISMAImpl : public DayCounter::DayCounterImpl {
               public:
-                std::string name() const { return std::string("act/act(b)");}
+                std::string name() const { return std::string("act/act (Bond)");}
                 int dayCount(const Date& d1, const Date& d2) const {
                     return (d2-d1); }
                 Time yearFraction(const Date& d1, const Date& d2,
@@ -56,7 +56,7 @@ namespace QuantLib {
             };
             class ActActISDAImpl : public DayCounter::DayCounterImpl {
               public:
-                std::string name() const { return std::string("act/act(h)");}
+                std::string name() const { return std::string("act/act (ISDA)");}
                 int dayCount(const Date& d1, const Date& d2) const {
                     return (d2-d1); }
                 Time yearFraction(const Date& d1, const Date& d2,
@@ -64,7 +64,7 @@ namespace QuantLib {
             };
             class ActActAFBImpl : public DayCounter::DayCounterImpl {
               public:
-                std::string name() const { return std::string("act/act(e)");}
+                std::string name() const { return std::string("act/act (Euro)");}
                 int dayCount(const Date& d1, const Date& d2) const {
                     return (d2-d1); }
                 Time yearFraction(const Date& d1, const Date& d2,
