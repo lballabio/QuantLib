@@ -82,12 +82,11 @@ namespace QuantLib {
         }
 
         //! %results from vanilla option calculation
-        class VanillaOptionResults : public OptionValue, 
-                                     public OptionGreeks {
+        class VanillaOptionResults : public Value, public Greeks {
           public:
             void reset() {
-                OptionValue::reset();
-                OptionGreeks::reset();
+                Value::reset();
+                Greeks::reset();
             }
         };
 

@@ -63,6 +63,11 @@ namespace QuantLib {
         */
         void setPricingEngine(const Handle<PricingEngine>&);
         //@}
+        /*! When a derived argument structure is defined for an instrument,
+            this method should be overridden to fill it. This is mandatory
+            in case a pricing engine is used.
+        */
+        virtual void setupArguments(Arguments*) const;
       protected:
         //! \name Calculations 
         //@{
@@ -71,11 +76,6 @@ namespace QuantLib {
             state when the expiration condition is met.
         */
         virtual void setupExpired() const;
-        /*! In case a pricing engine is used, this method must
-            setup its arguments so that they reflect the current
-            state of the instrument.
-        */
-        virtual void setupEngine() const {}
         /*! In case a pricing engine is <b>not</b> used, this
             method must be overridden to perform the actual 
             calculations and set any needed results. In case
@@ -95,6 +95,17 @@ namespace QuantLib {
         Handle<PricingEngine> engine_;
       private:
         std::string isinCode_, description_;
+    };
+
+    //! pricing results
+    class Value : public virtual Results {
+      public:
+        Value() { reset(); }
+        void reset() {
+            value = errorEstimate = Null<double>();
+        }
+        double value;
+        double errorEstimate;
     };
 
 
@@ -130,6 +141,10 @@ namespace QuantLib {
         update();
     }
 
+    inline void Instrument::setupArguments(Arguments*) const {
+        throw Error("setupArguments() not implemented");
+    }
+
     inline void Instrument::calculate() const {
         if (isExpired()) {
             setupExpired();
@@ -150,11 +165,10 @@ namespace QuantLib {
     inline void Instrument::performCalculations() const {
         QL_REQUIRE(!engine_.isNull(), "Instrument: null pricing engine");
         engine_->reset();
-        setupEngine();
+        setupArguments(engine_->arguments());
         engine_->arguments()->validate();
         engine_->calculate();
-        const OptionValue* results =
-            dynamic_cast<const OptionValue*>(engine_->results());
+        const Value* results = dynamic_cast<const Value*>(engine_->results());
         QL_ENSURE(results != 0,
                   "Instrument: no results returned from pricing engine");
         NPV_ = results->value;

@@ -52,9 +52,9 @@ namespace QuantLib {
             double qrho() const;
             double qlambda() const;
             //@}
+            void setupArguments(Arguments*) const;
           protected:
             void setupExpired() const;
-            void setupEngine() const;
             void performCalculations() const;
             // arguments
             RelinkableHandle<TermStructure> foreignRiskFreeTS_;

@@ -32,13 +32,9 @@ typedef GaussianStatistics<IncrementalStatistics>
 
 void RiskStatisticsTest::runTest() {
 
-    IncrementalGaussianStatistics   igs;
+    IncrementalGaussianStatistics igs;
     RiskStatistics s;
 
-    unsigned long dimension = 5;
-    SequenceStatistics<IncrementalGaussianStatistics> igss(dimension);
-    SequenceStatistics<RiskStatistics> ss(dimension);
-            
     double averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };
     double sigmas[] = { 0.1, 1.0, 100.0 };
     Size i, j, k, N;
@@ -49,20 +45,10 @@ void RiskStatisticsTest::runTest() {
     for (i=0; i<LENGTH(averages); i++) {
         for (j=0; j<LENGTH(sigmas); j++) {
 
-            NormalDistribution               normal(averages[i],sigmas[j]);
+            NormalDistribution normal(averages[i],sigmas[j]);
             CumulativeNormalDistribution cumulative(averages[i],sigmas[j]);
-
-/*
-            Size numberOfSigma = 15;
-            dataMin = averages[i] - numberOfSigma*sigmas[j];
-            dataMax = averages[i] + numberOfSigma*sigmas[j];
-            double h = (dataMax-dataMin)/(N-1);
-            for (k=0; k<N; k++)
-                data[k] = dataMin + h*k;
-            std::transform(data.begin(),data.end(),weights.begin(),normal);
-*/
-
             InverseCumulativeNormal inverseCum(averages[i],sigmas[j]);
+
             SobolRsg rng(1);
             dataMin = QL_MAX_DOUBLE;
             dataMax = QL_MIN_DOUBLE;
@@ -71,7 +57,6 @@ void RiskStatisticsTest::runTest() {
                 dataMin = QL_MIN(dataMin, data[k]);
                 dataMax = QL_MAX(dataMax, data[k]);
                 weights[k]=1.0;
-//                weights[k]=normal(data[k]);
             }
 
             igs.addSequence(data.begin(),data.end(),weights.begin());

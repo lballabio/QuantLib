@@ -85,22 +85,21 @@ namespace QuantLib {
             qvega_ = qrho_ = qlambda_ = 0.0;
         }
 
-        void QuantoVanillaOption::setupEngine() const {
-            VanillaOption::setupEngine();
+        void QuantoVanillaOption::setupArguments(Arguments* args) const {
+            VanillaOption::setupArguments(args);
             QuantoOptionArguments<VanillaOptionArguments>* arguments =
                 dynamic_cast
-                <QuantoOptionArguments<VanillaOptionArguments>*>(
-                    engine_->arguments());
+                <QuantoOptionArguments<VanillaOptionArguments>*>(args);
             QL_REQUIRE(arguments != 0,
-               "QuantoVanillaOption::setupEngine() : "
-               "pricing engine does not supply needed arguments");
+               "QuantoVanillaOption::setupArguments() : "
+               "wrong argument type");
 
             arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
 
             arguments->exchRateVolTS = exchRateVolTS_;
 
             QL_REQUIRE(!correlation_.isNull(),
-                "QuantoVanillaOption::setupEngine() : "
+                "QuantoVanillaOption::setupArguments() : "
                 "null correlation given");
             arguments->correlation =
                 correlation_->value();

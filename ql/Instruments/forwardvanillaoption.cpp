@@ -44,14 +44,14 @@ namespace QuantLib {
           exercise, volTS, engine, isinCode, description),
           moneyness_(moneyness), resetDate_(resetDate) {}
 
-        void ForwardVanillaOption::setupEngine() const {
-            VanillaOption::setupEngine();
+        void ForwardVanillaOption::setupArguments(Arguments* args) const {
+            VanillaOption::setupArguments(args);
             ForwardOptionArguments<VanillaOptionArguments>* arguments =
                 dynamic_cast
-                <ForwardOptionArguments<VanillaOptionArguments> *>(
-                    engine_->arguments());
+                <ForwardOptionArguments<VanillaOptionArguments> *>(args);
             QL_REQUIRE(arguments != 0,
-                       "pricing engine does not supply needed arguments");
+                       "ForwardVanillaOption::setupArguments :"
+                       "wrong argument type");
 
             arguments->moneyness = moneyness_;
             arguments->resetDate = resetDate_;

@@ -45,12 +45,13 @@ namespace QuantLib {
             return exercise_.dates().back() < termStructure_->referenceDate();
         }
 
-        void Swaption::setupEngine() const {
+        void Swaption::setupArguments(Arguments* args) const {
             SwaptionArguments* arguments =
-                dynamic_cast<SwaptionArguments*>(engine_->arguments());
+                dynamic_cast<SwaptionArguments*>(args);
                 
-            QL_REQUIRE(arguments != 0, "Swaption: "
-                       "pricing engine does not supply needed arguments");
+            QL_REQUIRE(arguments != 0, 
+                       "Swaption::setupArguments : "
+                       "wrong argument type");
 
             Date settlement = termStructure_->referenceDate();
             DayCounter counter = termStructure_->dayCounter();

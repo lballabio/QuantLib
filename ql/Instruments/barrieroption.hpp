@@ -64,9 +64,9 @@ namespace QuantLib {
             double strikeSensitivity() const;
             //@}
             bool isExpired() const;
+            void setupArguments(Arguments*) const;
           protected:
             void setupExpired() const;
-            void setupEngine() const;
             void performCalculations() const;
             // results
             mutable double delta_, gamma_, theta_, 

@@ -38,6 +38,21 @@ namespace QuantLib {
         }
     };
 
+    //! additional %option results
+    class Greeks : public virtual Results {
+      public:
+        Greeks() { reset(); }
+        void reset() {
+            delta =  gamma = theta = vega =
+                rho = dividendRho = strikeSensitivity = Null<double>();
+        }
+        double delta, gamma;
+        double theta;
+        double vega;
+        double rho, dividendRho;
+        double strikeSensitivity;
+    };
+
 }
 
 

@@ -64,12 +64,12 @@ namespace QuantLib {
             return lastFixing < termStructure_->referenceDate();
         }
 
-        void VanillaCapFloor::setupEngine() const {
+        void VanillaCapFloor::setupArguments(Arguments* args) const {
             CapFloorArguments* arguments =
-                dynamic_cast<CapFloorArguments*>(
-                    engine_->arguments());
+                dynamic_cast<CapFloorArguments*>(args);
             QL_REQUIRE(arguments != 0,
-                       "pricing engine does not supply needed arguments");
+                       "VanillaCapFloor::setupArguments :"
+                       "wrong argument type");
 
             arguments->type = type_;
             arguments->capRates.clear();

@@ -57,25 +57,22 @@ namespace QuantLib {
                 "null engine or wrong engine type");
         }
 
-        void QuantoForwardVanillaOption::setupEngine() const {
-            // cannot use this - arguments do not match
-            // QuantoVanillaOption::setupEngine();
-
-            VanillaOption::setupEngine();
+        void QuantoForwardVanillaOption::setupArguments(Arguments* args) 
+                                                                    const {
+            VanillaOption::setupArguments(args);
             QuantoOptionArguments<ForwardOptionArguments<
                 VanillaOptionArguments> >* arguments =
                 dynamic_cast
                 <QuantoOptionArguments<ForwardOptionArguments<
-                VanillaOptionArguments> >*>(
-                    engine_->arguments());
+                VanillaOptionArguments> >*>(args);
             QL_REQUIRE(arguments != 0,
-               "QuantoForwardVanillaOption::setupEngine() : "
+               "QuantoForwardVanillaOption::setupArguments() : "
                "pricing engine does not supply needed arguments");
 
             arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
             arguments->exchRateVolTS = exchRateVolTS_;
             QL_REQUIRE(!correlation_.isNull(),
-                "QuantoVanillaOption::setupEngine() : "
+                "QuantoVanillaOption::setupArguments() : "
                 "null correlation given");
             arguments->correlation =
                 correlation_->value();

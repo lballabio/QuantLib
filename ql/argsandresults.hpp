@@ -40,37 +40,6 @@ namespace QuantLib {
         virtual void reset() = 0;
     };
 
-
-    //! %option pricing results
-    /*! It must be noted that there's no result data specifying
-        whether the option is expired. The expiry condition should be
-        checked before calling the engine.
-    */
-    class OptionValue : public virtual Results {
-      public:
-        OptionValue() { reset(); }
-        void reset() {
-            value = errorEstimate = Null<double>();
-        }
-        double value;
-        double errorEstimate;
-    };
-
-    //! %option pricing results
-    class OptionGreeks : public virtual Results {
-      public:
-        OptionGreeks() { reset(); }
-        void reset() {
-            delta =  gamma = theta = vega =
-                rho = dividendRho = strikeSensitivity = Null<double>();
-        }
-        double delta, gamma;
-        double theta;
-        double vega;
-        double rho, dividendRho;
-        double strikeSensitivity;
-    };
-
 }
 
 

@@ -44,8 +44,8 @@ namespace QuantLib {
                 Date resetDate,
                 const std::string& isinCode = "",
                 const std::string& description = "");
+            void setupArguments(Arguments*) const;
           protected:
-            void setupEngine() const;
             void performCalculations() const;
           private:
             // arguments

@@ -126,19 +126,18 @@ namespace QuantLib {
                    vega_ = rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
         }
 
-        void VanillaOption::setupEngine() const {
+        void VanillaOption::setupArguments(Arguments* args) const {
             VanillaOptionArguments* arguments =
-                dynamic_cast<VanillaOptionArguments*>(
-                    engine_->arguments());
+                dynamic_cast<VanillaOptionArguments*>(args);
             QL_REQUIRE(arguments != 0,
-                       "VanillaOption::setupEngine : "
-                       "pricing engine does not supply needed arguments");
+                       "VanillaOption::setupArguments : "
+                       "wrong argument type");
 
             arguments->payoff = Handle<Payoff>(
                 new PlainVanillaPayoff(type_,strike_));
 
             QL_REQUIRE(!underlying_.isNull(),
-                       "VanillaOption::setupEngine : "
+                       "VanillaOption::setupArguments : "
                        "null underlying price given");
             arguments->underlying = underlying_->value();
 
@@ -162,8 +161,8 @@ namespace QuantLib {
 
         void VanillaOption::performCalculations() const {
             Option::performCalculations();
-            const OptionGreeks* results =
-                dynamic_cast<const OptionGreeks*>(engine_->results());
+            const Greeks* results =
+                dynamic_cast<const Greeks*>(engine_->results());
             QL_ENSURE(results != 0,
                       "VanillaOption::performCalculations : "
                       "no greeks returned from pricing engine");
@@ -202,8 +201,7 @@ namespace QuantLib {
                     new BlackConstantVol(
                         arguments_->volTS->referenceDate(), 
                         RelinkableHandle<MarketElement>(vol_))));
-            results_ = dynamic_cast<const OptionValue*>(
-                engine_->results());
+            results_ = dynamic_cast<const Value*>(engine_->results());
             QL_REQUIRE(results_ != 0,
                 "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
                 "pricing engine does not supply needed results");

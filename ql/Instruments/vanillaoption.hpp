@@ -71,9 +71,9 @@ namespace QuantLib {
                                      Size maxEvaluations = 100,
                                      double minVol = 1.0e-4,
                                      double maxVol = 4.0) const;
+            void setupArguments(Arguments*) const;
           protected:
             void setupExpired() const;
-            void setupEngine() const;
             void performCalculations() const;
             // results
             mutable double delta_, gamma_, theta_, 
@@ -96,12 +96,11 @@ namespace QuantLib {
                 Handle<PricingEngine> engine_;
                 double targetValue_;
                 Handle<SimpleMarketElement> vol_;
-                const OptionValue* results_;
+                const Value* results_;
             };
         };
 
     }
-
 
 }
 

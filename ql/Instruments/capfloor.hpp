@@ -58,8 +58,7 @@ namespace QuantLib {
                 return floorRates_;
             }
             //@}
-          protected:
-            void setupEngine() const;
+            void setupArguments(Arguments*) const;
           private:
             Type type_;
             std::vector<Handle<CashFlow> > floatingLeg_;
@@ -127,7 +126,7 @@ namespace QuantLib {
         };
 
         //! %results from cap/floor calculation
-        class CapFloorResults : public OptionValue {};
+        class CapFloorResults : public Value {};
 
     }
 

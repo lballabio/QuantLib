@@ -113,13 +113,12 @@ namespace QuantLib {
                    vega_ = rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
         }
 
-        void BarrierOption::setupEngine() const {
+        void BarrierOption::setupArguments(Arguments* args) const {
             BarrierOptionArguments* arguments =
-                dynamic_cast<BarrierOptionArguments*>(
-                    engine_->arguments());
+                dynamic_cast<BarrierOptionArguments*>(args);
             QL_REQUIRE(arguments != 0,
-                       "BarrierOption::setupEngine : "
-                       "pricing engine does not supply needed arguments");
+                       "BarrierOption::setupArguments : "
+                       "wrong argument type");
 
             arguments->payoff = Handle<Payoff>(
                 new PlainVanillaPayoff(type_,strike_));
@@ -129,7 +128,7 @@ namespace QuantLib {
             arguments->rebate = rebate_;
 
             QL_REQUIRE(!underlying_.isNull(),
-                       "BarrierOption::setupEngine : "
+                       "BarrierOption::setupArguments : "
                        "null underlying price given");
             arguments->underlying = underlying_->value();
 
@@ -153,8 +152,8 @@ namespace QuantLib {
 
         void BarrierOption::performCalculations() const {
             Option::performCalculations();
-            const OptionGreeks* results =
-                dynamic_cast<const OptionGreeks*>(engine_->results());
+            const Greeks* results =
+                dynamic_cast<const Greeks*>(engine_->results());
             QL_ENSURE(results != 0,
                       "BarrierOption::performCalculations : "
                       "no greeks returned from pricing engine");

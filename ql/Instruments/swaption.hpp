@@ -40,9 +40,9 @@ namespace QuantLib {
                      const RelinkableHandle<TermStructure>& termStructure,
                      const Handle<PricingEngine>& engine);
             bool isExpired() const;
+            void setupArguments(Arguments*) const;
           protected:
             void performCalculations() const;
-            void setupEngine() const;
           private:
             // arguments
             Handle<SimpleSwap> swap_;
@@ -83,7 +83,7 @@ namespace QuantLib {
         };
 
         //! %results from swaption calculation
-        class SwaptionResults : public OptionValue {};
+        class SwaptionResults : public Value {};
 
     }
 
