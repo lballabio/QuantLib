@@ -105,7 +105,7 @@ namespace QuantLib {
                 vrnc[i] = variance*dt;
             }
             generator_ = Handle<RandomArrayGenerator<RNG> >(
-                new RandomArrayGenerator<RNG>(0.0,vrnc,seed));
+                new RandomArrayGenerator<RNG>(vrnc,seed));
         }
 
         template <class RNG>

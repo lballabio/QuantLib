@@ -50,17 +50,21 @@ namespace QuantLib {
         using MonteCarlo::GeometricAsianPathPricer;
 
         AverageStrikeAsian::AverageStrikeAsian(Option::Type type,
-          double underlying, Rate dividendYield,
-          Rate riskFreeRate, double residualTime, double volatility,
-          int timesteps, unsigned int samples, bool antitheticVariance, long seed)
+          double underlying, Rate dividendYield, Rate riskFreeRate,
+          const std::vector<Time>& times, double volatility,
+          unsigned int samples, bool antitheticVariance, long seed)
         : McPricer(samples, seed) {
+            QL_REQUIRE(times.size() >= 1,
+                "AverageStrikeAsian: you must have at least one time-step");
             //! Initialize the path generator
             double mu = riskFreeRate - dividendYield
                                      - 0.5 * volatility * volatility;
 
             Handle<GaussianPathGenerator> pathGenerator(
                 new GaussianPathGenerator(mu, volatility*volatility, 
-                    residualTime, timesteps, seed));
+                    times, seed));
+
+            double residualTime = times[times.size()-1];
 
             //! Initialize the pricer on the single Path
             Handle<PathPricer> spPricer(

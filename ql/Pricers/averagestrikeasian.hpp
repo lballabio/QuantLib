@@ -48,9 +48,8 @@ namespace QuantLib {
                                double underlying,
                                Rate dividendYield,
                                Rate riskFreeRate,
-                               double residualTime,
+                               const std::vector<Time>& times,
                                double volatility,
-                               int timesteps,
                                unsigned int samples,
                                bool antitheticVariance,
                                long seed = 0);
