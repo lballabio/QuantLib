@@ -1,7 +1,6 @@
 """
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  * 
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -18,8 +17,17 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at:
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
+"""
+
+""" 
+    $Source$
+    $Log$
+    Revision 1.2  2001/01/08 15:33:23  nando
+    improved
+
 """
 
 # Make sure that Python path contains the directory of QuantLib and that of this file
@@ -30,13 +38,13 @@ ngrd = nstp+1
 
 def relErr(x1, x2, reference):
     if reference != 0.0:
-    	return abs(x1-x2)/reference
+        return abs(x1-x2)/reference
     else:
-    	return 10e10
+        return 10e10
 
 div=[3.92,4.21]
 dates=[0.333,0.667]
-    	
+        
 rangeUnder = [100]
 rangeQrate = [0.0, 0.05,0.15]
 rangeResTime = [1.0,2.0]
@@ -110,7 +118,7 @@ for typ in ['Call','Put','Straddle']:
                   print '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e' % (option.vega(), vegaNum, relErr(option.vega(), vegaNum, under))
   print "%9s %6d %7.2e %7.2e %7.2e %7.2e %7.2e" % (typ, len(resuDelta), 
         max(resuDelta), max(resuGamma), max(resuTheta), max(resuRho), max(resuVega))
-	       
+           
   maxNumDerErrorList.append(max(resuDelta))
   maxNumDerErrorList.append(max(resuGamma))
   maxNumDerErrorList.append(max(resuTheta))

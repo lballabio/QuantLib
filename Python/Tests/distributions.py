@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/01/08 15:33:09  nando
+    improved
+
     Revision 1.1  2001/01/08 15:12:45  nando
     added test for date and distributions
 
@@ -32,22 +35,46 @@
 
 from QuantLib import *
 
-tol = 1e-3
-steps = 10000
+tolerance = 1e-3
+steps = 100000
 cum = CumulativeNormalDistribution()
 invCum = InverseCumulativeNormalDistribution()
 
 try:
     dx = 1.0/steps
+    pOld =  invCum(dx)
+    tOld = cum(pOld)
+    abscissaOld = dx
+    
     for x in range(1, steps):
-        t = cum(invCum(x*dx))
-        if abs(t-x*dx)>tol:
-            print 'iter n.', x, 'increment', dx,
-            print 'abscissa', x*dx, t, abs(t-x*dx)
+        abscissa = x*dx
+
+        p = invCum(abscissa)
+        if (p<pOld):
+            print 'invCum not monotone'
+            print 'invCum(', abscissa, ') = ', p
+            print 'invCum(', abscissaOld, ') = ', pOld
             raise
+
+        t = cum(p)
+        if (t<tOld):
+            print 'cum not monotone'
+            print 'cum(', p, ') = ', t
+            print 'cum(', pOld, ') = ', tOld
+            raise
+
+        if abs(t-abscissa)>tolerance:
+            print 'invCum(', abscissa, ') = ', p,
+            print 'cum(', p, ') = ', t,
+            print 'error:', abs(t-abscissa), 'out of tolerance'
+            raise
+
+            pOld = p
+            tOld = t
+            abscissaOld = abscissa
     
 except Exception, e:
-    print 'cum(invCum(', x, ')) =', t, ': out of tolerance'
+    print 'iter n.', x, 'increment', dx,
     raise e
 
 print 'test passed'

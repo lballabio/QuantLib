@@ -1,7 +1,6 @@
 """
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  * 
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -18,11 +17,22 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at:
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 """
 
-# Make sure that Python path contains the directory of QuantLib and that of this file
+""" 
+    $Source$
+    $Log$
+    Revision 1.2  2001/01/08 15:33:23  nando
+    improved
+
+"""
+
+# Make sure that Python path contains the directory of QuantLib and
+# that of this file
+
 from QuantLib  import BSMEuropeanOption
 import copy
 import math
@@ -31,10 +41,10 @@ pricer = BSMEuropeanOption
 
 def relErr(x1, x2, reference):
     if reference != 0.0:
-	return abs(x1-x2)/reference
+    return abs(x1-x2)/reference
     else:
-    	return 10e10
-    	
+        return 10e10
+        
 rangeUnder = [100]
 rangeQrate = [0.05]
 rangeResTime = [1.0]
@@ -76,8 +86,8 @@ for under in rangeUnder:
         
 typ = 'C+P-S'
 print "%9s   %d  %7.2e %7.2e %7.2e %7.2e %7.2e %7.2e" % (
-        typ, len(resuCPSvalue),	max(resuCPSvalue),max(resuCPSdelta),max(resuCPSgamma),
-	max(resuCPStheta),max(resuCPSrho),max(resuCPSvega))
+        typ, len(resuCPSvalue),    max(resuCPSvalue),max(resuCPSdelta),max(resuCPSgamma),
+    max(resuCPStheta),max(resuCPSrho),max(resuCPSvega))
 
 maxCPSerrorList.append(max(resuCPSvalue))
 maxCPSerrorList.append(max(resuCPSdelta))
@@ -117,7 +127,7 @@ for typ in ['Call','Put','Straddle']:
                 thetaNum =-(optionPt.value()-optionMt.value())/(2*dT)
                 rhoNum   = (optionPr.value()-optionMr.value())/(2*dR)
                 vegaNum  = (optionPv.value()-optionMv.value())/(2*dVol)
-		            
+                    
                 resuDelta.append(relErr(option.delta(), deltaNum, under))
                 resuGamma.append(relErr(option.gamma(), gammaNum, under))
                 resuTheta.append(relErr(option.theta(), thetaNum, under))
@@ -139,14 +149,14 @@ for typ in ['Call','Put','Straddle']:
                   print '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e' % (option.vega(), vegaNum, relErr(option.vega(), vegaNum, under))
   print "%9s   %d            %7.2e %7.2e %7.2e %7.2e %7.2e" % (typ, len(resuDelta), 
         max(resuDelta), max(resuGamma), max(resuTheta), max(resuRho), max(resuVega))
-	       
+           
   maxNumDerErrorList.append(max(resuDelta))
   maxNumDerErrorList.append(max(resuGamma))
   maxNumDerErrorList.append(max(resuTheta))
   maxNumDerErrorList.append(max(resuRho))
   maxNumDerErrorList.append(max(resuVega))
 
-print 	
+print     
 maxCPparityError = max(resuCPparity)
 print "C-P parity err = %g" % (maxCPparityError)       
 print "Final maximum C+P-S = %g" % max(maxCPSerrorList)

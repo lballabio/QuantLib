@@ -1,8 +1,6 @@
-
 """
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  * 
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -19,8 +17,17 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at:
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
+"""
+
+""" 
+    $Source$
+    $Log$
+    Revision 1.8  2001/01/08 15:33:23  nando
+    improved
+
 """
 
 from QuantLib import Statistics
