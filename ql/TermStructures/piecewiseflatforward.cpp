@@ -155,7 +155,8 @@ namespace QuantLib {
 
         Rate PiecewiseFlatForward::zeroYieldImpl(Time t,
             bool extrapolate) const {
-                if (needsBootstrap_) bootstrap();
+                if (needsBootstrap_) 
+                    bootstrap();
                 if (t == 0.0) {
                     return zeroYields_[0];
                 } else {
@@ -172,7 +173,8 @@ namespace QuantLib {
 
         DiscountFactor PiecewiseFlatForward::discountImpl(
             Time t, bool extrapolate) const {
-                if (needsBootstrap_) bootstrap();
+                if (needsBootstrap_) 
+                    bootstrap();
                 if (t == 0.0) {
                     return discounts_[0];
                 } else {
@@ -189,7 +191,8 @@ namespace QuantLib {
 
         Rate PiecewiseFlatForward::forwardImpl(Time t,
             bool extrapolate) const {
-                if (needsBootstrap_) bootstrap();
+                if (needsBootstrap_) 
+                    bootstrap();
                 if (t == 0.0) {
                     return forwards_[0];
                 } else {
