@@ -5,6 +5,14 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+/*! \file currency.h
+	\brief Abstract currency class
+*/
+
+/*! \namespace QuantLib::Currencies
+	\brief Concrete implementations of the Currency interface
+*/
+
 #ifndef quantlib_currency_h
 #define quantlib_currency_h
 
@@ -16,13 +24,29 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 namespace QuantLib {
 
+	//! Abstract currency class
+	/*! This class is purely abstract and defines the interface of concrete
+		currency classes which will be derived from this one.
+		
+		It provides methods for determining a number of market conventions
+		which vary depending on the used currency.
+	*/
 	class Currency {
 	  public:
-		virtual std::string name() const = 0;	// used for output and comparisons - not for switch-on-type coding!
-		// settlement conventions
+		//! Returns the name of the currency.
+		/*!	\warning This method is used for output and comparison between currencies.
+			It is <b>not</b> meant to be used for writing switch-on-type code.
+		*/
+		virtual std::string name() const = 0;
+		//! \name Settlement conventions
+		//@{
+		//! Returns the calendar upon which the settlement days are calculated.
 		virtual Handle<Calendar> settlementCalendar() const = 0;
+		//! Returns the number of settlement days.
 		virtual int settlementDays() const = 0;
+		//! Returns the settlement date relative to a given actual date.
 		Date settlementDate(const Date&) const;
+		//@}
 		// conventions for deposits or any other rates can be added
 	};
 	
@@ -40,11 +64,19 @@ namespace QuantLib {
 		return settlementCalendar()->advance(d,settlementDays());
 	}
 	
+	/*! \defgroup currencycomparisons Comparisons between currencies */
+	
+	/*! \ingroup currencycomparisons
+		\relates Currency
+	*/
 	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator==(const Handle<Currency>& c1, const Handle<Currency>& c2) {
 		return (c1->name() == c2->name());
 	}
 	
+	/*! \ingroup currencycomparisons
+		\relates Currency
+	*/
 	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator!=(const Handle<Currency>& c1, const Handle<Currency>& c2) {
 		return (c1->name() != c2->name());

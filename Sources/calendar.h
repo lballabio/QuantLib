@@ -6,7 +6,11 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 */
 
 /*! \file calendar.h
-	\brief Calendar abstract class
+	\brief Abstract calendar class
+*/
+
+/*! \namespace QuantLib::Calendars
+	\brief Concrete implementations of the Calendar interface
 */
 
 #ifndef quantlib_calendar_h
@@ -30,7 +34,7 @@ namespace QuantLib {
 									in which case go to next business day */
 	};
 	
-	//! Calendar abstract class
+	//! Abstract calendar class
 	/*! This class is purely abstract and defines the interface of concrete
 		calendar classes which will be derived from this one.
 		
@@ -62,12 +66,9 @@ namespace QuantLib {
 	QL_DECLARE_TEMPLATE_SPECIALIZATION(
 	bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&))
 	
-	/*! \namespace QuantLib::Calendars
-		\brief Concrete implementations of the Calendar interface
-	*/
 	namespace Calendars {
 	
-		//! Calendar with no holidays, not even saturdays and sundays.
+		//! A calendar with no holidays, not even saturdays and sundays.
 		class NullCalendar : public Calendar {
 		  public:
 			NullCalendar() {}
