@@ -131,8 +131,9 @@ namespace {
 
 
 void StatisticsTest::testStatistics() {
-    check<IncrementalGaussianStatistics>("IncrementalGaussianStatistics");
-    check<Statistics>("Statistics");
+    check<IncrementalGaussianStatistics>(
+        std::string("IncrementalGaussianStatistics"));
+    check<Statistics>(std::string("Statistics"));
 }
 
 
@@ -268,8 +269,8 @@ namespace {
 
 void StatisticsTest::testSequenceStatistics() {
     checkSequence<IncrementalGaussianStatistics>(
-                                           "IncrementalGaussianStatistics",5);
-    checkSequence<Statistics>("Statistics",5);
+        std::string("IncrementalGaussianStatistics"),5);
+    checkSequence<Statistics>(std::string("Statistics"),5);
 }
 
 CppUnit::Test* StatisticsTest::suite() {
