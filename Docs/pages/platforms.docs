@@ -9,7 +9,7 @@
 
     <table>
     <tr>
-    <td>CONFIGURATION</td><td>COMPILER</td><td>MAINTAINER</td>
+    <td>CONFIGURATION</td><td>COMPILER</td><td>COORDINATOR</td>
     </tr><tr>
     <td>i686-pc-linux-debian2.2</td><td>gcc 2.95 and 3.0.1</td><td>Enrico Sirola</td>
     </tr><tr>
@@ -19,6 +19,7 @@
     </tr>
     </table>
 
+    Dirk Eddelbuettel is the maintainer of the QuantLib Debian packages.
     %QuantLib was reported to compile also under:
 
     <table>
@@ -36,6 +37,7 @@
     <tr><td>s390</td><td></td></tr>
     </table>
 
+    For all these platforms Debian packages are available.
     If you compiled (or failed to compile) %QuantLib on different configurations
     and/or compilers please report your feedback to:
     quantlib-users@lists.sourceforge.net

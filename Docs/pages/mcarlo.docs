@@ -47,15 +47,16 @@
     the number of samples \f$ N \f$.
     A number of so-called <em>variance-reduction</em> methods have been
     found which allows one to reduce the coefficient of proportionality
-    between \f$ e \f$ and \f$ 1/\sqrt{N} \f$. 
+    between \f$ e \f$ and \f$ 1/\sqrt{N} \f$.
 
     Separate implementations are provided in the library for the three
     components of the above average, namely, the random drawing of the
     \f$ \mathbf{x}_i \f$, the evaluation of the \f$ f(\mathbf{x}_i) \f$,
     and the averaging process itself.
-    The QuantLib::MonteCarlo::MonteCarloModel class acts as a glue for 
-    such three steps---which are outlined in the following subsections---and 
-    provides the interface of the resulting Monte Carlo model to the end user.
+    The QuantLib::MonteCarlo::MonteCarloModel class acts as a glue for
+    such three steps---which are outlined in the following subsections---and
+    provides the interface of the resulting Monte Carlo model to the 
+    end user.
 
 
     \subsection pathgen Path generation
@@ -66,37 +67,16 @@
     \f]
     where \f$ r \f$ is the risk-free rate, \f$ \sigma \f$ is the volatility
     of the underlying, and \f$ \nu = r - \sigma^2/2 \f$, has the form of a
-    diffusion process. According to this heuristic interpretation, paths
+    diffusion process. 
+    \anchor backmcnote1 
+    According to this heuristic interpretation \ref mcnote1 "(1)", paths 
     followed by the logarithm of the underlying would be Brownian random 
     walks with a constant drift \f$ \nu \f$ per unit time and a standard 
     deviation \f$ \sigma \sqrt{T} \f$ over a time \f$ T \f$.
 
-    A more rigorous approach would lead us to integrate the above equation
-    by means of Green functions or Laplace transforms. Both such methods
-    would show that the price at time \f$ t = 0 \f$ of an option with payoff
-    \f$ G(S(T)) \f$ where \f$ S(T) \f$ is the underlying price at expiry is
-    given by the integral
-    \f[ \int_{-\infty}^{\infty} e^{-rT} G(S_0 e^\xi)
-        \frac{1}{\sqrt{2 \pi \sigma^2 T}}
-        \exp \left( -\frac{(\xi - \nu T)^2}{2 \sigma^2 T} \right)
-        \mathrm{d} \xi
-    \f]
-    where \f$ S_0 \f$ is the price of the underlying at \f$ t = 0 \f$.
-    It can be seen that the above integral is of the form shown at the
-    beginning of this section, namely, the pricing function is
-    \f[ f(x) = e^{-rT} G(S_0 e^x) \f]
-    and can be interpreted as the option payoff discounted to the
-    present time, while the probability distribution is
-    \f[ p(x) = \frac{1}{\sqrt{2 \pi \sigma^2 T}}
-        \exp \left( -\frac{(x - \nu T)^2}{2 \sigma^2 T} \right).
-    \f]
-    which again shows that the logarithms of the underlying prices at 
-    time \f$ T \f$ are distributed as a Gaussian with average \f$ \nu T \f$ 
-    and standard deviation \f$ \sigma \sqrt{T} \f$.
-
     Therefore, the paths to be generated for a Monte Carlo model of the
     Black-Scholes equation will be vectors of successive variations of
-    the logarithm of the underlying price over \f$ N \f$ consecutive time 
+    the logarithm of the underlying price over \f$ N \f$ consecutive time
     intervals \f$ \Delta t_i, i = 0 \dots N-1 \f$.
     Each such variation will be drawn from a Gaussian distribution with
     average \f$ \nu \Delta T_i \f$ and standard deviation
@@ -104,21 +84,21 @@
     and \f$ \sigma_i \sqrt{\Delta T_i} \f$ should \f$ \nu \f$ and
     \f$ \sigma \f$ vary in time.
 
-    The QuantLib::MonteCarlo::Path class stores the variation vector 
-    decomposed in its drift (determined) and diffusion (random) components. 
-    As shown below, this allows the implementation of antithetic variance 
-    reduction techniques. 
+    The QuantLib::MonteCarlo::Path class stores the variation vector
+    decomposed in its drift (determined) and diffusion (random) components.
+    As shown below, this allows the implementation of antithetic variance
+    reduction techniques.
 
     The QuantLib::MonteCarlo::MultiPath class is a straightforward extension
     which acts as a vector of Path objects.
 
     Classes are provided which generate paths and multi-paths with the
-    desired drift and diffusion components, namely, 
-    QuantLib::MonteCarlo::PathGenerator and 
+    desired drift and diffusion components, namely,
+    QuantLib::MonteCarlo::PathGenerator and
     QuantLib::MonteCarlo::MultiPathGenerator.
 
     For the time being, the path generator is initialized with a constant
-    drift and variance. This requirement will most likely be relaxed in 
+    drift and variance. This requirement will most likely be relaxed in
     the next release. The multi-path generator is initialized with an array
     of constant drifts---one for each single path---and a covariance matrix
     which encapsulates the relations between the diffusion components of
@@ -132,18 +112,18 @@
     \subsection pathprc Pricing an instrument on a path
     The QuantLib::MonteCarlo::PathPricer class is the base class from
     which path pricers must inherit. The only method which subclasses
-    are required to implement is 
+    are required to implement is
     \code
     double operator()(const P&) const;
     \endcode
     where <tt>P</tt> can be Path or MultiPath depending on the derivative
-    whose value must be calculated. 
+    whose value must be calculated.
 
-    Similarly, the term <em>path</em> will be used in the following 
-    discussion as meaning either path or multi-path depending on the 
-    context. 
-    The term <em>single path</em> is not to be taken as opposite to 
-    multi-path, but rather as meaning ``a single instance of a (multi)path" 
+    Similarly, the term <em>path</em> will be used in the following
+    discussion as meaning either path or multi-path depending on the
+    context.
+    The term <em>single path</em> is not to be taken as opposite to
+    multi-path, but rather as meaning ``a single instance of a (multi)path"
     as opposed to the set of all generated (multi)paths.
 
     The above method encapsulates the pricing of the derivative on a single
@@ -153,24 +133,24 @@
     implemented at this level since they would cause the returned value
     to differ from the actual price of the derivative on the path.
 
-    Instead, antithetic variance-reduction techniques can be effectively 
-    implemented at this level and indeed are used in the pricers currently 
+    Instead, antithetic variance-reduction techniques can be effectively
+    implemented at this level and indeed are used in the pricers currently
     included in the library.
 
-    In short, such techniques consist in pricing an option on both the 
-    given path and its antithetic, the latter being a path with the same 
-    drift and the opposite diffusion component. The value of the sample 
-    is defined as the average of the prices on the two paths. 
+    In short, such techniques consist in pricing an option on both the
+    given path and its antithetic, the latter being a path with the same
+    drift and the opposite diffusion component. The value of the sample
+    is defined as the average of the prices on the two paths.
 
     A generic implementation of antithetic techniques could consist of a
     path pricer class which takes a concrete path pricer upon construction
     and whose operator() simply proxies two calls to the contained pricer,
     passing the given path and its antithetic, and averages the result.
-    However, this would not take full advantage of the technique. 
+    However, this would not take full advantage of the technique.
 
-    In fact, it must be noted that using antithetic paths not only reduces 
-    the variance <em>per se</em> but also allows to factor out 
-    calculations commons to a path and its antithetic, thus reducing greatly 
+    In fact, it must be noted that using antithetic paths not only reduces
+    the variance <em>per se</em> but also allows to factor out
+    calculations commons to a path and its antithetic, thus reducing greatly
     the computation time. Therefore, such techniques are best implemented
     inside the path pricer itself, whose algorithm can fully exploit such
     factorization.
@@ -185,10 +165,10 @@
     of a number of paths, the pricing of the derivative on each path, and
     the averaging of the results to yield the actual derivative price.
 
-    As outlined above, the first two steps are delegated to a path generator 
-    and a path pricer. The third step is also delegated to an object which 
-    accumulates weighted values and returns the statistic properties of the 
-    set of such values. One such class provided by the library is 
+    As outlined above, the first two steps are delegated to a path generator
+    and a path pricer. The third step is also delegated to an object which
+    accumulates weighted values and returns the statistic properties of the
+    set of such values. One such class provided by the library is
     QuantLib::Math::Statistics.
 
     The concern of the Monte Carlo model is therefore to act as a glue
@@ -204,25 +184,25 @@
     \endcode
 
     The Monte Carlo model also provides the user with the possibility to
-    take advantage of control-variate techniques. 
+    take advantage of control-variate techniques.
 
     Such techniques consist in pricing a portfolio from which the price of
     the derivative can be deduced, but with a lower variance than the
-    derivative alone. 
+    derivative alone.
 
-    In our current implementation, static-hedge control variate is used, 
-    namely, the formed portfolio is long of the derivative we need to price 
-    and short of a similar derivative whose price can be calculated 
-    analytically. The value of the portfolio on a given path will of course 
-    be given by the difference of the values of the two derivatives on such 
-    path. However, due to the similarity between the derivatives, the 
-    portfolio price will have a lower variance than either derivative alone 
-    since any variation in the price of the latter will be partly compensated 
+    In our current implementation, static-hedge control variate is used,
+    namely, the formed portfolio is long of the derivative we need to price
+    and short of a similar derivative whose price can be calculated
+    analytically. The value of the portfolio on a given path will of course
+    be given by the difference of the values of the two derivatives on such
+    path. However, due to the similarity between the derivatives, the
+    portfolio price will have a lower variance than either derivative alone
+    since any variation in the price of the latter will be partly compensated
     by a similar variation in the price of the other.
-    Lastly, given the portfolio price, the price of the derivative we are 
+    Lastly, given the portfolio price, the price of the derivative we are
     interested in can be deduced by adding the analytic value of the other.
 
-    In order to use such technique, the user must provide the model with a 
+    In order to use such technique, the user must provide the model with a
     path pricer for the additional option and the value of the latter.
     The action of the Monte Carlo model is in this case expressed as:
     \code
@@ -230,15 +210,15 @@
     for i in number of samples {
         path,weight  = pathGenerator.next();
         portfolioPrice = pathPricer(path) - cvPathPricer(path);
-        accumulator.add(portfolioPrice-cvPrice,weight);
+        accumulator.add(portfolioPrice+cvPrice,weight);
     }
     \endcode
 
-    Martingale (a.k.a. dynamic-hedge) control variate techniques are 
+    Martingale (a.k.a. dynamic-hedge) control variate techniques are
     planned for future releases.
 
 
-    A QuantLib::Pricers::McPricer class is also available which wraps 
+    A QuantLib::Pricers::McPricer class is also available which wraps
     the typical usage of a Monte Carlo model.
 
     Details on the Monte Carlo Pricer interface will be available
@@ -248,11 +228,11 @@
     As a simple example, we will use the outlined tools to price an
     European option by means of Monte Carlo techniques.
 
-    Given a current underlying price \f$ u_0 \f$ and a path 
-    \f$ p = [ p_1, \dots, p_N ] \f$ where every variation \f$ p_i \f$ is 
-    the sum of a drift term \f$ d_i \f$ and a random diffusion term 
+    Given a current underlying price \f$ u_0 \f$ and a path
+    \f$ p = [ p_1, \dots, p_N ] \f$ where every variation \f$ p_i \f$ is
+    the sum of a drift term \f$ d_i \f$ and a random diffusion term
     \f$ r_i \f$, the price of the underlying at maturity is
-    \f[ u = u_0 \prod_1^N e^{p_i} = 
+    \f[ u = u_0 \prod_1^N e^{p_i} =
             u_0 \exp \left( \sum_1^N p_i \right) =
             u_0 \exp \left( \sum_1^N d_i + \sum_1^N r_i \right) \f]
     while the price on the antithetic path---i.e., same drift and opposite
@@ -302,7 +282,7 @@
                 return optionValue;
 
             // ...otherwise calculate the value on the antithetic path
-            double antiPrice = underlying_*QL_EXP(sum_d+sum_r);
+            double antiPrice = underlying_*QL_EXP(sum_d-sum_r);
 
             // calculate payoff and option value as above
             ...
@@ -339,7 +319,7 @@
         new GaussianPathGenerator(nu,vol2,residualTime,timeSteps));
     \endcode
     where QuantLib::MonteCarlo::GaussianPathGenerator is a typedef to a
-    path generator using the default choice for a Gaussian random number 
+    path generator using the default choice for a Gaussian random number
     generator.
 
     The path pricer is instantiated as
@@ -363,7 +343,7 @@
         pathGenerator,pathPricer,Statistics());
 
     model.addSamples(samples);
-    
+
     // now get the results: the option price is given by value with
     // a confidence level given by error
     value = model.sampleAccumulator().mean();
@@ -371,8 +351,36 @@
     \endcode
 
     More examples of path pricers can be found in the QuantLib::MonteCarlo
-    namespace, while examples of more sophisticated pricers which uses them 
+    namespace, while examples of more sophisticated pricers which uses them
     in Monte Carlo models can be found in the QuantLib::Pricers namespace.
+
+
+    \subsection mcnotes Notes
+    
+    \anchor mcnote1
+    \ref backmcnote1 "(1)" A more rigorous approach would lead us to 
+    integrate the above equation by means of Green functions or Laplace 
+    transforms. Both such methods would show that the price at time 
+    \f$ t = 0 \f$ of an option with payoff \f$ G(S(T)) \f$ where \f$ S(T) \f$ 
+    is the underlying price at expiry is given by the integral
+    \f[ \int_{-\infty}^{\infty} e^{-rT} G(S_0 e^\xi)
+        \frac{1}{\sqrt{2 \pi \sigma^2 T}}
+        \exp \left( -\frac{(\xi - \nu T)^2}{2 \sigma^2 T} \right)
+        \mathrm{d} \xi
+    \f]
+    where \f$ S_0 \f$ is the price of the underlying at \f$ t = 0 \f$.
+    It can be seen that the above integral is of the form shown at the
+    beginning of this section, namely, the pricing function is
+    \f[ f(x) = e^{-rT} G(S_0 e^x) \f]
+    and can be interpreted as the option payoff discounted to the
+    present time, while the probability distribution is
+    \f[ p(x) = \frac{1}{\sqrt{2 \pi \sigma^2 T}}
+        \exp \left( -\frac{(x - \nu T)^2}{2 \sigma^2 T} \right).
+    \f]
+    which again shows that the logarithms of the underlying prices at
+    time \f$ T \f$ are distributed as a Gaussian with average \f$ \nu T \f$
+    and standard deviation \f$ \sigma \sqrt{T} \f$.
+
 
 */
 

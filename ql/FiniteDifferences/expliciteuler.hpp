@@ -70,7 +70,7 @@ namespace QuantLib {
             Operator operator-(const Operator&, const Operator&);
             \endcode
 
-            \todo adda Richardson extrapolation
+            \todo add Richardson extrapolation
         */
         template <class Operator>
         class ExplicitEuler {

@@ -197,7 +197,6 @@ namespace QuantLib {
         /*! \warning This class assumes that today's date does not change
             between calls of setTermStructure().
 
-            \todo discountGuess() should be implemented.
         */
         class SwapRateHelper : public RateHelper {
           public:

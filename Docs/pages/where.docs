@@ -2,16 +2,20 @@
 /*! \page where Where to get QuantLib
 
     \subsection download QuantLib releases
-    Source code, documentation, modules, etc. of current and previous 
+    Source code, documentation, modules, etc. of current and previous
     %QuantLib releases can be downloaded from
     http://quantlib.org/download.html
+
+    Debian package is available from
+    http://ftp.us.debian.org/debian/pool/main/q/quantlib
+    (the .us can be replaced by .jp, .uk, .de, .it, etc.)
 
     \subsection cvs Current CVS snapshot
     Instructions for anonymous CVS access are available at
     http://quantlib.org/cvs.html
-    
-    Access to the CVS repository is intended mainly for developers and 
-    is not recommended to end users which should download the 
+
+    Access to the CVS repository is intended mainly for developers and
+    is not recommended to end users which should download the
     latest stable release instead.
 
 */
