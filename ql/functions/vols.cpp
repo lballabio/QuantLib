@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2002 Ferdinando Ametrano
 
@@ -56,8 +57,8 @@ namespace QuantLib {
                         BilinearInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
-                        Matrix> >(refDate, dc, dates, strikes,
-                        blackVolSurface).blackForwardVol(date1, date2,
+                        Matrix> >(refDate, dates, strikes,
+                        blackVolSurface, dc).blackForwardVol(date1, date2,
                         strike, allowExtrapolation);
                     break;
                 default:
