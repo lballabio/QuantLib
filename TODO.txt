@@ -24,6 +24,7 @@ LIBRARY
     rename all files/dirs to lowercase no spaces
 
 DOCUMENTATION
+    enforce file&classes DoxyGen requirements
     automated changelog update for each cvs commit
     add ChangeLog or History to DoxyGen
     add QuantLib Team and contributors to DoxyGen
