@@ -1,0 +1,4493 @@
+2001-05-09 13:06  nando
+
+	* README-win.txt, Readme.txt, Include/ql/config.msvc.hpp,
+	Include/ql/Math/normaldistribution.hpp,
+	Include/ql/Math/vartool.hpp, Include/ql/Pricers/bsmoption.hpp,
+	Include/ql/Solvers1D/bisection.hpp, Include/ql/Solvers1D/brent.hpp,
+	Include/ql/Solvers1D/falseposition.hpp,
+	Include/ql/Solvers1D/newton.hpp,
+	Include/ql/Solvers1D/newtonsafe.hpp,
+	Include/ql/Solvers1D/ridder.hpp, Include/ql/Solvers1D/secant.hpp,
+	Python/README.txt, Sources/dataformatters.cpp, Sources/date.cpp,
+	Sources/solver1d.cpp, Sources/Calendars/frankfurt.cpp,
+	Sources/Calendars/london.cpp, Sources/Calendars/milan.cpp,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/target.cpp,
+	Sources/Calendars/zurich.cpp, Sources/Math/normaldistribution.cpp,
+	Sources/Pricers/bsmoption.cpp, Sources/Solvers1D/bisection.cpp,
+	Sources/Solvers1D/brent.cpp, Sources/Solvers1D/falseposition.cpp,
+	Sources/Solvers1D/newton.cpp, Sources/Solvers1D/newtonsafe.cpp,
+	Sources/Solvers1D/ridder.cpp, Sources/Solvers1D/secant.cpp: A few
+	comments modified/removed
+
+2001-05-09 11:22  nando
+
+	* QuantLib.nsi: removed SWIG and *.cpp files from the binaries'
+	installer
+
+2001-05-08 19:23  lballabio
+
+	* Sources/calendar.cpp: removed unnecessary if branch (although
+	more convoluted, it had the same effect of the else branch
+
+2001-05-08 19:22  lballabio
+
+	* Sources/DayCounters/actualactual.cpp: Modified reference period
+	calculation
+
+2001-05-08 19:21  lballabio
+
+	* Include/ql/DayCounters/actualactual.hpp: changed comment
+
+2001-05-07 12:51  marmar
+
+	* SWIG/DayCounters.i: Error message is now more clear
+
+2001-05-03 17:37  lballabio
+
+	* SWIG/DayCounters.i: Added actual/actual
+
+2001-05-03 17:36  lballabio
+
+	* Sources/DayCounters/actualactual.cpp: Hopefully fixed algorithm
+
+2001-05-03 17:35  lballabio
+
+	* Include/ql/DayCounters/actualactual.hpp: Fixed line wrappings
+
+2001-05-03 12:26  lballabio
+
+	* SWIG/Instruments.i: Stock is now an actual shadow class
+
+2001-05-03 12:25  lballabio
+
+	* Include/ql/termstructure.hpp: Fixed today and settlement in
+	implied term structure
+
+2001-05-02 14:44  lballabio
+
+	* Docs/quantlib.doxy: Set SHORT_NAMES to YES
+
+2001-05-02 11:30  lballabio
+
+	* Docs/quantlib.doxy: Updated for Doxygen 1.2.7
+
+2001-04-30 17:45  lballabio
+
+	* Docs/makefile.mak: make clean in Docs also deletes man
+
+2001-04-27 12:44  lballabio
+
+	* Python/Tests/: QuantLibSuite.py, american_option.py,
+	barrier_option.py, binary_option.py, cliquet_option.py, date.py,
+	distributions.py, european_option.py, european_with_dividends.py,
+	everest_option.py, finite_difference_european.py,
+	get_covariance.py, himalaya_option.py, implied_volatility.py,
+	montecarlo_pricers.py, pagoda_option.py, plain_basket_option.py,
+	random_generators.py, risk_statistics.py, statistics.py,
+	term_structures.py: Support for unittest in Python 2.1
+
+2001-04-27 10:03  marmar
+
+	* Python/: PyQuantLib.dsw, PyQuantLib.mak: Changes to make it link
+	on VC
+
+2001-04-27 09:55  marmar
+
+	* Python/makefile.mak: There was a small bubu
+
+2001-04-26 18:05  marmar
+
+	* Sources/Pricers/: bsmnumericaloption.cpp, dividendoption.cpp,
+	finitedifferenceeuropean.cpp, multiperiodoption.cpp,
+	stepconditionoption.cpp: underlying_ not mutable anymore,
+	setGridLimits accepts the value for center
+
+2001-04-26 18:04  marmar
+
+	* Include/ql/Pricers/: bsmnumericaloption.hpp, bsmoption.hpp:
+	underlying_ not mutable anymore
+
+2001-04-26 13:20  lballabio
+
+	* Makefile.am, Python/Makefile.am, Python/Tests/Makefile.am:
+	python-test uses Distutils under linux
+
+2001-04-24 18:02  nando
+
+	* QuantLib.nsi: smoothing ...
+
+2001-04-24 17:01  nando
+
+	* makefile.mak: fixed makefiles
+
+2001-04-24 16:55  nando
+
+	* makefile.mak, Python/makefile.mak: fixed makefiles
+
+2001-04-24 16:30  nando
+
+	* Python/makefile.mak: smoothing ...
+
+2001-04-24 15:51  lballabio
+
+	* makefile.mak: Hopefully fixed install
+
+2001-04-24 12:57  lballabio
+
+	* SWIG/: Date.i, QLArray.i, Vectors.i: Removed leak in xyzVector
+	and Array typemaps
+
+2001-04-24 11:11  lballabio
+
+	* makefile.mak, Python/makefile.mak: Fixed message for missing
+	environment variable
+
+2001-04-24 10:56  marmar
+
+	* Include/ql/qldefines.hpp: QL_MIN_POSITIVE_DOUBLE added
+
+2001-04-23 17:54  nando
+
+	* Python/setup.py: fixed linux setup bug
+
+2001-04-23 17:02  nando
+
+	* Include/ql/config.msvc.hpp: removed useless gard
+
+2001-04-23 16:52  marmar
+
+	* Python/setup.py: Optimization disabled, now psses the tests!
+
+2001-04-23 16:23  marmar
+
+	* Sources/Pricers/dividendoption.cpp: Tricky bug fixed: american
+	condition was applied to control price as well
+
+2001-04-23 16:21  marmar
+
+	* Sources/Pricers/multiperiodoption.cpp: Cosmetic changes
+
+2001-04-23 16:17  marmar
+
+	* Include/ql/Pricers/dividendoption.hpp,
+	Sources/Pricers/bsmnumericaloption.cpp: Cosmetic changes
+
+2001-04-23 16:17  marmar
+
+	* Include/ql/Pricers/bsmoption.hpp: Some variables are now mutable
+
+2001-04-23 14:29  lballabio
+
+	* Python/setup.py, SWIG/BoundaryConditions.i, SWIG/Date.i,
+	SWIG/Operators.i, SWIG/QuantLib.i: Fixed linking in setup.py (and
+	some tweakings in SWIG interfaces)
+
+2001-04-23 09:48  marmar
+
+	* Sources/Pricers/dividendoption.cpp: Control variate changed back,
+	error messages modified
+
+2001-04-23 09:34  marmar
+
+	* Sources/Pricers/dividendoption.cpp: Changed control variate
+
+2001-04-23 09:33  nando
+
+	* makefile.mak, Python/makefile.mak: install directive now first
+	purges the files already installed
+
+2001-04-20 19:29  nando
+
+	* Include/ql/config.msvc.hpp: added support for Python 1.6 and
+	Python 2.1
+
+2001-04-20 19:21  nando
+
+	* Include/ql/config.msvc.hpp, Python/PyQuantLib.dsp,
+	Python/PyQuantLib.mak, Python/setup.py: added support for Python
+	1.6 and Python 2.1
+
+2001-04-20 18:37  nando
+
+	* Python/: PyQuantLib.dsp, PyQuantLib.mak: added support for Python
+	1.6 and Python 2.1
+
+2001-04-20 18:25  nando
+
+	* Python/makefile.mak: added support for Python 1.6 and Python 2.1
+
+2001-04-20 18:06  nando
+
+	* makefile.mak: make install for the library
+
+2001-04-20 17:34  marmar
+
+	* Python/setup.py: Compiling options changed
+
+2001-04-20 15:45  nando
+
+	* Python/setup.py: minor changes
+
+2001-04-20 15:24  nando
+
+	* Python/setup.py: CVS tags
+
+2001-04-20 13:39  marmar
+
+	* Python/setup.py: setup.py works on Win32
+
+2001-04-20 12:52  nando
+
+	* History.txt, News.txt, Docs/makefile.mak, Docs/quantlib.doxy,
+	Python/setup.py, Python/Tests/QuantLibSuite.py,
+	Sources/Calendars/makefile.mak, Sources/DayCounters/makefile.mak,
+	Sources/FiniteDifferences/makefile.mak, Sources/Math/makefile.mak,
+	Sources/MonteCarlo/makefile.mak, Sources/Pricers/makefile.mak,
+	Sources/Solvers1D/makefile.mak,
+	Sources/TermStructures/makefile.mak: smoothing the autobuild
+	process
+
+2001-04-19 17:46  nando
+
+	* Python/: PyQuantLib.dsp, PyQuantLib.mak: fixed additional include
+	directories
+
+2001-04-19 17:46  nando
+
+	* QuantLib.nsi: fixed pdf documentation
+
+2001-04-19 15:32  nando
+
+	* Python/PyWrap.bat: *.i path fixed
+
+2001-04-19 14:07  nando
+
+	* QuantLib.nsi: smoothing ...
+
+2001-04-19 13:47  benin
+
+	* Python/: PyQuantLib.dsp, PyQuantLib.mak: extension VS project is
+	now based on the installled lib
+
+2001-04-19 12:56  nando
+
+	* Sources/: Makefile.am, DayCounters/Makefile.am, Math/Makefile.am,
+	Pricers/Makefile.am, Solvers1D/Makefile.am: typo(s) fixed
+
+2001-04-19 12:28  nando
+
+	* Python/: PyQuantLib.dsp, PyQuantLib.mak: now extension depends on
+	the installed library
+
+2001-04-19 09:40  nando
+
+	* Makefile.am, Docs/Makefile.am, Examples/Makefile.am,
+	Include/Makefile.am, Include/ql/Makefile.am,
+	Include/ql/Calendars/Makefile.am,
+	Include/ql/Currencies/Makefile.am,
+	Include/ql/DayCounters/Makefile.am,
+	Include/ql/FiniteDifferences/Makefile.am,
+	Include/ql/Instruments/Makefile.am, Include/ql/Math/Makefile.am,
+	Include/ql/MonteCarlo/Makefile.am, Include/ql/Patterns/Makefile.am,
+	Include/ql/Pricers/Makefile.am, Include/ql/Solvers1D/Makefile.am,
+	Include/ql/TermStructures/Makefile.am,
+	Include/ql/Utilities/Makefile.am, Python/Makefile.am,
+	Python/COM/Makefile.am, Python/Tests/Makefile.am, Ruby/Makefile.am,
+	Ruby/Tests/Makefile.am, SWIG/Makefile.am, Sources/Makefile.am,
+	Sources/Calendars/Makefile.am, Sources/DayCounters/Makefile.am,
+	Sources/FiniteDifferences/Makefile.am, Sources/Math/Makefile.am,
+	Sources/MonteCarlo/Makefile.am, Sources/Pricers/Makefile.am,
+	Sources/Solvers1D/Makefile.am, Sources/TermStructures/Makefile.am:
+	added CVS tags
+
+2001-04-18 15:38  nando
+
+	* Makefile.am, SWIG/QuantLib.i: QuantLib.nsi was missing from
+	distribution
+
+2001-04-18 11:17  nando
+
+	* configure.in, Sources/Makefile.am, Sources/Calendars/Makefile.am,
+	Sources/DayCounters/Makefile.am,
+	Sources/FiniteDifferences/Makefile.am, Sources/Math/Makefile.am,
+	Sources/MonteCarlo/Makefile.am, Sources/Pricers/Makefile.am,
+	Sources/Solvers1D/Makefile.am, Sources/TermStructures/Makefile.am:
+	smoothing ...
+
+2001-04-18 11:03  nando
+
+	* Python/Tests/: QuantLibSuite.py, american_option.py,
+	barrier_option.py, binary_option.py, cliquet_option.py, date.py,
+	distributions.py, european_option.py, european_with_dividends.py,
+	everest_option.py, finite_difference_european.py,
+	get_covariance.py, himalaya_option.py, implied_volatility.py,
+	montecarlo_pricers.py, pagoda_option.py, plain_basket_option.py,
+	random_generators.py, risk_statistics.py, statistics.py,
+	term_structures.py: added/removed final raw_input('press any key to
+	continue')
+
+2001-04-18 09:55  marmar
+
+	* Python/Tests/everest_option.py: Test is now faster
+
+2001-04-17 18:08  nando
+
+	* Docs/Makefile.am: typo fixed
+
+2001-04-17 17:43  nando
+
+	* Makefile.am, Docs/quantlib.doxy, Python/Makefile.am: smoothing
+	...
+
+2001-04-17 17:27  nando
+
+	* Docs/: footer.html, quantlibfooter.html: footer.html replaced by
+	quantlibfooter.html
+
+2001-04-17 16:45  enri
+
+	* Makefile.am: typo fixed
+
+2001-04-17 16:40  nando
+
+	* QuantLib.nsi: no message
+
+2001-04-17 16:31  nando
+
+	* QuantLib.nsi: Null Soft installer script
+
+2001-04-17 16:06  enri
+
+	* Ruby/Makefile.am: dependency added
+
+2001-04-17 16:05  enri
+
+	* Ruby/Makefile.am: Ruby target works well with "dist" target now
+	(?)
+
+2001-04-17 16:01  enri
+
+	* Makefile.am, Python/Makefile.am: dist target updated
+
+2001-04-17 15:15  enri
+
+	* Makefile.am, Python/Makefile.am: trailing \ removed
+
+2001-04-17 14:59  nando
+
+	* Makefile.am, Python/Makefile.am: added few Win32 files to Unix
+	make dist directive
+
+2001-04-17 11:32  enri
+
+	* SWIG/Makefile.am: changed to install SWIG files to ql/SWIG
+
+2001-04-17 11:15  marmar
+
+	* Sources/Pricers/barrieroption.cpp: Another bug fixed
+
+2001-04-17 11:11  nando
+
+	* Python/Tests/QuantLibSuite.py: minor smoothing
+
+2001-04-17 11:09  nando
+
+	* Python/makefile.mak: bug fix: python extension is now based on
+	the installed *.hpp files.  It was already based on the installed
+	library
+
+2001-04-13 15:06  nando
+
+	* makefile.mak: now python directive does not depend on general
+	make directive
+
+2001-04-13 14:50  nando
+
+	* Python/: PyQuantLib.dsw, PyQuantLib.mak: added Visual Studio
+	makefile
+
+2001-04-13 14:23  nando
+
+	* QuantLib.dsw, QuantLib.mak: added QuantLib Visual Studio makefile
+
+2001-04-13 14:16  nando
+
+	* Sources/makefile.mak: path-related bug fixed
+
+2001-04-13 14:06  nando
+
+	* Sources/makefile.mak: a little more polished
+
+2001-04-13 13:36  nando
+
+	* Python/makefile.mak: improved clean directive
+
+2001-04-13 13:21  nando
+
+	* Python/makefile.mak: improved clean directive
+
+2001-04-13 13:13  nando
+
+	* Python/makefile.mak: tentative -DDEBUG  python
+
+2001-04-13 12:46  nando
+
+	* Python/makefile.mak: make clean now purges *.py
+
+2001-04-13 11:45  nando
+
+	* Python/makefile.mak, Sources/makefile.mak: no message
+
+2001-04-13 10:42  nando
+
+	* QuantLib.dsp, makefile.mak, Python/makefile.mak,
+	Sources/makefile.mak: new homes for Win32 libs
+
+2001-04-13 10:19  nando
+
+	* lib/Win32/: Borland/README.txt, VisualStudio/README.txt: new
+	homes for Win32 libs
+
+2001-04-13 09:35  nando
+
+	* Python/: PyQuantLib.dsp, PyWrap.bat: reverting Luigi's change
+	back
+
+2001-04-12 17:52  lballabio
+
+	* SWIG/: Interpolation.i, QuantLib.i: Rubified interpolation (and
+	reworked it in Python too)
+
+2001-04-12 16:32  marmar
+
+	* Include/ql/quantlib.hpp: QL, QLMTH, and such converted into
+	official namespace nicknames
+
+2001-04-12 16:22  lballabio
+
+	* Include/ql/Utilities/: couplingiterator.hpp,
+	filteringiterator.hpp: Optimized operator++/--
+
+2001-04-12 16:21  lballabio
+
+	* Python/Tests/european_with_dividends.py: Corrected dividend dates
+	for theta check
+
+2001-04-12 14:17  marmar
+
+	* Sources/Pricers/dividendeuropeanoption.cpp,
+	Include/ql/Pricers/dividendeuropeanoption.hpp: Theta is now
+	consistent with DividendAmerican
+
+2001-04-12 11:31  marmar
+
+	* SWIG/Pricers.i: Destructor added in interface of BarrierOption
+
+2001-04-12 11:06  marmar
+
+	* Sources/Pricers/multiperiodoption.cpp,
+	Include/ql/Pricers/multiperiodoption.hpp: Last and first date are
+	handled more precisely
+
+2001-04-12 10:58  lballabio
+
+	* Sources/Calendars/westerncalendar.cpp: Fixed offset in Easter
+	mondays
+
+2001-04-11 19:04  lballabio
+
+	* Ruby/Tests/Makefile.am, Ruby/Tests/QuantLibSuite.rb,
+	Ruby/Tests/dates.rb, SWIG/QuantLib.i, SWIG/RiskStatistics.i,
+	SWIG/Statistics.i: Rubified RiskStatistics
+
+2001-04-11 19:03  lballabio
+
+	* QuantLib.dsp, Python/PyQuantLib.dsp, Python/PyWrap.bat,
+	Sources/makefile.mak: Python VC++ project fixed and moved to Python
+	dir
+
+2001-04-11 13:52  marmar
+
+	* Sources/Pricers/barrieroption.cpp: Bug fixed in gamma(), (thanks
+	to JH)
+
+2001-04-11 13:06  lballabio
+
+	* SWIG/: QLArray.i, QuantLib.i, Vectors.i: Rubified Array
+
+2001-04-10 16:51  lballabio
+
+	* Docs/quantlib.doxy, Examples/history_iterators.cpp: Added
+	Microsoft Help format to Doxygen output
+
+2001-04-10 16:35  lballabio
+
+	* Docs/quantlib.doxy: Fixed include paths
+
+2001-04-10 15:12  marmar
+
+	* Sources/makefile.mak: Makefile simplified
+
+2001-04-10 10:12  lballabio
+
+	* Include/Makefile.am: oops
+
+2001-04-10 10:09  marmar
+
+	* Python/makefile.mak: QuantLib.lib is now in .\lib
+
+2001-04-10 09:54  lballabio
+
+	* SWIG/Calendars.i, SWIG/Currencies.i, SWIG/Date.i,
+	SWIG/DayCounters.i, SWIG/History.i, SWIG/QuantLib.i,
+	SWIG/Vectors.i, Sources/dataformatters.cpp: Ruby histories (the
+	Ruby way)
+
+2001-04-09 17:51  lballabio
+
+	* configure.in, Include/ql/Makefile.am, Python/setup.py,
+	Ruby/extconf.rb, SWIG/Date.i, SWIG/History.i, SWIG/QuantLib.i:
+	Compiling again under Linux
+
+2001-04-09 16:31  nando
+
+	* Sources/makefile.mak, lib/README.txt: QuantLib.lib is produced
+	into lib folder
+
+2001-04-09 16:17  nando
+
+	* SWIG/QuantLib.i: all the *.hpp moved below the Include/ql level
+
+2001-04-09 16:13  nando
+
+	* Sources/: calendar.cpp, dataformatters.cpp, date.cpp,
+	ratehelper.cpp, solver1d.cpp, Calendars/frankfurt.cpp,
+	Calendars/helsinki.cpp, Calendars/london.cpp, Calendars/milan.cpp,
+	Calendars/newyork.cpp, Calendars/target.cpp,
+	Calendars/wellington.cpp, Calendars/westerncalendar.cpp,
+	Calendars/zurich.cpp, DayCounters/actualactual.cpp,
+	DayCounters/thirty360.cpp, DayCounters/thirty360italian.cpp,
+	FiniteDifferences/bsmoperator.cpp,
+	FiniteDifferences/tridiagonaloperator.cpp,
+	FiniteDifferences/valueatcenter.cpp, Math/matrix.cpp,
+	Math/multivariateaccumulator.cpp, Math/normaldistribution.cpp,
+	Math/statistics.cpp, Math/symmetricschurdecomposition.cpp,
+	MonteCarlo/avgpriceasianpathpricer.cpp,
+	MonteCarlo/avgstrikeasianpathpricer.cpp,
+	MonteCarlo/basketpathpricer.cpp,
+	MonteCarlo/controlvariatedpathpricer.cpp,
+	MonteCarlo/europeanpathpricer.cpp,
+	MonteCarlo/everestpathpricer.cpp,
+	MonteCarlo/geometricasianpathpricer.cpp,
+	MonteCarlo/getcovariance.cpp, MonteCarlo/himalayapathpricer.cpp,
+	MonteCarlo/lecuyerrandomgenerator.cpp,
+	MonteCarlo/pagodapathpricer.cpp, Pricers/averagepriceasian.cpp,
+	Pricers/averagestrikeasian.cpp, Pricers/barrieroption.cpp,
+	Pricers/bermudanoption.cpp, Pricers/binaryoption.cpp,
+	Pricers/bsmeuropeanoption.cpp, Pricers/bsmnumericaloption.cpp,
+	Pricers/bsmoption.cpp, Pricers/cliquetoption.cpp,
+	Pricers/dividendamericanoption.cpp,
+	Pricers/dividendeuropeanoption.cpp, Pricers/dividendoption.cpp,
+	Pricers/dividendshoutoption.cpp, Pricers/everestoption.cpp,
+	Pricers/finitedifferenceeuropean.cpp, Pricers/himalaya.cpp,
+	Pricers/mceuropeanpricer.cpp, Pricers/multiperiodoption.cpp,
+	Pricers/pagodaoption.cpp, Pricers/plainbasketoption.cpp,
+	Pricers/stepconditionoption.cpp, Solvers1D/bisection.cpp,
+	Solvers1D/brent.cpp, Solvers1D/falseposition.cpp,
+	Solvers1D/newton.cpp, Solvers1D/newtonsafe.cpp,
+	Solvers1D/ridder.cpp, Solvers1D/secant.cpp,
+	TermStructures/piecewiseconstantforwards.cpp: all the *.hpp moved
+	below the Include/ql level
+
+2001-04-09 16:06  nando
+
+	* Include/: Makefile.am, array.hpp, calendar.hpp, config.ansi.hpp,
+	config.bcc.hpp, config.decc.hpp, config.msvc.hpp, config.mwcw.hpp,
+	currency.hpp, dataformatters.hpp, date.hpp, daycounter.hpp,
+	depositrate.hpp, discountfactor.hpp, expressiontemplates.hpp,
+	forwardvolsurface.hpp, handle.hpp, history.hpp, instrument.hpp,
+	null.hpp, options.hpp, qldefines.hpp, qlerrors.hpp, quantlib.hpp,
+	rate.hpp, ratehelper.hpp, riskstatistics.hpp, solver1d.hpp,
+	spread.hpp, swaptionvolsurface.hpp, termstructure.hpp,
+	ql/TermStructures/Makefile.am, ql/TermStructures/flatforward.hpp,
+	ql/TermStructures/piecewiseconstantforwards.hpp,
+	ql/Utilities/Makefile.am, ql/Utilities/combiningiterator.hpp,
+	ql/Utilities/couplingiterator.hpp,
+	ql/Utilities/filteringiterator.hpp,
+	ql/Utilities/iteratorcategories.hpp,
+	ql/Utilities/processingiterator.hpp,
+	ql/Utilities/steppingiterator.hpp: all the *.hpp moved below the
+	Include/ql level
+
+2001-04-09 16:03  nando
+
+	* Include/ql/: Makefile.am, array.hpp, calendar.hpp,
+	config.ansi.hpp, config.bcc.hpp, config.decc.hpp, config.msvc.hpp,
+	config.mwcw.hpp, currency.hpp, dataformatters.hpp, date.hpp,
+	daycounter.hpp, depositrate.hpp, discountfactor.hpp,
+	expressiontemplates.hpp, forwardvolsurface.hpp, handle.hpp,
+	history.hpp, instrument.hpp, null.hpp, options.hpp, qldefines.hpp,
+	qlerrors.hpp, quantlib.hpp, rate.hpp, ratehelper.hpp,
+	riskstatistics.hpp, solver1d.hpp, spread.hpp,
+	swaptionvolsurface.hpp, termstructure.hpp, Calendars/Makefile.am,
+	Calendars/frankfurt.hpp, Calendars/helsinki.hpp,
+	Calendars/london.hpp, Calendars/milan.hpp, Calendars/newyork.hpp,
+	Calendars/target.hpp, Calendars/wellington.hpp,
+	Calendars/westerncalendar.hpp, Calendars/zurich.hpp,
+	Currencies/Makefile.am, Currencies/aud.hpp, Currencies/cad.hpp,
+	Currencies/chf.hpp, Currencies/dem.hpp, Currencies/dkk.hpp,
+	Currencies/eur.hpp, Currencies/gbp.hpp, Currencies/itl.hpp,
+	Currencies/jpy.hpp, Currencies/sek.hpp, Currencies/usd.hpp,
+	DayCounters/Makefile.am, DayCounters/actual360.hpp,
+	DayCounters/actual365.hpp, DayCounters/actualactual.hpp,
+	DayCounters/thirty360.hpp, DayCounters/thirty360european.hpp,
+	DayCounters/thirty360italian.hpp, FiniteDifferences/Makefile.am,
+	FiniteDifferences/backwardeuler.hpp,
+	FiniteDifferences/boundarycondition.hpp,
+	FiniteDifferences/bsmoperator.hpp,
+	FiniteDifferences/cranknicolson.hpp, FiniteDifferences/dminus.hpp,
+	FiniteDifferences/dplus.hpp, FiniteDifferences/dplusdminus.hpp,
+	FiniteDifferences/dzero.hpp,
+	FiniteDifferences/finitedifferencemodel.hpp,
+	FiniteDifferences/forwardeuler.hpp, FiniteDifferences/identity.hpp,
+	FiniteDifferences/operator.hpp,
+	FiniteDifferences/operatortraits.hpp,
+	FiniteDifferences/standardfdmodel.hpp,
+	FiniteDifferences/standardstepcondition.hpp,
+	FiniteDifferences/stepcondition.hpp,
+	FiniteDifferences/tridiagonaloperator.hpp,
+	FiniteDifferences/valueatcenter.hpp, Instruments/Makefile.am,
+	Instruments/stock.hpp, Math/Makefile.am, Math/cubicspline.hpp,
+	Math/interpolation.hpp, Math/lexicographicalview.hpp,
+	Math/linearinterpolation.hpp, Math/matrix.hpp,
+	Math/multivariateaccumulator.hpp, Math/normaldistribution.hpp,
+	Math/statistics.hpp, Math/symmetriceigenvalues.hpp,
+	Math/symmetricschurdecomposition.hpp, Math/vartool.hpp,
+	MonteCarlo/Makefile.am, MonteCarlo/avgpriceasianpathpricer.hpp,
+	MonteCarlo/avgstrikeasianpathpricer.hpp,
+	MonteCarlo/basketpathpricer.hpp, MonteCarlo/boxmuller.hpp,
+	MonteCarlo/centrallimitgaussian.hpp,
+	MonteCarlo/controlvariatedpathpricer.hpp,
+	MonteCarlo/europeanpathpricer.hpp,
+	MonteCarlo/everestpathpricer.hpp,
+	MonteCarlo/gaussianarraygenerator.hpp,
+	MonteCarlo/gaussianrandomgenerator.hpp,
+	MonteCarlo/generalmontecarlo.hpp,
+	MonteCarlo/geometricasianpathpricer.hpp,
+	MonteCarlo/getcovariance.hpp, MonteCarlo/himalayapathpricer.hpp,
+	MonteCarlo/lecuyerrandomgenerator.hpp,
+	MonteCarlo/mcoptionsample.hpp, MonteCarlo/mcpricer.hpp,
+	MonteCarlo/multifactormontecarlooption.hpp,
+	MonteCarlo/multifactorpricer.hpp, MonteCarlo/multipath.hpp,
+	MonteCarlo/multipathgenerator.hpp, MonteCarlo/multipathpricer.hpp,
+	MonteCarlo/onefactormontecarlooption.hpp,
+	MonteCarlo/pagodapathpricer.hpp, MonteCarlo/path.hpp,
+	MonteCarlo/pathmontecarlo.hpp, MonteCarlo/pathpricer.hpp,
+	MonteCarlo/randomarraygenerator.hpp,
+	MonteCarlo/standardmultipathgenerator.hpp,
+	MonteCarlo/standardpathgenerator.hpp,
+	MonteCarlo/uniformrandomgenerator.hpp, Patterns/Makefile.am,
+	Patterns/observable.hpp, Pricers/Makefile.am,
+	Pricers/americancondition.hpp, Pricers/americanoption.hpp,
+	Pricers/averagepriceasian.hpp, Pricers/averagestrikeasian.hpp,
+	Pricers/barrieroption.hpp, Pricers/bermudanoption.hpp,
+	Pricers/binaryoption.hpp, Pricers/bsmeuropeanoption.hpp,
+	Pricers/bsmnumericaloption.hpp, Pricers/bsmoption.hpp,
+	Pricers/cliquetoption.hpp, Pricers/dividendamericanoption.hpp,
+	Pricers/dividendeuropeanoption.hpp, Pricers/dividendoption.hpp,
+	Pricers/dividendshoutoption.hpp, Pricers/everestoption.hpp,
+	Pricers/finitedifferenceeuropean.hpp,
+	Pricers/geometricasianoption.hpp, Pricers/himalaya.hpp,
+	Pricers/mceuropeanpricer.hpp, Pricers/multiperiodoption.hpp,
+	Pricers/pagodaoption.hpp, Pricers/plainbasketoption.hpp,
+	Pricers/shoutcondition.hpp, Pricers/shoutoption.hpp,
+	Pricers/stepconditionoption.hpp, Solvers1D/Makefile.am,
+	Solvers1D/bisection.hpp, Solvers1D/brent.hpp,
+	Solvers1D/falseposition.hpp, Solvers1D/newton.hpp,
+	Solvers1D/newtonsafe.hpp, Solvers1D/ridder.hpp,
+	Solvers1D/secant.hpp: all the *.hpp moved below the Include/ql
+	level
+
+2001-04-09 14:24  nando
+
+	* SWIG/: Barrier.i, BoundaryConditions.i, Calendars.i,
+	Currencies.i, Date.i, DayCounters.i, Distributions.i, Financial.i,
+	History.i, Instruments.i, Interpolation.i, Matrix.i,
+	MontecarloPricers.i, MontecarloTools.i, Operators.i, Options.i,
+	Pricers.i, QLArray.i, QuantLib.i, README.txt, RandomGenerators.i,
+	RiskStatistics.i, Solvers1D.i, Statistics.i, String.i,
+	TermStructures.i, Vectors.i: updated copyright notice header and
+	improved CVS tags
+
+2001-04-09 13:28  nando
+
+	* Include/array.hpp, Python/Tests/QuantLibSuite.py,
+	Python/Tests/american_option.py, Python/Tests/barrier_option.py,
+	Python/Tests/binary_option.py, Python/Tests/cliquet_option.py,
+	Python/Tests/date.py, Python/Tests/distributions.py,
+	Python/Tests/european_option.py,
+	Python/Tests/european_with_dividends.py,
+	Python/Tests/everest_option.py,
+	Python/Tests/finite_difference_european.py,
+	Python/Tests/get_covariance.py, Python/Tests/himalaya_option.py,
+	Python/Tests/implied_volatility.py,
+	Python/Tests/montecarlo_pricers.py, Python/Tests/pagoda_option.py,
+	Python/Tests/plain_basket_option.py,
+	Python/Tests/random_generators.py, Python/Tests/risk_statistics.py,
+	Python/Tests/statistics.py, Python/Tests/term_structures.py:
+	updated copyright notice header and improved CVS tags
+
+2001-04-06 20:46  nando
+
+	* Authors.txt, Contributors.txt, LICENSE.TXT,
+	Examples/history_iterators.cpp, Include/array.hpp,
+	Include/calendar.hpp, Include/currency.hpp,
+	Include/dataformatters.hpp, Include/date.hpp,
+	Include/daycounter.hpp, Include/depositrate.hpp,
+	Include/discountfactor.hpp, Include/expressiontemplates.hpp,
+	Include/forwardvolsurface.hpp, Include/handle.hpp,
+	Include/history.hpp, Include/instrument.hpp, Include/null.hpp,
+	Include/options.hpp, Include/qldefines.hpp, Include/qlerrors.hpp,
+	Include/quantlib.hpp, Include/rate.hpp, Include/ratehelper.hpp,
+	Include/riskstatistics.hpp, Include/solver1d.hpp,
+	Include/spread.hpp, Include/swaptionvolsurface.hpp,
+	Include/termstructure.hpp, Python/Tests/QuantLibSuite.py,
+	Python/Tests/american_option.py, Python/Tests/barrier_option.py,
+	Python/Tests/binary_option.py, Python/Tests/cliquet_option.py,
+	Python/Tests/date.py, Python/Tests/distributions.py,
+	Python/Tests/european_option.py,
+	Python/Tests/european_with_dividends.py,
+	Python/Tests/everest_option.py,
+	Python/Tests/finite_difference_european.py,
+	Python/Tests/get_covariance.py, Python/Tests/himalaya_option.py,
+	Python/Tests/implied_volatility.py,
+	Python/Tests/montecarlo_pricers.py, Python/Tests/pagoda_option.py,
+	Python/Tests/plain_basket_option.py,
+	Python/Tests/random_generators.py, Python/Tests/risk_statistics.py,
+	Python/Tests/statistics.py, Python/Tests/term_structures.py,
+	Ruby/Tests/QuantLibSuite.rb, Ruby/Tests/dates.rb,
+	Ruby/Tests/distributions.rb, Ruby/Tests/random_generators.rb,
+	Ruby/Tests/statistics.rb, SWIG/Barrier.i,
+	SWIG/BoundaryConditions.i, SWIG/Calendars.i, SWIG/Currencies.i,
+	SWIG/Date.i, SWIG/DayCounters.i, SWIG/Distributions.i,
+	SWIG/Financial.i, SWIG/History.i, SWIG/Instruments.i,
+	SWIG/Interpolation.i, SWIG/Matrix.i, SWIG/MontecarloPricers.i,
+	SWIG/MontecarloTools.i, SWIG/Operators.i, SWIG/Options.i,
+	SWIG/Pricers.i, SWIG/QLArray.i, SWIG/QuantLib.i,
+	SWIG/RandomGenerators.i, SWIG/RiskStatistics.i, SWIG/Solvers1D.i,
+	SWIG/Statistics.i, SWIG/String.i, SWIG/TermStructures.i,
+	SWIG/Vectors.i, Sources/calendar.cpp, Sources/dataformatters.cpp,
+	Sources/date.cpp, Sources/ratehelper.cpp, Sources/solver1d.cpp,
+	Sources/Calendars/frankfurt.cpp, Sources/Calendars/helsinki.cpp,
+	Sources/Calendars/london.cpp, Sources/Calendars/milan.cpp,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/target.cpp,
+	Sources/Calendars/wellington.cpp,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/Calendars/zurich.cpp, Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/FiniteDifferences/bsmoperator.cpp,
+	Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/FiniteDifferences/valueatcenter.cpp,
+	Sources/Math/matrix.cpp, Sources/Math/multivariateaccumulator.cpp,
+	Sources/Math/normaldistribution.cpp, Sources/Math/statistics.cpp,
+	Sources/Math/symmetricschurdecomposition.cpp,
+	Sources/MonteCarlo/avgpriceasianpathpricer.cpp,
+	Sources/MonteCarlo/avgstrikeasianpathpricer.cpp,
+	Sources/MonteCarlo/basketpathpricer.cpp,
+	Sources/MonteCarlo/controlvariatedpathpricer.cpp,
+	Sources/MonteCarlo/europeanpathpricer.cpp,
+	Sources/MonteCarlo/everestpathpricer.cpp,
+	Sources/MonteCarlo/geometricasianpathpricer.cpp,
+	Sources/MonteCarlo/getcovariance.cpp,
+	Sources/MonteCarlo/himalayapathpricer.cpp,
+	Sources/MonteCarlo/lecuyerrandomgenerator.cpp,
+	Sources/MonteCarlo/pagodapathpricer.cpp,
+	Sources/Pricers/averagepriceasian.cpp,
+	Sources/Pricers/averagestrikeasian.cpp,
+	Sources/Pricers/barrieroption.cpp,
+	Sources/Pricers/bermudanoption.cpp,
+	Sources/Pricers/binaryoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp, Sources/Pricers/cliquetoption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Pricers/dividendeuropeanoption.cpp,
+	Sources/Pricers/dividendoption.cpp,
+	Sources/Pricers/dividendshoutoption.cpp,
+	Sources/Pricers/everestoption.cpp,
+	Sources/Pricers/finitedifferenceeuropean.cpp,
+	Sources/Pricers/himalaya.cpp, Sources/Pricers/mceuropeanpricer.cpp,
+	Sources/Pricers/multiperiodoption.cpp,
+	Sources/Pricers/pagodaoption.cpp,
+	Sources/Pricers/plainbasketoption.cpp,
+	Sources/Pricers/stepconditionoption.cpp,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: changed
+	Authors, Contributors, Licence and copyright header
+
+2001-04-06 18:19  lballabio
+
+	* Makefile.am, configure.in, Docs/Makefile.am, Docs/quantlib.doxy,
+	Include/qldefines.hpp: Fixed Doxygen-related stuff
+
+2001-04-06 18:12  marmar
+
+	* Sources/Pricers/: bermudanoption.cpp, bsmoption.cpp,
+	dividendoption.cpp, multiperiodoption.cpp: Bug fixed in
+	multi-period option
+
+2001-04-06 17:08  marmar
+
+	* Sources/date.cpp: Bug fixed
+
+2001-04-06 13:14  lballabio
+
+	* SWIG/: Currencies.i, DayCounters.i, QuantLib.i: Added
+	string-based constructor to Currency and DayCounter in Python and
+	Ruby modules
+
+2001-04-06 09:36  marmar
+
+	* Sources/Pricers/: multiperiodoption.cpp, bermudanoption.cpp,
+	dividendshoutoption.cpp: Code simplified and cleand
+
+2001-04-05 17:22  lballabio
+
+	* Python/README.txt, Ruby/Makefile.am, Ruby/README.txt: Updated
+	Python and Ruby readme's
+
+2001-04-05 15:33  nando
+
+	* QuantLib.dsp, Include/quantlib.hpp, SWIG/History.i: small fixes
+
+2001-04-05 15:06  marmar
+
+	* Sources/Pricers/stepconditionoption.cpp: Code simplified
+
+2001-04-05 09:57  marmar
+
+	* Sources/Pricers/: bermudanoption.cpp, bsmoption.cpp,
+	multiperiodoption.cpp: One bug fixed in bermudan option, theta,
+	rho, and vega  still not working
+
+2001-04-04 19:13  nando
+
+	* Sources/Pricers/bermudanoption.cpp: bat file was not updated with
+	Luigi's shuffling
+
+2001-04-04 18:20  lballabio
+
+	* Python/setup.py, Python/Tests/Makefile.am, Ruby/extconf.rb,
+	Sources/Makefile.am, Sources/Calendars/Makefile.am,
+	Sources/DayCounters/Makefile.am,
+	Sources/FiniteDifferences/Makefile.am, Sources/Math/Makefile.am,
+	Sources/MonteCarlo/Makefile.am, Sources/Pricers/Makefile.am,
+	Sources/Solvers1D/Makefile.am, Sources/TermStructures/Makefile.am:
+	Removed sub-include directories from compile flags
+
+2001-04-04 17:52  lballabio
+
+	* Python/makefile.mak, Sources/makefile.mak,
+	Sources/Calendars/makefile.mak, Sources/DayCounters/makefile.mak,
+	Sources/FiniteDifferences/makefile.mak, Sources/Math/makefile.mak,
+	Sources/MonteCarlo/makefile.mak, Sources/Pricers/makefile.mak,
+	Sources/Solvers1D/makefile.mak,
+	Sources/TermStructures/makefile.mak: Removed sub-include dirs from
+	bcc makefiles
+
+2001-04-04 16:36  lballabio
+
+	* Ruby/Tests/Makefile.am: oops
+
+2001-04-04 16:10  lballabio
+
+	* Ruby/Tests/: Makefile.am, QuantLibSuite.rb, TestUnit.rb, date.rb,
+	dates.rb, distributions.rb, random_generators.rb, statistics.rb:
+	Ruby tests moved on top of RubyUnit
+
+2001-04-04 15:32  enri
+
+	* configure.in, Python/setup.py,
+	Sources/MonteCarlo/avgpriceasianpathpricer.cpp,
+	Sources/MonteCarlo/avgstrikeasianpathpricer.cpp,
+	Sources/MonteCarlo/basketpathpricer.cpp,
+	Sources/Pricers/averagepriceasian.cpp,
+	Sources/Pricers/averagestrikeasian.cpp,
+	Sources/Pricers/bsmoption.cpp,
+	Sources/Pricers/plainbasketoption.cpp,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp: tons of typos fixed
+
+2001-04-04 14:55  nando
+
+	* configure.in: Headers policy: linux conf catching up
+
+2001-04-04 14:13  nando
+
+	* QuantLib.dsp, Examples/history_iterators.cpp,
+	Include/forwardvolsurface.hpp, Include/history.hpp,
+	Include/quantlib.hpp, Include/riskstatistics.hpp,
+	Include/swaptionvolsurface.hpp, Include/termstructure.hpp,
+	Sources/Calendars/frankfurt.cpp, Sources/Calendars/helsinki.cpp,
+	Sources/Calendars/london.cpp, Sources/Calendars/milan.cpp,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/target.cpp,
+	Sources/Calendars/wellington.cpp,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/Calendars/zurich.cpp, Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/FiniteDifferences/bsmoperator.cpp,
+	Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/FiniteDifferences/valueatcenter.cpp,
+	Sources/Math/matrix.cpp, Sources/Math/multivariateaccumulator.cpp,
+	Sources/Math/normaldistribution.cpp, Sources/Math/statistics.cpp,
+	Sources/Math/symmetricschurdecomposition.cpp,
+	Sources/MonteCarlo/avgpriceasianpathpricer.cpp,
+	Sources/MonteCarlo/avgstrikeasianpathpricer.cpp,
+	Sources/MonteCarlo/basketpathpricer.cpp,
+	Sources/MonteCarlo/controlvariatedpathpricer.cpp,
+	Sources/MonteCarlo/europeanpathpricer.cpp,
+	Sources/MonteCarlo/everestpathpricer.cpp,
+	Sources/MonteCarlo/geometricasianpathpricer.cpp,
+	Sources/MonteCarlo/getcovariance.cpp,
+	Sources/MonteCarlo/himalayapathpricer.cpp,
+	Sources/MonteCarlo/lecuyerrandomgenerator.cpp,
+	Sources/MonteCarlo/pagodapathpricer.cpp,
+	Sources/Pricers/averagepriceasian.cpp,
+	Sources/Pricers/averagestrikeasian.cpp,
+	Sources/Pricers/barrieroption.cpp,
+	Sources/Pricers/bermudanoption.cpp,
+	Sources/Pricers/binaryoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp, Sources/Pricers/cliquetoption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Pricers/dividendeuropeanoption.cpp,
+	Sources/Pricers/dividendoption.cpp,
+	Sources/Pricers/dividendshoutoption.cpp,
+	Sources/Pricers/everestoption.cpp,
+	Sources/Pricers/finitedifferenceeuropean.cpp,
+	Sources/Pricers/himalaya.cpp, Sources/Pricers/mceuropeanpricer.cpp,
+	Sources/Pricers/multiperiodoption.cpp,
+	Sources/Pricers/pagodaoption.cpp,
+	Sources/Pricers/plainbasketoption.cpp,
+	Sources/Pricers/stepconditionoption.cpp,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp, QuantLib.dsp:
+	Headers policy part 2: The Include directory is added to the
+	compiler's include search path.  Then both your code and user code
+	specifies the sub-directory in #include directives, as in #include
+	<Solvers1d/newton.hpp>
+
+2001-04-04 13:33  lballabio
+
+	* Python/makefile.mak, Sources/makefile.mak: Moved Python tests to
+	PyUnit
+
+2001-04-04 13:08  lballabio
+
+	* Python/Tests/: Makefile.am, QuantLibSuite.py, TestUnit.py,
+	american_option.py, barrier_option.py, binary_option.py,
+	cliquet_option.py, date.py, distributions.py, european_option.py,
+	european_with_dividends.py, everest_option.py,
+	finite_difference_european.py, get_covariance.py,
+	himalaya_option.py, implied_volatility.py, montecarlo_pricers.py,
+	pagoda_option.py, plain_basket_option.py, random_generators.py,
+	risk_statistics.py, statistics.py, term_structures.py: Python tests
+	implemented on top of PyUnit
+
+2001-04-04 13:06  nando
+
+	* Include/quantlib.h, QuantLib.dsp, Examples/history_iterators.cpp,
+	Include/Makefile.am, Include/array.h, Include/array.hpp,
+	Include/calendar.h, Include/calendar.hpp, Include/config.ansi.h,
+	Include/config.ansi.hpp, Include/config.bcc.h,
+	Include/config.bcc.hpp, Include/config.decc.h,
+	Include/config.decc.hpp, Include/config.msvc.h,
+	Include/config.msvc.hpp, Include/config.mwcw.h,
+	Include/config.mwcw.hpp, Include/currency.h, Include/currency.hpp,
+	Include/dataformatters.h, Include/dataformatters.hpp,
+	Include/date.h, Include/date.hpp, Include/daycounter.h,
+	Include/daycounter.hpp, Include/depositrate.h,
+	Include/depositrate.hpp, Include/discountfactor.h,
+	Include/discountfactor.hpp, Include/expressiontemplates.h,
+	Include/expressiontemplates.hpp, Include/forwardvolsurface.h,
+	Include/forwardvolsurface.hpp, Include/handle.h,
+	Include/handle.hpp, Include/history.h, Include/history.hpp,
+	Include/instrument.h, Include/instrument.hpp, Include/null.h,
+	Include/null.hpp, Include/options.h, Include/options.hpp,
+	Include/qldefines.h, Include/qldefines.hpp, Include/qlerrors.h,
+	Include/qlerrors.hpp, Include/quantlib.hpp, Include/rate.h,
+	Include/rate.hpp, Include/ratehelper.h, Include/ratehelper.hpp,
+	Include/riskstatistics.h, Include/riskstatistics.hpp,
+	Include/solver1d.h, Include/solver1d.hpp, Include/spread.h,
+	Include/spread.hpp, Include/swaptionvolsurface.h,
+	Include/swaptionvolsurface.hpp, Include/termstructure.h,
+	Include/termstructure.hpp, SWIG/History.i, SWIG/QuantLib.i,
+	Sources/calendar.cpp, Sources/dataformatters.cpp, Sources/date.cpp,
+	Sources/ratehelper.cpp, Sources/solver1d.cpp,
+	Sources/Calendars/frankfurt.cpp, Sources/Calendars/helsinki.cpp,
+	Sources/Calendars/london.cpp, Sources/Calendars/milan.cpp,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/target.cpp,
+	Sources/Calendars/wellington.cpp,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/Calendars/zurich.cpp, Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/FiniteDifferences/bsmoperator.cpp,
+	Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/FiniteDifferences/valueatcenter.cpp,
+	Sources/Math/matrix.cpp, Sources/Math/multivariateaccumulator.cpp,
+	Sources/Math/normaldistribution.cpp, Sources/Math/statistics.cpp,
+	Sources/Math/symmetricschurdecomposition.cpp,
+	Sources/MonteCarlo/avgpriceasianpathpricer.cpp,
+	Sources/MonteCarlo/avgstrikeasianpathpricer.cpp,
+	Sources/MonteCarlo/basketpathpricer.cpp,
+	Sources/MonteCarlo/controlvariatedpathpricer.cpp,
+	Sources/MonteCarlo/europeanpathpricer.cpp,
+	Sources/MonteCarlo/everestpathpricer.cpp,
+	Sources/MonteCarlo/geometricasianpathpricer.cpp,
+	Sources/MonteCarlo/getcovariance.cpp,
+	Sources/MonteCarlo/himalayapathpricer.cpp,
+	Sources/MonteCarlo/lecuyerrandomgenerator.cpp,
+	Sources/MonteCarlo/pagodapathpricer.cpp,
+	Sources/Pricers/averagepriceasian.cpp,
+	Sources/Pricers/averagestrikeasian.cpp,
+	Sources/Pricers/barrieroption.cpp,
+	Sources/Pricers/bermudanoption.cpp,
+	Sources/Pricers/binaryoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp, Sources/Pricers/cliquetoption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Pricers/dividendeuropeanoption.cpp,
+	Sources/Pricers/dividendoption.cpp,
+	Sources/Pricers/dividendshoutoption.cpp,
+	Sources/Pricers/everestoption.cpp,
+	Sources/Pricers/finitedifferenceeuropean.cpp,
+	Sources/Pricers/himalaya.cpp, Sources/Pricers/mceuropeanpricer.cpp,
+	Sources/Pricers/multiperiodoption.cpp,
+	Sources/Pricers/pagodaoption.cpp,
+	Sources/Pricers/plainbasketoption.cpp,
+	Sources/Pricers/stepconditionoption.cpp,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: Headers
+	policy part 1: Headers should have a .hpp (lowercase) filename
+	extension All *.h renamed to *.hpp
+
+2001-04-04 12:01  marmar
+
+	* Python/Tests/cliquet_option.py: introducing cliquet option
+
+2001-04-04 11:54  marmar
+
+	* Python/makefile.mak: introducing cliquet option
+
+2001-04-04 11:49  marmar
+
+	* Sources/Pricers/Makefile.am, SWIG/Pricers.i, Include/quantlib.h:
+	introducing cliquet option
+
+2001-04-04 11:37  marmar
+
+	* Sources/Pricers/: cliquetoption.cpp, makefile.mak: introducing
+	cliquet option
+
+2001-04-04 11:35  marmar
+
+	* Sources/makefile.mak: Dependencied of subfolders changed
+
+2001-04-04 08:21  marmar
+
+	* Sources/Math/matrix.cpp: Error messages changed
+
+2001-04-03 19:05  marmar
+
+	* Sources/Pricers/multiperiodoption.cpp: Error messages are now
+	more clear
+
+2001-04-03 16:50  lballabio
+
+	* Ruby/: Makefile.am, Tests/random_generators.rb: Forgotten
+	makefile
+
+2001-04-02 16:10  lballabio
+
+	* SWIG/: QuantLib.i, Solvers1D.i: Added Brent solver to Ruby module
+
+2001-04-02 12:59  lballabio
+
+	* Include/solver1d.h, SWIG/Solvers1D.i, Sources/solver1d.cpp,
+	Sources/Calendars/makefile.mak, Sources/DayCounters/makefile.mak,
+	Sources/FiniteDifferences/makefile.mak, Sources/Math/makefile.mak,
+	Sources/MonteCarlo/makefile.mak, Sources/Pricers/bsmoption.cpp,
+	Sources/Pricers/makefile.mak, Sources/Solvers1D/bisection.cpp,
+	Sources/Solvers1D/brent.cpp, Sources/Solvers1D/falseposition.cpp,
+	Sources/Solvers1D/makefile.mak, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp, Sources/TermStructures/makefile.mak:
+	Changed ObjectiveFunction::value to ObjectiveFunction::operator() -
+	also in Python module
+
+2001-04-02 11:21  lballabio
+
+	* Makefile.am, QuantLib.prj, QuantLib.prj.exp, README-mac.txt:
+	Removed Mac folder
+
+2001-03-30 17:45  lballabio
+
+	* Makefile.am, configure.in, Ruby/Tests/Makefile.am,
+	Ruby/Tests/statistics.rb, SWIG/QuantLib.i, SWIG/Statistics.i,
+	SWIG/Vectors.i: Still working on make dist (and added IntVector and
+	DoubleVector to Ruby module)
+
+2001-03-30 12:14  lballabio
+
+	* Makefile.am, QuantLib.dsp, README-win.txt: Emptied Win directory
+
+2001-03-30 11:59  marmar
+
+	* Python/COM/importlibrary.py: Documentation updated, Matrix call
+	did not work properly: rmoved
+
+2001-03-30 11:56  marmar
+
+	* Python/COM/importlibrary.py: Debug is now the default, simplified
+	and speeded up
+
+2001-03-29 16:57  lballabio
+
+	* Python/makefile.mak, Sources/makefile.mak,
+	Sources/Calendars/Makefile.am, Sources/Calendars/makefile.mak,
+	Sources/DayCounters/Makefile.am, Sources/DayCounters/makefile.mak,
+	Sources/FiniteDifferences/Makefile.am,
+	Sources/FiniteDifferences/makefile.mak, Sources/Math/Makefile.am,
+	Sources/Math/makefile.mak, Sources/MonteCarlo/Makefile.am,
+	Sources/MonteCarlo/makefile.mak, Sources/Pricers/Makefile.am,
+	Sources/Pricers/makefile.mak, Sources/Solvers1D/Makefile.am,
+	Sources/Solvers1D/makefile.mak, Sources/TermStructures/Makefile.am,
+	Sources/TermStructures/makefile.mak: Reorganized Borland makefiles
+
+2001-03-29 12:03  lballabio
+
+	* makefile.mak, Python/makefile.mak, Sources/Makefile.am,
+	Sources/makefile.mak: Moved bcc makefile from Win to Sources
+
+2001-03-28 15:40  marmar
+
+	* SWIG/MontecarloTools.i, Sources/Pricers/everestoption.cpp,
+	Sources/Pricers/himalaya.cpp, Sources/Pricers/pagodaoption.cpp,
+	Sources/Pricers/plainbasketoption.cpp: MultiPathGenerator now has a
+	default for mean
+
+2001-03-28 15:33  lballabio
+
+	* Makefile.am, configure.in, Ruby/Tests/Makefile.am,
+	Ruby/Tests/TestUnit.rb, SWIG/QuantLib.i, SWIG/Statistics.i:
+	Generated distribution almost complete (and added random generators
+	to Ruby module)
+
+2001-03-28 15:08  nando
+
+	* Docs/README.txt: better numbering
+
+2001-03-28 14:49  marmar
+
+	* Sources/Pricers/himalaya.cpp, Python/Tests/himalaya_option.py:
+	Dates are now used for input instead of time delays
+
+2001-03-28 14:40  lballabio
+
+	* Sources/Pricers/barrieroption.cpp: Added constness to
+	initialize() and mutableness to data members (how did this compile
+	before?)
+
+2001-03-28 09:37  marmar
+
+	* Include/quantlib.h: file added
+
+2001-03-27 19:39  lballabio
+
+	* Makefile.am, configure.in, Docs/Makefile.am,
+	Examples/Makefile.am, Include/Makefile.am, Python/Makefile.am,
+	Python/COM/Makefile.am, Python/Tests/Makefile.am,
+	Ruby/Tests/distributions.rb, SWIG/Distributions.i,
+	SWIG/Makefile.am, SWIG/QuantLib.i: Making sure dist target is
+	complete (and added distributions to Ruby module)
+
+2001-03-27 19:19  marmar
+
+	* Sources/Pricers/barrieroption.cpp: Bug fixed in calculation of
+	rho and vega
+
+2001-03-27 18:24  lballabio
+
+	* Python/: Tests/pagoda.py, Tests/pagoda_option.py, makefile.mak:
+	Renamed pagoda.py to pagoda_option.py
+
+2001-03-27 18:16  marmar
+
+	* SWIG/Operators.i: Functions SymmetricEigenvalues and
+	SymmetricEigenvectors added
+
+2001-03-27 15:44  lballabio
+
+	* SWIG/Instruments.i: Removed default string arguments (crashed the
+	thing when used)
+
+2001-03-27 11:38  lballabio
+
+	* Ruby/Tests/Makefile.am: Forgotten makefile
+
+2001-03-26 18:07  lballabio
+
+	* makefile.mak, Docs/makefile.mak, Python/makefile.mak: Moved docs
+	make targets to makefile in Docs dir - added docs-* target in
+	global makefile
+
+2001-03-26 14:41  lballabio
+
+	* Makefile.am, configure.in, Ruby/extconf.rb, SWIG/Calendars.i,
+	SWIG/Date.i, SWIG/QuantLib.i: Added ruby, ruby-install and
+	ruby-test targets to makefile (and added calendars to Ruby module
+	in the meantime)
+
+2001-03-26 13:48  lballabio
+
+	* Ruby/QuantLib.rb: I know I said not to delete it. Trust me.
+
+2001-03-26 12:27  lballabio
+
+	* Sources/Calendars/Makefile.am: Added Helsinki and Wellington
+	calendars
+
+2001-03-26 12:00  lballabio
+
+	* SWIG/Calendars.i: Turned string-based factory into Calendar
+	constructor
+
+2001-03-26 11:59  lballabio
+
+	* Include/quantlib.h, SWIG/Calendars.i,
+	Sources/Calendars/helsinki.cpp, Sources/Calendars/wellington.cpp:
+	Added Helsinki and Wellington calendars
+
+2001-03-26 11:13  lballabio
+
+	* Sources/Calendars/london.cpp: big fixed
+
+2001-03-26 10:51  lballabio
+
+	* Sources/Calendars/: london.cpp, newyork.cpp: really fixed line
+	wrappings
+
+2001-03-26 10:47  lballabio
+
+	* Sources/Calendars/: frankfurt.cpp, london.cpp, milan.cpp,
+	newyork.cpp, target.cpp, westerncalendar.cpp, zurich.cpp: Fixed
+	line wrappings
+
+2001-03-23 17:03  lballabio
+
+	* makefile.mak, Python/makefile.mak: Added makefile for Borland C++
+	at root level
+
+2001-03-23 16:01  lballabio
+
+	* Makefile.am, configure.in, Python/Makefile.am,
+	Python/Tests/Makefile.am, SWIG/QuantLib.i: Added targets python and
+	python-install which actually build and install the module, and
+	renamed target test to python-test
+
+2001-03-23 13:37  lballabio
+
+	* Ruby/Tests/date.rb: Translated from Python
+
+2001-03-23 09:44  aleppo
+
+	* Include/solver1d.h: Small bug fixed
+
+2001-03-22 19:07  lballabio
+
+	* Ruby/Tests/TestUnit.rb: Framework for Ruby tests
+
+2001-03-22 17:37  marmar
+
+	* SWIG/Pricers.i, Sources/Pricers/barrieroption.cpp: Barrier option
+	greeks included
+
+2001-03-22 17:01  lballabio
+
+	* Include/instrument.h: Improved up-to-date condition
+
+2001-03-22 13:24  marmar
+
+	* Include/quantlib.h, Python/makefile.mak: Introducing pagoda
+	options
+
+2001-03-22 13:12  marmar
+
+	* Sources/Pricers/Makefile.am, Sources/Pricers/pagodaoption.cpp,
+	Sources/MonteCarlo/Makefile.am,
+	Sources/MonteCarlo/pagodapathpricer.cpp, SWIG/MontecarloPricers.i,
+	Python/Tests/pagoda.py: Introducing pagoda options
+
+2001-03-21 16:29  lballabio
+
+	* Python/makefile.mak: Generic rule added to shadow the default one
+
+2001-03-21 16:06  lballabio
+
+	* Ruby/extconf.rb: Extension configuration file
+
+2001-03-21 16:05  lballabio
+
+	* Ruby/QuantLib.rb: This is not autogenerated - never ever remove
+	it
+
+2001-03-21 16:04  lballabio
+
+	* SWIG/: Date.i, QuantLib.i, String.i: Started playing with Ruby
+
+2001-03-21 16:02  lballabio
+
+	* Sources/FiniteDifferences/Makefile.am: Added missing include path
+
+2001-03-21 16:00  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Removed once again ghost
+	wrappers from hell
+
+2001-03-21 15:54  lballabio
+
+	* Sources/MonteCarlo/Makefile.am: Someone forgot Makefile.am while
+	adding files
+
+2001-03-21 15:25  lballabio
+
+	* SWIG/Statistics.i: Fixed %include (linux is case-sensitive,
+	Nando)
+
+2001-03-21 12:31  marmar
+
+	* Sources/Pricers/: bsmnumericaloption.cpp, bsmoption.cpp,
+	finitedifferenceeuropean.cpp, multiperiodoption.cpp,
+	stepconditionoption.cpp: Main loop tranfered from method value to
+	method calculate.  Methods vega and rho belong now to class
+	BSMOption
+
+2001-03-21 11:52  marmar
+
+	* Python/: quantlib_wrap.cpp, QuantLib.py: valueAtCenter,
+	firstDerivativeAtCenter, secondDerivativeAtCenter, are no longer
+	methods of BSMNumericalOption but separate functions
+
+2001-03-21 11:47  marmar
+
+	* Sources/FiniteDifferences/Makefile.am,
+	Sources/FiniteDifferences/valueatcenter.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/dividendoption.cpp,
+	Sources/Pricers/finitedifferenceeuropean.cpp,
+	Sources/Pricers/multiperiodoption.cpp,
+	Sources/Pricers/stepconditionoption.cpp, SWIG/Operators.i,
+	Include/quantlib.h: valueAtCenter, firstDerivativeAtCenter,
+	secondDerivativeAtCenter, are no longer methods of
+	BSMNumericalOption but separate functions
+
+2001-03-21 11:30  lballabio
+
+	* Python/makefile.mak: Fixed typo
+
+2001-03-21 11:29  lballabio
+
+	* Python/QuantLibc.def: Moved
+
+2001-03-21 10:58  marmar
+
+	* Include/quantlib.h: BermudanOption file added
+
+2001-03-21 10:54  marmar
+
+	* SWIG/Pricers.i, Python/quantlib_wrap.cpp, Python/QuantLib.py:
+	BermudanOption added, DividendOption removed
+
+2001-03-21 10:52  marmar
+
+	* Sources/Pricers/: bermudanoption.cpp, Makefile.am: simple
+	BermudanOption pricer added
+
+2001-03-21 10:50  marmar
+
+	* Sources/Pricers/dividendamericanoption.cpp:
+	DividendAmericanOption is now derived from DividendOption
+
+2001-03-20 16:27  marmar
+
+	* Sources/Pricers/: dividendoption.cpp, dividendshoutoption.cpp:
+	DividendOption and DividendShoutOption are examples of
+	MultiPeriodOption's
+
+2001-03-20 16:16  marmar
+
+	* Python/: quantlib_wrap.cpp, QuantLib.py: DividendOption and
+	DividendShoutOption are examples of  MultiPeriodOption's
+
+2001-03-20 16:13  marmar
+
+	* Sources/Pricers/Makefile.am,
+	Sources/Pricers/multiperiodoption.cpp, SWIG/Pricers.i,
+	Include/quantlib.h: MultiPeriodOption is a generalization of
+	DividendAmericanOption
+
+2001-03-20 16:05  lballabio
+
+	* Python/makefile.mak: Moved Python module generation to his own
+	makefile
+
+2001-03-19 19:39  nando
+
+	* Sources/ratehelper.cpp, Include/ratehelper.h: conflict resolved
+
+2001-03-19 19:18  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: QuantLib.dsp and
+	PyQuantLib.dsp use (Debug) Multithreaded DLL
+
+2001-03-19 18:52  nando
+
+	* Sources/ratehelper.cpp, Include/ratehelper.h: introduces
+	DepositRate2.  Later this will superseed DepositRate
+
+2001-03-19 18:30  nando
+
+	* SWIG/QuantLib.i: refactored *.i files inclusion.  The files are
+	sorted by SWIG debug problem
+
+2001-03-19 18:28  nando
+
+	* SWIG/Statistics.i: added missing %include vectors.i
+
+2001-03-15 17:51  lballabio
+
+	* Docs/footer.html: Aligned under Netscape, Explorer and Opera
+
+2001-03-15 17:07  nando
+
+	* Makefile.am, Docs/README.txt, Docs/footer.html,
+	Docs/quantlib.doxy: doxy config file renamed and unified (Win32 and
+	Linux) html doc footer modified
+
+2001-03-15 16:45  nando
+
+	* Docs/: Makefile.am, README.txt, footer.html, offline.doxy,
+	offline.doxy.linux, online.doxy, onlinefooter.html, quantlib.doxy:
+	doxy config file renamed and unified (Win32 and Linux) html doc
+	footer modified
+
+2001-03-15 16:31  aleppo
+
+	* Sources/solver1d.cpp: Minimum at boudaries compatible with
+	accuracy required.
+
+2001-03-15 14:48  marmar
+
+	* Sources/MonteCarlo/getcovariance.cpp, Include/quantlib.h,
+	Python/Tests/get_covariance.py, Python/Tests/himalaya_option.py,
+	Python/Tests/plain_basket_option.py, SWIG/MontecarloTools.i:
+	getCovariance function added
+
+2001-03-15 11:30  lballabio
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp, SWIG/Date.i,
+	SWIG/QLArray.i, SWIG/Vectors.i: Added dummy returns to avoid
+	warnings
+
+2001-03-15 11:29  lballabio
+
+	* Python/Tests/random_generators.py: Removed 1M list construction
+
+2001-03-14 17:20  lballabio
+
+	* SWIG/: Date.i, Matrix.i, Operators.i: Added augmented assignment
+	operators for Python 2.0
+
+2001-03-14 16:20  lballabio
+
+	* Docs/: offline.doxy, offline.doxy.linux, online.doxy: Updated for
+	Doxygen 1.2.6 (grab it)
+
+2001-03-14 15:03  lballabio
+
+	* Include/ratehelper.h, Python/quantlib_wrap.cpp,
+	Sources/Makefile.am, Sources/ratehelper.cpp,
+	Sources/Pricers/Makefile.am: Fixed Doxygen documentation and
+	makefiles
+
+2001-03-14 14:36  marmar
+
+	* Python/COM/importlibrary.py: Changed to accomodate some bad
+	behaviour of VB
+
+2001-03-13 16:28  lballabio
+
+	* Include/instrument.h: Recalculation control mechanism fixed
+
+2001-03-13 12:11  lballabio
+
+	* Include/handle.h: Removed comparison
+
+2001-03-12 18:35  lballabio
+
+	* Include/calendar.h, Include/currency.h, Include/daycounter.h,
+	Include/handle.h, Include/history.h, Include/instrument.h,
+	Include/null.h, Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	SWIG/Calendars.i, SWIG/Currencies.i, SWIG/Date.i,
+	SWIG/DayCounters.i, SWIG/History.i, SWIG/Instruments.i,
+	SWIG/Interpolation.i, SWIG/TermStructures.i,
+	Sources/dataformatters.cpp, Sources/date.cpp,
+	Sources/DayCounters/actualactual.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp: Removed global IsNull function -
+	could have caused very vicious loops
+
+2001-03-12 14:11  marmar
+
+	* Sources/Pricers/: bsmnumericaloption.cpp,
+	finitedifferenceeuropean.cpp: Public method getPrices added
+
+2001-03-12 14:09  marmar
+
+	* Python/COM/importlibrary.py: instances of Array and Matrix can be
+	easily accessed by COM
+
+2001-03-12 13:59  marmar
+
+	* SWIG/: Calendars.i, Currencies.i, Date.i, DayCounters.i,
+	History.i, Instruments.i, Matrix.i, Pricers.i, QLArray.i,
+	Vectors.i: __str__ now represents the object while __repr__ is
+	unchanged
+
+2001-03-09 13:51  marmar
+
+	* Python/COM/importlibrary.py: Now python can handle COM call to
+	_value_
+
+2001-03-09 13:40  lballabio
+
+	* Include/quantlib.h, Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	SWIG/Barrier.i, SWIG/BoundaryConditions.i, SWIG/Calendars.i,
+	SWIG/Currencies.i, SWIG/Date.i, SWIG/DayCounters.i,
+	SWIG/Distributions.i, SWIG/Financial.i, SWIG/History.i,
+	SWIG/Instruments.i, SWIG/Interpolation.i, SWIG/Matrix.i,
+	SWIG/MontecarloPricers.i, SWIG/MontecarloTools.i, SWIG/Operators.i,
+	SWIG/Options.i, SWIG/Pricers.i, SWIG/QLArray.i, SWIG/QuantLib.i,
+	SWIG/RandomGenerators.i, SWIG/RiskStatistics.i, SWIG/Solvers1D.i,
+	SWIG/Statistics.i, SWIG/String.i, SWIG/TermStructures.i,
+	SWIG/Vectors.i: Spring cleaning for SWIG interfaces
+
+2001-03-08 15:50  marmar
+
+	* Python/Tests/finite_difference_european.py: Revised form of test
+	with random parameters
+
+2001-03-08 15:48  marmar
+
+	* Python/Tests/TestUnit.py: printDetails now takes multiple
+	arguments
+
+2001-03-07 18:43  nando
+
+	* Python/quantlib_wrap.cpp: no message
+
+2001-03-07 18:32  nando
+
+	* Sources/date.cpp: more complete error message
+
+2001-03-07 18:31  nando
+
+	* Include/dataformatters.h: CVS tag Name removed
+
+2001-03-07 18:19  marmar
+
+	* Python/Tests/finite_difference_european.py: Example of european
+	option using finite differences
+
+2001-03-07 18:15  marmar
+
+	* Sources/Pricers/finitedifferenceeuropean.cpp, SWIG/Pricers.i,
+	Python/quantlib_wrap.cpp, Python/QuantLib.py, Include/quantlib.h:
+	Example of european option using finite differences
+
+2001-03-07 18:14  marmar
+
+	* Sources/Pricers/bsmnumericaloption.cpp: Grid limits are fine
+	tuned
+
+2001-03-07 16:27  lballabio
+
+	* Include/handle.h, Python/quantlib_wrap.cpp: Modified Handle to
+	allow keeping ownership
+
+2001-03-07 11:34  nando
+
+	* Include/Makefile.am, Include/depositrate.h, Include/ratehelper.h,
+	Sources/Makefile.am, Sources/ratehelper.cpp: added ratehelper.cpp
+	and ratehelper.h.  Borland, Linux and Visual C++ updated Also added
+	some missing files to Visual C++
+
+2001-03-07 10:35  marmar
+
+	* SWIG/MontecarloPricers.i: EverestOption interface changed
+
+2001-03-07 10:34  marmar
+
+	* Python/: quantlib_wrap.cpp, QuantLib.py: Wrappers updated
+
+2001-03-07 10:34  marmar
+
+	* Python/Tests/everest_option.py: Everest option test added
+
+2001-03-07 10:32  marmar
+
+	* Sources/: Pricers/everestoption.cpp,
+	MonteCarlo/everestpathpricer.cpp: Spot prices not necessary for
+	evaluation of everest option
+
+2001-03-07 10:18  enri
+
+	* Python/setup.py: tests added, default posix compiler changed to
+	g++
+
+2001-03-06 18:02  marmar
+
+	* SWIG/: RiskStatistics.i, Statistics.i: Destructor added to
+	interface
+
+2001-03-06 18:00  marmar
+
+	* SWIG/MontecarloTools.i, SWIG/MontecarloPricers.i,
+	Python/quantlib_wrap.cpp, Python/QuantLib.py,
+	Sources/Pricers/Makefile.am, Sources/Pricers/everestoption.cpp:
+	First, simplified version, of everest option introduced
+
+2001-03-06 17:59  marmar
+
+	* Sources/MonteCarlo/Makefile.am,
+	Sources/MonteCarlo/everestpathpricer.cpp, Include/quantlib.h:
+	First, simplified version, of everest option
+
+2001-03-06 16:13  marmar
+
+	* Sources/: MonteCarlo/himalayapathpricer.cpp,
+	Pricers/himalaya.cpp: Himalaya option now can handle any number of
+	time steps
+
+2001-03-06 16:12  marmar
+
+	* Sources/Pricers/dividendamericanoption.cpp: 80 column format
+	enforced
+
+2001-03-06 16:12  marmar
+
+	* Python/quantlib_wrap.cpp: New wrapper
+
+2001-03-06 14:52  marmar
+
+	* Python/COM/importlibrary.py: Export the QuantLib functionalities
+	to the COM world
+
+2001-03-06 14:10  marmar
+
+	* Python/setup.py: Copyright notice added
+
+2001-03-05 18:18  lballabio
+
+	* Python/Tests/distributions.py: Using math.pi
+
+2001-03-05 17:17  enri
+
+	* Makefile.am, configure.in, Docs/Makefile.am: doxygen support
+	added
+
+2001-03-05 13:50  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: updated
+
+2001-03-05 13:46  lballabio
+
+	* Include/dataformatters.h: Line wraps
+
+2001-03-05 13:45  lballabio
+
+	* SWIG/: Date.i, QLArray.i, Vectors.i: typemaps were _almost_
+	ultimate
+
+2001-03-05 12:47  lballabio
+
+	* Python/quantlib_wrap.cpp: Updated
+
+2001-03-05 12:41  lballabio
+
+	* Python/Tests/binary_option.py: Cosmetic change
+
+2001-03-05 11:41  nando
+
+	* SWIG/RiskStatistics.i, Include/riskstatistics.h: Expected
+	Shortfall added to classes HVarTool and HRiskStatistics.  Expected
+	Shortfall included in python test.
+
+2001-03-05 11:31  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp,
+	Tests/risk_statistics.py: Expected Shortfall added to classes
+	HVarTool and HRiskStatistics.  Expected Shortfall included in
+	python test.
+
+2001-03-02 16:44  lballabio
+
+	* Python/Tests/american_option.py: Cosmetic change
+
+2001-03-02 16:43  lballabio
+
+	* Sources/calendar.cpp: Fixed a bug in advance() with a negative
+	number of days
+
+2001-03-02 15:37  marmar
+
+	* Python/Tests/american_option.py: Shout option included in tests
+
+2001-03-02 15:27  enri
+
+	* Makefile.am: typo fixed
+
+2001-03-02 15:01  aleppo
+
+	* Sources/solver1d.cpp: Bug Fixed
+
+2001-03-02 14:50  marmar
+
+	* Sources/Pricers/: bsmnumericaloption.cpp,
+	stepconditionoption.cpp: Purely virtual method
+	initializeStepCondition() introduced in the design of
+	StepConditionOption
+
+2001-03-02 12:07  lballabio
+
+	* Python/Tests/Makefile.am: Exit make with an error upon failing a
+	test
+
+2001-03-02 11:19  marmar
+
+	* Python/Tests/: american_option.py, binary_option.py,
+	european_option.py, european_with_dividends.py: One failure is
+	enough to halt the test
+
+2001-03-02 10:21  nando
+
+	* Python/quantlib_wrap.cpp: no message
+
+2001-03-02 10:02  marmar
+
+	* Python/Tests/american_option.py: AmericanOption replaced
+	BSMAmericanOption
+
+2001-03-02 09:52  marmar
+
+	* Sources/Pricers/americanoption.cpp: File obsolete. See
+	stepconditionoption.cpp instead
+
+2001-03-02 09:39  enri
+
+	* Sources/Pricers/americanoption.cpp: comments slightly changed
+
+2001-03-02 09:36  enri
+
+	* Docs/offline.doxy.linux, Include/quantlib.h, Python/QuantLib.py,
+	Python/quantlib_wrap.cpp, SWIG/Pricers.i,
+	Sources/Pricers/Makefile.am, Sources/Pricers/americanoption.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Pricers/stepconditionoption.cpp: Shout options added:  *
+	BSMAmericanOption is now AmericanOption, same interface       *
+	ShoutOption added     * both ShoutOption and AmericanOption inherit
+	from	    StepConditionOption offline.doxy.linux added.
+
+2001-03-02 09:27  lballabio
+
+	* Python/Tests/binary_option.py: Fixed initial message
+
+2001-03-01 15:24  marmar
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Updating wrappers
+
+2001-03-01 15:20  marmar
+
+	* Sources/Pricers/: bsmamericanoption.cpp, bsmnumericaloption.cpp,
+	dividendamericanoption.cpp: Private-member syntax changed
+
+2001-03-01 14:53  marmar
+
+	* Sources/Pricers/: dividendamericanoption.cpp,
+	bsmamericanoption.cpp: Standard step condition and
+	finite-difference model introduced
+
+2001-03-01 13:57  enri
+
+	* Include/quantlib.h, Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	Python/Tests/binary_option.py, SWIG/Pricers.i,
+	Sources/Pricers/Makefile.am, Sources/Pricers/binaryoption.cpp:
+	class BinaryOption added, test it with binary_option.py
+
+2001-03-01 12:37  lballabio
+
+	* Sources/calendar.cpp: Fixed bug in advance(...,Days)
+
+2001-02-28 13:45  lballabio
+
+	* Python/Tests/TestUnit.py: Print exception type besides the
+	message
+
+2001-02-28 12:46  lballabio
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	Python/Tests/date.py, SWIG/Calendars.i, SWIG/Currencies.i,
+	SWIG/Date.i, SWIG/DayCounters.i, SWIG/History.i,
+	SWIG/Instruments.i, SWIG/Matrix.i, SWIG/QLArray.i, SWIG/Vectors.i:
+	Removed redundant __str__ methods - __repr__ used instead
+
+2001-02-27 16:44  lballabio
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp, SWIG/QuantLib.i,
+	SWIG/Vectors.i: Updated DoubleVector and IntVector typemaps
+
+2001-02-27 12:46  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Updated
+
+2001-02-27 12:45  lballabio
+
+	* SWIG/Date.i: Allowed None as null date and completed DateVector
+	typemap
+
+2001-02-27 12:44  lballabio
+
+	* SWIG/QLArray.i: Cosmetic changes
+
+2001-02-26 19:22  lballabio
+
+	* configure.in, Include/qlerrors.h, Python/quantlib_wrap.cpp,
+	SWIG/Date.i, SWIG/QLArray.i, SWIG/QuantLib.i: Replaced
+	std::domain_error with QuantLib::IndexError
+
+2001-02-26 18:05  lballabio
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp, SWIG/Date.i,
+	SWIG/Interpolation.i, SWIG/Makefile.am, SWIG/Matrix.i,
+	SWIG/MontecarloPricers.i, SWIG/MontecarloTools.i, SWIG/Operators.i,
+	SWIG/Pricers.i, SWIG/QLArray.i, SWIG/QuantLib.i, SWIG/Statistics.i,
+	SWIG/Vectors.i: Ultimate Array interface and typemap for SWIG
+
+2001-02-26 18:00  lballabio
+
+	* Sources/FiniteDifferences/tridiagonaloperator.cpp: Moved
+	constructor to .cpp - inlined constructors raising exceptions are
+	bad medicine
+
+2001-02-26 17:59  lballabio
+
+	* Include/qlerrors.h: Wrapped license line
+
+2001-02-23 18:24  lballabio
+
+	* Sources/dataformatters.cpp: Allow formatting of null dates
+
+2001-02-23 16:47  lballabio
+
+	* Python/Tests/TestUnit.py: Added output flush before actual
+	calculation
+
+2001-02-22 16:22  lballabio
+
+	* Makefile.am, configure.in, Python/Tests/Makefile.am: Added test
+	target to makefile
+
+2001-02-22 15:43  lballabio
+
+	* Python/Tests/: RiskStatistics.py, TermStructure.py,
+	barrier_option.py, barrieroption.py, himalaya.py,
+	himalaya_option.py, impliedVol.py, implied_volatility.py,
+	mcpricers.py, montecarlo_pricers.py, plain_basket_option.py,
+	plainbasket.py, random_generators.py, risk_statistics.py,
+	statistics.py, statistics_test.py, term_structures.py, testRNGs.py:
+	Renamed test script to follow a single naming scheme
+
+2001-02-22 15:29  lballabio
+
+	* Python/quantlib_wrap.cpp: Updated
+
+2001-02-22 15:27  lballabio
+
+	* Python/Tests/: RiskStatistics.py, TermStructure.py, TestUnit.py,
+	american_option.py, barrieroption.py, date.py, distributions.py,
+	european_option.py, european_with_dividends.py, himalaya.py,
+	impliedVol.py, mcpricers.py, plainbasket.py, statistics_test.py,
+	testRNGs.py: Implemented new test framework
+
+2001-02-22 15:26  lballabio
+
+	* SWIG/: Calendars.i, Currencies.i, DayCounters.i: Added dummy
+	returns to factories
+
+2001-02-22 15:25  lballabio
+
+	* Sources/Math/multivariateaccumulator.cpp: Template methods moved
+	to header file
+
+2001-02-21 14:16  lballabio
+
+	* Include/riskstatistics.h: Removed unneeded default constructor
+
+2001-02-21 13:26  aleppo
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	SWIG/RiskStatistics.i: added VarTool to the Python interface
+
+2001-02-21 12:38  lballabio
+
+	* Python/quantlib_wrap.cpp: Updated
+
+2001-02-21 12:35  lballabio
+
+	* Include/config.msvc.h: Removed unneeded warning
+
+2001-02-21 12:32  lballabio
+
+	* SWIG/History.i: __cmp__ now correctly returns an int
+
+2001-02-21 12:31  lballabio
+
+	* Sources/FiniteDifferences/tridiagonaloperator.cpp: Removed
+	redundant theSize data member
+
+2001-02-21 10:47  lballabio
+
+	* Include/config.msvc.h: Worked around bug in Visual C++
+
+2001-02-20 14:58  nando
+
+	* Include/riskstatistics.h, Python/quantlib_wrap.cpp,
+	SWIG/RiskStatistics.i: added class VarTool.  RiskStatistics was
+	derived from Statistics: now RiskStatistics includes VarTool and
+	Statistics.  VarTool is not based on Statistics, but requires mean
+	and standardDeviation as input.
+
+2001-02-20 12:15  marmar
+
+	* SWIG/: Barrier.i, Pricers.i, QuantLib.i: BarrierOption added to
+	the interface
+
+2001-02-20 12:14  marmar
+
+	* Sources/Pricers/bsmeuropeanoption.cpp: "growth" replaced with
+	dividend
+
+2001-02-20 12:13  marmar
+
+	* Python/: quantlib_wrap.cpp, QuantLib.py, Tests/barrieroption.py:
+	BarrierOption implements the analytical barrier option
+
+2001-02-20 12:09  marmar
+
+	* Sources/Pricers/Makefile.am, Sources/Pricers/barrieroption.cpp,
+	Include/quantlib.h: BarrierOption implements the analytical barrier
+	option
+
+2001-02-19 15:00  lballabio
+
+	* Docs/offline.doxy, Docs/online.doxy, Include/qldefines.h:
+	Corrected documentation
+
+2001-02-19 13:19  marmar
+
+	* Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Pricers/dividendeuropeanoption.cpp,
+	Include/forwardvolsurface.h: Added trailing _ to protected and
+	private members
+
+2001-02-19 13:05  lballabio
+
+	* Include/qldefines.h: Corrected documentation
+
+2001-02-19 12:05  lballabio
+
+	* Python/quantlib_wrap.cpp: Updated
+
+2001-02-19 12:04  lballabio
+
+	* Include/: config.msvc.h, qldefines.h: Refined a few macros
+
+2001-02-19 11:52  lballabio
+
+	* SWIG/String.i: Removed unused variable
+
+2001-02-16 17:57  nando
+
+	* Python/quantlib_wrap.cpp: no message
+
+2001-02-16 16:38  lballabio
+
+	* Python/quantlib_wrap.cpp: Updated
+
+2001-02-16 16:29  lballabio
+
+	* Include/: config.ansi.h, config.bcc.h, config.decc.h,
+	config.mwcw.h: Added QL_ITERATOR_TRAITS and
+	QL_DECLARE_TEMPLATE_SPECIFICATIONS macros
+
+2001-02-16 16:19  lballabio
+
+	* Include/: calendar.h, currency.h, daycounter.h, instrument.h:
+	Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
+
+2001-02-16 16:18  lballabio
+
+	* Include/qldefines.h: Added QL_ITERATOR_TRAITS and
+	QL_DECLARE_TEMPLATE_SPECIFICATIONS macros
+
+2001-02-16 16:14  lballabio
+
+	* Sources/Math/matrix.cpp,
+	Sources/Math/symmetricschurdecomposition.cpp, SWIG/Matrix.i:
+	renamed sqrt to matrixSqrt
+
+2001-02-16 16:11  lballabio
+
+	* Include/null.h: Hidden a few classes from Doxygen
+
+2001-02-16 08:57  marmar
+
+	* Sources/solver1d.cpp: The condition "fxMax_ == 0.0" became "if
+	(QL_FABS(fxMax_) <= xAccuracy", and other minor changes
+
+2001-02-15 18:44  lballabio
+
+	* Include/: config.ansi.h, config.bcc.h, config.decc.h,
+	config.msvc.h, config.mwcw.h: Updated macros
+
+2001-02-15 18:36  lballabio
+
+	* acconfig.h, acinclude.m4, configure.in, Include/qldefines.h:
+	Added checks for iterator and iterator_traits
+
+2001-02-15 16:57  marmar
+
+	* Sources/Pricers/: bsmnumericaloption.cpp, bsmoption.cpp: Defined
+	QL_MIN_VOLATILITY 0.0005 and QL_MAX_VOLATILITY 3.0
+
+2001-02-15 16:31  marmar
+
+	* Sources/Pricers/dividendamericanoption.cpp: Some beauty added to
+	the files
+
+2001-02-15 16:30  marmar
+
+	* Sources/Pricers/bsmnumericaloption.cpp: dVolMultiplier and
+	dRMultiplier defined constant
+
+2001-02-15 16:27  marmar
+
+	* Sources/Pricers/bsmoption.cpp: Now impliedVol is called with
+	default values for maxVolatility and minVolatility
+
+2001-02-15 12:57  nando
+
+	* Python/Tests/testRNGs.py: no message
+
+2001-02-15 12:56  nando
+
+	* Sources/Pricers/bsmoption.cpp, Python/Tests/impliedVol.py:
+	impliedVol require targetValue>0.0
+
+2001-02-14 19:43  lballabio
+
+	* Include/quantlib.h, Sources/Pricers/Makefile.am: Added coupling
+	iterators
+
+2001-02-14 14:51  marmar
+
+	* Sources/Pricers/dividendeuropeanoption.cpp: default  constructor
+	has been moved to the cpp file
+
+2001-02-14 13:27  lballabio
+
+	* Include/history.h: Bug fixed and guidelines enforced
+
+2001-02-14 12:13  lballabio
+
+	* Python/quantlib_wrap.cpp: Updated
+
+2001-02-14 11:57  marmar
+
+	* Sources/Pricers/bsmoption.cpp: BSMOption has	a cleaner
+	constructor
+
+2001-02-14 11:38  lballabio
+
+	* Include/history.h: Found out what 14.6.2.3 of the standard means
+
+2001-02-14 11:11  marmar
+
+	* Sources/Pricers/bsmnumericaloption.cpp: BSMNumericalOption has  a
+	cleaner constructor
+
+2001-02-13 16:05  lballabio
+
+	* Sources/: MonteCarlo/Makefile.am,
+	MonteCarlo/averagepriceasianpathpricer.cpp,
+	MonteCarlo/averagestrikeasianpathpricer.cpp,
+	MonteCarlo/avgpriceasianpathpricer.cpp,
+	MonteCarlo/avgstrikeasianpathpricer.cpp,
+	Pricers/averagepriceasian.cpp, Pricers/averagestrikeasian.cpp:
+	Trimmed a couple of long file names for Mac compatibility
+
+2001-02-13 12:32  marmar
+
+	* Sources/Pricers/dividendamericanoption.cpp: Efficency improved.
+	Also, dividends do not have to be positive to allow for negative
+	cash flows
+
+2001-02-13 11:08  marmar
+
+	* SWIG/MontecarloTools.i: Changed interface to
+	StandardMultiPathGenerator
+
+2001-02-13 11:06  marmar
+
+	* SWIG/Pricers.i, SWIG/MontecarloPricers.i,
+	Python/quantlib_wrap.cpp: Ambiguous variable name
+	underlyingGrowthRate changed in unambiguos dividendYield
+
+2001-02-13 11:02  marmar
+
+	* Sources/Pricers/averagepriceasian.cpp,
+	Sources/Pricers/averagestrikeasian.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Pricers/himalaya.cpp, Sources/Pricers/mceuropeanpricer.cpp,
+	Sources/Pricers/plainbasketoption.cpp, Python/Tests/mcpricers.py:
+	Ambiguous variable name underlyingGrowthRate changed in unambiguos
+	dividendYield
+
+2001-02-13 10:58  lballabio
+
+	* Include/: config.bcc.h, history.h, qldefines.h: Some more work on
+	iterators
+
+2001-02-12 20:00  lballabio
+
+	* Include/: config.bcc.h, history.h, qldefines.h: Some more work on
+	iterators
+
+2001-02-12 19:34  lballabio
+
+	* Include/config.bcc.h, Include/history.h, Include/qldefines.h,
+	Python/quantlib_wrap.cpp: Some work on iterators
+
+2001-02-09 20:45  lballabio
+
+	* acconfig.h, configure.in, Python/quantlib_wrap.cpp: Updated
+	configuration macros
+
+2001-02-09 20:25  lballabio
+
+	* Docs/: offline.doxy, online.doxy: Reworked macro documentation
+
+2001-02-09 20:24  lballabio
+
+	* Include/qldefines.h: Reorganized to include configuration file on
+	all platforms
+
+2001-02-09 20:23  lballabio
+
+	* Include/: config.ansi.h, config.bcc.h, config.decc.h,
+	config.msvc.h, config.mwcw.h: Added specialized config.*.h files
+
+2001-02-09 20:21  lballabio
+
+	* Include/: calendar.h, currency.h, daycounter.h, instrument.h:
+	removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
+
+2001-02-09 20:16  lballabio
+
+	* Include/date.h, Include/handle.h, Include/history.h,
+	Sources/date.cpp: removed QL_PTR_CONST macro
+
+2001-02-08 18:20  lballabio
+
+	* Include/qldefines.h: Fixed wrapping
+
+2001-02-08 18:05  lballabio
+
+	* Docs/offline.doxy: Switched EXTRACT ALL off
+
+2001-02-07 11:17  marmar
+
+	* Python/Tests/himalaya.py: Test for Himalayan-type option pricer
+
+2001-02-07 11:15  marmar
+
+	* SWIG/MontecarloPricers.i, Python/quantlib_wrap.cpp,
+	Python/QuantLib.py: Interface for Himalaya-type option pricer
+
+2001-02-07 11:15  marmar
+
+	* Sources/Pricers/: Makefile.am, himalaya.cpp: Himalaya-type option
+	pricer
+
+2001-02-07 11:13  marmar
+
+	* Sources/MonteCarlo/: Makefile.am, himalayapathpricer.cpp:
+	Himalaya-type path pricer
+
+2001-02-06 10:14  lballabio
+
+	* Python/quantlib_wrap.cpp: Fixed file names in Doxygen tags
+
+2001-02-06 10:02  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: no message
+
+2001-02-05 18:04  marmar
+
+	* Python/Tests/plainbasket.py: Test for PlainBasketOption
+
+2001-02-05 17:57  marmar
+
+	* Python/Tests/mcpricers.py: McAsianPricer replaced by
+	AveragePriceAsian and AverageStrikeAsian
+
+2001-02-05 17:54  marmar
+
+	* Sources/Pricers/mceuropeanpricer.cpp,
+	Sources/Pricers/Makefile.am, Sources/Pricers/averagepriceasian.cpp,
+	Sources/Pricers/averagestrikeasian.cpp,
+	Sources/Pricers/mcasianpricer.cpp, SWIG/MontecarloPricers.i:
+	McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
+
+2001-02-05 17:52  marmar
+
+	* Sources/MonteCarlo/: Makefile.am, averageasianpathpricer.cpp,
+	averagepriceasianpathpricer.cpp, averagestrikeasianpathpricer.cpp:
+	AverageAsianPathPricer substituted by AveragePriceAsianPathPricer
+	and AverageStrikeAsianPathPricer
+
+2001-02-05 15:49  enri
+
+	* Makefile.am, Include/Makefile.am, Include/qldefines.h,
+	Python/quantlib_wrap.cpp: added some files to Makefile.am files
+
+2001-02-05 14:52  lballabio
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	Sources/MonteCarlo/Makefile.am, Sources/Pricers/Makefile.am:
+	Makefiles fixed
+
+2001-02-05 14:26  enri
+
+	* Sources/Pricers/Makefile.am: typo removed
+
+2001-02-05 11:48  lballabio
+
+	* Docs/: offline.doxy, online.doxy: Updated for Doxygen 1.2.5
+
+2001-02-02 19:06  lballabio
+
+	* Include/instrument.h: Cosmetic changes (wrapping and docs)
+
+2001-02-02 19:01  lballabio
+
+	* SWIG/: Calendars.i, Currencies.i, DayCounters.i: Added factories
+
+2001-02-02 19:00  lballabio
+
+	* SWIG/Financial.i: Removed warning message
+
+2001-02-02 19:00  lballabio
+
+	* SWIG/Operators.i: Added tridiagonal Identity and algebra
+
+2001-02-02 18:59  lballabio
+
+	* SWIG/: BoundaryConditions.i, Date.i, Distributions.i, History.i,
+	Instruments.i, Interpolation.i, Matrix.i, Options.i, Pricers.i,
+	QuantLib.i, RandomGenerators.i, RiskStatistics.i, Solvers1D.i,
+	Statistics.i, String.i, TermStructures.i, Vectors.i: Added module
+	name in warning message
+
+2001-02-02 12:21  marmar
+
+	* Sources/: Pricers/Makefile.am, MonteCarlo/Makefile.am: Monte
+	Carlo tools updated
+
+2001-02-02 12:06  marmar
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Wrappers updated
+
+2001-02-02 12:00  marmar
+
+	* Sources/Pricers/plainbasketoption.cpp: Example of Monte Carlo
+	pricer on mutiple assets
+
+2001-02-02 11:58  marmar
+
+	* SWIG/: MontecarloPricers.i, QuantLib.i, Statistics.i:
+	MonteCarloTools.i added
+
+2001-02-02 11:57  marmar
+
+	* SWIG/MontecarloTools.i: Basic swig interface for Monte Carlo
+	tools
+
+2001-02-02 11:53  marmar
+
+	* Sources/MonteCarlo/basketpathpricer.cpp: Example of a path pricer
+	depending on multiple factors
+
+2001-02-02 11:44  marmar
+
+	* Sources/Math/multivariateaccumulator.cpp: MultivariateAccumulator
+	does NOT have to be initialized with the size of data
+
+2001-02-01 12:13  nando
+
+	* Python/quantlib_wrap.cpp: no message
+
+2001-02-01 12:10  nando
+
+	* Python/Tests/TermStructure.py: almost a test
+
+2001-01-30 16:57  marmar
+
+	* Sources/Pricers/: mcasianpricer.cpp, mceuropeanpricer.cpp: Now
+	using OneFactorMonteCarloOption
+
+2001-01-29 16:01  marmar
+
+	* Sources/Pricers/: mceuropeanpricer.cpp, mcasianpricer.cpp:
+	Modified to accomodate code-sharing with multi-dimensional Monte
+	Carlo
+
+2001-01-26 12:09  marmar
+
+	* Sources/Math/multivariateaccumulator.cpp: Now the covariance()
+	method is consistent with the variance() method of the class
+	Statistics
+
+2001-01-25 16:11  lballabio
+
+	* Python/quantlib_wrap.cpp: Added helper functions to make
+	iterators
+
+2001-01-25 14:00  lballabio
+
+	* Include/Makefile.am, Python/quantlib_wrap.cpp,
+	Sources/Math/Makefile.am: Fixed include paths in makefiles
+
+2001-01-25 12:57  lballabio
+
+	* Include/quantlib.h, Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	Sources/Math/Makefile.am, Sources/Math/multivariateaccumulator.cpp,
+	Sources/Math/symmetricschurdecomposition.cpp: Included outer
+	product and sqrt into matrix.h
+
+2001-01-25 12:56  lballabio
+
+	* SWIG/: Matrix.i, QuantLib.i: Added Matrix.i
+
+2001-01-25 12:54  lballabio
+
+	* Sources/Math/matrixsqrt.cpp: Included in matrix.cpp
+
+2001-01-25 11:29  marmar
+
+	* Sources/Math/symmetricschurdecomposition.cpp, Include/quantlib.h:
+	JacobiDecomposition renamed SymmetricSchurDecomposition
+
+2001-01-25 11:23  marmar
+
+	* Sources/Math/jacobidecomposition.cpp: JacobiDecomposition renamed
+	SymmetricSchurDecomposition
+
+2001-01-25 11:02  marmar
+
+	* Sources/Math/matrixsqrt.cpp: JacobiDecomposition renamed
+	SymmetricSchurDecomposition
+
+2001-01-24 17:02  marmar
+
+	* Include/quantlib.h: math files added
+
+2001-01-24 15:56  aleppo
+
+	* Sources/Math/multivariateaccumulator.cpp: Added iterator
+	combining-iterator
+
+2001-01-24 14:17  marmar
+
+	* Sources/calendar.cpp: style redefined
+
+2001-01-24 14:16  marmar
+
+	* Sources/Math/matrixsqrt.cpp: sqrt for Matrix
+
+2001-01-24 14:00  marmar
+
+	* Sources/Math/jacobidecomposition.cpp: Jacobi decomposition return
+	eigenvalues and eigenvectors of a square symmmetric real matrix
+
+2001-01-24 11:51  marmar
+
+	* Sources/Math/multivariateaccumulator.cpp: Sample accumulator for
+	multivariate analisys
+
+2001-01-23 19:12  lballabio
+
+	* Include/: array.h, quantlib.h: Added matrix.h to Include/Math
+
+2001-01-23 12:08  lballabio
+
+	* Contributors.txt, Include/history.h, Include/quantlib.h: Renamed
+	iterators in Include\Utilities and related files
+
+2001-01-19 10:33  nando
+
+	* Include/riskstatistics.h, Include/risktool.h, Python/QuantLib.py,
+	Python/quantlib_wrap.cpp, Python/Tests/RiskStatistics.py,
+	Python/Tests/RiskTool.py, SWIG/QuantLib.i, SWIG/RiskStatistics.i,
+	SWIG/RiskTool.i: RiskTool is now RiskStatistics everywhere
+
+2001-01-19 10:31  nando
+
+	* SWIG/TermStructures.i: Deposit is now DepositRate
+
+2001-01-19 09:52  marmar
+
+	* Sources/Pricers/bsmnumericaloption.cpp: Small bug fixed.
+	Initialization of grid vectors is now after  the determination of
+	their size
+
+2001-01-18 18:18  nando
+
+	* Python/Tests/TermStructure.py: it will eveolve into a
+	TermStructure test
+
+2001-01-18 17:26  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: deposit file and class
+	renamed to DepositRate
+
+2001-01-18 17:22  nando
+
+	* Include/deposit.h, Include/depositrate.h,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: deposit file
+	and class renamed to DepositRate
+
+2001-01-18 16:51  nando
+
+	* Sources/TermStructures/piecewiseconstantforwards.cpp: bug fixed.
+	Out of bound array access in case of extrapolation
+
+2001-01-18 15:40  nando
+
+	* Python/: quantlib_wrap.cpp, Tests/RiskTool.py: no message
+
+2001-01-18 15:39  nando
+
+	* SWIG/TermStructures.i: extrapolation allowed
+
+2001-01-18 15:36  nando
+
+	* Include/termstructure.h,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: 80 columns
+	enforced private members with trailing underscore
+
+2001-01-18 14:23  nando
+
+	* SWIG/TermStructures.i: now term structure allows extrapolation
+
+2001-01-18 14:18  nando
+
+	* Include/termstructure.h,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: now term
+	structure allows extrapolation
+
+2001-01-18 10:12  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp, Tests/RiskTool.py:
+	improved RiskTool test
+
+2001-01-17 19:21  enri
+
+	* Python/Makefile.am: added -keyword, -opt to swig flags
+
+2001-01-17 19:20  enri
+
+	* Makefile.am, configure.in, Python/Makefile.am,
+	Python/QuantLib.py, Python/quantlib_wrap.cpp, Sources/Makefile.am:
+	the python target is now generatet only iff you have swig
+	installed. (configure.in) added/removed some missing/extra files in
+	Makefile.am's
+
+2001-01-17 17:34  nando
+
+	* Python/Tests/RiskTool.py: new improved version
+
+2001-01-17 17:33  nando
+
+	* Include/qldefines.h: bug fix.  It was # define QL_MIN_DOUBLE
+	std::numeric_limits<double>::min() now it is # define QL_MIN_DOUBLE
+	 -std::numeric_limits<double>::max()
+
+2001-01-17 15:37  nando
+
+	* Include/calendar.h, Include/currency.h, Include/dataformatters.h,
+	Include/daycounter.h, Include/deposit.h, Include/discountfactor.h,
+	Include/forwardvolsurface.h, Include/handle.h, Include/history.h,
+	Include/instrument.h, Include/null.h, Include/options.h,
+	Include/qldefines.h, Include/qlerrors.h, Include/quantlib.h,
+	Include/rate.h, Include/spread.h, Include/swaptionvolsurface.h,
+	Include/termstructure.h, Sources/calendar.cpp,
+	Sources/dataformatters.cpp, Sources/date.cpp,
+	Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/Math/statistics.cpp,
+	Sources/MonteCarlo/geometricasianpathpricer.cpp,
+	Sources/MonteCarlo/lecuyerrandomgenerator.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmoption.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: tabs removed
+
+2001-01-17 15:00  nando
+
+	* Python/quantlib_wrap.cpp: no message
+
+2001-01-17 14:56  nando
+
+	* Sources/Pricers/bsmamericanoption.cpp: 80 columns enforced tabs
+	removed
+
+2001-01-17 14:53  nando
+
+	* Include/solver1d.h, Sources/solver1d.cpp,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp: 80 columns enforced tabs removed
+	private data member now have trailing underscore
+
+2001-01-16 12:32  nando
+
+	* SWIG/RiskTool.i, Python/quantlib_wrap.cpp,
+	Python/Tests/RiskTool.py: updated RiskTool.  now constructor
+	doesn't require target, while shortfall and averageShortfall
+	require target as input parameter
+
+2001-01-16 12:30  nando
+
+	* Sources/risktool.cpp: risktool.cpp removed
+
+2001-01-16 12:30  nando
+
+	* Include/risktool.h: restoring risktool.h
+
+2001-01-16 12:24  nando
+
+	* Include/risktool.h: file removed
+
+2001-01-15 18:06  lballabio
+
+	* Include/quantlib.h: Added MappingIterator class
+
+2001-01-15 16:10  lballabio
+
+	* Sources/Makefile.am: Added Include/Math to include path
+
+2001-01-15 15:55  lballabio
+
+	* Sources/Makefile.am: Added risktool.cpp
+
+2001-01-15 15:39  lballabio
+
+	* Include/Makefile.am: Added risktool.h
+
+2001-01-15 14:55  lballabio
+
+	* Sources/risktool.cpp: Fixed typo in documentation
+
+2001-01-15 14:49  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Updated
+
+2001-01-15 14:43  lballabio
+
+	* SWIG/: Makefile.am, MontecarloPricers.i, Operators.i: Using
+	PyArray typemap
+
+2001-01-15 14:43  lballabio
+
+	* SWIG/QuantLib.i: Added Interpolation.i
+
+2001-01-15 14:42  lballabio
+
+	* SWIG/Interpolation.i: Added interpolations
+
+2001-01-15 14:42  lballabio
+
+	* SWIG/Vectors.i: Added Array class, PyArray typemap and
+	lexicographical view
+
+2001-01-15 14:41  lballabio
+
+	* Sources/Math/Makefile.am: Deleted old files
+
+2001-01-15 14:40  lballabio
+
+	* Include/quantlib.h: Added new files
+
+2001-01-15 14:38  lballabio
+
+	* Sources/Pricers/dividendamericanoption.cpp: Using new cubic
+	spline
+
+2001-01-15 14:37  lballabio
+
+	* Sources/Math/newcubicspline.cpp: Removed functionalities
+	reimplemented in interpolation classes
+
+2001-01-15 14:27  aleppo
+
+	* Python/: quantlib_wrap.cpp, Tests/RiskTool.py: improved Python
+	test
+
+2001-01-15 13:41  aleppo
+
+	* Include/risktool.h: bug fixed: shortfall(s) were not normalized
+
+2001-01-12 19:28  lballabio
+
+	* Sources/Math/statistics.cpp: Updated to reflect changes in
+	statistics.h
+
+2001-01-12 18:38  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: added RiskTool.  It
+	offres VAR, shortfall, average shortfall methods.  It still needs
+	test
+
+2001-01-12 18:34  nando
+
+	* SWIG/QuantLib.i, SWIG/RiskTool.i, Python/Tests/RiskTool.py: added
+	RiskTool.  It offres VAR, shortfall, average shortfall methods.  It
+	still needs test
+
+2001-01-12 18:30  nando
+
+	* Sources/risktool.cpp, Include/risktool.h: added RiskTool.  It
+	offres VAR, shortfall, average shortfall methods.  It still needs
+	test
+
+2001-01-11 19:10  nando
+
+	* Python/Tests/distributions.py: generalized to sigma<>1 and
+	average<>0 Also added NormalDistribution.derivative().	Improved
+	Python test now also uses Finite Difference first and second order
+	operators
+
+2001-01-11 19:09  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: no message
+
+2001-01-11 19:06  nando
+
+	* SWIG/QuantLib.i: now includes all *.i
+
+2001-01-11 19:06  nando
+
+	* Sources/Math/normaldistribution.cpp, SWIG/Distributions.i:
+	generalized to sigma<>1 and average<>0 Also added
+	NormalDistribution.derivative().  Improved Python test now also
+	uses Finite Difference first and second order operators
+
+2001-01-11 17:22  enri
+
+	* Makefile.am: Examples/history_iterators.cpp added to EXTRA_DIST
+
+2001-01-11 12:51  lballabio
+
+	* Include/quantlib.h: Added QLUTL alias for QuantLib::Utilities::
+
+2001-01-11 12:02  nando
+
+	* Include/array.h: added #include <iterator>
+
+2001-01-10 17:34  nando
+
+	* Sources/MonteCarlo/: averageasianpathpricer.cpp,
+	europeanpathpricer.cpp, geometricasianpathpricer.cpp: unsigned int
+	< int turned into int < int to avoid warning
+
+2001-01-10 12:21  lballabio
+
+	* Docs/offline.doxy, Docs/online.doxy,
+	Examples/history_iterators.cpp, Include/history.h: Added Examples
+	folder
+
+2001-01-10 11:03  nando
+
+	* Contributors.txt: removed addresses (added without asking)
+
+2001-01-10 10:57  nando
+
+	* Contributors.txt: added email address
+
+2001-01-09 19:31  enri
+
+	* Makefile.am, acconfig.h, acinclude.m4, configure.in,
+	updateproject.sh, Include/Makefile.am, Include/qldefines.h,
+	Python/Makefile.am, Python/quantlib_wrap.cpp, Python/setup.py,
+	SWIG/Makefile.am, Sources/Makefile.am,
+	Sources/Calendars/Makefile.am, Sources/DayCounters/Makefile.am,
+	Sources/FiniteDifferences/Makefile.am, Sources/Math/Makefile.am,
+	Sources/MonteCarlo/Makefile.am, Sources/Pricers/Makefile.am,
+	Sources/Solvers1D/Makefile.am, Sources/TermStructures/Makefile.am:
+	gnu autotools files added. QuantLib autoconfiscation in
+	progress....
+
+2001-01-09 18:58  enri
+
+	* Include/history.h: added explicit typedefs to const_iterator
+
+2001-01-09 13:08  lballabio
+
+	* Include/expressiontemplates.h, Include/forwardvolsurface.h,
+	Include/swaptionvolsurface.h, Include/termstructure.h,
+	Python/QuantLib.py, Python/quantlib_wrap.cpp, SWIG/Date.i: Cleaned
+	up style in a few files
+
+2001-01-09 13:00  lballabio
+
+	* SWIG/Vectors.i: Added check for None
+
+2001-01-09 13:00  lballabio
+
+	* SWIG/History.i: Added iterator interface
+
+2001-01-09 12:56  lballabio
+
+	* Include/qldefines.h: Added QL_ITERATOR macro
+
+2001-01-09 12:51  lballabio
+
+	* Include/history.h: Using FilteringIterator for valid iterators
+
+2001-01-08 17:22  nando
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	Sources/Math/normaldistribution.cpp: added
+	InverseCumulativeNormalDistribution
+
+2001-01-08 17:20  nando
+
+	* SWIG/Distributions.i: Python interface now includes
+	InverseCumulativeNormalDistribution
+
+2001-01-08 17:19  nando
+
+	* Python/Tests/: american_option.py, date.py, distributions.py,
+	european_option.py, european_with_dividends.py, impliedVol.py,
+	mcpricers.py, statistics_test.py, testRNGs.py: more homogeneous
+	format
+
+2001-01-08 16:33  nando
+
+	* Python/Tests/: distributions.py, american_option.py,
+	european_option.py, european_with_dividends.py, impliedVol.py,
+	mcpricers.py, statistics_test.py, testRNGs.py: improved
+
+2001-01-08 16:12  nando
+
+	* Python/Tests/: date.py, distributions.py: added test for date and
+	distributions
+
+2001-01-08 12:47  lballabio
+
+	* Include/array.h: Moved array.h back to Include folder
+
+2001-01-08 12:44  lballabio
+
+	* Include/expressiontemplates.h, Python/quantlib_wrap.cpp,
+	SWIG/Vectors.i, Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp: Array back into
+	QuantLib namespace - Math namespace broke expression templates, go
+	figure
+
+2001-01-08 11:28  lballabio
+
+	* Include/array.h, Python/quantlib_wrap.cpp, SWIG/Vectors.i,
+	Sources/FiniteDifferences/bsmoperator.cpp,
+	Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/Math/newcubicspline.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp: Moved Array to Math
+	namespace
+
+2001-01-08 11:12  lballabio
+
+	* Sources/Pricers/dividendamericanoption.cpp: Fixed humongous bug
+	where prices were not modified by dividends
+
+2001-01-05 16:58  lballabio
+
+	* Include/date.h, Sources/MonteCarlo/controlvariatedpathpricer.cpp:
+	Fixed Doxygen documentation
+
+2001-01-05 14:06  lballabio
+
+	* Python/quantlib_wrap.cpp, SWIG/Currencies.i, SWIG/Date.i,
+	SWIG/String.i, SWIG/TermStructures.i, SWIG/Vectors.i: Fixed vector*
+	typemaps
+
+2001-01-05 13:52  nando
+
+	* Python/quantlib_wrap.cpp: no message
+
+2001-01-05 13:28  lballabio
+
+	* Sources/: MonteCarlo/controlvariatedpathpricer.cpp,
+	MonteCarlo/singlepathcontrolvariatedpricer.cpp,
+	Pricers/mcasianpricer.cpp: Renamed SinglePathControlVariatedPricer
+	to ControlVariatedPathPricer
+
+2001-01-05 12:52  lballabio
+
+	* Sources/: MonteCarlo/averageasianpathpricer.cpp,
+	MonteCarlo/singlepathaveragepriceasianpricer.cpp,
+	Pricers/mcasianpricer.cpp: Renamed
+	SinglePathAveragePriceAsianPricer to AverageAsianPathPricer
+
+2001-01-05 12:42  lballabio
+
+	* Sources/: MonteCarlo/europeanpathpricer.cpp,
+	MonteCarlo/geometricasianpathpricer.cpp,
+	MonteCarlo/singlepathaveragepriceasianpricer.cpp,
+	MonteCarlo/singlepatheuropeanpricer.cpp, Pricers/mcasianpricer.cpp,
+	Pricers/mceuropeanpricer.cpp: Renamed SinglePathEuropeanPricer to
+	EuropeanPathPricer
+
+2001-01-05 12:18  lballabio
+
+	* Sources/: MonteCarlo/geometricasianpathpricer.cpp,
+	MonteCarlo/singlepathgeometricasianpricer.cpp,
+	Pricers/mcasianpricer.cpp: Renamed SinglePathGeometricAsianPricer
+	to GeometricAsianPathPricer
+
+2001-01-05 12:02  lballabio
+
+	* Python/quantlib_wrap.cpp,
+	Sources/MonteCarlo/singlepathcontrolvariatedpricer.cpp,
+	Sources/MonteCarlo/singlepatheuropeanpricer.cpp,
+	Sources/Pricers/mcasianpricer.cpp,
+	Sources/Pricers/mceuropeanpricer.cpp: Renamed SinglePathPricer to
+	PathPricer
+
+2001-01-05 09:59  lballabio
+
+	* Python/Tests/: american_option.py, european_option.py,
+	european_with_dividends.py, greeks_in_american.py,
+	greeks_in_european.py, greeks_in_european_with_dividend.py: Renamed
+	a few tests
+
+2001-01-04 21:09  nando
+
+	* Include/date.h, Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	SWIG/Date.i, Sources/dataformatters.cpp, Sources/date.cpp,
+	Sources/Calendars/frankfurt.cpp, Sources/Calendars/london.cpp,
+	Sources/Calendars/milan.cpp, Sources/Calendars/newyork.cpp,
+	Sources/Calendars/target.cpp, Sources/Calendars/zurich.cpp: few
+	changes: enumerations, tab/spaces, more checks, python test, bug
+	fixed
+
+2001-01-04 21:07  nando
+
+	* Docs/README.txt: better readme (still to improve)
+
+2001-01-04 21:06  nando
+
+	* Include/qlerrors.h: no real change
+
+2001-01-04 18:31  marmar
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	Python/Tests/mcpricers.py, SWIG/MontecarloPricers.i,
+	SWIG/QuantLib.i,
+	Sources/MonteCarlo/singlepathaveragepriceasianpricer.cpp,
+	Sources/MonteCarlo/singlepathcontrolvariatedpricer.cpp,
+	Sources/MonteCarlo/singlepatheuropeanpricer.cpp,
+	Sources/MonteCarlo/singlepathgeometricasianpricer.cpp,
+	Sources/Pricers/mcasianpricer.cpp,
+	Sources/Pricers/mceuropeanpricer.cpp: Alpha version of the Monte
+	Carlo tools.
+
+2001-01-04 12:59  lballabio
+
+	* Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	SWIG/BoundaryConditions.i, SWIG/Calendars.i, SWIG/Currencies.i,
+	SWIG/Date.i, SWIG/DayCounters.i, SWIG/Financial.i, SWIG/History.i,
+	SWIG/Instruments.i, SWIG/Options.i, SWIG/Pricers.i,
+	SWIG/RandomGenerators.i, SWIG/Solvers1D.i, SWIG/Statistics.i,
+	SWIG/String.i, SWIG/TermStructures.i, SWIG/Vectors.i: Line wraps
+	fixed when stumbling upon them
+
+2001-01-04 12:57  lballabio
+
+	* SWIG/Operators.i, Include/quantlib.h: Differential operators
+	added
+
+2001-01-04 12:54  lballabio
+
+	* SWIG/: Distributions.i, QuantLib.i: Distributions.i added
+
+2000-12-28 16:25  marmar
+
+	* Include/quantlib.h: QLMNT QuantLib::MonteCarlo::
+
+2000-12-28 12:40  aleppo
+
+	* Include/qlerrors.h: Modified QL_REQUIRE and others
+
+2000-12-27 18:46  lballabio
+
+	* Sources/Math/randomgenerator.cpp: Moved to MonteCarlo folder
+
+2000-12-27 18:18  lballabio
+
+	* Contributors.txt, Include/array.h, Include/dataformatters.h,
+	Include/qldefines.h, Include/qlerrors.h, Include/quantlib.h,
+	Sources/dataformatters.cpp, Sources/DayCounters/actualactual.cpp:
+	Changes for compiling under Linux and Alpha Linux
+
+2000-12-27 16:23  marmar
+
+	* Include/quantlib.h, Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	Python/Tests/testRNGs.py, SWIG/RandomGenerators.i,
+	Sources/MonteCarlo/lecuyerrandomgenerator.cpp: Random number
+	generators has been updated and documented.  Now the Sample
+	Generator idea is fully implemented
+
+2000-12-27 16:16  lballabio
+
+	* SWIG/: Calendars.i, Currencies.i, Date.i, DayCounters.i,
+	History.i, Instruments.i, String.i, TermStructures.i: Using String
+	typemap for i/o of std::string
+
+2000-12-27 15:53  lballabio
+
+	* Sources/solver1d.cpp: using QL_EPSILON macro
+
+2000-12-27 15:18  lballabio
+
+	* Include/history.h: added missing semicolons
+
+2000-12-27 15:05  lballabio
+
+	* Include/array.h, Include/forwardvolsurface.h, Include/history.h,
+	Include/instrument.h, Include/qldefines.h, Include/qlerrors.h,
+	Include/solver1d.h, Include/swaptionvolsurface.h,
+	Python/quantlib_wrap.cpp, SWIG/Solvers1D.i, Sources/date.cpp,
+	Sources/solver1d.cpp, Sources/DayCounters/actualactual.cpp,
+	Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/Math/newcubicspline.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Solvers1D/newton.cpp, Sources/Solvers1D/newtonsafe.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: Turned
+	Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
+2000-12-22 16:14  aleppo
+
+	* Python/quantlib_wrap.cpp: Updated
+
+2000-12-22 16:13  aleppo
+
+	* Include/: forwardvolsurface.h, swaptionvolsurface.h: Included
+	spread.h
+
+2000-12-20 19:26  enri
+
+	* Sources/calendar.cpp: test
+
+2000-12-20 19:08  nando
+
+	* Python/quantlib_wrap.cpp: updated wrappers
+
+2000-12-20 19:02  nando
+
+	* Docs/README.txt: no message
+
+2000-12-20 18:00  enri
+
+	* Include/solver1d.h, Sources/dataformatters.cpp,
+	Sources/Math/randomgenerator.cpp, Sources/Pricers/bsmoption.cpp,
+	Sources/Solvers1D/brent.cpp, Sources/Solvers1D/ridder.cpp: modified
+	to use new macros
+
+2000-12-20 17:42  enri
+
+	* Sources/calendar.cpp: commit test
+
+2000-12-20 16:35  lballabio
+
+	* Python/quantlib_wrap.cpp: Updated
+
+2000-12-20 16:27  lballabio
+
+	* Include/null.h, Sources/dataformatters.cpp,
+	Sources/Math/statistics.cpp: Using new defines for helping Linux
+	port
+
+2000-12-20 16:27  lballabio
+
+	* Include/qldefines.h: Added new defines for helping Linux port
+
+2000-12-20 16:26  lballabio
+
+	* Include/instrument.h: #included null.h
+
+2000-12-20 16:26  lballabio
+
+	* Include/: discountfactor.h, rate.h, spread.h: Temporarily removed
+	debug implementations
+
+2000-12-20 16:19  lballabio
+
+	* Include/history.h: Removed History:: scopes not digestible by
+	VC++
+
+2000-12-19 15:52  enri
+
+	* History.txt: dumb commit (test)
+
+2000-12-18 19:37  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Updated
+
+2000-12-18 19:36  lballabio
+
+	* SWIG/QuantLib.i: Included History.i
+
+2000-12-18 19:36  lballabio
+
+	* SWIG/History.i, Include/history.h: Added to CVS
+
+2000-12-18 19:32  lballabio
+
+	* Sources/Math/randomgenerator.cpp: Added CVS tags
+
+2000-12-18 19:26  lballabio
+
+	* Include/array.h: Corrected Doxygen grouping
+
+2000-12-18 16:58  enri
+
+	* SWIG/String.i: typemap for string object added
+
+2000-12-18 16:38  enri
+
+	* SWIG/Vectors.i: Added typemap for const &
+
+2000-12-18 16:38  enri
+
+	* SWIG/TermStructures.i: Corrected error message
+
+2000-12-18 16:37  enri
+
+	* SWIG/Date.i: Added typemap for DateVector
+
+2000-12-18 16:37  enri
+
+	* SWIG/Currencies.i: Added typemap for CurrencyHandleVector
+
+2000-12-15 13:21  marmar
+
+	* SWIG/: QuantLib.i, RandomGenerators.i: Swig interfaces for
+	uniform and gaussian random number generators
+
+2000-12-15 13:20  marmar
+
+	* Python/Tests/testRNGs.py: Test for uniform and gaussian random
+	number generators
+
+2000-12-15 13:19  marmar
+
+	* Python/: quantlib_wrap.cpp, QuantLib.py: New wrappers for uniform
+	and gaussian random number generators
+
+2000-12-15 13:17  marmar
+
+	* Include/quantlib.h, Sources/Math/randomgenerator.cpp: Adding
+	uniform and gaussian random number generators
+
+2000-12-15 11:03  enri
+
+	* SWIG/Instruments.i: Updated Instrument interface
+
+2000-12-15 11:00  enri
+
+	* Include/instrument.h: Instrument interface slightly changed.
+	PricedInstrument added.
+
+2000-12-14 14:25  lballabio
+
+	* Docs/: offline.doxy, online.doxy: Excluded quantlib.h (humongous
+	dependency graph)
+
+2000-12-14 13:57  lballabio
+
+	* Include/quantlib.h: Removed Doxygen file documentation block
+
+2000-12-14 13:40  lballabio
+
+	* Sources/Pricers/: bsmeuropeanoption.cpp, bsmoption.cpp: Added CVS
+	tags in Doxygen file documentation blocks
+
+2000-12-14 13:32  lballabio
+
+	* Docs/offline.doxy, Docs/online.doxy, Include/array.h,
+	Include/calendar.h, Include/currency.h, Include/dataformatters.h,
+	Include/date.h, Include/daycounter.h, Include/deposit.h,
+	Include/discountfactor.h, Include/expressiontemplates.h,
+	Include/forwardvolsurface.h, Include/handle.h,
+	Include/instrument.h, Include/null.h, Include/options.h,
+	Include/qldefines.h, Include/qlerrors.h, Include/quantlib.h,
+	Include/rate.h, Include/solver1d.h, Include/spread.h,
+	Include/swaptionvolsurface.h, Include/termstructure.h,
+	Sources/calendar.cpp, Sources/dataformatters.cpp, Sources/date.cpp,
+	Sources/solver1d.cpp, Sources/Calendars/frankfurt.cpp,
+	Sources/Calendars/london.cpp, Sources/Calendars/milan.cpp,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/target.cpp,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/Calendars/zurich.cpp, Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/FiniteDifferences/bsmoperator.cpp,
+	Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/Math/newcubicspline.cpp,
+	Sources/Math/normaldistribution.cpp, Sources/Math/statistics.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: Added CVS
+	tags in Doxygen file documentation blocks
+
+2000-12-13 19:09  nando
+
+	* Include/array.h, Include/calendar.h, Include/currency.h,
+	Include/dataformatters.h, Include/date.h, Include/daycounter.h,
+	Include/deposit.h, Include/discountfactor.h,
+	Include/expressiontemplates.h, Include/forwardvolsurface.h,
+	Include/handle.h, Include/instrument.h, Include/null.h,
+	Include/options.h, Include/qlerrors.h, Include/quantlib.h,
+	Include/rate.h, Include/solver1d.h, Include/spread.h,
+	Include/swaptionvolsurface.h, Include/termstructure.h,
+	Sources/calendar.cpp, Sources/dataformatters.cpp, Sources/date.cpp,
+	Sources/solver1d.cpp, Sources/Calendars/frankfurt.cpp,
+	Sources/Calendars/london.cpp, Sources/Calendars/milan.cpp,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/target.cpp,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/Calendars/zurich.cpp, Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/FiniteDifferences/bsmoperator.cpp,
+	Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/Math/newcubicspline.cpp,
+	Sources/Math/normaldistribution.cpp, Sources/Math/statistics.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: CVS keyword
+	added
+
+2000-12-13 18:57  nando
+
+	* Include/qldefines.h: CVS keyword modified
+
+2000-12-13 18:52  nando
+
+	* Include/: qldefines.h, qldefines.h: CVS $Id$ and $Sources$ and
+	$Log$
+	Revision 1.1  2001/05/24 13:34:09  nando
+	changelog added.
+	Manual update for the time being
+ keywords added
+
+2000-12-13 13:20  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: updated wrapper
+
+2000-12-13 12:27  nando
+
+	* Python/Tests/statistics_test.py, SWIG/Statistics.i: added
+	errorEstimate()
+
+2000-12-13 11:23  lballabio
+
+	* Include/calendar.h, Include/currency.h, Python/quantlib_wrap.cpp,
+	SWIG/Calendars.i, Sources/calendar.cpp: Extended
+	Calendar::advance(...) method
+
+2000-12-12 18:36  nando
+
+	* Include/qldefines.h: added new comment for documentation
+
+2000-12-12 18:35  nando
+
+	* Docs/onlinefooter.html: new footer
+
+2000-12-12 13:13  nando
+
+	* Include/termstructure.h: comment typo fixed
+
+2000-12-12 12:22  lballabio
+
+	* Docs/: offline.doxy, online.doxy, onlinefooter.html: Diversified
+	online and offline footer
+
+2000-12-12 12:21  lballabio
+
+	* Docs/doxygen.cfg: Renamed
+
+2000-12-11 12:22  lballabio
+
+	* Include/qldefines.h: Expression templates now work under
+	CodeWarrior 4
+
+2000-12-11 12:00  lballabio
+
+	* Docs/doxygen.cfg, Include/array.h, Include/expressiontemplates.h,
+	Include/qldefines.h: Expression templates now work under Borland
+	C++ 5.5
+
+2000-12-11 12:00  lballabio
+
+	* Include/quantlib.h: removed QL_INCLUDE_IN_SUBFOLDER
+
+2000-12-05 16:46  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Updated wrappers
+
+2000-12-05 16:44  lballabio
+
+	* SWIG/TermStructures.i: Flat forward curve added
+
+2000-12-05 16:43  lballabio
+
+	* Sources/TermStructures/piecewiseconstantforwards.cpp: no message
+
+2000-12-05 16:43  lballabio
+
+	* Sources/date.cpp: Prevented out-of-array access in d/m/y
+	constructor
+
+2000-12-05 16:41  lballabio
+
+	* Include/quantlib.h: flatforward.h added
+
+2000-12-05 16:40  lballabio
+
+	* Docs/doxygen.cfg: Updated for Doxygen 1.2.3-20001203
+
+2000-12-05 13:15  marmar
+
+	* Sources/Pricers/bsmnumericaloption.cpp: Erooro message updated
+
+2000-12-05 13:14  marmar
+
+	* Python/quantlib_wrap.cpp: Updating wrapper
+
+2000-12-04 14:12  lballabio
+
+	* Include/qldefines.h: QL_CTIME_IN_STD and QL_CLOCK added
+
+2000-12-01 13:46  marmar
+
+	* Python/Tests/greeks_in_european_with_dividend.py: Theta has been
+	introduced
+
+2000-11-28 10:16  marmar
+
+	* Sources/Pricers/dividendamericanoption.cpp: Theta has been added,
+	but not yet tested
+
+2000-11-28 10:13  marmar
+
+	* SWIG/Pricers.i: Greeks added for options with dividend
+
+2000-11-28 10:11  marmar
+
+	* Python/Tests/greeks_in_european_with_dividend.py: New test added
+	for greeks in DividendEuropeanOption
+
+2000-11-27 18:07  lballabio
+
+	* Docs/doxygen.cfg: added GENERATE_TREEVIEW for the latest Doxygen
+	release
+
+2000-11-23 16:05  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Updated
+
+2000-11-23 15:46  lballabio
+
+	* SWIG/Date.i: Added comparison between dates
+
+2000-11-23 10:51  nando
+
+	* Python/Tests/: greeks_in_american.py, greeks_in_european.py,
+	impliedVol.py, statistics_test.py: changed the end message
+
+2000-11-22 09:59  nando
+
+	* Readme.txt, SWIG/README.txt: little changes
+
+2000-11-22 09:34  marmar
+
+	* SWIG/README.txt, Python/README.txt, Readme.txt: Minor changes in
+	README file
+
+2000-11-21 17:43  nando
+
+	* Docs/README.txt: rephrased Luigi: ma i link che ho messo sono
+	attendibili ?
+
+2000-11-21 17:36  lballabio
+
+	* Docs/README.txt: no message
+
+2000-11-21 16:55  nando
+
+	* Readme.txt: prova
+
+2000-11-21 16:55  nando
+
+	* Readme.txt, Docs/README.txt, Python/README.txt,
+	Python/quantlib_wrap.cpp, SWIG/README.txt,
+	Sources/Pricers/dividendamericanoption.cpp: added a few READMEs
+	Luigi e Marco: CONTROLLATELI !!!!
+
+2000-11-20 13:41  nando
+
+	* Authors.txt, Contributors.txt, History.txt, News.txt: no message
+
+2000-11-20 12:16  lballabio
+
+	* Include/qldefines.h, Python/quantlib_wrap.cpp: no message
+
+2000-11-17 14:56  nando
+
+	* Sources/Pricers/bsmoption.cpp: removed wrong the intrinsic value
+	check from the method impliedVol
+
+2000-11-17 13:40  lballabio
+
+	* Include/deposit.h: Changed documentation
+
+2000-11-17 13:39  lballabio
+
+	* Docs/doxygen.cfg: EXTRACT_ALL set to true
+
+2000-11-17 13:38  lballabio
+
+	* SWIG/: Calendars.i, Currencies.i, DayCounters.i, Instruments.i,
+	TermStructures.i: Changed comment
+
+2000-11-17 13:21  nando
+
+	* Include/qldefines.h: added two section to the documentation main
+	page
+
+2000-11-17 13:17  nando
+
+	* Python/quantlib_wrap.cpp: no message
+
+2000-11-17 10:49  lballabio
+
+	* Docs/doxygen.cfg: hidden undocumented classes
+
+2000-11-16 18:51  lballabio
+
+	* Docs/doxygen.cfg, Include/forwardvolsurface.h,
+	Include/qldefines.h, Include/swaptionvolsurface.h,
+	Include/termstructure.h, Python/QuantLib.py,
+	Python/quantlib_wrap.cpp, SWIG/BoundaryConditions.i,
+	SWIG/Calendars.i, SWIG/Currencies.i, SWIG/Date.i,
+	SWIG/DayCounters.i, SWIG/Financial.i, SWIG/Instruments.i,
+	SWIG/Operators.i, SWIG/Options.i, SWIG/Pricers.i, SWIG/QuantLib.i,
+	SWIG/Solvers1D.i, SWIG/Statistics.i, SWIG/TermStructures.i,
+	SWIG/Vectors.i, Sources/Calendars/frankfurt.cpp,
+	Sources/Calendars/london.cpp, Sources/Calendars/milan.cpp,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/target.cpp,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/FiniteDifferences/bsmoperator.cpp,
+	Sources/FiniteDifferences/tridiagonaloperator.cpp,
+	Sources/Math/newcubicspline.cpp,
+	Sources/Math/normaldistribution.cpp, Sources/Math/statistics.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp,
+	Sources/Pricers/dividendamericanoption.cpp,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: no more
+	global include files
+
+2000-11-16 18:36  lballabio
+
+	* Sources/Calendars/zurich.cpp: Added
+
+2000-11-16 18:33  lballabio
+
+	* Include/quantlib.h: Added
+
+2000-11-16 18:31  lballabio
+
+	* Include/: calendars.h, currencies.h, daycounters.h,
+	finitedifferences.h, instruments.h, mathtools.h, patterns.h,
+	pricers.h, solvers1d.h, termstructures.h: Deleted - quantlib.h
+	created instead
+
+2000-11-16 15:24  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: no message
+
+2000-11-16 15:08  nando
+
+	* Sources/FiniteDifferences/tridiagonaloperator.cpp: extended error
+	message
+
+2000-11-16 13:30  lballabio
+
+	* Include/: calendars.h, currencies.h, daycounters.h,
+	finitedifferences.h, forwardvolsurface.h, instrument.h,
+	instruments.h, mathtools.h, patterns.h, pricers.h, solvers1d.h,
+	termstructures.h: Documentation corrected
+
+2000-11-16 13:06  nando
+
+	* Sources/Pricers/bsmoption.cpp: fixed the buggy intrinsic value
+	check for impliedVol
+
+2000-11-16 12:44  lballabio
+
+	* Include/qldefines.h: Changed macro definitions to allow template
+	arguments
+
+2000-11-16 12:29  nando
+
+	* Sources/Pricers/bsmoption.cpp: target value for impliedVol now is
+	checked to be > option's intrinsic value
+
+2000-11-15 16:50  marmar
+
+	* Sources/Pricers/: bsmnumericaloption.cpp,
+	dividendamericanoption.cpp: Sfatey feature: grid has default
+	dimension
+
+2000-11-15 16:47  marmar
+
+	* SWIG/Pricers.i: New interface with default values for american
+	options
+
+2000-11-15 10:01  marmar
+
+	* Sources/Pricers/dividendamericanoption.cpp: The number of time
+	steps is chosen automatically
+
+2000-11-15 10:00  marmar
+
+	* Include/: mathtools.h, pricers.h: Modified to include
+	DividendEuropeanOption and  DividendAmericanOption
+
+2000-11-15 09:49  marmar
+
+	* SWIG/Pricers.i: Class DividendEuropeanOption and
+	DividendAmericanOption now have an interface
+
+2000-11-14 18:31  marmar
+
+	* Python/Tests/greeks_in_american.py: small problem fixed
+
+2000-11-14 18:29  marmar
+
+	* Sources/Pricers/dividendamericanoption.cpp: options with discrete
+	dividends are added
+
+2000-11-14 18:26  marmar
+
+	* Sources/Math/newcubicspline.cpp: newcubicspline are added
+
+2000-11-14 09:56  marmar
+
+	* Sources/Pricers/: bsmamericanoption.cpp, bsmnumericaloption.cpp:
+	thePrices have been converted to theInitialPrices
+
+2000-11-13 18:01  lballabio
+
+	* Include/solver1d.h: Documentation added
+
+2000-11-13 17:30  marmar
+
+	* Include/array.h: qlerrors.h is now included
+
+2000-11-13 16:29  lballabio
+
+	* Docs/doxygen.cfg: (Re)added
+
+2000-11-13 16:26  lballabio
+
+	* Docs/: doxygen.cfg, makefile.mak: no message
+
+2000-11-13 16:02  lballabio
+
+	* Sources/: statistics.cpp, Math/statistics.cpp: no message
+
+2000-11-13 14:00  lballabio
+
+	* Python/Tests/greeks_in_american.py, SWIG/Instruments.i,
+	SWIG/Statistics.i, SWIG/TermStructures.i,
+	Sources/Math/normaldistribution.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp: no message
+
+2000-11-13 13:59  lballabio
+
+	* Sources/Pricers/bsmamericanoption.cpp: Changed theta calculation
+
+2000-11-13 13:56  lballabio
+
+	* Include/calendars.h, Include/currencies.h, Include/daycounters.h,
+	Include/finitedifferences.h, Include/forwardvolsurface.h,
+	Include/solvers1d.h, Include/swaptionvolsurface.h,
+	Include/termstructure.h, Python/quantlib_wrap.cpp: no message
+
+2000-11-13 13:53  lballabio
+
+	* Include/array.h: Inlined algebra
+
+2000-11-13 13:47  lballabio
+
+	* Include/termstructures.h: Added
+
+2000-11-13 13:45  lballabio
+
+	* Include/piecewiseconstantforwards.h: Moved to TermStructures
+	folder
+
+2000-11-13 13:43  lballabio
+
+	* Include/patterns.h: Added
+
+2000-11-13 13:41  lballabio
+
+	* Include/observable.h: Moved to Patterns folder
+
+2000-11-13 13:37  lballabio
+
+	* Include/instruments.h: Added
+
+2000-11-13 13:33  lballabio
+
+	* Include/stock.h: Moved to Instruments folder
+
+2000-11-13 13:29  lballabio
+
+	* Include/mathtools.h: no message
+
+2000-11-13 13:28  lballabio
+
+	* Include/: normaldistribution.h, statistics.h: Moved to Math
+	folder
+
+2000-11-10 18:21  lballabio
+
+	* Sources/Calendars/frankfurt.cpp, Sources/Calendars/london.cpp,
+	Sources/Calendars/milan.cpp, Sources/Calendars/newyork.cpp,
+	Sources/Calendars/target.cpp,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp, Sources/Solvers1D/bisection.cpp,
+	Sources/Solvers1D/brent.cpp, Sources/Solvers1D/falseposition.cpp,
+	Sources/Solvers1D/newton.cpp, Sources/Solvers1D/newtonsafe.cpp,
+	Sources/Solvers1D/ridder.cpp, Sources/Solvers1D/secant.cpp,
+	SWIG/BoundaryConditions.i, SWIG/Calendars.i, SWIG/Currencies.i,
+	SWIG/DayCounters.i, SWIG/Operators.i, SWIG/Pricers.i,
+	SWIG/Solvers1D.i: Updated to account for the subfolders in the
+	Include folder
+
+2000-11-10 18:18  lballabio
+
+	* Sources/FiniteDifferences/: bsmoperator.cpp,
+	tridiagonaloperator.cpp: Moved from Operators folder
+
+2000-11-10 18:12  lballabio
+
+	* Python/quantlib_wrap.cpp: Updated versions
+
+2000-11-10 18:11  lballabio
+
+	* Include/qldefines.h: Added support for subfolders in Include
+
+2000-11-10 18:11  lballabio
+
+	* Include/: calendars.h, currencies.h, daycounters.h,
+	finitedifferences.h, pricers.h, solvers1d.h: Added
+
+2000-11-10 18:10  lballabio
+
+	* Include/: bisection.h, brent.h, falseposition.h, newton.h,
+	newtonsafe.h, ridder.h, secant.h: Moved to Solvers1D directory
+
+2000-11-10 18:08  lballabio
+
+	* Include/: americancondition.h, bsmamericanoption.h,
+	bsmeuropeanoption.h, bsmnumericaloption.h, bsmoption.h: Moved to
+	Pricers directory
+
+2000-11-10 18:06  lballabio
+
+	* Include/: backwardeuler.h, blackscholesmerton.h,
+	boundarycondition.h, cranknicolson.h, evolver.h,
+	finitedifferencemodel.h, forwardeuler.h, identity.h, operator.h,
+	operatortraits.h, stepcondition.h, tridiagonaloperator.h: Moved to
+	FiniteDifferences directory
+
+2000-11-10 18:02  lballabio
+
+	* Include/: actual360.h, actual365.h, actualactual.h, thirty360.h,
+	thirty360european.h, thirty360italian.h: Moved to DayCounters
+	directory
+
+2000-11-10 18:00  lballabio
+
+	* Include/: dem.h, eur.h, gbp.h, itl.h, usd.h: Moved to Currencies
+	directory
+
+2000-11-10 17:57  lballabio
+
+	* Include/: frankfurt.h, london.h, milan.h, newyork.h, target.h,
+	westerncalendar.h: Moved to Calendars directory
+
+2000-11-10 17:54  lballabio
+
+	* Docs/doxygen.cfg: no message
+
+2000-11-10 09:32  marmar
+
+	* Python/Tests/greeks_in_american.py: Now work as a test
+
+2000-11-09 19:21  lballabio
+
+	* Docs/doxygen.cfg, Include/bisection.h, Include/brent.h,
+	Include/bsmnumericaloption.h, Include/bsmoption.h,
+	Include/falseposition.h, Include/newton.h, Include/newtonsafe.h,
+	Include/qldefines.h, Include/ridder.h, Include/secant.h,
+	Include/solver1d.h, Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	Python/Tests/greeks_in_american.py,
+	Python/Tests/greeks_in_european.py, Python/Tests/impliedVol.py,
+	Python/Tests/statistics_test.py, SWIG/Solvers1D.i,
+	Sources/solver1d.cpp, Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp, Sources/Solvers1D/bisection.cpp,
+	Sources/Solvers1D/brent.cpp, Sources/Solvers1D/falseposition.cpp,
+	Sources/Solvers1D/newton.cpp, Sources/Solvers1D/newtonsafe.cpp,
+	Sources/Solvers1D/ridder.cpp, Sources/Solvers1D/secant.cpp: Fixed
+	american theta Renamed Function to ObjectiveFunction
+
+2000-11-09 13:05  marmar
+
+	* Sources/Pricers/bsmamericanoption.cpp: Small bug found in theta()
+	method of BSMAmericanOption
+
+2000-11-08 18:52  nando
+
+	* Python/Tests/statistics_test.py: sampleWeight changed to
+	weightSum
+
+2000-11-08 18:39  marmar
+
+	* Sources/Pricers/bsmnumericaloption.cpp,
+	Include/bsmnumericaloption.h: Methods moved from private to
+	protected in order to be accessed by derived classes
+
+2000-11-08 16:51  nando
+
+	* Python/Tests/: greeks_in_american.py, greeks_in_european.py: new
+	copyright notice
+
+2000-11-08 16:46  nando
+
+	* Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.cpp,
+	SWIG/BoundaryConditions.i, SWIG/Calendars.i, SWIG/Currencies.i,
+	SWIG/Date.i, SWIG/DayCounters.i, SWIG/Financial.i,
+	SWIG/Instruments.i, SWIG/Operators.i, SWIG/Options.i,
+	SWIG/Pricers.i, SWIG/QuantLib.i, SWIG/Solvers1D.i,
+	SWIG/Statistics.i, SWIG/TermStructures.i, SWIG/Vectors.i: new
+	copyright notice
+
+2000-11-08 16:43  nando
+
+	* Sources/: calendar.cpp, dataformatters.cpp, date.cpp,
+	solver1d.cpp, statistics.cpp, Calendars/frankfurt.cpp,
+	Calendars/london.cpp, Calendars/milan.cpp, Calendars/newyork.cpp,
+	Calendars/target.cpp, Calendars/westerncalendar.cpp,
+	DayCounters/actualactual.cpp, DayCounters/thirty360.cpp,
+	DayCounters/thirty360italian.cpp, Math/normaldistribution.cpp,
+	Pricers/bsmamericanoption.cpp, Pricers/bsmeuropeanoption.cpp,
+	Pricers/bsmnumericaloption.cpp, Pricers/bsmoption.cpp: new
+	copyright notice
+
+2000-11-08 16:39  nando
+
+	* Include/: actual360.h, actual365.h, actualactual.h,
+	americancondition.h, array.h, backwardeuler.h, bisection.h,
+	blackscholesmerton.h, boundarycondition.h, brent.h,
+	bsmamericanoption.h, bsmeuropeanoption.h, bsmnumericaloption.h,
+	bsmoption.h, calendar.h, cranknicolson.h, currency.h,
+	dataformatters.h, date.h, daycounter.h, dem.h, deposit.h,
+	discountfactor.h, eur.h, evolver.h, expressiontemplates.h,
+	falseposition.h, finitedifferencemodel.h, forwardeuler.h,
+	forwardvolsurface.h, frankfurt.h, gbp.h, handle.h, identity.h,
+	instrument.h, itl.h, london.h, milan.h, newton.h, newtonsafe.h,
+	newyork.h, normaldistribution.h, null.h, observable.h, operator.h,
+	operatortraits.h, options.h, piecewiseconstantforwards.h,
+	qldefines.h, qlerrors.h, rate.h, ridder.h, secant.h, solver1d.h,
+	spread.h, statistics.h, stepcondition.h, stock.h,
+	swaptionvolsurface.h, target.h, termstructure.h, thirty360.h,
+	thirty360european.h, thirty360italian.h, tridiagonaloperator.h,
+	usd.h, westerncalendar.h: new copyright notice
+
+2000-11-08 16:38  nando
+
+	* Python/Tests/bsm2.py: renamed as impliedVol.py
+
+2000-11-08 16:37  nando
+
+	* Python/Tests/: impliedVol.py, statistics_test.py: no message
+
+2000-11-08 16:12  marmar
+
+	* Python/Tests/: greeks_in_american.py, greeks_in_european.py: This
+	tests check the greeks
+
+2000-11-07 18:00  nando
+
+	* Python/Tests/: bsm2.py, statistics_test.py: no message
+
+2000-11-07 17:52  nando
+
+	* Sources/: Solvers1D/bisection.cpp, Solvers1D/brent.cpp,
+	Solvers1D/falseposition.cpp, Solvers1D/newton.cpp,
+	Solvers1D/newtonsafe.cpp, Solvers1D/ridder.cpp,
+	Solvers1D/secant.cpp, TermStructures/piecewiseconstantforwards.cpp:
+	copyright comment changed
+
+2000-11-07 17:49  nando
+
+	* Include/actual360.h, Include/actual365.h, Include/actualactual.h,
+	Include/americancondition.h, Include/array.h,
+	Include/backwardeuler.h, Include/bisection.h,
+	Include/blackscholesmerton.h, Include/boundarycondition.h,
+	Include/brent.h, Include/bsmamericanoption.h,
+	Include/bsmeuropeanoption.h, Include/bsmnumericaloption.h,
+	Include/bsmoption.h, Include/calendar.h, Include/cranknicolson.h,
+	Include/currency.h, Include/dataformatters.h, Include/date.h,
+	Include/daycounter.h, Include/dem.h, Include/deposit.h,
+	Include/discountfactor.h, Include/eur.h, Include/evolver.h,
+	Include/expressiontemplates.h, Include/falseposition.h,
+	Include/finitedifferencemodel.h, Include/forwardeuler.h,
+	Include/forwardvolsurface.h, Include/frankfurt.h, Include/gbp.h,
+	Include/handle.h, Include/identity.h, Include/instrument.h,
+	Include/itl.h, Include/london.h, Include/milan.h, Include/newton.h,
+	Include/newtonsafe.h, Include/newyork.h,
+	Include/normaldistribution.h, Include/null.h, Include/observable.h,
+	Include/operator.h, Include/operatortraits.h, Include/options.h,
+	Include/piecewiseconstantforwards.h, Include/qldefines.h,
+	Include/qlerrors.h, Include/rate.h, Include/ridder.h,
+	Include/secant.h, Include/solver1d.h, Include/spread.h,
+	Include/statistics.h, Include/stepcondition.h, Include/stock.h,
+	Include/swaptionvolsurface.h, Include/target.h,
+	Include/termstructure.h, Include/thirty360.h,
+	Include/thirty360european.h, Include/thirty360italian.h,
+	Include/tridiagonaloperator.h, Include/usd.h,
+	Include/westerncalendar.h, Sources/calendar.cpp,
+	Sources/dataformatters.cpp, Sources/date.cpp, Sources/solver1d.cpp,
+	Sources/statistics.cpp, Sources/Calendars/frankfurt.cpp,
+	Sources/Calendars/london.cpp, Sources/Calendars/milan.cpp,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/target.cpp,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/thirty360.cpp,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/Math/normaldistribution.cpp,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmoption.cpp: copyright comment changed
+
+2000-11-07 17:04  marmar
+
+	* Include/: discountfactor.h, rate.h, spread.h: Modified to use the
+	new formatting provided by dataformatter.h
+
+2000-11-07 17:00  nando
+
+	* Python/quantlib_wrap.cpp: no message
+
+2000-11-07 16:49  nando
+
+	* Include/: actual360.h, actual365.h, actualactual.h,
+	americancondition.h, array.h, backwardeuler.h, bisection.h,
+	blackscholesmerton.h, boundarycondition.h, brent.h,
+	bsmamericanoption.h, bsmeuropeanoption.h, bsmnumericaloption.h,
+	bsmoption.h, calendar.h, cranknicolson.h, currency.h,
+	dataformatters.h, date.h, daycounter.h, dem.h, deposit.h,
+	discountfactor.h, eur.h, evolver.h, expressiontemplates.h,
+	falseposition.h, finitedifferencemodel.h, forwardeuler.h,
+	forwardvolsurface.h, frankfurt.h, gbp.h, handle.h, identity.h,
+	instrument.h, itl.h, london.h, milan.h, newton.h, newtonsafe.h,
+	newyork.h, normaldistribution.h, null.h, observable.h, operator.h,
+	operatortraits.h, options.h, piecewiseconstantforwards.h,
+	qldefines.h, qlerrors.h, rate.h, ridder.h, secant.h, solver1d.h,
+	spread.h, statistics.h, stepcondition.h, stock.h,
+	swaptionvolsurface.h, target.h, termstructure.h, thirty360.h,
+	thirty360european.h, thirty360italian.h, tridiagonaloperator.h,
+	usd.h, westerncalendar.h: moved from various QuantLib\Sources\..
+	dirs and consolidated here
+
+2000-11-07 16:45  nando
+
+	* Sources/: Pricers/americancondition.h,
+	Pricers/bsmamericanoption.h, Pricers/bsmeuropeanoption.h,
+	Pricers/bsmnumericaloption.h, Pricers/bsmoption.h,
+	Solvers1D/bisection.h, Solvers1D/brent.h,
+	Solvers1D/falseposition.h, Solvers1D/newton.h,
+	Solvers1D/newtonsafe.h, Solvers1D/ridder.h, Solvers1D/secant.h,
+	TermStructures/piecewiseconstantforwards.h: moved to
+	QuantLib/Include
+
+2000-11-07 16:40  nando
+
+	* Sources/: DayCounters/actual360.h, DayCounters/actual365.h,
+	DayCounters/actualactual.h, DayCounters/thirty360.h,
+	DayCounters/thirty360european.h, DayCounters/thirty360italian.h,
+	Math/normaldistribution.h: moved to QuantLib/Include
+
+2000-11-07 16:34  nando
+
+	* Sources/: array.h, currency.h, date.h, daycounter.h, deposit.h,
+	discountfactor.h, expressiontemplates.h, forwardvolsurface.h,
+	handle.h, instrument.h, null.h, options.h, qldefines.h, qlerrors.h,
+	rate.h, solver1d.h, spread.h, statistics.h, swaptionvolsurface.h,
+	termstructure.h, calendar.h, dataformatters.h,
+	Calendars/frankfurt.h, Calendars/london.h, Calendars/milan.h,
+	Calendars/newyork.h, Calendars/target.h,
+	Calendars/westerncalendar.h: moved to QuantLib/Include
+
+2000-11-07 11:06  marmar
+
+	* Sources/dataformatters.cpp: Case changed to stadard format
+
+2000-11-06 19:11  lballabio
+
+	* Docs/doxygen.cfg, Python/QuantLib.py, Python/quantlib_wrap.cpp,
+	SWIG/BoundaryConditions.i, SWIG/Date.i, SWIG/Financial.i,
+	SWIG/Options.i, SWIG/Statistics.i, Sources/array.h,
+	Sources/calendar.h, Sources/currency.h, Sources/dataformatters.h,
+	Sources/date.h, Sources/daycounter.h, Sources/deposit.h,
+	Sources/discountfactor.h, Sources/forwardvolsurface.h,
+	Sources/handle.h, Sources/instrument.h, Sources/null.h,
+	Sources/options.h, Sources/qldefines.h, Sources/qlerrors.h,
+	Sources/rate.h, Sources/solver1d.cpp, Sources/solver1d.h,
+	Sources/spread.h, Sources/statistics.h,
+	Sources/swaptionvolsurface.h, Sources/termstructure.h,
+	Sources/Calendars/frankfurt.h, Sources/Calendars/london.h,
+	Sources/Calendars/milan.cpp, Sources/Calendars/milan.h,
+	Sources/Calendars/newyork.h, Sources/Calendars/target.h,
+	Sources/Calendars/westerncalendar.h,
+	Sources/Math/normaldistribution.cpp,
+	Sources/Math/normaldistribution.h,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmoption.cpp, Sources/Pricers/bsmoption.h,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/brent.cpp,
+	Sources/Solvers1D/falseposition.cpp, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newtonsafe.cpp, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.h: Documentation
+	added A few files moved
+
+2000-11-06 17:24  marmar
+
+	* Sources/Pricers/bsmnumericaloption.h: Handle<...> clone()
+	const=0; has been removed
+
+2000-11-06 16:48  lballabio
+
+	* Sources/deposit.h: Moved from TermStructures directory
+
+2000-11-06 16:47  lballabio
+
+	* Sources/TermStructures/deposit.h: Moved to base directory
+
+2000-11-06 16:39  lballabio
+
+	* Sources/Math/: normaldistribution.cpp, normaldistribution.h:
+	Moved from Math namespace
+
+2000-11-06 16:38  lballabio
+
+	* Sources/: normaldistribution.cpp, normaldistribution.h: Moved to
+	Math namespace
+
+2000-11-06 16:35  lballabio
+
+	* Sources/observable.h: Moved to Patterns namespace
+
+2000-11-06 15:43  lballabio
+
+	* Sources/rate.h: Added (was yield.h)
+
+2000-11-06 13:46  lballabio
+
+	* Sources/yield.h: Deleted (well, actually renamed to rate.h)
+
+2000-11-06 12:38  lballabio
+
+	* Sources/: dataformatters.cpp, dataformatters.h: Joined string
+	converters and formatters in a common file (and interface)
+
+2000-11-06 11:23  lballabio
+
+	* Sources/stringconverters.h: Deleted
+
+2000-11-06 11:04  lballabio
+
+	* Sources/formats.h: Deleted
+
+2000-11-03 19:22  lballabio
+
+	* Sources/: calendar.h, currency.h, daycounter.h: Documentation
+	added
+
+2000-11-03 19:20  lballabio
+
+	* SWIG/TermStructures.i: ImpliedTermStructure and
+	SpreadedTermStructure added
+
+2000-11-03 19:15  lballabio
+
+	* Docs/doxygen.cfg, Docs/makefile.mak, Python/QuantLib.py,
+	Python/quantlib_wrap.cpp: no message
+
+2000-11-03 12:47  lballabio
+
+	* Sources/calendar.h: Documentation added
+
+2000-11-03 12:47  lballabio
+
+	* Docs/: doxygen.cfg, makefile.mak: no message
+
+2000-11-03 10:47  lballabio
+
+	* Docs/doxygen.cfg: Changed a few switches from test to production
+	values
+
+2000-11-03 10:43  lballabio
+
+	* Sources/: calendar.h, currency.h, daycounter.h, instrument.h:
+	Added macro to fix template specialization problems with VC++
+
+2000-11-03 10:37  lballabio
+
+	* Sources/: array.h, qldefines.h: Documentation added
+
+2000-11-03 10:03  nando
+
+	* Python/Tests/bsm2.py: test impliedVolatility method (really
+	testing Brent 1D solver)
+
+2000-11-03 09:34  lballabio
+
+	* Sources/expressiontemplates.h: Removed namespace macros
+
+2000-10-31 19:33  lballabio
+
+	* Docs/makefile.mak: Added Borland makefile for documentation
+
+2000-10-31 19:32  lballabio
+
+	* Docs/doxygen.cfg: Added Doxygen configuration file
+
+2000-10-31 18:26  lballabio
+
+	* Python/quantlib_wrap.cpp, SWIG/BoundaryConditions.i,
+	SWIG/Calendars.i, SWIG/Currencies.i, SWIG/Date.i,
+	SWIG/DayCounters.i, SWIG/Financial.i, SWIG/Instruments.i,
+	SWIG/Operators.i, SWIG/Options.i, SWIG/Pricers.i, SWIG/Solvers1D.i,
+	SWIG/Statistics.i, SWIG/TermStructures.i, SWIG/Vectors.i,
+	Sources/calendar.cpp, Sources/calendar.h, Sources/currency.h,
+	Sources/date.cpp, Sources/date.h, Sources/daycounter.h,
+	Sources/discountfactor.h, Sources/expressiontemplates.h,
+	Sources/formats.h, Sources/forwardvolsurface.h, Sources/handle.h,
+	Sources/instrument.h, Sources/normaldistribution.cpp,
+	Sources/normaldistribution.h, Sources/null.h, Sources/observable.h,
+	Sources/options.h, Sources/qldefines.h, Sources/qlerrors.h,
+	Sources/solver1d.cpp, Sources/solver1d.h, Sources/spread.h,
+	Sources/statistics.cpp, Sources/statistics.h,
+	Sources/stringconverters.h, Sources/swaptionvolsurface.h,
+	Sources/termstructure.h, Sources/yield.h,
+	Sources/Calendars/frankfurt.cpp, Sources/Calendars/frankfurt.h,
+	Sources/Calendars/london.cpp, Sources/Calendars/london.h,
+	Sources/Calendars/milan.cpp, Sources/Calendars/milan.h,
+	Sources/Calendars/newyork.cpp, Sources/Calendars/newyork.h,
+	Sources/Calendars/target.cpp, Sources/Calendars/target.h,
+	Sources/Calendars/westerncalendar.cpp,
+	Sources/Calendars/westerncalendar.h,
+	Sources/DayCounters/actual360.h, Sources/DayCounters/actual365.h,
+	Sources/DayCounters/actualactual.cpp,
+	Sources/DayCounters/actualactual.h,
+	Sources/DayCounters/thirty360.cpp, Sources/DayCounters/thirty360.h,
+	Sources/DayCounters/thirty360european.h,
+	Sources/DayCounters/thirty360italian.cpp,
+	Sources/DayCounters/thirty360italian.h,
+	Sources/Pricers/americancondition.h,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmamericanoption.h,
+	Sources/Pricers/bsmeuropeanoption.cpp,
+	Sources/Pricers/bsmeuropeanoption.h,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmnumericaloption.h,
+	Sources/Pricers/bsmoption.cpp, Sources/Pricers/bsmoption.h,
+	Sources/Solvers1D/bisection.cpp, Sources/Solvers1D/bisection.h,
+	Sources/Solvers1D/brent.cpp, Sources/Solvers1D/brent.h,
+	Sources/Solvers1D/falseposition.cpp,
+	Sources/Solvers1D/falseposition.h, Sources/Solvers1D/newton.cpp,
+	Sources/Solvers1D/newton.h, Sources/Solvers1D/newtonsafe.cpp,
+	Sources/Solvers1D/newtonsafe.h, Sources/Solvers1D/ridder.cpp,
+	Sources/Solvers1D/ridder.h, Sources/Solvers1D/secant.cpp,
+	Sources/Solvers1D/secant.h, Sources/TermStructures/deposit.h,
+	Sources/TermStructures/piecewiseconstantforwards.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.h: No more macros
+	for namespaces - their support is now required
+
+2000-10-31 16:06  nando
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: SWIG generated warp
+	files
+
+2000-10-31 16:02  nando
+
+	* Sources/Pricers/bsmeuropeanoption.h: removed the impliedVol
+	method (it has to be inherited)
+
+2000-10-31 15:53  nando
+
+	* SWIG/Pricers.i: interface now includes more methods (greeks,
+	impliedVol, setXXX)
+
+2000-10-31 15:51  marmar
+
+	* Sources/Pricers/: bsmamericanoption.h, bsmnumericaloption.cpp,
+	bsmnumericaloption.h: clone() implemented in bsmaAmericanOption
+
+2000-10-31 15:50  nando
+
+	* Sources/Pricers/bsmoption.h: eliminated a useless 'virtual'
+
+2000-10-31 15:41  nando
+
+	* Sources/Pricers/: bsmeuropeanoption.h, bsmoption.h: greeks
+	implementation
+
+2000-10-31 15:40  nando
+
+	* Sources/Pricers/bsmoption.cpp: the impliedVol method is defined
+	here in the base class
+
+2000-10-31 15:11  marmar
+
+	* Sources/Pricers/bsmoption.h: setVolatility and setRiskFreeRate
+	are now included
+
+2000-10-31 13:34  marmar
+
+	* Sources/Pricers/: bsmamericanoption.cpp, bsmnumericaloption.cpp,
+	bsmnumericaloption.h: The greeks are now calculated in
+	BSMAmericanOption.  Rho and Vega still missing in
+	BSMNumericalOption
+
+2000-10-31 11:29  nando
+
+	* Sources/Pricers/: bsmeuropeanoption.cpp, bsmeuropeanoption.h,
+	bsmoption.h: added greeks methods
+
+2000-10-31 09:05  nando
+
+	* Sources/statistics.h: relaxed weight check.  Now it is
+	weight>=0.0
+
+2000-10-31 09:00  nando
+
+	* Python/quantlib_wrap.cpp: automatically SWIG generated wrap file.
+	 Do not worry about conflicts
+
+2000-10-30 17:31  nando
+
+	* Sources/statistics.h: few little changes. Added weight>0.0
+	control.
+
+2000-10-30 17:26  nando
+
+	* Python/Tests/statistics_test.py: test for the statistics class
+
+2000-10-30 15:40  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Exported Statistics.i
+
+2000-10-30 15:39  lballabio
+
+	* SWIG/QuantLib.i: Re-included Statistics.i
+
+2000-10-30 15:38  lballabio
+
+	* SWIG/Statistics.i: Included Vectors.i
+
+2000-10-30 14:12  nando
+
+	* SWIG/Statistics.i: Swig interface for Statistics class
+
+2000-10-27 20:34  lballabio
+
+	* Python/quantlib_wrap.cpp, SWIG/Financial.i, SWIG/Pricers.i,
+	SWIG/TermStructures.i, Sources/forwardvolsurface.h,
+	Sources/swaptionvolsurface.h, Sources/termstructure.h,
+	Sources/yield.h, Sources/Pricers/americancondition.h,
+	Sources/Pricers/bsmamericanoption.cpp,
+	Sources/Pricers/bsmamericanoption.h,
+	Sources/Pricers/bsmeuropeanoption.h,
+	Sources/Pricers/bsmnumericaloption.cpp,
+	Sources/Pricers/bsmnumericaloption.h, Sources/Pricers/bsmoption.h,
+	Sources/TermStructures/deposit.h,
+	Sources/TermStructures/piecewiseconstantforwards.cpp,
+	Sources/TermStructures/piecewiseconstantforwards.h: Borland C++
+	does not like "Yield"
+
+2000-10-27 18:34  lballabio
+
+	* Python/quantlib_wrap.cpp, SWIG/Pricers.i, SWIG/QuantLib.i,
+	Sources/array.h, Sources/forwardvolsurface.h, Sources/handle.h,
+	Sources/instrument.h, Sources/qldefines.h, Sources/qlerrors.h,
+	Sources/swaptionvolsurface.h, Sources/termstructure.h,
+	Sources/Calendars/newyork.cpp, Sources/Solvers1D/bisection.cpp,
+	Sources/Solvers1D/brent.cpp, Sources/Solvers1D/falseposition.cpp,
+	Sources/Solvers1D/newton.cpp, Sources/Solvers1D/newtonsafe.cpp,
+	Sources/Solvers1D/ridder.cpp, Sources/Solvers1D/secant.cpp,
+	Sources/TermStructures/deposit.h: Added compatibility with Borland
+	C++
+
+2000-10-27 18:32  lballabio
+
+	* Sources/Pricers/: bsmamericanoption.cpp, bsmamericanoption.h,
+	bsmeuropeanoption.cpp, bsmeuropeanoption.h, bsmnumericaloption.cpp,
+	bsmnumericaloption.h, bsmoption.h: BSMOption added as base file
+	Control variate added to American
+
+2000-10-27 18:15  marmar
+
+	* Sources/Pricers/: americancondition.h, bsmamericanoption.h:
+	American condition has been place in a separate file
+
+2000-10-27 14:16  nando
+
+	* Sources/statistics.h: bug fixed (skewness and kurtosis)
+
+2000-10-27 14:15  nando
+
+	* SWIG/QuantLib.i: added a few interfaces (reset, etc.)
+
+2000-10-26 19:40  nando
+
+	* Sources/: statistics.cpp, statistics.h: fixed a few bugs, a few
+	bugs left: still not good
+
+2000-10-26 15:22  nando
+
+	* Sources/: statistics.cpp, statistics.h: statistics files: mean,
+	variance, std dev, skew, kurtosis
+
+2000-10-26 15:18  nando
+
+	* Sources/calendar.cpp: removed blank line
+
+2000-10-26 15:18  lballabio
+
+	* Sources/: normaldistribution.cpp, normaldistribution.h: Added
+
+2000-10-26 10:17  marmar
+
+	* Sources/Pricers/: bsmamericanoption.h, bsmeuropeanoption.h,
+	bsmnumericaloption.cpp, bsmnumericaloption.h: The number of time
+	steps has been removed from the base class BSMNumericalOption
+
+2000-10-25 16:54  marmar
+
+	* Sources/Pricers/bsmamericanoption.cpp: Small comment has been
+	changed
+
+2000-10-25 12:51  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: New wrappers including
+	BSM american option
+
+2000-10-25 12:49  lballabio
+
+	* SWIG/Pricers.i: Added BSM american option
+
+2000-10-25 12:48  lballabio
+
+	* Sources/Pricers/: bsmamericanoption.cpp, bsmamericanoption.h,
+	bsmeuropeanoption.cpp, bsmeuropeanoption.h, bsmnumericaloption.cpp,
+	bsmnumericaloption.h: Added BSM american option Added BSM numerical
+	option as common base class
+
+2000-10-24 17:38  lballabio
+
+	* SWIG/: QuantLib.i, Solvers1D.i: Copyright notice added
+
+2000-10-24 15:53  lballabio
+
+	* SWIG/QuantLib.i: SWIG interface for QuantLib
+
+2000-10-24 15:51  lballabio
+
+	* Python/: QuantLib.py, quantlib_wrap.cpp: Added Python wrappers
+	for QuantLib
+
+2000-10-24 11:29  lballabio
+
+	* SWIG/Operators.i, SWIG/Vectors.i, Sources/array.h,
+	Sources/expressiontemplates.h, Sources/qldefines.h,
+	Sources/Pricers/bsmeuropeanoption.cpp: Array is no longer a
+	template
+
+2000-10-24 10:18  lballabio
+
+	* Sources/Pricers/bsmeuropeanoption.cpp: Boundary conditions are
+	now set correctly
+
+2000-10-23 12:33  nando
+
+	* Sources/Solvers1D/: bisection.cpp, brent.cpp, falseposition.cpp,
+	newton.cpp, newtonsafe.cpp, ridder.cpp, secant.cpp: Numerical
+	Recipes credits
+
+2000-10-23 11:51  lballabio
+
+	* SWIG/: BoundaryConditions.i, Calendars.i, Currencies.i, Date.i,
+	DayCounters.i, Financial.i, Instruments.i, Operators.i, Options.i,
+	Pricers.i, Solvers1D.i, TermStructures.i, Vectors.i: Added warning
+	when not exporting to Python
+
+2000-10-23 11:33  lballabio
+
+	* SWIG/Solvers1D.i: Added
+
+2000-10-23 11:33  lballabio
+
+	* Sources/: solver1d.cpp, solver1d.h: Moved from
+	QuantLib::Solvers1D to QuantLib namespace
+
+2000-10-23 11:32  lballabio
+
+	* Sources/Solvers1D/: bisection.cpp, bisection.h, brent.cpp,
+	brent.h, falseposition.cpp, falseposition.h, newton.cpp, newton.h,
+	newtonsafe.cpp, newtonsafe.h, ridder.cpp, ridder.h, secant.cpp,
+	secant.h: QuantLib::Solver1D namespace renamed to
+	QuantLib::Solvers1D
+
+2000-10-23 10:46  marmar
+
+	* Sources/Pricers/bsmeuropeanoption.cpp: Some minor style changes
+
+2000-10-20 18:56  nando
+
+	* Sources/Calendars/: frankfurt.cpp, frankfurt.h, london.cpp,
+	london.h, milan.cpp, milan.h, newyork.cpp, newyork.h, target.cpp,
+	target.h, westerncalendar.cpp, westerncalendar.h: copyright notice
+	changed
+
+2000-10-20 18:52  nando
+
+	* Sources/: array.h, calendar.cpp, calendar.h, currency.h,
+	date.cpp, date.h, daycounter.h, discountfactor.h,
+	expressiontemplates.h, formats.h, forwardvolsurface.h, handle.h,
+	instrument.h, null.h, observable.h, options.h, qldefines.h,
+	qlerrors.h, spread.h, stringconverters.h, swaptionvolsurface.h,
+	termstructure.h, yield.h, TermStructures/deposit.h,
+	TermStructures/piecewiseconstantforwards.cpp,
+	TermStructures/piecewiseconstantforwards.h,
+	Pricers/bsmeuropeanoption.cpp, Pricers/bsmeuropeanoption.h,
+	DayCounters/actual360.h, DayCounters/actual365.h,
+	DayCounters/actualactual.cpp, DayCounters/actualactual.h,
+	DayCounters/thirty360.cpp, DayCounters/thirty360.h,
+	DayCounters/thirty360european.h, DayCounters/thirty360italian.cpp,
+	DayCounters/thirty360italian.h: copyright notice changed
+
+2000-10-20 18:48  nando
+
+	* Sources/: solver1d.cpp, solver1d.h: 1 dimensional solver base
+	class (and interface)
+
+2000-10-20 18:43  nando
+
+	* Readme.txt: to be improved
+
+2000-10-20 18:41  nando
+
+	* Sources/Solvers1D/: bisection.cpp, bisection.h, brent.cpp,
+	brent.h, falseposition.cpp, falseposition.h, newton.cpp, newton.h,
+	newtonsafe.cpp, newtonsafe.h, ridder.cpp, ridder.h, secant.cpp,
+	secant.h: 1 dimensional solver
+
+2000-10-20 12:09  lballabio
+
+	* SWIG/Instruments.i: changed include guard
+
+2000-10-20 12:06  lballabio
+
+	* Sources/array.h: operators +=, -=, *= and /= now correctly return
+	*this
+
+2000-10-20 11:00  lballabio
+
+	* Sources/: Pricers/bsmeuropeanoption.cpp,
+	Pricers/bsmeuropeanoption.h, TermStructures/deposit.h,
+	TermStructures/piecewiseconstantforwards.cpp,
+	TermStructures/piecewiseconstantforwards.h: Added
+
+2000-10-20 10:57  lballabio
+
+	* Sources/DayCounters/: actual360.h, actual365.h, actualactual.cpp,
+	actualactual.h, thirty360.cpp, thirty360.h, thirty360european.h,
+	thirty360italian.cpp, thirty360italian.h: Added
+
+2000-10-20 10:53  lballabio
+
+	* Sources/: array.h, calendar.cpp, calendar.h, currency.h,
+	date.cpp, date.h, daycounter.h, discountfactor.h,
+	expressiontemplates.h, formats.h, forwardvolsurface.h, handle.h,
+	instrument.h, null.h, observable.h, options.h, qldefines.h,
+	qlerrors.h, spread.h, stringconverters.h, swaptionvolsurface.h,
+	termstructure.h, yield.h, Calendars/frankfurt.cpp,
+	Calendars/frankfurt.h, Calendars/london.cpp, Calendars/london.h,
+	Calendars/milan.cpp, Calendars/milan.h, Calendars/newyork.cpp,
+	Calendars/newyork.h, Calendars/target.cpp, Calendars/target.h,
+	Calendars/westerncalendar.cpp, Calendars/westerncalendar.h: Added
+
+2000-10-20 10:43  lballabio
+
+	* array.h, calendar.cpp, calendar.h, currency.h, date.cpp, date.h,
+	daycounter.h, discountfactor.h, expressiontemplates.h, formats.h,
+	forwardvolsurface.h, handle.h, instrument.h, null.h, observable.h,
+	options.h, qldefines.h, qlerrors.h, spread.h, stringconverters.h,
+	swaptionvolsurface.h, termstructure.h, yield.h: Deleted
+
+2000-10-20 10:37  lballabio
+
+	* LICENSE.TXT: License file
+
+2000-10-20 10:11  lballabio
+
+	* array.h, calendar.cpp, calendar.h, currency.h, date.cpp, date.h,
+	daycounter.h, discountfactor.h, expressiontemplates.h, formats.h,
+	forwardvolsurface.h, handle.h, instrument.h, null.h, observable.h,
+	options.h, qldefines.h, qlerrors.h, spread.h, stringconverters.h,
+	swaptionvolsurface.h, termstructure.h, yield.h,
+	SWIG/BoundaryConditions.i, SWIG/Calendars.i, SWIG/Currencies.i,
+	SWIG/Date.i, SWIG/DayCounters.i, SWIG/Financial.i,
+	SWIG/Instruments.i, SWIG/Operators.i, SWIG/Options.i,
+	SWIG/Pricers.i, SWIG/TermStructures.i, SWIG/Vectors.i: Initial
+	revision
+
+2000-10-20 10:11  lballabio
+
+	* array.h, calendar.cpp, calendar.h, currency.h, date.cpp, date.h,
+	daycounter.h, discountfactor.h, expressiontemplates.h, formats.h,
+	forwardvolsurface.h, handle.h, instrument.h, null.h, observable.h,
+	options.h, qldefines.h, qlerrors.h, spread.h, stringconverters.h,
+	swaptionvolsurface.h, termstructure.h, yield.h,
+	SWIG/BoundaryConditions.i, SWIG/Calendars.i, SWIG/Currencies.i,
+	SWIG/Date.i, SWIG/DayCounters.i, SWIG/Financial.i,
+	SWIG/Instruments.i, SWIG/Operators.i, SWIG/Options.i,
+	SWIG/Pricers.i, SWIG/TermStructures.i, SWIG/Vectors.i: Initial
+	import
+
