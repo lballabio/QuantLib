@@ -21,6 +21,7 @@ OBJS = \
     biasedbarrierpathpricer.obj$(_D) \
     binarybarrierpathpricer.obj$(_D) \
     cliquetoptionpathpricer.obj$(_D) \
+    digitalpathpricer.obj$(_D) \
     europeanpathpricer.obj$(_D) \
     everestpathpricer.obj$(_D) \
     geometricapopathpricer.obj$(_D) \
