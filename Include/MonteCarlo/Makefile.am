@@ -1,5 +1,5 @@
 includedir = $(prefix)/include/QuantLib/MonteCarlo
-include_HEADERS = antitheticcv.hpp \
+include_HEADERS = \
 	avgpriceasianpathpricer.hpp \
 	avgstrikeasianpathpricer.hpp \
 	basketpathpricer.hpp \

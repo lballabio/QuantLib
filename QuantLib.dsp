@@ -413,10 +413,6 @@ SOURCE=.\Include\Math\vartool.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\antitheticcv.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Sources\MonteCarlo\avgpriceasianpathpricer.cpp
 # End Source File
 # Begin Source File

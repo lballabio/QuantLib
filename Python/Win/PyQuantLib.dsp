@@ -94,7 +94,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\quantlib_wrap.cpp
+SOURCE=..\quantlib_wrap.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -110,10 +110,10 @@ SOURCE=.\PyQuantLibWrap.bat
 # End Source File
 # Begin Source File
 
-SOURCE=.\QuantLib.py
+SOURCE=..\QuantLib.py
 # End Source File
 # End Group
-# Begin Group "Interfaces"
+# Begin Group "SWIG Interfaces"
 
 # PROP Default_Filter ".i"
 # Begin Source File
