@@ -32,7 +32,7 @@ namespace QuantLib {
             VanillaCapFloor::Type type = arguments_.type;
 
             for (Size i=0; i<arguments_.startTimes.size(); i++) {
-                Time start = arguments_.startTimes[i],
+                Time fixing = arguments_.fixingTimes[i],
                      end = arguments_.endTimes[i],
                      accrualTime = arguments_.accrualTimes[i];
                 if (end > 0.0) {    // discard expired caplets
@@ -43,14 +43,14 @@ namespace QuantLib {
                     if ((type == VanillaCapFloor::Cap) ||
                         (type == VanillaCapFloor::Collar)) {
                             value += q * accrualTime * nominal *
-                                     capletValue(start,forward,
+                                     capletValue(fixing,forward,
                                                  arguments_.capRates[i],
                                                  model_->volatility());
                     }
                     if ((type == VanillaCapFloor::Floor) ||
                         (type == VanillaCapFloor::Collar)) {
                             double temp = q * accrualTime * nominal *
-                                          floorletValue(start,forward,
+                                          floorletValue(fixing,forward,
                                                  arguments_.floorRates[i],
                                                  model_->volatility());
                             if (type == VanillaCapFloor::Floor)

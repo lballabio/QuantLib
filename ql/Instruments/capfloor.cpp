@@ -76,11 +76,13 @@ namespace QuantLib {
             arguments->capRates.clear();
             arguments->floorRates.clear();
             arguments->startTimes.clear();
+            arguments->fixingTimes.clear();
             arguments->endTimes.clear();
             arguments->accrualTimes.clear();
             arguments->forwards.clear();
             arguments->nominals.clear();
 
+            Date today = termStructure_->todaysDate();
             Date settlement = termStructure_->referenceDate();
             DayCounter counter = termStructure_->dayCounter();
 
@@ -89,6 +91,9 @@ namespace QuantLib {
                 Date beginDate = coupon->accrualStartDate();
                 Time time = counter.yearFraction(settlement, beginDate);
                 arguments->startTimes.push_back(time);
+                Date fixingDate = coupon->fixingDate();
+                time = counter.yearFraction(today, fixingDate);
+                arguments->fixingTimes.push_back(time);
                 time = counter.yearFraction(settlement, coupon->date());
                 arguments->endTimes.push_back(time);
                 // this is passed explicitly for precision

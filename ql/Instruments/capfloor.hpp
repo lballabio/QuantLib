@@ -113,16 +113,10 @@ namespace QuantLib {
         //! arguments for cap/floor calculation
         class CapFloorArguments : public virtual Arguments {
           public:
-            CapFloorArguments() : type(VanillaCapFloor::Type(-1)),
-                                   startTimes(0),
-                                   endTimes(0),
-                                   accrualTimes(0),
-                                   capRates(0),
-                                   floorRates(0),
-                                   forwards(0),
-                                   nominals(0) {}
+            CapFloorArguments() : type(VanillaCapFloor::Type(-1)) {}
             VanillaCapFloor::Type type;
             std::vector<Time> startTimes;
+            std::vector<Time> fixingTimes;
             std::vector<Time> endTimes;
             std::vector<Time> accrualTimes;
             std::vector<Rate> capRates;
