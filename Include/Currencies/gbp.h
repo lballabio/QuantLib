@@ -29,7 +29,7 @@
 
 #include "qldefines.h"
 #include "currency.h"
-#include "calendars.h"
+#include "london.h"
 
 namespace QuantLib {
 

@@ -30,7 +30,7 @@
 
 #include "qldefines.h"
 #include "currency.h"
-#include "calendars.h"
+#include "target.h"
 
 namespace QuantLib {
 
