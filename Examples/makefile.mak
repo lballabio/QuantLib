@@ -12,6 +12,10 @@
     MAKE = $(MAKE) -DDEBUG
 !endif
 
+!ifdef QL_DIR
+    MAKE = $(MAKE) -DQL_DIR="$(QL_DIR)"
+!endif
+
 # Primary target:
 # QuantLib Examples
 examples::

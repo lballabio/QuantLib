@@ -15,6 +15,8 @@
 # Directories
 QL_INCLUDE_DIR = "$(QL_DIR)"
 QL_LIB_DIR     = "$(QL_DIR)\lib\Win32\Borland"
+BCC_INCLUDE    = $(MAKEDIR)\..\include
+BCC_LIBS       = $(MAKEDIR)\..\lib
 
 #Warning W8026 :
 #Warning W8027 :
@@ -23,14 +25,15 @@ QL_LIB_DIR     = "$(QL_DIR)\lib\Win32\Borland"
 
 # Options
 CC_OPTS = -vi- -w-8026 -w-8027 -w-8012 -w-8057 \
-    -I$(QL_INCLUDE_DIR)
+    -I$(QL_INCLUDE_DIR) \
+    -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 
 # Primary target:
 SwapValuation$(_D).exe: swapvaluation.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -oSwapValuation$(_D).obj -eSwapValuation$(_D).exe swapvaluation.cpp QuantLib$(_D).lib
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -oSwapValuation$(_D).obj -eSwapValuation$(_D).exe swapvaluation.cpp QuantLib$(_D).lib
 
 # Check
 check:: SwapValuation$(_D).exe
