@@ -67,10 +67,10 @@ namespace QuantLib {
                              true);
             
             std::vector<Handle<CashFlow> > fixedLeg =
-                FixedRateCouponVector(std::vector<double>(1,nominal), 
+                FixedRateCouponVector(fixedSchedule, 
+                                      std::vector<double>(1,nominal), 
                                       std::vector<Rate>(1,fixedRate), 
-                                      fixedDayCount,fixedDayCount,
-                                      fixedSchedule);
+                                      fixedDayCount);
             std::vector<Handle<CashFlow> > floatingLeg =
                 FloatingRateCouponVector(std::vector<double>(1,nominal),
                                          index, indexFixingDays, 
@@ -108,10 +108,10 @@ namespace QuantLib {
           nominal_(nominal), maturity_(maturity) {
 
             std::vector<Handle<CashFlow> > fixedLeg =
-                FixedRateCouponVector(std::vector<double>(1,nominal), 
+                FixedRateCouponVector(fixedSchedule,
+                                      std::vector<double>(1,nominal), 
                                       std::vector<Rate>(1,fixedRate), 
-                                      fixedDayCount,fixedDayCount,
-                                      fixedSchedule);
+                                      fixedDayCount);
             std::vector<Handle<CashFlow> > floatingLeg =
                 FloatingRateCouponVector(std::vector<double>(1,nominal),
                                          index, indexFixingDays, 
@@ -173,10 +173,10 @@ namespace QuantLib {
                     longFinalPeriod(floatLongFinal);
 
             std::vector<Handle<CashFlow> > fixedLeg =
-                FixedRateCouponVector(std::vector<double>(1,nominal), 
+                FixedRateCouponVector(fixedSchedule,
+                                      std::vector<double>(1,nominal), 
                                       std::vector<Rate>(1,fixedRate), 
-                                      fixedDayCount,fixedDayCount,
-                                      fixedSchedule);
+                                      fixedDayCount);
             std::vector<Handle<CashFlow> > floatingLeg =
                 FloatingRateCouponVector(std::vector<double>(1,nominal),
                                          index, indexFixingDays, 

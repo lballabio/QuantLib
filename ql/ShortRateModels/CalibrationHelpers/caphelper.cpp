@@ -77,12 +77,14 @@ namespace QuantLib {
                         frequency, index->calendar(), 
                         index->rollingConvention(), index, 0, 
                         std::vector<double>(1, 0.0));
+
+                Schedule fixedSchedule(index->calendar(), startDate, maturity,
+                                       frequency, index->rollingConvention(),
+                                       false);
                 std::vector<Handle<CashFlow> > fixedLeg = 
-                    FixedRateCouponVector(
-                        nominals, std::vector<Rate>(1, fixedRate), 
-                        startDate, maturity, frequency, index->calendar(), 
-                        index->rollingConvention(), false, 
-                        index->dayCounter(), index->dayCounter());
+                    FixedRateCouponVector(fixedSchedule, nominals, 
+                                          std::vector<Rate>(1, fixedRate), 
+                                          index->dayCounter());
 
                 Handle<Swap> swap(
                     new Swap(floatingLeg, fixedLeg, termStructure));
