@@ -31,7 +31,7 @@ void ExchangeRateTest::testDirect() {
     Money m1(50000.0, EURCurrency());
     Money m2(100000.0, USDCurrency());
 
-    Money::conversionType = Money::None;
+    Money::conversionType = Money::NoConversion;
 
     Money calculated = eur_usd.exchange(m1);
     Money expected(m1.value()*eur_usd.rate(), USDCurrency());
@@ -68,7 +68,7 @@ void ExchangeRateTest::testDerived() {
     Money m1(50000.0, GBPCurrency());
     Money m2(100000.0, USDCurrency());
 
-    Money::conversionType = Money::None;
+    Money::conversionType = Money::NoConversion;
 
     Money calculated = derived.exchange(m1);
     Money expected(m1.value()*eur_usd.rate()/eur_gbp.rate(), USDCurrency());
@@ -109,7 +109,7 @@ void ExchangeRateTest::testDirectLookup() {
     Money m1(50000.0, EURCurrency());
     Money m2(100000.0, USDCurrency());
 
-    Money::conversionType = Money::None;
+    Money::conversionType = Money::NoConversion;
 
     ExchangeRate eur_usd = rateManager.lookup(EURCurrency(),
                                               USDCurrency(),
@@ -117,8 +117,6 @@ void ExchangeRateTest::testDirectLookup() {
                                               ExchangeRate::Direct);
     Money calculated = eur_usd.exchange(m1);
     Money expected(m1.value()*eur_usd1.rate(), USDCurrency());
-
-    Money::conversionType = Money::None;
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
@@ -191,7 +189,7 @@ void ExchangeRateTest::testTriangulatedLookup() {
     Money m1(50000000.0, ITLCurrency());
     Money m2(100000.0, USDCurrency());
 
-    Money::conversionType = Money::None;
+    Money::conversionType = Money::NoConversion;
 
     ExchangeRate itl_usd = rateManager.lookup(ITLCurrency(),
                                               USDCurrency(),
@@ -294,7 +292,7 @@ void ExchangeRateTest::testSmartLookup() {
     Money m5(100000.0, SEK);
     Money m6(100000.0, JPY);
 
-    Money::conversionType = Money::None;
+    Money::conversionType = Money::NoConversion;
 
     // two-rate chain
 

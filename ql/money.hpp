@@ -64,13 +64,14 @@ namespace QuantLib {
             in different currencies
         */
         //@{
-        enum ConversionType { None,         /*!< do not perform conversions */
-                              BaseCurrency, /*!< convert both operands to
-                                                 the base currency before
-                                                 converting */
-                              Automated     /*!< return the result in the
-                                                 currency of the first
-                                                 operand */
+        enum ConversionType {
+            NoConversion,           /*!< do not perform conversions */
+            BaseCurrencyConversion, /*!< convert both operands to
+                                         the base currency before
+                                         converting */
+            AutomatedConversion     /*!< return the result in the
+                                         currency of the first
+                                         operand */
         };
         static ConversionType conversionType;
         static Currency baseCurrency;

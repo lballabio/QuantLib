@@ -30,7 +30,7 @@ void MoneyTest::testNone() {
     Money m2(100000.0, EURCurrency());
     Money m3(500000.0, EURCurrency());
 
-    Money::conversionType = Money::None;
+    Money::conversionType = Money::NoConversion;
 
     Money calculated = m1*3.0 + 2.5*m2 - m3/5.0;
     Decimal x = m1.value()*3.0 + 2.5*m2.value() - m3.value()/5.0;
@@ -61,7 +61,7 @@ void MoneyTest::testBaseCurrency() {
     ExchangeRateManager::instance().add(eur_usd);
     ExchangeRateManager::instance().add(eur_gbp);
 
-    Money::conversionType = Money::BaseCurrency;
+    Money::conversionType = Money::BaseCurrencyConversion;
     Money::baseCurrency = EURCurrency();
 
     Money calculated = m1*3.0 + 2.5*m2 - m3/5.0;
@@ -71,7 +71,7 @@ void MoneyTest::testBaseCurrency() {
               - round(m3.value()/(5.0*eur_usd.rate()));
     Money expected(x, EURCurrency());
 
-    Money::conversionType = Money::None;
+    Money::conversionType = Money::NoConversion;
 
     if (calculated != expected) {
         BOOST_FAIL("Wrong result: \n"
@@ -97,7 +97,7 @@ void MoneyTest::testAutomated() {
     ExchangeRateManager::instance().add(eur_usd);
     ExchangeRateManager::instance().add(eur_gbp);
 
-    Money::conversionType = Money::Automated;
+    Money::conversionType = Money::AutomatedConversion;
 
     Money calculated = (m1*3.0 + 2.5*m2) - m3/5.0;
 
@@ -106,7 +106,7 @@ void MoneyTest::testAutomated() {
               - round((m3.value()/5.0)*eur_gbp.rate()/eur_usd.rate());
     Money expected(x, GBPCurrency());
 
-    Money::conversionType = Money::None;
+    Money::conversionType = Money::NoConversion;
 
     if (calculated != expected) {
         BOOST_FAIL("Wrong result: \n"
