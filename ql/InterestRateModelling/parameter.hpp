@@ -60,7 +60,7 @@ namespace QuantLib {
 
         class ConstantParameter : public Parameter {
           public:
-            class ConstantParameterImpl : public ParameterImpl {
+            class ConstantParameterImpl : public Parameter::ParameterImpl {
               public:
                 double value(const Array& params, Time t) const {
                     return params[0];
@@ -80,7 +80,7 @@ namespace QuantLib {
 
         class NullParameter : public Parameter {
           public:
-            class NullParameterImpl : public ParameterImpl {
+            class NullParameterImpl : public Parameter::ParameterImpl {
               public:
                 double value(const Array& params, Time t) const {
                     return 0.0;
@@ -94,7 +94,7 @@ namespace QuantLib {
 
         class PiecewiseConstantParameter : public Parameter {
           public:
-            class PiecewiseConstantParameterImpl : public ParameterImpl {
+            class PiecewiseConstantParameterImpl : public Parameter::ParameterImpl {
               public:
                 PiecewiseConstantParameterImpl(const std::vector<Time>& times)
                 : times_(times) {}
@@ -120,7 +120,7 @@ namespace QuantLib {
 
         class TermStructureFittingParameter : public Parameter {
           public:
-            class NumericalImpl : public ParameterImpl {
+            class NumericalImpl : public Parameter::ParameterImpl {
               public:
                 NumericalImpl(
                     const RelinkableHandle<TermStructure>& termStructure)
