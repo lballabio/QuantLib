@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/01/30 15:57:39  marmar
+    Now using OneFactorMonteCarloOption
+
     Revision 1.7  2001/01/29 15:01:26  marmar
     Modified to accomodate code-sharing with
     multi-dimensional Monte Carlo
@@ -49,9 +52,9 @@
             
 */
 
+#include "handle.h"
 #include "standardpathgenerator.h"
 #include "mcasianpricer.h"
-#include "handle.h"
 #include "controlvariatedpathpricer.h"
 #include "averageasianpathpricer.h"
 #include "geometricasianpathpricer.h"
@@ -61,7 +64,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using MonteCarlo::MonteCarlo1D;
+        using MonteCarlo::OneFactorMonteCarloOption;
         using MonteCarlo::PathPricer;
         using MonteCarlo::StandardPathGenerator;
         using MonteCarlo::ControlVariatedPathPricer;
@@ -100,7 +103,7 @@ namespace QuantLib {
                     controlVariateSpPricer, controlVariatePrice));
 
             //! Initialize the one-dimensional Monte Carlo
-            montecarloPricer_ = MonteCarlo1D(pathGenerator,
+            montecarloPricer_ = OneFactorMonteCarloOption(pathGenerator,
                                      controlVariatedPricer);
         }
 

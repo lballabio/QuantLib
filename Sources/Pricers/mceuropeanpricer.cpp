@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/01/30 15:57:39  marmar
+    Now using OneFactorMonteCarloOption
+
     Revision 1.4  2001/01/29 15:01:25  marmar
     Modified to accomodate code-sharing with
     multi-dimensional Monte Carlo
@@ -48,7 +51,7 @@ namespace QuantLib {
 
     namespace Pricers {
         
-        using MonteCarlo::MonteCarlo1D;
+        using MonteCarlo::OneFactorMonteCarloOption;
         using MonteCarlo::PathPricer;
         using MonteCarlo::StandardPathGenerator;
         using MonteCarlo::EuropeanPathPricer;
@@ -72,7 +75,7 @@ namespace QuantLib {
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime)));
                 
             //! Initialize the one-dimensional Monte Carlo
-            montecarloPricer_ = MonteCarlo1D(pathGenerator, euroPricer);
+            montecarloPricer_ = OneFactorMonteCarloOption(pathGenerator, euroPricer);
         }
 
     }

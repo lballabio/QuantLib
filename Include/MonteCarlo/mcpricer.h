@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -17,7 +17,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file mcpricer.h
@@ -25,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/01/30 15:56:06  marmar
+    Now using OneFactorMonteCarloOption
+
     Revision 1.5  2001/01/30 09:03:38  marmar
     GeneralMonteCarlo contains the basic ideas of any Monte Carlo
     simulation: sample from a "sample generator" and accumulate
@@ -48,25 +52,29 @@
 #define quantlib_montecarlo_pricer_h
 
 #include "qldefines.h"
-#include "montecarlo1d.h"
+#include "statistics.h"
+#include "pathpricer.h"
+#include "standardpathgenerator.h"
+#include "onefactormontecarlooption.h"
 
 namespace QuantLib {
 
     namespace Pricers {
-        //! Base class for one dimensional Monte Carlo pricers
-        /*! McPricer is the base class for one dimensional Monte Carlo pricers.
+        //! Base class for one-factor Monte Carlo pricers
+        /*! McPricer is the base class for the Monte Carlo pricers depending 
+            from one factor.
             Eventually it might be linked to the general tree of pricers,
             in order to have available tools like impliedVolaitlity.
             Also, it will, eventually, implement the calculation of greeks
             in montecarlo methods.
             Deriving a class from McPricer gives an easy way to write
-            a Monte Carlo Pricer.
+            a one-factor Monte Carlo Pricer.
             See EuropeanPathPricer as an example
         */
 
         class McPricer {
         public:
-            McPricer():isInitialized_(false){}
+            McPricer() : isInitialized_(false){}
             McPricer(long samples, long seed=0);
             ~McPricer(){}
             virtual double value() const;
@@ -75,7 +83,7 @@ namespace QuantLib {
             bool isInitialized_;
             long seed_;
             mutable long samples_;
-            mutable MonteCarlo::MonteCarlo1D montecarloPricer_;
+            mutable MonteCarlo::OneFactorMonteCarloOption montecarloPricer_;
         };
 
         inline McPricer::McPricer(long samples, long seed):
@@ -84,18 +92,17 @@ namespace QuantLib {
         inline double McPricer::value() const{
             QL_REQUIRE(isInitialized_,
                 "McPricer::value has not been initialized");
-            return montecarloPricer_.value(samples_);
+            return montecarloPricer_.sampleAccumulator(samples_).mean();
         }
 
         inline double McPricer::errorEstimate() const {
             QL_REQUIRE(isInitialized_,
                 "McPricer::errorEstimate has not been initialized");
-            return montecarloPricer_.errorEstimate();
+            return montecarloPricer_.sampleAccumulator().errorEstimate();
         }
 
     }
 
 }
-
 
 #endif

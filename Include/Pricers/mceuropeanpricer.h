@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/01/30 15:57:15  marmar
+    Now using OneFactorMonteCarloOption
+
     Revision 1.4  2001/01/29 15:02:13  marmar
     Modified to accomodate code-sharing with
     multi-dimensional Monte Carlo
