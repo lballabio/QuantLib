@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.9  2001/04/12 14:21:23  lballabio
+    Corrected dividend dates for theta check
+
     Revision 1.8  2001/04/09 11:28:17  nando
     updated copyright notice header and improved CVS tags
 
@@ -103,9 +106,11 @@ class DividendEuropeanOptionTest(unittest.TestCase):
                         optMs = pricer(typ, under-dS, strike, Qrate,
                           Rrate   , resTime   , vol,      div, dates)
                         optPt = pricer(typ, under   , strike, Qrate,
-                          Rrate   , resTime+dT, vol,      div, dates)
+                          Rrate   , resTime+dT, vol,      div, 
+                          map(lambda t,dT=dT:t+dT, dates))
                         optMt = pricer(typ, under   , strike, Qrate,
-                          Rrate   , resTime-dT, vol,      div, dates)
+                          Rrate   , resTime-dT, vol,      div, 
+                          map(lambda t,dT=dT:t-dT, dates))
                         optPr = pricer(typ, under   , strike, Qrate,
                           Rrate+dR, resTime   , vol,      div, dates)
                         optMr = pricer(typ, under   , strike, Qrate,
