@@ -17,7 +17,7 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at 
+ * QuantLib license is also available at
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
@@ -25,14 +25,18 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/02 10:47:00  marmar
+    Specialization of PathMonteCarlo useful for pricing option
+    depending on  multiple factors
+
     Revision 1.1  2001/01/30 15:46:32  marmar
     Special cases of a PathMonteCarlo defined for convenience in
     single- and multi-factor Monte Carlo option-pricing
 
 */
 
-#ifndef quantlib_montecarlo_option_multi_dimensional_h
-#define quantlib_montecarlo_option_multi_dimensional_h
+#ifndef quantlib_multi_factor_montecarlo_option_h
+#define quantlib_multi_factor_montecarlo_option_h
 
 #include "qldefines.h"
 #include "statistics.h"
@@ -48,11 +52,10 @@ namespace QuantLib {
     of a Monte Carlo pricer based on a multi-factor model.
     See the corresponding classes for more documentation.
     */
-
-        typedef PathMonteCarlo<Math::Statistics, 
-                StandardMultiPathGenerator, MultiPathPricer> 
+        typedef PathMonteCarlo<Math::Statistics,
+                    StandardMultiPathGenerator, MultiPathPricer>
                                         MultiFactorMonteCarloOption;
-                    
+
     }
 
 }
