@@ -71,7 +71,7 @@ namespace QuantLib {
                 const Calendar& calendar,
                 int settlementDays,
                 const std::vector<Handle<RateHelper> >& instruments,
-                double accuracy=1.0e-9);
+                double accuracy=1.0e-12);
             ~PiecewiseFlatForward();
             //! \name TermStructure interface
             //@{
