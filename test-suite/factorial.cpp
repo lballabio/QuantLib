@@ -193,7 +193,7 @@ void FactorialTest::testPoissonDistribution() {
                          + DoubleFormatter::toString(cumExpected,16));
         for (unsigned long i=1; i<25; i++) {
             calculated = pdf(i);
-            logHelper = logHelper+QL_LOG(mean)-QL_LOG(i);
+            logHelper = logHelper+QL_LOG(mean)-QL_LOG(double(i));
             expected = QL_EXP(logHelper);
             if (QL_FABS(calculated-expected)>1.0e-13)
                 CPPUNIT_FAIL("Poisson pdf("
