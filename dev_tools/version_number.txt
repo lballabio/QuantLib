@@ -16,7 +16,6 @@ This version number is in:
     QuantLib/dev_tools/version_number.txt,
     QuantLib/configure.ac,
     QuantLib/QuantLib.nsi,
-    QuantLib/QuantLib.spec.in,
     QuantLib/QuantLib.vcproj,
     QuantLib/QuantLibFunctions.vcproj,
     QuantLib/QuantLib.dsp,
