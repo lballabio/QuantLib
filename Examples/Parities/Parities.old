@@ -72,6 +72,35 @@ using QuantLib::DoubleFormatter;
 using QuantLib::Pricers::ExercisePayoff;
 
 
+double optionSurplusIntegral(Time maturity_,
+        	                 double strike_,
+	                         double s0_,
+	                         double sigma_,
+	                         Rate r_)
+{
+	const int NY = 500;
+	const double y0 = QL_LOG(s0_/2000);
+	const double y1 = QL_LOG(s0_*40);
+	const double dy = (y1-y0)/(NY-1);
+
+	int i = 0;
+	double sum = 0.0;
+
+	double discount = QL_EXP(-r_*maturity_);
+	for(double y = y0; y <= y1; y += dy, ++i) {
+		double s0 = QL_EXP(y);
+		double ds = (EuropeanOption(Option::Call, s0, strike_, 0.0,
+									r_, maturity_, sigma_).value()
+				 - QL_MAX(s0 - discount*strike_,0.0)
+			   )*dy;
+		sum += ds;
+	}
+    return sum;
+}
+
+
+
+
 class Payoff : public QL::ObjectiveFunction{
     public:
         Payoff(Time maturity,
@@ -269,6 +298,35 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
+
+
+        //
+        //  Option calculus analogy to energy conservation in heat diffusion
+	    //  equation
+        //  Function computes
+        //          Integral[ OptionValue[Log[underlyingPrice]] -
+        //                  - Max[underlyingPrice - Exp[- r*T] * strike, 0],
+        //                  d(Log[underlyingPrice]), - inf, +inf]
+        //
+        //  should be equal for European Call to
+        //      1/2*sigma^2*T*Exp[-r*T]*strike
+        //
+        double theory = 1.0/2.0 * volatility*volatility * strike *
+                        maturity * QL_EXP(- riskFreeRate*maturity);
+
+        double integral = optionSurplusIntegral(maturity, strike, underlying,
+            volatility, riskFreeRate);
+        std::cout << "\nOption surplus integral: \n";
+        std::cout << "Integral value: " << integral
+                  << "\t Theoretical value: " << theory;
+        double err = QL_FABS(integral - theory);
+        std::cout << "\t Error: " << err;
+        std::cout << "\t Relative error: ";
+        if(QL_FABS(theory)>1e-16)
+            std::cout << err/theory;
+        else
+            std::cout << "not computed";
+        std::cout << "\n";
 
 
 	    return 0;
