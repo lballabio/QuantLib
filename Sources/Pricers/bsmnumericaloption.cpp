@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.30  2001/03/02 13:50:01  marmar
+    Purely virtual method initializeStepCondition()
+    introduced in the design of StepConditionOption
+
     Revision 1.29  2001/03/02 08:36:45  enri
     Shout options added:
     	* BSMAmericanOption is now AmericanOption, same interface
@@ -92,7 +96,8 @@ namespace QuantLib {
             Rate riskFreeRate, Time residualTime, double volatility, 
             int gridPoints)
         : BSMOption(type, underlying, strike, dividendYield, riskFreeRate,
-            residualTime, volatility), rhoComputed_(false), vegaComputed_(false),
+            residualTime, volatility), rhoComputed_(false),
+            vegaComputed_(false),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
             grid_(gridPoints_), initialPrices_(gridPoints_){
                 hasBeenCalculated_ = false;
@@ -119,8 +124,6 @@ namespace QuantLib {
         double BSMNumericalOption::vega() const {
         
             if(!vegaComputed_){
-                if(!hasBeenCalculated_) 
-                    value();
                 Handle<BSMOption> brandNewFD = clone();
                 double volMinus = volatility_ * (1.0 - dVolMultiplier_);
                 brandNewFD -> setVolatility(volMinus);        
@@ -134,8 +137,6 @@ namespace QuantLib {
         double BSMNumericalOption::rho() const {
         
             if(!rhoComputed_){
-                if(!hasBeenCalculated_) 
-                    value();
                 Handle<BSMOption> brandNewFD = clone();
                 Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier_);        
                 brandNewFD -> setRiskFreeRate(rMinus);
@@ -198,8 +199,8 @@ namespace QuantLib {
         }
         
         void BSMNumericalOption::initializeOperator() const {
-            finiteDifferenceOperator_ = BSMOperator(gridPoints_, gridLogSpacing_, 
-                riskFreeRate_, dividendYield_, volatility_);
+            finiteDifferenceOperator_ = BSMOperator(gridPoints_, 
+                gridLogSpacing_, riskFreeRate_, dividendYield_, volatility_);
                 
             finiteDifferenceOperator_.setLowerBC(
                 BoundaryCondition(BoundaryCondition::Neumann,

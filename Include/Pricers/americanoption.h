@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ *   http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file americanoption.h
@@ -26,6 +27,10 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/03/02 13:49:42  marmar
+    Purely virtual method initializeStepCondition()
+    introduced in the design of StepConditionOption
+
     Revision 1.1  2001/03/02 08:36:44  enri
     Shout options added:
     	* BSMAmericanOption is now AmericanOption, same interface
@@ -51,22 +56,31 @@ namespace QuantLib {
         public:
             // constructor
             AmericanOption(Type type, double underlying, double strike, 
-                           Rate dividendYield, Rate riskFreeRate, Time residualTime, 
-                           double volatility, int timeSteps, int gridPoints)
-                : StepConditionOption(type, underlying, strike, dividendYield, 
-                                      riskFreeRate, residualTime,
-                                      volatility, timeSteps, gridPoints)
-                {
-                    stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                        new AmericanCondition(initialPrices_));
-                }
+                           Rate dividendYield, Rate riskFreeRate, 
+                           Time residualTime, double volatility, 
+                           int timeSteps, int gridPoints);
+                void initializeStepCondition() const;
+
             // This method must be implemented to imply volatilities
             Handle<BSMOption> clone() const{    
                 return Handle<BSMOption>(new AmericanOption(*this));
             }
         };
+        
+        AmericanOption::AmericanOption(Type type, double underlying, 
+                double strike, Rate dividendYield, Rate riskFreeRate, 
+                Time residualTime, double volatility, int timeSteps, 
+                int gridPoints)
+        : StepConditionOption(type, underlying, strike, dividendYield, 
+                              riskFreeRate, residualTime, volatility, 
+                              timeSteps, gridPoints){}
+
+        void AmericanOption::initializeStepCondition() const{
+        
+            stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>
+                                        (new AmericanCondition(initialPrices_));
+        }
     }
 }
-
 
 #endif

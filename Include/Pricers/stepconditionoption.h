@@ -26,6 +26,10 @@
   
   $Source$
   $Log$
+  Revision 1.2  2001/03/02 13:49:42  marmar
+  Purely virtual method initializeStepCondition()
+  introduced in the design of StepConditionOption
+
   Revision 1.1  2001/03/02 08:36:44  enri
   Shout options added:
   	* BSMAmericanOption is now AmericanOption, same interface
@@ -54,15 +58,15 @@ namespace QuantLib {
         protected:
             // constructor
             StepConditionOption(Type type, double underlying, double strike, 
-                                Rate dividendYield, Rate riskFreeRate, Time residualTime, 
-                                double volatility, int timeSteps, 
-                                int gridPoints);
-            Handle<FiniteDifferences::StandardStepCondition > stepCondition_;
-        private:
+                                Rate dividendYield, Rate riskFreeRate, 
+                                Time residualTime, double volatility, 
+                                int timeSteps, int gridPoints);
+            virtual void initializeStepCondition() const = 0;                                
+            mutable Handle<FiniteDifferences::StandardStepCondition > 
+                                                            stepCondition_;
             int timeSteps_;
         };
     }
 }
-
 
 #endif

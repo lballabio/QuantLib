@@ -26,6 +26,10 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/03/02 13:50:01  marmar
+    Purely virtual method initializeStepCondition()
+    introduced in the design of StepConditionOption
+
     Revision 1.1  2001/03/02 08:36:45  enri
     Shout options added:
     	* BSMAmericanOption is now AmericanOption, same interface
@@ -46,20 +50,22 @@ namespace QuantLib {
     namespace Pricers {
         using FiniteDifferences::StandardStepCondition;
         using FiniteDifferences::StandardFiniteDifferenceModel;
-        StepConditionOption::StepConditionOption(Type type, double underlying, double strike, 
-                                                 Rate dividendYield, Rate riskFreeRate, Time residualTime, 
-                                                 double volatility, int timeSteps, int gridPoints)
+        StepConditionOption::StepConditionOption(Type type, double underlying,
+                 double strike, Rate dividendYield, Rate riskFreeRate, 
+                 Time residualTime, double volatility, int timeSteps, 
+                 int gridPoints)
             : BSMNumericalOption(type, underlying, strike, dividendYield, 
-                                 riskFreeRate, residualTime, volatility, gridPoints), 
-            timeSteps_(timeSteps) 
-        {
-            setGridLimits();
-            initializeGrid();
-            initializeInitialCondition();
-            initializeOperator();
-        }
+                                 riskFreeRate, residualTime, volatility, 
+                                 gridPoints), 
+            timeSteps_(timeSteps) {}
+            
         double StepConditionOption::value() const {
             if (!hasBeenCalculated_) {
+                setGridLimits();
+                initializeGrid();
+                initializeInitialCondition();                
+                initializeOperator();
+                initializeStepCondition();
                 /* model used for calculation: it could have been
                    BackwardEuler or ForwardEuler instead of CrankNicolson */
                 StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
@@ -68,7 +74,8 @@ namespace QuantLib {
                 // 1) calculate value/greeks of the European option analytically
                 BSMEuropeanOption analyticEuro(type_, underlying_,
                                                strike_, dividendYield_,
-                                               riskFreeRate_, residualTime_, volatility_);
+                                               riskFreeRate_, residualTime_,
+                                               volatility_);
                 double analyticEuroValue = analyticEuro.value();
                 double analyticEuroDelta = analyticEuro.delta();
                 double analyticEuroGamma = analyticEuro.gamma();
