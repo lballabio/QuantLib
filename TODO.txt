@@ -3,6 +3,8 @@
 make Parities to work
 remove option integral from parities
 
+online/offline docs
+
 switch false/true antithetic variate
 config.h is installed?
 installer splash screen
