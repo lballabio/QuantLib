@@ -60,6 +60,14 @@ namespace QuantLib {
     //! Year number
     typedef int Year;
 
+    //! Frequency of events
+    enum Frequency { Once = 0,    //!< e.g., a zero-coupon
+                     Annual = 1,
+                     Semiannual = 2,
+                     Quarterly = 4,
+                     Bimonthly = 6,
+                     Monthly = 12 };
+
     //! Units used to describe time periods
     enum TimeUnit { Days   = 0,
                     Weeks  = 1,
@@ -79,72 +87,82 @@ namespace QuantLib {
         int length_;
         TimeUnit units_;
     };
-   
+
+    /*! \relates Period */
+    bool operator<(const Period&, const Period&);
     /*! \relates Period */
     bool operator==(const Period&, const Period&);
     /*! \relates Period */
-    bool operator<(const Period&, const Period&);
+    bool operator!=(const Period&, const Period&);
+    /*! \relates Period */
+    bool operator>(const Period&, const Period&);
+    /*! \relates Period */
+    bool operator<=(const Period&, const Period&);
+    /*! \relates Period */
+    bool operator>=(const Period&, const Period&);
 
-    inline bool operator==(const Period& p1, const Period& p2) {
-        if (p1.units() == p2.units())
-	   return (p1.length() == p2.length());
-	if (p1.units() == Days) {
-	   if (p2.units() == Weeks)
-	      return (p1.length() == (p2.length() * 7));
-	   else if (p2.units() == Years)
-	      return (p1.length() == (p2.length() * 365));
-	   else if (p2.units() == Months)
-	      throw Error("Period::operator==() Undecidable outcome comparing days and months");
-	} else if (p1.units() == Weeks) {
-	   if (p2.units() == Days)
-	      return ((double)p1.length() == ((double)p2.length() / 7.0));
-	   else if (p2.units() == Months || p2.units() == Years)
-	      throw Error("Period::operator==() Undecidable outcome comparing weeks and months/years");
-	} else if (p1.units() == Months) {
-	   if (p2.units() == Years)
-	      return (p1.length() == (p2.length() * 12));
-	   else if (p2.units() == Days || p2.units() == Weeks)
-	      throw Error("Period::operator==() Undecidable outcome comparing months and days/weeks");
-	} else if (p1.units() == Years) {
-	   if (p2.units() == Days)
-	      return ((double)p1.length() == ((double)p2.length() / 365.0));
-	   else if (p2.units() == Months)
-	      return ((double)p1.length() == ((double)p2.length() / 12.0));
-	   else if (p2.units() == Weeks)
-	      throw Error("Period::operator==() Undecidable outcome comparing years and weeks");
-	}
-	return 0;
-    }
     inline bool operator<(const Period& p1, const Period& p2) {
         if (p1.units() == p2.units())
-	   return (p1.length() < p2.length());
-	if (p1.units() == Days) {
-	   if (p2.units() == Weeks)
-	      return (p1.length() < (p2.length() * 7));
-	   else if (p2.units() == Years)
-	      return (p1.length() < (p2.length() * 365));
-	   else if (p2.units() == Months)
-	      throw Error("Period::operator<() Undecidable outcome comparing days and months");
-	} else if (p1.units() == Weeks) {
-	   if (p2.units() == Days)
-	      return ((double)p1.length() < ((double)p2.length() / 7.0));
-	   else if (p2.units() == Months || p2.units() == Years)
-	      throw Error("Period::operator<() Undecidable outcome comparing weeks and months/years");
-	} else if (p1.units() == Months) {
-	   if (p2.units() == Years)
-	      return (p1.length() < (p2.length() * 12));
-	   else if (p2.units() == Days || p2.units() == Weeks)
-	      throw Error("Period::operator<() Undecidable outcome comparing months and days/weeks");
-	} else if (p1.units() == Years) {
-	   if (p2.units() == Days)
-	      return ((double)p1.length() < ((double)p2.length() / 365.0));
-	   else if (p2.units() == Months)
-	      return ((double)p1.length() < ((double)p2.length() / 12.0));
-	   else if (p2.units() == Weeks)
-	      throw Error("Period::operator<() Undecidable outcome comparing years and weeks");
-	}
-	return 0;
+            return (p1.length() < p2.length());
+        if (p1.units() == Days) {
+            if (p2.units() == Weeks)
+                return (p1.length() < p2.length() * 7);
+            else if (p2.units() == Years)
+                return (p1.length() < p2.length() * 365);
+            else if (p2.units() == Months)
+                throw Error("undecidable comparison between days and months");
+            else
+                throw Error("unknown units");
+        } else if (p1.units() == Weeks) {
+            if (p2.units() == Days)
+                return (p1.length() * 7 < p2.length());
+            else if (p2.units() == Months || p2.units() == Years)
+                throw Error("undecidable comparison between "
+                            "weeks and months/years");
+            else
+                throw Error("unknown units");
+        } else if (p1.units() == Months) {
+            if (p2.units() == Years)
+                return (p1.length() < p2.length() * 12);
+            else if (p2.units() == Days || p2.units() == Weeks)
+                throw Error("undecidable comparison between "
+                            "months and days/weeks");
+            else
+                throw Error("unknown units");
+        } else if (p1.units() == Years) {
+            if (p2.units() == Days)
+                return (p1.length() * 365 < p2.length());
+            else if (p2.units() == Months)
+                return (p1.length() * 12 < p2.length());
+            else if (p2.units() == Weeks)
+                throw Error("undecidable outcome comparing years and weeks");
+            else
+                throw Error("unknown units");
+        } else {
+            throw Error("unknown units");
+        }
     }
+
+    inline bool operator==(const Period& p1, const Period& p2) {
+        return !(p1 < p2 || p2 < p1);
+    }
+
+    inline bool operator!=(const Period& p1, const Period& p2) {
+        return !(p1 == p2);
+    }
+
+    inline bool operator>(const Period& p1, const Period& p2) {
+        return p2 < p1;
+    }
+
+    inline bool operator<=(const Period& p1, const Period& p2) {
+        return !(p1 > p2);
+    }
+
+    inline bool operator>=(const Period& p1, const Period& p2) {
+        return !(p1 < p2);
+    }
+
 
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
@@ -243,7 +261,7 @@ namespace QuantLib {
     bool operator>=(const Date&, const Date&);
 
     // inline definitions
-    
+
     inline Weekday Date::weekday() const {
         int w = serialNumber_ % 7;
         return Weekday(w == 0 ? 7 : w);
@@ -256,11 +274,11 @@ namespace QuantLib {
     inline bool Date::isEndOfMonth() const {
        return (dayOfMonth() == monthLength(month(), isLeap(year())));
     }
-   
+
     inline Day Date::lastDayOfMonth() const {
        return monthLength(month(), isLeap(year()));
     }
-   
+
     inline Day Date::dayOfYear() const {
         return serialNumber_ - yearOffset(year());
     }
@@ -316,7 +334,7 @@ namespace QuantLib {
     inline bool operator>=(const Date& d1, const Date& d2) {
         return (d1.serialNumber() >= d2.serialNumber());
     }
-    
+
 }
 
 

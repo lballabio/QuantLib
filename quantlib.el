@@ -40,7 +40,7 @@
 (setq c++-font-lock-extra-types
       (append c++-font-lock-extra-types
               '("Time" "Rate" "Spread" "DiscountFactor" "Size" 
-                "Date" "TimeUnit" "Period" "Weekday"
+                "Date" "TimeUnit" "Frequency" "Period" "Weekday"
                 "DayCounter" "Calendar" "RollingConvention"
                 "Handle" "RelinkableHandle")))
 
