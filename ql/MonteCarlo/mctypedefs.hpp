@@ -47,7 +47,7 @@ namespace QuantLib {
 
         //! default choice for Gaussian multi-path generator.
         typedef
-        MultiPathGenerator<RandomNumbers::RandomArrayGenerator<
+        MultiPathGenerator_old<RandomNumbers::RandomArrayGenerator<
             RandomNumbers::GaussianRandomGenerator> >
             GaussianMultiPathGenerator;
 
