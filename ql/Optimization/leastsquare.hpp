@@ -26,8 +26,6 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        using Math::Matrix;
-
         class LeastSquareProblem {
           public:
             //! size of the problem ie size of target vector
@@ -37,7 +35,7 @@ namespace QuantLib {
                          Array & fct2fit) = 0;
             //! compute the target vector, the values of the fonction to fit and the matrix of derivatives
             virtual void targetValueAndfirstDerivative (const Array& x,
-                Matrix& grad_fct2fit, Array& target, Array& fct2fit) = 0;
+                Math::Matrix& grad_fct2fit, Array& target, Array& fct2fit) = 0;
         };
 
         /*!
@@ -94,13 +92,13 @@ namespace QuantLib {
             // size of target and function to fit vectors
             Array target (lsp_.size ()), fct2fit (lsp_.size ());
             // size of gradient matrix
-            Matrix grad_fct2fit (lsp_.size (), x.size ());
+            Math::Matrix grad_fct2fit (lsp_.size (), x.size ());
             // compute its values
               lsp_.targetValueAndfirstDerivative (x, grad_fct2fit, target, fct2fit);
             // do the difference 
             Array diff = target - fct2fit;
             // compute derivative
-              grad_f = -2. * (transpose (grad_fct2fit) * diff);
+            grad_f = -2. * (Math::transpose(grad_fct2fit) * diff);
         }
 
         double LeastSquareFunction::valueAndFirstDerivative(Array& grad_f,
@@ -109,14 +107,14 @@ namespace QuantLib {
             // size of target and function to fit vectors
             Array target (lsp_.size ()), fct2fit (lsp_.size ());
             // size of gradient matrix
-            Matrix grad_fct2fit (lsp_.size (), x.size ());
+            Math::Matrix grad_fct2fit (lsp_.size (), x.size ());
             // compute its values
             lsp_.targetValueAndfirstDerivative (x, grad_fct2fit, target,
                             fct2fit);
             // do the difference 
             Array diff = target - fct2fit;
             // compute derivative
-            grad_f = -2. * (transpose (grad_fct2fit) * diff);
+            grad_f = -2. * (Math::transpose (grad_fct2fit) * diff);
             // and compute the scalar product (square of the norm)
             return DotProduct (diff, diff);
         }

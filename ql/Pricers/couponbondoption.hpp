@@ -34,9 +34,9 @@
 #ifndef quantlib_pricers_coupon_bond_option_h
 #define quantlib_pricers_coupon_bond_option_h
 
-#include <vector>
 #include "ql/option.hpp"
 #include "ql/InterestRateModelling/model.hpp"
+#include <vector>
 
 namespace QuantLib {
 

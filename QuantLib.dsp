@@ -371,6 +371,22 @@ SOURCE=.\ql\Indexes\xibormanager.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Instruments\capfloor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\capfloor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\europeanswaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\europeanswaption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\plainoption.cpp
 # End Source File
 # Begin Source File
@@ -664,6 +680,14 @@ SOURCE=.\ql\Pricers\cliquetoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\continuousgeometricapo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\couponbondoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\couponbondoption.hpp
 # End Source File
 # Begin Source File
 

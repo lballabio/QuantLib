@@ -115,13 +115,15 @@ namespace QuantLib {
 
             signed jMin = 0, jMax = 0;
 
-            for (unsigned i=0; i<timeSteps_; i++) {
+            unsigned int i;
+            for (i=0; i<timeSteps_; i++) {
                 unsigned width = jMax - jMin + 1;
 
                 double discountBond = termStructure()->discount(dt_*(i+1));
                 vector<double> statePrices(width);
                 unsigned index=0;
-                for (signed j=jMin; j<=jMax; j++)
+                int j;
+                for (j=jMin; j<=jMax; j++)
                     statePrices[index++] = tree_.node(i,j).statePrice();
                 PrivateFunction finder(dt_, dx, jMin, jMax, statePrices, discountBond);
                 // solver
@@ -138,7 +140,7 @@ namespace QuantLib {
                 vector<signed> k(width);
 
                 index = 0;
-                for (signed j=jMin; j<=jMax; j++) {
+                for (j=jMin; j<=jMax; j++) {
                     double x = j*dx;
                     double m = x*QL_EXP(-alpha_*dt_);
                     k[index] = int(m/dx + 0.5);
@@ -158,7 +160,7 @@ namespace QuantLib {
                 tree_.addLevel(k);
                 jMin = k.front() - 1;
                 jMax = k.back() + 1;
-                for (signed j=jMin; j<=jMax; j++) {
+                for (j=jMin; j<=jMax; j++) {
                     double value = 0.0;
                     Node& node = tree_.node(i+1,j);
                     unsigned nb = node.nbAscendants();
@@ -173,7 +175,7 @@ namespace QuantLib {
             }
             
             cout << "Tree filled " << endl;
-            for (unsigned i=0; i<(timeSteps_-1); i++)
+            for (i=0; i<(timeSteps_-1); i++)
                 theta_[i] = (u_[i+1] - u_[i])/dt_ + alpha_*u_[i];
             theta_[timeSteps_-1] = theta_[timeSteps_-2];
         }

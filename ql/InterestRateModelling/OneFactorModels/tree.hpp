@@ -1,16 +1,15 @@
+
 #ifndef quantlib_interest_rate_modelling_tree_h
 #define quantlib_interest_rate_modelling_tree_h
 
 #include "ql/InterestRateModelling/OneFactorModels/node.hpp"
-
-using std::vector;
 
 namespace QuantLib {
     namespace InterestRateModelling {
         class Tree {
           public:
             Tree(unsigned n) : depth_(1), nbDescendants_(n), 
-            nodes_(1, vector<Node>(1, Node(n,0,0))) {
+                nodes_(1, std::vector<Node>(1, Node(n,0,0))) {
             }
             virtual ~Tree() {}
 
@@ -19,7 +18,7 @@ namespace QuantLib {
           protected:
             unsigned depth_;
             unsigned nbDescendants_;
-            vector<vector<Node> > nodes_;
+            std::vector<std::vector<Node> > nodes_;
         };
 
 
@@ -36,7 +35,7 @@ namespace QuantLib {
           public:
             TrinomialTree() : Tree(3) {}
             double calcDiscount();
-            void addLevel(const vector<signed>& k);
+            void addLevel(const std::vector<signed>& k);
             Node& node(unsigned i, signed j) {
                 signed jMin = nodes_[i][0].j();
                 return nodes_[i][j-jMin];

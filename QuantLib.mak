@@ -74,12 +74,16 @@ CLEAN :
 	-@erase "$(INTDIR)\calendar.sbr"
 	-@erase "$(INTDIR)\cap.obj"
 	-@erase "$(INTDIR)\cap.sbr"
+	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\capfloor.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
 	-@erase "$(INTDIR)\conjugategradient.sbr"
+	-@erase "$(INTDIR)\couponbondoption.obj"
+	-@erase "$(INTDIR)\couponbondoption.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -102,6 +106,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
+	-@erase "$(INTDIR)\europeanswaption.obj"
+	-@erase "$(INTDIR)\europeanswaption.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -254,6 +260,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\xibor.sbr" \
@@ -315,26 +322,28 @@ BSC32_SBRS= \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
+	"$(INTDIR)\blackdermanandtoy.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\cap.sbr" \
+	"$(INTDIR)\hoandlee.sbr" \
+	"$(INTDIR)\hullandwhite.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\swapfuturevalue.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\onefactoroperator.sbr" \
-	"$(INTDIR)\swapfuturevalue.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\model.sbr" \
-	"$(INTDIR)\tree.sbr" \
-	"$(INTDIR)\blackkarasinski.sbr" \
-	"$(INTDIR)\hoandlee.sbr" \
-	"$(INTDIR)\hullandwhite.sbr" \
-	"$(INTDIR)\blackdermanandtoy.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\cap.sbr" \
-	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\armijo.sbr"
+	"$(INTDIR)\couponbondoption.sbr" \
+	"$(INTDIR)\europeanswaption.sbr" \
+	"$(INTDIR)\capfloor.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -357,6 +366,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\xibor.obj" \
@@ -418,26 +428,28 @@ LIB32_OBJS= \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\blackdermanandtoy.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\cap.obj" \
+	"$(INTDIR)\hoandlee.obj" \
+	"$(INTDIR)\hullandwhite.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\swapfuturevalue.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\onefactoroperator.obj" \
-	"$(INTDIR)\swapfuturevalue.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\model.obj" \
-	"$(INTDIR)\tree.obj" \
-	"$(INTDIR)\blackkarasinski.obj" \
-	"$(INTDIR)\hoandlee.obj" \
-	"$(INTDIR)\hullandwhite.obj" \
-	"$(INTDIR)\blackdermanandtoy.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\cap.obj" \
-	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\armijo.obj"
+	"$(INTDIR)\couponbondoption.obj" \
+	"$(INTDIR)\europeanswaption.obj" \
+	"$(INTDIR)\capfloor.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -488,12 +500,16 @@ CLEAN :
 	-@erase "$(INTDIR)\calendar.sbr"
 	-@erase "$(INTDIR)\cap.obj"
 	-@erase "$(INTDIR)\cap.sbr"
+	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\capfloor.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
 	-@erase "$(INTDIR)\conjugategradient.sbr"
+	-@erase "$(INTDIR)\couponbondoption.obj"
+	-@erase "$(INTDIR)\couponbondoption.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -516,6 +532,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
+	-@erase "$(INTDIR)\europeanswaption.obj"
+	-@erase "$(INTDIR)\europeanswaption.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -669,6 +687,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\xibor.sbr" \
@@ -730,26 +749,28 @@ BSC32_SBRS= \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
+	"$(INTDIR)\blackdermanandtoy.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\cap.sbr" \
+	"$(INTDIR)\hoandlee.sbr" \
+	"$(INTDIR)\hullandwhite.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\swapfuturevalue.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\onefactoroperator.sbr" \
-	"$(INTDIR)\swapfuturevalue.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\model.sbr" \
-	"$(INTDIR)\tree.sbr" \
-	"$(INTDIR)\blackkarasinski.sbr" \
-	"$(INTDIR)\hoandlee.sbr" \
-	"$(INTDIR)\hullandwhite.sbr" \
-	"$(INTDIR)\blackdermanandtoy.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\cap.sbr" \
-	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\armijo.sbr"
+	"$(INTDIR)\couponbondoption.sbr" \
+	"$(INTDIR)\europeanswaption.sbr" \
+	"$(INTDIR)\capfloor.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -772,6 +793,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\xibor.obj" \
@@ -833,26 +855,28 @@ LIB32_OBJS= \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\blackdermanandtoy.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\cap.obj" \
+	"$(INTDIR)\hoandlee.obj" \
+	"$(INTDIR)\hullandwhite.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\swapfuturevalue.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\onefactoroperator.obj" \
-	"$(INTDIR)\swapfuturevalue.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\model.obj" \
-	"$(INTDIR)\tree.obj" \
-	"$(INTDIR)\blackkarasinski.obj" \
-	"$(INTDIR)\hoandlee.obj" \
-	"$(INTDIR)\hullandwhite.obj" \
-	"$(INTDIR)\blackdermanandtoy.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\cap.obj" \
-	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\armijo.obj"
+	"$(INTDIR)\couponbondoption.obj" \
+	"$(INTDIR)\europeanswaption.obj" \
+	"$(INTDIR)\capfloor.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -903,12 +927,16 @@ CLEAN :
 	-@erase "$(INTDIR)\calendar.sbr"
 	-@erase "$(INTDIR)\cap.obj"
 	-@erase "$(INTDIR)\cap.sbr"
+	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\capfloor.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
 	-@erase "$(INTDIR)\conjugategradient.sbr"
+	-@erase "$(INTDIR)\couponbondoption.obj"
+	-@erase "$(INTDIR)\couponbondoption.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -931,6 +959,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
+	-@erase "$(INTDIR)\europeanswaption.obj"
+	-@erase "$(INTDIR)\europeanswaption.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -1083,6 +1113,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\xibor.sbr" \
@@ -1144,26 +1175,28 @@ BSC32_SBRS= \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
+	"$(INTDIR)\blackdermanandtoy.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\cap.sbr" \
+	"$(INTDIR)\hoandlee.sbr" \
+	"$(INTDIR)\hullandwhite.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\swapfuturevalue.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\onefactoroperator.sbr" \
-	"$(INTDIR)\swapfuturevalue.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\model.sbr" \
-	"$(INTDIR)\tree.sbr" \
-	"$(INTDIR)\blackkarasinski.sbr" \
-	"$(INTDIR)\hoandlee.sbr" \
-	"$(INTDIR)\hullandwhite.sbr" \
-	"$(INTDIR)\blackdermanandtoy.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\cap.sbr" \
-	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\armijo.sbr"
+	"$(INTDIR)\couponbondoption.sbr" \
+	"$(INTDIR)\europeanswaption.sbr" \
+	"$(INTDIR)\capfloor.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1186,6 +1219,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\xibor.obj" \
@@ -1247,26 +1281,28 @@ LIB32_OBJS= \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\blackdermanandtoy.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\cap.obj" \
+	"$(INTDIR)\hoandlee.obj" \
+	"$(INTDIR)\hullandwhite.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\swapfuturevalue.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\onefactoroperator.obj" \
-	"$(INTDIR)\swapfuturevalue.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\model.obj" \
-	"$(INTDIR)\tree.obj" \
-	"$(INTDIR)\blackkarasinski.obj" \
-	"$(INTDIR)\hoandlee.obj" \
-	"$(INTDIR)\hullandwhite.obj" \
-	"$(INTDIR)\blackdermanandtoy.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\cap.obj" \
-	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\armijo.obj"
+	"$(INTDIR)\couponbondoption.obj" \
+	"$(INTDIR)\europeanswaption.obj" \
+	"$(INTDIR)\capfloor.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1317,12 +1353,16 @@ CLEAN :
 	-@erase "$(INTDIR)\calendar.sbr"
 	-@erase "$(INTDIR)\cap.obj"
 	-@erase "$(INTDIR)\cap.sbr"
+	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\capfloor.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
 	-@erase "$(INTDIR)\conjugategradient.sbr"
+	-@erase "$(INTDIR)\couponbondoption.obj"
+	-@erase "$(INTDIR)\couponbondoption.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -1345,6 +1385,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
 	-@erase "$(INTDIR)\europeanpathpricer.sbr"
+	-@erase "$(INTDIR)\europeanswaption.obj"
+	-@erase "$(INTDIR)\europeanswaption.sbr"
 	-@erase "$(INTDIR)\everestpathpricer.obj"
 	-@erase "$(INTDIR)\everestpathpricer.sbr"
 	-@erase "$(INTDIR)\falseposition.obj"
@@ -1498,6 +1540,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
 	"$(INTDIR)\xibor.sbr" \
@@ -1559,26 +1602,28 @@ BSC32_SBRS= \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
+	"$(INTDIR)\blackdermanandtoy.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\cap.sbr" \
+	"$(INTDIR)\hoandlee.sbr" \
+	"$(INTDIR)\hullandwhite.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\swapfuturevalue.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\armijo.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\onefactoroperator.sbr" \
-	"$(INTDIR)\swapfuturevalue.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\model.sbr" \
-	"$(INTDIR)\tree.sbr" \
-	"$(INTDIR)\blackkarasinski.sbr" \
-	"$(INTDIR)\hoandlee.sbr" \
-	"$(INTDIR)\hullandwhite.sbr" \
-	"$(INTDIR)\blackdermanandtoy.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\cap.sbr" \
-	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\armijo.sbr"
+	"$(INTDIR)\couponbondoption.sbr" \
+	"$(INTDIR)\europeanswaption.sbr" \
+	"$(INTDIR)\capfloor.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1601,6 +1646,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
 	"$(INTDIR)\xibor.obj" \
@@ -1662,26 +1708,28 @@ LIB32_OBJS= \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\blackdermanandtoy.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\cap.obj" \
+	"$(INTDIR)\hoandlee.obj" \
+	"$(INTDIR)\hullandwhite.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\swapfuturevalue.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\armijo.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\onefactoroperator.obj" \
-	"$(INTDIR)\swapfuturevalue.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\model.obj" \
-	"$(INTDIR)\tree.obj" \
-	"$(INTDIR)\blackkarasinski.obj" \
-	"$(INTDIR)\hoandlee.obj" \
-	"$(INTDIR)\hullandwhite.obj" \
-	"$(INTDIR)\blackdermanandtoy.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\cap.obj" \
-	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\armijo.obj"
+	"$(INTDIR)\couponbondoption.obj" \
+	"$(INTDIR)\europeanswaption.obj" \
+	"$(INTDIR)\capfloor.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1839,6 +1887,18 @@ SOURCE=.\ql\Indexes\xibormanager.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Instruments\capfloor.cpp
+
+"$(INTDIR)\capfloor.obj"	"$(INTDIR)\capfloor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\europeanswaption.cpp
+
+"$(INTDIR)\europeanswaption.obj"	"$(INTDIR)\europeanswaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Instruments\plainoption.cpp
 
 "$(INTDIR)\plainoption.obj"	"$(INTDIR)\plainoption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1992,6 +2052,12 @@ SOURCE=.\ql\Pricers\bsmnumericaloption.cpp
 SOURCE=.\ql\Pricers\cliquetoption.cpp
 
 "$(INTDIR)\cliquetoption.obj"	"$(INTDIR)\cliquetoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\couponbondoption.cpp
+
+"$(INTDIR)\couponbondoption.obj"	"$(INTDIR)\couponbondoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

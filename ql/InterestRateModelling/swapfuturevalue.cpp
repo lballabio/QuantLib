@@ -42,7 +42,9 @@ namespace QuantLib {
             Date settlement = model->termStructure()->settlementDate();
             double fixedLegValue = 0.0;
             std::vector<Handle<CashFlow> > fixedLeg = swap->fixedLeg();
-            for (unsigned int i=0; i<fixedLeg.size(); i++) {
+
+            unsigned int i;
+            for (i=0; i<fixedLeg.size(); i++) {
                 Date cashFlowDate = fixedLeg[i]->date();
                 Time t = model->termStructure()->dayCounter().yearFraction(settlement, cashFlowDate);
                 if (t >= time) {
@@ -53,11 +55,17 @@ namespace QuantLib {
             double floatingLegValue = 0.0;
             std::vector<Handle<CashFlow> > floatingLeg = swap->floatingLeg();
 
-            for (unsigned int i=0; i<floatingLeg.size(); i++) {
+            for (i=0; i<floatingLeg.size(); i++) {
                 Date cashFlowDate = floatingLeg[i]->date();
                 Time t = model->termStructure()->dayCounter().yearFraction(settlement, cashFlowDate);
                 if (t >= time) {
-                    Coupon * coupon = floatingLeg[i].downcast<Coupon>();
+                    const Coupon * coupon = 
+                        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+                            floatingLeg[i].downcast<Coupon>();
+                        #else
+                            dynamic_cast<const Coupon*>(floatingLeg[i].pointer());
+                        #endif
+                    QL_ENSURE(coupon != 0, "not a coupon");
                     Time startTime = model->termStructure()->dayCounter().
                         yearFraction(settlement,  coupon->accrualStartDate());
                     Time endTime = model->termStructure()->dayCounter().

@@ -173,7 +173,8 @@ namespace QuantLib {
             discountFactors_[0][0] = 1.0/(1.0 + r0*dt_);
 
             cout << "tree built" << endl;
-            for (unsigned int i=0; i<timeSteps_; i++) {
+            unsigned int i;
+            for (i=0; i<timeSteps_; i++) {
                 double discountBond = termStructure()->discount(dt_*(i+1));
                 PrivateFunction finder(this, statePrices_[i], discountBond);
                 // solver
@@ -200,7 +201,7 @@ namespace QuantLib {
             }
             cout << "Tree filled " << endl;
             u_[timeSteps_] = u_[timeSteps_-1];
-            for (unsigned int i=0; i<timeSteps_; i++)
+            for (i=0; i<timeSteps_; i++)
                 theta_[i] = (u_[i+1] - u_[i])/dt_;
             theta_[timeSteps_] = theta_[timeSteps_-1];
         }

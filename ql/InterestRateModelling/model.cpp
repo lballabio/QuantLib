@@ -1,6 +1,6 @@
-#include "ql/InterestRateModelling/model.hpp"
 
 #include "ql/Math/matrix.hpp"
+#include "ql/InterestRateModelling/model.hpp"
 #include "ql/Optimization/leastsquare.hpp"
 
 namespace QuantLib {
@@ -13,10 +13,10 @@ namespace QuantLib {
 
         class Model::CalibrationProblem : public LeastSquareProblem {
           public:
-            CalibrationProblem(Handle<Model>& model, 
+            CalibrationProblem(Model* model, 
                 std::vector<Handle<CalibrationHelper> >& instruments,
                 const std::vector<double>& volatilities)
-            : model_(model), instruments_(instruments), 
+            : model_(model, false), instruments_(instruments), 
               prices_(instruments.size()) {
                 for (unsigned i=0; i<instruments_.size(); i++)
                     prices_[i] = 
@@ -52,11 +52,12 @@ namespace QuantLib {
                     newParams[j] -= off;
                     model_->setParameters(newParams);
                     Array newValues(size());
-                    for (signed i=0; i<size(); i++) 
+                    int i;
+                    for (i=0; i<size(); i++) 
                         newValues[i] = instruments_[i]->value(model_);
                     newParams[j] += 2.0*off;
                     model_->setParameters(newParams);
-                    for (signed i=0; i<size(); i++) {
+                    for (i=0; i<size(); i++) {
                         double diffValue = instruments_[i]->value(model_);
                         diffValue -= newValues[i];
                         grad_fct2fit[i][j] = diffValue/(2.0*off);
@@ -66,7 +67,7 @@ namespace QuantLib {
             }
 
           private:
-            Handle<Model>& model_;
+            Handle<Model> model_;
             std::vector<Handle<CalibrationHelper> >& instruments_;
             Array prices_;
         };
@@ -87,7 +88,7 @@ namespace QuantLib {
             NonLinearLeastSquare lsqnonlin(accuracy,maxiter);
 
             // Define the least square problem
-            CalibrationProblem problem(self_, instruments, volatilities);
+            CalibrationProblem problem(this, instruments, volatilities);
          
             // Set initial values
             lsqnonlin.setInitialValue(Array(nbParams_, 0.1));

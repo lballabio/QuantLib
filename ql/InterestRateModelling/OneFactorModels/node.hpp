@@ -1,11 +1,9 @@
 #ifndef quantlib_interest_rate_modelling_node_h
 #define quantlib_interest_rate_modelling_node_h
 
-#include <vector>
 #include "ql/errors.hpp"
 #include "ql/qldefines.hpp"
-
-using std::vector;
+#include <vector>
 
 namespace QuantLib {
     namespace InterestRateModelling {
@@ -31,7 +29,7 @@ namespace QuantLib {
             void setProbability(double prob, unsigned int branch) {
                 probabilities_[branch] = prob;
             }
-            void setProbabilities(const vector<double>& probabilities) {
+            void setProbabilities(const std::vector<double>& probabilities) {
                 probabilities_ = probabilities;
             }
             Node& ascendant(unsigned int index) {

@@ -34,7 +34,10 @@
 #ifndef quantlib_stochastic_process_h
 #define quantlib_stochastic_process_h
 
+#include <ql/qldefines.hpp>
+
 namespace QuantLib {
+
     //describes a process goverved by dx = \mu(t, x)dt + \sigma(t, x)dW_t
     class StochasticProcess {
       public:
@@ -46,6 +49,8 @@ namespace QuantLib {
       private:
         Variable variable_;
     };
+
 }
+
 
 #endif

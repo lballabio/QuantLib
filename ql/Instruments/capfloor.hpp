@@ -34,16 +34,14 @@
 #ifndef quantlib_instruments_capfloor_h
 #define quantlib_instruments_capfloor_h
 
-#include <vector>
 #include "ql/instrument.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/InterestRateModelling/model.hpp"
+#include <vector>
 
 namespace QuantLib {
 
     namespace Instruments {
-
-        using InterestRateModelling::Model;
 
         class EuropeanCapFloor : public Instrument {
           public:
@@ -53,7 +51,7 @@ namespace QuantLib {
                 std::vector<Rate> exerciseRates,
                 RelinkableHandle<TermStructure> termStructure);
             virtual ~EuropeanCapFloor() {}
-            void useModel(const Handle<Model>& model) {
+            void useModel(const Handle<InterestRateModelling::Model>& model) {
                 model_ = model;
             }
           private:
@@ -62,7 +60,7 @@ namespace QuantLib {
             const Handle<SimpleSwap>& swap_;
             std::vector<Rate> exerciseRates_;
             RelinkableHandle<TermStructure> termStructure_;
-            Handle<Model> model_;
+            Handle<InterestRateModelling::Model> model_;
             unsigned int nbOfPeriods_;
             std::vector<Time> startTimes_;
             std::vector<Time> endTimes_;

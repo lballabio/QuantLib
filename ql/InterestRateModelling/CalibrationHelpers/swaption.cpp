@@ -31,10 +31,9 @@
 
 // $Id$
 
-#include <iostream>
-#include "ql/InterestRateModelling/CalibrationHelpers/swaption.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/Math/normaldistribution.hpp"
+#include "ql/InterestRateModelling/CalibrationHelpers/swaption.hpp"
 
 namespace QuantLib {
 
@@ -94,7 +93,13 @@ namespace QuantLib {
                 DayCounter counter = termStructure_->dayCounter();
                 unsigned int i=0;
                 for (; begin != end; ++begin) {
-                    const FloatingRateCoupon* coupon = begin->downcast<FloatingRateCoupon>();
+                    const FloatingRateCoupon* coupon = 
+                        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+                            begin->downcast<FloatingRateCoupon>();
+                        #else
+                            dynamic_cast<const FloatingRateCoupon*>(begin->pointer());
+                        #endif
+                    QL_ENSURE(coupon != 0, "not a floating rate coupon");
                     Date beginDate = coupon->accrualStartDate();
                     Date endDate = coupon->date();
                     startTimes_.resize(i+1);

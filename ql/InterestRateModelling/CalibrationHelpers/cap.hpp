@@ -34,11 +34,10 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helpers_cap_h
 #define quantlib_interest_rate_modelling_calibration_helpers_cap_h
 
-#include <vector>
 #include "ql/instrument.hpp"
 #include "ql/Instruments/capfloor.hpp"
 #include "ql/InterestRateModelling/onefactormodel.hpp"
-
+#include <vector>
 
 namespace QuantLib {
 

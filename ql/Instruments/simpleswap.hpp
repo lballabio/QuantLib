@@ -97,9 +97,26 @@ namespace QuantLib {
             bool payFixedRate() const {
                 return payFixedRate_;
             }
-            double nominal() const { return fixedLeg()[0].downcast<FixedRateCoupon>()->nominal(); }
-            Rate fixedRate() const { return fixedLeg()[0].downcast<FixedRateCoupon>()->rate(); }
-
+            double nominal() const { 
+                const FixedRateCoupon* coupon =
+                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+                    fixedLeg()[0].downcast<FixedRateCoupon>();
+                #else
+                    dynamic_cast<const FixedRateCoupon*>(fixedLeg()[0].pointer());
+                #endif
+                QL_ENSURE(coupon != 0, "not a fixed-rate coupon");
+                return coupon->nominal(); 
+            }
+            Rate fixedRate() const { 
+                const FixedRateCoupon* coupon =
+                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+                    fixedLeg()[0].downcast<FixedRateCoupon>();
+                #else
+                    dynamic_cast<const FixedRateCoupon*>(fixedLeg()[0].pointer());
+                #endif
+                QL_ENSURE(coupon != 0, "not a fixed-rate coupon");
+                return coupon->rate(); 
+            }
           private:
             bool payFixedRate_;
             Date maturity_;

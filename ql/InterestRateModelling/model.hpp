@@ -55,7 +55,7 @@ namespace QuantLib {
           public:
             Model(unsigned nbParams, 
                 const RelinkableHandle<TermStructure>& termStructure) 
-            : nbParams_(nbParams), termStructure_(termStructure), self_(this) {}
+            : nbParams_(nbParams), termStructure_(termStructure) {}
             virtual ~Model() {}
             virtual void setParameters(const Array& params) = 0;
 
@@ -84,7 +84,6 @@ namespace QuantLib {
             friend class CalibrationProblem;
             unsigned int nbParams_;
             const RelinkableHandle<TermStructure>& termStructure_;
-            Handle<Model> self_;
         };
 
         class CalibrationHelper {
