@@ -31,38 +31,6 @@
 */
 
 // $Id$
-// $Log$
-// Revision 1.12  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.11  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.10  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.9  2001/08/07 17:33:03  nando
-// 1) StandardPathGenerator now is GaussianPathGenerator;
-// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
-// 3) PathMonteCarlo now is MonteCarloModel;
-// 4) added ICGaussian, a Gaussian distribution that use
-//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
-//    distribution extractions into gaussian distribution extractions;
-// 5) added a few trailing underscore to private members
-// 6) style enforced here and there ....
-//
-// Revision 1.8  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.6  2001/07/13 14:29:08  sigmud
-// removed a few gcc compile warnings
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_box_muller_transformation_h
 #define quantlib_box_muller_transformation_h
@@ -111,12 +79,12 @@ namespace QuantLib {
             if(returnFirst_) {
                 double x1,x2,r,ratio;
                 do {
-                    x1 = basicGenerator_.next()*2-1;
+                    x1 = basicGenerator_.next()*2.0-1.0;
                     firstWeight_ = basicGenerator_.weight();
-                    x2 = basicGenerator_.next()*2-1;
+                    x2 = basicGenerator_.next()*2.0-1.0;
                     secondWeight_ = basicGenerator_.weight();
                     r = x1*x1+x2*x2;
-                } while(r>=1 || r==0);
+                } while(r>=1.0 || r==0.0);
 
                 ratio = QL_SQRT(-2.0*QL_LOG(r)/r);
                 firstValue_ = x1*ratio;

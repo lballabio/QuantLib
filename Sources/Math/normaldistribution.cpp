@@ -31,28 +31,7 @@
 */
 
 // $Id$
-// $Log$
-// Revision 1.23  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.22  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.21  2001/08/08 11:07:50  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.20  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.19  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.18  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.17  2001/05/24 15:40:09  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
+
 
 #include "ql/Math/normaldistribution.hpp"
 
@@ -89,6 +68,8 @@ namespace QuantLib {
                 return 1.0-(*this)(2.0*average_-x);
             }
         }
+
+
 
 
         const double InvCumulativeNormalDistribution::p0_ = 2.515517;
