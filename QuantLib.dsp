@@ -1780,6 +1780,10 @@ SOURCE=.\ql\daycounter.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\diffusionprocess.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\diffusionprocess.hpp
 # End Source File
 # Begin Source File

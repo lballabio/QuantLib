@@ -116,6 +116,8 @@ CLEAN :
 	-@erase "$(INTDIR)\date.sbr"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\diffusionprocess.obj"
+	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
@@ -490,7 +492,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -645,7 +648,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\diffusionprocess.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -738,6 +742,8 @@ CLEAN :
 	-@erase "$(INTDIR)\date.sbr"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\diffusionprocess.obj"
+	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
@@ -1113,7 +1119,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1268,7 +1275,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\diffusionprocess.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1361,6 +1369,8 @@ CLEAN :
 	-@erase "$(INTDIR)\date.sbr"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\diffusionprocess.obj"
+	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
@@ -1735,7 +1745,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1890,7 +1901,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\diffusionprocess.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1983,6 +1995,8 @@ CLEAN :
 	-@erase "$(INTDIR)\date.sbr"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\diffusionprocess.obj"
+	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
@@ -2358,7 +2372,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2513,7 +2528,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\diffusionprocess.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3400,6 +3416,12 @@ SOURCE=.\ql\dataparsers.cpp
 SOURCE=.\ql\date.cpp
 
 "$(INTDIR)\date.obj"	"$(INTDIR)\date.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\diffusionprocess.cpp
+
+"$(INTDIR)\diffusionprocess.obj"	"$(INTDIR)\diffusionprocess.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

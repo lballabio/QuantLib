@@ -22,6 +22,9 @@ MONTE CARLO FRAMEWORK
 
 VOLATILITY
 -*local volatility
+- add bispline interpolation or the local vol will be useless
+- investigate extrapolation effect, consider one side differences,
+  instead of central, when on the border
 
 PRICING ENGINE FRAMEWORK
 - create Arguments class not including strike and use it in forward options
