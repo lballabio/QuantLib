@@ -25,8 +25,7 @@
     \brief simple example of multi-factor Monte Carlo pricer
 
     \fullpath
-    Pricers/%plainbasketoption.cpp
-
+    ql/Pricers/%plainbasketoption.cpp
 */
 
 // $Id$

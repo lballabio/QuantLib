@@ -21,12 +21,12 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
+
 /*! \file everestoption.hpp
     \brief Everest-type option pricer
 
     \fullpath
     ql/Pricers/%everestoption.hpp
-
 */
 
 // $Id$

@@ -26,7 +26,7 @@
     \brief simple example of Monte Carlo pricer
 
     \fullpath
-    Pricers/%mceuropeanpricer.cpp
+    ql/Pricers/%mceuropeanpricer.cpp
 */
 
 // $Id$

@@ -26,8 +26,7 @@
     \brief Himalayan-type option pricer
 
     \fullpath
-    Pricers/%himalaya.cpp
-
+    ql/Pricers/%himalaya.cpp
 */
 
 // $Id$

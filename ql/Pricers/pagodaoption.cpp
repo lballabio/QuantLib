@@ -26,8 +26,7 @@
     \brief roofed Asian option
 
     \fullpath
-    Pricers/%pagodaoption.cpp
-
+    ql/Pricers/%pagodaoption.cpp
 */
 
 // $Id$

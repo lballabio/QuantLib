@@ -26,7 +26,7 @@
     \brief example of Monte Carlo pricer using a control variate
 
     \fullpath
-    Pricers/%averagepriceasian.cpp
+    ql/Pricers/%averagepriceasian.cpp
 */
 
 // $Id$

@@ -26,7 +26,7 @@
     \brief common code for numerical option evaluation
 
     \fullpath
-    Pricers/%bsmnumericaloption.cpp
+    ql/Pricers/%bsmnumericaloption.cpp
 */
 
 // $Id$

@@ -23,58 +23,13 @@
 */
 
 /*! \file singleassetoption.cpp
-
-    \fullpath
-    Sources/Pricers/%singleassetoption.cpp
     \brief common code for option evaluation
 
+    \fullpath
+    ql/Pricers/%singleassetoption.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.2  2001/09/11 13:22:38  sadrejeb
-// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
-// changed styleguide of typenames in pathpricer.
-//
-// Revision 1.1  2001/09/03 14:04:01  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.9  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.8  2001/08/28 14:47:46  nando
-// unsigned int instead of int
-//
-// Revision 1.7  2001/08/20 14:55:15  nando
-// typo fixed
-//
-// Revision 1.6  2001/08/20 14:49:21  sigmud
-// enhanced error messages
-//
-// Revision 1.5  2001/08/13 15:06:17  nando
-// added dividendRho method
-//
-// Revision 1.4  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.3  2001/08/08 11:07:50  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.2  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.1  2001/08/07 07:50:20  nando
-// forgot to add the singleassetoption.* files
-//
-// Revision 1.38  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.37  2001/07/13 14:23:11  sigmud
-// removed a few gcc compile warnings
-//
-// Revision 1.36  2001/06/05 12:45:27  nando
-// R019-branch-merge4 merged into trunk
-//
 
 #include "ql/Pricers/singleassetoption.hpp"
 #include "ql/Solvers1D/brent.hpp"

@@ -24,6 +24,7 @@
 
 /*! \file mceuropeanpricer.hpp
     \brief simple example of Monte Carlo pricer
+    
     \fullpath
     ql/Pricers/%mceuropeanpricer.hpp
 */

@@ -27,7 +27,6 @@
 
     \fullpath
     ql/Pricers/%everestoption.cpp
-
 */
 
 // $Id$
