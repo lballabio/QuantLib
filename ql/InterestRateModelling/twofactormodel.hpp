@@ -36,7 +36,7 @@ namespace QuantLib {
             TwoFactorModel(
                 Size nParams,
                 const RelinkableHandle<TermStructure>& termStructure)
-            : Model(nParams, TwoFactor, termStructure) {}
+            : Model(nParams, termStructure) {}
             virtual ~TwoFactorModel() {}
 
             virtual double discountBondOption(Option::Type type,

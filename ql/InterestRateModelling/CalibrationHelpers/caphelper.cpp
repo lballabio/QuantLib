@@ -25,14 +25,11 @@
 #include "ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp"
 #include "ql/CashFlows/cashflowvectors.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
+#include "ql/Instruments/swap.hpp"
 #include "ql/Math/normaldistribution.hpp"
 #include "ql/Pricers/analyticalcapfloor.hpp"
 #include "ql/Pricers/treecapfloor.hpp"
 #include "ql/Solvers1D/brent.hpp"
-
-#include <iostream>
-using std::cout;
-using std::endl;
 
 namespace QuantLib {
 
@@ -45,12 +42,17 @@ namespace QuantLib {
             using CashFlows::FloatingRateCouponVector;
             using Instruments::VanillaCap;
             using Instruments::CapFloorParameters;
-            using Instruments::SimpleSwap;
             using Instruments::Swap;
             using Pricers::CapFloorPricingEngine;
 
+            class NullEngine : public CapFloorPricingEngine {
+              public:
+                NullEngine() {}
+                void calculate() const {}
+            };
+
             CapHelper::CapHelper(
-                const Period& tenor,
+                const Period& length,
                 const RelinkableHandle<MarketElement>& volatility,
                 const Handle<Indexes::Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure)
@@ -58,61 +60,77 @@ namespace QuantLib {
 
                 Period indexTenor = index->tenor();
                 int frequency;
-                if (indexTenor.units() == Months)
+                if (indexTenor.units() == Months) {
+                    QL_REQUIRE((12%indexTenor.length()) == 0, 
+                        "Invalid index tenor");
                     frequency = 12/indexTenor.length();
-                else if (indexTenor.units() == Years)
-                    frequency = 1/indexTenor.length();
-                else
-                    throw Error("index tenor not valid!");
+                } else if (indexTenor.units() == Years) {
+                    QL_REQUIRE(indexTenor.length()==1, "Invalid index tenor");
+                    frequency=1;
+                } else
+                    throw Error("Invalid index tenor");
                 Rate fixedRate = 0.04;//dummy value
                 Date startDate = termStructure->settlementDate().
                     plus(indexTenor.length(), indexTenor.units());
                 Date maturity = termStructure->settlementDate().
-                    plus(tenor.length(), tenor.units());
+                    plus(length.length(), length.units());
 
-                std::vector<Handle<CashFlow> > fixedLeg, floatingLeg;
                 std::vector<double> nominals(1,1.0);
-
-                floatingLeg = FloatingRateCouponVector(
+                FloatingRateCouponVector floatingLeg(
                     nominals, startDate, maturity, frequency,
                     index->calendar(), index->rollingConvention(), 
                     termStructure, index, 0, std::vector<double>(1, 0.0));
-                fixedLeg = FixedRateCouponVector(
+                FixedRateCouponVector fixedLeg(
                     nominals, std::vector<Rate>(1, fixedRate), 
                     startDate, maturity, frequency, 
                     index->calendar(), index->rollingConvention(),
                     false, index->dayCounter(), index->dayCounter());
 
-                SimpleSwap swap(false, fixedLeg, floatingLeg, termStructure);
-                Rate fairFixedRate = fixedRate - swap.NPV()/swap.fixedLegBPS();
-                fixedLeg = FixedRateCouponVector(
-                    nominals, std::vector<Rate>(1, fairFixedRate), 
-                    startDate, maturity, frequency, 
-                    index->calendar(), index->rollingConvention(),
-                    false, index->dayCounter(), index->dayCounter());
+                Handle<Swap> swap(
+                    new Swap(floatingLeg, fixedLeg, termStructure));
+                Rate fairRate = fixedRate - 
+                    swap->NPV()/swap->secondLegBPS();
 
-                swap_ = Handle<SimpleSwap>(new 
-                    SimpleSwap(false, fixedLeg, floatingLeg, termStructure));
-                engine_ = Handle<CapFloorPricingEngine>(
-                    new Pricers::TreeCapFloor(10));
+                engine_ = Handle<CapFloorPricingEngine>(new NullEngine());
                 cap_ = Handle<VanillaCap>(
-                    new VanillaCap( swap_, std::vector<Rate>(1, fairFixedRate),
-                    termStructure, engine_));
+                    new VanillaCap(floatingLeg, std::vector<Rate>(1, fairRate), 
+                                   termStructure, engine_));
                 cap_->setPricingEngine(engine_);
-
                 marketValue_ = blackPrice(volatility_->value());
             }
 
-            double CapHelper::modelValue(const Handle<Model>& model) {
-                if (model->hasDiscountBondOptionFormula())
-                    engine_ = Handle<CapFloorPricingEngine>(
-                        new Pricers::AnalyticalCapFloor());
-                else
-                    engine_ = Handle<CapFloorPricingEngine>(
-                        new Pricers::TreeCapFloor(10));
+            void CapHelper::addTimes(std::list<Time>& times) const {
+                CapFloorParameters* params =
+                    dynamic_cast<CapFloorParameters*>(engine_->parameters());
+                Size nPeriods = params->startTimes.size();
+                for (Size i=0; i<nPeriods; i++) {
+                    times.push_back(params->startTimes[i]);
+                    times.push_back(params->endTimes[i]);
+                }
+            }
+
+            void CapHelper::setAnalyticalPricingEngine() {
+                engine_ =  Handle<CapFloorPricingEngine>(
+                    new Pricers::AnalyticalCapFloor());
+            }
+
+            void CapHelper::setNumericalPricingEngine(
+                const Handle<Lattices::Tree>& tree) {
+                engine_ = Handle<CapFloorPricingEngine>(
+                    new Pricers::TreeCapFloor(tree));
+            }
+
+            void CapHelper::setNumericalPricingEngine(Size timeSteps) {
+                engine_ = Handle<CapFloorPricingEngine>(
+                    new Pricers::TreeCapFloor(timeSteps));
+            }
+
+            void CapHelper::setModel(const Handle<Model>& model) {
                 engine_->setModel(model);
+            }
+
+            double CapHelper::modelValue() {
                 cap_->setPricingEngine(engine_);
-                cap_->recalculate();
                 return cap_->NPV();
             }
 

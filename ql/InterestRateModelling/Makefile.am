@@ -9,8 +9,8 @@ include_HEADERS = \
     calibrationhelper.hpp \
     model.hpp \
     onefactormodel.hpp \
+    parameter.hpp \
     shortrateprocess.hpp \
-    timefunction.hpp \
     twofactormodel.hpp
 
 EXTRA_DIST=makefile.mak
@@ -18,7 +18,6 @@ EXTRA_DIST=makefile.mak
 libInterestRateModelling_la_SOURCES = \
     calibrationhelper.cpp \
     model.cpp \
-    onefactormodel.cpp \
-    timefunction.cpp
+    onefactormodel.cpp
 
 noinst_LTLIBRARIES = libInterestRateModelling.la

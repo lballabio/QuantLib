@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -38,20 +36,22 @@ namespace QuantLib {
         class OneFactorOperator : public TridiagonalOperator {
           public:
             OneFactorOperator() {}
-            OneFactorOperator(const Array& grid,
-                const Handle<ShortRateProcess>& process);
+            OneFactorOperator(
+                const Array& grid,
+                const Handle<InterestRateModelling::ShortRateProcess>& process);
             virtual ~OneFactorOperator() {}
 
             class SpecificTimeSetter : public TridiagonalOperator::TimeSetter{
               public:
                 SpecificTimeSetter(double x0, double dx,
-                    const Handle<ShortRateProcess>& process);
+                    const Handle<InterestRateModelling::ShortRateProcess>& 
+                        process);
                 virtual ~SpecificTimeSetter() {}
                 virtual void setTime(Time t, TridiagonalOperator& L) const;
               private:
                 double x0_;
                 double dx_;
-                const Handle<ShortRateProcess>& process_;
+                const Handle<InterestRateModelling::ShortRateProcess>& process_;
             };
         };
 

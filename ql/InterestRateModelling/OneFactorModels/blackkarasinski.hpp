@@ -25,42 +25,76 @@
 #ifndef quantlib_one_factor_models_black_karasinski_h
 #define quantlib_one_factor_models_black_karasinski_h
 
-#include <ql/InterestRateModelling/timefunction.hpp>
-#include <ql/Lattices/tree.hpp>
+#include <ql/InterestRateModelling/onefactormodel.hpp>
 
 namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class BlackKarasinski : public OneFactorModel {
+        class GeneralBlackKarasinski : public OneFactorModel {
           public:
-            BlackKarasinski(
-                const RelinkableHandle<TermStructure>& termStructure);
-            virtual ~BlackKarasinski() {}
+            GeneralBlackKarasinski(
+                const Parameter& a,
+                const Parameter& sigma,
+                const RelinkableHandle<TermStructure>& termStructure) 
+            : OneFactorModel(3, termStructure), 
+              a_(parameters_[0]), sigma_(parameters_[1]), f_(parameters_[2]) {
+                a_ = a;
+                sigma_ = sigma;
+            }
+            virtual ~GeneralBlackKarasinski() {}
 
-            Handle<Lattices::Tree> tree(
-                const Lattices::TimeGrid& timeGrid) const;
-
-          private:
-            double alpha(Time t) const {
-                return (*alpha_)(t);
+            virtual Handle<ShortRateProcess> process() const {
+                return Handle<ShortRateProcess>(
+                    new Process(f_, a_, sigma_));
             }
 
-            class Process;
-            friend class Process;
+            virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const {
+                return Handle<Lattices::Tree>(
+                    new OwnTrinomialTree(process(), f_.implementation(), grid));
+            }
 
-            class PrivateTree;
-            friend class PrivateTree;
+          protected:
+            virtual void generateParameters() {
+                f_ = TermStructureFittingParameter(termStructure());
+            }
 
-            class PrivateFunction;
-            friend class PrivateFunction;
+            Parameter& a_;
+            Parameter& sigma_;
+            Parameter& f_;
+          private:
+            class Process : public OrnsteinUhlenbeckProcess {
+              public:
+                Process(const Parameter& fitting,
+                        const Parameter& speed,
+                        const Parameter& volatility)
+                : OrnsteinUhlenbeckProcess(NullParameter(), speed, volatility),
+                  fitting_(fitting) {}
+                virtual double variable(Time t, Rate r) const {
+                    return QL_LOG(r) - fitting_(t);
+                }
 
-            Handle<TimeFunction> alpha_;
+                virtual double shortRate(Time t, double x) const {
+                    return QL_EXP(x + fitting_(t));
+                }
+              private:
+                Parameter fitting_;
+            };
 
-            double& a_;
-            double& sigma_;
         };
+
+        class BlackKarasinski : public GeneralBlackKarasinski {
+          public:
+            BlackKarasinski(
+                const RelinkableHandle<TermStructure>& termStructure)
+            : GeneralBlackKarasinski(ConstantParameter(0.1), 
+                                     ConstantParameter(0.1), 
+                                     termStructure) {}
+            virtual ~BlackKarasinski() {}
+        };
+
     }
+
 }
 
 #endif

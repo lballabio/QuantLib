@@ -23,8 +23,9 @@
 #ifndef quantlib_optimization_simplex_h
 #define quantlib_optimization_simplex_h
 
-#include <vector>
 #include <ql/Optimization/optimizer.hpp>
+
+#include <vector>
 
 namespace QuantLib {
 

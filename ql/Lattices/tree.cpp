@@ -28,17 +28,14 @@ namespace QuantLib {
 
     namespace Lattices {
 
-        using std::cout;
-        using std::endl;
-
         void Tree::computeStatePrices(Size until) {
             for (Size i=statePricesLimit_; i<until; i++) {
-                for (int j=jMin(i); j<=jMax(i); j++) {
+                Column::const_iterator c = column(i).begin();
+                for (; c != column(i).end(); c++) {
+                    double discountFactor = discount(i, c->j);
                     for (Size n=0; n<n_; n++) {
-                        node(i,j).descendant(n).statePrice() +=
-                            node(i,j).statePrice()*
-                            node(i,j).probability(n)*
-                            discount(i,j);
+                        node(i+1,c->descendant[n]).statePrice +=
+                            c->statePrice*c->probability[n]*discountFactor;
                     }
                 }
             }
@@ -51,15 +48,16 @@ namespace QuantLib {
                 computeStatePrices(i);
             double value = 0.0;
             Size l = 0;
-            for (int j=jMin(i); j<=jMax(i); j++, l++) {
-                value += asset->values()[l]*node(i,j).statePrice();
+            Column::const_iterator n = column(i).begin();
+            for (; n != column(i).end(); n++, l++) {
+                value += asset->values()[l]*n->statePrice;
             }
             return value;
         }
 
         void Tree::initialize(const Handle<Asset>& asset, Time t) const {
             Size i = t_.findIndex(t);
-            Size width = jMax(i) - jMin(i) + 1;
+            Size width = column(i).size();
             asset->setTime(t);
             asset->reset(width);
         }
@@ -89,15 +87,15 @@ namespace QuantLib {
                     Size width = jMax(i) - jMin(i) + 1;
                     Array newValues(width);
                     Size l = 0;
-                    for (int j=jMin(i); j<=jMax(i); j++, l++) {
+                    Column::const_iterator n = column(i).begin();
+                    for (; n != column(i).end(); n++, l++) {
                         double value = 0.0;
                         for (Size k=0; k<n_; k++) {
-                            Size index = node(i,j).descendant(k).j() -
-                                jMin(i+1);
-                            value += node(i,j).probability(k)
+                            Size index = nodeIndex(i+1, n->descendant[k]);
+                            value += n->probability[k]
                                 *(*begin)->values()[index];
                         }
-                        value *= discount(i, j);
+                        value *= discount(i, n->j);
                         newValues[l] = value;
                     }
                     (*begin)->setTime(t(i));

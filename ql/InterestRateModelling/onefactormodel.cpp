@@ -24,14 +24,12 @@
 
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 #include "ql/Lattices/trinomialtree.hpp"
+#include "ql/Solvers1D/brent.hpp"
 
 namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        using Lattices::TimeGrid;
-        using Lattices::Tree;
-        using Lattices::TrinomialTree;
         using Optimization::Constraint;
 
         class OneFactorModel::StandardConstraint : public Constraint {
@@ -47,29 +45,73 @@ namespace QuantLib {
             }
         };
 
-        class OneFactorModel::PrivateTree : public TrinomialTree {
+        //Private function used by solver to determine time-dependent parameter
+        class OneFactorModel::OwnTrinomialTree::Helper 
+            : public ObjectiveFunction {
           public:
-            PrivateTree(const OneFactorModel* model, const TimeGrid& timeGrid) 
-            : TrinomialTree(model->process(), timeGrid), model_(model) {}
-
-            virtual DiscountFactor discount(Size i, int j) const {
-                 Rate r = model_->process()->shortRate(t(i), j*dx(i));
-                 return QL_EXP(-r*dt(i));
+            Helper::Helper(
+                Time t, Time dt, double dx, 
+                int jMin, int jMax,
+                const std::vector<double>& statePrices,
+                double discountBondPrice,
+                const Handle<ShortRateProcess>& process,
+                const 
+                    Handle<TermStructureFittingParameter::NumericalImpl>& theta)
+            : t_(t), dt_(dt), dx_(dx), 
+              jMin_(jMin), jMax_(jMax),
+              statePrices_(statePrices),
+              discountBondPrice_(discountBondPrice),
+              process_(process), theta_(theta) {
+                theta_->set(t, 0.0);
             }
-          private:
-            const OneFactorModel* model_;
 
+            double operator()(double x) const {
+                double value = discountBondPrice_;
+                theta_->change(x);
+                Size k=0;
+                for (int j=jMin_; j<=jMax_; j++) {
+                    Rate r = process_->shortRate(t_, j*dx_);
+                    value -= statePrices_[k++]*QL_EXP(-r*dt_);
+                }
+                return value;
+            }
+
+          private:
+            Time t_, dt_;
+            double dx_;
+            int jMin_, jMax_;
+            const std::vector<double>& statePrices_;
+            double discountBondPrice_;
+            Handle<ShortRateProcess> process_;
+            Handle<TermStructureFittingParameter::NumericalImpl> theta_;
         };
 
-        OneFactorModel::OneFactorModel(
-            Size nParams,
-            const RelinkableHandle<TermStructure>& termStructure)
-        : Model(nParams, OneFactor, termStructure) {
-            constraint_ = Handle<Constraint>(new StandardConstraint());
+        OneFactorModel::OwnTrinomialTree::OwnTrinomialTree(
+            const Handle<ShortRateProcess>& process,
+            const Handle<TermStructureFittingParameter::NumericalImpl>& theta,
+            const TimeGrid& timeGrid)
+        : TrinomialTree(process, timeGrid), process_(process) {
+
+            for (Size i=0; i<(timeGrid.size() - 1); i++) {
+                double discountBond = theta->termStructure()->discount(t(i+1));
+                std::vector<double> statePrices(0);
+                for (int j=jMin(i); j<=jMax(i); j++)
+                    statePrices.push_back(node(i,j).statePrice);
+                Helper finder(t(i), dt(i), dx(i), jMin(i), jMax(i), 
+                              statePrices, discountBond, process_, theta);
+                Solvers1D::Brent s1d = Solvers1D::Brent();
+                s1d.setMaxEvaluations(1000);
+                double value = s1d.solve(finder, 1e-6, 1.0, -50.0, 50.0);
+                theta->change(value);
+                computeStatePrices(i+1);
+            }
         }
 
-        Handle<Tree> OneFactorModel::tree(const TimeGrid& timeGrid) const {
-            return Handle<Tree>(new PrivateTree(this, timeGrid));
+        OneFactorModel::OneFactorModel(
+            Size nParameters,
+            const RelinkableHandle<TermStructure>& termStructure)
+        : Model(nParameters, termStructure) {
+            constraint_ = Handle<Constraint>(new StandardConstraint());
         }
 
     }

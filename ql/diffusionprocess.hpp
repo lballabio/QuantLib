@@ -26,14 +26,22 @@
 #define quantlib_diffusion_process_h
 
 #include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
     //describes a process goverved by dx = \mu(t, x)dt + \sigma(t, x)dW_t
     class DiffusionProcess {
       public:
-        virtual double drift(double t, double x) const = 0;
-        virtual double diffusion(double t, double x) const = 0;
+        virtual double drift(Time t, double x) const = 0;
+        virtual double diffusion(Time t, double x) const = 0;
+        virtual double expectation(Time t0, double x0, Time dt) const {
+            return x0 + drift(t0, x0)*dt;
+        }
+        virtual double variance(Time t0, double x0, Time dt) const {
+            double sigma = diffusion(t0, x0);
+            return sigma*sigma*dt;
+        }
     };
 
 }

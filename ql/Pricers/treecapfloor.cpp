@@ -73,41 +73,47 @@ namespace QuantLib {
         };
 
         void TreeCapFloor::calculate() const {
-            QL_REQUIRE(!model_.isNull(), "Cannot price without model!");
 
-            QL_REQUIRE(
-                model_->type() == InterestRateModelling::Model::OneFactor,
-                "Analytical formulas required for n-factor models n>1");
-            Handle<OneFactorModel> model(model_);
+            Handle<Tree> tree;
 
-            std::list<Time> times(0);
-            Size nPeriods = parameters_.startTimes.size();
-            Size i;
-            for (i=0; i<nPeriods; i++)
-                times.push_back(parameters_.startTimes[i]);
-            for (i=0; i<nPeriods; i++)
-                times.push_back(parameters_.endTimes[i]);
-            times.unique();
-            times.sort();
+            if (tree_.isNull()) {
+                QL_REQUIRE(!model_.isNull(), "Cannot price without model!");
+                Handle<OneFactorModel> model(model_);
 
-            TimeGrid timeGrid(times, timeSteps_);
-            Handle<Tree> tree = model->tree(timeGrid);
+                std::list<Time> times(0);
+                Size nPeriods = parameters_.startTimes.size();
+                Size i;
+                for (i=0; i<nPeriods; i++) {
+                    times.push_back(parameters_.startTimes[i]);
+                    times.push_back(parameters_.endTimes[i]);
+                }
+                times.sort();
+                times.unique();
+
+                TimeGrid timeGrid(times, timeSteps_);
+                tree = model->tree(timeGrid);
+            } else {
+                tree = tree_;
+            }
 
             Option::Type optionType;
-            if (parameters_.type==VanillaCapFloor::Cap)
+            switch (parameters_.type==Instruments::VanillaCapFloor::Cap) {
+              case Instruments::VanillaCapFloor::Cap:
                 optionType = Option::Put;
-            else
+                break;
+              case Instruments::VanillaCapFloor::Floor:
                 optionType = Option::Call;
+                break;
+              default:
+                throw Error("Invalid cap/floor type");
+            }
 
             double value = 0.0;
 
-            for (i=0; i<nPeriods; i++) {
-                Rate exerciseRate;
-                if (i<parameters_.exerciseRates.size())
-                    exerciseRate = parameters_.exerciseRates[i];
-                else
-                    exerciseRate = parameters_.exerciseRates.back();
+            Size nPeriods = parameters_.startTimes.size();
 
+            for (Size i=0; i<nPeriods; i++) {
+                Rate exerciseRate = parameters_.exerciseRates[i];
                 Time maturity = parameters_.startTimes[i];
                 Time bond = parameters_.endTimes[i];
 

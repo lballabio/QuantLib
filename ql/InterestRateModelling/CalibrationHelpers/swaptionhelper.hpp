@@ -40,14 +40,22 @@ namespace QuantLib {
                 //!Constructor for ATM swaption
                 SwaptionHelper(
                     const Period& maturity,
-                    const Period& tenor,
+                    const Period& length,
                     const RelinkableHandle<MarketElement>& volatility,
                     const Handle<Indexes::Xibor>& index,
                     const RelinkableHandle<TermStructure>& termStructure);
 
                 virtual ~SwaptionHelper() {}
 
-                virtual double modelValue(const Handle<Model>& model);
+                virtual void addTimes(std::list<Time>& times) const;
+
+                virtual void setAnalyticalPricingEngine();
+                virtual void setNumericalPricingEngine(
+                    const Handle<Lattices::Tree>& tree);
+                virtual void setNumericalPricingEngine(Size timeSteps);
+
+                virtual void setModel(const Handle<Model>& model);
+                virtual double modelValue();
 
                 virtual double blackPrice(double volatility) const;
 

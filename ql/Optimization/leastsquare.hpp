@@ -171,8 +171,6 @@ namespace QuantLib {
 
                 // minimize
                 P.minimize();
-                std::cout << "Minimized function value" << lsf.value(om_->x());
-                std::cout << std::endl;
 
                 // summarize results of minimization
                 exitFlag_ = om_->endCriteria ().criteria();

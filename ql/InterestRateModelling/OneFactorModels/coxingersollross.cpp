@@ -30,7 +30,8 @@ namespace QuantLib {
     namespace InterestRateModelling {
 
         using Optimization::Constraint;
-        class CoxIngersollRoss::OwnConstraint : public Constraint {
+
+        class ExtendedCoxIngersollRoss::OwnConstraint : public Constraint {
             virtual bool test(const Array& params) const {
                 if (params[0]<=0.0)
                     return false;
@@ -50,85 +51,44 @@ namespace QuantLib {
             }
         };
 
-        class CoxIngersollRoss::Process : public ShortRateProcess {
-          public:
-            Process(CoxIngersollRoss * model)
-            : model_(model), k_(model->k_),
-              theta_(model->theta_), sigma_(model->sigma_), x0_(model->x0_) {}
-
-            virtual double variable(Time t, Rate r) const {
-                return QL_SQRT(r - model_->phi(t)) - QL_SQRT(x0_);
-            }
-            virtual double shortRate(Time t, double y) const {
-                double v = y + QL_SQRT(x0_);
-                return v*v + model_->phi(t);
-            }
-            virtual double drift(Time t, double y) const {
-                double v = y + QL_SQRT(x0_);
-                return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/v - 0.5*k_*v;
-            }
-            virtual double diffusion(Time t, double y) const {
-                return 0.5*sigma_;
-            }
-          private:
-            CoxIngersollRoss * model_;
-            const double& k_;
-            const double& theta_;
-            const double& sigma_;
-            const double& x0_;
-        };
-
-        CoxIngersollRoss::CoxIngersollRoss(
-            const RelinkableHandle<TermStructure>& termStructure)
-        : OneFactorModel(3, termStructure), k_(params_[0]),
-          theta_(params_[1]), sigma_(params_[2]), 
-          x0_(termStructure->forward(0.0)) {
-            k_ = 0.394529;
-            theta_ = 0.271373;
-            sigma_ = 0.0545128;
-            process_ = Handle<ShortRateProcess>(new Process(this));
+        ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
+            const RelinkableHandle<TermStructure>& termStructure) 
+        : GeneralCoxIngersollRoss(ConstantParameter(0.1), 
+                                  ConstantParameter(0.1), 
+                                  ConstantParameter(0.1), 
+                                  termStructure) {
+            constraint_ = Handle<Constraint>(new OwnConstraint());
         }
 
-        double CoxIngersollRoss::phi(Time t) const {
-            double forwardRate = termStructure()->forward(t);
-            double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
-            double expth = QL_EXP(t*h);
-            //FIXME
-            //Check this term
-            //Not the same in paper and in book
-            double temp = 2.0*h + (k_+h)*(expth-1.0);
-            double phi = forwardRate - 2.0*k_*theta_*(expth - 1.0)/temp 
-                - x0_*4.0*h*h*expth/(temp*temp);
-            return phi;
-        }
-
-        double CoxIngersollRoss::A(Time t, Time T) const {
-            double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
-            double numerator = 2.0*h*QL_EXP(0.5*(k_+h)*(T-t));
-            double denominator = 2.0*h + (k_+h)*(QL_EXP((T - t)*h) - 1.0);
+        double ExtendedCoxIngersollRoss::A(Time t, Time T) const {
+            double sigma2 = sigma()*sigma();
+            double h = QL_SQRT(k()*k() + 2.0*sigma2);
+            double numerator = 2.0*h*QL_EXP(0.5*(k()+h)*(T-t));
+            double denominator = 2.0*h + (k()+h)*(QL_EXP((T - t)*h) - 1.0);
             double value = QL_LOG(numerator/denominator)*
-                2.0*k_*theta_/(sigma_*sigma_);
+                2.0*k()*theta()/sigma2;
             return QL_EXP(value);
         }
 
-        double CoxIngersollRoss::B(Time t, Time T) const {
-            double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
+        double ExtendedCoxIngersollRoss::B(Time t, Time T) const {
+            double h = QL_SQRT(k()*k() + 2.0*sigma()*sigma());
             double numerator = 2.0*(QL_EXP((T-t)*h) - 1.0);
-            double denominator = 2.0*h + (k_+h)*(QL_EXP((T - t)*h) - 1.0);
+            double denominator = 2.0*h + (k()+h)*(QL_EXP((T - t)*h) - 1.0);
             double value = numerator/denominator;
             return value;
         }
 
-        double CoxIngersollRoss::C(Time t, Time T) const {
+        double ExtendedCoxIngersollRoss::C(Time t, Time T) const {
             double Pt = termStructure()->discount(t);
             double PT = termStructure()->discount(T);
-            double value = A(t,T)*QL_EXP(B(t,T)*phi(t))*
+            double value = A(t,T)*QL_EXP(B(t,T)*phi_(t))*
                 (PT*A(0,t)*QL_EXP(-B(0,t)*x0_))/
                 (Pt*A(0,T)*QL_EXP(-B(0,T)*x0_));
             return value;
         }
 
-        double CoxIngersollRoss::discountBond(Time t, Time T, Rate r) const {
+        double ExtendedCoxIngersollRoss::discountBond(
+            Time t, Time T, Rate r) const {
             double value =  C(t,T)*QL_EXP(-B(t,T)*r);
             return value;
         }
@@ -175,6 +135,7 @@ namespace QuantLib {
                 return call - discountS + strike*discountT;
         }
 */
+
     }
 
 }

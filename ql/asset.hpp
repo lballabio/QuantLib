@@ -29,6 +29,9 @@
 
 namespace QuantLib {
   
+    namespace FiniteDifferences {
+        class FiniteDifferenceModel;
+    }
     namespace Lattices {
         class Tree;
     }
@@ -37,16 +40,17 @@ namespace QuantLib {
         virtual ~Asset() {}
 
         Time time() const { return time_; }
-        const Array& values() { return values_; }
+        const Array& values() const { return values_; }
 
       protected:
         friend class Lattices::Tree;
+        friend class FiniteDifferences::FiniteDifferenceModel;
+
         virtual void reset(Size size) = 0;
         void setTime(Time t) { time_ = t; }
         void setValues(const Array& values) { values_ = values; }
 
         virtual void applyCondition() {}
-
 
         Array values_;
         Time time_;

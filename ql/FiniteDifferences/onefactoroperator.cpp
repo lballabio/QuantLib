@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -29,6 +27,8 @@
 namespace QuantLib {
 
     namespace FiniteDifferences {
+
+        using InterestRateModelling::ShortRateProcess;
 
         OneFactorOperator::OneFactorOperator(const Array& grid,
             const Handle<ShortRateProcess>& process)

@@ -24,8 +24,6 @@
 
 #include "ql/Pricers/analyticalcapfloor.hpp"
 
-#include <iostream>
-
 namespace QuantLib {
 
     namespace Pricers {
@@ -37,20 +35,21 @@ namespace QuantLib {
                 "No analytical formula for discount bond options");
 
             Option::Type optionType;
-            if (parameters_.type==Instruments::VanillaCapFloor::Cap)
+            switch (parameters_.type==Instruments::VanillaCapFloor::Cap) {
+              case Instruments::VanillaCapFloor::Cap:
                 optionType = Option::Put;
-            else
+                break;
+              case Instruments::VanillaCapFloor::Floor:
                 optionType = Option::Call;
+                break;
+              default:
+                throw Error("Invalid cap/floor type");
+            }
 
             double value = 0.0;
             Size nPeriods = parameters_.endTimes.size();
-            const std::vector<Rate>& exerciseRates = parameters_.exerciseRates;
             for (Size i=0; i<nPeriods; i++) {
-                Rate exerciseRate;
-                if (i<exerciseRates.size())
-                    exerciseRate = exerciseRates[i];
-                else
-                    exerciseRate = exerciseRates.back();
+                Rate exerciseRate = parameters_.exerciseRates[i];
 
                 Time maturity = parameters_.startTimes[i];
                 Time bond = parameters_.endTimes[i];

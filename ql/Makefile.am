@@ -63,6 +63,7 @@ include_HEADERS = \
 	solver1d.hpp \
 	swaptionvolsurface.hpp \
 	termstructure.hpp \
+    timegrid.hpp \
 	types.hpp
 
 

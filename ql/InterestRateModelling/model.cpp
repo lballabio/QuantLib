@@ -26,8 +26,6 @@
 #include "ql/InterestRateModelling/calibrationhelper.hpp"
 #include "ql/Optimization/optimizer.hpp"
 
-#include <iostream>
-
 namespace QuantLib {
 
     namespace InterestRateModelling {
@@ -38,39 +36,45 @@ namespace QuantLib {
           public:
             CalibrationFunction( 
               Model* model,
-              const std::vector<Handle<CalibrationHelper> >& instruments) 
+              CalibrationSet& instruments) 
             : model_(model, false),
               instruments_(instruments), prices_(instruments.size()) {
-                for (Size i=0; i<prices_.size(); i++)
+                for (Size i=0; i<prices_.size(); i++) {
+                    instruments_[i]->setModel(model_);
                     prices_[i] = instruments_[i]->marketValue();
+                }
             }
             virtual ~CalibrationFunction() {}
             
             virtual double Model::CalibrationFunction::value(
                 const Array& params) {
                 model_->setParams(params);
+                instruments_.update(model_);
+                std::cout << "parameters set to " << params << std::endl;
 
                 double value = 0.0;
                 for (Size i=0; i<prices_.size(); i++) {
-                    double diff = (instruments_[i]->modelValue(model_) - 
-                        prices_[i])/prices_[i];
+                    double diff = instruments_[i]->calibrationError();
                     value += diff*diff;
                 }
+
+                std::cout << "Cost function: " << QL_SQRT(value) << std::endl;
                 return QL_SQRT(value);
             }
             virtual double finiteDifferenceEpsilon() { return 1e-6; }
           private:
             Handle<Model> model_;
-            const std::vector<Handle<CalibrationHelper> >& instruments_;
+            CalibrationSet& instruments_;
             Array prices_;
         };
 
         void Model::calibrate(
-            const std::vector<Handle<CalibrationHelper> >& instruments,
+            CalibrationSet& instruments,
             const Handle<OptimizationMethod>& method) {
 
             CalibrationFunction f(this, instruments);
 
+            method->setInitialValue(params());
             method->endCriteria().setPositiveOptimization();
             OptimizationProblem prob(f, *constraint_, *method);
             prob.minimize();
@@ -78,10 +82,10 @@ namespace QuantLib {
             Array result(prob.minimumValue());
             setParams(result);
 
-            std::cout << "Cost function value: " << f.value(result) << std::endl;
+            std::cout << "Cost function: " << f.value(result) << std::endl;
             std::cout << "Model calibrated to these parameters:" << std::endl;
-            for (Size i=0; i<params_.size(); i++)
-                std::cout << i << "   " << params_[i]*100.0 << "%" << std::endl;
+            for (Size i=0; i<result.size(); i++)
+                std::cout << i << "   " << result[i]*100.0 << "%" << std::endl;
         }
 
     }

@@ -44,23 +44,32 @@ namespace QuantLib {
 
           private:
             inline double sigmaP(Time t, Time s) const {
-                double temp = 1.0 - QL_EXP(-(a_+b_)*t);
-                double temp1 = 1.0 - QL_EXP(-a_*(s-t));
-                double temp2 = 1.0 - QL_EXP(-b_*(s-t));
-                double a3 = a_*a_*a_;
-                double b3 = b_*b_*b_;
+                double temp = 1.0 - QL_EXP(-(a()+b())*t);
+                double temp1 = 1.0 - QL_EXP(-a()*(s-t));
+                double temp2 = 1.0 - QL_EXP(-b()*(s-t));
+                double a3 = a()*a()*a();
+                double b3 = b()*b()*b();
+                double sigma2 = sigma()*sigma();
+                double eta2 = eta()*eta();
                 double value =
-                    0.5*sigma_*sigma_*temp1*temp1*(1.0 - QL_EXP(-2.0*a_*t))/a3 +
-                    0.5*eta_*eta_*temp2*temp2*(1.0 - QL_EXP(-2.0*b_*t))/b3 +
-                    2.0*rho_*sigma_*eta_/(a_*b_*(a_+b_))*temp1*temp2*temp;
+                    0.5*sigma2*temp1*temp1*(1.0 - QL_EXP(-2.0*a()*t))/a3 +
+                    0.5*eta2*temp2*temp2*(1.0 - QL_EXP(-2.0*b()*t))/b3 +
+                    2.0*rho()*sigma()*eta()/(a()*b()*(a()+b()))*
+                        temp1*temp2*temp;
                 return QL_SQRT(value);
             }
 
-            double& a_;
-            double& sigma_;
-            double& b_;
-            double& eta_;
-            double& rho_;
+            Parameter& a_;
+            Parameter& sigma_;
+            Parameter& b_;
+            Parameter& eta_;
+            Parameter& rho_;
+
+            double a() const { return a_(0.0); }
+            double sigma() const { return sigma_(0.0); }
+            double b() const { return b_(0.0); }
+            double eta() const { return eta_(0.0); }
+            double rho() const { return rho_(0.0); }
 
             class OwnConstraint;
         };

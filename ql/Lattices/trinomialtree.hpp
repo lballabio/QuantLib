@@ -39,17 +39,14 @@ namespace QuantLib {
             TrinomialTree(const Handle<DiffusionProcess>& process,
                           const TimeGrid& timeGrid);
           protected:
+            virtual int findCentralNode(Size i, int j, double avg) const;
+
             void addLevel(const std::vector<int>& k);
 
-            virtual Lattices::Node& node(Size i, int j) {
-                int jMin = nodes_[i][0]->j();
-                return *(nodes_[i][j-jMin]);
+            virtual Size nodeIndex(Size i, int j) const {
+                return j - nodes_[i][0].j;
             }
 
-            virtual const Node& node(Size i, int j) const {
-                int jMin = nodes_[i][0]->j();
-                return *(nodes_[i][j-jMin]);
-            }
 
         };
 

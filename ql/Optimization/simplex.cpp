@@ -97,7 +97,7 @@ namespace QuantLib {
 
                 double vTry = extrapolate(P, iHighest, -1.0);
                 if (vTry <= values_[iLowest]) {
-                    vTry = extrapolate(P, iHighest, 2.0);
+                    extrapolate(P, iHighest, 2.0);
                 } else {
                     if (vTry >= values_[iNextHighest]) {
                         double vSave = values_[iHighest];

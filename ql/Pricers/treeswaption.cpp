@@ -57,7 +57,7 @@ namespace QuantLib {
 
                 QL_REQUIRE(time()==bond_->time(),
                     "Underlying bond has not been rolled back!");
-/*
+
                 for (i=0; i<parameters_.fixedPayTimes.size(); i++) {
                     if (time_ == parameters_.fixedPayTimes[i]) {
                         if (parameters_.payFixed)
@@ -66,7 +66,7 @@ namespace QuantLib {
                             values_ += parameters_.fixedCoupons[i];
                     }
                 }
-*/
+
                 for (i=0; i<parameters_.floatingResetTimes.size(); i++) {
                     if (time_ == parameters_.floatingResetTimes[i]) {
                         for (Size j=0; j<values_.size(); j++) {
@@ -131,30 +131,34 @@ namespace QuantLib {
             Handle<SwapAsset> swap_;
         };
 
-        TreeSwaption::TreeSwaption(Size timeSteps) : timeSteps_(timeSteps) {}
-
         void TreeSwaption::calculate() const {
-            QL_REQUIRE(!model_.isNull(), "You must first define a model");
 
-            std::list<Time> times(0);
-            Size i;
-            for (i=0; i<parameters_.exerciseTimes.size(); i++)
-                times.push_back(parameters_.exerciseTimes[i]);
-            for (i=0; i<parameters_.fixedPayTimes.size(); i++)
-                times.push_back(parameters_.fixedPayTimes[i]);
-            for (i=0; i<parameters_.floatingResetTimes.size(); i++)
-                times.push_back(parameters_.floatingResetTimes[i]);
-            for (i=0; i<parameters_.floatingPayTimes.size(); i++)
-                times.push_back(parameters_.floatingPayTimes[i]);
-            times.unique();
-            times.sort();
+            Handle<Tree> tree;
 
-            QL_REQUIRE(model_->type()==Model::OneFactor,
-                "Only 1-d trees are supported at the moment");
-            Handle<OneFactorModel> model(model_);
+            if (tree_.isNull()) {
+                QL_REQUIRE(!model_.isNull(), "You must first define a model");
 
-            TimeGrid timeGrid(times, timeSteps_);
-            Handle<Tree> tree(model->tree(timeGrid));
+                std::list<Time> times(0);
+                Size i;
+                for (i=0; i<parameters_.exerciseTimes.size(); i++)
+                    times.push_back(parameters_.exerciseTimes[i]);
+                for (i=0; i<parameters_.fixedPayTimes.size(); i++)
+                    times.push_back(parameters_.fixedPayTimes[i]);
+                for (i=0; i<parameters_.floatingResetTimes.size(); i++)
+                    times.push_back(parameters_.floatingResetTimes[i]);
+                for (i=0; i<parameters_.floatingPayTimes.size(); i++)
+                    times.push_back(parameters_.floatingPayTimes[i]);
+                times.sort();
+                times.unique();
+
+                Handle<OneFactorModel> model(model_);
+                QL_REQUIRE(!model.isNull(), "Only 1-d trees are supported");
+
+                TimeGrid timeGrid(times, timeSteps_);
+                tree = model->tree(timeGrid);
+            } else {
+                tree = tree_;
+            }
 
             Handle<Asset> bond(new DiscountBondAsset());
             Handle<Asset> swap(new SwapAsset(parameters_, bond));
@@ -163,22 +167,24 @@ namespace QuantLib {
             std::vector<Handle<Asset> > assets(0);
             assets.push_back(bond);
             assets.push_back(swap);
-            assets.push_back(swaption);
 
-            //FIXME: optimize for european and bermudan
-            // do not rollback until 0 but until the first exercise date
-            // sum with state prices...
+            Time lastFixedPay = parameters_.fixedPayTimes.back();
+            Time lastFloatPay = parameters_.floatingPayTimes.back();
+            Time start = QL_MAX(lastFixedPay, lastFloatPay);
 
-            Time start = times.back();
             tree->initialize(bond, start);
             tree->initialize(swap, start);
-            tree->initialize(swaption, start);
-            tree->rollback(assets, 0.0);
-            results_.value = swaption->values()[0];
 
-            std::cout << "Discount bond price: " << bond->values()[0]*100.0 << std::endl;
-            std::cout << "Theoretical value: " << model->termStructure()->discount(parameters_.floatingPayTimes[0])*100.0 << std::endl;
-            std::cout << "Swap price: " << swap->values()[0] << std::endl;
+            Time stop = parameters_.exerciseTimes.back();
+            tree->rollback(assets, stop);
+
+            assets.push_back(swaption);
+            tree->initialize(swaption, stop);
+
+            stop = parameters_.exerciseTimes[0];
+            tree->rollback(assets, stop);
+
+            results_.value = tree->presentValue(swaption);
         }
 
     }

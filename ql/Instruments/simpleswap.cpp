@@ -25,7 +25,7 @@
 // $Id$
 
 #include <ql/Instruments/simpleswap.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/fixedratecoupon.hpp>
 
 namespace QuantLib {
 
@@ -54,27 +54,20 @@ namespace QuantLib {
         : Swap(std::vector<Handle<CashFlow> >(),
                std::vector<Handle<CashFlow> >(),
                termStructure, isinCode, description),
-          payFixedRate_(payFixedRate) {
-            maturity_ = calendar.advance(
-                startDate,n,units,rollingConvention);
+          payFixedRate_(payFixedRate),
+          maturity_(calendar.advance(startDate,n,units,rollingConvention)),
+          fixedLeg_(nominals, couponRates, startDate, maturity_, fixedFrequency,
+                    calendar, rollingConvention,fixedIsAdjusted, fixedDayCount, 
+                    fixedDayCount),
+          floatingLeg_(nominals, startDate, maturity_, floatingFrequency,
+                       calendar, rollingConvention, termStructure, index, 
+                       indexFixingDays, spreads) {
             if (payFixedRate_) {
-                firstLeg_ = FixedRateCouponVector(nominals,
-                    couponRates, startDate, maturity_,
-                    fixedFrequency, calendar, rollingConvention,
-                    fixedIsAdjusted, fixedDayCount, fixedDayCount);
-                secondLeg_ = FloatingRateCouponVector(nominals,
-                    startDate, maturity_, floatingFrequency,
-                    calendar, rollingConvention, termStructure,
-                    index, indexFixingDays, spreads);
+                firstLeg_ = fixedLeg_;
+                secondLeg_ = floatingLeg_;
             } else {
-                firstLeg_ = FloatingRateCouponVector(nominals,
-                    startDate, maturity_, floatingFrequency,
-                    calendar, rollingConvention, termStructure,
-                    index, indexFixingDays, spreads);
-                secondLeg_ = FixedRateCouponVector(nominals,
-                    couponRates, startDate, maturity_,
-                    fixedFrequency, calendar, rollingConvention,
-                    fixedIsAdjusted, fixedDayCount, fixedDayCount);
+                firstLeg_ = floatingLeg_;
+                secondLeg_ = fixedLeg_;
             }
             // we should register as observer with the cash flows. However,
             // the base Swap class already registers as observer with

@@ -49,6 +49,7 @@
 #include <ql/solver1d.hpp>
 #include <ql/swaptionvolsurface.hpp>
 #include <ql/termstructure.hpp>
+#include <ql/timegrid.hpp>
 #include <ql/types.hpp>
 
 #include <ql/Calendars/frankfurt.hpp>
@@ -117,8 +118,8 @@
 #include <ql/InterestRateModelling/calibrationhelper.hpp>
 #include <ql/InterestRateModelling/model.hpp>
 #include <ql/InterestRateModelling/onefactormodel.hpp>
+#include <ql/InterestRateModelling/parameter.hpp>
 #include <ql/InterestRateModelling/shortrateprocess.hpp>
-#include <ql/InterestRateModelling/timefunction.hpp>
 #include <ql/InterestRateModelling/twofactormodel.hpp>
 
 #include <ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp>
@@ -130,8 +131,6 @@
 
 #include <ql/InterestRateModelling/TwoFactorModels/g2.hpp>
 
-#include <ql/Lattices/node.hpp>
-#include <ql/Lattices/timegrid.hpp>
 #include <ql/Lattices/tree.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 

@@ -27,7 +27,7 @@
 
 #include <ql/Instruments/swap.hpp>
 #include <ql/Indexes/xibor.hpp>
-#include <ql/CashFlows/fixedratecoupon.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
 
 namespace QuantLib {
 
@@ -36,28 +36,6 @@ namespace QuantLib {
         //! Simple fixed-rate vs Libor swap
         class SimpleSwap : public Swap {
           public:
-            SimpleSwap(
-                bool payFixedRate,
-                const std::vector<Handle<CashFlow> >& fixedLeg,
-                const std::vector<Handle<CashFlow> >& floatingLeg,
-                // hook to term structure
-                const RelinkableHandle<TermStructure>& termStructure,
-                // description
-                const std::string& isinCode = "",
-                const std::string& description = "") 
-            : Swap(std::vector<Handle<CashFlow> >(),
-                   std::vector<Handle<CashFlow> >(),
-                   termStructure, isinCode, description),
-              payFixedRate_(payFixedRate) {
-                if (payFixedRate) {
-                    firstLeg_ = fixedLeg;
-                    secondLeg_ = floatingLeg;
-                } else {
-                    firstLeg_ = floatingLeg;
-                    secondLeg_ = fixedLeg;
-                }
-            }
-
             SimpleSwap(bool payFixedRate,
                 // dates
                 const Date& startDate, int n, TimeUnit units,
@@ -91,26 +69,20 @@ namespace QuantLib {
             double floatingLegBPS() const;
             const Date& maturity() const { return maturity_; }
             //added by Sad
-            const std::vector<Handle<CashFlow> >& fixedLeg() const {
-                if (payFixedRate_) {
-                    return firstLeg_;
-                } else {
-                    return secondLeg_;
-                } 
-            }   
-            const std::vector<Handle<CashFlow> >& floatingLeg() const {
-                if (payFixedRate_) {
-                    return secondLeg_;
-                } else {
-                    return firstLeg_;
-                } 
-            }
             bool payFixedRate() const {
                 return payFixedRate_;
             }
+            const CashFlows::FixedRateCouponVector& fixedLeg() const {
+                return fixedLeg_;
+            }
+            const CashFlows::FloatingRateCouponVector& floatingLeg() const {
+                return floatingLeg_;
+            }   
           private:
             bool payFixedRate_;
             Date maturity_;
+            CashFlows::FixedRateCouponVector fixedLeg_;
+            CashFlows::FloatingRateCouponVector floatingLeg_;
         };
 
 

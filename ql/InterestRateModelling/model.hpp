@@ -28,21 +28,22 @@
 #include <ql/array.hpp>
 #include <ql/option.hpp>
 #include <ql/termstructure.hpp>
+#include <ql/InterestRateModelling/parameter.hpp>
 #include <ql/Optimization/optimizer.hpp>
+
 
 namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class CalibrationHelper;
+        class CalibrationSet;
 
         class Model {
           public:
-            enum Type { OneFactor, TwoFactor, Market };
-
-            Model(Size nParams, Type type,
+            Model(Size nParameters, 
                   const RelinkableHandle<TermStructure>& termStructure)
-            : params_(nParams), termStructure_(termStructure) {}
+            : parameters_(nParameters), termStructure_(termStructure) {}
+
             virtual ~Model() {}
 
             virtual bool hasDiscountBondFormula() const { return false; }
@@ -59,30 +60,49 @@ namespace QuantLib {
                 Time bondMaturity) const { return Null<double>(); }
 
             void calibrate(
-                const std::vector<Handle<CalibrationHelper> >& instruments,
+                CalibrationSet& instruments,
                 const Handle<Optimization::OptimizationMethod>& method);
 
             const RelinkableHandle<TermStructure>& termStructure() const {
                 return termStructure_;
             }
-            Type type() { return type_; }
-
-            const Array& params() { return params_; }
-            void setParams(const Array& params) {
-                QL_REQUIRE(params.size() == params_.size(),
-                    "incorrect parameter vector size");
-                params_ = params; 
-            }
 
           protected:
+            virtual void generateParameters() {}
+
             Handle<Optimization::Constraint> constraint_;
-            Array params_;
+            std::vector<Parameter> parameters_;
 
           private:
+            Array params() {
+                Size size = 0;
+                for (Size i=0; i<parameters_.size(); i++)
+                    size += parameters_[i].size();
+                Array params(size);
+                Size k = 0;
+                for (Size i=0; i<parameters_.size(); i++) {
+                    for (Size j=0; j<parameters_[i].size(); j++, k++) {
+                        params[k] = parameters_[i].params()[j];
+                    }
+                }
+                return params; 
+            }
+
+            void setParams(const Array& params) {
+                Array::const_iterator p = params.begin();
+                for (Size i=0; i<parameters_.size(); i++) {
+                    for (Size j=0; j<parameters_[i].size(); j++, p++) {
+                        QL_REQUIRE(p!=params.end(),"Parameter array too small");
+                        parameters_[i].setParam(j, *p);
+                    }
+                }
+                QL_REQUIRE(p==params.end(),"Parameter array too big!");
+                generateParameters();
+            }
+
             class CalibrationFunction;
             friend class CalibrationFunction;
             const RelinkableHandle<TermStructure>& termStructure_;
-            Type type_;
         };
 
         class ModelTermStructure : public DiscountStructure {

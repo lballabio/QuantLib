@@ -46,7 +46,7 @@ namespace QuantLib {
 
             SwaptionHelper::SwaptionHelper(
                 const Period& maturity,
-                const Period& tenor,
+                const Period& length,
                 const RelinkableHandle<MarketElement>& volatility,
                 const Handle<Indexes::Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure)
@@ -54,11 +54,14 @@ namespace QuantLib {
 
                 Period indexTenor = index->tenor();
                 int frequency;
-                if (indexTenor.units() == Months)
+                if (indexTenor.units() == Months) {
+                    QL_REQUIRE((12%indexTenor.length()) == 0, 
+                        "Invalid index tenor");
                     frequency = 12/indexTenor.length();
-                else if (indexTenor.units() == Years)
-                    frequency = 1/indexTenor.length();
-                else
+                } else if (indexTenor.units() == Years) {
+                    QL_REQUIRE(indexTenor.length()==1, "Invalid index tenor");
+                    frequency=1;
+                } else
                     throw Error("index tenor not valid!");
                 Date startDate = termStructure->settlementDate().
                     plus(maturity.length(), maturity.units());
@@ -66,8 +69,8 @@ namespace QuantLib {
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
                   false,
                   startDate,
-                  tenor.length(),
-                  tenor.units(),
+                  length.length(),
+                  length.units(),
                   index->calendar(),
                   index->rollingConvention(),
                   std::vector<double>(1, 1.0),
@@ -85,8 +88,8 @@ namespace QuantLib {
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
                   false,
                   startDate,
-                  tenor.length(),
-                  tenor.units(),
+                  length.length(),
+                  length.units(),
                   index->calendar(),
                   index->rollingConvention(),
                   std::vector<double>(1, 1.0),
@@ -102,7 +105,7 @@ namespace QuantLib {
                 exerciseRate_ = fairFixedRate;
 
                 engine_ = Handle<SwaptionPricingEngine>(new
-                    TreeSwaption(50));
+                    TreeSwaption());
 
                 swaption_ = Handle<Swaption>(new
                     Swaption(swap_, EuropeanExercise(startDate), termStructure,
@@ -112,17 +115,42 @@ namespace QuantLib {
                 marketValue_ = blackPrice(volatility_->value());
             }
 
-            double SwaptionHelper::modelValue(const Handle<Model>& model) {
-                if (model->hasDiscountBondFormula() &&
-                    model->hasDiscountBondOptionFormula())
-                    engine_ = Handle<SwaptionPricingEngine>(new
-                        JamshidianSwaption());
-                else
-                    engine_ = Handle<SwaptionPricingEngine>(new
-                        TreeSwaption(10));
+            void SwaptionHelper::addTimes(std::list<Time>& times) const {
+                SwaptionParameters* params =
+                    dynamic_cast<SwaptionParameters*>(engine_->parameters());
+                Size i;
+                for (i=0; i<params->exerciseTimes.size(); i++)
+                    times.push_back(params->exerciseTimes[i]);
+                for (i=0; i<params->fixedPayTimes.size(); i++)
+                    times.push_back(params->fixedPayTimes[i]);
+                for (i=0; i<params->floatingResetTimes.size(); i++)
+                    times.push_back(params->floatingResetTimes[i]);
+                for (i=0; i<params->floatingPayTimes.size(); i++)
+                    times.push_back(params->floatingPayTimes[i]);
+            }
+
+            void SwaptionHelper::setAnalyticalPricingEngine() {
+                engine_ =  Handle<SwaptionPricingEngine>(
+                    new Pricers::JamshidianSwaption());
+            }
+
+            void SwaptionHelper::setNumericalPricingEngine(
+                const Handle<Lattices::Tree>& tree) {
+                engine_ = Handle<SwaptionPricingEngine>(
+                    new Pricers::TreeSwaption(tree));
+            }
+
+            void SwaptionHelper::setNumericalPricingEngine(Size timeSteps) {
+                engine_ = Handle<SwaptionPricingEngine>(
+                    new Pricers::TreeSwaption(timeSteps));
+            }
+
+            void SwaptionHelper::setModel(const Handle<Model>& model) {
                 engine_->setModel(model);
+            }
+
+            double SwaptionHelper::modelValue() {
                 swaption_->setPricingEngine(engine_);
-                swaption_->recalculate();
                 return swaption_->NPV();
             }
 

@@ -28,7 +28,6 @@
 #include "ql/InterestRateModelling/calibrationhelper.hpp"
 #include "ql/Instruments/capfloor.hpp"
 
-
 namespace QuantLib {
 
     namespace InterestRateModelling {
@@ -39,20 +38,26 @@ namespace QuantLib {
               public:
                 //Constructor for ATM cap
                 CapHelper(
-                    const Period& tenor,
+                    const Period& length,
                     const RelinkableHandle<MarketElement>& volatility,
                     const Handle<Indexes::Xibor>& index,
                     const RelinkableHandle<TermStructure>& termStructure);
 
                 virtual ~CapHelper() {}
 
-                virtual double modelValue(const Handle<Model>& model);
+                virtual void addTimes(std::list<Time>& times) const;
+
+                virtual void setAnalyticalPricingEngine();
+                virtual void setNumericalPricingEngine(
+                    const Handle<Lattices::Tree>& tree);
+                virtual void setNumericalPricingEngine(Size timeSteps);
+                virtual void setModel(const Handle<Model>& model);
+                virtual double modelValue();
 
                 virtual double blackPrice(double volatility) const;
 
               private:
                 RelinkableHandle<TermStructure> termStructure_;
-                Handle<Instruments::SimpleSwap> swap_;
                 Handle<Instruments::VanillaCap> cap_;
                 Handle<Pricers::CapFloorPricingEngine> engine_;
             };

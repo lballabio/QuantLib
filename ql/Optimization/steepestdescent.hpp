@@ -23,7 +23,7 @@
 #ifndef quantlib_optimization_steepest_descent_h
 #define quantlib_optimization_steepest_descent_h
 
-#include "ql/Optimization/armijo.hpp"
+#include <ql/Optimization/armijo.hpp>
 
 namespace QuantLib {
 

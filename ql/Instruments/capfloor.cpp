@@ -29,15 +29,12 @@
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 #include "ql/Lattices/tree.hpp"
 
-using std::cout;
-using std::endl;
-
 namespace QuantLib {
 
     namespace Instruments {
 
+        using CashFlows::FloatingRateCouponVector;
         using CashFlows::FloatingRateCoupon;
-        using InterestRateModelling::OneFactorModel;
 
         void VanillaCapFloor::setupEngine() const {
             CapFloorParameters* parameters =
@@ -47,32 +44,39 @@ namespace QuantLib {
                        "pricing engine does not supply needed parameters");
 
             parameters->type = type_;
-            parameters->exerciseRates = exerciseRates_;
-
+            parameters->exerciseRates.clear();
             parameters->startTimes.clear();
             parameters->endTimes.clear();
             parameters->nominals.clear();
 
-            std::vector<Handle<CashFlow> > floatingLeg = swap_->floatingLeg();
-            std::vector<Handle<CashFlow> >::const_iterator begin, end;
-            begin = floatingLeg.begin();
-            end   = floatingLeg.end();
-            Date today = termStructure_->settlementDate();
+            Date settlement = termStructure_->settlementDate();
             DayCounter counter = termStructure_->dayCounter();
-            for (; begin != end; ++begin) {
+
+            std::vector<Handle<CashFlow> >::const_iterator begin =
+                floatingLeg_.begin();
+            std::vector<Rate>::const_iterator rates = exerciseRates_.begin();
+
+            for (; begin != floatingLeg_.end(); ++begin) {
                 Handle<FloatingRateCoupon> coupon = *begin;
                 QL_ENSURE(!coupon.isNull(), "not a floating rate coupon");
                 Date beginDate = coupon->accrualStartDate();
-                Time time = counter.yearFraction(today, beginDate);
+                Time time = counter.yearFraction(settlement, beginDate);
                 parameters->startTimes.push_back(time);
-                time = counter.yearFraction(today, coupon->date());
+                time = counter.yearFraction(settlement, coupon->date());
                 parameters->endTimes.push_back(time);
                 parameters->nominals.push_back(coupon->nominal());
+                if (rates == exerciseRates_.end()) {
+                    parameters->exerciseRates.push_back(exerciseRates_.back());
+                } else {
+                    parameters->exerciseRates.push_back(*rates);
+                    rates++;
+                }
+
             }
         }
 
         void VanillaCapFloor::performCalculations() const {
-            if (swap_->maturity() <= termStructure_->settlementDate()) {
+            if (floatingLeg_.back()->date()<termStructure_->settlementDate()) {
                 isExpired_ = true;
                 NPV_ = 0.0;
             } else {
@@ -95,6 +99,10 @@ namespace QuantLib {
             QL_REQUIRE(
                 parameters_.endTimes.size() == parameters_.startTimes.size(),
                 "Invalid pricing parameters");
+            QL_REQUIRE(
+                parameters_.exerciseRates.size()==parameters_.startTimes.size(),
+                "Invalid pricing parameters");
+
         }
 
         const Results* CapFloorPricingEngine::results() const {

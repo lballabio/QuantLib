@@ -52,13 +52,16 @@ namespace QuantLib {
 
         G2::G2(const RelinkableHandle<TermStructure>& termStructure)
         : TwoFactorModel(5, termStructure),
-          a_(params_[0]), sigma_(params_[1]), b_(params_[2]), eta_(params_[3]),
-          rho_(params_[4]) {
-            a_ = 0.543009105;
-            sigma_ = 0.005837408;
-            b_ = 0.075716774;
-            eta_ = 0.011657837;
-            rho_ = -0.991401219;
+          a_(parameters_[0]), 
+          sigma_(parameters_[1]), 
+          b_(parameters_[2]), 
+          eta_(parameters_[3]),
+          rho_(parameters_[4]) {
+            a_ = ConstantParameter(0.1);
+            sigma_ = ConstantParameter(0.1);
+            b_ = ConstantParameter(0.1);
+            eta_ = ConstantParameter(0.1);
+            rho_ = ConstantParameter(0.1);
             constraint_ = Handle<Constraint>(new OwnConstraint());
         }
 

@@ -112,7 +112,7 @@ namespace QuantLib {
 
                 double tryValue = extrapolate(P, iHighest, highestValue, -1.0);
                 if (tryValue <= lowestValue) {
-                    tryValue = extrapolate(P, iHighest, highestValue, 2.0);
+                    extrapolate(P, iHighest, highestValue, 2.0);
                 } else {
                     if (tryValue >= nextHighestValue) {
                         double saveValue = highestValue;

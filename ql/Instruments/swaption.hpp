@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -65,7 +63,7 @@ namespace QuantLib {
                                    floatingResetTimes(0),
                                    floatingPayTimes(0),
                                    nominals(0),
-                                   exerciseType(Exercise::European),
+                                   exerciseType(Exercise::Type(-1)),
                                    exerciseTimes(0) {}
             bool payFixed;
             std::vector<Time> fixedPayTimes;

@@ -67,9 +67,10 @@ namespace QuantLib {
             QL_REQUIRE(maturity==parameters_.floatingResetTimes[0],
                 "Maturity must be equal to first reset date");
 
-            QL_REQUIRE( model_->type()==Model::OneFactor,
-                "Jamshidian decomposition is only valid for one-factor models");
             Handle<OneFactorModel> model(model_);
+            QL_REQUIRE(!model.isNull(), 
+                "Jamshidian decomposition is only valid for one-factor models");
+
 
             Rate r0 = model_->termStructure()->forward(0.0);
 
@@ -83,8 +84,8 @@ namespace QuantLib {
 
             rStarFinder finder(parameters_, model, amounts);
             Solvers1D::Brent s1d = Solvers1D::Brent();
-            double minStrike = 0.00001;
-            double maxStrike = 0.20000;
+            double minStrike = -10.0;
+            double maxStrike = 10.0;
             s1d.setMaxEvaluations(10000);
             s1d.setLowBound(minStrike);
             s1d.setHiBound(maxStrike);

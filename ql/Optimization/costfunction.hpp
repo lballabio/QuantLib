@@ -23,19 +23,14 @@
 #ifndef quantlib_optimization_costfunction_h
 #define quantlib_optimization_costfunction_h
 
-/*!
-  Cost function abstract class for optimization problem
-*/
-
 #include <ql/qldefines.hpp>
 #include <ql/array.hpp>
-
-#include <iostream>
 
 namespace QuantLib {
 
     namespace Optimization {
 
+        //!  Cost function abstract class for optimization problem
         class CostFunction {
           public:
             //! method to overload to compute the cost functon value in x
@@ -43,31 +38,25 @@ namespace QuantLib {
 
             //! method to overload to compute grad_f, the first derivative of
             //  the cost function with respect to x
-            virtual void gradient(Array& grad_f, const Array& x) {
+            virtual void gradient(Array& grad, const Array& x) {
                 double eps = finiteDifferenceEpsilon(), fp, fm;
                 Array xx(x);
-				Size i;
-                std::cout << "Gradient at";
-                for (i=0; i<x.size(); i++)
-                    std::cout << " " << x[i];
-                std::cout << "  =  ";
 
-                for (i=0; i<x.size(); i++) {
+                for (Size i=0; i<x.size(); i++) {
                     xx[i] += eps;
                     fp = value(xx);
                     xx[i] -= 2.0*eps;
                     fm = value(xx);
-                    grad_f[i] = 0.5*(fp - fm)/eps;
-                    std::cout << " " << grad_f[i];
+                    grad[i] = 0.5*(fp - fm)/eps;
                     xx[i] = x[i];
                 }
-                std::cout << std::endl;
+                std::cout << "Gradient at " << x << " = " << grad << std::endl;
             }
 
             //! method to overload to compute grad_f, the first derivative of
             //  the cost function with respect to x and also the cost function
-            virtual double valueAndGradient(Array& grad_f, const Array& x) {
-                gradient(grad_f, x);
+            virtual double valueAndGradient(Array& grad, const Array& x) {
+                gradient(grad, x);
                 return value(x);
             }
 

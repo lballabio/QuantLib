@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -32,6 +30,8 @@ namespace QuantLib {
 
     namespace Instruments {
 
+        using CashFlows::FixedRateCouponVector;
+        using CashFlows::FloatingRateCouponVector;
         using CashFlows::FloatingRateCoupon;
 
         Swaption::Swaption(
@@ -50,16 +50,17 @@ namespace QuantLib {
             QL_REQUIRE(parameters != 0,
                        "pricing engine does not supply needed parameters");
 
-            Date today = termStructure_->settlementDate();
+            Date settlement = termStructure_->settlementDate();
             DayCounter counter = termStructure_->dayCounter();
             Size i;
 
-            const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
+            const FixedRateCouponVector& fixedLeg = swap_->fixedLeg();
             parameters->payFixed = swap_->payFixedRate();
             parameters->fixedPayTimes.clear();
             parameters->fixedCoupons.clear();
             for (i=0; i<fixedLeg.size(); i++) {
-                Time time = counter.yearFraction(today, fixedLeg[i]->date());
+                Time time = counter.yearFraction(settlement, 
+                    fixedLeg[i]->date());
                 parameters->fixedPayTimes.push_back(time);
                 parameters->fixedCoupons.push_back(fixedLeg[i]->amount());
             }
@@ -67,8 +68,7 @@ namespace QuantLib {
             parameters->floatingResetTimes.clear();
             parameters->floatingPayTimes.clear();
             parameters->nominals.clear();
-            const std::vector<Handle<CashFlow> >& floatingLeg =
-                swap_->floatingLeg();
+            const FloatingRateCouponVector& floatingLeg = swap_->floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
             begin = floatingLeg.begin();
             end   = floatingLeg.end();
@@ -77,27 +77,24 @@ namespace QuantLib {
                 Handle<FloatingRateCoupon> coupon = *begin;
                 QL_ENSURE(!coupon.isNull(), "not a floating rate coupon");
                 const Handle<Indexes::Xibor>& index = coupon->index();
-                Date fixingDate = index->calendar().advance(
+/*                Date fixingDate = index->calendar().advance(
                     coupon->accrualStartDate(), -coupon->fixingDays(), Days,
                     index->rollingConvention());
                 Date fixingValueDate = index->calendar().advance(
                     fixingDate, index->settlementDays(), Days,
-                    index->rollingConvention());
-                //Date resetDate =  index->calendar().roll(
-                //    coupon->accrualStartDate(), index->rollingConvention());
-                std::cout << "reset date:" << fixingValueDate << std::endl;
+                    index->rollingConvention());*/
+                Date resetDate =  index->calendar().roll(
+                    coupon->accrualStartDate(), index->rollingConvention());
                 
-                Time time = counter.yearFraction(today, fixingValueDate);
+                Time time = counter.yearFraction(settlement, resetDate);
                 parameters->floatingResetTimes.push_back(time);
-
+/*
                 Date payDate = index->calendar().advance(
                     coupon->accrualEndDate(), 
                     index->settlementDays()-coupon->fixingDays(), Days,
                     index->rollingConvention());
-
-                std::cout << "pay date:" << payDate << std::endl;
-                std::cout << "coupon date: " << coupon->date() << std::endl;
-                time = counter.yearFraction(today, coupon->date());
+*/
+                time = counter.yearFraction(settlement, coupon->date());
                 parameters->floatingPayTimes.push_back(time);
                 parameters->nominals.push_back(coupon->nominal());
             }
@@ -108,14 +105,13 @@ namespace QuantLib {
                 Date exerciseDate = exercise_.calendar().advance(
                     dates[i], exercise_.settlementDays(), Days,
                     exercise_.rollingConvention());
-                std::cout << "exercise date: " << exerciseDate << std::endl;
-                Time time = counter.yearFraction(today, exerciseDate);
+                Time time = counter.yearFraction(settlement, exerciseDate);
                 parameters->exerciseTimes.push_back(time);
             }
         }
 
         void Swaption::performCalculations() const {
-            if (swap_->maturity() <= termStructure_->settlementDate()) {
+            if (exercise_.dates().back() < termStructure_->settlementDate()) {
                 isExpired_ = true;
                 NPV_ = 0.0;
             } else {

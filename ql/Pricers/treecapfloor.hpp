@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -28,6 +26,7 @@
 #define quantlib_pricers_tree_cap_floor_h
 
 #include <ql/Instruments/capfloor.hpp>
+#include <ql/Lattices/tree.hpp>
 
 namespace QuantLib {
 
@@ -38,8 +37,13 @@ namespace QuantLib {
           public:
             TreeCapFloor() {}
             TreeCapFloor(Size timeSteps) : timeSteps_(timeSteps) {}
+
+            TreeCapFloor(const Handle<Lattices::Tree>& tree) 
+            : tree_(tree), timeSteps_(0) {}
+
             void calculate() const;
           private:
+            Handle<Lattices::Tree> tree_;
             Size timeSteps_;
         };
 

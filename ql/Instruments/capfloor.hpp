@@ -26,10 +26,8 @@
 #define quantlib_instruments_capfloor_h
 
 #include "ql/instrument.hpp"
-#include "ql/Instruments/simpleswap.hpp"
+#include "ql/CashFlows/cashflowvectors.hpp"
 #include "ql/InterestRateModelling/model.hpp"
-
-#include <list>
 
 namespace QuantLib {
 
@@ -39,11 +37,11 @@ namespace QuantLib {
           public:
             enum Type { Cap, Floor };
             VanillaCapFloor(Type type,
-                const Handle<SimpleSwap>& swap,
+                const CashFlows::FloatingRateCouponVector& floatingLeg,
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
-            : Option(engine), type_(type), swap_(swap),
+            : Option(engine), type_(type), floatingLeg_(floatingLeg),
               exerciseRates_(exerciseRates), termStructure_(termStructure) {}
             virtual ~VanillaCapFloor() {}
           protected:
@@ -51,35 +49,50 @@ namespace QuantLib {
             void setupEngine() const;
           private:
             Type type_;
-            Handle<SimpleSwap> swap_;
+            CashFlows::FloatingRateCouponVector floatingLeg_;
             std::vector<Rate> exerciseRates_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 
         class VanillaCap : public VanillaCapFloor {
           public:
-            VanillaCap(const Handle<SimpleSwap>& swap,
+            VanillaCap(
+                const CashFlows::FloatingRateCouponVector& floatingLeg,
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
-            : VanillaCapFloor(Cap, swap, exerciseRates, termStructure, engine)
+            : VanillaCapFloor(Cap, floatingLeg, exerciseRates, 
+                              termStructure, engine)
             {}
         };
 
         class VanillaFloor : public VanillaCapFloor {
           public:
-            VanillaFloor(const Handle<SimpleSwap>& swap,
-                  const std::vector<Rate>& exerciseRates,
-                  const RelinkableHandle<TermStructure>& termStructure,
-                  const Handle<OptionPricingEngine>& engine)
-            : VanillaCapFloor(Floor, swap, exerciseRates, termStructure, engine)
+            VanillaFloor(
+                const CashFlows::FloatingRateCouponVector& floatingLeg,
+                const std::vector<Rate>& exerciseRates,
+                const RelinkableHandle<TermStructure>& termStructure,
+                const Handle<OptionPricingEngine>& engine)
+            : VanillaCapFloor(Floor, floatingLeg, exerciseRates, 
+                              termStructure, engine)
             {}
         };
-
+/*
+        class Collar : public VanillaCapFloor {
+          public:
+            VanillaFloor(const CashFlows::FloatingRateCouponVector& swap,
+                const std::vector<Rate>& exerciseRates,
+                const RelinkableHandle<TermStructure>& termStructure,
+                const Handle<OptionPricingEngine>& engine)
+            : VanillaCapFloor(Collar, swap, exerciseRates, termStructure, engine)
+            {}
+        };
+*/
         //! parameters for cap/floor calculation
         class CapFloorParameters : public virtual Arguments {
           public:
-            CapFloorParameters() : startTimes(0),
+            CapFloorParameters() : type(VanillaCapFloor::Type(-1)),
+                                   startTimes(0),
                                    endTimes(0),
                                    exerciseRates(0),
                                    nominals(0) {}

@@ -29,47 +29,18 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class HullWhite::Process : public ShortRateProcess {
-          public:
-            Process(HullWhite * model) : model_(model) {}
-
-            virtual double variable(Time t, Rate r) const {
-                return r - model_->alpha(t);
-            }
-            virtual double shortRate(Time t, double x) const {
-                return x + model_->alpha(t);
-            }
-
-            virtual double drift(Time t, double r) const {
-                return - model_->a_*r;
-            }
-            virtual double diffusion(Time t, double r) const {
-                return model_->sigma_;
-            }
-          private:
-            HullWhite * model_;
-        };
-
-        HullWhite::HullWhite(
-            const RelinkableHandle<TermStructure>& termStructure)
-        : OneFactorModel(2, termStructure), a_(params_[0]),
-          sigma_(params_[1]) {
-            a_ = 0.0154;
-            sigma_ = 0.0073;
-            process_ = Handle<ShortRateProcess>(new Process(this));
-        }
-
-        double HullWhite::alpha(Time t) const {
-            double forwardRate = termStructure()->forward(t);
-            double temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
-            return (forwardRate + 0.5*temp*temp);
+        double HullWhite::B(Time t) const {
+            if (a() == 0.0)
+                return t;
+            else
+                return (1.0 - QL_EXP(-a()*t))/a();
         }
 
         double HullWhite::lnA(Time T, Time s) const {
             double discountT = termStructure()->discount(T);
             double discountS = termStructure()->discount(s);
             double forwardT = termStructure()->forward(T);
-            double temp = sigma_*B(s-T);
+            double temp = sigma()*B(s-T);
             double value = QL_LOG(discountS/discountT) + B(s-T)*forwardT
                 - 0.25*temp*temp*B(2.0*T);
             return value;
@@ -93,7 +64,7 @@ namespace QuantLib {
                 }
             }
 
-            double v = sigma_*B(bondMaturity - maturity)
+            double v = sigma()*B(bondMaturity - maturity)
                 *QL_SQRT(0.5*B(2.0*maturity));
             double d1 = QL_LOG(discountS/(strike*discountT))/v + 0.5*v;
             double d2 = d1 - v;

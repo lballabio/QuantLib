@@ -36,23 +36,47 @@ namespace QuantLib {
         class OneFactorModel : public Model {
           public:
             OneFactorModel(
-                Size nParams,
+                Size nParameters,
                 const RelinkableHandle<TermStructure>& termStructure);
             virtual ~OneFactorModel() {}
 
-            const Handle<ShortRateProcess>& process() const {
-                return process_;
+            virtual Handle<ShortRateProcess> process() const = 0;
+
+            virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const {
+                return Handle<Lattices::Tree>(
+                    new OwnTrinomialTree(process(), grid));
             }
 
-            virtual Handle<Lattices::Tree> tree(
-                const Lattices::TimeGrid& timeGrid) const;
-
           protected:
-            Handle<ShortRateProcess> process_;
+
+            class OwnTrinomialTree : public Lattices::TrinomialTree {
+              public:
+                OwnTrinomialTree(const Handle<ShortRateProcess>& process,
+                                 const TimeGrid& timeGrid) 
+                : TrinomialTree(process, timeGrid), process_(process) {}
+
+                OwnTrinomialTree(
+                    const Handle<ShortRateProcess>& process,
+                    const Handle<TermStructureFittingParameter::NumericalImpl>& 
+                          theta,
+                    const TimeGrid& timeGrid);
+
+                int findCentralNode(Size i, int j, double avg) const {
+                    return (int)floor(avg/dx(i+1) + 0.5);
+                }
+
+                virtual DiscountFactor discount(Size i, int j) const {
+                     Rate r = process_->shortRate(t(i), j*dx(i));
+                     return QL_EXP(-r*dt(i));
+                }
+              protected:
+                Handle<ShortRateProcess> process_;
+              private:
+                class Helper;
+            };
 
           private:
             class StandardConstraint;
-            class PrivateTree;
         };
 
     }

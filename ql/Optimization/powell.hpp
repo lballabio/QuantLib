@@ -23,18 +23,13 @@
 #ifndef quantlib_optimization_powell_h
 #define quantlib_optimization_powell_h
 
-#include "ql/Optimization/armijo.hpp"
+#include <ql/Optimization/armijo.hpp>
 
 namespace QuantLib {
 
     namespace Optimization {
 
         //! Multi-dimensionnal Powell class
-        /*! User has to provide line-search method and
-            optimization end criteria
-
-            search direction \f$ = - f'(x) \f$
-        */
         class Powell : public OptimizationMethod {
           public:
             //! default default constructor (msvc bug)
@@ -58,6 +53,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

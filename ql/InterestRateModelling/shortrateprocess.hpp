@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -29,15 +27,48 @@
 
 #include <ql/diffusionprocess.hpp>
 #include <ql/types.hpp>
+#include <ql/InterestRateModelling/parameter.hpp>
 
 namespace QuantLib {
 
-    //describes a process followed by the short rate or a function of it
-    class ShortRateProcess : public DiffusionProcess {
-      public:
-        virtual double variable(Time t, Rate r) const = 0;
-        virtual Rate shortRate(Time t, double variable) const = 0;
-    };
+    namespace InterestRateModelling {
+
+        //describes a process followed by the short rate or a function of it
+        class ShortRateProcess : public DiffusionProcess {
+          public:
+            virtual ~ShortRateProcess() {};
+
+            virtual double variable(Time t, Rate r) const = 0;
+            virtual Rate shortRate(Time t, double variable) const = 0;
+        };
+
+        class OrnsteinUhlenbeckProcess : public ShortRateProcess {
+          public:
+            OrnsteinUhlenbeckProcess(const Parameter& mean,
+                                     const Parameter& speed,
+                                     const Parameter& volatility)
+            : mean_(mean), speed_(speed), volatility_(volatility) {}
+
+            virtual double drift(Time t, double x) const {
+                return speed_(t)*(mean_(t) - x);
+            }
+
+            virtual double diffusion(Time t, double x) const {
+                return volatility_(t);
+            }
+            virtual double expectation(Time t0, double x0, Time dt) const {
+                return x0*QL_EXP(-speed_(t0)*dt);
+            }
+            virtual double variance(Time t0, double x0, Time dt) const {
+                return 0.5*volatility_(t0)*volatility_(t0)/speed_(t0)*
+                       (1.0 - QL_EXP(-2.0*speed_(t0)*dt));
+            }
+
+          protected:
+            Parameter mean_, speed_, volatility_;
+        };
+
+    }
 
 }
 
