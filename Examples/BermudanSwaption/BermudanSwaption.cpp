@@ -86,6 +86,8 @@ void calibrateModel(const Handle<Model>& model,
 int main(int argc, char* argv[])
 {
     try {
+        QL_IO_INIT
+
         Date todaysDate(15, February, 2002);
         Calendar calendar = Calendars::TARGET();
 

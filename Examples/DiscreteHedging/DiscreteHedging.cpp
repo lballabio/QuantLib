@@ -179,6 +179,8 @@ class ReplicationPathPricer : public PathPricer<Path>
 int main(int argc, char* argv[])
 {
     try {
+        QL_IO_INIT
+
         Time maturity = 1./12.;   // 1 month
         double strike = 100;
         double underlying = 100;

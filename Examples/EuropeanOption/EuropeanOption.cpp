@@ -60,6 +60,8 @@ private:
 int main(int argc, char* argv[])
 {
     try {
+        QL_IO_INIT
+
         // our option
         double underlying = 102;
         double strike = 100;      // at the money

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -1317,7 +1316,7 @@ namespace QuantLib {
         inline Array Abs(const Array& v) {
             Array result(v.size());
             std::transform(v.begin(),v.end(),result.begin(),
-                std::ptr_fun(QL_FABS));
+                std::ptr_fun<double,double>(QL_FABS));
             return result;
         }
 
@@ -1349,7 +1348,7 @@ namespace QuantLib {
         inline Array Sqrt(const Array& v) {
             Array result(v.size());
             std::transform(v.begin(),v.end(),result.begin(),
-                std::ptr_fun(QL_SQRT));
+                std::ptr_fun<double,double>(QL_SQRT));
             return result;
         }
 
@@ -1381,7 +1380,7 @@ namespace QuantLib {
         inline Array Log(const Array& v) {
             Array result(v.size());
             std::transform(v.begin(),v.end(),result.begin(),
-                std::ptr_fun(QL_LOG));
+                std::ptr_fun<double,double>(QL_LOG));
             return result;
         }
 
@@ -1413,7 +1412,7 @@ namespace QuantLib {
         inline Array Exp(const Array& v) {
             Array result(v.size());
             std::transform(v.begin(),v.end(),result.begin(),
-                std::ptr_fun(QL_EXP));
+                std::ptr_fun<double,double>(QL_EXP));
             return result;
         }
 

@@ -2,10 +2,7 @@
 # $Id$
 
 EXTRA_DIST = BermudanSwaption.patch \
-			 configure.patch \
-			 history.patch \
-			 ltmain.sh.patch
-
-
+             configure.patch \
+             history.patch
 
 

@@ -30,7 +30,12 @@ namespace QuantLib {
 
     namespace Indexes {
 
+        #if defined(QL_NEEDS_EXPLICIT_GLOBAL_INIT)
+        XiborManager::HistoryMap XiborManager::historyMap_ = 
+                                 XiborManager::HistoryMap();
+        #else
         XiborManager::HistoryMap XiborManager::historyMap_;
+        #endif
 
         void XiborManager::setHistory(const std::string& name,
             const History& history) {
@@ -40,8 +45,11 @@ namespace QuantLib {
         const History& XiborManager::getHistory(const std::string& name) {
             XiborManager::HistoryMap::const_iterator i =
                 historyMap_.find(name);
+            // the test below seems to crash on Sun Solaris
+            #if !defined(SOLARIS)
             QL_REQUIRE(i != historyMap_.end(),
                 name + " history not loaded");
+            #endif
             return i->second;
         }
 

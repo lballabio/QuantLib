@@ -94,6 +94,46 @@
     #error Neither <cstdlib> nor <stdlib.h> found
 #endif
 
+/*! \def QL_NEEDS_EXPLICIT_GLOBAL_INIT
+    \brief Is initialization of global variables working?
+
+    On Sun Solaris, g++ will not correctly initialize a global variable
+    if one relies on its default constructor being called, as in:
+    \code
+    static const Foo::Bar foobar;
+    \endcode
+    Instead, one must explicitly call the constructor, as in:
+    \code
+    static const Foo::Bar foobar = Bar();
+    \endcode
+*/
+#if defined(SOLARIS)
+    #define QL_NEEDS_EXPLICIT_GLOBAL_INIT
+#endif
+
+
+/*! \def QL_IO_INIT
+    \brief I/O initialization
+
+    Sometimes, programs compiled with the free Borland compiler will
+    crash miserably upon attempting to write on std::cout. 
+    Strangely enough, issuing the instruction
+    \code
+    std::cout << std::string();
+    \endcode
+    at the beginning of the program will prevent other accesses to
+    std::cout from crashing the program. This macro, to be called at
+    the beginning of main(), encapsulates the above enchantment for 
+    Borland and is defined as empty for the other compilers.
+*/
+#if defined(__BORLANDC__)
+    #define QL_IO_INIT    std::cout << std::string();
+#else
+    #define QL_IO_INIT
+#endif
+/*! @} */
+
+
 /*! \defgroup mathMacros Math functions
     Some compilers still define math functions them in the global namespace.
     For the code to be portable these macros should be used instead of

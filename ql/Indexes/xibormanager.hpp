@@ -38,6 +38,7 @@ namespace QuantLib {
         //! global repository for libor histories
         class XiborManager {
           public:
+            typedef std::map<std::string,History> HistoryMap;
             // historical fixings
             static void setHistory(const std::string& name,
                 const History&);
@@ -45,7 +46,6 @@ namespace QuantLib {
             static bool hasHistory(const std::string& name);
             static std::vector<std::string> histories();
           private:
-            typedef std::map<std::string,History> HistoryMap;
             static HistoryMap historyMap_;
         };
 

@@ -45,6 +45,7 @@ using TermStructures::SwapRateHelper;
 int main(int argc, char* argv[])
 {
     try {
+        QL_IO_INIT
 
         /*********************
          ***  MARKET DATA  ***
