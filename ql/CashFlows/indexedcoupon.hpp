@@ -44,7 +44,8 @@ namespace QuantLib {
                           int fixingDays,
                           Spread spread = 0.0,
                           const Date& refPeriodStart = Date(),
-                          const Date& refPeriodEnd = Date());
+                          const Date& refPeriodEnd = Date(),
+                          const DayCounter& dayCounter = DayCounter());
   			virtual ~IndexedCoupon() {}
             //! \name CashFlow interface
             //@{
@@ -76,19 +77,24 @@ namespace QuantLib {
             //@}
           private:
             Handle<Indexes::Xibor> index_;
+            DayCounter dayCounter_;
         };
 
 
         // inline definitions
-        inline IndexedCoupon::IndexedCoupon(double nominal,
-          const Date& paymentDate,
-          const Handle<Indexes::Xibor>& index,
-          const Date& startDate, const Date& endDate,
-          int fixingDays, Spread spread,
-          const Date& refPeriodStart, const Date& refPeriodEnd)
+        inline IndexedCoupon::IndexedCoupon(
+                double nominal,
+                const Date& paymentDate,
+                const Handle<Indexes::Xibor>& index,
+                const Date& startDate, const Date& endDate,
+                int fixingDays, Spread spread,
+                const Date& refPeriodStart, const Date& refPeriodEnd,
+                const DayCounter& dayCounter)
         : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
 							 fixingDays, spread, refPeriodStart, refPeriodEnd),
-          index_(index) {
+          index_(index), dayCounter_(dayCounter) {
+            if (dayCounter_.isNull())
+                dayCounter_ = index_->dayCounter();
             registerWith(index_);
         }
 
@@ -103,7 +109,7 @@ namespace QuantLib {
         }
 
         inline DayCounter IndexedCoupon::dayCounter() const {
-            return index_->dayCounter();
+            return dayCounter_;
         }
 
 		inline double IndexedCoupon::amount() const {

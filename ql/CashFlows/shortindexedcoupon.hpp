@@ -37,16 +37,17 @@ namespace QuantLib {
         class Short : public IndexedCouponType {
           public:
             Short(double nominal,
-                 const Date& paymentDate,
-                 const Handle<Indexes::Xibor>& index,
-                 const Date& startDate, const Date& endDate,
-                 int fixingDays,
-                 Spread spread = 0.0,
-                 const Date& refPeriodStart = Date(),
-                 const Date& refPeriodEnd = Date())
+                  const Date& paymentDate,
+                  const Handle<Indexes::Xibor>& index,
+                  const Date& startDate, const Date& endDate,
+                  int fixingDays,
+                  Spread spread = 0.0,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter())
  			: IndexedCouponType(nominal, paymentDate, index, startDate,
                                 endDate, fixingDays, spread, 
-                                refPeriodStart, refPeriodEnd) {}
+                                refPeriodStart, refPeriodEnd, dayCounter) {}
             //! inhibit calculation
             /*! Unlike ParCoupon, this coupon can't calculate 
                 its fixing for future dates, either.

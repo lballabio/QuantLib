@@ -36,15 +36,16 @@ namespace QuantLib {
         class UpFrontIndexedCoupon : public IndexedCoupon {
           public:
             UpFrontIndexedCoupon(double nominal,
-                const Date& paymentDate,
-                const Handle<Indexes::Xibor>& index,
-                const Date& startDate, const Date& endDate,
-                int fixingDays,
-                Spread spread = 0.0,
-                const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date())
+                                 const Date& paymentDate,
+                                 const Handle<Indexes::Xibor>& index,
+                                 const Date& startDate, const Date& endDate,
+                                 int fixingDays,
+                                 Spread spread = 0.0,
+                                 const Date& refPeriodStart = Date(),
+                                 const Date& refPeriodEnd = Date(),
+                                  const DayCounter& dayCounter = DayCounter())
 			 : IndexedCoupon(nominal, paymentDate, index, startDate, endDate,
-			   fixingDays, spread, refPeriodStart, refPeriodEnd) {}
+			   fixingDays, spread, refPeriodStart, refPeriodEnd, dayCounter) {}
 			//! \name FloatingRateCoupon interface
             //@{
 			Date fixingDate() const;
