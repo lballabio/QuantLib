@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2000, 2001, 2002, 2003 StatPro Italia s.r.l.
+ Copyright (C) 2003 StatPro Italia s.r.l.
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,7 +35,7 @@ namespace QuantLib {
       <li>Easter Monday</li>
       <li>General Prayer Day, 25 days after Easter Monday</li>      
       <li>Ascension</li>      
-      <li>Whit(Pentecost) Monday </li>
+      <li>Whit (Pentecost) Monday </li>
       <li>New Year's Day, January 1st</li>
       <li>Constitution Day, June 5th</li>
       <li>Christmas, December 25th</li>

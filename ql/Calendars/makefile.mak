@@ -15,6 +15,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 # Object files
 OBJS = \
     budapest.obj$(_D) \
+    copenhagen.obj$(_D) \
     frankfurt.obj$(_D) \
     helsinki.obj$(_D) \
     johannesburg.obj$(_D) \
