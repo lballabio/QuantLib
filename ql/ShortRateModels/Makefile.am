@@ -5,6 +5,8 @@ includedir = $(prefix)/include/ql/ShortRateModels
 SUBDIRS = CalibrationHelpers OneFactorModels TwoFactorModels
 
 include_HEADERS = \
+    all.hpp \
+    core.hpp \
     calibrationhelper.hpp \
     model.hpp \
     onefactormodel.hpp \

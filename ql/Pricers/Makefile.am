@@ -3,6 +3,8 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Pricers
 
 include_HEADERS = \
+    all.hpp \
+    core.hpp \
     analyticalcapfloor.hpp \
     blackcapfloor.hpp \
     blackmodel.hpp \

@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/TermStructures
 
 include_HEADERS = \
+    all.hpp \
     affinetermstructure.hpp \
     compoundforward.hpp \
     discountcurve.hpp \

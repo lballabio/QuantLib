@@ -36,82 +36,25 @@
 #include <ql/solver1d.hpp>
 #include <ql/swaptionvolstructure.hpp>
 
-#include <ql/Calendars/budapest.hpp>
-#include <ql/Calendars/copenhagen.hpp>
-#include <ql/Calendars/frankfurt.hpp>
-#include <ql/Calendars/helsinki.hpp>
-#include <ql/Calendars/johannesburg.hpp>
-#include <ql/Calendars/jointcalendar.hpp>
-#include <ql/Calendars/london.hpp>
-#include <ql/Calendars/milan.hpp>
-#include <ql/Calendars/newyork.hpp>
-#include <ql/Calendars/nullcalendar.hpp>
-#include <ql/Calendars/oslo.hpp>
-#include <ql/Calendars/stockholm.hpp>
-#include <ql/Calendars/sydney.hpp>
-#include <ql/Calendars/target.hpp>
-#include <ql/Calendars/tokyo.hpp>
-#include <ql/Calendars/toronto.hpp>
-#include <ql/Calendars/warsaw.hpp>
-#include <ql/Calendars/wellington.hpp>
-#include <ql/Calendars/zurich.hpp>
-
+#include <ql/Calendars/all.hpp>
 #include <ql/CashFlows/all.hpp>
 #include <ql/DayCounters/all.hpp>
 #include <ql/FiniteDifferences/all.hpp>
-
-#include <ql/functions/daycounters.hpp>
-#include <ql/functions/mathf.hpp>
-#include <ql/functions/vols.hpp>
-
+#include <ql/functions/all.hpp>
 #include <ql/Indexes/all.hpp>
 #include <ql/Instruments/all.hpp>
-
-#include <ql/Lattices/binomialtree.hpp>
-#include <ql/Lattices/bsmlattice.hpp>
-#include <ql/Lattices/lattice.hpp>
-#include <ql/Lattices/lattice2d.hpp>
-#include <ql/Lattices/tree.hpp>
-#include <ql/Lattices/trinomialtree.hpp>
-
+#include <ql/Lattices/all.hpp>
 #include <ql/Math/all.hpp>
 #include <ql/MonteCarlo/all.hpp>
 #include <ql/Optimization/all.hpp>
-
-#include <ql/Patterns/bridge.hpp>
-#include <ql/Patterns/composite.hpp>
-#include <ql/Patterns/lazyobject.hpp>
-#include <ql/Patterns/observable.hpp>
-#include <ql/Patterns/visitor.hpp>
-
+#include <ql/Patterns/all.hpp>
 #include <ql/Pricers/all.hpp>
 #include <ql/PricingEngines/all.hpp>
-
-#include <ql/RandomNumbers/boxmullergaussianrng.hpp>
-#include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
-#include <ql/RandomNumbers/haltonrsg.hpp>
-#include <ql/RandomNumbers/inversecumgaussianrng.hpp>
-#include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
-#include <ql/RandomNumbers/knuthuniformrng.hpp>
-#include <ql/RandomNumbers/lecuyeruniformrng.hpp>
-#include <ql/RandomNumbers/mt19937uniformrng.hpp>
-#include <ql/RandomNumbers/primitivepolynomials.h>
-#include <ql/RandomNumbers/randomarraygenerator.hpp>
-#include <ql/RandomNumbers/randomsequencegenerator.hpp>
-#include <ql/RandomNumbers/rngtypedefs.hpp>
-#include <ql/RandomNumbers/sobolrsg.hpp>
-
+#include <ql/RandomNumbers/all.hpp>
 #include <ql/ShortRateModels/all.hpp>
 #include <ql/Solvers1D/all.hpp>
 #include <ql/TermStructures/all.hpp>
-
-#include <ql/Utilities/combiningiterator.hpp>
-#include <ql/Utilities/couplingiterator.hpp>
-#include <ql/Utilities/filteringiterator.hpp>
-#include <ql/Utilities/iteratorcategories.hpp>
-#include <ql/Utilities/processingiterator.hpp>
-#include <ql/Utilities/steppingiterator.hpp>
-
+#include <ql/Utilities/all.hpp>
 #include <ql/Volatilities/all.hpp>
 
 

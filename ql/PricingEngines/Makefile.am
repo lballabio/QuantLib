@@ -5,6 +5,8 @@ includedir = $(prefix)/include/ql/PricingEngines
 SUBDIRS = Barrier Cliquet Forward Quanto Vanilla
 
 include_HEADERS = \
+    all.hpp \
+    core.hpp \
     genericmodelengine.hpp \
     latticeshortratemodelengine.hpp \
     mcsimulation.hpp

@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/DayCounters
 
 include_HEADERS = \
+	all.hpp \
 	actual360.hpp \
 	actual365.hpp \
 	actualactual.hpp \

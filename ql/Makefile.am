@@ -33,6 +33,7 @@ EXTRA_DIST= \
 	userconfig.hpp
 
 include_HEADERS = \
+	core.hpp \
 	argsandresults.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \

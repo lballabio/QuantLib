@@ -3,6 +3,8 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Instruments
 
 include_HEADERS = \
+    all.hpp \
+    core.hpp \
     asianoption.hpp \
     barrieroption.hpp \
     binaryoption.hpp \

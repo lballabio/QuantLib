@@ -3,7 +3,9 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/FiniteDifferences
 
 include_HEADERS = \
-    americancondition.hpp \
+	all.hpp \
+	core.hpp \
+	americancondition.hpp \
 	boundarycondition.hpp \
 	bsmoperator.hpp \
 	cranknicolson.hpp \

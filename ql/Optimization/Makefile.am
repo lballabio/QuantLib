@@ -3,6 +3,8 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Optimization
 
 include_HEADERS = \
+    all.hpp \
+    core.hpp \
     armijo.hpp \
     conjugategradient.hpp \
     constraint.hpp \

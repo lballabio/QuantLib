@@ -3,8 +3,10 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MonteCarlo
 
 include_HEADERS = \
-    arithmeticapopathpricer.hpp \
-    arithmeticasopathpricer.hpp \
+	all.hpp \
+	core.hpp \
+	arithmeticapopathpricer.hpp \
+	arithmeticasopathpricer.hpp \
 	barrierpathpricer.hpp \
 	basketpathpricer.hpp \
 	biasedbarrierpathpricer.hpp \

@@ -3,6 +3,8 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Lattices
 
 include_HEADERS = \
+    all.hpp \
+    core.hpp \
     binomialtree.hpp \
     bsmlattice.hpp \
     lattice.hpp \
