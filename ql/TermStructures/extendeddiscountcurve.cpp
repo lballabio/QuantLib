@@ -146,8 +146,12 @@ namespace QuantLib {
                 return (QL_EXP(zy*t)-1.0)/t;
             return (QL_EXP(zy*(1.0/f))-1.0)*f;
         }
+        #ifdef QL_DISABLE_DEPRECATED
         return forwardCurve(f)->forwardRate(t, t,
             SimpleThenCompounded, Frequency(f), true);
+        #else
+        return forwardCurve(f)->compoundForward(t,f);
+        #endif
     }
 
     boost::shared_ptr<YieldTermStructure>

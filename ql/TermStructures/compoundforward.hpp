@@ -38,6 +38,10 @@ namespace QuantLib {
         \bug swap rates are not reproduced exactly when using indexed
              coupons. Apparently, some assumption about the swap
              fixings is hard-coded into the bootstrapping algorithm.
+
+        \bug the class does not operate correctly when
+             QL_DISABLE_DEPRECATED is defined. Investigation is
+             required.
     */
     class CompoundForward : public ForwardRateStructure {
       public:
