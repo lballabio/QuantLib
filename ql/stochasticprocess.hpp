@@ -41,11 +41,14 @@ namespace QuantLib {
       public:
         OneFactorStochasticProcess(
                                  const RelinkableHandle<Quote>& stateVariable)
-        : stateVariable(stateVariable) {
-            registerWith(stateVariable);
+        : stateVariable_(stateVariable) {
+            registerWith(stateVariable_);
         }
-
-        RelinkableHandle<Quote> stateVariable;
+        const boost::shared_ptr<Quote>& stateVariable() const {
+            return stateVariable_.currentLink();
+        }
+      private:
+        RelinkableHandle<Quote> stateVariable_;
     };
 
     class BlackScholesStochasticProcess : public OneFactorStochasticProcess {
@@ -55,15 +58,24 @@ namespace QuantLib {
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const RelinkableHandle<BlackVolTermStructure>& volTS)
-        : OneFactorStochasticProcess(stateVariable), dividendTS(dividendTS),
-          riskFreeTS(riskFreeTS), volTS(volTS) {
-            registerWith(dividendTS);
-            registerWith(riskFreeTS);
-            registerWith(volTS);
+        : OneFactorStochasticProcess(stateVariable), dividendTS_(dividendTS),
+          riskFreeTS_(riskFreeTS), volTS_(volTS) {
+            registerWith(dividendTS_);
+            registerWith(riskFreeTS_);
+            registerWith(volTS_);
         }
-
-        RelinkableHandle<TermStructure> dividendTS, riskFreeTS;
-        RelinkableHandle<BlackVolTermStructure> volTS;
+        const boost::shared_ptr<TermStructure>& dividendYield() const {
+            return dividendTS_.currentLink();
+        }
+        const boost::shared_ptr<TermStructure>& riskFreeRate() const {
+            return riskFreeTS_.currentLink();
+        }
+        const boost::shared_ptr<BlackVolTermStructure>& volatility() const {
+            return volTS_.currentLink();
+        }
+      private:
+        RelinkableHandle<TermStructure> dividendTS_, riskFreeTS_;
+        RelinkableHandle<BlackVolTermStructure> volTS_;
     };
 
     class Merton76StochasticProcess : public BlackScholesStochasticProcess {
@@ -78,15 +90,24 @@ namespace QuantLib {
                          const RelinkableHandle<Quote>& logJVol)
         : BlackScholesStochasticProcess(stateVariable, dividendTS, 
                                         riskFreeTS, volTS),
-          jumpIntensity(jumpInt), logJumpMean(logJMean),
-          logJumpVolatility(logJVol) {
-            registerWith(jumpIntensity);
-            registerWith(logJumpMean);
-            registerWith(logJumpVolatility);
+          jumpIntensity_(jumpInt), logMeanJump_(logJMean),
+          logJumpVolatility_(logJVol) {
+            registerWith(jumpIntensity_);
+            registerWith(logMeanJump_);
+            registerWith(logJumpVolatility_);
         }
-
-        RelinkableHandle<Quote> jumpIntensity, logJumpMean, 
-                                logJumpVolatility;
+        const boost::shared_ptr<Quote>& jumpIntensity() const {
+            return jumpIntensity_.currentLink();
+        }
+        const boost::shared_ptr<Quote>& logMeanJump() const {
+            return logMeanJump_.currentLink();
+        }
+        const boost::shared_ptr<Quote>& logJumpVolatility() const {
+            return logJumpVolatility_.currentLink();
+        }
+      private:
+        RelinkableHandle<Quote> jumpIntensity_, logMeanJump_, 
+                                logJumpVolatility_;
     };
 
 }

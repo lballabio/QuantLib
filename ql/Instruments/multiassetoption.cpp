@@ -39,10 +39,7 @@ namespace QuantLib {
                 proc = stochProcs.begin();
         while (proc != stochProcs.end()) {
             blackScholesProcess = *proc;
-            registerWith(blackScholesProcess->stateVariable);
-            registerWith(blackScholesProcess->dividendTS);
-            registerWith(blackScholesProcess->riskFreeTS);
-            registerWith(blackScholesProcess->volTS);
+            registerWith(blackScholesProcess);
             ++proc;
         }
     }
@@ -52,7 +49,7 @@ namespace QuantLib {
         // we could take the max, or min
         // we could enfore the reference date to be the same for each process??
         return exercise_->lastDate() < 
-            blackScholesProcesses_[0]->riskFreeTS->referenceDate();
+            blackScholesProcesses_[0]->riskFreeRate()->referenceDate();
         //return true;
     }
 
@@ -109,19 +106,9 @@ namespace QuantLib {
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         arguments->payoff = payoff_;
-
-
-/*
-        QL_REQUIRE(blackScholesProcess_->stateVariable->value(),
-                   "null underlying price given");
-*/
-
         arguments->blackScholesProcesses = blackScholesProcesses_;
-
         arguments->correlation = correlation_;
-
         arguments->exercise = exercise_;
-
 
         // shouldn't be here
         // it should be moved elsewhere
@@ -135,8 +122,10 @@ namespace QuantLib {
         blackScholesProcess = *proc;
         arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
-            Time time = blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-                blackScholesProcess->riskFreeTS->referenceDate(), exercise_->date(i));
+            Time time = 
+                blackScholesProcess->riskFreeRate()->dayCounter().yearFraction(
+                        blackScholesProcess->riskFreeRate()->referenceDate(), 
+                        exercise_->date(i));
             arguments->stoppingTimes.push_back(time);
         }
 
@@ -172,31 +161,25 @@ namespace QuantLib {
         #else
         Option::arguments::validate();
         #endif
-        /*
-        QL_REQUIRE(blackScholesProcess->stateVariable != Null<double>(),
-                   "no underlying given");
-        QL_REQUIRE(blackScholesProcess->stateVariable > 0.0,
-                   "negative or zero underlying given");
-        */
 
-        /*
-        QL_REQUIRE(correlation,
-                   "no correlation given");
-*/
+        QL_REQUIRE(correlation.rows() == correlation.columns(),
+                   "correlation matrix is not square");
+        QL_REQUIRE(correlation.rows() == blackScholesProcesses.size(),
+                   "the size of the correlation matrix does not match "
+                   "the number of underlyings");
 
-        boost::shared_ptr<BlackScholesStochasticProcess> blackScholesProcess; 
-        std::vector<
-            boost::shared_ptr<BlackScholesStochasticProcess> >::const_iterator
-                proc = blackScholesProcesses.begin();
-        while (proc != blackScholesProcesses.end()) {
-            blackScholesProcess = *proc;
-            QL_REQUIRE(blackScholesProcess->dividendTS,
+        for (Size i=0; i<blackScholesProcesses.size(); i++) {
+            QL_REQUIRE(blackScholesProcesses[i]->stateVariable(),
+                       "no underlying given");
+            QL_REQUIRE(blackScholesProcesses[i]->stateVariable()->value() 
+                       > 0.0,
+                       "negative or zero underlying given");
+            QL_REQUIRE(blackScholesProcesses[i]->dividendYield(),
                        "no dividend term structure given");
-            QL_REQUIRE(blackScholesProcess->riskFreeTS,
+            QL_REQUIRE(blackScholesProcesses[i]->riskFreeRate(),
                        "no risk free term structure given");
-            QL_REQUIRE(blackScholesProcess->volTS,
+            QL_REQUIRE(blackScholesProcesses[i]->volatility(),
                        "no vol term structure given");
-            ++proc;
         }
     }
 

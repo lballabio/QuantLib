@@ -91,7 +91,7 @@ namespace QuantLib {
 
         try {
             boost::shared_ptr<BlackConstantVol> constVolTS = 
-                (*(arguments.blackVolTS)).currentLink();
+                arguments.blackVolTS.currentLink();
             return TimeGrid(resetTimes.begin(), resetTimes.end());
         } catch (...) {
             return TimeGrid(resetTimes.begin(), resetTimes.end(),

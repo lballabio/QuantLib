@@ -163,18 +163,23 @@ namespace QuantLib {
         PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
                                             PseudoRandom::urng_type(76));
 
+        RelinkableHandle<TermStructure> riskFree(
+                             arguments_.blackScholesProcess->riskFreeRate());
+        RelinkableHandle<TermStructure> dividend(
+                             arguments_.blackScholesProcess->dividendYield());
+        RelinkableHandle<BlackVolTermStructure> volatility(
+                             arguments_.blackScholesProcess->volatility());
+
         return boost::shared_ptr<MCDigitalEngine<RNG,S>::path_pricer_type>(new
           DigitalPathPricer(
             payoff,
             exercise,
-            arguments_.blackScholesProcess->stateVariable->value(),
-            arguments_.blackScholesProcess->riskFreeTS,
-            boost::shared_ptr<DiffusionProcess>(new
-                BlackScholesProcess(
-                    arguments_.blackScholesProcess->riskFreeTS,
-                    arguments_.blackScholesProcess->dividendTS,
-                    arguments_.blackScholesProcess->volTS,
-                    arguments_.blackScholesProcess->stateVariable->value())),
+            arguments_.blackScholesProcess->stateVariable()->value(),
+            riskFree,
+            boost::shared_ptr<DiffusionProcess>(
+                       new BlackScholesProcess(riskFree, dividend, volatility,
+                                               arguments_.blackScholesProcess
+                                               ->stateVariable()->value())),
             sequenceGen));
     }
 
@@ -182,8 +187,9 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     TimeGrid MCDigitalEngine<RNG,S>::timeGrid() const {
-        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+        Time t = arguments_.blackScholesProcess->riskFreeRate()
+            ->dayCounter().yearFraction(
+            arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
             arguments_.exercise->lastDate());
         return TimeGrid(t, Size(QL_MAX(t * maxTimeStepsPerYear_, 1.0)));
     }

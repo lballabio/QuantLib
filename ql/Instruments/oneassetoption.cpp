@@ -34,7 +34,7 @@ namespace QuantLib {
 
     bool OneAssetOption::isExpired() const {
         return exercise_->lastDate() < 
-            blackScholesProcess_->riskFreeTS->referenceDate();
+            blackScholesProcess_->riskFreeRate()->referenceDate();
     }
 
     double OneAssetOption::delta() const {
@@ -115,9 +115,9 @@ namespace QuantLib {
         calculate();
         QL_REQUIRE(!isExpired(), "option expired");
 
-        double guess = blackScholesProcess_->volTS->blackVol(
-            exercise_->lastDate(),
-            blackScholesProcess_->stateVariable->value());
+        double guess = blackScholesProcess_->volatility()->blackVol(
+                              exercise_->lastDate(),
+                              blackScholesProcess_->stateVariable()->value());
 
         ImpliedVolHelper f(engine_,targetValue);
         Brent solver;
@@ -138,24 +138,18 @@ namespace QuantLib {
             dynamic_cast<OneAssetOption::arguments*>(args);
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
-/*
-        QL_REQUIRE(blackScholesProcess_->stateVariable->value(),
-                   "null underlying price given");
-*/
-
         arguments->blackScholesProcess = blackScholesProcess_;
-
         arguments->exercise = exercise_;
-
 
         // shouldn't be here
         // it should be moved elsewhere
         arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
             Time time = 
-                blackScholesProcess_->riskFreeTS->dayCounter().yearFraction(
-                           blackScholesProcess_->riskFreeTS->referenceDate(), 
-                           exercise_->date(i));
+                blackScholesProcess_->riskFreeRate()
+                ->dayCounter().yearFraction(
+                       blackScholesProcess_->riskFreeRate()->referenceDate(), 
+                       exercise_->date(i));
             arguments->stoppingTimes.push_back(time);
         }
     }
@@ -207,17 +201,16 @@ namespace QuantLib {
         #else
         Option::arguments::validate();
         #endif
-        /*
-        QL_REQUIRE(blackScholesProcess->stateVariable != Null<double>(),
+
+        QL_REQUIRE(blackScholesProcess->stateVariable(),
                    "no underlying given");
-        QL_REQUIRE(blackScholesProcess->stateVariable > 0.0,
+        QL_REQUIRE(blackScholesProcess->stateVariable()->value() > 0.0,
                    "negative or zero underlying given");
-        */
-        QL_REQUIRE(blackScholesProcess->dividendTS,
+        QL_REQUIRE(blackScholesProcess->dividendYield(),
                    "no dividend term structure given");
-        QL_REQUIRE(blackScholesProcess->riskFreeTS,
+        QL_REQUIRE(blackScholesProcess->riskFreeRate(),
                    "no risk free term structure given");
-        QL_REQUIRE(blackScholesProcess->volTS,
+        QL_REQUIRE(blackScholesProcess->volatility(),
                    "no vol term structure given");
     }
 
@@ -237,21 +230,24 @@ namespace QuantLib {
         // Making it work for a generic process would need some reflection
         // technique (which is possible, but requires some thought, hence
         // its postponement.)
+        RelinkableHandle<Quote> stateVariable(
+                            arguments_->blackScholesProcess->stateVariable());
+        RelinkableHandle<TermStructure> dividendYield(
+                            arguments_->blackScholesProcess->dividendYield());
+        RelinkableHandle<TermStructure> riskFreeRate(
+                            arguments_->blackScholesProcess->riskFreeRate());
+        RelinkableHandle<BlackVolTermStructure> volatility;
         boost::shared_ptr<BlackScholesStochasticProcess> process(
-                        new BlackScholesStochasticProcess(
-                               arguments_->blackScholesProcess->stateVariable,
-                               arguments_->blackScholesProcess->dividendTS,
-                               arguments_->blackScholesProcess->riskFreeTS,
-                               RelinkableHandle<BlackVolTermStructure>()));
+               new BlackScholesStochasticProcess(stateVariable, dividendYield,
+                                                 riskFreeRate, volatility));
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
-        process->volTS = RelinkableHandle<BlackVolTermStructure>(
-                boost::shared_ptr<BlackVolTermStructure>(
+        volatility.linkTo(boost::shared_ptr<BlackVolTermStructure>(
                     new BlackConstantVol(arguments_->blackScholesProcess
-                                         ->volTS->referenceDate(),
+                                         ->volatility()->referenceDate(),
                                          RelinkableHandle<Quote>(vol_),
                                          arguments_->blackScholesProcess
-                                         ->volTS->dayCounter())));
+                                         ->volatility()->dayCounter())));
         arguments_->blackScholesProcess = process;
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,

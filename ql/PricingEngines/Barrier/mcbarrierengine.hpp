@@ -149,12 +149,14 @@ namespace QuantLib {
     boost::shared_ptr<QL_TYPENAME MCBarrierEngine<RNG,S>::path_generator_type>
     MCBarrierEngine<RNG,S>::pathGenerator() const
     {
-        boost::shared_ptr<DiffusionProcess> bs(new
-            BlackScholesProcess(
-                arguments_.blackScholesProcess->riskFreeTS,
-                arguments_.blackScholesProcess->dividendTS,
-                arguments_.blackScholesProcess->volTS,
-                arguments_.blackScholesProcess->stateVariable->value()));
+        boost::shared_ptr<DiffusionProcess> bs(new BlackScholesProcess(
+                RelinkableHandle<TermStructure>(
+                             arguments_.blackScholesProcess->riskFreeRate()),
+                RelinkableHandle<TermStructure>(
+                             arguments_.blackScholesProcess->dividendYield()),
+                RelinkableHandle<BlackVolTermStructure>(
+                             arguments_.blackScholesProcess->volatility()),
+                arguments_.blackScholesProcess->stateVariable()->value()));
 
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
@@ -185,13 +187,17 @@ namespace QuantLib {
                     arguments_.rebate,
                     payoff->optionType(),
                     payoff->strike(),
-                    process->stateVariable->value(),
-                    process->riskFreeTS));
+                    process->stateVariable()->value(),
+                    RelinkableHandle<TermStructure>(process->riskFreeRate())));
         } else {
             TimeGrid grid = timeGrid();
             PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
                                                 PseudoRandom::urng_type(5));
 
+            RelinkableHandle<TermStructure> riskFree(process->riskFreeRate());
+            RelinkableHandle<TermStructure> dividend(process->dividendYield());
+            RelinkableHandle<BlackVolTermStructure> volatility(
+                                                       process->volatility());
             return boost::shared_ptr<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
                     arguments_.barrierType,
@@ -199,14 +205,14 @@ namespace QuantLib {
                     arguments_.rebate,
                     payoff->optionType(),
                     payoff->strike(),
-                    process->stateVariable->value(),
-                    process->riskFreeTS,
+                    process->stateVariable()->value(),
+                    riskFree,
                     boost::shared_ptr<DiffusionProcess>(
                         new BlackScholesProcess(
-                            process->riskFreeTS,
-                            process->dividendTS,
-                            process->volTS,
-                            process->stateVariable->value())),
+                                          riskFree,
+                                          dividend,
+                                          volatility,
+                                          process->stateVariable()->value())),
                     sequenceGen));
         }
     }
@@ -215,10 +221,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.blackScholesProcess->riskFreeTS
+        Time t = arguments_.blackScholesProcess->riskFreeRate()
             ->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-                arguments_.exercise->lastDate());
+              arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
+              arguments_.exercise->lastDate());
 
         return TimeGrid(t, Size(QL_MAX(t * maxTimeStepsPerYear_, 1.0)));
     }

@@ -39,24 +39,23 @@ namespace QuantLib {
                                               arguments_.blackScholesProcess);
         QL_REQUIRE(jdProcess, "not a jump diffusion process");
 
-        double jumpSquareVol = jdProcess->logJumpVolatility->value()
-            * jdProcess->logJumpVolatility->value();
-        double muPlusHalfSquareVol = jdProcess->logJumpMean->value()
+        double jumpSquareVol = jdProcess->logJumpVolatility()->value()
+            * jdProcess->logJumpVolatility()->value();
+        double muPlusHalfSquareVol = jdProcess->logMeanJump()->value()
             + 0.5*jumpSquareVol;
         // mean jump size
         double k = QL_EXP(muPlusHalfSquareVol) - 1.0;
-        double lambda = (k+1.0) * jdProcess->jumpIntensity->value();
+        double lambda = (k+1.0) * jdProcess->jumpIntensity()->value();
 
         // dummy strike
-        double variance = jdProcess->volTS->blackVariance(
-            arguments_.exercise->lastDate(), 1.0);
-        DayCounter dc = jdProcess->volTS->dayCounter();
-        Date volRefDate = jdProcess->volTS->referenceDate();
-        Time t = dc.yearFraction(volRefDate,
-            arguments_.exercise->lastDate());
-        Rate riskFreeRate = -QL_LOG(jdProcess->riskFreeTS->discount(
-            arguments_.exercise->lastDate()))/t;
-        Date rateRefDate = jdProcess->riskFreeTS->referenceDate();
+        double variance = jdProcess->volatility()->blackVariance(
+                                        arguments_.exercise->lastDate(), 1.0);
+        DayCounter dc = jdProcess->volatility()->dayCounter();
+        Date volRefDate = jdProcess->volatility()->referenceDate();
+        Time t = dc.yearFraction(volRefDate, arguments_.exercise->lastDate());
+        Rate riskFreeRate = -QL_LOG(jdProcess->riskFreeRate()->discount(
+                                          arguments_.exercise->lastDate()))/t;
+        Date rateRefDate = jdProcess->riskFreeRate()->referenceDate();
 
         PoissonDistribution p(lambda*t);
 
@@ -67,13 +66,14 @@ namespace QuantLib {
 
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
+        RelinkableHandle<Quote> stateVariable(jdProcess->stateVariable());
+        RelinkableHandle<TermStructure> dividendTS(jdProcess->dividendYield());
+        RelinkableHandle<TermStructure> riskFreeTS(jdProcess->riskFreeRate());
+        RelinkableHandle<BlackVolTermStructure> volTS(jdProcess->volatility());
         baseArguments->blackScholesProcess = 
             boost::shared_ptr<BlackScholesStochasticProcess>(
-                  new BlackScholesStochasticProcess(jdProcess->stateVariable, 
-                                                    jdProcess->dividendTS,
-                                                    jdProcess->riskFreeTS, 
-                                                    jdProcess->volTS));
-
+                  new BlackScholesStochasticProcess(stateVariable, dividendTS,
+                                                    riskFreeTS, volTS));
         baseArguments->validate();
 
         const VanillaOption::results* baseResults =
@@ -98,17 +98,12 @@ namespace QuantLib {
 
             // constant vol/rate assumption. It should be relaxed
             v = QL_SQRT((variance + i*jumpSquareVol)/t);
-            r = riskFreeRate - jdProcess->jumpIntensity->value()*k
+            r = riskFreeRate - jdProcess->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
-            baseArguments->blackScholesProcess->riskFreeTS =
-                RelinkableHandle<TermStructure>(
-                    boost::shared_ptr<TermStructure>(new
-                        FlatForward(rateRefDate, rateRefDate, r, dc)));
-            baseArguments->blackScholesProcess->volTS =
-                RelinkableHandle<BlackVolTermStructure>(
-                    boost::shared_ptr<BlackVolTermStructure>(new
-                        BlackConstantVol(rateRefDate, v, dc)));
-
+            riskFreeTS.linkTo(boost::shared_ptr<TermStructure>(
+                           new FlatForward(rateRefDate, rateRefDate, r, dc)));
+            volTS.linkTo(boost::shared_ptr<BlackVolTermStructure>(
+                                   new BlackConstantVol(rateRefDate, v, dc)));
 
             baseArguments->validate();
             baseEngine_->calculate();
@@ -125,7 +120,7 @@ namespace QuantLib {
 
             lastContribution = QL_FABS(baseResults->value /
                 (QL_FABS(results_.value)>QL_EPSILON ? results_.value : 1.0));
-            
+
             lastContribution = QL_MAX(lastContribution,
                 QL_FABS(baseResults->delta /
                 (QL_FABS(results_.delta)>QL_EPSILON ? results_.delta : 1.0)));

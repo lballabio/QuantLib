@@ -112,26 +112,28 @@ namespace QuantLib {
 
         double strike = payoff->strike();
 
-        double variance1 = 
-            procs[0]->volTS->blackVariance(exercise->lastDate(), strike);
-        double variance2 = 
-            procs[1]->volTS->blackVariance(exercise->lastDate(), strike);
+        double variance1 = procs[0]->volatility()->blackVariance(
+                                                exercise->lastDate(), strike);
+        double variance2 = procs[1]->volatility()->blackVariance(
+                                                exercise->lastDate(), strike);
 
         double rho = arguments_.correlation[1][0];
 
         DiscountFactor riskFreeDiscount =
-              procs[0]->riskFreeTS->discount(exercise->lastDate());
+            procs[0]->riskFreeRate()->discount(exercise->lastDate());
 
         // cannot handle non zero dividends, so don't believe this...
         DiscountFactor dividendDiscount1 =
-            procs[0]->dividendTS->discount(exercise->lastDate());
+            procs[0]->dividendYield()->discount(exercise->lastDate());
         DiscountFactor dividendDiscount2 =
-            procs[1]->dividendTS->discount(exercise->lastDate());
+            procs[1]->dividendYield()->discount(exercise->lastDate());
 
         BasketOption::BasketType basketType = arguments_.basketType;
 
-        double forward1 = procs[0]->stateVariable->value() * dividendDiscount1 / riskFreeDiscount;
-        double forward2 = procs[1]->stateVariable->value() * dividendDiscount2 / riskFreeDiscount;
+        double forward1 = procs[0]->stateVariable()->value() * 
+            dividendDiscount1 / riskFreeDiscount;
+        double forward2 = procs[1]->stateVariable()->value() * 
+            dividendDiscount2 / riskFreeDiscount;
 
         switch (basketType) {
           case BasketOption::Max:

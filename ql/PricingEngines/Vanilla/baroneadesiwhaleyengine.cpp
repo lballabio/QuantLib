@@ -135,15 +135,16 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        double variance = arguments_.blackScholesProcess->volTS->blackVariance(
-            ex->lastDate(), payoff->strike());
+        double variance = 
+            arguments_.blackScholesProcess->volatility()->blackVariance(
+                                            ex->lastDate(), payoff->strike());
         DiscountFactor dividendDiscount =
-            arguments_.blackScholesProcess->dividendTS->discount(
-            ex->lastDate());
+            arguments_.blackScholesProcess->dividendYield()->discount(
+                                                              ex->lastDate());
         DiscountFactor riskFreeDiscount =
-            arguments_.blackScholesProcess->riskFreeTS->discount(
-            ex->lastDate());
-        double spot = arguments_.blackScholesProcess->stateVariable->value();
+            arguments_.blackScholesProcess->riskFreeRate()->discount(
+                                                              ex->lastDate());
+        double spot = arguments_.blackScholesProcess->stateVariable()->value();
         double forwardPrice = spot * dividendDiscount / riskFreeDiscount;
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
@@ -156,19 +157,22 @@ namespace QuantLib {
             results_.gamma        = black.gamma(spot);
 
             Time t =
-                arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-                arguments_.exercise->lastDate());
+                arguments_.blackScholesProcess->riskFreeRate()
+                ->dayCounter().yearFraction(arguments_.blackScholesProcess
+                                            ->riskFreeRate()->referenceDate(),
+                                            arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
 
-            t = arguments_.blackScholesProcess->dividendTS->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->dividendTS->referenceDate(),
-                arguments_.exercise->lastDate());
+            t = arguments_.blackScholesProcess->dividendYield()
+                ->dayCounter().yearFraction(arguments_.blackScholesProcess
+                                            ->dividendYield()->referenceDate(),
+                                            arguments_.exercise->lastDate());
             results_.dividendRho = black.dividendRho(t);
 
-            t = arguments_.blackScholesProcess->volTS->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->volTS->referenceDate(),
-                arguments_.exercise->lastDate());
+            t = arguments_.blackScholesProcess->volatility()
+                ->dayCounter().yearFraction(arguments_.blackScholesProcess
+                                            ->volatility()->referenceDate(),
+                                            arguments_.exercise->lastDate());
             results_.vega        = black.vega(t);
             results_.theta       = black.theta(spot, t);
             results_.thetaPerDay = black.thetaPerDay(spot, t);

@@ -80,12 +80,16 @@ namespace QuantLib {
     inline 
     boost::shared_ptr<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
     MCVanillaEngine<RNG,S>::pathGenerator() const {
+        RelinkableHandle<TermStructure> riskFree(
+                             arguments_.blackScholesProcess->riskFreeRate());
+        RelinkableHandle<TermStructure> dividend(
+                             arguments_.blackScholesProcess->dividendYield());
+        RelinkableHandle<BlackVolTermStructure> vol(
+                                arguments_.blackScholesProcess->volatility());
         boost::shared_ptr<DiffusionProcess> bs(new
-            BlackScholesProcess(
-                arguments_.blackScholesProcess->riskFreeTS,
-                arguments_.blackScholesProcess->dividendTS,
-                arguments_.blackScholesProcess->volTS,
-                arguments_.blackScholesProcess->stateVariable->value()));
+                            BlackScholesProcess(riskFree, dividend, vol,
+                                                arguments_.blackScholesProcess
+                                                ->stateVariable()->value()));
 
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =

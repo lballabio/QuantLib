@@ -32,24 +32,28 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesStochasticProcess>& process =
             arguments_.blackScholesProcess;
 
-        Date settlementDate = process->riskFreeTS->referenceDate();
+        Date settlementDate = process->riskFreeRate()->referenceDate();
         double riskless = 0.0;
         Size i;
         for (i=0; i<arguments_.dividends.size(); i++)
             if (arguments_.dividendDates[i] >= settlementDate)
                 riskless += arguments_.dividends[i] * 
-                    process->riskFreeTS->discount(arguments_.dividendDates[i]);
-        double spot = process->stateVariable->value() - riskless;
+                    process->riskFreeRate()
+                    ->discount(arguments_.dividendDates[i]);
+        double spot = process->stateVariable()->value() - riskless;
 
         DiscountFactor dividendDiscount =
-            process->dividendTS->discount(arguments_.exercise->lastDate());
+            process->dividendYield()->discount(
+                                            arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            process->riskFreeTS->discount(arguments_.exercise->lastDate());
+            process->riskFreeRate()->discount(
+                                            arguments_.exercise->lastDate());
         double forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
         double variance = 
-            process->volTS->blackVariance(arguments_.exercise->lastDate(),
-                                          payoff->strike());
+            process->volatility()->blackVariance(
+                                              arguments_.exercise->lastDate(),
+                                              payoff->strike());
 
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
@@ -57,28 +61,27 @@ namespace QuantLib {
         results_.delta = black.delta(spot);
         results_.gamma = black.gamma(spot);
 
-        Time t = process->volTS->dayCounter().yearFraction(
-                                              process->volTS->referenceDate(),
-                                              arguments_.exercise->lastDate());
+        Time t = process->volatility()->dayCounter().yearFraction(
+                                       process->volatility()->referenceDate(),
+                                       arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
 
         double delta_theta = 0.0, delta_rho = 0.0;
         for (i = 0; i < arguments_.dividends.size(); i++) {
             Date d = arguments_.dividendDates[i];
-            Time t = process->riskFreeTS->dayCounter().yearFraction(
-                                         process->riskFreeTS->referenceDate(),
-                                         d);
+            Time t = process->riskFreeRate()->dayCounter().yearFraction(
+                                 process->riskFreeRate()->referenceDate(), d);
             if (d >= settlementDate) {
                 delta_theta -= arguments_.dividends[i] * 
-                               process->riskFreeTS->zeroYield(d) * 
-                               process->riskFreeTS->discount(d);
+                               process->riskFreeRate()->zeroYield(d) * 
+                               process->riskFreeRate()->discount(d);
                 delta_rho += arguments_.dividends[i] * t * 
-                             process->riskFreeTS->discount(t);
+                             process->riskFreeRate()->discount(t);
             }
         }
-        t = process->riskFreeTS->dayCounter().yearFraction(
-                                         process->riskFreeTS->referenceDate(),
-                                         arguments_.exercise->lastDate());
+        t = process->riskFreeRate()->dayCounter().yearFraction(
+                                     process->riskFreeRate()->referenceDate(),
+                                     arguments_.exercise->lastDate());
         try {
             results_.theta = black.theta(spot, t) +
                              delta_theta * black.delta(spot);

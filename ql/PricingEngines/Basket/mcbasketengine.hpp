@@ -116,13 +116,17 @@ namespace QuantLib {
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
         std::vector<boost::shared_ptr<DiffusionProcess> > diffusionProcs;
-        for (Size j = 0; j < numAssets; j++) { 
-            boost::shared_ptr<DiffusionProcess> bs(new
-              BlackScholesProcess(
-                arguments_.blackScholesProcesses[j]->riskFreeTS,
-                arguments_.blackScholesProcesses[j]->dividendTS,
-                arguments_.blackScholesProcesses[j]->volTS,
-                arguments_.blackScholesProcesses[j]->stateVariable->value()));
+        for (Size j = 0; j < numAssets; j++) {
+            RelinkableHandle<TermStructure> riskFree(
+                        arguments_.blackScholesProcesses[j]->riskFreeRate());
+            RelinkableHandle<TermStructure> dividend(
+                        arguments_.blackScholesProcesses[j]->dividendYield());
+            RelinkableHandle<BlackVolTermStructure> vol(
+                        arguments_.blackScholesProcesses[j]->volatility());
+            boost::shared_ptr<DiffusionProcess> bs(
+                   new BlackScholesProcess(riskFree, dividend, vol,
+                                           arguments_.blackScholesProcesses[j]
+                                           ->stateVariable()->value()));
             diffusionProcs.push_back(bs);
         }
 
@@ -146,7 +150,7 @@ namespace QuantLib {
         Array underlying(numAssets, 0.0);
         for (Size i = 0; i < numAssets; i++) {
             underlying[i] = arguments_.blackScholesProcesses[i]
-                ->stateVariable->value();
+                ->stateVariable()->value();
         }
 
         return boost::shared_ptr<MCBasketEngine<RNG,S>::path_pricer_type>(new
@@ -155,17 +159,18 @@ namespace QuantLib {
                 payoff->optionType(),
                 payoff->strike(),
                 underlying,
-                arguments_.blackScholesProcesses[0]->riskFreeTS));
+                RelinkableHandle<TermStructure>(
+                       arguments_.blackScholesProcesses[0]->riskFreeRate())));
     }
 
 
     template <class RNG, class S>
     inline TimeGrid MCBasketEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.blackScholesProcesses[0]->riskFreeTS
+        Time t = arguments_.blackScholesProcesses[0]->riskFreeRate()
             ->dayCounter().yearFraction(
                 arguments_.blackScholesProcesses[0]
-                    ->riskFreeTS->referenceDate(),
+                    ->riskFreeRate()->referenceDate(),
                 arguments_.exercise->lastDate());
 
         return TimeGrid(t, maxTimeStepsPerYear_);

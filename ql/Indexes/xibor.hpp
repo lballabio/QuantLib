@@ -115,7 +115,7 @@ namespace QuantLib {
     }
 
     inline boost::shared_ptr<TermStructure> Xibor::termStructure() const {
-        return (*termStructure_).currentLink();
+        return termStructure_.currentLink();
     }
 
 }

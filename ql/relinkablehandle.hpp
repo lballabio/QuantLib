@@ -85,6 +85,7 @@ namespace QuantLib {
         void linkTo(const boost::shared_ptr<Type>&,
                     bool registerAsObserver = true);
         //! dereferencing
+        const boost::shared_ptr<Type>& currentLink() const;
         const boost::shared_ptr<Type>& operator->() const;
         //! Checks if the contained handle points to anything
         bool isNull() const;
@@ -131,6 +132,12 @@ namespace QuantLib {
                                             const boost::shared_ptr<Type>& h,
                                             bool registerAsObserver) {
         (**this).linkTo(h,registerAsObserver);
+    }
+
+    template <class Type>
+    inline const boost::shared_ptr<Type>&
+    RelinkableHandle<Type>::currentLink() const {
+        return (**this).currentLink();
     }
 
     template <class Type>

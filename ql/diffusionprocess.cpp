@@ -32,7 +32,7 @@ namespace QuantLib {
       dividendTS_(dividendTS) {
 
         boost::shared_ptr<BlackVolTermStructure> blackVol = 
-            (*blackVolTS).currentLink();
+            blackVolTS.currentLink();
 
         // constant Black vol?
         boost::shared_ptr<BlackConstantVol> constVol =

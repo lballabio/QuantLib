@@ -48,20 +48,20 @@ namespace QuantLib {
     template <class T>
     void BinomialVanillaEngine<T>::calculate() const {
 
-        double s0 = arguments_.blackScholesProcess->stateVariable->value();
-        double v = arguments_.blackScholesProcess->volTS->blackVol(
+        double s0 = arguments_.blackScholesProcess->stateVariable()->value();
+        double v = arguments_.blackScholesProcess->volatility()->blackVol(
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
-        Rate r = arguments_.blackScholesProcess->riskFreeTS
+        Rate r = arguments_.blackScholesProcess->riskFreeRate()
             ->zeroYield(maturityDate);
-        Rate q = arguments_.blackScholesProcess->dividendTS
+        Rate q = arguments_.blackScholesProcess->dividendYield()
             ->zeroYield(maturityDate);
         Date referenceDate = 
-            arguments_.blackScholesProcess->riskFreeTS->referenceDate();
+            arguments_.blackScholesProcess->riskFreeRate()->referenceDate();
         Date todaysDate = 
-            arguments_.blackScholesProcess->riskFreeTS->todaysDate();
+            arguments_.blackScholesProcess->riskFreeRate()->todaysDate();
         DayCounter dc = 
-            arguments_.blackScholesProcess->riskFreeTS->dayCounter();
+            arguments_.blackScholesProcess->riskFreeRate()->dayCounter();
 
         // binomial trees with constant coefficient
         RelinkableHandle<TermStructure> flatRiskFree(
@@ -78,7 +78,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        Time maturity = arguments_.blackScholesProcess->riskFreeTS
+        Time maturity = arguments_.blackScholesProcess->riskFreeRate()
             ->dayCounter().yearFraction(referenceDate, maturityDate);
 
         boost::shared_ptr<DiffusionProcess> bs(

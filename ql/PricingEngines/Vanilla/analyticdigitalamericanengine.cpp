@@ -31,7 +31,8 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->dates()[0]<=
-                   arguments_.blackScholesProcess->volTS->referenceDate(),
+                   arguments_.blackScholesProcess->volatility()
+                   ->referenceDate(),
                    "American option with window exercise not handled yet");
 
         boost::shared_ptr<StrikedTypePayoff> payoff =
@@ -41,11 +42,14 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesStochasticProcess>& process = 
             arguments_.blackScholesProcess;
 
-        double spot = process->stateVariable->value();
-        double variance = process->volTS->blackVariance(ex->lastDate(), 
-                                                        payoff->strike());
-        Rate dividendDiscount = process->dividendTS->discount(ex->lastDate());
-        Rate riskFreeDiscount = process->riskFreeTS->discount(ex->lastDate());
+        double spot = process->stateVariable()->value();
+        double variance = 
+            process->volatility()->blackVariance(ex->lastDate(), 
+                                                 payoff->strike());
+        Rate dividendDiscount = 
+            process->dividendYield()->discount(ex->lastDate());
+        Rate riskFreeDiscount = 
+            process->riskFreeRate()->discount(ex->lastDate());
 
         if(ex->payoffAtExpiry()) {
             AmericanPayoffAtExpiry pricer(spot, riskFreeDiscount,
@@ -58,9 +62,9 @@ namespace QuantLib {
             results_.delta = pricer.delta();
             results_.gamma = pricer.gamma();
 
-            Time t = process->riskFreeTS->dayCounter().yearFraction(
-                                         process->riskFreeTS->referenceDate(),
-                                         arguments_.exercise->lastDate());
+            Time t = process->riskFreeRate()->dayCounter().yearFraction(
+                                     process->riskFreeRate()->referenceDate(),
+                                     arguments_.exercise->lastDate());
             results_.rho = pricer.rho(t);
         }
     }

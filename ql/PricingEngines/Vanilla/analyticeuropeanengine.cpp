@@ -33,15 +33,16 @@ namespace QuantLib {
             arguments_.blackScholesProcess;
 
         double variance = 
-            process->volTS->blackVariance(arguments_.exercise->lastDate(),
-                                          payoff->strike());
+            process->volatility()->blackVariance(
+                                              arguments_.exercise->lastDate(),
+                                              payoff->strike());
         DiscountFactor dividendDiscount =
-            process->dividendTS->discount(arguments_.exercise->lastDate());
+            process->dividendYield()->discount(
+                                             arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            process->riskFreeTS->discount(arguments_.exercise->lastDate());
-        double spot = process->stateVariable->value();
-        double forwardPrice = spot *
-            dividendDiscount / riskFreeDiscount;
+            process->riskFreeRate()->discount(arguments_.exercise->lastDate());
+        double spot = process->stateVariable()->value();
+        double forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
@@ -52,19 +53,19 @@ namespace QuantLib {
         results_.elasticity = black.elasticity(spot);
         results_.gamma = black.gamma(spot);
 
-        Time t = process->riskFreeTS->dayCounter().yearFraction(
-            process->riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
+        Time t = process->riskFreeRate()->dayCounter().yearFraction(
+                                     process->riskFreeRate()->referenceDate(),
+                                     arguments_.exercise->lastDate());
         results_.rho = black.rho(t);
 
-        t = process->dividendTS->dayCounter().yearFraction(
-                process->dividendTS->referenceDate(),
-                arguments_.exercise->lastDate());
+        t = process->dividendYield()->dayCounter().yearFraction(
+                                    process->dividendYield()->referenceDate(),
+                                    arguments_.exercise->lastDate());
         results_.dividendRho = black.dividendRho(t);
 
-        t = process->volTS->dayCounter().yearFraction(
-                process->volTS->referenceDate(),
-                arguments_.exercise->lastDate());
+        t = process->volatility()->dayCounter().yearFraction(
+                                       process->volatility()->referenceDate(),
+                                       arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
         try {
             results_.theta = black.theta(spot, t);

@@ -121,9 +121,10 @@ namespace QuantLib {
         return boost::shared_ptr<MCEuropeanEngine<RNG,S>::path_pricer_type>(
             new EuropeanPathPricer(
                 payoff->optionType(),
-                arguments_.blackScholesProcess->stateVariable->value(),
+                arguments_.blackScholesProcess->stateVariable()->value(),
                 payoff->strike(),
-                arguments_.blackScholesProcess->riskFreeTS));
+                RelinkableHandle<TermStructure>(
+                            arguments_.blackScholesProcess->riskFreeRate())));
     }
 
 
@@ -160,13 +161,13 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.blackScholesProcess->riskFreeTS
+        Time t = arguments_.blackScholesProcess->riskFreeRate()
             ->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-                arguments_.exercise->lastDate());
+              arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
+              arguments_.exercise->lastDate());
 
         TimeGridCalculator calc(t, maxTimeStepsPerYear_);
-        arguments_.blackScholesProcess->volTS->accept(calc);
+        arguments_.blackScholesProcess->volatility()->accept(calc);
         return TimeGrid(t, calc.size());
     }
 

@@ -34,8 +34,8 @@ namespace QuantLib {
 
         boost::shared_ptr<BlackScholesStochasticProcess> process =
             arguments_.blackScholesProcess;
-        Date referenceDate = process->riskFreeTS->referenceDate();
-        DayCounter dc = process->volTS->dayCounter();
+        Date referenceDate = process->riskFreeRate()->referenceDate();
+        DayCounter dc = process->volatility()->dayCounter();
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
@@ -58,50 +58,51 @@ namespace QuantLib {
                                          fixingTimes.end(), 0.0);
 
 
-        double vola = process->volTS->blackVol(arguments_.exercise->lastDate(),
-                                               payoff->strike());
+        double vola = process->volatility()->blackVol(
+                                              arguments_.exercise->lastDate(),
+                                              payoff->strike());
         double temp = 0.0;
         for (i=pastFixings+1; i<N; i++)
             temp += fixingTimes[i-pastFixings-1]*(N-i);
         double variance = vola*vola /N/N * 
             (timeSum+ 2.0*temp);
 
-        Rate dividendRate =
-            process->dividendTS->zeroYield(arguments_.exercise->lastDate());
-        Rate riskFreeRate =
-            process->riskFreeTS->zeroYield(arguments_.exercise->lastDate());
+        Rate dividendRate = process->dividendYield()->zeroYield(
+                                             arguments_.exercise->lastDate());
+        Rate riskFreeRate = process->riskFreeRate()->zeroYield(
+                                             arguments_.exercise->lastDate());
         double nu = riskFreeRate - dividendRate - 0.5*vola*vola;
         double runningLog = QL_LOG(arguments_.runningProduct);
         double muG = pastWeight * runningLog +
-            futureWeight * QL_LOG(process->stateVariable->value()) +
+            futureWeight * QL_LOG(process->stateVariable()->value()) +
             nu*timeSum/N;
         double forwardPrice = QL_EXP(muG + variance / 2.0);
 
-        DiscountFactor riskFreeDiscount =
-            process->riskFreeTS->discount(arguments_.exercise->lastDate());
+        DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
+                                             arguments_.exercise->lastDate());
 
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
         results_.value = black.value();
-        results_.delta = black.delta(process->stateVariable->value());
+        results_.delta = black.delta(process->stateVariable()->value());
         // results_.deltaForward = black.value();
-        results_.gamma = black.gamma(process->stateVariable->value());
+        results_.gamma = black.gamma(process->stateVariable()->value());
 
-        Time t = process->riskFreeTS->dayCounter().yearFraction(
-            process->riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
+        Time t = process->riskFreeRate()->dayCounter().yearFraction(
+                                     process->riskFreeRate()->referenceDate(),
+                                     arguments_.exercise->lastDate());
         results_.rho = black.rho(t);
 
-        t = process->dividendTS->dayCounter().yearFraction(
-                process->dividendTS->referenceDate(),
-                arguments_.exercise->lastDate());
+        t = process->dividendYield()->dayCounter().yearFraction(
+                                    process->dividendYield()->referenceDate(),
+                                    arguments_.exercise->lastDate());
         results_.dividendRho = black.dividendRho(t);
 
-        t = process->volTS->dayCounter().yearFraction(
-                process->volTS->referenceDate(),
-                arguments_.exercise->lastDate());
+        t = process->volatility()->dayCounter().yearFraction(
+                                       process->volatility()->referenceDate(),
+                                       arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
-        results_.theta = black.theta(process->stateVariable->value(), t);
+        results_.theta = black.theta(process->stateVariable()->value(), t);
 
         results_.strikeSensitivity = black.strikeSensitivity();
 

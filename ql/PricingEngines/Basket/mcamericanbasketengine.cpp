@@ -193,8 +193,9 @@ namespace QuantLib {
 
         bool brownianBridge = false;
 
-        Rate r = arguments_.blackScholesProcesses[0]->riskFreeTS->zeroYield(
-            arguments_.exercise->lastDate());
+        Rate r = 
+            arguments_.blackScholesProcesses[0]->riskFreeRate()->zeroYield(
+                                             arguments_.exercise->lastDate());
 
         // counters
         Size i; // for paths
@@ -396,10 +397,10 @@ namespace QuantLib {
         Size numBasisFunctions = basisFunctions.size();
 
         // create the time grid
-        Time T = arguments_.blackScholesProcesses[0]->riskFreeTS->
+        Time T = arguments_.blackScholesProcesses[0]->riskFreeRate()->
                     dayCounter().yearFraction( 
                         arguments_.blackScholesProcesses[0]->
-                            riskFreeTS->referenceDate(),
+                            riskFreeRate()->referenceDate(),
                         arguments_.exercise->lastDate());
         TimeGrid grid(T, timeSteps_);
 
@@ -417,13 +418,16 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<DiffusionProcess> > diffusionProcs;
         for (j = 0; j < numAssets; j++) { 
             initialPrices[j] = arguments_.blackScholesProcesses[j]
-                ->stateVariable->value();
+                ->stateVariable()->value();
             boost::shared_ptr<DiffusionProcess> bs(new
               BlackScholesProcess(
-                arguments_.blackScholesProcesses[j]->riskFreeTS,
-                arguments_.blackScholesProcesses[j]->dividendTS,
-                arguments_.blackScholesProcesses[j]->volTS,
-                initialPrices[j]));
+                    RelinkableHandle<TermStructure>(
+                        arguments_.blackScholesProcesses[j]->riskFreeRate()),
+                    RelinkableHandle<TermStructure>(
+                        arguments_.blackScholesProcesses[j]->dividendYield()),
+                    RelinkableHandle<BlackVolTermStructure>(
+                        arguments_.blackScholesProcesses[j]->volatility()),
+                    initialPrices[j]));
             diffusionProcs.push_back(bs);
         }
 
