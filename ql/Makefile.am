@@ -98,6 +98,7 @@ libQuantLib_la_LIBADD = \
     Instruments/libInstruments.la \
     Lattices/libLattices.la \
     Math/libMath.la \
+    MonteCarlo/libMonteCarlo.la \
     Optimization/libOptimization.la \
     Pricers/libPricers.la \
     PricingEngines/libPricingEngines.la \
