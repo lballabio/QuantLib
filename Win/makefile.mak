@@ -411,7 +411,7 @@ clean::
 # Documentation
 Docs::
 	@cd ..\Docs
-	@$(DOXYGEN) doxygen.bcc
+	@$(DOXYGEN) doxygen.cfg
 	@cd latex
 	@$(LATEX) refman
 	@$(MAKEINDEX) refman.idx
