@@ -66,16 +66,18 @@ namespace QuantLib {
         : antitheticVariate_(antitheticVariate),
           controlVariate_(controlVariate) {}
         virtual boost::shared_ptr<path_pricer_type> pathPricer() const = 0;
+        virtual boost::shared_ptr<path_generator_type> pathGenerator()
+                                                                   const = 0;
+        virtual TimeGrid timeGrid() const = 0;
         virtual boost::shared_ptr<path_pricer_type> controlPathPricer() const {
             return boost::shared_ptr<path_pricer_type>();
         }
         virtual boost::shared_ptr<PricingEngine> controlPricingEngine() const {
             return boost::shared_ptr<PricingEngine>();
         }
-        virtual boost::shared_ptr<path_generator_type> pathGenerator() 
-                                                                   const = 0;
-        virtual TimeGrid timeGrid() const = 0;
-        virtual Real controlVariateValue() const = 0;
+        virtual Real controlVariateValue() const {
+            return Null<Real>();
+        }
         mutable boost::shared_ptr<MonteCarloModel<MC,S> > mcModel_;
         static const Size minSample_;
         bool antitheticVariate_, controlVariate_;
@@ -169,12 +171,15 @@ namespace QuantLib {
         if (this->controlVariate_) {
 
             Real controlVariateValue = this->controlVariateValue();
+            QL_REQUIRE(controlVariateValue != Null<Real>(),
+                       "engine does not provide "
+                       "control-variation price");
 
             boost::shared_ptr<path_pricer_type> controlPP =
                 this->controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
-                       "control variation path pricer");
+                       "control-variation path pricer");
 
             this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<MC, S> >(

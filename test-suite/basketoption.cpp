@@ -262,9 +262,9 @@ void BasketOptionTest::testEuroTwoValues() {
     //boost::shared_ptr<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
       //  (1, false, false, Null<Size>(), 0.005, Null<Size>(), false, 42));
     boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 10000,
-                                                     Null<Real>(), 100000,
-                                                     false, 42));
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, false,
+                                                     10000, Null<Real>(),
+                                                     100000, 42));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -351,7 +351,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
         // basketType, optionType,       strike,    s1,    s2,   s3,    r,    t,   v1,   v2,  v3,  rho, euro, american,
         // Table 2
         // not using 4 month case to speed up test
-  /*      {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 8.59, 8.59},
+/*
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 8.59, 8.59},
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 3.84, 3.84},
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.89, 0.89},
         {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 12.55, 12.55},
@@ -361,17 +362,19 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 10.72, 10.72},
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 6.96, 6.96},
 */
-//        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 7.78, 7.78},
-//        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 3.18, 3.18},
-//        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.82, 0.82},
-  //      {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 10.97, 10.97},
-  //      {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 6.69, 6.69},
-  //      {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 3.70, 3.70},
-//        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 13.23, 13.23},
-//        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 9.11, 9.11},
-//        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 5.98, 5.98},
-
-        /*{BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 6.53, 6.53},
+/*
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 7.78, 7.78},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 3.18, 3.18},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.82, 0.82},
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 10.97, 10.97},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 6.69, 6.69},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 3.70, 3.70},
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 13.23, 13.23},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 9.11, 9.11},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 5.98, 5.98},
+*/
+/*
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 6.53, 6.53},
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 2.38, 2.38},
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 0.74, 0.74},
         {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 8.51, 8.51},
@@ -379,8 +382,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 2.97, 2.97},
         {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 10.04, 10.04},
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 6.64, 6.64},
-        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.61, 4.61},*/
-/*
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.61, 4.61},
+*/
         // Table 3
         // not working yet...
 
@@ -393,8 +396,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
       //  {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.03, 0.04},
      //   {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.31, 0.57},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 1.41, 5.00},
-*/
-       /*
+
+/*
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.00, 0.00},
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.38, 0.48},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 3.00, 5.00},
@@ -414,7 +417,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 0.41, 0.42},
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 1.87, 1.96},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.70, 5.20}
-        */
+*/
     };
 
     DayCounter dc = Actual360();
@@ -441,16 +444,16 @@ void BasketOptionTest::testBarraquandThreeValues() {
     Real mcRelativeErrorTolerance = 0.01;
     Real mcAmericanRelativeErrorTolerance = 0.1;
     boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false,
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, false,
                                                      Null<Size>(), 0.005,
-                                                     maxSamples, false, 42));
+                                                     maxSamples, 42));
 
     // use a 3D sobol sequence...
     // Think long and hard before moving to more than 1 timestep....
     boost::shared_ptr<PricingEngine> mcQuasiEngine(
-        new MCBasketEngine<LowDiscrepancy, Statistics>(1, false, false,
+        new MCBasketEngine<LowDiscrepancy, Statistics>(1, false, false, false,
                                                        Null<Size>(), 0.005,
-                                                       maxSamples, false, 42));
+                                                       maxSamples, 42));
 
     Size requiredSamples = 20000;
     Size timeSteps = 20;
@@ -727,9 +730,9 @@ void BasketOptionTest::testOneDAmericanValues() {
     Matrix correlation(1, 1, 1.0);
 
     boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false,
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, false,
                                                      Null<Size>(), 0.005,
-                                                     Null<Size>(), false, 42));
+                                                     Null<Size>(), 42));
 
     for (Size i=0; i<LENGTH(values); i++) {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new

@@ -66,7 +66,7 @@ namespace QuantLib {
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_generator_type> pathGenerator() const;
         boost::shared_ptr<path_pricer_type> pathPricer() const;
-        Real controlVariateValue() const;
+        // Real controlVariateValue() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_;
@@ -173,16 +173,16 @@ namespace QuantLib {
                                 ->discount(arguments_.exercise->lastDate())));
     }
 
+    /*
     template<class RNG, class S>
-    inline
-    Real MCBasketEngine<RNG,S>::controlVariateValue() const {
+    inline Real MCBasketEngine<RNG,S>::controlVariateValue() const {
 
         boost::shared_ptr<PricingEngine> controlPE =
             this->controlPricingEngine();
 
         QL_REQUIRE(controlPE,
                     "engine does not provide "
-                    "control variation pricing engine");
+                    "control-variation pricing engine");
 
         BasketOption::arguments* controlArguments =
             dynamic_cast<BasketOption::arguments*>(
@@ -196,6 +196,7 @@ namespace QuantLib {
 
         return controlResults->value;
     }
+    */
 
 }
 

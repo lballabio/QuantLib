@@ -189,7 +189,7 @@ namespace QuantLib {
     inline MakeMCEuropeanEngine<RNG,S>::MakeMCEuropeanEngine()
     : antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
+      tolerance_(Null<Real>()), brownianBridge_(false), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
@@ -235,8 +235,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withBrownianBridge(
-        bool brownianBridge) {
+    MakeMCEuropeanEngine<RNG,S>::withBrownianBridge(bool brownianBridge) {
         brownianBridge_ = brownianBridge;
         return *this;
     }

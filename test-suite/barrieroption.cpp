@@ -277,6 +277,7 @@ void BarrierOptionTest::testBabsiriValues() {
     Rate q = 0.02;
 
     Size timeSteps = 1;
+    bool brownianBridge = false;
     bool antitheticVariate = false;
     bool controlVariate = false;
     Size requiredSamples = 10000;
@@ -320,10 +321,10 @@ void BarrierOptionTest::testBabsiriValues() {
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
     boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBarrierEngine<PseudoRandom>(timeSteps, antitheticVariate,
-                                          controlVariate, requiredSamples,
-                                          requiredTolerance, maxSamples,
-                                          isBiased, 5));
+        new MCBarrierEngine<PseudoRandom>(timeSteps, brownianBridge,
+                                          antitheticVariate, controlVariate,
+                                          requiredSamples, requiredTolerance,
+                                          maxSamples, isBiased, 5));
 
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
@@ -390,6 +391,7 @@ void BarrierOptionTest::testBeagleholeValues() {
     Rate q = 0.00;
 
     Size timeSteps = 1;
+    bool brownianBridge = false;
     bool antitheticVariate = false;
     bool controlVariate = false;
     Size requiredSamples = 10000;
@@ -426,10 +428,10 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
     boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBarrierEngine<PseudoRandom>(timeSteps, antitheticVariate,
-                                          controlVariate, requiredSamples,
-                                          requiredTolerance, maxSamples,
-                                          isBiased, 10));
+        new MCBarrierEngine<PseudoRandom>(timeSteps, brownianBridge,
+                                          antitheticVariate, controlVariate,
+                                          requiredSamples, requiredTolerance,
+                                          maxSamples, isBiased, 10));
 
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);

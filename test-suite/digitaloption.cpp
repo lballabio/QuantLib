@@ -685,6 +685,7 @@ void DigitalOptionTest::testMCCashAtHit() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     Size maxTimeStepsPerYear = 90;
+    bool brownianBridge  = false;
     bool controlVariate = false;
     Size maxSamples = 1000000;
     BigNatural seed = 1;
@@ -711,7 +712,7 @@ void DigitalOptionTest::testMCCashAtHit() {
 
         bool antitheticVariate = true;
         boost::shared_ptr<PricingEngine> mcEngine(new
-            MCDigitalEngine<PseudoRandom>(maxTimeStepsPerYear,
+            MCDigitalEngine<PseudoRandom>(maxTimeStepsPerYear, brownianBridge,
                                           antitheticVariate, controlVariate,
                                           Null<Size>(), values[i].tol,
                                           maxSamples, seed));
