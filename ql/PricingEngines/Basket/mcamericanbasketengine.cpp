@@ -28,113 +28,123 @@
 
 namespace {
 
+    using QuantLib::Size;
+
     //! Basis function
     class BasisFunction : std::unary_function<std::vector<double>, double > {
       public:
-        virtual ~BasisFunction() {}        
-        virtual double calculate(std::vector<double> x) const = 0;
+        virtual ~BasisFunction() {}
+        virtual double calculate(const std::vector<double>& x) const = 0;
     };
 
     class Constant : public BasisFunction {
-        private:
-            const double constant_;    
-        public:
-            Constant(double constant) : constant_(constant) {}            
-            double calculate(std::vector<double> x) const {return constant_;}
+      private:
+        double constant_;
+      public:
+        Constant(double constant) : constant_(constant) {}
+        double calculate(const std::vector<double>& x) const {
+            return constant_;
+        }
     };
 
     class Linear : public BasisFunction {
-        private:
-            const double index_;    
-            const double coeff_;
-        public:
-            Linear(double index) : index_(index), coeff_(1) {}            
-            Linear(double index, double coeff) : index_(index), coeff_(coeff) {} 
-            double calculate(std::vector<double> x) const {return coeff_*x[index_];}
+      private:
+        Size index_;
+        double coeff_;
+      public:
+        Linear(Size index) : index_(index), coeff_(1.0) {}
+        Linear(Size index, double coeff) : index_(index), coeff_(coeff) {} 
+        double calculate(const std::vector<double>& x) const {
+            return coeff_*x[index_];
+        }
     };
 
     class Square : public BasisFunction {
-        private:
-            const double index_;    
-            const double coeff_;
-        public:
-            Square(double index) : index_(index), coeff_(1) {} 
-            Square(double index, double coeff) : index_(index), coeff_(coeff) {} 
-            double calculate(std::vector<double> x) const 
-                    {return coeff_*x[index_]*x[index_];}        
+      private:
+        Size index_;
+        double coeff_;
+      public:
+        Square(Size index) : index_(index), coeff_(1.0) {} 
+        Square(Size index, double coeff) : index_(index), coeff_(coeff) {} 
+        double calculate(const std::vector<double>& x) const {
+            return coeff_*x[index_]*x[index_];
+        }
     };
 
     class Cube : public BasisFunction {
-        private:
-            const double index_;    
-            const double coeff_;
-        public:
-            Cube(double index) : index_(index), coeff_(1) {}  
-            Cube(double index, double coeff) : index_(index), coeff_(coeff) {}
-            double calculate(std::vector<double> x) const 
-                    {return coeff_*x[index_]*x[index_]*x[index_];}        
+      private:
+        Size index_;
+        double coeff_;
+      public:
+        Cube(Size index) : index_(index), coeff_(1.0) {}
+        Cube(Size index, double coeff) : index_(index), coeff_(coeff) {}
+        double calculate(const std::vector<double>& x) const {
+            return coeff_*x[index_]*x[index_]*x[index_];
+        }
     };
 
     class LinearCombination : public BasisFunction {
-        private:
-            const double index1_;    
-            const double index2_;
-        public:
-            LinearCombination(double index1, double index2) :
-              index1_(index1), index2_(index2) {}   
-            double calculate(std::vector<double> x) const 
-                    {return x[index1_]*x[index2_];}  
+      private:
+        Size index1_, index2_;
+      public:
+        LinearCombination(Size index1, Size index2) 
+        : index1_(index1), index2_(index2) {}
+        double calculate(const std::vector<double>& x) const {
+            return x[index1_]*x[index2_];
+        }
     };
 
     class LinearCombo : public BasisFunction {
-        private:
-            BasisFunction* bf1_;    
-            BasisFunction* bf2_;    
-        public:
-            LinearCombo(BasisFunction* bf1, BasisFunction* bf2) :
-              bf1_(bf1), bf2_(bf2) {}   
-            double calculate(std::vector<double> x) const 
-                    {return bf1_->calculate(x)*bf2_->calculate(x);}  
+      private:
+        Handle<BasisFunction> bf1_, bf2_;
+      public:
+        LinearCombo(const Handle<BasisFunction>& bf1, 
+                    const Handle<BasisFunction>& bf2) 
+        : bf1_(bf1), bf2_(bf2) {}
+        double calculate(const std::vector<double>& x) const {
+            return bf1_->calculate(x)*bf2_->calculate(x);
+        }
     };
 
     class Polynomial : public BasisFunction {
-        private:
-            double factor_;
-            BasisFunction* bf1_;    
-            BasisFunction* bf2_;    
-        public:
-            Polynomial(double factor, BasisFunction* bf1, BasisFunction* bf2) :
-              factor_(factor), bf1_(bf1), bf2_(bf2) {}   
-            double calculate(std::vector<double> x) const 
-                    {return factor_*(bf1_->calculate(x) + bf2_->calculate(x));}  
+      private:
+        double factor_;
+        Handle<BasisFunction> bf1_, bf2_;
+      public:
+        Polynomial(double factor, 
+                   const Handle<BasisFunction>& bf1, 
+                   const Handle<BasisFunction>& bf2) 
+        : factor_(factor), bf1_(bf1), bf2_(bf2) {}
+        double calculate(const std::vector<double>& x) const {
+            return factor_*(bf1_->calculate(x) + bf2_->calculate(x));
+        }
     };
 
 
-    double basketPayoff ( QuantLib::BasketOption::BasketType basketType, 
-        std::vector<double> assetPrices) {
+    double basketPayoff (QuantLib::BasketOption::BasketType basketType, 
+                         const std::vector<double>& assetPrices) {
 
         double basketPrice = assetPrices[0];
         QuantLib::Size numAssets = assetPrices.size();
         QuantLib::Size j = 0;
-    
+
         switch (basketType) {
-          case QuantLib::BasketOption::Max:        
+          case QuantLib::BasketOption::Max:
             for (j = 1; j < numAssets; j++) {
                 if (assetPrices[j] > basketPrice) {
                     basketPrice = assetPrices[j];
                 }
             }
-          break;
-    
-          case QuantLib::BasketOption::Min:        
+            break;
+          case QuantLib::BasketOption::Min:
             for (j = 1; j < numAssets; j++) {
                 if (assetPrices[j] < basketPrice) {
                     basketPrice = assetPrices[j];
                 }
             }
-          break;
+            break;
         }
-    
+
         return basketPrice;
     }
 
@@ -148,33 +158,33 @@ namespace QuantLib {
         #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff_handle =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(payoff,
-                   "MCBasketEngineEngine: non-plain payoff given");
+        QL_REQUIRE(payoff_handle,
+                   "MCAmericanBasketEngine: non-plain payoff given");
         #else
         Handle<PlainVanillaPayoff> payoff_handle = arguments_.payoff;
         #endif
-        
+
         double strike = payoff_handle->strike();
-        PlainVanillaPayoff payoff(payoff_handle->optionType(), strike);        
+        PlainVanillaPayoff payoff(payoff_handle->optionType(), strike);
 
         Size numAssets = arguments_.blackScholesProcesses.size();
-        
-        bool brownianBridge = false;        
-        
+
+        bool brownianBridge = false;
+
         Rate r = arguments_.blackScholesProcesses[0]->riskFreeTS->zeroYield(
             arguments_.exercise->lastDate());
-        
+
         // counters
         Size i; // for paths
         Size j; // for assets
         Size k; // for basis functions
         Size timeStep; // for time loops
-        
+
         // Number of paths
         Size N = requiredSamples_;
-       
+
         // normalize the prices?
-        bool normalize = true;
+        // bool normalize = true;
 
         // set up the basis functions        
         std::vector<Handle<BasisFunction> > basisFunctions;
@@ -184,11 +194,11 @@ namespace QuantLib {
             if (monomial) {
                 // monomials
                 basisFunctions.push_back(Handle<BasisFunction> 
-                    (new Constant(1)));        
-                
+                    (new Constant(1)));
+
                 basisFunctions.push_back(Handle<BasisFunction> 
                     (new Linear(0)));
-                
+
                 basisFunctions.push_back(Handle<BasisFunction> 
                     (new Square(0)));
                 /*
@@ -196,83 +206,112 @@ namespace QuantLib {
                     (new Cube(0)));
 
                 basisFunctions.push_back(Handle<BasisFunction> 
-                    (new LinearCombo(new Square(0), new Square(0) )));
+                    (new LinearCombo
+                        (Handle<BasisFunction>(new Square(0)), 
+                         Handle<BasisFunction>(new Square(0)))));
 
                 basisFunctions.push_back(Handle<BasisFunction> 
-                    (new LinearCombo(new Square(0), new Cube(0) )));
+                    (new LinearCombo
+                        (Handle<BasisFunction>(new Square(0)), 
+                         Handle<BasisFunction>(new Cube(0)))));
                 */
             } else {
                 // legendre polynomials
                 basisFunctions.push_back(Handle<BasisFunction> 
-                    (new Constant(1)));        
-                
+                    (new Constant(1)));
+
                 basisFunctions.push_back(Handle<BasisFunction> 
                     (new Linear(0)));
-                
+
                 basisFunctions.push_back(Handle<BasisFunction> 
-                    (new Polynomial (0.5, new Constant(-1), new Square(0, 3))));
-                
+                    (new Polynomial(0.5, 
+                                    Handle<BasisFunction>(new Constant(-1)), 
+                                    Handle<BasisFunction>(new Square(0, 3)))));
+
                 /*
                 basisFunctions.push_back(Handle<BasisFunction> 
-                    (new Polynomial (0.5, new Linear(0, -3), new Cube(0, 5))));
-                    */
+                    (new Polynomial(0.5, 
+                                    Handle<BasisFunction>(new Linear(0, -3)), 
+                                    Handle<BasisFunction>(new Cube(0, 5)))));
+                */
             }
 
         } else if (numAssets == 3) {
 
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new Constant(1)));        
-            
+                (new Constant(1)));
+
             basisFunctions.push_back(Handle<BasisFunction> 
                 (new Linear(1)));
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new Linear(2)));        
-            
+                (new Linear(2)));
+
             basisFunctions.push_back(Handle<BasisFunction> 
                 (new Square(1)));
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new Square(2)));        
-            
+                (new Square(2)));
+
             basisFunctions.push_back(Handle<BasisFunction> 
                 (new Cube(1)));
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new Cube(2)));       
-            
+                (new Cube(2)));
+
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Square(1), new Square(1) )));
+                (new LinearCombo(Handle<BasisFunction>(new Square(1)), 
+                                 Handle<BasisFunction>(new Square(1)))));
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Square(2), new Square(2) )));
-            
+                (new LinearCombo(Handle<BasisFunction>(new Square(2)), 
+                                 Handle<BasisFunction>(new Square(2)))));
+
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Square(1), new Cube(1) )));
+                (new LinearCombo(Handle<BasisFunction>(new Square(1)), 
+                                 Handle<BasisFunction>(new Cube(1)))));
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Square(2), new Cube(2) )));
+                (new LinearCombo(Handle<BasisFunction>(new Square(2)), 
+                                 Handle<BasisFunction>(new Cube(2)))));
 
             basisFunctions.push_back(Handle<BasisFunction> 
                 (new LinearCombination(1,2)));
-            
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Linear(1), new Square(2) )));
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Linear(2), new Square(1) )));                
-            
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Square(1), new Square(2) )));
-            
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Linear(1), new Cube(2) )));
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Linear(2), new Cube(1) )));
 
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Square(1), new Cube(2) )));
+                (new LinearCombo(Handle<BasisFunction>(new Linear(1)), 
+                                 Handle<BasisFunction>(new Square(2)))));
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Square(2), new Cube(1) )));
+                (new LinearCombo(Handle<BasisFunction>(new Linear(2)), 
+                                 Handle<BasisFunction>(new Square(1)))));
 
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Linear(1), new LinearCombo(new Cube(2),new Cube(2)) )));
+                (new LinearCombo(Handle<BasisFunction>(new Square(1)), 
+                                 Handle<BasisFunction>(new Square(2)))));
+
             basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(new Linear(2), new LinearCombo(new Cube(2),new Cube(2)) )));
+                (new LinearCombo(Handle<BasisFunction>(new Linear(1)), 
+                                 Handle<BasisFunction>(new Cube(2)))));
+            basisFunctions.push_back(Handle<BasisFunction> 
+                (new LinearCombo(Handle<BasisFunction>(new Linear(2)), 
+                                 Handle<BasisFunction>(new Cube(1)))));
+
+            basisFunctions.push_back(Handle<BasisFunction> 
+                (new LinearCombo(Handle<BasisFunction>(new Square(1)), 
+                                 Handle<BasisFunction>(new Cube(2)))));
+            basisFunctions.push_back(Handle<BasisFunction> 
+                (new LinearCombo(Handle<BasisFunction>(new Square(2)), 
+                                 Handle<BasisFunction>(new Cube(1)))));
+
+            basisFunctions.push_back(Handle<BasisFunction> 
+                (new LinearCombo(Handle<BasisFunction>(new Linear(1)), 
+                                 Handle<BasisFunction>
+                                 (new LinearCombo(Handle<BasisFunction>(
+                                                            new Cube(2)),
+                                                  Handle<BasisFunction>(
+                                                            new Cube(2)))))));
+            basisFunctions.push_back(Handle<BasisFunction> 
+                (new LinearCombo(Handle<BasisFunction>(new Linear(2)), 
+                                 Handle<BasisFunction>
+                                 (new LinearCombo(Handle<BasisFunction>(
+                                                            new Cube(2)),
+                                                  Handle<BasisFunction>(
+                                                            new Cube(2)))))));
         }
 
         Size numBasisFunctions = basisFunctions.size();
@@ -284,13 +323,13 @@ namespace QuantLib {
                             riskFreeTS->referenceDate(),
                         arguments_.exercise->lastDate());
         TimeGrid grid(T, timeSteps_);
-        int gridLength = grid.size();
+        // int gridLength = grid.size();
 
         // create a Gaussian Random Sequence Generator
         GaussianRandomSequenceGenerator gen = 
             PseudoRandom::make_sequence_generator(
                                 numAssets*(grid.size()-1),seed_);
-                
+
         // set up the diffuction processes
         std::vector<double> initialPrices (numAssets);
         std::vector<Handle<DiffusionProcess> > diffusionProcs;
@@ -305,7 +344,7 @@ namespace QuantLib {
                 initialPrices[j]));
             diffusionProcs.push_back(bs);
         }
-               
+
         // create the MultiPathGenerator
         Handle<MultiPathGenerator<GaussianRandomSequenceGenerator> > 
             multipathGenerator(
@@ -315,40 +354,40 @@ namespace QuantLib {
                                             gen, brownianBridge));
 
         MultiPathGenerator<GaussianRandomSequenceGenerator>::sample_type 
-            multipathHolder = multipathGenerator->next();        
+            multipathHolder = multipathGenerator->next();
 
         // generate the paths
-        MultiPath multipath = multipathHolder.value;        
+        MultiPath multipath = multipathHolder.value;
         std::vector<MultiPath> multipaths (N, multipath);
-        for (i=0; i<N; i++) {          
-            multipathHolder = multipathGenerator->next();           
+        for (i=0; i<N; i++) {
+            multipathHolder = multipathGenerator->next();
             multipaths[i] = multipathHolder.value;
         }
 
         // get the asset values into an easy container
         std::vector<double> assetPath = getAssetSequence(
                         initialPrices[0], (multipaths[0])[0]); 
-        int assetPathLength = assetPath.size();
+        // int assetPathLength = assetPath.size();
         std::vector< std::vector<double> >  temp_asset(numAssets, assetPath);
         std::vector<std::vector<std::vector<double> > > multiAssetPaths(N, temp_asset);
-        for (i=0; i<N; i++) {             
+        for (i=0; i<N; i++) {
             multipath = multipaths[i];
             for (j = 0; j < numAssets; j++) {
                 multiAssetPaths[i][j] = getAssetSequence(initialPrices[j], multipath[j]);
             }
-        }        
-        
+        }
+
         // initialise rollback vector with payoff        
-        std::vector<double> normalizedContinuationValue(N);      
-        for (i=0; i<N; i++) {                        
+        std::vector<double> normalizedContinuationValue(N);
+        for (i=0; i<N; i++) {
             std::vector<double> finalPrices(numAssets);
             for (j=0; j<numAssets; j++) {
                 finalPrices[j] = multiAssetPaths[i][j][timeSteps_-1];
-            }            
+            }
             normalizedContinuationValue[i] = payoff(basketPayoff(
                         arguments_.basketType, finalPrices))/strike; 
         }
-        
+
         Array temp_coeffs(numBasisFunctions,1.0);
         std::vector<Array> basisCoeffs(timeSteps_-1, temp_coeffs);
 
@@ -356,9 +395,9 @@ namespace QuantLib {
         std::vector<double> normalizedAssetPrices(numAssets);
 
         // LOOP   
-        int timeLoop;        
-        for (timeLoop = timeSteps_-2; timeLoop>=0; timeLoop--) {            
-            timeStep = timeLoop;         
+        int timeLoop;
+        for (timeLoop = timeSteps_-2; timeLoop>=0; timeLoop--) {
+            timeStep = timeLoop;
 
             // rollback all paths
             // use rollback vector
@@ -367,8 +406,8 @@ namespace QuantLib {
                     // discount 
                     // +1 because the grid includes the start time
                     Time from = grid[timeStep+1];
-                    Time to = grid[timeStep+2];                        
-                    
+                    Time to = grid[timeStep+2];
+
                     normalizedContinuationValue[i] = 
                         normalizedContinuationValue[i]* QL_EXP(-r * (to-from));
                 }
@@ -377,11 +416,12 @@ namespace QuantLib {
             // select in the money paths            
             std::vector<int> itmPaths;
             std::vector<double> y(N);
-            for (i=0; i<N; i++) {                 
+            for (i=0; i<N; i++) {
                 for (j=0; j<numAssets; j++) {
-                    assetPrices[j] = multiAssetPaths[i][j][timeStep];                    
+                    assetPrices[j] = multiAssetPaths[i][j][timeStep];
                 }
-                y[i] = payoff(basketPayoff(arguments_.basketType, assetPrices));                
+                y[i] = payoff(basketPayoff(arguments_.basketType, 
+                                           assetPrices));
                 if (y[i] > 0) {
                     itmPaths.push_back(i);
                 }
@@ -390,7 +430,7 @@ namespace QuantLib {
             // loop over all itm paths
             Size num_itmPaths = itmPaths.size();
             if (num_itmPaths > 0) {
-                
+
                 // for itm paths   
                 std::vector<double> y_exercise(num_itmPaths);
                 Array y_temp(num_itmPaths);
@@ -402,12 +442,12 @@ namespace QuantLib {
                     // get discounted continuation value                    
                     y_temp[i] = normalizedContinuationValue[itmPaths[i]]; 
                 }
-                                                                
+
                 // calculate the basis functions and 
                 // create the design matrix A                                
-                Matrix A(num_itmPaths,numBasisFunctions);                
-                for (i=0; i<num_itmPaths; i++) {                    
-                                   
+                Matrix A(num_itmPaths,numBasisFunctions);
+                for (i=0; i<num_itmPaths; i++) {
+
                     for (j=0; j<numAssets; j++) {
                         normalizedAssetPrices[j] = 
                             multiAssetPaths[itmPaths[i]][j][timeStep]/strike;
@@ -416,9 +456,10 @@ namespace QuantLib {
                     std::sort(normalizedAssetPrices.begin(), 
                                 normalizedAssetPrices.end());
 
-                    for (k=0; k<numBasisFunctions; k++) {          
-                        A[i][k] =  basisFunctions[k]->calculate(normalizedAssetPrices);
-                    }                    
+                    for (k=0; k<numBasisFunctions; k++) {
+                        A[i][k] = 
+                          basisFunctions[k]->calculate(normalizedAssetPrices);
+                    }
                 }
 
                 // do least squares regression                
@@ -453,7 +494,7 @@ namespace QuantLib {
 
                 // modify stopping rule                
                 for (i=0; i<num_itmPaths; i++) {
-                    if (y_exercise[i] > y_continue[i]) {                        
+                    if (y_exercise[i] > y_continue[i]) {
                         normalizedContinuationValue[itmPaths[i]] = 
                                 y_exercise[i];
                     }
@@ -468,7 +509,7 @@ namespace QuantLib {
         for (timeStep = 0; timeStep < basisCoeffs.size(); timeStep++) {
             Array b = basisCoeffs[timeStep]; 
             std::cout << " [";
-            for (k = 0; k < numBasisFunctions; k++) {       
+            for (k = 0; k < numBasisFunctions; k++) {
                 std::cout << " " << b[k];
             }
             std::cout << " ]" << std::endl;
@@ -477,23 +518,23 @@ namespace QuantLib {
         // evaluate the option using the continuation rule and 
         // basis function definitions
         // could use a new set of paths here   
-        Statistics stats = GeneralStatistics();          
-        double value = 0.0;          
+        GeneralStatistics stats;
+        double value = 0.0;
         double exerciseValue = 0.0;
-        double continueValue = 0.0;        
+        double continueValue = 0.0;
         for (i = 0; i < N; i++) {
             bool exercised = false;
-                                
-            for (timeStep = 0; timeStep < timeSteps_-1; timeStep++) {            
+
+            for (timeStep = 0; timeStep < timeSteps_-1; timeStep++) {
                 //std::cout << " ==== TIMESTEP ===== " << timeStep << std::endl;
 
                 for (j = 0; j < numAssets; j++) {
-                    assetPrices[j] = multiAssetPaths[i][j][timeStep];                    
+                    assetPrices[j] = multiAssetPaths[i][j][timeStep];
                 }
-                
+
                 exerciseValue = payoff(basketPayoff(
                         arguments_.basketType, assetPrices));
-                
+
                 if (exerciseValue > 0.0) {
                     Array b = basisCoeffs[timeStep];
                     //std::cout << " [ ";
@@ -502,39 +543,39 @@ namespace QuantLib {
                     //    std::cout << bcoeff << " ";
                     //}
                     //std::cout << "] " << std::endl;
-                                       
+
                     for (j = 0; j < numAssets; j++) {
                         normalizedAssetPrices[j] = assetPrices[j] / strike;
                     }
-                
+
                     // sort - ascending order
                     std::sort(normalizedAssetPrices.begin(), 
                                 normalizedAssetPrices.end());
 
-                    continueValue = 0.0;                    
-                    for (k = 0; k < numBasisFunctions; k++) {                        
+                    continueValue = 0.0;
+                    for (k = 0; k < numBasisFunctions; k++) {
                         continueValue =+ b[k]*(basisFunctions[k]->
                                 calculate(normalizedAssetPrices));
                     }
                     continueValue = continueValue * strike;
-                    
+
                     if (exerciseValue >= continueValue) {
                         // discount              
                         // time grid, so +1
                         Time to = grid[timeStep+1];
                         value = exerciseValue * arguments_.blackScholesProcesses[0]
-                                    ->riskFreeTS->discount(to);                    
+                                    ->riskFreeTS->discount(to);
                         stats.add(value);
                         exercised = true;
                         break;
                     }
                 }
-                
+
             }
             if (!exercised) {
                 for (j = 0; j < numAssets; j++) {
-                    assetPrices[j] = multiAssetPaths[i][j][timeSteps_-1];  
-                }                
+                    assetPrices[j] = multiAssetPaths[i][j][timeSteps_-1];
+                }
                 exerciseValue = payoff(basketPayoff(arguments_.basketType, assetPrices)) *
                         arguments_.blackScholesProcesses[0]->riskFreeTS->discount(
                             arguments_.exercise->lastDate());
@@ -543,7 +584,7 @@ namespace QuantLib {
         }
 
         results_.value  = stats.mean();
-        results_.errorEstimate = stats.errorEstimate();        
+        results_.errorEstimate = stats.errorEstimate();
     }
 
     // put all the asset prices into a vector.
