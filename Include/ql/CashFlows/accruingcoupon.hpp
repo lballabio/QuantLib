@@ -28,6 +28,10 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.4  2001/07/05 12:31:32  enri
+    - added some casts to prevent gcc warning
+    - added some virtual constructors (same reason)
+
     Revision 1.3  2001/07/02 12:36:18  sigmud
     pruned redundant header inclusions
 
@@ -62,11 +66,15 @@ namespace QuantLib {
                 const Handle<DayCounter>& dayCounter,
                 const Date& startDate, const Date& endDate,
                 const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date())
-            : calendar_(calendar), rollingConvention_(rollingConvention), 
-              dayCounter_(dayCounter), startDate_(startDate), 
-              endDate_(endDate), refPeriodStart_(refPeriodStart), 
-              refPeriodEnd_(refPeriodEnd) {}
+                const Date& refPeriodEnd = Date()) : 
+                startDate_(startDate), 
+                endDate_(endDate), 
+                refPeriodStart_(refPeriodStart), 
+                refPeriodEnd_(refPeriodEnd),
+                calendar_(calendar), 
+                rollingConvention_(rollingConvention), 
+                dayCounter_(dayCounter)
+                {}
             //! \name Partial CashFlow interface
             //@{
             Date date() const;
