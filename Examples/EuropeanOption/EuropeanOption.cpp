@@ -56,7 +56,7 @@ using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
 using QuantLib::MonteCarlo::MonteCarloModel;
 
 using QuantLib::MonteCarlo::EuropeanPathPricer;
-using QuantLib::MonteCarlo::UniformRandomGenerator;
+using QuantLib::RandomNumbers::UniformRandomGenerator;
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::FiniteDifferenceEuropean;
 

@@ -36,6 +36,8 @@
 
 namespace QuantLib {
 
+    //! Monte Carlo framework
+    /*! See sect. \ref mcarlo */
     namespace MonteCarlo {
 
         //! General purpose Monte Carlo model for path samples

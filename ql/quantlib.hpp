@@ -207,6 +207,7 @@ namespace QLMTH = QuantLib::Math;
 namespace QLMNT = QuantLib::MonteCarlo;
 namespace QLPAT = QuantLib::Patterns;
 namespace QLPRC = QuantLib::Pricers;
+namespace QLRNG = QuantLib::RandomNumbers;
 namespace QLS1D = QuantLib::Solvers1D;
 namespace QLTST = QuantLib::TermStructures;
 namespace QLUTL = QuantLib::Utilities;
