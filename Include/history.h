@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2000/12/20 15:19:56  lballabio
+	Removed History:: scopes not digestible by VC++
+
 	Revision 1.1  2000/12/18 18:37:34  lballabio
 	Added to CVS
-
+	
 */
 
 #ifndef quantlib_history_h
@@ -107,8 +110,8 @@ namespace QuantLib {
 		class const_valid_iterator;
 		//! single datum in history
 		class Entry {
-			friend class History::const_iterator;
-			friend class History::const_valid_iterator;
+			friend class const_iterator;
+			friend class const_valid_iterator;
 		  public:
 			const Date& date() const { return theDate; }
 			double value() const { return *theValue; }
@@ -119,18 +122,18 @@ namespace QuantLib {
 			std::vector<double>::const_iterator theValue;
 		};
 		//! const iterator on history entries
-		class const_iterator : public std::iterator<std::random_access_iterator_tag,History::Entry> {
+		class const_iterator : public std::iterator<std::random_access_iterator_tag,Entry> {
 			friend class History;
 		  public:
 			//! \name Dereferencing
 			//@{
-			const History::Entry& operator*() const { return theEntry; }
-			const History::Entry QL_PTR_CONST operator->() const { return &theEntry; }
+			const Entry& operator*() const { return theEntry; }
+			const Entry QL_PTR_CONST operator->() const { return &theEntry; }
 			//@}
 			//! \name Random access
 			//@{
-			History::Entry operator[](int i) const {
-				return History::Entry(theEntry.theDate+i,theEntry.theValue+i);
+			Entry operator[](int i) const {
+				return Entry(theEntry.theDate+i,theEntry.theValue+i);
 			}
 			//@}
 			//! \name Increment and decrement
@@ -184,17 +187,17 @@ namespace QuantLib {
 		  private:
 			const_iterator(const Date& d, const std::vector<double>::const_iterator& v)
 			: theEntry(d,v) {}
-			History::Entry theEntry;
+			Entry theEntry;
 		};
 		
 		//! const iterator on non-null history entries
-		class const_valid_iterator : public std::iterator<std::bidirectional_iterator_tag,History::Entry> {
+		class const_valid_iterator : public std::iterator<std::bidirectional_iterator_tag,Entry> {
 			friend class History;
 		  public:
 			//! \name Dereferencing
 			//@{
-			const History::Entry& operator*() const { return theEntry; }
-			const History::Entry QL_PTR_CONST operator->() const { return &theEntry; }
+			const Entry& operator*() const { return theEntry; }
+			const Entry QL_PTR_CONST operator->() const { return &theEntry; }
 			//@}
 			//! \name Increment and decrement
 			//@{
@@ -239,7 +242,7 @@ namespace QuantLib {
 				}
 			}
 			std::vector<double>::const_iterator beforeBegin, end;
-			History::Entry theEntry;
+			Entry theEntry;
 		};
 
 		typedef std::vector<double>::const_iterator const_data_iterator;
