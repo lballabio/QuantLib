@@ -42,35 +42,37 @@ namespace QuantLib {
             operator Date() const;
         };
       public:
-        //! \name Evaluation date
-        //@{
-        //! the date at which pricing is to be performed
-        /*! If not set, the current date will be used.
-            \note setting the evaluation date to the null date will
-                  actually cause it to be set to today's date.
+        //! the date at which pricing is to be performed.
+        /*! Client code can inspect the evaluation date, as in:
+            \code
+            Date d = Settings::instance().evaluationDate();
+            \endcode
+            where today's date is returned if the evaluation date is
+            set to the null date (its default value;) can set it to a
+            new value, as in:
+            \code
+            Settings::instance().evaluationDate() = d;
+            \endcode
+            and can register with it, as in:
+            \code
+            registerWith(Settings::instance().evaluationDate());
+            \endcode
+            to be notified when it is set to a new value.
+            \warning a notification is not sent when the evaluation
+                     date changes for natural causes---i.e., a date
+                     was not explicitly set (which results in today's
+                     date being used for pricing) and the current date
+                     changes as the clock strikes midnight.
         */
         DateProxy& evaluationDate();
+        const DateProxy& evaluationDate() const;
         #ifndef QL_DISABLE_DEPRECATED
-        //! change the evaluation date and notify registered instruments
-        /*! \note settings the evaluation date to the null date will
-                  cause evaluationDate() to return today's date.
-            \deprecated assign the new value to evaluationDate() instead
-        */
+        /*! \deprecated assign the new value to evaluationDate() instead */
         void setEvaluationDate(const Date&);
-        //! observable sending notification when the evaluation date changes
-        /*! \warning this observable does not send a notification when
-                     the evaluation date changes for natural
-                     causes---i.e., a date was not explicitly set
-                     (which results in today's date being used for
-                     pricing) and the current date changes as the
-                     clock strikes midnight.
-            \deprecated register with evaluationDate() instead
-        */
+        /*! \deprecated register with evaluationDate() instead */
         boost::shared_ptr<Observable> evaluationDateGuard() const;
-        //@}
         #endif
       private:
-        // evaluation date
         DateProxy evaluationDate_;
     };
 
@@ -78,6 +80,10 @@ namespace QuantLib {
     // inline definitions
 
     inline Settings::DateProxy& Settings::evaluationDate() {
+        return evaluationDate_;
+    }
+
+    inline const Settings::DateProxy& Settings::evaluationDate() const {
         return evaluationDate_;
     }
 
