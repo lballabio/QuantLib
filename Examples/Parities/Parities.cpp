@@ -27,6 +27,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/07/15 08:34:53  nando
+// feedback to Maxim's example
+//
 // Revision 1.1  2001/07/15 00:12:55  dzuki
 // Added "Parities" example
 //
@@ -63,7 +66,8 @@ public:
 			<<"\t Volatility = "<<sigma_;
 		cout<<"\n";
 
-		printResult("Using call-put parity", europeanPutFormula() + s0_ - strike_*QL_EXP(- r_*maturity_));
+		printResult("Using call-put parity", europeanPutFormula() +
+		    s0_ - strike_*QL_EXP(- r_*maturity_));
 		printResult("Monte-Carlo method", europeanCallMC());
 		printResult("FiniteDifference method", eropeanCallFD());
 	}
@@ -87,18 +91,19 @@ protected:
 		//  BSMEuropeanOption(Type type, double underlying, double strike,
         //                Rate dividendYield, Rate riskFreeRate,
         //                Time residualTime, double volatility)
-            
-		return BSMEuropeanOption(Option::Call, s0_, strike_, 0.0, 
-			r_, maturity_, sigma_).value(); 
+
+		return BSMEuropeanOption(Option::Call, s0_, strike_, 0.0,
+			r_, maturity_, sigma_).value();
 	}
 
 	double europeanPutFormula()
 	{
-		return BSMEuropeanOption(Option::Put, s0_, strike_, 0.0, 
-			r_, maturity_, sigma_).value(); 
+		return BSMEuropeanOption(Option::Put, s0_, strike_, 0.0,
+			r_, maturity_, sigma_).value();
 	}
 
-	double europeanCallMC(int nTimeSteps = 100, int nSamples = 100000) // MonteCarlo
+    // MonteCarlo
+	double europeanCallMC(int nTimeSteps = 100, int nSamples = 100000)
 	{
 			double tau = maturity_ / nTimeSteps;
 			double sigma = sigma_* sqrt(tau);
@@ -106,7 +111,10 @@ protected:
 			Math::Statistics samples;
 
 		return OneFactorMonteCarloOption(
-					Handle<StandardPathGenerator>( new StandardPathGenerator(nTimeSteps, mean, sigma*sigma)),
+					Handle<StandardPathGenerator>(
+					    new StandardPathGenerator(nTimeSteps,
+					                              mean,
+					                              sigma*sigma)),
 					Handle<PathPricer>(new EuropeanPathPricer(
 						Option::Type::Call,
 						s0_, strike_, exp(-r_*maturity_))),
@@ -117,17 +125,17 @@ protected:
 	}
 	double eropeanCallFD(int gridPoints = 100)  // Finite differences
 	{
-		return FiniteDifferenceEuropean(Option::Call, s0_, strike_, 0.0, 
-			r_, maturity_, sigma_, 100).value(); 
+		return FiniteDifferenceEuropean(Option::Call, s0_, strike_, 0.0,
+			r_, maturity_, sigma_, 100).value();
 	}
 
 private:
 	double standardValue_;
 
-	double	s0_; 
+	double	s0_;
 	double	strike_;
 	Time	maturity_;
-	double	sigma_; 
+	double	sigma_;
 	Rate	r_;
 };
 

@@ -3,7 +3,7 @@ Many thanks to the QuantLib contributors:
 Christopher Baus
 Thomas Becker
 David Binderman
+Matteo Gallivanoni
 Gilbert Peffer
-Maxim Sokolov <maxim_sokolov@rambler.ru>
 Peter Schmitteckert
 Bernd Johannes Wuebben

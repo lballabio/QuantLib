@@ -4,7 +4,8 @@ RiskMap (info@riskmap.net) - main sponsor
 Ferdinando Ametrano (ferdinando@ametrano.net) - admin
 
 Mario Aleppo (mario.aleppo@riskmap.net)
-Luigi Ballabio (luigi.ballabio@riskmap.net)
+Luigi Ballabio (luigi.ballabio@riskmap.net) (design)
 Adolfo Benin (adolfo.benin@riskmap.net)
-Marco Marchioro (marco.marchioro@riskmap.net)
+Marco Marchioro (marco.marchioro@riskmap.net) (finite difference, montecarlo)
 Enrico Sirola (enrico.sirala@riskmap.net)
+Maxim Sokolov <maxim_sokolov@rambler.ru> (examples)

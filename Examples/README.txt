@@ -1,3 +1,3 @@
 
-this folder (will) includes examples on how to use QuantLib
+this folder includes examples on how to use QuantLib
 
