@@ -46,7 +46,12 @@ namespace QuantLib {
         QL_REQUIRE(arguments != 0, "wrong argument type");
 
         Date settlement = termStructure_->referenceDate();
+        /// ??? ///
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter counter = termStructure_->dayCounter();
+        #else
+        DayCounter counter = Settings::instance().dayCounter();
+        #endif
 
         // volatilities are calculated for zero-spreaded swaps.
         // Therefore, the spread on the floating leg is removed

@@ -62,9 +62,13 @@ namespace QuantLib {
             results_.delta = pricer.delta();
             results_.gamma = pricer.gamma();
 
-            Time t = process->riskFreeRate()->dayCounter().yearFraction(
-                                     process->riskFreeRate()->referenceDate(),
-                                     arguments_.exercise->lastDate());
+            #ifndef QL_DISABLE_DEPRECATED
+            DayCounter rfdc = process->riskFreeRate()->dayCounter();
+            #else
+            DayCounter rfdc = Settings::instance().dayCounter();
+            #endif
+            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+                                       arguments_.exercise->lastDate());
             results_.rho = pricer.rho(t);
         }
     }

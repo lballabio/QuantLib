@@ -54,6 +54,10 @@ namespace QuantLib {
         SwaptionVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~SwaptionVolatilityStructure() {}
+        #ifdef QL_DISABLE_DEPRECATED
+        //! the day counter used for date/time conversion
+        virtual DayCounter dayCounter() const = 0;
+        #endif
         //! \name Volatility
         //@{
         //! returns the volatility for a given starting date and length

@@ -112,11 +112,19 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCBasketEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.blackScholesProcesses[0]->riskFreeRate()
-            ->dayCounter().yearFraction(
-                arguments_.blackScholesProcesses[0]
-                    ->riskFreeRate()->referenceDate(),
-                arguments_.exercise->lastDate());
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            this->arguments_.blackScholesProcesses[0];
+
+        Date refDate = process->riskFreeRate()->referenceDate();
+        Date lastExerciseDate = this->arguments_.exercise->lastDate();
+
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        #endif
+
+        Time t = rfdc.yearFraction(refDate, lastExerciseDate);
 
         return TimeGrid(t, maxTimeStepsPerYear_);
     }

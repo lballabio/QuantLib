@@ -26,6 +26,7 @@
 #include <ql/Patterns/singleton.hpp>
 #include <ql/Patterns/observable.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
+#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -75,7 +76,7 @@ namespace QuantLib {
 
     inline void Settings::initialize() {
         evaluationDateGuard_ = boost::shared_ptr<Observable>(new Observable);
-        dc_ = Actual365Fixed();
+        dc_ = Actual360();
     }
 
     inline Date Settings::evaluationDate() const {

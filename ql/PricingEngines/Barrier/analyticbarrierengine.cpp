@@ -107,15 +107,24 @@ namespace QuantLib {
     }
 
     Time AnalyticBarrierEngine::residualTime() const {
-        return arguments_.blackScholesProcess
-            ->riskFreeRate()->dayCounter().yearFraction(
-              arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
-              arguments_.exercise->lastDate());
+        const boost::shared_ptr<BlackScholesProcess>& process = 
+            this->arguments_.blackScholesProcess;
+
+        Date refDate = process->riskFreeRate()->referenceDate();
+        Date lastExerciseDate = this->arguments_.exercise->lastDate();
+
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        #endif
+        return rfdc.yearFraction(refDate, lastExerciseDate);
     }
 
     Volatility AnalyticBarrierEngine::volatility() const {
-        return arguments_.blackScholesProcess->blackVolatility()->blackVol(
-                                                    residualTime(), strike());
+        const boost::shared_ptr<BlackScholesProcess>& process = 
+            arguments_.blackScholesProcess;
+        return process->blackVolatility()->blackVol(residualTime(), strike());
     }
 
     Real AnalyticBarrierEngine::stdDeviation() const {

@@ -53,42 +53,42 @@ namespace QuantLib {
     template <class T>
     void BinomialVanillaEngine<T>::calculate() const {
 
-        Real s0 = arguments_.blackScholesProcess->stateVariable()->value();
-        Volatility v =
-            arguments_.blackScholesProcess->blackVolatility()->blackVol(
-                                         arguments_.exercise->lastDate(), s0);
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            this->arguments_.blackScholesProcess;
+
+        Real s0 = process->stateVariable()->value();
+        Volatility v = process->blackVolatility()->blackVol(
+            arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
-        Rate r = arguments_.blackScholesProcess->riskFreeRate()
-            ->zeroYield(maturityDate);
-        Rate q = arguments_.blackScholesProcess->dividendYield()
-            ->zeroYield(maturityDate);
-        Date referenceDate =
-            arguments_.blackScholesProcess->riskFreeRate()->referenceDate();
-        DayCounter dc =
-            arguments_.blackScholesProcess->riskFreeRate()->dayCounter();
+        Rate r = process->riskFreeRate()->zeroYield(maturityDate);
+        Rate q = process->dividendYield()->zeroYield(maturityDate);
+        Date referenceDate = process->riskFreeRate()->referenceDate();
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        #endif
 
         // binomial trees with constant coefficient
         Handle<YieldTermStructure> flatRiskFree(
             boost::shared_ptr<YieldTermStructure>(
-                new FlatForward(referenceDate, r, dc)));
+                new FlatForward(referenceDate, r, rfdc)));
         Handle<YieldTermStructure> flatDividends(
             boost::shared_ptr<YieldTermStructure>(
-                new FlatForward(referenceDate, q, dc)));
+                new FlatForward(referenceDate, q, rfdc)));
         Handle<BlackVolTermStructure> flatVol(
             boost::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(referenceDate, v, dc)));
+                new BlackConstantVol(referenceDate, v, rfdc)));
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        Time maturity = arguments_.blackScholesProcess->riskFreeRate()
-            ->dayCounter().yearFraction(referenceDate, maturityDate);
+        Time maturity = rfdc.yearFraction(referenceDate, maturityDate);
 
-        boost::shared_ptr<StochasticProcess> bs(
-            new BlackScholesProcess(
-               Handle<Quote>(arguments_.blackScholesProcess->stateVariable()),
-                   flatDividends, flatRiskFree, flatVol));
+        boost::shared_ptr<StochasticProcess> bs(new
+            BlackScholesProcess(Handle<Quote>(process->stateVariable()),
+                                flatDividends, flatRiskFree, flatVol));
         boost::shared_ptr<Tree> tree(new T(bs, maturity, timeSteps_,
                                            payoff->strike()));
 

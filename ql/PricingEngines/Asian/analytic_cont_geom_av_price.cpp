@@ -34,7 +34,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<BlackScholesProcess> process =
+        const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
 
 
@@ -51,8 +51,15 @@ namespace QuantLib {
                    process->dividendYield()->zeroYield(exercise) +
                    volatility*volatility/6.0);
 
-        Time t_q = process->dividendYield()->dayCounter().yearFraction(
-                         process->dividendYield()->referenceDate(), exercise);
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        DayCounter divdc = process->dividendYield()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        DayCounter divdc = Settings::instance().dayCounter();
+        #endif
+        Time t_q = divdc.yearFraction(
+            process->dividendYield()->referenceDate(), exercise);
         DiscountFactor dividendDiscount = QL_EXP(-dividendYield*t_q);
 
         Real spot = process->stateVariable()->value();
@@ -66,8 +73,7 @@ namespace QuantLib {
 
         results_.dividendRho = black.dividendRho(t_q)/2.0;
 
-        Time t_r = process->riskFreeRate()->dayCounter().yearFraction(
-                                     process->riskFreeRate()->referenceDate(),
+        Time t_r = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
                                      arguments_.exercise->lastDate());
         results_.rho = black.rho(t_r) + 0.5 * black.dividendRho(t_q);
 

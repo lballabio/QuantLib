@@ -171,15 +171,21 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
 
-        Date refDate = this->arguments_.blackScholesProcess->
-            riskFreeRate()->referenceDate();
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            this->arguments_.blackScholesProcess;
 
-        Time t = this->arguments_.blackScholesProcess->riskFreeRate()
-            ->dayCounter().yearFraction(
-              refDate, this->arguments_.exercise->lastDate());
+        Date refDate = process->riskFreeRate()->referenceDate();
+        Date lastExerciseDate = this->arguments_.exercise->lastDate();
+
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        #endif
+        Time t = rfdc.yearFraction(refDate, lastExerciseDate);
 
         TimeGridCalculator calc(t, this->maxTimeStepsPerYear_);
-        this->arguments_.blackScholesProcess->blackVolatility()->accept(calc);
+        process->blackVolatility()->accept(calc);
         return TimeGrid(t, calc.size());
     }
 

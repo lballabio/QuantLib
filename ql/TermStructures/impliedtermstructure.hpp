@@ -55,7 +55,9 @@ namespace QuantLib {
                              const Date& referenceDate);
         //! \name YieldTermStructure interface
         //@{
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return originalCurve_->dayCounter(); }
+        #endif
         Calendar calendar() const;
         Date maxDate() const;
         //@}
@@ -100,8 +102,13 @@ namespace QuantLib {
            and needs to be converted to the time relative
            to the reference date of the original curve */
         Date ref = referenceDate();
-        Time originalTime =
-            t + dayCounter().yearFraction(originalCurve_->referenceDate(),ref);
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter dc = dayCounter();
+        #else
+        DayCounter dc = Settings::instance().dayCounter();
+        #endif
+        Time originalTime = t + dc.yearFraction(
+            originalCurve_->referenceDate(), ref);
         /* discount at evaluation date cannot be cached
            since the original curve could change between
            invocations of this method */

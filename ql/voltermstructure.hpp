@@ -63,6 +63,10 @@ namespace QuantLib {
         BlackVolTermStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~BlackVolTermStructure() {}
+        #ifdef QL_DISABLE_DEPRECATED
+        //! the day counter used for date/time conversion
+        virtual DayCounter dayCounter() const = 0;
+        #endif
         //! \name Black Volatility
         //@{
         //! present (a.k.a spot) volatility
@@ -254,6 +258,10 @@ namespace QuantLib {
         LocalVolTermStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~LocalVolTermStructure() {}
+        #ifdef QL_DISABLE_DEPRECATED
+        //! the day counter used for date/time conversion
+        virtual DayCounter dayCounter() const = 0;
+        #endif
         //! \name Local Volatility
         //@{
         Volatility localVol(const Date& d,

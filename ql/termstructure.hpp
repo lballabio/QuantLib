@@ -73,6 +73,10 @@ namespace QuantLib {
         YieldTermStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~YieldTermStructure() {}
+        #ifndef QL_DISABLE_DEPRECATED
+        //! the day counter used for date/time conversion
+        virtual DayCounter dayCounter() const = 0;
+        #endif
         /*! \name Rates and discount
 
             These methods are either function of dates or times.

@@ -147,7 +147,7 @@ namespace QuantLib {
             }
             discountCurve_ = boost::shared_ptr<DiscountCurve>(
                      new ExtendedDiscountCurve(dates_, discounts,
-                                               calendar_, conv_, dayCounter_));
+                                               calendar_, conv_));
         }
         catch (std::exception& ) {
             // signal incomplete state

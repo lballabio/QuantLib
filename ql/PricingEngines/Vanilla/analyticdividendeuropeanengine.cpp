@@ -66,11 +66,16 @@ namespace QuantLib {
                                   arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
 
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        #endif
         Real delta_theta = 0.0, delta_rho = 0.0;
         for (i = 0; i < arguments_.dividends.size(); i++) {
             Date d = arguments_.dividendDates[i];
-            Time t = process->riskFreeRate()->dayCounter().yearFraction(
-                                 process->riskFreeRate()->referenceDate(), d);
+            Time t = rfdc.yearFraction(
+                process->riskFreeRate()->referenceDate(), d);
             if (d >= settlementDate) {
                 delta_theta -= arguments_.dividends[i] * 
                                process->riskFreeRate()->zeroYield(d) * 
@@ -79,9 +84,8 @@ namespace QuantLib {
                              process->riskFreeRate()->discount(t);
             }
         }
-        t = process->riskFreeRate()->dayCounter().yearFraction(
-                                     process->riskFreeRate()->referenceDate(),
-                                     arguments_.exercise->lastDate());
+        t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+                              arguments_.exercise->lastDate());
         try {
             results_.theta = black.theta(spot, t) +
                              delta_theta * black.delta(spot);

@@ -134,16 +134,16 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        Real variance = 
-            arguments_.blackScholesProcess->blackVolatility()->blackVariance(
-                                            ex->lastDate(), payoff->strike());
-        DiscountFactor dividendDiscount =
-            arguments_.blackScholesProcess->dividendYield()->discount(
-                                                              ex->lastDate());
-        DiscountFactor riskFreeDiscount =
-            arguments_.blackScholesProcess->riskFreeRate()->discount(
-                                                              ex->lastDate());
-        Real spot = arguments_.blackScholesProcess->stateVariable()->value();
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            arguments_.blackScholesProcess;
+
+        Real variance = process->blackVolatility()->blackVariance(
+            ex->lastDate(), payoff->strike());
+        DiscountFactor dividendDiscount = process->dividendYield()->discount(
+            ex->lastDate());
+        DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
+            ex->lastDate());
+        Real spot = process->stateVariable()->value();
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
@@ -155,23 +155,24 @@ namespace QuantLib {
             results_.elasticity   = black.elasticity(spot);
             results_.gamma        = black.gamma(spot);
 
-            Time t =
-                arguments_.blackScholesProcess->riskFreeRate()
-                ->dayCounter().yearFraction(arguments_.blackScholesProcess
-                                            ->riskFreeRate()->referenceDate(),
-                                            arguments_.exercise->lastDate());
+            #ifndef QL_DISABLE_DEPRECATED
+            DayCounter rfdc = process->riskFreeRate()->dayCounter();
+            DayCounter divdc = process->dividendYield()->dayCounter();
+            #else
+            DayCounter rfdc = Settings::instance().dayCounter();
+            DayCounter divdc = Settings::instance().dayCounter();
+            #endif
+            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+                                       arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
 
-            t = arguments_.blackScholesProcess->dividendYield()
-                ->dayCounter().yearFraction(arguments_.blackScholesProcess
-                                            ->dividendYield()->referenceDate(),
-                                            arguments_.exercise->lastDate());
+            t = divdc.yearFraction(process->dividendYield()->referenceDate(),
+                                   arguments_.exercise->lastDate());
             results_.dividendRho = black.dividendRho(t);
 
-            t = arguments_.blackScholesProcess->blackVolatility()
-                ->dayCounter().yearFraction(arguments_.blackScholesProcess
-                                         ->blackVolatility()->referenceDate(),
-                                            arguments_.exercise->lastDate());
+            t = process->blackVolatility()->dayCounter().yearFraction(
+                    process->blackVolatility()->referenceDate(),
+                    arguments_.exercise->lastDate());
             results_.vega        = black.vega(t);
             results_.theta       = black.theta(spot, t);
             results_.thetaPerDay = black.thetaPerDay(spot, t);

@@ -44,7 +44,9 @@ namespace QuantLib {
                   const std::vector<Rate>& yields,
                   const DayCounter& dayCounter = Actual365Fixed());
         // inspectors
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
+        #endif
         Calendar calendar() const;
         const std::vector<Date>& dates() const;
         Date maxDate() const;

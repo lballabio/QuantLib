@@ -53,14 +53,19 @@ namespace QuantLib {
         results_.elasticity = black.elasticity(spot);
         results_.gamma = black.gamma(spot);
 
-        Time t = process->riskFreeRate()->dayCounter().yearFraction(
-                                     process->riskFreeRate()->referenceDate(),
-                                     arguments_.exercise->lastDate());
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        DayCounter divdc = process->dividendYield()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        DayCounter divdc = Settings::instance().dayCounter();
+        #endif
+        Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+                                   arguments_.exercise->lastDate());
         results_.rho = black.rho(t);
 
-        t = process->dividendYield()->dayCounter().yearFraction(
-                                    process->dividendYield()->referenceDate(),
-                                    arguments_.exercise->lastDate());
+        t = divdc.yearFraction(process->dividendYield()->referenceDate(),
+                               arguments_.exercise->lastDate());
         results_.dividendRho = black.dividendRho(t);
 
         t = process->blackVolatility()->dayCounter().yearFraction(

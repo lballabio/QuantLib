@@ -82,7 +82,12 @@ namespace QuantLib {
         arguments->currentFloatingCoupon = Null<Real>();
 
         Date settlement = termStructure_->referenceDate();
+        /// ??? ///
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter counter = termStructure_->dayCounter();
+        #else
+        DayCounter counter = Settings::instance().dayCounter();
+        #endif
         Size i;
 
         const std::vector<boost::shared_ptr<CashFlow> >& fixedCoupons =

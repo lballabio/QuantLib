@@ -38,8 +38,8 @@ namespace QuantLib {
             #if !defined(QL_NEGATIVE_RATES)
             QL_REQUIRE(yields_[i] >= 0.0, "invalid yield");
             #endif
-            times_[i] = dayCounter_.yearFraction(dates_[0],
-                                                 dates_[i]);
+            times_[i] = dayCounter.yearFraction(dates_[0],
+                                                dates_[i]);
         }
 
         interpolation_ = LinearInterpolation(times_.begin(), times_.end(),
@@ -50,8 +50,11 @@ namespace QuantLib {
     ZeroCurve::ZeroCurve(const std::vector<Date>& dates,
                          const std::vector<Rate>& yields,
                          const DayCounter& dayCounter)
-    : ZeroYieldStructure(dates[0]), dates_(dates), yields_(yields),
-      dayCounter_(dayCounter) {
+    : ZeroYieldStructure(dates[0]), dates_(dates), yields_(yields)
+      #ifndef QL_DISABLE_DEPRECATED
+      , dayCounter_(Settings::instance().dayCounter())
+      #endif
+    {
 
         QL_REQUIRE(dates_.size()>1, "too few dates");
         QL_REQUIRE(yields_.size()==dates_.size(),
@@ -64,8 +67,8 @@ namespace QuantLib {
             #if !defined(QL_NEGATIVE_RATES)
             QL_REQUIRE(yields_[i] >= 0.0, "invalid yield");
             #endif
-            times_[i] = dayCounter_.yearFraction(dates_[0],
-                                                 dates_[i]);
+            times_[i] = dayCounter.yearFraction(dates_[0],
+                                                dates_[i]);
         }
 
         interpolation_ = LinearInterpolation(times_.begin(), times_.end(),

@@ -71,7 +71,7 @@ namespace QuantLib {
         discounts_[0]=1.0;
         zeroYields_[0]=forwards_[0];
         for (Size i=1; i<dates_.size(); i++) {
-            times_[i] = dayCounter_.yearFraction(referenceDate(),
+            times_[i] = dayCounter.yearFraction(referenceDate(),
                                                  dates_[i]);
             zeroYields_[i] = (forwards_[i]*(times_[i]-times_[i-1])+
                               zeroYields_[i-1]*times_[i-1])/times_[i];
@@ -85,8 +85,11 @@ namespace QuantLib {
     PiecewiseFlatForward::PiecewiseFlatForward(
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter, Real accuracy)
-    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
+               Real accuracy)
+    : YieldTermStructure(referenceDate),
+      #ifndef QL_DISABLE_DEPRECATED
+      dayCounter_(Settings::instance().dayCounter()),
+      #endif
       instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
@@ -94,8 +97,11 @@ namespace QuantLib {
     PiecewiseFlatForward::PiecewiseFlatForward(
                Integer settlementDays, const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter, Real accuracy)
-    : YieldTermStructure(settlementDays, calendar), dayCounter_(dayCounter),
+               Real accuracy)
+    : YieldTermStructure(settlementDays, calendar),
+      #ifndef QL_DISABLE_DEPRECATED
+      dayCounter_(Settings::instance().dayCounter()),
+      #endif
       instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
@@ -104,7 +110,10 @@ namespace QuantLib {
                                            const std::vector<Date>& dates,
                                            const std::vector<Rate>& forwards,
                                            const DayCounter& dayCounter)
-    : YieldTermStructure(dates[0]), dayCounter_(dayCounter),
+    : YieldTermStructure(dates[0]),
+      #ifndef QL_DISABLE_DEPRECATED
+      dayCounter_(Settings::instance().dayCounter()),
+      #endif
       times_(dates.size()), dates_(dates), discounts_(dates.size()),
       forwards_(forwards), zeroYields_(dates.size()) {
 
@@ -116,8 +125,8 @@ namespace QuantLib {
         discounts_[0]=1.0;
         zeroYields_[0]=forwards_[0];
         for (Size i=1; i<dates_.size(); i++) {
-            times_[i] = dayCounter_.yearFraction(referenceDate(),
-                                                 dates_[i]);
+            times_[i] = dayCounter.yearFraction(referenceDate(),
+                                                dates_[i]);
             zeroYields_[i] = (forwards_[i]*(times_[i]-times_[i-1])+
                               zeroYields_[i-1]*times_[i-1])/times_[i];
             discounts_[i] = QL_EXP(-zeroYields_[i]*times_[i]);
@@ -263,8 +272,14 @@ namespace QuantLib {
     : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
         // extend curve to next point
         curve_->dates_.push_back(rateHelper_->latestDate());
-        curve_->times_.push_back(curve_->dayCounter().yearFraction(
-                              curve_->referenceDate(),curve_->dates_.back()));
+        /// ??? ///
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter dc = curve_->dayCounter();
+        #else
+        DayCounter dc = Settings::instance().dayCounter();
+        #endif
+        curve_->times_.push_back(dc.yearFraction(curve_->referenceDate(),
+                                                 curve_->dates_.back()));
         if (segment_ == 1) {
             // add dummy values at reference
             curve_->forwards_.push_back(0.0);

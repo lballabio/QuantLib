@@ -62,7 +62,9 @@ namespace QuantLib {
                         const DayCounter& dayCounter);
         Calendar calendar() const { return calendar_; }
         BusinessDayConvention businessDayConvention() const { return conv_; }
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
+        #endif
         Integer compounding() const { return compounding_; }
         Date maxDate() const;
         Time maxTime() const;

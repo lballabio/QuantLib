@@ -397,11 +397,15 @@ namespace QuantLib {
         Size numBasisFunctions = basisFunctions.size();
 
         // create the time grid
-        Time T = arguments_.blackScholesProcesses[0]->riskFreeRate()->
-                    dayCounter().yearFraction( 
-                        arguments_.blackScholesProcesses[0]->
-                            riskFreeRate()->referenceDate(),
-                        arguments_.exercise->lastDate());
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            arguments_.blackScholesProcesses[0];
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        #endif
+        Time T = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
+                                   arguments_.exercise->lastDate());
         TimeGrid grid(T, timeSteps_);
 
         // create a Gaussian Random Sequence Generator

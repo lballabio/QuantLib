@@ -160,10 +160,18 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.blackScholesProcess->riskFreeRate()
-            ->dayCounter().yearFraction(
-              arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
-              arguments_.exercise->lastDate());
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            this->arguments_.blackScholesProcess;
+
+        Date refDate = process->riskFreeRate()->referenceDate();
+        Date lastExerciseDate = this->arguments_.exercise->lastDate();
+
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter rfdc = Settings::instance().dayCounter();
+        #endif
+        Time t = rfdc.yearFraction(refDate, lastExerciseDate);
 
         return TimeGrid(t, Size(QL_MAX<Real>(t * maxTimeStepsPerYear_, 1.0)));
     }

@@ -88,8 +88,8 @@ namespace {
                                              Annual, Unadjusted, Thirty360(),
                                              Semiannual, ModifiedFollowing));
         }
-        termStructure_ = boost::shared_ptr<YieldTermStructure>(
-                new PiecewiseFlatForward(settlement,instruments,Actual360()));
+        termStructure_ = boost::shared_ptr<YieldTermStructure>(new
+            PiecewiseFlatForward(settlement, instruments));
     }
 
     void teardown() {

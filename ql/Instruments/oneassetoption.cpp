@@ -135,10 +135,13 @@ namespace QuantLib {
         // shouldn't be here
         // it should be moved elsewhere
         arguments->stoppingTimes.clear();
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter dc = blackScholesProcess_->riskFreeRate()->dayCounter();
+        #else
+        DayCounter dc = Settings::instance().dayCounter();
+        #endif
         for (Size i=0; i<exercise_->dates().size(); i++) {
-            Time time =
-                blackScholesProcess_->riskFreeRate()
-                ->dayCounter().yearFraction(
+            Time time = dc.yearFraction(
                        blackScholesProcess_->riskFreeRate()->referenceDate(),
                        exercise_->date(i));
             arguments->stoppingTimes.push_back(time);

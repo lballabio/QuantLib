@@ -132,7 +132,7 @@ namespace {
 
         // instantiate curve
         termStructure = boost::shared_ptr<YieldTermStructure>(
-                new PiecewiseFlatForward(settlement,instruments,Actual360()));
+                new PiecewiseFlatForward(settlement,instruments));
 
     }
 
@@ -208,9 +208,8 @@ void PiecewiseFlatForwardTest::testObservability() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    termStructure = boost::shared_ptr<YieldTermStructure>(
-                          new PiecewiseFlatForward(settlementDays,calendar,
-                                                   instruments,Actual360()));
+    termStructure = boost::shared_ptr<YieldTermStructure>(new
+        PiecewiseFlatForward(settlementDays, calendar, instruments));
 
     Flag f;
     f.registerWith(termStructure);

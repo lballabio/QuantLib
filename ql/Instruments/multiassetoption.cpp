@@ -100,14 +100,17 @@ namespace QuantLib {
         //
         // just take the times from the first blackScholesProcess....
         // Hmmmmm, not a very nice solution
-        boost::shared_ptr<BlackScholesProcess> blackScholesProcess =
+        const boost::shared_ptr<BlackScholesProcess>& process =
             blackScholesProcesses_[0];
         arguments->stoppingTimes.clear();
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter dc = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter dc = Settings::instance().dayCounter();
+        #endif
         for (Size i=0; i<exercise_->dates().size(); i++) {
-            Time time = 
-                blackScholesProcess->riskFreeRate()->dayCounter().yearFraction(
-                        blackScholesProcess->riskFreeRate()->referenceDate(), 
-                        exercise_->date(i));
+            Time time = dc.yearFraction(
+                process->riskFreeRate()->referenceDate(), exercise_->date(i));
             arguments->stoppingTimes.push_back(time);
         }
 

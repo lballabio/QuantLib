@@ -46,8 +46,13 @@ namespace QuantLib {
 
 
     Real BPSBasketCalculator::sensfactor(const Date& date) const {
-        Time t = termStructure_->dayCounter().yearFraction(
-                                         termStructure_->referenceDate(),date);
+        /// ??? ///
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter dc = termStructure_->dayCounter();
+        #else
+        DayCounter dc = Settings::instance().dayCounter();
+        #endif
+        Time t = dc.yearFraction(termStructure_->referenceDate(),date);
         // Based on 1st derivative of zero coupon rate
         Rate r = termStructure_->zeroCoupon(date,basis_);
         return -QL_POW(1.0+r/basis_,-1.0-t*basis_)*t;

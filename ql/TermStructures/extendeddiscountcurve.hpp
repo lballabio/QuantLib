@@ -47,8 +47,7 @@ namespace QuantLib {
         ExtendedDiscountCurve(const std::vector<Date>& dates,
                               const std::vector<DiscountFactor>& dfs,
                               const Calendar& calendar,
-                              const BusinessDayConvention conv,
-                              const DayCounter& dayCounter = Actual365Fixed());
+                              const BusinessDayConvention conv);
         Calendar calendar() const { return calendar_; };
         BusinessDayConvention businessDayConvention() const {
             return conv_;

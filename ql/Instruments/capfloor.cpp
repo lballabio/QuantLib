@@ -74,7 +74,12 @@ namespace QuantLib {
 
         Date today = Settings::instance().evaluationDate();
         Date settlement = termStructure_->referenceDate();
+        /// ??? ///
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter counter = termStructure_->dayCounter();
+        #else
+        DayCounter counter = Settings::instance().dayCounter();
+        #endif
 
         for (Size i=0; i<floatingLeg_.size(); i++) {
             boost::shared_ptr<FloatingRateCoupon> coupon =

@@ -60,27 +60,25 @@ namespace QuantLib {
         #endif
         //! constructor using a fixed model
         AffineTermStructure(const Date& referenceDate,
-                            const boost::shared_ptr<AffineModel>& model,
-                            const DayCounter& dayCounter);
+                            const boost::shared_ptr<AffineModel>& model);
         //! constructor using a model that has to be calibrated
         AffineTermStructure(const Date& referenceDate,
                             const boost::shared_ptr<AffineModel>& model,
                             const std::vector<boost::shared_ptr<RateHelper> >&,
-                            const boost::shared_ptr<OptimizationMethod>&,
-                            const DayCounter& dayCounter);
+                            const boost::shared_ptr<OptimizationMethod>&);
         //! constructor using a fixed model
         AffineTermStructure(Integer settlementDays, const Calendar& calendar,
-                            const boost::shared_ptr<AffineModel>& model,
-                            const DayCounter& dayCounter);
+                            const boost::shared_ptr<AffineModel>& model);
         //! constructor using a model that has to be calibrated
         AffineTermStructure(Integer settlementDays, const Calendar& calendar,
                             const boost::shared_ptr<AffineModel>& model,
                             const std::vector<boost::shared_ptr<RateHelper> >&,
-                            const boost::shared_ptr<OptimizationMethod>&,
-                            const DayCounter& dayCounter);
+                            const boost::shared_ptr<OptimizationMethod>&);
 
         // inspectors
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
+        #endif
         Date maxDate() const;
         // observer interface
         void update();
@@ -90,9 +88,9 @@ namespace QuantLib {
         class CalibrationFunction;
 
         virtual void performCalculations() const;
-
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-
+        #endif
         boost::shared_ptr<AffineModel> model_;
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
         boost::shared_ptr<OptimizationMethod> method_;
