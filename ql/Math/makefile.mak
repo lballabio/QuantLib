@@ -13,6 +13,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = chisquaredistribution.obj$(_D) \
+       discrepancystatistics.obj$(_D) \
        errorfunction.obj$(_D) \
        gammadistribution.obj$(_D) \
        generalstatistics.obj$(_D) \
@@ -21,8 +22,8 @@ OBJS = chisquaredistribution.obj$(_D) \
        multivariateaccumulator.obj$(_D) \
        normaldistribution.obj$(_D) \
        primenumbers.obj$(_D) \
-       symmetricschurdecomposition.obj$(_D) \
-       svd.obj$(_D)
+       svd.obj$(_D) \
+       symmetricschurdecomposition.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
