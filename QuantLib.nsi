@@ -196,12 +196,14 @@ SectionIn 1 2
 
     SetOutPath $INSTDIR\Examples\HedgingError
     File /r "Examples\HedgingError\*.cpp"
+    File /r "Examples\HedgingError\*.dep"
     File /r "Examples\HedgingError\*.dsp"
     File /r "Examples\HedgingError\*.txt"
     File /r "Examples\HedgingError\*.mak"
 
     SetOutPath $INSTDIR\Examples\Parities
     File /r "Examples\Parities\*.cpp"
+    File /r "Examples\Parities\*.dep"
     File /r "Examples\Parities\*.dsp"
     File /r "Examples\Parities\*.txt"
     File /r "Examples\Parities\*.mak"
