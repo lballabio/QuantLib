@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.21  2001/05/07 10:51:34  marmar
+    Error message is now more clear
+
     Revision 1.20  2001/05/03 15:37:07  lballabio
     Added actual/actual
 
@@ -88,7 +91,7 @@ using QuantLib::DayCounters::Thirty360Italian;
         else if (s == "30/360i" || s == "30/360it")
             return new DayCounterHandle(new Thirty360Italian);
         else
-            throw Error("Unknown currency");
+            throw Error("Unknown day counter");
         QL_DUMMY_RETURN(new DayCounterHandle)
     }
     int dayCount(const Date& d1, const Date& d2) {
