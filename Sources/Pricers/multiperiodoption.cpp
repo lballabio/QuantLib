@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/04/03 17:05:33  marmar
+    Error messages are now more clear
+
     Revision 1.3  2001/03/21 11:31:55  marmar
     Main loop tranfered from method value to method calculate.
     Methods vega and rho belong now to class BSMOption
@@ -64,17 +67,14 @@ namespace QuantLib {
           riskFreeRate, residualTime, volatility, gridPoints) {
 
             if (dateNumber_ > 0){
-
-                QL_REQUIRE(dates_[0] > 0,
-                    "The dividend times must be positive");
-
+                QL_REQUIRE(dates_[0] > 0, "First date be positive");
                 QL_REQUIRE(dates_[dates_.size()-1] < residualTime,
-                    "The dividend times must be within the residual time");
+                    "dates must be within the residual time");
 
                 if (dateNumber_ > 0){
                     for (unsigned int j = 1; j < dateNumber_; j++)
                         QL_REQUIRE(dates_[j-1] < dates_[j],
-                            "Dividend dates must be in increasing order");
+                            "Dates must be in increasing order");
                 }
 
             }
