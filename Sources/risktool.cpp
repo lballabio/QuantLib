@@ -22,11 +22,14 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file risktools.cpp
+/*! \file risktool.cpp
     \brief risk tools
     
     $Source$
     $Log$
+    Revision 1.2  2001/01/15 13:55:16  lballabio
+    Fixed typo in documentation
+
     Revision 1.1  2001/01/12 17:30:04  nando
     added RiskTool.
     It offres VAR, shortfall, average shortfall methods.
