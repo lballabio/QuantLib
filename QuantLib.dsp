@@ -1247,6 +1247,10 @@ SOURCE=.\ql\Lattices\trinomialtree.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Lattices\twodimensionaltree.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Lattices\twodimensionaltree.hpp
 # End Source File
 # End Group

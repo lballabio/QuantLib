@@ -264,6 +264,8 @@ CLEAN :
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
 	-@erase "$(INTDIR)\trinomialtree.sbr"
+	-@erase "$(INTDIR)\twodimensionaltree.obj"
+	-@erase "$(INTDIR)\twodimensionaltree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -406,7 +408,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\twodimensionaltree.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -533,7 +536,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\twodimensionaltree.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -774,6 +778,8 @@ CLEAN :
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
 	-@erase "$(INTDIR)\trinomialtree.sbr"
+	-@erase "$(INTDIR)\twodimensionaltree.obj"
+	-@erase "$(INTDIR)\twodimensionaltree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -917,7 +923,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\twodimensionaltree.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1044,7 +1051,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\twodimensionaltree.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1285,6 +1293,8 @@ CLEAN :
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
 	-@erase "$(INTDIR)\trinomialtree.sbr"
+	-@erase "$(INTDIR)\twodimensionaltree.obj"
+	-@erase "$(INTDIR)\twodimensionaltree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -1427,7 +1437,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\twodimensionaltree.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1554,7 +1565,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\twodimensionaltree.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1795,6 +1807,8 @@ CLEAN :
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
 	-@erase "$(INTDIR)\trinomialtree.sbr"
+	-@erase "$(INTDIR)\twodimensionaltree.obj"
+	-@erase "$(INTDIR)\twodimensionaltree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -1938,7 +1952,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\twodimensionaltree.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2065,7 +2080,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\twodimensionaltree.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2700,6 +2716,12 @@ SOURCE=.\ql\Lattices\tree.cpp
 SOURCE=.\ql\Lattices\trinomialtree.cpp
 
 "$(INTDIR)\trinomialtree.obj"	"$(INTDIR)\trinomialtree.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\twodimensionaltree.cpp
+
+"$(INTDIR)\twodimensionaltree.obj"	"$(INTDIR)\twodimensionaltree.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
