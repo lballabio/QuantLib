@@ -20,7 +20,6 @@ OBJS = \
        fdbermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
        cliquetoption.obj$(_D) \
-       couponbondoption.obj$(_D) \
        discretegeometricapo.obj$(_D) \
        discretegeometricaso.obj$(_D) \
        fddividendshoutoption.obj$(_D) \
@@ -31,7 +30,6 @@ OBJS = \
        fddividendeuropeanoption.obj$(_D) \
        fddividendoption.obj$(_D) \
        fdeuropean.obj$(_D) \
-       fdeuropeanswaption.obj$(_D) \
        fdmultiperiodoption.obj$(_D) \
        fdstepconditionoption.obj$(_D) \
        mcbasket.obj$(_D) \
@@ -42,7 +40,8 @@ OBJS = \
        mchimalaya.obj$(_D) \
        mcmaxbasket.obj$(_D) \
        mcpagoda.obj$(_D) \
-       singleassetoption.obj$(_D)
+       singleassetoption.obj$(_D) \
+       treeswaption.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

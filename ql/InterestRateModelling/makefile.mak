@@ -18,7 +18,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 OBJS = \
        model.obj$(_D) \
        onefactormodel.obj$(_D) \
-       swapfuturevalue.obj$(_D)
+       trinomialtree.cpp
 
 # Tools to be used
 CC        = bcc32

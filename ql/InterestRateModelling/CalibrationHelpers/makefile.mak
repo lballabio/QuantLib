@@ -16,8 +16,8 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-       cap.obj$(_D) \
-       swaption.obj$(_D)
+       caphelper.obj$(_D) \
+       swaptionhelper.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

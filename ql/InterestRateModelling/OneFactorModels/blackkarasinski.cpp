@@ -113,7 +113,8 @@ namespace QuantLib {
                 //adjust space intervals
                 dx_.resize(t_.size());
                 dx_[0] = 0.0; //Just one node
-                for (unsigned i=0; i<(dx_.size()-1); i++) {
+                unsigned i;
+                for (i=0; i<(dx_.size()-1); i++) {
                     //The diffusion term must be r-independant
                     double v = sigma*
                         QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a*dt(i)))/a);
@@ -129,13 +130,14 @@ namespace QuantLib {
                 alpha->clear();
 
                 double lastValue = 0.0;
-                for (unsigned i=0; i<nTimeSteps; i++) {
+                for (i=0; i<nTimeSteps; i++) {
                     unsigned width = jMax - jMin + 1;
 
                     double discountBond = termStructure->discount(t(i+1));
                     vector<double> statePrices(width);
                     unsigned index=0;
-                    for (int j=jMin; j<=jMax; j++)
+                    int j;
+                    for (j=jMin; j<=jMax; j++)
                         statePrices[index++] = node(i,j).statePrice();
                     BlackKarasinski::PrivateFunction finder(dt(i), dx(i), jMin, 
                         jMax, statePrices, discountBond);
@@ -156,7 +158,7 @@ namespace QuantLib {
                     double v2 = v*v;
 
                     index = 0;
-                    for (int j=jMin; j<=jMax; j++) {
+                    for (j=jMin; j<=jMax; j++) {
                         double x = j*dx(i);
                         double m = x*QL_EXP(-a*dt(i));
                         k[index] = (int)floor(m/dx(i+1) + 0.5);
@@ -180,7 +182,7 @@ namespace QuantLib {
                     addLevel(k);
                     jMin = k.front() - 1;
                     jMax = k.back() + 1;
-                    for (int j=jMin; j<=jMax; j++) {
+                    for (j=jMin; j<=jMax; j++) {
                         double value = 0.0;
                         Node& child = node(i+1,j);
                         unsigned nAscendants = child.nAscendants();

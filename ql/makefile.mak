@@ -24,34 +24,37 @@ CORE_OBJS        = calendar.obj$(_D) \
                    solver1d.obj$(_D)
 
 CALENDAR_LIB     = Calendars\Calendars$(_D).lib
+CALIBRATION_LIB  = InterestRateModelling\CalibrationHelpers\CalibrationHelpers$(_D).lib
 CASHFLOWS_LIB    = CashFlows\CashFlows$(_D).lib
 DAYCOUNTER_LIB   = DayCounters\DayCounters$(_D).lib
 FDM_LIB          = FiniteDifferences\FiniteDifferences$(_D).lib
 INDEXES_LIB      = Indexes\Indexes$(_D).lib
 INSTRUMENTS_LIB  = Instruments\Instruments$(_D).lib
 IRMODELING_LIB   = InterestRateModelling\IRModelling$(_D).lib
-CALIBRATION_LIB  = InterestRateModelling\CalibrationHelpers\CalibrationHelpers$(_D).lib
-ONEFACTOR_LIB    = InterestRateModelling\OneFactorModels\OneFactorModels$(_D).lib
+LATTICES_LIB     = Lattices\Lattices$(_D).lib
 MATH_LIB         = Math\Math$(_D).lib
 MONTECARLO_LIB   = MonteCarlo\MonteCarlo$(_D).lib
+ONEFACTOR_LIB    = InterestRateModelling\OneFactorModels\OneFactorModels$(_D).lib
 OPTIMIZATION_LIB = Optimization\Optimization$(_D).lib
 PRICER_LIB       = Pricers\Pricers$(_D).lib
 RNG_LIB          = RandomNumbers\RandomNumbers$(_D).lib
 SOLVER1D_LIB     = Solvers1D\Solvers1D$(_D).lib
 TERMSTRUCT_LIB   = TermStructures\TermStructures$(_D).lib
 
-QUANTLIB_OBJS    = $(CORE_OBJS) \
+QUANTLIB_OBJS    = \
                    $(CALENDAR_LIB) \
+                   $(CALIBRATION_LIB) \
                    $(CASHFLOWS_LIB) \
+                   $(CORE_OBJS) \
                    $(DAYCOUNTER_LIB) \
                    $(FDM_LIB) \
                    $(INDEXES_LIB) \
                    $(INSTRUMENTS_LIB) \
                    $(IRMODELING_LIB) \
-                   $(CALIBRATION_LIB) \
-                   $(ONEFACTOR_LIB) \
+                   $(LATTICES_LIB) \
                    $(MATH_LIB) \
                    $(MONTECARLO_LIB) \
+                   $(ONEFACTOR_LIB) \
                    $(OPTIMIZATION_LIB) \
                    $(PRICER_LIB) \
                    $(RNG_LIB) \

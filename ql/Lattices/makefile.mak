@@ -1,7 +1,9 @@
 
+<<<<<<< makefile.mak
 # $Id$
-
-
+=======
+# $Id$
+>>>>>>> 1.2
 
 .autodepend
 .silent
@@ -17,11 +19,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = capfloor.obj$(_D) \
-       plainoption.obj$(_D) \
-       simpleswap.obj$(_D) \
-       stock.obj$(_D) \
-       swap.obj$(_D)
+OBJS = \
+       tree.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
@@ -29,9 +28,9 @@ TLIB      = tlib
 
 # Options
 CC_OPTS        = -vi- -q -c -tWM -n$(OUTPUT_DIR) \
-                 -w-8026 -w-8027 -w-8012 \
-                 -I$(INCLUDE_DIR) \
-                 -I$(BCC_INCLUDE)
+    -w-8026 -w-8027 -w-8012 \
+    -I$(INCLUDE_DIR) \
+    -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
@@ -49,9 +48,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Instruments$(_D).lib:: $(OBJS)
-    if exist Instruments$(_D).lib     del Instruments$(_D).lib
-    $(TLIB) $(TLIB_OPTS) Instruments$(_D).lib /a $(OBJS)
+Lattices$(_D).lib:: $(OBJS)
+    if exist Lattices$(_D).lib     del Lattices$(_D).lib
+    $(TLIB) $(TLIB_OPTS) Lattices$(_D).lib /a $(OBJS)
 
 
 # Clean up

@@ -16,11 +16,10 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-       blackdermanandtoy.obj$(_D) \
+       blackdermantoy.obj$(_D) \
        blackkarasinski.obj$(_D) \
-       hoandlee.obj$(_D) \
-       hullandwhite.obj$(_D) \
-       tree.obj$(_D)
+       holee.obj$(_D) \
+       hullwhite.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
