@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.5  2001/05/22 13:18:35  marmar
+    Volatility limits change to [0.0001, 1.0]
+
     Revision 1.4  2001/05/09 11:06:18  nando
     A few comments modified/removed
 
@@ -51,8 +54,8 @@
 #include "ql/handle.hpp"
 #include "ql/solver1d.hpp"
 
-#define QL_MIN_VOLATILITY 0.0005
-#define QL_MAX_VOLATILITY 3.0
+#define QL_MIN_VOLATILITY 0.0001
+#define QL_MAX_VOLATILITY 4.0
 
 namespace QuantLib {
 
