@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file continuousgeometricapo.hpp
     \brief Continuous Geometric Average Price Option (European exercise)
 
@@ -64,7 +64,7 @@ namespace QuantLib {
             double volatility)
         : EuropeanOption(type, underlying, strike,
             (riskFreeRate+dividendYield+volatility*volatility/6.0)/2.0,
-            riskFreeRate, residualTime, volatility/QL_SQRT(3)) {}
+            riskFreeRate, residualTime, volatility/QL_SQRT(3.0)) {}
 
         inline double ContinuousGeometricAPO::rho() const{
             return EuropeanOption::rho()/2.0;

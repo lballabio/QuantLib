@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file trinomialtree.cpp
     \brief Trinomial tree class
 
@@ -45,7 +47,7 @@ namespace QuantLib {
                 //Variance must be independent of x
                 double v2 = process->variance(t, 0.0, dt);
                 double v = QL_SQRT(v2);
-                dx_.push_back(v*QL_SQRT(3));
+                dx_.push_back(v*QL_SQRT(3.0));
 
                 Handle<TrinomialBranching> branching(new TrinomialBranching());
                 for (int j=jMin; j<=jMax; j++) {
@@ -62,7 +64,7 @@ namespace QuantLib {
                     branching->k_.push_back(temp);
                     double e = m - (x0_ + temp*dx_[i+1]);
                     double e2 = e*e;
-                    double e3 = e*QL_SQRT(3);
+                    double e3 = e*QL_SQRT(3.0);
 
                     branching->probs_[0].push_back((1.0 + e2/v2 - e3/v)/6.0);
                     branching->probs_[1].push_back((2.0 - e2/v2)/3.0);
