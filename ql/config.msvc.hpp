@@ -184,7 +184,7 @@
 
 #pragma comment(lib, QL_LIB_NAME)
 #ifdef BOOST_LIB_DIAGNOSTIC
-#  pragma message(QL_LIB_NAME)
+#  pragma message("Linking to lib file: " QL_LIB_NAME)
 #endif
 
 #ifndef _CPPRTTI
