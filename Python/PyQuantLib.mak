@@ -34,10 +34,21 @@ RSC=rc.exe
 OUTDIR=.\Release
 INTDIR=.\Release
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\QuantLibc.dll"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 Release" ".\QuantLibc.dll"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 ReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\quantlib_wrap.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(OUTDIR)\QuantLibc.exp"
@@ -56,7 +67,8 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\QuantLibc.pdb" /machine:I386 /out:".\QuantLibc.dll" /implib:"$(OUTDIR)\QuantLibc.lib" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio" /libpath:"$(PYTHON_HOME)\libs" /export:initQuantLibc 
 LINK32_OBJS= \
-	"$(INTDIR)\quantlib_wrap.obj"
+	"$(INTDIR)\quantlib_wrap.obj" \
+	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 ".\QuantLibc.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -68,10 +80,21 @@ LINK32_OBJS= \
 OUTDIR=.\Debug
 INTDIR=.\Debug
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\QuantLibc_d.dll"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 Debug" ".\QuantLibc_d.dll"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 DebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\quantlib_wrap.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
@@ -93,7 +116,8 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\QuantLibc_d.pdb" /debug /machine:I386 /out:".\QuantLibc_d.dll" /implib:"$(OUTDIR)\QuantLibc_d.lib" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio" /libpath:"$(PYTHON_HOME)\libs" /export:initQuantLibc 
 LINK32_OBJS= \
-	"$(INTDIR)\quantlib_wrap.obj"
+	"$(INTDIR)\quantlib_wrap.obj" \
+	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 ".\QuantLibc_d.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -147,6 +171,32 @@ SOURCE=quantlib_wrap.cpp
 
 "$(INTDIR)\quantlib_wrap.obj" : $(SOURCE) "$(INTDIR)"
 
+
+!IF  "$(CFG)" == "PyQuantLib - Win32 Release"
+
+"QuantLib - Win32 Release" : 
+   cd "\Backed_up\_projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
+   cd ".\Python"
+
+"QuantLib - Win32 ReleaseCLEAN" : 
+   cd "\Backed_up\_projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
+   cd ".\Python"
+
+!ELSEIF  "$(CFG)" == "PyQuantLib - Win32 Debug"
+
+"QuantLib - Win32 Debug" : 
+   cd "\Backed_up\_projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
+   cd ".\Python"
+
+"QuantLib - Win32 DebugCLEAN" : 
+   cd "\Backed_up\_projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
+   cd ".\Python"
+
+!ENDIF 
 
 
 !ENDIF 
