@@ -327,10 +327,6 @@ SOURCE=.\ql\FiniteDifferences\stepcondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\FiniteDifferences\swaptioncondition.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
 # End Source File
 # Begin Source File
@@ -388,14 +384,6 @@ SOURCE=.\ql\Instruments\capfloor.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\capfloor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Instruments\europeanswaption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Instruments\europeanswaption.hpp
 # End Source File
 # Begin Source File
 
@@ -671,14 +659,6 @@ SOURCE=.\ql\Pricers\continuousgeometricapo.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\couponbondoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\couponbondoption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\discretegeometricapo.cpp
 # End Source File
 # Begin Source File
@@ -768,14 +748,6 @@ SOURCE=.\ql\Pricers\fdeuropean.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fdeuropean.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdeuropeanswaption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdeuropeanswaption.hpp
 # End Source File
 # Begin Source File
 
@@ -873,10 +845,18 @@ SOURCE=.\ql\Pricers\singleassetoption.cpp
 
 SOURCE=.\ql\Pricers\singleassetoption.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\treeswaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\treeswaption.hpp
+# End Source File
 # End Group
 # Begin Group "RandomNumbers"
 
-# PROP Default_Filter "cpp,hpp"
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\boxmullergaussianrng.hpp
@@ -1029,14 +1009,9 @@ SOURCE=.\ql\Utilities\steppingiterator.hpp
 # Begin Group "InterestRateModellling"
 
 # PROP Default_Filter ""
-# Begin Source File
+# Begin Group "OneFactorModels"
 
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackdermanandtoy.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackdermanandtoy.hpp
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.cpp
@@ -1047,31 +1022,36 @@ SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\cap.cpp
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullwhite.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\cap.hpp
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullwhite.hpp
 # End Source File
+# End Group
+# Begin Group "CalibrationHelpers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\caphelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\caphelper.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\grid.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\hoandlee.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\hoandlee.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullandwhite.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullandwhite.hpp
 # End Source File
 # Begin Source File
 
@@ -1083,10 +1063,6 @@ SOURCE=.\ql\InterestRateModelling\model.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\node.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\InterestRateModelling\onefactormodel.cpp
 # End Source File
 # Begin Source File
@@ -1095,27 +1071,19 @@ SOURCE=.\ql\InterestRateModelling\onefactormodel.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\swapfuturevalue.cpp
+SOURCE=.\ql\InterestRateModelling\shortrateprocess.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\swapfuturevalue.hpp
+SOURCE=.\ql\InterestRateModelling\timefunction.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaption.cpp
+SOURCE=.\ql\InterestRateModelling\trinomialtree.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\tree.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\tree.hpp
+SOURCE=.\ql\InterestRateModelling\trinomialtree.hpp
 # End Source File
 # End Group
 # Begin Group "Optimization"
@@ -1164,6 +1132,26 @@ SOURCE=.\ql\Optimization\steepestdescent.cpp
 # Begin Source File
 
 SOURCE=.\ql\Optimization\steepestdescent.hpp
+# End Source File
+# End Group
+# Begin Group "Lattices"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Lattices\node.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\timegrid.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\tree.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\tree.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -1236,7 +1224,15 @@ SOURCE=.\ql\daycounter.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\diffusionprocess.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\errors.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\exercise.hpp
 # End Source File
 # Begin Source File
 
@@ -1313,10 +1309,6 @@ SOURCE=.\ql\solver1d.cpp
 # Begin Source File
 
 SOURCE=.\ql\solver1d.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\stochasticprocess.hpp
 # End Source File
 # Begin Source File
 
