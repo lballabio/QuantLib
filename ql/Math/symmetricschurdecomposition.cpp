@@ -21,14 +21,13 @@
 
 namespace QuantLib {
 
-    SymmetricSchurDecomposition::SymmetricSchurDecomposition(
-        const Matrix & s)
+    SymmetricSchurDecomposition::SymmetricSchurDecomposition(const Matrix & s)
     : diagonal_(s.rows()), eigenVectors_(s.rows(), s.columns(), 0.0) {
 
-        Size size = s.rows();
-        QL_REQUIRE(size==s.columns(),
-                   "input matrix must be square");
+        QL_REQUIRE(s.rows() > 0 && s.columns() > 0, "null matrix given");
+        QL_REQUIRE(s.rows()==s.columns(), "input matrix must be square");
 
+        Size size = s.rows();
         for (Size q=0; q<size; q++) {
             diagonal_[q] = s[q][q];
             eigenVectors_[q][q] = 1.0;
@@ -133,14 +132,11 @@ namespace QuantLib {
         Real maxEv = temp[0].first;
         for (col=0; col<size; col++) {
             // check for round-off errors
-            diagonal_[col] = 
+            diagonal_[col] =
                 (QL_FABS(temp[col].first/maxEv)<1e-16 ? 0.0 : temp[col].first);
             Real sign = 1.0;
             if (temp[col].second[0]<0.0)
                 sign = -1.0;
-            // doesn't work at all :(
-            // std::copy(eigenVector.begin(), eigenVector.end(),
-            //    eigenVectors_.column_begin(col));
             for (row=0; row<size; row++) {
                 eigenVectors_[row][col] = sign * temp[col].second[row];
             }
