@@ -25,6 +25,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\Release
@@ -50,6 +53,7 @@ CLEAN :
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoption.obj"
 	-@erase "$(INTDIR)\calendar.obj"
+	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\controlvariatedpathpricer.obj"
 	-@erase "$(INTDIR)\dataformatters.obj"
@@ -83,15 +87,19 @@ CLEAN :
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
+	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
+	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\secant.obj"
+	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\stepconditionoption.obj"
+	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\thirty360.obj"
@@ -108,40 +116,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -164,6 +139,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\simpleswap.obj" \
+	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -213,10 +190,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\libormanager.obj" \
 	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\parcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -248,6 +228,7 @@ CLEAN :
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoption.obj"
 	-@erase "$(INTDIR)\calendar.obj"
+	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\controlvariatedpathpricer.obj"
 	-@erase "$(INTDIR)\dataformatters.obj"
@@ -281,15 +262,19 @@ CLEAN :
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
+	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
+	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\secant.obj"
+	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\stepconditionoption.obj"
+	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\thirty360.obj"
@@ -307,40 +292,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /I "Include\Pricers" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -363,6 +315,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\simpleswap.obj" \
+	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -412,10 +366,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\libormanager.obj" \
 	"$(INTDIR)\xibor.obj" \
+	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\parcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -423,6 +380,36 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -522,6 +509,18 @@ SOURCE=.\Sources\FiniteDifferences\tridiagonaloperator.cpp
 SOURCE=.\Sources\FiniteDifferences\valueatcenter.cpp
 
 "$(INTDIR)\valueatcenter.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\Instruments\simpleswap.cpp
+
+"$(INTDIR)\simpleswap.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\Instruments\swap.cpp
+
+"$(INTDIR)\swap.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -819,6 +818,18 @@ SOURCE=.\Sources\Indexes\xibor.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\Sources\CashFlows\cashflowvectors.cpp
+
+"$(INTDIR)\cashflowvectors.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\CashFlows\parcoupon.cpp
+
+"$(INTDIR)\parcoupon.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\Sources\calendar.cpp
 
 "$(INTDIR)\calendar.obj" : $(SOURCE) "$(INTDIR)"
@@ -834,6 +845,12 @@ SOURCE=.\Sources\dataformatters.cpp
 SOURCE=.\Sources\date.cpp
 
 "$(INTDIR)\date.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\scheduler.cpp
+
+"$(INTDIR)\scheduler.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

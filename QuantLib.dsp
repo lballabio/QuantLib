@@ -929,6 +929,14 @@ SOURCE=.\Include\ql\CashFlows\indexlinkedcoupon.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Sources\CashFlows\parcoupon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\CashFlows\parcoupon.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Include\ql\CashFlows\simplecashflow.hpp
 # End Source File
 # End Group
