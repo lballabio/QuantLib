@@ -69,10 +69,11 @@ namespace QuantLib {
         QL_REQUIRE(moneyness > 0.0, "negative or zero moneyness given");
 
         QL_REQUIRE(resetDate != Null<Date>(), "null reset date given");
-        QL_REQUIRE(resetDate >= blackScholesProcess->riskFreeRate()
-                                                          ->referenceDate(),
+        QL_REQUIRE(resetDate >=
+            ArgumentsType::blackScholesProcess->riskFreeRate()
+                ->referenceDate(),
                    "reset date later than settlement");
-        QL_REQUIRE(exercise->lastDate() > resetDate,
+        QL_REQUIRE(ArgumentsType::exercise->lastDate() > resetDate,
                    "reset date later or equal to maturity");
     }
 
