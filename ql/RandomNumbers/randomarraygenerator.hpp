@@ -82,7 +82,7 @@ namespace QuantLib {
                 IntegerFormatter::toString(covariance.columns())+ ")");
             QL_REQUIRE(covariance.rows() > 0,
                 "Null covariance matrix given");
-            sqrtCovariance_ = Math::matrixSqrt(covariance);
+            sqrtCovariance_ = Math::pseudoSqrt(covariance);
         }
 
 
