@@ -241,7 +241,7 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
  LIBS="$ql_original_LIBS"
  if test "$boost_unit_found" = no ; then
      AC_MSG_RESULT([no])
-     AC_MSG_ERROR([Boost development files not found])
+     AC_MSG_ERROR([Boost unit-test framework not found])
  else
      AC_MSG_RESULT([yes])
      AC_SUBST([BOOST_UNIT_TEST_LIB],[$boost_lib])

@@ -25,6 +25,30 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.])
 
 AC_PROG_AWK
 AC_PROG_INSTALL
+
+# Help the compiler find external software
+
+AC_ARG_WITH([boost-include],
+            AC_HELP_STRING([--with-boost-include=INCLUDE_PATH],
+                           [Supply the location of Boost header files]),
+            [ql_boost_include_path=$withval],
+            [ql_boost_include_path=""])
+if test [ -n "$ql_boost_include_path" ] ; then
+   AC_SUBST([CPPFLAGS],["${CPPFLAGS} -I${ql_boost_include_path}"])
+fi
+AC_ARG_WITH([boost-lib],
+            AC_HELP_STRING([--with-boost-lib=LIB_PATH],
+                           [Supply the location of Boost libraries]),
+            [ql_boost_lib_path=$withval],
+            [ql_boost_lib_path=""])
+if test [ -n "$ql_boost_lib_path" ] ; then
+   AC_SUBST([LDFLAGS],["${LDFLAGS} -L${ql_boost_lib_path}"])
+fi
+
+
+
+# Continue setup
+
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CPP
@@ -155,6 +179,7 @@ AC_PATH_PROG([DVIPS], [dvips])
 #                                  large integer calculations. At least
 #                                  4 bytes are required.])])
 
+
 AC_ARG_ENABLE([error-lines],
               AC_HELP_STRING([--enable-error-lines],
                              [If enabled (the default), file and line
@@ -168,7 +193,7 @@ if test "$ql_error_lines" = "yes" ; then
               information.])
 fi
 
-AC_ARG_ENABLE([indexed-coupon],
+AC_ARG_ENABLE([indexed-coupons],
               AC_HELP_STRING([--enable-indexed-coupons],
                              [If enabled, indexed coupons (see the
                               documentation) are used in floating legs.
