@@ -7,14 +7,14 @@ includedir = $(prefix)/include/ql/Math
 include_HEADERS = \
 	bilinearinterpolation.hpp \
 	bicubicsplineinterpolation.hpp \
-    chisquaredistribution.hpp \
+	chisquaredistribution.hpp \
 	cubicspline.hpp \
 	discrepancystatistics.hpp \
 	errorfunction.hpp \
 	functional.hpp \
 	interpolation.hpp \
 	interpolation2D.hpp \
-    gammadistribution.hpp \
+	gammadistribution.hpp \
 	gaussianstatistics.hpp \
 	generalstatistics.hpp \
 	incrementalstatistics.hpp \
@@ -27,6 +27,7 @@ include_HEADERS = \
 	normaldistribution.hpp \
 	primenumbers.hpp \
 	riskmeasures.hpp \
+	riskstatistics.hpp \
 	segmentintegral.hpp \
 	sequencestatistics.hpp \
 	statistics.hpp \
@@ -36,16 +37,16 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libMath_la_SOURCES = \
-    chisquaredistribution.cpp \
+	chisquaredistribution.cpp \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
-    gammadistribution.cpp \
+	gammadistribution.cpp \
 	generalstatistics.cpp \
 	incrementalstatistics.cpp \
-    matrix.cpp \
-    multivariateaccumulator.cpp \
-    normaldistribution.cpp \
+	matrix.cpp \
+	multivariateaccumulator.cpp \
+	normaldistribution.cpp \
 	primenumbers.cpp \
-    symmetricschurdecomposition.cpp
+	symmetricschurdecomposition.cpp
 
 noinst_LTLIBRARIES = libMath.la
