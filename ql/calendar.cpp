@@ -113,7 +113,7 @@ namespace QuantLib {
                 return adjust(d,Following);
             }
         } else {
-            QL_FAIL("unknown rolling convention");
+            QL_FAIL("unknown business-day convention");
         }
         return d1;
     }

@@ -66,7 +66,7 @@ namespace {
     Calendar calendar;
     Integer settlementDays, fixingDays;
     Date today, settlement;
-    BusinessDayConvention depoRollingConvention;
+    BusinessDayConvention depoConvention;
     DayCounter depoDayCounter;
     BusinessDayConvention fixedLegConvention, floatingLegConvention;
     Frequency fixedLegFrequency;
@@ -85,7 +85,7 @@ namespace {
         fixingDays = 2;
         today = calendar.adjust(Date::todaysDate());
         settlement = calendar.advance(today,settlementDays,Days);
-        depoRollingConvention = ModifiedFollowing;
+        depoConvention = ModifiedFollowing;
         depoDayCounter = Actual360();
         fixedLegConvention = Unadjusted;
         floatingLegConvention = ModifiedFollowing;
@@ -116,7 +116,7 @@ namespace {
             instruments[i] = boost::shared_ptr<RateHelper>(
               new DepositRateHelper(r, depositData[i].n, depositData[i].units,
                                     settlementDays, calendar,
-                                    depoRollingConvention, depoDayCounter));
+                                    depoConvention, depoDayCounter));
         }
         for (i=0; i<swaps; i++) {
             RelinkableHandle<Quote> r(rates[i+deposits]);

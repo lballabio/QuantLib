@@ -98,17 +98,17 @@ namespace QuantLib {
       payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
       nominal_(nominal) {
 
-        BusinessDayConvention rollingConvention =
+        BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
             FixedRateCouponVector(fixedSchedule,
-                                  rollingConvention,
+                                  convention,
                                   std::vector<Real>(1,nominal),
                                   std::vector<Rate>(1,fixedRate),
                                   fixedDayCount);
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
-                                     rollingConvention,
+                                     convention,
                                      std::vector<Real>(1,nominal),
                                      index, indexFixingDays,
                                      std::vector<Spread>(1,spread));
@@ -172,7 +172,7 @@ namespace QuantLib {
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                           floatingCoupons[i]);
 
-            Date resetDate = coupon->accrualStartDate(); // already rolled
+            Date resetDate = coupon->accrualStartDate(); // already adjusted
             Time time = counter.yearFraction(settlement, resetDate);
             arguments->floatingResetTimes[i] = time;
             time = counter.yearFraction(settlement, coupon->date());

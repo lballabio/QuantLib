@@ -62,7 +62,7 @@ namespace {
     Calendar calendar;
     Integer settlementDays, fixingDays;
     Date today, settlement;
-    BusinessDayConvention rollingConvention;
+    BusinessDayConvention convention;
     DayCounter dayCounter;
     Frequency frequency;
 
@@ -81,7 +81,7 @@ namespace {
         today = calendar.adjust(Date::todaysDate());
         // just for fun
         settlement = calendar.advance(today,settlementDays,Days);
-        rollingConvention = ModifiedFollowing;
+        convention = ModifiedFollowing;
         dayCounter = Actual365();
         frequency = Semiannual;
 
@@ -97,19 +97,19 @@ namespace {
             dates[i] = calendar.advance(settlement,
                                         Period(depositData[i].n,
                                                depositData[i].units),
-                                        rollingConvention);
+                                        convention);
         }
         for (i=0; i<swaps; i++) {
             rates[i+deposits] = swapData[i].rate/100;
             dates[i+deposits] = calendar.advance(settlement,
                                                  Period(swapData[i].n,
                                                         swapData[i].units),
-                                                 rollingConvention);
+                                                 convention);
         }
 
         termStructure = boost::shared_ptr<TermStructure>(
                              new CompoundForward(today,settlement,dates,rates,
-                                                 calendar,rollingConvention,
+                                                 calendar,convention,
                                                  frequency,dayCounter));
     }
 
@@ -132,9 +132,9 @@ void CompoundForwardTest::testSuppliedRates() {
     for (i=0; i<swaps; i++) {
         Date maturity = calendar.advance(settlement,
                                          swapData[i].n,swapData[i].units,
-                                         rollingConvention);
+                                         convention);
         Schedule schedule(calendar,settlement,maturity,
-                          frequency,rollingConvention);
+                          frequency,convention);
         SimpleSwap swap(true,100.0,
                         schedule,0.0,dayCounter,
                         schedule,index,fixingDays,0.0,
@@ -170,9 +170,9 @@ void CompoundForwardTest::testConvertedRates() {
     for (i=0; i<swaps; i++) {
         Date maturity = calendar.advance(settlement,
                                          swapData[i].n,swapData[i].units,
-                                         rollingConvention);
+                                         convention);
         Schedule schedule(calendar,settlement,maturity,
-                          frequency,rollingConvention);
+                          frequency,convention);
         SimpleSwap swap(true,100.0,
                         schedule,0.0,dayCounter,
                         schedule,index,fixingDays,0.0,

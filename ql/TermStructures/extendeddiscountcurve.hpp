@@ -48,7 +48,8 @@ namespace QuantLib {
         BusinessDayConvention roll() const { return conv_; };
         #endif
         BusinessDayConvention businessDayConvention() const {
-            return conv_; };
+            return conv_;
+        }
         //! \name Observer interface
         //@{
         void update();
