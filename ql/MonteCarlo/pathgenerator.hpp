@@ -43,11 +43,11 @@ namespace QuantLib {
                       Time length,
                       Size timeSteps,
                       const GSG& generator,
-                      bool brownianBridge = false);
+                      bool brownianBridge);
         PathGenerator(const Handle<DiffusionProcess>& diffProcess,
                       const TimeGrid& timeGrid,
                       const GSG& generator,
-                      bool brownianBridge = false);
+                      bool brownianBridge);
         //! \name inspectors
         //@{
         const sample_type& next() const;
