@@ -46,13 +46,14 @@ namespace QuantLib {
                           Size timeSteps,
                           SG generator);
             PathGenerator(const Handle<DiffusionProcess>& diffProcess,
-                          const TimeGrid& times,
+                          const TimeGrid& timeGrid,
                           SG generator);
             //! \name inspectors
             //@{
             const sample_type& next() const;
             const sample_type& antithetic() const;
             Size size() const { return dimension_; }
+            const TimeGrid& timeGrid() const { return timeGrid_; }
             //@}
           private:
             SG generator_;

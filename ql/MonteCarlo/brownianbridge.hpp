@@ -46,46 +46,162 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! Builds Wiener process paths of equal time steps of delta t = 1
-        /*! Builds Wiener process paths of equal time steps of delta t = 1
+        //! Builds Wiener process paths using Gaussian variates
+        /*! Builds Wiener process paths using Gaussian variates
 
             For more details: "Monte Carlo Methods in Finance" by P. Jäckel,
-            section 10.8
+            section 10.8.3
         */
-        template <class SG>
+        template <class GSG> // Gaussian Sequence Generator
         class BrownianBridge {
         public:
-            typedef Sample<Path> sample_type;
-            BrownianBridge(SG generator);
+            typedef Sample<std::vector<double> > sample_type;
+            //! normalised (unit time, unit variance) Wiener process paths
+            BrownianBridge(GSG generator);
+            //! unit variance Wiener process paths
+            BrownianBridge(Time length,
+                           Size timeSteps,
+                           GSG generator);
+            //! unit variance Wiener process paths
+            BrownianBridge(const TimeGrid& timeGrid,
+                           GSG generator);
+            //! general Wiener process paths
+            BrownianBridge(const std::vector<double>& sigma,
+                           const TimeGrid& timeGrid,
+                           GSG generator);
+            BrownianBridge(const Handle<BlackVolTermStructure>& blackVol,
+                           const TimeGrid& timeGrid,
+                           GSG generator);
             //! \name inspectors
             //@{
             const sample_type& next() const;
             const sample_type& antithetic() const;
             Size size() const { return dimension_; }
+            const TimeGrid& timeGrid() const { return timeGrid_; }
             //@}
         private:
-            SG generator_;
+            void initialize(const std::vector<double>& v);
+            GSG generator_;
             Size dimension_;
-            std::vector<unsigned long> leftIndex_, rightIndex_, bridgeIndex_;
-            std::vector<double> leftWeight_, rightWeight_, sigma_;
-            mutable Sample<Path> next_;
+            TimeGrid timeGrid_;
+            mutable Sample<std::vector<double> > next_;
+            std::vector<Size> bridgeIndex_, leftIndex_, rightIndex_;
+            std::vector<double> leftWeight_, rightWeight_, stdDev_;
         };
 
 
-
-        template <class SG>
-        BrownianBridge<SG>::BrownianBridge(SG generator)
+        template <class GSG>
+        BrownianBridge<GSG>::BrownianBridge(GSG generator)
         : generator_(generator), dimension_(generator_.dimension()),
-          next_(Path(dimension_), 1.0), bridgeIndex_(dimension_),
+          timeGrid_(dimension_, dimension_),
+          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
           leftIndex_(dimension_),  rightIndex_(dimension_),
           leftWeight_(dimension_), rightWeight_(dimension_),
-          sigma_(dimension_) {
+          stdDev_(dimension_) {
+            initialize(std::vector<double>(dimension_, 1.0));
+        }
+
+        template <class GSG>
+        BrownianBridge<GSG>::BrownianBridge(Time length, Size timeSteps,
+            GSG generator)
+        : generator_(generator), dimension_(generator_.dimension()),
+          timeGrid_(length, timeSteps),
+          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          leftIndex_(dimension_),  rightIndex_(dimension_),
+          leftWeight_(dimension_), rightWeight_(dimension_),
+          stdDev_(dimension_) {
 
             QL_REQUIRE(dimension_>0,
               "BrownianBridge::BrownianBridge : "
               "there must be at least one step");
 
-            std::vector<unsigned long> map(dimension_);
+            QL_REQUIRE(dimension_==timeGrid_.size(),
+              "BrownianBridge::BrownianBridge : "
+              "GSG/timeGrid mismatch");
+
+            initialize(std::vector<double>(dimension_, 1.0));
+        }
+
+        template <class GSG>
+        BrownianBridge<GSG>::BrownianBridge(const TimeGrid& timeGrid,
+            GSG generator)
+        : generator_(generator), dimension_(generator_.dimension()),
+          timeGrid_(timeGrid),
+          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          leftIndex_(dimension_),  rightIndex_(dimension_),
+          leftWeight_(dimension_), rightWeight_(dimension_),
+          stdDev_(dimension_) {
+
+            QL_REQUIRE(dimension_>0,
+              "BrownianBridge::BrownianBridge : "
+              "there must be at least one step");
+
+            QL_REQUIRE(dimension_==timeGrid_.size(),
+              "BrownianBridge::BrownianBridge : "
+              "GSG/timeGrid mismatch");
+
+            initialize(std::vector<double>(dimension_, 1.0));
+        }
+
+        template <class GSG>
+        BrownianBridge<GSG>::BrownianBridge(const std::vector<double>& variances,
+                                            const TimeGrid& timeGrid,
+                                            GSG generator)
+        : generator_(generator), dimension_(generator_.dimension()),
+          timeGrid_(timeGrid),
+          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          leftIndex_(dimension_),  rightIndex_(dimension_),
+          leftWeight_(dimension_), rightWeight_(dimension_),
+          stdDev_(dimension_) {
+
+            QL_REQUIRE(dimension_>0,
+              "BrownianBridge::BrownianBridge : "
+              "there must be at least one step");
+
+            QL_REQUIRE(dimension_==timeGrid_.size(),
+              "BrownianBridge::BrownianBridge : "
+              "GSG/timeGrid mismatch");
+
+            QL_REQUIRE(dimension_==variances.size(),
+              "BrownianBridge::BrownianBridge : "
+              "GSG/timeGrid mismatch");
+
+            initialize(variances);
+        }
+
+        template <class GSG>
+        BrownianBridge<GSG>::BrownianBridge(
+            const Handle<BlackVolTermStructure>& blackVol,
+            const TimeGrid& timeGrid,
+            GSG generator)
+        : generator_(generator), dimension_(generator_.dimension()),
+          timeGrid_(timeGrid),
+          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          leftIndex_(dimension_),  rightIndex_(dimension_),
+          leftWeight_(dimension_), rightWeight_(dimension_),
+          stdDev_(dimension_) {
+
+            QL_REQUIRE(dimension_>0,
+              "BrownianBridge::BrownianBridge : "
+              "there must be at least one step");
+
+            QL_REQUIRE(dimension_==timeGrid_.size(),
+              "BrownianBridge::BrownianBridge : "
+              "GSG/timeGrid mismatch");
+
+            std::vector<double> v(dimension_);
+            for (Size i=0; i<dimension_; i++) {
+                // problems here if the blackVol is asset dependant
+                v[i]=blackVol->blackVariance(timeGrid_[i], 1.0);
+            }
+            initialize(v);
+        }
+
+
+        template <class GSG>
+        void BrownianBridge<GSG>::initialize(const std::vector<double>& v) {
+
+            std::vector<Size> map(dimension_);
             // map is used to indicate which points are already constructed.
             // If map[i] is zero, path point i is yet unconstructed.
             // map[i]-1 is the index of the variate that constructs the path point # i.
@@ -95,8 +211,8 @@ namespace QuantLib {
             map[dimension_-1] = 1;
             //  The global step is constructed from the first variate.
             bridgeIndex_[0] = dimension_-1;
-            //  The variance of the global step is numberOfSteps*1.0.
-            sigma_[0] = QL_SQRT(dimension_);
+            //  The variance of the global step
+            stdDev_[0] = QL_SQRT(v[dimension_-1]);
             //  The global step to the last point in time is special.
             leftWeight_[0] = rightWeight_[0] = 0.;
             for (j=0, i=1; i<dimension_; ++i) {
@@ -112,19 +228,19 @@ namespace QuantLib {
                 bridgeIndex_[i] = l;
                 leftIndex_[i]   = j;
                 rightIndex_[i]  = k;
-                leftWeight_[i]  = (k-l)/(k+1.-j);
-                rightWeight_[i] = (l+1.-j)/(k+1.-j);
-                sigma_[i]       = sqrt(((l+1.-j)*(k-l))/(k+1.-j));
+                leftWeight_[i]  = (v[k]-v[l])  /(v[k]-v[j-1]);
+                rightWeight_[i] = (v[l]-v[j-1])/(v[k]-v[j]-1);
+                stdDev_[i]      = sqrt(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
                 j=k+1;
                 if (j>=dimension_) j=0;	//	Wrap around.
             }
         }
 
-        template <class SG>
-        inline const typename BrownianBridge<SG>::sample_type&
-        BrownianBridge<SG>::next() const {
+        template <class GSG>
+        inline const typename BrownianBridge<GSG>::sample_type&
+        BrownianBridge<GSG>::next() const {
 
-            typedef typename SG::sample_type sequence_type;
+            typedef typename GSG::sample_type sequence_type;
             const sequence_type& sequence_ = generator_.nextSequence();
 
             next_.weight = sequence_.weight;
@@ -137,19 +253,19 @@ namespace QuantLib {
                 k = rightIndex_[i];
                 l = bridgeIndex_[i];
                 // using only the drift component here for the time being ....
-                if (j) next_.value.drift()[l] =
-                     leftWeight_[i] * next_.value.drift()[j-1] +
-                    rightWeight_[i] * next_.value.drift()[k]   +
+                if (j) next_[l] =
+                     leftWeight_[i] * next_[j-1] +
+                    rightWeight_[i] * next_[k]   +
                           sigma_[i] * sequence_.value[i];
-                else   next_.value.drift()[l] =
-                    rightWeight_[i] * next_.value.drift()[k]   +
+                else   next_[l] =
+                    rightWeight_[i] * next_[k]   +
                           sigma_[i] * sequence_.value[i];
             }
         }
 
-        template <class SG>
-        inline const typename BrownianBridge<SG>::sample_type&
-        BrownianBridge<SG>::antithetic() const {
+        template <class GSG>
+        inline const typename BrownianBridge<GSG>::sample_type&
+        BrownianBridge<GSG>::antithetic() const {
 
             Size i, j, k, l;
             // The global step.
@@ -158,12 +274,12 @@ namespace QuantLib {
                 j = leftIndex_[i];
                 k = rightIndex_[i];
                 l = bridgeIndex_[i];
-                if (j) next_.value.drift()[l] =
-                     leftWeight_[i] * next_.value.drift()[j-1] +
-                    rightWeight_[i] * next_.value.drift()[k]   +
+                if (j) next_[l] =
+                     leftWeight_[i] * next_[j-1] +
+                    rightWeight_[i] * next_[k]   +
                           sigma_[i] * sequence_.value[i];
-                else   next_.value.drift()[l] =
-                    rightWeight_[i] * next_.value.drift()[k]   +
+                else   next_[l] =
+                    rightWeight_[i] * next_[k]   +
                           sigma_[i] * sequence_.value[i];
             }
 

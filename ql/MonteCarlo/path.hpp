@@ -29,9 +29,8 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+
         //! single factor random walk
-        /*! \todo make it time-aware
-        */
         class Path {
           public:
             Path(Size size);
