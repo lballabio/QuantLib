@@ -234,8 +234,6 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\secant.sbr"
-	-@erase "$(INTDIR)\segmentintegral.obj"
-	-@erase "$(INTDIR)\segmentintegral.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
@@ -339,7 +337,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
-	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
@@ -426,11 +423,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\dataparsers.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -474,7 +471,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
-	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
@@ -561,11 +557,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\dataparsers.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -776,8 +772,6 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\secant.sbr"
-	-@erase "$(INTDIR)\segmentintegral.obj"
-	-@erase "$(INTDIR)\segmentintegral.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
@@ -882,7 +876,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
-	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
@@ -969,11 +962,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\dataparsers.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1017,7 +1010,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
-	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
@@ -1104,11 +1096,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\dataparsers.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1319,8 +1311,6 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\secant.sbr"
-	-@erase "$(INTDIR)\segmentintegral.obj"
-	-@erase "$(INTDIR)\segmentintegral.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
@@ -1424,7 +1414,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
-	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
@@ -1511,11 +1500,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\dataparsers.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1559,7 +1548,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
-	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
@@ -1646,11 +1634,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\dataparsers.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1861,8 +1849,6 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\secant.sbr"
-	-@erase "$(INTDIR)\segmentintegral.obj"
-	-@erase "$(INTDIR)\segmentintegral.sbr"
 	-@erase "$(INTDIR)\shortfloatingcoupon.obj"
 	-@erase "$(INTDIR)\shortfloatingcoupon.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
@@ -1967,7 +1953,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
-	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
@@ -2054,11 +2039,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\dataparsers.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2102,7 +2087,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
-	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
@@ -2189,11 +2173,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\dataparsers.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2444,12 +2428,6 @@ SOURCE=.\ql\Math\multivariateaccumulator.cpp
 SOURCE=.\ql\Math\normaldistribution.cpp
 
 "$(INTDIR)\normaldistribution.obj"	"$(INTDIR)\normaldistribution.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Math\segmentintegral.cpp
-
-"$(INTDIR)\segmentintegral.obj"	"$(INTDIR)\segmentintegral.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -567,10 +567,6 @@ SOURCE=.\ql\Math\riskmeasures.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\segmentintegral.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Math\segmentintegral.hpp
 # End Source File
 # Begin Source File
