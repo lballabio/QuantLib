@@ -35,7 +35,8 @@ If you want to produce TeX/PDF/PS documentation:
    Add miktex\bin (where latex.exe is) to your PATH.
 6) under your "Local TEXMF Tree" create a folder \tex\latex\fancyhdr
    that includes fancyhdr.sty, extramarks.sty and fixmarks.sty (the 3 files
-   can be downloaded from http://toocool.calpoly.edu/latex/fancy_header.html)
+   can be downloaded from 
+   http://mechatro2.me.berkeley.edu/resources/latex_resources/latex/fancyhdr/
 7) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
    and copy it into a directory on your path
 8) Open MikTeX Options panel from "Programs/MiKTeX 2" list and click on the
