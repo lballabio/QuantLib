@@ -35,7 +35,7 @@ namespace QuantLib {
 
         //! Black volatility curve modelled as variance curve
         /*! This class calculates time dependant Black volatilities
-            using  as input a vector of (ATM) Black volatilities
+            using as input a vector of (ATM) Black volatilities
             observed in the market.
 
             The calculation is performed interpolating on the variance curve.

@@ -23,8 +23,8 @@
 
 // $Id$
 
-#ifndef quantlib_constantvol_hpp
-#define quantlib_constantvol_hpp
+#ifndef quantlib_blackconstantvol_hpp
+#define quantlib_blackconstantvol_hpp
 
 #include <ql/voltermstructure.hpp>
 #include <ql/DayCounters/actual365.hpp>

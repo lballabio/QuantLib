@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "build\Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /Gi- /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -67,7 +67,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gi- /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -91,7 +91,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\OnTheEdgeRelease"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /c
-# ADD CPP /nologo /MD /W3 /Gi- /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -115,7 +115,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\OnTheEdgeDebug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gi- /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -1391,6 +1391,10 @@ SOURCE=.\ql\functions\vols.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\blackconstantvol.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\blackvariancecurve.hpp
 # End Source File
 # Begin Source File
@@ -1400,10 +1404,6 @@ SOURCE=.\ql\Volatilities\blackvariancesurface.hpp
 # Begin Source File
 
 SOURCE=.\ql\Volatilities\capflatvolvector.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Volatilities\constantvol.hpp
 # End Source File
 # Begin Source File
 
