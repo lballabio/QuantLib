@@ -22,13 +22,18 @@
 
  $Source$
  $Log$
+ Revision 1.2  2001/04/04 14:10:30  lballabio
+ Ruby tests moved on top of RubyUnit
+
  Revision 1.1  2001/03/27 17:39:39  lballabio
  Making sure dist target is complete (and added distributions to Ruby module)
 
 =end
 
 require 'QuantLib'
-require 'TestUnit'
+require 'runit/testcase'
+require 'runit/testsuite'
+require 'runit/cui/testrunner'
 
 # define a Gaussian
 def gaussian(x,average,sigma)
@@ -64,59 +69,71 @@ end
 
 # Test
 
-TestUnit.test('distributions') {
-    average = 0.0
-    sigma = 1.0
-    TestUnit.printDetails(
-        "Gaussian distribution with average #{average} and sigma #{sigma}")
+class DistributionTest < RUNIT::TestCase
+    def name
+        "Testing distributions..."
+    end
+    def test
+        average = 0.0
+        sigma = 1.0
 
-    normal = QuantLib::NormalDistribution.new(average, sigma)
-    cum =    QuantLib::CumulativeNormalDistribution.new(average, sigma)
-    invCum = QuantLib::InvCumulativeNormalDistribution.new(average, sigma)
+        normal = QuantLib::NormalDistribution.new(average, sigma)
+        cum =    QuantLib::CumulativeNormalDistribution.new(average, sigma)
+        invCum = QuantLib::InvCumulativeNormalDistribution.new(average, sigma)
         
-    xMin = average - 4*sigma
-    xMax = average + 4*sigma
+        xMin = average - 4*sigma
+        xMax = average + 4*sigma
 
-    N = 10001
-    h = (xMax-xMin)/(N-1)
+        n = 10001
+        h = (xMax-xMin)/(n-1)
 
-    x = Array.new(N)        # creates a list of N elements
-    0.upto(N-1) { |i| x[i] = xMin+h*i }
+        x = Array.new(n)        # creates a list of N elements
+        0.upto(n-1) { |i| x[i] = xMin+h*i }
 
-    y = x.map { |z| gaussian(z,average,sigma) }
+        y = x.map { |z| gaussian(z,average,sigma) }
         
-    yIntegrated = x.map { |z| cum.call(z) }
-    yTemp       = x.map { |z| normal.call(z) }
-    y2Temp      = x.map { |z| cum.derivative(z) }
-    xTemp       = yIntegrated.map { |z| invCum.call(z) }
-    yd          = x.map { |z| normal.derivative(z) }
-    ydTemp      = x.map { |z| gaussianDerivative(z,average,sigma) }
+        yIntegrated = x.map { |z| cum.call(z) }
+        yTemp       = x.map { |z| normal.call(z) }
+        y2Temp      = x.map { |z| cum.derivative(z) }
+        xTemp       = yIntegrated.map { |z| invCum.call(z) }
+        yd          = x.map { |z| normal.derivative(z) }
+        ydTemp      = x.map { |z| gaussianDerivative(z,average,sigma) }
+        
+        #check norm=gaussian
+        e = yTemp.diff(y).norm(h)
+        unless e <= 1.0e-16
+            raise "tolerance exceeded\n" + \
+                  "norm of C++ NormalDistribution " + \
+                  "minus analytic gaussian: #{e}\n"
+        end
+        
+        #check invCum(cum) = Identity
+        e = xTemp.diff(x).norm(h)
+        unless e <= 1.0e-3
+            raise "tolerance exceeded\n" + \
+                  "norm of C++ invCum(cum(.)) " + \
+                  "minus identity: #{e}\n"
+        end
+        
+        #check cum.derivative=normal
+        e = y2Temp.diff(y).norm(h)
+        unless e <= 1.0e-16
+            raise "tolerance exceeded\n" + \
+                  "norm of C++ Cumulative.derivative " + \
+                  "minus analytic gaussian: #{e}\n"
+        end
+        
+        #check normal.derivative=gaussianDerivative
+        e = ydTemp.diff(yd).norm(h)
+        unless e <= 1.0e-16
+            raise "tolerance exceeded\n" + \
+                  "norm of C++ NormalDist.derivative " + \
+                  "minus analytic gaussian derivative: #{e}\n"
+        end
+    end
+end
 
-    TestUnit.printDetails("norm of:")
-        
-    #check norm=gaussian
-    e = yTemp.diff(y).norm(h)
-    TestUnit.printDetails(
-        "C++ NormalDistribution    MINUS            analityc gaussian: #{e}")
-    raise "tolerance exceeded" if e > 1.0e-16
-        
-    #check invCum(cum) = Identity
-    e = xTemp.diff(x).norm(h)
-    TestUnit.printDetails(
-        "C++ invCum(cum(.))        MINUS                     identity: #{e}") 
-    raise "tolerance exceeded" if e > 1.0e-3
-        
-    #check cum.derivative=normal
-    e = y2Temp.diff(y).norm(h)
-    TestUnit.printDetails(
-        "C++ Cumulative.derivative MINUS            analytic gaussian: #{e}")
-    raise "tolerance exceeded" if e > 1.0e-16
-        
-    #check normal.derivative=gaussianDerivative
-    e = ydTemp.diff(yd).norm(h)
-    TestUnit.printDetails(
-        "C++ NormalDist.derivative MINUS analytic gaussian.derivative: #{e}") 
-    raise "tolerance exceeded" if e > 1.0e-16
-        
-}
+if $0 == __FILE__
+    RUNIT::CUI::TestRunner.run(DistributionTest.suite)
+end
 

@@ -22,13 +22,18 @@
 
  $Source$
  $Log$
+ Revision 1.2  2001/04/04 14:10:30  lballabio
+ Ruby tests moved on top of RubyUnit
+
  Revision 1.1  2001/03/30 15:45:42  lballabio
  Still working on make dist (and added IntVector and DoubleVector to Ruby module)
 
 =end
 
 require 'QuantLib'
-require 'TestUnit'
+require 'runit/testcase'
+require 'runit/testsuite'
+require 'runit/cui/testrunner'
 
 module Enumerable
     def sum
@@ -49,46 +54,78 @@ module QuantLib
     end
 end
 
-TestUnit.test('statistics') {
-    tol = 1e-9
-    data =    QuantLib::DoubleVector.new(
-        [  3,   4,   5,   2,   3,   4,   5,   6,   4,   7])
-    weights = QuantLib::DoubleVector.new(
-        [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+class StatisticsTest < RUNIT::TestCase
+    def name
+        "Testing statistics..."
+    end
+    def test
+        tol = 1e-9
+        data =    QuantLib::DoubleVector.new(
+            [  3,   4,   5,   2,   3,   4,   5,   6,   4,   7])
+        weights = QuantLib::DoubleVector.new(
+            [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
         
-    s = QuantLib::Statistics.new
-    s.addWeightedSequence(data, weights)
-        
-    TestUnit.printDetails("samples:             #{s.samples}")
-    raise "Wrong number of samples" if s.samples != data.length
-        
-    TestUnit.printDetails("sum of the weights:  #{s.weightSum}")
-    raise "Wrong sum of weights" if s.weightSum != weights.sum
-        
-    TestUnit.printDetails("minimum value:        #{s.min}")
-    raise "Wrong minimum value" if s.min != data.min
-        
-    TestUnit.printDetails("maximum value:        #{s.max}")
-    raise "Wrong maximum value" if s.max != data.max
+        s = QuantLib::Statistics.new
+        s.addWeightedSequence(data, weights)
 
-    TestUnit.printDetails("mean value:           #{s.mean}")
-    raise "Wrong mean value" \
-        if (s.mean-data.times(weights).sum/weights.sum).abs > tol
+        unless s.samples == data.length
+            raise "Wrong number of samples\n" + \
+                  "calculated: #{s.samples}\n" + \
+                  "expected:   #{data.length}\n"
+        end
 
-    TestUnit.printDetails("variance:             #{s.variance}")
-    raise "Wrong variance" if (s.variance-2.23333333333).abs>tol
+        unless s.weightSum == weights.sum
+            raise "Wrong sum of weights\n" + \
+                  "calculated: #{s.weightSum}\n" + \
+                  "expected:   #{weights.sum}\n"
+        end
         
-    TestUnit.printDetails("std. deviation:       #{s.standardDeviation}")
-    raise "Wrong std. deviation" if (s.standardDeviation-1.4944341181).abs>tol
+        unless s.min == data.min
+            raise "Wrong minimum value\n" + \
+                  "calculated: #{s.min}\n" + \
+                  "expected:   #{data.min}\n"
+        end
         
-    TestUnit.printDetails("skewness:             #{s.skewness}")
-    raise "Wrong skewness" if (s.skewness-0.359543071407).abs>tol
+        unless s.max == data.max
+            raise "Wrong maximum value\n" + \
+                  "calculated: #{s.max}\n" + \
+                  "expected:   #{data.max}\n"
+        end
         
-    TestUnit.printDetails("excess kurtosis:     #{s.kurtosis}")
-    raise "Wrong kurtosis" if (s.kurtosis+0.151799637209).abs>tol
+        unless (s.mean-data.times(weights).sum/weights.sum).abs <= tol
+            raise "Wrong mean value\n" + \
+                  "calculated: #{s.mean}\n" + \
+                  "expected:   #{data.times(weights).sum/weights.sum}\n"
+        end
         
-    TestUnit.printDetails(
-	"error estimate:       #{s.errorEstimate} (not checked)"
-    )
-}
+        unless (s.variance-2.23333333333).abs <= tol
+            raise "Wrong variance\n" + \
+                  "calculated: #{s.variance}\n" + \
+                  "expected:   2.23333333333\n"
+        end
+
+        unless (s.standardDeviation-1.4944341181).abs <= tol
+            raise "Wrong std. deviation\n" + \
+                  "calculated: #{s.standardDeviation}\n" + \
+                  "expected:   1.4944341181\n"
+        end
+        
+        unless (s.skewness-0.359543071407).abs <= tol
+            raise "Wrong skewness\n" + \
+                  "calculated: #{s.skewness}\n" + \
+                  "expected:   0.359543071407\n"
+        end
+        
+        unless (s.kurtosis+0.151799637209).abs <= tol
+            raise "Wrong kurtosis\n" + \
+                  "calculated: #{s.kurtosis}\n" + \
+                  "expected:   -0.151799637209\n"
+        end
+    end
+end
+
+if $0 == __FILE__
+    RUNIT::CUI::TestRunner.run(StatisticsTest.suite)
+end
+
 
