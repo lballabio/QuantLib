@@ -23,10 +23,11 @@
 #define quantlib_errors_hpp
 
 #include <ql/qldefines.hpp>
-#include <exception>
-#include <string>
 #include <boost/assert.hpp>
 #include <boost/current_function.hpp>
+#include <boost/shared_ptr.hpp>
+#include <exception>
+#include <string>
 
 namespace QuantLib {
 
@@ -46,11 +47,11 @@ namespace QuantLib {
         //! returns the error message.
         const char* what() const throw ();
       private:
-        std::string file_;
+        boost::shared_ptr<std::string> file_;
         long line_;
-        std::string function_;
-        std::string message_;
-        std::string longMessage_;
+        boost::shared_ptr<std::string> function_;
+        boost::shared_ptr<std::string> message_;
+        boost::shared_ptr<std::string> longMessage_;
     };
 
 }

@@ -81,12 +81,16 @@ namespace QuantLib {
     Error::Error(const std::string& file, long line,
                  const std::string& function,
                  const std::string& message)
-    : file_(file), line_(line), function_(function), message_(message) {
-        longMessage_ = format(file, line, function, message);
+    : file_(boost::shared_ptr<std::string>(new std::string(file))),
+      line_(line),
+      function_(boost::shared_ptr<std::string>(new std::string(function))),
+      message_(boost::shared_ptr<std::string>(new std::string(message))) {
+        longMessage_ = boost::shared_ptr<std::string>(new std::string(
+                                      format(file, line, function, message)));
     }
 
     const char* Error::what() const throw () {
-        return longMessage_.c_str();
+        return longMessage_->c_str();
     }
 
 }
