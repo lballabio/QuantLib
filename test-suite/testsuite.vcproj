@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\Debug/testsuite.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\lib"
 				GenerateDebugInformation="TRUE"
@@ -240,7 +240,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugMTDLL/testsuite.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\lib"
 				GenerateDebugInformation="TRUE"
@@ -372,7 +372,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugST/testsuite.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\lib"
 				GenerateDebugInformation="TRUE"

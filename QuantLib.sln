@@ -109,8 +109,8 @@ Global
 		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Debug MTDLL.Build.0 = Debug MTDLL|Win32
 		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Debug SingleThread.ActiveCfg = Debug SingleThread|Win32
 		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Debug SingleThread.Build.0 = Debug SingleThread|Win32
-		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Release.ActiveCfg = Release|Win32
-		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Release.Build.0 = Release|Win32
+		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Release.ActiveCfg = Debug SingleThread|Win32
+		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Release.Build.0 = Debug SingleThread|Win32
 		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Release MTDLL.ActiveCfg = Release MTDLL|Win32
 		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Release MTDLL.Build.0 = Release MTDLL|Win32
 		{AEC3B2B0-6A5C-4F7A-A769-23F763EEEE24}.Release SingleThread.ActiveCfg = Release SingleThread|Win32
