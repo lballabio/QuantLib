@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -86,6 +83,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -269,7 +268,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -279,6 +311,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
+	"$(INTDIR)\sydney.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -376,13 +409,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\sydney.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -398,6 +431,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\sydney.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -495,13 +529,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\sydney.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -564,6 +598,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -748,7 +784,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -758,6 +827,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
+	"$(INTDIR)\sydney.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -855,13 +925,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\sydney.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -877,6 +947,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\sydney.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -974,13 +1045,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\sydney.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1043,6 +1114,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -1226,7 +1299,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1236,6 +1342,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
+	"$(INTDIR)\sydney.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -1333,13 +1440,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\sydney.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1355,6 +1462,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\sydney.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -1452,13 +1560,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\sydney.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1521,6 +1629,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -1705,7 +1815,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1715,6 +1858,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
+	"$(INTDIR)\sydney.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -1812,13 +1956,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\sydney.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1834,6 +1978,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\sydney.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -1931,13 +2076,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\sydney.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1945,36 +2090,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -2608,6 +2723,12 @@ SOURCE=.\ql\Lattices\tree.cpp
 SOURCE=.\ql\Lattices\trinomialtree.cpp
 
 "$(INTDIR)\trinomialtree.obj"	"$(INTDIR)\trinomialtree.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\functions\daycounters.cpp
+
+"$(INTDIR)\daycounters.obj"	"$(INTDIR)\daycounters.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

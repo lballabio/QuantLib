@@ -146,6 +146,7 @@ AC_OUTPUT(Makefile \
     ql/CashFlows/Makefile \
     ql/DayCounters/Makefile \
     ql/FiniteDifferences/Makefile \
+    ql/functions/Makefile \
     ql/Indexes/Makefile \
     ql/Instruments/Makefile \
     ql/Math/Makefile \

@@ -94,6 +94,8 @@
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
+#include <ql/functions/daycounters.hpp>
+
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Indexes/audlibor.hpp>
 #include <ql/Indexes/gbplibor.hpp>

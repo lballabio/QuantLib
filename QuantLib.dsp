@@ -1306,6 +1306,18 @@ SOURCE=.\ql\Lattices\trinomialtree.cpp
 SOURCE=.\ql\Lattices\trinomialtree.hpp
 # End Source File
 # End Group
+# Begin Group "functions"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\functions\daycounters.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\daycounters.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp

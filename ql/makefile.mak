@@ -28,6 +28,7 @@ CALIBRATION_LIB  = InterestRateModelling\CalibrationHelpers\CalibrationHelpers$(
 CASHFLOWS_LIB    = CashFlows\CashFlows$(_D).lib
 DAYCOUNTER_LIB   = DayCounters\DayCounters$(_D).lib
 FDM_LIB          = FiniteDifferences\FiniteDifferences$(_D).lib
+FUNCTIONS        = functions\functions$(_D).lib
 INDEXES_LIB      = Indexes\Indexes$(_D).lib
 INSTRUMENTS_LIB  = Instruments\Instruments$(_D).lib
 IRMODELING_LIB   = InterestRateModelling\IRModelling$(_D).lib
@@ -48,6 +49,7 @@ QUANTLIB_OBJS    = \
                    $(CORE_OBJS) \
                    $(DAYCOUNTER_LIB) \
                    $(FDM_LIB) \
+                   $(FUNCTIONS) \
                    $(INDEXES_LIB) \
                    $(INSTRUMENTS_LIB) \
                    $(IRMODELING_LIB) \
@@ -106,6 +108,8 @@ SubLibraries:
     $(MAKE)
     cd ..\FiniteDifferences
     $(MAKE)
+    cd ..\functions
+    $(MAKE)
     cd ..\Indexes
     $(MAKE)
     cd ..\Instruments
@@ -144,6 +148,8 @@ clean::
     cd ..\DayCounters
     $(MAKE) clean
     cd ..\FiniteDifferences
+    $(MAKE) clean
+    cd ..\functions
     $(MAKE) clean
     cd ..\Indexes
     $(MAKE) clean

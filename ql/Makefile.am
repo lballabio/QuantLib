@@ -9,6 +9,7 @@ SUBDIRS = \
     CashFlows \
     DayCounters \
     FiniteDifferences \
+    functions \
     Indexes \
     Instruments \
     InterestRateModelling \
@@ -77,6 +78,7 @@ libQuantLib_la_LIBADD = \
 	CashFlows/libCashFlows.la \
 	DayCounters/libDayCounters.la \
 	FiniteDifferences/libFiniteDifferences.la \
+	functions/libfunctions.la \
 	Indexes/libIndexes.la \
 	Instruments/libInstruments.la \
     InterestRateModelling/libInterestRateModelling.la \
