@@ -36,7 +36,6 @@
 
 #include <ql/dataformatters.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
@@ -95,6 +94,7 @@ namespace QuantLib {
             while (accuracy > tolerance) {
                 // conservative estimate of how many samples are needed 
                 order = accuracy*accuracy/tolerance/tolerance;
+                
                 nextBatch = size_t(
                     QL_MAX(sampleNumber*order*0.8-sampleNumber,
                     double(minSample_)));
