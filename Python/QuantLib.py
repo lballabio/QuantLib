@@ -1,6 +1,26 @@
 # This file was created automatically by SWIG.
 import QuantLibc
 import new
+class BoundaryCondition:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_BoundaryCondition,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_BoundaryCondition(self)
+    def __repr__(self):
+        return "<C BoundaryCondition instance at %s>" % (self.this,)
+class BoundaryConditionPtr(BoundaryCondition):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = BoundaryCondition
+
+
+BoundaryCondition.type = new.instancemethod(QuantLibc.BoundaryCondition_type, None, BoundaryCondition)
+BoundaryCondition.value = new.instancemethod(QuantLibc.BoundaryCondition_value, None, BoundaryCondition)
+
 class Date:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_Date,args,kwargs)
@@ -85,27 +105,6 @@ Calendar.__repr__ = new.instancemethod(QuantLibc.Calendar___repr__, None, Calend
 Calendar.__cmp__ = new.instancemethod(QuantLibc.Calendar___cmp__, None, Calendar)
 Calendar.__nonzero__ = new.instancemethod(QuantLibc.Calendar___nonzero__, None, Calendar)
 
-class DayCounter:
-    def __init__(self,this):
-        self.this = this
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_DayCounter(self)
-class DayCounterPtr(DayCounter):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = DayCounter
-
-
-DayCounter.dayCount = new.instancemethod(QuantLibc.DayCounter_dayCount, None, DayCounter)
-DayCounter.yearFraction = new.instancemethod(QuantLibc.DayCounter_yearFraction, None, DayCounter)
-DayCounter.__str__ = new.instancemethod(QuantLibc.DayCounter___str__, None, DayCounter)
-DayCounter.__repr__ = new.instancemethod(QuantLibc.DayCounter___repr__, None, DayCounter)
-DayCounter.__cmp__ = new.instancemethod(QuantLibc.DayCounter___cmp__, None, DayCounter)
-DayCounter.__nonzero__ = new.instancemethod(QuantLibc.DayCounter___nonzero__, None, DayCounter)
-
 class Currency:
     def __init__(self,this):
         self.this = this
@@ -133,6 +132,254 @@ Currency.__str__ = new.instancemethod(QuantLibc.Currency___str__, None, Currency
 Currency.__repr__ = new.instancemethod(QuantLibc.Currency___repr__, None, Currency)
 Currency.__cmp__ = new.instancemethod(QuantLibc.Currency___cmp__, None, Currency)
 Currency.__nonzero__ = new.instancemethod(QuantLibc.Currency___nonzero__, None, Currency)
+
+class DayCounter:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DayCounter(self)
+class DayCounterPtr(DayCounter):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DayCounter
+
+
+DayCounter.dayCount = new.instancemethod(QuantLibc.DayCounter_dayCount, None, DayCounter)
+DayCounter.yearFraction = new.instancemethod(QuantLibc.DayCounter_yearFraction, None, DayCounter)
+DayCounter.__str__ = new.instancemethod(QuantLibc.DayCounter___str__, None, DayCounter)
+DayCounter.__repr__ = new.instancemethod(QuantLibc.DayCounter___repr__, None, DayCounter)
+DayCounter.__cmp__ = new.instancemethod(QuantLibc.DayCounter___cmp__, None, DayCounter)
+DayCounter.__nonzero__ = new.instancemethod(QuantLibc.DayCounter___nonzero__, None, DayCounter)
+
+class NormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_NormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_NormalDistribution(self)
+    def __repr__(self):
+        return "<C NormalDistribution instance at %s>" % (self.this,)
+class NormalDistributionPtr(NormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = NormalDistribution
+
+
+NormalDistribution.derivative = new.instancemethod(QuantLibc.NormalDistribution_derivative, None, NormalDistribution)
+NormalDistribution.__call__ = new.instancemethod(QuantLibc.NormalDistribution___call__, None, NormalDistribution)
+
+class CumulativeNormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_CumulativeNormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_CumulativeNormalDistribution(self)
+    def __repr__(self):
+        return "<C CumulativeNormalDistribution instance at %s>" % (self.this,)
+class CumulativeNormalDistributionPtr(CumulativeNormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = CumulativeNormalDistribution
+
+
+CumulativeNormalDistribution.derivative = new.instancemethod(QuantLibc.CumulativeNormalDistribution_derivative, None, CumulativeNormalDistribution)
+CumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.CumulativeNormalDistribution___call__, None, CumulativeNormalDistribution)
+
+class InvCumulativeNormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_InvCumulativeNormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_InvCumulativeNormalDistribution(self)
+    def __repr__(self):
+        return "<C InvCumulativeNormalDistribution instance at %s>" % (self.this,)
+class InvCumulativeNormalDistributionPtr(InvCumulativeNormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = InvCumulativeNormalDistribution
+
+
+InvCumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.InvCumulativeNormalDistribution___call__, None, InvCumulativeNormalDistribution)
+
+class HistoryIterator:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_HistoryIterator(self)
+    def date(*args, **kwargs):
+        val = apply(QuantLibc.HistoryIterator_date,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C HistoryIterator instance at %s>" % (self.this,)
+class HistoryIteratorPtr(HistoryIterator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = HistoryIterator
+
+
+HistoryIterator.value = new.instancemethod(QuantLibc.HistoryIterator_value, None, HistoryIterator)
+HistoryIterator.advance = new.instancemethod(QuantLibc.HistoryIterator_advance, None, HistoryIterator)
+HistoryIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryIterator___cmp__, None, HistoryIterator)
+HistoryIterator.__str__ = new.instancemethod(QuantLibc.HistoryIterator___str__, None, HistoryIterator)
+
+class HistoryValidIterator:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_HistoryValidIterator(self)
+    def date(*args, **kwargs):
+        val = apply(QuantLibc.HistoryValidIterator_date,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C HistoryValidIterator instance at %s>" % (self.this,)
+class HistoryValidIteratorPtr(HistoryValidIterator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = HistoryValidIterator
+
+
+HistoryValidIterator.value = new.instancemethod(QuantLibc.HistoryValidIterator_value, None, HistoryValidIterator)
+HistoryValidIterator.advance = new.instancemethod(QuantLibc.HistoryValidIterator_advance, None, HistoryValidIterator)
+HistoryValidIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidIterator___cmp__, None, HistoryValidIterator)
+HistoryValidIterator.__str__ = new.instancemethod(QuantLibc.HistoryValidIterator___str__, None, HistoryValidIterator)
+
+class HistoryDataIterator:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_HistoryDataIterator(self)
+    def __repr__(self):
+        return "<C HistoryDataIterator instance at %s>" % (self.this,)
+class HistoryDataIteratorPtr(HistoryDataIterator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = HistoryDataIterator
+
+
+HistoryDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryDataIterator___float__, None, HistoryDataIterator)
+HistoryDataIterator.advance = new.instancemethod(QuantLibc.HistoryDataIterator_advance, None, HistoryDataIterator)
+HistoryDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryDataIterator___cmp__, None, HistoryDataIterator)
+HistoryDataIterator.__str__ = new.instancemethod(QuantLibc.HistoryDataIterator___str__, None, HistoryDataIterator)
+
+class HistoryValidDataIterator:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_HistoryValidDataIterator(self)
+    def __repr__(self):
+        return "<C HistoryValidDataIterator instance at %s>" % (self.this,)
+class HistoryValidDataIteratorPtr(HistoryValidDataIterator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = HistoryValidDataIterator
+
+
+HistoryValidDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___float__, None, HistoryValidDataIterator)
+HistoryValidDataIterator.advance = new.instancemethod(QuantLibc.HistoryValidDataIterator_advance, None, HistoryValidDataIterator)
+HistoryValidDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___cmp__, None, HistoryValidDataIterator)
+HistoryValidDataIterator.__str__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___str__, None, HistoryValidDataIterator)
+
+class History:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_History,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_History(self)
+    def firstDate(*args, **kwargs):
+        val = apply(QuantLibc.History_firstDate,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+    def lastDate(*args, **kwargs):
+        val = apply(QuantLibc.History_lastDate,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+    def begin(*args, **kwargs):
+        val = apply(QuantLibc.History_begin,args, kwargs)
+        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
+        return val
+    def end(*args, **kwargs):
+        val = apply(QuantLibc.History_end,args, kwargs)
+        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
+        return val
+    def iterator(*args, **kwargs):
+        val = apply(QuantLibc.History_iterator,args, kwargs)
+        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
+        return val
+    def vbegin(*args, **kwargs):
+        val = apply(QuantLibc.History_vbegin,args, kwargs)
+        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
+        return val
+    def vend(*args, **kwargs):
+        val = apply(QuantLibc.History_vend,args, kwargs)
+        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
+        return val
+    def valid_iterator(*args, **kwargs):
+        val = apply(QuantLibc.History_valid_iterator,args, kwargs)
+        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
+        return val
+    def dbegin(*args, **kwargs):
+        val = apply(QuantLibc.History_dbegin,args, kwargs)
+        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def dend(*args, **kwargs):
+        val = apply(QuantLibc.History_dend,args, kwargs)
+        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def data_iterator(*args, **kwargs):
+        val = apply(QuantLibc.History_data_iterator,args, kwargs)
+        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def vdbegin(*args, **kwargs):
+        val = apply(QuantLibc.History_vdbegin,args, kwargs)
+        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def vdend(*args, **kwargs):
+        val = apply(QuantLibc.History_vdend,args, kwargs)
+        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
+        return val
+    def valid_data_iterator(*args, **kwargs):
+        val = apply(QuantLibc.History_valid_data_iterator,args, kwargs)
+        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
+        return val
+class HistoryPtr(History):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = History
+
+
+History.size = new.instancemethod(QuantLibc.History_size, None, History)
+History.__getitem__ = new.instancemethod(QuantLibc.History___getitem__, None, History)
+History.__str__ = new.instancemethod(QuantLibc.History___str__, None, History)
+History.__repr__ = new.instancemethod(QuantLibc.History___repr__, None, History)
 
 class TermStructure:
     def __init__(self,this):
@@ -239,25 +486,72 @@ Instrument.__repr__ = new.instancemethod(QuantLibc.Instrument___repr__, None, In
 Instrument.__cmp__ = new.instancemethod(QuantLibc.Instrument___cmp__, None, Instrument)
 Instrument.__nonzero__ = new.instancemethod(QuantLibc.Instrument___nonzero__, None, Instrument)
 
-class BoundaryCondition:
+class StandardPathGenerator:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_BoundaryCondition,args,kwargs)
+        self.this = apply(QuantLibc.new_StandardPathGenerator,args,kwargs)
         self.thisown = 1
 
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_BoundaryCondition(self)
     def __repr__(self):
-        return "<C BoundaryCondition instance at %s>" % (self.this,)
-class BoundaryConditionPtr(BoundaryCondition):
+        return "<C StandardPathGenerator instance at %s>" % (self.this,)
+class StandardPathGeneratorPtr(StandardPathGenerator):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = BoundaryCondition
+        self.__class__ = StandardPathGenerator
 
 
-BoundaryCondition.type = new.instancemethod(QuantLibc.BoundaryCondition_type, None, BoundaryCondition)
-BoundaryCondition.value = new.instancemethod(QuantLibc.BoundaryCondition_value, None, BoundaryCondition)
+StandardPathGenerator.next = new.instancemethod(QuantLibc.StandardPathGenerator_next, None, StandardPathGenerator)
+StandardPathGenerator.weight = new.instancemethod(QuantLibc.StandardPathGenerator_weight, None, StandardPathGenerator)
+
+class McEuropeanPricer:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_McEuropeanPricer,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C McEuropeanPricer instance at %s>" % (self.this,)
+class McEuropeanPricerPtr(McEuropeanPricer):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = McEuropeanPricer
+
+
+McEuropeanPricer.value = new.instancemethod(QuantLibc.McEuropeanPricer_value, None, McEuropeanPricer)
+McEuropeanPricer.errorEstimate = new.instancemethod(QuantLibc.McEuropeanPricer_errorEstimate, None, McEuropeanPricer)
+
+class GeometricAsianOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_GeometricAsianOption,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C GeometricAsianOption instance at %s>" % (self.this,)
+class GeometricAsianOptionPtr(GeometricAsianOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = GeometricAsianOption
+
+
+GeometricAsianOption.value = new.instancemethod(QuantLibc.GeometricAsianOption_value, None, GeometricAsianOption)
+
+class McAsianPricer:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_McAsianPricer,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C McAsianPricer instance at %s>" % (self.this,)
+class McAsianPricerPtr(McAsianPricer):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = McAsianPricer
+
+
+McAsianPricer.value = new.instancemethod(QuantLibc.McAsianPricer_value, None, McAsianPricer)
+McAsianPricer.errorEstimate = new.instancemethod(QuantLibc.McAsianPricer_errorEstimate, None, McAsianPricer)
 
 class TridiagonalOperator:
     def __init__(self,*args,**kwargs):
@@ -462,6 +756,46 @@ DividendEuropeanOption.vega = new.instancemethod(QuantLibc.DividendEuropeanOptio
 DividendEuropeanOption.rho = new.instancemethod(QuantLibc.DividendEuropeanOption_rho, None, DividendEuropeanOption)
 DividendEuropeanOption.impliedVolatility = new.instancemethod(QuantLibc.DividendEuropeanOption_impliedVolatility, None, DividendEuropeanOption)
 
+class UniformRandomGenerator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_UniformRandomGenerator,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_UniformRandomGenerator(self)
+    def __repr__(self):
+        return "<C UniformRandomGenerator instance at %s>" % (self.this,)
+class UniformRandomGeneratorPtr(UniformRandomGenerator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = UniformRandomGenerator
+
+
+UniformRandomGenerator.next = new.instancemethod(QuantLibc.UniformRandomGenerator_next, None, UniformRandomGenerator)
+UniformRandomGenerator.weight = new.instancemethod(QuantLibc.UniformRandomGenerator_weight, None, UniformRandomGenerator)
+
+class GaussianRandomGenerator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_GaussianRandomGenerator,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_GaussianRandomGenerator(self)
+    def __repr__(self):
+        return "<C GaussianRandomGenerator instance at %s>" % (self.this,)
+class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = GaussianRandomGenerator
+
+
+GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
+GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
+
 class ObjectiveFunction:
     def __init__(self,this):
         self.this = this
@@ -655,339 +989,6 @@ Statistics.reset = new.instancemethod(QuantLibc.Statistics_reset, None, Statisti
 Statistics.addSequence = new.instancemethod(QuantLibc.Statistics_addSequence, None, Statistics)
 Statistics.addWeightedSequence = new.instancemethod(QuantLibc.Statistics_addWeightedSequence, None, Statistics)
 
-class UniformRandomGenerator:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_UniformRandomGenerator,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_UniformRandomGenerator(self)
-    def __repr__(self):
-        return "<C UniformRandomGenerator instance at %s>" % (self.this,)
-class UniformRandomGeneratorPtr(UniformRandomGenerator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = UniformRandomGenerator
-
-
-UniformRandomGenerator.next = new.instancemethod(QuantLibc.UniformRandomGenerator_next, None, UniformRandomGenerator)
-UniformRandomGenerator.weight = new.instancemethod(QuantLibc.UniformRandomGenerator_weight, None, UniformRandomGenerator)
-
-class GaussianRandomGenerator:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_GaussianRandomGenerator,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_GaussianRandomGenerator(self)
-    def __repr__(self):
-        return "<C GaussianRandomGenerator instance at %s>" % (self.this,)
-class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = GaussianRandomGenerator
-
-
-GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
-GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
-
-class HistoryIterator:
-    def __init__(self,this):
-        self.this = this
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_HistoryIterator(self)
-    def date(*args, **kwargs):
-        val = apply(QuantLibc.HistoryIterator_date,args, kwargs)
-        if val: val = DatePtr(val) ; val.thisown = 1
-        return val
-    def __repr__(self):
-        return "<C HistoryIterator instance at %s>" % (self.this,)
-class HistoryIteratorPtr(HistoryIterator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = HistoryIterator
-
-
-HistoryIterator.value = new.instancemethod(QuantLibc.HistoryIterator_value, None, HistoryIterator)
-HistoryIterator.advance = new.instancemethod(QuantLibc.HistoryIterator_advance, None, HistoryIterator)
-HistoryIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryIterator___cmp__, None, HistoryIterator)
-HistoryIterator.__str__ = new.instancemethod(QuantLibc.HistoryIterator___str__, None, HistoryIterator)
-
-class HistoryValidIterator:
-    def __init__(self,this):
-        self.this = this
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_HistoryValidIterator(self)
-    def date(*args, **kwargs):
-        val = apply(QuantLibc.HistoryValidIterator_date,args, kwargs)
-        if val: val = DatePtr(val) ; val.thisown = 1
-        return val
-    def __repr__(self):
-        return "<C HistoryValidIterator instance at %s>" % (self.this,)
-class HistoryValidIteratorPtr(HistoryValidIterator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = HistoryValidIterator
-
-
-HistoryValidIterator.value = new.instancemethod(QuantLibc.HistoryValidIterator_value, None, HistoryValidIterator)
-HistoryValidIterator.advance = new.instancemethod(QuantLibc.HistoryValidIterator_advance, None, HistoryValidIterator)
-HistoryValidIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidIterator___cmp__, None, HistoryValidIterator)
-HistoryValidIterator.__str__ = new.instancemethod(QuantLibc.HistoryValidIterator___str__, None, HistoryValidIterator)
-
-class HistoryDataIterator:
-    def __init__(self,this):
-        self.this = this
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_HistoryDataIterator(self)
-    def __repr__(self):
-        return "<C HistoryDataIterator instance at %s>" % (self.this,)
-class HistoryDataIteratorPtr(HistoryDataIterator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = HistoryDataIterator
-
-
-HistoryDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryDataIterator___float__, None, HistoryDataIterator)
-HistoryDataIterator.advance = new.instancemethod(QuantLibc.HistoryDataIterator_advance, None, HistoryDataIterator)
-HistoryDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryDataIterator___cmp__, None, HistoryDataIterator)
-HistoryDataIterator.__str__ = new.instancemethod(QuantLibc.HistoryDataIterator___str__, None, HistoryDataIterator)
-
-class HistoryValidDataIterator:
-    def __init__(self,this):
-        self.this = this
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_HistoryValidDataIterator(self)
-    def __repr__(self):
-        return "<C HistoryValidDataIterator instance at %s>" % (self.this,)
-class HistoryValidDataIteratorPtr(HistoryValidDataIterator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = HistoryValidDataIterator
-
-
-HistoryValidDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___float__, None, HistoryValidDataIterator)
-HistoryValidDataIterator.advance = new.instancemethod(QuantLibc.HistoryValidDataIterator_advance, None, HistoryValidDataIterator)
-HistoryValidDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___cmp__, None, HistoryValidDataIterator)
-HistoryValidDataIterator.__str__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___str__, None, HistoryValidDataIterator)
-
-class History:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_History,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_History(self)
-    def firstDate(*args, **kwargs):
-        val = apply(QuantLibc.History_firstDate,args, kwargs)
-        if val: val = DatePtr(val) ; val.thisown = 1
-        return val
-    def lastDate(*args, **kwargs):
-        val = apply(QuantLibc.History_lastDate,args, kwargs)
-        if val: val = DatePtr(val) ; val.thisown = 1
-        return val
-    def begin(*args, **kwargs):
-        val = apply(QuantLibc.History_begin,args, kwargs)
-        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
-        return val
-    def end(*args, **kwargs):
-        val = apply(QuantLibc.History_end,args, kwargs)
-        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
-        return val
-    def iterator(*args, **kwargs):
-        val = apply(QuantLibc.History_iterator,args, kwargs)
-        if val: val = HistoryIteratorPtr(val) ; val.thisown = 1
-        return val
-    def vbegin(*args, **kwargs):
-        val = apply(QuantLibc.History_vbegin,args, kwargs)
-        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
-        return val
-    def vend(*args, **kwargs):
-        val = apply(QuantLibc.History_vend,args, kwargs)
-        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
-        return val
-    def valid_iterator(*args, **kwargs):
-        val = apply(QuantLibc.History_valid_iterator,args, kwargs)
-        if val: val = HistoryValidIteratorPtr(val) ; val.thisown = 1
-        return val
-    def dbegin(*args, **kwargs):
-        val = apply(QuantLibc.History_dbegin,args, kwargs)
-        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
-        return val
-    def dend(*args, **kwargs):
-        val = apply(QuantLibc.History_dend,args, kwargs)
-        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
-        return val
-    def data_iterator(*args, **kwargs):
-        val = apply(QuantLibc.History_data_iterator,args, kwargs)
-        if val: val = HistoryDataIteratorPtr(val) ; val.thisown = 1
-        return val
-    def vdbegin(*args, **kwargs):
-        val = apply(QuantLibc.History_vdbegin,args, kwargs)
-        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
-        return val
-    def vdend(*args, **kwargs):
-        val = apply(QuantLibc.History_vdend,args, kwargs)
-        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
-        return val
-    def valid_data_iterator(*args, **kwargs):
-        val = apply(QuantLibc.History_valid_data_iterator,args, kwargs)
-        if val: val = HistoryValidDataIteratorPtr(val) ; val.thisown = 1
-        return val
-class HistoryPtr(History):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = History
-
-
-History.size = new.instancemethod(QuantLibc.History_size, None, History)
-History.__getitem__ = new.instancemethod(QuantLibc.History___getitem__, None, History)
-History.__str__ = new.instancemethod(QuantLibc.History___str__, None, History)
-History.__repr__ = new.instancemethod(QuantLibc.History___repr__, None, History)
-
-class NormalDistribution:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_NormalDistribution,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_NormalDistribution(self)
-    def __repr__(self):
-        return "<C NormalDistribution instance at %s>" % (self.this,)
-class NormalDistributionPtr(NormalDistribution):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = NormalDistribution
-
-
-NormalDistribution.__call__ = new.instancemethod(QuantLibc.NormalDistribution___call__, None, NormalDistribution)
-
-class CumulativeNormalDistribution:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_CumulativeNormalDistribution,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_CumulativeNormalDistribution(self)
-    def __repr__(self):
-        return "<C CumulativeNormalDistribution instance at %s>" % (self.this,)
-class CumulativeNormalDistributionPtr(CumulativeNormalDistribution):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = CumulativeNormalDistribution
-
-
-CumulativeNormalDistribution.derivative = new.instancemethod(QuantLibc.CumulativeNormalDistribution_derivative, None, CumulativeNormalDistribution)
-CumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.CumulativeNormalDistribution___call__, None, CumulativeNormalDistribution)
-
-class InverseCumulativeNormalDistribution:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_InverseCumulativeNormalDistribution,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_InverseCumulativeNormalDistribution(self)
-    def __repr__(self):
-        return "<C InverseCumulativeNormalDistribution instance at %s>" % (self.this,)
-class InverseCumulativeNormalDistributionPtr(InverseCumulativeNormalDistribution):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = InverseCumulativeNormalDistribution
-
-
-InverseCumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.InverseCumulativeNormalDistribution___call__, None, InverseCumulativeNormalDistribution)
-
-class StandardPathGenerator:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_StandardPathGenerator,args,kwargs)
-        self.thisown = 1
-
-    def __repr__(self):
-        return "<C StandardPathGenerator instance at %s>" % (self.this,)
-class StandardPathGeneratorPtr(StandardPathGenerator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = StandardPathGenerator
-
-
-StandardPathGenerator.next = new.instancemethod(QuantLibc.StandardPathGenerator_next, None, StandardPathGenerator)
-StandardPathGenerator.weight = new.instancemethod(QuantLibc.StandardPathGenerator_weight, None, StandardPathGenerator)
-
-class McEuropeanPricer:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_McEuropeanPricer,args,kwargs)
-        self.thisown = 1
-
-    def __repr__(self):
-        return "<C McEuropeanPricer instance at %s>" % (self.this,)
-class McEuropeanPricerPtr(McEuropeanPricer):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = McEuropeanPricer
-
-
-McEuropeanPricer.value = new.instancemethod(QuantLibc.McEuropeanPricer_value, None, McEuropeanPricer)
-McEuropeanPricer.errorEstimate = new.instancemethod(QuantLibc.McEuropeanPricer_errorEstimate, None, McEuropeanPricer)
-
-class GeometricAsianOption:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_GeometricAsianOption,args,kwargs)
-        self.thisown = 1
-
-    def __repr__(self):
-        return "<C GeometricAsianOption instance at %s>" % (self.this,)
-class GeometricAsianOptionPtr(GeometricAsianOption):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = GeometricAsianOption
-
-
-GeometricAsianOption.value = new.instancemethod(QuantLibc.GeometricAsianOption_value, None, GeometricAsianOption)
-
-class McAsianPricer:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_McAsianPricer,args,kwargs)
-        self.thisown = 1
-
-    def __repr__(self):
-        return "<C McAsianPricer instance at %s>" % (self.this,)
-class McAsianPricerPtr(McAsianPricer):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = McAsianPricer
-
-
-McAsianPricer.value = new.instancemethod(QuantLibc.McAsianPricer_value, None, McAsianPricer)
-McAsianPricer.errorEstimate = new.instancemethod(QuantLibc.McAsianPricer_errorEstimate, None, McAsianPricer)
-
 
 
 #-------------- FUNCTION WRAPPERS ------------------
@@ -1025,31 +1026,6 @@ def Milan(*args, **kwargs):
 def Zurich(*args, **kwargs):
     val = apply(QuantLibc.Zurich,args,kwargs)
     if val: val = CalendarPtr(val); val.thisown = 1
-    return val
-
-def Actual360(*args, **kwargs):
-    val = apply(QuantLibc.Actual360,args,kwargs)
-    if val: val = DayCounterPtr(val); val.thisown = 1
-    return val
-
-def Actual365(*args, **kwargs):
-    val = apply(QuantLibc.Actual365,args,kwargs)
-    if val: val = DayCounterPtr(val); val.thisown = 1
-    return val
-
-def Thirty360(*args, **kwargs):
-    val = apply(QuantLibc.Thirty360,args,kwargs)
-    if val: val = DayCounterPtr(val); val.thisown = 1
-    return val
-
-def Thirty360European(*args, **kwargs):
-    val = apply(QuantLibc.Thirty360European,args,kwargs)
-    if val: val = DayCounterPtr(val); val.thisown = 1
-    return val
-
-def Thirty360Italian(*args, **kwargs):
-    val = apply(QuantLibc.Thirty360Italian,args,kwargs)
-    if val: val = DayCounterPtr(val); val.thisown = 1
     return val
 
 def EUR(*args, **kwargs):
@@ -1105,6 +1081,31 @@ def JPY(*args, **kwargs):
 def SEK(*args, **kwargs):
     val = apply(QuantLibc.SEK,args,kwargs)
     if val: val = CurrencyPtr(val); val.thisown = 1
+    return val
+
+def Actual360(*args, **kwargs):
+    val = apply(QuantLibc.Actual360,args,kwargs)
+    if val: val = DayCounterPtr(val); val.thisown = 1
+    return val
+
+def Actual365(*args, **kwargs):
+    val = apply(QuantLibc.Actual365,args,kwargs)
+    if val: val = DayCounterPtr(val); val.thisown = 1
+    return val
+
+def Thirty360(*args, **kwargs):
+    val = apply(QuantLibc.Thirty360,args,kwargs)
+    if val: val = DayCounterPtr(val); val.thisown = 1
+    return val
+
+def Thirty360European(*args, **kwargs):
+    val = apply(QuantLibc.Thirty360European,args,kwargs)
+    if val: val = DayCounterPtr(val); val.thisown = 1
+    return val
+
+def Thirty360Italian(*args, **kwargs):
+    val = apply(QuantLibc.Thirty360Italian,args,kwargs)
+    if val: val = DayCounterPtr(val); val.thisown = 1
     return val
 
 def ImpliedTermStructure(*args, **kwargs):
