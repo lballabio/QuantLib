@@ -1,13 +1,24 @@
-add Edgeworth expansion
-switch to BrownianBridge
+1) switch to BrownianBridge
+2) american at-hit lambda: is Haug wrong? Probably not, anyway...
+3) report errors to Haug:
+    - case 3, 4 of binary barriers
+    - jump diffusion values (termination criterium)
+4) add Edgeworth expansion
 american at-expiry greeks
 american at-hit greeks to be completed
-american at-hit lambda: is Haug wrong? Probably not, anyway...
-report case 3, 4 as wrong to Haug
 review MC engine for american options
 
+add Geske-Johnson close formula for american put
+add Roll-Geske-Whaley close formula for american call
+
 check accuracy of bivariate algo:
-Z. Drezner "Computation of the Bivariate Normal Integral" (January 78)
+e-mail: zdrezner@fullerton.edu for
+Drezner, Z, (1978), Computation of the bivariate normal integral, Mathematics of Computation 32, pp. 277-279.
+Drezner, Z. and Wesolowsky, G. O. (1990) `On the Computation of the Bivariate Normal Integral', Journal of Statistical Computation and Simulation 35, pp. 101-107.
+Drezner, Z (1992) Computation of the Multivariate Normal Integral, ACM Transactions on Mathematics Software 18, pp. 450-460.
+Drezner, Z (1994) Computation of the Trivariate Normal Integral, Mathematics of Computation 62, pp. 289-294.
+
+Genz, A. (1992) `Numerical Computation of the Multivariate Normal Probabilities', J. Comput. Graph. Stat. 1, pp. 141-150.
 
 investigate quanto-forward bug
 add tests for quanto and forward (Haug cases)
