@@ -41,34 +41,32 @@
     In the QuantLib namespace:
 
     <ul>
-    <li>A number of financial types is provided, such as Rate,
-    Spread, or DiscountFactor. All these types act
+    <li>A number of financial types is provided, such as QuantLib::Rate,
+    QuantLib::Spread, or QuantLib::DiscountFactor. All these types act
     as, and indeed are, doubles.</li>
 
-    <li>The concrete class Date (see \ref datetime).
+    <li>The Date, Calendar and DayCounter classes are defined 
+    (see \ref datetime).
 
-    <li>The abstract classes <tt>ForwardVolatilitySurface</tt>
-    and <tt>SwaptionVolatilitySurface</tt> provide the common interface
+    <li>The abstract classes QuantLib::ForwardVolatilitySurface
+    and QuantLib::SwaptionVolatilitySurface provide the common interface
     to concrete volatility models. No examples are available at this
-    time.</li>
+    time, and the classes themselves will probably need some reworking.</li>
 
-    <li>The abstract class Solver1D provides the common interface of the classes
-    implemented in the Solvers1D namespace.</li>
+    <li>The abstract class QuantLib::Solver1D provides a common interface for 
+    the one-dimensional solvers implemented in the QuantLib::Solvers1D 
+    namespace.</li>
 
-    <li>The abstract class DayCounter provides the common interface of the classes
-    implemented in the DayCounters namespace.</li>
+    <li>The abstract class QuantLib::Index provides the common interface of 
+    the classes implemented in the QuantLib::Indexes namespace.</li>
 
-    <li>The abstract class Currency provides the common interface of the classes
-    implemented in the Currencies namespace.</li>
+    <li>The abstract class QuantLib::Instrument provides a common interface 
+    and a calculation ramework for the classes implemented in the 
+    QuantLib::Instruments namespace.</li>
 
-    <li>The abstract class Index provides the common interface of the classes
-    implemented in the Indexes namespace.</li>
-
-    <li>The abstract class Instrument provides the common interface of the classes
-    implemented in the Instruments namespace.</li>
-
-    <li>The abstract class TermStructure provides the common interface of the classes
-    implemented in the TermStructures namespace.</li>
+    <li>The abstract class QuantLib::TermStructure provides a common interface 
+    for the classes implemented in the QuantLib::TermStructures 
+    namespace.</li>
 
     </ul>
 

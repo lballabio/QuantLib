@@ -21,20 +21,11 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page instruments Instrument classes
+/*! \page instruments Instruments and pricers
     Documentation for this part of the library is in progress.
 
-    The abstract class Instrument provides the common
-    interface through which concrete implementations of different
-    financial instruments can be used. Also, two abstract classes are
-    provided which are derived from Instrument and implement
-    part of the interface, namely, PricedInstrument and
-    OTCInstrument (where OTC stands for over-the-counter).
-    Methods are declared for accessing the codes and value of the
-    instrument, and for setting the term structure and volatility
-    surface (see below) which will be used while pricing the
-    instrument. The Stock class is provided as an example in
-    the Instruments namespace, where concrete instrument
-    classes will be stored.
+    This section will include documentation for classes such as 
+    QuantLib::Instrument, its derived classes in the QuantLib::Instruments 
+    namespace, and the pricing engines in the QuantLib::Pricers namespace.
 
 */

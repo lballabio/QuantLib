@@ -21,29 +21,11 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page solvers1d One-dimensional solvers
+/*! \page fixedincome The fixed-income framework
     Documentation for this part of the library is in progress.
 
-    The abstract class QuantLib::Solver1D provides the interface to a
-    1-dimensional solver which can find the zeroes of a given function.
-
-    A number of such solvers is contained in the QuantLib::Solvers1D
-    namespace, namely,
-
-    - Bisection
-    - Brent
-    - FalsePosition
-    - Newton (%Newton algorithm without braketing)
-    - NewtonSafe (%Newton algorithm with braketing)
-    - Ridder
-    - Secant
-
-    The implementation of the algorithms was inspired by
-    "Numerical Recipes in C", 2nd edition,
-    Press, Teukolsky, Vetterling, Flannery - Chapter 9
-
-    Some work is needed to resolve the ambiguity of the root finding accuracy
-    defition: for some algorithms it is the x-accuracy, for others it is
-    f(x)-accuracy.
-
+    This framework include classes such as QuantLib::CashFlow and 
+    QuantLib::Index with their derived classes (implemented in the 
+    QuantLib::CashFlows and QuantLib::Indexes namespace, respectively)
+    and instruments such as QuantLib::Instruments::Swap.
 */

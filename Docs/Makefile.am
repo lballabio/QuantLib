@@ -36,9 +36,9 @@ docs-html-online:
 	cp images/*.eps latex
 	cp images/*.pdf latex
 docs-ps: tex-files
-	extra_mem_top=263000 max_strings=30000 hash_extra=10000 $(MAKE) -C latex ps
+	pool_size=128000 extra_mem_top=263000 max_strings=30000 hash_extra=10000 $(MAKE) -C latex ps
 docs-pdf: tex-files pdf-figures
-	extra_mem_top=263000 max_strings=30000 hash_extra=10000 $(MAKE) -C latex pdf
+	pool_size=128000 extra_mem_top=263000 max_strings=30000 hash_extra=10000 $(MAKE) -C latex pdf
 docs-man: docs-html
 docs-clean:
 	rm -Rf man
@@ -52,14 +52,13 @@ tex-files: docs-html
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
            -e "/input{group}/d" \
-           -e "/include{cashflows}/d" \
            -e "/include{coreclasses}/d" \
            -e "/include{currencies}/d" \
            -e "/include{datetime}/d" \
            -e "/include{findiff}/d" \
+           -e "/include{fixedincome}/d" \
            -e "/include{history}/d" \
            -e "/include{index}/d" \
-           -e "/include{indexes}/d" \
            -e "/include{install}/d" \
            -e "/include{instruments}/d" \
            -e "/include{license}/d" \
@@ -68,10 +67,7 @@ tex-files: docs-html
            -e "/include{overview}/d" \
            -e "/include{patterns}/d" \
            -e "/include{platforms}/d" \
-           -e "/include{pricers}/d" \
-           -e "/include{randomnumbers}/d" \
            -e "/include{resources}/d" \
-           -e "/include{solvers1d}/d" \
            -e "/include{termstructures}/d" \
            -e "/include{usage}/d" \
            -e "/include{utilities}/d" \

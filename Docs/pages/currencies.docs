@@ -21,18 +21,7 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page currencies Currencies
+/*! \page currencies Currencies and FX rates
     Documentation for this part of the library is in progress.
-
-    The abstract class QuantLib::Currency provides the interface to
-    market conventions depending on the currency, such as the calendar
-    used or the number of settlement days. A number of such currencies
-    is contained in the QuantLib::Currencies namespace, namely,
-
-    - EUR
-    - GBP
-    - USD
-    - More
-
 
 */
