@@ -35,14 +35,15 @@ class Payoff : public QL::ObjectiveFunction{
                double strike,
                double s0,
                double sigma,
-               Rate r)
+               Rate r,
+               Rate q)
         : maturity_(maturity),
         strike_(strike),
         s0_(s0),
-        sigma_(sigma),r_(r){}
+        sigma_(sigma),r_(r), q_(q){}
 
         double operator()(double x) const {
-           double nuT = (r_-0.5*sigma_*sigma_)*maturity_;
+           double nuT = (r_-q_-0.5*sigma_*sigma_)*maturity_;
            return QL_EXP(-r_*maturity_)
                *ExercisePayoff(Option::Call, s0_*QL_EXP(x), strike_)
                *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
@@ -53,7 +54,7 @@ private:
     double strike_;
     double s0_;
     double sigma_;
-    Rate r_;
+    Rate r_,q_;
 };
 
 
@@ -65,9 +66,16 @@ int main(int argc, char* argv[])
         // our option
         double underlying = 102;
         double strike = 100;      // at the money
-        Spread dividendYield = 0.0; // no dividends
+        Spread dividendYield = 0.01; // 1%
         Rate riskFreeRate = 0.05; // 5%
-        Time maturity = 0.25;      // 3 months
+
+        Date todaysDate(15, May, 1999);
+        Date settlementDate(17, May, 1999);
+        Date exerciseDate(17, August, 1999); // 3 months
+        DayCounter rateDayCounter = DayCounters::Actual365();
+        Time maturity = rateDayCounter.yearFraction(settlementDate,
+            exerciseDate);
+
         double volatility = 0.20; // 20%
         std::cout << "Time to maturity = "        << maturity
                   << std::endl;
@@ -119,7 +127,7 @@ int main(int argc, char* argv[])
         method ="Call-Put parity";
         value = EuropeanOption(Option::Put, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility).value()
-            + underlying - strike*QL_EXP(- riskFreeRate*maturity);
+            + underlying*QL_EXP(-dividendYield*maturity) - strike*QL_EXP(- riskFreeRate*maturity);
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
@@ -133,10 +141,11 @@ int main(int argc, char* argv[])
         // third method: Integral
         method ="Integral";
         using QuantLib::Math::SegmentIntegral;
-        Payoff po(maturity, strike, underlying, volatility, riskFreeRate);
+        Payoff po(maturity, strike, underlying, volatility, riskFreeRate,
+            dividendYield);
         SegmentIntegral integrator(5000);
 
-        double nuT = (riskFreeRate - 0.5*volatility*volatility)*maturity;
+        double nuT = (riskFreeRate - dividendYield + 0.5*volatility*volatility)*maturity;
         double infinity = 10.0*volatility*QL_SQRT(maturity);
 
         value = integrator(po, nuT-infinity, nuT+infinity);
@@ -209,27 +218,29 @@ int main(int argc, char* argv[])
         // New option pricing framework 
         std::cout << "\nNew Pricing engine framework" << std::endl;
 
-        Date todaysDate(15, February, 1999);
-        Date settlementDate(17, February, 1999);
-        DayCounter depositDayCounter = DayCounters::Thirty360();
 
-        // bootstrap the curve
+        // bootstrap the yield/dividend/vol curves
         Handle<TermStructure> flatTermStructure(new
             TermStructures::FlatForward(todaysDate, settlementDate,
-            riskFreeRate, depositDayCounter));
+            riskFreeRate, rateDayCounter));
+        Handle<TermStructure> flatDividendTS(new
+            TermStructures::FlatForward(todaysDate, settlementDate,
+            dividendYield, rateDayCounter));
+        Handle<BlackVolTermStructure> flatVolTS(new
+            VolTermStructures::BlackConstantVol(settlementDate, volatility));
+
 
         Instruments::VanillaOption option(
             Option::Call,
             Handle<MarketElement>(new SimpleMarketElement(underlying)),
             strike,
-            Handle<TermStructure>(),
+            flatDividendTS,
             flatTermStructure,
-            settlementDate.plus(3, Months),
-            Handle<MarketElement>(new SimpleMarketElement(volatility)),
+            exerciseDate,
+            flatVolTS,
             Handle<PricingEngine>(new PricingEngines::EuropeanAnalyticalEngine())
             );
             
-
         // method: Black Scholes Engine
         method = "Black Scholes";
         value = option.NPV();
@@ -283,13 +294,13 @@ int main(int argc, char* argv[])
             Option::Call,
             Handle<MarketElement>(new SimpleMarketElement(underlying)),
             strike,
-            Handle<TermStructure>(),
+            flatDividendTS,
             flatTermStructure,
-            settlementDate.plus(3, Months),
-            Handle<MarketElement>(new SimpleMarketElement(volatility)),
+            exerciseDate,
+            flatVolTS,
             quantoEngine,
             flatTermStructure,
-            Handle<MarketElement>(new SimpleMarketElement(volatility)),
+            flatVolTS,
             Handle<MarketElement>(new SimpleMarketElement(correlation))
             );
             
@@ -306,31 +317,31 @@ int main(int argc, char* argv[])
         std::cout << std::endl << std::endl << "quanto: "
              << DoubleFormatter::toString(value, 4)
              << std::endl;
-        std::cout << std::endl << "quanto delta: "
+        std::cout << "quanto delta: "
              << DoubleFormatter::toString(delta, 4)
              << std::endl;
-        std::cout << std::endl << "quanto gamma: "
+        std::cout << "quanto gamma: "
              << DoubleFormatter::toString(gamma, 4)
              << std::endl;
-        std::cout << std::endl << "quanto theta: "
+        std::cout << "quanto theta: "
              << DoubleFormatter::toString(theta, 4)
              << std::endl;
-        std::cout << std::endl << "quanto vega: "
+        std::cout << "quanto vega: "
              << DoubleFormatter::toString(vega, 4)
              << std::endl;
-        std::cout << std::endl << "quanto rho: "
+        std::cout << "quanto rho: "
              << DoubleFormatter::toString(rho, 4)
              << std::endl;
-        std::cout << std::endl << "quanto divRho: "
+        std::cout << "quanto divRho: "
              << DoubleFormatter::toString(divRho, 4)
              << std::endl;
-        std::cout << std::endl << "quanto qvega: "
+        std::cout << "quanto qvega: "
              << DoubleFormatter::toString(qvega, 4)
              << std::endl;
-        std::cout << std::endl << "quanto qrho: "
+        std::cout << "quanto qrho: "
              << DoubleFormatter::toString(qrho, 4)
              << std::endl;
-        std::cout << std::endl << "quanto qlambda: "
+        std::cout << "quanto qlambda: "
              << DoubleFormatter::toString(qlambda, 4)
              << std::endl;
 
