@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.7  2001/03/12 12:59:01  marmar
+   __str__ now represents the object while __repr__ is unchanged
+
    Revision 1.6  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -73,7 +76,7 @@ class MatrixRow {
     Matrix __div__(double x) {
         return *self/x;
     }
-    String __repr__() {
+    String __str__() {
         String s;
         for (int j=0; j<self->rows(); j++) {
     	    s += "\n";

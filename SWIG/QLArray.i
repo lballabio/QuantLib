@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.7  2001/03/12 12:59:01  marmar
+   __str__ now represents the object while __repr__ is unchanged
+
    Revision 1.6  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -97,7 +100,7 @@ class Array {
         QL_ENSURE(rhs.size() == j-i, "Arrays are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-    String __repr__() {
+    String __str__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
         	if (i != 0)
@@ -173,7 +176,7 @@ class ArrayLexicographicalViewColumn {
     ArrayLexicographicalViewColumn __getitem__(int i) {
         return (*self)[i];
     }
-    String __repr__() {
+    String __str__() {
         String s;
         for (int j=0; j<self->ySize(); j++) {
     	    s += "\n";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.20  2001/03/12 12:59:01  marmar
+   __str__ now represents the object while __repr__ is unchanged
+
    Revision 1.19  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -104,7 +107,7 @@ class IntVector {
         QL_ENSURE(rhs.size() == j-i, "IntVectors are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-    String __repr__() {
+    String __str__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
             if (i != 0)
@@ -212,7 +215,7 @@ class DoubleVector {
         QL_ENSURE(rhs.size() == j-i, "DoubleVectors are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-    String __repr__() {
+    String __str__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
             if (i != 0)

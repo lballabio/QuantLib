@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.14  2001/03/12 12:59:01  marmar
+   __str__ now represents the object while __repr__ is unchanged
+
    Revision 1.13  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -57,7 +60,7 @@ typedef Handle<DayCounter> DayCounterHandle;
         return (*self)->yearFraction(d1,d2);
     }
     #if defined (SWIGPYTHON)
-    String __repr__() {
+    String __str__() {
         return (*self)->name()+" day counter";
     }
     int __cmp__(const DayCounterHandle& other) {

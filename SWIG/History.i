@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.9  2001/03/12 12:59:01  marmar
+   __str__ now represents the object while __repr__ is unchanged
+
    Revision 1.8  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -99,7 +102,7 @@ class History {
     double __getitem__(Date d) {
         return (*self)[d];
     }
-    String __repr__() {
+    String __str__() {
         return "Historical data from " + 
             DateFormatter::toString(self->firstDate()) +
             " to " + DateFormatter::toString(self->lastDate());
@@ -121,7 +124,7 @@ class History {
     int __cmp__(const HistoryIterator& other) {
         return (*self == other ? 0 : -1);
     }
-    String __repr__() {
+    String __str__() {
         return DateFormatter::toString((*self)->date()) + 
         "\t" + (IsNull((*self)->value()) ? String("Null") : 
         DoubleFormatter::toString((*self)->value()));
@@ -143,7 +146,7 @@ class History {
     int __cmp__(const HistoryValidIterator& other) {
         return (*self == other ? 0 : -1);
     }
-    String __repr__() {
+    String __str__() {
         return DateFormatter::toString((*self)->date()) + 
         "\t" + (IsNull((*self)->value()) ? String("Null") : 
         DoubleFormatter::toString((*self)->value()));
@@ -162,7 +165,7 @@ class History {
     int __cmp__(const HistoryDataIterator& other) {
         return (*self == other ? 0 : -1);
     }
-    String __repr__() {
+    String __str__() {
         return (IsNull(**self) ? String("Null") : 
         DoubleFormatter::toString(**self));
     }
@@ -180,7 +183,7 @@ class History {
     int __cmp__(const HistoryValidDataIterator& other) {
         return (*self == other ? 0 : -1);
     }
-    String __repr__() {
+    String __str__() {
         return (IsNull(**self) ? String("Null") : 
         DoubleFormatter::toString(**self));
     }

@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.23  2001/03/12 12:59:01  marmar
+   __str__ now represents the object while __repr__ is unchanged
+
    Revision 1.22  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -75,6 +78,8 @@ class FiniteDifferenceEuropean {
 	double theta() const;
 	double vega() const;
 	double rho() const;
+	Array getGrid() const;
+	Array getPrices() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4, 
 	  int maxEvaluations = 100) const ;
 };
