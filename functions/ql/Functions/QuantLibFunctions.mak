@@ -29,18 +29,26 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLibFunctions - Win32 Release"
 
 OUTDIR=.\build\Release
 INTDIR=.\build\Release
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 Release" "..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 ReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\mathf.obj"
@@ -51,213 +59,8 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
-BSC32_SBRS= \
-	
-LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
-
-"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug"
-
-OUTDIR=.\build\Debug
-INTDIR=.\build\Debug
-
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
-
-
-CLEAN :
-	-@erase "$(INTDIR)\calendars.obj"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
-BSC32_SBRS= \
-	
-LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
-
-"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release MTDLL"
-
-OUTDIR=.\build\ReleaseMTDLL
-INTDIR=.\build\ReleaseMTDLL
-
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
-
-
-CLEAN :
-	-@erase "$(INTDIR)\calendars.obj"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
-BSC32_SBRS= \
-	
-LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
-
-"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug MTDLL"
-
-OUTDIR=.\build\DebugMTDLL
-INTDIR=.\build\DebugMTDLL
-
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
-
-
-CLEAN :
-	-@erase "$(INTDIR)\calendars.obj"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
-BSC32_SBRS= \
-	
-LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
-
-"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release SingleThread"
-
-OUTDIR=.\build\ReleaseST
-INTDIR=.\build\ReleaseST
-
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
-
-
-CLEAN :
-	-@erase "$(INTDIR)\calendars.obj"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /ML /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
-BSC32_SBRS= \
-	
-LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
-
-"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug SingleThread"
-
-OUTDIR=.\build\DebugST
-INTDIR=.\build\DebugST
-
-ALL : "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
-
-
-CLEAN :
-	-@erase "$(INTDIR)\calendars.obj"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MLd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
-BSC32_SBRS= \
-	
-LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib" 
-LIB32_OBJS= \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
-
-"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
-  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
-<<
-
-!ENDIF 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -289,6 +92,440 @@ LIB32_OBJS= \
    $(CPP_PROJ) $< 
 <<
 
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
+	"..\..\..\lib\QuantLib-vc6-mt-s-0_3_8.lib"
+
+"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug"
+
+OUTDIR=.\build\Debug
+INTDIR=.\build\Debug
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Debug" "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 DebugCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\calendars.obj"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vc60.pdb"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
+	"..\..\..\lib\QuantLib-vc6-mt-sgd-0_3_8.lib"
+
+"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release MTDLL"
+
+OUTDIR=.\build\ReleaseMTDLL
+INTDIR=.\build\ReleaseMTDLL
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Release MTDLL" "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Release MTDLLCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\calendars.obj"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
+	"..\..\..\lib\QuantLib-vc6-mt-0_3_8.lib"
+
+"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug MTDLL"
+
+OUTDIR=.\build\DebugMTDLL
+INTDIR=.\build\DebugMTDLL
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Debug MTDLL" "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Debug MTDLLCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\calendars.obj"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vc60.pdb"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
+	"..\..\..\lib\QuantLib-vc6-mt-gd-0_3_8.lib"
+
+"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release SingleThread"
+
+OUTDIR=.\build\ReleaseST
+INTDIR=.\build\ReleaseST
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Release SingleThread" "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Release SingleThreadCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\calendars.obj"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /ML /W3 /GR /GX /O2 /I "..\.." /I "..\..\.." /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
+	"..\..\..\lib\QuantLib-vc6-s-0_3_8.lib"
+
+"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug SingleThread"
+
+OUTDIR=.\build\DebugST
+INTDIR=.\build\DebugST
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Debug SingleThread" "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Debug SingleThreadCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\calendars.obj"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vc60.pdb"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP=cl.exe
+CPP_PROJ=/nologo /MLd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\.." /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLibFunctions.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLibFunctions.bsc" 
+BSC32_SBRS= \
+	
+LIB32=link.exe -lib
+LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib" 
+LIB32_OBJS= \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
+	"..\..\..\lib\QuantLib-vc6-sgd-0_3_8.lib"
+
+"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+    $(LIB32) @<<
+  $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
+<<
+
+!ENDIF 
+
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
 !IF EXISTS("QuantLibFunctions.dep")
@@ -319,6 +556,80 @@ SOURCE=.\vols.cpp
 
 "$(INTDIR)\vols.obj" : $(SOURCE) "$(INTDIR)"
 
+
+!IF  "$(CFG)" == "QuantLibFunctions - Win32 Release"
+
+"QuantLib - Win32 Release" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+"QuantLib - Win32 ReleaseCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug"
+
+"QuantLib - Win32 Debug" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+"QuantLib - Win32 DebugCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release MTDLL"
+
+"QuantLib - Win32 Release MTDLL" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+"QuantLib - Win32 Release MTDLLCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" RECURSE=1 CLEAN 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug MTDLL"
+
+"QuantLib - Win32 Debug MTDLL" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+"QuantLib - Win32 Debug MTDLLCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" RECURSE=1 CLEAN 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Release SingleThread"
+
+"QuantLib - Win32 Release SingleThread" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+"QuantLib - Win32 Release SingleThreadCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" RECURSE=1 CLEAN 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+!ELSEIF  "$(CFG)" == "QuantLibFunctions - Win32 Debug SingleThread"
+
+"QuantLib - Win32 Debug SingleThread" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+"QuantLib - Win32 Debug SingleThreadCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" RECURSE=1 CLEAN 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+
+!ENDIF 
 
 
 !ENDIF 

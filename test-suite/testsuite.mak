@@ -29,9 +29,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "testsuite - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -142,7 +139,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -161,6 +191,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
@@ -170,6 +201,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
 	"$(INTDIR)\matrices.sbr" \
 	"$(INTDIR)\mersennetwister.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\old_pricers.sbr" \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
@@ -183,9 +215,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -210,6 +240,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
@@ -219,6 +250,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
 	"$(INTDIR)\matrices.obj" \
 	"$(INTDIR)\mersennetwister.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -233,8 +265,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-mt-s-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib"
 
@@ -256,7 +286,7 @@ OutDir=.\build\Release
 # End Custom Macros
 
 $(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Release" "QuantLib - Win32 Release" "$(OUTDIR)\testsuite.exe" "$(OUTDIR)\testsuite.bsc"
-   ".\build\Release\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=no
+   ".\build\Release\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=short
 	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
@@ -372,7 +402,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -391,6 +454,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
@@ -400,6 +464,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
 	"$(INTDIR)\matrices.sbr" \
 	"$(INTDIR)\mersennetwister.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\old_pricers.sbr" \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
@@ -413,9 +478,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -440,6 +503,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
@@ -449,6 +513,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
 	"$(INTDIR)\matrices.obj" \
 	"$(INTDIR)\mersennetwister.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -463,8 +528,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
 
@@ -486,7 +549,7 @@ OutDir=.\build\Debug
 # End Custom Macros
 
 $(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Debug" "QuantLib - Win32 Debug" "$(OUTDIR)\testsuite.exe" "$(OUTDIR)\testsuite.bsc"
-   ".\build\Debug\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=no --catch_system_errors=no
+   ".\build\Debug\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release MTDLL"
@@ -601,7 +664,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -620,6 +716,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
@@ -629,6 +726,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
 	"$(INTDIR)\matrices.sbr" \
 	"$(INTDIR)\mersennetwister.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\old_pricers.sbr" \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
@@ -642,9 +740,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -669,6 +765,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
@@ -678,6 +775,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
 	"$(INTDIR)\matrices.obj" \
 	"$(INTDIR)\mersennetwister.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -692,8 +790,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-mt-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
 
@@ -715,7 +811,7 @@ OutDir=.\build\ReleaseMTDLL
 # End Custom Macros
 
 $(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Release MTDLL" "QuantLib - Win32 Release MTDLL" "$(OUTDIR)\testsuite.exe" "$(OUTDIR)\testsuite.bsc"
-   ".\build\ReleaseMTDLL\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=no
+   ".\build\ReleaseMTDLL\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=short
 	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug MTDLL"
@@ -831,7 +927,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -850,6 +979,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
@@ -859,6 +989,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
 	"$(INTDIR)\matrices.sbr" \
 	"$(INTDIR)\mersennetwister.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\old_pricers.sbr" \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
@@ -872,9 +1003,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -899,6 +1028,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
@@ -908,6 +1038,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
 	"$(INTDIR)\matrices.obj" \
 	"$(INTDIR)\mersennetwister.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -922,8 +1053,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-mt-gd-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
 
@@ -945,7 +1074,7 @@ OutDir=.\build\DebugMTDLL
 # End Custom Macros
 
 $(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Debug MTDLL" "QuantLib - Win32 Debug MTDLL" "$(OUTDIR)\testsuite.exe" "$(OUTDIR)\testsuite.bsc"
-   ".\build\DebugMTDLL\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=no --catch_system_errors=no
+   ".\build\DebugMTDLL\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release SingleThread"
@@ -1058,7 +1187,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -1077,6 +1239,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
@@ -1086,6 +1249,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
 	"$(INTDIR)\matrices.sbr" \
 	"$(INTDIR)\mersennetwister.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\old_pricers.sbr" \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
@@ -1099,9 +1263,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1126,6 +1288,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
@@ -1135,6 +1298,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
 	"$(INTDIR)\matrices.obj" \
 	"$(INTDIR)\mersennetwister.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -1149,8 +1313,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-s-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
 
@@ -1172,7 +1334,7 @@ OutDir=.\build\ReleaseST
 # End Custom Macros
 
 $(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Release SingleThread" "QuantLib - Win32 Release SingleThread" "$(OUTDIR)\testsuite.exe" "$(OUTDIR)\testsuite.bsc"
-   ".\build\ReleaseST\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=no
+   ".\build\ReleaseST\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=short
 	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug SingleThread"
@@ -1288,124 +1450,8 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\americanoption.sbr" \
-	"$(INTDIR)\asianoptions.sbr" \
-	"$(INTDIR)\barrieroption.sbr" \
-	"$(INTDIR)\basketoption.sbr" \
-	"$(INTDIR)\calendars.sbr" \
-	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\cliquetoption.sbr" \
-	"$(INTDIR)\compoundforward.sbr" \
-	"$(INTDIR)\covariance.sbr" \
-	"$(INTDIR)\dates.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\digitaloption.sbr" \
-	"$(INTDIR)\distributions.sbr" \
-	"$(INTDIR)\dividendeuropeanoption.sbr" \
-	"$(INTDIR)\europeanoption.sbr" \
-	"$(INTDIR)\factorial.sbr" \
-	"$(INTDIR)\forwardoption.sbr" \
-	"$(INTDIR)\instruments.sbr" \
-	"$(INTDIR)\integrals.sbr" \
-	"$(INTDIR)\interpolations.sbr" \
-	"$(INTDIR)\jumpdiffusion.sbr" \
-	"$(INTDIR)\lowdiscrepancysequences.sbr" \
-	"$(INTDIR)\matrices.sbr" \
-	"$(INTDIR)\mersennetwister.sbr" \
-	"$(INTDIR)\old_pricers.sbr" \
-	"$(INTDIR)\operators.sbr" \
-	"$(INTDIR)\piecewiseflatforward.sbr" \
-	"$(INTDIR)\quantlibtestsuite.sbr" \
-	"$(INTDIR)\quantooption.sbr" \
-	"$(INTDIR)\quotes.sbr" \
-	"$(INTDIR)\riskstats.sbr" \
-	"$(INTDIR)\rounding.sbr" \
-	"$(INTDIR)\solvers.sbr" \
-	"$(INTDIR)\stats.sbr" \
-	"$(INTDIR)\swap.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr"
-
-"$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib" 
-LINK32_OBJS= \
-	"$(INTDIR)\americanoption.obj" \
-	"$(INTDIR)\asianoptions.obj" \
-	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\basketoption.obj" \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
-	"$(INTDIR)\compoundforward.obj" \
-	"$(INTDIR)\covariance.obj" \
-	"$(INTDIR)\dates.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\digitaloption.obj" \
-	"$(INTDIR)\distributions.obj" \
-	"$(INTDIR)\dividendeuropeanoption.obj" \
-	"$(INTDIR)\europeanoption.obj" \
-	"$(INTDIR)\factorial.obj" \
-	"$(INTDIR)\forwardoption.obj" \
-	"$(INTDIR)\instruments.obj" \
-	"$(INTDIR)\integrals.obj" \
-	"$(INTDIR)\interpolations.obj" \
-	"$(INTDIR)\jumpdiffusion.obj" \
-	"$(INTDIR)\lowdiscrepancysequences.obj" \
-	"$(INTDIR)\matrices.obj" \
-	"$(INTDIR)\mersennetwister.obj" \
-	"$(INTDIR)\old_pricers.obj" \
-	"$(INTDIR)\operators.obj" \
-	"$(INTDIR)\piecewiseflatforward.obj" \
-	"$(INTDIR)\quantlibtestsuite.obj" \
-	"$(INTDIR)\quantooption.obj" \
-	"$(INTDIR)\quotes.obj" \
-	"$(INTDIR)\riskstats.obj" \
-	"$(INTDIR)\rounding.obj" \
-	"$(INTDIR)\solvers.obj" \
-	"$(INTDIR)\stats.obj" \
-	"$(INTDIR)\swap.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
-	"..\lib\QuantLib-vc6-sgd-0_3_8.lib" \
-	"..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
-
-"$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-TargetDir=.\build\DebugST
-TargetName=testsuite
-SOURCE="$(InputPath)"
-PostBuild_Desc=Auto run test
-DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
-
-ALL : $(DS_POSTBUILD_DEP)
-
-# Begin Custom Macros
-OutDir=.\build\DebugST
-# End Custom Macros
-
-$(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Debug SingleThread" "QuantLib - Win32 Debug SingleThread" "$(OUTDIR)\testsuite.exe" "$(OUTDIR)\testsuite.bsc"
-   ".\build\DebugST\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=no --catch_system_errors=no
-	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
-
-!ENDIF 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -1436,6 +1482,125 @@ $(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Debug SingleThread" "QuantLib -
    $(CPP) @<<
    $(CPP_PROJ) $< 
 <<
+
+RSC=rc.exe
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\americanoption.sbr" \
+	"$(INTDIR)\asianoptions.sbr" \
+	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\calendars.sbr" \
+	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\compoundforward.sbr" \
+	"$(INTDIR)\covariance.sbr" \
+	"$(INTDIR)\dates.sbr" \
+	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\digitaloption.sbr" \
+	"$(INTDIR)\distributions.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
+	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\forwardoption.sbr" \
+	"$(INTDIR)\instruments.sbr" \
+	"$(INTDIR)\integrals.sbr" \
+	"$(INTDIR)\interpolations.sbr" \
+	"$(INTDIR)\jumpdiffusion.sbr" \
+	"$(INTDIR)\lowdiscrepancysequences.sbr" \
+	"$(INTDIR)\matrices.sbr" \
+	"$(INTDIR)\mersennetwister.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\old_pricers.sbr" \
+	"$(INTDIR)\operators.sbr" \
+	"$(INTDIR)\piecewiseflatforward.sbr" \
+	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quantooption.sbr" \
+	"$(INTDIR)\quotes.sbr" \
+	"$(INTDIR)\riskstats.sbr" \
+	"$(INTDIR)\rounding.sbr" \
+	"$(INTDIR)\solvers.sbr" \
+	"$(INTDIR)\stats.sbr" \
+	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\termstructures.sbr" \
+	"$(INTDIR)\utilities.sbr"
+
+"$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib" 
+LINK32_OBJS= \
+	"$(INTDIR)\americanoption.obj" \
+	"$(INTDIR)\asianoptions.obj" \
+	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\covariance.obj" \
+	"$(INTDIR)\dates.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\digitaloption.obj" \
+	"$(INTDIR)\distributions.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
+	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\exchangerate.obj" \
+	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\forwardoption.obj" \
+	"$(INTDIR)\instruments.obj" \
+	"$(INTDIR)\integrals.obj" \
+	"$(INTDIR)\interpolations.obj" \
+	"$(INTDIR)\jumpdiffusion.obj" \
+	"$(INTDIR)\lowdiscrepancysequences.obj" \
+	"$(INTDIR)\matrices.obj" \
+	"$(INTDIR)\mersennetwister.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\old_pricers.obj" \
+	"$(INTDIR)\operators.obj" \
+	"$(INTDIR)\piecewiseflatforward.obj" \
+	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\quotes.obj" \
+	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\rounding.obj" \
+	"$(INTDIR)\solvers.obj" \
+	"$(INTDIR)\stats.obj" \
+	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\utilities.obj" \
+	"..\lib\QuantLib-vc6-sgd-0_3_8.lib" \
+	"..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
+
+"$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+TargetDir=.\build\DebugST
+TargetName=testsuite
+SOURCE="$(InputPath)"
+PostBuild_Desc=Auto run test
+DS_POSTBUILD_DEP=$(INTDIR)\postbld.dep
+
+ALL : $(DS_POSTBUILD_DEP)
+
+# Begin Custom Macros
+OutDir=.\build\DebugST
+# End Custom Macros
+
+$(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Debug SingleThread" "QuantLib - Win32 Debug SingleThread" "$(OUTDIR)\testsuite.exe" "$(OUTDIR)\testsuite.bsc"
+   ".\build\DebugST\testsuite.exe" --log_level=messages --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
+	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
+
+!ENDIF 
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
