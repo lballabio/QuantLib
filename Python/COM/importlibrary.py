@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.6  2001/03/30 09:59:33  marmar
+    Documentation updated, Matrix call did not work properly: rmoved
+
     Revision 1.5  2001/03/30 09:56:20  marmar
     Debug is now the default, simplified and speeded up
 
@@ -43,13 +46,11 @@ Example:
     ' The following is an example of VB code that creates the
     ' QuantLib module and uses it
 
-    ' The object ImportLibrary must be initialized before any python 
-    ' module can be created. Tip: define QuantLib as Public
-    Set QuantLib = CreateObject("QuantLib.Import")
-    
-    ' Create a QuantLib object
+    Set importQL = CreateObject("QuantLib.Import")
+    Set QuantLib = importQL.QuantLib
     Set uniformDeviate = QuantLib.UniformRandomGenerator()
-    MsgBox uniformDeviate.next()
+    RndNumber = uniformDeviate.Next()
+    MsgBox RndNumber
 
 COM Exceptions raised:
     #5, ERROR_ACCESS_DENIED if import is called with
