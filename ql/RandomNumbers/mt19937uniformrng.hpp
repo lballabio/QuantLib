@@ -115,7 +115,7 @@ namespace QuantLib {
             /* mag01[x] = x * MATRIX_A  for x=0,1 */
 
             if (mti >= N) { /* generate N words at one time */
-                int kk;
+                Size kk;
 
                 for (kk=0;kk<N-M;kk++) {
                     y = (mt[kk]&UPPER_MASK)|(mt[kk+1]&LOWER_MASK);

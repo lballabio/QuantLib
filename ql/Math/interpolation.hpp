@@ -82,7 +82,7 @@ namespace QuantLib {
             QL_REQUIRE(n_ >= 2,
                 "not enough points to interpolate");
             I1 xi = xBegin_+1;
-            for (int i=1; i<n_; i++, xi++) {
+            for (Size i=1; i<n_; i++, xi++) {
                 QL_REQUIRE(double(*xi-*(xi-1)) > 0.0,
                     "Interpolation::Interpolation : "
                     "x[i] not sorted");
