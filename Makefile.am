@@ -2,7 +2,7 @@
 # $Id$
 # $Source$
 # $Log$
-# Revision 1.41  2001/08/27 15:27:05  nando
+# Revision 1.42  2001/08/27 15:27:29  nando
 # typo fixed
 #
 
@@ -10,7 +10,7 @@ AUTOMAKE_OPTIONS=foreign
 
 SUBDIRS=Sources Include Docs
 
-EXTRA_DIST=
+EXTRA_DIST = \
     Authors.txt \
     ChangeLog.txt \
 	Contributors.txt \
