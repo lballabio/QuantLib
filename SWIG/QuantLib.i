@@ -58,6 +58,7 @@
 %include History.i
 %include Instruments.i
 %include Interpolation.i
+%include Matrix.i
 %include MontecarloPricers.i
 %include Operators.i
 %include Options.i
