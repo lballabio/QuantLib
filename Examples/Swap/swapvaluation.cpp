@@ -35,8 +35,9 @@ int main(int, char* [])
          ***  MARKET DATA  ***
          *********************/
 
-//        Calendar calendar = Tokyo();
         Calendar calendar = TARGET();
+        // uncommenting the following line generates an error
+        // calendar = Tokyo();
         Date settlementDate(22, September, 2004);
         // must be a business day
         settlementDate = calendar.adjust(settlementDate);
@@ -177,49 +178,49 @@ int main(int, char* [])
 
         // setup futures
         Integer futMonths = 3;
-        Date imm = settlementDate.nextIMM();
+        Date imm = settlementDate.nextIMMdate();
         boost::shared_ptr<RateHelper> fut1(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMM();
+        imm = imm.plusDays(1).nextIMMdate();
         boost::shared_ptr<RateHelper> fut2(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMM();
+        imm = imm.plusDays(1).nextIMMdate();
         boost::shared_ptr<RateHelper> fut3(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMM();
+        imm = imm.plusDays(1).nextIMMdate();
         boost::shared_ptr<RateHelper> fut4(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMM();
+        imm = imm.plusDays(1).nextIMMdate();
         boost::shared_ptr<RateHelper> fut5(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMM();
+        imm = imm.plusDays(1).nextIMMdate();
         boost::shared_ptr<RateHelper> fut6(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMM();
+        imm = imm.plusDays(1).nextIMMdate();
         boost::shared_ptr<RateHelper> fut7(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMM();
+        imm = imm.plusDays(1).nextIMMdate();
         boost::shared_ptr<RateHelper> fut8(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
@@ -275,6 +276,8 @@ int main(int, char* [])
             ActualActual(ActualActual::ISDA);
 
 
+        double tolerance = 1.0e-15;
+
         // A depo-swap curve
         std::vector<boost::shared_ptr<RateHelper> > depoSwapInstruments;
         depoSwapInstruments.push_back(d1w);
@@ -290,7 +293,7 @@ int main(int, char* [])
         depoSwapInstruments.push_back(s15y);
         boost::shared_ptr<YieldTermStructure> depoSwapTermStructure(new
             PiecewiseFlatForward(settlementDate,
-            depoSwapInstruments, termStructureDayCounter));
+            depoSwapInstruments, termStructureDayCounter, tolerance));
 
 
         // A depo-futures-swap curve
@@ -311,7 +314,7 @@ int main(int, char* [])
         depoFutSwapInstruments.push_back(s15y);
         boost::shared_ptr<YieldTermStructure> depoFutSwapTermStructure(new
             PiecewiseFlatForward(settlementDate,
-            depoFutSwapInstruments, termStructureDayCounter));
+            depoFutSwapInstruments, termStructureDayCounter, tolerance));
 
 
         // A depo-FRA-swap curve
@@ -329,7 +332,7 @@ int main(int, char* [])
         depoFRASwapInstruments.push_back(s15y);
         boost::shared_ptr<YieldTermStructure> depoFRASwapTermStructure(new
             PiecewiseFlatForward(settlementDate,
-            depoFRASwapInstruments, termStructureDayCounter));
+            depoFRASwapInstruments, termStructureDayCounter, tolerance));
 
 
         // Term structures that will be used for pricing:
@@ -409,11 +412,11 @@ int main(int, char* [])
 
         std::cout << dblrule << std::endl;
         std::cout <<  "5-year market swap-rate = "
-                  << RateFormatter::toString(s5yRate->value(),2) << std::endl;
+                  << RateFormatter::toString(s5yRate->value()) << std::endl;
         std::cout << dblrule << std::endl;
 
         std::cout << tab << "5-years swap paying "
-                  << RateFormatter::toString(fixedRate,2) << std::endl;
+                  << RateFormatter::toString(fixedRate) << std::endl;
         std::cout << headers[0] << separator
                   << headers[1] << separator
                   << headers[2] << separator
@@ -437,16 +440,16 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
 
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
                    "5-years swap mispriced by "
-                   + DecimalFormatter::toString(QL_FABS(fairRate-s5yQuote)));
+                   + RateFormatter::toString(QL_FABS(fairRate-s5yQuote)));
 
 
         forecastingTermStructure.linkTo(depoFutSwapTermStructure);
@@ -461,9 +464,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
@@ -482,9 +485,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
@@ -496,7 +499,7 @@ int main(int, char* [])
         // now let's price the 1Y forward 5Y swap
 
         std::cout << tab << "5-years, 1-year forward swap paying "
-                  << RateFormatter::toString(fixedRate,2) << std::endl;
+                  << RateFormatter::toString(fixedRate) << std::endl;
         std::cout << headers[0] << separator
                   << headers[1] << separator
                   << headers[2] << separator
@@ -516,9 +519,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -534,9 +537,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -552,9 +555,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -573,11 +576,11 @@ int main(int, char* [])
 
         std::cout << dblrule << std::endl;
         std::cout <<  "5-year market swap-rate = "
-                  << RateFormatter::toString(s5yRate->value(),2) << std::endl;
+                  << RateFormatter::toString(s5yRate->value()) << std::endl;
         std::cout << dblrule << std::endl;
 
         std::cout << tab << "5-years swap paying "
-                  << RateFormatter::toString(fixedRate,2) << std::endl;
+                  << RateFormatter::toString(fixedRate) << std::endl;
         std::cout << headers[0] << separator
                   << headers[1] << separator
                   << headers[2] << separator
@@ -597,9 +600,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
@@ -618,9 +621,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
@@ -639,9 +642,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
         QL_REQUIRE(QL_FABS(fairRate-s5yRate->value())<1e-8,
@@ -672,9 +675,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -690,9 +693,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
 
@@ -708,9 +711,9 @@ int main(int, char* [])
         std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size())
-                  << RateFormatter::toString(fairSpread,4) << separator;
+                  << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
-                  << RateFormatter::toString(fairRate,4) << separator;
+                  << RateFormatter::toString(fairRate) << separator;
         std::cout << std::endl;
 
         return 0;
