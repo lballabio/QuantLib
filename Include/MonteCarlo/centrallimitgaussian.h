@@ -26,10 +26,13 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2000/12/27 17:56:16  lballabio
+	Cleaned up the documentation for use with Doxygen
+
 	Revision 1.1  2000/12/27 15:23:39  marmar
 	Random number generators has been updated and documented.
 	Now the Sample Generator idea is fully implemented
-
+	
 	
 */
 
@@ -41,8 +44,9 @@
 namespace QuantLib {
 
 	namespace MonteCarlo {
+
 		//! Gaussian random number generator
-		/*! It uses the well-known that the sum of 12 uniform deviate 
+		/*! It uses the well-known fact that the sum of 12 uniform deviate 
 			in (-.5,.5) is approximately a Gaussian deviate with average 0.0
 			and standard deviation 1.0, 
 			The uniform deviate is supplied by U.
@@ -57,12 +61,14 @@ namespace QuantLib {
 	
 		template <class U>
 		class CLGaussian {
-		public:
+		  public:
 			typedef double SampleType;
 			CLGaussian(long seed=0);
+			//! returns next sample from the Gaussian distribution
 			double next() const;
+			//! returns the weight of the last extracted sample
 	        double weight() const;
-		private:		
+		  private:		
 			U basicGenerator;		
 			double gaussWeight_;
 		};

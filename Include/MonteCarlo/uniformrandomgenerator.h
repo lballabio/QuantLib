@@ -27,14 +27,17 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2000/12/27 17:56:16  lballabio
+    Cleaned up the documentation for use with Doxygen
+
     Revision 1.1  2000/12/27 15:23:39  marmar
     Random number generators has been updated and documented.
     Now the Sample Generator idea is fully implemented
 
 */
 
-#ifndef ql_uniform_random_generator_h
-#define ql_uniform_random_generator_h
+#ifndef quantlib_uniform_random_generator_h
+#define quantlib_uniform_random_generator_h
 
 #include "qldefines.h"
 #include "lecuyerrandomgenerator.h"
@@ -43,16 +46,9 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    /*! The following is the default choice for the uniform random number 
-        generator. UniformRandomGenerator presents the following interface
-
-		\code
-		UniformRandomGenerator(long seed);	// the constructor
-        typedef double SampleType;
-		double next() const;			// returns the next random numer
-	    double weight() const;	        // returns the weight of the last 
-		                                // random numer generated
-		\endcode
+    /*! \typedef UniformRandomGenerator
+    	The following is the default choice for the uniform random number 
+        generator. See the corresponding class for documentation.
 	*/	
         typedef LecuyerRandomGenerator UniformRandomGenerator;
 

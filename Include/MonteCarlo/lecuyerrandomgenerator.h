@@ -27,18 +27,20 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2000/12/27 17:56:16  lballabio
+    Cleaned up the documentation for use with Doxygen
+
     Revision 1.1  2000/12/27 15:23:39  marmar
     Random number generators has been updated and documented.
     Now the Sample Generator idea is fully implemented
 
 */
 
-#ifndef ql_lecuyer_random_generator_h
-#define ql_lecuyer_random_generator_h
+#ifndef quantlib_lecuyer_random_generator_h
+#define quantlib_lecuyer_random_generator_h
 
 #include "qldefines.h"
 #include <string>
-#include <ctime>
 #include <algorithm>
 #include <vector>
 
@@ -46,20 +48,22 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    /*!  Random number generator of L'Ecuyer with added Bays-Durham shuffle.
-        See Section 7.1 of Numerical Recipes in C, 2nd Edition, Cambridge University Press
-        for more details. 
-	*/
+	    /*! Random number generator of L'Ecuyer with added Bays-Durham shuffle.
+	        For more details see Section 7.1 of Numerical Recipes in C, 2nd Edition, 
+	        Cambridge University Press (available at http://www.nr.com/)
+		*/
 
         class LecuyerRandomGenerator {
-        public:
-            // constructor
+          public:
+            /*! if the given seed is 0, a random seed will be chosen
+                based on clock() */
             explicit LecuyerRandomGenerator(long seed = 0);
-            // random number uniformly chosen from (0.0,1.0)
 			typedef double SampleType;
+            //! returns a random number uniformly chosen from (0.0,1.0)
             double next() const;
+            //! uniformly returns 1.0
             double weight() const;
-        private:
+          private:
             mutable long temp1, temp2;
             mutable long y;
             mutable std::vector<long> buffer;

@@ -26,10 +26,13 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2000/12/27 17:56:16  lballabio
+	Cleaned up the documentation for use with Doxygen
+
 	Revision 1.1  2000/12/27 15:23:39  marmar
 	Random number generators has been updated and documented.
 	Now the Sample Generator idea is fully implemented
-
+	
 */
 
 #ifndef quantlib_box_muller_transformation_h
@@ -55,14 +58,14 @@ namespace QuantLib {
 		*/
 		template <class U>
 		class BoxMuller {
-		public:
+		  public:
 			BoxMuller(long seed=0);
 			typedef double SampleType;
 			//! returns next sample from the Gaussian distribution
 			double next() const;
 			//! returns the weight of the last extracted sample
             double weight() const;
-		private:		
+		  private:		
 			U basicGenerator;		
 			mutable double weight_;
 			mutable bool returnFirst;		  

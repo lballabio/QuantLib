@@ -21,11 +21,14 @@
 */
 
 /*! \file gaussianrandomgenerator.h
-    \brief the best uniform random-number generator available in QuantLib
+    \brief the best Gaussian random-number generator available in QuantLib
 
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2000/12/27 17:56:16  lballabio
+    Cleaned up the documentation for use with Doxygen
+
     Revision 1.1  2000/12/27 15:23:39  marmar
     Random number generators has been updated and documented.
     Now the Sample Generator idea is fully implemented
@@ -43,15 +46,9 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    /*! The following is the default choice for the gaussian random number 
-		generator. GaussianRandomGenerator presents the following interface
-
-		\code
-			GaussianRandomGenerator(long seed);	// the constructor
-			typedef double SampleType;
-			double next() const;		// returns the next random numer
-			double weight() const;		// returns the weight of the last random numer
-		\endcode
+    /*! \typedef GaussianRandomGenerator
+    	Default choice for the gaussian random number 
+		generator. See the corresponding class for documentation.
 	*/
         typedef BoxMuller<UniformRandomGenerator> GaussianRandomGenerator;
 
