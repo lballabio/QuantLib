@@ -2,7 +2,7 @@
 # main makefile for QuantLib under Borland C++
 
 .autodepend
-.silent
+#.silent
 
 # MAKE Options
 !ifdef __MT__
@@ -80,6 +80,11 @@ docs-all:
 docs-html:
     cd Docs
     $(MAKE) html
+    cd ..
+
+docs-htmlhelp:
+    cd Docs
+    $(MAKE) htmlhelp
     cd ..
 
 docs-html-online:

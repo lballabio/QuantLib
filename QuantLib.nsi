@@ -48,8 +48,6 @@ SectionIn 1 2
     File "*.txt"
     File "*.TXT"
     File "*.mak"
-    File "*.dsw"
-    File "*.sln"
     File "*.dsp"
     File "*.vcproj"
     File "*.nsi"
@@ -136,11 +134,11 @@ SectionEnd
 
 Section "WinHelp documentation"
 SectionIn 1
-  SetOutPath "$INSTDIR\Docs\html"
-  File /nonfatal "Docs\html\index.chm"
-  IfFileExists "$INSTDIR\Docs\html\index.chm" 0 NoWinHelpDoc
+  SetOutPath "$INSTDIR\Docs"
+  File /nonfatal "Docs\QuantLib-docs-${VER_NUMBER}.chm"
+  IfFileExists "$INSTDIR\Docs\QuantLib-docs-${VER_NUMBER}.chm" 0 NoWinHelpDoc
       CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (WinHelp).lnk" \
-                 "$INSTDIR\Docs\html\index.chm"
+                 "$INSTDIR\Docs\QuantLib-docs-${VER_NUMBER}.chm"
   NoWinHelpDoc:
 SectionEnd
 

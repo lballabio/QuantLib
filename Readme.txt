@@ -23,9 +23,9 @@ submit patches using the Patch Tracker at
 request features using the Feature Request Tracker at
 <http://sourceforge.net/tracker/?group_id=12740&atid=362740>.
 
-You can also use the mailing list <quantlib-users@lists.sourceforge.net> for
-feedback, questions, etc. The mailing list is only for subscribers, so please
-subscribe before posting
+You can also use the mailing lists <quantlib-users@lists.sourceforge.net> and
+<quantlib-dev@lists.sourceforge.net> for feedback, questions, etc. The mailing
+lists are for subscribers only, so please subscribe before posting.
 
 If you are interested in participating in QuantLib development, please
 send mail to Ferdinando Ametrano -- nando AT ametrano DOT net --
@@ -48,6 +48,6 @@ A (hopefully growing) list of frequently-asked questions is available at
 <http://quantlib.org/reference/faq.html>.
 
 If you are willing to contribute and looking for a task, to-do items
-are listed in <http://quantlib.org/reference/todo.html> and 
+are listed in <http://quantlib.org/reference/todo.html> and
 <http://quantlib.org/reference/overview.html>.
 
