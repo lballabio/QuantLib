@@ -24,7 +24,6 @@
 namespace QuantLib {
 
     Volatility blackVol(const Date& refDate,
-                        const DayCounter& dc,
                         const std::vector<Date>& dates,
                         const std::vector<Real>& strikes,
                         const Matrix& blackVolSurface,
@@ -40,12 +39,11 @@ namespace QuantLib {
 
         switch (interpolation2DType) {
           case 1:
-            result = surface_t(refDate, dates, strikes,
-                               blackVolSurface,
-                               surface_t::InterpolatorDefaultExtrapolation,
-                               surface_t::InterpolatorDefaultExtrapolation,
-                               dc).blackForwardVol(date1, date2,
-                                                   strike, allowExtrapolation);
+            result = surface_t(
+                refDate, dates, strikes, blackVolSurface,
+                surface_t::InterpolatorDefaultExtrapolation,
+                surface_t::InterpolatorDefaultExtrapolation).blackForwardVol(
+                    date1, date2, strike, allowExtrapolation);
             break;
           default:
             QL_FAIL("invalid interpolation type");

@@ -107,7 +107,7 @@ namespace QuantLib {
             riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(
                                    new FlatForward(rateRefDate, r, voldc)));
             volTS.linkTo(boost::shared_ptr<BlackVolTermStructure>(
-                                   new BlackConstantVol(rateRefDate, v, voldc)));
+                                   new BlackConstantVol(rateRefDate, v)));
 
             baseArguments->validate();
             baseEngine_->calculate();

@@ -43,7 +43,7 @@ namespace QuantLib {
         DiscountCurve(const Date& todaysDate,
                       const std::vector<Date>& dates,
                       const std::vector<DiscountFactor>& dfs,
-                      const DayCounter& dayCounter = Actual365Fixed());
+                      const DayCounter& dayCounter);
         #endif
         DiscountCurve(const std::vector<Date>& dates,
                       const std::vector<DiscountFactor>& dfs);

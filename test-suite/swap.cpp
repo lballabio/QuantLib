@@ -259,19 +259,16 @@ void SwapTest::testInArrears() {
 
     Date maturity = today_ + 5*Years;
     Calendar calendar = NullCalendar();
-    DayCounter dayCounter = SimpleDayCounter();
-
     Schedule schedule(calendar, today_, maturity, Annual, Following);
+
+    DayCounter dayCounter = SimpleDayCounter();
     std::vector<Real> nominals(1, 100000000.0);
     boost::shared_ptr<Xibor> index(new Xibor("dummy", 1, Years, 0,
                                              EURCurrency(), calendar,
                                              Following, dayCounter,
                                              termStructure_));
-    std::vector<Rate> spreads;
-    Integer fixingDays = 0;
-
     Rate oneYear = 0.05;
-    Rate r = -QL_LOG(1.0/(1.0+oneYear));
+    Rate r = QL_LOG(1.0+oneYear);
     termStructure_.linkTo(flatRate(today_,r,dayCounter));
 
 
@@ -281,6 +278,8 @@ void SwapTest::testInArrears() {
                               coupons, dayCounter);
 
 
+    std::vector<Rate> spreads;
+    Integer fixingDays = 0;
     std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
         IndexedCouponVector<InArrearIndexedCoupon>(schedule, Following,
                                                    nominals, index, fixingDays,
@@ -297,7 +296,9 @@ void SwapTest::testInArrears() {
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
         boost::shared_ptr<CapletVolatilityStructure>(
-            new CapletConstantVolatility(today_,capletVolatility,dayCounter)));
+            new CapletConstantVolatility(today_,capletVolatility
+            //,dayCounter
+            )));
     for (Size i=0; i<floatingLeg.size(); i++) {
         boost::dynamic_pointer_cast<InArrearIndexedCoupon>(floatingLeg[i])
             ->setCapletVolatility(vol);

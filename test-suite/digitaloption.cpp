@@ -92,7 +92,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         { Option::Put,   80.00, 100.0, 0.06, 0.06, 0.75, 0.35, 2.6710, 1e-4 }
     };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -101,7 +101,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -109,7 +109,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 10.0));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -145,7 +145,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         { Option::Put,   65.00, 70.0, 0.05, 0.07, 0.50, 0.27, 20.2069, 1e-4 }
     };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -154,7 +154,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -162,7 +162,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -198,7 +198,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
         { Option::Call,  50.00, 50.0, 0.00, 0.09, 0.50, 0.20, -0.0053, 1e-4 }
     };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -207,7 +207,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -215,7 +215,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new GapPayoff(
             values[i].type, values[i].strike, 57.00));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -263,7 +263,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         { Option::Put,  100.00,  95.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16}
     };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -272,7 +272,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
     boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -280,7 +280,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.00));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
@@ -328,7 +328,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000, 1e-16 }
     };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -337,7 +337,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
     boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -345,7 +345,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
@@ -388,7 +388,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*QL_EXP(-0.05), 1e-16 }
     };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -397,7 +397,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
     boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -405,7 +405,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.0));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate,
                                                                     true));
@@ -455,7 +455,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*QL_EXP(-0.005), 1e-16 }
     };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -464,7 +464,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
     boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -472,7 +472,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate,
                                                                     true));
@@ -524,7 +524,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Volatility vols[] = { 0.11, 0.5, 1.2 };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -534,10 +534,10 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol));
 
     // there is no cycling on different residual times
-    Date exDate = today + 360;
+    Date exDate = today + Settings::instance().dayCounterBase();
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
     boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                 exDate,
@@ -677,7 +677,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 3e-3 }
     };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -686,7 +686,7 @@ void DigitalOptionTest::testMCCashAtHit() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
 
     Size maxTimeStepsPerYear = 90;
     bool brownianBridge, antitheticVariate;
@@ -699,7 +699,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.0));
 
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> amExercise(
                                          new AmericanExercise(today, exDate));
 

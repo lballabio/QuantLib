@@ -214,7 +214,7 @@ void BarrierOptionTest::testHaugValues() {
     };
 
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -223,10 +223,10 @@ void BarrierOptionTest::testHaugValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today + Integer(values[i].t*360+0.5);
+        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -291,7 +291,7 @@ void BarrierOptionTest::testBabsiriValues() {
     Rate r = 0.05;
     Rate q = 0.02;
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
     boost::shared_ptr<SimpleQuote> underlying(
                                             new SimpleQuote(underlyingPrice));
@@ -304,11 +304,11 @@ void BarrierOptionTest::testBabsiriValues() {
 
     boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
     boost::shared_ptr<BlackVolTermStructure> volTS =
-        flatVol(today, volatility, dc);
+        flatVol(today, volatility);
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
 
-    Date exDate = today+360;
+    Date exDate = today+Settings::instance().dayCounterBase();
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -394,7 +394,7 @@ void BarrierOptionTest::testBeagleholeValues() {
     Rate r = QL_LOG (1.1);
     Rate q = 0.00;
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> underlying(
@@ -408,12 +408,12 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
     boost::shared_ptr<BlackVolTermStructure> volTS =
-        flatVol(today, volatility, dc);
+        flatVol(today, volatility);
 
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
 
-    Date exDate = today+360;
+    Date exDate = today+Settings::instance().dayCounterBase();
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {

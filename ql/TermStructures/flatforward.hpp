@@ -39,12 +39,12 @@ namespace QuantLib {
         FlatForward(const Date& todaysDate,
                     const Date& referenceDate,
                     Rate forward,
-                    const DayCounter& dayCounter = Actual365Fixed());
+                    const DayCounter& dayCounter);
         /*! \deprecated use one of the non-deprecated constructors. */
         FlatForward(const Date& todaysDate,
                     const Date& referenceDate,
                     const Handle<Quote>& forward,
-                    const DayCounter& dayCounter = Actual365Fixed());
+                    const DayCounter& dayCounter);
         #endif
         FlatForward(const Date& referenceDate,
                     const Handle<Quote>& forward,

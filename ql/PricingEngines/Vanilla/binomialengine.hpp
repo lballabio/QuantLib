@@ -78,7 +78,7 @@ namespace QuantLib {
                 new FlatForward(referenceDate, q, rfdc)));
         Handle<BlackVolTermStructure> flatVol(
             boost::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(referenceDate, v, rfdc)));
+                new BlackConstantVol(referenceDate, v)));
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);

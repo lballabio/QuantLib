@@ -59,16 +59,24 @@ namespace QuantLib {
         //@}
         //! the day counter used for date/time conversion
         /*! \warning cannot be changed at run-time. If changed at compile-time
-                     you are advised to select a strictly monotone daycounter
-                     (e.g. Actual365Fixed, Actual360Fixed, ActualActual ISDA,
-                     etc.) and to avoid the non-strictly monotone ones (e.g.
-                     Thirty360, "1/1", etc.)
+                     you are advised to select a strictly monotone additive
+                     daycounter (e.g. Actual365Fixed, Actual360, etc.) and to
+                     avoid the non-strictly monotone non-additive ones
+                     (e.g. Thirty360, "1/1", etc.)
+
+                     The test-suite can be succesfully run only with Actual360.
         */
-        DayCounter dayCounter() const { return dc_; }
+        DayCounter dayCounter() const {
+//            return Actual365Fixed();
+            return Actual360();
+        }
+        Integer dayCounterBase() const {
+//            return 365;
+            return 360;
+        }
       private:
         Date evaluationDate_;
         boost::shared_ptr<Observable> evaluationDateGuard_;
-        DayCounter dc_;
     };
 
 
@@ -76,7 +84,6 @@ namespace QuantLib {
 
     inline void Settings::initialize() {
         evaluationDateGuard_ = boost::shared_ptr<Observable>(new Observable);
-        dc_ = Actual360();
     }
 
     inline Date Settings::evaluationDate() const {

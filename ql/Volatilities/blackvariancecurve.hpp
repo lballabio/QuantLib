@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -45,13 +45,20 @@ namespace QuantLib {
     */
     class BlackVarianceCurve : public BlackVarianceTermStructure {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
         BlackVarianceCurve(const Date& referenceDate,
                            const std::vector<Date>& dates,
                            const std::vector<Volatility>& blackVolCurve,
-                           const DayCounter& dayCounter = Actual365Fixed());
+                           const DayCounter& dayCounter);
+        #endif
+        BlackVarianceCurve(const Date& referenceDate,
+                           const std::vector<Date>& dates,
+                           const std::vector<Volatility>& blackVolCurve);
         //! \name BlackVolTermStructure interface
         //@{
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
+        #endif
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -77,7 +84,9 @@ namespace QuantLib {
       protected:
         virtual Real blackVarianceImpl(Time t, Real) const;
       private:
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
+        #endif
         Date maxDate_;
         std::vector<Time> times_;
         std::vector<Real> variances_;

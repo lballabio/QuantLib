@@ -87,7 +87,7 @@ void DividendEuropeanOptionTest::testGreeks() {
     Integer lengths[] = { 1, 2 };
     Volatility vols[] = { 0.05, 0.20, 0.70 };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -97,12 +97,13 @@ void DividendEuropeanOptionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(lengths); k++) {
-          Date exDate = today + lengths[k]*Years;
+          Date exDate = today +
+            lengths[k]*Settings::instance().dayCounterBase();
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
           std::vector<Date> dividendDates;

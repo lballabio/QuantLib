@@ -123,9 +123,8 @@ int main(int, char* [])
         vols[3][0] = volatility*1.1; vols[3][1] = volatility;
             vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
         Handle<BlackVolTermStructure> blackSurface(
-            boost::shared_ptr<BlackVolTermStructure>(
-                new BlackVarianceSurface(settlementDate, dates,
-                                         strikes, vols)));
+            boost::shared_ptr<BlackVolTermStructure>(new
+                BlackVarianceSurface(settlementDate, dates, strikes, vols)));
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(type, strike));

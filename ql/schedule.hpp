@@ -43,6 +43,7 @@ namespace QuantLib {
         Size size() const { return dates_.size(); }
         const Date& operator[](Size i) const;
         const Date& date(Size i) const;
+        const std::vector<Date>& dates() const { return dates_; }
         bool isRegular(Size i) const;
         //@}
         //! \name Other inspectors

@@ -59,39 +59,35 @@ namespace QuantLib {
     boost::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              const boost::shared_ptr<Quote>& forward,
-             const DayCounter& dc = Actual365Fixed());
+             const DayCounter& dc);
 
     boost::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              Rate forward,
-             const DayCounter& dc = Actual365Fixed());
+             const DayCounter& dc);
 
     boost::shared_ptr<YieldTermStructure>
     flatRate(const boost::shared_ptr<Quote>& forward,
-             const DayCounter& dc = Actual365Fixed());
+             const DayCounter& dc);
 
     boost::shared_ptr<YieldTermStructure>
     flatRate(Rate forward,
-             const DayCounter& dc = Actual365Fixed());
+             const DayCounter& dc);
 
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
-            const boost::shared_ptr<Quote>& volatility,
-            const DayCounter& dc = Actual365Fixed());
+            const boost::shared_ptr<Quote>& volatility);
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
-            Volatility volatility,
-            const DayCounter& dc = Actual365Fixed());
+            Volatility volatility);
 
     boost::shared_ptr<BlackVolTermStructure>
-    flatVol(const boost::shared_ptr<Quote>& volatility,
-            const DayCounter& dc = Actual365Fixed());
+    flatVol(const boost::shared_ptr<Quote>& volatility);
 
     boost::shared_ptr<BlackVolTermStructure>
-    flatVol(Volatility volatility,
-            const DayCounter& dc = Actual365Fixed());
+    flatVol(Volatility volatility);
 
 
     Real relativeError(Real x1, Real x2, Real reference);

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -46,18 +46,28 @@ namespace QuantLib {
       public:
         enum Extrapolation { ConstantExtrapolation,
                              InterpolatorDefaultExtrapolation };
+        #ifndef QL_DISABLE_DEPRECATED
+        BlackVarianceSurface(const Date& referenceDate,
+                             const std::vector<Date>& dates,
+                             const std::vector<Real>& strikes,
+                             const Matrix& blackVolMatrix,
+                             Extrapolation lowerExtrapolation,
+                             Extrapolation upperExtrapolation,
+                             const DayCounter& dayCounter);
+        #endif
         BlackVarianceSurface(const Date& referenceDate,
                              const std::vector<Date>& dates,
                              const std::vector<Real>& strikes,
                              const Matrix& blackVolMatrix,
                              Extrapolation lowerExtrapolation =
-                             InterpolatorDefaultExtrapolation,
+                                InterpolatorDefaultExtrapolation,
                              Extrapolation upperExtrapolation =
-                             InterpolatorDefaultExtrapolation,
-                             const DayCounter& dayCounter = Actual365Fixed());
+                                InterpolatorDefaultExtrapolation);
         //! \name BlackVolTermStructure interface
         //@{
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
+        #endif
         Date maxDate() const {
             return maxDate_;
         }
@@ -90,7 +100,9 @@ namespace QuantLib {
       protected:
         virtual Real blackVarianceImpl(Time t, Real strike) const;
       private:
+        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
+        #endif
         Date maxDate_;
         std::vector<Real> strikes_;
         std::vector<Time> times_;

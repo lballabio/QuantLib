@@ -54,7 +54,7 @@ namespace QuantLib {
         CapVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~CapVolatilityStructure() {}
-        #ifdef QL_DISABLE_DEPRECATED
+        #ifndef QL_DISABLE_DEPRECATED
         //! the day counter used for date/time conversion
         virtual DayCounter dayCounter() const = 0;
         #endif
@@ -104,7 +104,7 @@ namespace QuantLib {
         CapletVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~CapletVolatilityStructure() {}
-        #ifdef QL_DISABLE_DEPRECATED
+        #ifndef QL_DISABLE_DEPRECATED
         //! the day counter used for date/time conversion
         virtual DayCounter dayCounter() const = 0;
         #endif

@@ -76,7 +76,7 @@ void InterestRateTest::testConversions() {
         ir = InterestRate(cases[i].r, Actual360(),
                           cases[i].comp, cases[i].freq);
 
-        d2 = d1+Integer(360*cases[i].t+0.5)*Days;
+        d2 = d1+Integer(Settings::instance().dayCounterBase()*cases[i].t+0.5)*Days;
         accrual = ir.compoundingFactor(d1, d2);
         disc = ir.discountFactor(d1, d2);
         error = QL_FABS(disc-1.0/accrual);

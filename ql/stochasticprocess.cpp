@@ -161,11 +161,9 @@ namespace QuantLib {
             if (constVol) {
                 // ok, the local vol is constant too.
                 localVolatility_.linkTo(
-                    boost::shared_ptr<LocalVolTermStructure>(
-                             new LocalConstantVol(constVol->referenceDate(),
-                                                  constVol->blackVol(
-                                                           0.0, x0_->value()),
-                                                  constVol->dayCounter())));
+                    boost::shared_ptr<LocalVolTermStructure>(new
+                        LocalConstantVol(constVol->referenceDate(),
+                                         constVol->blackVol(0.0, x0_->value()))));
                 updated_ = true;
                 return localVolatility_.currentLink();
             }

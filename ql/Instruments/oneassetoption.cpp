@@ -236,18 +236,11 @@ namespace QuantLib {
                                        riskFreeRate, volatility));
 
 
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter voldc = arguments_->blackScholesProcess->blackVolatility()->dayCounter();
-        #else
-        DayCounter voldc = Settings::instance().dayCounter();
-        #endif
-
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         volatility.linkTo(boost::shared_ptr<BlackVolTermStructure>(
                     new BlackConstantVol(arguments_->blackScholesProcess
                                          ->blackVolatility()->referenceDate(),
-                                         Handle<Quote>(vol_),
-                                         voldc)));
+                                         Handle<Quote>(vol_))));
         arguments_->blackScholesProcess = process;
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,

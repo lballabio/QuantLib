@@ -38,11 +38,11 @@ namespace QuantLib {
         ZeroCurve(const Date& todaysDate,
                   const std::vector<Date>& dates,
                   const std::vector<Rate>& yields,
-                  const DayCounter& dayCounter = Actual365Fixed());
+                  const DayCounter& dayCounter);
         #endif
         ZeroCurve(const std::vector<Date>& dates,
                   const std::vector<Rate>& yields,
-                  const DayCounter& dayCounter = Actual365Fixed());
+                  const DayCounter& dayCounter);
         // inspectors
         #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }

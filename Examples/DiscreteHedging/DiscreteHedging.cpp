@@ -298,7 +298,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
                                       new FlatForward(today, 0.0, dayCount)));
     Handle<BlackVolTermStructure> volatility(
                           boost::shared_ptr<BlackVolTermStructure>(
-                               new BlackConstantVol(today, sigma_,dayCount)));
+                               new BlackConstantVol(today, sigma_)));
     boost::shared_ptr<StochasticProcess> diffusion(
                          new BlackScholesProcess(stateVariable, dividendYield,
                                                  riskFreeRate, volatility));

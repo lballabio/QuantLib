@@ -94,7 +94,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
     // data from "Option Pricing Formulas", Haug, pag.96-97
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(80.0));
@@ -103,7 +103,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(Handle<Quote>(spot),
@@ -187,7 +187,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     Integer lengths[] = { 1, 2 };
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -197,7 +197,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol));
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
@@ -328,7 +328,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -337,7 +337,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(Handle<Quote>(spot),
@@ -357,11 +357,11 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
 
-    Date exerciseDate = today + 360;
+    Date exerciseDate = today + Settings::instance().dayCounterBase();
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = Integer(360/futureFixings+0.5);
+    Integer dt = Integer(Settings::instance().dayCounterBase()/futureFixings+0.5);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -391,7 +391,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -400,7 +400,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(Handle<Quote>(spot),
@@ -430,11 +430,11 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
 
-    Date exerciseDate = today + 360;
+    Date exerciseDate = today + Settings::instance().dayCounterBase();
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Integer dt = Integer(360/futureFixings+0.5);
+    Integer dt = Integer(Settings::instance().dayCounterBase()/futureFixings+0.5);
     fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j] = fixingDates[j-1] + dt;
@@ -545,7 +545,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
           0.13, true, 2.89703362437 }
    };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -554,7 +554,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
 
 
 
@@ -583,10 +583,10 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
         std::vector<Time> timeIncrements(cases4[l].fixings);
         std::vector<Date> fixingDates(cases4[l].fixings);
         timeIncrements[0] = cases4[l].first;
-        fixingDates[0] = today + Integer(timeIncrements[0]*360+0.5);
+        fixingDates[0] = today + Integer(timeIncrements[0]*Settings::instance().dayCounterBase()+0.5);
         for (Size i=1; i<cases4[l].fixings; i++) {
             timeIncrements[i] = i*dt + cases4[l].first;
-            fixingDates[i] = today + Integer(timeIncrements[i]*360+0.5);
+            fixingDates[i] = today + Integer(timeIncrements[i]*Settings::instance().dayCounterBase()+0.5);
         }
         boost::shared_ptr<Exercise> exercise(new
             EuropeanExercise(fixingDates[cases4[l].fixings-1]));
@@ -642,7 +642,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     Integer lengths[] = { 1, 2 };
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-    DayCounter dc = Actual360();
+    DayCounter dc = Settings::instance().dayCounter();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -652,7 +652,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol));
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
