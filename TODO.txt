@@ -1,4 +1,4 @@
-
+compile example after QuantLib in MS VC++
 set QL_DIR environment variable in the Win32 binary installer
 compile with gcc 3.0
 
