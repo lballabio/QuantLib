@@ -1,4 +1,26 @@
 
+/*
+ Copyright (C) 2000, 2001, 2002 RiskMap srl
+
+ This file is part of QuantLib, a C++ free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software developed by the QuantLib Group; you can
+ redistribute it and/or modify it under the terms of the QuantLib License;
+ either version 1.0, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ QuantLib License for more details.
+
+ You should have received a copy of the QuantLib License along with this
+ program; if not, please email ferdinando@ametrano.net
+
+ The QuantLib License is also available at http://quantlib.org/license.html
+ The members of the QuantLib Group are listed in the QuantLib License
+*/
+
 /*! \page mcarlo The Monte Carlo framework
 
     \htmlonly
@@ -55,7 +77,7 @@
     and the averaging process itself.
     The QuantLib::MonteCarlo::MonteCarloModel class acts as a glue for
     such three steps---which are outlined in the following subsections---and
-    provides the interface of the resulting Monte Carlo model to the 
+    provides the interface of the resulting Monte Carlo model to the
     end user.
 
 
@@ -67,11 +89,11 @@
     \f]
     where \f$ r \f$ is the risk-free rate, \f$ \sigma \f$ is the volatility
     of the underlying, and \f$ \nu = r - \sigma^2/2 \f$, has the form of a
-    diffusion process. 
-    \anchor backmcnote1 
-    According to this heuristic interpretation \ref mcnote1 "(1)", paths 
-    followed by the logarithm of the underlying would be Brownian random 
-    walks with a constant drift \f$ \nu \f$ per unit time and a standard 
+    diffusion process.
+    \anchor backmcnote1
+    According to this heuristic interpretation \ref mcnote1 "(1)", paths
+    followed by the logarithm of the underlying would be Brownian random
+    walks with a constant drift \f$ \nu \f$ per unit time and a standard
     deviation \f$ \sigma \sqrt{T} \f$ over a time \f$ T \f$.
 
     Therefore, the paths to be generated for a Monte Carlo model of the
@@ -356,12 +378,12 @@
 
 
     \subsection mcnotes Notes
-    
+
     \anchor mcnote1
-    \ref backmcnote1 "(1)" A more rigorous approach would lead us to 
-    integrate the above equation by means of Green functions or Laplace 
-    transforms. Both such methods would show that the price at time 
-    \f$ t = 0 \f$ of an option with payoff \f$ G(S(T)) \f$ where \f$ S(T) \f$ 
+    \ref backmcnote1 "(1)" A more rigorous approach would lead us to
+    integrate the above equation by means of Green functions or Laplace
+    transforms. Both such methods would show that the price at time
+    \f$ t = 0 \f$ of an option with payoff \f$ G(S(T)) \f$ where \f$ S(T) \f$
     is the underlying price at expiry is given by the integral
     \f[ \int_{-\infty}^{\infty} e^{-rT} G(S_0 e^\xi)
         \frac{1}{\sqrt{2 \pi \sigma^2 T}}
