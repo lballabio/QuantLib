@@ -53,31 +53,21 @@ namespace QuantLib {
                                                 discounts_.begin());
     }
 
-    DiscountFactor DiscountCurve::discountImpl(Time t, 
-                                               bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" + DoubleFormatter::toString(t) +
-                   ") not allowed");
+    DiscountFactor DiscountCurve::discountImpl(Time t) const {
         if (t == 0.0) {
             return discounts_[0];
         } else {
-            Size n = referenceNode(t, extrapolate);
+            Size n = referenceNode(t);
             if (t == times_[n]) {
                 return discounts_[n];
             } else {
-                return interpolation_(t, extrapolate);
+                return interpolation_(t, true);
             }
         }
         QL_DUMMY_RETURN(DiscountFactor());
     }
 
-    Size DiscountCurve::referenceNode(Time t, bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                   "time (" +
-                   DoubleFormatter::toString(t) +
-                   ") outside curve definition [" +
-                   DoubleFormatter::toString(0.0) + ", " +
-                   DoubleFormatter::toString(times_.back()) + "]");
+    Size DiscountCurve::referenceNode(Time t) const {
         if (t >= times_.back())
             return times_.size()-1;
         std::vector<Time>::const_iterator i=times_.begin(),

@@ -46,12 +46,10 @@ namespace QuantLib {
         // Observer interface
         void update();
       protected:
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-        DiscountFactor discountImpl(Time,
-                                    bool extrapolate = false) const;
-        Rate forwardImpl(Time, bool extrapolate = false) const;
-        Rate compoundForwardImpl(Time t, int compFreq,
-                                 bool extrapolate = false) const;
+        Rate zeroYieldImpl(Time) const;
+        DiscountFactor discountImpl(Time) const;
+        Rate forwardImpl(Time) const;
+        Rate compoundForwardImpl(Time t, int compFreq) const;
       private:
         Date todaysDate_, referenceDate_;
         DayCounter dayCounter_;
@@ -94,33 +92,20 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline Rate FlatForward::zeroYieldImpl(Time t, bool) const {
-        // no forward limit on time
-        QL_REQUIRE(t >= 0.0,
-                   "zero yield undefined for time (" +
-                   DoubleFormatter::toString(t) + ")");
+    inline Rate FlatForward::zeroYieldImpl(Time t) const {
         return forward_->value();
     }
 
-    inline DiscountFactor FlatForward::discountImpl(Time t, bool) const {
-        // no forward limit on time
-        QL_REQUIRE(t >= 0.0,
-                   "discount undefined for time (" +
-                   DoubleFormatter::toString(t) + ")");
+    inline DiscountFactor FlatForward::discountImpl(Time t) const {
         return DiscountFactor(QL_EXP(-forward_->value()*t));
     }
 
-    inline Rate FlatForward::forwardImpl(Time t, bool) const {
-        // no forward limit on time
-        QL_REQUIRE(t >= 0.0,
-                   "forward undefined for time (" +
-                   DoubleFormatter::toString(t) + ")");
+    inline Rate FlatForward::forwardImpl(Time t) const {
         return forward_->value();
     }
 
-    inline Rate FlatForward::compoundForwardImpl(Time t, int compFreq, 
-                                                 bool extrapolate) const {
-        double zy = zeroYieldImpl(t, extrapolate);
+    inline Rate FlatForward::compoundForwardImpl(Time t, int compFreq) const {
+        double zy = zeroYieldImpl(t);
         if (compFreq == 0)
             return zy;
         if (t <= 1.0/compFreq)

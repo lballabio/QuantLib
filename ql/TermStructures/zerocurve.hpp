@@ -46,7 +46,7 @@ namespace QuantLib {
         const std::vector<Time>& times() const;
         Time maxTime() const;
       protected:
-        Rate zeroYieldImpl(Time t, bool extrapolate = false) const;
+        Rate zeroYieldImpl(Time t) const;
       private:
         Date todaysDate_;
         std::vector<Date> dates_;

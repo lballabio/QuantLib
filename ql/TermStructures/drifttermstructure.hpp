@@ -55,7 +55,7 @@ namespace QuantLib {
         //@}
       protected:
         //! returns the discount factor as seen from the evaluation date
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+        Rate zeroYieldImpl(Time) const;
       private:
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
         RelinkableHandle<BlackVolTermStructure> blackVolTS_;
@@ -97,16 +97,14 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline Rate DriftTermStructure::zeroYieldImpl(Time t,
-                                                  bool extrapolate) const {
+    inline Rate DriftTermStructure::zeroYieldImpl(Time t) const {
         // warning: here it is assumed that all TS have the same daycount.
         //          It should be QL_REQUIREd, or maybe even enforced in the
         //          whole QuantLib
-        return riskFreeTS_->zeroYield(referenceDate(),extrapolate)
-            - dividendTS_->zeroYield(t, extrapolate)
-            - 0.5
-            * blackVolTS_->blackVol(t, underlyingLevel_, extrapolate)
-            * blackVolTS_->blackVol(t, underlyingLevel_, extrapolate);
+        return riskFreeTS_->zeroYield(referenceDate(),true)
+            - dividendTS_->zeroYield(t, true)
+            - 0.5 * blackVolTS_->blackVol(t, underlyingLevel_, true)
+                  * blackVolTS_->blackVol(t, underlyingLevel_, true);
     }
 }
 

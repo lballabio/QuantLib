@@ -53,7 +53,7 @@ namespace QuantLib {
         //@}
       protected:
         //! returns the discount factor as seen from the evaluation date
-        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
+        DiscountFactor discountImpl(Time) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
         Date newTodaysDate_, newReferenceDate_;
@@ -95,20 +95,18 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline DiscountFactor ImpliedTermStructure::discountImpl(Time t,
-                                                             bool extrapolate)
-                                                                        const {
+    inline DiscountFactor ImpliedTermStructure::discountImpl(Time t) const {
         /* t is relative to the current reference date
            and needs to be converted to the time relative
            to the reference date of the original curve */
-        Time originalTime = t + dayCounter().yearFraction(
-                          originalCurve_->referenceDate(), newReferenceDate_);
-        // evaluationDate cannot be an extrapolation
+        Time originalTime = 
+            t + dayCounter().yearFraction(originalCurve_->referenceDate(), 
+                                          newReferenceDate_);
         /* discount at evaluation date cannot be cached
            since the original curve could change between
            invocations of this method */
-        return originalCurve_->discount(originalTime, extrapolate) /
-            originalCurve_->discount(referenceDate(),false);
+        return originalCurve_->discount(originalTime, true) /
+            originalCurve_->discount(referenceDate(), true);
     }
 
 }

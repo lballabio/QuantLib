@@ -49,8 +49,8 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<DiscountFactor>& discounts() const;
       protected:
-        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-        Size referenceNode(Time, bool extrapolate = false) const;
+        DiscountFactor discountImpl(Time) const;
+        Size referenceNode(Time) const;
         Date todaysDate_;
         Date referenceDate_;
         DayCounter dayCounter_;

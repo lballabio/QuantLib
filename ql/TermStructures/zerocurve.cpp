@@ -45,11 +45,8 @@ namespace QuantLib {
                                              yields_.begin());
     }
 
-    Rate ZeroCurve::zeroYieldImpl(Time t, bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" + DoubleFormatter::toString(t) +
-                   ") not allowed");
-        return interpolation_(t, extrapolate);
+    Rate ZeroCurve::zeroYieldImpl(Time t) const {
+        return interpolation_(t, true);
     }
 
 }

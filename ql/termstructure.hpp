@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +26,7 @@
 #include <ql/daycounter.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/marketelement.hpp>
+#include <ql/Math/extrapolation.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -42,7 +43,8 @@ namespace QuantLib {
         \todo allow for different compounding rules and compounding
               frequencies
     */
-    class TermStructure : public virtual Observable {
+    class TermStructure : public virtual Observable,
+                          public Extrapolator {
       public:
         virtual ~TermStructure() {}
         /*! \name Rates and discount
@@ -96,28 +98,32 @@ namespace QuantLib {
         /*! \name Calculations
 
             These methods must be implemented in derived classes to perform
-            the actual discount and rate calculations
+            the actual discount and rate calculations. When they are called,
+            range check has already been performed; therefore, they must
+            assume that extrapolation is to be performed.
         */
         //@{
         //! zero-yield calculation
-        virtual Rate zeroYieldImpl(Time, bool extrapolate = false) const = 0;
+        virtual Rate zeroYieldImpl(Time) const = 0;
         //! discount calculation
-        virtual DiscountFactor discountImpl(Time, 
-                                            bool extrapolate=false) const = 0;
+        virtual DiscountFactor discountImpl(Time) const = 0;
         //! instantaneous forward-rate calculation
-        virtual Rate forwardImpl(Time, bool extrapolate = false) const = 0;
+        virtual Rate forwardImpl(Time) const = 0;
         //! compound forward-rate calculation 
-        virtual Rate compoundForwardImpl(Time, int,
-                                         bool extrapolate = false) const = 0;
+        virtual Rate compoundForwardImpl(Time, int) const = 0;
         //@}
+      private:
+        void checkRange(const Date&, bool extrapolate) const;
+        void checkRange(const Time&, bool extrapolate) const;
     };
+
 
     //! Zero yield term structure
     /*! This abstract class acts as an adapter to TermStructure allowing the
         programmer to implement only the
         <tt>zeroYieldImpl(Time, bool)</tt> method in derived classes.
 
-        Rates are assumed to be annual continuos compounding.
+        Rates are assumed to be annual continuous compounding.
     */
     class ZeroYieldStructure : public TermStructure {
       public:
@@ -126,15 +132,15 @@ namespace QuantLib {
         /*! Returns the discount factor for the given date calculating it
             from the zero yield.
         */
-        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
+        DiscountFactor discountImpl(Time) const;
         /*! Returns the instantaneous forward rate for the given date
             calculating it from the zero yield.
         */
-        Rate forwardImpl(Time, bool extrapolate = false) const;
+        Rate forwardImpl(Time) const;
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
-        Rate compoundForwardImpl(Time, int, bool extrapolate = false) const;
+        Rate compoundForwardImpl(Time, int) const;
     };
 
     //! Discount factor term structure
@@ -151,15 +157,15 @@ namespace QuantLib {
         /*! Returns the zero yield rate for the given date calculating it
             from the discount.
         */
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+        Rate zeroYieldImpl(Time) const;
         /*! Returns the instantaneous forward rate for the given date
             calculating it from the discount.
         */
-        Rate forwardImpl(Time, bool extrapolate = false) const;
+        Rate forwardImpl(Time) const;
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
-        Rate compoundForwardImpl(Time, int, bool extrapolate = false) const;
+        Rate compoundForwardImpl(Time, int) const;
     };
 
     //! Forward rate term structure
@@ -179,15 +185,15 @@ namespace QuantLib {
                 implementation. Derived classes should implement their own
                 zeroYield method.
         */
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+        Rate zeroYieldImpl(Time) const;
         /*! Returns the discount factor for the given date calculating it
             from the instantaneous forward rate.
         */
-        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
+        DiscountFactor discountImpl(Time) const;
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
-        Rate compoundForwardImpl(Time, int, bool extrapolate = false) const;
+        Rate compoundForwardImpl(Time, int) const;
     };
 
 
@@ -195,63 +201,80 @@ namespace QuantLib {
 
     inline Rate TermStructure::zeroYield(const Date& d,
                                          bool extrapolate) const {
-            Time t = dayCounter().yearFraction(referenceDate(),d);
-            return zeroYieldImpl(t,extrapolate);
+        checkRange(d, extrapolate);
+        Time t = dayCounter().yearFraction(referenceDate(),d);
+        return zeroYieldImpl(t);
     }
 
     inline Rate TermStructure::zeroYield(Time t, bool extrapolate) const {
-        return zeroYieldImpl(t,extrapolate);
+        checkRange(t, extrapolate);
+        return zeroYieldImpl(t);
     }
 
     inline DiscountFactor TermStructure::discount(const Date& d,
                                                   bool extrapolate) const {
-            Time t = dayCounter().yearFraction(referenceDate(),d);
-            return discountImpl(t,extrapolate);
+        checkRange(d, extrapolate);
+        Time t = dayCounter().yearFraction(referenceDate(),d);
+        return discountImpl(t);
     }
 
     inline DiscountFactor TermStructure::discount(Time t,
                                                   bool extrapolate) const {
-            return discountImpl(t,extrapolate);
+        checkRange(t, extrapolate);
+        return discountImpl(t);
     }
 
     inline Rate TermStructure::instantaneousForward(const Date& d,
                                                     bool extrapolate) const {
-            Time t = dayCounter().yearFraction(referenceDate(),d);
-            return forwardImpl(t,extrapolate);
+        checkRange(d, extrapolate);
+        Time t = dayCounter().yearFraction(referenceDate(),d);
+        return forwardImpl(t);
     }
 
     inline Rate TermStructure::instantaneousForward(Time t,
                                                     bool extrapolate) const {
-        return forwardImpl(t,extrapolate);
+        checkRange(t, extrapolate);
+        return forwardImpl(t);
     }
 
     inline Rate TermStructure::compoundForward(const Date& d, int f, 
                                                bool extrapolate) const {
+        checkRange(d, extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(),d);
-        return compoundForwardImpl(t,f,extrapolate);
+        return compoundForwardImpl(t,f);
     }
 
     inline Rate TermStructure::compoundForward(Time t, int f, 
                                                bool extrapolate) const {
-        return compoundForwardImpl(t,f,extrapolate);
+        checkRange(t, extrapolate);
+        return compoundForwardImpl(t,f);
     }
 
     inline Rate TermStructure::forward(const Date& d1, const Date& d2, 
                                        bool extrapolate) const {
+        QL_REQUIRE(d1 <= d2,
+                   DateFormatter::toString(d1) +
+                   " later than " +
+                   DateFormatter::toString(d2));
+        checkRange(d2, extrapolate);
         Time t1 = dayCounter().yearFraction(referenceDate(),d1);
         Time t2 = dayCounter().yearFraction(referenceDate(),d2);
-        return forward(t1, t2, extrapolate);
+        return forward(t1, t2);
     }
 
     inline Rate TermStructure::forward(Time t1, Time t2,
                                        bool extrapolate) const {
+        QL_REQUIRE(t1 <= t2,
+                   DoubleFormatter::toString(t1) +
+                   " later than " +
+                   DoubleFormatter::toString(t2));
+        checkRange(t2, extrapolate);
         if (t2==t1)
-	        return instantaneousForward(t1, extrapolate);
+	        return instantaneousForward(t1);
         else 
-            return QL_LOG( discountImpl(t1,extrapolate)/
-                           discountImpl(t2,extrapolate)  ) / (t2-t1);
+            return QL_LOG(discountImpl(t1)/discountImpl(t2))/(t2-t1);
     }
-    
+
     inline Rate TermStructure::zeroCoupon(const Date& d, int f,
                                           bool extrapolate) const {
         Time t = dayCounter().yearFraction(referenceDate(),d);
@@ -260,9 +283,10 @@ namespace QuantLib {
 
     inline Rate TermStructure::zeroCoupon(Time t, int f,
                                           bool extrapolate) const {
-        DiscountFactor df = discountImpl(t, extrapolate);
+        checkRange(t, extrapolate);
+        DiscountFactor df = discountImpl(t);
         if (t == 0.0)
-            return zeroYield(0.0, extrapolate); // limit for t -> 0
+            return zeroYieldImpl(0.0); // limit for t -> 0
 	    else if (f > 0 && t <= (1.0/(double)f))
             return Rate((1.0/df-1.0)/t);
         else
@@ -273,26 +297,43 @@ namespace QuantLib {
         return dayCounter().yearFraction(referenceDate(), maxDate());
     }
 
-    inline DiscountFactor ZeroYieldStructure::discountImpl(Time t,
-                                                           bool extrapolate) 
-                                                                       const {
-        Rate r = zeroYieldImpl(t, extrapolate);
+    inline void TermStructure::checkRange(const Date& d,
+                                          bool extrapolate) const {
+        Time t = dayCounter().yearFraction(referenceDate(),d);
+        checkRange(t,extrapolate);
+    }
+
+    inline void TermStructure::checkRange(const Time& t,
+                                          bool extrapolate) const {
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" +
+                   DoubleFormatter::toString(t) +
+                   ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
+                   "time (" +
+                   DoubleFormatter::toString(t) +
+                   ") is past max curve time (" +
+                   DoubleFormatter::toString(maxTime()) + ")");
+    }
+
+
+    // curve deriving discount and forward from zero yield 
+
+    inline DiscountFactor ZeroYieldStructure::discountImpl(Time t) const {
+        Rate r = zeroYieldImpl(t);
         return DiscountFactor(QL_EXP(-r*t));
     }
 
-    inline Rate ZeroYieldStructure::forwardImpl(Time t,
-                                                bool extrapolate) const {
+    inline Rate ZeroYieldStructure::forwardImpl(Time t) const {
         // less than half day
         Time dt = 0.001;
-        Rate r1 = zeroYieldImpl(t, extrapolate),
-             r2 = zeroYieldImpl(t+dt, true);
+        Rate r1 = zeroYieldImpl(t),
+             r2 = zeroYieldImpl(t+dt);
         return r2+t*(r2-r1)/dt;
     }
 
-    inline Rate ZeroYieldStructure::compoundForwardImpl(Time t, int f, 
-                                                        bool extrapolate) 
-                                                                       const {
-        Rate zy = zeroYieldImpl(t, extrapolate);
+    inline Rate ZeroYieldStructure::compoundForwardImpl(Time t, int f) const {
+        Rate zy = zeroYieldImpl(t);
         if (f == 0)
             return zy;
         if (t <= 1.0/f)
@@ -302,32 +343,28 @@ namespace QuantLib {
 
     // curve deriving zero yield and forward from discount
 
-    inline Rate DiscountStructure::zeroYieldImpl(Time t,
-                                                 bool extrapolate) const {
+    inline Rate DiscountStructure::zeroYieldImpl(Time t) const {
         DiscountFactor df;
         if (t==0.0) {
             Time dt = 0.001;
-            df = discountImpl(dt, extrapolate);
+            df = discountImpl(dt);
             return Rate(-QL_LOG(df)/dt);
         } else {
-            df = discountImpl(t, extrapolate);
+            df = discountImpl(t);
             return Rate(-QL_LOG(df)/t);
         }
     }
 
-    inline Rate DiscountStructure::forwardImpl(Time t,
-                                               bool extrapolate) const {
+    inline Rate DiscountStructure::forwardImpl(Time t) const {
         // less than half day
         Time dt = 0.001;
-        DiscountFactor df1 = discountImpl(t, extrapolate),
-                       df2 = discountImpl(t+dt, true);
+        DiscountFactor df1 = discountImpl(t),
+                       df2 = discountImpl(t+dt);
         return Rate(QL_LOG(df1/df2)/dt);
     }
 
-    inline Rate DiscountStructure::compoundForwardImpl(Time t, int f, 
-                                                       bool extrapolate) 
-                                                                       const {
-        Rate zy = zeroYieldImpl(t, extrapolate);
+    inline Rate DiscountStructure::compoundForwardImpl(Time t, int f) const {
+        Rate zy = zeroYieldImpl(t);
         if (f == 0)
             return zy;
         if (t <= 1.0/f)
@@ -337,33 +374,26 @@ namespace QuantLib {
 
     // curve deriving zero yield and discount from forward
 
-    inline Rate ForwardRateStructure::zeroYieldImpl(Time t,
-                                                    bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" + DoubleFormatter::toString(t) +
-                   ") not allowed");
+    inline Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
         if (t == 0.0)
             return forwardImpl(0.0);
         double sum = 0.5*forwardImpl(0.0);
         Size N = 1000;
         double dt = t/N;
         for (Time i=dt; i<t; i+=dt)
-            sum += forwardImpl(i, extrapolate);
-        sum += 0.5*forwardImpl(t, extrapolate);
+            sum += forwardImpl(i);
+        sum += 0.5*forwardImpl(t);
         return Rate(sum*dt/t);
     }
 
-    inline DiscountFactor ForwardRateStructure::discountImpl(Time t,
-                                                             bool extrapolate) 
-                                                                       const {
-        Rate r = zeroYieldImpl(t, extrapolate);
+    inline DiscountFactor ForwardRateStructure::discountImpl(Time t) const {
+        Rate r = zeroYieldImpl(t);
         return DiscountFactor(QL_EXP(-r*t));
     }
 
-    inline Rate ForwardRateStructure::compoundForwardImpl(Time t, int f, 
-                                                          bool extrapolate) 
+    inline Rate ForwardRateStructure::compoundForwardImpl(Time t, int f) 
                                                                        const {
-        Rate zy = zeroYieldImpl(t, extrapolate);
+        Rate zy = zeroYieldImpl(t);
         if (f == 0)
             return zy;
         if (t <= 1.0/f)

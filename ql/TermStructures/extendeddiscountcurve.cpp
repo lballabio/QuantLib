@@ -109,13 +109,12 @@ namespace QuantLib {
                                             compounding, dayCounter_));
     }
 
-    Rate ExtendedDiscountCurve::compoundForwardImpl(Time t, int compounding, 
-                                                    bool extrapolate) const {
+    Rate ExtendedDiscountCurve::compoundForwardImpl(Time t, int compounding) 
+                                                                      const {
         if (compounding == 0)
-            return DiscountCurve::compoundForwardImpl(t, compounding,
-                                                      extrapolate);
+            return DiscountCurve::compoundForwardImpl(t, compounding);
         return forwardCurve(compounding)->compoundForward(t, compounding,
-                                                          extrapolate);
+                                                          true);
     }
 
     boost::shared_ptr<TermStructure> 

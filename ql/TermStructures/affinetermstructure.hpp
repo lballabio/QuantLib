@@ -62,8 +62,7 @@ namespace QuantLib {
 
         void update();
       protected:
-        DiscountFactor discountImpl(Time,
-                                    bool extrapolate = false) const;
+        DiscountFactor discountImpl(Time) const;
       private:
         class CalibrationFunction;
 
@@ -95,12 +94,8 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline
-    DiscountFactor AffineTermStructure::discountImpl(Time t, bool) const {
+    inline DiscountFactor AffineTermStructure::discountImpl(Time t) const {
         if (needsRecalibration_) calibrate();
-        QL_REQUIRE(t >= 0.0,
-                   "discount undefined for time (" +
-                   DoubleFormatter::toString(t) + ")");
         return model_->discount(t);
     }
 

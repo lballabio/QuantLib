@@ -62,7 +62,7 @@ namespace QuantLib {
         //@}
       protected:
         //! returns the zero yield as seen from the evaluation date
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+        Rate zeroYieldImpl(Time) const;
       private:
         RelinkableHandle<TermStructure> underlyingDividendTS_, riskFreeTS_,
             foreignRiskFreeTS_;
@@ -122,19 +122,16 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline Rate QuantoTermStructure::zeroYieldImpl(Time t,
-                                                   bool extrapolate) const {
+    inline Rate QuantoTermStructure::zeroYieldImpl(Time t) const {
         // warning: here it is assumed that all TS have the same daycount.
         //          It should be QL_REQUIREd, or maybe even enforced in the
         //          whole QuantLib
-        return underlyingDividendTS_->zeroYield(t, extrapolate)
-            +            riskFreeTS_->zeroYield(t, extrapolate)
-            -     foreignRiskFreeTS_->zeroYield(t, extrapolate)
+        return underlyingDividendTS_->zeroYield(t, true)
+            +            riskFreeTS_->zeroYield(t, true)
+            -     foreignRiskFreeTS_->zeroYield(t, true)
             + underlyingExchRateCorrelation_
-            * underlyingBlackVolTS_->blackVol(t, strike_,
-                                              extrapolate)
-            *   exchRateBlackVolTS_->blackVol(t, exchRateATMlevel_,
-                                              extrapolate);
+            * underlyingBlackVolTS_->blackVol(t, strike_, true)
+            *   exchRateBlackVolTS_->blackVol(t, exchRateATMlevel_, true);
     }
 
 }

@@ -59,11 +59,11 @@ namespace QuantLib {
         // methods
         void calibrateNodes() const;
         boost::shared_ptr<TermStructure> bootstrap() const;
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-        Size referenceNode(Time, bool extrapolate = false) const;
-        Rate forwardImpl(Time, bool extrapolate = false) const;
-        Rate compoundForwardImpl(Time, int, bool extrapolate = false) const;
+        Rate zeroYieldImpl(Time) const;
+        DiscountFactor discountImpl(Time) const;
+        Size referenceNode(Time) const;
+        Rate forwardImpl(Time) const;
+        Rate compoundForwardImpl(Time, int) const;
       private:
         // data members
         Date todaysDate_;

@@ -80,12 +80,10 @@ namespace QuantLib {
         Time maxTime() const;
         //@}
       protected:
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-        DiscountFactor discountImpl(Time,
-                                    bool extrapolate = false) const;
-        Rate forwardImpl(Time, bool extrapolate = false) const;
-	    Rate compoundForwardImpl(Time t, int compFreq,
-                                 bool extrapolate) const;
+        Rate zeroYieldImpl(Time) const;
+        DiscountFactor discountImpl(Time) const;
+        Rate forwardImpl(Time) const;
+	    Rate compoundForwardImpl(Time t, int compFreq) const;
       private:
         // inner classes
         // objective function for solver
@@ -108,7 +106,7 @@ namespace QuantLib {
                             const boost::shared_ptr<RateHelper>&) const;
         };
         // methods
-        Size referenceNode(Time t, bool extrapolate) const;
+        Size referenceNode(Time t) const;
         void performCalculations() const;
         // data members
         DayCounter dayCounter_;

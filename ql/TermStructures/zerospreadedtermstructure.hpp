@@ -50,12 +50,12 @@ namespace QuantLib {
         //@}
       protected:
         //! returns the spreaded zero yield rate
-        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+        Rate zeroYieldImpl(Time) const;
         //! returns the spreaded forward rate
         /*! \warning This method must disappear should the spread become a
-          curve
+                     curve
         */
-        Rate forwardImpl(Time, bool extrapolate = false) const;
+        Rate forwardImpl(Time) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
         RelinkableHandle<Quote> spread_;
@@ -93,17 +93,12 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t,
-                                                         bool extrapolate) 
-                                                                       const {
-        return originalCurve_->zeroYield(t, extrapolate) +
-            spread_->value();
+    inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t) const {
+        return originalCurve_->zeroYield(t, true) + spread_->value();
     }
 
-    inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t,
-                                                       bool extrapolate) 
-                                                                       const {
-        return originalCurve_->instantaneousForward(t, extrapolate) +
+    inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t) const {
+        return originalCurve_->instantaneousForward(t, true) +
             spread_->value();
     }
 

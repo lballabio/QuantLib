@@ -30,6 +30,7 @@
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/discrepancystatistics.hpp>
 #include <ql/Math/errorfunction.hpp>
+#include <ql/Math/extrapolation.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/Math/factorial.hpp>
 #include <ql/Math/gammadistribution.hpp>

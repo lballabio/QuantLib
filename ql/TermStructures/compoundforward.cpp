@@ -137,30 +137,23 @@ namespace QuantLib {
         return discountCurve_;
     }
 
-    Rate CompoundForward::zeroYieldImpl(Time t, bool extrapolate) const {
+    Rate CompoundForward::zeroYieldImpl(Time t) const {
         if (compounding_ == 0)
-            return ForwardRateStructure::zeroYieldImpl(t,extrapolate);
+            return ForwardRateStructure::zeroYieldImpl(t);
         if (needsBootstrap_)
             bootstrap();
-        return discountCurve()->zeroYield(t,extrapolate);
+        return discountCurve()->zeroYield(t,true);
     }
 
-    DiscountFactor CompoundForward::discountImpl(Time t,
-                                                 bool extrapolate) const {
+    DiscountFactor CompoundForward::discountImpl(Time t) const {
         if (compounding_ == 0)
-            return ForwardRateStructure::discountImpl(t,extrapolate);
+            return ForwardRateStructure::discountImpl(t);
         if (needsBootstrap_)
             bootstrap();
-        return discountCurve()->discount(t,extrapolate);
+        return discountCurve()->discount(t,true);
     }
 
-    Size CompoundForward::referenceNode(Time t, bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                   "time (" +
-                   DoubleFormatter::toString(t) +
-                   ") outside curve definition [" +
-                   DoubleFormatter::toString(0.0) + ", " +
-                   DoubleFormatter::toString(times_.back()) + "]");
+    Size CompoundForward::referenceNode(Time t) const {
         if (t >= times_.back())
             return times_.size()-1;
         std::vector<Time>::const_iterator i=times_.begin(),
@@ -175,27 +168,26 @@ namespace QuantLib {
         return (j-times_.begin());
     }
 
-    Rate CompoundForward::forwardImpl(Time t, bool extrapolate) const {
+    Rate CompoundForward::forwardImpl(Time t) const {
         if (t == 0.0) {
             return forwards_[0];
         } else {
-            Size n = referenceNode(t, extrapolate);
+            Size n = referenceNode(t);
             if (t == times_[n]) {
                 return forwards_[n];
             } else {
-                return fwdinterp_(t,extrapolate);
+                return fwdinterp_(t,true);
             }
         }
         QL_DUMMY_RETURN(Rate());
     }
 
-    Rate CompoundForward::compoundForwardImpl(Time t, int f, 
-                                              bool extrapolate) const {
+    Rate CompoundForward::compoundForwardImpl(Time t, int f) const {
         if (f == compounding_)
-            return forwardImpl(t,extrapolate);
+            return forwardImpl(t);
         if (needsBootstrap_)
             bootstrap();
-        return discountCurve()->compoundForward(t,f,extrapolate);
+        return discountCurve()->compoundForward(t,f,true);
     }
 
     boost::shared_ptr<TermStructure> CompoundForward::discountCurve() const {

@@ -109,13 +109,12 @@ namespace QuantLib {
         }
     }
 
-    Rate PiecewiseFlatForward::zeroYieldImpl(Time t,
-                                             bool extrapolate) const {
+    Rate PiecewiseFlatForward::zeroYieldImpl(Time t) const {
         calculate();
         if (t == 0.0) {
             return zeroYields_[0];
         } else {
-            Size n = referenceNode(t, extrapolate);
+            Size n = referenceNode(t);
             if (t == times_[n]) {
                 return zeroYields_[n];
             } else {
@@ -126,13 +125,12 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Rate());
     }
 
-    DiscountFactor PiecewiseFlatForward::discountImpl(Time t, 
-                                                      bool extrapolate) const {
+    DiscountFactor PiecewiseFlatForward::discountImpl(Time t) const {
         calculate();
         if (t == 0.0) {
             return discounts_[0];
         } else {
-            Size n = referenceNode(t, extrapolate);
+            Size n = referenceNode(t);
             if (t == times_[n]) {
                 return discounts_[n];
             } else {
@@ -145,20 +143,19 @@ namespace QuantLib {
         QL_DUMMY_RETURN(DiscountFactor());
     }
 
-    Rate PiecewiseFlatForward::forwardImpl(Time t,
-                                           bool extrapolate) const {
+    Rate PiecewiseFlatForward::forwardImpl(Time t) const {
         calculate();
         if (t == 0.0) {
             return forwards_[0];
         } else {
-            return forwards_[referenceNode(t, extrapolate)];
+            return forwards_[referenceNode(t)];
         }
         QL_DUMMY_RETURN(Rate());
     }
 
-    Rate PiecewiseFlatForward::compoundForwardImpl(Time t, int compFreq, 
-                                                   bool extrapolate) const {
-		double zy = zeroYieldImpl(t, extrapolate);
+    Rate PiecewiseFlatForward::compoundForwardImpl(Time t, int compFreq) 
+                                                                      const {
+		double zy = zeroYieldImpl(t);
 		if (compFreq == 0)
             return zy;
 		if (t <= 1.0/compFreq)
@@ -166,14 +163,7 @@ namespace QuantLib {
 		return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
 	}
 
-    Size PiecewiseFlatForward::referenceNode(Time t, 
-                                            bool extrapolate) const {
-        QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                   "time (" +
-                   DoubleFormatter::toString(t) +
-                   ") outside curve definition [" +
-                   DoubleFormatter::toString(0.0) + ", " +
-                   DoubleFormatter::toString(times_.back()) + "]");
+    Size PiecewiseFlatForward::referenceNode(Time t) const {
         if (t>=times_.back())
             return times_.size()-1;
         std::vector<Time>::const_iterator i=times_.begin(),

@@ -51,8 +51,7 @@ namespace QuantLib {
       protected:
         void calibrateNodes() const;
         boost::shared_ptr<TermStructure> reversebootstrap(int) const;
-        Rate compoundForwardImpl(Time, int, 
-                                 bool extrapolate = false) const;
+        Rate compoundForwardImpl(Time, int) const;
         boost::shared_ptr<TermStructure> forwardCurve(int) const;
       private:
         Calendar calendar_;
