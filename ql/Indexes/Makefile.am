@@ -8,6 +8,10 @@ include_HEADERS = \
     euribor.hpp \
     gbplibor.hpp \
     usdlibor.hpp \
+    jpylibor.hpp \
+    cadlibor.hpp \
+    chflibor.hpp \
+    zarlibor.hpp \
     xibor.hpp \
     xibormanager.hpp
 
