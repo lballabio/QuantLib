@@ -4,9 +4,9 @@
 # configure program
 # this is known to work with the following tools:
 #
-# automake 1.4p4
-# autoconf 2.13
-# libtool 1.3.5
+# automake 1.5
+# autoconf 2.52
+# libtool 1.4.2
 
 aclocal
 # cppunit approach
