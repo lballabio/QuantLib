@@ -10,6 +10,7 @@ COMPILING
     Borland projects
 
 LIBRARY
+    introduce size_t where appropriate
     Payoff class from EuropeanOption into QuantLib
     timer class
     switch false/true antithetic variate
