@@ -27,6 +27,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/07/16 22:24:51  dzuki
+// Minor style fixes
+//
 // Revision 1.4  2001/07/16 21:57:11  dzuki
 // Added option surplus integral test
 //
@@ -40,14 +43,16 @@
 // Added "Parities" example
 //
 
-#include "ql\quantlib.hpp"
-#include <iostream>
 #include "stdlib.h"
+#include <iostream>
+
+#include "ql\quantlib.hpp"
+
+using namespace std;
 
 using namespace QuantLib;
 using namespace QuantLib::Pricers;
 using namespace QuantLib::MonteCarlo;
-using namespace std;
 
 
 class TestMethodsAndParity
@@ -176,7 +181,9 @@ protected:
     
     void testOptionSurplusIntegral()
     {
-        double theory = 1./2. * sigma_*sigma_ * strike_ * maturity_ * QL_EXP(- r_*maturity_);
+        double theory = 1./2. * sigma_*sigma_ * strike_ * 
+                        maturity_ * QL_EXP(- r_*maturity_);
+
         double integral = optionSurplusIntegral(maturity_);
         cout<<"\nOption surplus integral: \n";
         cout<<"Integral value: "<<integral<<"\t Theoretical value: "<<theory;
