@@ -38,6 +38,18 @@
 
 
 #endif
+
+
+// STLPort or VC++ implementation?
+#if defined(__SGI_STL)
+    #define QL_MIN      _STL::min
+    #define QL_MAX      _STL::max
+#else
+    #define QL_MIN      std::_cpp_min
+    #define QL_MAX      std::_cpp_max
+#endif
+
+
 // leave outside here common configs
 
 
@@ -79,9 +91,6 @@
 
 #define HAVE_CSTDIO
 #define QL_SPRINTF  sprintf
-
-#define QL_MIN      std::_cpp_min
-#define QL_MAX      std::_cpp_max
 
 #define BROKEN_TEMPLATE_SPECIALIZATION
 #define BROKEN_TEMPLATE_METHOD_CALLS
