@@ -101,10 +101,11 @@ namespace QuantLib {
         }
         
         inline Observer& Observer::operator=(const Observer& o) {
-            for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+            iterator i;
+            for (i=observables_.begin(); i!=observables_.end(); ++i)
                 (*i)->unregisterObserver(this);
             observables_ = o.observables_;
-            for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+            for (i=observables_.begin(); i!=observables_.end(); ++i)
                 (*i)->registerObserver(this);
             return *this;
         }
