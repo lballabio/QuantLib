@@ -762,6 +762,9 @@
 				RelativePath="ql\Calendars\london.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Calendars\milan.hpp">
+			</File>
+			<File
 				RelativePath="ql\Calendars\newyork.hpp">
 			</File>
 			<File
