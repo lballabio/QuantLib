@@ -47,7 +47,7 @@ docs-html-online:
 	cp images/*.pdf latex
 docs-ps: tex-files
 	$(MAKE) -C latex ps
-docs-pdf: tex-files
+docs-pdf: tex-files pdf-figures
 	$(MAKE) -C latex pdf
 docs-man: docs-html
 docs-clean:
@@ -93,4 +93,14 @@ tex-files: docs-html
 	       -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
 	       oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex
+
+# some uncharted combination of dot and epstopdf leads to cropped pdf figures.
+# removing the %%BoundingBox line and rerunning epstopdf fixes them.
+pdf-figures: docs-html
+	for i in latex/a0*.eps ; do \
+		sed -e "/%%BoundingBox/d" $$i > $$i.tmp ; \
+		mv $$i.tmp $$i ; \
+		epstopdf $$i 2> /dev/null ; \
+	done
+
 
