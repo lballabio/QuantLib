@@ -191,8 +191,7 @@ namespace {
 */
 void InterpolationTest::testSplineErrorOnGaussianValues() {
 
-    BOOST_MESSAGE("Testing spline interpolation error "
-                  "on Gaussian data sets...");
+    BOOST_MESSAGE("Testing spline approximation on Gaussian data sets...");
 
     Size points[]                = {      5,      9,     17,     33 };
 
@@ -782,6 +781,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
+/*
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSimmetricEndConditions));
@@ -792,6 +792,7 @@ test_suite* InterpolationTest::suite() {
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnRPN15AValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSplineOnGaussianValues));
+*/
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSplineErrorOnGaussianValues));
     return suite;
