@@ -1,17 +1,17 @@
 #
-# Makefile for documentation under Borland C++
+# Makefile for documentation
 #
 
 # Primary target:
 # Complete documentation
-Docs: MakeDocs MakePDF
+Docs: RunDoxygen CompileLaTeX
 
 # Generate docs with doxygen
-MakeDocs:
+RunDoxygen:
 	@doxygen doxygen.cfg
 
 # Compile LaTeX sources to PDF
-MakePDF::
+CompileLaTeX::
 	@cd latex
 	@pdflatex refman
 	@makeindex refman.idx
