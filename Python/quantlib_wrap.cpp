@@ -4427,6 +4427,62 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
 }
 
 
+static PyObject *_wrap_BSMEuropeanOption_setVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMEuropeanOption *arg0 ;
+    double arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","newVolatility", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:BSMEuropeanOption_setVolatility",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
+    {
+        try {
+            arg0->setVolatility(arg1);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMEuropeanOption_setRiskFreeRate(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMEuropeanOption *arg0 ;
+    Rate arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","newRate", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:BSMEuropeanOption_setRiskFreeRate",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
+    {
+        try {
+            arg0->setRiskFreeRate(arg1);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
 static PyObject *_wrap_BSMEuropeanOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     BSMEuropeanOption *arg0 ;
@@ -4441,6 +4497,171 @@ static PyObject *_wrap_BSMEuropeanOption_value(PyObject *self, PyObject *args, P
     {
         try {
             result = (double )arg0->value();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMEuropeanOption_delta(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMEuropeanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMEuropeanOption_delta",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->delta();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMEuropeanOption_gamma(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMEuropeanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMEuropeanOption_gamma",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->gamma();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMEuropeanOption_theta(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMEuropeanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMEuropeanOption_theta",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->theta();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMEuropeanOption_vega(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMEuropeanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMEuropeanOption_vega",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->vega();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMEuropeanOption_rho(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMEuropeanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMEuropeanOption_rho",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->rho();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMEuropeanOption_impliedVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMEuropeanOption *arg0 ;
+    double arg1 ;
+    double arg2 ;
+    int arg3 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","targetValue","accuracy","maxEvaluations", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oddi:BSMEuropeanOption_impliedVolatility",kwnames,&argo0,&arg1,&arg2,&arg3)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -4509,6 +4730,62 @@ static PyObject *_wrap_new_BSMAmericanOption(PyObject *self, PyObject *args, PyO
 }
 
 
+static PyObject *_wrap_BSMAmericanOption_setVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    double arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","newVolatility", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:BSMAmericanOption_setVolatility",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            arg0->setVolatility(arg1);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMAmericanOption_setRiskFreeRate(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    Rate arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","newRate", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:BSMAmericanOption_setRiskFreeRate",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            arg0->setRiskFreeRate(arg1);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
 static PyObject *_wrap_BSMAmericanOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     BSMAmericanOption *arg0 ;
@@ -4523,6 +4800,171 @@ static PyObject *_wrap_BSMAmericanOption_value(PyObject *self, PyObject *args, P
     {
         try {
             result = (double )arg0->value();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMAmericanOption_delta(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMAmericanOption_delta",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->delta();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMAmericanOption_gamma(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMAmericanOption_gamma",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->gamma();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMAmericanOption_theta(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMAmericanOption_theta",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->theta();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMAmericanOption_vega(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMAmericanOption_vega",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->vega();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMAmericanOption_rho(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BSMAmericanOption_rho",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->rho();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_BSMAmericanOption_impliedVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    BSMAmericanOption *arg0 ;
+    double arg1 ;
+    double arg2 ;
+    int arg3 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","targetValue","accuracy","maxEvaluations", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oddi:BSMAmericanOption_impliedVolatility",kwnames,&argo0,&arg1,&arg2,&arg3)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMAmericanOption,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -5780,9 +6222,25 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "TridiagonalOperator_setMidRows", (PyCFunction) _wrap_TridiagonalOperator_setMidRows, METH_VARARGS | METH_KEYWORDS },
 	 { "TridiagonalOperator_setLastRow", (PyCFunction) _wrap_TridiagonalOperator_setLastRow, METH_VARARGS | METH_KEYWORDS },
 	 { "new_BSMEuropeanOption", (PyCFunction) _wrap_new_BSMEuropeanOption, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMEuropeanOption_setVolatility", (PyCFunction) _wrap_BSMEuropeanOption_setVolatility, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMEuropeanOption_setRiskFreeRate", (PyCFunction) _wrap_BSMEuropeanOption_setRiskFreeRate, METH_VARARGS | METH_KEYWORDS },
 	 { "BSMEuropeanOption_value", (PyCFunction) _wrap_BSMEuropeanOption_value, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMEuropeanOption_delta", (PyCFunction) _wrap_BSMEuropeanOption_delta, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMEuropeanOption_gamma", (PyCFunction) _wrap_BSMEuropeanOption_gamma, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMEuropeanOption_theta", (PyCFunction) _wrap_BSMEuropeanOption_theta, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMEuropeanOption_vega", (PyCFunction) _wrap_BSMEuropeanOption_vega, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMEuropeanOption_rho", (PyCFunction) _wrap_BSMEuropeanOption_rho, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMEuropeanOption_impliedVolatility", (PyCFunction) _wrap_BSMEuropeanOption_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
 	 { "new_BSMAmericanOption", (PyCFunction) _wrap_new_BSMAmericanOption, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_setVolatility", (PyCFunction) _wrap_BSMAmericanOption_setVolatility, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_setRiskFreeRate", (PyCFunction) _wrap_BSMAmericanOption_setRiskFreeRate, METH_VARARGS | METH_KEYWORDS },
 	 { "BSMAmericanOption_value", (PyCFunction) _wrap_BSMAmericanOption_value, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_delta", (PyCFunction) _wrap_BSMAmericanOption_delta, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_gamma", (PyCFunction) _wrap_BSMAmericanOption_gamma, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_theta", (PyCFunction) _wrap_BSMAmericanOption_theta, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_vega", (PyCFunction) _wrap_BSMAmericanOption_vega, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_rho", (PyCFunction) _wrap_BSMAmericanOption_rho, METH_VARARGS | METH_KEYWORDS },
+	 { "BSMAmericanOption_impliedVolatility", (PyCFunction) _wrap_BSMAmericanOption_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
 	 { "Function_value", (PyCFunction) _wrap_Function_value, METH_VARARGS | METH_KEYWORDS },
 	 { "Function_derivative", (PyCFunction) _wrap_Function_derivative, METH_VARARGS | METH_KEYWORDS },
 	 { "Solver1D_solve", (PyCFunction) _wrap_Solver1D_solve, METH_VARARGS | METH_KEYWORDS },

@@ -291,7 +291,15 @@ class BSMEuropeanOptionPtr(BSMEuropeanOption):
         self.__class__ = BSMEuropeanOption
 
 
+BSMEuropeanOption.setVolatility = new.instancemethod(QuantLibc.BSMEuropeanOption_setVolatility, None, BSMEuropeanOption)
+BSMEuropeanOption.setRiskFreeRate = new.instancemethod(QuantLibc.BSMEuropeanOption_setRiskFreeRate, None, BSMEuropeanOption)
 BSMEuropeanOption.value = new.instancemethod(QuantLibc.BSMEuropeanOption_value, None, BSMEuropeanOption)
+BSMEuropeanOption.delta = new.instancemethod(QuantLibc.BSMEuropeanOption_delta, None, BSMEuropeanOption)
+BSMEuropeanOption.gamma = new.instancemethod(QuantLibc.BSMEuropeanOption_gamma, None, BSMEuropeanOption)
+BSMEuropeanOption.theta = new.instancemethod(QuantLibc.BSMEuropeanOption_theta, None, BSMEuropeanOption)
+BSMEuropeanOption.vega = new.instancemethod(QuantLibc.BSMEuropeanOption_vega, None, BSMEuropeanOption)
+BSMEuropeanOption.rho = new.instancemethod(QuantLibc.BSMEuropeanOption_rho, None, BSMEuropeanOption)
+BSMEuropeanOption.impliedVolatility = new.instancemethod(QuantLibc.BSMEuropeanOption_impliedVolatility, None, BSMEuropeanOption)
 
 class BSMAmericanOption:
     def __init__(self,*args,**kwargs):
@@ -307,7 +315,15 @@ class BSMAmericanOptionPtr(BSMAmericanOption):
         self.__class__ = BSMAmericanOption
 
 
+BSMAmericanOption.setVolatility = new.instancemethod(QuantLibc.BSMAmericanOption_setVolatility, None, BSMAmericanOption)
+BSMAmericanOption.setRiskFreeRate = new.instancemethod(QuantLibc.BSMAmericanOption_setRiskFreeRate, None, BSMAmericanOption)
 BSMAmericanOption.value = new.instancemethod(QuantLibc.BSMAmericanOption_value, None, BSMAmericanOption)
+BSMAmericanOption.delta = new.instancemethod(QuantLibc.BSMAmericanOption_delta, None, BSMAmericanOption)
+BSMAmericanOption.gamma = new.instancemethod(QuantLibc.BSMAmericanOption_gamma, None, BSMAmericanOption)
+BSMAmericanOption.theta = new.instancemethod(QuantLibc.BSMAmericanOption_theta, None, BSMAmericanOption)
+BSMAmericanOption.vega = new.instancemethod(QuantLibc.BSMAmericanOption_vega, None, BSMAmericanOption)
+BSMAmericanOption.rho = new.instancemethod(QuantLibc.BSMAmericanOption_rho, None, BSMAmericanOption)
+BSMAmericanOption.impliedVolatility = new.instancemethod(QuantLibc.BSMAmericanOption_impliedVolatility, None, BSMAmericanOption)
 
 class Function:
     def __init__(self,this):
