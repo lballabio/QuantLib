@@ -31,6 +31,9 @@
 */
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/03 16:34:03  sadrejeb
+// gcc-3.0.1 fix (Array::iterator --> std-vector::iterator)
+//
 // Revision 1.1  2001/09/03 14:04:01  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -71,6 +74,7 @@
 #include "ql/Math/cubicspline.hpp"
 #include "ql/Pricers/dividendeuropeanoption.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
+#include <iterator>
 
 namespace QuantLib {
 
@@ -151,8 +155,8 @@ namespace QuantLib {
 
             int j, gridSize = oldGrid.size();
 
-            std::vector<double> logOldGrid(0);
-            std::vector<double> tmpPrices(0);
+	    std::vector<double> logOldGrid(0);
+	    std::vector<double> tmpPrices(0);
 
             for(j = 0; j<gridSize; j++){
                 double p = prices[j];
@@ -163,7 +167,7 @@ namespace QuantLib {
                 }
             }
 
-            CubicSpline<Array::iterator, Array::iterator> priceSpline(
+            CubicSpline<std::vector<double>::iterator, std::vector<double>::iterator> priceSpline(
                 logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin());
 
             for (j = 0; j < gridSize; j++)
