@@ -39,13 +39,7 @@ while test $# -gt 0; do
       echo @PACKAGE_VERSION@
       ;;
     --cflags)
-      if test @includedir@ != /usr/include ; then
-          # Handle oddities in Win32 path handling (assumes prefix)
-          prefix=`echo ${prefix} | sed 's,^//\([A-Z]\),\1:,'`
-
-          includes=-I@includedir@
-      fi
-      echo $includes -I@includedir@
+      echo -I@includedir@
       ;;
     --libs)
       echo -L@libdir@ -lQuantLib
