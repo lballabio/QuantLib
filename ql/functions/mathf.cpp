@@ -27,6 +27,7 @@
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 using QuantLib::Array;
 using QuantLib::Math::Matrix;
@@ -35,6 +36,9 @@ using QuantLib::Math::LinearInterpolation;
 using QuantLib::Math::CubicSpline;
 using QuantLib::Math::Interpolation2D;
 using QuantLib::Math::BilinearInterpolation;
+using QuantLib::Math::NormalDistribution;
+using QuantLib::Math::CumulativeNormalDistribution;
+using QuantLib::Math::InvCumulativeNormalDistribution;
 
 namespace QuantLib {
 
@@ -47,19 +51,19 @@ namespace QuantLib {
             bool allowExtrapolation) {
 
             double result = 0.0;
-            
-            
+
+
             switch (interpolationType) {
                 case 1:
                     result = LinearInterpolation<
-                        std::vector<double>::const_iterator, 
+                        std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
                         y_values.begin(), allowExtrapolation)(x);
                     break;
                 case 2:
                     result = CubicSpline<
-                        std::vector<double>::const_iterator, 
+                        std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
                         y_values.begin(), allowExtrapolation)(x);
@@ -68,7 +72,7 @@ namespace QuantLib {
                     throw IllegalArgumentError(
                         "interpolate: invalid interpolation type");
             }
-                
+
 			return result;
         }
 
@@ -94,6 +98,25 @@ namespace QuantLib {
             }
 
             return result;
+        }
+
+
+
+		double normDist(double x, double mean, double standard_dev,
+            bool cumulative) {
+
+            if (cumulative) {
+                return CumulativeNormalDistribution(mean, standard_dev)(x);
+            } else {
+                return NormalDistribution(mean, standard_dev)(x);
+            }
+        }
+
+
+		double normInv(double probability, double mean, double standard_dev) {
+
+            return InvCumulativeNormalDistribution(mean, standard_dev)
+                (probability);
         }
 
     }
