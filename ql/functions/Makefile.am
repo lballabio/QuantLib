@@ -13,6 +13,6 @@ EXTRA_DIST=makefile.mak
 libfunctions_la_SOURCES = \
     daycounters.cpp \
     mathf.cpp \
-	vols.hpp
+	vols.cpp
 
 noinst_LTLIBRARIES = libfunctions.la
