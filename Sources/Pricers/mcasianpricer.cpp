@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -25,6 +25,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/01/29 15:01:26  marmar
+    Modified to accomodate code-sharing with
+    multi-dimensional Monte Carlo
+
     Revision 1.6  2001/01/05 12:28:15  lballabio
     Renamed SinglePathControlVariatedPricer to ControlVariatedPathPricer
 
@@ -45,6 +49,7 @@
             
 */
 
+#include "standardpathgenerator.h"
 #include "mcasianpricer.h"
 #include "handle.h"
 #include "controlvariatedpathpricer.h"
@@ -58,6 +63,7 @@ namespace QuantLib {
 
         using MonteCarlo::MonteCarlo1D;
         using MonteCarlo::PathPricer;
+        using MonteCarlo::StandardPathGenerator;
         using MonteCarlo::ControlVariatedPathPricer;
         using MonteCarlo::AverageAsianPathPricer;
         using MonteCarlo::GeometricAsianPathPricer;
@@ -67,7 +73,16 @@ namespace QuantLib {
           double residualTime, double volatility, int timesteps, long samples,
           long seed)
         : McPricer(samples, seed) {
+            //! Initialize the path generator
+            double deltaT = residualTime/timesteps;
+            double mu = deltaT * (riskFreeRate - underlyingGrowthRate
+                                    - 0.5 * volatility * volatility);
+            double sigma = volatility*QL_SQRT(deltaT);
 
+            Handle<StandardPathGenerator> pathGenerator(
+                    new StandardPathGenerator(timesteps, mu, sigma, seed));
+            
+            //! Initialize the pricer on the single Path 
             Handle<PathPricer> spPricer(
                 new AverageAsianPathPricer(type, underlying, strike,
                     QL_EXP(-riskFreeRate*residualTime)));
@@ -84,9 +99,9 @@ namespace QuantLib {
                 new ControlVariatedPathPricer(spPricer, 
                     controlVariateSpPricer, controlVariatePrice));
 
-            montecarloPricer_ = MonteCarlo1D(controlVariatedPricer, 
-                underlyingGrowthRate, riskFreeRate, residualTime, volatility,
-                timesteps, seed);
+            //! Initialize the one-dimensional Monte Carlo
+            montecarloPricer_ = MonteCarlo1D(pathGenerator,
+                                     controlVariatedPricer);
         }
 
     }

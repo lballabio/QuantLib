@@ -25,6 +25,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/29 15:00:49  marmar
+    Modified to accomodate code-sharing with
+    multi-dimensional Monte Carlo
+
     Revision 1.3  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -46,6 +50,8 @@ namespace QuantLib {
 
     namespace MonteCarlo {
     /*!
+    To be fixed!!!
+    
     Given a path generator class PG, together with an instance "samplepath",
     and a single-path pricer SPP, again with an instance singlepathpricer,
     a sample generator OptionSample<PG, SPP> returns at each next a value
@@ -68,25 +74,25 @@ namespace QuantLib {
         class OptionSample {
         public:
             OptionSample(){}
-            OptionSample(const PG& samplepath, Handle<SPP> singlePathPricer);
+            OptionSample(Handle<PG> samplepath, Handle<SPP> singlePathPricer);
             double next() const; // this will eventually evolve into
                                  // SPP::ValueType next() const;
             double weight() const;
         private:
-            mutable PG samplePath_;
+            mutable Handle<PG> samplePath_;
             mutable double weight_;
             Handle<SPP> singlePathPricer_;
         };
 
         template<class PG, class SPP>
-        inline OptionSample<PG, SPP>::OptionSample(const PG& samplePath,
+        inline OptionSample<PG, SPP>::OptionSample(Handle<PG> samplePath,
                Handle<SPP> singlePathPricer): samplePath_(samplePath),
                singlePathPricer_(singlePathPricer), weight_(0){}
 
         template<class PG, class SPP>
         inline double OptionSample<PG, SPP>::next() const{
-            double price = singlePathPricer_ -> value(samplePath_.next());
-            weight_ = samplePath_.weight();
+            double price = singlePathPricer_ -> value(samplePath_ -> next());
+            weight_ = samplePath_ -> weight();
             return price;
         }
 

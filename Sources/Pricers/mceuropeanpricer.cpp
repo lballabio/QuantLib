@@ -25,6 +25,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/29 15:01:25  marmar
+    Modified to accomodate code-sharing with
+    multi-dimensional Monte Carlo
+
     Revision 1.3  2001/01/05 11:42:38  lballabio
     Renamed SinglePathEuropeanPricer to EuropeanPathPricer
 
@@ -43,8 +47,10 @@
 namespace QuantLib {
 
     namespace Pricers {
-
+        
+        using MonteCarlo::MonteCarlo1D;
         using MonteCarlo::PathPricer;
+        using MonteCarlo::StandardPathGenerator;
         using MonteCarlo::EuropeanPathPricer;
 
         McEuropeanPricer::McEuropeanPricer(Option::Type type, double underlying,
@@ -52,14 +58,22 @@ namespace QuantLib {
           double residualTime, double volatility, int timesteps, long samples,
           long seed)
         : McPricer(samples, seed) {
-            Handle<PathPricer> spPricer(new EuropeanPathPricer(type,
+            //! Initialize the path generator
+            double deltaT = residualTime/timesteps;
+            double mu = deltaT * (riskFreeRate - underlyingGrowthRate
+                                    - 0.5 * volatility * volatility);
+            double sigma = volatility*QL_SQRT(deltaT);
+
+            Handle<StandardPathGenerator> pathGenerator(
+                    new StandardPathGenerator(timesteps, mu, sigma, seed));
+            
+            //! Initialize the pricer on the single Path 
+            Handle<PathPricer> euroPricer(new EuropeanPathPricer(type,
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime)));
-
-            montecarloPricer_ = MonteCarlo1D(spPricer, underlyingGrowthRate,
-                riskFreeRate, residualTime, volatility, timesteps, seed);
-
+                
+            //! Initialize the one-dimensional Monte Carlo
+            montecarloPricer_ = MonteCarlo1D(pathGenerator, euroPricer);
         }
-
 
     }
 

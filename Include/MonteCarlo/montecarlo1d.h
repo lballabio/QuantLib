@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -20,11 +20,15 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 /*! \file montecarlo1d.h
-    \brief Create a sample generator from a path generator and a single-path pricer
+    \brief Create a sample generator from a path generator and a path pricer
 
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/01/29 15:00:49  marmar
+    Modified to accomodate code-sharing with
+    multi-dimensional Monte Carlo
+
     Revision 1.5  2001/01/24 13:14:25  marmar
     Removed typedef
 
@@ -58,8 +62,6 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        using Math::Statistics;
-
         //! General purpose 1D Monte Carlo pricer
         /*! MonteCarlo1D is initialized giving a safe reference, that is
             an handle, to a PathPricer, some stochastic parameters, the number
@@ -71,35 +73,23 @@ namespace QuantLib {
         class MonteCarlo1D {
         public:
             MonteCarlo1D(){}
-            MonteCarlo1D(Handle<PathPricer> pathPricer,
-              Rate underlyingGrowthRate, Rate riskFreeRate, double residualTime,
-              double volatility, int timesteps, long seed=0);
+            MonteCarlo1D(Handle<StandardPathGenerator> pathGenerator,
+                Handle<PathPricer> pathPricer);
             double value(long samples) const;
             double errorEstimate() const;
         private:
             mutable OptionSample<StandardPathGenerator,PathPricer>
                 optionSample_;
-            mutable Statistics sampleAccumulator_;
+            mutable Math::Statistics sampleAccumulator_;
         };
 
         // inline definitions
 
-        inline MonteCarlo1D::MonteCarlo1D(Handle<PathPricer> singlePathPricer,
-                      Rate underlyingGrowthRate, Rate riskFreeRate,
-                      double residualTime, double volatility, int timesteps,
-                      long seed) : sampleAccumulator_() {
-
-            double deltaT = residualTime/timesteps;
-            double mu = deltaT * (riskFreeRate - underlyingGrowthRate
-                                    - 0.5 * volatility * volatility);
-            double sigma = volatility*QL_SQRT(deltaT);
-
-            StandardPathGenerator pathGenerator(timesteps, mu, sigma, seed);
-
-            optionSample_ = OptionSample<StandardPathGenerator,PathPricer>
-              (pathGenerator, singlePathPricer);
-
-        }
+        inline MonteCarlo1D::MonteCarlo1D(
+                Handle<StandardPathGenerator> pathGenerator,
+                Handle<PathPricer> pathPricer) :
+                sampleAccumulator_(), 
+                optionSample_(pathGenerator, pathPricer){}
 
         inline double MonteCarlo1D::value(long samples) const{
             for(long i=1; i<=samples; i++)
@@ -115,6 +105,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif

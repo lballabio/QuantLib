@@ -25,6 +25,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/29 15:02:13  marmar
+    Modified to accomodate code-sharing with
+    multi-dimensional Monte Carlo
+
     Revision 1.3  2001/01/17 11:54:18  marmar
     Some documentation added and 80 columns format enforced.
 
@@ -36,11 +40,11 @@
     
 */
 
-#ifndef quantlib_mc_european_pricer_h
-#define quantlib_mc_european_pricer_h
+#ifndef quantlib_montecarlo_european_pricer_h
+#define quantlib_montecarlo_european_pricer_h
 
 #include "qldefines.h"
-#include "bsmoption.h"
+#include "options.h"
 #include "rate.h"
 #include "mcpricer.h"
 
@@ -49,7 +53,6 @@ namespace QuantLib {
     namespace Pricers {
         //! This is a simple example of Monte Carlo pricer
 
-        using MonteCarlo::MonteCarlo1D;
 
         class McEuropeanPricer: public McPricer {
         public:
