@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ *   http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 #ifndef quantlib_pricers_i
@@ -117,6 +118,23 @@ class DividendEuropeanOption{
 	double rho() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4,
 	  int maxEvaluations = 100) const ;
+};
+
+%include Barrier.i
+
+%{
+using QuantLib::Pricers::BarrierOption;
+%}
+
+
+class BarrierOption{
+    public:
+        BarrierOption(BarrierType barrType, OptionType type, double underlying, 
+            double strike, Rate dividendYield, Rate riskFreeRate,
+            Time residualTime, double volatility, double barrier, 
+            double rebate = 0.0);
+        ~BarrierOption();
+        double value() const;
 };
 
 

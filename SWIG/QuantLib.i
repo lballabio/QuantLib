@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -48,6 +48,7 @@
 	}
 }
 
+%include Barrier.i
 %include BoundaryConditions.i
 %include Calendars.i
 %include Currencies.i
