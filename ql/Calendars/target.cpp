@@ -40,17 +40,18 @@ namespace QuantLib {
                 // New Year's Day
                 || (d == 1  && m == January)
                 // Good Friday
-                || (dd == em-3)
+                || (dd == em-3 && y >= 2000)
                 // Easter Monday
-                || (dd == em)
+                || (dd == em && y >= 2000)
                 // Labour Day
-                || (d == 1  && m == May)
+                || (d == 1  && m == May && y >= 2000)
                 // Christmas
                 || (d == 25 && m == December)
                 // Day of Goodwill
-                || (d == 26 && m == December)
+                || (d == 26 && m == December && y >= 2000)
                 // December 31st, 1998 and 1999 only
-                || (d == 31 && m == December && (y == 1998 || y == 1999)))
+                || (d == 31 && m == December && 
+                    (y == 1998 || y == 1999 || y == 2001)))
                     return false;
             return true;
         }
