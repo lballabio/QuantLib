@@ -25,7 +25,7 @@
 
 class InterestRateTest {
   public:
-    static void conversions();
+    static void testConversions();
     static boost::unit_test_framework::test_suite* suite();
 };
 

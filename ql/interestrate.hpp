@@ -39,6 +39,8 @@ namespace QuantLib {
         It manages daycounting convention, compounding convention,
         conversion between different conventions, and discount and accrual
         calculations.
+
+        \test Converted rates are checked against known good results
     */
     class InterestRate {
       public:
@@ -54,11 +56,11 @@ namespace QuantLib {
         //@}
         //! \name inspectors
         //@{
-        Rate rate() {return r_;}
-        DayCounter dayCounter() {return dc_;}
-        Compounding compounding() {return comp_;}
+        Rate rate() { return r_; }
+        DayCounter dayCounter() { return dc_; }
+        Compounding compounding() { return comp_; }
         Frequency frequency() {
-            return ( comp_==Compounded ? Frequency(Integer(freq_)) : NoFrequency);
+            return comp_==Compounded ? Frequency(Integer(freq_)) : NoFrequency;
         }
         //@}
         //! \name calculations
@@ -120,7 +122,7 @@ namespace QuantLib {
     };
 
     //! Formats interest rates for output
-    /*! Combines RateFormatter and CompoundingRuleFormatter with 
+    /*! Combines RateFormatter and CompoundingRuleFormatter with
         information about the daycounting convention*/
     class InterestRateFormatter {
       public:

@@ -17,10 +17,10 @@
 
 #include "interestrates.hpp"
 #include "utilities.hpp"
-#include <ql/basicdataformatters.hpp>
-#include <ql/Math/rounding.hpp>
-#include <ql/DayCounters/actual360.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/Math/rounding.hpp>
+#include <ql/Math/comparison.hpp>
+#include <ql/DayCounters/actual360.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -39,14 +39,14 @@ namespace {
     };
 }
 
-void InterestRateTest::conversions() {
+void InterestRateTest::testConversions() {
     BOOST_MESSAGE("Testing interest rate conversions...");
 
     InterestRateData cases[] = {
         // data from "Option Pricing Formulas", Haug, pag.181-182
         // Rate,Compounding,        Frequency,   Time, Compounding2,      Frequency2,  Rate2, precision
         {0.0800, Compounded,        Quarterly,   1.00, Continuous,            Annual, 0.0792, 4},
-        {0.1200, Continuous,           Annual,   1.00, Compounded,            Annual, 0.1275, 4}, 
+        {0.1200, Continuous,           Annual,   1.00, Compounded,            Annual, 0.1275, 4},
         {0.0800, Compounded,        Quarterly,   1.00, Compounded,            Annual, 0.0824, 4},
         {0.0700, Compounded,        Quarterly,   1.00, Compounded,        Semiannual, 0.0706, 4},
         // undocumented, but reasonable :)
@@ -73,7 +73,8 @@ void InterestRateTest::conversions() {
 
 
     for (Size i=0; i<LENGTH(cases); i++) {
-        ir = InterestRate(cases[i].r, Actual360(), cases[i].comp, cases[i].freq);
+        ir = InterestRate(cases[i].r, Actual360(),
+                          cases[i].comp, cases[i].freq);
 
         d2 = d1+Integer(360*cases[i].t+0.5)*Days;
         accrual = ir.accrualFactor(d1, d2);
@@ -100,11 +101,12 @@ void InterestRateTest::conversions() {
                        "\n            error: "
                        + DecimalFormatter::toExponential(error, 1));
 
-        r3 = ir.equivalentRate(d1, d2, ir.dayCounter(), cases[i].comp2, cases[i].freq2);
+        r3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
+                               cases[i].comp2, cases[i].freq2);
         roundingPrecision = Rounding(cases[i].precision);
         r3 = roundingPrecision(r3);
         error = QL_FABS(r3-cases[i].expected);
-        if (error!=0.0)
+        if (error>1.0e-17)
             BOOST_FAIL("\n  calculated equivalent rate: "
                        + RateFormatter::toString(r3,cases[i].precision-2) +
                        "\n    expected equivalent rate: "
@@ -118,7 +120,7 @@ void InterestRateTest::conversions() {
 
 test_suite* InterestRateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interest Rate tests");
-    suite->add(BOOST_TEST_CASE(&InterestRateTest::conversions));
+    suite->add(BOOST_TEST_CASE(&InterestRateTest::testConversions));
     return suite;
 }
 
