@@ -64,7 +64,7 @@ namespace QuantLib {
             std::vector<Time> timeLengths_;
             Math::Matrix volatilities_;
             // interpolation
-            typedef Math::Interpolation<
+            typedef Math::Interpolation2D<
                 std::vector<Time>::const_iterator,
                 std::vector<Time>::const_iterator,
                 Math::Matrix> VolInterpolation;
