@@ -76,12 +76,12 @@ namespace QuantLib {
             Size i = tree->nColumns() - 1;
             double strike = arguments_.strike;
 
-            Array prices(values_.size(), 0.0);
+            double underlying, payoff;
             for (Size j=0; j<values_.size(); j++) {
-                double underlying = tree->underlying(i, j);
-                prices[j] = Pricers::ExercisePayoff(arguments_.type,
+                underlying = tree->underlying(i, j);
+                payoff = ExercisePayoff(arguments_.type,
                     underlying, strike);
-                values_[j] = QL_MAX(values_[j], prices[j]);
+                values_[j] = QL_MAX(values_[j], payoff);
             }
         }
 
