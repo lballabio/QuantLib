@@ -1,3 +1,1835 @@
+2003-04-22 14:54  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/.cvsignore (1.3), Examples/BermudanSwaption/.cvsignore
+	(1.6), Examples/DiscreteHedging/.cvsignore (1.6),
+	Examples/EuropeanOption/.cvsignore (1.6), Examples/Swap/.cvsignore
+	(1.6): cvs ignore: Makefile.in
+
+2003-04-22 14:40  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.28.2.2): updated
+
+2003-04-22 14:37  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* .cvsignore (1.6), TODO.txt (1.113), ql/.cvsignore (1.8),
+	ql/Calendars/.cvsignore (1.4), ql/CashFlows/.cvsignore (1.4),
+	ql/DayCounters/.cvsignore (1.4), ql/FiniteDifferences/.cvsignore
+	(1.4), ql/Indexes/.cvsignore (1.4), ql/Instruments/.cvsignore
+	(1.4), ql/Lattices/.cvsignore (1.4), ql/Math/.cvsignore (1.4),
+	ql/MonteCarlo/.cvsignore (1.4), ql/Optimization/.cvsignore (1.4),
+	ql/Pricers/.cvsignore (1.4), ql/PricingEngines/.cvsignore (1.4),
+	ql/RandomNumbers/.cvsignore (1.4), ql/ShortRateModels/.cvsignore
+	(1.4), ql/ShortRateModels/CalibrationHelpers/.cvsignore (1.4),
+	ql/ShortRateModels/OneFactorModels/.cvsignore (1.4),
+	ql/ShortRateModels/TwoFactorModels/.cvsignore (1.4),
+	ql/Solvers1D/.cvsignore (1.4), ql/TermStructures/.cvsignore (1.4),
+	ql/functions/.cvsignore (1.4): cvs ignore: Makefile.in
+
+2003-04-22 13:00  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.112): updated
+
+2003-04-19 10:16  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.154), Docs/pages/authors.docs (1.19),
+	ql/quantlib.hpp (1.105), ql/Math/Makefile.am (1.18),
+	ql/Math/kronrodintegral.hpp (1.1), test-suite/covariance.hpp (1.3):
+	added Niels Elken Sønderby's Gauss-Kronrod code
+
+2003-04-18 16:18  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.31): catching
+	up
+
+2003-04-18 16:05  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/generalstatistics.cpp (1.2),
+	ql/Math/generalstatistics.hpp (1.2),
+	test-suite/quantlibtestsuite.cpp (1.25), test-suite/riskstats.cpp
+	(1.16): more risk measures with their tests
+
+2003-04-18 11:01  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/covariance.cpp (1.5): added covariance/correlation
+	tests
+
+2003-04-18 10:59  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/dataformatters.cpp (1.17), ql/dataformatters.hpp (1.14),
+	QuantLib.dsp (1.153), QuantLib.mak (1.147), TODO.txt (1.111),
+	test-suite/lowdiscrepancysequences.cpp (1.18),
+	test-suite/old_pricers.cpp (1.12): 'begin, end' input couple
+	replaced 'const Array&'
+
+2003-04-18 10:58  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: Makefile.am (1.21), getcovariance.cpp (1.12),
+	getcovariance.hpp (1.10), makefile.mak (1.15): begin, end input
+	couple replaced const Array&
+
+2003-04-18 07:14  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/quantlibtestsuite.cpp (1.24): I figured LDSs are no
+	longer alpha :)
+
+2003-04-18 07:14  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/covariance.cpp (1.4): grammar again :)
+
+2003-04-17 16:06  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/sequencestatistics.hpp (1.15), test-suite/covariance.cpp
+	(1.3), test-suite/covariance.hpp (1.2),
+	test-suite/quantlibtestsuite.cpp (1.23): added
+	covariance/correlation tests (not finished yet)
+
+2003-04-17 13:17  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/riskmeasures.hpp (1.16): Replacements are hard to get
+	right
+
+2003-04-17 11:07  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.146), QuantLib.dsp (1.152): VC++ catching up with
+	disposable
+
+2003-04-17 10:58  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/sequencestatistics.hpp (1.14): bug fix
+
+2003-04-17 10:54  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Makefile.am (1.34), array.hpp (1.14), config.ansi.hpp
+	(1.16), config.bcc.hpp (1.17), config.msvc.hpp (1.30),
+	config.mwcw.hpp (1.15), disposable.hpp (1.1),
+	expressiontemplates.hpp (1.8), qldefines.hpp (1.51), quantlib.hpp
+	(1.104), FiniteDifferences/tridiagonaloperator.cpp (1.18),
+	FiniteDifferences/tridiagonaloperator.hpp (1.21), Math/matrix.hpp
+	(1.13), Math/multivariateaccumulator.hpp (1.15),
+	Math/symmetriceigenvalues.hpp (1.8), Pricers/fdbsmoption.hpp
+	(1.11), Pricers/fdeuropean.hpp (1.10): QuEP 9 implemented
+
+2003-04-17 09:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.73): cleanup
+
+2003-04-17 08:34  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.dsp (1.7),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.22),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.9),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.40),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.72),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.7),
+	Examples/EuropeanOption/EuropeanOption.mak (1.40),
+	Examples/Swap/Swap.dsp (1.8), Examples/Swap/Swap.mak (1.37),
+	test-suite/testsuite.mak (1.18), test-suite/testsuite.dsp (1.12):
+	clean up
+
+2003-04-17 08:11  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/stats.hpp (1.7): Reverted indiscriminated grep
+
+2003-04-17 07:52  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/riskstatistics.hpp (1.17): Compiles with gcc
+
+2003-04-17 07:51  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/: lowdiscrepancysequences.cpp (1.17), riskstats.cpp
+	(1.15), stats.hpp (1.6): Warnings and grammar
+
+2003-04-17 07:49  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/: riskmeasures.hpp (1.15), sequencestatistics.hpp (1.13):
+	Compiles with gcc
+
+2003-04-16 16:28  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.110), makefile.mak (1.41),
+	Examples/BermudanSwaption/.cvsignore (1.5),
+	Examples/DiscreteHedging/.cvsignore (1.5),
+	Examples/EuropeanOption/.cvsignore (1.5), Examples/Swap/.cvsignore
+	(1.5), ql/Math/matrix.hpp (1.12), ql/Math/sequencestatistics.hpp
+	(1.12), test-suite/.cvsignore (1.5), test-suite/makefile.mak (1.4):
+	added covariance/correlation (untested yet)
+
+2003-04-16 14:53  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.151), QuantLib.mak (1.145),
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.23),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.71), ql/quantlib.hpp
+	(1.103), ql/riskstatistics.hpp (1.16), ql/Math/Makefile.am (1.17),
+	ql/Math/discrepancystatistics.cpp (1.3),
+	ql/Math/discrepancystatistics.hpp (1.5),
+	ql/Math/gaussianstatistics.cpp (1.2),
+	ql/Math/gaussianstatistics.hpp (1.2), ql/Math/generalstatistics.cpp
+	(1.1), ql/Math/generalstatistics.hpp (1.1),
+	ql/Math/incrementalstatistics.cpp (1.1),
+	ql/Math/incrementalstatistics.hpp (1.1), ql/Math/makefile.mak
+	(1.14), ql/Math/multivariateaccumulator.hpp (1.14),
+	ql/Math/riskmeasures.hpp (1.14), ql/Math/sequencestatistics.hpp
+	(1.11), ql/Math/statistics.cpp (1.13), ql/Math/statistics.hpp
+	(1.24), ql/MonteCarlo/mctypedefs.hpp (1.20),
+	ql/Pricers/mcbasket.cpp (1.15), ql/Pricers/mcbasket.hpp (1.13),
+	ql/Pricers/mccliquetoption.cpp (1.11),
+	ql/Pricers/mccliquetoption.hpp (1.10),
+	ql/Pricers/mcdiscretearithmeticapo.cpp (1.14),
+	ql/Pricers/mcdiscretearithmeticapo.hpp (1.12),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.15),
+	ql/Pricers/mcdiscretearithmeticaso.hpp (1.13),
+	ql/Pricers/mceuropean.cpp (1.15), ql/Pricers/mceuropean.hpp (1.16),
+	ql/Pricers/mceverest.cpp (1.18), ql/Pricers/mceverest.hpp (1.12),
+	ql/Pricers/mchimalaya.cpp (1.18), ql/Pricers/mchimalaya.hpp (1.13),
+	ql/Pricers/mcmaxbasket.cpp (1.15), ql/Pricers/mcmaxbasket.hpp
+	(1.12), ql/Pricers/mcpagoda.cpp (1.18), ql/Pricers/mcpagoda.hpp
+	(1.14), ql/Pricers/mcperformanceoption.cpp (1.10),
+	ql/Pricers/mcperformanceoption.hpp (1.8), test-suite/riskstats.cpp
+	(1.14), test-suite/stats.cpp (1.9): refactoring the Statistics
+	classes: now there is IncrementalStatistics (based on incremental
+	sums) and Statistics (which stores all samples). 
+	GaussianStatistics<Stat> adds gaussian methods. 
+	SequenceStatistics<Stat> (will) add covariance calculation. 
+	DiscrepancyStatistics (not-incremental) adds discrepancy
+	calculation
+
+2003-04-15 16:09  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/riskmeasures.hpp (1.13): Statistics renamed
+	GaussianStatistics and replaced by the former HStatistics
+
+2003-04-15 15:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/statistics.hpp (1.23): Statistics renamed
+	GaussianStatistics and replaced by the former HStatistics
+
+2003-04-15 15:19  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.150), QuantLib.mak (1.144), makefile.mak (1.40),
+	Docs/Examples/history_iterators.cpp (1.9),
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.22),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.70), ql/history.hpp
+	(1.15), ql/quantlib.hpp (1.102), ql/riskstatistics.hpp (1.15),
+	ql/Math/Makefile.am (1.16), ql/Math/discrepancystatistics.hpp
+	(1.4), ql/Math/gaussianstatistics.cpp (1.1),
+	ql/Math/gaussianstatistics.hpp (1.1), ql/Math/hstatistics.cpp
+	(1.10), ql/Math/hstatistics.hpp (1.6), ql/Math/makefile.mak (1.13),
+	ql/Math/riskmeasures.hpp (1.12), ql/Math/sequencestatistics.hpp
+	(1.10), ql/Math/statistics.cpp (1.12), ql/Math/statistics.hpp
+	(1.22), ql/MonteCarlo/mctypedefs.hpp (1.19),
+	ql/Pricers/mcbasket.cpp (1.14), ql/Pricers/mcbasket.hpp (1.12),
+	ql/Pricers/mccliquetoption.cpp (1.10),
+	ql/Pricers/mccliquetoption.hpp (1.9),
+	ql/Pricers/mcdiscretearithmeticapo.cpp (1.13),
+	ql/Pricers/mcdiscretearithmeticapo.hpp (1.11),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.14),
+	ql/Pricers/mcdiscretearithmeticaso.hpp (1.12),
+	ql/Pricers/mceuropean.cpp (1.14), ql/Pricers/mceuropean.hpp (1.15),
+	ql/Pricers/mceverest.cpp (1.17), ql/Pricers/mceverest.hpp (1.11),
+	ql/Pricers/mchimalaya.cpp (1.17), ql/Pricers/mchimalaya.hpp (1.12),
+	ql/Pricers/mcmaxbasket.cpp (1.14), ql/Pricers/mcmaxbasket.hpp
+	(1.11), ql/Pricers/mcpagoda.cpp (1.17), ql/Pricers/mcpagoda.hpp
+	(1.13), ql/Pricers/mcperformanceoption.cpp (1.9),
+	ql/Pricers/mcperformanceoption.hpp (1.7),
+	test-suite/lowdiscrepancysequences.cpp (1.16),
+	test-suite/riskstats.cpp (1.13), test-suite/stats.cpp (1.8),
+	test-suite/stats.hpp (1.5): Statistics renamed GaussianStatistics
+	and replaced by the former HStatistics
+
+2003-04-15 11:12  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.109), ql/Math/hstatistics.cpp (1.9),
+	ql/Math/hstatistics.hpp (1.5), ql/Math/normaldistribution.cpp
+	(1.19), ql/Math/sequencestatistics.hpp (1.9),
+	ql/Math/statistics.hpp (1.21), test-suite/mersennetwister.cpp
+	(1.5), test-suite/quantlibtestsuite.cpp (1.22),
+	test-suite/riskstats.cpp (1.12), test-suite/stats.cpp (1.7): 1)
+	HStatistics does not inherit from Statistic (final) 2) added tests
+	for HStatistics 3) warning: Statistics' high moments are
+	numerically unstable for high average/standardDeviation ratios.
+	HStatistics is stable.
+
+2003-04-15 08:58  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/riskstats.cpp (1.11): Warnings
+
+2003-04-15 08:38  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/hstatistics.cpp (1.7), test-suite/riskstats.cpp (1.10),
+	ql/Math/hstatistics.cpp (1.8): HStatistics will not inherit from
+	Statistic (Part II)
+
+2003-04-15 08:33  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/hstatistics.cpp (1.6): HStatistics will not inherit from
+	Statistic (Part II)
+
+2003-04-15 08:11  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/riskstats.cpp (1.9): How many times again?
+
+2003-04-15 08:09  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/README.txt (1.20): Doxygen 1.3 released
+
+2003-04-15 06:42  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/Makefile.am (1.55), Docs/quantlib.doxy (1.65),
+	Docs/quantlibheader.tex (1.12), Docs/pages/fixedincome.docs (1.9),
+	ql/argsandresults.hpp (1.12), ql/array.hpp (1.13),
+	ql/blackmodel.hpp (1.8), ql/calendar.cpp (1.12), ql/calendar.hpp
+	(1.21), ql/capvolstructures.hpp (1.5), ql/cashflow.hpp (1.10),
+	ql/currency.hpp (1.8), ql/dataformatters.cpp (1.16),
+	ql/dataformatters.hpp (1.13), ql/dataparsers.cpp (1.5),
+	ql/dataparsers.hpp (1.5), ql/date.cpp (1.24), ql/date.hpp (1.20),
+	ql/daycounter.hpp (1.18), ql/diffusionprocess.cpp (1.5),
+	ql/diffusionprocess.hpp (1.22), ql/errors.hpp (1.11),
+	ql/exercise.cpp (1.3), ql/exercise.hpp (1.23),
+	ql/expressiontemplates.hpp (1.7), ql/grid.cpp (1.8), ql/grid.hpp
+	(1.14), ql/handle.hpp (1.13), ql/history.hpp (1.14), ql/index.hpp
+	(1.11), ql/instrument.hpp (1.14), ql/marketelement.hpp (1.11),
+	ql/null.hpp (1.7), ql/numericalmethod.hpp (1.7), ql/option.cpp
+	(1.18), ql/option.hpp (1.14), ql/payoff.hpp (1.3),
+	ql/pricingengine.hpp (1.7), ql/qldefines.hpp (1.50),
+	ql/relinkablehandle.hpp (1.14), ql/riskstatistics.hpp (1.14),
+	ql/scheduler.cpp (1.11), ql/scheduler.hpp (1.10), ql/solver1d.cpp
+	(1.10), ql/solver1d.hpp (1.11), ql/swaptionvolstructure.hpp (1.5),
+	ql/termstructure.hpp (1.29), ql/types.hpp (1.8),
+	ql/voltermstructure.cpp (1.8), ql/voltermstructure.hpp (1.11),
+	ql/Calendars/budapest.cpp (1.3), ql/Calendars/budapest.hpp (1.3),
+	ql/Calendars/frankfurt.cpp (1.12), ql/Calendars/frankfurt.hpp
+	(1.12), ql/Calendars/helsinki.cpp (1.11), ql/Calendars/helsinki.hpp
+	(1.12), ql/Calendars/johannesburg.cpp (1.5),
+	ql/Calendars/johannesburg.hpp (1.4), ql/Calendars/jointcalendar.cpp
+	(1.3), ql/Calendars/jointcalendar.hpp (1.2),
+	ql/Calendars/london.cpp (1.12), ql/Calendars/london.hpp (1.12),
+	ql/Calendars/milan.cpp (1.11), ql/Calendars/milan.hpp (1.12),
+	ql/Calendars/newyork.cpp (1.12), ql/Calendars/newyork.hpp (1.13),
+	ql/Calendars/oslo.cpp (1.3), ql/Calendars/oslo.hpp (1.3),
+	ql/Calendars/stockholm.cpp (1.4), ql/Calendars/stockholm.hpp (1.3),
+	ql/Calendars/sydney.cpp (1.4), ql/Calendars/sydney.hpp (1.4),
+	ql/Calendars/target.cpp (1.12), ql/Calendars/target.hpp (1.13),
+	ql/Calendars/tokyo.cpp (1.8), ql/Calendars/tokyo.hpp (1.5),
+	ql/Calendars/toronto.cpp (1.4), ql/Calendars/toronto.hpp (1.4),
+	ql/Calendars/warsaw.cpp (1.3), ql/Calendars/warsaw.hpp (1.3),
+	ql/Calendars/wellington.cpp (1.12), ql/Calendars/wellington.hpp
+	(1.12), ql/Calendars/zurich.cpp (1.11), ql/Calendars/zurich.hpp
+	(1.12), ql/CashFlows/basispointsensitivity.hpp (1.2),
+	ql/CashFlows/cashflowvectors.cpp (1.20),
+	ql/CashFlows/cashflowvectors.hpp (1.15), ql/CashFlows/coupon.hpp
+	(1.13), ql/CashFlows/fixedratecoupon.hpp (1.15),
+	ql/CashFlows/floatingratecoupon.hpp (1.24),
+	ql/CashFlows/inarrearindexedcoupon.hpp (1.4),
+	ql/CashFlows/indexcashflowvectors.hpp (1.3),
+	ql/CashFlows/indexedcoupon.hpp (1.4), ql/CashFlows/parcoupon.cpp
+	(1.2), ql/CashFlows/parcoupon.hpp (1.2),
+	ql/CashFlows/shortfloatingcoupon.cpp (1.9),
+	ql/CashFlows/shortfloatingcoupon.hpp (1.9),
+	ql/CashFlows/shortindexedcoupon.hpp (1.4),
+	ql/CashFlows/simplecashflow.hpp (1.8),
+	ql/CashFlows/upfrontindexedcoupon.hpp (1.4),
+	ql/DayCounters/actual360.hpp (1.12), ql/DayCounters/actual365.hpp
+	(1.12), ql/DayCounters/actualactual.cpp (1.18),
+	ql/DayCounters/actualactual.hpp (1.16),
+	ql/DayCounters/thirty360.cpp (1.11), ql/DayCounters/thirty360.hpp
+	(1.15), ql/FiniteDifferences/americancondition.hpp (1.9),
+	ql/FiniteDifferences/boundarycondition.cpp (1.3),
+	ql/FiniteDifferences/boundarycondition.hpp (1.8),
+	ql/FiniteDifferences/bsmoperator.cpp (1.11),
+	ql/FiniteDifferences/bsmoperator.hpp (1.11),
+	ql/FiniteDifferences/cranknicolson.hpp (1.15),
+	ql/FiniteDifferences/dminus.hpp (1.10),
+	ql/FiniteDifferences/dplus.hpp (1.10),
+	ql/FiniteDifferences/dplusdminus.hpp (1.11),
+	ql/FiniteDifferences/dzero.hpp (1.10),
+	ql/FiniteDifferences/expliciteuler.hpp (1.11),
+	ql/FiniteDifferences/fdtypedefs.hpp (1.7),
+	ql/FiniteDifferences/finitedifferencemodel.hpp (1.17),
+	ql/FiniteDifferences/impliciteuler.hpp (1.10),
+	ql/FiniteDifferences/mixedscheme.hpp (1.7),
+	ql/FiniteDifferences/onefactoroperator.cpp (1.13),
+	ql/FiniteDifferences/onefactoroperator.hpp (1.13),
+	ql/FiniteDifferences/shoutcondition.hpp (1.9),
+	ql/FiniteDifferences/stepcondition.hpp (1.8),
+	ql/FiniteDifferences/tridiagonaloperator.cpp (1.17),
+	ql/FiniteDifferences/tridiagonaloperator.hpp (1.20),
+	ql/FiniteDifferences/valueatcenter.cpp (1.11),
+	ql/FiniteDifferences/valueatcenter.hpp (1.7),
+	ql/Indexes/audlibor.hpp (1.7), ql/Indexes/cadlibor.hpp (1.7),
+	ql/Indexes/chflibor.hpp (1.5), ql/Indexes/euribor.hpp (1.11),
+	ql/Indexes/gbplibor.hpp (1.11), ql/Indexes/jpylibor.hpp (1.6),
+	ql/Indexes/usdlibor.hpp (1.11), ql/Indexes/xibor.cpp (1.12),
+	ql/Indexes/xibor.hpp (1.15), ql/Indexes/xibormanager.cpp (1.11),
+	ql/Indexes/xibormanager.hpp (1.11), ql/Indexes/zarlibor.hpp (1.5),
+	ql/Instruments/capfloor.cpp (1.30), ql/Instruments/capfloor.hpp
+	(1.31), ql/Instruments/forwardvanillaoption.cpp (1.11),
+	ql/Instruments/forwardvanillaoption.hpp (1.8),
+	ql/Instruments/quantoforwardvanillaoption.cpp (1.4),
+	ql/Instruments/quantoforwardvanillaoption.hpp (1.4),
+	ql/Instruments/quantovanillaoption.cpp (1.12),
+	ql/Instruments/quantovanillaoption.hpp (1.9),
+	ql/Instruments/simpleswap.cpp (1.22), ql/Instruments/simpleswap.hpp
+	(1.25), ql/Instruments/stock.cpp (1.9), ql/Instruments/stock.hpp
+	(1.8), ql/Instruments/swap.cpp (1.17), ql/Instruments/swap.hpp
+	(1.13), ql/Instruments/swaption.cpp (1.27),
+	ql/Instruments/swaption.hpp (1.23),
+	ql/Instruments/vanillaoption.cpp (1.17),
+	ql/Instruments/vanillaoption.hpp (1.16),
+	ql/Lattices/binomialtree.cpp (1.12), ql/Lattices/binomialtree.hpp
+	(1.9), ql/Lattices/bsmlattice.cpp (1.7), ql/Lattices/bsmlattice.hpp
+	(1.5), ql/Lattices/lattice.cpp (1.4), ql/Lattices/lattice.hpp
+	(1.4), ql/Lattices/lattice2d.cpp (1.4), ql/Lattices/lattice2d.hpp
+	(1.4), ql/Lattices/tree.hpp (1.17), ql/Lattices/trinomialtree.cpp
+	(1.15), ql/Lattices/trinomialtree.hpp (1.8),
+	ql/Math/bicubicsplineinterpolation.hpp (1.5),
+	ql/Math/bilinearinterpolation.hpp (1.13),
+	ql/Math/chisquaredistribution.cpp (1.6),
+	ql/Math/chisquaredistribution.hpp (1.6), ql/Math/cubicspline.hpp
+	(1.23), ql/Math/discrepancystatistics.cpp (1.2),
+	ql/Math/discrepancystatistics.hpp (1.3), ql/Math/errorfunction.cpp
+	(1.3), ql/Math/errorfunction.hpp (1.2),
+	ql/Math/gammadistribution.cpp (1.4), ql/Math/gammadistribution.hpp
+	(1.4), ql/Math/hstatistics.cpp (1.5), ql/Math/hstatistics.hpp
+	(1.4), ql/Math/interpolation.hpp (1.17),
+	ql/Math/interpolation2D.hpp (1.11), ql/Math/lexicographicalview.hpp
+	(1.8), ql/Math/linearinterpolation.hpp (1.13),
+	ql/Math/loglinearinterpolation.hpp (1.14), ql/Math/matrix.cpp
+	(1.12), ql/Math/matrix.hpp (1.11),
+	ql/Math/multivariateaccumulator.cpp (1.15),
+	ql/Math/multivariateaccumulator.hpp (1.13),
+	ql/Math/normaldistribution.cpp (1.18),
+	ql/Math/normaldistribution.hpp (1.21), ql/Math/primenumbers.cpp
+	(1.6), ql/Math/primenumbers.hpp (1.5), ql/Math/riskmeasures.hpp
+	(1.11), ql/Math/segmentintegral.hpp (1.15),
+	ql/Math/sequencestatistics.hpp (1.8), ql/Math/statistics.cpp
+	(1.11), ql/Math/statistics.hpp (1.20),
+	ql/Math/symmetriceigenvalues.hpp (1.7),
+	ql/Math/symmetricschurdecomposition.cpp (1.9),
+	ql/Math/symmetricschurdecomposition.hpp (1.9),
+	ql/MonteCarlo/arithmeticapopathpricer.cpp (1.11),
+	ql/MonteCarlo/arithmeticapopathpricer.hpp (1.10),
+	ql/MonteCarlo/arithmeticasopathpricer.cpp (1.12),
+	ql/MonteCarlo/arithmeticasopathpricer.hpp (1.8),
+	ql/MonteCarlo/basketpathpricer.cpp (1.23),
+	ql/MonteCarlo/basketpathpricer.hpp (1.18),
+	ql/MonteCarlo/brownianbridge.hpp (1.7),
+	ql/MonteCarlo/cliquetoptionpathpricer.cpp (1.13),
+	ql/MonteCarlo/cliquetoptionpathpricer.hpp (1.8),
+	ql/MonteCarlo/europeanpathpricer.cpp (1.18),
+	ql/MonteCarlo/europeanpathpricer.hpp (1.16),
+	ql/MonteCarlo/everestpathpricer.cpp (1.16),
+	ql/MonteCarlo/everestpathpricer.hpp (1.14),
+	ql/MonteCarlo/geometricapopathpricer.cpp (1.13),
+	ql/MonteCarlo/geometricapopathpricer.hpp (1.10),
+	ql/MonteCarlo/geometricasopathpricer.cpp (1.15),
+	ql/MonteCarlo/geometricasopathpricer.hpp (1.8),
+	ql/MonteCarlo/getcovariance.cpp (1.11),
+	ql/MonteCarlo/getcovariance.hpp (1.9),
+	ql/MonteCarlo/himalayapathpricer.cpp (1.20),
+	ql/MonteCarlo/himalayapathpricer.hpp (1.15),
+	ql/MonteCarlo/maxbasketpathpricer.cpp (1.9),
+	ql/MonteCarlo/maxbasketpathpricer.hpp (1.8),
+	ql/MonteCarlo/mctypedefs.hpp (1.18),
+	ql/MonteCarlo/montecarlomodel.hpp (1.21),
+	ql/MonteCarlo/multipath.hpp (1.15),
+	ql/MonteCarlo/multipathgenerator.hpp (1.32),
+	ql/MonteCarlo/pagodapathpricer.cpp (1.16),
+	ql/MonteCarlo/pagodapathpricer.hpp (1.16), ql/MonteCarlo/path.hpp
+	(1.13), ql/MonteCarlo/pathgenerator.hpp (1.35),
+	ql/MonteCarlo/pathpricer.hpp (1.14),
+	ql/MonteCarlo/performanceoptionpathpricer.cpp (1.8),
+	ql/MonteCarlo/performanceoptionpathpricer.hpp (1.9),
+	ql/MonteCarlo/sample.hpp (1.8), ql/Optimization/armijo.cpp (1.14),
+	ql/Optimization/armijo.hpp (1.15),
+	ql/Optimization/conjugategradient.cpp (1.15),
+	ql/Optimization/conjugategradient.hpp (1.13),
+	ql/Optimization/constraint.hpp (1.9),
+	ql/Optimization/costfunction.hpp (1.16),
+	ql/Optimization/criteria.hpp (1.12),
+	ql/Optimization/leastsquare.hpp (1.20),
+	ql/Optimization/linesearch.hpp (1.14), ql/Optimization/method.hpp
+	(1.6), ql/Optimization/problem.hpp (1.6),
+	ql/Optimization/simplex.cpp (1.8), ql/Optimization/simplex.hpp
+	(1.10), ql/Optimization/steepestdescent.cpp (1.13),
+	ql/Optimization/steepestdescent.hpp (1.15), ql/Patterns/bridge.hpp
+	(1.3), ql/Patterns/lazyobject.hpp (1.2), ql/Patterns/observable.hpp
+	(1.13), ql/Patterns/visitor.hpp (1.2),
+	ql/Pricers/analyticalcapfloor.cpp (1.17),
+	ql/Pricers/analyticalcapfloor.hpp (1.12),
+	ql/Pricers/barrieroption.cpp (1.10), ql/Pricers/barrieroption.hpp
+	(1.10), ql/Pricers/binaryoption.cpp (1.11),
+	ql/Pricers/binaryoption.hpp (1.10), ql/Pricers/blackcapfloor.cpp
+	(1.10), ql/Pricers/blackcapfloor.hpp (1.7),
+	ql/Pricers/blackswaption.cpp (1.8), ql/Pricers/blackswaption.hpp
+	(1.5), ql/Pricers/capfloorpricer.cpp (1.6),
+	ql/Pricers/capfloorpricer.hpp (1.7), ql/Pricers/cliquetoption.cpp
+	(1.13), ql/Pricers/cliquetoption.hpp (1.11),
+	ql/Pricers/continuousgeometricapo.hpp (1.8),
+	ql/Pricers/discretegeometricapo.cpp (1.10),
+	ql/Pricers/discretegeometricapo.hpp (1.7),
+	ql/Pricers/discretegeometricaso.cpp (1.10),
+	ql/Pricers/discretegeometricaso.hpp (1.7),
+	ql/Pricers/europeanoption.cpp (1.13), ql/Pricers/europeanoption.hpp
+	(1.15), ql/Pricers/fdamericanoption.hpp (1.8),
+	ql/Pricers/fdbermudanoption.cpp (1.7),
+	ql/Pricers/fdbermudanoption.hpp (1.5), ql/Pricers/fdbsmoption.cpp
+	(1.11), ql/Pricers/fdbsmoption.hpp (1.10),
+	ql/Pricers/fddividendamericanoption.cpp (1.5),
+	ql/Pricers/fddividendamericanoption.hpp (1.5),
+	ql/Pricers/fddividendeuropeanoption.cpp (1.6),
+	ql/Pricers/fddividendeuropeanoption.hpp (1.7),
+	ql/Pricers/fddividendoption.cpp (1.8),
+	ql/Pricers/fddividendoption.hpp (1.5),
+	ql/Pricers/fddividendshoutoption.cpp (1.8),
+	ql/Pricers/fddividendshoutoption.hpp (1.7),
+	ql/Pricers/fdeuropean.cpp (1.11), ql/Pricers/fdeuropean.hpp (1.9),
+	ql/Pricers/fdmultiperiodoption.cpp (1.13),
+	ql/Pricers/fdmultiperiodoption.hpp (1.6),
+	ql/Pricers/fdshoutoption.hpp (1.7),
+	ql/Pricers/fdstepconditionoption.cpp (1.10),
+	ql/Pricers/fdstepconditionoption.hpp (1.6),
+	ql/Pricers/jamshidianswaption.cpp (1.14),
+	ql/Pricers/jamshidianswaption.hpp (1.11), ql/Pricers/mcbasket.cpp
+	(1.13), ql/Pricers/mcbasket.hpp (1.11),
+	ql/Pricers/mccliquetoption.cpp (1.9),
+	ql/Pricers/mccliquetoption.hpp (1.8),
+	ql/Pricers/mcdiscretearithmeticapo.cpp (1.12),
+	ql/Pricers/mcdiscretearithmeticapo.hpp (1.10),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.13),
+	ql/Pricers/mcdiscretearithmeticaso.hpp (1.11),
+	ql/Pricers/mceuropean.cpp (1.13), ql/Pricers/mceuropean.hpp (1.14),
+	ql/Pricers/mceverest.cpp (1.16), ql/Pricers/mceverest.hpp (1.10),
+	ql/Pricers/mchimalaya.cpp (1.16), ql/Pricers/mchimalaya.hpp (1.11),
+	ql/Pricers/mcmaxbasket.cpp (1.13), ql/Pricers/mcmaxbasket.hpp
+	(1.10), ql/Pricers/mcpagoda.cpp (1.16), ql/Pricers/mcpagoda.hpp
+	(1.12), ql/Pricers/mcperformanceoption.cpp (1.8),
+	ql/Pricers/mcperformanceoption.hpp (1.6), ql/Pricers/mcpricer.hpp
+	(1.19), ql/Pricers/performanceoption.cpp (1.4),
+	ql/Pricers/performanceoption.hpp (1.3),
+	ql/Pricers/singleassetoption.cpp (1.20),
+	ql/Pricers/singleassetoption.hpp (1.22),
+	ql/Pricers/swaptionpricer.cpp (1.7), ql/Pricers/swaptionpricer.hpp
+	(1.10), ql/Pricers/treecapfloor.cpp (1.22),
+	ql/Pricers/treecapfloor.hpp (1.16), ql/Pricers/treeswaption.cpp
+	(1.27), ql/Pricers/treeswaption.hpp (1.19),
+	ql/PricingEngines/analyticeuropeanengine.cpp (1.5),
+	ql/PricingEngines/binomialvanillaengine.cpp (1.8),
+	ql/PricingEngines/cliquetengines.hpp (1.8),
+	ql/PricingEngines/discretizedvanillaoption.cpp (1.16),
+	ql/PricingEngines/discretizedvanillaoption.hpp (1.11),
+	ql/PricingEngines/fdvanillaengine.cpp (1.2),
+	ql/PricingEngines/forwardengines.hpp (1.16),
+	ql/PricingEngines/genericengine.hpp (1.9),
+	ql/PricingEngines/integralengines.cpp (1.3),
+	ql/PricingEngines/latticeshortratemodelengine.hpp (1.3),
+	ql/PricingEngines/mcengine.hpp (1.23),
+	ql/PricingEngines/quantoengines.hpp (1.16),
+	ql/PricingEngines/vanillaengines.hpp (1.27),
+	ql/RandomNumbers/boxmullergaussianrng.hpp (1.9),
+	ql/RandomNumbers/centrallimitgaussianrng.hpp (1.9),
+	ql/RandomNumbers/haltonrsg.cpp (1.4),
+	ql/RandomNumbers/haltonrsg.hpp (1.5),
+	ql/RandomNumbers/inversecumgaussianrng.hpp (1.6),
+	ql/RandomNumbers/inversecumgaussianrsg.hpp (1.5),
+	ql/RandomNumbers/knuthuniformrng.cpp (1.7),
+	ql/RandomNumbers/knuthuniformrng.hpp (1.10),
+	ql/RandomNumbers/lecuyeruniformrng.cpp (1.7),
+	ql/RandomNumbers/lecuyeruniformrng.hpp (1.8),
+	ql/RandomNumbers/mt19937uniformrng.cpp (1.4),
+	ql/RandomNumbers/mt19937uniformrng.hpp (1.6),
+	ql/RandomNumbers/randomarraygenerator.hpp (1.14),
+	ql/RandomNumbers/randomsequencegenerator.hpp (1.4),
+	ql/RandomNumbers/rngtypedefs.hpp (1.17),
+	ql/RandomNumbers/sobolrsg.cpp (1.11), ql/RandomNumbers/sobolrsg.hpp
+	(1.7), ql/ShortRateModels/calibrationhelper.cpp (1.4),
+	ql/ShortRateModels/calibrationhelper.hpp (1.8),
+	ql/ShortRateModels/model.cpp (1.10), ql/ShortRateModels/model.hpp
+	(1.13), ql/ShortRateModels/onefactormodel.cpp (1.8),
+	ql/ShortRateModels/onefactormodel.hpp (1.9),
+	ql/ShortRateModels/parameter.hpp (1.8),
+	ql/ShortRateModels/twofactormodel.cpp (1.5),
+	ql/ShortRateModels/twofactormodel.hpp (1.5),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.11),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.hpp (1.4),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.11),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp (1.4),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.cpp (1.8),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp (1.6),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.cpp (1.12),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.hpp (1.9),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
+	(1.10),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.11), ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.10),
+	ql/ShortRateModels/OneFactorModels/hullwhite.hpp (1.11),
+	ql/ShortRateModels/OneFactorModels/vasicek.cpp (1.6),
+	ql/ShortRateModels/OneFactorModels/vasicek.hpp (1.6),
+	ql/ShortRateModels/TwoFactorModels/g2.cpp (1.7),
+	ql/ShortRateModels/TwoFactorModels/g2.hpp (1.9),
+	ql/Solvers1D/bisection.cpp (1.8), ql/Solvers1D/bisection.hpp (1.8),
+	ql/Solvers1D/brent.cpp (1.9), ql/Solvers1D/brent.hpp (1.8),
+	ql/Solvers1D/falseposition.cpp (1.8),
+	ql/Solvers1D/falseposition.hpp (1.8), ql/Solvers1D/newton.cpp
+	(1.8), ql/Solvers1D/newton.hpp (1.8), ql/Solvers1D/newtonsafe.cpp
+	(1.9), ql/Solvers1D/newtonsafe.hpp (1.9), ql/Solvers1D/ridder.cpp
+	(1.8), ql/Solvers1D/ridder.hpp (1.8), ql/Solvers1D/secant.cpp
+	(1.8), ql/Solvers1D/secant.hpp (1.8),
+	ql/TermStructures/affinetermstructure.cpp (1.11),
+	ql/TermStructures/affinetermstructure.hpp (1.12),
+	ql/TermStructures/compoundforward.cpp (1.22),
+	ql/TermStructures/compoundforward.hpp (1.15),
+	ql/TermStructures/discountcurve.cpp (1.17),
+	ql/TermStructures/discountcurve.hpp (1.14),
+	ql/TermStructures/drifttermstructure.hpp (1.3),
+	ql/TermStructures/flatforward.hpp (1.23),
+	ql/TermStructures/forwardspreadedtermstructure.hpp (1.12),
+	ql/TermStructures/impliedtermstructure.hpp (1.11),
+	ql/TermStructures/piecewiseflatforward.cpp (1.32),
+	ql/TermStructures/piecewiseflatforward.hpp (1.27),
+	ql/TermStructures/quantotermstructure.hpp (1.6),
+	ql/TermStructures/ratehelpers.cpp (1.31),
+	ql/TermStructures/ratehelpers.hpp (1.26),
+	ql/TermStructures/zerocurve.cpp (1.3),
+	ql/TermStructures/zerocurve.hpp (1.2),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.13),
+	ql/Utilities/combiningiterator.hpp (1.8),
+	ql/Utilities/couplingiterator.hpp (1.7),
+	ql/Utilities/filteringiterator.hpp (1.7),
+	ql/Utilities/iteratorcategories.hpp (1.7),
+	ql/Utilities/processingiterator.hpp (1.7),
+	ql/Utilities/steppingiterator.hpp (1.8),
+	ql/Volatilities/blackconstantvol.hpp (1.12),
+	ql/Volatilities/blackvariancecurve.hpp (1.14),
+	ql/Volatilities/blackvariancesurface.hpp (1.15),
+	ql/Volatilities/capflatvolvector.hpp (1.6),
+	ql/Volatilities/impliedvoltermstructure.hpp (1.4),
+	ql/Volatilities/localconstantvol.hpp (1.9),
+	ql/Volatilities/localvolcurve.hpp (1.4),
+	ql/Volatilities/localvolsurface.hpp (1.7),
+	ql/Volatilities/swaptionvolmatrix.hpp (1.8),
+	ql/functions/daycounters.cpp (1.5), ql/functions/daycounters.hpp
+	(1.5), ql/functions/mathf.cpp (1.17), ql/functions/mathf.hpp
+	(1.10), ql/functions/vols.cpp (1.16), ql/functions/vols.hpp (1.5):
+	Doxygen 1.3 released
+
+2003-04-14 16:51  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: hstatistics.cpp (1.4), hstatistics.hpp (1.3):
+	HStatistics will not inherit from Statistic (Part II)
+
+2003-04-14 16:48  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: statistics.hpp (1.19), statistics.cpp (1.10): code
+	formatting
+
+2003-04-14 14:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/riskstats.cpp (1.8): nothing relevant
+
+2003-04-14 12:15  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Calendars/newyork.cpp (1.11): Veterans day not holiday
+
+2003-04-14 11:57  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: hstatistics.cpp (1.3), hstatistics.hpp (1.2):
+	HStatistics can avoid Statistics numerical problems ... part 1
+
+2003-04-14 09:07  Sadruddin Rejeb <sad@quantlib.org>
+
+	* test-suite/stats.cpp (1.6): Fixed gcc compilation issue
+
+2003-04-13 07:56  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/normaldistribution.hpp (1.20): code formatting
+
+2003-04-13 07:55  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: statistics.cpp (1.9), statistics.hpp (1.18): bug fixed:
+	it didn't handle correctly large number of samples.  kurtosis doc
+	typo fixed
+
+2003-04-12 18:30  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* makefile.mak (1.39): fixed
+
+2003-04-12 17:38  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/: riskstats.cpp (1.7), stats.cpp (1.5): added
+	HStatistics, SequenceStatistics<Statistics>, and
+	SequenceStatistics<HStatistics> tests
+
+2003-04-12 17:33  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/lowdiscrepancysequences.cpp (1.15): added (incomplete
+	and reduced) discrepancy test
+
+2003-04-12 17:29  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/sequencestatistics.hpp (1.7): forgotten, but not lost
+
+2003-04-12 17:28  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/: sobolrsg.cpp (1.10), sobolrsg.hpp (1.6): bug
+	fix. Sobol now works. I will finish the tests next week.  Also unit
+	initialization is allowed for study/comparison
+
+2003-04-12 17:21  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/makefile.mak (1.13): make it work with -DDEBUG
+
+2003-04-11 09:34  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/makefile.mak (1.12): grammar rules: back to Statistics,
+	with the final s
+
+2003-04-11 08:13  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* QuantLib.dsp (1.149), QuantLib.mak (1.143): [no log message]
+
+2003-04-10 16:19  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/Makefile.am (1.15), ql/Math/discrepancystatistics.cpp
+	(1.1), ql/Math/discrepancystatistics.hpp (1.2),
+	ql/Math/hstatistics.cpp (1.2), ql/Math/sequencestatistics.hpp
+	(1.6), test-suite/lowdiscrepancysequences.cpp (1.14),
+	test-suite/quantlibtestsuite.cpp (1.21), test-suite/riskstats.cpp
+	(1.6), test-suite/riskstats.hpp (1.4), test-suite/stats.cpp (1.4),
+	test-suite/stats.hpp (1.4): Grumpf
+
+2003-04-10 15:00  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/riskstatistics.hpp (1.13): typo fixed
+
+2003-04-10 11:41  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.148), QuantLib.mak (1.142),
+	Docs/Examples/history_iterators.cpp (1.8),
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.21),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.69), ql/history.hpp
+	(1.13), ql/quantlib.hpp (1.101), ql/riskstatistics.hpp (1.12),
+	ql/Math/discrepancystatistic.hpp (1.2),
+	ql/Math/discrepancystatistics.hpp (1.1), ql/Math/hstatistic.cpp
+	(1.2), ql/Math/hstatistic.hpp (1.2), ql/Math/hstatistics.cpp (1.1),
+	ql/Math/hstatistics.hpp (1.1), ql/Math/normaldistribution.hpp
+	(1.19), ql/Math/sequencestatistic.hpp (1.2),
+	ql/Math/sequencestatistics.hpp (1.5), ql/Math/statistic.cpp (1.2),
+	ql/Math/statistic.hpp (1.2), ql/Math/statistics.cpp (1.8),
+	ql/Math/statistics.hpp (1.17), ql/MonteCarlo/mctypedefs.hpp (1.17),
+	ql/Pricers/mcbasket.cpp (1.12), ql/Pricers/mcbasket.hpp (1.10),
+	ql/Pricers/mccliquetoption.cpp (1.8),
+	ql/Pricers/mccliquetoption.hpp (1.7),
+	ql/Pricers/mcdiscretearithmeticapo.cpp (1.11),
+	ql/Pricers/mcdiscretearithmeticapo.hpp (1.9),
+	ql/Pricers/mcdiscretearithmeticaso.cpp (1.12),
+	ql/Pricers/mcdiscretearithmeticaso.hpp (1.10),
+	ql/Pricers/mceuropean.cpp (1.12), ql/Pricers/mceuropean.hpp (1.13),
+	ql/Pricers/mceverest.cpp (1.15), ql/Pricers/mceverest.hpp (1.9),
+	ql/Pricers/mchimalaya.cpp (1.15), ql/Pricers/mchimalaya.hpp (1.10),
+	ql/Pricers/mcmaxbasket.cpp (1.12), ql/Pricers/mcmaxbasket.hpp
+	(1.9), ql/Pricers/mcpagoda.cpp (1.15), ql/Pricers/mcpagoda.hpp
+	(1.11), ql/Pricers/mcperformanceoption.cpp (1.7),
+	ql/Pricers/mcperformanceoption.hpp (1.5), ql/Pricers/mcpricer.hpp
+	(1.18), ql/PricingEngines/mcengine.hpp (1.22),
+	test-suite/lowdiscrepancysequences.cpp (1.13),
+	test-suite/quantlibtestsuite.cpp (1.20), test-suite/riskstats.cpp
+	(1.5), test-suite/riskstats.hpp (1.3), test-suite/stats.cpp (1.3),
+	test-suite/stats.hpp (1.3): grammar rules: back to Statistics, with
+	the final s
+
+2003-04-10 08:17  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/: lowdiscrepancysequences.cpp (1.12),
+	lowdiscrepancysequences.hpp (1.4), quantlibtestsuite.cpp (1.19):
+	added discrepancy test (too long in this version to be really added
+	to the suite). Extended Halton/Sobol tests
+
+2003-04-10 08:14  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/: riskstats.cpp (1.4), riskstats.hpp (1.2), stats.cpp
+	(1.2), stats.hpp (1.2): Statistics renamed Statistic
+
+2003-04-10 08:09  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/mctypedefs.hpp (1.16): Statistics renamed Statistic
+
+2003-04-10 08:06  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: sequencestatistic.hpp (1.1), sequencestatistics.hpp
+	(1.4): SequenceStatistics renamed SequenceStatistic
+
+2003-04-10 08:05  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: discrepancystatistic.hpp (1.1), hstatistic.cpp (1.1),
+	hstatistic.hpp (1.1): 1) added HStatistic (for historical and
+	empirical non-gaussian distribution) 2) added DiscrepancyStatistic
+	that inherit from SequenceStatistic and extend it with the
+	calculation of L2-discrepancy
+
+2003-04-10 08:04  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/Examples/history_iterators.cpp (1.7): Statistics renamed
+	Statistic
+
+2003-04-10 08:03  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/sobolrsg.cpp (1.9): added switches for unit
+	initialization (for study and test only)
+
+2003-04-10 08:01  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Pricers/mcbasket.cpp (1.11), Pricers/mcbasket.hpp (1.9),
+	Pricers/mccliquetoption.cpp (1.7), Pricers/mccliquetoption.hpp
+	(1.6), Pricers/mcdiscretearithmeticapo.cpp (1.10),
+	Pricers/mcdiscretearithmeticapo.hpp (1.8),
+	Pricers/mcdiscretearithmeticaso.cpp (1.11),
+	Pricers/mcdiscretearithmeticaso.hpp (1.9), Pricers/mceuropean.cpp
+	(1.11), Pricers/mceuropean.hpp (1.12), Pricers/mceverest.cpp
+	(1.14), Pricers/mceverest.hpp (1.8), Pricers/mchimalaya.cpp (1.14),
+	Pricers/mchimalaya.hpp (1.9), Pricers/mcmaxbasket.cpp (1.11),
+	Pricers/mcmaxbasket.hpp (1.8), Pricers/mcpagoda.cpp (1.14),
+	Pricers/mcpagoda.hpp (1.10), Pricers/mcperformanceoption.cpp (1.6),
+	Pricers/mcperformanceoption.hpp (1.4), Math/statistic.cpp (1.1),
+	Math/statistic.hpp (1.1), Math/statistics.cpp (1.7),
+	Math/statistics.hpp (1.16): Statistics renamed Statistic
+
+2003-04-10 07:58  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/quantlib.hpp (1.100), ql/Math/Makefile.am (1.14),
+	ql/Math/makefile.mak (1.11), QuantLib.dsp (1.147), QuantLib.mak
+	(1.141): 1) added HStatistic (for historical and empirical
+	non-gaussian distribution) 2) added DiscrepancyStatistic that
+	inherit from SequenceStatistic and extend it with the calculation
+	of L2-discrepancy
+
+2003-04-10 07:55  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/riskstatistics.hpp (1.11): deprecated
+
+2003-04-10 07:54  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/: DiscreteHedging/DiscreteHedging.cpp (1.20),
+	EuropeanOption/EuropeanOption.cpp (1.68): Statistics renamed
+	Statistic
+
+2003-04-09 12:58  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/sequencestatistics.hpp (1.3),
+	test-suite/lowdiscrepancysequences.cpp (1.11): No need to
+	parameterize on sequence type---and it wouldn't have worked with
+	std::list
+
+2003-04-08 16:05  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/lowdiscrepancysequences.cpp (1.10): [no log message]
+
+2003-04-08 16:01  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/sequencestatistics.hpp (1.2): HOW could this template
+	method compile?
+
+2003-04-08 13:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.146), QuantLib.mak (1.140), ql/quantlib.hpp
+	(1.99), ql/RandomNumbers/makefile.mak (1.12): added
+	SequenceStatistics
+
+2003-04-08 13:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/lowdiscrepancysequences.cpp (1.9): testing low
+	discrepancy sequences using SequenceStatistics Sobol might still
+	have some problems (or I am missing something ... ;-)
+
+2003-04-08 13:38  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: Makefile.am (1.13), riskmeasures.hpp (1.10),
+	sequencestatistics.hpp (1.1), statistics.hpp (1.15): added
+	SequenceStatistics
+
+2003-04-08 07:57  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/lowdiscrepancysequences.cpp (1.8): There was a
+	reason...
+
+2003-04-08 07:57  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: dataformatters.cpp (1.15), dataformatters.hpp (1.12):
+	Ordinal numerals
+
+2003-04-07 16:40  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/lowdiscrepancysequences.cpp (1.7): bug-fix
+
+2003-04-07 16:22  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/RandomNumbers/sobolrsg.cpp (1.8),
+	ql/RandomNumbers/sobolrsg.hpp (1.5),
+	test-suite/lowdiscrepancysequences.cpp (1.6): [no log message]
+
+2003-04-07 15:37  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/lowdiscrepancysequences.cpp (1.5): faster test
+
+2003-04-07 15:32  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/sobolrsg.cpp (1.7): bug-fix (and more comments)
+
+2003-04-07 14:49  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.145), QuantLib.mak (1.139),
+	ql/RandomNumbers/sobolrsg.cpp (1.6),
+	test-suite/lowdiscrepancysequences.cpp (1.4),
+	test-suite/lowdiscrepancysequences.hpp (1.3),
+	test-suite/quantlibtestsuite.cpp (1.18): added Sobol/Holton first
+	tests
+
+2003-04-07 12:09  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/grid.cpp (1.7), ql/quantlib.hpp (1.98),
+	ql/Instruments/vanillaoption.cpp (1.16),
+	ql/Instruments/vanillaoption.hpp (1.15), ql/Math/cubicspline.hpp
+	(1.22), ql/Math/interpolation.hpp (1.16),
+	ql/Math/linearinterpolation.hpp (1.12),
+	ql/MonteCarlo/cliquetoptionpathpricer.cpp (1.12),
+	ql/MonteCarlo/performanceoptionpathpricer.cpp (1.7),
+	ql/MonteCarlo/performanceoptionpathpricer.hpp (1.8),
+	ql/PricingEngines/vanillaengines.hpp (1.26),
+	ql/RandomNumbers/Makefile.am (1.12),
+	ql/RandomNumbers/PrimitivePolynomialsModuloTwoUpToDegree27.c (1.2),
+	ql/RandomNumbers/PrimitivePolynomialsModuloTwoUpToDegree27.h (1.2),
+	ql/RandomNumbers/mt19937uniformrng.cpp (1.3),
+	ql/RandomNumbers/primitivepolynomials.c (1.1),
+	ql/RandomNumbers/primitivepolynomials.h (1.1),
+	ql/RandomNumbers/sobolrsg.cpp (1.5), ql/RandomNumbers/sobolrsg.hpp
+	(1.4), test-suite/Makefile.am (1.12), test-suite/capfloor.cpp
+	(1.8), test-suite/europeanoption.cpp (1.10),
+	test-suite/lowdiscrepancysequences.cpp (1.3),
+	test-suite/old_pricers.cpp (1.11), test-suite/quantlibtestsuite.cpp
+	(1.17), test-suite/riskstats.cpp (1.3), test-suite/solvers.cpp
+	(1.2), test-suite/swap.cpp (1.5), test-suite/swaption.cpp (1.4):
+	[no log message]
+
+2003-04-07 10:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/: lowdiscrepancysequences.cpp (1.2),
+	lowdiscrepancysequences.hpp (1.2), quantlibtestsuite.cpp (1.16):
+	simple test added
+
+2003-04-07 10:45  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/sobolrsg.cpp (1.4): bug fix
+
+2003-04-07 09:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/: PrimitivePolynomialsModuloTwoUpToDegree27.h
+	(1.1), PrimitivePolynomialsModuloTwoUpToDegree27.c (1.1): included
+	in QuantLib primitive polynomials modulo two up to dimension 18
+
+2003-04-07 09:44  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.144), QuantLib.mak (1.138),
+	Examples/BermudanSwaption/BermudanSwaption.dsp (1.6),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.21),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.8),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.39),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.6),
+	Examples/EuropeanOption/EuropeanOption.mak (1.39),
+	Examples/Swap/Swap.dsp (1.7), Examples/Swap/Swap.mak (1.36),
+	test-suite/testsuite.dsp (1.11), test-suite/testsuite.mak (1.17):
+	included in QuantLib primitive polynomials modulo two up to
+	dimension 18
+
+2003-04-07 09:40  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* makefile.mak (1.38), ql/makefile.mak (1.26), ql/quantlib.hpp
+	(1.97), ql/RandomNumbers/Makefile.am (1.11),
+	ql/RandomNumbers/makefile.mak (1.11), ql/RandomNumbers/sobolrsg.cpp
+	(1.3), ql/RandomNumbers/sobolrsg.hpp (1.3),
+	test-suite/quantlibtestsuite.cpp (1.15): included in QuantLib
+	primitive polynomials modulo two up to dimension 18
+
+2003-04-07 08:03  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/: sobolrsg.hpp (1.2), sobolrsg.cpp (1.2): added
+	Sobol Random Sequence Generator. Untested yet
+
+2003-04-06 00:17  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.143), QuantLib.mak (1.137), makefile.mak (1.37),
+	ql/makefile.mak (1.25), ql/quantlib.hpp (1.96),
+	ql/RandomNumbers/Makefile.am (1.10), ql/RandomNumbers/makefile.mak
+	(1.10), ql/RandomNumbers/sobolrsg.cpp (1.1),
+	ql/RandomNumbers/sobolrsg.hpp (1.1): added Sobol Random Sequence
+	Generator. Untested yet
+
+2003-04-05 23:34  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/: haltonrsg.hpp (1.4), mt19937uniformrng.hpp
+	(1.5): code formatting
+
+2003-04-04 17:22  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/: BermudanSwaption.dsp (1.5),
+	BermudanSwaption.mak (1.20): added primitive polynomial modulo 2
+
+2003-04-04 17:05  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.142),
+	Examples/BermudanSwaption/BermudanSwaption.dsp (1.4),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.19),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.7),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.38),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.5),
+	Examples/EuropeanOption/EuropeanOption.mak (1.38),
+	Examples/Swap/Swap.dsp (1.6), Examples/Swap/Swap.mak (1.35),
+	ql/Math/cubicspline.hpp (1.21), ql/Math/interpolation.hpp (1.15),
+	ql/RandomNumbers/mt19937uniformrng.hpp (1.4),
+	test-suite/testsuite.dsp (1.10), test-suite/testsuite.mak (1.16):
+	warning avoided
+
+2003-04-04 16:43  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/chisquaredistribution.hpp (1.5): typo fixed
+
+2003-04-04 16:33  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.141), QuantLib.mak (1.136), makefile.mak (1.36),
+	Examples/makefile.mak (1.14),
+	Examples/BermudanSwaption/BermudanSwaption.dsp (1.3),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.18),
+	Examples/BermudanSwaption/makefile.mak (1.3),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.6),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.37),
+	Examples/DiscreteHedging/makefile.mak (1.6),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.4),
+	Examples/EuropeanOption/EuropeanOption.mak (1.37),
+	Examples/EuropeanOption/makefile.mak (1.8), Examples/Swap/Swap.dsp
+	(1.5), Examples/Swap/Swap.mak (1.34), Examples/Swap/makefile.mak
+	(1.6), ql/qldefines.hpp (1.49), ql/quantlib.hpp (1.95),
+	ql/RandomNumbers/mt19937uniformrng.cpp (1.2),
+	ql/RandomNumbers/mt19937uniformrng.hpp (1.3),
+	test-suite/lowdiscrepancysequences.cpp (1.1),
+	test-suite/lowdiscrepancysequences.hpp (1.1),
+	test-suite/quantlibtestsuite.cpp (1.14), test-suite/testsuite.dsp
+	(1.9), test-suite/testsuite.mak (1.15): 1) added primitive
+	polynomial modulo 2 (also an unit test) 2) VC++ moved from (Debug)
+	Multithread DLL to (Debug) Multithread
+
+2003-04-02 14:21  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.19): working on
+	payoff classes removed default argument from binary option
+
+2003-04-02 07:48  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.140), QuantLib.mak (1.135),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.67), ql/payoff.hpp
+	(1.2), ql/FiniteDifferences/americancondition.hpp (1.8),
+	ql/FiniteDifferences/shoutcondition.hpp (1.8),
+	ql/MonteCarlo/arithmeticapopathpricer.hpp (1.9),
+	ql/MonteCarlo/arithmeticasopathpricer.cpp (1.11),
+	ql/MonteCarlo/basketpathpricer.hpp (1.17),
+	ql/MonteCarlo/cliquetoptionpathpricer.cpp (1.11),
+	ql/MonteCarlo/europeanpathpricer.hpp (1.15),
+	ql/MonteCarlo/geometricapopathpricer.hpp (1.9),
+	ql/MonteCarlo/geometricasopathpricer.cpp (1.14),
+	ql/MonteCarlo/performanceoptionpathpricer.hpp (1.7),
+	ql/Pricers/singleassetoption.hpp (1.21),
+	ql/PricingEngines/discretizedvanillaoption.cpp (1.15),
+	ql/PricingEngines/integralengines.cpp (1.2),
+	ql/PricingEngines/vanillaengines.hpp (1.25),
+	test-suite/old_pricers.cpp (1.10): working on payoff classes
+	removed default argument from binary option
+
+2003-04-01 15:39  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/: quantlib.doxy (1.64), quantlibfooter.html (1.12),
+	quantlibfooteronline.html (1.4), quantlibheader.html (1.17),
+	quantlibheader.tex (1.11), images/Makefile.am (1.2),
+	images/QL-largish.bmp (1.2), images/QL-largish.eps (1.2),
+	images/QL-largish.jpg (1.2), images/QL-largish.pdf (1.2),
+	images/QL-small-notitle.jpg (1.2), images/QL-small.jpg (1.1),
+	images/QL.bmp (1.1), images/QL.eps (1.1), images/QL.jpg (1.1),
+	images/QL.pdf (1.1), pages/index.docs (1.7): [no log message]
+
+2003-04-01 14:43  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Instruments/vanillaoption.cpp (1.15),
+	Instruments/vanillaoption.hpp (1.14), PricingEngines/Makefile.am
+	(1.15), PricingEngines/analyticeuropeanengine.cpp (1.4),
+	PricingEngines/discretizedvanillaoption.cpp (1.14),
+	PricingEngines/forwardengines.hpp (1.15),
+	PricingEngines/integralengines.cpp (1.1),
+	PricingEngines/integraleuropeanengine.cpp (1.3),
+	PricingEngines/makefile.mak (1.11), PricingEngines/mcengine.hpp
+	(1.21), PricingEngines/quantoengines.hpp (1.15),
+	PricingEngines/vanillaengines.hpp (1.24): working on
+	Cash-Or-Nothing and Asset-Or-Nothing payoff classes
+
+2003-04-01 11:16  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Makefile.am (1.33), exercise.hpp (1.22), payoff.hpp (1.1),
+	quantlib.hpp (1.94), MonteCarlo/arithmeticapopathpricer.hpp (1.8),
+	MonteCarlo/basketpathpricer.hpp (1.16),
+	MonteCarlo/europeanpathpricer.hpp (1.14),
+	MonteCarlo/geometricapopathpricer.hpp (1.8),
+	MonteCarlo/performanceoptionpathpricer.hpp (1.6),
+	Pricers/binaryoption.hpp (1.9), Pricers/singleassetoption.hpp
+	(1.20), PricingEngines/vanillaengines.hpp (1.23): added payoff file
+	for Payoff classes.  Added Cash-Or-Nothing and Asset-Or-Nothing
+	payoff classes
+
+2003-04-01 09:36  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.18),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.66), ql/exercise.cpp
+	(1.2), ql/exercise.hpp (1.21),
+	ql/FiniteDifferences/americancondition.hpp (1.7),
+	ql/FiniteDifferences/shoutcondition.hpp (1.7),
+	ql/Instruments/vanillaoption.cpp (1.14),
+	ql/Instruments/vanillaoption.hpp (1.13),
+	ql/MonteCarlo/arithmeticapopathpricer.cpp (1.10),
+	ql/MonteCarlo/arithmeticapopathpricer.hpp (1.7),
+	ql/MonteCarlo/arithmeticasopathpricer.cpp (1.10),
+	ql/MonteCarlo/basketpathpricer.cpp (1.22),
+	ql/MonteCarlo/basketpathpricer.hpp (1.15),
+	ql/MonteCarlo/cliquetoptionpathpricer.cpp (1.10),
+	ql/MonteCarlo/europeanpathpricer.cpp (1.17),
+	ql/MonteCarlo/europeanpathpricer.hpp (1.13),
+	ql/MonteCarlo/geometricapopathpricer.cpp (1.12),
+	ql/MonteCarlo/geometricapopathpricer.hpp (1.7),
+	ql/MonteCarlo/geometricasopathpricer.cpp (1.13),
+	ql/MonteCarlo/performanceoptionpathpricer.cpp (1.6),
+	ql/MonteCarlo/performanceoptionpathpricer.hpp (1.5),
+	ql/Pricers/barrieroption.cpp (1.9), ql/Pricers/barrieroption.hpp
+	(1.9), ql/Pricers/binaryoption.cpp (1.10),
+	ql/Pricers/discretegeometricapo.cpp (1.9),
+	ql/Pricers/discretegeometricaso.cpp (1.9),
+	ql/Pricers/europeanoption.cpp (1.12), ql/Pricers/europeanoption.hpp
+	(1.14), ql/Pricers/fdbermudanoption.cpp (1.6),
+	ql/Pricers/fdbsmoption.cpp (1.10), ql/Pricers/fddividendoption.cpp
+	(1.7), ql/Pricers/fdmultiperiodoption.cpp (1.12),
+	ql/Pricers/fdstepconditionoption.cpp (1.9),
+	ql/Pricers/singleassetoption.cpp (1.19),
+	ql/Pricers/singleassetoption.hpp (1.19),
+	ql/PricingEngines/analyticeuropeanengine.cpp (1.3),
+	ql/PricingEngines/discretizedvanillaoption.cpp (1.13),
+	ql/PricingEngines/forwardengines.hpp (1.14),
+	ql/PricingEngines/integraleuropeanengine.cpp (1.2),
+	ql/PricingEngines/mcengine.hpp (1.20),
+	ql/PricingEngines/quantoengines.hpp (1.14),
+	ql/PricingEngines/vanillaengines.hpp (1.22): ExercisePayoff
+	function became a Payoff class derived from std::unary_funcion.
+	
+	It can be integrated in the Integral engines (only european for the
+	time being, more to follow)
+
+2003-03-31 16:57  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.139), QuantLib.mak (1.134), TODO.txt (1.108),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.65),
+	ql/PricingEngines/Makefile.am (1.14),
+	ql/PricingEngines/integraleuropeanengine.cpp (1.1),
+	ql/PricingEngines/makefile.mak (1.10),
+	ql/PricingEngines/vanillaengines.hpp (1.21): added Integral
+	(european) pricing engine
+
+2003-03-28 17:31  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/: matrices.hpp (1.2), quantlibtestsuite.cpp (1.13):
+	[no log message]
+
+2003-03-28 17:10  Sadruddin Rejeb <sad@quantlib.org>
+
+	* UFILE (1.2): Updated e-mail address (bis)
+
+2003-03-28 17:09  Sadruddin Rejeb <sad@quantlib.org>
+
+	* Authors.txt (1.10): Updated e-mail address (yes, I'm alive...
+	I'll be back soon!)
+
+2003-03-28 10:20  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/himalayapathpricer.cpp (1.19),
+	ql/MonteCarlo/himalayapathpricer.hpp (1.14),
+	ql/MonteCarlo/maxbasketpathpricer.cpp (1.8),
+	ql/MonteCarlo/maxbasketpathpricer.hpp (1.7),
+	ql/MonteCarlo/pagodapathpricer.cpp (1.15),
+	ql/MonteCarlo/pagodapathpricer.hpp (1.15),
+	ql/Pricers/mchimalaya.cpp (1.13), ql/Pricers/mchimalaya.hpp (1.8),
+	ql/Pricers/mcmaxbasket.cpp (1.10), ql/Pricers/mcmaxbasket.hpp
+	(1.7), ql/Pricers/mcpagoda.cpp (1.13), ql/Pricers/mcpagoda.hpp
+	(1.9), test-suite/old_pricers.cpp (1.9): using std::vector instead
+	of Array
+
+2003-03-27 11:46  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/randomarraygenerator.hpp (1.13): not using
+	deprecated class anymore
+
+2003-03-27 10:24  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/functions/: mathf.cpp (1.16), mathf.hpp (1.9): Mersenne
+	Twister related functions
+
+2003-03-25 00:00  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/mccliquetoption.hpp (1.5): no message
+
+2003-03-24 23:14  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.107), test-suite/old_pricers.cpp (1.8),
+	test-suite/testsuite.dsp (1.8), test-suite/testsuite.mak (1.14):
+	updated
+
+2003-03-24 23:11  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/haltonrsg.cpp (1.3): code formatting
+
+2003-03-24 23:11  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: MonteCarlo/cliquetoptionpathpricer.cpp (1.9),
+	MonteCarlo/cliquetoptionpathpricer.hpp (1.7),
+	Pricers/mccliquetoption.cpp (1.6), Pricers/mccliquetoption.hpp
+	(1.4): extending functionalities
+
+2003-03-24 23:11  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: MonteCarlo/basketpathpricer.cpp (1.21),
+	MonteCarlo/basketpathpricer.hpp (1.14), Pricers/mcbasket.cpp
+	(1.10), Pricers/mcbasket.hpp (1.8): using std::vector instead of
+	Array
+
+2003-03-24 16:37  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* test-suite/mersennetwister.cpp (1.4): Removed warning with gcc
+
+2003-03-24 15:45  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.106): updated
+
+2003-03-24 15:45  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/Faure2.bas (1.1): need to be converted in C++
+
+2003-03-24 15:39  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: matrix.cpp (1.11), symmetricschurdecomposition.cpp
+	(1.8), symmetricschurdecomposition.hpp (1.8): const-ness fixes
+
+2003-03-24 15:30  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/: Makefile.am (1.11), makefile.mak (1.3), matrices.cpp
+	(1.1), matrices.hpp (1.1), quantlibtestsuite.cpp (1.12): added
+	matrices test (eigenvectors and pseudoSqrt for the time being)
+
+2003-03-24 14:12  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.105), ql/Math/matrix.cpp (1.10), ql/Math/matrix.hpp
+	(1.10): matrix pseudo square algorithm using salvaging algorithm(s)
+
+2003-03-24 10:53  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/symmetricschurdecomposition.hpp (1.7): avoid copying
+	results
+
+2003-03-24 10:52  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/multipathgenerator.hpp (1.31): code formatting
+
+2003-03-23 23:39  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.17),
+	ql/PricingEngines/cliquetengines.hpp (1.7),
+	ql/PricingEngines/mcengine.hpp (1.19): Compiles and runs with gcc
+
+2003-03-23 20:14  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/MonteCarlo/pathgenerator.hpp (1.34): Template argument name
+	fixed
+
+2003-03-23 15:15  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.64): working on
+	cliquet and MC framework
+
+2003-03-23 15:09  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/brownianbridge.hpp (1.6): avoid warning
+
+2003-03-23 15:06  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: cliquetoptionpathpricer.cpp (1.8),
+	cliquetoptionpathpricer.hpp (1.6): working on cliquet
+
+2003-03-23 15:05  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/montecarlomodel.hpp (1.20): in the new framework
+	antithetic variate is handled by MonteCarloModel
+
+2003-03-23 15:03  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Pricers/mcperformanceoption.cpp (1.5), Pricers/mcbasket.cpp
+	(1.9), Pricers/mccliquetoption.cpp (1.5),
+	Pricers/mcdiscretearithmeticapo.cpp (1.9),
+	Pricers/mcdiscretearithmeticaso.cpp (1.10), Pricers/mceuropean.cpp
+	(1.10), Pricers/mceverest.cpp (1.13), Pricers/mchimalaya.cpp
+	(1.12), Pricers/mcmaxbasket.cpp (1.9), Pricers/mcpagoda.cpp (1.12),
+	MonteCarlo/pathgenerator.hpp (1.33),
+	MonteCarlo/multipathgenerator.hpp (1.30): old pricers don't use new
+	framework's antithetic variate
+
+2003-03-23 14:59  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/PricingEngines/: cliquetengines.hpp (1.6), mcengine.hpp
+	(1.18): working on cliquet and MC framework
+
+2003-03-23 14:57  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/inversecumgaussianrsg.hpp (1.4): bug fix
+
+2003-03-22 20:58  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: arithmeticapopathpricer.cpp (1.9),
+	arithmeticasopathpricer.cpp (1.9), cliquetoptionpathpricer.cpp
+	(1.7), europeanpathpricer.cpp (1.16), geometricapopathpricer.cpp
+	(1.11), geometricasopathpricer.cpp (1.12), himalayapathpricer.cpp
+	(1.18): using TimeGrid instead of std::vector<Time>
+
+2003-03-22 20:57  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: multipath.hpp (1.14), multipathgenerator.hpp
+	(1.29): 1) using TimeGrid instead of std::vector<Time> 2) new
+	MultiPathGenerator using sequence generator 3) old
+	MultiPathGenerator available as MultiPathGenerator_old
+
+2003-03-22 20:53  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: path.hpp (1.12), pathgenerator.hpp (1.32): using
+	TimeGrid instead of std::vector<Time>
+
+2003-03-22 20:51  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/: mcbasket.cpp (1.8), mccliquetoption.cpp (1.4),
+	mcdiscretearithmeticapo.cpp (1.8), mcdiscretearithmeticaso.cpp
+	(1.9), mceverest.cpp (1.12), mchimalaya.cpp (1.11), mcmaxbasket.cpp
+	(1.8), mcpagoda.cpp (1.11), mcperformanceoption.cpp (1.4): using
+	timeGrid
+
+2003-03-22 20:49  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/grid.hpp (1.13): bug fix and interface extension
+
+2003-03-22 20:48  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/config.msvc.hpp (1.29): relaxing conditions enforced on end
+	user
+
+2003-03-22 17:50  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/mctypedefs.hpp (1.15): code formatting
+
+2003-03-22 17:45  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: performanceoptionpathpricer.hpp (1.4), sample.hpp
+	(1.7): code formatting
+
+2003-03-22 16:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/: randomsequencegenerator.hpp (1.3),
+	haltonrsg.hpp (1.3), inversecumgaussianrsg.hpp (1.3): added
+	lastSequence
+
+2003-03-22 16:21  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/Makefile.am (1.54), Docs/quantlib.doxy (1.63),
+	Docs/quantlibheader.html (1.16),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.63),
+	ql/diffusionprocess.cpp (1.4), ql/grid.cpp (1.6), ql/grid.hpp
+	(1.12): Misc. fixes
+
+2003-03-21 18:42  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: cliquetoptionpathpricer.cpp (1.6),
+	cliquetoptionpathpricer.hpp (1.5): working on cliquet
+
+2003-03-20 16:05  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.61),
+	ql/MonteCarlo/brownianbridge.hpp (1.5),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.62): BrownianBridge
+	QuantLibfied
+
+2003-03-20 15:52  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.60): clean up
+
+2003-03-20 15:11  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: brownianbridge.hpp (1.4), path.hpp (1.11),
+	pathgenerator.hpp (1.31): BrownianBridge QuantLibfied
+
+2003-03-20 11:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/brownianbridge.hpp (1.3): BrownianBridge
+	QuantLibfied
+
+2003-03-20 11:15  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.138), QuantLib.mak (1.133),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.59),
+	ql/MonteCarlo/Makefile.am (1.20), ql/MonteCarlo/brownianbridge.cpp
+	(1.3), ql/MonteCarlo/makefile.mak (1.14),
+	ql/MonteCarlo/pathgenerator.hpp (1.30),
+	ql/PricingEngines/analyticeuropeanengine.cpp (1.2),
+	ql/PricingEngines/cliquetengines.hpp (1.5),
+	ql/PricingEngines/mcengine.hpp (1.17),
+	ql/PricingEngines/vanillaengines.hpp (1.20): useless
+	Handle<TimeGrid> removed
+
+2003-03-20 10:39  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: brownianbridge.cpp (1.2), brownianbridge.hpp
+	(1.2): BrownianBridge QuantLibfied
+
+2003-03-20 09:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.30): extending
+	and refactoring TimeGrid
+
+2003-03-20 09:30  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: diffusionprocess.hpp (1.21), diffusionprocess.cpp (1.3):
+	temporary patch
+
+2003-03-20 09:28  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: grid.cpp (1.5), grid.hpp (1.11): extending and refactoring
+
+2003-03-20 09:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/randomsequencegenerator.hpp (1.2): added
+	RandomSequenceGenerator(Size dimensionality, long seed = 0)
+
+2003-03-20 09:23  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: functions/mathf.cpp (1.15), RandomNumbers/haltonrsg.cpp
+	(1.2), RandomNumbers/haltonrsg.hpp (1.2): static version to avoid
+	multiple prime calculation
+
+2003-03-20 09:21  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/pathgenerator.hpp (1.29): avoiding a copy
+
+2003-03-20 08:37  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: primenumbers.cpp (1.5), primenumbers.hpp (1.4): static
+	version to avoid multiple prime calculation
+
+2003-03-19 17:31  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.137), QuantLib.mak (1.132), ql/quantlib.hpp
+	(1.93), ql/MonteCarlo/Makefile.am (1.19),
+	ql/MonteCarlo/brownianbridge.cpp (1.1),
+	ql/MonteCarlo/brownianbridge.hpp (1.1), ql/MonteCarlo/makefile.mak
+	(1.13): added Jäckel's Brownian Bridge
+
+2003-03-19 17:06  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.29),
+	ql/grid.cpp (1.4), ql/grid.hpp (1.10), ql/Pricers/treecapfloor.cpp
+	(1.21), ql/Pricers/treeswaption.cpp (1.26): TimeGrid now uses
+	iterators
+
+2003-03-19 16:59  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.131), QuantLib.dsp (1.136),
+	test-suite/testsuite.mak (1.13), test-suite/testsuite.dsp (1.7):
+	updated
+
+2003-03-19 16:59  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/: cliquetoptionpathpricer.cpp (1.5),
+	cliquetoptionpathpricer.hpp (1.4): working on cliquet
+
+2003-03-19 16:56  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/PricingEngines/cliquetengines.hpp (1.4): working on cliquet
+
+2003-03-19 15:10  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/: BermudanSwaption/BermudanSwaption.dsp (1.2),
+	BermudanSwaption/BermudanSwaption.mak (1.17),
+	DiscreteHedging/DiscreteHedging.dsp (1.5),
+	DiscreteHedging/DiscreteHedging.mak (1.36),
+	EuropeanOption/EuropeanOption.dsp (1.3),
+	EuropeanOption/EuropeanOption.mak (1.36): QL_DEBUG undefined in
+	project settings
+
+2003-03-19 14:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/: DiscreteHedging/DiscreteHedging.cpp (1.16),
+	EuropeanOption/EuropeanOption.cpp (1.58): old PathPricer(s),
+	PathGenerators, etc are available with a trailing _old
+
+2003-03-19 14:44  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/PricingEngines/: cliquetengines.hpp (1.3), mcengine.hpp
+	(1.16): using new Path framework
+
+2003-03-19 14:42  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: MonteCarlo/arithmeticapopathpricer.cpp (1.8),
+	MonteCarlo/arithmeticapopathpricer.hpp (1.6),
+	MonteCarlo/arithmeticasopathpricer.cpp (1.8),
+	MonteCarlo/arithmeticasopathpricer.hpp (1.7),
+	MonteCarlo/basketpathpricer.cpp (1.20),
+	MonteCarlo/basketpathpricer.hpp (1.13),
+	MonteCarlo/cliquetoptionpathpricer.cpp (1.4),
+	MonteCarlo/cliquetoptionpathpricer.hpp (1.3),
+	MonteCarlo/europeanpathpricer.cpp (1.15),
+	MonteCarlo/europeanpathpricer.hpp (1.12),
+	MonteCarlo/everestpathpricer.cpp (1.15),
+	MonteCarlo/everestpathpricer.hpp (1.13),
+	MonteCarlo/geometricapopathpricer.cpp (1.10),
+	MonteCarlo/geometricapopathpricer.hpp (1.6),
+	MonteCarlo/geometricasopathpricer.cpp (1.11),
+	MonteCarlo/geometricasopathpricer.hpp (1.7),
+	MonteCarlo/getcovariance.cpp (1.10), MonteCarlo/getcovariance.hpp
+	(1.8), MonteCarlo/himalayapathpricer.cpp (1.17),
+	MonteCarlo/himalayapathpricer.hpp (1.13),
+	MonteCarlo/maxbasketpathpricer.cpp (1.7),
+	MonteCarlo/maxbasketpathpricer.hpp (1.6), MonteCarlo/mctypedefs.hpp
+	(1.14), MonteCarlo/multipath.hpp (1.13),
+	MonteCarlo/pagodapathpricer.cpp (1.14),
+	MonteCarlo/pagodapathpricer.hpp (1.14),
+	MonteCarlo/pathgenerator.hpp (1.28),
+	MonteCarlo/performanceoptionpathpricer.cpp (1.5),
+	MonteCarlo/performanceoptionpathpricer.hpp (1.3),
+	Pricers/mcbasket.cpp (1.7), Pricers/mcbasket.hpp (1.7),
+	Pricers/mccliquetoption.cpp (1.3), Pricers/mccliquetoption.hpp
+	(1.3), Pricers/mcdiscretearithmeticapo.cpp (1.7),
+	Pricers/mcdiscretearithmeticapo.hpp (1.7),
+	Pricers/mcdiscretearithmeticaso.cpp (1.8),
+	Pricers/mcdiscretearithmeticaso.hpp (1.8), Pricers/mceuropean.cpp
+	(1.9), Pricers/mceuropean.hpp (1.11), Pricers/mceverest.cpp (1.11),
+	Pricers/mceverest.hpp (1.7), Pricers/mchimalaya.cpp (1.10),
+	Pricers/mchimalaya.hpp (1.7), Pricers/mcmaxbasket.cpp (1.7),
+	Pricers/mcmaxbasket.hpp (1.6), Pricers/mcpagoda.cpp (1.10),
+	Pricers/mcpagoda.hpp (1.8), Pricers/mcperformanceoption.cpp (1.3),
+	Pricers/mcperformanceoption.hpp (1.3): old PathPricer(s),
+	PathGenerators, etc are available with a trailing _old
+
+2003-03-19 14:40  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/pathpricer.hpp (1.13): new PathPricer does not
+	handle antithetic variance reduction and accepts a term structure
+	as input.  The old PathPricer is available as PathPricer_old
+
+2003-03-19 12:28  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.57),
+	ql/config.bcc.hpp (1.16), ql/config.msvc.hpp (1.28): defined
+	QL_DEBUG when _DEBUG (Visual) or DEBUG (Borland) is defined
+
+2003-03-19 12:08  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/mt19935uniformrng.cpp (1.2): removed useless
+	dummy empty file
+
+2003-03-19 11:22  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/: testsuite.dsp (1.6), testsuite.mak (1.12): test
+	suite bug fix: the debug version was untested before
+
+2003-03-19 10:56  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.135), QuantLib.mak (1.130),
+	test-suite/mersennetwister.cpp (1.3), test-suite/old_pricers.cpp
+	(1.7), test-suite/quantlibtestsuite.cpp (1.11): fixed MC test
+	numbers: there has been a big improvement of the quality of the
+	GaussianRandomGenerator
+
+2003-03-19 08:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/mersennetwister.cpp (1.2): extended test
+
+2003-03-18 17:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/rngtypedefs.hpp (1.16): more typedef-ed
+	generators
+
+2003-03-18 16:42  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/mt19937uniformrng.hpp (1.2): Mersenne Twister
+	test
+
+2003-03-18 16:33  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/: Makefile.am (1.10), makefile.mak (1.2),
+	mersennetwister.cpp (1.1), mersennetwister.hpp (1.1),
+	quantlibtestsuite.cpp (1.10), testsuite.dsp (1.5), testsuite.mak
+	(1.11): Mersenne Twister test
+
+2003-03-18 14:17  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.134), QuantLib.mak (1.129), ql/quantlib.hpp
+	(1.92), ql/RandomNumbers/Makefile.am (1.9),
+	ql/RandomNumbers/makefile.mak (1.9),
+	ql/RandomNumbers/mt19935uniformrng.cpp (1.1),
+	ql/RandomNumbers/mt19937uniformrng.cpp (1.1),
+	ql/RandomNumbers/mt19937uniformrng.hpp (1.1),
+	ql/RandomNumbers/rngtypedefs.hpp (1.15): Mersenne Twister random
+	number generator added (untested yet)
+
+2003-03-18 11:18  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/: lecuyeruniformrng.cpp (1.6),
+	lecuyeruniformrng.hpp (1.7): comments added
+
+2003-03-18 10:23  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.56),
+	ql/PricingEngines/mcengine.hpp (1.15): Redundant naming
+
+2003-03-18 10:22  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/quantlib.doxy (1.62): [no log message]
+
+2003-03-18 09:39  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.55),
+	ql/PricingEngines/mcengine.hpp (1.14): fix
+
+2003-03-18 09:22  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/PricingEngines/cliquetengines.hpp (1.2): missing inline
+
+2003-03-17 20:08  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/PricingEngines/: cliquetengines.hpp (1.1), mcengine.hpp
+	(1.13): working on MC cliquet option
+
+2003-03-17 19:38  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.133), QuantLib.mak (1.128),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.54), ql/quantlib.hpp
+	(1.91), ql/MonteCarlo/pathgenerator.hpp (1.27),
+	ql/PricingEngines/Makefile.am (1.13),
+	ql/PricingEngines/makefile.mak (1.9),
+	ql/PricingEngines/mcengine.hpp (1.12): timeGrid everywhere in
+	MCengine and derived classes
+
+2003-03-17 18:37  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.53),
+	ql/MonteCarlo/mctypedefs.hpp (1.13),
+	ql/MonteCarlo/pathgenerator.hpp (1.26),
+	ql/Pricers/europeanoption.hpp (1.13), ql/Pricers/mceuropean.hpp
+	(1.10), ql/PricingEngines/Makefile.am (1.12),
+	ql/PricingEngines/analyticalvanillaengine.cpp (1.7),
+	ql/PricingEngines/analyticeuropeanengine.cpp (1.1),
+	ql/PricingEngines/vanillaengines.hpp (1.19),
+	test-suite/europeanoption.cpp (1.9): [no log message]
+
+2003-03-17 17:22  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.127), Examples/EuropeanOption/EuropeanOption.cpp
+	(1.52), ql/MonteCarlo/pathgenerator.hpp (1.25),
+	ql/PricingEngines/mcengine.hpp (1.11): MC engines now use sequence
+	generators
+
+2003-03-17 17:22  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/rngtypedefs.hpp (1.14): comments
+
+2003-03-17 17:21  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/quantlib.hpp (1.90): reordered
+
+2003-03-17 17:21  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* makefile.mak (1.35): not silent anymore (not here at least)
+
+2003-03-17 15:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/makefile.mak (1.13): not silent anymore (not here at
+	least)
+
+2003-03-17 15:46  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/makefile.mak (1.7): reverting wrong
+	changes
+
+2003-03-17 15:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/functions/: mathf.cpp (1.14), mathf.hpp (1.8): added
+	primeNumber function
+
+2003-03-17 15:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/primenumbers.hpp (1.3): removed redundant method
+
+2003-03-17 12:39  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.132), QuantLib.mak (1.126), makefile.mak (1.34),
+	Examples/EuropeanOption/makefile.mak (1.6), ql/quantlib.hpp (1.89),
+	ql/MonteCarlo/sample.hpp (1.6),
+	ql/RandomNumbers/inversecumgaussianrsg.hpp (1.2): updated
+
+2003-03-17 12:26  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/rngtypedefs.hpp (1.13): added sequence
+	generators: random sequence generator create a sequence generator
+	out of a random number generator.
+
+2003-03-17 12:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/: boxmullergaussianrng.hpp (1.8),
+	centrallimitgaussianrng.hpp (1.8), inversecumgaussianrng.hpp (1.5):
+	RNG as constructor input constructor( long seed) deprecated
+
+2003-03-17 12:15  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/: halton.cpp (1.2), halton.hpp (1.2),
+	haltonrsg.cpp (1.1), Makefile.am (1.8), haltonrsg.hpp (1.1),
+	makefile.mak (1.8): QuantLibfied interface
+
+2003-03-17 12:05  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/primenumbers.cpp (1.4): improved
+
+2003-03-17 11:49  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: primenumbers.cpp (1.3), primenumbers.hpp (1.2):
+	improved
+
+2003-03-17 11:29  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/randomarraygenerator.hpp (1.12): deprecated
+
+2003-03-17 11:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/RandomNumbers/randomsequencegenerator.cpp (1.2): added by
+	error, now removed
+
+2003-03-17 11:26  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: RandomNumbers/inversecumgaussianrsg.hpp (1.1),
+	RandomNumbers/Makefile.am (1.7),
+	RandomNumbers/randomsequencegenerator.cpp (1.1),
+	RandomNumbers/randomsequencegenerator.hpp (1.1), quantlib.hpp
+	(1.88): added sequence generators: random sequence generator create
+	a sequence generator out of a random number generator. 
+	InvCumGaussianRsg create a gaussian sequence generator out of a
+	uniform (random or low discrepancy) sequence generator
+
+2003-03-17 11:10  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/: .cvsignore (1.4), covariance.cpp (1.2),
+	distributions.cpp (1.6), makefile.mak (1.1), old_pricers.cpp (1.6),
+	operators.cpp (1.3), piecewiseflatforward.cpp (1.3), riskstats.cpp
+	(1.2), termstructures.cpp (1.5): Borland fixes
+
+2003-03-17 08:59  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* acinclude.m4 (1.6), configure.ac (1.10), Docs/quantlib.doxy
+	(1.61), ql/argsandresults.hpp (1.11), ql/option.cpp (1.17),
+	ql/option.hpp (1.13), ql/pricingengine.hpp (1.6),
+	ql/Instruments/forwardvanillaoption.cpp (1.10),
+	ql/Instruments/quantovanillaoption.cpp (1.11),
+	ql/Instruments/vanillaoption.cpp (1.13),
+	ql/Instruments/vanillaoption.hpp (1.12), ql/Math/errorfunction.cpp
+	(1.2), ql/Math/normaldistribution.cpp (1.17),
+	ql/Math/normaldistribution.hpp (1.18), ql/Math/primenumbers.cpp
+	(1.2), ql/PricingEngines/forwardengines.hpp (1.13),
+	ql/PricingEngines/genericengine.hpp (1.8),
+	ql/PricingEngines/mcengine.hpp (1.10),
+	ql/PricingEngines/quantoengines.hpp (1.13),
+	ql/PricingEngines/vanillaengines.hpp (1.18): Works on gcc +
+	errorEstimate() and misc
+
+2003-03-16 02:12  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.125), ql/Math/normaldistribution.cpp (1.16),
+	ql/Math/normaldistribution.hpp (1.17), test-suite/capfloor.cpp
+	(1.7), test-suite/distributions.cpp (1.5),
+	test-suite/old_pricers.cpp (1.5), test-suite/quantlibtestsuite.cpp
+	(1.9), test-suite/swaption.cpp (1.3): improved Cumulative Normal
+	Distribution function using the Error Function.
+
+2003-03-16 01:38  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.131): added error function
+
+2003-03-16 01:32  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Math/Makefile.am (1.12), Math/errorfunction.cpp (1.1),
+	Math/errorfunction.hpp (1.1), Math/makefile.mak (1.10),
+	quantlib.hpp (1.87): added error function
+
+2003-03-15 23:02  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* test-suite/distributions.cpp (1.4): old bug fixed
+
+2003-03-15 22:58  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/normaldistribution.hpp (1.16): old bug fixed
+
+2003-03-15 21:42  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: config.bcc.hpp (1.15), config.msvc.hpp (1.27): added missing
+	DEFINEs
+
+2003-03-15 21:41  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/normaldistribution.hpp (1.15): backward compatibility
+
+2003-03-15 20:17  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.31),
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.15),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.51),
+	ql/config.msvc.hpp (1.26), ql/quantlib.hpp (1.86),
+	ql/Math/chisquaredistribution.cpp (1.5),
+	ql/Math/chisquaredistribution.hpp (1.4),
+	ql/Math/normaldistribution.cpp (1.15),
+	ql/Math/normaldistribution.hpp (1.14), ql/Math/riskmeasures.hpp
+	(1.9), ql/PricingEngines/analyticalvanillaengine.cpp (1.6),
+	ql/PricingEngines/vanillaengines.hpp (1.17),
+	ql/RandomNumbers/rngtypedefs.hpp (1.12),
+	ql/ShortRateModels/TwoFactorModels/g2.cpp (1.6),
+	ql/functions/mathf.cpp (1.13), test-suite/distributions.cpp (1.3):
+	1) Acklam's approximation for inverse cumulative normal
+	distribution function replaced Moro's algorithm. Moro is still
+	available as MoroInverseCumulative.  2)
+	InvCumulativeNormalDistribution renamed to InverseCumulativeNormal.
+	 3) M_PI replaced all pi (3.14) values
+
+2003-03-15 16:41  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.130), QuantLib.mak (1.124), ql/Math/Makefile.am
+	(1.11), ql/Math/makefile.mak (1.9), ql/Math/normaldistribution.hpp
+	(1.13), ql/Math/primenumbers.cpp (1.1), ql/Math/primenumbers.hpp
+	(1.1), ql/RandomNumbers/Makefile.am (1.6),
+	ql/RandomNumbers/halton.cpp (1.1), ql/RandomNumbers/halton.hpp
+	(1.1), ql/RandomNumbers/makefile.mak (1.7): added Halton low
+	discrepancy sequence (and prime number generation).  Code taken
+	from "Monte Carlo Methods in Finance", by Peter Jäckel
+
+2003-03-14 17:37  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: grid.cpp (1.3), grid.hpp (1.9): mandatory times indexed for
+	easier rollback/simulation
+
+2003-03-14 17:36  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Volatilities/localvolsurface.hpp (1.6): richer error messages
+
+2003-03-14 09:30  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.30): updated
+
 2003-03-13 23:25  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* ql/Math/: interpolation2D.hpp (1.10), interpolation.hpp (1.14),
@@ -1058,7 +2890,7 @@
 
 	* Docs/Makefile.am (1.52): Worked around a bug in Doxygen
 
-2003-01-31 07:10  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2003-01-31 07:10  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
 	(1.8): Fixed bug, thanks to Pete Schnettler.
@@ -2257,7 +4089,7 @@
 	ql/quantlib.hpp (1.70), QuantLib.dsp (1.110), QuantLib.mak (1.101):
 	Added calendars for Budapest, Oslo, Stockholm, and Warsaw
 
-2002-11-23 22:09  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-11-23 22:09  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.6):
 	Bermudan Swaption problem fixed (part 2)
@@ -2272,7 +4104,7 @@
 	* ql/scheduler.cpp (1.9): Removed QL_REQUIRE for "..  holiday and
 	end of month .."
 
-2002-11-21 12:53  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-11-21 12:53  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Instruments/swaption.cpp (1.22), Instruments/swaption.hpp
 	(1.21), Pricers/swaptionpricer.cpp (1.4),
@@ -2479,7 +4311,7 @@
 
 	* ql/Optimization/constraint.hpp (1.6): Cosmetic changes
 
-2002-09-26 19:45  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-09-26 19:45  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/PricingEngines/Makefile.am (1.6): Added missing file
 
@@ -2569,7 +4401,7 @@
 	* ql/Math/loglinearinterpolation.hpp (1.10): removed gcc3.1
 	warnings (maybe)
 
-2002-09-13 22:41  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-09-13 22:41  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.7): Yes, it
 	should.
@@ -3052,7 +4884,7 @@
 	* ql/Indexes/: xibor.cpp (1.9), xibor.hpp (1.11): added frequency()
 	method
 
-2002-06-11 23:19  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-06-11 23:19  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Indexes/audlibor.hpp (1.5), Math/lexicographicalview.hpp
 	(1.6), MonteCarlo/multipathgenerator.hpp (1.27),
@@ -3108,7 +4940,7 @@
 	It doesn't work yet 2) introducing Black vol surface. It doesn't
 	work yet
 
-2002-06-10 20:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-06-10 20:59  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: calendar.hpp (1.15), dataparsers.cpp (1.3), dataparsers.hpp
 	(1.3), Instruments/swap.hpp (1.9), Math/cubicspline.hpp (1.15),
@@ -3882,7 +5714,7 @@
 
 	* ChangeLog.txt (1.25): updated
 
-2002-04-19 01:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-04-19 01:35  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/: Makefile.am (1.48), makefile.mak (1.31),
 	quantlibheader.html (1.14), userman.tex (1.5), pages/Makefile.am
@@ -3923,7 +5755,7 @@
 	* TODO.txt (1.83): test commit to see what kind of problem Andre is
 	having
 
-2002-04-15 09:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-04-15 09:59  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/diffusionprocess.hpp (1.13): Fixed BSM process
 
@@ -3939,17 +5771,17 @@
 	Examples/EuropeanOption/EuropeanOption.mak (1.19),
 	ql/Pricers/binomialplainoption.cpp (1.2): MS VC++ catching up
 
-2002-04-15 04:31  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-04-15 04:31  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Lattices/makefile.mak (1.13), Pricers/makefile.mak (1.19):
 	Update makefile.mak files.
 
-2002-04-15 04:06  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-04-15 04:06  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/EuropeanOption/EuropeanOption.cpp (1.16): Added binomial
 	method pricing (JR & CRR).
 
-2002-04-15 04:04  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-04-15 04:04  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: diffusionprocess.hpp (1.12), exercise.hpp (1.15),
 	numericalmethod.hpp (1.3), quantlib.hpp (1.56),
@@ -4021,7 +5853,7 @@
 
 	* Docs/pages/authors.docs (1.13): updated Dirk status
 
-2002-04-08 09:00  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-04-08 09:00  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Math/chisquaredistribution.cpp (1.3): Fixed warning.
 
@@ -4074,7 +5906,7 @@
 	* Examples/Swap/Makefile.am (1.4): lowered optimization level in
 	order to compile it under cygwin/gcc
 
-2002-04-02 23:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-04-02 23:35  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: grid.hpp (1.4), Instruments/swaption.cpp (1.16),
 	Instruments/swaption.hpp (1.18), Math/chisquaredistribution.cpp
@@ -4141,11 +5973,11 @@
 	Examples/EuropeanOption/EuropeanOption.mak (1.18),
 	Examples/Swap/Swap.mak (1.19): updating MS VC makefiles
 
-2002-03-28 10:25  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-28 10:25  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.78): No comment.
 
-2002-03-28 10:09  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-28 10:09  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.77),
 	Examples/BermudanSwaption/BermudanSwaption.cpp (1.12),
@@ -4178,7 +6010,7 @@
 	ShortRateModels::ExtendedCoxIngersollRoss::generateParameters() 2)
 	ShortRateModels::ExtendedCoxIngersollRoss::dynamics()
 
-2002-03-27 23:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-27 23:35  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/pages/fixedincome.docs (1.5), ql/blackmodel.hpp (1.5),
 	ql/diffusionprocess.hpp (1.11), ql/exercise.hpp (1.13),
@@ -4232,7 +6064,7 @@
 	inspectors, since it is an inspector method and it does not provide
 	a result
 
-2002-03-27 09:48  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-27 09:48  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.8): ITM
 	swaption value is now higher than an ATM one.
@@ -4303,7 +6135,7 @@
 	* ql/ShortRateModels/OneFactorModels/coxingersollross.hpp (1.3):
 	ConxIngersollRoss::Dynamics public
 
-2002-03-25 14:10  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-25 14:10  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/ShortRateModels/: model.cpp (1.4),
 	OneFactorModels/blackkarasinski.cpp (1.3): Bugfix. BermudanSwaption
@@ -4329,7 +6161,7 @@
 	* makefile.mak (1.30), ql/blackmodel.hpp (1.3): Fixed
 	BlackModel::formula
 
-2002-03-25 10:41  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-25 10:41  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Lattices/trinomialtree.cpp (1.10), ShortRateModels/model.cpp
 	(1.3), ShortRateModels/onefactormodel.cpp (1.2),
@@ -4364,35 +6196,35 @@
 	(1.3), ql/ShortRateModels/TwoFactorModels/g2.cpp (1.2): Borland and
 	MS VC++ catching up with the latest commit Welcome back Sad
 
-2002-03-25 08:45  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-25 08:45  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.3): small fix
 
-2002-03-25 08:38  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-25 08:38  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.2),
 	ql/ShortRateModels/model.cpp (1.2), ql/ShortRateModels/model.hpp
 	(1.2): Small fix
 
-2002-03-25 08:10  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-25 08:10  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: makefile.mak (1.14), Lattices/makefile.mak (1.11),
 	Pricers/makefile.mak (1.17), ShortRateModels/makefile.mak (1.2):
 	Updated makefile.mak files
 
-2002-03-25 07:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-25 07:22  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Lattices/: Makefile.am (1.6), twodimensionaltree.cpp (1.1),
 	twodimensionaltree.hpp (1.1): Added missing files
 
-2002-03-25 00:09  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-25 00:09  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Math/: chisquaredistribution.cpp (1.1),
 	chisquaredistribution.hpp (1.1), gammadistribution.cpp (1.1),
 	gammadistribution.hpp (1.1): Added non-central chi-square
 	distribution function.
 
-2002-03-24 23:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-24 23:59  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.76), Docs/pages/fixedincome.docs (1.4),
 	Docs/pages/instruments.docs (1.5), Docs/pages/math.docs (1.6),
@@ -4405,7 +6237,7 @@
 	Examples/BermudanSwaption/makefile.mak (1.1): Added Bermudan
 	Swaption example and updated docs
 
-2002-03-24 23:53  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-24 23:53  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Makefile.am (1.19), blackmodel.hpp (1.1),
 	diffusionprocess.hpp (1.10), exercise.hpp (1.12), grid.hpp (1.2),
@@ -4647,12 +6479,12 @@
 	Volatilities/swaptionvolmatrix.hpp (1.2): Using day counter in
 	Swaption volatility surface
 
-2002-03-07 17:04  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-07 17:04  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/: capfloor.cpp (1.22), capfloor.hpp (1.22):
 	Removed requirement of FloatingRateCouponVector
 
-2002-03-07 15:28  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-07 15:28  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Instruments/swaption.cpp (1.13), Instruments/swaption.hpp
 	(1.14), Pricers/blackswaption.cpp (1.2): Simplification of
@@ -4707,7 +6539,7 @@
 	Removed a couple of unnecessary destructors (~Observer will take
 	care of unregistering)
 
-2002-03-06 11:44  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-06 11:44  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/: analyticalcapfloor.cpp (1.12), blackcapfloor.cpp
 	(1.2): Added collar type to CapFloor.
@@ -4718,20 +6550,20 @@
 	Math/interpolation2D.hpp (1.5), functions/mathf.cpp (1.4),
 	functions/mathf.hpp (1.3): Fixed bilinear interpolation
 
-2002-03-06 11:10  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-06 11:10  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/: capfloor.cpp (1.21), capfloor.hpp (1.20): Fixed
 	bug and added Collar instrument.
 
-2002-03-06 08:34  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-06 08:34  Sadruddin Rejeb <sad@quantlib.org>
 
 	* News.txt (1.22): Corrected news items.
 
-2002-03-06 07:33  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-06 07:33  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/makefile.mak (1.14): Added missing files to makefiles
 
-2002-03-06 07:16  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-06 07:16  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: diffusionprocess.hpp (1.9), handle.hpp (1.9),
 	Instruments/capfloor.cpp (1.20), Instruments/capfloor.hpp (1.19),
@@ -4802,23 +6634,23 @@
 	* ql/: Math/interpolation2D.hpp (1.4), functions/mathf.cpp (1.3),
 	functions/mathf.hpp (1.2): working on bilinear interpolation
 
-2002-03-05 12:30  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 12:30  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.72), ql/Lattices/trinomialtree.cpp (1.8),
 	acconfig.h (1.6): QL_FLOORification continued...
 
-2002-03-05 12:29  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 12:29  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: config.ansi.hpp (1.8), config.bcc.hpp (1.7), config.decc.hpp
 	(1.7), config.msvc.hpp (1.11), config.mwcw.hpp (1.7),
 	Lattices/trinomialtree.cpp (1.7): Added std::floor to the QL_* set
 
-2002-03-05 11:52  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 11:52  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Math/interpolation2D.hpp (1.3), functions/mathf.cpp (1.2):
 	Fixed compilation with "g++ -pedantic"
 
-2002-03-05 11:31  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 11:31  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Lattices/trinomialtree.cpp (1.6): will this make it work under
 	VC++?
@@ -4834,31 +6666,31 @@
 	
 	anyone?
 
-2002-03-05 02:19  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 02:19  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Lattices/Makefile.am (1.4): Added missing included file
 
-2002-03-05 01:39  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 01:39  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/pages/fixedincome.docs (1.3): replaced fixedincome.docs
 
-2002-03-05 01:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 01:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/pages/fixedincome.docs (1.2): removed (for a few minutes)
 	fixedincome.docs
 
-2002-03-05 01:31  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 01:31  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/pages/optimization.docs (1.2): removed optimization page
 	(should be included in Math, like Sovers1D, no?)
 
-2002-03-05 01:14  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 01:14  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/: Makefile.am (1.46), makefile.mak (1.30),
 	quantlibheader.html (1.13), userman.tex (1.4), pages/Makefile.am
 	(1.4), pages/math.docs (1.5): Fixed income framework documentation.
 
-2002-03-05 01:10  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-03-05 01:10  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Makefile.am (1.16), asset.hpp (1.11), diffusionprocess.hpp
 	(1.8), exercise.hpp (1.11), grid.hpp (1.1), numericalmethod.hpp
@@ -4992,7 +6824,7 @@
 	ImplicitEuler and ExplicitEuler are now derived Now if only I could
 	make SOR to work!
 
-2002-02-22 15:21  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-22 15:21  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/: analyticalcapfloor.cpp (1.9), treecapfloor.cpp
 	(1.11): Fixed typo
@@ -5003,16 +6835,16 @@
 	ql/Lattices/makefile.mak (1.7): catching up with Sad commit, but it
 	doesn't work with VC++ yet.  Where is ParameterImplementation ?
 
-2002-02-21 17:02  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-21 17:02  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/asset.hpp (1.10): Small fix.
 
-2002-02-21 16:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-21 16:22  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Lattices/: binomialtree.cpp (1.1), binomialtree.hpp (1.1):
 	Added BinomialTree class (still incomplete)
 
-2002-02-21 16:11  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-21 16:11  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Makefile.am (1.15), asset.hpp (1.9), diffusionprocess.hpp
 	(1.7), quantlib.hpp (1.47), timegrid.hpp (1.1),
@@ -5098,11 +6930,11 @@
 
 	* ql/DayCounters/thirty360.hpp (1.12): more comments
 
-2002-02-15 18:06  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-15 18:06  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Calendars/Makefile.am (1.10): Sorted files...
 
-2002-02-15 18:03  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-15 18:03  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Calendars/Makefile.am (1.9): (Re)fixed compilation problem
 	under Linux.
@@ -5117,7 +6949,7 @@
 	ql/Indexes/jpylibor.hpp (1.2): new exciting calendars and xibors
 	introduced
 
-2002-02-15 16:31  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-15 16:31  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Calendars/Makefile.am (1.7): fixed compiling problem on linux
 
@@ -5203,7 +7035,7 @@
 	* ql/Optimization/: powell.cpp (1.2), simplex.hpp (1.2): #include
 	<vector> added
 
-2002-02-08 14:48  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-08 14:48  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: quantlib.hpp (1.43), CashFlows/floatingratecoupon.hpp
 	(1.15), Instruments/capfloor.cpp (1.16), Instruments/capfloor.hpp
@@ -5215,7 +7047,7 @@
 	(1.9), Pricers/treeswaption.cpp (1.13): Interest rate modelling
 	refactoring
 
-2002-02-08 14:46  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-08 14:46  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Optimization/: Makefile.am (1.3), armijo.cpp (1.9), armijo.hpp
 	(1.10), conjugategradient.cpp (1.9), conjugategradient.hpp (1.9),
@@ -5226,20 +7058,20 @@
 	steepestdescent.cpp (1.8), steepestdescent.hpp (1.9): Added some
 	drafts of optimization methods
 
-2002-02-08 14:41  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-08 14:41  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Lattices/: Makefile.am (1.2), node.hpp (1.9), timegrid.hpp
 	(1.8), tree.cpp (1.9), tree.hpp (1.8), trinomialtree.cpp (1.1),
 	trinomialtree.hpp (1.1): Added TrinomialTree class
 
-2002-02-08 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-08 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Makefile.am (1.13), array.hpp (1.9), asset.hpp (1.8),
 	constraint.hpp (1.13), diffusionprocess.hpp (1.6), exercise.hpp
 	(1.10), minimizer.hpp (1.13), quantlib.hpp (1.42): Refactoring of
 	interest rate modelling
 
-2002-02-07 04:46  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-02-07 04:46  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/: Makefile.am (1.44), makefile.mak (1.28),
 	quantlibheader.html (1.12), userman.tex (1.3), pages/Makefile.am
@@ -5607,7 +7439,7 @@
 	pages/randomnumbers.docs (1.4), pages/solvers1d.docs (1.4):
 	Rearranged documentation - feedback is welcome
 
-2002-01-16 12:26  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-16 12:26  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/option.cpp (1.7): added setupEngine in setPricingEngine (can
 	be useful)
@@ -5771,7 +7603,7 @@
 	* Authors.txt (1.9), Contributors.txt (1.15),
 	Docs/pages/authors.docs (1.8): new copyright and license agreement
 
-2002-01-10 14:55  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-10 14:55  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: exercise.hpp (1.7), FiniteDifferences/onefactoroperator.cpp
 	(1.6), FiniteDifferences/onefactoroperator.hpp (1.6),
@@ -6086,7 +7918,7 @@
 	* dev_tools/modify-copyr.sh (1.1): script for updating copyright
 	notice
 
-2002-01-08 16:38  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-08 16:38  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: exercise.hpp (1.4), Instruments/swaption.cpp (1.3),
 	Instruments/swaption.hpp (1.2), Pricers/treeswaption.cpp (1.8):
@@ -6105,11 +7937,11 @@
 
 	* TODO.txt (1.75): updated
 
-2002-01-08 15:15  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-08 15:15  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/treeswaption.cpp (1.7): Small fix
 
-2002-01-08 14:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-08 14:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/treeswaption.cpp (1.6): small fix
 
@@ -6121,15 +7953,15 @@
 	ql/Pricers/treeswaption.cpp (1.5): MS VC++ and Borland fixes. 
 	Added few missing files
 
-2002-01-08 14:28  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-08 14:28  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/quantlib.hpp (1.35): Added missing file
 
-2002-01-08 12:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-08 12:59  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.64), quantlib-config.in (1.3): Small fixes
 
-2002-01-08 12:57  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-08 12:57  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Makefile.am (1.12), asset.hpp (1.1), exercise.hpp (1.3),
 	option.cpp (1.4), option.hpp (1.5), quantlib.hpp (1.34),
@@ -6146,7 +7978,7 @@
 	(1.4), Pricers/treeswaption.hpp (1.4): Made interest-rate pricing
 	framework compliant to new convention (QuEP n5)
 
-2002-01-08 12:49  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2002-01-08 12:49  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Optimization/: armijo.cpp (1.4), armijo.hpp (1.5),
 	conjugategradient.cpp (1.4), conjugategradient.hpp (1.4),
@@ -6345,31 +8177,31 @@
 	Lattices/makefile.mak (1.3), Pricers/makefile.mak (1.13): MS VC++
 	and Borland catching up with Sad's commit
 
-2001-12-19 12:19  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 12:19  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Lattices/makefile.mak (1.2): Removed makefile.mak (Nando will
 	take care of it)
 
-2001-12-19 12:08  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 12:08  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Lattices/makefile.mak (1.1): Added makefile.mak
 
-2001-12-19 12:04  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 12:04  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.58): added Lattices/ directory
 
-2001-12-19 12:00  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 12:00  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/swaptioncondition.hpp (1.2): remove
 	SwaptionCondition (until IR modelling framework stabilizes)
 
-2001-12-19 11:58  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 11:58  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/: Makefile.am (1.11), onefactoroperator.cpp
 	(1.3), onefactoroperator.hpp (1.4): Interest rate modelling
 	refactoring
 
-2001-12-19 11:53  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 11:53  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/: Makefile.am (1.21), couponbondoption.cpp (1.5),
 	couponbondoption.hpp (1.6), fdeuropeanswaption.cpp (1.6),
@@ -6377,22 +8209,22 @@
 	treeswaption.hpp (1.1): refactoring interest rate modelling
 	framework
 
-2001-12-19 11:49  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 11:49  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/: Makefile.am (1.7), capfloor.cpp (1.7),
 	capfloor.hpp (1.7), europeanswaption.cpp (1.5),
 	europeanswaption.hpp (1.6): refactoring..
 
-2001-12-19 11:47  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 11:47  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Lattices/: Makefile.am (1.1), node.hpp (1.1), timegrid.hpp
 	(1.1), tree.cpp (1.1), tree.hpp (1.1): Added lattice framework
 
-2001-12-19 11:46  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 11:46  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: quantlib.hpp (1.32), Makefile.am (1.11): updated
 
-2001-12-19 11:45  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-19 11:45  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Makefile.am (1.10), constraint.hpp (1.4),
 	diffusionprocess.hpp (1.1), exercise.hpp (1.1), quantlib.hpp
@@ -6601,11 +8433,11 @@
 
 	* ql/solver1d.cpp (1.4): error message beautified
 
-2001-12-13 16:14  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-13 16:14  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/mcpricer.hpp (1.12): Added forgotten header
 
-2001-12-13 15:46  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-13 15:46  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/MonteCarlo/multipathgenerator.hpp (1.18): Fixed typo
 
@@ -6779,11 +8611,11 @@
 
 	* dev_tools/downloadrelease.py (1.1): dev utility
 
-2001-12-03 12:05  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-03 12:05  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/Makefile.am (1.17): added missing file
 
-2001-12-03 12:05  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-03 12:05  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/swaptioncondition.hpp (1.2): Added missing file
 
@@ -6791,11 +8623,11 @@
 
 	* QuantLib.nsi (1.53): moved things around
 
-2001-12-03 11:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-03 11:22  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Optimization/leastsquare.hpp (1.4): Fixed typo
 
-2001-12-03 10:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-03 10:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/: fdeuropeanswaption.cpp (1.2), fdeuropeanswaption.hpp
 	(1.2): added missing files
@@ -6812,7 +8644,7 @@
 
 	* Docs/pages/mcarlo.docs (1.1.2.6): [no log message]
 
-2001-12-03 09:55  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-12-03 09:55  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: minimizer.hpp (1.6), Instruments/capfloor.cpp (1.4),
 	Instruments/capfloor.hpp (1.4), Instruments/europeanswaption.cpp
@@ -6867,7 +8699,7 @@
 	Solvers1D/makefile.mak (1.3), TermStructures/makefile.mak (1.4):
 	Compiles under Borland C++
 
-2001-11-30 12:57  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 12:57  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Makefile.am (1.9): Adding interest rate modelling framework
 
@@ -6880,33 +8712,33 @@
 	(1.3), ql/Instruments/makefile.mak (1.4): first attempt to include
 	Sad's stuff in VC++ and Borland
 
-2001-11-30 11:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 11:59  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/europeanswaption.cpp (1.3): small fix
 
-2001-11-30 11:58  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 11:58  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/: Makefile.am (1.15), couponbondoption.cpp (1.2),
 	couponbondoption.hpp (1.2): Adding interest rate modelling
 	framework
 
-2001-11-30 11:47  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 11:47  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/constraint.hpp (1.2): Adding interest rate modelling framework
 
-2001-11-30 11:44  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 11:44  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: minimizer.hpp (1.5), Pricers/Makefile.am (1.14),
 	qldefines.hpp (1.19), Instruments/simpleswap.cpp (1.10): Adding
 	interest rate modelling framework
 
-2001-11-30 11:38  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 11:38  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: minimizer.hpp (1.3), minimizer.hpp (1.4), qldefines.hpp
 	(1.18), Instruments/simpleswap.cpp (1.9), Pricers/Makefile.am
 	(1.13): Adding interest rate modelling framework
 
-2001-11-30 10:44  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 10:44  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.55), ql/Makefile.am (1.8),
 	ql/Optimization/Makefile.am (1.1), ql/Optimization/armijo.cpp
@@ -6921,12 +8753,12 @@
 	ql/Optimization/steepestdescent.hpp (1.1): Adding interest rate
 	modelling framework
 
-2001-11-30 10:38  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 10:38  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Instruments/Makefile.am (1.6), FiniteDifferences/Makefile.am
 	(1.9): Adding interest rate modelling framework
 
-2001-11-30 10:25  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-30 10:25  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: minimizer.hpp (1.2), stochasticprocess.hpp (1.1),
 	FiniteDifferences/onefactoroperator.cpp (1.2),
@@ -7787,25 +9619,25 @@
 
 	* ql/Calendars/makefile.mak (1.2.2.1): Win32 support
 
-2001-11-12 16:55  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 16:55  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/constraint.hpp (1.1): file constraint.hpp was initially added
 	on branch Sad-branch.
 
-2001-11-12 16:55  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 16:55  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/constraint.hpp (1.1.2.1): update
 
-2001-11-12 16:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 16:22  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/Swap/test.cpp (1.1): file test.cpp was initially added
 	on branch Sad-branch.
 
-2001-11-12 16:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 16:22  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/Swap/test.cpp (1.1.2.1): added test file
 
-2001-11-12 16:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 16:22  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/Swap/swapvaluation.cpp (1.8.2.1): update
 
@@ -7814,7 +9646,7 @@
 	* ql/makefile.mak (1.5.2.3), ql/Instruments/makefile.mak (1.3.2.1),
 	QuantLib.nsi (1.45.2.2): Win32 support
 
-2001-11-12 16:00  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 16:00  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/: backwardeuler.hpp (1.7.2.1),
 	bsmoperator.cpp (1.4.2.1), bsmoperator.hpp (1.4.2.1),
@@ -7826,78 +9658,78 @@
 	tridiagonaloperator.cpp (1.6.2.1), tridiagonaloperator.hpp
 	(1.10.2.1), valueatcenter.cpp (1.2.12.1): update
 
-2001-11-12 15:54  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:54  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/onefactoroperator.hpp (1.1): file
 	onefactoroperator.hpp was initially added on branch Sad-branch.
 
-2001-11-12 15:54  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:54  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/onefactoroperator.cpp (1.1): file
 	onefactoroperator.cpp was initially added on branch Sad-branch.
 
-2001-11-12 15:54  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:54  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/: Makefile.am (1.6.2.1),
 	onefactoroperator.cpp (1.1.2.1), onefactoroperator.hpp (1.1.2.1):
 	adding missing files
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/fdbermudanswaption.cpp (1.1): file
 	fdbermudanswaption.cpp was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/fddiscountbondoption.cpp (1.1): file
 	fddiscountbondoption.cpp was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/swaptioncondition.hpp (1.1): file
 	swaptioncondition.hpp was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/couponbondoption.hpp (1.1): file couponbondoption.hpp
 	was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/fddiscountbond.hpp (1.1): file fddiscountbond.hpp was
 	initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/fdbermudanswaption.hpp (1.1): file
 	fdbermudanswaption.hpp was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/fddiscountbondoption.hpp (1.1): file
 	fddiscountbondoption.hpp was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/fdeuropeanswaption.cpp (1.1): file
 	fdeuropeanswaption.cpp was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/couponbondoption.cpp (1.1): file couponbondoption.cpp
 	was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/fdeuropeanswaption.hpp (1.1): file
 	fdeuropeanswaption.hpp was initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/fddiscountbond.cpp (1.1): file fddiscountbond.cpp was
 	initially added on branch Sad-branch.
 
-2001-11-12 15:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/: Makefile.am (1.7.2.1), americancondition.hpp
 	(1.2.12.1), americanoption.hpp (1.3.2.1), barrieroption.cpp
@@ -7933,25 +9765,25 @@
 	stepconditionoption.hpp (1.4.2.1), swaptioncondition.hpp (1.1.2.1):
 	update
 
-2001-11-12 15:46  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:46  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Indexes/: euribor.hpp (1.2.12.1), gbplibor.hpp (1.2.12.1),
 	usdlibor.hpp (1.2.12.1), xibor.cpp (1.2.12.1), xibor.hpp
 	(1.2.12.1): update
 
-2001-11-12 15:42  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:42  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/CashFlows/: cashflowvectors.cpp (1.3.4.1), cashflowvectors.hpp
 	(1.4.2.1), coupon.hpp (1.2.2.1), fixedratecoupon.hpp (1.5.2.1),
 	floatingratecoupon.cpp (1.4.2.1), floatingratecoupon.hpp (1.7.2.1):
 	update
 
-2001-11-12 15:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Calendars/: westerncalendar.cpp (1.3.10.1),
 	westerncalendar.hpp (1.3.10.1): update
 
-2001-11-12 15:33  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:33  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: argsandresults.hpp (1.2.2.2), array.hpp (1.2.12.2),
 	calendar.cpp (1.2.12.2), calendar.hpp (1.5.4.2), cashflow.hpp
@@ -7991,31 +9823,31 @@
 	(1.3.10.1), Calendars/zurich.hpp (1.4.8.1), Calendars/Makefile.am
 	(1.4.12.1): update
 
-2001-11-12 15:26  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:26  Sadruddin Rejeb <sad@quantlib.org>
 
 	* man/: DiscreteHedging.1 (1.1.2.1), EuropeanOption.1 (1.1.2.1),
 	Makefile.am (1.2.2.1), SwapValuation.1 (1.1.2.1), quantlib-config.1
 	(1.1.2.1): update
 
-2001-11-12 15:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:22  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.45.2.2): update
 
-2001-11-12 15:20  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 15:20  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Makefile.am (1.7.2.2): updatge
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/simplestswap.hpp (1.1): file simplestswap.hpp was
 	initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/simplestswap.cpp (1.1): file simplestswap.cpp was
 	initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/: Makefile.am (1.5.2.1), bermudanswaption.cpp
 	(1.1.2.1), bermudanswaption.hpp (1.1.2.1), capcalibrationhelper.cpp
@@ -8026,42 +9858,42 @@
 	simplestswap.hpp (1.1.2.1), simpleswap.cpp (1.5.2.1),
 	simpleswap.hpp (1.5.2.1), swap.cpp (1.3.2.1): reorganisation
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/europeanswaption.hpp (1.1): file
 	europeanswaption.hpp was initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/bermudanswaption.cpp (1.1): file
 	bermudanswaption.cpp was initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/bermudanswaption.hpp (1.1): file
 	bermudanswaption.hpp was initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/capcalibrationhelper.cpp (1.1): file
 	capcalibrationhelper.cpp was initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/capfloor.cpp (1.1): file capfloor.cpp was
 	initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/europeanswaption.cpp (1.1): file
 	europeanswaption.cpp was initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/capfloor.hpp (1.1): file capfloor.hpp was
 	initially added on branch Sad-branch.
 
-2001-11-12 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-12 14:37  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/capcalibrationhelper.hpp (1.1): file
 	capcalibrationhelper.hpp was initially added on branch Sad-branch.
@@ -8442,20 +10274,20 @@
 
 	* configure.in (1.47): reverting back Sad commit
 
-2001-11-02 16:33  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-02 16:33  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.45.2.1): Fix
 
-2001-11-02 16:32  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-02 16:32  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.46): [no log message]
 
-2001-11-02 16:30  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-02 16:30  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/exercisetype.hpp (1.1): file exercisetype.hpp was initially
 	added on branch Sad-branch.
 
-2001-11-02 16:30  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-02 16:30  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: Makefile.am (1.7.2.1), argsandresults.hpp (1.2.2.1),
 	array.hpp (1.2.12.1), calendar.cpp (1.2.12.1), calendar.hpp
@@ -8479,23 +10311,23 @@
 	(1.2.12.1), termstructure.hpp (1.7.2.1), types.hpp (1.2.12.1):
 	Sad's first commit
 
-2001-11-02 16:30  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-02 16:30  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/onefactormodel.hpp (1.1): file onefactormodel.hpp was
 	initially added on branch Sad-branch.
 
-2001-11-02 16:30  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-02 16:30  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/onefactormodel.cpp (1.1): file onefactormodel.cpp was
 	initially added on branch Sad-branch.
 
-2001-11-02 16:30  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-02 16:30  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/interestratederivative.hpp (1.1): file
 	interestratederivative.hpp was initially added on branch
 	Sad-branch.
 
-2001-11-02 16:30  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-11-02 16:30  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/minimizer.hpp (1.1): file minimizer.hpp was initially added on
 	branch Sad-branch.
@@ -9175,29 +11007,29 @@
 	Pricers/stepconditionoption.hpp (1.4): Beginning of new Option
 	framework
 
-2001-10-09 09:17  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-09 09:17  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: termstructure.hpp (1.4), TermStructures/flatforward.hpp
 	(1.4), TermStructures/piecewiseflatforward.hpp (1.5): Removed
 	duplicate methods...
 
-2001-10-09 08:56  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-09 08:56  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/tridiagonaloperator.hpp (1.6): Fixed doxygen
 	warning
 
-2001-10-09 08:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-09 08:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: termstructure.hpp (1.3), TermStructures/flatforward.hpp
 	(1.3), TermStructures/piecewiseflatforward.cpp (1.3),
 	TermStructures/piecewiseflatforward.hpp (1.4): Added some useful
 	methods to term structure classes
 
-2001-10-08 14:43  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-08 14:43  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/tridiagonaloperator.hpp (1.5): Samll fix
 
-2001-10-08 14:18  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-08 14:18  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/FiniteDifferences/: backwardeuler.hpp (1.4), bsmoperator.cpp
 	(1.3), bsmoperator.hpp (1.3), cranknicolson.hpp (1.3),
@@ -9247,11 +11079,11 @@
 	* Docs/examples.docs (1.4), Docs/quantlib.doxy (1.31),
 	ql/config.ansi.hpp (1.3): Documentation glitches
 
-2001-10-04 10:12  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-04 10:12  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/date.hpp (1.6): Fixed documentation problem for new operator
 
-2001-10-04 09:34  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-04 09:34  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: date.cpp (1.5), date.hpp (1.5): Added a printing (<<)
 	operator to Date
@@ -9269,7 +11101,7 @@
 	(1.4), ql/TermStructures/ratehelpers.cpp (1.3): CashFlow/Coupon
 	reorganization
 
-2001-10-03 16:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-03 16:51  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Instruments/simpleswap.hpp (1.3): Added comment about nominal
 	and fixed rate input.
@@ -9356,7 +11188,7 @@
 	(1.4), Patterns/Makefile.am (1.5), Patterns/factory.hpp (1.1),
 	Patterns/observable.hpp (1.3): Added factory pattern
 
-2001-10-01 16:27  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-10-01 16:27  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.40): Added Swap example related lines
 
@@ -9671,7 +11503,7 @@
 	Utilities/processingiterator.hpp (1.2),
 	Utilities/steppingiterator.hpp (1.2): Polished files' headers
 
-2001-09-13 16:15  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-13 16:15  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/platforms.docs (1.4): Updated after new tests.
 
@@ -9715,11 +11547,11 @@
 	(1.2), Pricers/stepconditionoption.cpp (1.2),
 	Pricers/stepconditionoption.hpp (1.2): Grouped typedefs
 
-2001-09-13 14:17  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-13 14:17  Sadruddin Rejeb <sad@quantlib.org>
 
 	* bootstrap (1.2): updated auto-tools version
 
-2001-09-13 13:45  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-13 13:45  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Makefile.am (1.58): Added quantlib.m4 to the list of distributed
 	files
@@ -9738,17 +11570,17 @@
 	Docs/quantlibheader.html (1.7), Docs/quantlibheader.tex (1.6),
 	Docs/resources.docs (1.1), Docs/where.docs (1.4): Docs added
 
-2001-09-13 10:54  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-13 10:54  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.39): Wall is there again, but only if g++ is the
 	selected compiler
 
-2001-09-13 09:07  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-13 09:07  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.38): removed -Wall from CXXFLAGS. Was breaking
 	Solaris build
 
-2001-09-13 08:47  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-13 08:47  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/MonteCarlo/europeanpathpricer.cpp (1.4): Fix to remove warning
 	(comparison between signed and unsigned).
@@ -9782,12 +11614,12 @@
 
 	* Docs/quantlib.css (1.5): valid CSS
 
-2001-09-12 11:28  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-12 11:28  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Makefile.am (1.57): Deleted the config/ dist-hook lines. Wasn't
 	necessary
 
-2001-09-12 11:16  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-12 11:16  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Makefile.am (1.56): modified Makefile.am (dist-hook) cos'
 	automake does not package files in config/
@@ -9823,12 +11655,12 @@
 	* Docs/: quantlibfooter.html (1.6), quantlibfooter.html (1.7): [no
 	log message]
 
-2001-09-12 08:44  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-12 08:44  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/MonteCarlo/: generalmontecarlo.hpp (1.3), mcoptionsample.hpp
 	(1.3): delete obsolete classes GeneralMonteCarlo and MCOptionSample
 
-2001-09-12 08:34  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-12 08:34  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/MonteCarlo/: avgpriceasianpathpricer.cpp (1.3),
 	controlvariatedpathpricer.cpp (1.3), geometricasianpathpricer.cpp
@@ -9872,7 +11704,7 @@
 	ql/Pricers/bsmnumericaloption.cpp (1.2): Finite differences docs
 	enhanced
 
-2001-09-11 14:47  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-11 14:47  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/DiscreteHedging/DiscreteHedging.cpp (1.3): Monte carlo
 	updates fix
@@ -9889,7 +11721,7 @@
 	used instead of default doxygen.css because of browser problems
 	with doxygen.css
 
-2001-09-11 13:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-11 13:22  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: MonteCarlo/Makefile.am (1.6),
 	MonteCarlo/avgpriceasianpathpricer.cpp (1.2),
@@ -9928,7 +11760,7 @@
 	quantlibheader.html (1.5): quantlib.css will be used for QuantLib
 	html documentation produced by DoxyGen in addition to doxygen.css
 
-2001-09-11 11:00  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-11 11:00  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/: quantlib.hpp (1.3), MonteCarlo/mcpricer.hpp (1.2),
 	MonteCarlo/montecarlomodel.hpp (1.2),
@@ -9941,7 +11773,7 @@
 	Pricers/plainbasketoption.cpp (1.2): Merged GeneralMonteCarlo and
 	SampleOption into MonteCarloModel
 
-2001-09-11 10:17  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-11 10:17  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.37): Removed duplicate output file lines. (Why
 	did they exist in the 1st place?)
@@ -9983,34 +11815,34 @@
 	ql/Pricers/averagestrikeasian.cpp (1.2),
 	ql/Pricers/mceuropeanpricer.cpp (1.2): Path revamped
 
-2001-09-07 10:08  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-07 10:08  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.36), Examples/DiscreteHedging/Makefile.am (1.6):
 	Modified version to 0.2.0 and examples can now build independantly
 
-2001-09-07 09:14  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-07 09:14  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.35), Examples/acinclude.m4 (1.1),
 	Examples/configure.in (1.1): Enable examples to build autonomously
 
-2001-09-07 08:45  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-07 08:45  Sadruddin Rejeb <sad@quantlib.org>
 
 	* quantlib-config.in (1.2): Small fix (CFLAGS cleanup)
 
-2001-09-07 08:43  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-07 08:43  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Makefile.am (1.53): Added lines related to the quantlib.m4 file
 
-2001-09-07 08:42  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-07 08:42  Sadruddin Rejeb <sad@quantlib.org>
 
 	* config/readme.txt (1.1): Dummy file ensuring that config/ is
 	checked out
 
-2001-09-07 08:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-07 08:35  Sadruddin Rejeb <sad@quantlib.org>
 
 	* quantlib.m4 (1.1): aclocal m4 file for QuantLib
 
-2001-09-06 10:27  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-06 10:27  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Makefile.am (1.52), quantlib-config.in (1.1): Added
 	quantlib-config script
@@ -10027,21 +11859,21 @@
 
 	* QuantLib.nsi (1.33), Readme.txt (1.12): small tweaks
 
-2001-09-05 10:40  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-05 10:40  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.34): Added a line to produce intermediate scripts
 	in config/
 
-2001-09-05 10:11  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-05 10:11  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Makefile.am (1.51): Removed documentation-related steps
 
-2001-09-05 09:49  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-05 09:49  Sadruddin Rejeb <sad@quantlib.org>
 
 	* configure.in (1.33): Removed documentation-related configuration
 	steps (e.g. doxygen)
 
-2001-09-05 09:48  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-05 09:48  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Docs/configure.in (1.1): Separated documentation from main
 	configure process
@@ -10088,7 +11920,7 @@
 
 	* ChangeLog.txt (1.2): file updated
 
-2001-09-04 12:56  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-04 12:56  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Makefile.am (1.49): small fix (updateproject.sh => bootstrap)
 
@@ -10125,7 +11957,7 @@
 	TermStructures/Makefile.am (1.3), Utilities/Makefile.am (1.3):
 	removed (hopefully) useless includedir=
 
-2001-09-04 08:47  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-04 08:47  Sadruddin Rejeb <sad@quantlib.org>
 
 	* Examples/Makefile.am (1.12), Examples/DiscreteHedging/Makefile.am
 	(1.4), ql/Makefile.am (1.2), ql/Calendars/Makefile.am (1.2),
@@ -10159,12 +11991,12 @@
 	* Docs/: index.docs (1.2), install.docs (1.2), platforms.docs
 	(1.3), usage.docs (1.3): updated
 
-2001-09-03 16:34  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-03 16:34  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/Pricers/dividendoption.cpp (1.2): gcc-3.0.1 fix
 	(Array::iterator --> std-vector::iterator)
 
-2001-09-03 16:33  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-03 16:33  Sadruddin Rejeb <sad@quantlib.org>
 
 	* ql/errors.hpp (1.2): gcc-3.0.1 fix (added destructor)
 
@@ -10420,7 +12252,7 @@
 	* Makefile.am (1.46), bootstrap (1.1), updateproject.sh (1.4):
 	bootstrap script name changed from updateproject.sh to bootstrap
 
-2001-09-03 10:34  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+2001-09-03 10:34  Sadruddin Rejeb <sad@quantlib.org>
 
 	* TODO.txt (1.18): gcc-3.0 -> gcc-3.0.1
 
@@ -10668,7 +12500,7 @@
 	StandardMultiPathGenerator now is GaussianMultiPathGenerator; 3)
 	PathMonteCarlo now is MonteCarloModel; 4) added ICGaussian, a
 	Gaussian distribution that use	 
-	QuantLib::Math::InverseCumulativeNormal to convert uniform 
+	QuantLib::Math::InvCumulativeNormalDistribution to convert uniform 
 	  distribution extractions into gaussian distribution extractions;
 	5) added a few trailing underscore to private members 6) style
 	enforced here and there ....
