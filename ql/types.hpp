@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,10 +27,20 @@
 namespace QuantLib {
 
     //! integer number
+    /*! \ingroup types */
     typedef int Integer;
 
     //! real number
+    /*! Modify this typedef for less or more precision.
+        Changes will be propagated to all dependent types.
+
+        \ingroup types 
+    */
     typedef double Real;
+
+    //! decimal number
+    /*! \ingroup types */
+    typedef Real Decimal;
 
     //! size of a container
     /*! \ingroup types */
@@ -38,23 +48,24 @@ namespace QuantLib {
 
     //! continuous quantity with 1-year units
     /*! \ingroup types */
-    typedef double Time;
+    typedef Real Time;
 
-    //! used to describe discount factors between dates.
+    //! discount factor between dates
     /*! \ingroup types */
-    typedef double DiscountFactor;
+    typedef Real DiscountFactor;
 
-    //! used to describe interest rates.
+    //! interest rates
     /*! \ingroup types */
-    typedef double Rate;
+    typedef Real Rate;
 
-    //! used to describe spreads on interest rates.
+    //! spreads on interest rates
     /*! \ingroup types */
-    typedef double Spread;
+    typedef Real Spread;
 
-    //! decimal number
-    typedef double Decimal;
-    
+    //! volatility
+    /*! \ingroup types */
+    typedef Real Volatility;
+
 }
 
 

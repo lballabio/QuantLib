@@ -41,7 +41,8 @@
 (setq c++-font-lock-extra-types
       (append c++-font-lock-extra-types
               '("QuantLib" 
-                "Time" "Rate" "Spread" "DiscountFactor" "Size" 
+                "Integer" "Real" "Decimal" "Time" "Rate" "Spread" 
+                "DiscountFactor" "Size" "Volatility"
                 "Date" "TimeUnit" "Frequency" "Period" "Weekday"
                 "DayCounter" "Calendar" "RollingConvention"
                 "RelinkableHandle")))
