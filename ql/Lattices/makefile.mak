@@ -1,9 +1,5 @@
 
-<<<<<<< makefile.mak
 # $Id$
-=======
-# $Id$
->>>>>>> 1.2
 
 .autodepend
 .silent

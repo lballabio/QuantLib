@@ -39,7 +39,17 @@ namespace QuantLib {
             bool EndCriteria = false;
 
             // function and squared norm of gradient values;
-            double f, fold, sd2, sdold2, g2, gold2, c = 0., normdiff = 0;
+            double f, fold, g2, gold2;
+// is it needed?
+//            double sd2;
+// is it needed?
+//          double sdold2;
+// is it needed?
+//          double c = 0.0;
+            double c;
+// is it needed?
+//          double normdiff = 0.0;
+            double normdiff;
             // classical initial value for line-search step
             double t = 1.;
 
@@ -53,8 +63,10 @@ namespace QuantLib {
             f = P.valueAndFirstDerivative (g, X);
             SearchDirection = -g;
             g2 = DotProduct (g, g);
-            sd2 = g2;
-            normdiff = sqrt (sd2);
+// is it needed?
+//            sd2 = g2;
+// is it needed?
+//            normdiff = sqrt (sd2);
 
 
             do {
@@ -84,8 +96,10 @@ namespace QuantLib {
                 normdiff = sqrt (DotProduct (sddiff, sddiff));
                 SearchDirection = -g + c * d;
                 // New gradient squared norm
-                sdold2 = sd2;
-                sd2 = DotProduct (SearchDirection, SearchDirection);
+// is it needed?
+//                sdold2 = sd2;
+// is it needed?
+//                sd2 = DotProduct (SearchDirection, SearchDirection);
 
                 // End criteria
                 EndCriteria =

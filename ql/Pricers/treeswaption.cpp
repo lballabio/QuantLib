@@ -55,9 +55,10 @@ namespace QuantLib {
           coupons_(coupons), nominal_(nominal) {
             
             std::list<Time> times(0);
-            for (size_t i=0; i<maturities.size(); i++)
+            size_t i;
+            for (i=0; i<maturities.size(); i++)
                 times.push_back(maturities[i]);
-            for (size_t i=0; i<payTimes.size(); i++)
+            for (i=0; i<payTimes.size(); i++)
                 times.push_back(payTimes[i]);
             times.unique();
             times.sort();
@@ -70,10 +71,11 @@ namespace QuantLib {
             Handle<Tree> tree(model_->tree(timeGrid_));
 
             unsigned int iEnd = timeGrid_.findIndex(payTimes_.back());
-            for (int j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++)
+            int j, i;
+            for (j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++)
                 tree->node(iEnd, j).setValue(nominal_);
 
-            for (int i=(payTimes_.size() - 1); i>=0; i--) {
+            for (i=(payTimes_.size() - 1); i>=0; i--) {
                 unsigned int iStart = timeGrid_.findIndex(payTimes_[i]);
                 tree->rollback(iEnd,iStart);
                 for (int j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++) {
@@ -85,7 +87,7 @@ namespace QuantLib {
             unsigned int iStart = timeGrid_.findIndex(start_);
             tree->rollback(iEnd, iStart);
             iEnd = iStart;
-            for (int j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++) {
+            for (j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++) {
                 double value = tree->node(iEnd, j).value() - nominal_;
                 if (payFixed_)
                     value = -value;
@@ -97,7 +99,7 @@ namespace QuantLib {
             value_ = 0.0;
             QL_REQUIRE(exerciseType_==Exercise::European,
                 "Exercise type not supported");
-            for (int j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++) {
+            for (j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++) {
                 double value = QL_MAX(tree->node(iEnd, j).value(), 0.0);
                 value_ += value*tree->node(iEnd, j).statePrice();
             }

@@ -31,12 +31,13 @@
 
 // $Id$
 
-#include <iostream>
 
 #include "ql/Solvers1D/brent.hpp"
 #include "ql/InterestRateModelling/model.hpp"
 #include "ql/InterestRateModelling/trinomialtree.hpp"
 #include "ql/InterestRateModelling/timefunction.hpp"
+
+#include <iostream>
 
 namespace QuantLib {
 
@@ -76,14 +77,14 @@ namespace QuantLib {
             double discountBond_;
             Handle<TimeFunction>& theta_;
             const Handle<ShortRateProcess>& process_;
-        };      
-            
+        };
+
         TrinomialTree::TrinomialTree(
             const Handle<ShortRateProcess>& process,
             const RelinkableHandle<TermStructure>& termStructure,
             Handle<TimeFunction>& theta,
             Time dtMax,
-            const std::list<Time>& times) 
+            const std::list<Time>& times)
         : Tree(3) {
 
             Rate r0 = termStructure->forward(0.0);
@@ -111,8 +112,8 @@ namespace QuantLib {
 
                 //calculating u_[i]
                 double discountBond = termStructure->discount(t_[i+1]);
-                
-                PrivateFunction 
+
+                PrivateFunction
                     finder(this, i, r0, discountBond, theta, process);
                 Solvers1D::Brent s1d = Solvers1D::Brent();
                 double minStrike = -10.0;
@@ -120,7 +121,7 @@ namespace QuantLib {
                 s1d.setMaxEvaluations(1000);
                 s1d.setLowBound(minStrike);
                 s1d.setHiBound(maxStrike);
-                double value = 
+                double value =
                     s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
                 theta->set(t_[i], value);
                 //cout << "Theta(" << t_[i] << ") = " << value << endl;
@@ -179,14 +180,15 @@ namespace QuantLib {
         TrinomialTree::TrinomialTree(
             const Handle<ShortRateProcess>& process,
             const TimeGrid& timeGrid)
-        : Tree(3) {
+        : Lattices::Tree(3) {
 
             t_ = timeGrid;
 
             //adjust space intervals
             dx_.resize(t_.size());
             dx_[0] = 0.0; //Just one node
-            for (size_t i=0; i<(dx_.size()-1); i++) {
+            size_t i;
+            for (i=0; i<(dx_.size()-1); i++) {
                 //The diffusion term must be r-independant
                 double v = process->diffusion(t_[i], 0.0)*QL_SQRT(dt(i));
                 dx_[i+1] = v*QL_SQRT(3);
@@ -197,7 +199,7 @@ namespace QuantLib {
             int jMin = 0, jMax = 0;
             size_t nTimeSteps = t_.size() - 1;
 
-            for (size_t i=0; i<nTimeSteps; i++) {
+            for (i=0; i<nTimeSteps; i++) {
 
                 //Determine branching
                 double v = dx(i+1)/QL_SQRT(3);
@@ -248,7 +250,7 @@ namespace QuantLib {
         void TrinomialTree::addLevel(const std::vector<int>& k) {
             unsigned i = nodes_.size();
             nodes_.push_back(std::vector<Handle<Node> >());
-            
+
             int jMin = k.front() - 1;
             int jMax = k.back() + 1;
 

@@ -37,6 +37,8 @@
 #include <ql/qldefines.hpp>
 #include <ql/date.hpp>
 
+#include <vector>
+
 namespace QuantLib {
 
     class Exercise {

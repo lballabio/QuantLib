@@ -36,7 +36,7 @@ namespace QuantLib {
     namespace Optimization {
 
         double ArmijoLineSearch::operator()(
-            OptimizationProblem &P,	// Optimization problem 
+            OptimizationProblem &P,	// Optimization problem
             value_type t_ini,	// initial value of line-search step
             value_type q0,	// function value
             value_type qp0)	// squared norm of gradient vector
@@ -44,7 +44,9 @@ namespace QuantLib {
             bool maxIter = false;
             qt_ = q0;
             qpt_ = qp0;
-            double qtold, qptnew, t = t_ini;
+            double qtold, t = t_ini;
+// is it needed?
+//          double qptnew;
             int loopNumber = 0;
 
             OptimizationMethod &method = P.optimisationMethod ();
@@ -60,8 +62,8 @@ namespace QuantLib {
 
             // Enter in the loop if the criterion is not satisfied
 #ifdef DEBUG_ARMIJO
-            
-                
+
+
                 std::cout << "qt_ - q0 = " << (qt_ -
                                q0) << ", - alpha_ * t * qpt_ = "
                 << (-alpha_ * t * qpt_) << std::endl;
@@ -80,7 +82,8 @@ namespace QuantLib {
                     qt_ = P.value (xtd_);
                     P.firstDerivative (gradient_, xtd_);
                     // and it squared norm
-                    qptnew = DotProduct (gradient_, gradient_);
+// is it needed?
+//                  qptnew = DotProduct (gradient_, gradient_);
 #ifdef DEBUG_ARMIJO
                     std::cout << loopNumber << ", qt_ - q0 = " << (qt_ -
                                            q0) <<

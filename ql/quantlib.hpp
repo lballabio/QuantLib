@@ -38,7 +38,9 @@
 #include <ql/dataformatters.hpp>
 #include <ql/date.hpp>
 #include <ql/daycounter.hpp>
+#include <ql/diffusionprocess.hpp>
 #include <ql/errors.hpp>
+#include <ql/exercise.hpp>
 #include <ql/expressiontemplates.hpp>
 #include <ql/forwardvolsurface.hpp>
 #include <ql/handle.hpp>
@@ -53,7 +55,6 @@
 #include <ql/riskstatistics.hpp>
 #include <ql/scheduler.hpp>
 #include <ql/solver1d.hpp>
-#include <ql/diffusionprocess.hpp>
 #include <ql/swaptionvolsurface.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/types.hpp>
@@ -93,7 +94,6 @@
 #include <ql/FiniteDifferences/onefactoroperator.hpp>
 #include <ql/FiniteDifferences/shoutcondition.hpp>
 #include <ql/FiniteDifferences/stepcondition.hpp>
-#include <ql/FiniteDifferences/swaptioncondition.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
@@ -104,7 +104,6 @@
 #include <ql/Indexes/xibormanager.hpp>
 
 #include <ql/Instruments/capfloor.hpp>
-#include <ql/Instruments/europeanswaption.hpp>
 #include <ql/Instruments/plainoption.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Instruments/stock.hpp>
@@ -115,13 +114,16 @@
 #include <ql/InterestRateModelling/onefactormodel.hpp>
 #include <ql/InterestRateModelling/shortrateprocess.hpp>
 #include <ql/InterestRateModelling/timefunction.hpp>
+#include <ql/InterestRateModelling/trinomialtree.hpp>
 
 #include <ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp>
 #include <ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp>
+
 #include <ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/hullwhite.hpp>
 
 #include <ql/Lattices/node.hpp>
+#include <ql/Lattices/timegrid.hpp>
 #include <ql/Lattices/tree.hpp>
 
 #include <ql/Math/cubicspline.hpp>
@@ -173,7 +175,6 @@
 #include <ql/Pricers/binaryoption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
-#include <ql/Pricers/couponbondoption.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
 #include <ql/Pricers/europeanengine.hpp>
@@ -186,7 +187,6 @@
 #include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Pricers/fddividendshoutoption.hpp>
 #include <ql/Pricers/fdeuropean.hpp>
-#include <ql/Pricers/fdeuropeanswaption.hpp>
 #include <ql/Pricers/fdmultiperiodoption.hpp>
 #include <ql/Pricers/fdshoutoption.hpp>
 #include <ql/Pricers/fdstepconditionoption.hpp>

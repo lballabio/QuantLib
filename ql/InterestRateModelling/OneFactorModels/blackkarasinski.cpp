@@ -105,7 +105,7 @@ namespace QuantLib {
             PrivateTree(double a, 
                         double sigma,
                         const RelinkableHandle<TermStructure>& termStructure,
-                        Handle<TimeFunction>& alpha, 
+                        const Handle<TimeFunction>& alpha, 
                         const TimeGrid& timeGrid) {
 
                 t_ = timeGrid;
@@ -216,10 +216,8 @@ namespace QuantLib {
         Handle<Tree> BlackKarasinski::tree(
             const TimeGrid& timeGrid) const {
             cout << "Reconfiguring for sigma = " << sigma_*100.0 << "%" << endl;
-            Handle<TimeFunction>&
-                alpha(const_cast<Handle<TimeFunction>& >(alpha_)); 
             return Handle<Tree>(new PrivateTree(a_, sigma_, 
-                                     termStructure(), alpha, timeGrid));
+                                     termStructure(), alpha_, timeGrid));
         }
 
     }

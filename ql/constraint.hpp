@@ -8,15 +8,15 @@ namespace QuantLib {
 
     class Constraint {
       public:
-        Constraint(unsigned int size) 
+        Constraint(unsigned int size)
         : minParams_(size, QL_MIN_DOUBLE), maxParams_(size, QL_MAX_DOUBLE) {}
         virtual ~Constraint() {}
 
-        double setLowerBound(unsigned int i, double boundary) {
+        void setLowerBound(unsigned int i, double boundary) {
             minParams_[i] = boundary;
         }
 
-        double setUpperBound(unsigned int i, double boundary) {
+        void setUpperBound(unsigned int i, double boundary) {
             maxParams_[i] = boundary;
         }
 

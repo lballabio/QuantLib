@@ -34,10 +34,11 @@
 #ifndef quantlib_pricers_european_swaption_h
 #define quantlib_pricers_european_swaption_h
 
-#include <vector>
 #include "ql/exercise.hpp"
 #include "ql/option.hpp"
 #include "ql/InterestRateModelling/onefactormodel.hpp"
+
+#include <vector>
 
 namespace QuantLib {
 

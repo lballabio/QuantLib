@@ -34,6 +34,7 @@
 #ifndef quantlib_interest_rate_modelling_trinomial_tree_h
 #define quantlib_interest_rate_modelling_trinomial_tree_h
 
+
 #include <ql/qldefines.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/InterestRateModelling/shortrateprocess.hpp>
@@ -49,7 +50,7 @@ namespace QuantLib {
 
         class TrinomialTree : public Lattices::Tree {
           public:
-            TrinomialTree() : Tree(3) {}
+            TrinomialTree() : Lattices::Tree(3) {}
 /*            TrinomialTree(
                 const Handle<ShortRateProcess>& process,
                 const RelinkableHandle<TermStructure>& termStructure,
