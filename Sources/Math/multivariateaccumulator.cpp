@@ -26,6 +26,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/02/02 10:44:22  marmar
+    MultivariateAccumulator does NOT have to be
+    initialized with the size of data
+
     Revision 1.4  2001/01/26 11:09:28  marmar
     Now the covariance() method is consistent with the variance()
     method of the class Statistics
@@ -53,12 +57,10 @@ namespace QuantLib {
             reset();            
         }
 
-        MultivariateAccumulator::MultivariateAccumulator(int size):
-                size_(size){
-            QL_REQUIRE(size_ > 0,
-                    "MultivariateAccumulator: size must be positive");
+        MultivariateAccumulator::MultivariateAccumulator(int size)
+                : size_(size){
             reset();            
-        }
+        }        
 
         void MultivariateAccumulator::reset() {
             sampleNumber_ = 0;
@@ -70,11 +72,20 @@ namespace QuantLib {
 
         void MultivariateAccumulator::add(const Array &value, double weight) {
         /*! \pre weights must be positive or null */
+        
+            if(size_ == 0){
+                size_ = value.size();
+                reset();
+            }
+            else{
+                QL_REQUIRE(value.size() == size_,
+                        "MultivariateAccumulator::add : "
+                                    "wrong size for input array");
+            }
+
             QL_REQUIRE(weight >= 0.0,
                 "MultivariateAccumulator::add : negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
-            QL_REQUIRE(value.size() == size_,
-                "MultivariateAccumulator::add : wrong size for input array");
                 
             sampleNumber_ += 1.0;
             sampleWeight_ += weight;
@@ -106,10 +117,9 @@ namespace QuantLib {
         void MultivariateAccumulator::add(const std::vector<double> &vec, 
                                                                 double wei){                  
           Array arr(vec.size());
-//          std::copy(vec.begin(), vec.end(), arr.begin());
-            for(int i=0; i<vec.size(); i++)
-                arr[i] = vec[i] ;    
-            add(arr, wei);
+          std::copy(vec.begin(), vec.end(), arr.begin());
+//            for(int i=0; i<vec.size(); i++) arr[i] = vec[i] ;    
+          add(arr, wei);
         }
 
         template <class DataIterator>
