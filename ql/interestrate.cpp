@@ -114,22 +114,18 @@ namespace QuantLib {
         switch (comp) {
             case Simple:
                 return std::string("simple compounding");
-                break;
             case Compounded:
                 switch (freq) {
                   case NoFrequency:
                   case Once:
                     QL_FAIL(FrequencyFormatter::toString(freq) +
                             " frequency not allowed for interest rate");
-                    break;
                   default:
                     return std::string(FrequencyFormatter::toString(freq)
                                        + " compounding");
                 }
-                break;
             case Continuous:
                 return std::string("continuous compounding");
-                break;
             default:
                 QL_FAIL("unknown compounding convention ("+
                     IntegerFormatter::toString(comp)+")");
