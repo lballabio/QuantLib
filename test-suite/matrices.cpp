@@ -39,7 +39,7 @@ namespace {
         double sum = 0.0;
         for (Size i=0; i<m.rows(); i++)
             for (Size j=0; j<m.columns(); j++)
-                sum += m[i][j];
+                sum += m[i][j]*m[i][j];
         return QL_SQRT(sum);
     }
 
@@ -49,7 +49,8 @@ void MatricesTest::setUp() {
 
     N = 3;
     M1 = M2 = I = Matrix(N,N);
-    M3 = M4 = Matrix(4,3);
+    M3 = Matrix(3,4);
+    M4 = Matrix(4,3);
 
     M1[0][0] = 1.0;  M1[0][1] = 0.9;  M1[0][2] = 0.7;
     M1[1][0] = 0.9;  M1[1][1] = 1.0;  M1[1][2] = 0.4;
@@ -63,10 +64,9 @@ void MatricesTest::setUp() {
     I[1][0] = 0.0;  I[1][1] = 1.0;  I[1][2] = 0.0;
     I[2][0] = 0.0;  I[2][1] = 0.0;  I[2][2] = 1.0;
 
-    M3[0][0] = 1; M3[0][1] = 2; M3[0][2] = 0; 
-    M3[1][0] = 2; M3[1][1] = 0; M3[1][2] = 1; 
-    M3[2][0] = 3; M3[2][1] = 2; M3[2][2] = 0; 
-    M3[3][0] = 4; M3[3][1] = 1; M3[3][2] = 0;   
+    M3[0][0] = 1; M3[0][1] = 2; M3[0][2] = 3; M3[0][3] = 4;
+    M3[1][0] = 2; M3[1][1] = 0; M3[1][2] = 2; M3[1][3] = 1;
+    M3[2][0] = 0; M3[2][1] = 1; M3[2][2] = 0; M3[2][3] = 0;
 
     M4[0][0] = 1; M4[0][1] = 2; M4[0][2] = 400; 
     M4[1][0] = 2; M4[1][1] = 0; M4[1][2] = 1; 
@@ -98,7 +98,7 @@ void MatricesTest::testEigenvectors() {
 
         // check normalization
         Matrix m = eigenVectors * transpose(eigenVectors);
-        if (norm(m-I) > 1.0e-7)
+        if (norm(m-I) > 1.0e-15)
             CPPUNIT_FAIL("Eigenvector not normalized");
     }
 }
@@ -106,14 +106,14 @@ void MatricesTest::testEigenvectors() {
 void MatricesTest::testSqrt() {
 
     Matrix m = pseudoSqrt(M1, SalvagingAlgorithm::None);
-    if (norm(m*m - M1) > 1.0e-20)
+    if (norm(m*m - M1) > 1.0e-12)
         CPPUNIT_FAIL("Matrix square root calculation failed");
 
 }
 
 void MatricesTest::testSVD() {      
     
-    double tol = 1.0e-6;
+    double tol = 1.0e-12;
     Matrix testMatrices[] = { M1, M2, M3, M4 };
 
     for (Size j = 0; j < LENGTH(testMatrices); j++) {
@@ -121,39 +121,40 @@ void MatricesTest::testSVD() {
         Matrix& A = testMatrices[j];        
         SVD svd(A);    
         // U is m x n
-        Matrix U(A.rows(), A.columns());
+        Matrix U = svd.U();
         // s is n long
-        Array s(A.columns());
+        Array s = svd.singularValues();
         // S is n x n
-        Matrix S(I);
+        Matrix S = svd.S();
         // V is n x n 
-        Matrix V(A.columns(), A.columns());
-        
-        svd.getU(U);
-        svd.getV(V);
-        svd.getSingularValues(s);
+        Matrix V = svd.V();
 
         for (Size i=0; i < S.rows(); i++) {
-            S[i][i] = s[i];
+            if (S[i][i] != s[i])
+                CPPUNIT_FAIL("S not consistent with s");
         }
         
         // tests
-        Matrix U_Utranspose = transpose(U)*U;    
+        Matrix U_Utranspose = transpose(U)*U;
         if (norm(U_Utranspose-I) > tol)
-                CPPUNIT_FAIL("U not orthogonal"
-                    + DoubleFormatter::toExponential(norm(U_Utranspose-I)));
+            CPPUNIT_FAIL("U not orthogonal (norm of U*U^T-I = " +
+                         DoubleFormatter::toExponential(norm(U_Utranspose-I))
+                         + ")");
 
         Matrix V_Vtranspose = transpose(V)*V;
         if (norm(V_Vtranspose-I) > tol)
-            CPPUNIT_FAIL("V not orthogonal: error " 
-                + DoubleFormatter::toExponential(norm(V_Vtranspose-I)));
+            CPPUNIT_FAIL("V not orthogonal (norm of V*V^T-I = " +
+                         DoubleFormatter::toExponential(norm(V_Vtranspose-I))
+                         + ")");
 
         Matrix A_reconstructed = U * S * transpose(V);        
         if (norm(A_reconstructed-A) > tol)
-            CPPUNIT_FAIL("Product does not recover A: error " 
-                + DoubleFormatter::toExponential(norm(A_reconstructed-A)));
+            CPPUNIT_FAIL("Product does not recover A: (norm of A'-A = " +
+                         DoubleFormatter::toExponential(norm(A_reconstructed-A))
+                         + ")");
     }
 }
+
 
 CppUnit::Test* MatricesTest::suite() {
     CppUnit::TestSuite* tests = new CppUnit::TestSuite("Matrix tests");
@@ -164,7 +165,7 @@ CppUnit::Test* MatricesTest::suite() {
                    ("Testing matricial square root",
                     &MatricesTest::testSqrt));
     tests->addTest(new CppUnit::TestCaller<MatricesTest>
-                   ("Testing Singular Value Decomposition - SVD",
+                   ("Testing singular value decomposition",
                     &MatricesTest::testSVD));
     return tests;
 }

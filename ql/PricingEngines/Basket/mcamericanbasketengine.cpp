@@ -463,12 +463,9 @@ namespace QuantLib {
 
                 // do least squares regression                
                 SVD svd(A);
-                Matrix U(A.rows(), A.rows());
-                Array s(A.columns());
-                Matrix V(A.columns(), A.columns());
-                svd.getU(U);
-                svd.getV(V);
-                svd.getSingularValues(s);
+                Matrix U = svd.U();
+                Array s = svd.singularValues();
+                Matrix V = svd.V();
                 // probably faster to do this directly
                 // in MATLAB this is V*(S\(U'*y_temp))
                 Matrix Utrans = transpose(U);

@@ -187,6 +187,8 @@ namespace QuantLib {
         by Peter Jäckel, Chapter 6
 
         \relates Matrix
+
+        \bug the non-salvaged algorithm currently yields wrong results
     */
     const Disposable<Matrix> pseudoSqrt(const Matrix& realSymmetricMatrix,
                                         SalvagingAlgorithm::Type sa);

@@ -39,77 +39,107 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        /*  returns hypotenuse of real (non-complex) scalars a and b by 
+            avoiding underflow/overflow
+            using (a * sqrt( 1 + (b/a) * (b/a))), rather than
+            sqrt(a*a + b*b).
+        */
+        double hypot(const double &a, const double &b) {	
+            if (a == 0) {
+                return QL_FABS(b);
+            } else {
+                double c = b/a;
+                return QL_FABS(a) * sqrt(1 + c*c);
+            }
+        }
+
+    }
+
     //! Singular Value Decomposition
     /*! Refer to Golub and Van Loan: Matrix computation,
         The Johns Hopkins University Press
     */
 
-    /*  returns hypotenuse of real (non-complex) scalars a and b by 
-        avoiding underflow/overflow
-        using (a * sqrt( 1 + (b/a) * (b/a))), rather than
-        sqrt(a*a + b*b).
-    */
-    double hypot(const double &a, const double &b) {	
-        if (a == 0) {
-            return QL_FABS(b);
+    SVD::SVD(const Matrix& M) {
+
+        Matrix A;
+
+        /* The implementation requires that rows > columns.
+           If this is not the case, we decompose M^T instead.
+           Swapping the resulting U and V gives the desired
+           result for M as
+
+           M^T = U S V^T           (decomposition of M^T)
+
+           M = (U S V^T)^T         (transpose)
+
+           M = (V^T^T S^T U^T)     ((AB)^T = B^T A^T)
+
+           M = V S U^T             (idempotence of transposition,
+                                    symmetry of diagonal matrix S)
+
+        */
+
+        if (M.rows() >= M.columns()) {
+            A = M;
+            transpose_ = false;
         } else {
-            double c = b/a;
-            return QL_FABS(a) * sqrt(1 + c*c);
+            A = transpose(M);
+            transpose_ = true;
         }
-    }
 
-    SVD::SVD(const Matrix &Arg) {
+        m_ = A.rows();
+        n_ = A.columns();
 
-        m = Arg.rows();
-        n = Arg.columns();
-        int nu = QL_MIN(m,n);
-        s = Array(QL_MIN(m+1,n)); 
-        U = Matrix(m, nu, 0.0);
-        V = Matrix(n,n);
-        Array e(n);
-        Array work(m);
-        Matrix A(Arg);
+        // we're sure that m_ >= n_ 
+
+        s_ = Array(n_); 
+        U_ = Matrix(m_,n_, 0.0);
+        V_ = Matrix(n_,n_);
+        Array e(n_);
+        Array work(m_);
         int wantu = 1;  					/* boolean */
-        int wantv = 1;  					/* boolean */
         int i, j, k;
 
         // Reduce A to bidiagonal form, storing the diagonal elements
         // in s and the super-diagonal elements in e.
 
-        int nct = QL_MIN(m-1,n);
-        int nrt = QL_MAX(0,QL_MIN(n-2,m));
+        int nct = QL_MIN(m_-1,n_);
+        int nrt = QL_MAX(0,n_-2);
         for (k = 0; k < QL_MAX(nct,nrt); k++) {
             if (k < nct) {
 
                 // Compute the transformation for the k-th column and
                 // place the k-th diagonal in s[k].
                 // Compute 2-norm of k-th column without under/overflow.
-                s[k] = 0;
-                for (i = k; i < m; i++) {
-                    s[k] = hypot(s[k],A[i][k]);
+                s_[k] = 0;
+                for (i = k; i < m_; i++) {
+                    s_[k] = hypot(s_[k],A[i][k]);
                 }
-                if (s[k] != 0.0) {
+                if (s_[k] != 0.0) {
                     if (A[k][k] < 0.0) {
-                        s[k] = -s[k];
+                        s_[k] = -s_[k];
                     }
-                    for (i = k; i < m; i++) {
-                        A[i][k] /= s[k];
+                    for (i = k; i < m_; i++) {
+                        A[i][k] /= s_[k];
                     }
                     A[k][k] += 1.0;
                 }
-                s[k] = -s[k];
+                s_[k] = -s_[k];
             }
-            for (j = k+1; j < n; j++) {
-                if ((k < nct) && (s[k] != 0.0))  {
+            for (j = k+1; j < n_; j++) {
+                if ((k < nct) && (s_[k] != 0.0))  {
 
                     // Apply the transformation.
 
                     double t = 0;
-                    for (i = k; i < m; i++) {
+                    for (i = k; i < m_; i++) {
                         t += A[i][k]*A[i][j];
                     }
                     t = -t/A[k][k];
-                    for (i = k; i < m; i++) {
+                    for (i = k; i < m_; i++) {
                         A[i][j] += t*A[i][k];
                     }
                 }
@@ -124,8 +154,8 @@ namespace QuantLib {
                 // Place the transformation in U for subsequent back
                 // multiplication.
 
-                for (i = k; i < m; i++) {
-                    U[i][k] = A[i][k];
+                for (i = k; i < m_; i++) {
+                    U_[i][k] = A[i][k];
                 }
             }
             if (k < nrt) {
@@ -134,127 +164,117 @@ namespace QuantLib {
                 // k-th super-diagonal in e[k].
                 // Compute 2-norm without under/overflow.
                 e[k] = 0;
-                for (i = k+1; i < n; i++) {
+                for (i = k+1; i < n_; i++) {
                     e[k] = hypot(e[k],e[i]);
                 }
                 if (e[k] != 0.0) {
                     if (e[k+1] < 0.0) {
                         e[k] = -e[k];
                     }
-                    for (i = k+1; i < n; i++) {
+                    for (i = k+1; i < n_; i++) {
                         e[i] /= e[k];
                     }
                     e[k+1] += 1.0;
                 }
                 e[k] = -e[k];
-                if ((k+1 < m) & (e[k] != 0.0)) {
+                if ((k+1 < m_) & (e[k] != 0.0)) {
 
                     // Apply the transformation.
 
-                    for (i = k+1; i < m; i++) {
+                    for (i = k+1; i < m_; i++) {
                         work[i] = 0.0;
                     }
-                    for (j = k+1; j < n; j++) {
-                        for (i = k+1; i < m; i++) {
+                    for (j = k+1; j < n_; j++) {
+                        for (i = k+1; i < m_; i++) {
                             work[i] += e[j]*A[i][j];
                         }
                     }
-                    for (j = k+1; j < n; j++) {
+                    for (j = k+1; j < n_; j++) {
                         double t = -e[j]/e[k+1];
-                        for (i = k+1; i < m; i++) {
+                        for (i = k+1; i < m_; i++) {
                             A[i][j] += t*work[i];
                         }
                     }
                 }
-                if (wantv) {
 
-                    // Place the transformation in V for subsequent
-                    // back multiplication.
+                // Place the transformation in V for subsequent
+                // back multiplication.
 
-                    for (i = k+1; i < n; i++) {
-                        V[i][k] = e[i];
-                    }
+                for (i = k+1; i < n_; i++) {
+                    V_[i][k] = e[i];
                 }
             }
         }
 
-        // Set up the final bidiagonal matrix or order p.
+        // Set up the final bidiagonal matrix or order n.
 
-        int p = QL_MIN(n,m+1);
-        if (nct < n) {
-            s[nct] = A[nct][nct];
+        if (nct < n_) {
+            s_[nct] = A[nct][nct];
         }
-        if (m < p) {
-            s[p-1] = 0.0;
+        if (nrt+1 < n_) {
+            e[nrt] = A[nrt][n_-1];
         }
-        if (nrt+1 < p) {
-            e[nrt] = A[nrt][p-1];
-        }
-        e[p-1] = 0.0;
+        e[n_-1] = 0.0;
 
-        // If required, generate U.
+        // generate U
 
-        if (wantu) {
-            for (j = nct; j < nu; j++) {
-                for (i = 0; i < m; i++) {
-                    U[i][j] = 0.0;
-                }
-                U[j][j] = 1.0;
+        for (j = nct; j < n_; j++) {
+            for (i = 0; i < m_; i++) {
+                U_[i][j] = 0.0;
             }
-            for (k = nct-1; k >= 0; k--) {
-                if (s[k] != 0.0) {
-                    for (j = k+1; j < nu; j++) {
-                        double t = 0;
-                        for (i = k; i < m; i++) {
-                            t += U[i][k]*U[i][j];
-                        }
-                        t = -t/U[k][k];
-                        for (i = k; i < m; i++) {
-                            U[i][j] += t*U[i][k];
-                        }
+            U_[j][j] = 1.0;
+        }
+        for (k = nct-1; k >= 0; k--) {
+            if (s_[k] != 0.0) {
+                for (j = k+1; j < n_; j++) {
+                    double t = 0;
+                    for (i = k; i < m_; i++) {
+                        t += U_[i][k]*U_[i][j];
                     }
-                    for (i = k; i < m; i++ ) {
-                        U[i][k] = -U[i][k];
+                    t = -t/U_[k][k];
+                    for (i = k; i < m_; i++) {
+                        U_[i][j] += t*U_[i][k];
                     }
-                    U[k][k] = 1.0 + U[k][k];
-                    for (i = 0; i < k-1; i++) {
-                        U[i][k] = 0.0;
-                    }
-                } else {
-                    for (i = 0; i < m; i++) {
-                        U[i][k] = 0.0;
-                    }
-                    U[k][k] = 1.0;
                 }
+                for (i = k; i < m_; i++ ) {
+                    U_[i][k] = -U_[i][k];
+                }
+                U_[k][k] = 1.0 + U_[k][k];
+                for (i = 0; i < k-1; i++) {
+                    U_[i][k] = 0.0;
+                }
+            } else {
+                for (i = 0; i < m_; i++) {
+                    U_[i][k] = 0.0;
+                }
+                U_[k][k] = 1.0;
             }
         }
 
-        // If required, generate V.
+        // generate V
 
-        if (wantv) {
-            for (k = n-1; k >= 0; k--) {
-                if ((k < nrt) & (e[k] != 0.0)) {
-                    for (j = k+1; j < nu; j++) {
-                        double t = 0;
-                        for (i = k+1; i < n; i++) {
-                            t += V[i][k]*V[i][j];
-                        }
-                        t = -t/V[k+1][k];
-                        for (i = k+1; i < n; i++) {
-                            V[i][j] += t*V[i][k];
-                        }
+        for (k = n_-1; k >= 0; k--) {
+            if ((k < nrt) & (e[k] != 0.0)) {
+                for (j = k+1; j < n_; j++) {
+                    double t = 0;
+                    for (i = k+1; i < n_; i++) {
+                        t += V_[i][k]*V_[i][j];
+                    }
+                    t = -t/V_[k+1][k];
+                    for (i = k+1; i < n_; i++) {
+                        V_[i][j] += t*V_[i][k];
                     }
                 }
-                for (i = 0; i < n; i++) {
-                    V[i][k] = 0.0;
-                }
-                V[k][k] = 1.0;
             }
+            for (i = 0; i < n_; i++) {
+                V_[i][k] = 0.0;
+            }
+            V_[k][k] = 1.0;
         }
 
         // Main iteration loop for the singular values.
 
-        int pp = p-1;
+        int p = n_, pp = p-1;
         int iter = 0;
         double eps = pow(2.0,-52.0);
         while (p > 0) {
@@ -277,7 +297,7 @@ namespace QuantLib {
                 if (k == -1) {
                     break;
                 }
-                if (QL_FABS(e[k]) <= eps*(QL_FABS(s[k]) + QL_FABS(s[k+1]))) {
+                if (QL_FABS(e[k]) <= eps*(QL_FABS(s_[k]) + QL_FABS(s_[k+1]))) {
                     e[k] = 0.0;
                     break;
                 }
@@ -292,8 +312,8 @@ namespace QuantLib {
                     }
                     double t = (ks != p ? QL_FABS(e[ks]) : 0.) + 
                         (ks != k+1 ? QL_FABS(e[ks-1]) : 0.);
-                    if (QL_FABS(s[ks]) <= eps*t)  {
-                        s[ks] = 0.0;
+                    if (QL_FABS(s_[ks]) <= eps*t)  {
+                        s_[ks] = 0.0;
                         break;
                     }
                 }
@@ -318,20 +338,18 @@ namespace QuantLib {
                   double f = e[p-2];
                   e[p-2] = 0.0;
                   for (j = p-2; j >= k; j--) {
-                      double t = hypot(s[j],f);
-                      double cs = s[j]/t;
+                      double t = hypot(s_[j],f);
+                      double cs = s_[j]/t;
                       double sn = f/t;
-                      s[j] = t;
+                      s_[j] = t;
                       if (j != k) {
                           f = -sn*e[j-1];
                           e[j-1] = cs*e[j-1];
                       }
-                      if (wantv) {
-                          for (i = 0; i < n; i++) {
-                              t = cs*V[i][j] + sn*V[i][p-1];
-                              V[i][p-1] = -sn*V[i][j] + cs*V[i][p-1];
-                              V[i][j] = t;
-                          }
+                      for (i = 0; i < n_; i++) {
+                          t = cs*V_[i][j] + sn*V_[i][p-1];
+                          V_[i][p-1] = -sn*V_[i][j] + cs*V_[i][p-1];
+                          V_[i][j] = t;
                       }
                   }
               }
@@ -343,18 +361,16 @@ namespace QuantLib {
                   double f = e[k-1];
                   e[k-1] = 0.0;
                   for (j = k; j < p; j++) {
-                      double t = hypot(s[j],f);
-                      double cs = s[j]/t;
+                      double t = hypot(s_[j],f);
+                      double cs = s_[j]/t;
                       double sn = f/t;
-                      s[j] = t;
+                      s_[j] = t;
                       f = -sn*e[j];
                       e[j] = cs*e[j];
-                      if (wantu) {
-                          for (i = 0; i < m; i++) {
-                              t = cs*U[i][j] + sn*U[i][k-1];
-                              U[i][k-1] = -sn*U[i][j] + cs*U[i][k-1];
-                              U[i][j] = t;
-                          }
+                      for (i = 0; i < m_; i++) {
+                          t = cs*U_[i][j] + sn*U_[i][k-1];
+                          U_[i][k-1] = -sn*U_[i][j] + cs*U_[i][k-1];
+                          U_[i][j] = t;
                       }
                   }
               }
@@ -365,14 +381,18 @@ namespace QuantLib {
               case 3: {
 
                   // Calculate the shift.
-                  //                        double asdfasdf = QL_MAX(1.12, 1.342);
-                  double scale = QL_MAX(QL_MAX(QL_MAX(QL_MAX(
-                                                             QL_FABS(s[p-1]),QL_FABS(s[p-2])),QL_FABS(e[p-2])), 
-                                               QL_FABS(s[k])),QL_FABS(e[k]));
-                  double sp = s[p-1]/scale;
-                  double spm1 = s[p-2]/scale;
+                  double scale = QL_MAX(
+                                     QL_MAX(
+                                         QL_MAX(
+                                             QL_MAX(QL_FABS(s_[p-1]),
+                                                    QL_FABS(s_[p-2])),
+                                             QL_FABS(e[p-2])), 
+                                         QL_FABS(s_[k])),
+                                     QL_FABS(e[k]));
+                  double sp = s_[p-1]/scale;
+                  double spm1 = s_[p-2]/scale;
                   double epm1 = e[p-2]/scale;
-                  double sk = s[k]/scale;
+                  double sk = s_[k]/scale;
                   double ek = e[k]/scale;
                   double b = ((spm1 + sp)*(spm1 - sp) + epm1*epm1)/2.0;
                   double c = (sp*epm1)*(sp*epm1);
@@ -396,30 +416,28 @@ namespace QuantLib {
                       if (j != k) {
                           e[j-1] = t;
                       }
-                      f = cs*s[j] + sn*e[j];
-                      e[j] = cs*e[j] - sn*s[j];
-                      g = sn*s[j+1];
-                      s[j+1] = cs*s[j+1];
-                      if (wantv) {
-                          for (i = 0; i < n; i++) {
-                              t = cs*V[i][j] + sn*V[i][j+1];
-                              V[i][j+1] = -sn*V[i][j] + cs*V[i][j+1];
-                              V[i][j] = t;
-                          }
+                      f = cs*s_[j] + sn*e[j];
+                      e[j] = cs*e[j] - sn*s_[j];
+                      g = sn*s_[j+1];
+                      s_[j+1] = cs*s_[j+1];
+                      for (i = 0; i < n_; i++) {
+                          t = cs*V_[i][j] + sn*V_[i][j+1];
+                          V_[i][j+1] = -sn*V_[i][j] + cs*V_[i][j+1];
+                          V_[i][j] = t;
                       }
                       t = hypot(f,g);
                       cs = f/t;
                       sn = g/t;
-                      s[j] = t;
-                      f = cs*e[j] + sn*s[j+1];
-                      s[j+1] = -sn*e[j] + cs*s[j+1];
+                      s_[j] = t;
+                      f = cs*e[j] + sn*s_[j+1];
+                      s_[j+1] = -sn*e[j] + cs*s_[j+1];
                       g = sn*e[j+1];
                       e[j+1] = cs*e[j+1];
-                      if (wantu && (j < m-1)) {
-                          for (i = 0; i < m; i++) {
-                              t = cs*U[i][j] + sn*U[i][j+1];
-                              U[i][j+1] = -sn*U[i][j] + cs*U[i][j+1];
-                              U[i][j] = t;
+                      if (j < m_-1) {
+                          for (i = 0; i < m_; i++) {
+                              t = cs*U_[i][j] + sn*U_[i][j+1];
+                              U_[i][j+1] = -sn*U_[i][j] + cs*U_[i][j+1];
+                              U_[i][j] = t;
                           }
                       }
                   }
@@ -434,32 +452,28 @@ namespace QuantLib {
 
                   // Make the singular values positive.
 
-                  if (s[k] <= 0.0) {
-                      s[k] = (s[k] < 0.0 ? -s[k] : 0.0);
-                      if (wantv) {
-                          for (i = 0; i <= pp; i++) {
-                              V[i][k] = -V[i][k];
-                          }
+                  if (s_[k] <= 0.0) {
+                      s_[k] = (s_[k] < 0.0 ? -s_[k] : 0.0);
+                      for (i = 0; i <= pp; i++) {
+                          V_[i][k] = -V_[i][k];
                       }
                   }
 
                   // Order the singular values.
 
                   while (k < pp) {
-                      if (s[k] >= s[k+1]) {
+                      if (s_[k] >= s_[k+1]) {
                           break;
                       }
-                      double t = s[k];
-                      s[k] = s[k+1];
-                      s[k+1] = t;
-                      if (wantv && (k < n-1)) {
-                          for (i = 0; i < n; i++) {
-                              t = V[i][k+1]; V[i][k+1] = V[i][k]; V[i][k] = t;
+                      std::swap(s_[k], s_[k+1]);
+                      if (k < n_-1) {
+                          for (i = 0; i < n_; i++) {
+                              std::swap(V_[i][k], V_[i][k+1]);
                           }
                       }
-                      if (wantu && (k < m-1)) {
-                          for (i = 0; i < m; i++) {
-                              t = U[i][k+1]; U[i][k+1] = U[i][k]; U[i][k] = t;
+                      if (k < m_-1) {
+                          for (i = 0; i < m_; i++) {
+                              std::swap(U_[i][k], U_[i][k+1]);
                           }
                       }
                       k++;
@@ -472,49 +486,43 @@ namespace QuantLib {
         }
     }
 
-    void SVD::getU(Matrix &A) const {
-        int minm = QL_MIN(m+1,n);
-
-        A = Matrix(m, minm);
-
-        for (int i=0; i<m; i++)
-            for (int j=0; j<minm; j++)
-                A[i][j] = U[i][j];
-
+    const Matrix& SVD::U() const {
+        return (transpose_ ? V_ : U_);
     }
 
-    void SVD::getV(Matrix &A) const {
-        A = V;
+    const Matrix& SVD::V() const {
+        return (transpose_ ? U_ : V_);
     }
 
-    void SVD::getSingularValues(Array &x) const {
-        x = s;
+    const Array& SVD::singularValues() const {
+        return s_;
     }
 
-    void SVD::getS(Matrix &S) const {
-        S = Matrix(n,n);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+    Disposable<Matrix> SVD::S() const {
+        Matrix S(n_,n_);
+        for (int i = 0; i < n_; i++) {
+            for (int j = 0; j < n_; j++) {
                 S[i][j] = 0.0;
             }
-            S[i][i] = s[i];
+            S[i][i] = s_[i];
         }
+        return S;
     }
 
     double SVD::norm2() {
-        return s[0];
+        return s_[0];
     }
 
     double SVD::cond() {
-        return s[0]/s[QL_MIN(m,n)-1];
+        return s_[0]/s_[n_-1];
     }
 
     int SVD::rank() {
         double eps = pow(2.0,-52.0);
-        double tol = QL_MAX(m,n)*s[0]*eps;
+        double tol = m_*s_[0]*eps;
         int r = 0;
-        for (Size i = 0; i < s.size(); i++) {
-            if (s[i] > tol) {
+        for (Size i = 0; i < s_.size(); i++) {
+            if (s_[i] > tol) {
                 r++;
             }
         }

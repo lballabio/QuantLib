@@ -46,22 +46,26 @@ namespace QuantLib {
     /*! Refer to Golub and Van Loan: Matrix computation,
         The Johns Hopkins University Press
 
-        \bug This class was reported to yield wrong results
+        \bug This class was reported to yield wrong results and probably
+             needs further investigation.
     */
     class SVD {
       public:
-        SVD(const Matrix &Arg);
-        void getU(Matrix &A) const;
-        void getV(Matrix &A) const;
-        void getSingularValues(Array &x) const;
-        void getS(Matrix &S) const;
+        // constructor
+        SVD(const Matrix&);
+        // results
+        const Matrix& U() const;
+        const Matrix& V() const;
+        const Array& singularValues() const;
+        Disposable<Matrix> S() const;
         double norm2();
         double cond();
         int rank();
       private:
-        Matrix U, V;
-        Array s;
-        int m, n;
+        Matrix U_, V_;
+        Array s_;
+        int m_, n_;
+        bool transpose_;
     };
 
 }
