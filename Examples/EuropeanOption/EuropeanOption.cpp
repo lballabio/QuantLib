@@ -67,6 +67,8 @@ int main(int argc, char* argv[])
     try {
         QL_IO_INIT
 
+        std::cout << "Using " << QL_VERSION << std::endl << std::endl;
+
         // our option
         double underlying = 8;
         double strike = 8;

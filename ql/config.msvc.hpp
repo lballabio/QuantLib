@@ -164,6 +164,10 @@
 /*** libraries to be linked***/
 
 #ifdef _DEBUG
+    #define QL_DEBUG
+#endif
+
+#ifdef _DEBUG
     #pragma comment(lib,"QuantLib_d.lib")
 #else
     #pragma comment(lib,"QuantLib.lib")
