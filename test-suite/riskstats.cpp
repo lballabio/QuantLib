@@ -18,6 +18,7 @@
 
 #include "riskstats.hpp"
 #include <ql/Math/riskstatistics.hpp>
+#include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 

@@ -23,9 +23,6 @@
 #define quantlib_statistics_h
 
 #include <ql/Math/generalstatistics.hpp>
-#include <ql/Math/incrementalstatistics.hpp>
-#include <ql/Math/gaussianstatistics.hpp>
-#include <ql/Math/riskstatistics.hpp>
 
 namespace QuantLib {
 
