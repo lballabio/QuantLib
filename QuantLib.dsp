@@ -1566,7 +1566,7 @@ SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Asian\asianengines.hpp
+SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.hpp
 # End Source File
 # End Group
 # Begin Group "Barrier"
@@ -1578,7 +1578,15 @@ SOURCE=.\ql\PricingEngines\Barrier\analyticamericanbinarybarrierengine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Barrier\analyticamericanbinarybarrierengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1586,11 +1594,15 @@ SOURCE=.\ql\PricingEngines\Barrier\analyticeuropeanbinarybarrierengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Barrier\barrierengines.hpp
+SOURCE=.\ql\PricingEngines\Barrier\analyticeuropeanbinarybarrierengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Barrier\binarybarrierengines.hpp
+SOURCE=.\ql\PricingEngines\Barrier\mcbarrierengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Barrier\mcbinarybarrierengine.hpp
 # End Source File
 # End Group
 # Begin Group "Cliquet"
@@ -1598,7 +1610,7 @@ SOURCE=.\ql\PricingEngines\Barrier\binarybarrierengines.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Cliquet\cliquetengines.hpp
+SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.hpp
 # End Source File
 # End Group
 # Begin Group "Forward"
@@ -1608,22 +1620,22 @@ SOURCE=.\ql\PricingEngines\Cliquet\cliquetengines.hpp
 
 SOURCE=.\ql\PricingEngines\Forward\forwardengines.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Forward\forwardperformanceengine.hpp
+# End Source File
 # End Group
 # Begin Group "Quanto"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Quanto\quantoengines.hpp
+SOURCE=.\ql\PricingEngines\Quanto\quantoengine.hpp
 # End Source File
 # End Group
 # Begin Group "Vanilla"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Vanilla\all.hpp
-# End Source File
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.cpp
@@ -1707,10 +1719,6 @@ SOURCE=.\ql\PricingEngines\Vanilla\mcvanillaengine.hpp
 # End Group
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\all.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\americanpayoffatexpiry.hpp
 # End Source File
 # Begin Source File
@@ -1720,10 +1728,6 @@ SOURCE=.\ql\PricingEngines\americanpayoffathit.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\blackformula.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\core.hpp
 # End Source File
 # Begin Source File
 
