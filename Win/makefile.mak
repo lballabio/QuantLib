@@ -230,8 +230,6 @@ test::
 
 # Install PyQuantLib
 install::
-	if exist $(PYTHON_ROOT)\QuantLib.py       del $(PYTHON_ROOT)\QuantLib.py
 	if exist $(PYTHON_ROOT)\QuantLib.pyc      del $(PYTHON_ROOT)\QuantLib.pyc
-	if exist $(PYTHON_ROOT)\QuantLibc.dll     del $(PYTHON_ROOT)\QuantLibc.dll
-	move $(PYTHON_DIR)\QuantLib.py $(PYTHON_ROOT)\QuantLib.py
-	move $(PYTHON_DIR)\QuantLibc.dll $(PYTHON_ROOT)\QuantLibc.dll
+	copy $(PYTHON_DIR)\QuantLib.py $(PYTHON_ROOT)\QuantLib.py
+	copy $(PYTHON_DIR)\QuantLibc.dll $(PYTHON_ROOT)\QuantLibc.dll
