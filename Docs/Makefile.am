@@ -36,9 +36,11 @@ docs-html-online:
 	cp images/*.eps latex
 	cp images/*.pdf latex
 docs-ps: tex-files
-	pool_size=128000 extra_mem_top=263000 max_strings=30000 hash_extra=10000 $(MAKE) -C latex ps
+	buf_size=100000 pool_size=128000 extra_mem_top=263000 \
+	max_strings=30000 hash_extra=10000 $(MAKE) -C latex ps
 docs-pdf: tex-files pdf-figures
-	pool_size=128000 extra_mem_top=263000 max_strings=30000 hash_extra=10000 $(MAKE) -C latex pdf
+	buf_size=100000 pool_size=128000 extra_mem_top=263000 \
+	max_strings=30000 hash_extra=10000 $(MAKE) -C latex pdf
 docs-man: docs-html
 docs-clean:
 	rm -Rf man
