@@ -101,8 +101,12 @@ $(QUANTLIB_DLL):: quantlib_wrap$(_D).obj $(QUANTLIB_LIB) $(PYTHON_BCC_LIB)
 $(PYTHON_BCC_LIB):
     if exist $(PYTHON_LIBS)\python15$(_D).lib \
         $(COFF2OMF) -q $(PYTHON_LIBS)\python15$(_D).lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python16$(_D).lib \
+        $(COFF2OMF) -q $(PYTHON_LIBS)\python16$(_D).lib $(PYTHON_BCC_LIB)
     if exist $(PYTHON_LIBS)\python20$(_D).lib \
         $(COFF2OMF) -q $(PYTHON_LIBS)\python20$(_D).lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python21$(_D).lib \
+        $(COFF2OMF) -q $(PYTHON_LIBS)\python21$(_D).lib $(PYTHON_BCC_LIB)
 
 # Wrapper functions
 quantlib_wrap$(_D).obj:: quantlib_wrap.cpp
