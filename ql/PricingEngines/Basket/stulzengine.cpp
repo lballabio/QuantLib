@@ -53,8 +53,7 @@ namespace QuantLib {
             double variance = variance1 + variance2 - 2 * rho * stdDev1 * stdDev2;
             double stdDev = QL_SQRT(variance);
 
-            double b1 = (QL_LOG(forward2 / forward1) - 0.5 * variance) / stdDev;
-            double b2 = (QL_LOG(forward1 / forward2) - 0.5 * variance) / stdDev;
+            double D1 = (QL_LOG(forward1 / forward2) + 0.5 * variance) / stdDev;
             double modRho1 = (rho * stdDev2 - stdDev1) / stdDev;
             double modRho2 = (rho * stdDev1 - stdDev2) / stdDev;
 
@@ -66,8 +65,8 @@ namespace QuantLib {
                 BivariateCumulativeNormalDistribution(modRho1);
 
             return riskFreeDiscount * (
-                forward1 * bivCNormMod1(D1_1, b1) + 
-                forward2 * bivCNormMod2(D1_2, b2) - 
+                forward1 * bivCNormMod1(D1_1, -D1) + 
+                forward2 * bivCNormMod2(D1_2, D1 - stdDev) - 
                 strike   * bivCNorm(D1_1 - stdDev1, D1_2 - stdDev2)
                 );
 
