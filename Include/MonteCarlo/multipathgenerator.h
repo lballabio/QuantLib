@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/04/02 07:40:07  marmar
+    First date is allowed to be zero
+
     Revision 1.6  2001/03/28 13:39:47  marmar
     MultiPathGenerator now has a default for mean
 
@@ -143,10 +146,10 @@ namespace QuantLib {
 
             QL_REQUIRE(timeDimension_ > 0,
                 "Time dimension("+
-                DoubleFormatter::toString(timeDimension_)+
+                IntegerFormatter::toString(timeDimension_)+
                 ") too small");
                              
-             QL_REQUIRE(dates[0] > 0,
+             QL_REQUIRE(dates[0] >= 0,
                  "MultiPathGenerator: first date(" +
                  DoubleFormatter::toString(dates[0])+
                  ") must be positive");                             
