@@ -22,6 +22,20 @@
 #ifndef quantlib_piecewise_flat_forward_curve_hpp
 #define quantlib_piecewise_flat_forward_curve_hpp
 
+#if defined(QL_DISABLE_DEPRECATED)
+
+#include <ql/TermStructures/piecewiseyieldcurve.hpp>
+
+namespace QuantLib {
+
+    //! Piecewise flat-forward term structure
+    /*! \ingroup yieldtermstructures */
+    typedef PiecewiseYieldCurve<Discount,LogLinear> PiecewiseFlatForward;
+
+}
+
+#else
+
 #include <ql/TermStructures/ratehelpers.hpp>
 
 namespace QuantLib {
@@ -67,11 +81,11 @@ namespace QuantLib {
                const DayCounter& dayCounter,
                Real accuracy = 1.0e-12);
         /*! In this constructor, the first date must be the reference
-          date of the curve, the other dates are the nodes of the
-          term structure. The forward rate at index \f$i\f$ is used
-          in the period \f$t_{i-1} < t \le t_i\f$. Therefore,
-          forwards[0] is used only to compute the zero yield for
-          \f$t = 0\f$.
+            date of the curve, the other dates are the nodes of the
+            term structure. The forward rate at index \f$i\f$ is used
+            in the period \f$t_{i-1} < t \le t_i\f$. Therefore,
+            forwards[0] is used only to compute the zero yield for
+            \f$t = 0\f$.
         */
         PiecewiseFlatForward(const std::vector<Date>& dates,
                              const std::vector<Rate>& forwards,
@@ -143,6 +157,8 @@ namespace QuantLib {
     }
 
 }
+
+#endif
 
 
 #endif
