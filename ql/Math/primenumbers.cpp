@@ -43,12 +43,13 @@ namespace QuantLib {
     namespace Math {
 
         Size PrimeNumbers::nextPrimeNumber() {
+            Size p, n, m = primeNumbers_.back();
             do {
                 // skip the even numbers
-                Size m = primeNumbers_.back() + 2;
-                Size n = static_cast<Size>(QL_SQRT(double(m)));
+                m += 2;
+                n = static_cast<Size>(QL_SQRT(double(m)));
                 // it can be i==1 since the even numbers have been skipped
-                Size p, i = 1;
+                Size i = 1;
                 do {
                     p = primeNumbers_[i];
                     ++i;
