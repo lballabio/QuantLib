@@ -260,9 +260,9 @@ namespace QuantLib {
 
         //! European Vanilla option pricing engine using Monte Carlo simulation
         template<class S, class SG, class PG, class PP>
-        class MCEuropeanVanillaEngine : public MCVanillaEngine<S, SG, PG, PP> {
+        class MCEuropeanEngine : public MCVanillaEngine<S, SG, PG, PP> {
           public:
-            MCEuropeanVanillaEngine(
+            MCEuropeanEngine(
                 bool antitheticVariance,
                 bool controlVariate,
                 const Handle<TimeGrid>& timeGrid,
@@ -275,7 +275,7 @@ namespace QuantLib {
 
         template<class S, class SG, class PG, class PP>
         inline 
-        Handle<PP> MCEuropeanVanillaEngine<S, SG, PG, PP>::pathPricer() const {
+        Handle<PP> MCEuropeanEngine<S, SG, PG, PP>::pathPricer() const {
             //! Initialize the path pricer
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
                 new MonteCarlo::EuropeanPathPricer(arguments_.type,

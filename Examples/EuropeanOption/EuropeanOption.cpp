@@ -411,7 +411,7 @@ int main(int argc, char* argv[])
         GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
 
         option.setPricingEngine(Handle<PricingEngine>(
-            new MCEuropeanVanillaEngine<
+            new MCEuropeanEngine<
                 Statistics,
                 GaussianRandomSequenceGenerator,
                 GaussianPathGenerator2,
