@@ -15,26 +15,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticasianengine.hpp
-    \brief Analytic Asian option engine
+/*! \file analyticcontinuousasianengine.hpp
+    \brief Analytic continuous-averaging Asian option engine
 */
 
-#ifndef quantlib_analytic_asian_engines_hpp
-#define quantlib_analytic_asian_engines_hpp
+#ifndef quantlib_analytic_continuous_asian_engines_hpp
+#define quantlib_analytic_continuous_asian_engines_hpp
 
 #include <ql/Instruments/asianoption.hpp>
 
 namespace QuantLib {
 
-    //! Pricing engine for European discrete geometric average Asian option
-    /*! This class implements a discrete geometric average price asian
-        option, with european exercise.  The formula is from "Asian
-        Option", E. Levy (1997) in "Exotic Options: The State of the
-        Art", edited by L. Clewlow, C. Strickland, pag 65-97
+    //! Pricing engine for European continuous geometric average Asian option
+    /*! This class implements a continuous geometric average price
+        asian option with european exercise.  The formula is from
+        "Option Pricing Formulas", E. G. Haug (1997) pag 96-97
 
+        \bug calculated Greeks do not match numerical results
     */
-    class AnalyticDiscreteAveragingAsianEngine 
-        : public DiscreteAveragingAsianOption::engine {
+    class AnalyticContinuousAveragingAsianEngine 
+        : public ContinuousAveragingAsianOption::engine {
       public:
         void calculate() const;
     };

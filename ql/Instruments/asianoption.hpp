@@ -33,7 +33,28 @@ namespace QuantLib {
         enum Type { Arithmetic, Geometric };
     };
 
-    //! Asian option
+    //! Continuous-averaging Asian option
+    /*! \todo add running average
+
+        \ingroup instruments 
+    */
+    class ContinuousAveragingAsianOption : public OneAssetStrikedOption {
+      public:
+        class arguments;
+        class engine;
+        ContinuousAveragingAsianOption(
+                Average::Type averageType,
+                const boost::shared_ptr<BlackScholesProcess>&,
+                const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                const boost::shared_ptr<Exercise>& exercise,
+                const boost::shared_ptr<PricingEngine>& engine = 
+                                           boost::shared_ptr<PricingEngine>());
+        void setupArguments(Arguments*) const;
+      protected:
+        Average::Type averageType_;
+    };
+
+    //! Discrete-averaging Asian option
     /*! \ingroup instruments */
     class DiscreteAveragingAsianOption : public OneAssetStrikedOption {
       public:
@@ -51,17 +72,19 @@ namespace QuantLib {
                                            boost::shared_ptr<PricingEngine>());
         void setupArguments(Arguments*) const;
       protected:
-        // arguments
         Average::Type averageType_;
         double runningProduct_;
         Size pastFixings_;
         std::vector<Date> fixingDates_;
     };
 
-    //! extra arguments for single asset asian option calculation
+    //! Extra arguments for single-asset Asian option calculation
     class DiscreteAveragingAsianOption::arguments 
         : public OneAssetStrikedOption::arguments {
       public:
+        arguments() : averageType(Average::Type(-1)),
+                      runningProduct(Null<double>()),
+                      pastFixings(Null<int>()) {}
         void validate() const;
         Average::Type averageType;
         double runningProduct;
@@ -69,11 +92,24 @@ namespace QuantLib {
         std::vector<Date> fixingDates;
     };
 
-    //! Discrete averaging asian engine base class
+    //! Extra arguments for single-asset Asian option calculation
+    class ContinuousAveragingAsianOption::arguments 
+        : public OneAssetStrikedOption::arguments {
+      public:
+        arguments() : averageType(Average::Type(-1)) {}
+        void validate() const;
+        Average::Type averageType;
+    };
+
+    //! Discrete-averaging Asian engine base class
     class DiscreteAveragingAsianOption::engine 
         : public GenericEngine<DiscreteAveragingAsianOption::arguments, 
                                DiscreteAveragingAsianOption::results> {};
 
+    //! Continuous-averaging Asian engine base class
+    class ContinuousAveragingAsianOption::engine 
+        : public GenericEngine<ContinuousAveragingAsianOption::arguments, 
+                               ContinuousAveragingAsianOption::results> {};
 
 }
 

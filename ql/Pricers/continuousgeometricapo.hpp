@@ -26,12 +26,15 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
+
     //! Continuous geometric average-price option (European exercise)
     /*! This class implements a continuous geometric average price
         asian option with european exercise.  The formula is from
         "Option Pricing Formulas", E. G. Haug (1997) pag 96-97
 
-        \todo add Average Strike version and make it backward starting
+        \deprecated use ContinuousAveragingAsianOption with
+                    AnalyticContinuousAveragingAsianEngine instead
     */
     class ContinuousGeometricAPO {
       public:
@@ -86,6 +89,8 @@ namespace QuantLib {
         rho_ = black.rho(residualTime)/2.0;
         dividendRho_ = black.dividendRho(residualTime);
     }
+
+#endif
 
 }
 

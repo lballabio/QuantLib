@@ -434,6 +434,8 @@ void OldPricerTest::testMcSingleFactorPricers() {
             "    expected:         "
             + DoubleFormatter::toString(storedValue,10));
 
+#ifndef QL_DISABLE_DEPRECATED
+
     // "batch" 2
     //
     // data from "Option Pricing Formulas", Haug, pag.96-97
@@ -455,6 +457,8 @@ void OldPricerTest::testMcSingleFactorPricers() {
             + DoubleFormatter::toString(pricer2.value(),10) + "\n"
             "    expected:         "
             + DoubleFormatter::toString(storedValue,10));
+
+#endif
 
     // "batch" 3
     //

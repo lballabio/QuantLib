@@ -34,8 +34,6 @@ namespace QuantLib {
         std::sort(fixingDates_.begin(), fixingDates_.end());
     }
 
-
-
     void DiscreteAveragingAsianOption::setupArguments(Arguments* args) const {
 
         OneAssetStrikedOption::setupArguments(args);
@@ -47,7 +45,6 @@ namespace QuantLib {
         moreArgs->runningProduct = runningProduct_;
         moreArgs->pastFixings = pastFixings_;
         moreArgs->fixingDates = fixingDates_;
-
     }
 
     void DiscreteAveragingAsianOption::arguments::validate() const {
@@ -59,10 +56,46 @@ namespace QuantLib {
         OneAssetStrikedOption::arguments::validate();
         #endif
 
-        QL_REQUIRE(runningProduct >= 0.0,
-                   "negative running product");
+        QL_REQUIRE(int(averageType) != -1, "unspecified average type");
+        QL_REQUIRE(runningProduct != Null<double>(), "null running product");
+        QL_REQUIRE(runningProduct >= 0.0, "negative running product");
+        QL_REQUIRE(pastFixings != Null<int>(), "null past-fixing number");
 
         // check fixingTimes_ here
+    }
+
+
+
+
+    ContinuousAveragingAsianOption::ContinuousAveragingAsianOption(
+        Average::Type averageType,
+        const boost::shared_ptr<BlackScholesProcess>& stochProc,
+        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise,
+        const boost::shared_ptr<PricingEngine>& engine)
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine), 
+      averageType_(averageType) {}
+
+    void ContinuousAveragingAsianOption::setupArguments(Arguments* args) 
+                                                                     const {
+        OneAssetStrikedOption::setupArguments(args);
+
+        ContinuousAveragingAsianOption::arguments* moreArgs =
+            dynamic_cast<ContinuousAveragingAsianOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != 0, "wrong argument type");
+        moreArgs->averageType = averageType_;
+    }
+
+    void ContinuousAveragingAsianOption::arguments::validate() const {
+
+        #if defined(QL_PATCH_MICROSOFT)
+        OneAssetStrikedOption::arguments copy = *this;
+        copy.validate();
+        #else
+        OneAssetStrikedOption::arguments::validate();
+        #endif
+
+        QL_REQUIRE(int(averageType) != -1, "unspecified average type");
     }
 
 }

@@ -19,7 +19,9 @@
 #define quantlib_pricing_engines_asian_all_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/PricingEngines/Asian/analyticasianengine.hpp>
+
+#include <ql/PricingEngines/Asian/analyticcontinuousasianengine.hpp>
+#include <ql/PricingEngines/Asian/analyticdiscreteasianengine.hpp>
 
 
 #endif

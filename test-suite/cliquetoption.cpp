@@ -167,8 +167,6 @@ namespace {
                        new BlackScholesProcess(
                              RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
 
-    int loop = 0;
-
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(moneyness); j++) {
         for (Size k=0; k<LENGTH(lengths); k++) {

@@ -22,7 +22,10 @@
 
 class AsianOptionTest {
   public:
+    static void testGeometricContinuousAverage();
+    static void testGeometricContinuousGreeks();
     static void testGeometricDiscreteAverage();
+    static void testGeometricDiscreteGreeks();
     static boost::unit_test_framework::test_suite* suite();
 };
 
