@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/21 10:47:26  nando
+// "dividendRho not implemented yet" moved up in the class hierarchy
+//
 // Revision 1.11  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -67,6 +70,9 @@ namespace QuantLib {
                 const std::vector<double>& dividends = std::vector<double>(),
                 const std::vector<Time>& exdivdates = std::vector<Time>(),
                 int timeSteps = 100, int gridPoints = 100);
+            double dividendRho() const {
+                throw Error("DividendOption::dividendRho not implemented yet");
+            }
             protected:
             void initializeControlVariate() const;
             private:

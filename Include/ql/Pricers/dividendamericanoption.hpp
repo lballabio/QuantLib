@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/21 10:47:26  nando
+// "dividendRho not implemented yet" moved up in the class hierarchy
+//
 // Revision 1.13  2001/08/13 15:06:17  nando
 // added dividendRho method
 //
@@ -76,9 +79,6 @@ namespace QuantLib {
                 const std::vector<Time>& exdivdates = std::vector<Time>(),
                 int timeSteps = 100, int gridPoints = 100);
             Handle<SingleAssetOption> clone() const;
-            double dividendRho() const {
-                throw Error("DividendOption::dividendRho not implemented yet");
-            }
         };
 
     }
