@@ -2,9 +2,12 @@
 # $Id$
 
 #AUTOMAKE_OPTIONS=foreign dist-bzip2
+
 AUTOMAKE_OPTIONS=foreign
 SUBDIRS=ql Examples
 CFLAGS=-Wall
+
+bin_SCRIPTS = quantlib-config
 
 EXTRA_DIST = \
 	Authors.txt \
