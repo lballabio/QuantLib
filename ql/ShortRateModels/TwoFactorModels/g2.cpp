@@ -29,11 +29,11 @@ namespace QuantLib {
       a_(arguments_[0]), sigma_(arguments_[1]), 
       b_(arguments_[2]), eta_(arguments_[3]),
       rho_(arguments_[4]) {
-        a_ = ConstantParameter(a, PositiveConstraint());
+        a_     = ConstantParameter(a, PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
-        b_ = ConstantParameter(b, PositiveConstraint());
-        eta_ = ConstantParameter(eta, PositiveConstraint());
-        rho_ = ConstantParameter(rho, BoundaryConstraint(-1.0, -0.65));
+        b_     = ConstantParameter(b, PositiveConstraint());
+        eta_   = ConstantParameter(eta, PositiveConstraint());
+        rho_   = ConstantParameter(rho, BoundaryConstraint(-1.0, -0.65));
         generateArguments();
     }
 

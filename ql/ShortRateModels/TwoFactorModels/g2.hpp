@@ -57,7 +57,7 @@ namespace QuantLib {
            Real sigma = 0.01,
            Real b = 0.1, 
            Real eta = 0.01,
-           Real rho = 0.0);
+           Real rho = -0.75);
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
