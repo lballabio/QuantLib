@@ -19,7 +19,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #endif
 
 %{
-#include "yield.h"
+#include "rate.h"
 #include "spread.h"
 #include "discountfactor.h"
 

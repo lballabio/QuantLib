@@ -504,7 +504,7 @@ class StatisticsPtr(Statistics):
 
 
 Statistics.samples = new.instancemethod(QuantLibc.Statistics_samples, None, Statistics)
-Statistics.sampleWeight = new.instancemethod(QuantLibc.Statistics_sampleWeight, None, Statistics)
+Statistics.weightSum = new.instancemethod(QuantLibc.Statistics_weightSum, None, Statistics)
 Statistics.mean = new.instancemethod(QuantLibc.Statistics_mean, None, Statistics)
 Statistics.variance = new.instancemethod(QuantLibc.Statistics_variance, None, Statistics)
 Statistics.standardDeviation = new.instancemethod(QuantLibc.Statistics_standardDeviation, None, Statistics)

@@ -23,15 +23,15 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 using QuantLib::Option;
 typedef Option::Type OptionType;
 
-#include "stringconverters.h"
-using QuantLib::ConvertToLowercase;
+#include "dataformatters.h"
+using QuantLib::StringFormatter;
 %}
 
 %typemap(python,in) OptionType, OptionType * {
 	if (PyString_Check($source)) {
 		$target = new OptionType;
 		std::string s(PyString_AsString($source));
-		ConvertToLowercase(s);
+		s = StringFormatter::toLowercase(s);
 		if (s == "call")				*($target) = Option::Call;
 		else if (s == "put")			*($target) = Option::Put;
 		else if (s == "straddle")		*($target) = Option::Straddle;

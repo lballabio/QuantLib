@@ -22,7 +22,7 @@ namespace QuantLib {
 			// constructor
 			PiecewiseConstantForwards(Handle<Currency> currency, Handle<DayCounter> dayCounter, const Date& today, 
 			  const std::vector<Deposit>& deposits);
-			// clone			
+			// clone
 			Handle<TermStructure> clone() const;
 			// inspectors
 			Handle<Currency> currency() const;

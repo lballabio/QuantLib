@@ -5,40 +5,49 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+/*! \file swaptionvolsurface.h
+	\brief Swaption volatility surface
+*/
+
 #ifndef quantlib_swaption_volatility_surface_h
 #define quantlib_swaption_volatility_surface_h
 
 #include "qldefines.h"
 #include "date.h"
-#include "yield.h"
+#include "rate.h"
 #include "handle.h"
 #include "observable.h"
 
 namespace QuantLib {
 
-	class SwaptionVolatilitySurface : public Observable {
+	//! Swaption volatility surface
+	/*! This class is purely abstract and defines the interface of concrete
+		swaption volatility structures which will be derived from this one.
+	*/
+	class SwaptionVolatilitySurface : public Patterns::Observable {
 	  public:
-		// constructors
-		SwaptionVolatilitySurface() {};
-		// copy of this surface with no observers registered
+		virtual ~SwaptionVolatilitySurface() {}
+		//! returns a copy of this surface with no observers registered
 		virtual Handle<SwaptionVolatilitySurface> clone() const = 0;
-		// volatility
+		//! returns the volatility for a given starting date and length
 		virtual Rate vol(const Date& start, Time length) const = 0;
 	};
 	
-	// spreaded surface 
-	
+	//! Swaption volatility surface with an added spread
+	/*! This surface will remain linked to the original surface, i.e., any changes
+		in the latter will be reflected in this surface as well.
+	*/
 	class SpreadedSwaptionVolatilitySurface : public SwaptionVolatilitySurface {
 	  public:
-		// constructor
 		SpreadedSwaptionVolatilitySurface(const Handle<SwaptionVolatilitySurface>&, Spread spread);
-		// clone
 		Handle<SwaptionVolatilitySurface> clone() const;
-		// volatility
+		//! returns the volatility of the original surface plus the given spread
 		Rate vol(const Date& start, Time length) const;
-		// observers of this curve are also observers of the original curve
-		void registerObserver(Observer*);
-		void unregisterObserver(Observer*);
+		//! registers with the original surface as well
+		void registerObserver(Patterns::Observer*);
+		//! unregisters with the original surface as well
+		void unregisterObserver(Patterns::Observer*);
+		//! unregisters with the original surface as well
 		void unregisterAll();
 	  private:
 		Handle<SwaptionVolatilitySurface> theOriginalSurface;
@@ -61,18 +70,18 @@ namespace QuantLib {
 		return theOriginalSurface->vol(start,length)+theSpread;
 	}
 	
-	inline void SpreadedSwaptionVolatilitySurface::registerObserver(Observer* o) {
+	inline void SpreadedSwaptionVolatilitySurface::registerObserver(Patterns::Observer* o) {
 		SwaptionVolatilitySurface::registerObserver(o);
 		theOriginalSurface->registerObserver(o);
 	}
 	
-	inline void SpreadedSwaptionVolatilitySurface::unregisterObserver(Observer* o) {
+	inline void SpreadedSwaptionVolatilitySurface::unregisterObserver(Patterns::Observer* o) {
 		SwaptionVolatilitySurface::unregisterObserver(o);
 		theOriginalSurface->unregisterObserver(o);
 	}
 	
 	inline void SpreadedSwaptionVolatilitySurface::unregisterAll() {
-		for (std::set<Observer*>::iterator i = observers().begin(); i!=observers().end(); ++i)
+		for (std::set<Patterns::Observer*>::iterator i = observers().begin(); i!=observers().end(); ++i)
 			theOriginalSurface->unregisterObserver(*i);
 		SwaptionVolatilitySurface::unregisterAll();
 	}

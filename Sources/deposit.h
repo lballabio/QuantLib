@@ -16,14 +16,18 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 namespace QuantLib {
 
+	//! deposit rate
 	class Deposit {
 	  public:
 		Deposit() {}
 		Deposit(const Date& maturity, Rate rate, const Handle<DayCounter>& dayCounter)
 		: theMaturity(maturity), theRate(rate), theDayCounter(dayCounter) {}
+		//! \name Inspectors
+		//@{
 		Date maturity() const { return theMaturity; }
 		Rate rate() const { return theRate; }
 		Handle<DayCounter> dayCounter() const { return theDayCounter; }
+		//@}
 	  private:
 		Date theMaturity;
 		Rate theRate;

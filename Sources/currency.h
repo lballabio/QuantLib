@@ -64,9 +64,7 @@ namespace QuantLib {
 		return settlementCalendar()->advance(d,settlementDays());
 	}
 	
-	/*! \defgroup currencycomparisons Comparisons between currencies */
-	
-	/*! \ingroup currencycomparisons
+	/*! Returns <tt>true</tt> iff the two currencies belong to the same derived class.
 		\relates Currency
 	*/
 	QL_TEMPLATE_SPECIALIZATION
@@ -74,9 +72,7 @@ namespace QuantLib {
 		return (c1->name() == c2->name());
 	}
 	
-	/*! \ingroup currencycomparisons
-		\relates Currency
-	*/
+	/*! \relates Currency */
 	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator!=(const Handle<Currency>& c1, const Handle<Currency>& c2) {
 		return (c1->name() != c2->name());

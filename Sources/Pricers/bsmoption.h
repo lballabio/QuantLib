@@ -17,7 +17,7 @@
 #include "qldefines.h"
 #include "options.h"
 #include "date.h"
-#include "yield.h"
+#include "rate.h"
 #include "handle.h"
 #include "solver1d.h"
 

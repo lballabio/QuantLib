@@ -5,6 +5,10 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+/*! \file statistics.h
+	\brief statistic tools
+*/
+
 #ifndef quantlib_statistic_h
 #define quantlib_statistic_h
 
@@ -15,39 +19,67 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 namespace QuantLib {
 
+	//! Statistic tool
+	/*! It can accumulate a set of data and return statistic quantities
+		as mean, variance, std. deviation, skewness, and kurtosis.
+	*/
 	class Statistics {
 	  public:
 	    Statistics();
-	    // Accessors
+	    //! \name Inspectors
+	    //@{
+	    //! size of data set
 	    int samples() const;
-	    double sampleWeight() const;
+	    //! sum of data weights
+	    double weightSum() const;
+	    /*! returns the mean, defined as
+	    \f[ \langle x \rangle = \frac{\sum w_i x_i}{\sum w_i}. \f]
+	    */
 	    double mean() const;
-	    // Variance, uses N-1 divisor
+	    /*! returns the variance, defined as
+	    \f[ \frac{N}{N-1} \left\langle \left( x-\langle x \rangle \right)^2 \right\rangle. \f]
+	    */
 	    double variance() const;
-	    // Standard deviation, uses N-1 divisor
+	    /*! returns the standard deviation \f$ \sigma \f$, defined as the square root of the variance. */
 	    double standardDeviation() const;
-	    // Skew (Excel definition).  Zero for normal distribution.
+	    /*! returns the skewness, defined as
+	    \f[ \frac{N^2}{(N-1)(N-2)}
+	    \frac{\left\langle \left( x-\langle x \rangle \right)^3 \right\rangle}{\sigma^3}. \f]
+	    The above evaluates to 0 for a Gaussian distribution.
+	    */
 	    double skewness() const;
-	    // Kurtosis (Excel definition). Zero for normal distribution.
+	    /*! returns the excess kurtosis, defined as
+	    \f[ \frac{N(N+1)}{(N-1)(N-2)(N-3)}
+	    \frac{\left\langle \left( x-\langle x \rangle \right)^4 \right\rangle}{\sigma^4}
+	    -\frac{3(N-1)^2}{(N-2)(N-3)}. \f]
+	    The above evaluates to 0 for a Gaussian distribution.
+	    */
 	    double kurtosis() const;
-	    // Minimum sample value
+	    /*! returns the minimum sample value */
 	    double min() const;
-	    // Maximum sample value
+	    /*! returns the maximum sample value */
 	    double max() const;
-	
-	    // Modifiers
+		//@}
+		
+	    //! \name Modifiers
+	    //@{
+	    //! adds a datum to the set, possibly with a weight
 	    void add(double value, double weight = 1.0);
+	    //! adds a sequence of data to the set
 	    template <class DataIterator>
 	    void addSequence(DataIterator begin, DataIterator end) {
 	      for (;begin!=end;begin++)
 	        add(*begin);
 	    }
+	    //! adds a sequence of data to the set, each with its weight
 	    template <class DataIterator, class WeightIterator>
 	    void addSequence(DataIterator begin, DataIterator end, WeightIterator wbegin) {
 	      for (;begin!=end;begin++,wbegin++)
 	        add(*begin, *wbegin);
 	    }
+	    //! resets the data to a null set
 	    void reset();
+	    //@}
 	  private:
 	    int theSampleNumber;
 	    double theSampleWeight;
@@ -77,7 +109,7 @@ namespace QuantLib {
 	  return theSampleNumber;
 	}
 	
-	inline double Statistics::sampleWeight() const {
+	inline double Statistics::weightSum() const {
 	  return theSampleWeight;
 	}
 	

@@ -81,10 +81,8 @@ namespace QuantLib {
 	}
 	
 	// inline definitions
-
-	/*! \defgroup calendarcomparisons Comparisons between calendars */
 	
-	/*! \ingroup calendarcomparisons
+	/*! Returns <tt>true</tt> iff the two calendars belong to the same derived class.
 		\relates Calendar
 	*/
 	QL_TEMPLATE_SPECIALIZATION
@@ -92,9 +90,7 @@ namespace QuantLib {
 		return (h1->name() == h2->name());
 	}
 	
-	/*! \ingroup calendarcomparisons
-		\relates Calendar
-	*/
+	/*! \relates Calendar */
 	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator!=(const Handle<Calendar>& h1, const Handle<Calendar>& h2) {
 		return (h1->name() != h2->name());

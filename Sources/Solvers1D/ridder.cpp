@@ -56,7 +56,7 @@ namespace QuantLib {
 			  if (QL_FABS(xMax-xMin) <= xAccuracy) return root;
 			}
 			throw Error("Ridder: maximum number of function evaluations ("
-			+ IntegerFormat(maxEvaluations) + ") exceeded");
+			+ IntegerFormatter::toString(maxEvaluations) + ") exceeded");
 			QL_DUMMY_RETURN(0.0);
 		}
 	

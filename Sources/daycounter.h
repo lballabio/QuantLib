@@ -52,9 +52,7 @@ namespace QuantLib {
 	
 	// inline definitions
 
-	/*! \defgroup daycountercomparisons Comparisons between day counters */
-	
-	/*! \ingroup daycountercomparisons
+	/*! Returns <tt>true</tt> iff the two day counters belong to the same derived class.
 		\relates DayCounter
 	*/
 	QL_TEMPLATE_SPECIALIZATION
@@ -62,9 +60,7 @@ namespace QuantLib {
 		return (h1->name() == h2->name());
 	}
 	
-	/*! \ingroup daycountercomparisons
-		\relates DayCounter
-	*/
+	/*! \relates DayCounter */
 	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator!=(const Handle<DayCounter>& h1, const Handle<DayCounter>& h2) {
 		return (h1->name() != h2->name());

@@ -5,6 +5,10 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+/*! \file null.h
+	\brief null values
+*/
+
 #ifndef quantlib_null_h
 #define quantlib_null_h
 
@@ -13,6 +17,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 namespace QuantLib {
 
+	//! template class providing a null value.
 	template <class Type>
 	class Null {
 	  public:

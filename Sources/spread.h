@@ -10,7 +10,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 #include "qldefines.h"
 #include "qlerrors.h"
-#include "formats.h"
+#include "dataformatters.h"
 #include <sstream>
 
 namespace QuantLib {
@@ -60,6 +60,7 @@ namespace QuantLib {
 	
 	#else
 	
+		//! used to describe spreads on interest rates.
 		typedef double Spread;
 	
 	#endif

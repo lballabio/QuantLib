@@ -31,21 +31,14 @@ class Statistics {
     virtual ~Statistics();
     // Accessors
     int samples() const;
-    double sampleWeight() const;
+    double weightSum() const;
     double mean() const;
-    // Variance, uses N-1 divisor
     double variance() const;
-    // Standard deviation, uses N-1 divisor
     double standardDeviation() const;
-    // Skewness (Excel definition).  Zero for normal distribution.
     double skewness() const;
-    // Kurtosis (Excel definition). Zero for normal distribution.
     double kurtosis() const;
-    // Minimum sample value
     double min() const;
-    // Maximum sample value
     double max() const;
-
     // Modifiers
     void add(double value, double weight = 1.0);
     void reset();

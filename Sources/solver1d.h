@@ -11,7 +11,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "qldefines.h"
 #include "null.h"
 #include "qlerrors.h"
-#include "formats.h"
+#include "dataformatters.h"
 #include <cmath>
 #include <limits>
 #include <iostream>

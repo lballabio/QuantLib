@@ -5,13 +5,17 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+/*! \file termstructure.h
+	\brief Term structure
+*/
+
 #ifndef quantlib_term_structure_h
 #define quantlib_term_structure_h
 
 #include "qldefines.h"
 #include "date.h"
 #include "calendar.h"
-#include "yield.h"
+#include "rate.h"
 #include "spread.h"
 #include "discountfactor.h"
 #include "currency.h"
@@ -21,102 +25,138 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 namespace QuantLib {
 
-	class TermStructure : public Observable {
+	//! Term structure
+	/*! This class is purely abstract and defines the interface of concrete
+		rate structures which will be derived from this one.
+	*/
+	class TermStructure : public Patterns::Observable {
 	  public:
-		// constructor
-		TermStructure() {}
 		virtual ~TermStructure() {}
-		// copy of this curve with no observers registered
+		//! returns a copy of this structure with no observers registered
 		virtual Handle<TermStructure> clone() const = 0;
-		// inspectors
-		virtual Handle<Currency> currency() const = 0;
-		virtual Date todaysDate() const = 0;
-		virtual Date settlementDate() const = 0;
-		virtual Handle<Calendar> calendar() const = 0;
-		virtual Date maxDate() const = 0;
-		virtual Date minDate() const = 0;
-		// zero yield
+		//! \name Rates
+		//@{
+		//! zero yield rate for a given date
 		virtual Rate zeroYield(const Date&) const = 0;
+		//! zero yield rate for a given set of dates
 		std::vector<Rate> zeroYield(const std::vector<Date>&) const;
-		// discount
+		//! discount factor for a given date
 		virtual DiscountFactor discount(const Date&) const = 0;
+		//! discount factor for a given set of dates
 		std::vector<DiscountFactor> discount(const std::vector<Date>&) const;
-		// forward
+		//! instantaneous forward rate for a given date
 		virtual Rate forward(const Date&) const = 0;
+		//! instantaneous forward rate for a given set of dates
 		std::vector<Rate> forward(const std::vector<Date>&) const;
+		//@}
+
+		//! \name Other inspectors
+		//@{
+		//! returns the currency upon which the term structure is defined
+		virtual Handle<Currency> currency() const = 0;
+		//! returns the calendar upon which the term structure is defined
+		virtual Handle<Calendar> calendar() const = 0;
+		//! returns the date at which the structure is defined
+		virtual Date todaysDate() const = 0;
+		//! returns the settlement date relative to today's date
+		virtual Date settlementDate() const = 0;
+		//! returns the earliest date for which the curve can return rates
+		virtual Date minDate() const = 0;
+		//! returns the latest date for which the curve can return rates
+		virtual Date maxDate() const = 0;
+		//@}
 	};
 	
+	//! Zero yield term structure
+	/*! This abstract class acts as an adapter to TermStructure allowing the
+		programmer to implement only the <tt>zeroYield(const Date&)</tt> method
+		in derived classes.
+	*/
 	class ZeroYieldStructure : public TermStructure {
 	  public:
-		// constructor
-		ZeroYieldStructure() {}
 		virtual ~ZeroYieldStructure() {}
+		//! returns the discount factor for the given date calculating it from the zero yield
 		DiscountFactor discount(const Date&) const;
+		//! returns the instantaneous forward rate for the given date calculating it from the zero yield
 		Rate forward(const Date&) const;
 	};
 	
+	//! Discount factor term structure
+	/*! This abstract class acts as an adapter to TermStructure allowing the
+		programmer to implement only the <tt>discount(const Date&)</tt> method
+		in derived classes.
+	*/
 	class DiscountStructure : public TermStructure {
 	  public:
-		// constructor
-		DiscountStructure() {}
 		virtual ~DiscountStructure() {}
+		//! returns the zero yield rate for the given date calculating it from the discount
 		Rate zeroYield(const Date&) const;
+		//! returns the instantaneous forward rate for the given date calculating it from the discount
 		Rate forward(const Date&) const;
 	};
 	
+	//! Forward rate term structure
+	/*! This abstract class acts as an adapter to TermStructure allowing the
+		programmer to implement only the <tt>forward(const Date&)</tt> method
+		in derived classes.
+	*/
 	class ForwardRateStructure : public TermStructure {
 	  public:
-		// constructor
-		ForwardRateStructure() {}
 		virtual ~ForwardRateStructure() {}
+		//! returns the zero yield rate for the given date calculating it from the instantaneous forward rate
 		Rate zeroYield(const Date&) const;
+		//! returns the discount factor for the given date calculating it from the instantaneous forward rate
 		DiscountFactor discount(const Date&) const;
 	};
 	
-	// note: the shifted and spreaded curves remain linked to the original curve
-	
+	//! Implied term structure at a given rate in the future
+	/*! This term structure will remain linked to the original structure, i.e., any changes
+		in the latter will be reflected in this structure as well.
+	*/
 	class ImpliedTermStructure : public DiscountStructure {
 	  public:
-		// constructor
 		ImpliedTermStructure(const Handle<TermStructure>&, const Date& evaluationDate);
-		// clone
 		Handle<TermStructure> clone() const;
-		// inspectors
 		Handle<Currency> currency() const;
 		Date todaysDate() const;
 		Date settlementDate() const;
 		Handle<Calendar> calendar() const;
 		Date maxDate() const;
 		Date minDate() const;
-		// discount
+		//! returns the discount factor as seen from the evaluation date
 		DiscountFactor discount(const Date&) const;
-		// observers of this curve are also observers of the original curve
-		void registerObserver(Observer*);
-		void unregisterObserver(Observer*);
+		//! registers with the original structure as well
+		void registerObserver(Patterns::Observer*);
+		//! unregisters with the original structure as well
+		void unregisterObserver(Patterns::Observer*);
+		//! unregisters with the original structure as well
 		void unregisterAll();
 	  private:
 		Handle<TermStructure> theOriginalCurve;
 		Date theEvaluationDate;
 	};
 	
+	//! Term structure with an added spread on the zero yield rate
+	/*! This term structure will remain linked to the original structure, i.e., any changes
+		in the latter will be reflected in this structure as well.
+	*/
 	class SpreadedTermStructure : public ZeroYieldStructure {
 	  public:
-		// constructor
 		SpreadedTermStructure(const Handle<TermStructure>&, Spread spread);
-		// clone
 		Handle<TermStructure> clone() const;
-		// inspectors
 		Handle<Currency> currency() const;
 		Date todaysDate() const;
 		Date settlementDate() const;
 		Handle<Calendar> calendar() const;
 		Date maxDate() const;
 		Date minDate() const;
-		// discount
+		//! returns the zero yield rate from the original structure plus the spread
 		Rate zeroYield(const Date&) const;
-		// observers of this curve are actually observers of the original curve
-		void registerObserver(Observer*);
-		void unregisterObserver(Observer*);
+		//! registers with the original structure as well
+		void registerObserver(Patterns::Observer*);
+		//! unregisters with the original structure as well
+		void unregisterObserver(Patterns::Observer*);
+		//! unregisters with the original structure as well
 		void unregisterAll();
 	  private:
 		Handle<TermStructure> theOriginalCurve;
@@ -237,18 +277,18 @@ namespace QuantLib {
 		return Handle<TermStructure>(new ImpliedTermStructure(theOriginalCurve->clone(),theEvaluationDate));
 	}
 	
-	inline void ImpliedTermStructure::registerObserver(Observer* o) {
+	inline void ImpliedTermStructure::registerObserver(Patterns::Observer* o) {
 		TermStructure::registerObserver(o);
 		theOriginalCurve->registerObserver(o);
 	}
 	
-	inline void ImpliedTermStructure::unregisterObserver(Observer* o) {
+	inline void ImpliedTermStructure::unregisterObserver(Patterns::Observer* o) {
 		TermStructure::unregisterObserver(o);
 		theOriginalCurve->unregisterObserver(o);
 	}
 	
 	inline void ImpliedTermStructure::unregisterAll() {
-		for (std::set<Observer*>::iterator i = observers().begin(); i!=observers().end(); ++i)
+		for (std::set<Patterns::Observer*>::iterator i = observers().begin(); i!=observers().end(); ++i)
 			theOriginalCurve->unregisterObserver(*i);
 		TermStructure::unregisterAll();
 	}
@@ -291,18 +331,18 @@ namespace QuantLib {
 		return Handle<TermStructure>(new SpreadedTermStructure(theOriginalCurve->clone(),theSpread));
 	}
 	
-	inline void SpreadedTermStructure::registerObserver(Observer* o) {
+	inline void SpreadedTermStructure::registerObserver(Patterns::Observer* o) {
 		TermStructure::registerObserver(o);
 		theOriginalCurve->registerObserver(o);
 	}
 	
-	inline void SpreadedTermStructure::unregisterObserver(Observer* o) {
+	inline void SpreadedTermStructure::unregisterObserver(Patterns::Observer* o) {
 		TermStructure::unregisterObserver(o);
 		theOriginalCurve->unregisterObserver(o);
 	}
 	
 	inline void SpreadedTermStructure::unregisterAll() {
-		for (std::set<Observer*>::iterator i = observers().begin(); i!=observers().end(); ++i)
+		for (std::set<Patterns::Observer*>::iterator i = observers().begin(); i!=observers().end(); ++i)
 			theOriginalCurve->unregisterObserver(*i);
 		TermStructure::unregisterAll();
 	}

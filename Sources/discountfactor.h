@@ -10,7 +10,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 #include "qldefines.h"
 #include "qlerrors.h"
-#include "formats.h"
+#include "dataformatters.h"
 
 namespace QuantLib {
 
@@ -51,6 +51,7 @@ namespace QuantLib {
 	
 	#else
 	
+		//! used to describe discount factors between dates.
 		typedef double DiscountFactor;
 	
 	#endif

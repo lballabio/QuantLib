@@ -5,6 +5,10 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+/*! \file dem.h
+	\brief Deutsche Mark
+*/
+
 #ifndef quantlib_DEM_h
 #define quantlib_DEM_h
 
@@ -16,12 +20,15 @@ namespace QuantLib {
 
 	namespace Currencies {
 	
+		//! Deutsche Mark
 		class DEM : public Currency {
 		  public:
 			DEM() {}
 			std::string name() const { return std::string("DEM"); }
+			//! returns a handle to the TARGET calendar
 			Handle<Calendar> settlementCalendar() const { 
 				return Handle<Calendar>(new Calendars::TARGET); }
+			//! returns 2
 			int settlementDays() const { return 2; }
 		};
 	

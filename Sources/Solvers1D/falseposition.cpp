@@ -50,7 +50,7 @@ namespace QuantLib {
 		  	}
 			}
 			throw Error("FalsePosition: maximum number of function evaluations ("
-			  + IntegerFormat(maxEvaluations) + ") exceeded");
+			  + IntegerFormatter::toString(maxEvaluations) + ") exceeded");
 			QL_DUMMY_RETURN(0.0);
 		}
 	

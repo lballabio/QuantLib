@@ -17,7 +17,7 @@ namespace QuantLib {
 		    growthDiscount = (QL_EXP(-theUnderlyingGrowthRate*theResidualTime));
 		    riskFreeDiscount = (QL_EXP(-theRiskFreeRate*theResidualTime));
 			  standardDeviation = theVolatility*QL_SQRT(theResidualTime);
-			  CumulativeNormalDistribution f;
+			  Math::CumulativeNormalDistribution f;
 			  double D1 = QL_LOG(theUnderlying/theStrike)/standardDeviation + standardDeviation/2.0
 				  + (theRiskFreeRate-theUnderlyingGrowthRate)*theResidualTime/standardDeviation;
 			  double D2 = D1 - standardDeviation;

@@ -35,7 +35,7 @@ namespace QuantLib {
 				|| (d == 8 && m == December)
 				// Christmas
 				|| (d == 25 && m == December)
-				// Boxing Day
+				// St. Stephen
 				|| (d == 26 && m == December)
 				// December 31st, 1999 only
 				|| (d == 31 && m == December && y == 1999))

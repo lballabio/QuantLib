@@ -5,6 +5,10 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
+/*! \file instrument.h
+	\brief Abstract instrument class
+*/
+
 #ifndef quantlib_financial_instrument_h
 #define quantlib_financial_instrument_h
 
@@ -15,6 +19,10 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 namespace QuantLib {
 
+	//! Abstract instrument class
+	/*! This class is purely abstract and defines the interface of concrete
+		instruments which will be derived from this one.
+	*/
 	class Instrument {
 	  public:
 		Instrument()
@@ -25,28 +33,95 @@ namespace QuantLib {
 		  termStructureHasChanged(true), swaptionVolHasChanged(true), forwardVolHasChanged(true), 
 		  theSettlementDate(Date()), theNPV(0.0), expired(false) {}
 		virtual ~Instrument();
-		// modifiers
+		//! \name Modifiers
+		//@{
+		//! sets the price for instruments which allow to do so.
 		virtual void setPrice(double price) = 0;
+		//! sets the term structure to be used for pricing.
 		virtual void setTermStructure(const Handle<TermStructure>&);
+		//! sets the swaption volatility surface to be used for pricing.
 		virtual void setSwaptionVolatility(const Handle<SwaptionVolatilitySurface>&);
+		//! sets the forward volatility surface to be used for pricing.
 		virtual void setForwardVolatility(const Handle<ForwardVolatilitySurface>&);
-		// inspectors
+		//@}
+		
+		//! \name Inspectors
+		//@{
+		//! returns the ISIN code of the instrument.
 		std::string isinCode() const;
+		//! returns a brief textual description of the instrument.
 		std::string description() const;
+		//! returns <tt>true</tt> iff the instrument needs a term structure for pricing.
 		virtual bool useTermStructure() const = 0;
+		//! returns the term structure used for pricing.
 		Handle<TermStructure> termStructure() const;
+		//! returns <tt>true</tt> iff the instrument needs a swaption volatility surface for pricing.
 		virtual bool useSwaptionVolatility() const = 0;
+		//! returns the swaption volatility surface used for pricing.
 		Handle<SwaptionVolatilitySurface> swaptionVolatility() const;
+		//! returns <tt>true</tt> iff the instrument needs a forward volatility surface for pricing.
 		virtual bool useForwardVolatility() const = 0;
+		//! returns the forward volatility surface used for pricing.
 		Handle<ForwardVolatilitySurface> forwardVolatility() const;
+		//! returns the net present value of the instrument.
 		double NPV() const;
+		//! returns the price of the instrument.
 		virtual double price() const = 0;
+		//@}
 	  protected:
+		/*! \name Calculations
+			These methods do not modify the structure of the instrument and are therefore declared
+			as <tt>const</tt>. Temporary variables will be declared as mutable.
+		*/
+		//@{
+		/*! This method must implement any calculations which must be (re)done in case
+			the term structure is set or changes. A default is supplied with a null body. */
+		virtual void performTermStructureCalculations() const {}
+		/*! This method must implement any calculations which must be redone in case
+			the swaption volatility surface is set or changes. A default is supplied with a null body. */
+		virtual void performSwaptionVolCalculations() const {}
+		/*! This method must implement any calculations which must be redone in case
+			the forward volatility surface is set or changes. A default is supplied with a null body. */
+		virtual void performForwardVolCalculations() const {}
+		/*! This method must return <tt>true</tt> if any calculations are needed besides 
+			the ones implemented in <b>performTermStructureCalculations</b>, 
+			<b>performSwaptionVolCalculations</b>, and <b>performForwardVolCalculations</b>. */
+		virtual bool needsFinalCalculations() const;
+		/*! This method must implement any calculations which are needed besides 
+			the ones implemented in <b>performTermStructureCalculations</b>, 
+			<b>performSwaptionVolCalculations</b>, and <b>performForwardVolCalculations</b>.
+			A default is supplied with a null body. */
+		virtual void performFinalCalculations() const {}
+		//@}
+		
+		//! \name Results
+		//@{
+		/*! The value of this attribute must be set by the instrument constructor.
+		*/
+		Date theSettlementDate;
+		/*! The value of this attribute must be set by either of the <b>performXxxCalculations</b>
+			methods.
+		*/
+		mutable double theNPV;
+		/*! The value of this attribute must be set to <tt>true</tt> by either of the 
+			<b>performXxxCalculations</b> methods if the instrument is expired.
+		*/
+		mutable bool expired;
+		//@}
+	  private:
+		void calculate() const;
+		// data members
+		std::string theISINCode, theDescription;
+		Handle<TermStructure> theTermStructure;
+		Handle<SwaptionVolatilitySurface> theSwaptionVol;
+		Handle<ForwardVolatilitySurface> theForwardVol;
+		// temporaries
+		mutable bool termStructureHasChanged, swaptionVolHasChanged, forwardVolHasChanged;
 		// observers
 		// term structure
 		class TermStructureObserver;
 		friend class TermStructureObserver;
-		class TermStructureObserver : public Observer {
+		class TermStructureObserver : public Patterns::Observer {
 		  public:
 			TermStructureObserver(Instrument* i = 0) : theInstrument(i) {}
 			void update() { theInstrument->termStructureHasChanged = true; }
@@ -59,7 +134,7 @@ namespace QuantLib {
 		// swaption vol
 		class SwaptionVolObserver;
 		friend class SwaptionVolObserver;
-		class SwaptionVolObserver : public Observer {
+		class SwaptionVolObserver : public Patterns::Observer {
 		  public:
 			SwaptionVolObserver(Instrument* i = 0) : theInstrument(i) {}
 			void update() { theInstrument->swaptionVolHasChanged = true; }
@@ -72,7 +147,7 @@ namespace QuantLib {
 		// forward vol
 		class ForwardVolObserver;
 		friend class ForwardVolObserver;
-		class ForwardVolObserver : public Observer {
+		class ForwardVolObserver : public Patterns::Observer {
 		  public:
 			ForwardVolObserver(Instrument* i = 0) : theInstrument(i) {}
 			void update() { theInstrument->forwardVolHasChanged = true; }
@@ -82,36 +157,25 @@ namespace QuantLib {
 		ForwardVolObserver theForwardVolObserver;
 		void registerToForwardVol();
 		void unregisterFromForwardVol();
-		// calculations
-		// these methods do not modify the structure - temporary variables will be declared as mutable
-		void calculate() const;
-		virtual void performTermStructureCalculations() const {};
-		virtual void performSwaptionVolCalculations() const {};
-		virtual void performForwardVolCalculations() const {};
-		virtual bool needsFinalCalculations() const;
-		virtual void performFinalCalculations() const {};
-		// data members
-		std::string theISINCode, theDescription;
-		Handle<TermStructure> theTermStructure;
-		Handle<SwaptionVolatilitySurface> theSwaptionVol;
-		Handle<ForwardVolatilitySurface> theForwardVol;
-		Date theSettlementDate;
-		// temporaries
-		mutable double theNPV;
-		mutable bool termStructureHasChanged, swaptionVolHasChanged, forwardVolHasChanged;
-		mutable bool expired;
+
 	};
-	
-	// comparisons based on ISIN code
-	
+
+	/*! \relates Instrument
+		\brief returns <tt>true</tt> iff two instruments have the same ISIN code
+	*/
 	QL_DECLARE_TEMPLATE_SPECIALIZATION(
 	bool operator==(const Handle<Instrument>&, const Handle<Instrument>&))
+	/*! \relates Instrument */
 	QL_DECLARE_TEMPLATE_SPECIALIZATION(
 	bool operator!=(const Handle<Instrument>&, const Handle<Instrument>&))
 	
 	
 	// derived classes
 	
+	//! Abstract instrument class
+	/*! It implements the <b>setPrice</b> and <b>price</b> methods for instruments
+		for instruments whose prices are available on the market.
+	*/
 	class PricedInstrument : public Instrument {
 	  public:
 		PricedInstrument() : priceIsSet(false) {}
@@ -119,12 +183,15 @@ namespace QuantLib {
 		: Instrument(isinCode,description), priceIsSet(false) {}
 		void setPrice(double price) { thePrice = price; priceIsSet = true; }
 		double price() const { Require(priceIsSet, "price not set"); return thePrice; }
-	  protected:
-		bool priceIsSet;
 	  private:
+		bool priceIsSet;
 		double thePrice;
 	};
 	
+	//! Abstract instrument class
+	/*! It inhibits the <b>setPrice</b> method and redirects the <b>price</b> method to <b>NPV</b>
+		for over-the-counter instruments.
+	*/
 	class OTCInstrument : public Instrument { // over the counter
 	  public:
 		OTCInstrument() {}

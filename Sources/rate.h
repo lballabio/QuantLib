@@ -80,6 +80,7 @@ namespace QuantLib {
 	
 	#else
 	
+		//! used to describe interest rates.
 		typedef double Rate;
 	
 	#endif

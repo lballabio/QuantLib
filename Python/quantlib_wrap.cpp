@@ -540,8 +540,9 @@ using QuantLib::Thursday;
 using QuantLib::Friday;
 using QuantLib::Saturday;
 
-#include "stringconverters.h"
-using QuantLib::ConvertToLowercase;
+#include "dataformatters.h"
+using QuantLib::StringFormatter;
+using QuantLib::DateFormatter;
 
 using QuantLib::Month;
 using QuantLib::January;
@@ -562,9 +563,6 @@ using QuantLib::Days;
 using QuantLib::Weeks;
 using QuantLib::Months;
 using QuantLib::Years;
-
-#include "formats.h"
-using QuantLib::DateFormat;
 
 	Date DateFromSerialNumber(int serialNumber) {
 		return Date(serialNumber);
@@ -645,7 +643,7 @@ CurrencyHandle NewGBP()		{ return CurrencyHandle(new GBP); }
 CurrencyHandle NewDEM()		{ return CurrencyHandle(new DEM); }
 CurrencyHandle NewITL()		{ return CurrencyHandle(new ITL); }
 
-#include "yield.h"
+#include "rate.h"
 #include "spread.h"
 #include "discountfactor.h"
 
@@ -657,8 +655,8 @@ using QuantLib::DiscountFactor;
 using QuantLib::Option;
 typedef Option::Type OptionType;
 
-#include "stringconverters.h"
-using QuantLib::ConvertToLowercase;
+#include "dataformatters.h"
+using QuantLib::StringFormatter;
 
 #include "termstructure.h"
 #include "handle.h"
@@ -727,8 +725,8 @@ using QuantLib::Array;
 using QuantLib::PDE::BoundaryCondition;
 typedef BoundaryCondition::Type BoundaryConditionType;
 
-#include "stringconverters.h"
-using QuantLib::ConvertToLowercase;
+#include "dataformatters.h"
+using QuantLib::StringFormatter;
 
 #include "tridiagonaloperator.h"
 using QuantLib::Operators::TridiagonalOperator;
@@ -1323,7 +1321,7 @@ static PyObject *_wrap_new_Date(PyObject *self, PyObject *args, PyObject *kwargs
     {
         if (PyString_Check(obj1)) {
             std::string s(PyString_AsString(obj1));
-            ConvertToLowercase(s);
+            s = StringFormatter::toLowercase(s);
             if (s == "jan" || s == "january")			arg1 = new Month(January);
             else if (s == "feb" || s == "february")		arg1 = new Month(February);
             else if (s == "mar" || s == "march")		arg1 = new Month(March);
@@ -1715,7 +1713,7 @@ static PyObject *_wrap_Date_plus(PyObject *self, PyObject *args, PyObject *kwarg
     {
         if (PyString_Check(obj2)) {
             std::string s(PyString_AsString(obj2));
-            ConvertToLowercase(s);
+            s = StringFormatter::toLowercase(s);
             if (s == "d" || s == "day" || s == "days")			arg2 = new TimeUnit(Days);
             else if (s == "w" || s == "week" || s == "weeks")	arg2 = new TimeUnit(Weeks);
             else if (s == "m" || s == "month" || s == "months")	arg2 = new TimeUnit(Months);
@@ -1889,7 +1887,7 @@ static PyObject *_wrap_Date___sub__(PyObject *self, PyObject *args, PyObject *kw
 char * Date___str__(Date *self) {
     {
         static char temp[256];
-        strcpy(temp,DateFormat(*self).c_str());
+        strcpy(temp,DateFormatter::toString(*self).c_str());
         return temp;
     }
 }
@@ -1925,7 +1923,7 @@ static PyObject *_wrap_Date___str__(PyObject *self, PyObject *args, PyObject *kw
 char * Date___repr__(Date *self) {
     {
         static char temp[256];
-        std::string s = "<Date: "+DateFormat(*self)+">";
+        std::string s = "<Date: "+DateFormatter::toString(*self)+">";
         strcpy(temp,s.c_str());
         return temp;
     }
@@ -3844,7 +3842,7 @@ static PyObject *_wrap_new_BoundaryCondition(PyObject *self, PyObject *args, PyO
     {
         if (PyString_Check(obj0)) {
             std::string s(PyString_AsString(obj0));
-            ConvertToLowercase(s);
+            s = StringFormatter::toLowercase(s);
             if (s == "" || s == "none")	arg0 = new BoundaryConditionType(BoundaryCondition::None);
             else if (s == "neumann")	arg0 = new BoundaryConditionType(BoundaryCondition::Neumann);
             else if (s == "dirichlet")	arg0 = new BoundaryConditionType(BoundaryCondition::Dirichlet);
@@ -4459,7 +4457,7 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
         if (PyString_Check(obj0)) {
             arg0 = new OptionType;
             std::string s(PyString_AsString(obj0));
-            ConvertToLowercase(s);
+            s = StringFormatter::toLowercase(s);
             if (s == "call")				*(arg0) = Option::Call;
             else if (s == "put")			*(arg0) = Option::Put;
             else if (s == "straddle")		*(arg0) = Option::Straddle;
@@ -4762,7 +4760,7 @@ static PyObject *_wrap_new_BSMAmericanOption(PyObject *self, PyObject *args, PyO
         if (PyString_Check(obj0)) {
             arg0 = new OptionType;
             std::string s(PyString_AsString(obj0));
-            ConvertToLowercase(s);
+            s = StringFormatter::toLowercase(s);
             if (s == "call")				*(arg0) = Option::Call;
             else if (s == "put")			*(arg0) = Option::Put;
             else if (s == "straddle")		*(arg0) = Option::Straddle;
@@ -5716,7 +5714,7 @@ static PyObject *_wrap_Statistics_samples(PyObject *self, PyObject *args, PyObje
 }
 
 
-static PyObject *_wrap_Statistics_sampleWeight(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_Statistics_weightSum(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     Statistics *arg0 ;
     PyObject * argo0 =0 ;
@@ -5725,11 +5723,11 @@ static PyObject *_wrap_Statistics_sampleWeight(PyObject *self, PyObject *args, P
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_sampleWeight",kwnames,&argo0)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Statistics_weightSum",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
     {
         try {
-            result = (double )arg0->sampleWeight();
+            result = (double )arg0->weightSum();
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -6332,7 +6330,7 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "new_Statistics", (PyCFunction) _wrap_new_Statistics, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_Statistics", (PyCFunction) _wrap_delete_Statistics, METH_VARARGS | METH_KEYWORDS },
 	 { "Statistics_samples", (PyCFunction) _wrap_Statistics_samples, METH_VARARGS | METH_KEYWORDS },
-	 { "Statistics_sampleWeight", (PyCFunction) _wrap_Statistics_sampleWeight, METH_VARARGS | METH_KEYWORDS },
+	 { "Statistics_weightSum", (PyCFunction) _wrap_Statistics_weightSum, METH_VARARGS | METH_KEYWORDS },
 	 { "Statistics_mean", (PyCFunction) _wrap_Statistics_mean, METH_VARARGS | METH_KEYWORDS },
 	 { "Statistics_variance", (PyCFunction) _wrap_Statistics_variance, METH_VARARGS | METH_KEYWORDS },
 	 { "Statistics_standardDeviation", (PyCFunction) _wrap_Statistics_standardDeviation, METH_VARARGS | METH_KEYWORDS },

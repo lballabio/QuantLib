@@ -45,14 +45,15 @@ using QuantLib::Thursday;
 using QuantLib::Friday;
 using QuantLib::Saturday;
 
-#include "stringconverters.h"
-using QuantLib::ConvertToLowercase;
+#include "dataformatters.h"
+using QuantLib::StringFormatter;
+using QuantLib::DateFormatter;
 %}
 
 %typemap(python,in) Weekday, Weekday * {
 	if (PyString_Check($source)) {
 		std::string s(PyString_AsString($source));
-		ConvertToLowercase(s);
+		s = StringFormatter::toLowercase(s);
 		if (s == "sun" || s == "sunday")			$target = new Weekday(Sunday);
 		else if (s == "mon" || s == "monday")		$target = new Weekday(Monday);
 		else if (s == "tue" || s == "tuesday")		$target = new Weekday(Tuesday);
@@ -112,7 +113,7 @@ using QuantLib::December;
 %typemap(python,in) Month, Month * {
 	if (PyString_Check($source)) {
 		std::string s(PyString_AsString($source));
-		ConvertToLowercase(s);
+		s = StringFormatter::toLowercase(s);
 		if (s == "jan" || s == "january")			$target = new Month(January);
 		else if (s == "feb" || s == "february")		$target = new Month(February);
 		else if (s == "mar" || s == "march")		$target = new Month(March);
@@ -182,7 +183,7 @@ using QuantLib::Years;
 %typemap(python,in) TimeUnit, TimeUnit * {
 	if (PyString_Check($source)) {
 		std::string s(PyString_AsString($source));
-		ConvertToLowercase(s);
+		s = StringFormatter::toLowercase(s);
 		if (s == "d" || s == "day" || s == "days")			$target = new TimeUnit(Days);
 		else if (s == "w" || s == "week" || s == "weeks")	$target = new TimeUnit(Weeks);
 		else if (s == "m" || s == "month" || s == "months")	$target = new TimeUnit(Months);
@@ -247,11 +248,6 @@ class Date {
 
 #if defined(SWIGPYTHON)
 
-%{
-#include "formats.h"
-using QuantLib::DateFormat;
-%}
-
 %addmethods Date {
 	Date __add__(int days) {
 		return self->plusDays(days);
@@ -261,12 +257,12 @@ using QuantLib::DateFormat;
 	}
 	char* __str__() {
 		static char temp[256];
-		strcpy(temp,DateFormat(*self).c_str());
+		strcpy(temp,DateFormatter::toString(*self).c_str());
 		return temp;
 	}
 	char* __repr__() {
 		static char temp[256];
-		std::string s = "<Date: "+DateFormat(*self)+">";
+		std::string s = "<Date: "+DateFormatter::toString(*self)+">";
 		strcpy(temp,s.c_str());
 		return temp;
 	}

@@ -29,7 +29,7 @@ namespace QuantLib {
 		  private:
 			// methods
 			bool needsFinalCalculations() const { return true; }
-			void performFinalCalculations() const { Require(priceIsSet,"stock price not set"); }
+			void performFinalCalculations() const { price(); } // just check that it works
 		};
 	
 	}

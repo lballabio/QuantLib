@@ -62,7 +62,7 @@ namespace QuantLib {
 			}
 		
 			throw Error("NewtonSafe: maximum number of function evaluations ("
-			  + IntegerFormat(maxEvaluations) + ") exceeded");
+			  + IntegerFormatter::toString(maxEvaluations) + ") exceeded");
 			QL_DUMMY_RETURN(0.0);
 		}
 	

@@ -158,350 +158,223 @@ namespace QuantLib {
 		int n, bufferSize;
 	};
 	
-	/*! \relates Array
-	*/
+	/*! \relates Array */
 	double DotProduct(const Array&, const Array&);
 	
 	// unary operators
 	
-	/*! \defgroup vectalg Vector algebra */
-	
 	#if QL_EXPRESSION_TEMPLATES_WORK
 		// unary plus
-		/*! \ingroup vectalg 
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Plus> >
 		operator+(const Array& v);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Plus> >
 		operator+(const VectorialExpression<Iter1>& e);
 		// unary minus
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Minus> >
 		operator-(const Array& v);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Minus> >
 		operator-(const VectorialExpression<Iter1>& e);
 	#else
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator+(const Array& v);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator-(const Array& v);
 	#endif
 	
 	// binary operators
 	#if QL_EXPRESSION_TEMPLATES_WORK
 		// addition
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Add> >
 		operator+(const Array& v1, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Add> >
 		operator+(const Array& v1, double x);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Add> >
 		operator+(double x, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter2> 
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Add> >
 		operator+(const Array& v1, const VectorialExpression<Iter2>& e2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Add> >
 		operator+(const VectorialExpression<Iter1>& e1, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Add> >
 		operator+(const VectorialExpression<Iter1>& e1, double x);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter2>
 		VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Add> >
 		operator+(double x, const VectorialExpression<Iter2>& e2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1, class Iter2>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Add> >
 		operator+(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 		// subtraction
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Subtract> >
 		operator-(const Array& v1, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Subtract> >
 		operator-(const Array& v1, double x);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Subtract> >
 		operator-(double x, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter2> 
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Subtract> >
 		operator-(const Array& v1, const VectorialExpression<Iter2>& e2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Subtract> >
 		operator-(const VectorialExpression<Iter1>& e1, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Subtract> >
 		operator-(const VectorialExpression<Iter1>& e1, double x);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter2>
 		VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Subtract> >
 		operator-(double x, const VectorialExpression<Iter2>& e2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1, class Iter2>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Subtract> >
 		operator-(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 		// multiplication
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Multiply> >
 		operator*(const Array& v1, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Multiply> >
 		operator*(const Array& v1, double x);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Multiply> >
 		operator*(double x, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter2> 
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Multiply> >
 		operator*(const Array& v1, const VectorialExpression<Iter2>& e2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Multiply> >
 		operator*(const VectorialExpression<Iter1>& e1, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Multiply> >
 		operator*(const VectorialExpression<Iter1>& e1, double x);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter2>
 		VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Multiply> >
 		operator*(double x, const VectorialExpression<Iter2>& e2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1, class Iter2>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Multiply> >
 		operator*(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 		// division
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Divide> >
 		operator/(const Array& v1, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Divide> >
 		operator/(const Array& v1, double x);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Divide> >
 		operator/(double x, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter2> 
 		VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Divide> >
 		operator/(const Array& v1, const VectorialExpression<Iter2>& e2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Divide> >
 		operator/(const VectorialExpression<Iter1>& e1, const Array& v2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Divide> >
 		operator/(const VectorialExpression<Iter1>& e1, double x);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter2>
 		VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Divide> >
 		operator/(double x, const VectorialExpression<Iter2>& e2);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1, class Iter2>
 		VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Divide> >
 		operator/(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 	#else
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator+(const Array&, const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator+(const Array&, double);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator+(double, const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator-(const Array&, const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator-(const Array&, double);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator-(double, const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator*(const Array&, const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator*(const Array&, double);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator*(double, const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator/(const Array&, const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator/(const Array&, double);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array operator/(double, const Array&);
 	#endif
 		
 	// math functions
 	
 	#if QL_EXPRESSION_TEMPLATES_WORK
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,AbsoluteValue> >
 		Abs(const Array& v);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,AbsoluteValue> >
 		Abs(const VectorialExpression<Iter1>& e);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,SquareRoot> >
 		Sqrt(const Array& v);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,SquareRoot> >
 		Sqrt(const VectorialExpression<Iter1>& e);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Logarithm> >
 		Log(const Array& v);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Logarithm> >
 		Log(const VectorialExpression<Iter1>& e);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Exponential> >
 		Exp(const Array& v);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		template <class Iter1> 
 		VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Exponential> >
 		Exp(const VectorialExpression<Iter1>& e);
 	#else
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array Abs(const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array Sqrt(const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array Log(const Array&);
-		/*! \ingroup vectalg
-			\relates Array
-		*/
+		/*! \relates Array */
 		Array Exp(const Array&);
 	#endif
 	

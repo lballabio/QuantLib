@@ -13,6 +13,10 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	non-standard behaviors and implementations).
 */
 
+/*! \defgroup foundation The QuantLib Foundation
+	The core of abstract classes upon which the rest of the library is built.
+*/
+
 /*! \namespace QuantLib
 	\brief a.k.a. the QuantLib Foundation
 	
@@ -62,6 +66,18 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			1
+	#define QL_BROKEN_TEMPLATE_SPECIALIZATION	0
+	#define QL_GARBLED_MIN_AND_MAX				0
+	#define QL_GARBLED_REVERSE_ITERATORS		0
+	#define QL_GARBLED_PTR_CONST				0
+
+#elif defined(__GNUC__)						// GNU C++
+	// set switches
+	#define QL_CMATH_IN_STD						0
+	#define QL_CCHAR_IN_STD						0
+	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
+	#define QL_EXPRESSION_TEMPLATES_WORK		0
+	#define QL_REQUIRES_DUMMY_RETURN			0
 	#define QL_BROKEN_TEMPLATE_SPECIALIZATION	0
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0

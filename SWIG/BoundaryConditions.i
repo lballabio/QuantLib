@@ -23,8 +23,8 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 using QuantLib::PDE::BoundaryCondition;
 typedef BoundaryCondition::Type BoundaryConditionType;
 
-#include "stringconverters.h"
-using QuantLib::ConvertToLowercase;
+#include "dataformatters.h"
+using QuantLib::StringFormatter;
 %}
 
 // typemap boundary condition type to the corresponding strings
@@ -32,7 +32,7 @@ using QuantLib::ConvertToLowercase;
 %typemap(python,in) BoundaryConditionType, BoundaryConditionType * {
 	if (PyString_Check($source)) {
 		std::string s(PyString_AsString($source));
-		ConvertToLowercase(s);
+		s = StringFormatter::toLowercase(s);
 		if (s == "" || s == "none")	$target = new BoundaryConditionType(BoundaryCondition::None);
 		else if (s == "neumann")	$target = new BoundaryConditionType(BoundaryCondition::Neumann);
 		else if (s == "dirichlet")	$target = new BoundaryConditionType(BoundaryCondition::Dirichlet);

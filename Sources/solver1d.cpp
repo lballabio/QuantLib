@@ -59,10 +59,10 @@ namespace QuantLib {
 		  evaluationNumber++;
 	  }
 	
-	  throw Error("unable to braket root in " + IntegerFormat(maxEvaluations) +
-	    " function evaluations (last bracket attempt: f[" + DoubleFormat(xMin) +
-		  "," + DoubleFormat(xMax) + "] -> [" +
-		  DoubleFormat(fxMin) + "," + DoubleFormat(fxMax) + "])");
+	  throw Error("unable to bracket root in " + IntegerFormatter::toString(maxEvaluations) +
+	    " function evaluations (last bracket attempt: f[" + DoubleFormatter::toString(xMin) +
+		  "," + DoubleFormatter::toString(xMax) + "] -> [" +
+		  DoubleFormatter::toString(fxMin) + "," + DoubleFormatter::toString(fxMax) + "])");
 	}
 	
 	
@@ -71,12 +71,13 @@ namespace QuantLib {
 	  xMin = xMin_;
 	  xMax = xMax_;
 	  // better safe than sorry
-	  Require(xMin < xMax, "invalid range: xMin (" + DoubleFormat(xMin) + ") >= xMax (" + DoubleFormat(xMax) + ")");
+	  Require(xMin < xMax, "invalid range: xMin (" + DoubleFormatter::toString(xMin)
+	  	+ ") >= xMax (" + DoubleFormatter::toString(xMax) + ")");
 	
-	  Require(!lowBoundEnforced || xMin >= theLowBound, "xMin (" + DoubleFormat(xMin) +
-	    ") < enforced low bound (" + DoubleFormat(theLowBound) + ")");
-	  Require(!hiBoundEnforced || xMax <= theHiBound, "xMax (" + DoubleFormat(xMax) +
-	    ") > enforced hi bound (" + DoubleFormat(theHiBound) + ")");
+	  Require(!lowBoundEnforced || xMin >= theLowBound, "xMin (" + DoubleFormatter::toString(xMin) +
+	    ") < enforced low bound (" + DoubleFormatter::toString(theLowBound) + ")");
+	  Require(!hiBoundEnforced || xMax <= theHiBound, "xMax (" + DoubleFormatter::toString(xMax) +
+	    ") > enforced hi bound (" + DoubleFormatter::toString(theHiBound) + ")");
 	
 	  fxMin = f.value(xMin);
 	  if (fxMin == 0.0)    return xMin;
@@ -85,14 +86,14 @@ namespace QuantLib {
 	  evaluationNumber = 2;
 	
 	  Require((fxMin*fxMax < 0.0),
-	  	"root not bracketed: f["+DoubleFormat(xMin)+","+DoubleFormat(xMax)+"] -> ["
-		  +DoubleFormat(fxMin)+","+DoubleFormat(fxMax)+"]");
+	  	"root not bracketed: f["+DoubleFormatter::toString(xMin)+","+DoubleFormatter::toString(xMax)+"] -> ["
+		  +DoubleFormatter::toString(fxMin)+","+DoubleFormatter::toString(fxMax)+"]");
 	
 	
-	  Require(guess > xMin, "Solver1D: guess (" + DoubleFormat(guess) + 
-		  ") < xMin (" + DoubleFormat(xMin) + ")");
-	  Require(guess < xMax, "Solver1D: guess (" + DoubleFormat(guess) +
-		  ") > xMax (" + DoubleFormat(xMax) + ")");
+	  Require(guess > xMin, "Solver1D: guess (" + DoubleFormatter::toString(guess) + 
+		  ") < xMin (" + DoubleFormatter::toString(xMin) + ")");
+	  Require(guess < xMax, "Solver1D: guess (" + DoubleFormatter::toString(guess) +
+		  ") > xMax (" + DoubleFormatter::toString(xMax) + ")");
 	  root = guess;
 	
 	  return _solve(f, QL_MAX(QL_FABS(xAccuracy), DBL_EPSILON));
