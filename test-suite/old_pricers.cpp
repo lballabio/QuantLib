@@ -33,6 +33,13 @@ using QuantLib::Pricers::CliquetOption;
 using QuantLib::Pricers::FdDividendEuropeanOption;
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::FdEuropean;
+using QuantLib::Pricers::FdAmericanOption;
+using QuantLib::Pricers::FdShoutOption;
+using QuantLib::Pricers::DiscreteGeometricAPO;
+using QuantLib::Pricers::ContinuousGeometricAPO;
+using QuantLib::Pricers::McEuropean;
+using QuantLib::Pricers::McDiscreteArithmeticAPO;
+using QuantLib::Pricers::McDiscreteArithmeticASO;
 using QuantLib::RandomNumbers::UniformRandomGenerator;
 
 namespace {
@@ -77,13 +84,13 @@ CppUnit::Test* OldPricerTest::suite() {
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style finite-difference European pricer",
                     &OldPricerTest::testFdEuropeanPricer));
-    /*
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style American-type pricers",
                     &OldPricerTest::testAmericanPricers));
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style Monte Carlo single-factor pricers",
                     &OldPricerTest::testMcSingleFactorPricers));
+    /*
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style Monte Carlo multi-factor pricers",
                     &OldPricerTest::testMcMultiFactorPricers));
@@ -513,5 +520,500 @@ void OldPricerTest::testFdEuropeanPricer() {
     }
 }
 
+namespace {
 
-                
+    template<class O>
+    void testStepOption(Option::Type type, double u, double k, 
+                        Rate q, Rate r, Time T, double v,
+                        const std::string& name) {
+
+        Size nstp = 145;
+        Size ngrd = nstp+1;
+
+        std::map<std::string,double> calculated, expected, tolerance;
+        tolerance["delta"]  = 2.0e-3;
+        tolerance["gamma"]  = 2.0e-3;
+        tolerance["theta"]  = 2.0e-3;
+        tolerance["rho"]    = 2.0e-3;
+        tolerance["divRho"] = 2.0e-3;
+        tolerance["vega"]   = 2.0e-3;
+        
+        double du = u*1.0e-4;
+        double dv = v*1.0e-4;
+        Spread dr = r*1.0e-4;
+        Spread dq = q*1.0e-4;
+
+        O option(type,u,k,q,r,T,v,nstp,ngrd);
+        if (option.value() > u*1.0e-5) {
+            // greeks
+            calculated["delta"]  = option.delta();
+            calculated["gamma"]  = option.gamma();
+            calculated["theta"]  = option.theta();
+            calculated["rho"]    = option.rho();
+            calculated["divRho"] = option.dividendRho();
+            calculated["vega"]   = option.vega();
+            // recalculate greeks numerically
+            O optPs(type,u+du,k,q,   r,   T,v,   nstp,ngrd);
+            O optMs(type,u-du,k,q,   r,   T,v,   nstp,ngrd);
+            O optPr(type,u,   k,q,   r+dr,T,v,   nstp,ngrd);
+            O optMr(type,u,   k,q,   r-dr,T,v,   nstp,ngrd);
+            O optPq(type,u,   k,q+dq,r,   T,v,   nstp,ngrd);
+            O optMq(type,u,   k,q-dq,r,   T,v,   nstp,ngrd);
+            O optPv(type,u,   k,q,   r,   T,v+dv,nstp,ngrd);
+            O optMv(type,u,   k,q,   r,   T,v-dv,nstp,ngrd);
+            
+            expected["delta"]  = (optPs.value()-optMs.value())/(2*du);
+            expected["gamma"]  = (optPs.delta()-optMs.delta())/(2*du);
+            expected["theta"]  = r*option.value() - (r-q)*u*option.delta()
+                                 - 0.5*v*v*u*u*option.gamma();
+            expected["rho"]    = (optPr.value()-optMr.value())/(2*dr);
+            expected["divRho"] = (optPq.value()-optMq.value())/(2*dq);
+            expected["vega"]   = (optPv.value()-optMv.value())/(2*dv);
+
+            // check
+            std::map<std::string,double>::iterator it;
+            for (it = expected.begin(); it != expected.end(); ++it) {
+                std::string greek = it->first;
+                double expct = expected[greek];
+                double calcl = calculated[greek];
+                double tol = tolerance[greek];
+                if (relError(expct,calcl,u) > tol)
+                    CPPUNIT_FAIL(
+                        "Option details: \n"
+                        "    type:           " +
+                        name + " " + typeToString(type) + "\n"
+                        "    underlying:     " +
+                        DoubleFormatter::toString(u) + "\n"
+                        "    strike:         " +
+                        DoubleFormatter::toString(k) + "\n"
+                        "    dividend yield: " +
+                        RateFormatter::toString(q) + "\n"
+                        "    risk-free rate: " +
+                        RateFormatter::toString(r) + "\n"
+                        "    residual time:  " +
+                        DoubleFormatter::toString(T) + "\n"
+                        "    volatility:     " +
+                        RateFormatter::toString(v) + "\n\n"
+                        "    calculated " + greek + ": " +
+                        DoubleFormatter::toString(calcl) + "\n"
+                        "    expected:    " + 
+                        std::string(greek.size(),' ') +
+                        DoubleFormatter::toString(expct));
+            }
+        }
+    }
+
+}
+
+void OldPricerTest::testAmericanPricers() {
+    
+    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+    double underlyings[] = { 100 };
+    Rate rRates[] = { 0.01, 0.05, 0.15 };
+    Rate qRates[] = { 0.04, 0.05, 0.06 };
+    Time residualTimes[] = { 1.0 };
+    double strikes[] = { 50, 100, 150 };
+    double volatilities[] = { 0.05, 0.5, 1.2 };
+
+    for (int i1=0; i1<LENGTH(types); i1++) {
+      for (int i2=0; i2<LENGTH(underlyings); i2++) {
+        for (int i3=0; i3<LENGTH(rRates); i3++) {
+          for (int i4=0; i4<LENGTH(qRates); i4++) {
+            for (int i5=0; i5<LENGTH(residualTimes); i5++) {
+              for (int i6=0; i6<LENGTH(strikes); i6++) {
+                for (int i7=0; i7<LENGTH(volatilities); i7++) {
+                  // test data
+                  Option::Type type = types[i1];
+                  double u = underlyings[i2];
+                  Rate r = rRates[i3];
+                  Rate q = qRates[i4];
+                  Time T = residualTimes[i5];
+                  double k = strikes[i6];
+                  double v = volatilities[i7];
+                    
+                  testStepOption<FdAmericanOption>(type,u,k,q,r,T,v,
+                                                   "American");
+                  testStepOption<FdShoutOption>(type,u,k,q,r,T,v,"shout");
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+}
+
+namespace {
+
+    struct Batch4Data {
+        Option::Type type;
+        double underlying;
+        double strike;
+        Rate dividendYield;
+        Rate riskFreeRate;
+        Time residualTime;
+        double volatility;
+        bool antithetic;
+        double result;
+    };
+
+    struct Batch5Data {
+        Option::Type type;
+        double underlying;
+        double strike;
+        Rate dividendYield;
+        Rate riskFreeRate;
+        Time first;
+        Time length;
+        Size fixings;
+        double volatility;
+        bool antithetic;
+        bool controlVariate;
+        double result;
+    };
+
+    typedef Batch5Data Batch6Data;
+}
+
+void OldPricerTest::testMcSingleFactorPricers() {
+
+    long seed = 3456789;
+    Size fixedSamples = 100;
+    double minimumTol = 1.0e-2;
+
+    // "batch" 1
+    //
+    // data from "Implementing Derivatives Model",
+    // Clewlow, Strickland, p.118-123
+    Option::Type type = Option::Call;
+    double underlying = 100.0, strike = 100.0;
+    Rate dividendYield = 0.03, riskFreeRate = 0.06;
+    Time times[] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
+    double volatility = 0.2;
+    double storedValue = 5.34255485619;
+
+    std::vector<Time> timeIncrements(LENGTH(times));
+    std::copy(times,times+LENGTH(times),timeIncrements.begin());
+    DiscreteGeometricAPO pricer(type,underlying,strike,dividendYield,
+                                riskFreeRate,timeIncrements, volatility);
+    if (QL_FABS(pricer.value()-storedValue) > 1.0e-10)
+        CPPUNIT_FAIL(
+            "Batch 1, case 1:\n"
+            "    calculated value: "
+            + DoubleFormatter::toString(pricer.value(),10) + "\n"
+            "    expected:         "
+            + DoubleFormatter::toString(storedValue,10));
+
+    // "batch" 2
+    //
+    // data from "Option Pricing Formulas", Haug, pag.96-97
+    type = Option::Put;
+    underlying = 80.0;
+    strike = 85.0;
+    dividendYield = -0.03;
+    riskFreeRate = 0.05;
+    Time residualTime = 0.25;
+    volatility = 0.2;
+
+    EuropeanOption pricer1(type,underlying,strike,dividendYield,
+                           riskFreeRate,residualTime,volatility);
+    storedValue = 5.21858890396;
+    if (QL_FABS(pricer1.value()-storedValue) > 1.0e-10)
+        CPPUNIT_FAIL(
+            "Batch 2, case 1:\n"
+            "    calculated value: "
+            + DoubleFormatter::toString(pricer1.value(),10) + "\n"
+            "    expected:         "
+            + DoubleFormatter::toString(storedValue,10));
+    ContinuousGeometricAPO pricer2(type,underlying,strike,dividendYield,
+                                   riskFreeRate,residualTime,volatility);
+    storedValue = 4.69221973405;
+    if (QL_FABS(pricer2.value()-storedValue) > 1.0e-10)
+        CPPUNIT_FAIL(
+            "Batch 2, case 2:\n"
+            "    calculated value: "
+            + DoubleFormatter::toString(pricer2.value(),10) + "\n"
+            "    expected:         "
+            + DoubleFormatter::toString(storedValue,10));
+    
+    // "batch" 3
+    //
+    // trying to approximate the continous version with the discrete version
+    type = Option::Put;
+    underlying = 80.0;
+    strike = 85.0;
+    dividendYield = -0.03;
+    riskFreeRate = 0.05;
+    residualTime = 0.25;
+    volatility = 0.2;
+    Size timeSteps = 90000;
+    storedValue = 4.6922231469;
+
+    timeIncrements = std::vector<Time>(timeSteps);
+    Time dt = residualTime/timeSteps;
+    for (int i=0; i<timeSteps; i++)
+        timeIncrements[i] = (i+1)*dt;
+    DiscreteGeometricAPO pricer3(type,underlying,strike,dividendYield,
+                                 riskFreeRate,timeIncrements,volatility);
+    if (QL_FABS(pricer3.value()-storedValue) > 1.0e-10)
+        CPPUNIT_FAIL(
+            "Batch 3, case 1:\n"
+            "    calculated value: "
+            + DoubleFormatter::toString(pricer3.value(),10) + "\n"
+            "    expected:         "
+            + DoubleFormatter::toString(storedValue,10));
+    
+    // batch 4
+
+    Batch4Data cases4[] = {
+        { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+          false, 5.9135872358 },
+        { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+          true,  5.42005964479 },
+        { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+          false, 1.98816310759 },
+        { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+          true, 2.12098432917 },
+        { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+          false, 7.90175034339 },
+        { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+          true, 7.54104397396 }
+    };
+
+    for (int j=0; j<LENGTH(cases4); j++) {
+        McEuropean pricer(cases4[j].type, cases4[j].underlying,
+                          cases4[j].strike, cases4[j].dividendYield,
+                          cases4[j].riskFreeRate, cases4[j].residualTime,
+                          cases4[j].volatility, cases4[j].antithetic, seed);
+        double value = pricer.valueWithSamples(fixedSamples);
+        if (QL_FABS(value-cases4[j].result) > 1.0e-10)
+            CPPUNIT_FAIL(
+                "Batch 4, case " + IntegerFormatter::toString(j+1) + ":\n"
+                "    calculated value: "
+                + DoubleFormatter::toString(value,10) + "\n"
+                "    expected:         "
+                + DoubleFormatter::toString(cases4[j].result,10));
+        double tolerance = pricer.errorEstimate()/value;
+        tolerance = QL_MIN(tolerance/2.0, minimumTol);
+        value = pricer.value(tolerance);
+        double accuracy = pricer.errorEstimate()/value;
+        if (accuracy > tolerance)
+            CPPUNIT_FAIL(
+                "Batch 4, case " + IntegerFormatter::toString(j+1) + ":\n"
+                "    reached accuracy: "
+                + DoubleFormatter::toString(accuracy,10) + "\n"
+                "    expected:         "
+                + DoubleFormatter::toString(tolerance,10));
+    }
+
+    // batch 5
+    //
+    // data from "Asian Option", Levy, 1997
+    // in "Exotic Options: The State of the Art",
+    // edited by Clewlow, Strickland
+
+    Batch5Data cases5[] = {
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2, 
+          0.13, true, true, 1.38418414762 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4, 
+          0.13, true, true, 1.57691714387 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8, 
+          0.13, true, true, 1.66062743445 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12, 
+          0.13, true, true, 1.68847081883 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26, 
+          0.13, true, true, 1.72955964448 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52, 
+          0.13, true, true, 1.73372169316 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100, 
+          0.13, true, true, 1.74918801089 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250, 
+          0.13, true, true, 1.75421310915 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500, 
+          0.13, true, true, 1.75158383443 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000, 
+          0.13, true, true, 1.75162110180 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2, 
+          0.13, true, true, 1.83665087164 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4, 
+          0.13, true, true, 2.00560271429 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8, 
+          0.13, true, true, 2.07789721712 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 12, 
+          0.13, true, true, 2.09622556625 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26, 
+          0.13, true, true, 2.14229795212 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52, 
+          0.13, true, true, 2.14470270916 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100, 
+          0.13, true, true, 2.15954145741 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250, 
+          0.13, true, true, 2.16007690017 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500, 
+          0.13, true, true, 2.15986704400 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000, 
+          0.13, true, true, 2.15951634387 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2, 
+          0.13, true, true, 2.63315092584 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4, 
+          0.13, true, true, 2.76723962361 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 8, 
+          0.13, true, true, 2.83124836881 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 12, 
+          0.13, true, true, 2.84290301412 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 26, 
+          0.13, true, true, 2.88179560417 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 52, 
+          0.13, true, true, 2.88447044543 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 100, 
+          0.13, true, true, 2.89985329603 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 250, 
+          0.13, true, true, 2.90047296063 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 500, 
+          0.13, true, true, 2.89813412160 },
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 1000, 
+          0.13, true, true, 2.89703362437 }
+    };
+
+    for (int k=0; k<LENGTH(cases5); k++) {
+        Time dt = cases5[k].length/(cases5[k].fixings-1);
+        std::vector<Time> timeIncrements(cases5[k].fixings);
+        for (int i=0; i<cases5[k].fixings; i++)
+            timeIncrements[i] = i*dt + cases5[k].first;
+        McDiscreteArithmeticAPO pricer(cases5[k].type,
+                                       cases5[k].underlying,
+                                       cases5[k].strike,
+                                       cases5[k].dividendYield,
+                                       cases5[k].riskFreeRate,
+                                       timeIncrements,
+                                       cases5[k].volatility,
+                                       cases5[k].antithetic,
+                                       cases5[k].controlVariate,
+                                       seed);
+        double value = pricer.valueWithSamples(fixedSamples);
+        if (QL_FABS(value-cases5[k].result) > 1.0e-10)
+            CPPUNIT_FAIL(
+                "Batch 5, case " + IntegerFormatter::toString(k+1) + ":\n"
+                "    calculated value: "
+                + DoubleFormatter::toString(value,10) + "\n"
+                "    expected:         "
+                + DoubleFormatter::toString(cases5[k].result,10));
+        double tolerance = pricer.errorEstimate()/value;
+        tolerance = QL_MIN(tolerance/2.0, minimumTol);
+        value = pricer.value(tolerance);
+        double accuracy = pricer.errorEstimate()/value;
+        if (accuracy > tolerance)
+            CPPUNIT_FAIL(
+                "Batch 5, case " + IntegerFormatter::toString(k+1) + ":\n"
+                "    reached accuracy: "
+                + DoubleFormatter::toString(accuracy,10) + "\n"
+                "    expected:         "
+                + DoubleFormatter::toString(tolerance,10));
+    }
+
+    // batch 6
+    //
+    // data from "Asian Option", Levy, 1997
+    // in "Exotic Options: The State of the Art",
+    // edited by Clewlow, Strickland
+
+    Batch6Data cases6[] = {
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2, 
+          0.13, true, true, 1.51917595129 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4, 
+          0.13, true, true, 1.67940165674 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8, 
+          0.13, true, true, 1.75371215251 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12, 
+          0.13, true, true, 1.77595318693 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26, 
+          0.13, true, true, 1.81430536630 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52, 
+          0.13, true, true, 1.82269246898 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100, 
+          0.13, true, true, 1.83822402464 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250, 
+          0.13, true, true, 1.83875059026 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500, 
+          0.13, true, true, 1.83750703638 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000, 
+          0.13, true, true, 1.83887181884 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2, 
+          0.13, true, true, 1.51154400089 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4, 
+          0.13, true, true, 1.67103508506 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8, 
+          0.13, true, true, 1.74529684070 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 12,
+          0.13, true, true, 1.76667074564 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26, 
+          0.13, true, true, 1.80528400613 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52, 
+          0.13, true, true, 1.81400883891 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100, 
+          0.13, true, true, 1.82922901451 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250, 
+          0.13, true, true, 1.82937111773 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500, 
+          0.13, true, true, 1.82826193186 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000, 
+          0.13, true, true, 1.82967846654 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2, 
+          0.13, true, true, 1.49648170891 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4, 
+          0.13, true, true, 1.65443100462 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 8, 
+          0.13, true, true, 1.72817806731 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 12, 
+          0.13, true, true, 1.74877367895 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 26, 
+          0.13, true, true, 1.78733801988 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 52, 
+          0.13, true, true, 1.79624826757 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 100, 
+          0.13, true, true, 1.81114186876 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 250, 
+          0.13, true, true, 1.81101152587 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 500, 
+          0.13, true, true, 1.81002311939 },
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 1000, 
+          0.13, true, true, 1.81145760308 }
+    };
+
+    for (int l=0; l<LENGTH(cases6); l++) {
+        Time dt = cases6[l].length/(cases6[l].fixings-1);
+        std::vector<Time> timeIncrements(cases6[l].fixings);
+        for (int i=0; i<cases6[l].fixings; i++)
+            timeIncrements[i] = i*dt + cases6[l].first;
+        McDiscreteArithmeticASO pricer(cases6[l].type,
+                                       cases6[l].underlying,
+                                       cases6[l].dividendYield,
+                                       cases6[l].riskFreeRate,
+                                       timeIncrements,
+                                       cases6[l].volatility,
+                                       cases6[l].antithetic,
+                                       cases6[l].controlVariate,
+                                       seed);
+        double value = pricer.valueWithSamples(fixedSamples);
+        if (QL_FABS(value-cases6[l].result) > 1.0e-10)
+            CPPUNIT_FAIL(
+                "Batch 6, case " + IntegerFormatter::toString(l+1) + ":\n"
+                "    calculated value: "
+                + DoubleFormatter::toString(value,10) + "\n"
+                "    expected:         "
+                + DoubleFormatter::toString(cases6[l].result,10));
+        double tolerance = pricer.errorEstimate()/value;
+        tolerance = QL_MIN(tolerance/2.0, minimumTol);
+        value = pricer.value(tolerance);
+        double accuracy = pricer.errorEstimate()/value;
+        if (accuracy > tolerance)
+            CPPUNIT_FAIL(
+                "Batch 6, case " + IntegerFormatter::toString(l+1) + ":\n"
+                "    reached accuracy: "
+                + DoubleFormatter::toString(accuracy,10) + "\n"
+                "    expected:         "
+                + DoubleFormatter::toString(tolerance,10));
+    }
+
+}
