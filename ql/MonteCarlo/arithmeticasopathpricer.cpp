@@ -66,10 +66,10 @@ namespace QuantLib {
                     averageStrike2 += price2;
                 }
                 averageStrike2 = averageStrike2/fixings;
-                return discount_/2.0*(PlainPayoff(type_, averageStrike1)(price1)
-                    +PlainPayoff(type_, averageStrike2)(price2));
+                return discount_/2.0*(PlainVanillaPayoff(type_, averageStrike1)(price1)
+                    +PlainVanillaPayoff(type_, averageStrike2)(price2));
             } else
-                return discount_ * PlainPayoff(type_, averageStrike1)(price1);
+                return discount_ * PlainVanillaPayoff(type_, averageStrike1)(price1);
         }
 
     }

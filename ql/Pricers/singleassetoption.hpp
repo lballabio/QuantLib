@@ -81,7 +81,7 @@ namespace QuantLib {
             virtual Handle<SingleAssetOption> clone() const = 0;
           protected:
             double underlying_;
-            PlainPayoff payoff_;
+            PlainVanillaPayoff payoff_;
             Spread dividendYield_;
             Rate riskFreeRate_;
             Time residualTime_;

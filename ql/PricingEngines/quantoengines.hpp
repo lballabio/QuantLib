@@ -104,9 +104,11 @@ namespace QuantLib {
             double exchangeRateATMlevel = 1.0;
 
             originalEngine_->reset();
+            // determine strike from payoff
+            Handle<StrikedTypePayoff> payoff(arguments_.payoff);
+            double strike = payoff->strike();
 
-            originalArguments_->strike        = arguments_.strike;
-            originalArguments_->type          = arguments_.type;
+            originalArguments_->payoff = arguments_.payoff;
             originalArguments_->underlying    = arguments_.underlying;
             originalArguments_->dividendTS    = 
                 RelinkableHandle<TermStructure>(
@@ -115,7 +117,7 @@ namespace QuantLib {
                         arguments_.dividendTS,
                         arguments_.riskFreeTS, 
                         arguments_.foreignRiskFreeTS,
-                        arguments_.volTS, arguments_.strike,
+                        arguments_.volTS, strike,
                         arguments_.exchRateVolTS, exchangeRateATMlevel,
                         arguments_.correlation)));
             originalArguments_->riskFreeTS    = arguments_.riskFreeTS;

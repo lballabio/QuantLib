@@ -34,17 +34,18 @@ namespace QuantLib {
         virtual double operator()(double price) const = 0;
     };
 
+    /*! We need an intermediate class for all those payoff that have
+        both a strike and a type but are not neccesarely plain-vanilla
+    */
 
-    //! Plain payoff
-    class PlainPayoff : public Payoff {
+    class StrikedTypePayoff : public Payoff {
       public:
-        PlainPayoff(Option::Type type,
+        StrikedTypePayoff(Option::Type type,
                     double strike)
         : type_(type), strike_(strike) {
             QL_REQUIRE(strike >= 0.0,
-                       "PlainPayoff : negative strike given");
+                       "StrikedTypePayoff: negative strike given");
         }
-        double operator()(double price) const;
         Option::Type optionType() const { return type_; };
         double strike() const { return strike_; };
       protected:
@@ -52,7 +53,17 @@ namespace QuantLib {
         double strike_;
     };
 
-    inline double PlainPayoff::operator()(double price) const {
+    /*! The former PlainPayoff has been renamed PlainVanillaPayoff
+        to stress that fact that now nobody elses derives from it */
+    class PlainVanillaPayoff : public StrikedTypePayoff {
+      public:
+        PlainVanillaPayoff(Option::Type type,
+                    double strike)
+        : StrikedTypePayoff(type, strike){}
+        double operator()(double price) const;
+    };
+
+    inline double PlainVanillaPayoff::operator()(double price) const {
         switch (type_) {
           case Option::Call:
             return QL_MAX(price-strike_,0.0);
@@ -67,12 +78,12 @@ namespace QuantLib {
 
 
     //! Binary Cash-Or-Nothing option payoff
-    class CashOrNothingPayoff : public PlainPayoff {
+    class CashOrNothingPayoff : public StrikedTypePayoff {
       public:
         CashOrNothingPayoff(Option::Type type,
                             double strike,
                             double cashPayoff)
-        : PlainPayoff(type, strike), cashPayoff_(cashPayoff) {}
+        : StrikedTypePayoff(type, strike), cashPayoff_(cashPayoff) {}
         double operator()(double price) const;
       private:
         double cashPayoff_;
@@ -93,11 +104,11 @@ namespace QuantLib {
 
 
     //! Binary Asset-Or-Nothing option payoff
-    class AssetOrNothingPayoff : public PlainPayoff {
+    class AssetOrNothingPayoff : public StrikedTypePayoff {
     public:
         AssetOrNothingPayoff(Option::Type type,
                              double strike)
-        : PlainPayoff(type, strike) {}
+        : StrikedTypePayoff(type, strike) {}
         double operator()(double price) const;
     };
 
@@ -116,12 +127,12 @@ namespace QuantLib {
 
 
     //! Binary supershare option payoff
-    class SupersharePayoff : public PlainPayoff {
+    class SupersharePayoff : public StrikedTypePayoff {
     public:
         SupersharePayoff(Option::Type type,
                          double strike,
                          double strikeIncrement)
-        : PlainPayoff(type, strike), strikeIncrement_(strikeIncrement) {}
+        : StrikedTypePayoff(type, strike), strikeIncrement_(strikeIncrement) {}
         double operator()(double price) const;
     private:
         double strikeIncrement_;

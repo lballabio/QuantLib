@@ -51,7 +51,7 @@ namespace QuantLib {
 
         inline AmericanCondition::AmericanCondition(Option::Type type,
             double strike)
-        : payoff_(new PlainPayoff(type, strike)) {}
+        : payoff_(new PlainVanillaPayoff(type, strike)) {}
 
         inline AmericanCondition::AmericanCondition(
             const Array& intrinsicValues)

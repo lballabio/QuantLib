@@ -45,7 +45,7 @@ class WeightedPayoff {
         double operator()(double x) const {
            double nuT = (r_-q_-0.5*sigma_*sigma_)*maturity_;
            return QL_EXP(-r_*maturity_)
-               *PlainPayoff(type_, strike_)(s0_*QL_EXP(x))
+               *PlainVanillaPayoff(type_, strike_)(s0_*QL_EXP(x))
                *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
                /QL_SQRT(2.0*M_PI*sigma_*sigma_*maturity_);
         }
@@ -312,7 +312,7 @@ int main(int argc, char* argv[])
         // method: Integral
         method = "Integral";
         option.setPricingEngine(Handle<PricingEngine>(
-            new IntegralEuropeanEngine()));
+            new IntegralEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -431,8 +431,9 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
-        // Finite Differences Method
-        method = "Finite Diff.";
+        // Finite Differences Method: not implemented
+
+        /*method = "Finite Diff.";
         option.setPricingEngine(Handle<PricingEngine>(
             new FDVanillaEngine()));
         value = option.NPV();
@@ -443,7 +444,7 @@ int main(int argc, char* argv[])
              << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+             << std::endl;*/
 
 
         // Monte Carlo Method

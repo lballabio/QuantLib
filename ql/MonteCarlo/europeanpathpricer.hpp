@@ -47,7 +47,7 @@ namespace QuantLib {
           private:
             double underlying_;
             // it would be easy to generalize to more exotic payoffs
-            PlainPayoff payoff_;
+            PlainVanillaPayoff payoff_;
         };
 
 
@@ -67,7 +67,7 @@ namespace QuantLib {
           private:
             double underlying_;
             // it would be easy to generalize to more exotic payoffs
-            PlainPayoff payoff_;
+            PlainVanillaPayoff payoff_;
         };
 
     }

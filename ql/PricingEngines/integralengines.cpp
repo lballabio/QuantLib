@@ -54,7 +54,7 @@ namespace QuantLib {
                 "IntegralEuropeanEngine::calculate() : "
                 "not an European Option");
 
-            Handle<PlainPayoff> payoff = arguments_.payoff;
+            Handle<StrikedTypePayoff> payoff = arguments_.payoff;
 
             double variance = arguments_.volTS->blackVariance(
                 arguments_.maturity, payoff->strike());

@@ -53,8 +53,8 @@
 using QuantLib::Rate;
 using QuantLib::Time;
 
-// PlainPayoff is a helper class that calculates option payoff
-using QuantLib::PlainPayoff;
+// PlainVanillaPayoff is a helper class that calculates option payoff
+using QuantLib::PlainVanillaPayoff;
 
 // Option is a helper class that holds the enumeration {Call, Put, Straddle}
 using QuantLib::Option;
@@ -125,7 +125,7 @@ public:
     void compute(int nTimeSteps, int nSamples);
 private:
     Time maturity_;
-    PlainPayoff payoff_;
+    PlainVanillaPayoff payoff_;
     double s0_;
     double sigma_;
     Rate r_;
@@ -293,7 +293,7 @@ double ReplicationPathPricer::operator()(const Path& path) const
     stock = underlying_*QL_EXP(stockLogGrowth);
 
     // the hedger delivers the option payoff to the option holder
-    double optionPayoff = PlainPayoff(type_, strike_)(stock);
+    double optionPayoff = PlainVanillaPayoff(type_, strike_)(stock);
     money_account -= optionPayoff;
 
     // and unwinds the hedge selling his stock position

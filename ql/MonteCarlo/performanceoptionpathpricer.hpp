@@ -43,7 +43,7 @@ namespace QuantLib {
             double underlying_;
             std::vector<DiscountFactor> discounts_;
             // it would be easy to generalize to more exotic payoffs
-            PlainPayoff payoff_;
+            PlainVanillaPayoff payoff_;
         };
 
     }

@@ -61,7 +61,7 @@ namespace QuantLib {
 
         inline ShoutCondition::ShoutCondition(Option::Type type,
             double strike, Time resTime, Rate rate)
-            : payoff_(new PlainPayoff(type, strike)), 
+            : payoff_(new PlainVanillaPayoff(type, strike)), 
               resTime_(resTime), rate_(rate) {}
 
         inline ShoutCondition::ShoutCondition(
