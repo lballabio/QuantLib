@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/06 17:05:52  marmar
+    private members are no longer mutable
+
     Revision 1.1  2001/02/02 10:52:54  marmar
     Example of a path pricer depending on multiple factors
 
@@ -52,8 +55,8 @@ namespace QuantLib {
             BasketPathPricer(const Array &underlying, double discount);
             double value(const MultiPath &path) const;
         protected:
-            mutable double discount_;
-            mutable Array underlying_;
+            double discount_;
+            Array underlying_;
         };
 
     }
