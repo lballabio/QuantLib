@@ -23,7 +23,7 @@
 #define quantlib_tridiagonal_operator_h
 
 #include <ql/Math/array.hpp>
-#include <ql/handle.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 

@@ -45,12 +45,10 @@ include_HEADERS = \
 	date.hpp \
 	daycounter.hpp \
 	discretizedasset.hpp \
-	diffusionprocess.hpp \
 	disposable.hpp \
 	errors.hpp \
 	exercise.hpp \
 	grid.hpp \
-	handle.hpp \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \

@@ -44,26 +44,6 @@ namespace QuantLib {
           dayCounter_(dayCounter), termStructure_(h) {
             registerWith(termStructure_);
         }
-#ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without <tt>isAdjusted</tt>
-                        argument; <tt>isAdjusted = false</tt> can be 
-                        replicated by <tt>convention = Unadjusted</tt>.
-        */
-        Xibor(const std::string& familyName,
-              Integer n, TimeUnit units, Integer settlementDays,
-              CurrencyTag currency,
-              const Calendar& calendar, bool isAdjusted,
-              BusinessDayConvention convention,
-              const DayCounter& dayCounter, 
-              const RelinkableHandle<TermStructure>& h)
-        : familyName_(familyName), n_(n), units_(units),
-          settlementDays_(settlementDays),
-          currency_(currency), calendar_(calendar),
-          dayCounter_(dayCounter), termStructure_(h) {
-            registerWith(termStructure_);
-            convention_ = isAdjusted ? convention : Unadjusted;
-        }
-#endif
         //! \name Index interface
         //@{
         Rate fixing(const Date& fixingDate) const;
@@ -82,10 +62,6 @@ namespace QuantLib {
         Calendar calendar() const;
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
-#ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated renamed to businessDayConvention()
-        BusinessDayConvention rollingConvention() const;
-#endif
         DayCounter dayCounter() const;
         boost::shared_ptr<TermStructure> termStructure() const;
         //@}
@@ -131,12 +107,6 @@ namespace QuantLib {
     inline BusinessDayConvention Xibor::businessDayConvention() const {
         return convention_; 
     }
-
-#ifndef QL_DISABLE_DEPRECATED
-    inline BusinessDayConvention Xibor::rollingConvention() const {
-        return convention_; 
-    }
-#endif
 
     inline DayCounter Xibor::dayCounter() const { 
         return dayCounter_; 

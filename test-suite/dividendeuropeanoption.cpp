@@ -69,11 +69,7 @@ void DividendEuropeanOptionTest::testGreeks() {
     tolerance["rho"]   = 1.0e-5;
     tolerance["vega"]  = 1.0e-5;
 
-    Option::Type types[] = { Option::Call, Option::Put
-        #ifndef QL_DISABLE_DEPRECATED
-        , Option::Straddle
-        #endif
-    };
+    Option::Type types[] = { Option::Call, Option::Put };
     Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     Real underlyings[] = { 100.0 };
     Rate qRates[] = { 0.00, 0.10, 0.30 };

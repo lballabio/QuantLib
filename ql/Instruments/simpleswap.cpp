@@ -22,65 +22,6 @@
 
 namespace QuantLib {
 
-#ifndef QL_DISABLE_DEPRECATED
-    SimpleSwap::SimpleSwap(
-                         bool payFixedRate,
-                         const Date& startDate, Integer n, TimeUnit units,
-                         const Calendar& calendar,
-                         BusinessDayConvention rollingConvention,
-                         Real nominal,
-                         Frequency fixedFrequency,
-                         Rate fixedRate,
-                         bool fixedIsAdjusted,
-                         const DayCounter& fixedDayCount,
-                         Frequency floatingFrequency,
-                         const boost::shared_ptr<Xibor>& index,
-                         Integer indexFixingDays,
-                         Spread spread,
-                         const RelinkableHandle<TermStructure>& termStructure)
-    : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
-           std::vector<boost::shared_ptr<CashFlow> >(),
-           termStructure),
-      payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
-      nominal_(nominal) {
-
-        Date maturity = calendar.adjust(startDate.plus(n,units),
-                                        rollingConvention);
-
-        Schedule fixedSchedule = 
-            MakeSchedule(calendar,startDate,maturity,
-                         fixedFrequency,rollingConvention,
-                         fixedIsAdjusted);
-        Schedule floatSchedule =
-            MakeSchedule(calendar,startDate,maturity,
-                         floatingFrequency,rollingConvention);
-
-        std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
-            FixedRateCouponVector(fixedSchedule,
-                                  rollingConvention,
-                                  std::vector<Real>(1,nominal), 
-                                  std::vector<Rate>(1,fixedRate), 
-                                  fixedDayCount);
-        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-            FloatingRateCouponVector(floatSchedule,
-                                     rollingConvention,
-                                     std::vector<Real>(1,nominal),
-                                     index, indexFixingDays, 
-                                     std::vector<Spread>(1,spread));
-        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
-        for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
-            registerWith(*i);
-
-        if (payFixedRate_) {
-            firstLeg_ = fixedLeg;
-            secondLeg_ = floatingLeg;
-        } else {
-            firstLeg_ = floatingLeg;
-            secondLeg_ = fixedLeg;
-        }
-    }
-#endif
-
     SimpleSwap::SimpleSwap(
                          bool payFixedRate,
                          Real nominal,

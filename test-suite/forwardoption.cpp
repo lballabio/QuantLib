@@ -234,11 +234,7 @@ namespace {
     tolerance["divRho"]  = 1.0e-5;
     tolerance["vega"]    = 1.0e-5;
 
-    Option::Type types[] = { Option::Call, Option::Put
-        #ifndef QL_DISABLE_DEPRECATED
-        , Option::Straddle
-        #endif
-    };
+    Option::Type types[] = { Option::Call, Option::Put };
     Real moneyness[] = { 0.9, 1.0, 1.1 };
     Real underlyings[] = { 100.0 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };

@@ -22,9 +22,9 @@
 #ifndef quantlib_montecarlo_model_h
 #define quantlib_montecarlo_model_h
 
-#include <ql/handle.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/Math/statistics.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 

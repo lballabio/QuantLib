@@ -54,11 +54,6 @@ namespace QuantLib {
                                  to first business day before month-end */
     };
 
-#ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated renamed to BusinessDayConvention
-    typedef BusinessDayConvention RollingConvention;
-#endif
-
     //! abstract base class for calendar implementations
     class CalendarImpl {
       public:
@@ -110,22 +105,8 @@ namespace QuantLib {
         /*! Removes a date from the set of holidays for the given calendar. */
         void removeHoliday(const Date&);
 
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! Returns the next business day on the given market with respect to
-            the given date and convention.
-    
-            \deprecated renamed to Calendar::roll()
-        */
-        Date roll(const Date& d,
-                  BusinessDayConvention convention = Following,
-                  const Date& origin = Date()) const {
-                      return adjust(d, convention, origin);
-        }
-        #endif
-
         /*! Adjusts a non-business day to the appropriate near business day
             with respect to the given convention.
-    
         */
         Date adjust(const Date&,
                     BusinessDayConvention convention = Following,

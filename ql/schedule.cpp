@@ -20,20 +20,6 @@
 
 namespace QuantLib {
 
-#ifndef QL_DISABLE_DEPRECATED
-    Schedule::Schedule(const Calendar& calendar,
-                       const Date& startDate, const Date& endDate, 
-                       Frequency frequency,
-                       BusinessDayConvention convention, 
-                       bool isAdjusted,
-                       const Date& stubDate, bool startFromEnd, 
-                       bool longFinal) {
-        convention = isAdjusted? convention : Unadjusted;
-        *this = Schedule(calendar, startDate, endDate, frequency,
-                         convention, stubDate, startFromEnd, longFinal);
-    }
-#endif
-
     Schedule::Schedule(const Calendar& calendar,
                        const Date& startDate, const Date& endDate, 
                        Frequency frequency,

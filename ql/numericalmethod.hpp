@@ -23,7 +23,7 @@
 #define quantlib_numerical_method_h
 
 #include <ql/grid.hpp>
-#include <ql/handle.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 

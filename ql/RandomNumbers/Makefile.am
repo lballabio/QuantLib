@@ -15,7 +15,6 @@ include_HEADERS = \
 	mt19937uniformrng.hpp \
 	primitivepolynomials.h \
 	randomsequencegenerator.hpp \
-	rngtypedefs.hpp \
 	rngtraits.hpp \
 	sobolrsg.hpp
 

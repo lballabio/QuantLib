@@ -249,42 +249,6 @@ namespace QuantLib {
       floatingFrequency_(floatingFrequency),
       fixedDayCount_(fixedDayCount) {}
 
-#ifndef QL_DISABLE_DEPRECATED
-    SwapRateHelper::SwapRateHelper(
-                            const RelinkableHandle<Quote>& rate,
-                            Integer n, TimeUnit units, Integer settlementDays,
-                            const Calendar& calendar, 
-                            BusinessDayConvention convention,
-                            Frequency fixedFrequency, bool fixedIsAdjusted,
-                            const DayCounter& fixedDayCount,
-                            Frequency floatingFrequency)
-    : RateHelper(rate), 
-      n_(n), units_(units), settlementDays_(settlementDays),
-      calendar_(calendar), floatingConvention_(convention),
-      fixedFrequency_(fixedFrequency),
-      floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount) {
-        fixedConvention_ = fixedIsAdjusted ? convention : Unadjusted;
-    }
-
-    SwapRateHelper::SwapRateHelper(
-                            Rate rate,
-                            Integer n, TimeUnit units, Integer settlementDays,
-                            const Calendar& calendar, 
-                            BusinessDayConvention convention,
-                            Frequency fixedFrequency, bool fixedIsAdjusted,
-                            const DayCounter& fixedDayCount,
-                            Frequency floatingFrequency)
-    : RateHelper(rate), 
-      n_(n), units_(units), settlementDays_(settlementDays),
-      calendar_(calendar), floatingConvention_(convention),
-      fixedFrequency_(fixedFrequency),
-      floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount) {
-        fixedConvention_ = fixedIsAdjusted ? convention : Unadjusted;
-    }
-#endif
-
     void SwapRateHelper::setTermStructure(TermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed

@@ -156,10 +156,6 @@ namespace QuantLib {
                                               riskFreeDiscount, 
                                               variance1, variance2, rho);
                 break;
-              #ifndef QL_DISABLE_DEPRECATED
-              case Option::Straddle:
-                QL_FAIL("unsupported option type");
-              #endif
               default:
                 QL_FAIL("unknown option type");
             }
@@ -183,10 +179,6 @@ namespace QuantLib {
                                               riskFreeDiscount, 
                                               variance1, variance2, rho);
                 break;
-              #ifndef QL_DISABLE_DEPRECATED
-              case Option::Straddle:
-                QL_FAIL("unsupported option type");
-              #endif
               default:
                 QL_FAIL("unknown option type");
             }

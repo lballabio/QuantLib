@@ -43,10 +43,6 @@ namespace QuantLib {
                               const BusinessDayConvention conv,
                               const DayCounter & dayCounter = Actual365());
         Calendar calendar() const { return calendar_; };
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use businessDayConvention() instead
-        BusinessDayConvention roll() const { return conv_; };
-        #endif
         BusinessDayConvention businessDayConvention() const {
             return conv_;
         }

@@ -15,7 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/handle.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
 
 namespace QuantLib {

@@ -21,11 +21,8 @@
 #include <ql/qldefines.hpp>
 #include <ql/Pricers/core.hpp>
 
-#include <ql/Pricers/cliquetoptionpricer.hpp>
-#include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
-#include <ql/Pricers/dividendeuropeanoption.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>
 #include <ql/Pricers/fdbermudanoption.hpp>
 #include <ql/Pricers/fdbsmoption.hpp>
@@ -36,7 +33,6 @@
 #include <ql/Pricers/fdmultiperiodoption.hpp>
 #include <ql/Pricers/fdshoutoption.hpp>
 #include <ql/Pricers/fdstepconditionoption.hpp>
-#include <ql/Pricers/mcbasket.hpp>
 #include <ql/Pricers/mccliquetoption.hpp>
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
@@ -45,7 +41,6 @@
 #include <ql/Pricers/mcmaxbasket.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
 #include <ql/Pricers/mcperformanceoption.hpp>
-#include <ql/Pricers/performanceoption.hpp>
 
 
 #endif

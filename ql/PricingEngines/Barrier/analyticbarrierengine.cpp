@@ -89,42 +89,6 @@ namespace QuantLib {
                 break;
             }
             break;
-          #ifndef QL_DISABLE_DEPRECATED
-          case Option::Straddle:
-            switch (barrierType) {
-              case Barrier::DownIn:
-                if (strike() >= barrier())
-                    results_.value = C(1,1) + E(1) + B(-1) - 
-                        C(1,-1) + D(1,-1) + E(1);
-                else
-                    results_.value = A(1) - B(1) + D(1,1) + 
-                        E(1) + A(-1) + E(1);
-                break;
-              case Barrier::UpIn:
-                if (strike() >= barrier())
-                    results_.value = A(1) + E(-1) + A(-1) - 
-                        B(-1) + D(-1,-1) + E(-1);
-                else
-                    results_.value = B(1) - C(-1,1) + D(-1,1) + 
-                        E(-1) + C(-1,-1) + E(-1);
-                break;
-              case Barrier::DownOut:
-                if (strike() >= barrier())
-                   results_.value = A(1) - C(1,1) + F(1) + A(-1) - 
-                        B(-1) + C(1,-1) - D(1,-1) + F(1);
-                else
-                    results_.value = B(1) - D(1,1) + F(1) + F(1);
-                break;
-              case Barrier::UpOut:
-                if (strike() >= barrier())
-                    results_.value = F(-1) + B(-1) - D(-1,-1) + F(-1);
-                else
-                    results_.value = A(1) - B(1) + C(-1,1) - D(-1,1) + 
-                        F(-1) + A(-1) - C(-1,-1) + F(-1);
-                break;
-            }
-            break;
-          #endif
           default:
             QL_FAIL("unknown type");
         }

@@ -26,7 +26,6 @@
 #define quantlib_digital_mc_engine_hpp
 
 #include <ql/exercise.hpp>
-#include <ql/handle.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>

@@ -7,16 +7,12 @@ include_HEADERS = \
 	beijing.hpp \
 	budapest.hpp \
 	copenhagen.hpp \
-	frankfurt.hpp \
 	germany.hpp \
 	helsinki.hpp \
 	hongkong.hpp \
 	italy.hpp \
 	johannesburg.hpp \
 	jointcalendar.hpp \
-	london.hpp \
-	milan.hpp \
-	newyork.hpp \
 	nullcalendar.hpp \
 	oslo.hpp \
 	riyadh.hpp \

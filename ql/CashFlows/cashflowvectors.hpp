@@ -37,20 +37,6 @@ namespace QuantLib {
         const DayCounter& dayCount,
         const DayCounter& firstPeriodDayCount = DayCounter());
 
-#ifndef QL_DISABLE_DEPRECATED
-    //! helper function building a sequence of fixed rate coupons
-    /*! \deprecated use the version with a BusinessDayConvention as
-                    second argument instead
-    */
-    std::vector<boost::shared_ptr<CashFlow> > FixedRateCouponVector(
-        const Schedule& schedule,
-        const std::vector<Real>& nominals,
-        const std::vector<Rate>& couponRates,
-        const DayCounter& dayCount,
-        const DayCounter& firstPeriodDayCount = DayCounter(),
-        BusinessDayConvention paymentAdjustment = Following);
-#endif
-
     //! helper function building a sequence of par coupons
     /*! \warning The passing of a non-null stub date - i.e., the creation
                  of a short/long first coupon - is currently disabled.
@@ -64,21 +50,6 @@ namespace QuantLib {
         const std::vector<Real>& nominals,
         const boost::shared_ptr<Xibor>& index, Integer fixingDays,
         const std::vector<Spread>& spreads = std::vector<Spread>());
-
-#ifndef QL_DISABLE_DEPRECATED
-    //! helper function building a sequence of par coupons
-    /*! \warning The passing of a non-null stub date - i.e., the creation
-                 of a short/long first coupon - is currently disabled.
-        \deprecated use the version with a BusinessDayConvention as
-                    second argument instead
-    */
-    std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
-        const Schedule& schedule,
-        const std::vector<Real>& nominals,
-        const boost::shared_ptr<Xibor>& index, Integer fixingDays,
-        const std::vector<Spread>& spreads = std::vector<Spread>(),
-        BusinessDayConvention paymentAdjustment = Following);
-#endif
 
 }
 

@@ -38,24 +38,6 @@ namespace QuantLib {
                  bool startFromEnd = false, bool longFinal = false);
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar, BusinessDayConvention convention);
-#ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without the <tt>isAdjusted</tt> 
-                        argument; use <tt>convention = Unadjusted</tt> for
-                        <tt>isAdjusted = false</tt>.
-        */
-        Schedule(const Calendar& calendar,
-                 const Date& startDate, const Date& endDate,
-                 Frequency frequency, BusinessDayConvention convention,
-                 bool isAdjusted, const Date& stubDate = Date(),
-                 bool startFromEnd = false, bool longFinal = false);
-        /*! \deprecated use the constructor without the <tt>isAdjusted</tt>
-                        argument; use <tt>convention = Unadjusted</tt> for
-                        <tt>isAdjusted = false</tt>.
-        */
-        Schedule(const std::vector<Date>&,
-                 const Calendar& calendar, BusinessDayConvention convention,
-                 bool isAdjusted);
-#endif
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }
@@ -70,14 +52,6 @@ namespace QuantLib {
         const Date& endDate() const;
         Frequency frequency() const;
         BusinessDayConvention businessDayConvention() const;
-#ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated renamed to businessDayConvention()
-        BusinessDayConvention rollingConvention() const;
-        /*! \deprecated if you really need it (which you shouldn't) check
-                        that <tt>businessDayConvention() != Unadjusted</tt>
-        */
-        bool isAdjusted() const;
-#endif
         //@}
         //! \name Iterators
         //@{
@@ -110,22 +84,6 @@ namespace QuantLib {
         : calendar_(calendar), startDate_(startDate), endDate_(endDate),
           frequency_(frequency), convention_(convention),
           stubDate_(Date()), startFromEnd_(false), longFinal_(false) {}
-#ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without the <tt>isAdjusted</tt>
-                        argument; use <tt>convention = Unadjusted</tt> for
-                        <tt>isAdjusted = false</tt>.
-        */
-        MakeSchedule(const Calendar& calendar,
-                     const Date& startDate, const Date& endDate,
-                     Frequency frequency, 
-                     BusinessDayConvention convention,
-                     bool isAdjusted)
-        : calendar_(calendar), startDate_(startDate), endDate_(endDate),
-          frequency_(frequency), stubDate_(Date()), 
-          startFromEnd_(false), longFinal_(false) {
-            convention_ = isAdjusted ? convention : Unadjusted;
-        }
-#endif
         MakeSchedule& withStubDate(const Date& d) {
             stubDate_ = d; 
             return *this;
@@ -171,18 +129,6 @@ namespace QuantLib {
       startFromEnd_(false), longFinal_(false), finalIsRegular_(true),
       dates_(dates) {}
 
-#ifndef QL_DISABLE_DEPRECATED
-    inline Schedule::Schedule(const std::vector<Date>& dates,
-                              const Calendar& calendar, 
-                              BusinessDayConvention convention,
-                              bool isAdjusted)
-    : calendar_(calendar), frequency_(Frequency(-1)), 
-      startFromEnd_(false), longFinal_(false), finalIsRegular_(true),
-      dates_(dates) {
-        convention_ = isAdjusted? convention : Unadjusted;
-    }
-#endif
-
     inline const Date& Schedule::date(Size i) const {
         QL_REQUIRE(i <= dates_.size(),
                    "date index out of bounds");
@@ -218,16 +164,6 @@ namespace QuantLib {
     inline BusinessDayConvention Schedule::businessDayConvention() const {
         return convention_;
     }
-
-#ifndef QL_DISABLE_DEPRECATED
-    inline BusinessDayConvention Schedule::rollingConvention() const {
-        return convention_;
-    }
-
-    inline bool Schedule::isAdjusted() const {
-        return (convention_ != Unadjusted);
-    }
-#endif
 
 }
 

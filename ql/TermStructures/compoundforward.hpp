@@ -42,10 +42,6 @@ namespace QuantLib {
         Date todaysDate() const { return todaysDate_; }
         Date referenceDate() const { return referenceDate_; };
         Calendar calendar() const { return calendar_; };
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use businessDayConvention() instead
-        BusinessDayConvention roll() const { return conv_; };
-        #endif
         BusinessDayConvention businessDayConvention() const {
             return conv_; };
         DayCounter dayCounter() const { return dayCounter_; };

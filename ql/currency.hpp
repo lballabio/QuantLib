@@ -85,11 +85,6 @@ namespace QuantLib {
         ZAR     //!< South African Rand
     };
 
-#ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated renamed to CurrencyTag
-    typedef CurrencyTag Currency;
-#endif
-
 }
 
 

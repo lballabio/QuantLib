@@ -66,10 +66,6 @@ namespace QuantLib {
             return QL_MAX<Real>(price-strike_,0.0);
           case Option::Put:
             return QL_MAX<Real>(strike_-price,0.0);
-          #ifndef QL_DISABLE_DEPRECATED
-          case Option::Straddle:
-            return QL_FABS(strike_-price);
-          #endif
           default:
             QL_FAIL("unknown/illegal option type");
         }
@@ -94,10 +90,6 @@ namespace QuantLib {
             return price*QL_MAX<Real>(Real(1.0)-strike_,0.0);
           case Option::Put:
             return price*QL_MAX<Real>(strike_-Real(1.0),0.0);
-          #ifndef QL_DISABLE_DEPRECATED
-          case Option::Straddle:
-            return price*QL_FABS(strike_-Real(1.0));
-          #endif
           default:
             QL_FAIL("unknown/illegal option type");
         }
@@ -123,10 +115,6 @@ namespace QuantLib {
             return (price-strike_ > 0.0 ? cashPayoff_ : 0.0);
           case Option::Put:
             return (strike_-price > 0.0 ? cashPayoff_ : 0.0);
-          #ifndef QL_DISABLE_DEPRECATED
-          case Option::Straddle:
-            return cashPayoff_;
-          #endif
           default:
             QL_FAIL("unknown/illegal option type");
         }
@@ -148,10 +136,6 @@ namespace QuantLib {
             return (price-strike_ > 0.0 ? price : 0.0);
           case Option::Put:
             return (strike_-price > 0.0 ? price : 0.0);
-          #ifndef QL_DISABLE_DEPRECATED
-          case Option::Straddle:
-            return price;
-          #endif
           default:
             QL_FAIL("unknown/illegal option type");
         }
@@ -177,10 +161,6 @@ namespace QuantLib {
             return (price-strike_ > 0.0 ? price-strikePayoff_ : 0.0);
           case Option::Put:
             return (strike_-price > 0.0 ? strikePayoff_-price : 0.0);
-          #ifndef QL_DISABLE_DEPRECATED
-          case Option::Straddle:
-            return 0.0;
-          #endif
           default:
             QL_FAIL("unknown/illegal option type");
         }
@@ -209,10 +189,6 @@ namespace QuantLib {
             return ((strike_                 -price > 0.0 ? 1.0 : 0.0)
                    -(strike_+strikeIncrement_-price > 0.0 ? 1.0 : 0.0))
                 / strikeIncrement_;
-          #ifndef QL_DISABLE_DEPRECATED
-          case Option::Straddle:
-            return -1.0;
-          #endif
           default:
             QL_FAIL("unknown/illegal option type");
         }

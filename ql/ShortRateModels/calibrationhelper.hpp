@@ -82,23 +82,6 @@ namespace QuantLib {
         class ImpliedVolatilityHelper;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! Set of calibration instruments
-    /*! For the moment, this is just here to facilitate the assignment of a
-        pricing engine to a set of calibration helpers
-
-        \deprecated use a std::vector of CalibrationHelpers instead
-    */
-    class CalibrationSet 
-        : public std::vector<boost::shared_ptr<CalibrationHelper> > {
-      public:
-        void setPricingEngine(const boost::shared_ptr<PricingEngine>& engine) {
-            for (Size i=0; i<size(); i++)
-                (*this)[i]->setPricingEngine(engine);
-        }
-    };
-    #endif
-
 }
 
 

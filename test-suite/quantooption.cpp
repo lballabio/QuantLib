@@ -240,11 +240,7 @@ void QuantoOptionTest::testGreeks() {
     tolerance["qvega"]   = 1.0e-5;
     tolerance["qlambda"] = 1.0e-5;
 
-    Option::Type types[] = { Option::Call, Option::Put
-        #ifndef QL_DISABLE_DEPRECATED
-        , Option::Straddle
-        #endif
-    };
+    Option::Type types[] = { Option::Call, Option::Put };
     Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     Real underlyings[] = { 100.0 };
     Rate qRates[] = { 0.04, 0.05 };
@@ -547,11 +543,7 @@ void QuantoOptionTest::testForwardGreeks() {
     tolerance["qvega"]   = 1.0e-5;
     tolerance["qlambda"] = 1.0e-5;
 
-    Option::Type types[] = { Option::Call, Option::Put
-        #ifndef QL_DISABLE_DEPRECATED
-        , Option::Straddle
-        #endif
-    };
+    Option::Type types[] = { Option::Call, Option::Put };
     Real moneyness[] = { 0.9, 1.0, 1.1 };
     Real underlyings[] = { 100.0 };
     Rate qRates[] = { 0.04, 0.05 };

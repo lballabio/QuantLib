@@ -24,6 +24,7 @@
 
 #include <ql/Patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 

@@ -59,12 +59,6 @@ namespace QuantLib {
     };
 
 
-#ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated Renamed to DecimalFormatter
-    typedef DecimalFormatter DoubleFormatter;
-#endif
-
-
     //! Formats amounts in Euro for output
     /*! Formatting follows Euro convention (x,xxx,xxx.xx) */
     class EuroFormatter {

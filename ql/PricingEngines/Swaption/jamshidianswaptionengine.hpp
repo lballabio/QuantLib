@@ -46,11 +46,6 @@ namespace QuantLib {
         friend class rStarFinder;
     };
 
-    #if !defined(QL_DISABLE_DEPRECATED)
-    //! \deprecated renamed to JamshidianSwaptionEngine
-    typedef JamshidianSwaptionEngine JamshidianSwaption;
-    #endif
-
 }
 
 

@@ -34,27 +34,6 @@ namespace QuantLib {
       public:
         class arguments;
         class results;
-#ifndef QL_DISABLE_DEPRECATED
-        //! \deprecated use the constructor taking two Schedules
-        SimpleSwap(bool payFixedRate,
-                   // dates
-                   const Date& startDate, Integer n, TimeUnit units,
-                   const Calendar& calendar,
-                   BusinessDayConvention rollingConvention,
-                   Real nominal,
-                   // fixed leg
-                   Frequency fixedFrequency,
-                   Rate fixedRate,
-                   bool fixedIsAdjusted,
-                   const DayCounter& fixedDayCount,
-                   // floating leg
-                   Frequency floatingFrequency,
-                   const boost::shared_ptr<Xibor>& index,
-                   Integer indexFixingDays,
-                   Spread spread,
-                   // hook to term structure
-                   const RelinkableHandle<TermStructure>& termStructure);
-#endif
         SimpleSwap(bool payFixedRate,
                    Real nominal,
                    const Schedule& fixedSchedule,

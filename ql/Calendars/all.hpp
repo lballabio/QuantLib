@@ -23,16 +23,12 @@
 #include <ql/Calendars/beijing.hpp>
 #include <ql/Calendars/budapest.hpp>
 #include <ql/Calendars/copenhagen.hpp>
-#include <ql/Calendars/frankfurt.hpp>
 #include <ql/Calendars/germany.hpp>
 #include <ql/Calendars/helsinki.hpp>
 #include <ql/Calendars/hongkong.hpp>
 #include <ql/Calendars/italy.hpp>
 #include <ql/Calendars/johannesburg.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
-#include <ql/Calendars/london.hpp>
-#include <ql/Calendars/milan.hpp>
-#include <ql/Calendars/newyork.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Calendars/riyadh.hpp>
 #include <ql/Calendars/oslo.hpp>

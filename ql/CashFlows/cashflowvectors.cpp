@@ -112,23 +112,6 @@ namespace QuantLib {
         return leg;
     }
 
-#ifndef QL_DISABLE_DEPRECATED
-    std::vector<boost::shared_ptr<CashFlow> > 
-    FixedRateCouponVector(const Schedule& schedule,
-                          const std::vector<Real>& nominals,
-                          const std::vector<Rate>& couponRates,
-                          const DayCounter& dayCount, 
-                          const DayCounter& firstPeriodDayCount,
-                          BusinessDayConvention paymentAdjustment) {
-        BusinessDayConvention convention =
-            schedule.isAdjusted() ?
-                schedule.businessDayConvention():
-                paymentAdjustment;
-        return FixedRateCouponVector(schedule,convention,nominals,
-                                     couponRates,dayCount,firstPeriodDayCount);
-    }
-#endif
-
     std::vector<boost::shared_ptr<CashFlow> > 
     FloatingRateCouponVector(const Schedule& schedule,
                              BusinessDayConvention paymentAdjustment,
@@ -220,23 +203,6 @@ namespace QuantLib {
         }
         return leg;
     }
-
-#ifndef QL_DISABLE_DEPRECATED
-    std::vector<boost::shared_ptr<CashFlow> > 
-    FloatingRateCouponVector(const Schedule& schedule,
-                             const std::vector<Real>& nominals,
-                             const boost::shared_ptr<Xibor>& index, 
-                             Integer fixingDays,
-                             const std::vector<Spread>& spreads,
-                             BusinessDayConvention paymentAdjustment) {
-        BusinessDayConvention convention =
-            schedule.isAdjusted() ?
-                schedule.businessDayConvention():
-                paymentAdjustment;
-        return FloatingRateCouponVector(schedule,convention,nominals,
-                                        index,fixingDays,spreads);
-    }
-#endif
 
 }
 

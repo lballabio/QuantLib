@@ -41,7 +41,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-sgd-0_3_7.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-sgd-0_3_8.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -95,7 +95,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-s-0_3_7.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-s-0_3_8.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -149,7 +149,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-0_3_7.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-0_3_8.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -202,7 +202,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-sgd-0_3_7.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-sgd-0_3_8.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -256,7 +256,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-s-0_3_7.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-s-0_3_8.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -309,7 +309,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-gd-0_3_7.lib"
+				OutputFile="..\..\..\lib\QuantLibFunctions-vc71-mt-gd-0_3_8.lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>

@@ -17,177 +17,24 @@
 
 #include "old_pricers.hpp"
 #include "utilities.hpp"
-#include <ql/Pricers/cliquetoptionpricer.hpp>
-#include <ql/Pricers/dividendeuropeanoption.hpp>
 #include <ql/Pricers/fdeuropean.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>
 #include <ql/Pricers/fdshoutoption.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
-#include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/mceverest.hpp>
-#include <ql/Pricers/mcbasket.hpp>
 #include <ql/Pricers/mcmaxbasket.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
 #include <ql/Pricers/mchimalaya.hpp>
-#include <ql/RandomNumbers/rngtypedefs.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
 #include <ql/DayCounters/actual365.hpp>
 #include <map>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
-
-#ifndef QL_DISABLE_DEPRECATED
-void OldPricerTest::testCliquetPricer() {
-
-    BOOST_MESSAGE("Testing old-style cliquet option pricer...");
-
-    Real spot = 60.0;
-    Real moneyness = 1.1;
-    std::vector<Spread> divYield(2);
-    divYield[0] = 0.04; divYield[1] = 0.04;
-    std::vector<Rate> rRate(2);
-    rRate[0] = 0.08; rRate[1] = 0.08;
-    std::vector<Time> dates(2);
-    dates[0] = 0.25; dates[1] = 1.00;
-    std::vector<Volatility> vol(2);
-    vol[0] = 0.30; vol[1] = 0.30;
-    CliquetOptionPricer cliquet(Option::Call, spot, moneyness,
-                                divYield, rRate, dates, vol);
-    Real calculated = cliquet.value();
-    Real expected = 4.4064; // Haug, p.37
-    if (QL_FABS(calculated-expected) > 1.0e-4)
-        BOOST_FAIL(
-            "calculated value: " +
-            DecimalFormatter::toString(calculated) + "\n"
-            "expected:         " +
-            DecimalFormatter::toString(expected));
-}
-#endif
-
-#ifndef QL_DISABLE_DEPRECATED
-void OldPricerTest::testDividendEuropeanPricer() {
-
-    BOOST_MESSAGE("Testing old-style European option pricer "
-                  "with dividends...");
-
-    Size nstp = 150;
-//    Size ngrd = nstp+1;
-    std::vector<Real> div(2);
-    div[0] = 3.92; div[1] = 4.21;
-    std::vector<Time> dates(2);
-    dates[0] = 0.333; dates[1] = 0.667;
-
-    std::map<std::string,Real> calculated, expected, tolerance;
-    tolerance["delta"]  = 1.0e-4;
-    tolerance["gamma"]  = 1.0e-4;
-    tolerance["theta"]  = 1.0e-4;
-    tolerance["rho"]    = 1.0e-4;
-    tolerance["vega"]   = 1.0e-4;
-
-    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-    Real underlyings[] = { 100 };
-    Rate rRates[] = { 0.01, 0.10, 0.30 };
-    Rate qRates[] = { 0.00, 0.05, 0.15 };
-    Time residualTimes[] = { 1.0, 2.0 };
-    Real strikes[] = { 50, 99.5, 100, 100.5, 150 };
-    Volatility volatilities[] = { 0.04, 0.2, 0.7 };
-
-    for (Size i1=0; i1<LENGTH(types); i1++) {
-      for (Size i2=0; i2<LENGTH(underlyings); i2++) {
-        for (Size i3=0; i3<LENGTH(rRates); i3++) {
-          for (Size i4=0; i4<LENGTH(qRates); i4++) {
-            for (Size i5=0; i5<LENGTH(residualTimes); i5++) {
-              for (Size i6=0; i6<LENGTH(strikes); i6++) {
-                for (Size i7=0; i7<LENGTH(volatilities); i7++) {
-                  // test data
-                  Option::Type type = types[i1];
-                  Real u = underlyings[i2];
-                  Rate r = rRates[i3];
-                  Rate q = qRates[i4];
-                  Time T = residualTimes[i5];
-                  Real k = strikes[i6];
-                  Volatility v = volatilities[i7];
-                  // increments
-                  Real du = u*1.0e-4;
-                  Time dT = T/nstp;
-                  Volatility dv = v*1.0e-4;
-                  Spread dr = r*1.0e-4;
-
-                  // reference option
-                  DividendEuropeanOption opt(type,u,k,q,r,T,v,div,dates);
-                  if (opt.value() > u*1.0e-5) {
-                    // greeks
-                    calculated["delta"]  = opt.delta();
-                    calculated["gamma"]  = opt.gamma();
-                    calculated["theta"]  = opt.theta();
-                    calculated["rho"]    = opt.rho();
-                    calculated["vega"]   = opt.vega();
-
-                    // recalculate greeks numerically
-                    std::vector<Time> datesP(2), datesM(2);
-                    std::transform(dates.begin(),dates.end(),datesP.begin(),
-                                   std::bind2nd(std::plus<Time>(),dT));
-                    std::transform(dates.begin(),dates.end(),datesM.begin(),
-                                   std::bind2nd(std::minus<Time>(),dT));
-                    DividendEuropeanOption
-                        optPs(type, u+du, k, q, r,    T ,   v   , div, dates),
-                        optMs(type, u-du, k, q, r,    T ,   v   , div, dates),
-                        optPt(type, u   , k, q, r,    T+dT, v   , div, datesP),
-                        optMt(type, u   , k, q, r,    T-dT, v   , div, datesM),
-                        optPr(type, u   , k, q, r+dr, T   , v   , div, dates),
-                        optMr(type, u   , k, q, r-dr, T   , v   , div, dates),
-                        optPv(type, u   , k, q, r   , T   , v+dv, div, dates),
-                        optMv(type, u   , k, q, r   , T   , v-dv, div, dates);
-
-                    expected["delta"]  =  (optPs.value()-optMs.value())/(2*du);
-                    expected["gamma"]  =  (optPs.delta()-optMs.delta())/(2*du);
-                    expected["theta"]  = -(optPt.value()-optMt.value())/(2*dT);
-                    expected["rho"]    =  (optPr.value()-optMr.value())/(2*dr);
-                    expected["vega"]   =  (optPv.value()-optMv.value())/(2*dv);
-
-                    // check
-                    std::map<std::string,Real>::iterator it;
-                    for (it = expected.begin(); it != expected.end(); ++it) {
-                      std::string greek = it->first;
-                      Real expct = expected[greek];
-                      Real calcl = calculated[greek];
-                      Real tol = tolerance[greek];
-                      if (relativeError(expct,calcl,u) > tol)
-                          BOOST_FAIL(
-                              "Option details: \n"
-                              "    type:           " +
-                              OptionTypeFormatter::toString(type) + "\n"
-                              "    underlying:     " +
-                              DecimalFormatter::toString(u) + "\n"
-                              "    strike:         " +
-                              DecimalFormatter::toString(k) + "\n"
-                              "    dividend yield: " +
-                              RateFormatter::toString(q) + "\n"
-                              "    risk-free rate: " +
-                              RateFormatter::toString(r) + "\n"
-                              "    residual time:  " +
-                              DecimalFormatter::toString(T) + "\n"
-                              "    volatility:     " +
-                              VolatilityFormatter::toString(v) + "\n\n"
-                              "    calculated " + greek + ": " +
-                              DecimalFormatter::toString(calcl) + "\n"
-                              "    expected:    " +
-                              std::string(greek.size(),' ') +
-                              DecimalFormatter::toString(expct));
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-}
-#endif
 
 void OldPricerTest::testFdEuropeanPricer() {
 
@@ -205,11 +52,7 @@ void OldPricerTest::testFdEuropeanPricer() {
 
     PseudoRandom::urng_type rng(56789012);
 
-    Option::Type types[] = { Option::Call, Option::Put
-        #ifndef QL_DISABLE_DEPRECATED
-        , Option::Straddle
-        #endif
-    };
+    Option::Type types[] = { Option::Call, Option::Put };
 
     for (Size i=0; i<totCases; i++) {
 
@@ -347,11 +190,7 @@ void OldPricerTest::testAmericanPricers() {
 
     BOOST_MESSAGE("Testing old-style American-type pricers...");
 
-    Option::Type types[] = { Option::Call, Option::Put
-        #ifndef QL_DISABLE_DEPRECATED
-        , Option::Straddle
-        #endif
-    };
+    Option::Type types[] = { Option::Call, Option::Put };
     Real underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };
@@ -443,31 +282,6 @@ void OldPricerTest::testMcSingleFactorPricers() {
             + DecimalFormatter::toString(storedValue,10));
 
     Time residualTime;
-#ifndef QL_DISABLE_DEPRECATED
-
-    // "batch" 2
-    //
-    // data from "Option Pricing Formulas", Haug, pag.96-97
-    type = Option::Put;
-    underlying = 80.0;
-    strike = 85.0;
-    dividendYield = -0.03;
-    riskFreeRate = 0.05;
-    residualTime = 0.25;
-    volatility = 0.2;
-
-    ContinuousGeometricAPO pricer2(type,underlying,strike,dividendYield,
-                                   riskFreeRate,residualTime,volatility);
-    storedValue = 4.6922213122;
-    if (QL_FABS(pricer2.value()-storedValue) > 1.0e-10)
-        BOOST_FAIL(
-            "Batch 2:\n"
-            "    calculated value: "
-            + DecimalFormatter::toString(pricer2.value(),10) + "\n"
-            "    expected:         "
-            + DecimalFormatter::toString(storedValue,10));
-
-#endif
 
     // "batch" 3
     //
@@ -823,18 +637,6 @@ void OldPricerTest::testMcMultiFactorPricers() {
     std::vector<Real> sameAssetValues(4,25.0);
     Real strike;
 
-#ifndef QL_DISABLE_DEPRECATED
-    Option::Type type = Option::Call;
-    strike = 100.0;
-    // McBasket
-    testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
-                            riskFreeRate, sameAssetVols, perfectCorrelation,
-                            resTime, seed),
-                   12.69493382,
-                   1.0e-8,
-                   "McBasket");
-#endif
-
     // McMaxBasket
     std::vector<Real> assetValues(4);
     assetValues[0] = 100.0;
@@ -880,10 +682,6 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
-#ifndef QL_DISABLE_DEPRECATED
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testCliquetPricer));
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testDividendEuropeanPricer));
-#endif
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdEuropeanPricer));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testAmericanPricers));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));

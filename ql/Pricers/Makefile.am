@@ -5,11 +5,8 @@ includedir = $(prefix)/include/ql/Pricers
 include_HEADERS = \
     all.hpp \
     core.hpp \
-    cliquetoptionpricer.hpp \
-    continuousgeometricapo.hpp \
     discretegeometricapo.hpp \
     discretegeometricaso.hpp \
-    dividendeuropeanoption.hpp \
     fdamericanoption.hpp \
     fdbermudanoption.hpp \
     fdbsmoption.hpp \
@@ -20,7 +17,6 @@ include_HEADERS = \
     fdmultiperiodoption.hpp \
     fdshoutoption.hpp \
     fdstepconditionoption.hpp \
-    mcbasket.hpp \
     mccliquetoption.hpp \
     mcdiscretearithmeticapo.hpp \
     mcdiscretearithmeticaso.hpp \
@@ -30,16 +26,13 @@ include_HEADERS = \
     mcpagoda.hpp \
     mcperformanceoption.hpp \
     mcpricer.hpp \
-    performanceoption.hpp \
     singleassetoption.hpp
 
 EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
-    cliquetoptionpricer.cpp \
     discretegeometricapo.cpp \
     discretegeometricaso.cpp \
-    dividendeuropeanoption.cpp \
     fdbermudanoption.cpp \
     fdbsmoption.cpp \
     fddividendamericanoption.cpp \
@@ -48,7 +41,6 @@ libPricers_la_SOURCES = \
     fdeuropean.cpp \
     fdmultiperiodoption.cpp \
     fdstepconditionoption.cpp \
-    mcbasket.cpp \
     mccliquetoption.cpp \
     mcdiscretearithmeticapo.cpp \
     mcdiscretearithmeticaso.cpp \
@@ -57,7 +49,6 @@ libPricers_la_SOURCES = \
     mcmaxbasket.cpp \
     mcpagoda.cpp \
     mcperformanceoption.cpp \
-    performanceoption.cpp \
     singleassetoption.cpp
 
 noinst_LTLIBRARIES = libPricers.la

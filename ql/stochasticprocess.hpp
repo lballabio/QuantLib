@@ -143,10 +143,6 @@ namespace QuantLib {
         mutable bool updated_;
     };
 
-#ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated Use BlackScholesProcess instead
-    typedef BlackScholesProcess BlackScholesStochasticProcess;
-#endif
 
     //! Merton-76 jump-diffusion process
     class Merton76Process : public BlackScholesProcess {
@@ -177,11 +173,6 @@ namespace QuantLib {
         RelinkableHandle<Quote> jumpIntensity_, logMeanJump_, 
                                 logJumpVolatility_;
     };
-
-#ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated Use Merton76Process instead
-    typedef Merton76Process Merton76StochasticProcess;
-#endif
 
 
     //! Ornstein-Uhlenbeck process class

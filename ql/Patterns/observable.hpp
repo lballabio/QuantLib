@@ -22,7 +22,8 @@
 #ifndef quantlib_observable_h
 #define quantlib_observable_h
 
-#include <ql/handle.hpp>
+#include <ql/qldefines.hpp>
+#include <boost/shared_ptr.hpp>
 #include <list>
 
 namespace QuantLib {

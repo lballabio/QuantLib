@@ -51,15 +51,15 @@
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.3.7-debug"
+    #define QL_VERSION "0.3.8-debug"
 #else
-    #define QL_VERSION "0.3.7"
+    #define QL_VERSION "0.3.8"
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000307f0
+#define QL_HEX_VERSION 0x000308f0
 //! version string for output lib name
-#define QL_LIB_VERSION "0_3_7"
+#define QL_LIB_VERSION "0_3_8"
 
 #if   defined(__BORLANDC__)     // Borland C++ 5.5
     #include <ql/config.bcc.hpp>

@@ -18,15 +18,10 @@
 #ifndef quantlib_test_old_pricers_hpp
 #define quantlib_test_old_pricers_hpp
 
-#include <ql/qldefines.hpp>  // needed for QL_DISABLE_DEPRECATED
 #include <boost/test/unit_test.hpp>
 
 class OldPricerTest {
   public:
-#ifndef QL_DISABLE_DEPRECATED
-    static void testCliquetPricer();
-    static void testDividendEuropeanPricer();
-#endif
     static void testFdEuropeanPricer();
     static void testAmericanPricers();
     static void testMcSingleFactorPricers();

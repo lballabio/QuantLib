@@ -22,7 +22,8 @@
 #ifndef quantlib_composite_hpp
 #define quantlib_composite_hpp
 
-#include <ql/handle.hpp>
+#include <ql/qldefines.hpp>
+#include <boost/shared_ptr.hpp>
 
 namespace QuantLib {
 
