@@ -74,11 +74,9 @@ int main() {
     runner.addTest(DayCounterTest::suite());
     runner.addTest(DigitalOptionTest::suite());
     runner.addTest(DistributionTest::suite());
-    runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(FactorialTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(IntegralTest::suite());
-    runner.addTest(JumpDiffusionTest::suite());
     runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
     runner.addTest(MatricesTest::suite());
@@ -94,6 +92,12 @@ int main() {
 
     // to be deprecated
     runner.addTest(OldPricerTest::suite());
+
+    // the following tests fail with Borland
+    // to be investigated further
+    // please leave them at the bottom of the list for the time being
+    runner.addTest(EuropeanOptionTest::suite());
+    runner.addTest(JumpDiffusionTest::suite());
 
     std::string header = "Testing QuantLib " QL_VERSION;
 

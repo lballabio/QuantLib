@@ -608,6 +608,7 @@ CppUnit::Test* JumpDiffusionTest::suite() {
         ("Testing Merton 76 jump diffusion model for European options",
         &JumpDiffusionTest::testMerton76));
 
+    // fails with Borland
     tests->addTest(new CppUnit::TestCaller<JumpDiffusionTest>
         ("Testing jump diffusion option greeks",
         &JumpDiffusionTest::testGreeks));

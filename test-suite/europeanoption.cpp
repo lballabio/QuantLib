@@ -244,8 +244,8 @@ void EuropeanOptionTest::testValues() {
         double error = QL_FABS(calculated-values[i].result);
         double tolerance = 1e-4;
         if (error>tolerance) {
-            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, 
-                                    values[i].q, values[i].r, today, dc, 
+            vanillaOptionTestFailed("value", payoff, exercise, values[i].s,
+                                    values[i].q, values[i].r, today, dc,
                                     values[i].v, values[i].result, calculated,
                                     error, tolerance);
         }
@@ -326,8 +326,8 @@ void EuropeanOptionTest::testGreekValues() {
     double error = QL_FABS(calculated-values[i].result);
     double tolerance = 1e-4;
     if (error>tolerance)
-        vanillaOptionTestFailed("delta", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("delta", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -345,8 +345,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->delta();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("delta", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("delta", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -364,8 +364,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->elasticity();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("elasticity", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("elasticity", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -384,8 +384,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->gamma();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -403,8 +403,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->gamma();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("gamma", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -423,8 +423,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->vega();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("vega", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("vega", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -443,8 +443,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->vega();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("vega", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("vega", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -463,8 +463,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->theta();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("theta", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("theta", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -483,8 +483,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->thetaPerDay();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("thetaPerDay", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("thetaPerDay", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -503,8 +503,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->rho();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("rho", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("rho", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -523,8 +523,8 @@ void EuropeanOptionTest::testGreekValues() {
     calculated = option->dividendRho();
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
-        vanillaOptionTestFailed("dividendRho", payoff, exercise, values[i].s, 
-                                values[i].q, values[i].r, today, dc, 
+        vanillaOptionTestFailed("dividendRho", payoff, exercise, values[i].s,
+                                values[i].q, values[i].r, today, dc,
                                 values[i].v, values[i].result, calculated,
                                 error, tolerance);
 
@@ -658,12 +658,12 @@ void EuropeanOptionTest::testGreeks() {
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // get theta from time-shifted options
-                          expected["theta"] = 
+                          expected["theta"] =
                               (optionM->NPV() - optionP->NPV())/dT;
 
                           // compare
                           std::map<std::string,double>::iterator it;
-                          for (it = calculated.begin(); 
+                          for (it = calculated.begin();
                                it != calculated.end(); ++it) {
                               std::string greek = it->first;
                               double expct = expected  [greek],
@@ -671,9 +671,9 @@ void EuropeanOptionTest::testGreeks() {
                                      tol   = tolerance [greek];
                               double error = relativeError(expct,calcl,u);
                               if (error>tol) {
-                                  vanillaOptionTestFailed(greek, payoff, 
-                                                          exercise, u, q, r, 
-                                                          today, dc, v, expct, 
+                                  vanillaOptionTestFailed(greek, payoff,
+                                                          exercise, u, q, r,
+                                                          today, dc, v, expct,
                                                           calcl, error, tol);
                               }
                           }
@@ -933,6 +933,7 @@ CppUnit::Test* EuropeanOptionTest::suite() {
                    ("Testing European option greeks",
                     &EuropeanOptionTest::testGreeks));
 
+    // fails with Borland
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing European option implied volatility",
                     &EuropeanOptionTest::testImpliedVol));
