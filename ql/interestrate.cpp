@@ -38,7 +38,7 @@ namespace QuantLib {
         }
     }
 
-    Real InterestRate::accrualFactor(Time t) const {
+    Real InterestRate::compoundFactor(Time t) const {
         QL_REQUIRE(r_, "null InterestRate");
         switch (comp_) {
           case Simple:
@@ -64,34 +64,17 @@ namespace QuantLib {
 
         QL_REQUIRE(r_, "null InterestRate");
 
-        Real accrual = accrualFactor(t);
+        Real compounded = compoundFactor(t);
         switch (comp) {
           case Simple:
-            /*
-              std::cout << "equivalentRate Simple, ";
-              std::cout << accrual << ", ";
-              std::cout << t << std::endl;
-            */
-            return (accrual - 1.0)/t;
+            return (compounded - 1.0)/t;
           case Compounded:
-            /*
-              std::cout << "equivalentRate Compounded, ";
-              std::cout << accrual << ", ";
-              std::cout << freq << ", ";
-              std::cout << t << std::endl;
-            */
-            return (QL_POW(accrual, 1.0/(Real(freq)*t))-1.0)*Real(freq);
+            return (QL_POW(compounded, 1.0/(Real(freq)*t))-1.0)*Real(freq);
           case Continuous:
-            /*
-              std::cout << "equivalentRate Continuous, ";
-              std::cout << accrual << ", ";
-              std::cout << t << ", ";
-              std::cout << QL_LOG(accrual)/t << std::endl;
-            */
-            return QL_LOG(accrual)/t;
+            return QL_LOG(compounded)/t;
           default:
             QL_FAIL("unknown compounding convention ("+
-                    IntegerFormatter::toString(comp)+")");
+                IntegerFormatter::toString(comp)+")");
         }
     }
 

@@ -69,12 +69,12 @@ namespace QuantLib {
             compounded at time t
         */
         DiscountFactor discountFactor(Time t) const {
-            return 1.0/accrualFactor(t);
+            return 1.0/compoundFactor(t);
         }
-        /*! returns the accrual factor implied by the rate
+        /*! returns the compound factor implied by the rate
             compounded at time t
         */
-        Real accrualFactor(Time t) const;
+        Real compoundFactor(Time t) const;
         //! returns the equivalent rate for the compounding period t
         Rate equivalentRate(Time t,
                             DayCounter dc,
@@ -87,12 +87,12 @@ namespace QuantLib {
             Time t = dc_.yearFraction(d1, d2);
             return discountFactor(t);
         }
-        /*! returns the accrual factor implied by the rate
+        /*! returns the compound factor implied by the rate
             compounded between two dates
         */
-        Real accrualFactor(Date d1, Date d2) const {
+        Real compoundFactor(Date d1, Date d2) const {
             Time t = dc_.yearFraction(d1, d2);
-            return accrualFactor(t);
+            return compoundFactor(t);
         }
         /*! returns the equivalent rate for the
             compounding period between two dates

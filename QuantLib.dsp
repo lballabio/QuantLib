@@ -2508,11 +2508,11 @@ SOURCE=.\ql\instrument.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=".\test-suite\interestrates.cpp"
+SOURCE=.\ql\interestrate.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=".\test-suite\interestrates.hpp"
+SOURCE=.\ql\interestrate.hpp
 # End Source File
 # Begin Source File
 

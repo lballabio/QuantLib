@@ -232,8 +232,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\interestrates.obj"
-	-@erase "$(INTDIR)\interestrates.sbr"
+	-@erase "$(INTDIR)\interestrate.obj"
+	-@erase "$(INTDIR)\interestrate.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -606,7 +606,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrates.sbr"
+	"$(INTDIR)\interestrate.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -799,7 +799,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrates.obj"
+	"$(INTDIR)\interestrate.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1009,8 +1009,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\interestrates.obj"
-	-@erase "$(INTDIR)\interestrates.sbr"
+	-@erase "$(INTDIR)\interestrate.obj"
+	-@erase "$(INTDIR)\interestrate.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -1384,7 +1384,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrates.sbr"
+	"$(INTDIR)\interestrate.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1577,7 +1577,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrates.obj"
+	"$(INTDIR)\interestrate.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1787,8 +1787,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\interestrates.obj"
-	-@erase "$(INTDIR)\interestrates.sbr"
+	-@erase "$(INTDIR)\interestrate.obj"
+	-@erase "$(INTDIR)\interestrate.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -2161,7 +2161,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrates.sbr"
+	"$(INTDIR)\interestrate.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2354,7 +2354,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrates.obj"
+	"$(INTDIR)\interestrate.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2564,8 +2564,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\interestrates.obj"
-	-@erase "$(INTDIR)\interestrates.sbr"
+	-@erase "$(INTDIR)\interestrate.obj"
+	-@erase "$(INTDIR)\interestrate.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -2939,7 +2939,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrates.sbr"
+	"$(INTDIR)\interestrate.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3132,7 +3132,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrates.obj"
+	"$(INTDIR)\interestrate.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3342,8 +3342,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\interestrates.obj"
-	-@erase "$(INTDIR)\interestrates.sbr"
+	-@erase "$(INTDIR)\interestrate.obj"
+	-@erase "$(INTDIR)\interestrate.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -3716,7 +3716,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrates.sbr"
+	"$(INTDIR)\interestrate.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3909,7 +3909,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrates.obj"
+	"$(INTDIR)\interestrate.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4119,8 +4119,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
-	-@erase "$(INTDIR)\interestrates.obj"
-	-@erase "$(INTDIR)\interestrates.sbr"
+	-@erase "$(INTDIR)\interestrate.obj"
+	-@erase "$(INTDIR)\interestrate.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -4494,7 +4494,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrates.sbr"
+	"$(INTDIR)\interestrate.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4687,7 +4687,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrates.obj"
+	"$(INTDIR)\interestrate.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -5814,9 +5814,9 @@ SOURCE=.\ql\grid.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=".\test-suite\interestrates.cpp"
+SOURCE=.\ql\interestrate.cpp
 
-"$(INTDIR)\interestrates.obj"	"$(INTDIR)\interestrates.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\interestrate.obj"	"$(INTDIR)\interestrate.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -96,5 +96,5 @@ Changes since release 0.3.7:
 
 - added InterestRate class, which encapsulate the interest rate compounding
   algebra. It manages daycounting convention, compounding convention,
-  conversion between different conventions, and discount and accrual
+  conversion between different conventions, and discount/compound factor
   calculations. It also has its own formatter.
