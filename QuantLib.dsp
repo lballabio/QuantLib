@@ -66,7 +66,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR /YX /FD"lib\Win32\VisualStudio\QuantLib.pbd" /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -112,7 +112,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "build\OnTheEdgeDebug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR /YX /FD"lib\Win32\VisualStudio\QuantLib.pbd" /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -136,6 +136,30 @@ LIB32=link.exe -lib
 # Begin Source File
 
 SOURCE=.\ql\Calendars\frankfurt.cpp
+DEP_CPP_FRANK=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\frankfurt.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -144,6 +168,30 @@ SOURCE=.\ql\Calendars\frankfurt.hpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\helsinki.cpp
+DEP_CPP_HELSI=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\helsinki.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -152,6 +200,30 @@ SOURCE=.\ql\Calendars\helsinki.hpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\london.cpp
+DEP_CPP_LONDO=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\london.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -160,6 +232,30 @@ SOURCE=.\ql\Calendars\london.hpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\milan.cpp
+DEP_CPP_MILAN=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\milan.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -168,6 +264,30 @@ SOURCE=.\ql\Calendars\milan.hpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\newyork.cpp
+DEP_CPP_NEWYO=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\newyork.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -176,6 +296,30 @@ SOURCE=.\ql\Calendars\newyork.hpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\target.cpp
+DEP_CPP_TARGE=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\target.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -184,6 +328,30 @@ SOURCE=.\ql\Calendars\target.hpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\wellington.cpp
+DEP_CPP_WELLI=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\wellington.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -192,6 +360,30 @@ SOURCE=.\ql\Calendars\wellington.hpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\zurich.cpp
+DEP_CPP_ZURIC=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\zurich.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -204,6 +396,43 @@ SOURCE=.\ql\Calendars\zurich.hpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\cashflowvectors.cpp
+DEP_CPP_CASHF=\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\CashFlows\cashflowvectors.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\CashFlows\floatingratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\scheduler.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -216,6 +445,44 @@ SOURCE=.\ql\CashFlows\fixedratecoupon.hpp
 # Begin Source File
 
 SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
+DEP_CPP_FLOAT=\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\floatingratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\history.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\Indexes\xibormanager.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\filteringiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -240,6 +507,30 @@ SOURCE=.\ql\DayCounters\actual365.hpp
 # Begin Source File
 
 SOURCE=.\ql\DayCounters\actualactual.cpp
+DEP_CPP_ACTUA=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\DayCounters\actualactual.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -248,6 +539,30 @@ SOURCE=.\ql\DayCounters\actualactual.hpp
 # Begin Source File
 
 SOURCE=.\ql\DayCounters\thirty360.cpp
+DEP_CPP_THIRT=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\DayCounters\thirty360.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -268,6 +583,33 @@ SOURCE=.\ql\FiniteDifferences\boundarycondition.hpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\bsmoperator.cpp
+DEP_CPP_BSMOP=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -312,6 +654,35 @@ SOURCE=.\ql\FiniteDifferences\impliciteuler.hpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\onefactoroperator.cpp
+DEP_CPP_ONEFA=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\onefactoroperator.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -328,6 +699,34 @@ SOURCE=.\ql\FiniteDifferences\stepcondition.hpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
+DEP_CPP_TRIDI=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -336,6 +735,27 @@ SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.hpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
+DEP_CPP_VALUE=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -360,6 +780,41 @@ SOURCE=.\ql\Indexes\usdlibor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\xibor.cpp
+DEP_CPP_XIBOR=\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\history.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\Indexes\xibormanager.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\filteringiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -368,6 +823,39 @@ SOURCE=.\ql\Indexes\xibor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\xibormanager.cpp
+DEP_CPP_XIBORM=\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\history.hpp"\
+	".\ql\Indexes\xibormanager.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\filteringiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -380,6 +868,62 @@ SOURCE=.\ql\Indexes\xibormanager.hpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\capfloor.cpp
+DEP_CPP_CAPFL=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\CashFlows\floatingratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\capfloor.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -388,6 +932,42 @@ SOURCE=.\ql\Instruments\capfloor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\plainoption.cpp
+DEP_CPP_PLAIN=\
+	".\ql\argsandresults.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\plainoption.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -396,6 +976,44 @@ SOURCE=.\ql\Instruments\plainoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\simpleswap.cpp
+DEP_CPP_SIMPL=\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\CashFlows\cashflowvectors.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -404,6 +1022,30 @@ SOURCE=.\ql\Instruments\simpleswap.hpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\stock.cpp
+DEP_CPP_STOCK=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\stock.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -412,6 +1054,39 @@ SOURCE=.\ql\Instruments\stock.hpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\swap.cpp
+DEP_CPP_SWAP_=\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -420,6 +1095,56 @@ SOURCE=.\ql\Instruments\swap.hpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\swaption.cpp
+DEP_CPP_SWAPT=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\CashFlows\floatingratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\exercise.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\Instruments\swaption.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -448,6 +1173,33 @@ SOURCE=.\ql\Math\linearinterpolation.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\matrix.cpp
+DEP_CPP_MATRI=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\symmetricschurdecomposition.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -456,6 +1208,34 @@ SOURCE=.\ql\Math\matrix.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\multivariateaccumulator.cpp
+DEP_CPP_MULTI=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\multivariateaccumulator.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -464,6 +1244,29 @@ SOURCE=.\ql\Math\multivariateaccumulator.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\normaldistribution.cpp
+DEP_CPP_NORMA=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -476,6 +1279,31 @@ SOURCE=.\ql\Math\riskmeasures.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\segmentintegral.cpp
+DEP_CPP_SEGME=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\Math\segmentintegral.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -484,6 +1312,30 @@ SOURCE=.\ql\Math\segmentintegral.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\statistics.cpp
+DEP_CPP_STATI=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -496,6 +1348,30 @@ SOURCE=.\ql\Math\symmetriceigenvalues.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
+DEP_CPP_SYMME=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\symmetricschurdecomposition.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -508,6 +1384,41 @@ SOURCE=.\ql\Math\symmetricschurdecomposition.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\arithmeticapopathpricer.cpp
+DEP_CPP_ARITH=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\arithmeticapopathpricer.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -516,6 +1427,41 @@ SOURCE=.\ql\MonteCarlo\arithmeticapopathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.cpp
+DEP_CPP_ARITHM=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\arithmeticasopathpricer.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -524,6 +1470,42 @@ SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
+DEP_CPP_BASKE=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\basketpathpricer.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -532,6 +1514,41 @@ SOURCE=.\ql\MonteCarlo\basketpathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
+DEP_CPP_EUROP=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -540,6 +1557,40 @@ SOURCE=.\ql\MonteCarlo\europeanpathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\everestpathpricer.cpp
+DEP_CPP_EVERE=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\everestpathpricer.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -548,6 +1599,41 @@ SOURCE=.\ql\MonteCarlo\everestpathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\geometricapopathpricer.cpp
+DEP_CPP_GEOME=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\geometricapopathpricer.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -556,6 +1642,41 @@ SOURCE=.\ql\MonteCarlo\geometricapopathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\geometricasopathpricer.cpp
+DEP_CPP_GEOMET=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\geometricasopathpricer.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -564,6 +1685,30 @@ SOURCE=.\ql\MonteCarlo\geometricasopathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\getcovariance.cpp
+DEP_CPP_GETCO=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\MonteCarlo\getcovariance.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -572,6 +1717,40 @@ SOURCE=.\ql\MonteCarlo\getcovariance.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\himalayapathpricer.cpp
+DEP_CPP_HIMAL=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\himalayapathpricer.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -580,6 +1759,40 @@ SOURCE=.\ql\MonteCarlo\himalayapathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.cpp
+DEP_CPP_MAXBA=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\maxbasketpathpricer.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -604,6 +1817,40 @@ SOURCE=.\ql\MonteCarlo\multipathgenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
+DEP_CPP_PAGOD=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\pagodapathpricer.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -640,6 +1887,52 @@ SOURCE=.\ql\Patterns\observable.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\analyticalcapfloor.cpp
+DEP_CPP_ANALY=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\capfloor.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\analyticalcapfloor.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -648,6 +1941,38 @@ SOURCE=.\ql\Pricers\analyticalcapfloor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\barrieroption.cpp
+DEP_CPP_BARRI=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\barrieroption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -656,6 +1981,38 @@ SOURCE=.\ql\Pricers\barrieroption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\binaryoption.cpp
+DEP_CPP_BINAR=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\binaryoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -664,6 +2021,39 @@ SOURCE=.\ql\Pricers\binaryoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\cliquetoption.cpp
+DEP_CPP_CLIQU=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\cliquetoption.hpp"\
+	".\ql\Pricers\europeanoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -676,6 +2066,38 @@ SOURCE=.\ql\Pricers\continuousgeometricapo.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\discretegeometricapo.cpp
+DEP_CPP_DISCR=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\discretegeometricapo.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -684,6 +2106,38 @@ SOURCE=.\ql\Pricers\discretegeometricapo.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\discretegeometricaso.cpp
+DEP_CPP_DISCRE=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\discretegeometricaso.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -692,6 +2146,43 @@ SOURCE=.\ql\Pricers\discretegeometricaso.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\europeanengine.cpp
+DEP_CPP_EUROPE=\
+	".\ql\argsandresults.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\plainoption.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\europeanengine.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -700,6 +2191,38 @@ SOURCE=.\ql\Pricers\europeanengine.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\europeanoption.cpp
+DEP_CPP_EUROPEA=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\europeanoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -712,6 +2235,50 @@ SOURCE=.\ql\Pricers\fdamericanoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fdbermudanoption.cpp
+DEP_CPP_FDBER=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\ql\FiniteDifferences\fdtypedefs.hpp"\
+	".\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\ql\FiniteDifferences\stepcondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\europeanoption.hpp"\
+	".\ql\Pricers\fdbermudanoption.hpp"\
+	".\ql\Pricers\fdbsmoption.hpp"\
+	".\ql\Pricers\fdmultiperiodoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -720,6 +2287,43 @@ SOURCE=.\ql\Pricers\fdbermudanoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fdbsmoption.cpp
+DEP_CPP_FDBSM=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\fdbsmoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -728,6 +2332,49 @@ SOURCE=.\ql\Pricers\fdbsmoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fddividendamericanoption.cpp
+DEP_CPP_FDDIV=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\ql\FiniteDifferences\fdtypedefs.hpp"\
+	".\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\ql\FiniteDifferences\stepcondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\fdbsmoption.hpp"\
+	".\ql\Pricers\fddividendamericanoption.hpp"\
+	".\ql\Pricers\fddividendoption.hpp"\
+	".\ql\Pricers\fdmultiperiodoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -736,6 +2383,39 @@ SOURCE=.\ql\Pricers\fddividendamericanoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fddividendeuropeanoption.cpp
+DEP_CPP_FDDIVI=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\europeanoption.hpp"\
+	".\ql\Pricers\fddividendeuropeanoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -744,6 +2424,54 @@ SOURCE=.\ql\Pricers\fddividendeuropeanoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fddividendoption.cpp
+DEP_CPP_FDDIVID=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\ql\FiniteDifferences\fdtypedefs.hpp"\
+	".\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\ql\FiniteDifferences\stepcondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\cubicspline.hpp"\
+	".\ql\Math\interpolation.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\europeanoption.hpp"\
+	".\ql\Pricers\fdbsmoption.hpp"\
+	".\ql\Pricers\fddividendeuropeanoption.hpp"\
+	".\ql\Pricers\fddividendoption.hpp"\
+	".\ql\Pricers\fdmultiperiodoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -752,6 +2480,50 @@ SOURCE=.\ql\Pricers\fddividendoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fddividendshoutoption.cpp
+DEP_CPP_FDDIVIDE=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\ql\FiniteDifferences\fdtypedefs.hpp"\
+	".\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\ql\FiniteDifferences\shoutcondition.hpp"\
+	".\ql\FiniteDifferences\stepcondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\fdbsmoption.hpp"\
+	".\ql\Pricers\fddividendoption.hpp"\
+	".\ql\Pricers\fddividendshoutoption.hpp"\
+	".\ql\Pricers\fdmultiperiodoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -760,6 +2532,48 @@ SOURCE=.\ql\Pricers\fddividendshoutoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fdeuropean.cpp
+DEP_CPP_FDEUR=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\ql\FiniteDifferences\fdtypedefs.hpp"\
+	".\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\ql\FiniteDifferences\stepcondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\fdbsmoption.hpp"\
+	".\ql\Pricers\fdeuropean.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -768,6 +2582,51 @@ SOURCE=.\ql\Pricers\fdeuropean.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fdmultiperiodoption.cpp
+DEP_CPP_FDMUL=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\americancondition.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\ql\FiniteDifferences\fdtypedefs.hpp"\
+	".\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\ql\FiniteDifferences\stepcondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\europeanoption.hpp"\
+	".\ql\Pricers\fdbsmoption.hpp"\
+	".\ql\Pricers\fdmultiperiodoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -780,6 +2639,50 @@ SOURCE=.\ql\Pricers\fdshoutoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fdstepconditionoption.cpp
+DEP_CPP_FDSTE=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\ql\FiniteDifferences\fdtypedefs.hpp"\
+	".\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\ql\FiniteDifferences\stepcondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\europeanoption.hpp"\
+	".\ql\Pricers\fdbsmoption.hpp"\
+	".\ql\Pricers\fdstepconditionoption.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -788,6 +2691,64 @@ SOURCE=.\ql\Pricers\fdstepconditionoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\jamshidianswaption.cpp
+DEP_CPP_JAMSH=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\exercise.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\Instruments\swaption.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\jamshidianswaption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -796,6 +2757,54 @@ SOURCE=.\ql\Pricers\jamshidianswaption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcbasket.cpp
+DEP_CPP_MCBAS=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\MonteCarlo\basketpathpricer.hpp"\
+	".\ql\MonteCarlo\mctypedefs.hpp"\
+	".\ql\MonteCarlo\montecarlomodel.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathgenerator.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\mcbasket.hpp"\
+	".\ql\Pricers\mcpricer.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\boxmullergaussianrng.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	".\ql\RandomNumbers\randomarraygenerator.hpp"\
+	".\ql\RandomNumbers\rngtypedefs.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -804,6 +2813,59 @@ SOURCE=.\ql\Pricers\mcbasket.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.cpp
+DEP_CPP_MCDIS=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\MonteCarlo\arithmeticapopathpricer.hpp"\
+	".\ql\MonteCarlo\geometricapopathpricer.hpp"\
+	".\ql\MonteCarlo\mctypedefs.hpp"\
+	".\ql\MonteCarlo\montecarlomodel.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathgenerator.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\discretegeometricapo.hpp"\
+	".\ql\Pricers\mcdiscretearithmeticapo.hpp"\
+	".\ql\Pricers\mcpricer.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\boxmullergaussianrng.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	".\ql\RandomNumbers\randomarraygenerator.hpp"\
+	".\ql\RandomNumbers\rngtypedefs.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -812,6 +2874,59 @@ SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcdiscretearithmeticaso.cpp
+DEP_CPP_MCDISC=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\MonteCarlo\arithmeticasopathpricer.hpp"\
+	".\ql\MonteCarlo\geometricasopathpricer.hpp"\
+	".\ql\MonteCarlo\mctypedefs.hpp"\
+	".\ql\MonteCarlo\montecarlomodel.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathgenerator.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\discretegeometricaso.hpp"\
+	".\ql\Pricers\mcdiscretearithmeticaso.hpp"\
+	".\ql\Pricers\mcpricer.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\boxmullergaussianrng.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	".\ql\RandomNumbers\randomarraygenerator.hpp"\
+	".\ql\RandomNumbers\rngtypedefs.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -820,6 +2935,54 @@ SOURCE=.\ql\Pricers\mcdiscretearithmeticaso.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mceuropean.cpp
+DEP_CPP_MCEUR=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\ql\MonteCarlo\mctypedefs.hpp"\
+	".\ql\MonteCarlo\montecarlomodel.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathgenerator.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\mceuropean.hpp"\
+	".\ql\Pricers\mcpricer.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\boxmullergaussianrng.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	".\ql\RandomNumbers\randomarraygenerator.hpp"\
+	".\ql\RandomNumbers\rngtypedefs.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -828,6 +2991,54 @@ SOURCE=.\ql\Pricers\mceuropean.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mceverest.cpp
+DEP_CPP_MCEVE=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\MonteCarlo\everestpathpricer.hpp"\
+	".\ql\MonteCarlo\mctypedefs.hpp"\
+	".\ql\MonteCarlo\montecarlomodel.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathgenerator.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\mceverest.hpp"\
+	".\ql\Pricers\mcpricer.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\boxmullergaussianrng.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	".\ql\RandomNumbers\randomarraygenerator.hpp"\
+	".\ql\RandomNumbers\rngtypedefs.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -836,6 +3047,54 @@ SOURCE=.\ql\Pricers\mceverest.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mchimalaya.cpp
+DEP_CPP_MCHIM=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\MonteCarlo\himalayapathpricer.hpp"\
+	".\ql\MonteCarlo\mctypedefs.hpp"\
+	".\ql\MonteCarlo\montecarlomodel.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathgenerator.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\mchimalaya.hpp"\
+	".\ql\Pricers\mcpricer.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\boxmullergaussianrng.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	".\ql\RandomNumbers\randomarraygenerator.hpp"\
+	".\ql\RandomNumbers\rngtypedefs.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -844,6 +3103,54 @@ SOURCE=.\ql\Pricers\mchimalaya.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcmaxbasket.cpp
+DEP_CPP_MCMAX=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\MonteCarlo\maxbasketpathpricer.hpp"\
+	".\ql\MonteCarlo\mctypedefs.hpp"\
+	".\ql\MonteCarlo\montecarlomodel.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathgenerator.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\mcmaxbasket.hpp"\
+	".\ql\Pricers\mcpricer.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\boxmullergaussianrng.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	".\ql\RandomNumbers\randomarraygenerator.hpp"\
+	".\ql\RandomNumbers\rngtypedefs.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -852,6 +3159,54 @@ SOURCE=.\ql\Pricers\mcmaxbasket.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcpagoda.cpp
+DEP_CPP_MCPAG=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\Math\statistics.hpp"\
+	".\ql\MonteCarlo\mctypedefs.hpp"\
+	".\ql\MonteCarlo\montecarlomodel.hpp"\
+	".\ql\MonteCarlo\multipath.hpp"\
+	".\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\ql\MonteCarlo\pagodapathpricer.hpp"\
+	".\ql\MonteCarlo\path.hpp"\
+	".\ql\MonteCarlo\pathgenerator.hpp"\
+	".\ql\MonteCarlo\pathpricer.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\mcpagoda.hpp"\
+	".\ql\Pricers\mcpricer.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\boxmullergaussianrng.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	".\ql\RandomNumbers\randomarraygenerator.hpp"\
+	".\ql\RandomNumbers\rngtypedefs.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -864,6 +3219,37 @@ SOURCE=.\ql\Pricers\mcpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\singleassetoption.cpp
+DEP_CPP_SINGL=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\singleassetoption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -872,6 +3258,60 @@ SOURCE=.\ql\Pricers\singleassetoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\treecapfloor.cpp
+DEP_CPP_TREEC=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\capfloor.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\treecapfloor.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -880,6 +3320,61 @@ SOURCE=.\ql\Pricers\treecapfloor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\treeswaption.cpp
+DEP_CPP_TREES=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\exercise.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\Instruments\swaption.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\treeswaption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -904,6 +3399,25 @@ SOURCE=.\ql\RandomNumbers\inversecumulativegaussianrng.hpp
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
+DEP_CPP_KNUTH=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\knuthuniformrng.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -912,6 +3426,25 @@ SOURCE=.\ql\RandomNumbers\knuthuniformrng.hpp
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
+DEP_CPP_LECUY=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\MonteCarlo\sample.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\RandomNumbers\lecuyeruniformrng.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -932,6 +3465,31 @@ SOURCE=.\ql\RandomNumbers\rngtypedefs.hpp
 # Begin Source File
 
 SOURCE=.\ql\Solvers1D\bisection.cpp
+DEP_CPP_BISEC=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\bisection.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -940,6 +3498,31 @@ SOURCE=.\ql\Solvers1D\bisection.hpp
 # Begin Source File
 
 SOURCE=.\ql\Solvers1D\brent.cpp
+DEP_CPP_BRENT=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -948,6 +3531,31 @@ SOURCE=.\ql\Solvers1D\brent.hpp
 # Begin Source File
 
 SOURCE=.\ql\Solvers1D\falseposition.cpp
+DEP_CPP_FALSE=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\falseposition.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -956,6 +3564,32 @@ SOURCE=.\ql\Solvers1D\falseposition.hpp
 # Begin Source File
 
 SOURCE=.\ql\Solvers1D\newton.cpp
+DEP_CPP_NEWTO=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\newton.hpp"\
+	".\ql\Solvers1D\newtonsafe.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -964,6 +3598,31 @@ SOURCE=.\ql\Solvers1D\newton.hpp
 # Begin Source File
 
 SOURCE=.\ql\Solvers1D\newtonsafe.cpp
+DEP_CPP_NEWTON=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\newtonsafe.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -972,6 +3631,31 @@ SOURCE=.\ql\Solvers1D\newtonsafe.hpp
 # Begin Source File
 
 SOURCE=.\ql\Solvers1D\ridder.cpp
+DEP_CPP_RIDDE=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\ridder.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -980,6 +3664,31 @@ SOURCE=.\ql\Solvers1D\ridder.hpp
 # Begin Source File
 
 SOURCE=.\ql\Solvers1D\secant.cpp
+DEP_CPP_SECAN=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\secant.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -996,6 +3705,48 @@ SOURCE=.\ql\TermStructures\flatforward.hpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
+DEP_CPP_PIECE=\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\TermStructures\piecewiseflatforward.hpp"\
+	".\ql\TermStructures\ratehelpers.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1004,6 +3755,47 @@ SOURCE=.\ql\TermStructures\piecewiseflatforward.hpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\ratehelpers.cpp
+DEP_CPP_RATEH=\
+	".\ql\calendar.hpp"\
+	".\ql\Calendars\target.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\DayCounters\actual360.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\euribor.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\TermStructures\ratehelpers.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1047,6 +3839,60 @@ SOURCE=.\ql\Utilities\steppingiterator.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.cpp
+DEP_CPP_BLACK=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\OneFactorModels\blackkarasinski.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\timefunction.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\cubicspline.hpp"\
+	".\ql\Math\interpolation.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1055,6 +3901,54 @@ SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollrossplus.cpp
+DEP_CPP_COXIN=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\OneFactorModels\coxingersollrossplus.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1063,6 +3957,54 @@ SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollrossplus.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullwhite.cpp
+DEP_CPP_HULLW=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\OneFactorModels\hullwhite.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1075,6 +4017,60 @@ SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullwhite.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\caphelper.cpp
+DEP_CPP_CAPHE=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\CashFlows\floatingratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\capfloor.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\InterestRateModelling\calibrationhelper.hpp"\
+	".\ql\InterestRateModelling\CalibrationHelpers\caphelper.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\analyticalcapfloor.hpp"\
+	".\ql\Pricers\treecapfloor.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1083,6 +4079,67 @@ SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\caphelper.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.cpp
+DEP_CPP_SWAPTI=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\cashflow.hpp"\
+	".\ql\cashflows\coupon.hpp"\
+	".\ql\CashFlows\fixedratecoupon.hpp"\
+	".\ql\CashFlows\floatingratecoupon.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\exercise.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\index.hpp"\
+	".\ql\Indexes\xibor.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\Instruments\simpleswap.hpp"\
+	".\ql\Instruments\swap.hpp"\
+	".\ql\Instruments\swaption.hpp"\
+	".\ql\InterestRateModelling\calibrationhelper.hpp"\
+	".\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\Pricers\jamshidianswaption.hpp"\
+	".\ql\Pricers\treeswaption.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1095,6 +4152,47 @@ SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\TwoFactorModels\g2.cpp
+DEP_CPP_G2_CP=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\twofactormodel.hpp"\
+	".\ql\InterestRateModelling\TwoFactorModels\g2.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\normaldistribution.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1104,6 +4202,47 @@ SOURCE=.\ql\InterestRateModelling\TwoFactorModels\g2.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\calibrationhelper.cpp
+DEP_CPP_CALIB=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\calibrationhelper.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1112,6 +4251,52 @@ SOURCE=.\ql\InterestRateModelling\calibrationhelper.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\grid.cpp
+DEP_CPP_GRID_=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\grid.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1120,6 +4305,53 @@ SOURCE=.\ql\InterestRateModelling\grid.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\model.cpp
+DEP_CPP_MODEL=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\calibrationhelper.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\matrix.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Optimization\armijo.hpp"\
+	".\ql\Optimization\conjugategradient.hpp"\
+	".\ql\Optimization\costfunction.hpp"\
+	".\ql\Optimization\criteria.hpp"\
+	".\ql\Optimization\leastsquare.hpp"\
+	".\ql\Optimization\linesearch.hpp"\
+	".\ql\Optimization\optimizer.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	".\ql\Utilities\steppingiterator.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1136,6 +4368,64 @@ SOURCE=.\ql\InterestRateModelling\shortrateprocess.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\timefunction.cpp
+DEP_CPP_TIMEF=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\ql\FiniteDifferences\expliciteuler.hpp"\
+	".\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\ql\FiniteDifferences\onefactoroperator.hpp"\
+	".\ql\FiniteDifferences\stepcondition.hpp"\
+	".\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\grid.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\onefactormodel.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\timefunction.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\Math\cubicspline.hpp"\
+	".\ql\Math\interpolation.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1144,6 +4434,53 @@ SOURCE=.\ql\InterestRateModelling\timefunction.hpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\trinomialtree.cpp
+DEP_CPP_TRINO=\
+	".\ql\argsandresults.hpp"\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\constraint.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\diffusionprocess.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\InterestRateModelling\model.hpp"\
+	".\ql\InterestRateModelling\shortrateprocess.hpp"\
+	".\ql\InterestRateModelling\trinomialtree.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\minimizer.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\Solvers1D\brent.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1160,6 +4497,33 @@ SOURCE=.\ql\InterestRateModelling\twofactormodel.hpp
 # Begin Source File
 
 SOURCE=.\ql\Optimization\armijo.cpp
+DEP_CPP_ARMIJ=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\Optimization\armijo.hpp"\
+	".\ql\Optimization\costfunction.hpp"\
+	".\ql\Optimization\criteria.hpp"\
+	".\ql\Optimization\linesearch.hpp"\
+	".\ql\Optimization\optimizer.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1168,6 +4532,34 @@ SOURCE=.\ql\Optimization\armijo.hpp
 # Begin Source File
 
 SOURCE=.\ql\Optimization\conjugategradient.cpp
+DEP_CPP_CONJU=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\Optimization\armijo.hpp"\
+	".\ql\Optimization\conjugategradient.hpp"\
+	".\ql\Optimization\costfunction.hpp"\
+	".\ql\Optimization\criteria.hpp"\
+	".\ql\Optimization\linesearch.hpp"\
+	".\ql\Optimization\optimizer.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1196,6 +4588,34 @@ SOURCE=.\ql\Optimization\optimizer.hpp
 # Begin Source File
 
 SOURCE=.\ql\Optimization\steepestdescent.cpp
+DEP_CPP_STEEP=\
+	".\ql\array.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\Optimization\armijo.hpp"\
+	".\ql\Optimization\costfunction.hpp"\
+	".\ql\Optimization\criteria.hpp"\
+	".\ql\Optimization\linesearch.hpp"\
+	".\ql\Optimization\optimizer.hpp"\
+	".\ql\Optimization\steepestdescent.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1216,6 +4636,41 @@ SOURCE=.\ql\Lattices\timegrid.hpp
 # Begin Source File
 
 SOURCE=.\ql\Lattices\tree.cpp
+DEP_CPP_TREE_=\
+	".\ql\array.hpp"\
+	".\ql\asset.hpp"\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\date.hpp"\
+	".\ql\daycounter.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\expressiontemplates.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\Lattices\node.hpp"\
+	".\ql\Lattices\timegrid.hpp"\
+	".\ql\Lattices\tree.hpp"\
+	".\ql\marketelement.hpp"\
+	".\ql\null.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\relinkablehandle.hpp"\
+	".\ql\termstructure.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1237,6 +4692,29 @@ SOURCE=.\ql\asset.hpp
 # Begin Source File
 
 SOURCE=.\ql\calendar.cpp
+DEP_CPP_CALEN=\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1277,6 +4755,29 @@ SOURCE=.\ql\currency.hpp
 # Begin Source File
 
 SOURCE=.\ql\dataformatters.cpp
+DEP_CPP_DATAF=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1285,6 +4786,28 @@ SOURCE=.\ql\dataformatters.hpp
 # Begin Source File
 
 SOURCE=.\ql\date.cpp
+DEP_CPP_DATE_=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1345,6 +4868,30 @@ SOURCE=.\ql\null.hpp
 # Begin Source File
 
 SOURCE=.\ql\option.cpp
+DEP_CPP_OPTIO=\
+	".\ql\argsandresults.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\instrument.hpp"\
+	".\ql\null.hpp"\
+	".\ql\option.hpp"\
+	".\ql\Patterns\observable.hpp"\
+	".\ql\qldefines.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1369,6 +4916,32 @@ SOURCE=.\ql\riskstatistics.hpp
 # Begin Source File
 
 SOURCE=.\ql\scheduler.cpp
+DEP_CPP_SCHED=\
+	".\ql\calendar.hpp"\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\handle.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\scheduler.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1377,6 +4950,30 @@ SOURCE=.\ql\scheduler.hpp
 # Begin Source File
 
 SOURCE=.\ql\solver1d.cpp
+DEP_CPP_SOLVE=\
+	".\ql\config.bcc.hpp"\
+	".\ql\config.msvc.hpp"\
+	".\ql\config.mwcw.hpp"\
+	".\ql\currency.hpp"\
+	".\ql\dataformatters.hpp"\
+	".\ql\date.hpp"\
+	".\ql\errors.hpp"\
+	".\ql\null.hpp"\
+	".\ql\qldefines.hpp"\
+	".\ql\solver1d.hpp"\
+	".\ql\types.hpp"\
+	
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
