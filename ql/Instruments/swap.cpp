@@ -97,7 +97,11 @@ namespace QuantLib {
             // add second leg cash flows and BPS
             for (Size j=0; j<secondLeg_.size(); j++) {
                 Date cashFlowDate = secondLeg_[j]->date();
+                #if QL_INCLUDE_TODAYS_COUPON
                 if (cashFlowDate >= settlement) {
+                #else
+                if (cashFlowDate > settlement) {
+                #endif
                     isExpired_ = false;
                     NPV_ += secondLeg_[j]->amount() *
                         termStructure_->discount(cashFlowDate);
