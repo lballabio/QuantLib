@@ -4603,6 +4603,9 @@
 				RelativePath="ql\Math\matrix.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\multicubicspline.hpp">
+			</File>
+			<File
 				RelativePath="ql\Math\multivariateaccumulator.hpp">
 			</File>
 			<File
