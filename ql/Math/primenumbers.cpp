@@ -42,6 +42,28 @@ namespace QuantLib {
 
     namespace Math {
 
+        namespace {
+            const unsigned long firstPrimes[] = {
+                // the first two primes are necessary for bootstrapping
+                 2,  3, 
+                // additional precomputed primes
+                 5,  7, 11, 13, 17, 19, 23, 29,
+                31, 37, 41, 43, 47 };
+        }
+
+        std::vector<unsigned long> PrimeNumbers::primeNumbers_;
+
+        unsigned long PrimeNumbers::get(Size absoluteIndex) {
+            if (primeNumbers_.empty()) {
+                Size n = sizeof(firstPrimes)/sizeof(firstPrimes[0]);
+                std::copy(firstPrimes, firstPrimes+n,
+                          std::back_inserter(primeNumbers_));
+            }
+            while (primeNumbers_.size()<=absoluteIndex)
+                nextPrimeNumber();
+            return primeNumbers_[absoluteIndex];
+        }
+
         Size PrimeNumbers::nextPrimeNumber() {
             Size p, n, m = primeNumbers_.back();
             do {

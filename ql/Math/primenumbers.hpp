@@ -50,36 +50,12 @@ namespace QuantLib {
         */
         class PrimeNumbers {
           public:
-            PrimeNumbers() : primeNumbers_(15) {
-                // the first 2 prime numbeers are necessary
-                // for the algorithm to work
-                primeNumbers_[ 0] =  2;
-                primeNumbers_[ 1] =  3;
-                // precomputed .....
-                primeNumbers_[ 2] =  5;
-                primeNumbers_[ 3] =  7;
-                primeNumbers_[ 4] = 11;
-                primeNumbers_[ 5] = 13;
-                primeNumbers_[ 6] = 17;
-                primeNumbers_[ 7] = 19;
-                primeNumbers_[ 8] = 23;
-                primeNumbers_[ 9] = 29;
-                primeNumbers_[10] = 31;
-                primeNumbers_[11] = 37;
-                primeNumbers_[12] = 41;
-                primeNumbers_[13] = 43;
-                primeNumbers_[14] = 47;
-
-            }
             //! Get and store one after another.
-            Size nextPrimeNumber();
-            Size operator[](Size absoluteIndex) {
-                while (primeNumbers_.size()<=absoluteIndex)
-                    nextPrimeNumber();
-                return primeNumbers_[absoluteIndex];
-            }
+            static unsigned long get(Size absoluteIndex);
           private:
-            std::vector<Size> primeNumbers_;
+            PrimeNumbers() {}
+            static Size nextPrimeNumber();
+            static std::vector<unsigned long> primeNumbers_;
         };
 
     }
