@@ -67,8 +67,6 @@ namespace QuantLib {
             RelinkableHandle<TermStructure> termStructure_;
         };
 
-        class CalibrationSet;
-
         //! Abstract short-rate model class
         class Model : public Patterns::Observer, 
                       public Patterns::Observable {

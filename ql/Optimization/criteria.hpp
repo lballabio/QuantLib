@@ -35,19 +35,21 @@ namespace QuantLib {
         */
         class EndCriteria {
           public:
-            enum Type { maxIter = 1, statPt = 2, statGd = 3 };
+            enum Type { maxIter, statPt, statGd };
 
             //! default constructor
-            EndCriteria ();
-            //! initialization constructor
-            EndCriteria (int maxIteration, double epsilon);
-            //! copy constructor
-            EndCriteria (const EndCriteria& oec);
-            //! destructor
-            ~EndCriteria () {}
+            EndCriteria()
+            : maxIteration_(100), functionEpsilon_(1e-8), 
+              gradientEpsilon_(1e-8), maxIterStatPt_(10), 
+              statState_(0), endCriteria_(0),
+              positiveOptimization_ (false) {}
 
-            //! assignement operator
-            EndCriteria& operator=(const EndCriteria& oec);
+            //! initialization constructor
+            EndCriteria(int maxIteration, double epsilon)
+            : maxIteration_ (maxIteration), functionEpsilon_ (epsilon),
+              gradientEpsilon_ (epsilon), maxIterStatPt_(maxIteration/10),
+              statState_ (0), endCriteria_ (0), 
+              positiveOptimization_ (false) {}
 
             void setPositiveOptimization() {
                 positiveOptimization_ = true;
@@ -60,7 +62,7 @@ namespace QuantLib {
                 return test;
             }
             bool checkStationaryValue(double fold, double fnew) {
-                bool test = (QL_FABS (fold - fnew) < functionEpsilon_);
+                bool test = (QL_FABS(fold - fnew) < functionEpsilon_);
                 if (test) {
                     statState_++;
                     if (statState_ > maxIterStatPt_) {
@@ -74,7 +76,7 @@ namespace QuantLib {
             }
 
             bool checkAccuracyValue(double f) {
-                bool test = ((f < functionEpsilon_) && positiveOptimization_);
+                bool test = (f < functionEpsilon_ && positiveOptimization_);
                 if (test) {
                     endCriteria_ = statPt;
                 }
@@ -87,6 +89,7 @@ namespace QuantLib {
                     endCriteria_ = statGd;
                 return test;
             }
+
             bool checkAccuracyGradientNorm (double norm) {
                 bool test = (norm < gradientEpsilon_);
                 if (test)
@@ -101,10 +104,18 @@ namespace QuantLib {
                             double normgold,
                             double fnew,
                             double normgnew,
-                            double normdiff);
+                            double normdiff) {
+                return 
+                    checkIterationNumber(iteration) ||
+                    checkStationaryValue(fold, fnew) ||
+                    checkAccuracyValue(fnew) ||
+                    checkAccuracyValue(fold) ||
+                    checkAccuracyGradientNorm(normgnew) ||
+                    checkAccuracyGradientNorm(normgold);
+            }
 
             //! return the end criteria type
-            int criteria () const {
+            int criteria() const {
                 return endCriteria_;
             }
 
@@ -119,51 +130,9 @@ namespace QuantLib {
             bool positiveOptimization_;
         };
 
-        inline EndCriteria::EndCriteria ()
-        : maxIteration_(100), functionEpsilon_(1e-8), gradientEpsilon_(1e-8),
-          maxIterStatPt_(10), statState_(0), endCriteria_(0),
-          positiveOptimization_ (false) {}
-
-        inline EndCriteria::EndCriteria(
-            int maxIteration, double epsilon)
-        : maxIteration_ (maxIteration), functionEpsilon_ (epsilon),
-          gradientEpsilon_ (epsilon), maxIterStatPt_(maxIteration/10),
-          statState_ (0), endCriteria_ (0), positiveOptimization_ (false) {}
-
-        inline EndCriteria::EndCriteria(const EndCriteria& oec)
-        : maxIteration_ (oec.maxIteration_),
-          functionEpsilon_(oec.functionEpsilon_),
-          gradientEpsilon_(oec.gradientEpsilon_),
-          maxIterStatPt_(oec.maxIterStatPt_),
-          statState_(oec.statState_), endCriteria_(oec.endCriteria_),
-          positiveOptimization_(oec.positiveOptimization_) {
-        }
-
-        inline EndCriteria& EndCriteria::operator=(const EndCriteria & oec) {
-            maxIteration_ = oec.maxIteration_;
-            functionEpsilon_ = oec.functionEpsilon_;
-            gradientEpsilon_ = oec.gradientEpsilon_;
-            maxIterStatPt_ = oec.maxIterStatPt_;
-            statState_ = oec.statState_;
-            endCriteria_ = oec.endCriteria_;
-            positiveOptimization_ = oec.positiveOptimization_;
-            return (*this);
-        }
-
-        inline bool EndCriteria::operator()(
-            int iteration, double fold, double normgold,
-            double fnew, double normgnew, double normdiff) {
-            return (
-                checkIterationNumber(iteration) ||
-                checkStationaryValue(fold, fnew) ||
-                checkAccuracyValue(fnew) ||
-                checkAccuracyValue(fold) ||
-                checkAccuracyGradientNorm(normgnew) ||
-                checkAccuracyGradientNorm(normgold));
-        }
-
     }
 
 }
+
 
 #endif
