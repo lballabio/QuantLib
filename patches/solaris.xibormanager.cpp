@@ -1,26 +1,5 @@
-*** QuantLib-old/ql/Indexes/xibormanager.hpp	Fri Oct 11 13:20:34 2002
---- QuantLib/ql/Indexes/xibormanager.hpp	Tue Oct 22 11:34:50 2002
-***************
-*** 46,52 ****
-              static bool hasHistory(const std::string& name);
-              static std::vector<std::string> histories();
-            private:
-!             static HistoryMap historyMap_;
-          };
-  
-      }
---- 46,54 ----
-              static bool hasHistory(const std::string& name);
-              static std::vector<std::string> histories();
-            private:
-!             static void checkHistoryMap();
-!             static bool initialized_;
-!             static HistoryMap* historyMap_;
-          };
-  
-      }
-*** QuantLib-old/ql/Indexes/xibormanager.cpp	Tue Oct 22 11:26:36 2002
---- QuantLib/ql/Indexes/xibormanager.cpp	Tue Oct 22 11:34:43 2002
+*** QuantLib-old/ql/Indexes/xibormanager.cpp	Tue Oct 22 13:52:08 2002
+--- QuantLib/ql/Indexes/xibormanager.cpp	Wed Oct 23 12:37:32 2002
 ***************
 *** 30,62 ****
   
@@ -33,12 +12,12 @@
 !                 historyMap_[name] = history;
           }
   
-          const History& XiborManager::getHistory(const std::string& name) {
-              XiborManager::HistoryMap::const_iterator i =
+!         const History& XiborManager::getHistory(const std::string& name) {
+!             XiborManager::HistoryMap::const_iterator i =
 !                 historyMap_.find(name);
 !             QL_REQUIRE(i != historyMap_.end(),
-                  name + " history not loaded");
-              return i->second;
+!                 name + " history not loaded");
+!             return i->second;
           }
   
           bool XiborManager::hasHistory(const std::string& name) {
@@ -56,7 +35,7 @@
       }
   
   }
---- 30,74 ----
+--- 30,70 ----
   
       namespace Indexes {
   
@@ -69,13 +48,9 @@
 !                 (*historyMap_)[name] = history;
           }
   
-          const History& XiborManager::getHistory(const std::string& name) {
-+             checkHistoryMap();
-              XiborManager::HistoryMap::const_iterator i =
-!                 historyMap_->find(name);
-!             QL_REQUIRE(i != historyMap_->end(),
-                  name + " history not loaded");
-              return i->second;
+!         History XiborManager::getHistory(const std::string& name) {
+!             checkHistoryMap();
+! 	    return (*historyMap_)[name];
           }
   
           bool XiborManager::hasHistory(const std::string& name) {

@@ -1,4 +1,6 @@
 #!/bin/sh
-patch -p1 < patches/solaris.xibormanager
-patch -p1 < patches/solaris.europeanoption
+patch -p1 ql/Indexes/xibormanager.hpp < patches/solaris.xibormanager.hpp
+patch -p1 ql/Indexes/xibormanager.cpp < patches/solaris.xibormanager.cpp
+patch -p1 ql/Pricers/europeanoption.hpp < patches/solaris.europeanoption.hpp
+patch -p1 ql/Pricers/europeanoption.cpp < patches/solaris.europeanoption.cpp
 
