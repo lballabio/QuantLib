@@ -36,13 +36,13 @@ namespace QuantLib {
         FdMultiPeriodOption(Option::Type type, double underlying, 
                             double strike, Spread dividendYield, 
                             Rate riskFreeRate, Time residualTime, 
-                            double volatility, int gridPoints,
+                            double volatility, Size gridPoints,
                             const std::vector<Time>& dates,
-                            int timeSteps);
+                            Size timeSteps);
         // Protected attributes
         std::vector<Time> dates_;
         Size dateNumber_;
-        int timeStepPerPeriod_;
+        Size timeStepPerPeriod_;
         bool lastDateIsResTime_;
         int lastIndex_;
         bool firstDateIsZero_;

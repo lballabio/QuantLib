@@ -49,7 +49,7 @@ namespace QuantLib {
         return DotProduct(asset->values(), statePrices_[i]);
     }
 
-    void Lattice::initialize(const boost::shared_ptr<DiscretizedAsset>& asset, 
+    void Lattice::initialize(const boost::shared_ptr<DiscretizedAsset>& asset,
                              Time t) const {
 
         Size i = t_.findIndex(t);
@@ -57,19 +57,19 @@ namespace QuantLib {
         asset->reset(size(i));
     }
 
-    void Lattice::rollback(const boost::shared_ptr<DiscretizedAsset>& asset, 
+    void Lattice::rollback(const boost::shared_ptr<DiscretizedAsset>& asset,
                            Time to) const {
         rollAlmostBack(asset,to);
         asset->postAdjustValues();
     }
 
     void Lattice::rollAlmostBack(
-                            const boost::shared_ptr<DiscretizedAsset>& asset, 
+                            const boost::shared_ptr<DiscretizedAsset>& asset,
                             Time to) const {
 
         Time from = asset->time();
 
-        QL_REQUIRE(from >= to, 
+        QL_REQUIRE(from >= to,
                    "Lattice: cannot roll the asset back to" +
                    DoubleFormatter::toString(to) +
                    " (it is already at t = " +
@@ -77,10 +77,11 @@ namespace QuantLib {
 
         if (from > to) {
             Size iFrom = t_.findIndex(from);
-            int iTo = t_.findIndex(to);
-
-            for (int i=iFrom-1; i>=iTo; i--) {
-                Array newValues(size(i));
+            Size iTo = t_.findIndex(to);
+            unsigned long counter, steps = (unsigned long)(iTo - iFrom);
+            Size i;
+            for (i=iFrom-1, counter=0; counter<steps; counter++, i--) {
+                Array newValues(i);
                 stepback(i, asset->values(), newValues);
                 asset->time() = t_[i];
                 asset->values() = newValues;
@@ -93,7 +94,7 @@ namespace QuantLib {
         }
     }
 
-    void Lattice::stepback(Size i, const Array& values, 
+    void Lattice::stepback(Size i, const Array& values,
                            Array& newValues) const {
         for (Size j=0; j<size(i); j++) {
             double value = 0.0;

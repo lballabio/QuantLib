@@ -136,7 +136,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         std::vector<Date> fixingDates(values[i].futureFixings);
-        Size dt = Size(values[i].t*360/values[i].futureFixings+0.5);
+        int dt = int(values[i].t*360/values[i].futureFixings+0.5);
         fixingDates[0]=today.plusDays(dt);
         for (Size j=1; j<values[i].futureFixings; j++)
             fixingDates[j]=fixingDates[j-1].plusDays(dt);

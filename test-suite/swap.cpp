@@ -160,7 +160,7 @@ void SwapTest::testRateDependency() {
                 std::adjacent_find(swap_values.begin(),swap_values.end(),
                                    std::less<double>());
             if (it != swap_values.end()) {
-                int n = it - swap_values.begin();
+                Size n = it - swap_values.begin();
                 BOOST_FAIL(
                     "NPV is increasing with the fixed rate in a swap: \n"
                     "    length: " + 
@@ -202,7 +202,7 @@ void SwapTest::testSpreadDependency() {
                 std::adjacent_find(swap_values.begin(),swap_values.end(),
                                    std::greater<double>());
             if (it != swap_values.end()) {
-                int n = it - swap_values.begin();
+                Size n = it - swap_values.begin();
                 BOOST_FAIL(
                     "NPV is decreasing with the floating spread in a swap: \n"
                     "    length: " + 

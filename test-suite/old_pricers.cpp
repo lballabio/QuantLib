@@ -798,7 +798,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
     std::vector<RelinkableHandle<TermStructure> > 
         sameAssetDividend(4, sameDividend);
 
-    Size seed = 86421;
+    unsigned long seed = 86421;
 
     // McEverest
     testMcMFPricer(McEverest(dividendYields, riskFreeRate, volatilities,

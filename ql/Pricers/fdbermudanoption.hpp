@@ -35,7 +35,7 @@ namespace QuantLib {
                          Rate riskFreeRate, Time residualTime, 
                          double volatility,
                          const std::vector<Time>& dates = std::vector<Time>(),
-                         int timeSteps = 100, int gridPoints = 100);
+                         Size timeSteps = 100, Size gridPoints = 100);
         boost::shared_ptr<SingleAssetOption> clone() const;
       protected:
         double extraTermInBermudan ;

@@ -115,7 +115,7 @@ namespace QuantLib {
             baseEngine_->calculate();
 
 
-            weight = p(i);
+            weight = p((unsigned long)(i));
             results_.value       += weight * baseResults->value;
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;

@@ -129,7 +129,7 @@ void SwaptionTest::testStrikeDependency() {
                         std::adjacent_find(values.begin(), values.end(),
                                            std::less<double>());
                     if (it != values.end()) {
-                        int n = it - values.begin();
+                        Size n = it - values.begin();
                         BOOST_FAIL(
                             "NPV is increasing with the strike "
                             "in a payer swaption: \n"
@@ -151,7 +151,7 @@ void SwaptionTest::testStrikeDependency() {
                         std::adjacent_find(values.begin(), values.end(),
                                            std::greater<double>());
                     if (it != values.end()) {
-                        int n = it - values.begin();
+                        Size n = it - values.begin();
                         BOOST_FAIL(
                             "NPV is decreasing with the strike "
                             "in a receiver swaption: \n"
@@ -205,7 +205,7 @@ void SwaptionTest::testSpreadDependency() {
                         std::adjacent_find(values.begin(), values.end(),
                                            std::greater<double>());
                     if (it != values.end()) {
-                        int n = it - values.begin();
+                        Size n = it - values.begin();
                         BOOST_FAIL(
                             "NPV is decreasing with the spread "
                             "in a payer swaption: \n"
@@ -227,7 +227,7 @@ void SwaptionTest::testSpreadDependency() {
                         std::adjacent_find(values.begin(), values.end(),
                                            std::less<double>());
                     if (it != values.end()) {
-                        int n = it - values.begin();
+                        Size n = it - values.begin();
                         BOOST_FAIL(
                             "NPV is increasing with the spread "
                             "in a receiver swaption: \n"

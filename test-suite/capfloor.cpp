@@ -146,7 +146,7 @@ void CapFloorTest::testStrikeDependency() {
                 std::adjacent_find(cap_values.begin(),cap_values.end(),
                                    std::less<double>());
             if (it != cap_values.end()) {
-                int n = it - cap_values.begin();
+                Size n = it - cap_values.begin();
                 BOOST_FAIL(
                     "NPV is increasing with the strike in a cap: \n"
                     "    length: " + 
@@ -166,7 +166,7 @@ void CapFloorTest::testStrikeDependency() {
             it = std::adjacent_find(floor_values.begin(),floor_values.end(),
                                     std::greater<double>());
             if (it != floor_values.end()) {
-                int n = it - floor_values.begin();
+                Size n = it - floor_values.begin();
                 BOOST_FAIL(
                     "NPV is decreasing with the strike in a floor: \n"
                     "    length: " + 

@@ -33,7 +33,7 @@ namespace QuantLib {
       public:
         BinomialTree(const boost::shared_ptr<DiffusionProcess>& process,
                      Time end,
-                     Size steps);
+                     unsigned long steps);
         Size size(Size i) const {
             return i+1;
         }
@@ -56,7 +56,7 @@ namespace QuantLib {
         EqualProbabilitiesBinomialTree(
                            const boost::shared_ptr<DiffusionProcess>& process,
                            Time end,
-                           Size steps)
+                           unsigned long steps)
         : BinomialTree(process, end, steps) {}
         double underlying(Size i, Size index) const;
         double probability(Size, Size, Size) const {return 0.5 ; }
@@ -72,7 +72,7 @@ namespace QuantLib {
         EqualJumpsBinomialTree(
                            const boost::shared_ptr<DiffusionProcess>& process,
                            Time end,
-                           Size steps)
+                           unsigned long steps)
         : BinomialTree(process, end, steps) {}
         double underlying(Size i, Size index) const;
         double probability(Size, Size, Size branch) const;
@@ -87,7 +87,7 @@ namespace QuantLib {
       public:
         JarrowRudd(const boost::shared_ptr<DiffusionProcess>& process,
                    Time end,
-                   Size steps,
+                   unsigned long steps,
                    double strike);
     };
 
@@ -96,7 +96,7 @@ namespace QuantLib {
       public:
         CoxRossRubinstein(const boost::shared_ptr<DiffusionProcess>& process,
                           Time end,
-                          Size steps,
+                          unsigned long steps,
                           double strike);
     };
 
@@ -107,8 +107,8 @@ namespace QuantLib {
         AdditiveEQPBinomialTree(
                            const boost::shared_ptr<DiffusionProcess>& process,
                            Time end,
-                           Size steps,
-                                double strike);
+                           unsigned long steps,
+                           double strike);
     };
 
     //! %Trigeorgis (additive equal jumps) binomial tree
@@ -116,7 +116,7 @@ namespace QuantLib {
       public:
         Trigeorgis(const boost::shared_ptr<DiffusionProcess>& process,
                    Time end,
-                   Size steps,
+                   unsigned long steps,
                    double strike);
     };
 
@@ -126,7 +126,7 @@ namespace QuantLib {
       public:
         Tian(const boost::shared_ptr<DiffusionProcess>& process,
              Time end,
-             Size steps,
+             unsigned long steps,
              double strike);
         double underlying(Size i, Size index) const;
         double probability(Size, Size, Size) const;
@@ -139,7 +139,7 @@ namespace QuantLib {
       public:
         LeisenReimer(const boost::shared_ptr<DiffusionProcess>& process,
                      Time end,
-                     Size steps,
+                     unsigned long steps,
                      double strike);
         double underlying(Size i, Size index) const;
         double probability(Size, Size, Size) const;

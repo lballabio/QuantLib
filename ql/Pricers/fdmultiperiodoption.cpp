@@ -25,8 +25,8 @@ namespace QuantLib {
                        Option::Type type, double underlying, double strike, 
                        Spread dividendYield, Rate riskFreeRate, 
                        Time residualTime, double volatility,
-                       int gridPoints, const std::vector<Time>& dates,
-                       int timeSteps)
+                       Size gridPoints, const std::vector<Time>& dates,
+                       Size timeSteps)
     : FdBsmOption(type, underlying, strike,
                   dividendYield, riskFreeRate,
                   residualTime, volatility,
@@ -35,7 +35,7 @@ namespace QuantLib {
       dateNumber_(dates.size()),
       timeStepPerPeriod_(timeSteps),
       lastDateIsResTime_(false),
-      lastIndex_(dateNumber_ - 1),
+      lastIndex_(int(dateNumber_) - 1),
       firstDateIsZero_(false),
       firstNonZeroDate_(residualTime),
       firstIndex_(-1) {
@@ -56,7 +56,7 @@ namespace QuantLib {
 
             if(QL_FABS(dates_[lastIndex_] - residualTime) < dateTollerance){
                 lastDateIsResTime_ = true;
-                lastIndex_ = dateNumber_ - 2;
+                lastIndex_ = int(dateNumber_) - 2;
             }
 
             QL_REQUIRE(dates_[dateNumber_-1] <= residualTime,

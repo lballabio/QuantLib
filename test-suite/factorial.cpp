@@ -28,7 +28,7 @@ void FactorialTest::testFactorial() {
 
     BOOST_MESSAGE("Testing factorial numbers...");
 
-    Size i;
+    unsigned int i;
     double expected = 1.0;
     double calculated = Factorial::get(0);
     if (calculated!=expected)

@@ -24,7 +24,7 @@ namespace QuantLib {
                                        Rate riskFreeRate, Time residualTime, 
                                        double volatility,
                                        const std::vector<Time>& dates,
-                                       int timeSteps, int gridPoints)
+                                       Size timeSteps, Size gridPoints)
     : FdMultiPeriodOption(type, underlying, strike, dividendYield,
                           riskFreeRate, residualTime, volatility, 
                           gridPoints, dates, timeSteps) {}
