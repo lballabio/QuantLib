@@ -121,16 +121,9 @@ void BinaryOptionTest::testValues() {
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
 
     Handle<MarketElement> underlyingH = underlyingH_SME;
-    //Handle<MarketElement> qH = qH_SME;
-    //Handle<MarketElement> rH = rH_SME;
 
-    // the date calculations are ignored by DayCounters::HalfYear
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
-
-    //underlyingH_SME->setValue(underlyingPrice);
-    //qH_SME->setValue(q);
-    //rH_SME->setValue(r);
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
         new PricingEngines::AnalyticEuropeanBinaryEngine());
@@ -175,9 +168,6 @@ void BinaryOptionTest::testAmericanValues() {
     Rate q = 0.04;
 
 
-    // BinaryOptionData contains:
-    // type, optionType, volatility;        
-    // barrier, rebate, value        
     BinaryOptionData values[] = {
         { Binary::CashAtHit, Option::Call, 1, 
           0.11, 0.01, 0.04, 100.5, 100, 94.8825 },
@@ -216,16 +206,9 @@ void BinaryOptionTest::testAmericanValues() {
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatilityH_SME);
 
     Handle<MarketElement> underlyingH = underlyingH_SME;
-    //Handle<MarketElement> qH = qH_SME;
-    //Handle<MarketElement> rH = rH_SME;
 
-    // the date calculations are ignored by DayCounters::HalfYear
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
-
-    //underlyingH_SME->setValue(underlyingPrice);
-    //qH_SME->setValue(q);
-    //rH_SME->setValue(r);
 
     Handle<PricingEngine> amEngine = Handle<PricingEngine>(
         new PricingEngines::AnalyticAmericanBinaryEngine());
@@ -275,15 +258,12 @@ void BinaryOptionTest::testSelfConsistency() {
 
     double rebate = 100.0;
     Binary::Type binaryTypes[] = { Binary::CashAtExpiry, Binary::CashAtHit };
-    //Binary::Type binaryTypes[] = {Binary::CashAtHit};    
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };
     Time residualTimes[] = { 1.0 };
-    //double strikes[] = { 50, 99.5, 100, 100.5, 150 };
-    double strikes[] = { 50, 99.5, 100.5, 150 };
-    //double strikes[] = { 100.5, 150 };
+    double strikes[] = { 50.0, 99.5, 100.5, 150.0 };
     double volatilities[] = { 0.11, 0.5, 1.2 };
 
     Handle<SimpleMarketElement> underlyingH_SME(
@@ -304,7 +284,6 @@ void BinaryOptionTest::testSelfConsistency() {
     EuropeanExercise exercise(exDate);
     AmericanExercise amExercise(today, exDate);
     Exercise exercises[] = { exercise, amExercise };
-    //Exercise exercises[] = {amExercise};
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
         new PricingEngines::AnalyticEuropeanBinaryEngine());
@@ -313,7 +292,6 @@ void BinaryOptionTest::testSelfConsistency() {
         new PricingEngines::AnalyticAmericanBinaryEngine());
 
     Handle<PricingEngine> engines[] = { euroEngine, amEngine };
-    //Handle<PricingEngine> engines[] = {amEngine};
 
     for (Size j=0; j<LENGTH(engines); j++) {
       for (Size i1=0; i1<LENGTH(types); i1++) {
@@ -465,7 +443,7 @@ void BinaryOptionTest::testEngineConsistency() {
     Size maxTimeStepsPerYear = 10;
     bool antitheticVariate = false;
     bool controlVariate = false;
-    Size requiredSamples = 1000;
+    Size requiredSamples = 1023;
     double requiredTolerance = 5.0e-2;
     Size maxSamples = 1000000;
     bool isBiased = false;
@@ -511,7 +489,6 @@ void BinaryOptionTest::testEngineConsistency() {
     Handle<PricingEngine> amEngine = Handle<PricingEngine>(
         new PricingEngines::AnalyticAmericanBinaryEngine());
 
-    // this engine fails with Borland
     Handle<PricingEngine> mcEngine = Handle<PricingEngine>(
         new PricingEngines::MCBinaryEngine
             <MonteCarlo::PseudoRandom, Math::Statistics>

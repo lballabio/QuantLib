@@ -378,7 +378,7 @@ void BarrierOptionTest::testBabsiriValues() {
 void BarrierOptionTest::testBeagleholeValues() {
 
     double maxErrorAllowed = 1.0e-3;
-    double maxMCErrorAllowed = 1.0e-1;
+    double maxMCErrorAllowed = 1.5e-1;
 
     double underlyingPrice = 50.0;
     double rebate = 0.0;

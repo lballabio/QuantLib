@@ -53,7 +53,7 @@ int main() {
     runner.eventManager().addListener(&qlListener);
 
     runner.addTest(BarrierOptionTest::suite());
-    runner.addTest(BinaryOptionTest::suite()); // MC engine fails with Borland
+    runner.addTest(BinaryOptionTest::suite());
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
     runner.addTest(CompoundForwardTest::suite());
@@ -61,7 +61,7 @@ int main() {
     runner.addTest(new DateTest);
     runner.addTest(DayCounterTest::suite());
     runner.addTest(new DistributionTest);
-    runner.addTest(EuropeanOptionTest::suite()); //MC engine fails with Borland
+    runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(new IntegralTest);
     runner.addTest(LDSTest::suite());
