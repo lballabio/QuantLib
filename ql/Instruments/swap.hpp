@@ -47,13 +47,12 @@ namespace QuantLib {
             // added interface
             double firstLegBPS() const;
             double secondLegBPS() const;
-            void linkTermStructure(Handle<TermStructure> ts) const;
           protected:
             // methods
             void performCalculations() const;
             // data members
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
-            mutable RelinkableHandle<TermStructure> termStructure_;
+	    RelinkableHandle<TermStructure> termStructure_;
             mutable double firstLegBPS_, secondLegBPS_;
         };
 
@@ -68,11 +67,7 @@ namespace QuantLib {
             calculate();
             return secondLegBPS_;
         }
-
-        inline void Swap::linkTermStructure(Handle<TermStructure> ts) const {
-            termStructure_.linkTo(ts);
-        }
-
+					    
     }
 
 }
