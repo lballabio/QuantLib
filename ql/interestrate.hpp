@@ -71,8 +71,8 @@ namespace QuantLib {
         DiscountFactor discountFactor(Time t) const {
             return 1.0/compoundFactor(t);
         }
-        /*! returns the compound factor implied by the rate
-            compounded at time t
+        /*! returns the compound (a.k.a capitalization) factor implied by
+            the rate compounded at time t
         */
         Real compoundFactor(Time t) const;
         //! returns the equivalent rate for the compounding period t
