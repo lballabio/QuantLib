@@ -8,6 +8,7 @@ include_HEADERS = \
     affinetermstructure.hpp \
     compoundforward.hpp \
     discountcurve.hpp \
+    drifttermstructure.hpp \
     flatforward.hpp \
     forwardspreadedtermstructure.hpp \
     impliedtermstructure.hpp \

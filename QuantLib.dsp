@@ -1251,6 +1251,10 @@ SOURCE=.\ql\TermStructures\discountcurve.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\drifttermstructure.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\flatforward.hpp
 # End Source File
 # Begin Source File
