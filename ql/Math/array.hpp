@@ -164,7 +164,6 @@ namespace QuantLib {
     const Disposable<Array> Exp(const Array&);
 
 
-    #ifndef QL_PATCH_MSVC6
     //! format arrays for output
     class ArrayFormatter {
       public:
@@ -172,12 +171,26 @@ namespace QuantLib {
                                     Integer precision = 6,
                                     Integer digits = 0,
                                     Size elementsPerRow = QL_MAX_INTEGER) {
+            #ifndef QL_PATCH_MSVC6
             return SequenceFormatter::toString(a.begin(),a.end(),
                                                precision,digits,
                                                elementsPerRow);
+            #else
+            std::string s = "[ ";
+            for (Size n=0; n<a.size(); ++n) {
+                if (n == elementsPerRow) {
+                    s += ";\n  ";
+                    n = 0;
+                }
+                if (n!=0)
+                    s += " ; ";
+                s += DecimalFormatter::toString(a[n], precision, digits);
+            }
+            s += " ]";
+            return s;
+            #endif
         }
     };
-    #endif
 
 
     // inline definitions

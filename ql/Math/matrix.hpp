@@ -168,19 +168,33 @@ namespace QuantLib {
                                           Iterator2 v2begin, Iterator2 v2end);
 
 
-    #ifndef QL_PATCH_MSVC6
     //! format matrices for output
     class MatrixFormatter {
       public:
         static std::string toString(const Matrix& m,
                                     Integer precision = 6,
                                     Integer digits = 0) {
+            #ifndef QL_PATCH_MSVC6
             return SequenceFormatter::toString(m.begin(),m.end(),
                                                precision,digits,
                                                m.columns());
+            #else
+            std::string s = "[ ";
+            Matrix::const_iterator begin = m.begin(), end = m.end();
+            for (Size n=0; begin!=end; ++begin, ++n) {
+                if (n == m.columns()) {
+                    s += ";\n  ";
+                    n = 0;
+                }
+                if (n!=0)
+                    s += " ; ";
+                s += DecimalFormatter::toString(*begin, precision, digits);
+            }
+            s += " ]";
+            return s;
+            #endif
         }
     };
-    #endif
 
 
     // inline definitions
