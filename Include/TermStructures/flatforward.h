@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/03/07 17:42:43  nando
+    added #include "dataformatters.h"
+
     Revision 1.8  2001/03/07 17:32:42  nando
     more complete error message
 
@@ -53,6 +56,7 @@
 
 #include "qldefines.h"
 #include "termstructure.h"
+#include "dataformatters.h"
 
 namespace QuantLib {
 
