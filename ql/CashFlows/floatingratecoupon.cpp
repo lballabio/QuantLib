@@ -49,9 +49,8 @@ namespace QuantLib {
         : Coupon(nominal, index->calendar(),index->rollingConvention(),
               index->dayCounter(), startDate, endDate,
               refPeriodStart, refPeriodEnd), 
-          termStructure_(termStructure), index_(index), fixingDays_(fixingDays),
-          spread_(spread) 
-        {
+          termStructure_(termStructure), index_(index), 
+          fixingDays_(fixingDays), spread_(spread) {
             termStructure_.registerObserver(this);
         }
 
