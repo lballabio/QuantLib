@@ -1,8 +1,12 @@
 
-# $Id$
-# $Source$
 #
 # main makefile for QuantLib under Borland C++
+#
+# $Id$
+# $Source$
+# $Log$
+# Revision 1.12  2001/05/15 16:10:01  nando
+# updated all PyWrap depencencies to PyQuantLibWrap
 #
 
 .autodepend
@@ -40,7 +44,8 @@ install::
 # Python module
 python::
     cd Python
-    $(MAKE) Python
+#    $(MAKE) Python
+    python setup.py build --compiler
     cd ..
 
 # Install Python module

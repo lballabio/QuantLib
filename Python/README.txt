@@ -27,7 +27,7 @@ Include directory list and C:\Python20\libs to the Library directory list
 In order to (re)generate the wrapper files (which is not needed if you
 downloaded a QuantLib release) you will need a SWIG installation. You can refer
 to http://quantlib.sourceforge.net/FAQ.html for help about installing SWIG.
-The batch file QuantLib\Win\PyWrap.bat builds the wrapper files.
+The batch file QuantLib\Win\PyQuantLibWrap.bat builds the wrapper files.
 
 The suite of tests in the Tests folder is implemented on top of the PyUnit
 framework, available from http://pyunit.sourceforge.net/ and scheduled to be
