@@ -173,13 +173,13 @@ namespace QuantLib {
           protected:
             MCVanillaEngine(bool antitheticVariance,
                             bool controlVariate,
-                            long seed=0) 
+                            const Handle<RandomNumbers::GaussianRandomGenerator>& rng) 
             : antitheticVariance_(antitheticVariance),
-              controlVariate_(controlVariate), seed_(seed) {}
+              controlVariate_(controlVariate), rng_(rng) {}
             Handle<PG> pathGenerator() const;
             bool antitheticVariance_, controlVariate_;
           private:
-            long seed_;
+            Handle<RandomNumbers::GaussianRandomGenerator> rng_;
         };
 
 
@@ -191,18 +191,18 @@ namespace QuantLib {
             Time residualTime = arguments_.riskFreeTS->dayCounter().yearFraction(
                 referenceDate, exerciseDate);
 
-            //! Initialize the path generator
-            Handle<TermStructure> drift(new
-                TermStructures::DriftTermStructure(arguments_.riskFreeTS,
-                                                   arguments_.dividendTS,
-                                                   arguments_.volTS));
-            double mu = drift->zeroYield(exerciseDate);
-            double volatility = arguments_.volTS->blackVol(
-                arguments_.exercise.lastDate(), arguments_.underlying);
+            Handle<DiffusionProcess> bs(new
+                BlackScholesProcess(arguments_.riskFreeTS, arguments_.dividendTS,
+                arguments_.volTS, arguments_.underlying));
 
-            return Handle<MonteCarlo::GaussianPathGenerator>(
-                new MonteCarlo::GaussianPathGenerator(mu,
-                    volatility*volatility, residualTime, 1, seed_));
+
+//            return Handle<MonteCarlo::PathGenerator<RandomNumbers::GaussianRandomGenerator> >(
+//                new MonteCarlo::PathGenerator<RandomNumbers::GaussianRandomGenerator>(mu,
+//                    volatility*volatility, residualTime, 1, seed_));
+
+            return Handle<MonteCarlo::PathGenerator2<RandomNumbers::GaussianRandomGenerator> >(
+                new MonteCarlo::PathGenerator2<RandomNumbers::GaussianRandomGenerator>(bs,
+                    residualTime, 1, rng_));
 
         }
 
@@ -256,7 +256,7 @@ namespace QuantLib {
             }
 
 
-            value(0.005);
+            value(0.02);
 
             results_.value       = mcModel_->sampleAccumulator().mean();
             results_.delta       = 0.0;
@@ -276,9 +276,9 @@ namespace QuantLib {
           public:
             MCEuropeanVanillaEngine(bool antitheticVariance,
                                     bool controlVariate,
-                                    long seed=0) 
+                                    const Handle<RandomNumbers::GaussianRandomGenerator>& rng) 
             : MCVanillaEngine<S, PG, PP>(antitheticVariance, controlVariate,
-              seed) {}
+              rng) {}
           protected:
             Handle<PP> pathPricer() const;
         };
