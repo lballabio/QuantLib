@@ -30,10 +30,7 @@ namespace QuantLib {
         CumulativeNormalDistribution cumNormalDist;
 
         double phi(double S, double gamma, double H, double I,
-            double rfD, double dD, double variance) {
-
-            double bT = QL_LOG(dD/rfD);
-            double rT = QL_LOG(1.0/rfD);
+            double rT, double bT, double variance) {
 
             double lambda = (-rT + gamma * bT + 0.5 * gamma * (gamma - 1.0)
                 * variance);
@@ -55,20 +52,25 @@ namespace QuantLib {
             double Beta = (0.5 - bT/variance) +
                 QL_SQRT(QL_POW((bT/variance - 0.5), 2.0) + 2.0 * rT/variance);
             double BInfinity = Beta / (Beta - 1.0) * X;
+            // double B0 = QL_MAX(X, QL_LOG(rfD) / QL_LOG(dD) * X);
             double B0 = QL_MAX(X, rT / (rT - bT) * X);
             double ht = -(bT + 2.0 * QL_SQRT(variance)) * B0 /
                 (BInfinity - B0);
+
+            // investigate what happen to I for dD->0.0
             double I = B0 + (BInfinity - B0) * (1 - QL_EXP(ht));
-            double alpha = (I - X) * QL_POW(I, (-Beta));
             if (S >= I)
                 return S - X;
-            else
+            else {
+                // investigate what happen to alpha for dD->0.0
+                double alpha = (I - X) * QL_POW(I, (-Beta));
                 return alpha * QL_POW(S, Beta)
-                    - alpha * phi(S, Beta, I, I, rfD, dD, variance)
-                    +         phi(S,  1.0, I, I, rfD, dD, variance)
-                    -         phi(S,  1.0, X, I, rfD, dD, variance)
-                    -    X *  phi(S,  0.0, I, I, rfD, dD, variance)
-                    +    X *  phi(S,  0.0, X, I, rfD, dD, variance);
+                    - alpha * phi(S, Beta, I, I, rT, bT, variance)
+                    +         phi(S,  1.0, I, I, rT, bT, variance)
+                    -         phi(S,  1.0, X, I, rT, bT, variance)
+                    -    X *  phi(S,  0.0, I, I, rT, bT, variance)
+                    +    X *  phi(S,  0.0, X, I, rT, bT, variance);
+            }
         }
     }
 
