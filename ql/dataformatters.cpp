@@ -47,7 +47,7 @@ namespace QuantLib {
     }
 
     std::string IntegerFormatter::toPowerOfTwo(unsigned long l, int digits) {
-        if (l == unsigned long(Null<int>()))
+        if (l == long(Null<int>()))
             return std::string("null");
 
         int power = 0;
