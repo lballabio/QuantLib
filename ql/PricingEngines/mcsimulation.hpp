@@ -26,7 +26,6 @@
 #include <ql/grid.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
-#include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
 
@@ -64,11 +63,11 @@ namespace QuantLib {
         : antitheticVariate_(antitheticVariate),
           controlVariate_(controlVariate) {}
         virtual Handle<path_pricer_type> pathPricer() const = 0;
-        virtual Handle<path_pricer_type> controlPathPricer() const { 
-            return Handle<path_pricer_type>(); 
+        virtual Handle<path_pricer_type> controlPathPricer() const {
+            return Handle<path_pricer_type>();
         }
-        virtual Handle<PricingEngine> controlPricingEngine() const { 
-            return Handle<PricingEngine>(); 
+        virtual Handle<PricingEngine> controlPricingEngine() const {
+            return Handle<PricingEngine>();
         }
         virtual Handle<path_generator_type> pathGenerator() const = 0;
         virtual TimeGrid timeGrid() const = 0;
@@ -106,7 +105,7 @@ namespace QuantLib {
             accuracy = error/result;
         }
         while (accuracy > tolerance) {
-            // conservative estimate of how many samples are needed 
+            // conservative estimate of how many samples are needed
             order = accuracy*accuracy/tolerance/tolerance;
             nextBatch = Size(QL_MAX(sampleNumber*order*0.8-sampleNumber,
                                     double(minSample_)));
@@ -168,145 +167,9 @@ namespace QuantLib {
     }
 
     template<class MC, class S>
-    inline const typename McSimulation<MC,S>::stats_type& 
+    inline const typename McSimulation<MC,S>::stats_type&
     McSimulation<MC,S>::sampleAccumulator() const {
         return mcModel_->sampleAccumulator();
-    }
-
-
-
-    //! Base class for Monte Carlo vanilla option engines
-    template<class RNG = PseudoRandom, class S = Statistics>
-    class MCVanillaEngine : public VanillaEngine,
-                            public McSimulation<SingleAsset<RNG>, S> {
-      public:
-        void calculate() const;
-      protected:
-        typedef typename McSimulation<SingleAsset<RNG>,S>::path_generator_type
-            path_generator_type;
-        typedef typename McSimulation<SingleAsset<RNG>,S>::path_pricer_type
-            path_pricer_type;
-        typedef typename McSimulation<SingleAsset<RNG>,S>::stats_type
-            stats_type;
-        // constructor
-        MCVanillaEngine(Size maxTimeStepsPerYear,
-                        bool antitheticVariate = false,
-                        bool controlVariate = false,
-                        Size requiredSamples = Null<int>(),
-                        double requiredTolerance = Null<double>(),
-                        Size maxSamples = Null<int>(),
-                        long seed = 0);
-        // McSimulation implementation
-        Handle<path_generator_type> pathGenerator() const;
-        // data members
-        Size maxTimeStepsPerYear_;
-        Size requiredSamples_, maxSamples_;
-        double requiredTolerance_;
-        long seed_;
-    };
-
-
-    // inline definitions
-
-    template<class RNG, class S>
-    inline MCVanillaEngine<RNG,S>::MCVanillaEngine(Size maxTimeStepsPerYear,
-                                                   bool antitheticVariate,
-                                                   bool controlVariate,
-                                                   Size requiredSamples,
-                                                   double requiredTolerance,
-                                                   Size maxSamples,
-                                                   long seed)
-    : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
-      maxTimeStepsPerYear_(maxTimeStepsPerYear), 
-      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance), seed_(seed) {}
-
-    // template definitions
-
-    template<class RNG, class S>
-    inline Handle<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type> 
-    MCVanillaEngine<RNG,S>::pathGenerator() const {
-        Handle<DiffusionProcess> bs(new
-            BlackScholesProcess(arguments_.riskFreeTS, 
-                                arguments_.dividendTS,
-                                arguments_.volTS, 
-                                arguments_.underlying));
-
-        TimeGrid grid = timeGrid();
-        typename RNG::rsg_type gen = 
-            RNG::make_sequence_generator(grid.size()-1,seed_);
-        return Handle<path_generator_type>(
-            new path_generator_type(bs, grid, gen));
-    }
-
-
-    template<class RNG, class S>
-    inline void MCVanillaEngine<RNG,S>::calculate() const {
-
-        QL_REQUIRE(requiredTolerance_ != Null<double>() ||
-                   int(requiredSamples_) != Null<int>(),
-                   "MCVanillaEngine::calculate: "
-                   "neither tolerance nor number of samples set");
-
-        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
-                   "MCVanillaEngine::calculate() : "
-                   "not an European Option");
-
-        //! Initialize the one-factor Monte Carlo
-        if (controlVariate_) {
-
-            Handle<path_pricer_type> controlPP = controlPathPricer();
-            QL_REQUIRE(!IsNull(controlPP),
-                       "MCVanillaEngine::calculate() : "
-                       "engine does not provide "
-                       "control variation path pricer");
-
-            Handle<PricingEngine> controlPE = controlPricingEngine();
-
-            QL_REQUIRE(!IsNull(controlPE),
-                       "MCVanillaEngine::calculate() : "
-                       "engine does not provide "
-                       "control variation pricing engine");
-
-            VanillaOption::arguments* controlArguments =
-                dynamic_cast<VanillaOption::arguments*>(
-                    controlPE->arguments());
-            *controlArguments = arguments_;
-            controlPE->calculate();
-
-            const VanillaOption::results* controlResults =
-                dynamic_cast<const VanillaOption::results*>(
-                    controlPE->results());
-            double controlVariateValue = controlResults->value;
-
-            mcModel_ = 
-                Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                           pathGenerator(), pathPricer(), stats_type(), 
-                           antitheticVariate_, controlPP, 
-                           controlVariateValue));
-
-        } else {
-            mcModel_ = 
-                Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                           pathGenerator(), pathPricer(), S(), 
-                           antitheticVariate_));
-        }
-
-        if (requiredTolerance_ != Null<double>()) {
-            if (int(maxSamples_) != Null<int>())
-                value(requiredTolerance_, maxSamples_);
-            else
-                value(requiredTolerance_);
-        } else {
-            valueWithSamples(requiredSamples_);
-        }
-
-        results_.value = mcModel_->sampleAccumulator().mean();
-        if (RNG::allowsErrorEstimate)
-            results_.errorEstimate = 
-                mcModel_->sampleAccumulator().errorEstimate();
     }
 
 }

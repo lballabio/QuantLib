@@ -22,7 +22,7 @@
     \brief European binary option engine
 */
 
-#include <ql/PricingEngines/binaryengines.hpp>
+#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
 
 namespace QuantLib {
 

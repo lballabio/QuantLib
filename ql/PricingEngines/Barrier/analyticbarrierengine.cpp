@@ -22,7 +22,7 @@
     \brief Barrier option engines
 */
 
-#include <ql/PricingEngines/barrierengines.hpp>
+#include <ql/PricingEngines/Barrier/barrierengines.hpp>
 
 namespace QuantLib {
 

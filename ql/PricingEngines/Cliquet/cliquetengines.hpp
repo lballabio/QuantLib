@@ -23,7 +23,7 @@
 #define quantlib_cliquet_engines_h
 
 #include <ql/Instruments/cliquetoption.hpp>
-#include <ql/PricingEngines/mcengine.hpp>
+#include <ql/PricingEngines/mcsimulation.hpp>
 
 namespace QuantLib {
 

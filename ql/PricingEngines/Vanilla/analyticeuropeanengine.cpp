@@ -19,7 +19,7 @@
     \brief European option engine using analytic formulas
 */
 
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 
 namespace QuantLib {
 

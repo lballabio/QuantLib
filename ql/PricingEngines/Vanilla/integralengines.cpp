@@ -19,7 +19,7 @@
     \brief Option engines using the integral approach
 */
 
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 #include <ql/Math/segmentintegral.hpp>
 
 namespace QuantLib {

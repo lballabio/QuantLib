@@ -26,7 +26,7 @@
 #include <ql/Math/svd.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 
 namespace QuantLib {
 

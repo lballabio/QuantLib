@@ -23,7 +23,7 @@
 #ifndef quantlib_montecarlo_european_engine_h
 #define quantlib_montecarlo_european_engine_h
 
-#include <ql/PricingEngines/mcengine.hpp>
+#include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Volatilities/blackvariancecurve.hpp>
 

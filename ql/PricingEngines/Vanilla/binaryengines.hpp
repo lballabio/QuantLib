@@ -33,7 +33,7 @@
 #include <ql/voltermstructure.hpp>
 #include <ql/MonteCarlo/binarypathpricer.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
-#include <ql/PricingEngines/mcengine.hpp>
+#include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
 
 namespace QuantLib {
 

@@ -19,7 +19,7 @@
     \brief Least-square Monte Carlo engines
 */
 
-#include <ql/PricingEngines/americanmcengines.hpp>
+#include <ql/PricingEngines/Vanilla/americanmcengines.hpp>
 
 namespace QuantLib {
 

@@ -19,7 +19,7 @@
     \brief discretized vanilla option
 */
 
-#include <ql/PricingEngines/discretizedvanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <vector>
 
 namespace QuantLib {

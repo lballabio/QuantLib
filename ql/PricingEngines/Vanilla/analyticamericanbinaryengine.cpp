@@ -19,7 +19,7 @@
     \brief American binary option engine using analytic formulas
 */
 
-#include <ql/PricingEngines/binaryengines.hpp>
+#include <ql/PricingEngines/Vanilla/binaryengines.hpp>
 
 namespace QuantLib {
 

@@ -26,7 +26,7 @@
 
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Lattices/binomialtree.hpp>
-#include <ql/PricingEngines/discretizedvanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
