@@ -403,13 +403,18 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
                             Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS)));
 
+    Real tolerance = 4.0e-3;
+
     boost::shared_ptr<PricingEngine> engine;
     engine =
         MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>().withStepsPerYear(1)
                                                          .withSamples(8191);
-//        MakeMCDiscreteGeometricAPEngine<PseudoRandom>().withStepsPerYear(1)
-//                                            .withTolerance(0.003)
-//                                            .withSeed(42);
+/*
+        MakeMCDiscreteGeometricAPEngine<PseudoRandom>().withStepsPerYear(1)
+                                                       .withTolerance(tolerance/4.0)
+                                                       .withAntitheticVariate()
+                                                       .withSeed(42);
+*/
 
     Average::Type averageType = Average::Geometric;
     Real runningAccumulator = 1.0;
@@ -436,7 +441,6 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
     Real calculated = option.NPV();
     Real expected = 5.3425606635;
-    Real tolerance = 4.0e-3;
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
@@ -550,15 +554,16 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
     boost::shared_ptr<PricingEngine> engine;
     engine =
-/*        MakeMCDiscreteArithmeticAPEngine<PseudoRandom>().withStepsPerYear(1)
+/*
+        MakeMCDiscreteArithmeticAPEngine<PseudoRandom>().withStepsPerYear(1)
                                                         .withTolerance(tolerance/4.0)
                                                         .withControlVariate()
+                                                        .withAntitheticVariate()
                                                         .withSeed(42);
 */
         MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>().withStepsPerYear(1)
                                                           .withSamples(2047)
-                                                          .withControlVariate()
-                                                          ;
+                                                          .withControlVariate();
 
     Average::Type averageType = Average::Arithmetic;
     Real runningSum = 0.0;
