@@ -74,18 +74,16 @@ namespace QuantLib {
                    DoubleFormatter::toString(from) + ")");
 
         if (from > to) {
-            Size iFrom = t_.findIndex(from);
-            Size iTo = t_.findIndex(to);
-            Size ii;
+            int iFrom = int(t_.findIndex(from));
+            int iTo = int(t_.findIndex(to));
 
-            for (Size i=iFrom; i>iTo; i--) {
-                ii = i-1; // ii can be zero, i cannot be zero
-                Array newValues(size(ii));
+            for (int i=iFrom-1; i>=iTo; i--) {
+                Array newValues(size(i));
                 stepback(i, asset->values(), newValues);
-                asset->time() = t_[ii];
+                asset->time() = t_[i];
                 asset->values() = newValues;
                 // skip the very last post-adjustment
-                if (ii != iTo)
+                if (i != iTo)
                     asset->adjustValues();
                 else
                     asset->preAdjustValues();
