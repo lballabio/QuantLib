@@ -34,7 +34,7 @@ namespace QuantLib {
         /*! \warning see the documentation of the <tt>linkTo</tt> method
                 for issues relatives to <tt>registerAsObserver</tt>.
         */
-        explicit Link(const boost::shared_ptr<Type>& h = 
+        explicit Link(const boost::shared_ptr<Type>& h =
                                                boost::shared_ptr<Type>(),
                       bool registerAsObserver = true);
         /*! \warning <i><b>registerAsObserver</b></i> is left as a backdoor
@@ -50,7 +50,7 @@ namespace QuantLib {
                 ensure that the relinkable handle gets destroyed before the
                 pointed object does.
         */
-        void linkTo(const boost::shared_ptr<Type>&, 
+        void linkTo(const boost::shared_ptr<Type>&,
                     bool registerAsObserver = true);
         //! Checks if the contained handle points to anything
         bool isNull() const { return !h_; }
@@ -65,24 +65,24 @@ namespace QuantLib {
 
 
     //! Globally accessible relinkable pointer
-    /*! An instance of this class can be relinked to another shared 
-        pointer: such change will be propagated to all the copies of 
+    /*! An instance of this class can be relinked to another shared
+        pointer: such change will be propagated to all the copies of
         the instance.
         \pre Class "Type" must inherit from Observable
     */
     template <class Type>
     class RelinkableHandle : public boost::shared_ptr<Link<Type> > {
       public:
-        /*! \warning see the documentation of <tt>Link</tt> for issues 
+        /*! \warning see the documentation of <tt>Link</tt> for issues
                      relatives to <tt>registerAsObserver</tt>.
         */
-        explicit RelinkableHandle(const boost::shared_ptr<Type>& h = 
+        explicit RelinkableHandle(const boost::shared_ptr<Type>& h =
                                                     boost::shared_ptr<Type>(),
                                   bool registerAsObserver = true);
-        /*! \warning see the documentation of <tt>Link</tt> for issues 
+        /*! \warning see the documentation of <tt>Link</tt> for issues
                      relatives to <tt>registerAsObserver</tt>.
         */
-        void linkTo(const boost::shared_ptr<Type>&, 
+        void linkTo(const boost::shared_ptr<Type>&,
                     bool registerAsObserver = true);
         //! dereferencing
         const boost::shared_ptr<Type>& operator->() const;
@@ -94,8 +94,8 @@ namespace QuantLib {
     // inline definitions
 
     template <class Type>
-    inline Link<Type>::Link(const boost::shared_ptr<Type>& h, 
-                            bool registerAsObserver) 
+    inline Link<Type>::Link(const boost::shared_ptr<Type>& h,
+                            bool registerAsObserver)
     : isObserver_(false) {
         linkTo(h,registerAsObserver);
     }
@@ -104,13 +104,13 @@ namespace QuantLib {
     inline void Link<Type>::linkTo(const boost::shared_ptr<Type>& h,
                                    bool registerAsObserver) {
         if ((h != h_) || (isObserver_ != registerAsObserver)) {
-            if (h_ && isObserver_) {
+            if (bool(h_) && isObserver_) {
                 boost::shared_ptr<Observable> obs = h_;
                 unregisterWith(obs);
             }
             h_ = h;
             isObserver_ = registerAsObserver;
-            if (h_ && isObserver_) {
+            if (bool(h_) && isObserver_) {
                 boost::shared_ptr<Observable> obs = h_;
                 registerWith(obs);
             }
@@ -122,8 +122,8 @@ namespace QuantLib {
 
     template <class Type>
     inline RelinkableHandle<Type>::RelinkableHandle(
-                                            const boost::shared_ptr<Type>& h, 
-                                            bool registerAsObserver) 
+                                            const boost::shared_ptr<Type>& h,
+                                            bool registerAsObserver)
     : boost::shared_ptr<Link<Type> >(new Link<Type>(h,registerAsObserver)) {}
 
     template <class Type>
@@ -134,7 +134,7 @@ namespace QuantLib {
     }
 
     template <class Type>
-    inline const boost::shared_ptr<Type>& 
+    inline const boost::shared_ptr<Type>&
     RelinkableHandle<Type>::operator->() const {
         return (**this).currentLink();
     }
