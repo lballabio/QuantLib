@@ -53,6 +53,11 @@ BSC32=bscmake.exe
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo /out:".\lib\Win32\VisualStudio\QuantLib.lib"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Desc=Make build directory
+PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
@@ -76,6 +81,11 @@ BSC32=bscmake.exe
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Desc=Make build directory
+PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
@@ -99,6 +109,11 @@ BSC32=bscmake.exe
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
 # ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Desc=Make build directory
+PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
 
@@ -122,6 +137,11 @@ BSC32=bscmake.exe
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 # ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Desc=Make build directory
+PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
 
@@ -145,6 +165,11 @@ BSC32=bscmake.exe
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
 # ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Desc=Make build directory
+PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+# End Special Build Tool
 
 !ENDIF 
 

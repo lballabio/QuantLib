@@ -231,9 +231,6 @@ AC_CONFIG_FILES([
     ql/Utilities/Makefile 
     ql/Volatilities/Makefile 
     man/Makefile 
-    lib/Makefile 
-    lib/Win32/Makefile 
-    lib/Win32/VisualStudio/Makefile 
     Docs/Makefile 
     Docs/pages/Makefile 
     Docs/Examples/Makefile 

@@ -709,9 +709,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
+   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
+
+SOURCE="$(InputPath)"
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
@@ -1392,9 +1395,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
+   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
+
+SOURCE="$(InputPath)"
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
@@ -2074,9 +2080,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
+   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
+
+SOURCE="$(InputPath)"
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
 
@@ -2757,9 +2766,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
+   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
+
+SOURCE="$(InputPath)"
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
 
@@ -3439,9 +3451,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-    $(LIB32) @<<
+   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
+
+SOURCE="$(InputPath)"
 
 !ENDIF 
 

@@ -1,5 +1,5 @@
 
-SUBDIRS=config ql man lib Docs Examples test-suite
+SUBDIRS=config ql man Docs Examples test-suite
 
 bin_SCRIPTS = quantlib-config
 
