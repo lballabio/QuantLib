@@ -40,6 +40,7 @@
 
 %include Financial.i
 %include TermStructures.i
+%include String.i
 
 %{
 #include <cstdlib>
@@ -73,15 +74,11 @@ std::string Representation(const Handle<Instrument>& i) {
 	void setTermStructure(TermStructureHandle h) {
 		(*self)->setTermStructure(h);
 	}
-	char* isinCode() {
-		static char temp[256];
-		strcpy(temp,(*self)->isinCode().c_str());
-		return temp;
+	String isinCode() {
+		return (*self)->isinCode();
 	}
-	char* description() {
-		static char temp[256];
-		strcpy(temp,(*self)->description().c_str());
-		return temp;
+	String description() {
+		return (*self)->description();
 	}
 	TermStructureHandle termStructure() {
 		return (*self)->termStructure();
@@ -93,16 +90,11 @@ std::string Representation(const Handle<Instrument>& i) {
 		return (*self)->price();
 	}
 	#if defined(SWIGPYTHON)
-	char* __str__() {
-		static char temp[256];
-		strcpy(temp,Representation(*self).c_str());
-		return temp;
+	String __str__() {
+		return Representation(*self);
 	}
-	char* __repr__() {
-		static char temp[256];
-		std::string s = "<Handle<Instrument>: "+Representation(*self)+">";
-		strcpy(temp,s.c_str());
-		return temp;
+	String __repr__() {
+		return "<Handle<Instrument>: "+Representation(*self)+">";
 	}
 	int __cmp__(const InstrumentHandle& other) {
 		return ((*self) == other ? 0 : 1);
@@ -119,12 +111,12 @@ std::string Representation(const Handle<Instrument>& i) {
 %{
 using QuantLib::Instruments::Stock;
 
-InstrumentHandle NewStock(char* isinCode = "", char* description = "") {
+InstrumentHandle NewStock(String isinCode = "", String description = "") {
 	return InstrumentHandle(new Stock(isinCode,description));
 }
 %}
 
-%name(Stock) InstrumentHandle NewStock(char* isinCode = "", char* description = "");
+%name(Stock) InstrumentHandle NewStock(String isinCode = "", String description = "");
 
 
 #endif

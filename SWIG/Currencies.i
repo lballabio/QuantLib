@@ -40,6 +40,7 @@
 
 %include Date.i
 %include Calendars.i
+%include String.i
 
 %{
 using QuantLib::Currency;
@@ -66,15 +67,11 @@ typedef Handle<Currency> CurrencyHandle;
 		return (*self)->settlementDate(d);
 	}
 	#if defined (SWIGPYTHON)
-	char* __str__() {
-		static char temp[256];
-		sprintf(temp,"%s currency",(*self)->name().c_str());
-		return temp;
+	String __str__() {
+		return (*self)->name()+" currency";
 	}
-	char* __repr__() {
-		static char temp[256];
-		sprintf(temp,"<%s currency>",(*self)->name().c_str());
-		return temp;
+	String __repr__() {
+		return "<"+(*self)->name()+" currency>";
 	}
 	int __cmp__(const CurrencyHandle& other) {
 		return ((*self) == other ? 0 : 1);

@@ -38,6 +38,8 @@
 #endif
 #endif
 
+%include String.i
+
 %{
 #include <cstdlib>
 #include <string>
@@ -280,16 +282,11 @@ class Date {
 			return 0;
 		return 1;
 	}
-	char* __str__() {
-		static char temp[256];
-		strcpy(temp,DateFormatter::toString(*self).c_str());
-		return temp;
+	String __str__() {
+		return DateFormatter::toString(*self);
 	}
-	char* __repr__() {
-		static char temp[256];
-		std::string s = "<Date: "+DateFormatter::toString(*self)+">";
-		strcpy(temp,s.c_str());
-		return temp;
+	String __repr__() {
+		return "<Date: "+DateFormatter::toString(*self)+">";
 	}
 }
 

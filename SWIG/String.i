@@ -42,7 +42,7 @@
 	typedef std::string String;
 %}
 
-%typemap(python,in) String, String *, const String & {
+%typemap(python,in) String, const String & {
 	if (PyString_Check($source)) {
 		$target = new std::string(PyString_AsString($source));
 	} else {
@@ -51,7 +51,7 @@
 	}
 };
 
-%typemap(python,freearg) String, String *, const String & {
+%typemap(python,freearg) String, const String & {
 	delete $source;
 };
 
@@ -69,7 +69,7 @@
 	typedef std::vector<std::string> StringVector;
 %}
 
-%typemap(python,in) StringVector, StringVector *, const StringVector & {
+%typemap(python,in) StringVector, const StringVector & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new std::vector<std::string>(size);
@@ -104,7 +104,7 @@
 	}
 };
 
-%typemap(python,freearg) StringVector, StringVector *, const StringVector & {
+%typemap(python,freearg) StringVector, const StringVector & {
 	delete $source;
 };
 

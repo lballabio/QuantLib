@@ -39,6 +39,7 @@
 #endif
 
 %include Date.i
+%include String.i
 
 %{
 using QuantLib::Handle;
@@ -70,15 +71,11 @@ using QuantLib::IsNull;
 		return (*self)->advance(d,n,unit,modified);
 	}
 	#if defined (SWIGPYTHON)
-	char* __str__() {
-		static char temp[256];
-		sprintf(temp,"%s calendar",(*self)->name().c_str());
-		return temp;
+	String __str__() {
+		return (*self)->name()+" calendar";
 	}
-	char* __repr__() {
-		static char temp[256];
-		sprintf(temp,"<%s calendar>",(*self)->name().c_str());
-		return temp;
+	String __repr__() {
+		return "<"+(*self)->name()+" calendar>";
 	}
 	int __cmp__(const CalendarHandle& other) {
 		return ((*self) == other ? 0 : 1);

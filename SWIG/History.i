@@ -40,6 +40,7 @@
 
 %include Date.i
 %include Vectors.i
+%include String.i
 
 %{
 #include "history.h"
@@ -63,17 +64,13 @@ class History {
 #if defined(SWIGPYTHON)
 
 %addmethods History {
-	char* __str__() {
-		static char temp[256];
-		int n = sprintf(temp,"Historical data from %s", DateFormatter::toString(self->firstDate()).c_str());
-		sprintf(temp+n," to %s", DateFormatter::toString(self->lastDate()).c_str());
-		return temp;
+	String __str__() {
+		return "Historical data from " + DateFormatter::toString(self->firstDate()) +
+			" to " + DateFormatter::toString(self->lastDate());
 	}
-	char* __repr__() {
-		static char temp[256];
-		int n = sprintf(temp,"<History: historical data from %s", DateFormatter::toString(self->firstDate()).c_str());
-		sprintf(temp+n," to %s>", DateFormatter::toString(self->lastDate()).c_str());
-		return temp;
+	String __repr__() {
+		return "<History: historical data from " + DateFormatter::toString(self->firstDate()) + 
+			" to " + DateFormatter::toString(self->lastDate())+">";
 	}
 	double __getitem__(Date d) {
 		return (*self)[d];

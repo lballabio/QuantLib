@@ -39,6 +39,7 @@
 #endif
 
 %include Date.i
+%include String.i
 
 %{
 using QuantLib::DayCounter;
@@ -62,15 +63,11 @@ typedef Handle<DayCounter> DayCounterHandle;
 		return (*self)->yearFraction(d1,d2);
 	}
 	#if defined (SWIGPYTHON)
-	char* __str__() {
-		static char temp[256];
-		sprintf(temp,"%s day counter",(*self)->name().c_str());
-		return temp;
+	String __str__() {
+		return (*self)->name()+" day counter";
 	}
-	char* __repr__() {
-		static char temp[256];
-		sprintf(temp,"<%s day counter>",(*self)->name().c_str());
-		return temp;
+	String __repr__() {
+		return "<"+(*self)->name()+" day counter>";
 	}
 	int __cmp__(const DayCounterHandle& other) {
 		return ((*self) == other ? 0 : 1);

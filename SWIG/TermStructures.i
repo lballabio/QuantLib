@@ -90,16 +90,6 @@ typedef Handle<TermStructure> TermStructureHandle;
 		return (*self)->forward(d);
 	}
 	#if defined (SWIGPYTHON)
-	char* __str__() {
-		static char temp[256];
-		sprintf(temp,"Term structure");
-		return temp;
-	}
-	char* __repr__() {
-		static char temp[256];
-		sprintf(temp,"<Term structure>");
-		return temp;
-	}
 	int __nonzero__() {
 		return (IsNull(*self) ? 0 : 1);
 	}
