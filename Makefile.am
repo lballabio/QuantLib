@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.36  2001/07/25 07:42:29  nando
+# updated
+#
 # Revision 1.35  2001/07/25 07:36:08  nando
 # updated
 #
@@ -15,6 +18,7 @@ SUBDIRS=Sources Include Docs Examples
 EXTRA_DIST=Authors.txt \
 	Contributors.txt \
 	History.txt \
+	INSTALL.txt \
 	LICENSE.TXT \
 	makefile.mak \
 	News.txt \
