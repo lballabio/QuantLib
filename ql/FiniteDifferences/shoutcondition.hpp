@@ -55,7 +55,8 @@ namespace QuantLib {
             void applyTo(Handle<DiscretizedAsset> asset) const;
           private:
             Array intrinsicValues_;
-            Payoff payoff_;
+            // it would be easy to generalize to more exotic payoffs
+            PlainPayoff payoff_;
             Time resTime_;
             Rate rate_;
         };

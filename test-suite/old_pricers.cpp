@@ -260,7 +260,7 @@ void OldPricerTest::testBinaryPricer() {
                   Spread dQ = q*1.0e-4;
 
                   // reference option
-                  BinaryOption opt(type,u,k,q,r,T,v);
+                  BinaryOption opt(type,u,k,q,r,T,v, 1.0);
                   if (opt.value() > 1.0e-6) {
                     // greeks
                     calculated["delta"]  = opt.delta();
@@ -271,16 +271,16 @@ void OldPricerTest::testBinaryPricer() {
                     calculated["vega"]   = opt.vega();
 
                     // recalculate greeks numerically
-                    BinaryOption optPs(type, u+dS, k, q   , r,    T ,   v);
-                    BinaryOption optMs(type, u-dS, k, q   , r,    T ,   v);
-                    BinaryOption optPt(type, u   , k, q   , r,    T+dT, v);
-                    BinaryOption optMt(type, u   , k, q   , r,    T-dT, v);
-                    BinaryOption optPr(type, u   , k, q   , r+dR, T   , v);
-                    BinaryOption optMr(type, u   , k, q   , r-dR, T   , v);
-                    BinaryOption optPq(type, u   , k, q+dQ, r   , T   , v);
-                    BinaryOption optMq(type, u   , k, q-dQ, r   , T   , v);
-                    BinaryOption optPv(type, u   , k, q   , r   , T   , v+dV);
-                    BinaryOption optMv(type, u   , k, q   , r   , T   , v-dV);
+                    BinaryOption optPs(type, u+dS, k, q   , r,    T ,   v,    1.0);
+                    BinaryOption optMs(type, u-dS, k, q   , r,    T ,   v,    1.0);
+                    BinaryOption optPt(type, u   , k, q   , r,    T+dT, v,    1.0);
+                    BinaryOption optMt(type, u   , k, q   , r,    T-dT, v,    1.0);
+                    BinaryOption optPr(type, u   , k, q   , r+dR, T   , v,    1.0);
+                    BinaryOption optMr(type, u   , k, q   , r-dR, T   , v,    1.0);
+                    BinaryOption optPq(type, u   , k, q+dQ, r   , T   , v,    1.0);
+                    BinaryOption optMq(type, u   , k, q-dQ, r   , T   , v,    1.0);
+                    BinaryOption optPv(type, u   , k, q   , r   , T   , v+dV, 1.0);
+                    BinaryOption optMv(type, u   , k, q   , r   , T   , v-dV, 1.0);
 
                     expected["delta"]  =  (optPs.value()-optMs.value())/(2*dS);
                     expected["gamma"]  =  (optPs.delta()-optMs.delta())/(2*dS);

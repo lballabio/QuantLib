@@ -125,14 +125,40 @@ namespace QuantLib {
           public:
             void calculate() const;
           protected:
-            virtual Payoff payoff() const = 0;
+            virtual Handle<Payoff> payoff() const = 0;
         };
 
         //! European option pricing engine using integral approach
         class IntegralEuropeanEngine : public IntegralEngine {
           protected:
-              virtual Payoff payoff() const {
-                  return Payoff(arguments_.type, arguments_.strike); }
+              Handle<Payoff> payoff() const {
+                  return Handle<Payoff>(new
+                      PlainPayoff(arguments_.type,
+                                  arguments_.strike)); }
+        };
+
+        //! Binary Cash-Or-Nothing pricing engine using integral approach
+        class IntegralCashOrNothingEngine : public IntegralEngine {
+          public:
+            IntegralCashOrNothingEngine(double cashPayoff)
+            : cashPayoff_(cashPayoff), IntegralEngine() {}
+          protected:
+              Handle<Payoff> payoff() const {
+                  return Handle<Payoff>(new
+                      CashOrNothingPayoff(arguments_.type,
+                                          arguments_.strike,
+                                          cashPayoff_)); }
+          private:
+              double cashPayoff_;
+        };
+
+        //! Binary Asset-Or-Nothing pricing engine using integral approach
+        class IntegralAssetOrNothingEngine : public IntegralEngine {
+          protected:
+              Handle<Payoff> payoff() const {
+                  return Handle<Payoff>(new
+                      AssetOrNothingPayoff(arguments_.type,
+                                           arguments_.strike)); }
         };
 
         //! Pricing engine for Vanilla options using Finite Differences

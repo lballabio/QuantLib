@@ -1351,7 +1351,7 @@ SOURCE=.\ql\PricingEngines\genericengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\integraleuropeanengine.cpp
+SOURCE=.\ql\PricingEngines\integralengines.cpp
 # End Source File
 # Begin Source File
 
@@ -1897,6 +1897,10 @@ SOURCE=.\ql\option.cpp
 # Begin Source File
 
 SOURCE=.\ql\option.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\payoff.hpp
 # End Source File
 # Begin Source File
 

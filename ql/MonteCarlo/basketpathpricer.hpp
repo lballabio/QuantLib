@@ -49,7 +49,8 @@ namespace QuantLib {
             double operator()(const MultiPath& multiPath) const;
           private:
             std::vector<double> underlying_;
-            Payoff payoff_;
+            // it would be easy to generalize to more exotic payoffs
+            PlainPayoff payoff_;
         };
 
     }

@@ -66,12 +66,12 @@ namespace QuantLib {
                 double averageStrike2 = underlying_*
                     QL_EXP((geoLogDrift-geoLogDiffusion)/fixings);
                 return discount_* 0.5 *
-                    (Payoff(type_, averageStrike1)(underlying_ *
+                    (PlainPayoff(type_, averageStrike1)(underlying_ *
                                             QL_EXP(logDrift+logDiffusion))
-                    +Payoff(type_, averageStrike2)(underlying_ *
+                    +PlainPayoff(type_, averageStrike2)(underlying_ *
                                             QL_EXP(logDrift-logDiffusion)));
             } else
-                return discount_*Payoff(type_, averageStrike1)(underlying_ *
+                return discount_*PlainPayoff(type_, averageStrike1)(underlying_ *
                                             QL_EXP(logDrift+logDiffusion));
         }
 

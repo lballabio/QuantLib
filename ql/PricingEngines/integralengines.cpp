@@ -27,24 +27,27 @@
 #include <ql/PricingEngines/vanillaengines.hpp>
 #include <ql/Math/segmentintegral.hpp>
 
+#include <ql/handle.hpp>
+
 namespace QuantLib {
 
     namespace {
         class Integrand : std::unary_function<double,double> {
         public:
-            Integrand(const Payoff& payoff,
+            Integrand(Handle<Payoff> payoff,
                       double s0,
                       double drift,
                       double variance)
            : payoff_(payoff), s0_(s0), drift_(drift), variance_(variance) {}
             double operator()(double x) const {
-                return payoff_(s0_*QL_EXP(x)) *
+                double temp = s0_ * QL_EXP(x);
+                double result = (*payoff_)(temp);
+                return result *
                     QL_EXP(-(x - drift_)*(x -drift_)/(2.0*variance_)) ;
             }
         private:
-            Payoff payoff_;
-            double s0_;
-            double drift_, variance_;
+            Handle<Payoff> payoff_;
+            double s0_, drift_, variance_;
         };
     }
 

@@ -47,7 +47,7 @@ class WeightedPayoff : public QL::ObjectiveFunction{
         double operator()(double x) const {
            double nuT = (r_-q_-0.5*sigma_*sigma_)*maturity_;
            return QL_EXP(-r_*maturity_)
-               *Payoff(type_, strike_)(s0_*QL_EXP(x))
+               *PlainPayoff(type_, strike_)(s0_*QL_EXP(x))
                *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
                /QL_SQRT(2.0*M_PI*sigma_*sigma_*maturity_);
         }
@@ -325,7 +325,36 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
+/*
+        // method: Integral
+        method = "Binary Cash";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new IntegralCashOrNothingEngine(1.0)));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // method: Integral
+        method = "Binary Asset";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new IntegralAssetOrNothingEngine()));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
         
+*/
         Size timeSteps=800;
 
         // Binomial Method (JR)
@@ -342,7 +371,6 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
-
 
 
         // Binomial Method (CRR)

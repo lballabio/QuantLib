@@ -73,7 +73,7 @@ namespace QuantLib {
                 }
                 // incorporate payoff
                 if (lastFixing != Null<double>()) {
-                    payoff = Payoff(type_, moneyness_*lastFixing)(underlying)/lastFixing;
+                    payoff = PlainPayoff(type_, moneyness_*lastFixing)(underlying)/lastFixing;
                     payoff = QL_MAX(payoff, localFloor_);
                     payoff = QL_MIN(payoff, localCap_);
                     result += payoff;
@@ -149,7 +149,7 @@ namespace QuantLib {
                 underlying *= QL_EXP(path[i]);
                 // incorporate payoff
                 if (lastFixing != Null<double>()) {
-                    payoff = Payoff(type_, moneyness_*lastFixing)(underlying)/lastFixing;
+                    payoff = PlainPayoff(type_, moneyness_*lastFixing)(underlying)/lastFixing;
                     payoff = QL_MAX(payoff, localFloor_);
                     payoff = QL_MIN(payoff, localCap_);
                     if (redemptionOnly_)
@@ -178,7 +178,7 @@ namespace QuantLib {
                     underlying *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
                     // incorporate payoff
                     if (lastFixing != Null<double>()) {
-                        payoff = Payoff(type_, moneyness_*lastFixing)(underlying)/lastFixing;
+                        payoff = PlainPayoff(type_, moneyness_*lastFixing)(underlying)/lastFixing;
                         payoff = QL_MAX(payoff, localFloor_);
                         payoff = QL_MIN(payoff, localCap_);
                         if (redemptionOnly_)

@@ -45,7 +45,8 @@ namespace QuantLib {
             double operator()(const Path& path) const;
           private:
             double underlying_;
-            Payoff payoff_;
+            // it would be easy to generalize to more exotic payoffs
+            PlainPayoff payoff_;
         };
 
     }
