@@ -31,9 +31,6 @@ using QuantLib::Pricers::FdEuropean;
 using QuantLib::TermStructures::FlatForward;
 using QuantLib::VolTermStructures::BlackConstantVol;
 
-// helper function for option payoff: MAX((stike-underlying),0), etc.
-using QuantLib::Pricers::ExercisePayoff;
-
 // This will be included in the library after a bit of redesign
 class Payoff : public QL::ObjectiveFunction{
     public:
@@ -72,7 +69,7 @@ int main(int argc, char* argv[])
         // our option
         double underlying = 102;
         double strike = 100;
-        Spread dividendYield = 0.0;
+        Spread dividendYield = 0.1;
         Rate riskFreeRate = 0.05;
 
         Date todaysDate(15, May, 1998);
@@ -228,8 +225,14 @@ int main(int argc, char* argv[])
         // New option pricing framework 
         std::cout << "\nNew Pricing engine framework" << std::endl;
 
+        Date midlifeDate(19, November, 1998);
+        std::vector<Date> exDates(2);
+        exDates[0]=midlifeDate;
+        exDates[1]=exerciseDate;
+
         EuropeanExercise exercise(exerciseDate);
         AmericanExercise amExercise(settlementDate, exerciseDate);
+        BermudanExercise berExercise(exDates);
 
 
         RelinkableHandle<MarketElement> underlyingH(
@@ -259,9 +262,12 @@ int main(int argc, char* argv[])
             flatVolTS,
             Handle<PricingEngine>(
                 new AnalyticalVanillaEngine()));
-            
+
+        
         // method: Black Scholes Engine
         method = "Black Scholes";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new AnalyticalVanillaEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -272,11 +278,13 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
+        Size timeSteps=2000;
+
         // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine(
-                BinomialVanillaEngine::JarrowRudd, 800)));
+                BinomialVanillaEngine::JarrowRudd, timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -291,7 +299,7 @@ int main(int argc, char* argv[])
         method = "Binomial (CRR)";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine(
-                BinomialVanillaEngine::CoxRossRubinstein, 800)));
+                BinomialVanillaEngine::CoxRossRubinstein, timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -306,7 +314,7 @@ int main(int argc, char* argv[])
         method = "Additive (EQP)";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine(
-                BinomialVanillaEngine::EQP, 800)));
+                BinomialVanillaEngine::EQP, timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -321,7 +329,22 @@ int main(int argc, char* argv[])
         method = "Bin. Trigeorgis";
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine(
-                BinomialVanillaEngine::Trigeorgis, 800)));
+                BinomialVanillaEngine::Trigeorgis, timeSteps)));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // Tian Binomial Tree (third moment matching)
+        method = "Binomial Tian";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new BinomialVanillaEngine(
+                BinomialVanillaEngine::Tian, timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -361,6 +384,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
         
+        return 0;
 
         Handle<AnalyticalVanillaEngine> baseEngine(new
             AnalyticalVanillaEngine);
