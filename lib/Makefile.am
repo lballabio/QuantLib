@@ -1,5 +1,5 @@
 
-SUBDIRS=Mac Win32
+SUBDIRS=Win32
 
 EXTRA_DIST = README.txt
 

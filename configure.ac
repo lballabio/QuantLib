@@ -232,8 +232,6 @@ AC_CONFIG_FILES([
     ql/Volatilities/Makefile 
     man/Makefile 
     lib/Makefile 
-    lib/Mac/Makefile 
-    lib/Mac/CodeWarrior/Makefile 
     lib/Win32/Makefile 
     lib/Win32/Borland/Makefile 
     lib/Win32/VisualStudio/Makefile 
