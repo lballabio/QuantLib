@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/07/04 08:05:15  uid37043
+// Worked around Visual C++ being off-standard again
+//
 // Revision 1.1  2001/07/03 13:19:38  lballabio
 // Added Knuth random generator after doubts were casted on the NR one
 //
@@ -69,10 +72,7 @@ namespace QuantLib {
           private:
             /* Knuth's names and routines were preserved as much as possible
                while changing the data structures to more modern ones. */
-            static const int KK = 100;
-            static const int LL = 37;
-            static const int TT = 70;
-            static const int QUALITY = 1009;
+            static const int KK, LL, TT, QUALITY;
             mutable std::vector<double> ranf_arr_buf;
             mutable std::vector<double>::const_iterator ranf_arr_ptr, 
                                                         ranf_arr_sentinel;

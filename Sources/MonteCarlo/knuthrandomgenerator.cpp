@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/07/04 08:05:15  uid37043
+// Worked around Visual C++ being off-standard again
+//
 // Revision 1.1  2001/07/03 13:19:38  lballabio
 // Added Knuth random generator after doubts were casted on the NR one
 //
@@ -40,6 +43,11 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+        const int KnuthRandomGenerator::KK = 100;
+        const int KnuthRandomGenerator::LL = 37;
+        const int KnuthRandomGenerator::TT = 70;
+        const int KnuthRandomGenerator::QUALITY = 1009;
+
         KnuthRandomGenerator::KnuthRandomGenerator(long seed)
         : ranf_arr_buf(QUALITY), ran_u(QUALITY) {
             ranf_arr_ptr = ranf_arr_sentinel = ranf_arr_buf.end();
@@ -48,7 +56,7 @@ namespace QuantLib {
         
         void KnuthRandomGenerator::ranf_start(long seed) {
             int t,s,j;
-            double u[KK+KK-1],ul[KK+KK-1];
+            std::vector<double> u(KK+KK-1),ul(KK+KK-1);
             double ulp=(1.0/(1L<<30))/(1L<<22);                // 2 to the -52
             double ss=2.0*ulp*((seed&0x3fffffff)+2);
             
