@@ -31,17 +31,6 @@
 #define QL_ATOI      std::atoi
 
 #define HAVE_CMATH   1
-#define QL_SQRT      std::sqrt
-#define QL_FABS      std::fabs
-#define QL_EXP       std::exp
-#define QL_LOG       std::log
-#define QL_SIN       std::sin
-#define QL_COS       std::cos
-#define QL_SINH      std::sinh
-#define QL_COSH      std::cosh
-#define QL_POW       std::pow
-#define QL_MODF      std::modf
-#define QL_FLOOR     std::floor
 
 /* Useful constants missing in Borland math.h  */
 #define M_IVLN10    0.434294481903251827651 /* 1 / log(10) */

@@ -66,17 +66,6 @@
 #define QL_ATOI      atoi
 
 #define HAVE_CMATH   1
-#define QL_SQRT      sqrt
-#define QL_FABS      fabs
-#define QL_EXP       exp
-#define QL_LOG       log
-#define QL_SIN       sin
-#define QL_COS       cos
-#define QL_SINH      sinh
-#define QL_COSH      cosh
-#define QL_POW       pow
-#define QL_MODF      modf
-#define QL_FLOOR     floor
 
 /* Useful constants missing in Visual C++ math.h  */
 #define M_E         2.71828182845904523536

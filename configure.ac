@@ -69,17 +69,6 @@ QL_CHECK_TYPE([size_t],[],[$ql_stdlib])
 QL_CHECK_FUNC([atoi],["1.0"],[$ql_stdlib])
 
 QL_CHECK_HEADER([math])
-QL_CHECK_FUNC([sqrt],[1.0],[$ql_math])
-QL_CHECK_FUNC([fabs],[1.0],[$ql_math])
-QL_CHECK_FUNC([exp],[1.0],[$ql_math])
-QL_CHECK_FUNC([log],[1.0],[$ql_math])
-QL_CHECK_FUNC([sin],[1.0],[$ql_math])
-QL_CHECK_FUNC([cos],[1.0],[$ql_math])
-QL_CHECK_FUNC([sinh],[1.0],[$ql_math])
-QL_CHECK_FUNC([cosh],[1.0],[$ql_math])
-QL_CHECK_FUNC([pow],[1.0,2],[$ql_math])
-QL_CHECK_FUNC([modf],[1.0,&x],[$ql_math])
-QL_CHECK_FUNC([floor],[1.0],[$ql_math])
 
 QL_CHECK_CONSTANT([M_PI],[double],[$ql_math],
                   [3.141592653589793238462643383280],[pi])

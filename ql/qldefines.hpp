@@ -146,25 +146,82 @@
 /*! \defgroup mathMacros Math functions
 
     Some compilers still define math functions in the global
-    namespace.  For the code to be portable these macros should be
-    used instead of the actual functions.
+    namespace.  For the code to be portable these macros had to be
+    used instead of the actual functions. However, Boost provides
+    the means of bypassing this limitation; therefore, all these
+    macros are now deprecated in favor of the actual functions in
+    namespace std.
 
     @{
 */
-/*! \def QL_SQRT \brief square root */
-/*! \def QL_FABS \brief absolute value */
-/*! \def QL_EXP  \brief exponential */
-/*! \def QL_LOG  \brief logarithm */
-/*! \def QL_SIN  \brief sine */
-/*! \def QL_COS  \brief cosine */
-/*! \def QL_POW  \brief power */
-/*! \def QL_MODF \brief floating-point module */
 #if defined HAVE_CMATH
     #include <cmath>
 #elif defined HAVE_MATH_H
     #include <math.h>
 #else
     #error Neither <cmath> nor <math.h> found
+#endif
+#if defined(BOOST_NO_STDC_NAMESPACE)
+    namespace std { using ::sqrt; using ::fabs; using ::exp; using ::log;
+                    using ::sin; using ::cos; using ::pow; using ::modf;
+                    using ::sinh; using ::cosh; using ::floor; }
+#endif
+#ifndef QL_DISABLE_DEPRECATED
+/*! \def QL_SQRT
+    \brief square root
+    \deprecated use std::sqrt instead
+*/
+#define QL_SQRT std::sqrt
+/*! \def QL_FABS
+    \brief absolute value
+    \deprecated use std::fabs instead
+*/
+#define QL_FABS std::fabs
+/*! \def QL_EXP
+    \brief exponential
+    \deprecated use std::exp instead
+*/
+#define QL_EXP std::exp
+/*! \def QL_LOG
+    \brief logarithm
+    \deprecated use std::log instead
+*/
+#define QL_LOG std::log
+/*! \def QL_SIN
+    \brief sine
+    \deprecated use std::sin instead
+*/
+#define QL_SIN std::sin
+/*! \def QL_COS
+    \brief cosine
+    \deprecated use std::cos instead
+*/
+#define QL_COS std::cos
+/*! \def QL_POW
+    \brief power
+    \deprecated use std::pow instead
+*/
+#define QL_POW std::pow
+/*! \def QL_MODF
+   \brief floating-point module
+   \deprecated use std::modf instead
+*/
+#define QL_MODF std::modf
+/*! \def QL_SINH
+    \brief hyperbolic sine
+    \deprecated use std::sinh instead
+*/
+#define QL_SINH std::sinh
+/*! \def QL_COSH
+    \brief hyperbolic cosine
+    \deprecated use std::cosh instead
+*/
+#define QL_COSH std::cosh
+/*! \def QL_FLOOR
+    \brief floor
+    \deprecated use std::floor instead
+*/
+#define QL_FLOOR std::floor
 #endif
 /*! @} */
 
@@ -278,7 +335,7 @@
 /*! \defgroup algoMacros Min and max functions
 
     Some compilers still do not define <code>std::min</code> and
-    <code>std::max</code>. Moreover, Visual C++ defines them but for
+    <code>std::max</code>. Moreover, Visual C++ 6 defines them but for
     unfathomable reasons garble their names.  For the code to be
     portable these macros should be used instead of the actual
     functions.
@@ -315,9 +372,8 @@
 */
 
 /*! \def QL_TYPENAME
-    \brief Blame Microsoft for this one...
 
-    They decided that typename can only be used in template declarations
+    In Visual C++ 6,  typename can only be used in template declarations
     and not in template definitions.
 */
 #if defined(CHOKES_ON_TYPENAME)
@@ -338,7 +394,7 @@
     @{
 */
 /*! \def QL_FULL_ITERATOR_SUPPORT
-    Some compilers (most notably, Visual C++) still do not fully
+    Some compilers (most notably, Visual C++ 6) still do not fully
     support iterators in their STL implementation.  This macro can be
     used to select between alternate implementations of blocks of
     code, namely, one that takes advantage of full iterator support

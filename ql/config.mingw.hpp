@@ -31,17 +31,6 @@
 #define QL_ATOI      std::atoi
 
 #define HAVE_CMATH   1
-#define QL_SQRT      std::sqrt
-#define QL_FABS      std::fabs
-#define QL_EXP       std::exp
-#define QL_LOG       std::log
-#define QL_SIN       std::sin
-#define QL_COS       std::cos
-#define QL_SINH      std::sinh
-#define QL_COSH      std::cosh
-#define QL_POW       std::pow
-#define QL_MODF      std::modf
-#define QL_FLOOR     std::floor
 
 #define M_SQRT_2    0.7071067811865475244008443621048490392848359376887
 #define M_1_SQRTPI  0.564189583547756286948
