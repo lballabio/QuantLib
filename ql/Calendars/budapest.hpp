@@ -52,7 +52,7 @@ namespace QuantLib {
         };
       public:
         Budapest()
-        : Calendar(Handle<Calendar::Impl>(new Budapest::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Budapest::Impl)) {}
     };
 
 }

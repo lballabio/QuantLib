@@ -73,7 +73,7 @@ namespace QuantLib {
         template <class I1, class I2>
         LogLinearInterpolation(const I1& xBegin, const I1& xEnd,
                                const I2& yBegin) {
-            impl_ = Handle<Interpolation::Impl>(
+            impl_ = boost::shared_ptr<Interpolation::Impl>(
                   new LogLinearInterpolation::Impl<I1,I2>(xBegin, xEnd,
                                                           yBegin));
         }

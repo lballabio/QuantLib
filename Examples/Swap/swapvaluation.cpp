@@ -75,31 +75,31 @@ int main(int argc, char* argv[])
         // or some kind of data feed.
 
         // deposits
-        Handle<Quote> d1wRate(new SimpleQuote(d1wQuote));
-        Handle<Quote> d1mRate(new SimpleQuote(d1mQuote));
-        Handle<Quote> d3mRate(new SimpleQuote(d3mQuote));
-        Handle<Quote> d6mRate(new SimpleQuote(d6mQuote));
-        Handle<Quote> d9mRate(new SimpleQuote(d9mQuote));
-        Handle<Quote> d1yRate(new SimpleQuote(d1yQuote));
+        boost::shared_ptr<Quote> d1wRate(new SimpleQuote(d1wQuote));
+        boost::shared_ptr<Quote> d1mRate(new SimpleQuote(d1mQuote));
+        boost::shared_ptr<Quote> d3mRate(new SimpleQuote(d3mQuote));
+        boost::shared_ptr<Quote> d6mRate(new SimpleQuote(d6mQuote));
+        boost::shared_ptr<Quote> d9mRate(new SimpleQuote(d9mQuote));
+        boost::shared_ptr<Quote> d1yRate(new SimpleQuote(d1yQuote));
         // FRAs
-        Handle<Quote> fra3x6Rate(new SimpleQuote(fra3x6Quote));
-        Handle<Quote> fra6x9Rate(new SimpleQuote(fra6x9Quote));
-        Handle<Quote> fra6x12Rate(new SimpleQuote(fra6x12Quote));
+        boost::shared_ptr<Quote> fra3x6Rate(new SimpleQuote(fra3x6Quote));
+        boost::shared_ptr<Quote> fra6x9Rate(new SimpleQuote(fra6x9Quote));
+        boost::shared_ptr<Quote> fra6x12Rate(new SimpleQuote(fra6x12Quote));
         // futures
-        Handle<Quote> fut1Price(new SimpleQuote(fut1Quote));
-        Handle<Quote> fut2Price(new SimpleQuote(fut2Quote));
-        Handle<Quote> fut3Price(new SimpleQuote(fut3Quote));
-        Handle<Quote> fut4Price(new SimpleQuote(fut4Quote));
-        Handle<Quote> fut5Price(new SimpleQuote(fut5Quote));
-        Handle<Quote> fut6Price(new SimpleQuote(fut6Quote));
-        Handle<Quote> fut7Price(new SimpleQuote(fut7Quote));
-        Handle<Quote> fut8Price(new SimpleQuote(fut8Quote));
+        boost::shared_ptr<Quote> fut1Price(new SimpleQuote(fut1Quote));
+        boost::shared_ptr<Quote> fut2Price(new SimpleQuote(fut2Quote));
+        boost::shared_ptr<Quote> fut3Price(new SimpleQuote(fut3Quote));
+        boost::shared_ptr<Quote> fut4Price(new SimpleQuote(fut4Quote));
+        boost::shared_ptr<Quote> fut5Price(new SimpleQuote(fut5Quote));
+        boost::shared_ptr<Quote> fut6Price(new SimpleQuote(fut6Quote));
+        boost::shared_ptr<Quote> fut7Price(new SimpleQuote(fut7Quote));
+        boost::shared_ptr<Quote> fut8Price(new SimpleQuote(fut8Quote));
         // swaps
-        Handle<Quote> s2yRate(new SimpleQuote(s2yQuote));
-        Handle<Quote> s3yRate(new SimpleQuote(s3yQuote));
-        Handle<Quote> s5yRate(new SimpleQuote(s5yQuote));
-        Handle<Quote> s10yRate(new SimpleQuote(s10yQuote));
-        Handle<Quote> s15yRate(new SimpleQuote(s15yQuote));
+        boost::shared_ptr<Quote> s2yRate(new SimpleQuote(s2yQuote));
+        boost::shared_ptr<Quote> s3yRate(new SimpleQuote(s3yQuote));
+        boost::shared_ptr<Quote> s5yRate(new SimpleQuote(s5yQuote));
+        boost::shared_ptr<Quote> s10yRate(new SimpleQuote(s10yQuote));
+        boost::shared_ptr<Quote> s15yRate(new SimpleQuote(s15yQuote));
 
 
         /*********************
@@ -115,42 +115,42 @@ int main(int argc, char* argv[])
         DayCounter depositDayCounter = Actual360();
         int settlementDays = 2;
 
-        Handle<RateHelper> d1w(new DepositRateHelper(
+        boost::shared_ptr<RateHelper> d1w(new DepositRateHelper(
             RelinkableHandle<Quote>(d1wRate), 
             1, Weeks, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d1m(new DepositRateHelper(
+        boost::shared_ptr<RateHelper> d1m(new DepositRateHelper(
             RelinkableHandle<Quote>(d1mRate), 
             1, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d3m(new DepositRateHelper(
+        boost::shared_ptr<RateHelper> d3m(new DepositRateHelper(
             RelinkableHandle<Quote>(d3mRate), 
             3, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d6m(new DepositRateHelper(
+        boost::shared_ptr<RateHelper> d6m(new DepositRateHelper(
             RelinkableHandle<Quote>(d6mRate), 
             6, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d9m(new DepositRateHelper(
+        boost::shared_ptr<RateHelper> d9m(new DepositRateHelper(
             RelinkableHandle<Quote>(d9mRate), 
             9, Months, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
-        Handle<RateHelper> d1y(new DepositRateHelper(
+        boost::shared_ptr<RateHelper> d1y(new DepositRateHelper(
             RelinkableHandle<Quote>(d1yRate), 
             1, Years, settlementDays, 
             calendar, ModifiedFollowing, depositDayCounter));
 
 
         // setup FRAs
-        Handle<RateHelper> fra3x6(new FraRateHelper(
+        boost::shared_ptr<RateHelper> fra3x6(new FraRateHelper(
             RelinkableHandle<Quote>(fra3x6Rate),
             3, 6, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fra6x9(new FraRateHelper(
+        boost::shared_ptr<RateHelper> fra6x9(new FraRateHelper(
             RelinkableHandle<Quote>(fra6x9Rate),
             6, 9, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fra6x12(new FraRateHelper(
+        boost::shared_ptr<RateHelper> fra6x12(new FraRateHelper(
             RelinkableHandle<Quote>(fra6x12Rate),
             6, 12, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
@@ -158,42 +158,42 @@ int main(int argc, char* argv[])
 
         // setup futures
         int futMonths = 3;
-        Handle<RateHelper> fut1(new FuturesRateHelper(
+        boost::shared_ptr<RateHelper> fut1(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(19, December, 2001),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fut2(new FuturesRateHelper(
+        boost::shared_ptr<RateHelper> fut2(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(20, March, 2002),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fut3(new FuturesRateHelper(
+        boost::shared_ptr<RateHelper> fut3(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(19, June, 2002),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fut4(new FuturesRateHelper(
+        boost::shared_ptr<RateHelper> fut4(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(18, September, 2002),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fut5(new FuturesRateHelper(
+        boost::shared_ptr<RateHelper> fut5(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(18, December, 2002),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fut6(new FuturesRateHelper(
+        boost::shared_ptr<RateHelper> fut6(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(19, March, 2003),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fut7(new FuturesRateHelper(
+        boost::shared_ptr<RateHelper> fut7(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(18, June, 2003),
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        Handle<RateHelper> fut8(new FuturesRateHelper(
+        boost::shared_ptr<RateHelper> fut8(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(17, September, 2003),
             futMonths, calendar, ModifiedFollowing,
@@ -206,31 +206,31 @@ int main(int argc, char* argv[])
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
         int swFloatingLegFrequency = 2;
 
-        Handle<RateHelper> s2y(new SwapRateHelper(
+        boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
             RelinkableHandle<Quote>(s2yRate), 
             2, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
-        Handle<RateHelper> s3y(new SwapRateHelper(
+        boost::shared_ptr<RateHelper> s3y(new SwapRateHelper(
             RelinkableHandle<Quote>(s3yRate), 
             3, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
-        Handle<RateHelper> s5y(new SwapRateHelper(
+        boost::shared_ptr<RateHelper> s5y(new SwapRateHelper(
             RelinkableHandle<Quote>(s5yRate), 
             5, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
-        Handle<RateHelper> s10y(new SwapRateHelper(
+        boost::shared_ptr<RateHelper> s10y(new SwapRateHelper(
             RelinkableHandle<Quote>(s10yRate), 
             10, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
-        Handle<RateHelper> s15y(new SwapRateHelper(
+        boost::shared_ptr<RateHelper> s15y(new SwapRateHelper(
             RelinkableHandle<Quote>(s15yRate), 
             15, Years, settlementDays, 
             calendar, ModifiedFollowing, swFixedLegFrequency,
@@ -249,7 +249,7 @@ int main(int argc, char* argv[])
 
 
         // A depo-swap curve
-        std::vector<Handle<RateHelper> > depoSwapInstruments;
+        std::vector<boost::shared_ptr<RateHelper> > depoSwapInstruments;
         depoSwapInstruments.push_back(d1w);
         depoSwapInstruments.push_back(d1m);
         depoSwapInstruments.push_back(d3m);
@@ -261,13 +261,13 @@ int main(int argc, char* argv[])
         depoSwapInstruments.push_back(s5y);
         depoSwapInstruments.push_back(s10y);
         depoSwapInstruments.push_back(s15y);
-        Handle<TermStructure> depoSwapTermStructure(new
+        boost::shared_ptr<TermStructure> depoSwapTermStructure(new
             PiecewiseFlatForward(todaysDate, settlementDate,
             depoSwapInstruments, termStructureDayCounter));
 
 
         // A depo-futures-swap curve
-        std::vector<Handle<RateHelper> > depoFutSwapInstruments;
+        std::vector<boost::shared_ptr<RateHelper> > depoFutSwapInstruments;
         depoFutSwapInstruments.push_back(d1w);
         depoFutSwapInstruments.push_back(d1m);
         depoFutSwapInstruments.push_back(fut1);
@@ -282,13 +282,13 @@ int main(int argc, char* argv[])
         depoFutSwapInstruments.push_back(s5y);
         depoFutSwapInstruments.push_back(s10y);
         depoFutSwapInstruments.push_back(s15y);
-        Handle<TermStructure> depoFutSwapTermStructure(new
+        boost::shared_ptr<TermStructure> depoFutSwapTermStructure(new
             PiecewiseFlatForward(todaysDate, settlementDate,
             depoFutSwapInstruments, termStructureDayCounter));
 
 
         // A depo-FRA-swap curve
-        std::vector<Handle<RateHelper> > depoFRASwapInstruments;
+        std::vector<boost::shared_ptr<RateHelper> > depoFRASwapInstruments;
         depoFRASwapInstruments.push_back(d1w);
         depoFRASwapInstruments.push_back(d1m);
         depoFRASwapInstruments.push_back(d3m);
@@ -300,7 +300,7 @@ int main(int argc, char* argv[])
         depoFRASwapInstruments.push_back(s5y);
         depoFRASwapInstruments.push_back(s10y);
         depoFRASwapInstruments.push_back(s15y);
-        Handle<TermStructure> depoFRASwapTermStructure(new
+        boost::shared_ptr<TermStructure> depoFRASwapTermStructure(new
             PiecewiseFlatForward(todaysDate, settlementDate,
             depoFRASwapInstruments, termStructureDayCounter));
 
@@ -328,7 +328,7 @@ int main(int argc, char* argv[])
 
         // floating leg
         int floatingLegFrequency = 2;
-        Handle<Xibor> euriborIndex(new Euribor(6, Months,
+        boost::shared_ptr<Xibor> euriborIndex(new Euribor(6, Months,
             forecastingTermStructure)); // using the forecasting curve
         Spread spread = 0.0;
 
@@ -527,7 +527,7 @@ int main(int argc, char* argv[])
         // value contained in the Quote triggers a new bootstrapping
         // of the curve and a repricing of the swap.
 
-        Handle<SimpleQuote> fiveYearsRate = 
+        boost::shared_ptr<SimpleQuote> fiveYearsRate = 
             boost::dynamic_pointer_cast<SimpleQuote>(s5yRate);
         fiveYearsRate->setValue(0.0460);
 

@@ -33,7 +33,7 @@ namespace QuantLib {
         //Constructor for ATM cap
         CapHelper(const Period& length,
                   const RelinkableHandle<Quote>& volatility,
-                  const Handle<Xibor>& index,
+                  const boost::shared_ptr<Xibor>& index,
                   const RelinkableHandle<TermStructure>& termStructure);
 
         virtual void addTimesTo(std::list<Time>& times) const;
@@ -43,7 +43,7 @@ namespace QuantLib {
         virtual double blackPrice(double volatility) const;
 
       private:
-        Handle<Cap> cap_;
+        boost::shared_ptr<Cap> cap_;
     };
 
 }

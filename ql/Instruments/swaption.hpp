@@ -33,17 +33,17 @@ namespace QuantLib {
       public:
         class arguments;
         class results;
-        Swaption(const Handle<SimpleSwap>& swap,
-                 const Handle<Exercise>& exercise,
+        Swaption(const boost::shared_ptr<SimpleSwap>& swap,
+                 const boost::shared_ptr<Exercise>& exercise,
                  const RelinkableHandle<TermStructure>& termStructure,
-                 const Handle<PricingEngine>& engine);
+                 const boost::shared_ptr<PricingEngine>& engine);
         bool isExpired() const;
         void setupArguments(Arguments*) const;
       protected:
         void performCalculations() const;
       private:
         // arguments
-        Handle<SimpleSwap> swap_;
+        boost::shared_ptr<SimpleSwap> swap_;
         const RelinkableHandle<TermStructure>& termStructure_;
     };
 

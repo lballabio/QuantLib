@@ -44,7 +44,7 @@ namespace QuantLib {
                                double volatility);
         double vega() const;
         double rho() const;
-        Handle<SingleAssetOption> clone() const;
+        boost::shared_ptr<SingleAssetOption> clone() const;
     };
 
 
@@ -68,8 +68,10 @@ namespace QuantLib {
             -EuropeanOption::rho()*volatility_*volatility_/4;
     }
 
-    inline Handle<SingleAssetOption> ContinuousGeometricAPO::clone() const {
-        return Handle<SingleAssetOption>(new ContinuousGeometricAPO(*this));
+    inline boost::shared_ptr<SingleAssetOption> 
+    ContinuousGeometricAPO::clone() const {
+        return boost::shared_ptr<SingleAssetOption>(
+                                           new ContinuousGeometricAPO(*this));
     }
 
 }

@@ -36,7 +36,7 @@ namespace QuantLib {
                          double volatility,
                          const std::vector<Time>& dates = std::vector<Time>(),
                          int timeSteps = 100, int gridPoints = 100);
-        Handle<SingleAssetOption> clone() const;
+        boost::shared_ptr<SingleAssetOption> clone() const;
       protected:
         double extraTermInBermudan ;
         void initializeStepCondition() const;

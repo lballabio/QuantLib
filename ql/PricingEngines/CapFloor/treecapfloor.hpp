@@ -32,9 +32,9 @@ namespace QuantLib {
         : public LatticeShortRateModelEngine<CapFloor::arguments,
                                              CapFloor::results> {
       public:
-        TreeCapFloor(const Handle<ShortRateModel>& model, 
+        TreeCapFloor(const boost::shared_ptr<ShortRateModel>& model, 
                      Size timeSteps);
-        TreeCapFloor(const Handle<ShortRateModel>& model, 
+        TreeCapFloor(const boost::shared_ptr<ShortRateModel>& model, 
                      const TimeGrid& timeGrid);
         void calculate() const;
     };

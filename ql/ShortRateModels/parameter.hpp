@@ -49,10 +49,12 @@ namespace QuantLib {
         double operator()(Time t) const {
             return impl_->value(params_, t);
         }
-        const Handle<ParameterImpl>& implementation() const {return impl_;}
+        const boost::shared_ptr<ParameterImpl>& implementation() const {
+            return impl_;
+        }
       protected:
         Parameter(Size size,
-                  const Handle<ParameterImpl>& impl,
+                  const boost::shared_ptr<ParameterImpl>& impl,
                   const Constraint& constraint)
         : Bridge<Parameter,ParameterImpl>(impl),
           params_(size), constraint_(constraint) {}
@@ -71,16 +73,18 @@ namespace QuantLib {
         };
       public:
         ConstantParameter(const Constraint& constraint)
-        : Parameter(1,
-                    Handle<Parameter::Impl>(new ConstantParameter::Impl),
-                    constraint)
+        : Parameter(
+              1,
+              boost::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
+              constraint)
         {}
 
         ConstantParameter(double value,
                           const Constraint& constraint)
-        : Parameter(1,
-                    Handle<Parameter::Impl>(new ConstantParameter::Impl),
-                    constraint) {
+        : Parameter(
+              1,
+              boost::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
+              constraint) {
             params_[0] = value;
             QL_REQUIRE(testParams(params_),
                        "ConstantParameter: invalid value in constructor");
@@ -99,9 +103,10 @@ namespace QuantLib {
         };
       public:
         NullParameter()
-        : Parameter(0,
-                    Handle<Parameter::Impl>(new NullParameter::Impl),
-                    NoConstraint())
+        : Parameter(
+                  0,
+                  boost::shared_ptr<Parameter::Impl>(new NullParameter::Impl),
+                  NoConstraint())
         {}
     };
 
@@ -131,7 +136,7 @@ namespace QuantLib {
       public:
         PiecewiseConstantParameter(const std::vector<Time>& times)
         : Parameter(times.size()+1,
-                    Handle<Parameter::Impl>(
+                    boost::shared_ptr<Parameter::Impl>(
                                  new PiecewiseConstantParameter::Impl(times)),
                     NoConstraint())
         {}
@@ -142,8 +147,7 @@ namespace QuantLib {
       public:
         class NumericalImpl : public Parameter::Impl {
           public:
-            NumericalImpl(
-                          const RelinkableHandle<TermStructure>& termStructure)
+            NumericalImpl(const RelinkableHandle<TermStructure>& termStructure)
             : times_(0), values_(0), termStructure_(termStructure) {}
 
             void set(Time t, double x) {
@@ -173,13 +177,16 @@ namespace QuantLib {
             RelinkableHandle<TermStructure> termStructure_;
         };
 
-        TermStructureFittingParameter(const Handle<Parameter::Impl>& impl)
+        TermStructureFittingParameter(
+                               const boost::shared_ptr<Parameter::Impl>& impl)
         : Parameter(0, impl, NoConstraint()) {}
 
         TermStructureFittingParameter(
                                   const RelinkableHandle<TermStructure>& term)
-        : Parameter(0, Handle<Parameter::Impl>(new NumericalImpl(term)),
-                    NoConstraint())
+        : Parameter(
+                  0, 
+                  boost::shared_ptr<Parameter::Impl>(new NumericalImpl(term)),
+                  NoConstraint())
         {}
     };
 

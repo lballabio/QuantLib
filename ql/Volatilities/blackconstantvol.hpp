@@ -75,7 +75,8 @@ namespace QuantLib {
                                               double volatility, 
                                               const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter) {
-        volatility_.linkTo(Handle<Quote>(new SimpleQuote(volatility)));
+        volatility_.linkTo(
+                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
         registerWith(volatility_);
     }
 

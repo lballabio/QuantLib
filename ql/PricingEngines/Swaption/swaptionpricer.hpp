@@ -29,7 +29,7 @@ namespace QuantLib {
 
     class DiscretizedSwap : public DiscretizedAsset {
       public:
-        DiscretizedSwap(const Handle<NumericalMethod>& method,
+        DiscretizedSwap(const boost::shared_ptr<NumericalMethod>& method,
                         const SimpleSwap::arguments& params)
         : DiscretizedAsset(method), arguments_(params) {}
 
@@ -65,8 +65,7 @@ namespace QuantLib {
 
     class DiscretizedSwaption : public DiscretizedOption {
       public:
-        DiscretizedSwaption(
-                            const Handle<DiscretizedSwap>& swap,
+        DiscretizedSwaption(const boost::shared_ptr<DiscretizedSwap>& swap,
                             const Swaption::arguments& params)
         : DiscretizedOption(swap,
                             params.exercise->type(),

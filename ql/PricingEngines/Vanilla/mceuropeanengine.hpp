@@ -49,11 +49,11 @@ namespace QuantLib {
                          long seed = 0);
       protected:
         TimeGrid timeGrid() const;
-        Handle<path_pricer_type> pathPricer() const;
+        boost::shared_ptr<path_pricer_type> pathPricer() const;
     };
 
     #if !defined(QL_PATCH_MICROSOFT)
-    // Visual cannot cope with the conversion operator to Handle
+    // Visual cannot cope with the conversion operator to boost::shared_ptr
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCEuropeanEngine {
       public:
@@ -67,7 +67,7 @@ namespace QuantLib {
         MakeMCEuropeanEngine& withAntitheticVariate();
         MakeMCEuropeanEngine& withControlVariate();
         // conversion to pricing engine
-        operator Handle<PricingEngine>() const;
+        operator boost::shared_ptr<PricingEngine>() const;
       private:
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
@@ -111,15 +111,15 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    Handle<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
     MCEuropeanEngine<RNG,S>::pathPricer() const {
 
-        Handle<PlainVanillaPayoff> payoff =
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticAmericanBinaryEngine: non-plain payoff given");
 
-        return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(
+        return boost::shared_ptr<MCEuropeanEngine<RNG,S>::path_pricer_type>(
             new EuropeanPathPricer(
                 payoff->optionType(),
                 arguments_.blackScholesProcess->stateVariable->value(),
@@ -241,11 +241,12 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCEuropeanEngine<RNG,S>::operator Handle<PricingEngine>() const {
+    MakeMCEuropeanEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>() 
+                                                                      const {
         QL_REQUIRE(steps_ != Size(Null<int>()),
                    "MakeMCEuropeanEngine<RNG,S>: "
                    "max number of steps per year not given");
-        return Handle<PricingEngine>(
+        return boost::shared_ptr<PricingEngine>(
                              new MCEuropeanEngine<RNG,S>(steps_, antithetic_,
                                                          controlVariate_,
                                                          samples_, tolerance_,

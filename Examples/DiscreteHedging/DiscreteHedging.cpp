@@ -285,17 +285,16 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // Black Scholes equation rules the path generator:
     // at each step the log of the stock
     // will have drift and sigma^2 variance
-    Handle<GaussianPathGenerator_old> myPathGenerator(
+    boost::shared_ptr<GaussianPathGenerator_old> myPathGenerator(
         new GaussianPathGenerator_old(drift, sigma_*sigma_,
             maturity_, nTimeSteps));
 
     // The replication strategy's Profit&Loss is computed for each path
     // of the stock. The path pricer knows how to price a path using its
     // value() method
-    Handle<PathPricer_old<Path> > myPathPricer =
-        Handle<PathPricer_old<Path> >(new
-            ReplicationPathPricer(payoff_.optionType(), s0_,
-                payoff_.strike(), r_, maturity_, sigma_));
+    boost::shared_ptr<PathPricer_old<Path> > myPathPricer(new
+        ReplicationPathPricer(payoff_.optionType(), s0_,
+            payoff_.strike(), r_, maturity_, sigma_));
 
     // a statistics accumulator for the path-dependant Profit&Loss values
     Statistics statisticsAccumulator;

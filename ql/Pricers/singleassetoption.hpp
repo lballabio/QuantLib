@@ -69,7 +69,7 @@ namespace QuantLib {
                                Size maxEvaluations = 100,
                                double minVol = QL_MIN_DIVYIELD,
                                double maxVol = QL_MAX_DIVYIELD) const;
-        virtual Handle<SingleAssetOption> clone() const = 0;
+        virtual boost::shared_ptr<SingleAssetOption> clone() const = 0;
       protected:
         double underlying_;
         PlainVanillaPayoff payoff_;
@@ -92,28 +92,28 @@ namespace QuantLib {
 
     class SingleAssetOption::VolatilityFunction {
       public:
-        VolatilityFunction(const Handle<SingleAssetOption>& tempBSM,
+        VolatilityFunction(const boost::shared_ptr<SingleAssetOption>& tempBSM,
                            double targetPrice);
         double operator()(double x) const;
       private:
-        mutable Handle<SingleAssetOption> bsm;
+        mutable boost::shared_ptr<SingleAssetOption> bsm;
         double targetPrice_;
     };
 
     class SingleAssetOption::DivYieldFunction {
       public:
-        DivYieldFunction(const Handle<SingleAssetOption>& tempBSM,
+        DivYieldFunction(const boost::shared_ptr<SingleAssetOption>& tempBSM,
                          double targetPrice);
         double operator()(double x) const;
       private:
-        mutable Handle<SingleAssetOption> bsm;
+        mutable boost::shared_ptr<SingleAssetOption> bsm;
         double targetPrice_;
     };
 
 
     inline SingleAssetOption::VolatilityFunction::VolatilityFunction(
-                                     const Handle<SingleAssetOption>& tempBSM,
-                                     double targetPrice) {
+                          const boost::shared_ptr<SingleAssetOption>& tempBSM,
+                          double targetPrice) {
         bsm = tempBSM;
         targetPrice_ = targetPrice;
     }
@@ -126,8 +126,8 @@ namespace QuantLib {
 
 
     inline SingleAssetOption::DivYieldFunction::DivYieldFunction(
-                                     const Handle<SingleAssetOption>& tempBSM,
-                                     double targetPrice) {
+                          const boost::shared_ptr<SingleAssetOption>& tempBSM,
+                          double targetPrice) {
         bsm = tempBSM;
         targetPrice_ = targetPrice;
     }

@@ -34,7 +34,7 @@ namespace QuantLib {
                                     Swaption::arguments,
                                     Swaption::results > {
       public:
-        JamshidianSwaption(const Handle<OneFactorAffineModel>& modl)
+        JamshidianSwaption(const boost::shared_ptr<OneFactorAffineModel>& modl)
         : GenericModelEngine<OneFactorAffineModel,
                              Swaption::arguments,
                              Swaption::results >(modl) {} 

@@ -24,7 +24,7 @@ namespace QuantLib {
 
     CapHelper::CapHelper(const Period& length,
                          const RelinkableHandle<Quote>& volatility,
-                         const Handle<Xibor>& index,
+                         const boost::shared_ptr<Xibor>& index,
                          const RelinkableHandle<TermStructure>& termStructure)
     : CalibrationHelper(volatility,termStructure) {
 
@@ -46,40 +46,43 @@ namespace QuantLib {
         Date maturity = termStructure->referenceDate().
             plus(length.length(), length.units());
 
-        Handle<Xibor> dummyIndex(new Xibor("dummy",
-                                           indexTenor.length(),
-                                           indexTenor.units(),
-                                           index->settlementDays(),
-                                           index->currency(),
-                                           index->calendar(),
-                                           index->isAdjusted(),
-                                           index->rollingConvention(),
-                                           termStructure->dayCounter(),
-                                           termStructure));
+        boost::shared_ptr<Xibor> dummyIndex(
+                                        new Xibor("dummy",
+                                                  indexTenor.length(),
+                                                  indexTenor.units(),
+                                                  index->settlementDays(),
+                                                  index->currency(),
+                                                  index->calendar(),
+                                                  index->isAdjusted(),
+                                                  index->rollingConvention(),
+                                                  termStructure->dayCounter(),
+                                                  termStructure));
 
         std::vector<double> nominals(1,1.0);
         Schedule floatSchedule(index->calendar(), startDate, maturity,
                                frequency, index->rollingConvention(),
                                true);
-        std::vector<Handle<CashFlow> > floatingLeg = 
+        std::vector<boost::shared_ptr<CashFlow> > floatingLeg = 
             FloatingRateCouponVector(floatSchedule, nominals, 
                                      index, 0);
 
         Schedule fixedSchedule(index->calendar(), startDate, maturity,
                                frequency, index->rollingConvention(),
                                false);
-        std::vector<Handle<CashFlow> > fixedLeg = 
+        std::vector<boost::shared_ptr<CashFlow> > fixedLeg = 
             FixedRateCouponVector(fixedSchedule, nominals, 
                                   std::vector<Rate>(1, fixedRate), 
                                   index->dayCounter());
 
-        Handle<Swap> swap(new Swap(floatingLeg, fixedLeg, termStructure));
+        boost::shared_ptr<Swap> swap(
+                              new Swap(floatingLeg, fixedLeg, termStructure));
         Rate fairRate = fixedRate - 
             swap->NPV()/swap->secondLegBPS();
-        engine_  = Handle<PricingEngine>(new BlackCapFloor(blackModel_));
-        cap_ = Handle<Cap>(new Cap(floatingLeg, 
-                                   std::vector<Rate>(1, fairRate), 
-                                   termStructure, engine_));
+        engine_  = boost::shared_ptr<PricingEngine>(
+                                              new BlackCapFloor(blackModel_));
+        cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg, 
+                                              std::vector<Rate>(1, fairRate), 
+                                              termStructure, engine_));
         marketValue_ = blackPrice(volatility_->value());
     }
 
@@ -100,11 +103,11 @@ namespace QuantLib {
     }
 
     double CapHelper::blackPrice(double sigma) const {
-        Handle<Quote> vol(new SimpleQuote(sigma));
-        Handle<BlackModel> blackModel(
+        boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
+        boost::shared_ptr<BlackModel> blackModel(
                          new BlackModel(RelinkableHandle<Quote>(vol), 
                                         termStructure_));
-        Handle<PricingEngine> black(new BlackCapFloor(blackModel));
+        boost::shared_ptr<PricingEngine> black(new BlackCapFloor(blackModel));
         cap_->setPricingEngine(black);
         double value = cap_->NPV();
         cap_->setPricingEngine(engine_);

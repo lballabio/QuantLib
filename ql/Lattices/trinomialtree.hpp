@@ -37,7 +37,7 @@ namespace QuantLib {
     */
     class TrinomialTree : public Tree {
       public:
-        TrinomialTree(const Handle<DiffusionProcess>& process,
+        TrinomialTree(const boost::shared_ptr<DiffusionProcess>& process,
                       const TimeGrid& timeGrid,
                       bool isPositive = false);
         double dx(Size i) const { return dx_[i]; }
@@ -49,7 +49,7 @@ namespace QuantLib {
         double probability(Size i, Size index, Size branch) const;
 
       protected:
-        std::vector<Handle<TrinomialBranching> > branchings_;
+        std::vector<boost::shared_ptr<TrinomialBranching> > branchings_;
         double x0_;
         std::vector<double> dx_;
         TimeGrid timeGrid_;

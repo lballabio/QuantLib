@@ -52,7 +52,7 @@ namespace QuantLib {
         };
       public:
         Zurich()
-        : Calendar(Handle<Calendar::Impl>(new Zurich::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Zurich::Impl)) {}
     };
 
 }

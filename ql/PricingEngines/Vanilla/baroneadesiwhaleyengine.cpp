@@ -23,9 +23,9 @@ namespace QuantLib {
     namespace {
 
         // critical commodity price
-        double Kc(const Handle<StrikedTypePayoff>& payoff,
-            double riskFreeDiscount, double dividendDiscount,
-            double variance, double tolerance = 1e-6) {
+        double Kc(const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                  double riskFreeDiscount, double dividendDiscount,
+                  double variance, double tolerance = 1e-6) {
 
             // Calculation of seed value, Si
             double n= 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
@@ -124,7 +124,7 @@ namespace QuantLib {
                    "BaroneAdesiWhaleyApproximationEngine::calculate() : "
                    "not an American Option");
 
-        Handle<AmericanExercise> ex = 
+        boost::shared_ptr<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex,
                    "BaroneAdesiWhaleyApproximationEngine: "
@@ -133,7 +133,7 @@ namespace QuantLib {
                    "BaroneAdesiWhaleyApproximationEngine::calculate() : "
                    "payoff at expiry not handled");
 
-        Handle<StrikedTypePayoff> payoff =
+        boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticEuropeanEngine: non-striked payoff given");

@@ -61,16 +61,17 @@ namespace QuantLib {
                      bool controlVariate)
         : antitheticVariate_(antitheticVariate),
           controlVariate_(controlVariate) {}
-        virtual Handle<path_pricer_type> pathPricer() const = 0;
-        virtual Handle<path_pricer_type> controlPathPricer() const {
-            return Handle<path_pricer_type>();
+        virtual boost::shared_ptr<path_pricer_type> pathPricer() const = 0;
+        virtual boost::shared_ptr<path_pricer_type> controlPathPricer() const {
+            return boost::shared_ptr<path_pricer_type>();
         }
-        virtual Handle<PricingEngine> controlPricingEngine() const {
-            return Handle<PricingEngine>();
+        virtual boost::shared_ptr<PricingEngine> controlPricingEngine() const {
+            return boost::shared_ptr<PricingEngine>();
         }
-        virtual Handle<path_generator_type> pathGenerator() const = 0;
+        virtual boost::shared_ptr<path_generator_type> pathGenerator() 
+                                                                   const = 0;
         virtual TimeGrid timeGrid() const = 0;
-        mutable Handle<MonteCarloModel<MC,S> > mcModel_;
+        mutable boost::shared_ptr<MonteCarloModel<MC,S> > mcModel_;
         static const Size minSample_;
         bool antitheticVariate_, controlVariate_;
     };

@@ -23,7 +23,7 @@ namespace QuantLib {
     class JamshidianSwaption::rStarFinder {
       public:
         rStarFinder(const Swaption::arguments &params,
-                    const Handle<OneFactorAffineModel>& model,
+                    const boost::shared_ptr<OneFactorAffineModel>& model,
                     const std::vector<double>& amounts)
         : strike_(params.nominal), maturity_(params.stoppingTimes[0]),
           times_(params.fixedPayTimes), amounts_(amounts), model_(model) {
@@ -44,7 +44,7 @@ namespace QuantLib {
         Time maturity_;
         const std::vector<Time>& times_;
         const std::vector<double>& amounts_;
-        const Handle<OneFactorAffineModel>& model_;
+        const boost::shared_ptr<OneFactorAffineModel>& model_;
     };
 
     void JamshidianSwaption::calculate() const {

@@ -41,7 +41,7 @@ namespace QuantLib {
         };
       public:
         VolatilityConstraint(const Parameter& theta, const Parameter& k)
-        : Constraint(Handle<Constraint::Impl>(
+        : Constraint(boost::shared_ptr<Constraint::Impl>(
                                  new VolatilityConstraint::Impl(theta, k))) {}
     };
 
@@ -56,9 +56,9 @@ namespace QuantLib {
         r0_ = ConstantParameter(r0, PositiveConstraint());
     }
 
-    Handle<OneFactorModel::ShortRateDynamics> 
+    boost::shared_ptr<OneFactorModel::ShortRateDynamics> 
     CoxIngersollRoss::dynamics() const {
-        return Handle<ShortRateDynamics>(
+        return boost::shared_ptr<ShortRateDynamics>(
                                   new Dynamics(theta(), k() , sigma(), x0()));
     }
 
@@ -123,10 +123,12 @@ namespace QuantLib {
             return call - discountS + strike*discountT;
     }
 
-    Handle<Lattice> CoxIngersollRoss::tree(const TimeGrid& grid) const {
-        Handle<Tree> trinomial(
+    boost::shared_ptr<Lattice> 
+    CoxIngersollRoss::tree(const TimeGrid& grid) const {
+        boost::shared_ptr<Tree> trinomial(
                         new TrinomialTree(dynamics()->process(), grid, true));
-        return Handle<Lattice>(new ShortRateTree(trinomial, dynamics(), grid));
+        return boost::shared_ptr<Lattice>(
+                              new ShortRateTree(trinomial, dynamics(), grid));
     }
 
 }

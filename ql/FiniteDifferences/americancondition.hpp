@@ -37,11 +37,10 @@ namespace QuantLib {
         AmericanCondition(const Array& intrinsicValues);
         void applyTo(Array& a,
                      Time t) const;
-        void applyTo(Handle<DiscretizedAsset> asset) const;
+        void applyTo(boost::shared_ptr<DiscretizedAsset> asset) const;
       private:
         Array intrinsicValues_;
-        // it would be easy to generalize to more exotic payoffs
-        Handle<Payoff> payoff_;
+        boost::shared_ptr<Payoff> payoff_;
     };
 
 
@@ -69,8 +68,8 @@ namespace QuantLib {
 
     }
 
-    inline void AmericanCondition::applyTo(Handle<DiscretizedAsset> asset) 
-                                                                      const {
+    inline void AmericanCondition::applyTo(
+                            boost::shared_ptr<DiscretizedAsset> asset) const {
         if (intrinsicValues_.size()!=0) {
             QL_REQUIRE(intrinsicValues_.size() == asset->values().size(),
                        "AmericanCondition::applyTo : "

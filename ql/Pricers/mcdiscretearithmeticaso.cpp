@@ -152,18 +152,18 @@ namespace QuantLib {
         double mu = riskFreeRate - dividendYield
                                  - 0.5 * volatility * volatility;
 
-        Handle<GaussianPathGenerator_old> pathGenerator(
+        boost::shared_ptr<GaussianPathGenerator_old> pathGenerator(
             new GaussianPathGenerator_old(mu, volatility*volatility,
                 TimeGrid(times.begin(), times.end()),
                 seed));
 
         // initialize the Path Pricer
-        Handle<PathPricer_old<Path> > spPricer(
+        boost::shared_ptr<PathPricer_old<Path> > spPricer(
             new ArithmeticASOPathPricer_old(type, underlying,
                 QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
 
         if (controlVariate) {
-            Handle<PathPricer_old<Path> > controlVariateSpPricer(
+            boost::shared_ptr<PathPricer_old<Path> > controlVariateSpPricer(
                 new GeometricASOPathPricer_old(type, underlying,
                 QL_EXP(-riskFreeRate*times.back()),
                 antitheticVariance));
@@ -173,14 +173,14 @@ namespace QuantLib {
                 times, volatility).value();
 
             // initialize the one-dimensional Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
+            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset_old<
                                               PseudoRandom_old> > > (
                 new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
                     pathGenerator, spPricer, Statistics(), false,
                     controlVariateSpPricer, controlVariatePrice));
         } else {
             // initialize the one-dimensional Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
+            mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset_old<
                                               PseudoRandom_old> > > (
                 new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
                     pathGenerator, spPricer, Statistics(), false));

@@ -46,11 +46,10 @@ namespace QuantLib {
                        Rate rate);
         void applyTo(Array& a,
                      Time t) const;
-        void applyTo(Handle<DiscretizedAsset> asset) const;
+        void applyTo(boost::shared_ptr<DiscretizedAsset> asset) const;
       private:
         Array intrinsicValues_;
-        // it would be easy to generalize to more exotic payoffs
-        Handle<Payoff> payoff_;
+        boost::shared_ptr<Payoff> payoff_;
         Time resTime_;
         Rate rate_;
     };
@@ -83,7 +82,8 @@ namespace QuantLib {
         }
     }
 
-    inline void ShoutCondition::applyTo(Handle<DiscretizedAsset> asset) const {
+    inline void ShoutCondition::applyTo(
+                            boost::shared_ptr<DiscretizedAsset> asset) const {
         DiscountFactor disc = QL_EXP(-rate_ * (asset->time() - resTime_));
 
         if (intrinsicValues_.size()!=0) {

@@ -32,7 +32,7 @@ namespace QuantLib {
         BlackFormula(double forward,
                      double discount,
                      double variance,
-                     const Handle<StrikedTypePayoff>& payoff);
+                     const boost::shared_ptr<StrikedTypePayoff>& payoff);
         double value() const;
         double delta(double spot) const;
         double elasticity(double spot) const;
@@ -63,9 +63,10 @@ namespace QuantLib {
     };
 
 
-    inline BlackFormula::BlackFormula(double forward, double discount,
-                                      double variance, 
-                                      const Handle<StrikedTypePayoff>& payoff)
+    inline BlackFormula::BlackFormula(
+                           double forward, double discount,
+                           double variance, 
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff)
     : forward_(forward), discount_(discount), variance_(variance) {
 
         QL_REQUIRE(forward>0.0,
@@ -151,9 +152,9 @@ namespace QuantLib {
         }
 
         // binary cash-or-nothing payoff?
-        Handle<CashOrNothingPayoff> coo =
+        boost::shared_ptr<CashOrNothingPayoff> coo =
             boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
-        if (!IsNull(coo)) {
+        if (coo) {
             // ok, the payoff is binary cash-or-nothing
             alpha_ = DalphaDd1_ = 0.0;
             X_ = coo->cashPayoff();
@@ -179,9 +180,9 @@ namespace QuantLib {
         }
 
         // binary asset-or-nothing payoff?
-        Handle<AssetOrNothingPayoff> aoo =
+        boost::shared_ptr<AssetOrNothingPayoff> aoo =
             boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
-        if (!IsNull(aoo)) {
+        if (aoo) {
             // ok, the payoff is binary asset-or-nothing
             beta_ = DbetaDd2_ = 0.0;
             switch (payoff->optionType()) {
@@ -205,18 +206,18 @@ namespace QuantLib {
         }
 
         // binary gap payoff?
-        Handle<GapPayoff> gap =
+        boost::shared_ptr<GapPayoff> gap =
             boost::dynamic_pointer_cast<GapPayoff>(payoff);
-        if (!IsNull(gap)) {
+        if (gap) {
             // ok, the payoff is binary gap
             X_ = gap->strikePayoff();
             DXDstrike_ = 0.0;
         }
 
         // binary super-share payoff?
-        Handle<SuperSharePayoff> ss =
+        boost::shared_ptr<SuperSharePayoff> ss =
             boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
-        if (!IsNull(ss)) {
+        if (ss) {
             // ok, the payoff is binary super-share
             QL_FAIL("Binary super-share payoff not handled yet");
         }

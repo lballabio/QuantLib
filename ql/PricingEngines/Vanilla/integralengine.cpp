@@ -24,7 +24,7 @@ namespace QuantLib {
 
         class Integrand : std::unary_function<double,double> {
           public:
-            Integrand(const Handle<Payoff>& payoff,
+            Integrand(const boost::shared_ptr<Payoff>& payoff,
                       double s0,
                       double drift,
                       double variance)
@@ -36,7 +36,7 @@ namespace QuantLib {
                     QL_EXP(-(x - drift_)*(x -drift_)/(2.0*variance_)) ;
             }
           private:
-            Handle<Payoff> payoff_;
+            boost::shared_ptr<Payoff> payoff_;
             double s0_, drift_, variance_;
         };
     }
@@ -47,7 +47,7 @@ namespace QuantLib {
                    "IntegralEuropeanEngine::calculate() : "
                    "not an European Option");
 
-        Handle<StrikedTypePayoff> payoff = 
+        boost::shared_ptr<StrikedTypePayoff> payoff = 
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticEuropeanEngine: non-striked payoff given");

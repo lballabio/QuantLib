@@ -53,17 +53,17 @@ namespace QuantLib {
         virtual ~Observer();
         // observer interface
         template <class T>
-        void registerWith(const Handle<T>& h) {
-            if (!IsNull(h)) {
-                Handle<Observable> obs = h;
+        void registerWith(const boost::shared_ptr<T>& h) {
+            if (h) {
+                boost::shared_ptr<Observable> obs = h;
                 observables_.push_front(obs);
                 obs->registerObserver(this);
             }
         }
         template <class T>
-        void unregisterWith(const Handle<T>& h) {
-            if (!IsNull(h)) {
-                Handle<Observable> obs = h;
+        void unregisterWith(const boost::shared_ptr<T>& h) {
+            if (h) {
+                boost::shared_ptr<Observable> obs = h;
                 for (iterator i=observables_.begin(); 
                               i!=observables_.end();
                               ++i) {
@@ -82,8 +82,8 @@ namespace QuantLib {
         */
         virtual void update() = 0;
       private:
-        std::list<Handle<Observable> > observables_;
-        typedef std::list<Handle<Observable> >::iterator iterator;
+        std::list<boost::shared_ptr<Observable> > observables_;
+        typedef std::list<boost::shared_ptr<Observable> >::iterator iterator;
     };
 
 

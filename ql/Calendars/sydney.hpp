@@ -52,7 +52,7 @@ namespace QuantLib {
         };
       public:
         Sydney()
-        : Calendar(Handle<Calendar::Impl>(new Sydney::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Sydney::Impl)) {}
     };
 
 }

@@ -36,9 +36,9 @@ namespace QuantLib {
         generateArguments();
     }
 
-    Handle<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
-        return Handle<ShortRateDynamics>(new Dynamics(phi_, a(), sigma(), 
-                                                      b(), eta(), rho()));
+    boost::shared_ptr<TwoFactorModel::ShortRateDynamics> G2::dynamics() const {
+        return boost::shared_ptr<ShortRateDynamics>(
+                         new Dynamics(phi_, a(), sigma(), b(), eta(), rho()));
     }
 
     void G2::generateArguments() {

@@ -31,22 +31,23 @@ using namespace QuantLib;
 
 namespace {
 
-    void jumpOptionTestFailed(std::string greekName,
-                              const Handle<StrikedTypePayoff>& payoff,
-                              const Handle<Exercise>& exercise,
-                              double s,
-                              double q,
-                              double r,
-                              Date today,
-                              DayCounter dc,
-                              double v,
-                              double intensity,
-                              double meanLogJump,
-                              double jumpVol,
-                              double expected,
-                              double calculated,
-                              double error,
-                              double tolerance) {
+    void jumpOptionTestFailed(
+                           std::string greekName,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           double s,
+                           double q,
+                           double r,
+                           Date today,
+                           DayCounter dc,
+                           double v,
+                           double intensity,
+                           double meanLogJump,
+                           double jumpVol,
+                           double expected,
+                           double calculated,
+                           double error,
+                           double tolerance) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -86,21 +87,22 @@ namespace {
             "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
 
-    void jump2OptionTestFailed(std::string greekName,
-                               const Handle<StrikedTypePayoff>& payoff,
-                               const Handle<Exercise>& exercise,
-                               double s,
-                               double q,
-                               double r,
-                               Date today,
-                               DayCounter dc,
-                               double v,
-                               double intensity,
-                               double gamma,
-                               double expected,
-                               double calculated,
-                               double error,
-                               double tolerance) {
+    void jump2OptionTestFailed(
+                           std::string greekName,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           double s,
+                           double q,
+                           double r,
+                           Date today,
+                           DayCounter dc,
+                           double v,
+                           double intensity,
+                           double gamma,
+                           double expected,
+                           double calculated,
+                           double error,
+                           double tolerance) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -329,19 +331,20 @@ void JumpDiffusionTest::testMerton76() {
 
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
 
-    Handle<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
-    Handle<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
-    Handle<SimpleQuote> jumpVol(new SimpleQuote(0.0));
-    
-    Handle<BlackScholesStochasticProcess> stochProcess(new
+    boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
+
+    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
         Merton76StochasticProcess(
             RelinkableHandle<Quote>(spot),
             RelinkableHandle<TermStructure>(qTS),
@@ -351,19 +354,20 @@ void JumpDiffusionTest::testMerton76() {
             RelinkableHandle<Quote>(meanLogJump),
             RelinkableHandle<Quote>(jumpVol)));
 
-    Handle<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
-    Handle<PricingEngine> engine(new JumpDiffusionEngine(baseEngine));
+    boost::shared_ptr<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<PricingEngine> engine(
+                                         new JumpDiffusionEngine(baseEngine));
 
     Date today = Date::todaysDate();
 
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -434,19 +438,20 @@ void JumpDiffusionTest::testGreeks() {
     double jV[] = { 0.01, 0.25 };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
 
-    Handle<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
-    Handle<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
-    Handle<SimpleQuote> jumpVol(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    Handle<BlackScholesStochasticProcess> stochProcess(new
+    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
         Merton76StochasticProcess(
             RelinkableHandle<Quote>(spot),
             RelinkableHandle<TermStructure>(qTS),
@@ -456,12 +461,13 @@ void JumpDiffusionTest::testGreeks() {
             RelinkableHandle<Quote>(meanLogJump),
             RelinkableHandle<Quote>(jumpVol)));
 
-    Handle<StrikedTypePayoff> payoff;
+    boost::shared_ptr<StrikedTypePayoff> payoff;
 
     Date today = Date::todaysDate();
 
-    Handle<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
-    Handle<PricingEngine> engine(new JumpDiffusionEngine(baseEngine));
+    boost::shared_ptr<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<PricingEngine> engine(
+                                         new JumpDiffusionEngine(baseEngine));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -473,34 +479,36 @@ void JumpDiffusionTest::testGreeks() {
         jumpVol->setValue(jV[jj3]);
         for (Size k=0; k<LENGTH(residualTimes); k++) {
           Date exDate = today.plusDays(int(residualTimes[k]*360+0.5));
-          Handle<Exercise> exercise(new EuropeanExercise(exDate));
+          boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
           Date exDateP = exDate.plusDays(1),
                exDateM = exDate.plusDays(-1);
           // Time dT = (exDateP-exDateM)/360.0;
           for (Size kk=0; kk<1; kk++) {
               // option to check
               if (kk==0) {
-                  payoff = Handle<StrikedTypePayoff>(new
+                  payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     PlainVanillaPayoff(types[i], strikes[j]));
               } else if (kk==1) {
-                  payoff = Handle<StrikedTypePayoff>(new
+                  payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     CashOrNothingPayoff(types[i], strikes[j],
                     100.0));
               } else if (kk==2) {
-                  payoff = Handle<StrikedTypePayoff>(new
+                  payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     AssetOrNothingPayoff(types[i], strikes[j]));
               } else if (kk==3) {
-                  payoff = Handle<StrikedTypePayoff>(new
+                  payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     GapPayoff(types[i], strikes[j], 100.0));
               }
-              Handle<VanillaOption> option(new
+              boost::shared_ptr<VanillaOption> option(new
                   VanillaOption(stochProcess, payoff, exercise, engine));
               // time-shifted exercise dates and options
-              Handle<Exercise> exerciseP(new EuropeanExercise(exDateP));
-              Handle<VanillaOption> optionP(new
+              boost::shared_ptr<Exercise> exerciseP(new 
+                  EuropeanExercise(exDateP));
+              boost::shared_ptr<VanillaOption> optionP(new
                   VanillaOption(stochProcess, payoff, exerciseP, engine));
-              Handle<Exercise> exerciseM(new EuropeanExercise(exDateM));
-              Handle<VanillaOption> optionM(new
+              boost::shared_ptr<Exercise> exerciseM(new 
+                  EuropeanExercise(exDateM));
+              boost::shared_ptr<VanillaOption> optionM(new
                   VanillaOption(stochProcess, payoff, exerciseM, engine));
 
               for (Size l=0; l<LENGTH(underlyings); l++) {

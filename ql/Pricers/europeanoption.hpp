@@ -43,8 +43,9 @@ namespace QuantLib {
         double vega() const;
         double rho() const;
         double dividendRho() const;
-        Handle<SingleAssetOption> clone() const {
-            return Handle<SingleAssetOption>(new EuropeanOption(*this)); }
+        boost::shared_ptr<SingleAssetOption> clone() const {
+            return boost::shared_ptr<SingleAssetOption>(
+                                                 new EuropeanOption(*this)); }
         // modifiers
         void setVolatility(double newVolatility);
         void setRiskFreeRate(Rate newRate);

@@ -319,8 +319,7 @@
 
     Their compiler cannot cope with method calls such as
     \code
-    Handle<Type1> h1(whatever);
-    h2 = h1.downcast<Type2>();
+    x = foo.bar<Type>();
     \endcode
 
     For compatibility, a workaround should be implemented (which of course will

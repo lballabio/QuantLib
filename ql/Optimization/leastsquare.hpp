@@ -45,10 +45,7 @@ namespace QuantLib {
 
     //! Cost function for least-square problems
     /*! Implements a cost function using the interface provided by
-        the LeastSquareProblem class.  Array vector class requires
-        function DotProduct() that computes dot product and -
-        operator.  M matrix class requires function transpose() that
-        computes transpose and * operator with vector class.
+        the LeastSquareProblem class.
     */
     class LeastSquareFunction : public CostFunction {
       public:
@@ -73,20 +70,18 @@ namespace QuantLib {
     /*! Using a given optimization algorithm (default is conjugate
         gradient),
 
-        min { r(x) : x in R^n }
+        \f[ min \{ r(x) : x in R^n \} \f]
 
-        where r(x) = ||f(x)||^2 the euclidian norm of f(x)
-        for some vector-valued function f from R^n to R^m
-        f = (f1, ..., fm) with fi(x) = bi - phi(x,ti)
-        where bi is the vector of target data and phi
-        is a scalar function.
+        where \f$ r(x) = |f(x)|^2 \f$ is the Euclidean norm of \f$
+        f(x) \f$ for some vector-valued function \f$ f \f$ from 
+        \f$ R^n \f$ to \f$ R^m \f$, 
+        \f[ f = (f_1, ..., f_m) \f]
+        with \f$ f_i(x) = b_i - \phi(x,t_i) \f$ where \f$ b \f$ is the
+        vector of target data and \f$ phi \f$ is a scalar function.
 
-        Assuming the differentiability of f, the gradient of r
-        is define by
-        grad r(x) = f'(x)^t.f(x)
-
-        Array vector class has the requirement of the previous class
-        Handle class is need to manage pointer to optimization method
+        Assuming the differentiability of \f$ f \f$, the gradient of 
+        \f$ r \d$ is defined by
+        \f[ grad r(x) = f'(x)^t.f(x) \f]
     */
     class NonLinearLeastSquare {
       public:
@@ -98,7 +93,7 @@ namespace QuantLib {
         inline NonLinearLeastSquare(Constraint& c,
                                     double accuracy,
                                     int maxiter,
-                                    Handle<OptimizationMethod> om);
+                                    boost::shared_ptr<OptimizationMethod> om);
         //! Destructor
         inline ~NonLinearLeastSquare () {}
 
@@ -135,7 +130,7 @@ namespace QuantLib {
         //! maximum and real number of iterations
         Size maxIterations_, nbIterations_;
         //! Optimization method
-        Handle<OptimizationMethod> om_;
+        boost::shared_ptr<OptimizationMethod> om_;
         //constraint
         Constraint& c_;
 
@@ -188,14 +183,15 @@ namespace QuantLib {
                                                       double accuracy, 
                                                       int maxiter)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (Handle<OptimizationMethod>(new ConjugateGradient())), c_(c)
+      om_ (boost::shared_ptr<OptimizationMethod>(new ConjugateGradient())), 
+      c_(c)
     {}
 
     inline NonLinearLeastSquare::NonLinearLeastSquare(
-                                            Constraint& c, 
-                                            double accuracy, 
-                                            int maxiter, 
-                                            Handle<OptimizationMethod> om)
+                                     Constraint& c, 
+                                     double accuracy, 
+                                     int maxiter, 
+                                     boost::shared_ptr<OptimizationMethod> om)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
       om_ (om), c_(c) {}
 

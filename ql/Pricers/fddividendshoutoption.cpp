@@ -31,13 +31,14 @@ namespace QuantLib {
                        dividends, exdivdates, timeSteps, gridPoints){}
 
     void FdDividendShoutOption::initializeStepCondition() const {
-        stepCondition_ = Handle<StandardStepCondition>(
+        stepCondition_ = boost::shared_ptr<StandardStepCondition>(
                           new ShoutCondition(intrinsicValues_, residualTime_, 
                                              riskFreeRate_));
     }
 
-    Handle<SingleAssetOption> FdDividendShoutOption::clone() const {
-        return Handle<SingleAssetOption>(new FdDividendShoutOption(*this));
+    boost::shared_ptr<SingleAssetOption> FdDividendShoutOption::clone() const {
+        return boost::shared_ptr<SingleAssetOption>(
+                                            new FdDividendShoutOption(*this));
     }
 
 }

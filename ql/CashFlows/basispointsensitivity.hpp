@@ -52,8 +52,9 @@ namespace QuantLib {
     };
 
     //! Collective basis-point sensitivity of a cash-flow sequence
-    double BasisPointSensitivity(const std::vector<Handle<CashFlow> >&,
-                                 const RelinkableHandle<TermStructure>&);
+    double BasisPointSensitivity(
+                             const std::vector<boost::shared_ptr<CashFlow> >&,
+                             const RelinkableHandle<TermStructure>&);
 
 
     /*! \bug This class must still be checked. It is not guaranteed
@@ -85,9 +86,9 @@ namespace QuantLib {
              to yield the right results.
     */
     TimeBasket BasisPointSensitivityBasket(
-                                     const std::vector<Handle<CashFlow> >&,
-                                     const RelinkableHandle<TermStructure>&,
-                                     int basis);
+                             const std::vector<boost::shared_ptr<CashFlow> >&,
+                             const RelinkableHandle<TermStructure>&,
+                             int basis);
 
 }
 

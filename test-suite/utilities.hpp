@@ -33,16 +33,16 @@
 
 namespace QuantLib {
 
-    std::string payoffTypeToString(const Handle<Payoff>&);
-    std::string exerciseTypeToString(const Handle<Exercise>&);
+    std::string payoffTypeToString(const boost::shared_ptr<Payoff>&);
+    std::string exerciseTypeToString(const boost::shared_ptr<Exercise>&);
 
 
-    Handle<TermStructure> 
-    makeFlatCurve(const Handle<Quote>& forward,
+    boost::shared_ptr<TermStructure> 
+    makeFlatCurve(const boost::shared_ptr<Quote>& forward,
                   DayCounter dc);
 
-    Handle<BlackVolTermStructure> 
-    makeFlatVolatility(const Handle<Quote>& volatility,
+    boost::shared_ptr<BlackVolTermStructure> 
+    makeFlatVolatility(const boost::shared_ptr<Quote>& volatility,
                        DayCounter dc);
 
     double relativeError(double x1, double x2, double reference);
@@ -59,19 +59,20 @@ namespace QuantLib {
         double tol;    // tolerance
     };
 
-    void vanillaOptionTestFailed(std::string greekName,
-                                 const Handle<StrikedTypePayoff>& payoff,
-                                 const Handle<Exercise>& exercise,
-                                 double s,
-                                 double q,
-                                 double r,
-                                 Date today,
-                                 DayCounter dc,
-                                 double v,
-                                 double expected,
-                                 double calculated,
-                                 double error,
-                                 double tolerance);
+    void vanillaOptionTestFailed(
+                           std::string greekName,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           double s,
+                           double q,
+                           double r,
+                           Date today,
+                           DayCounter dc,
+                           double v,
+                           double expected,
+                           double calculated,
+                           double error,
+                           double tolerance);
 
 }
 

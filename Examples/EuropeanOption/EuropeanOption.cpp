@@ -192,26 +192,28 @@ int main(int argc, char* argv[])
         exDates[0]=midlifeDate;
         exDates[1]=exerciseDate;
 
-        Handle<Exercise> exercise(new EuropeanExercise(exerciseDate));
-        Handle<Exercise> amExercise(new AmericanExercise(settlementDate,
-                                                         exerciseDate));
-        Handle<Exercise> berExercise(new BermudanExercise(exDates));
+        boost::shared_ptr<Exercise> exercise(
+                                          new EuropeanExercise(exerciseDate));
+        boost::shared_ptr<Exercise> amExercise(
+                                          new AmericanExercise(settlementDate,
+                                                               exerciseDate));
+        boost::shared_ptr<Exercise> berExercise(new BermudanExercise(exDates));
 
 
         RelinkableHandle<Quote> underlyingH(
-            Handle<Quote>(new SimpleQuote(underlying)));
+            boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
         // bootstrap the yield/dividend/vol curves
         RelinkableHandle<TermStructure> flatTermStructure(
-            Handle<TermStructure>(
+            boost::shared_ptr<TermStructure>(
                 new FlatForward(todaysDate, settlementDate,
                                 riskFreeRate, rateDayCounter)));
         RelinkableHandle<TermStructure> flatDividendTS(
-            Handle<TermStructure>(
+            boost::shared_ptr<TermStructure>(
                 new FlatForward(todaysDate, settlementDate,
                                 dividendYield, rateDayCounter)));
         RelinkableHandle<BlackVolTermStructure> flatVolTS(
-            Handle<BlackVolTermStructure>(
+            boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(settlementDate, volatility)));
 
         std::vector<Date> dates(4);
@@ -244,27 +246,27 @@ int main(int argc, char* argv[])
                                                vols[3][3] = volatility*0.8;
 
         RelinkableHandle<BlackVolTermStructure> blackSurface(
-            Handle<BlackVolTermStructure>(
+            boost::shared_ptr<BlackVolTermStructure>(
                 new BlackVarianceSurface(settlementDate, dates,
                                          strikes, vols)));
 
 
-        Handle<StrikedTypePayoff> payoff(new
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(type, strike));
 
-        Handle<BlackScholesStochasticProcess> stochasticProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochasticProcess(new
             BlackScholesStochasticProcess(underlyingH, flatDividendTS,
                 flatTermStructure,
                 //  blackSurface
                 flatVolTS));
 
         VanillaOption option(stochasticProcess, payoff, exercise,
-            Handle<PricingEngine>(new AnalyticEuropeanEngine()));
+            boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine()));
 
 
         // method: Black Scholes Engine
         method = "Black Scholes";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new AnalyticEuropeanEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -279,7 +281,7 @@ int main(int argc, char* argv[])
 
         // method: Integral
         method = "Integral";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new IntegralEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -294,7 +296,7 @@ int main(int argc, char* argv[])
 /*
         // method: Integral
         method = "Binary Cash";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new IntegralCashOrNothingEngine(1.0)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -308,7 +310,7 @@ int main(int argc, char* argv[])
 
         // method: Integral
         method = "Binary Asset";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new IntegralAssetOrNothingEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -325,7 +327,7 @@ int main(int argc, char* argv[])
 
         // Binomial Method (JR)
         method = "Binomial (JR)";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<JarrowRudd>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -340,7 +342,7 @@ int main(int argc, char* argv[])
 
         // Binomial Method (CRR)
         method = "Binomial (CRR)";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<CoxRossRubinstein>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -354,7 +356,7 @@ int main(int argc, char* argv[])
 
         // Equal Probability Additive Binomial Tree (EQP)
         method = "Additive (EQP)";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<AdditiveEQPBinomialTree>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -368,7 +370,7 @@ int main(int argc, char* argv[])
 
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
         method = "Bin. Trigeorgis";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<Trigeorgis>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -382,7 +384,7 @@ int main(int argc, char* argv[])
 
         // Tian Binomial Tree (third moment matching)
         method = "Binomial Tian";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<Tian>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -396,7 +398,7 @@ int main(int argc, char* argv[])
 
         // Leisen-Reimer Binomial Tree
         method = "Binomial LR";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<LeisenReimer>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -411,7 +413,7 @@ int main(int argc, char* argv[])
         // Finite Differences Method: not implemented
 
         /*method = "Finite Diff.";
-        option.setPricingEngine(Handle<PricingEngine>(
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new FDVanillaEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
@@ -431,12 +433,12 @@ int main(int argc, char* argv[])
         Size mcSeed = 42;
 
         #if defined(QL_PATCH_MICROSOFT)
-        Handle<PricingEngine> mcengine1(
+        boost::shared_ptr<PricingEngine> mcengine1(
             new MCEuropeanEngine<PseudoRandom>(timeSteps, false, false,
                                                Null<int>(), 0.02,
                                                Null<int>(), mcSeed));
         #else
-        Handle<PricingEngine> mcengine1 =
+        boost::shared_ptr<PricingEngine> mcengine1 =
             MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
                                                 .withTolerance(0.02)
                                                 .withSeed(mcSeed);
@@ -459,12 +461,12 @@ int main(int argc, char* argv[])
         Size nSamples = 32768;  // 2^15
 
         #if defined(QL_PATCH_MICROSOFT)
-        Handle<PricingEngine> mcengine2(
+        boost::shared_ptr<PricingEngine> mcengine2(
             new MCEuropeanEngine<LowDiscrepancy>(timeSteps, false, false,
                                                  nSamples, Null<double>(),
                                                  Null<int>()));
         #else
-        Handle<PricingEngine> mcengine2 =
+        boost::shared_ptr<PricingEngine> mcengine2 =
             MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
                                                   .withSamples(nSamples);
         #endif

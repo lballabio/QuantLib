@@ -45,8 +45,8 @@ namespace QuantLib {
         return prob1*prob2 + rho_*(m_[branch1][branch2])/36.0;
     }
 
-    Lattice2D::Lattice2D(const Handle<TrinomialTree>& tree1,
-                         const Handle<TrinomialTree>& tree2,
+    Lattice2D::Lattice2D(const boost::shared_ptr<TrinomialTree>& tree1,
+                         const boost::shared_ptr<TrinomialTree>& tree2,
                          double correlation)
     : Lattice(tree1->timeGrid(), 9),
       tree1_(tree1), tree2_(tree2), m_(3,3), rho_(QL_FABS(correlation)) {

@@ -64,7 +64,7 @@ namespace QuantLib {
         bool isAdjusted() const;
         RollingConvention rollingConvention() const;
         DayCounter dayCounter() const;
-        Handle<TermStructure> termStructure() const;
+        boost::shared_ptr<TermStructure> termStructure() const;
         //@}
       private:
         std::string familyName_;
@@ -114,7 +114,7 @@ namespace QuantLib {
         return dayCounter_; 
     }
 
-    inline Handle<TermStructure> Xibor::termStructure() const {
+    inline boost::shared_ptr<TermStructure> Xibor::termStructure() const {
         return (*termStructure_).currentLink();
     }
 

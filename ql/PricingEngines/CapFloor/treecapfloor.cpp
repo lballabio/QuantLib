@@ -21,22 +21,22 @@
 
 namespace QuantLib {
 
-    TreeCapFloor::TreeCapFloor(const Handle<ShortRateModel>& model, 
+    TreeCapFloor::TreeCapFloor(const boost::shared_ptr<ShortRateModel>& model, 
                                Size timeSteps) 
     : LatticeShortRateModelEngine<CapFloor::arguments, 
                                   CapFloor::results >(model,timeSteps){}
 
-    TreeCapFloor::TreeCapFloor(const Handle<ShortRateModel>& model,
+    TreeCapFloor::TreeCapFloor(const boost::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid) 
     : LatticeShortRateModelEngine<CapFloor::arguments, 
                                   CapFloor::results>(model,timeGrid) {}
 
     void TreeCapFloor::calculate() const {
 
-        QL_REQUIRE(!IsNull(model_), "TreeCapFloor: No model specified");
-        Handle<Lattice> lattice;
+        QL_REQUIRE(model_, "TreeCapFloor: No model specified");
+        boost::shared_ptr<Lattice> lattice;
 
-        if (IsNull(lattice_)) {
+        if (!lattice_) {
             std::list<Time> times(0);
             Size nPeriods = arguments_.startTimes.size();
             Size i;
@@ -51,7 +51,7 @@ namespace QuantLib {
             lattice = lattice_;
         }
 
-        Handle<DiscretizedAsset> capfloor(
+        boost::shared_ptr<DiscretizedAsset> capfloor(
                                  new DiscretizedCapFloor(lattice,arguments_));
 
         lattice->initialize(capfloor, arguments_.endTimes.back());

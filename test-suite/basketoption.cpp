@@ -45,24 +45,25 @@ namespace {
         QL_FAIL("basketTypeToString : unknown basket option type");
     }
 
-    void basketOptionTestFailed(std::string greekName,
-                                BasketOption::BasketType basketType,
-                                const Handle<StrikedTypePayoff>& payoff,
-                                const Handle<Exercise>& exercise,
-                                double s1,
-                                double s2,
-                                double q1,
-                                double q2,
-                                double r,
-                                Date today,
-                                DayCounter dc,
-                                double v1,
-                                double v2,
-                                double rho,
-                                double expected,
-                                double calculated,
-                                double error,
-                                double tolerance) {
+    void basketOptionTestFailed(
+                           std::string greekName,
+                           BasketOption::BasketType basketType,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           double s1,
+                           double s2,
+                           double q1,
+                           double q2,
+                           double r,
+                           Date today,
+                           DayCounter dc,
+                           double v1,
+                           double v2,
+                           double rho,
+                           double expected,
+                           double calculated,
+                           double error,
+                           double tolerance) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -106,24 +107,25 @@ namespace {
             + DoubleFormatter::toString(tolerance));
     }
 
-    void basketOptionThreeTestFailed(std::string greekName,
-                                BasketOption::BasketType basketType,
-                                const Handle<StrikedTypePayoff>& payoff,
-                                const Handle<Exercise>& exercise,
-                                double s1,
-                                double s2,
-                                double s3,
-                                double r,
-                                Date today,
-                                DayCounter dc,
-                                double v1,
-                                double v2,
-                                double v3,
-                                double rho,
-                                double expected,
-                                double calculated,
-                                double error,
-                                double tolerance) {
+    void basketOptionThreeTestFailed(
+                           std::string greekName,
+                           BasketOption::BasketType basketType,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           double s1,
+                           double s2,
+                           double s3,
+                           double r,
+                           Date today,
+                           DayCounter dc,
+                           double v1,
+                           double v2,
+                           double v3,
+                           double rho,
+                           double expected,
+                           double calculated,
+                           double error,
+                           double tolerance) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -262,43 +264,47 @@ void BasketOptionTest::testEuroTwoValues() {
         {BasketOption::Min,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  3.5224, 1.0e-4},
         // data from "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 pag 58
         {BasketOption::Max, Option::Call,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  8.0701, 1.0e-4},
-        {BasketOption::Max,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  1.2181, 1.0e-4}        
+        {BasketOption::Max,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  1.2181, 1.0e-4}
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
-    Handle<SimpleQuote> spot2(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
 
-    Handle<SimpleQuote> qRate1(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS1 = makeFlatCurve(qRate1, dc);
-    Handle<SimpleQuote> qRate2(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS2 = makeFlatCurve(qRate2, dc);
+    boost::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS1 = makeFlatCurve(qRate1, dc);
+    boost::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS2 = makeFlatCurve(qRate2, dc);
 
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
-    Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
-    Handle<SimpleQuote> vol2(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS2 = makeFlatVolatility(vol2, dc);
+    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = 
+        makeFlatVolatility(vol1, dc);
+    boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = 
+        makeFlatVolatility(vol2, dc);
 
-    Handle<PricingEngine> engine(new StulzEngine);
+    boost::shared_ptr<PricingEngine> engine(new StulzEngine);
 
     double mcRelativeErrorTolerance = 0.01;
-    //Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics> 
+    //boost::shared_ptr<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics> 
       //  (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
-    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics> 
-        (1, false, false, 10000, Null<double>(), 100000, false, 42));
+    boost::shared_ptr<PricingEngine> mcEngine(
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 10000, 
+                                                     Null<double>(), 100000, 
+                                                     false, 42));
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<PlainVanillaPayoff> payoff(new
+        boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot1 ->setValue(values[i].s1);
         spot2 ->setValue(values[i].s2);
@@ -308,22 +314,21 @@ void BasketOptionTest::testEuroTwoValues() {
         vol1  ->setValue(values[i].v1);
         vol2  ->setValue(values[i].v2);
 
-        Handle<BlackScholesStochasticProcess> stochProcess1(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess1(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot1),
                 RelinkableHandle<TermStructure>(qTS1),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
-        Handle<BlackScholesStochasticProcess> stochProcess2(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess2(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot2),
                 RelinkableHandle<TermStructure>(qTS2),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<Handle<BlackScholesStochasticProcess> > procs =
-            std::vector<Handle<BlackScholesStochasticProcess> >();
+        std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs;
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
 
@@ -442,50 +447,58 @@ void BasketOptionTest::testBarraquandThreeValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
-    Handle<SimpleQuote> spot2(new SimpleQuote(0.0));
-    Handle<SimpleQuote> spot3(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
 
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
 
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
-    Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
-    Handle<SimpleQuote> vol2(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS2 = makeFlatVolatility(vol2, dc);
-    Handle<SimpleQuote> vol3(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS3 = makeFlatVolatility(vol3, dc);
+    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = 
+        makeFlatVolatility(vol1, dc);
+    boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = 
+        makeFlatVolatility(vol2, dc);
+    boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS3 = 
+        makeFlatVolatility(vol3, dc);
 
     Size maxSamples = 200000;
     double mcRelativeErrorTolerance = 0.01;
     double mcAmericanRelativeErrorTolerance = 0.1;
-    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
-        (1, false, false, Null<int>(), 0.005, maxSamples, false, 42));
+    boost::shared_ptr<PricingEngine> mcEngine(
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 
+                                                     Null<int>(), 0.005, 
+                                                     maxSamples, false, 42));
 
     // use a 3D sobol sequence...
     // Think long and hard before moving to more than 1 timestep....
-    Handle<PricingEngine> mcQuasiEngine(new MCBasketEngine<LowDiscrepancy, Statistics>
-        (1, false, false, Null<int>(), 0.005, maxSamples, false, 42));
+    boost::shared_ptr<PricingEngine> mcQuasiEngine(
+        new MCBasketEngine<LowDiscrepancy, Statistics>(1, false, false, 
+                                                       Null<int>(), 0.005, 
+                                                       maxSamples, false, 42));
 
     Size requiredSamples = 20000;
     Size timeSteps = 20;
     long seed = 1;
-    Handle<PricingEngine> mcLSMCEngine(new MCAmericanBasketEngine(requiredSamples,
-                                timeSteps, seed));
+    boost::shared_ptr<PricingEngine> mcLSMCEngine(
+        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<PlainVanillaPayoff> payoff(new
+        boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*30+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
-        Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+                                                                    exDate));
 
         spot1 ->setValue(values[i].s1);
         spot2 ->setValue(values[i].s2);
@@ -495,29 +508,28 @@ void BasketOptionTest::testBarraquandThreeValues() {
         vol2  ->setValue(values[i].v2);
         vol3  ->setValue(values[i].v3);
 
-        Handle<BlackScholesStochasticProcess> stochProcess1(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess1(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot1),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
-        Handle<BlackScholesStochasticProcess> stochProcess2(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess2(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot2),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS2)));
 
-        Handle<BlackScholesStochasticProcess> stochProcess3(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess3(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot3),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS3)));
 
-        std::vector<Handle<BlackScholesStochasticProcess> > procs =
-            std::vector<Handle<BlackScholesStochasticProcess> >();
+        std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs;
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
         procs.push_back(stochProcess3);
@@ -574,39 +586,42 @@ void BasketOptionTest::testTavellaValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
-    Handle<SimpleQuote> spot2(new SimpleQuote(0.0));
-    Handle<SimpleQuote> spot3(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
 
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.1));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.1));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
 
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.05));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
-    Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
-    Handle<SimpleQuote> vol2(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS2 = makeFlatVolatility(vol2, dc);
-    Handle<SimpleQuote> vol3(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS3 = makeFlatVolatility(vol3, dc);
+    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = 
+        makeFlatVolatility(vol1, dc);
+    boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = 
+        makeFlatVolatility(vol2, dc);
+    boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS3 = 
+        makeFlatVolatility(vol3, dc);
 
     double mcRelativeErrorTolerance = 0.01;
     Size requiredSamples = 10000;
     Size timeSteps = 20;
     long seed = 0;
-    Handle<PricingEngine> mcLSMCEngine(new MCAmericanBasketEngine(requiredSamples,
-                                timeSteps, seed));
+    boost::shared_ptr<PricingEngine> mcLSMCEngine(
+        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
-    //Handle<PricingEngine> mcEuroEngine(new MCBasketEngine<PseudoRandom, Statistics>
+    //boost::shared_ptr<PricingEngine> mcEuroEngine(new MCBasketEngine<PseudoRandom, Statistics>
     //   (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
 
-    Handle<PlainVanillaPayoff> payoff(new
+    boost::shared_ptr<PlainVanillaPayoff> payoff(new
         PlainVanillaPayoff(values[0].type, values[0].strike));
 
     Date today = Date::todaysDate();
     Date exDate = today.plusDays(int(values[0].t*360+0.5));
-    Handle<Exercise> exercise(new AmericanExercise(today, exDate));
+    boost::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
     spot1 ->setValue(values[0].s1);
     spot2 ->setValue(values[0].s2);
@@ -615,29 +630,28 @@ void BasketOptionTest::testTavellaValues() {
     vol2  ->setValue(values[0].v2);
     vol3  ->setValue(values[0].v3);
 
-    Handle<BlackScholesStochasticProcess> stochProcess1(new
+    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess1(new
         BlackScholesStochasticProcess(
             RelinkableHandle<Quote>(spot1),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
-    Handle<BlackScholesStochasticProcess> stochProcess2(new
+    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess2(new
         BlackScholesStochasticProcess(
             RelinkableHandle<Quote>(spot2),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS2)));
 
-    Handle<BlackScholesStochasticProcess> stochProcess3(new
+    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess3(new
         BlackScholesStochasticProcess(
             RelinkableHandle<Quote>(spot3),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS3)));
 
-    std::vector<Handle<BlackScholesStochasticProcess> > procs =
-        std::vector<Handle<BlackScholesStochasticProcess> >();
+    std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs;
     procs.push_back(stochProcess1);
     procs.push_back(stochProcess2);
     procs.push_back(stochProcess3);
@@ -716,26 +730,27 @@ void BasketOptionTest::testOneDAmericanValues() {
 
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
 
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
 
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.05));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
-    Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
+    boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = 
+        makeFlatVolatility(vol1, dc);
 
     Size requiredSamples = 10000;
     Size timeSteps = 52;
     long seed = 0;
-    Handle<PricingEngine> mcLSMCEngine(new MCAmericanBasketEngine(requiredSamples,
-                                timeSteps, seed));
+    boost::shared_ptr<PricingEngine> mcLSMCEngine(
+        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
     Date today = Date::todaysDate();
 
-    Handle<BlackScholesStochasticProcess> stochProcess1(new
+    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess1(new
         BlackScholesStochasticProcess(
             RelinkableHandle<Quote>(spot1),
             RelinkableHandle<TermStructure>(qTS),
@@ -743,21 +758,23 @@ void BasketOptionTest::testOneDAmericanValues() {
             RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
 
-    std::vector<Handle<BlackScholesStochasticProcess> > procs =
-        std::vector<Handle<BlackScholesStochasticProcess> >();
+    std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs;
     procs.push_back(stochProcess1);
 
     Matrix correlation(1, 1, 1.0);
 
-    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
-        (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
+    boost::shared_ptr<PricingEngine> mcEngine(
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 
+                                                     Null<int>(), 0.005, 
+                                                     Null<int>(), false, 42));
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Handle<PlainVanillaPayoff> payoff(new
+        boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-            Handle<Exercise> exercise(new AmericanExercise(today, exDate));
+        boost::shared_ptr<Exercise> exercise(new AmericanExercise(today, 
+                                                                  exDate));
 
         spot1 ->setValue(values[i].s);
         vol1  ->setValue(values[i].v);

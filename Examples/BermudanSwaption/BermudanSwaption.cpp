@@ -38,7 +38,7 @@ double swaptionVols[] = {
     12.00, 11.40, 11.5, 10.8, 10.3, 10.00,  9.80,  9.60,  9.5,  9.10,
     11.50, 11.20, 11.3, 10.6, 10.2, 10.10,  9.70,  9.50,  9.4,  8.60};
 
-void calibrateModel(const Handle<ShortRateModel>& model,
+void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
                     CalibrationSet& calibs,
                     double lambda) {
 
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
         Date settlementDate(19, February, 2002);
 
         //Instruments used to bootstrap the yield curve:
-        std::vector<Handle<RateHelper> > instruments;
+        std::vector<boost::shared_ptr<RateHelper> > instruments;
 
         //Deposit rates
         DayCounter depositDayCounter = Thirty360();
@@ -93,8 +93,8 @@ int main(int argc, char* argv[])
         Size i;
         for (i=0; i<3; i++) {
             RelinkableHandle<Quote> depositRate(
-                Handle<Quote>(new SimpleQuote(weekRates[i]*0.01)));
-            Handle<RateHelper> depositHelper(new DepositRateHelper(
+                boost::shared_ptr<Quote>(new SimpleQuote(weekRates[i]*0.01)));
+            boost::shared_ptr<RateHelper> depositHelper(new DepositRateHelper(
                 depositRate, i+1, Weeks, settlementDays, calendar,
                 ModifiedFollowing, depositDayCounter));
             instruments.push_back(depositHelper);
@@ -106,8 +106,9 @@ int main(int argc, char* argv[])
 
         for (i=0; i<11; i++) {
             RelinkableHandle<Quote> depositRate(
-                Handle<Quote>(new SimpleQuote(depositRates[i]*0.01)));
-            Handle<RateHelper> depositHelper(new DepositRateHelper(
+                boost::shared_ptr<Quote>(
+                                      new SimpleQuote(depositRates[i]*0.01)));
+            boost::shared_ptr<RateHelper> depositHelper(new DepositRateHelper(
                 depositRate, i+1, Months, settlementDays, calendar,
                 ModifiedFollowing, depositDayCounter));
             instruments.push_back(depositHelper);
@@ -125,8 +126,9 @@ int main(int argc, char* argv[])
         int swFloatingLegFrequency = 2;
 
         for (i=0; i<13; i++) {
-            Handle<Quote> swapRate(new SimpleQuote(swapRates[i]*0.01));
-            Handle<RateHelper> swapHelper(new SwapRateHelper(
+            boost::shared_ptr<Quote> swapRate(
+                                          new SimpleQuote(swapRates[i]*0.01));
+            boost::shared_ptr<RateHelper> swapHelper(new SwapRateHelper(
                 RelinkableHandle<Quote>(swapRate),
                 swapYears[i], Years, settlementDays,
                 calendar, ModifiedFollowing,
@@ -138,7 +140,7 @@ int main(int argc, char* argv[])
 
 
         // bootstrapping the yield curve
-        Handle<PiecewiseFlatForward> myTermStructure(new
+        boost::shared_ptr<PiecewiseFlatForward> myTermStructure(new
             PiecewiseFlatForward(todaysDate, settlementDate, instruments,
                                  depositDayCounter));
 
@@ -154,26 +156,27 @@ int main(int argc, char* argv[])
         bool payFixedRate = true;
         int fixingDays = 2;
         Rate dummyFixedRate = 0.03;
-        Handle<Xibor> indexSixMonths(new Euribor(6, Months, rhTermStructure));
+        boost::shared_ptr<Xibor> indexSixMonths(
+                                     new Euribor(6, Months, rhTermStructure));
 
-        Handle<SimpleSwap> swap(new SimpleSwap(
+        boost::shared_ptr<SimpleSwap> swap(new SimpleSwap(
             payFixedRate, settlementDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, dummyFixedRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
         Rate fixedATMRate = swap->fairRate();
 
-        Handle<SimpleSwap> atmSwap(new SimpleSwap(
+        boost::shared_ptr<SimpleSwap> atmSwap(new SimpleSwap(
             payFixedRate, settlementDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
-        Handle<SimpleSwap> otmSwap(new SimpleSwap(
+        boost::shared_ptr<SimpleSwap> otmSwap(new SimpleSwap(
             payFixedRate, settlementDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate * 1.2,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
-        Handle<SimpleSwap> itmSwap(new SimpleSwap(
+        boost::shared_ptr<SimpleSwap> itmSwap(new SimpleSwap(
             payFixedRate, settlementDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate * 0.8,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
@@ -199,8 +202,9 @@ int main(int argc, char* argv[])
         for (i=0; i<numRows; i++) {
             for (unsigned int j=0; j<numCols; j++) {
                 unsigned int k = i*10 + j;
-                Handle<Quote> vol(new SimpleQuote(swaptionVols[k]*0.01));
-                swaptions.push_back(Handle<CalibrationHelper>(
+                boost::shared_ptr<Quote> vol(
+                                       new SimpleQuote(swaptionVols[k]*0.01));
+                swaptions.push_back(boost::shared_ptr<CalibrationHelper>(
                     new SwaptionHelper(swaptionMaturities[j],
                                        Period(swaptionLengths[i], Years),
                                        RelinkableHandle<Quote>(vol),
@@ -215,15 +219,16 @@ int main(int argc, char* argv[])
         // Building time-grid
         TimeGrid grid(times.begin(), times.end(), 30);
 
-        Handle<HullWhite> modelHW(new HullWhite(rhTermStructure));
-        Handle<HullWhite> modelHW2(new HullWhite(rhTermStructure));
-        Handle<BlackKarasinski> modelBK(new BlackKarasinski(rhTermStructure));
+        boost::shared_ptr<HullWhite> modelHW(new HullWhite(rhTermStructure));
+        boost::shared_ptr<HullWhite> modelHW2(new HullWhite(rhTermStructure));
+        boost::shared_ptr<BlackKarasinski> modelBK(
+                                        new BlackKarasinski(rhTermStructure));
 
         std::cout << "Calibrating to swaptions" << std::endl;
 
         std::cout << "Hull-White (analytic formulae):" << std::endl;
         swaptions.setPricingEngine(
-            Handle<PricingEngine>(new JamshidianSwaption(modelHW)));
+            boost::shared_ptr<PricingEngine>(new JamshidianSwaption(modelHW)));
 
 
         calibrateModel(modelHW, swaptions, 0.05);
@@ -234,7 +239,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Hull-White (numerical calibration):" << std::endl;
         swaptions.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelHW2, grid)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW2,grid)));
 
 
         calibrateModel(modelHW2, swaptions, 0.05);
@@ -245,7 +250,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Black-Karasinski: " << std::endl;
         swaptions.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelBK, grid)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelBK,grid)));
         calibrateModel(modelBK, swaptions, 0.05);
         std::cout << "calibrated to "
                   << modelBK->params()
@@ -256,32 +261,33 @@ int main(int argc, char* argv[])
 
         //Define the bermudan swaption
         std::vector<Date> bermudanDates;
-        const std::vector<Handle<CashFlow> >& leg = swap->floatingLeg();
+        const std::vector<boost::shared_ptr<CashFlow> >& leg = 
+            swap->floatingLeg();
         for (i=0; i<leg.size(); i++) {
-            Handle<Coupon> coupon =
+            boost::shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(leg[i]);
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 
-        Handle<Exercise> bermudaExercise(new BermudanExercise(
+        boost::shared_ptr<Exercise> bermudaExercise(new BermudanExercise(
             bermudanDates));
 
         Swaption bermudanSwaption(atmSwap,
             bermudaExercise,
             rhTermStructure,
-            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model
         bermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW, 100)));
         std::cout << "HW:       " << bermudanSwaption.NPV() << std::endl;
 
         bermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelHW2, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW2, 100)));
         std::cout << "HW (num): " << bermudanSwaption.NPV() << std::endl;
 
         bermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelBK, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << bermudanSwaption.NPV() << std::endl;
 
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
@@ -289,19 +295,19 @@ int main(int argc, char* argv[])
         Swaption otmBermudanSwaption(otmSwap,
             bermudaExercise,
             rhTermStructure,
-            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model
         otmBermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW, 100)));
         std::cout << "HW:       " << otmBermudanSwaption.NPV() << std::endl;
 
         otmBermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelHW2, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW2, 100)));
         std::cout << "HW (num): " << otmBermudanSwaption.NPV() << std::endl;
 
         otmBermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelBK, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << otmBermudanSwaption.NPV() << std::endl;
 
         std::cout << "Pricing an ITM bermudan swaption" << std::endl;
@@ -309,17 +315,17 @@ int main(int argc, char* argv[])
         Swaption itmBermudanSwaption(itmSwap,
             bermudaExercise,
             rhTermStructure,
-            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model
         itmBermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW, 100)));
         std::cout << "HW:       " << itmBermudanSwaption.NPV() << std::endl;
         itmBermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelHW2, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW2, 100)));
         std::cout << "HW (num): " << itmBermudanSwaption.NPV() << std::endl;
         itmBermudanSwaption.setPricingEngine(
-            Handle<PricingEngine>(new TreeSwaption(modelBK, 100)));
+            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << itmBermudanSwaption.NPV() << std::endl;
 
         return 0;

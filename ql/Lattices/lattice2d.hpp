@@ -34,8 +34,8 @@ namespace QuantLib {
     */
     class Lattice2D : public Lattice {
       public:
-        Lattice2D(const Handle<TrinomialTree>& tree1,
-                  const Handle<TrinomialTree>& tree2,
+        Lattice2D(const boost::shared_ptr<TrinomialTree>& tree1,
+                  const boost::shared_ptr<TrinomialTree>& tree2,
                   double correlation);
 
         Size size(Size i) const { return tree1_->size(i)*tree2_->size(i); }
@@ -43,7 +43,7 @@ namespace QuantLib {
         Size descendant(Size i, Size index, Size branch) const;
         double probability(Size i, Size index, Size branch) const;
 
-        Handle<Tree> tree1_, tree2_;
+        boost::shared_ptr<Tree> tree1_, tree2_;
       private:
         Matrix m_;
         double rho_;

@@ -37,7 +37,7 @@ namespace QuantLib {
       public:
         IndexedCoupon(double nominal,
                       const Date& paymentDate,
-                      const Handle<Xibor>& index,
+                      const boost::shared_ptr<Xibor>& index,
                       const Date& startDate, const Date& endDate,
                       int fixingDays,
                       Spread spread = 0.0,
@@ -59,7 +59,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        const Handle<Xibor>& index() const;
+        const boost::shared_ptr<Xibor>& index() const;
         //@}
         //! \name Observer interface
         //@{
@@ -70,7 +70,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        Handle<Xibor> index_;
+        boost::shared_ptr<Xibor> index_;
         DayCounter dayCounter_;
     };
 
@@ -78,7 +78,7 @@ namespace QuantLib {
     // inline definitions
     inline IndexedCoupon::IndexedCoupon(double nominal,
                                         const Date& paymentDate,
-                                        const Handle<Xibor>& index,
+                                        const boost::shared_ptr<Xibor>& index,
                                         const Date& startDate, 
                                         const Date& endDate,
                                         int fixingDays, Spread spread,
@@ -94,7 +94,7 @@ namespace QuantLib {
     }
 
 
-    inline const Handle<Xibor>&
+    inline const boost::shared_ptr<Xibor>&
     IndexedCoupon::index() const {
         return index_;
     }

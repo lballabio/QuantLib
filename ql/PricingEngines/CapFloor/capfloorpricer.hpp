@@ -29,7 +29,7 @@ namespace QuantLib {
 
     class DiscretizedCapFloor : public DiscretizedAsset {
       public:
-        DiscretizedCapFloor(const Handle<NumericalMethod>& method,
+        DiscretizedCapFloor(const boost::shared_ptr<NumericalMethod>& method,
                             const CapFloor::arguments& params)
         : DiscretizedAsset(method), arguments_(params) {}
 

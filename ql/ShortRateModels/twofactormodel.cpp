@@ -22,20 +22,23 @@ namespace QuantLib {
     TwoFactorModel::TwoFactorModel(Size nArguments) 
     : ShortRateModel(nArguments) {}
 
-    Handle<Lattice> TwoFactorModel::tree(const TimeGrid& grid) const {
-        Handle<ShortRateDynamics> dyn = dynamics();
+    boost::shared_ptr<Lattice> 
+    TwoFactorModel::tree(const TimeGrid& grid) const {
+        boost::shared_ptr<ShortRateDynamics> dyn = dynamics();
 
-        Handle<TrinomialTree> tree1(new TrinomialTree(dyn->xProcess(), grid));
-        Handle<TrinomialTree> tree2(new TrinomialTree(dyn->yProcess(), grid));
+        boost::shared_ptr<TrinomialTree> tree1(
+                                    new TrinomialTree(dyn->xProcess(), grid));
+        boost::shared_ptr<TrinomialTree> tree2(
+                                    new TrinomialTree(dyn->yProcess(), grid));
 
-        return Handle<Lattice>( 
+        return boost::shared_ptr<Lattice>( 
                         new TwoFactorModel::ShortRateTree(tree1, tree2, dyn));
     }
 
     TwoFactorModel::ShortRateTree::ShortRateTree(
-                                    const Handle<TrinomialTree>& tree1,
-                                    const Handle<TrinomialTree>& tree2,
-                                    const Handle<ShortRateDynamics>& dynamics)
+                         const boost::shared_ptr<TrinomialTree>& tree1,
+                         const boost::shared_ptr<TrinomialTree>& tree2,
+                         const boost::shared_ptr<ShortRateDynamics>& dynamics)
     : Lattice2D(tree1, tree2, dynamics->correlation()), dynamics_(dynamics) 
     {}
 

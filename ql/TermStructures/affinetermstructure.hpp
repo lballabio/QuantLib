@@ -44,14 +44,14 @@ namespace QuantLib {
         //! constructor using a fixed model
         AffineTermStructure(const Date& todaysDate,
                             const Date& referenceDate,
-                            const Handle<AffineModel>& model,
+                            const boost::shared_ptr<AffineModel>& model,
                             const DayCounter& dayCounter);
         //! constructor using a model that has to be calibrated
         AffineTermStructure(const Date& todaysDate,
                             const Date& referenceDate,
-                            const Handle<AffineModel>& model,
-                            const std::vector<Handle<RateHelper> >&,
-                            const Handle<OptimizationMethod>& method,
+                            const boost::shared_ptr<AffineModel>& model,
+                            const std::vector<boost::shared_ptr<RateHelper> >&,
+                            const boost::shared_ptr<OptimizationMethod>&,
                             const DayCounter& dayCounter);
 
         // inspectors
@@ -73,9 +73,9 @@ namespace QuantLib {
         Date todaysDate_, referenceDate_;
 
         mutable bool needsRecalibration_;
-        Handle<AffineModel> model_;
-        std::vector<Handle<RateHelper> > instruments_;
-        Handle<OptimizationMethod> method_;
+        boost::shared_ptr<AffineModel> model_;
+        std::vector<boost::shared_ptr<RateHelper> > instruments_;
+        boost::shared_ptr<OptimizationMethod> method_;
     };
 
     inline DayCounter AffineTermStructure::dayCounter() const {

@@ -31,15 +31,16 @@ namespace QuantLib {
     : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
 
-        Handle<BlackVolTermStructure> blackVol = (*blackVolTS).currentLink();
+        boost::shared_ptr<BlackVolTermStructure> blackVol = 
+            (*blackVolTS).currentLink();
 
         // constant Black vol?
-        Handle<BlackConstantVol> constVol =
+        boost::shared_ptr<BlackConstantVol> constVol =
             boost::dynamic_pointer_cast<BlackConstantVol>(blackVol);
-        if (!IsNull(constVol)) {
+        if (constVol) {
             // ok, the local vol is constant too.
             localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-                Handle<LocalVolTermStructure>(
+                boost::shared_ptr<LocalVolTermStructure>(
                     new LocalConstantVol(constVol->referenceDate(),
                                          constVol->blackVol(0.0, s0),
                                          constVol->dayCounter())));
@@ -47,12 +48,12 @@ namespace QuantLib {
         }
 
         // ok, so it's not constant. Maybe it's strike-independent?
-        Handle<BlackVarianceCurve> volCurve =
+        boost::shared_ptr<BlackVarianceCurve> volCurve =
             boost::dynamic_pointer_cast<BlackVarianceCurve>(blackVol);
-        if (!IsNull(volCurve)) {
+        if (volCurve) {
             // ok, we can use the optimized algorithm
             localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-                Handle<LocalVolTermStructure>(
+                boost::shared_ptr<LocalVolTermStructure>(
                     new LocalVolCurve(
                         RelinkableHandle<BlackVarianceCurve>(volCurve))));
             return;
@@ -60,7 +61,7 @@ namespace QuantLib {
 
         // ok, so it's strike-dependent. Never mind.
         localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-            Handle<LocalVolTermStructure>(
+            boost::shared_ptr<LocalVolTermStructure>(
                 new LocalVolSurface(blackVolTS, riskFreeTS,
                                     dividendTS, s0)));
     }

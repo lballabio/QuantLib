@@ -20,23 +20,23 @@
 
 namespace QuantLib {
 
-    TreeSwaption::TreeSwaption(const Handle<ShortRateModel>& model,
+    TreeSwaption::TreeSwaption(const boost::shared_ptr<ShortRateModel>& model,
                                Size timeSteps) 
     : LatticeShortRateModelEngine<Swaption::arguments, Swaption::results> 
     (model, timeSteps) {} 
 
-    TreeSwaption::TreeSwaption(const Handle<ShortRateModel>& model,
+    TreeSwaption::TreeSwaption(const boost::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid) 
     : LatticeShortRateModelEngine<Swaption::arguments, Swaption::results> 
     (model, timeGrid) {}
 
     void TreeSwaption::calculate() const {
 
-        QL_REQUIRE(!IsNull(model_), 
+        QL_REQUIRE(model_,
                    "TreeSwaption: No model was specified");
-        Handle<Lattice> lattice;
+        boost::shared_ptr<Lattice> lattice;
 
-        if (IsNull(lattice_)) {
+        if (!lattice_) {
             std::list<Time> times;
             Time t;
             Size i;
@@ -73,13 +73,13 @@ namespace QuantLib {
         }
 
 
-        Handle<DiscretizedSwap> swap(
+        boost::shared_ptr<DiscretizedSwap> swap(
                                     new DiscretizedSwap(lattice, arguments_));
         Time lastFixedPay = arguments_.fixedPayTimes.back();
         Time lastFloatPay = arguments_.floatingPayTimes.back();
         lattice->initialize(swap,QL_MAX(lastFixedPay,lastFloatPay));
 
-        Handle<DiscretizedAsset> swaption(
+        boost::shared_ptr<DiscretizedAsset> swaption(
                                    new DiscretizedSwaption(swap, arguments_));
         lattice->initialize(swaption, arguments_.stoppingTimes.back());
 

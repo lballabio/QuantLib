@@ -35,7 +35,7 @@ namespace {
 
     Calendar calendar_;
     int settlementDays_;
-    Handle<TermStructure> termStructure_;
+    boost::shared_ptr<TermStructure> termStructure_;
 
     // utilities
 
@@ -69,24 +69,24 @@ void TermStructureTest::setUp() {
     Size deposits = LENGTH(depositData),
          swaps = LENGTH(swapData);
 
-    std::vector<Handle<RateHelper> > instruments(deposits+swaps);
+    std::vector<boost::shared_ptr<RateHelper> > instruments(deposits+swaps);
     Size i;
     for (i=0; i<deposits; i++) {
-        instruments[i] = Handle<RateHelper>(
+        instruments[i] = boost::shared_ptr<RateHelper>(
             new DepositRateHelper(depositData[i].rate/100,
                                   depositData[i].n, depositData[i].units,
                                   settlementDays_, calendar_,
                                   ModifiedFollowing, Actual360()));
     }
     for (i=0; i<swaps; i++) {
-        instruments[i+deposits] = Handle<RateHelper>(
+        instruments[i+deposits] = boost::shared_ptr<RateHelper>(
             new SwapRateHelper(swapData[i].rate/100,
                                swapData[i].n, swapData[i].units,
                                settlementDays_, calendar_,
                                ModifiedFollowing, 1, false,
                                Thirty360(), 2));
     }
-    termStructure_ = Handle<TermStructure>(
+    termStructure_ = boost::shared_ptr<TermStructure>(
         new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
 }
 
@@ -95,7 +95,7 @@ void TermStructureTest::testImplied() {
     Date newToday = termStructure_->todaysDate().plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
     Date testDate = newSettlement.plusYears(5);
-    Handle<TermStructure> implied(
+    boost::shared_ptr<TermStructure> implied(
         new ImpliedTermStructure(
             RelinkableHandle<TermStructure>(termStructure_),
             newToday, newSettlement));
@@ -115,7 +115,7 @@ void TermStructureTest::testImpliedObs() {
     Date newToday = termStructure_->todaysDate().plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
     RelinkableHandle<TermStructure> h;
-    Handle<TermStructure> implied(
+    boost::shared_ptr<TermStructure> implied(
         new ImpliedTermStructure(h, newToday, newSettlement));
     Flag flag;
     flag.registerWith(implied);
@@ -126,9 +126,9 @@ void TermStructureTest::testImpliedObs() {
 
 void TermStructureTest::testFSpreaded() {
     double tolerance = 1.0e-10;
-    Handle<Quote> me(new SimpleQuote(0.01));
+    boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
-    Handle<TermStructure> spreaded(
+    boost::shared_ptr<TermStructure> spreaded(
         new ForwardSpreadedTermStructure(
             RelinkableHandle<TermStructure>(termStructure_),mh));
     Date testDate = termStructure_->referenceDate().plusYears(5);
@@ -144,10 +144,10 @@ void TermStructureTest::testFSpreaded() {
 }
 
 void TermStructureTest::testFSpreadedObs() {
-    Handle<SimpleQuote> me(new SimpleQuote(0.01));
+    boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
     RelinkableHandle<TermStructure> h;
-    Handle<TermStructure> spreaded(
+    boost::shared_ptr<TermStructure> spreaded(
         new ForwardSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);
@@ -162,9 +162,9 @@ void TermStructureTest::testFSpreadedObs() {
 
 void TermStructureTest::testZSpreaded() {
     double tolerance = 1.0e-10;
-    Handle<Quote> me(new SimpleQuote(0.01));
+    boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
-    Handle<TermStructure> spreaded(
+    boost::shared_ptr<TermStructure> spreaded(
         new ZeroSpreadedTermStructure(
             RelinkableHandle<TermStructure>(termStructure_),mh));
     Date testDate = termStructure_->referenceDate().plusYears(5);
@@ -180,10 +180,10 @@ void TermStructureTest::testZSpreaded() {
 }
 
 void TermStructureTest::testZSpreadedObs() {
-    Handle<SimpleQuote> me(new SimpleQuote(0.01));
+    boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
     RelinkableHandle<TermStructure> h;
-    Handle<TermStructure> spreaded(
+    boost::shared_ptr<TermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);

@@ -76,7 +76,7 @@ namespace QuantLib {
                                          double variance1, double variance2, 
                                          double rho) {
 
-            Handle<StrikedTypePayoff> payoff(new
+            boost::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(Option::Call, strike));
 
             BlackFormula black1(forward1, riskFreeDiscount, 
@@ -93,7 +93,7 @@ namespace QuantLib {
 
     void StulzEngine::calculate() const {
 
-        std::vector< Handle<BlackScholesStochasticProcess> > procs = 
+        std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs = 
             arguments_.blackScholesProcesses;
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -104,13 +104,13 @@ namespace QuantLib {
                    "StulzEngine::calculate() : "
                    "not a basket of two stocks");
 
-        Handle<EuropeanExercise> exercise = 
+        boost::shared_ptr<EuropeanExercise> exercise = 
             boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise,
                    "StulzEngine::calculate() : "
                    "not an European Option");
 
-        Handle<PlainVanillaPayoff> payoff =
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "StulzEngine: "

@@ -42,7 +42,8 @@ namespace QuantLib {
         };
       public:
         Actual365()
-        : DayCounter(Handle<DayCounter::Impl>(new Actual365::Impl)) {}
+        : DayCounter(boost::shared_ptr<DayCounter::Impl>(
+                                                      new Actual365::Impl)) {}
     };
 
 }

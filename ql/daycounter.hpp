@@ -73,7 +73,7 @@ namespace QuantLib {
       protected:
         /*! This protected constructor will only be invoked by derived
             classes which define a given DayCounter implementation */
-        DayCounter(const Handle<DayCounterImpl>& impl) 
+        DayCounter(const boost::shared_ptr<DayCounterImpl>& impl) 
         : Bridge<DayCounter,DayCounterImpl>(impl) {}
     };
 

@@ -59,10 +59,10 @@ namespace QuantLib {
         BrownianBridge(const std::vector<double>& sigma,
                        const TimeGrid& timeGrid,
                        const GSG& generator);
-        BrownianBridge(const Handle<BlackVolTermStructure>& blackVol,
+        BrownianBridge(const boost::shared_ptr<BlackVolTermStructure>&,
                        const TimeGrid& timeGrid,
                        const GSG& generator);
-        BrownianBridge(const Handle<DiffusionProcess>& diffProcess,
+        BrownianBridge(const boost::shared_ptr<DiffusionProcess>&,
                        const TimeGrid& timeGrid,
                        const GSG& generator);
         //! \name inspectors
@@ -181,7 +181,7 @@ namespace QuantLib {
 
     template <class GSG>
     BrownianBridge<GSG>::BrownianBridge(
-        const Handle<BlackVolTermStructure>& blackVol,
+        const boost::shared_ptr<BlackVolTermStructure>& blackVol,
         const TimeGrid& timeGrid,
         const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),
@@ -214,7 +214,7 @@ namespace QuantLib {
 
     template <class GSG>
     BrownianBridge<GSG>::BrownianBridge(
-        const Handle<DiffusionProcess>& diffProcess,
+        const boost::shared_ptr<DiffusionProcess>& diffProcess,
         const TimeGrid& timeGrid,
         const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),

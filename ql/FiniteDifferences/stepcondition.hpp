@@ -33,7 +33,7 @@ namespace QuantLib {
         virtual ~StepCondition() {}
         virtual void applyTo(arrayType& a,
                              Time t) const = 0;
-        virtual void applyTo(Handle<DiscretizedAsset> asset) const = 0;
+        virtual void applyTo(boost::shared_ptr<DiscretizedAsset>) const = 0;
     };
 
 }

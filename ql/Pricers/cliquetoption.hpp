@@ -57,7 +57,7 @@ namespace QuantLib {
         std::vector<Time> times_;
         std::vector<Spread> dividendYield_;
         Size numOptions_;
-        std::vector<Handle<EuropeanOption> > optionlet_;
+        std::vector<boost::shared_ptr<EuropeanOption> > optionlet_;
         std::vector<double> weight_;
         std::vector<DiscountFactor> forwardDiscounts_;
     };

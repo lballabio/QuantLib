@@ -34,13 +34,14 @@ namespace QuantLib {
         : public GenericEngine<ForwardOptionArguments<ArgumentsType>,
                                ResultsType> {
       public:
-        ForwardEngine(const Handle<GenericEngine<ArgumentsType,
-                                                 ResultsType> >&);
+        ForwardEngine(const boost::shared_ptr<GenericEngine<ArgumentsType,
+                                                            ResultsType> >&);
         void setOriginalArguments() const;
         void calculate() const;
         void getOriginalResults() const;
       protected:
-        Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
+        boost::shared_ptr<GenericEngine<ArgumentsType, 
+                                        ResultsType> > originalEngine_;
         ArgumentsType* originalArguments_;
         const ResultsType* originalResults_;
     };
@@ -50,10 +51,10 @@ namespace QuantLib {
 
     template<class ArgumentsType, class ResultsType>
     ForwardEngine<ArgumentsType, ResultsType>::ForwardEngine(
-        const Handle<GenericEngine<ArgumentsType, ResultsType> >&
+        const boost::shared_ptr<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
     : originalEngine_(originalEngine) {
-        QL_REQUIRE(!IsNull(originalEngine_),
+        QL_REQUIRE(originalEngine_,
                    "ForwardEngine::ForwardEngine: null engine");
         originalResults_ = dynamic_cast<const ResultsType*>(
             originalEngine_->results());
@@ -66,7 +67,7 @@ namespace QuantLib {
     void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments()
                                                                         const {
 
-        Handle<StrikedTypePayoff> argumentsPayoff =
+        boost::shared_ptr<StrikedTypePayoff> argumentsPayoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(argumentsPayoff,
                    "ForwardEngine: wrong payoff given");
@@ -83,14 +84,14 @@ namespace QuantLib {
             arguments_.blackScholesProcess->stateVariable;
         originalArguments_->blackScholesProcess->dividendTS = 
             RelinkableHandle<TermStructure>(
-                Handle<TermStructure>(
+                boost::shared_ptr<TermStructure>(
                     new ImpliedTermStructure(
                         arguments_.blackScholesProcess->dividendTS, 
                         arguments_.resetDate,
                         arguments_.resetDate)));
         originalArguments_->blackScholesProcess->riskFreeTS = 
             RelinkableHandle<TermStructure>(
-                Handle<TermStructure>(
+                boost::shared_ptr<TermStructure>(
                     new ImpliedTermStructure(
                         arguments_.blackScholesProcess->riskFreeTS, 
                         arguments_.resetDate,
@@ -103,7 +104,7 @@ namespace QuantLib {
         // implies an unrealistic time-decreasing smile)
         originalArguments_->blackScholesProcess->volTS =
             RelinkableHandle<BlackVolTermStructure>(
-                Handle<BlackVolTermStructure>(
+                boost::shared_ptr<BlackVolTermStructure>(
                     new ImpliedVolTermStructure(
                         arguments_.blackScholesProcess->volTS,
                         arguments_.resetDate)));

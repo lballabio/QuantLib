@@ -29,8 +29,9 @@ namespace QuantLib {
 
     void BPSCalculator::visit(CashFlow&) {}
 
-    double BasisPointSensitivity(const std::vector<Handle<CashFlow> >& leg,
-                                 const RelinkableHandle<TermStructure>& ts) {
+    double BasisPointSensitivity(
+                         const std::vector<boost::shared_ptr<CashFlow> >& leg,
+                         const RelinkableHandle<TermStructure>& ts) {
         Date settlement = ts->referenceDate();
         BPSCalculator calc(ts);
         for (Size i=0; i<leg.size(); i++)
@@ -89,9 +90,9 @@ namespace QuantLib {
     }
 
     TimeBasket BasisPointSensitivityBasket(
-                                    const std::vector<Handle<CashFlow> >& leg,
-                                    const RelinkableHandle<TermStructure>& ts,
-                                    int basis) {
+                         const std::vector<boost::shared_ptr<CashFlow> >& leg,
+                         const RelinkableHandle<TermStructure>& ts,
+                         int basis) {
         Date settlement = ts->referenceDate();
         BPSBasketCalculator calc(ts,basis);
         for (Size i=0; i<leg.size(); i++)

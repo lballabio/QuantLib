@@ -43,16 +43,17 @@ namespace {
     int fixedFrequency_, floatingFrequency_;
     DayCounter fixedDayCount_;
     bool fixedIsAdjusted_;
-    Handle<Xibor> index_;
+    boost::shared_ptr<Xibor> index_;
     int settlementDays_, fixingDays_;
     RelinkableHandle<TermStructure> termStructure_;
 
     // utilities
 
-    Handle<SimpleSwap> makeSwap(const Date& start, int length, 
-                                Rate fixedRate, Spread floatingSpread, 
-                                bool payFixed) {
-        return Handle<SimpleSwap>(
+    boost::shared_ptr<SimpleSwap> makeSwap(const Date& start, int length, 
+                                           Rate fixedRate, 
+                                           Spread floatingSpread, 
+                                           bool payFixed) {
+        return boost::shared_ptr<SimpleSwap>(
             new SimpleSwap(payFixed,start,length,Years,
                            calendar_,rollingConvention_,nominal_,
                            fixedFrequency_,fixedRate,fixedIsAdjusted_,
@@ -60,17 +61,20 @@ namespace {
                            fixingDays_,floatingSpread,termStructure_));
     }
 
-    Handle<Swaption> makeSwaption(const Handle<SimpleSwap>& swap,
-                                  const Date& exercise, 
-                                  double volatility) {
-        Handle<Quote> vol_me(new SimpleQuote(volatility));
+    boost::shared_ptr<Swaption> makeSwaption(
+                                    const boost::shared_ptr<SimpleSwap>& swap,
+                                    const Date& exercise, 
+                                    double volatility) {
+        boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
         RelinkableHandle<Quote> vol_rh(vol_me);
-        Handle<BlackModel> model(new BlackModel(vol_rh,termStructure_));
-        Handle<PricingEngine> engine(new BlackSwaption(model));
-        return Handle<Swaption>(new Swaption(
-            swap,
-            Handle<Exercise>(new EuropeanExercise(exercise)),
-            termStructure_,engine));
+        boost::shared_ptr<BlackModel> model(
+                                       new BlackModel(vol_rh,termStructure_));
+        boost::shared_ptr<PricingEngine> engine(new BlackSwaption(model));
+        return boost::shared_ptr<Swaption>(new Swaption(
+                  swap,
+                  boost::shared_ptr<Exercise>(new EuropeanExercise(exercise)),
+                  termStructure_,
+                  engine));
     }
 
 }
@@ -87,13 +91,13 @@ void SwaptionTest::setUp() {
     floatingFrequency_ = 2;
     fixedDayCount_ = Thirty360();
     fixedIsAdjusted_ = false;
-    index_ = Handle<Xibor>(new Euribor(12/floatingFrequency_,Months,
-                                       termStructure_));
+    index_ = boost::shared_ptr<Xibor>(new Euribor(12/floatingFrequency_,Months,
+                                                  termStructure_));
     calendar_ = index_->calendar();
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(
-        Handle<TermStructure>(new FlatForward(today_,settlement_,0.05,
-                                              Actual365())));
+        boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
+                                                         0.05,Actual365())));
 }
 
 void SwaptionTest::testStrikeDependency() {
@@ -110,10 +114,10 @@ void SwaptionTest::testStrikeDependency() {
                 // store the results for different rates...
                 std::vector<double> values;
                 for (Size l=0; l<LENGTH(strikes); l++) {
-                    Handle<SimpleSwap> swap = 
+                    boost::shared_ptr<SimpleSwap> swap = 
                         makeSwap(startDate,lengths[j],strikes[l],
                                  0.0,payFixed[k]);
-                    Handle<Swaption> swaption = 
+                    boost::shared_ptr<Swaption> swaption = 
                         makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
                 }
@@ -182,10 +186,10 @@ void SwaptionTest::testSpreadDependency() {
                 // store the results for different rates...
                 std::vector<double> values;
                 for (Size l=0; l<LENGTH(spreads); l++) {
-                    Handle<SimpleSwap> swap = 
+                    boost::shared_ptr<SimpleSwap> swap = 
                         makeSwap(startDate,lengths[j],0.06,
                                  spreads[l],payFixed[k]);
-                    Handle<Swaption> swaption = 
+                    boost::shared_ptr<Swaption> swaption = 
                         makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
                 }
@@ -252,18 +256,18 @@ void SwaptionTest::testSpreadTreatment() {
                 Date startDate = calendar_.advance(exerciseDate,
                                                    settlementDays_,Days);
                 for (Size l=0; l<LENGTH(spreads); l++) {
-                    Handle<SimpleSwap> swap = 
+                    boost::shared_ptr<SimpleSwap> swap = 
                         makeSwap(startDate,lengths[j],0.06,
                                  spreads[l],payFixed[k]);
                     Spread correction = spreads[l] *
                                         swap->floatingLegBPS() / 
                                         swap->fixedLegBPS();
-                    Handle<SimpleSwap> equivalentSwap =
+                    boost::shared_ptr<SimpleSwap> equivalentSwap =
                         makeSwap(startDate,lengths[j],0.06+correction,
                                  0.0,payFixed[k]);
-                    Handle<Swaption> swaption1 =
+                    boost::shared_ptr<Swaption> swaption1 =
                         makeSwaption(swap,exerciseDate,0.20);
-                    Handle<Swaption> swaption2 =
+                    boost::shared_ptr<Swaption> swaption2 =
                         makeSwaption(equivalentSwap,exerciseDate,0.20);
                     if (QL_FABS(swaption1->NPV()-swaption2->NPV()) > 1.0e-10)
                         CPPUNIT_FAIL(
@@ -292,14 +296,15 @@ void SwaptionTest::testCachedValue() {
     today_ = Date(13,March,2002);
     settlement_ = Date(15,March,2002);
     termStructure_.linkTo(
-        Handle<TermStructure>(new FlatForward(today_,settlement_,0.05,
-                                              Actual365())));
+        boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
+                                                         0.05,Actual365())));
     Date exerciseDate = calendar_.advance(settlement_,5,Years);
     Date startDate = calendar_.advance(exerciseDate,settlementDays_,Days);
-    Handle<SimpleSwap> swap = makeSwap(startDate,10,0.06,0.0,true);
-    Handle<Swaption> swaption = makeSwaption(swap,exerciseDate,0.20);
+    boost::shared_ptr<SimpleSwap> swap = makeSwap(startDate,10,0.06,0.0,true);
+    boost::shared_ptr<Swaption> swaption = 
+        makeSwaption(swap,exerciseDate,0.20);
     double cachedNPV = 3.639365179345;
-    
+
     if (QL_FABS(swaption->NPV()-cachedNPV) > 1.0e-11)
         CPPUNIT_FAIL(
             "failed to reproduce cached swaption value:\n"

@@ -40,48 +40,49 @@ namespace {
                       JR, CRR, EQP, TGEO, TIAN, LR,
                       PseudoMonteCarlo, QuasiMonteCarlo };
 
-    Handle<VanillaOption>
-    makeOption(const Handle<StrikedTypePayoff>& payoff,
-               const Handle<Exercise>& exercise,
-               const Handle<Quote>& u,
-               const Handle<TermStructure>& q,
-               const Handle<TermStructure>& r,
-               const Handle<BlackVolTermStructure>& vol,
+    boost::shared_ptr<VanillaOption>
+    makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
+               const boost::shared_ptr<Exercise>& exercise,
+               const boost::shared_ptr<Quote>& u,
+               const boost::shared_ptr<TermStructure>& q,
+               const boost::shared_ptr<TermStructure>& r,
+               const boost::shared_ptr<BlackVolTermStructure>& vol,
                EngineType engineType = Analytic) {
 
         Size binomialSteps = 251;
-        Handle<PricingEngine> engine;
+        boost::shared_ptr<PricingEngine> engine;
         switch (engineType) {
           case Analytic:
-            engine = Handle<PricingEngine>(new AnalyticEuropeanEngine);
+            engine = boost::shared_ptr<PricingEngine>(
+                new AnalyticEuropeanEngine);
             break;
           case JR:
-            engine = Handle<PricingEngine>(
+            engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<JarrowRudd>(binomialSteps));
             break;
           case CRR:
-            engine = Handle<PricingEngine>(
+            engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<CoxRossRubinstein>(binomialSteps));
           case EQP:
-            engine = Handle<PricingEngine>(
+            engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<AdditiveEQPBinomialTree>(
                                                               binomialSteps));
             break;
           case TGEO:
-            engine = Handle<PricingEngine>(
+            engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<Trigeorgis>(binomialSteps));
             break;
           case TIAN:
-            engine = Handle<PricingEngine>(
+            engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<Tian>(binomialSteps));
             break;
           case LR:
-            engine = Handle<PricingEngine>(
+            engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<LeisenReimer>(binomialSteps));
             break;
           case PseudoMonteCarlo:
             #if defined(QL_PATCH_MICROSOFT)
-            engine = Handle<PricingEngine>(new
+            engine = boost::shared_ptr<PricingEngine>(new
                 MCEuropeanEngine<PseudoRandom>(1,
                                                false, false,
                                                Null<int>(), 0.05,
@@ -94,7 +95,7 @@ namespace {
             break;
           case QuasiMonteCarlo:
             #if defined(QL_PATCH_MICROSOFT)
-            engine = Handle<PricingEngine>(new
+            engine = boost::shared_ptr<PricingEngine>(new
                 MCEuropeanEngine<LowDiscrepancy>(1,
                                                  false, false,
                                                  1023, Null<double>(),
@@ -109,14 +110,14 @@ namespace {
         }
 
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(u),
                 RelinkableHandle<TermStructure>(q),
                 RelinkableHandle<TermStructure>(r),
                 RelinkableHandle<BlackVolTermStructure>(vol)));
 
-        return Handle<VanillaOption>(new
+        return boost::shared_ptr<VanillaOption>(new
             VanillaOption(stochProcess, payoff, exercise, engine));
     }
 
@@ -209,30 +210,31 @@ void EuropeanOptionTest::testValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
         Date exDate = today.plusDays(timeToDays(values[i].t));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                  RelinkableHandle<Quote>(spot),
                  RelinkableHandle<TermStructure>(qTS),
@@ -286,15 +288,16 @@ void EuropeanOptionTest::testGreekValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
-    Handle<BlackScholesStochasticProcess> stochProcess(new
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
         BlackScholesStochasticProcess(
              RelinkableHandle<Quote>(spot),
              RelinkableHandle<TermStructure>(qTS),
@@ -304,24 +307,24 @@ void EuropeanOptionTest::testGreekValues() {
 
     Date today = Date::todaysDate();
 
-    Handle<StrikedTypePayoff> payoff;
+    boost::shared_ptr<StrikedTypePayoff> payoff;
     Date exDate;
-    Handle<Exercise> exercise;
-    Handle<VanillaOption> option;
+    boost::shared_ptr<Exercise> exercise;
+    boost::shared_ptr<VanillaOption> option;
     double calculated;
 
     int i = -1;
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
     double error = QL_FABS(calculated-values[i].result);
@@ -333,15 +336,15 @@ void EuropeanOptionTest::testGreekValues() {
                                 error, tolerance);
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
     error = QL_FABS(calculated-values[i].result);
@@ -352,15 +355,15 @@ void EuropeanOptionTest::testGreekValues() {
                                 error, tolerance);
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->elasticity();
     error = QL_FABS(calculated-values[i].result);
@@ -372,15 +375,15 @@ void EuropeanOptionTest::testGreekValues() {
 
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
     error = QL_FABS(calculated-values[i].result);
@@ -391,15 +394,15 @@ void EuropeanOptionTest::testGreekValues() {
                                 error, tolerance);
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->gamma();
     error = QL_FABS(calculated-values[i].result);
@@ -411,15 +414,15 @@ void EuropeanOptionTest::testGreekValues() {
 
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->vega();
     error = QL_FABS(calculated-values[i].result);
@@ -431,15 +434,15 @@ void EuropeanOptionTest::testGreekValues() {
 
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->vega();
     error = QL_FABS(calculated-values[i].result);
@@ -451,15 +454,15 @@ void EuropeanOptionTest::testGreekValues() {
 
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->theta();
     error = QL_FABS(calculated-values[i].result);
@@ -471,15 +474,15 @@ void EuropeanOptionTest::testGreekValues() {
 
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->thetaPerDay();
     error = QL_FABS(calculated-values[i].result);
@@ -491,15 +494,15 @@ void EuropeanOptionTest::testGreekValues() {
 
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->rho();
     error = QL_FABS(calculated-values[i].result);
@@ -511,15 +514,15 @@ void EuropeanOptionTest::testGreekValues() {
 
 
     i++;
-    payoff = Handle<StrikedTypePayoff>(new
+    payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
     exDate = today.plusDays(timeToDays(values[i].t));
-    exercise = Handle<Exercise>(new EuropeanExercise(exDate));
+    exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
     rRate->setValue(values[i].r);
     vol  ->setValue(values[i].v);
-    option = Handle<VanillaOption>(new VanillaOption(
+    option = boost::shared_ptr<VanillaOption>(new VanillaOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->dividendRho();
     error = QL_FABS(calculated-values[i].result);
@@ -550,15 +553,16 @@ void EuropeanOptionTest::testGreeks() {
     double vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
 
-    Handle<StrikedTypePayoff> payoff;
+    boost::shared_ptr<StrikedTypePayoff> payoff;
 
     Date today = Date::todaysDate();
 
@@ -566,35 +570,37 @@ void EuropeanOptionTest::testGreeks() {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(residualTimes); k++) {
           Date exDate = today.plusDays(timeToDays(residualTimes[k]));
-          Handle<Exercise> exercise(new EuropeanExercise(exDate));
+          boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
           Date exDateP = exDate.plusDays(1),
                exDateM = exDate.plusDays(-1);
           Time dT = (exDateP-exDateM)/360.0;
           for (Size kk=0; kk<4; kk++) {
               // option to check
               if (kk==0) {
-                  payoff = Handle<StrikedTypePayoff>(new
+                  payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     PlainVanillaPayoff(types[i], strikes[j]));
               } else if (kk==1) {
-                  payoff = Handle<StrikedTypePayoff>(new
+                  payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     CashOrNothingPayoff(types[i], strikes[j],
                     100.0));
               } else if (kk==2) {
-                  payoff = Handle<StrikedTypePayoff>(new
+                  payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     AssetOrNothingPayoff(types[i], strikes[j]));
               } else if (kk==3) {
-                  payoff = Handle<StrikedTypePayoff>(new
+                  payoff = boost::shared_ptr<StrikedTypePayoff>(new
                     GapPayoff(types[i], strikes[j], 100.0));
               }
-              Handle<VanillaOption> option = makeOption(payoff, exercise,
-                  spot, qTS, rTS,volTS);
+              boost::shared_ptr<VanillaOption> option = 
+                  makeOption(payoff, exercise, spot, qTS, rTS, volTS);
               // time-shifted exercise dates and options
-              Handle<Exercise> exerciseP(new EuropeanExercise(exDateP));
-              Handle<VanillaOption> optionP =
+              boost::shared_ptr<Exercise> exerciseP(
+                                               new EuropeanExercise(exDateP));
+              boost::shared_ptr<VanillaOption> optionP =
                   makeOption(payoff,exerciseP, spot,
                                      qTS,rTS,volTS);
-              Handle<Exercise> exerciseM(new EuropeanExercise(exDateM));
-              Handle<VanillaOption> optionM =
+              boost::shared_ptr<Exercise> exerciseM(
+                                               new EuropeanExercise(exDateM));
+              boost::shared_ptr<VanillaOption> optionM =
                   makeOption(payoff, exerciseM, spot,
                                      qTS, rTS, volTS);
 
@@ -706,13 +712,14 @@ void EuropeanOptionTest::testImpliedVol() {
 
     DayCounter dc = Actual360();
 
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol,dc);
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol,dc);
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
     Date today = Date::todaysDate();
 
@@ -721,10 +728,10 @@ void EuropeanOptionTest::testImpliedVol() {
         for (Size k=0; k<LENGTH(lengths); k++) {
           // option to check
           Date exDate = today.plusDays(lengths[k]);
-          Handle<Exercise> exercise(new EuropeanExercise(exDate));
-          Handle<StrikedTypePayoff> payoff(new
+          boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+          boost::shared_ptr<StrikedTypePayoff> payoff(new
               PlainVanillaPayoff(types[i], strikes[j]));
-          Handle<VanillaOption> option =
+          boost::shared_ptr<VanillaOption> option =
               makeOption(payoff, exercise, spot,
                                  qTS, rTS, volTS);
 
@@ -826,13 +833,14 @@ namespace {
         double vols[] = { 0.11, 0.50, 1.20 };
 
         DayCounter dc = Actual360();
-        Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-        Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-        Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-        Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-        Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-        Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-        Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        boost::shared_ptr<BlackVolTermStructure> volTS = 
+            makeFlatVolatility(vol, dc);
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
         Date today = Date::todaysDate();
 
@@ -840,14 +848,15 @@ namespace {
           for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(lengths); k++) {
               Date exDate = today.plusDays(lengths[k]*360);
-              Handle<Exercise> exercise(new EuropeanExercise(exDate));
-              Handle<StrikedTypePayoff> payoff(new
+              boost::shared_ptr<Exercise> exercise(
+                                                new EuropeanExercise(exDate));
+              boost::shared_ptr<StrikedTypePayoff> payoff(new
                   PlainVanillaPayoff(types[i], strikes[j]));
               // reference option
-              Handle<VanillaOption> refOption =
+              boost::shared_ptr<VanillaOption> refOption =
                   makeOption(payoff, exercise, spot, qTS, rTS, volTS);
               // options to check
-              std::map<EngineType,Handle<VanillaOption> > options;
+              std::map<EngineType,boost::shared_ptr<VanillaOption> > options;
               for (Size ii=0; ii<N; ii++) {
                   options[engines[ii]] =
                       makeOption(payoff, exercise, spot,

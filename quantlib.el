@@ -37,12 +37,19 @@
 (defvar c++-font-lock-extra-types)
 
 ; A few types for syntax-highlighting
+; from QuantLib:
 (setq c++-font-lock-extra-types
       (append c++-font-lock-extra-types
-              '("Time" "Rate" "Spread" "DiscountFactor" "Size" 
+              '("QuantLib" 
+                "Time" "Rate" "Spread" "DiscountFactor" "Size" 
                 "Date" "TimeUnit" "Frequency" "Period" "Weekday"
                 "DayCounter" "Calendar" "RollingConvention"
-                "Handle" "RelinkableHandle")))
+                "RelinkableHandle")))
+; from Boost:
+(setq c++-font-lock-extra-types
+      (append c++-font-lock-extra-types
+              '("Boost"
+                "shared_ptr")))
 
 
 ; helper functions

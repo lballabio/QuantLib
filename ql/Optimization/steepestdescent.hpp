@@ -35,10 +35,10 @@ namespace QuantLib {
       public:
         //! default default constructor (msvc bug)
         SteepestDescent()
-        : lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
+        : lineSearch_(boost::shared_ptr<LineSearch>(new ArmijoLineSearch())) {}
 
         //! default constructor
-        SteepestDescent(const Handle<LineSearch>& lineSearch)
+        SteepestDescent(const boost::shared_ptr<LineSearch>& lineSearch)
         : lineSearch_(lineSearch) {}
         //! destructor
         virtual ~SteepestDescent() {}
@@ -47,7 +47,7 @@ namespace QuantLib {
         virtual void minimize(const Problem& P) const;
       private:
         //! line search
-        Handle<LineSearch> lineSearch_;
+        boost::shared_ptr<LineSearch> lineSearch_;
     };
 
 }

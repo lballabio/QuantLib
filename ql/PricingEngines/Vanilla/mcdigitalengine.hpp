@@ -75,8 +75,8 @@ namespace QuantLib {
 
         // McSimulation implementation
         TimeGrid timeGrid() const;
-//        Handle<path_generator_type> pathGenerator() const;
-        Handle<path_pricer_type> pathPricer() const;
+//        boost::shared_ptr<path_generator_type> pathGenerator() const;
+        boost::shared_ptr<path_pricer_type> pathPricer() const;
 
         // data members
         //my_sequence_type uniformGenerator_;
@@ -88,18 +88,19 @@ namespace QuantLib {
 
     class DigitalPathPricer : public PathPricer<Path> {
       public:
-        DigitalPathPricer(const Handle<CashOrNothingPayoff>& payoff,
-                          const Handle<AmericanExercise>& exercise,
-                          double underlying,
-                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                          const Handle<DiffusionProcess>& diffProcess,
-                          const PseudoRandom::ursg_type& sequenceGen);
+        DigitalPathPricer(
+                       const boost::shared_ptr<CashOrNothingPayoff>& payoff,
+                       const boost::shared_ptr<AmericanExercise>& exercise,
+                       double underlying,
+                       const RelinkableHandle<TermStructure>& riskFreeTS,
+                       const boost::shared_ptr<DiffusionProcess>& diffProcess,
+                       const PseudoRandom::ursg_type& sequenceGen);
         double operator()(const Path& path) const;
       private:
-        Handle<CashOrNothingPayoff> payoff_;
-        Handle<AmericanExercise> exercise_;
+        boost::shared_ptr<CashOrNothingPayoff> payoff_;
+        boost::shared_ptr<AmericanExercise> exercise_;
         double underlying_;
-        Handle<DiffusionProcess> diffProcess_;
+        boost::shared_ptr<DiffusionProcess> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
     };
 
@@ -125,10 +126,10 @@ namespace QuantLib {
 
 /*
     template<class RNG, class S>
-    Handle<QL_TYPENAME MCDigitalEngine<RNG,S>::path_generator_type>
+    boost::shared_ptr<QL_TYPENAME MCDigitalEngine<RNG,S>::path_generator_type>
     MCDigitalEngine<RNG,S>::pathGenerator() const {
 
-        Handle<DiffusionProcess> bs(new
+        boost::shared_ptr<DiffusionProcess> bs(new
             BlackScholesProcess(
                 arguments_.blackScholesProcess->riskFreeTS,
                 arguments_.blackScholesProcess->dividendTS,
@@ -140,22 +141,22 @@ namespace QuantLib {
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1, seed_);
 
-        return Handle<path_generator_type>(
+        return boost::shared_ptr<path_generator_type>(
             new path_generator_type(bs, grid, gen));
 
     }
 */
 
     template <class RNG, class S>
-    Handle<QL_TYPENAME MCDigitalEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<QL_TYPENAME MCDigitalEngine<RNG,S>::path_pricer_type>
     MCDigitalEngine<RNG,S>::pathPricer() const {
 
-        Handle<CashOrNothingPayoff> payoff =
+        boost::shared_ptr<CashOrNothingPayoff> payoff =
             boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCDigitalEngine: wrong payoff given");
 
-        Handle<AmericanExercise> exercise =
+        boost::shared_ptr<AmericanExercise> exercise =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise,
                    "MCDigitalEngine: wrong exercise given");
@@ -164,13 +165,13 @@ namespace QuantLib {
         PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
                                             PseudoRandom::urng_type(76));
 
-        return Handle<MCDigitalEngine<RNG,S>::path_pricer_type>(new
+        return boost::shared_ptr<MCDigitalEngine<RNG,S>::path_pricer_type>(new
           DigitalPathPricer(
             payoff,
             exercise,
             arguments_.blackScholesProcess->stateVariable->value(),
             arguments_.blackScholesProcess->riskFreeTS,
-            Handle<DiffusionProcess>(new
+            boost::shared_ptr<DiffusionProcess>(new
                 BlackScholesProcess(
                     arguments_.blackScholesProcess->riskFreeTS,
                     arguments_.blackScholesProcess->dividendTS,
@@ -200,21 +201,22 @@ namespace QuantLib {
         //! Initialize the one-factor Monte Carlo
         if (controlVariate_) {
 
-            Handle<path_pricer_type> controlPP = controlPathPricer();
-            QL_REQUIRE(!IsNull(controlPP),
+            boost::shared_ptr<path_pricer_type> controlPP = 
+                controlPathPricer();
+            QL_REQUIRE(controlPP,
                        "MCDigitalEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
-            Handle<PricingEngine> controlPE = controlPricingEngine();
-
-            QL_REQUIRE(!IsNull(controlPE),
+            boost::shared_ptr<PricingEngine> controlPE = 
+                controlPricingEngine();
+            QL_REQUIRE(controlPE,
                        "MCDigitalEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
         } else {
             mcModel_ =
-                Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
+                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
                         pathGenerator(), pathPricer(), S(),
                         antitheticVariate_));

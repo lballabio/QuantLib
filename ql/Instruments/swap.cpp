@@ -20,13 +20,13 @@
 
 namespace QuantLib {
 
-    Swap::Swap(const std::vector<Handle<CashFlow> >& firstLeg,
-               const std::vector<Handle<CashFlow> >& secondLeg,
+    Swap::Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
+               const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
                const RelinkableHandle<TermStructure>& termStructure)
     : firstLeg_(firstLeg), secondLeg_(secondLeg), 
       termStructure_(termStructure) {
         registerWith(termStructure_);
-        std::vector<Handle<CashFlow> >::iterator i;
+        std::vector<boost::shared_ptr<CashFlow> >::iterator i;
         for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
             registerWith(*i);
         for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
@@ -35,7 +35,7 @@ namespace QuantLib {
 
     bool Swap::isExpired() const {
         Date lastPayment = Date::minDate();
-        std::vector<Handle<CashFlow> >::const_iterator i;
+        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
         for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
             lastPayment = QL_MAX(lastPayment, (*i)->date());
         for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
@@ -95,15 +95,15 @@ namespace QuantLib {
         Date d = Date::maxDate();
         Size i;
         for (i=0; i<firstLeg_.size(); i++) {
-            Handle<Coupon> c = 
+            boost::shared_ptr<Coupon> c = 
                 boost::dynamic_pointer_cast<Coupon>(firstLeg_[i]);
-            if (!IsNull(c))
+            if (c)
                 d = QL_MIN(d, c->accrualStartDate());
         }
         for (i=0; i<secondLeg_.size(); i++) {
-            Handle<Coupon> c = 
+            boost::shared_ptr<Coupon> c = 
                 boost::dynamic_pointer_cast<Coupon>(secondLeg_[i]);
-            if (!IsNull(c))
+            if (c)
                 d = QL_MIN(d, c->accrualStartDate());
         }
         QL_REQUIRE(d != Date::maxDate(),

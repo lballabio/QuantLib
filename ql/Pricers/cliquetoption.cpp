@@ -54,14 +54,14 @@ namespace QuantLib {
 
         forwardDiscounts_[0] = QL_EXP(-riskFreeRate[0] * times[0]);
         double dummyStrike = underlying * moneyness_;
-        optionlet_[0] = Handle<EuropeanOption>(
+        optionlet_[0] = boost::shared_ptr<EuropeanOption>(
             new EuropeanOption(type, underlying, dummyStrike, dividendYield[0],
                                riskFreeRate[0], times[0], volatility[0]));
 
         for(i = 1; i < numOptions_; i++) {
             forwardDiscounts_[i] = QL_EXP(-riskFreeRate[i] *
                                           (times[i] - times[i-1]));
-            optionlet_[i] = Handle<EuropeanOption>(
+            optionlet_[i] = boost::shared_ptr<EuropeanOption>(
                 new EuropeanOption(type, underlying, underlying * moneyness_,
                                    dividendYield[i], riskFreeRate[i], 
                                    times[i] - times[i-1], volatility[i]));

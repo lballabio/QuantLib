@@ -40,22 +40,23 @@ namespace {
             QL_FAIL("unknown averaging");
     }
 
-    void asianOptionTestFailed(std::string greekName,
-                               Average::Type averageType,
-                               double runningProduct,
-                               Size pastFixings,
-                               std::vector<Date> fixingDates,
-                               const Handle<StrikedTypePayoff>& payoff,
-                               const Handle<Exercise>& exercise,
-                               double s,
-                               double q,
-                               double r,
-                               Date today,
-                               DayCounter dc,
-                               double v,
-                               double expected,
-                               double calculated,
-                               double tolerance = Null<double>()) {
+    void asianOptionTestFailed(
+                           std::string greekName,
+                           Average::Type averageType,
+                           double runningProduct,
+                           Size pastFixings,
+                           std::vector<Date> fixingDates,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           double s,
+                           double q,
+                           double r,
+                           Date today,
+                           DayCounter dc,
+                           double v,
+                           double expected,
+                           double calculated,
+                           double tolerance = Null<double>()) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -124,30 +125,32 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
 
-    Handle<BlackScholesStochasticProcess> stochProcess(new
+    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
         BlackScholesStochasticProcess(
             RelinkableHandle<Quote>(spot),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS)));
 
-    Handle<PricingEngine> engine(new AnalyticDiscreteAveragingAsianEngine);
+    boost::shared_ptr<PricingEngine> engine(
+                                    new AnalyticDiscreteAveragingAsianEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         std::vector<Date> fixingDates(values[i].futureFixings);
         Size dt = Size(values[i].t*360/values[i].futureFixings+0.5);

@@ -24,7 +24,7 @@ namespace QuantLib {
             if (isOnTime(arguments_.startTimes[i])) {
                 Time end = arguments_.endTimes[i];
                 Time tenor = arguments_.accrualTimes[i];
-                Handle<DiscretizedAsset> bond(
+                boost::shared_ptr<DiscretizedAsset> bond(
                                        new DiscretizedDiscountBond(method()));
                 method()->initialize(bond, end);
                 method()->rollback(bond,time_);

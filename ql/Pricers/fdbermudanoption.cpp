@@ -31,7 +31,7 @@ namespace QuantLib {
                           gridPoints, dates, timeSteps) {}
 
     void FdBermudanOption::initializeStepCondition() const{
-        stepCondition_ = Handle<StandardStepCondition> ();
+        stepCondition_ = boost::shared_ptr<StandardStepCondition> ();
     }
 
     void FdBermudanOption::executeIntermediateStep(int ) const{
@@ -41,8 +41,8 @@ namespace QuantLib {
             prices_[j] = QL_MAX(prices_[j], intrinsicValues_[j]);
     }
 
-    Handle<SingleAssetOption> FdBermudanOption::clone() const {
-        return Handle<SingleAssetOption>(new FdBermudanOption(
+    boost::shared_ptr<SingleAssetOption> FdBermudanOption::clone() const {
+        return boost::shared_ptr<SingleAssetOption>(new FdBermudanOption(
                        payoff_.optionType(), underlying_, payoff_.strike(), 
                        dividendYield_, riskFreeRate_, residualTime_, 
                        volatility_, dates_, timeStepPerPeriod_, gridPoints_));

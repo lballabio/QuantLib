@@ -54,18 +54,19 @@ namespace QuantLib {
         typedef typename path_pricer_type::result_type result_type;
         typedef stats_traits stats_type;
         // constructor
-        MonteCarloModel(const Handle<path_generator_type>& pathGenerator,
-                        const Handle<path_pricer_type>& pathPricer,
-                        const stats_type& sampleAccumulator,
-                        bool antitheticVariate,
-                        const Handle<path_pricer_type>& cvPathPricer 
-                        = Handle<path_pricer_type>(),
-                        result_type cvOptionValue = result_type())
+        MonteCarloModel(
+                  const boost::shared_ptr<path_generator_type>& pathGenerator,
+                  const boost::shared_ptr<path_pricer_type>& pathPricer,
+                  const stats_type& sampleAccumulator,
+                  bool antitheticVariate,
+                  const boost::shared_ptr<path_pricer_type>& cvPathPricer 
+                        = boost::shared_ptr<path_pricer_type>(),
+                  result_type cvOptionValue = result_type())
         : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
           sampleAccumulator_(sampleAccumulator),
           isAntitheticVariate_(antitheticVariate),
           cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue) {
-            if (IsNull(cvPathPricer_))
+            if (!cvPathPricer_)
                 isControlVariate_ = false;
             else
                 isControlVariate_ = true;
@@ -73,11 +74,11 @@ namespace QuantLib {
         void addSamples(Size samples);
         const stats_type& sampleAccumulator(void) const;
       private:
-        Handle<path_generator_type> pathGenerator_;
-        Handle<path_pricer_type> pathPricer_;
+        boost::shared_ptr<path_generator_type> pathGenerator_;
+        boost::shared_ptr<path_pricer_type> pathPricer_;
         stats_type sampleAccumulator_;
         bool isAntitheticVariate_;
-        Handle<path_pricer_type> cvPathPricer_;
+        boost::shared_ptr<path_pricer_type> cvPathPricer_;
         result_type cvOptionValue_;
         bool isControlVariate_;
     };

@@ -46,7 +46,7 @@ namespace QuantLib {
                    const DayCounter& fixedDayCount,
                    // floating leg
                    int floatingFrequency,
-                   const Handle<Xibor>& index,
+                   const boost::shared_ptr<Xibor>& index,
                    int indexFixingDays,
                    Spread spread,
                    // hook to term structure
@@ -57,7 +57,7 @@ namespace QuantLib {
                    Rate fixedRate,
                    const DayCounter& fixedDayCount,
                    const Schedule& floatSchedule,
-                   const Handle<Xibor>& index,
+                   const boost::shared_ptr<Xibor>& index,
                    int indexFixingDays,
                    Spread spread,
                    const RelinkableHandle<TermStructure>& termStructure);
@@ -71,8 +71,8 @@ namespace QuantLib {
         Spread spread() const;
         double nominal() const;
         bool payFixedRate() const;
-        const std::vector<Handle<CashFlow> >& fixedLeg() const;
-        const std::vector<Handle<CashFlow> >& floatingLeg() const;
+        const std::vector<boost::shared_ptr<CashFlow> >& fixedLeg() const;
+        const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const;
         // other
         void setupArguments(Arguments* args) const;
       private:
@@ -137,12 +137,12 @@ namespace QuantLib {
         return payFixedRate_;
     }
 
-    inline const std::vector<Handle<CashFlow> >&
+    inline const std::vector<boost::shared_ptr<CashFlow> >&
     SimpleSwap::fixedLeg() const {
         return (payFixedRate_ ? firstLeg_ : secondLeg_);
     }
 
-    inline const std::vector<Handle<CashFlow> >&
+    inline const std::vector<boost::shared_ptr<CashFlow> >&
     SimpleSwap::floatingLeg() const {
         return (payFixedRate_ ? secondLeg_ : firstLeg_);
     }

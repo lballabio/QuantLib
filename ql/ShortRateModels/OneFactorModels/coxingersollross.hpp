@@ -47,9 +47,9 @@ namespace QuantLib {
                                           Time maturity,
                                           Time bondMaturity) const;
 
-        virtual Handle<ShortRateDynamics> dynamics() const;
+        virtual boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
-        virtual Handle<Lattice> tree(const TimeGrid& grid) const;
+        virtual boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
         class Dynamics;
       protected:
@@ -103,7 +103,7 @@ namespace QuantLib {
                  double k,
                  double sigma,
                  double x0)
-        : ShortRateDynamics(Handle<DiffusionProcess>(
+        : ShortRateDynamics(boost::shared_ptr<DiffusionProcess>(
                           new HelperProcess(theta, k, sigma, QL_SQRT(x0)))) {}
 
         virtual double variable(Time t, Rate r) const {

@@ -83,31 +83,34 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new BaroneAdesiWhaleyApproximationEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(
+                                    new BaroneAdesiWhaleyApproximationEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new AmericanExercise(today, exDate));
+        boost::shared_ptr<Exercise> exercise(
+                                         new AmericanExercise(today, exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -140,30 +143,33 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Date today = Date::todaysDate();
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new BjerksundStenslandApproximationEngine);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(
+                                   new BjerksundStenslandApproximationEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new AmericanExercise(today, exDate));
+        boost::shared_ptr<Exercise> exercise(
+                                         new AmericanExercise(today, exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),

@@ -31,7 +31,8 @@ namespace QuantLib {
       public:
         CalibrationFunction( 
                   ShortRateModel* model,
-                  const std::vector<Handle<CalibrationHelper> >& instruments) 
+                  const std::vector<boost::shared_ptr<CalibrationHelper> >& 
+                                                                  instruments) 
         : model_(model, no_deletion), instruments_(instruments) {}
         virtual ~CalibrationFunction() {}
 
@@ -48,14 +49,14 @@ namespace QuantLib {
         }
         virtual double finiteDifferenceEpsilon() const { return 1e-6; }
       private:
-        Handle<ShortRateModel> model_;
-        const std::vector<Handle<CalibrationHelper> >& instruments_;
+        boost::shared_ptr<ShortRateModel> model_;
+        const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments_;
     };
 
     void ShortRateModel::calibrate(
-                   const std::vector<Handle<CalibrationHelper> >& instruments,
-                   OptimizationMethod& method, 
-                   const Constraint& additionalConstraint) {
+        const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments,
+        OptimizationMethod& method, 
+        const Constraint& additionalConstraint) {
 
         Constraint c;
         if (additionalConstraint.isNull())

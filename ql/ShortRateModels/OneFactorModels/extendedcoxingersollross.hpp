@@ -46,9 +46,9 @@ namespace QuantLib {
                          double sigma = 0.1,
                          double x0 = 0.05);
 
-        Handle<Lattice> tree(const TimeGrid& grid) const;
+        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
-        Handle<ShortRateDynamics> dynamics() const;
+        boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
         double discountBondOption(Option::Type type,
                                   double strike,
@@ -134,16 +134,16 @@ namespace QuantLib {
         FittingParameter(
                          const RelinkableHandle<TermStructure>& termStructure,
                          double theta, double k, double sigma, double x0) 
-        : TermStructureFittingParameter(Handle<Parameter::Impl>(
+        : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                  new FittingParameter::Impl(
                                      termStructure, theta, k, sigma, x0))) {}
     };
 
     // inline definitions
 
-    inline Handle<OneFactorModel::ShortRateDynamics> 
+    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics> 
     ExtendedCoxIngersollRoss::dynamics() const {
-        return Handle<ShortRateDynamics>(
+        return boost::shared_ptr<ShortRateDynamics>(
                             new Dynamics(phi_, theta(), k() , sigma(), x0()));
     }
 

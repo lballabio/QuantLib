@@ -26,12 +26,12 @@ namespace QuantLib {
                    "AnalyticEuropeanEngine::calculate() : "
                    "not an European Option");
 
-        Handle<StrikedTypePayoff> payoff =
+        boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticEuropeanEngine: non-striked payoff given");
 
-        const Handle<BlackScholesStochasticProcess>& process =
+        const boost::shared_ptr<BlackScholesStochasticProcess>& process =
             arguments_.blackScholesProcess;
 
         double variance = 

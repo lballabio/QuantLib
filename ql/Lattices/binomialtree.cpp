@@ -21,8 +21,9 @@
 
 namespace QuantLib {
 
-    BinomialTree::BinomialTree(const Handle<DiffusionProcess>& process,
-                               Time end, Size steps)
+    BinomialTree::BinomialTree(
+                           const boost::shared_ptr<DiffusionProcess>& process,
+                           Time end, Size steps)
     : Tree(steps+1) {
 
         x0_ = process->x0();
@@ -54,8 +55,8 @@ namespace QuantLib {
     }
 
 
-    JarrowRudd::JarrowRudd(const Handle<DiffusionProcess>& process,
-        Time end, Size steps, double)
+    JarrowRudd::JarrowRudd(const boost::shared_ptr<DiffusionProcess>& process,
+                           Time end, Size steps, double)
     : EqualProbabilitiesBinomialTree(process, end, steps) {
 
         // drift removed
@@ -63,7 +64,8 @@ namespace QuantLib {
     }
 
     AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(
-    const Handle<DiffusionProcess>& process, Time end, Size steps, double)
+                          const boost::shared_ptr<DiffusionProcess>& process, 
+                          Time end, Size steps, double)
     : EqualProbabilitiesBinomialTree(process, end, steps) {
 
         up_ = - 0.5 * driftPerStep_ + 0.5 *
@@ -75,7 +77,8 @@ namespace QuantLib {
 
 
     CoxRossRubinstein::CoxRossRubinstein(
-        const Handle<DiffusionProcess>& process, Time end, Size steps, double)
+                          const boost::shared_ptr<DiffusionProcess>& process, 
+                          Time end, Size steps, double)
     : EqualJumpsBinomialTree(process, end, steps) {
 
         dx_ = QL_SQRT(process->variance(0.0, x0_, dt_));
@@ -91,8 +94,8 @@ namespace QuantLib {
     }
 
 
-    Trigeorgis::Trigeorgis(const Handle<DiffusionProcess>& process, Time end,
-        Size steps, double)
+    Trigeorgis::Trigeorgis(const boost::shared_ptr<DiffusionProcess>& process, 
+                           Time end, Size steps, double)
     : EqualJumpsBinomialTree(process, end, steps) {
 
         dx_ = QL_SQRT(process->variance(0.0, x0_, dt_)+
@@ -107,8 +110,8 @@ namespace QuantLib {
     }
 
 
-    Tian::Tian(const Handle<DiffusionProcess>& process, Time end, Size steps,
-        double)
+    Tian::Tian(const boost::shared_ptr<DiffusionProcess>& process, 
+               Time end, Size steps, double)
     : BinomialTree(process, end, steps) {
 
         double q = QL_EXP(process->variance(0.0, x0_, dt_));
@@ -142,8 +145,9 @@ namespace QuantLib {
     }
 
 
-    LeisenReimer::LeisenReimer(const Handle<DiffusionProcess>& process,
-        Time end, Size steps, double strike)
+    LeisenReimer::LeisenReimer(
+                           const boost::shared_ptr<DiffusionProcess>& process,
+                           Time end, Size steps, double strike)
     : BinomialTree(process, end, (steps%2 ? steps : steps+1)) {
 
         QL_REQUIRE(strike>0.0,

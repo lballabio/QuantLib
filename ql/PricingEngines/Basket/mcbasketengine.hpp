@@ -52,9 +52,9 @@ namespace QuantLib {
 
       protected:
         // McSimulation implementation
-        Handle<path_generator_type> pathGenerator() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const;
         TimeGrid timeGrid() const;
-        Handle<path_pricer_type> pathPricer() const;
+        boost::shared_ptr<path_pricer_type> pathPricer() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_;
@@ -101,10 +101,11 @@ namespace QuantLib {
 
 
     template<class RNG, class S>
-    inline Handle<QL_TYPENAME MCBasketEngine<RNG,S>::path_generator_type>
+    inline 
+    boost::shared_ptr<QL_TYPENAME MCBasketEngine<RNG,S>::path_generator_type>
     MCBasketEngine<RNG,S>::pathGenerator() const {
 
-        Handle<PlainVanillaPayoff> payoff =
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCBasketEngineEngine: non-plain payoff given");
@@ -115,9 +116,9 @@ namespace QuantLib {
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
 
-        std::vector<Handle<DiffusionProcess> > diffusionProcs;
+        std::vector<boost::shared_ptr<DiffusionProcess> > diffusionProcs;
         for (Size j = 0; j < numAssets; j++) { 
-            Handle<DiffusionProcess> bs(new
+            boost::shared_ptr<DiffusionProcess> bs(new
               BlackScholesProcess(
                 arguments_.blackScholesProcesses[j]->riskFreeTS,
                 arguments_.blackScholesProcesses[j]->dividendTS,
@@ -126,7 +127,7 @@ namespace QuantLib {
             diffusionProcs.push_back(bs);
         }
 
-        return Handle<path_generator_type>(new
+        return boost::shared_ptr<path_generator_type>(new
             path_generator_type(diffusionProcs, arguments_.correlation, 
                                     grid, gen, brownianBridge_));
 
@@ -135,10 +136,10 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    Handle<QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>
+    boost::shared_ptr<QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>
     MCBasketEngine<RNG,S>::pathPricer() const {
 
-        Handle<PlainVanillaPayoff> payoff =
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCBasketEngine: non-plain payoff given");
@@ -150,7 +151,7 @@ namespace QuantLib {
                 ->stateVariable->value();
         }
 
-        return Handle<MCBasketEngine<RNG,S>::path_pricer_type>(new
+        return boost::shared_ptr<MCBasketEngine<RNG,S>::path_pricer_type>(new
             EuropeanMultiPathPricer(
                 arguments_.basketType,
                 payoff->optionType(),
@@ -188,15 +189,17 @@ namespace QuantLib {
         //! Initialize the multi-factor Monte Carlo
         if (controlVariate_) {
 
-            Handle<path_pricer_type> controlPP = controlPathPricer();
-            QL_REQUIRE(!IsNull(controlPP),
+            boost::shared_ptr<path_pricer_type> controlPP = 
+                controlPathPricer();
+            QL_REQUIRE(controlPP,
                        "MCBasketEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
-            Handle<PricingEngine> controlPE = controlPricingEngine();
+            boost::shared_ptr<PricingEngine> controlPE = 
+                controlPricingEngine();
 
-            QL_REQUIRE(!IsNull(controlPE),
+            QL_REQUIRE(controlPE,
                        "MCBasketEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
@@ -213,7 +216,7 @@ namespace QuantLib {
             double controlVariateValue = controlResults->value;
 
             mcModel_ =
-                Handle<MonteCarloModel<MultiAsset<RNG>, S> >(
+                boost::shared_ptr<MonteCarloModel<MultiAsset<RNG>, S> >(
                     new MonteCarloModel<MultiAsset<RNG>, S>(
                            pathGenerator(), pathPricer(), stats_type(),
                            antitheticVariate_, controlPP,
@@ -221,7 +224,7 @@ namespace QuantLib {
 
         } else {
             mcModel_ =
-                Handle<MonteCarloModel<MultiAsset<RNG>, S> >(
+                boost::shared_ptr<MonteCarloModel<MultiAsset<RNG>, S> >(
                     new MonteCarloModel<MultiAsset<RNG>, S>(
                            pathGenerator(), pathPricer(), S(),
                            antitheticVariate_));

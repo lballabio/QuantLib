@@ -33,11 +33,12 @@ namespace QuantLib {
     */
     class AmericanPayoffAtExpiry {
     public:
-        AmericanPayoffAtExpiry(double spot,
-                               double discount,
-                               double dividendDiscount,
-                               double variance,
-                               const Handle<StrikedTypePayoff>& payoff);
+        AmericanPayoffAtExpiry(
+                          double spot,
+                          double discount,
+                          double dividendDiscount,
+                          double variance,
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff);
         double value() const;
     private:
         double spot_, discount_, dividendDiscount_, variance_;
@@ -58,7 +59,7 @@ namespace QuantLib {
 
     inline AmericanPayoffAtExpiry::AmericanPayoffAtExpiry(double spot,
         double discount, double dividendDiscount, double variance,
-        const Handle<StrikedTypePayoff>& payoff)
+        const boost::shared_ptr<StrikedTypePayoff>& payoff)
     : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
       variance_(variance) {
 
@@ -89,17 +90,17 @@ namespace QuantLib {
         mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
 
         // binary cash-or-nothing payoff?
-        Handle<CashOrNothingPayoff> coo =
+        boost::shared_ptr<CashOrNothingPayoff> coo =
             boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
-        if (!IsNull(coo)) {
+        if (coo) {
             K_ = coo->cashPayoff();
             DKDstrike_ = 0.0;
         }
 
         // binary asset-or-nothing payoff?
-        Handle<AssetOrNothingPayoff> aoo =
+        boost::shared_ptr<AssetOrNothingPayoff> aoo =
             boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
-        if (!IsNull(aoo)) {
+        if (aoo) {
             K_ = forward_;
             DKDstrike_ = 0.0;
             mu_ += 1.0;

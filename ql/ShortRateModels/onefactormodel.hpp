@@ -37,10 +37,10 @@ namespace QuantLib {
         class ShortRateDynamics;
 
         //! returns the short-rate dynamics
-        virtual Handle<ShortRateDynamics> dynamics() const = 0;
+        virtual boost::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Return by default a trinomial recombining tree
-        virtual Handle<Lattice> tree(const TimeGrid& grid) const;
+        virtual boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
       protected:
         class ShortRateTree;
@@ -49,7 +49,7 @@ namespace QuantLib {
     //! Base class describing the short-rate dynamics
     class OneFactorModel::ShortRateDynamics {
       public:
-        ShortRateDynamics(const Handle<DiffusionProcess>& process)
+        ShortRateDynamics(const boost::shared_ptr<DiffusionProcess>& process)
         : process_(process) {}
         virtual ~ShortRateDynamics() {};
 
@@ -60,24 +60,27 @@ namespace QuantLib {
         virtual Rate shortRate(Time t, double variable) const = 0;
 
         //! Returns the risk-neutral dynamics of the state variable
-        const Handle<DiffusionProcess>& process() { return process_; }
+        const boost::shared_ptr<DiffusionProcess>& process() {
+            return process_;
+        }
       private:
-        Handle<DiffusionProcess> process_;
+        boost::shared_ptr<DiffusionProcess> process_;
     };
 
     //! Recombining trinomial tree discretizing the state variable
     class OneFactorModel::ShortRateTree : public Lattice {
       public:
         //! Plain tree build-up from short-rate dynamics
-        ShortRateTree(const Handle<Tree>& tree,
-                      const Handle<ShortRateDynamics>& dynamics,
+        ShortRateTree(const boost::shared_ptr<Tree>& tree,
+                      const boost::shared_ptr<ShortRateDynamics>& dynamics,
                       const TimeGrid& timeGrid);
         //! Tree build-up + numerical fitting to term-structure
         ShortRateTree(
-              const Handle<Tree>& tree,
-              const Handle<ShortRateDynamics>& dynamics,
-              const Handle<TermStructureFittingParameter::NumericalImpl>& phi,
-              const TimeGrid& timeGrid);
+                      const boost::shared_ptr<Tree>& tree,
+                      const boost::shared_ptr<ShortRateDynamics>& dynamics,
+                      const boost::shared_ptr
+                          <TermStructureFittingParameter::NumericalImpl>& phi,
+                      const TimeGrid& timeGrid);
 
         Size size(Size i) const {
             return tree_->size(i);
@@ -95,8 +98,8 @@ namespace QuantLib {
             return tree_->probability(i, index, branch);
         }
       private:
-        Handle<Tree> tree_;
-        Handle<ShortRateDynamics> dynamics_;
+        boost::shared_ptr<Tree> tree_;
+        boost::shared_ptr<ShortRateDynamics> dynamics_;
         class Helper;
     };
 

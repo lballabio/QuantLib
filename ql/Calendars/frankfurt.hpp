@@ -54,7 +54,7 @@ namespace QuantLib {
         };
       public:
         Frankfurt()
-        : Calendar(Handle<Calendar::Impl>(new Frankfurt::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Frankfurt::Impl)) {}
     };
 
 }

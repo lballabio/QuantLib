@@ -39,7 +39,8 @@ namespace QuantLib {
         };
       public:
         NullCalendar()
-        : Calendar(Handle<Calendar::Impl>(new NullCalendar::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(
+                                                 new NullCalendar::Impl)) {}
     };
 
 }

@@ -52,12 +52,12 @@ namespace QuantLib {
     }
 
     void DiscretizedVanillaOption::applySpecificCondition() {
-        Handle<BlackScholesLattice> lattice = 
+        boost::shared_ptr<BlackScholesLattice> lattice = 
             boost::dynamic_pointer_cast<BlackScholesLattice>(method());
         QL_REQUIRE(lattice,
                    "DiscretizedVanillaOption: "
                    "non-Black-Scholes lattice given");
-        Handle<Tree> tree(lattice->tree());
+        boost::shared_ptr<Tree> tree(lattice->tree());
         Size i = method()->timeGrid().findIndex(time());
 
         for (Size j=0; j<values_.size(); j++) {

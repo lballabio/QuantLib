@@ -55,7 +55,7 @@ namespace QuantLib {
         };
       public:
         NewYork()
-        : Calendar(Handle<Calendar::Impl>(new NewYork::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new NewYork::Impl)) {}
     };
 
 }

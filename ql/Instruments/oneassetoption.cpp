@@ -23,10 +23,10 @@
 namespace QuantLib {
 
     OneAssetOption::OneAssetOption(
-        const Handle<BlackScholesStochasticProcess>& stochProc,
-        const Handle<Payoff>& payoff,
-        const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine)
+        const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
+        const boost::shared_ptr<Payoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise,
+        const boost::shared_ptr<PricingEngine>& engine)
     : Option(payoff, exercise, engine),
       blackScholesProcess_(stochProc) {
         registerWith(blackScholesProcess_->stateVariable);
@@ -146,7 +146,7 @@ namespace QuantLib {
                    "wrong argument type");
 
 /*
-        QL_REQUIRE(!IsNull(blackScholesProcess_->stateVariable->value()),
+        QL_REQUIRE(blackScholesProcess_->stateVariable->value(),
                    "OneAssetOption::setupArguments : "
                    "null underlying price given");
 */
@@ -229,32 +229,34 @@ namespace QuantLib {
                    "OneAssetOption::arguments::validate() : "
                    "negative or zero underlying given");
         */
-        QL_REQUIRE(!IsNull(blackScholesProcess->dividendTS),
+        QL_REQUIRE(blackScholesProcess->dividendTS,
                    "OneAssetOption::arguments::validate() : "
                    "no dividend term structure given");
-        QL_REQUIRE(!IsNull(blackScholesProcess->riskFreeTS),
+        QL_REQUIRE(blackScholesProcess->riskFreeTS,
                    "OneAssetOption::arguments::validate() : "
                    "no risk free term structure given");
-        QL_REQUIRE(!IsNull(blackScholesProcess->volTS),
+        QL_REQUIRE(blackScholesProcess->volTS,
                    "OneAssetOption::arguments::validate() : "
                    "no vol term structure given");
     }
 
 
     OneAssetOption::ImpliedVolHelper::ImpliedVolHelper(
-                                         const Handle<PricingEngine>& engine,
-                                         double targetValue)
+                               const boost::shared_ptr<PricingEngine>& engine,
+                               double targetValue)
     : engine_(engine), targetValue_(targetValue) {
         OneAssetOption::arguments* arguments_ =
             dynamic_cast<OneAssetOption::arguments*>(engine_->arguments());
         QL_REQUIRE(arguments_ != 0,
                    "OneAssetOption::ImpliedVolHelper::ImpliedVolHelper : "
                    "pricing engine does not supply needed arguments");
-        vol_ = Handle<SimpleQuote>(new SimpleQuote(0.0));
-        arguments_->blackScholesProcess->volTS = RelinkableHandle<BlackVolTermStructure>(
-            Handle<BlackVolTermStructure>(
-                new BlackConstantVol(arguments_->blackScholesProcess->volTS->referenceDate(),
-                                     RelinkableHandle<Quote>(vol_))));
+        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
+        arguments_->blackScholesProcess->volTS = 
+            RelinkableHandle<BlackVolTermStructure>(
+                boost::shared_ptr<BlackVolTermStructure>(
+                    new BlackConstantVol(arguments_->blackScholesProcess
+                                         ->volTS->referenceDate(),
+                                         RelinkableHandle<Quote>(vol_))));
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,
                    "OneAssetOption::ImpliedVolHelper::ImpliedVolHelper : "

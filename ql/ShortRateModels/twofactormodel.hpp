@@ -37,10 +37,10 @@ namespace QuantLib {
         class ShortRateTree;
 
         //! Returns the short-rate dynamics
-        virtual Handle<ShortRateDynamics> dynamics() const = 0;
+        virtual boost::shared_ptr<ShortRateDynamics> dynamics() const = 0;
 
         //! Returns a two-dimensional trinomial tree
-        virtual Handle<Lattice> tree(const TimeGrid& grid) const;
+        virtual boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
     };
 
@@ -67,8 +67,8 @@ namespace QuantLib {
     */
     class TwoFactorModel::ShortRateDynamics {
       public:
-        ShortRateDynamics(const Handle<DiffusionProcess>& xProcess,
-                          const Handle<DiffusionProcess>& yProcess,
+        ShortRateDynamics(const boost::shared_ptr<DiffusionProcess>& xProcess,
+                          const boost::shared_ptr<DiffusionProcess>& yProcess,
                           double correlation)
         : xProcess_(xProcess), yProcess_(yProcess), 
           correlation_(correlation) {}
@@ -77,12 +77,12 @@ namespace QuantLib {
         virtual Rate shortRate(Time t, double x, double y) const = 0;
 
         //! Risk-neutral dynamics of the first state variable x
-        const Handle<DiffusionProcess>& xProcess() const {
+        const boost::shared_ptr<DiffusionProcess>& xProcess() const {
             return xProcess_;
         }
 
         //! Risk-neutral dynamics of the second state variable y
-        const Handle<DiffusionProcess>& yProcess() const {
+        const boost::shared_ptr<DiffusionProcess>& yProcess() const {
             return yProcess_;
         }
 
@@ -91,7 +91,7 @@ namespace QuantLib {
             return correlation_;
         }
       private:
-        Handle<DiffusionProcess> xProcess_, yProcess_;
+        boost::shared_ptr<DiffusionProcess> xProcess_, yProcess_;
         double correlation_;
     };
 
@@ -99,10 +99,9 @@ namespace QuantLib {
     class TwoFactorModel::ShortRateTree : public Lattice2D {
       public:
         //! Plain tree build-up from short-rate dynamics
-        ShortRateTree(
-                      const Handle<TrinomialTree>& tree1,
-                      const Handle<TrinomialTree>& tree2,
-                      const Handle<ShortRateDynamics>& dynamics);
+        ShortRateTree(const boost::shared_ptr<TrinomialTree>& tree1,
+                      const boost::shared_ptr<TrinomialTree>& tree2,
+                      const boost::shared_ptr<ShortRateDynamics>& dynamics);
 
         DiscountFactor discount(Size i, Size index) const {
             Size modulo = tree1_->size(i);
@@ -116,7 +115,7 @@ namespace QuantLib {
             return QL_EXP(-r*timeGrid().dt(i));
         }
       private:
-        Handle<ShortRateDynamics> dynamics_;
+        boost::shared_ptr<ShortRateDynamics> dynamics_;
     };
 
 }

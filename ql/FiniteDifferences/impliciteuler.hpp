@@ -66,7 +66,7 @@ namespace QuantLib {
         typedef BoundaryCondition<Operator> bcType;
         // constructors
         ImplicitEuler(const Operator& L,
-                      const std::vector<Handle<bcType> >& bcs)
+                      const std::vector<boost::shared_ptr<bcType> >& bcs)
         : MixedScheme<Operator>(L, 1.0, bcs) {}
     };
 

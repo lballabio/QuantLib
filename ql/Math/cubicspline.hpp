@@ -267,7 +267,7 @@ namespace QuantLib {
             bool monotone_;
         };
       private:
-        Handle<CoefficientHolder> coeffs_;
+        boost::shared_ptr<CoefficientHolder> coeffs_;
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
@@ -277,7 +277,7 @@ namespace QuantLib {
                     CubicSpline::BoundaryCondition rightCondition,
                     double rightConditionValue,
                     bool monotonicityConstraint) {
-            impl_ = Handle<Interpolation::Impl>(
+            impl_ = boost::shared_ptr<Interpolation::Impl>(
                         new CubicSpline::Impl<I1,I2>(
                                           xBegin, xEnd, yBegin,
                                           leftCondition, leftConditionValue,

@@ -36,13 +36,13 @@ namespace QuantLib {
           public Observer {
       public:
         GenericModelEngine() {}
-        GenericModelEngine(const Handle<ModelType>& model)
+        GenericModelEngine(const boost::shared_ptr<ModelType>& model)
         : model_(model) {
             registerWith(model_);
         }
         void validateArguments() const { arguments_.validate(); }
 
-        void setModel(const Handle<ModelType>& model) {
+        void setModel(const boost::shared_ptr<ModelType>& model) {
             unregisterWith(model_);
             model_ = model;
             QL_REQUIRE(!model_.isNull(),
@@ -54,7 +54,7 @@ namespace QuantLib {
             notifyObservers();
         }
       protected:
-        Handle<ModelType> model_;
+        boost::shared_ptr<ModelType> model_;
     };
 
 }

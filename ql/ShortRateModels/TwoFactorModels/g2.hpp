@@ -55,7 +55,7 @@ namespace QuantLib {
            double eta = 0.01,
            double rho = 0.9);
 
-        Handle<ShortRateDynamics> dynamics() const;
+        boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
         double discountBondOption(Option::Type type,
                                   double strike,
@@ -103,9 +103,9 @@ namespace QuantLib {
       public:
         Dynamics(const Parameter& fitting, 
                  double a, double sigma, double b, double eta, double rho)
-        : ShortRateDynamics(Handle<DiffusionProcess>(
+        : ShortRateDynamics(boost::shared_ptr<DiffusionProcess>(
                                       new OrnsteinUhlenbeckProcess(a, sigma)),
-                            Handle<DiffusionProcess>(
+                            boost::shared_ptr<DiffusionProcess>(
                                       new OrnsteinUhlenbeckProcess(b, eta)),
                             rho), 
           fitting_(fitting) {}
@@ -153,7 +153,7 @@ namespace QuantLib {
         FittingParameter(const RelinkableHandle<TermStructure>& termStructure,
                          double a, double sigma, double b, 
                          double eta, double rho)
-        : TermStructureFittingParameter(Handle<Parameter::Impl>(
+        : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                           new FittingParameter::Impl(termStructure, a, sigma, 
                                                      b, eta, rho))) {}
     };

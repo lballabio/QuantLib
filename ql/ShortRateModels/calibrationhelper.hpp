@@ -34,7 +34,7 @@ namespace QuantLib {
         CalibrationHelper(const RelinkableHandle<Quote>& volatility,
                           const RelinkableHandle<TermStructure>& termStructure)
         : volatility_(volatility), termStructure_(termStructure) {
-            blackModel_ = Handle<BlackModel>(
+            blackModel_ = boost::shared_ptr<BlackModel>(
                                   new BlackModel(volatility_,termStructure_));
             registerWith(volatility_);
             registerWith(termStructure_);
@@ -67,7 +67,7 @@ namespace QuantLib {
         //! Black price given a volatility
         virtual double blackPrice(double volatility) const = 0;
 
-        void setPricingEngine(const Handle<PricingEngine>& engine) {
+        void setPricingEngine(const boost::shared_ptr<PricingEngine>& engine) {
             engine_ = engine;
         }
 
@@ -75,8 +75,8 @@ namespace QuantLib {
         double marketValue_;
         RelinkableHandle<Quote> volatility_;
         RelinkableHandle<TermStructure> termStructure_;
-        Handle<BlackModel> blackModel_;
-        Handle<PricingEngine> engine_;
+        boost::shared_ptr<BlackModel> blackModel_;
+        boost::shared_ptr<PricingEngine> engine_;
 
       private:
         class ImpliedVolatilityHelper;
@@ -86,9 +86,10 @@ namespace QuantLib {
     /*! For the moment, this is just here to facilitate the assignment of a
         pricing engine to a set of calibration helpers
     */
-    class CalibrationSet : public std::vector<Handle<CalibrationHelper> > {
+    class CalibrationSet 
+        : public std::vector<boost::shared_ptr<CalibrationHelper> > {
       public:
-        void setPricingEngine(const Handle<PricingEngine>& engine) {
+        void setPricingEngine(const boost::shared_ptr<PricingEngine>& engine) {
             for (Size i=0; i<size(); i++)
                 (*this)[i]->setPricingEngine(engine);
         }

@@ -50,22 +50,23 @@ namespace {
         }
     }
 
-    void barrierOptionTestFailed(std::string greekName,
-                                 Barrier::Type barrierType,
-                                 double barrier,
-                                 double rebate,
-                                 const Handle<StrikedTypePayoff>& payoff,
-                                 const Handle<Exercise>& exercise,
-                                 double s,
-                                 double q,
-                                 double r,
-                                 Date today,
-                                 DayCounter dc,
-                                 double v,
-                                 double expected,
-                                 double calculated,
-                                 double error,
-                                 double tolerance = Null<double>()) {
+    void barrierOptionTestFailed(
+                           std::string greekName,
+                           Barrier::Type barrierType,
+                           double barrier,
+                           double rebate,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           double s,
+                           double q,
+                           double r,
+                           Date today,
+                           DayCounter dc,
+                           double v,
+                           double expected,
+                           double calculated,
+                           double error,
+                           double tolerance = Null<double>()) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -233,30 +234,31 @@ void BarrierOptionTest::testHaugValues() {
 
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<StrikedTypePayoff> payoff(new
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -333,19 +335,21 @@ void BarrierOptionTest::testBabsiriValues() {
     };
 
     DayCounter dc = SimpleDayCounter();
-    Handle<SimpleQuote> underlying(new SimpleQuote(underlyingPrice));
+    boost::shared_ptr<SimpleQuote> underlying(
+                                            new SimpleQuote(underlyingPrice));
 
-    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
+    boost::shared_ptr<SimpleQuote> qH_SME(new SimpleQuote(q));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
 
-    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
+    boost::shared_ptr<SimpleQuote> rH_SME(new SimpleQuote(r));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
 
-    Handle<SimpleQuote> volatility(new SimpleQuote(0.10));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility, dc);
+    boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(volatility, dc);
 
-    Handle<PricingEngine> engine(new AnalyticBarrierEngine);
-    Handle<PricingEngine> mcEngine(
+    boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
+    boost::shared_ptr<PricingEngine> mcEngine(
         new MCBarrierEngine<PseudoRandom>(timeSteps, antitheticVariate,
                                           controlVariate, requiredSamples,
                                           requiredTolerance, maxSamples,
@@ -354,15 +358,15 @@ void BarrierOptionTest::testBabsiriValues() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
-    Handle<Exercise> exercise(new EuropeanExercise(exDate));
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
-        Handle<StrikedTypePayoff> callPayoff(new
+        boost::shared_ptr<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(underlying),
                 RelinkableHandle<TermStructure>(qTS),
@@ -435,19 +439,21 @@ void BarrierOptionTest::testBeagleholeValues() {
     };
 
     DayCounter dc = SimpleDayCounter();
-    Handle<SimpleQuote> underlying(new SimpleQuote(underlyingPrice));
+    boost::shared_ptr<SimpleQuote> underlying(
+                                            new SimpleQuote(underlyingPrice));
 
-    Handle<SimpleQuote> qH_SME(new SimpleQuote(q));
-    Handle<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
+    boost::shared_ptr<SimpleQuote> qH_SME(new SimpleQuote(q));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
 
-    Handle<SimpleQuote> rH_SME(new SimpleQuote(r));
-    Handle<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
+    boost::shared_ptr<SimpleQuote> rH_SME(new SimpleQuote(r));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
 
-    Handle<SimpleQuote> volatility(new SimpleQuote(0.10));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(volatility, dc);
+    boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(volatility, dc);
 
-    Handle<PricingEngine> engine(new AnalyticBarrierEngine);
-    Handle<PricingEngine> mcEngine(
+    boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
+    boost::shared_ptr<PricingEngine> mcEngine(
         new MCBarrierEngine<PseudoRandom>(timeSteps, antitheticVariate,
                                           controlVariate, requiredSamples,
                                           requiredTolerance, maxSamples,
@@ -456,15 +462,15 @@ void BarrierOptionTest::testBeagleholeValues() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
-    Handle<Exercise> exercise(new EuropeanExercise(exDate));
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
-        Handle<StrikedTypePayoff> callPayoff(new
+        boost::shared_ptr<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(underlying),
                 RelinkableHandle<TermStructure>(qTS),

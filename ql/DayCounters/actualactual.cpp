@@ -20,18 +20,18 @@
 
 namespace QuantLib {
 
-    Handle<DayCounter::Impl>
+    boost::shared_ptr<DayCounter::Impl>
     ActualActual::implementation(ActualActual::Convention c) {
         switch (c) {
           case ISMA:
           case Bond:
-            return Handle<DayCounter::Impl>(new ISMA_Impl);
+            return boost::shared_ptr<DayCounter::Impl>(new ISMA_Impl);
           case ISDA:
           case Historical:
-            return Handle<DayCounter::Impl>(new ISDA_Impl);
+            return boost::shared_ptr<DayCounter::Impl>(new ISDA_Impl);
           case AFB:
           case Euro:
-            return Handle<DayCounter::Impl>(new AFB_Impl);
+            return boost::shared_ptr<DayCounter::Impl>(new AFB_Impl);
           default:
             QL_FAIL("Unknown act/act convention");
         }

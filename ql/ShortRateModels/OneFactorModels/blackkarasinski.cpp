@@ -26,7 +26,7 @@ namespace QuantLib {
       public:
         Helper(Size i, double xMin, double dx,
                double discountBondPrice, 
-               const Handle<ShortRateTree>& tree)
+               const boost::shared_ptr<ShortRateTree>& tree)
         : size_(tree->size(i)), 
           dt_(tree->timeGrid().dt(i)),
           xMin_(xMin), dx_(dx),
@@ -61,20 +61,21 @@ namespace QuantLib {
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
     }
 
-    Handle<Lattice> BlackKarasinski::tree(const TimeGrid& grid) const {
+    boost::shared_ptr<Lattice> 
+    BlackKarasinski::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
 
-        Handle<ShortRateDynamics> numericDynamics(
+        boost::shared_ptr<ShortRateDynamics> numericDynamics(
                                              new Dynamics(phi, a(), sigma()));
 
-        Handle<TrinomialTree> trinomial(
+        boost::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
-        Handle<ShortRateTree> numericTree(
+        boost::shared_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        Handle<NumericalImpl> impl = 
+        boost::shared_ptr<NumericalImpl> impl = 
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
         double value = 1.0;

@@ -47,10 +47,10 @@ namespace QuantLib {
         bool firstDateIsZero_;
         double firstNonZeroDate_;
         int firstIndex_;
-        mutable Handle<SingleAssetOption> analytic_;
+        mutable boost::shared_ptr<SingleAssetOption> analytic_;
         mutable Array prices_, controlPrices_;
-        mutable Handle<StandardStepCondition> stepCondition_;
-        mutable Handle<StandardFiniteDifferenceModel> model_;
+        mutable boost::shared_ptr<StandardStepCondition> stepCondition_;
+        mutable boost::shared_ptr<StandardFiniteDifferenceModel> model_;
         // Methods
         void calculate() const;
         virtual void initializeControlVariate() const;

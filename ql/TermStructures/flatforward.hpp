@@ -66,7 +66,7 @@ namespace QuantLib {
                                     const DayCounter& dayCounter)
     : todaysDate_(todaysDate), referenceDate_(referenceDate),
       dayCounter_(dayCounter) {
-        forward_.linkTo(Handle<Quote>(new SimpleQuote(forward)));
+        forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
     }
 
     inline FlatForward::FlatForward(const Date& todaysDate,

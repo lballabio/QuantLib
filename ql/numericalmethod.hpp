@@ -37,13 +37,13 @@ namespace QuantLib {
 
         const TimeGrid& timeGrid() const { return t_; }
 
-        virtual void initialize(const Handle<DiscretizedAsset>&,
+        virtual void initialize(const boost::shared_ptr<DiscretizedAsset>&,
                                 Time time) const = 0;
 
-        virtual void rollback(const Handle<DiscretizedAsset>&,
+        virtual void rollback(const boost::shared_ptr<DiscretizedAsset>&,
                               Time to) const = 0;
 
-        virtual void rollAlmostBack(const Handle<DiscretizedAsset>&,
+        virtual void rollAlmostBack(const boost::shared_ptr<DiscretizedAsset>&,
                                     Time to) const = 0;
       protected:
         TimeGrid t_;

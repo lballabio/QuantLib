@@ -39,9 +39,9 @@ namespace QuantLib {
         HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
                   double a = 0.1, double sigma = 0.01);
 
-        Handle<Lattice> tree(const TimeGrid& grid) const;
+        boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
-        Handle<ShortRateDynamics> dynamics() const;
+        boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
         double discountBondOption(Option::Type type,
                                   double strike,
@@ -74,7 +74,7 @@ namespace QuantLib {
         Dynamics(const Parameter& fitting,
                  double a,
                  double sigma)
-        : ShortRateDynamics(Handle<DiffusionProcess>(
+        : ShortRateDynamics(boost::shared_ptr<DiffusionProcess>(
                                      new OrnsteinUhlenbeckProcess(a, sigma))),
           fitting_(fitting) {}
 
@@ -118,16 +118,17 @@ namespace QuantLib {
         FittingParameter(
                          const RelinkableHandle<TermStructure>& termStructure,
                          double a, double sigma)
-        : TermStructureFittingParameter(Handle<Parameter::Impl>(
+        : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                       new FittingParameter::Impl(termStructure, a, sigma))) {}
     };
 
 
     // inline definitions
 
-    inline Handle<OneFactorModel::ShortRateDynamics> 
+    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics> 
     HullWhite::dynamics() const {
-        return Handle<ShortRateDynamics>(new Dynamics(phi_, a(), sigma()));
+        return boost::shared_ptr<ShortRateDynamics>(
+                                            new Dynamics(phi_, a(), sigma()));
     }
 
 }

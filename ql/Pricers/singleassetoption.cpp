@@ -102,7 +102,7 @@ namespace QuantLib {
 
             double valuePlus = value();
 
-            Handle<SingleAssetOption> brandNewFD = clone();
+            boost::shared_ptr<SingleAssetOption> brandNewFD = clone();
             double volMinus = volatility_ * (1.0 - dVolMultiplier_);
             brandNewFD -> setVolatility(volMinus);
             double valueMinus = brandNewFD -> value();
@@ -119,7 +119,7 @@ namespace QuantLib {
         if(!dividendRhoComputed_){
             double valuePlus = value();
 
-            Handle<SingleAssetOption> brandNewFD = clone();
+            boost::shared_ptr<SingleAssetOption> brandNewFD = clone();
             Rate dMinus = (dividendYield_ ?
                            dividendYield_ * (1.0 - dRMultiplier_) : 0.0001);
             brandNewFD -> setDividendYield(dMinus);
@@ -137,7 +137,7 @@ namespace QuantLib {
         if(!rhoComputed_){
             double valuePlus = value();
 
-            Handle<SingleAssetOption> brandNewFD = clone();
+            boost::shared_ptr<SingleAssetOption> brandNewFD = clone();
             Rate rMinus= (riskFreeRate_ ?
                           riskFreeRate_ * (1.0 - dRMultiplier_) : 0.0001);
             brandNewFD -> setRiskFreeRate(rMinus);
@@ -163,7 +163,7 @@ namespace QuantLib {
         if (optionValue == targetValue)
             return volatility_;
         // clone used for root finding
-        Handle<SingleAssetOption> tempBSM = clone();
+        boost::shared_ptr<SingleAssetOption> tempBSM = clone();
         // objective function
         VolatilityFunction bsmf(tempBSM, targetValue);
         // solver
@@ -188,7 +188,7 @@ namespace QuantLib {
         if (optionValue == targetValue)
             return dividendYield_;
         // clone used for root finding
-        Handle<SingleAssetOption> tempBSM = clone();
+        boost::shared_ptr<SingleAssetOption> tempBSM = clone();
         // objective function
         DivYieldFunction bsmf(tempBSM, targetValue);
         // solver

@@ -41,14 +41,15 @@ namespace QuantLib {
         return statePrices_[i];
     }
 
-    double Lattice::presentValue(const Handle<DiscretizedAsset>& asset) {
+    double Lattice::presentValue(
+                           const boost::shared_ptr<DiscretizedAsset>& asset) {
         Size i = t_.findIndex(asset->time());
         if (i>statePricesLimit_)
             computeStatePrices(i);
         return DotProduct(asset->values(), statePrices_[i]);
     }
 
-    void Lattice::initialize(const Handle<DiscretizedAsset>& asset, 
+    void Lattice::initialize(const boost::shared_ptr<DiscretizedAsset>& asset, 
                              Time t) const {
 
         Size i = t_.findIndex(t);
@@ -56,14 +57,15 @@ namespace QuantLib {
         asset->reset(size(i));
     }
 
-    void Lattice::rollback(const Handle<DiscretizedAsset>& asset, 
+    void Lattice::rollback(const boost::shared_ptr<DiscretizedAsset>& asset, 
                            Time to) const {
         rollAlmostBack(asset,to);
         asset->postAdjustValues();
     }
 
-    void Lattice::rollAlmostBack(const Handle<DiscretizedAsset>& asset, 
-                                 Time to) const {
+    void Lattice::rollAlmostBack(
+                            const boost::shared_ptr<DiscretizedAsset>& asset, 
+                            Time to) const {
 
         Time from = asset->time();
 

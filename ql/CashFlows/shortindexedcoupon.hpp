@@ -36,7 +36,7 @@ namespace QuantLib {
       public:
         Short(double nominal,
               const Date& paymentDate,
-              const Handle<Xibor>& index,
+              const boost::shared_ptr<Xibor>& index,
               const Date& startDate, const Date& endDate,
               int fixingDays,
               Spread spread = 0.0,

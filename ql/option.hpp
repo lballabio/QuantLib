@@ -33,17 +33,18 @@ namespace QuantLib {
       public:
         class arguments;
         enum Type { Call, Put, Straddle };
-        Option(const Handle<Payoff>& payoff,
-               const Handle<Exercise>& exercise,
-               const Handle<PricingEngine>& engine = Handle<PricingEngine>())
+        Option(const boost::shared_ptr<Payoff>& payoff,
+               const boost::shared_ptr<Exercise>& exercise,
+               const boost::shared_ptr<PricingEngine>& engine = 
+                                          boost::shared_ptr<PricingEngine>())
         : payoff_(payoff), exercise_(exercise) {
-            if (!IsNull(engine))
+            if (engine)
                 setPricingEngine(engine);
         }
       protected:
         // arguments
-        Handle<Payoff> payoff_;
-        Handle<Exercise> exercise_;
+        boost::shared_ptr<Payoff> payoff_;
+        boost::shared_ptr<Exercise> exercise_;
     };
 
 
@@ -57,12 +58,12 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const {
-            QL_REQUIRE(!IsNull(payoff),
+            QL_REQUIRE(payoff,
                        "Option::arguments::validate() : "
                        "no payoff given");
         }
-        Handle<Payoff> payoff;
-        Handle<Exercise> exercise;
+        boost::shared_ptr<Payoff> payoff;
+        boost::shared_ptr<Exercise> exercise;
         // shouldn't be here
         // it should be moved elsewhere
         std::vector<Time> stoppingTimes;

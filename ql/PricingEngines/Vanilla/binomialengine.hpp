@@ -65,16 +65,16 @@ namespace QuantLib {
 
         // binomial trees with constant coefficient
         RelinkableHandle<TermStructure> flatRiskFree(
-            Handle<TermStructure>(
+            boost::shared_ptr<TermStructure>(
                 new FlatForward(todaysDate, referenceDate, r, dc)));
         RelinkableHandle<TermStructure> flatDividends(
-            Handle<TermStructure>(
+            boost::shared_ptr<TermStructure>(
                 new FlatForward(todaysDate, referenceDate, q, dc)));
         RelinkableHandle<BlackVolTermStructure> flatVol(
-            Handle<BlackVolTermStructure>(
+            boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, v, dc)));
 
-        Handle<PlainVanillaPayoff> payoff =
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticEuropeanEngine: non-plain payoff given");
@@ -82,15 +82,15 @@ namespace QuantLib {
         Time maturity = arguments_.blackScholesProcess->riskFreeTS
             ->dayCounter().yearFraction(referenceDate, maturityDate);
 
-        Handle<DiffusionProcess> bs(
+        boost::shared_ptr<DiffusionProcess> bs(
             new BlackScholesProcess(flatRiskFree, flatDividends, flatVol,s0));
-        Handle<Tree> tree(new T(bs, maturity, timeSteps_,
-                                payoff->strike()));
+        boost::shared_ptr<Tree> tree(new T(bs, maturity, timeSteps_,
+                                           payoff->strike()));
 
-        Handle<Lattice> lattice(
+        boost::shared_ptr<Lattice> lattice(
             new BlackScholesLattice(tree, r, maturity, timeSteps_));
 
-        Handle<DiscretizedAsset> option(
+        boost::shared_ptr<DiscretizedAsset> option(
             new DiscretizedVanillaOption(lattice, arguments_));
 
         lattice->initialize(option, maturity);

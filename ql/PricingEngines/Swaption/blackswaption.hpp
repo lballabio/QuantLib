@@ -33,10 +33,10 @@ namespace QuantLib {
                                                     Swaption::arguments,
                                                     Swaption::results> {
       public:
-        BlackSwaption(const Handle<BlackModel>& mod)
+        BlackSwaption(const boost::shared_ptr<BlackModel>& model)
         : GenericModelEngine<BlackModel, 
                              Swaption::arguments,
-                             Swaption::results>(mod) {}
+                             Swaption::results>(model) {}
         void calculate() const;
     };
 

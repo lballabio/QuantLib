@@ -53,11 +53,11 @@ namespace QuantLib {
       public:
         // constructor
         PiecewiseFlatForward(
-                             const Date& todaysDate,
-                             const Date& referenceDate,
-                             const std::vector<Handle<RateHelper> >& instruments,
-                             const DayCounter& dayCounter,
-                             double accuracy=1.0e-12);
+               const Date& todaysDate,
+               const Date& referenceDate,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter,
+               double accuracy=1.0e-12);
         /*! In this constructor, the first date must be the reference
           date of the curve, the other dates are the nodes of the
           term structure. The forward rate at index \f$i\f$ is used
@@ -94,18 +94,18 @@ namespace QuantLib {
         class FFObjFunction {
           public:
             FFObjFunction(const PiecewiseFlatForward*,
-                          const Handle<RateHelper>&, int segment);
+                          const boost::shared_ptr<RateHelper>&, int segment);
             double operator()(double discountGuess) const;
           private:
             const PiecewiseFlatForward* curve_;
-            Handle<RateHelper> rateHelper_;
+            boost::shared_ptr<RateHelper> rateHelper_;
             int segment_;
         };
         // instrument sorter
         class RateHelperSorter {
           public:
-            bool operator()(const Handle<RateHelper>&,
-                            const Handle<RateHelper>&) const;
+            bool operator()(const boost::shared_ptr<RateHelper>&,
+                            const boost::shared_ptr<RateHelper>&) const;
         };
         // methods
         int referenceNode(Time t, bool extrapolate) const;
@@ -113,7 +113,7 @@ namespace QuantLib {
         // data members
         DayCounter dayCounter_;
         Date todaysDate_, referenceDate_;
-        std::vector<Handle<RateHelper> > instruments_;
+        std::vector<boost::shared_ptr<RateHelper> > instruments_;
         mutable std::vector<Time> times_;
         mutable std::vector<Date> dates_;
         mutable std::vector<DiscountFactor> discounts_;

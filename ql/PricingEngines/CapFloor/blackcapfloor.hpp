@@ -33,10 +33,10 @@ namespace QuantLib {
                                                     CapFloor::arguments,
                                                     CapFloor::results> {
       public:
-        BlackCapFloor(const Handle<BlackModel>& mod)
+        BlackCapFloor(const boost::shared_ptr<BlackModel>& model)
         : GenericModelEngine<BlackModel, 
                              CapFloor::arguments,
-                             CapFloor::results>(mod) {}
+                             CapFloor::results>(model) {}
         void calculate() const;
       private:
         double capletValue(Time start, Rate forward,

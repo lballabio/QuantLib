@@ -55,7 +55,7 @@ namespace QuantLib {
         mutable BSMOperator finiteDifferenceOperator_;
         mutable Array intrinsicValues_;
         typedef BoundaryCondition<TridiagonalOperator> BoundaryCondition;
-        mutable std::vector<Handle<BoundaryCondition> > BCs_;
+        mutable std::vector<boost::shared_ptr<BoundaryCondition> > BCs_;
         // temporaries
         mutable double sMin_, center_, sMax_;
       private:

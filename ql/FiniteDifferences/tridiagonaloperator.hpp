@@ -111,7 +111,7 @@ namespace QuantLib {
         };
       protected:
         Array diagonal_, lowerDiagonal_, upperDiagonal_;
-        Handle<TimeSetter> timeSetter_;
+        boost::shared_ptr<TimeSetter> timeSetter_;
     };
 
 
@@ -151,7 +151,7 @@ namespace QuantLib {
     }
 
     inline bool TridiagonalOperator::isTimeDependent() {
-        return !IsNull(timeSetter_);
+        return !!timeSetter_;
     }
 
     inline const Array& TridiagonalOperator::lowerDiagonal() const{
@@ -200,7 +200,7 @@ namespace QuantLib {
     }
 
     inline void TridiagonalOperator::setTime(Time t) {
-        if (!IsNull(timeSetter_))
+        if (timeSetter_)
             timeSetter_->setTime(t,*this);
     }
 

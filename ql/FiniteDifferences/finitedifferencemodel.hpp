@@ -37,9 +37,10 @@ namespace QuantLib {
         typedef BoundaryCondition<operatorType> bcType;
         typedef StepCondition<arrayType> conditionType;
         // constructors
-        FiniteDifferenceModel(const operatorType& L,
-                              const std::vector<Handle<bcType> >& bcs,
-                              const std::vector<Time>& stoppingTimes = 
+        FiniteDifferenceModel(
+                           const operatorType& L,
+                           const std::vector<boost::shared_ptr<bcType> >& bcs,
+                           const std::vector<Time>& stoppingTimes = 
                                                           std::vector<Time>())
         : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {}
         FiniteDifferenceModel(const Evolver& evolver,
@@ -57,8 +58,8 @@ namespace QuantLib {
                       Time from,
                       Time to,
                       Size steps,
-                      const Handle<conditionType>& condition =
-                      Handle<conditionType>());
+                      const boost::shared_ptr<conditionType>& condition =
+                                          boost::shared_ptr<conditionType>());
         const Evolver& evolver() const{return evolver_;};
       private:
         Evolver evolver_;
@@ -69,9 +70,9 @@ namespace QuantLib {
     // template definitions
     template<class Evolver>
     void FiniteDifferenceModel<Evolver>::rollback(
-                          typename FiniteDifferenceModel::arrayType& a,
-                          Time from, Time to, Size steps,
-                          const Handle<StepCondition<arrayType> >& condition) {
+              typename FiniteDifferenceModel::arrayType& a,
+              Time from, Time to, Size steps,
+              const boost::shared_ptr<StepCondition<arrayType> >& condition) {
 
         Time dt = (from-to)/steps, t = from;
         evolver_.setStep(dt);
@@ -84,7 +85,7 @@ namespace QuantLib {
             if (j == stoppingTimes_.size()) {
                 // No stopping time was hit
                 evolver_.step(a,t);
-                if (!IsNull(condition))
+                if (condition)
                     condition->applyTo(a, t-dt);
             } else {
                 // A stopping time was hit
@@ -92,13 +93,13 @@ namespace QuantLib {
                 // First baby step from t to stoppingTimes_[j]
                 evolver_.setStep(t-stoppingTimes_[j]);
                 evolver_.step(a,t);
-                if (!IsNull(condition))
+                if (condition)
                     condition->applyTo(a,stoppingTimes_[j]);
 
                 // Second baby step from stoppingTimes_[j] to t-dt
                 evolver_.setStep(stoppingTimes_[j] - (t-dt));
                 evolver_.step(a,stoppingTimes_[j]);
-                if (!IsNull(condition))
+                if (condition)
                     condition->applyTo(a,t-dt);
 
                 evolver_.setStep(dt);

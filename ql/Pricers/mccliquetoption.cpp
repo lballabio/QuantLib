@@ -198,13 +198,13 @@ namespace QuantLib {
         }
 
 
-        Handle<GaussianPathGenerator_old> pathGenerator(
+        boost::shared_ptr<GaussianPathGenerator_old> pathGenerator(
             new GaussianPathGenerator_old(mu, diffusion,
                                           TimeGrid(times.begin(), times.end()),
                                           seed));
 
         // initialize the pricer on the single Path
-        Handle<PathPricer_old<Path> > cliquetPathPricer(
+        boost::shared_ptr<PathPricer_old<Path> > cliquetPathPricer(
             new CliquetOptionPathPricer_old(type, underlying, moneyness, 
                                             accruedCoupon, lastFixing,
                                             localCap, localFloor, 
@@ -214,7 +214,8 @@ namespace QuantLib {
 
         // initialize the one-factor Monte Carlo
         mcModel_ = 
-            Handle<MonteCarloModel<SingleAsset_old<PseudoRandom_old> > >(
+            boost::shared_ptr<MonteCarloModel<SingleAsset_old<
+                                                PseudoRandom_old> > >(
                 new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
                       pathGenerator, cliquetPathPricer, Statistics(), false));
     }

@@ -41,10 +41,11 @@ namespace QuantLib {
                 double runningProduct,
                 Size pastFixings,
                 std::vector<Date> fixingDates,
-                const Handle<BlackScholesStochasticProcess>& stochProc,
-                const Handle<StrikedTypePayoff>& payoff,
-                const Handle<Exercise>& exercise,
-                const Handle<PricingEngine>& engine = Handle<PricingEngine>());
+                const boost::shared_ptr<BlackScholesStochasticProcess>&,
+                const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                const boost::shared_ptr<Exercise>& exercise,
+                const boost::shared_ptr<PricingEngine>& engine = 
+                                           boost::shared_ptr<PricingEngine>());
         //! \name Instrument interface
         //@{
         class arguments;

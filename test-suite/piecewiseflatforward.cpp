@@ -76,8 +76,8 @@ namespace {
     int floatingLegFrequency;
 
     Size deposits, swaps;
-    std::vector<Handle<SimpleQuote> > rates;
-    Handle<TermStructure> termStructure;
+    std::vector<boost::shared_ptr<SimpleQuote> > rates;
+    boost::shared_ptr<TermStructure> termStructure;
 }
 
 void PiecewiseFlatForwardTest::setUp() {
@@ -100,40 +100,40 @@ void PiecewiseFlatForwardTest::setUp() {
     swaps = LENGTH(swapData);
 
     // market elements
-    rates = std::vector<Handle<SimpleQuote> >(deposits+swaps);
+    rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
     Size i;
     for (i=0; i<deposits; i++) {
-        rates[i] = Handle<SimpleQuote>(
+        rates[i] = boost::shared_ptr<SimpleQuote>(
             new SimpleQuote(depositData[i].rate/100));
     }
     for (i=0; i<swaps; i++) {
-        rates[i+deposits] = Handle<SimpleQuote>(
+        rates[i+deposits] = boost::shared_ptr<SimpleQuote>(
             new SimpleQuote(swapData[i].rate/100));
     }
 
     // rate helpers
-    std::vector<Handle<RateHelper> > instruments(deposits+swaps);
+    std::vector<boost::shared_ptr<RateHelper> > instruments(deposits+swaps);
     for (i=0; i<deposits; i++) {
         RelinkableHandle<Quote> r(rates[i]);
-        instruments[i] = Handle<RateHelper>(
+        instruments[i] = boost::shared_ptr<RateHelper>(
             new DepositRateHelper(r, depositData[i].n, depositData[i].units,
                                   settlementDays, calendar,
                                   depoRollingConvention, depoDayCounter));
     }
     for (i=0; i<swaps; i++) {
         RelinkableHandle<Quote> r(rates[i+deposits]);
-        instruments[i+deposits] = Handle<RateHelper>(
+        instruments[i+deposits] = boost::shared_ptr<RateHelper>(
             new SwapRateHelper(r, swapData[i].n, swapData[i].units,
                                settlementDays, calendar,
                                swapRollingConvention,
                                fixedLegFrequency, fixedLegIsAdjusted,
                                fixedLegDayCounter, floatingLegFrequency));
     }
-    
+
     // instantiate curve
-    termStructure = Handle<TermStructure>(
+    termStructure = boost::shared_ptr<TermStructure>(
         new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
-    
+
 }
 
 void PiecewiseFlatForwardTest::testConsistency() {
@@ -161,8 +161,8 @@ void PiecewiseFlatForwardTest::testConsistency() {
     }
 
     // check swaps
-    Handle<Xibor> index(new Euribor(12/floatingLegFrequency,Months,
-                                    euriborHandle));
+    boost::shared_ptr<Xibor> index(new Euribor(12/floatingLegFrequency,Months,
+                                               euriborHandle));
     for (i=0; i<swaps; i++) {
         SimpleSwap swap(true,settlement,swapData[i].n,swapData[i].units,
                         calendar,swapRollingConvention,100.0,

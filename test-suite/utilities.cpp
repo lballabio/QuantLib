@@ -22,14 +22,14 @@
 #include <cppunit/TestCaller.h>
 
 #define CHECK_DOWNCAST(Derived,Description) { \
-    Handle<Derived> hd = boost::dynamic_pointer_cast<Derived>(h); \
+    boost::shared_ptr<Derived> hd = boost::dynamic_pointer_cast<Derived>(h); \
     if (hd) \
         return Description; \
 }
 
 namespace QuantLib {
 
-    std::string payoffTypeToString(const Handle<Payoff>& h) {
+    std::string payoffTypeToString(const boost::shared_ptr<Payoff>& h) {
 
         CHECK_DOWNCAST(PlainVanillaPayoff, "plain-vanilla");
         CHECK_DOWNCAST(CashOrNothingPayoff, "cash-or-nothing");
@@ -41,7 +41,7 @@ namespace QuantLib {
     }
 
 
-    std::string exerciseTypeToString(const Handle<Exercise>& h) {
+    std::string exerciseTypeToString(const boost::shared_ptr<Exercise>& h) {
 
         CHECK_DOWNCAST(EuropeanExercise, "European");
         CHECK_DOWNCAST(AmericanExercise, "American");
@@ -51,18 +51,20 @@ namespace QuantLib {
     }
 
 
-    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward,
-                                        DayCounter dc) {
+    boost::shared_ptr<TermStructure> 
+    makeFlatCurve(const boost::shared_ptr<Quote>& forward,
+                  DayCounter dc) {
         Date today = Date::todaysDate();
-        return Handle<TermStructure>(
+        return boost::shared_ptr<TermStructure>(
                        new FlatForward(today, today, 
                                        RelinkableHandle<Quote>(forward), dc));
     }
 
-    Handle<BlackVolTermStructure> makeFlatVolatility(const Handle<Quote>& vol,
-                                                     DayCounter dc) {
+    boost::shared_ptr<BlackVolTermStructure> 
+    makeFlatVolatility(const boost::shared_ptr<Quote>& vol,
+                       DayCounter dc) {
         Date today = Date::todaysDate();
-        return Handle<BlackVolTermStructure>(
+        return boost::shared_ptr<BlackVolTermStructure>(
                       new BlackConstantVol(today, 
                                            RelinkableHandle<Quote>(vol), dc));
     }
@@ -77,19 +79,20 @@ namespace QuantLib {
 
 
 
-    void vanillaOptionTestFailed(std::string greekName,
-                                 const Handle<StrikedTypePayoff>& payoff,
-                                 const Handle<Exercise>& exercise,
-                                 double s,
-                                 double q,
-                                 double r,
-                                 Date today,
-                                 DayCounter dc,
-                                 double v,
-                                 double expected,
-                                 double calculated,
-                                 double error,
-                                 double tolerance) {
+    void vanillaOptionTestFailed(
+                           std::string greekName,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           double s,
+                           double q,
+                           double r,
+                           Date today,
+                           DayCounter dc,
+                           double v,
+                           double expected,
+                           double calculated,
+                           double error,
+                           double tolerance) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 

@@ -21,8 +21,9 @@ namespace QuantLib {
 
     class AffineTermStructure::CalibrationFunction : public CostFunction {
       public:
-        CalibrationFunction(const Handle<ShortRateModel>& model,
-                            const std::vector<Handle<RateHelper> >& helpers)
+        CalibrationFunction(
+                   const boost::shared_ptr<ShortRateModel>& model,
+                   const std::vector<boost::shared_ptr<RateHelper> >& helpers)
         : model_(model), instruments_(helpers) {}
         virtual ~CalibrationFunction() {}
 
@@ -38,25 +39,26 @@ namespace QuantLib {
         }
         virtual double finiteDifferenceEpsilon() const { return 1e-7; }
       private:
-        Handle<ShortRateModel> model_;
-        const std::vector<Handle<RateHelper> >& instruments_;
+        boost::shared_ptr<ShortRateModel> model_;
+        const std::vector<boost::shared_ptr<RateHelper> >& instruments_;
     };
 
-    AffineTermStructure::AffineTermStructure(const Date& todaysDate,
-                                             const Date& referenceDate,
-                                             const Handle<AffineModel>& model,
-                                             const DayCounter& dayCounter)
+    AffineTermStructure::AffineTermStructure(
+                                  const Date& todaysDate,
+                                  const Date& referenceDate,
+                                  const boost::shared_ptr<AffineModel>& model,
+                                  const DayCounter& dayCounter)
     : dayCounter_(dayCounter), todaysDate_(todaysDate), 
       referenceDate_(referenceDate), needsRecalibration_(false), 
       model_(model) { }
 
     AffineTermStructure::AffineTermStructure(
-                          const Date& todaysDate,
-                          const Date& referenceDate,
-                          const Handle<AffineModel>& model,
-                          const std::vector<Handle<RateHelper> >& instruments,
-                          const Handle<OptimizationMethod>& method,
-                          const DayCounter& dayCounter)
+               const Date& todaysDate,
+               const Date& referenceDate,
+               const boost::shared_ptr<AffineModel>& model,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const boost::shared_ptr<OptimizationMethod>& method,
+               const DayCounter& dayCounter)
     : dayCounter_(dayCounter), todaysDate_(todaysDate), 
       referenceDate_(referenceDate), needsRecalibration_(true), 
       model_(model), instruments_(instruments), method_(method) {
@@ -65,7 +67,7 @@ namespace QuantLib {
     }
 
     void AffineTermStructure::calibrate() const {
-        Handle<ShortRateModel> model = 
+        boost::shared_ptr<ShortRateModel> model = 
             boost::dynamic_pointer_cast<ShortRateModel>(model_);
         CalibrationFunction f(model, instruments_);
 

@@ -31,8 +31,9 @@ namespace QuantLib {
 
     class DiscretizedVanillaOption : public DiscretizedAsset {
       public:
-        DiscretizedVanillaOption(const Handle<NumericalMethod>& method,
-                                 const VanillaOption::arguments& arguments)
+        DiscretizedVanillaOption(
+                             const boost::shared_ptr<NumericalMethod>& method,
+                             const VanillaOption::arguments& arguments)
         : DiscretizedAsset(method), arguments_(arguments) {}
 
         void reset(Size size);

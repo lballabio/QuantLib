@@ -64,7 +64,7 @@ namespace QuantLib {
                                                 discounts_.begin());
     }
 
-    Handle<TermStructure> 
+    boost::shared_ptr<TermStructure> 
     ExtendedDiscountCurve::reversebootstrap(int compounding) const {
         std::vector<Rate> forwards;
         Date compoundDate = calendar_.advance(referenceDate_,
@@ -101,7 +101,7 @@ namespace QuantLib {
         }
         forwards.insert(forwards.begin(),forwards[0]);
 
-        return Handle<CompoundForward>(
+        return boost::shared_ptr<CompoundForward>(
                         new CompoundForward(todaysDate_, referenceDate_,
                                             dates_, forwards, calendar_,roll_,
                                             compounding, dayCounter_));
@@ -116,7 +116,7 @@ namespace QuantLib {
                                                           extrapolate);
     }
 
-    Handle<TermStructure> 
+    boost::shared_ptr<TermStructure> 
     ExtendedDiscountCurve::forwardCurve(int compounding) const {
         if (forwardCurveMap_.find(compounding) == forwardCurveMap_.end())
             forwardCurveMap_[compounding] = reversebootstrap(compounding);

@@ -24,7 +24,7 @@ namespace QuantLib {
 
     void AnalyticBarrierEngine::calculate() const {
 
-        Handle<PlainVanillaPayoff> payoff = 
+        boost::shared_ptr<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticAmericanBinaryEngine: non-plain payoff given");
@@ -136,7 +136,7 @@ namespace QuantLib {
     }
 
     double AnalyticBarrierEngine::strike() const {
-        Handle<PlainVanillaPayoff> payoff = 
+        boost::shared_ptr<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticAmericanBinaryEngine: non-plain payoff given");

@@ -34,7 +34,7 @@ namespace QuantLib {
                                     CapFloor::arguments,
                                     CapFloor::results > {
       public:
-        AnalyticalCapFloor(const Handle<AffineModel>& model) 
+        AnalyticalCapFloor(const boost::shared_ptr<AffineModel>& model) 
         : GenericModelEngine<AffineModel, 
                              CapFloor::arguments,
                              CapFloor::results >(model) 

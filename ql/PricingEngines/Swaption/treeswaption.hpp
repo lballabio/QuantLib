@@ -32,9 +32,9 @@ namespace QuantLib {
     : public LatticeShortRateModelEngine<Swaption::arguments,
                                          Swaption::results> {
       public:
-        TreeSwaption(const Handle<ShortRateModel>& model, 
+        TreeSwaption(const boost::shared_ptr<ShortRateModel>& model, 
                      Size timeSteps);
-        TreeSwaption(const Handle<ShortRateModel>& model, 
+        TreeSwaption(const boost::shared_ptr<ShortRateModel>& model, 
                      const TimeGrid& timeGrid) ;
         void calculate() const;
     };

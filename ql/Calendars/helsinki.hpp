@@ -53,7 +53,7 @@ namespace QuantLib {
         };
       public:
         Helsinki()
-        : Calendar(Handle<Calendar::Impl>(new Helsinki::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Helsinki::Impl)) {}
     };
 
 }

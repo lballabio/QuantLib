@@ -33,7 +33,7 @@ namespace QuantLib {
         OneFactorOperator() {}
         OneFactorOperator(
             const Array& grid,
-            const Handle<OneFactorModel::ShortRateDynamics>&);
+            const boost::shared_ptr<OneFactorModel::ShortRateDynamics>&);
         virtual ~OneFactorOperator() {}
 
         class SpecificTimeSetter;
@@ -44,13 +44,13 @@ namespace QuantLib {
       public:
         SpecificTimeSetter(
             double x0, double dx,
-            const Handle<OneFactorModel::ShortRateDynamics>&);
+            const boost::shared_ptr<OneFactorModel::ShortRateDynamics>&);
         virtual ~SpecificTimeSetter() {}
         virtual void setTime(Time t, TridiagonalOperator& L) const;
       private:
         double x0_;
         double dx_;
-        Handle<OneFactorModel::ShortRateDynamics> dynamics_;
+        boost::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics_;
     };
 
 }

@@ -166,7 +166,7 @@ namespace QuantLib {
         Array mu(riskFreeRate - dividendYield
                  - 0.5 * covariance.diagonal());
 
-        Handle<GaussianMultiPathGenerator> pathGenerator(
+        boost::shared_ptr<GaussianMultiPathGenerator> pathGenerator(
             new GaussianMultiPathGenerator(
                 mu, covariance,
                 TimeGrid(times.begin(), times.end()),
@@ -174,13 +174,13 @@ namespace QuantLib {
         double residualTime = times[times.size()-1];
 
         // initialize the pricer on the path pricer
-        Handle<PathPricer_old<MultiPath> > pathPricer(
+        boost::shared_ptr<PathPricer_old<MultiPath> > pathPricer(
             new HimalayaPathPricer_old(
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
         // initialize the multi-factor Monte Carlo
-        mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
+        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset_old<
                                           PseudoRandomSequence_old> > > (
             new MonteCarloModel<MultiAsset_old<
                                 PseudoRandomSequence_old> > (

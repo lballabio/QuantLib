@@ -51,7 +51,7 @@ namespace QuantLib {
         };
       public:
         Copenhagen()
-        : Calendar(Handle<Calendar::Impl>(new Copenhagen::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Copenhagen::Impl)) {}
     };
 
 }

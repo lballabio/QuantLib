@@ -29,7 +29,8 @@ namespace QuantLib {
     }
 
     RateHelper::RateHelper(double quote)
-    : quote_(RelinkableHandle<Quote>(Handle<Quote>(new SimpleQuote(quote)))),
+    : quote_(RelinkableHandle<Quote>(
+                           boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
       termStructure_(0) {
         registerWith(quote_);
     }
@@ -261,21 +262,23 @@ namespace QuantLib {
     void SwapRateHelper::setTermStructure(TermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
-        termStructureHandle_.linkTo(Handle<TermStructure>(t,no_deletion),
-                                    false);
+        termStructureHandle_.linkTo(
+                              boost::shared_ptr<TermStructure>(t,no_deletion),
+                              false);
         RateHelper::setTermStructure(t);
         Date today = termStructure_->todaysDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
         int fixingDays = settlementDays_;
         // dummy Libor index with curve/swap arguments
-        Handle<Xibor> dummyIndex(new Xibor("dummy",
-                                           12/floatingFrequency_, Months, 
-                                           fixingDays,
-                                           EUR, // any would do
-                                           calendar_,true,convention_,
-                                           t->dayCounter(),
-                                           termStructureHandle_));
-        swap_ = Handle<SimpleSwap>(
+        boost::shared_ptr<Xibor> dummyIndex(
+                                     new Xibor("dummy",
+                                               12/floatingFrequency_, Months, 
+                                               fixingDays,
+                                               EUR, // any would do
+                                               calendar_,true,convention_,
+                                               t->dayCounter(),
+                                               termStructureHandle_));
+        swap_ = boost::shared_ptr<SimpleSwap>(
                     new SimpleSwap(true,                // pay fixed rate
                                    settlement_, n_, units_, calendar_,
                                    convention_,

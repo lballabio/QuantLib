@@ -30,7 +30,7 @@ namespace QuantLib {
     //! Discretized asset class used by numerical methods
     class DiscretizedAsset {
       public:
-        DiscretizedAsset(const Handle<NumericalMethod>& method)
+        DiscretizedAsset(const boost::shared_ptr<NumericalMethod>& method)
         : method_(method) {}
         virtual ~DiscretizedAsset() {}
 
@@ -42,7 +42,9 @@ namespace QuantLib {
         const Array& values() const { return values_; }
         Array& values() { return values_; }
 
-        const Handle<NumericalMethod>& method() const { return method_; }
+        const boost::shared_ptr<NumericalMethod>& method() const {
+            return method_;
+        }
 
         /*! This method will be invoked after rollback and before any
             other asset (i.e., an option on this one) has any chance to 
@@ -71,13 +73,14 @@ namespace QuantLib {
         Array values_;
 
       private:
-        Handle<NumericalMethod> method_;
+        boost::shared_ptr<NumericalMethod> method_;
     };
 
     //! Useful discretized discount bond asset
     class DiscretizedDiscountBond : public DiscretizedAsset {
       public:
-        DiscretizedDiscountBond(const Handle<NumericalMethod>& method)
+        DiscretizedDiscountBond(
+                             const boost::shared_ptr<NumericalMethod>& method)
         : DiscretizedAsset(method) {}
         void reset(Size size) {
             values_ = Array(size, 1.0);
@@ -88,9 +91,10 @@ namespace QuantLib {
     /*! \pre The underlying asset must be initialized */
     class DiscretizedOption : public DiscretizedAsset {
       public:
-        DiscretizedOption(const Handle<DiscretizedAsset>& underlying,
-                          Exercise::Type exerciseType,
-                          const std::vector<Time>& exerciseTimes)
+        DiscretizedOption(
+                      const boost::shared_ptr<DiscretizedAsset>& underlying,
+                      Exercise::Type exerciseType,
+                      const std::vector<Time>& exerciseTimes)
         : DiscretizedAsset(underlying->method()),
           underlying_(underlying), exerciseType_(exerciseType),
           exerciseTimes_(exerciseTimes) {}
@@ -99,7 +103,7 @@ namespace QuantLib {
         void addTimesTo(std::list<Time>& times) const;
       protected:
         void applyExerciseCondition();
-        Handle<DiscretizedAsset> underlying_;
+        boost::shared_ptr<DiscretizedAsset> underlying_;
         Exercise::Type exerciseType_;
         std::vector<Time> exerciseTimes_;
     };

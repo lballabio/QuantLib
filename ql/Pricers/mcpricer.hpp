@@ -51,7 +51,7 @@ namespace QuantLib {
         const S& sampleAccumulator(void) const;
       protected:
         McPricer() {}
-        mutable Handle<MonteCarloModel<MC,S> > mcModel_;
+        mutable boost::shared_ptr<MonteCarloModel<MC,S> > mcModel_;
         static const Size minSample_;
     };
 

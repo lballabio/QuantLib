@@ -31,11 +31,11 @@ namespace QuantLib {
     //! Base class for options on a single asset
     class OneAssetOption : public Option {
       public:
-        OneAssetOption(const Handle<BlackScholesStochasticProcess>& stochProc,
-                       const Handle<Payoff>& payoff,
-                       const Handle<Exercise>& exercise,
-                       const Handle<PricingEngine>& engine =
-                                            Handle<PricingEngine>());
+        OneAssetOption(const boost::shared_ptr<BlackScholesStochasticProcess>&,
+                       const boost::shared_ptr<Payoff>& payoff,
+                       const boost::shared_ptr<Exercise>& exercise,
+                       const boost::shared_ptr<PricingEngine>& engine =
+                                          boost::shared_ptr<PricingEngine>());
         //! \name Instrument interface
         //@{
         class arguments;
@@ -80,18 +80,18 @@ namespace QuantLib {
         mutable double delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;
         // arguments
-        Handle<BlackScholesStochasticProcess> blackScholesProcess_;
+        boost::shared_ptr<BlackScholesStochasticProcess> blackScholesProcess_;
       private:
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
           public:
-            ImpliedVolHelper(const Handle<PricingEngine>& engine,
+            ImpliedVolHelper(const boost::shared_ptr<PricingEngine>& engine,
                              double targetValue);
             double operator()(double x) const;
           private:
-            Handle<PricingEngine> engine_;
+            boost::shared_ptr<PricingEngine> engine_;
             double targetValue_;
-            Handle<SimpleQuote> vol_;
+            boost::shared_ptr<SimpleQuote> vol_;
             const Value* results_;
         };
     };
@@ -101,7 +101,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        Handle<BlackScholesStochasticProcess> blackScholesProcess;
+        boost::shared_ptr<BlackScholesStochasticProcess> blackScholesProcess;
     };
 
     //! %Results from single-asset option calculation

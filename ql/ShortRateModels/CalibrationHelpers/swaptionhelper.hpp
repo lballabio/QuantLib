@@ -25,7 +25,6 @@
 #include <ql/ShortRateModels/calibrationhelper.hpp>
 #include <ql/Instruments/swaption.hpp>
 
-
 namespace QuantLib {
 
     class SwaptionHelper : public CalibrationHelper {
@@ -34,7 +33,7 @@ namespace QuantLib {
         SwaptionHelper(const Period& maturity,
                        const Period& length,
                        const RelinkableHandle<Quote>& volatility,
-                       const Handle<Xibor>& index,
+                       const boost::shared_ptr<Xibor>& index,
                        const RelinkableHandle<TermStructure>& termStructure);
 
         virtual void addTimesTo(std::list<Time>& times) const;
@@ -45,8 +44,8 @@ namespace QuantLib {
 
       private:
         Rate exerciseRate_;
-        Handle<SimpleSwap> swap_;
-        Handle<Swaption> swaption_;
+        boost::shared_ptr<SimpleSwap> swap_;
+        boost::shared_ptr<Swaption> swaption_;
     };
 
 }

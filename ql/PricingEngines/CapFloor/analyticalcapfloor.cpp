@@ -20,7 +20,7 @@
 namespace QuantLib {
 
     void AnalyticalCapFloor::calculate() const {
-        QL_REQUIRE(!IsNull(model_), 
+        QL_REQUIRE(model_, 
                    "AnalyticalCapFloor: cannot price without model!");
 
         double value = 0.0;

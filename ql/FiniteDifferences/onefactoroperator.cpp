@@ -20,16 +20,16 @@
 namespace QuantLib {
 
     OneFactorOperator::OneFactorOperator(
-                     const Array& grid,
-                     const Handle<OneFactorModel::ShortRateDynamics>& process)
+          const Array& grid,
+          const boost::shared_ptr<OneFactorModel::ShortRateDynamics>& process)
     : TridiagonalOperator(grid.size()) {
-        timeSetter_ = Handle<TridiagonalOperator::TimeSetter>(
+        timeSetter_ = boost::shared_ptr<TridiagonalOperator::TimeSetter>(
                  new SpecificTimeSetter(grid[0], grid[1] - grid[0], process));
     }
 
     OneFactorOperator::SpecificTimeSetter::SpecificTimeSetter(
-                    double x0, double dx, 
-                    const Handle<OneFactorModel::ShortRateDynamics>& dynamics)
+         double x0, double dx, 
+         const boost::shared_ptr<OneFactorModel::ShortRateDynamics>& dynamics)
     : x0_(x0), dx_(dx), dynamics_(dynamics) {}
 
     void OneFactorOperator::SpecificTimeSetter::setTime(

@@ -56,7 +56,8 @@ namespace QuantLib {
         };
       public:
         Johannesburg()
-        : Calendar(Handle<Calendar::Impl>(new Johannesburg::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(
+                                                 new Johannesburg::Impl)) {}
     };
 
 }

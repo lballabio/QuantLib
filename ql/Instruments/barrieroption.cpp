@@ -27,15 +27,16 @@ namespace QuantLib {
         Barrier::Type barrierType,
         double barrier,
         double rebate,
-        const Handle<BlackScholesStochasticProcess>& stochProc,
-        const Handle<StrikedTypePayoff>& payoff,
-        const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine)
+        const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
+        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise,
+        const boost::shared_ptr<PricingEngine>& engine)
     : OneAssetStrikedOption(stochProc, payoff, exercise, engine), 
       barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {
 
-        if (IsNull(engine))
-            setPricingEngine(Handle<PricingEngine>(new AnalyticBarrierEngine));
+        if (!engine)
+            setPricingEngine(
+                 boost::shared_ptr<PricingEngine>(new AnalyticBarrierEngine));
 
     }
 

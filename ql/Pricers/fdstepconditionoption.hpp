@@ -42,7 +42,7 @@ namespace QuantLib {
                               int gridPoints);
         void calculate() const;
         virtual void initializeStepCondition() const = 0;
-        mutable Handle<StandardStepCondition > stepCondition_;
+        mutable boost::shared_ptr<StandardStepCondition > stepCondition_;
         int timeSteps_;
     };
 

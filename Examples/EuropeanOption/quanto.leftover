@@ -6,11 +6,11 @@
 
         // quanto and all that
 
-        Handle<AnalyticEuropeanEngine> baseEngine(new
+        boost::shared_ptr<AnalyticEuropeanEngine> baseEngine(new
             AnalyticEuropeanEngine);
 
-        Handle<QuantoEngine<VanillaOption::arguments,
-                            VanillaOption::results> >
+        boost::shared_ptr<QuantoEngine<VanillaOption::arguments,
+                                       VanillaOption::results> >
             quantoEngine(new QuantoEngine<VanillaOption::arguments,
                                           VanillaOption::results>(baseEngine));
 
@@ -18,7 +18,7 @@
         QuantoVanillaOption quantoOption(
             flatTermStructure,
             flatVolTS,
-            RelinkableHandle<Quote>(Handle<Quote>(new
+            RelinkableHandle<Quote>(boost::shared_ptr<Quote>(new
                 SimpleQuote(correlation))),
             stochasticProcess,
             payoff,
@@ -67,8 +67,8 @@
              << std::endl;
 
 
-        Handle<ForwardEngine<VanillaOption::arguments,
-                             VanillaOption::results> >
+        boost::shared_ptr<ForwardEngine<VanillaOption::arguments,
+                                        VanillaOption::results> >
             forwardEngine(new ForwardEngine<VanillaOption::arguments,
                                             VanillaOption::results>(baseEngine));
 
@@ -111,8 +111,8 @@
              << std::endl;
 
 
-        Handle<ForwardPerformanceEngine<VanillaOption::arguments,
-                                        VanillaOption::results> >
+        boost::shared_ptr<ForwardPerformanceEngine<VanillaOption::arguments,
+                                                   VanillaOption::results> >
             forwardPerformanceEngine(
                 new ForwardPerformanceEngine<VanillaOption::arguments,
                                              VanillaOption::results>(
@@ -151,8 +151,8 @@
 
 
 
-        Handle<QuantoEngine<ForwardVanillaOption::arguments,
-                            ForwardVanillaOption::results> >
+        boost::shared_ptr<QuantoEngine<ForwardVanillaOption::arguments,
+                                       ForwardVanillaOption::results> >
             quantoForwardEngine(
                new QuantoEngine<ForwardVanillaOption::arguments,
                                 ForwardVanillaOption::results>(forwardEngine));
@@ -160,7 +160,7 @@
         QuantoForwardVanillaOption quantoForwardOption(
             flatTermStructure,
             flatVolTS,
-            RelinkableHandle<Quote>(Handle<Quote>(new
+            RelinkableHandle<Quote>(boost::shared_ptr<Quote>(new
                 SimpleQuote(correlation))),
             1.1, // moneyness
             resetDate,
@@ -212,8 +212,8 @@
              << std::endl;
 
 
-        Handle<QuantoEngine<ForwardVanillaOption::arguments,
-                            ForwardVanillaOption::results> >
+        boost::shared_ptr<QuantoEngine<ForwardVanillaOption::arguments,
+                                       ForwardVanillaOption::results> >
             quantoForwardPerformanceEngine(
                new QuantoEngine<ForwardVanillaOption::arguments,
                                 ForwardVanillaOption::results>(

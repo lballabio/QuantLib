@@ -75,7 +75,7 @@ namespace QuantLib {
                    "BjerksundStenslandApproximationEngine::calculate() : "
                    "not an American Option");
 
-        Handle<AmericanExercise> ex = 
+        boost::shared_ptr<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex,
                    "BjerksundStenslandApproximationEngine: "
@@ -84,7 +84,7 @@ namespace QuantLib {
                    "BjerksundStenslandApproximationEngine::calculate() : "
                    "payoff at expiry not handled");
 
-        Handle<StrikedTypePayoff> payoff =
+        boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticEuropeanEngine: non-striked payoff given");

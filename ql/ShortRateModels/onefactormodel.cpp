@@ -26,8 +26,8 @@ namespace QuantLib {
       public:
         Helper(Size i,
                double discountBondPrice,
-               const Handle<TermStructureFittingParameter::NumericalImpl>& 
-                                                                       theta,
+               const boost::shared_ptr
+                   <TermStructureFittingParameter::NumericalImpl>& theta,
                ShortRateTree& tree)
         : size_(tree.size(i)),
           i_(i),
@@ -51,14 +51,15 @@ namespace QuantLib {
         Size i_;
         const Array& statePrices_;
         double discountBondPrice_;
-        Handle<TermStructureFittingParameter::NumericalImpl> theta_;
+        boost::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta_;
         ShortRateTree& tree_;
     };
 
     OneFactorModel::ShortRateTree::ShortRateTree(
-            const Handle<Tree>& tree,
-            const Handle<ShortRateDynamics>& dynamics,
-            const Handle<TermStructureFittingParameter::NumericalImpl>& theta,
+            const boost::shared_ptr<Tree>& tree,
+            const boost::shared_ptr<ShortRateDynamics>& dynamics,
+            const boost::shared_ptr
+                <TermStructureFittingParameter::NumericalImpl>& theta,
             const TimeGrid& timeGrid)
     : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {
 
@@ -79,17 +80,20 @@ namespace QuantLib {
     }
 
     OneFactorModel::ShortRateTree::ShortRateTree(
-                                    const Handle<Tree>& tree,
-                                    const Handle<ShortRateDynamics>& dynamics,
-                                    const TimeGrid& timeGrid)
+                         const boost::shared_ptr<Tree>& tree,
+                         const boost::shared_ptr<ShortRateDynamics>& dynamics,
+                         const TimeGrid& timeGrid)
     : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {}
 
     OneFactorModel::OneFactorModel(Size nArguments) 
     : ShortRateModel(nArguments) {}
 
-    Handle<Lattice> OneFactorModel::tree(const TimeGrid& grid) const {
-        Handle<Tree> trinomial(new TrinomialTree(dynamics()->process(), grid));
-        return Handle<Lattice>(new ShortRateTree(trinomial, dynamics(), grid));
+    boost::shared_ptr<Lattice> 
+    OneFactorModel::tree(const TimeGrid& grid) const {
+        boost::shared_ptr<Tree> trinomial(
+                              new TrinomialTree(dynamics()->process(), grid));
+        return boost::shared_ptr<Lattice>(
+                              new ShortRateTree(trinomial, dynamics(), grid));
     }
 
 }

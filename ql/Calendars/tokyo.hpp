@@ -63,7 +63,7 @@ namespace QuantLib {
         };
       public:
         Tokyo()
-        : Calendar(Handle<Calendar::Impl>(new Tokyo::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Tokyo::Impl)) {}
     };
 
 }

@@ -40,8 +40,8 @@ namespace QuantLib {
                    Size timeSteps = 200,
                    Size gridPoints = 800);
         const Array& getPrices() const;
-        Handle<SingleAssetOption> clone() const{
-            return Handle<SingleAssetOption>(
+        boost::shared_ptr<SingleAssetOption> clone() const{
+            return boost::shared_ptr<SingleAssetOption>(
                                              new FdEuropean(*this));
         }
       protected:

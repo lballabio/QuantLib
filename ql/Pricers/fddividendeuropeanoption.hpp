@@ -41,7 +41,7 @@ namespace QuantLib {
             QL_FAIL("FdDividendEuropeanOption::dividendRho not"
                     "implemented yet");
         }
-        Handle<SingleAssetOption> clone() const;
+        boost::shared_ptr<SingleAssetOption> clone() const;
         double riskless(Rate r, std::vector<double> divs,
                         std::vector<Time> divDates) const;
       private:

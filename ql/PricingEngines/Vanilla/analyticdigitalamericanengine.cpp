@@ -28,7 +28,7 @@ namespace QuantLib {
                    "AnalyticAmericanEngine::calculate() : "
                    "not an American Option");
 
-        Handle<AmericanExercise> ex = 
+        boost::shared_ptr<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "AnalyticDigitalAmericanEngine: "
                    "non-American exercise given");
@@ -37,12 +37,12 @@ namespace QuantLib {
                    "AnalyticDigitalAmericanEngine::calculate() : "
                    "American option with window exercise not handled yet");
 
-        Handle<StrikedTypePayoff> payoff =
+        boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticDigitalEuropeanEngine: non-striked payoff given");
 
-        const Handle<BlackScholesStochasticProcess>& process = 
+        const boost::shared_ptr<BlackScholesStochasticProcess>& process = 
             arguments_.blackScholesProcess;
 
         double spot = process->stateVariable->value();

@@ -50,14 +50,15 @@ namespace QuantLib {
         //@}
       protected:
         void calibrateNodes() const;
-        Handle<TermStructure> reversebootstrap(int) const;
+        boost::shared_ptr<TermStructure> reversebootstrap(int) const;
         Rate compoundForwardImpl(Time, int, 
                                  bool extrapolate = false) const;
-        Handle<TermStructure> forwardCurve(int) const;
+        boost::shared_ptr<TermStructure> forwardCurve(int) const;
       private:
         Calendar calendar_;
         RollingConvention roll_;
-        mutable std::map<int,Handle<TermStructure> > forwardCurveMap_;
+        mutable std::map<int,boost::shared_ptr<TermStructure> > 
+                                                         forwardCurveMap_;
     };
 
     // inline definitions

@@ -40,7 +40,7 @@ namespace QuantLib {
                  const std::vector<double>& dividends = std::vector<double>(),
                  const std::vector<Time>& exdivdates = std::vector<Time>(),
                  int timeSteps = 100, int gridPoints = 100);
-        Handle<SingleAssetOption> clone() const;
+        boost::shared_ptr<SingleAssetOption> clone() const;
     };
 
 }

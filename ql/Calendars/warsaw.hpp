@@ -52,7 +52,7 @@ namespace QuantLib {
         };
       public:
         Warsaw()
-        : Calendar(Handle<Calendar::Impl>(new Warsaw::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Warsaw::Impl)) {}
     };
 
 }

@@ -43,7 +43,8 @@ namespace QuantLib {
         registerWith(blackTS_);
         registerWith(riskFreeTS_);
         registerWith(dividendTS_);
-        underlying_.linkTo(Handle<Quote>(new SimpleQuote(underlying)));
+        underlying_.linkTo(
+                       boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
     }
 
     void LocalVolSurface::accept(AcyclicVisitor& v) {

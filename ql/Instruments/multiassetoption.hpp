@@ -32,12 +32,14 @@ namespace QuantLib {
     class MultiAssetOption : public Option {
       public:
         MultiAssetOption(
-               const std::vector<Handle<BlackScholesStochasticProcess> >& 
+               const std::vector<
+                   boost::shared_ptr<BlackScholesStochasticProcess> >& 
                                                                    stochProcs,
-               const Handle<Payoff>& payoff,
-               const Handle<Exercise>& exercise,
+               const boost::shared_ptr<Payoff>& payoff,
+               const boost::shared_ptr<Exercise>& exercise,
                const Matrix& correlation,
-               const Handle<PricingEngine>& engine = Handle<PricingEngine>());
+               const boost::shared_ptr<PricingEngine>& engine = 
+                                           boost::shared_ptr<PricingEngine>());
         //! \name Instrument interface
         //@{
         class arguments;
@@ -61,7 +63,7 @@ namespace QuantLib {
         mutable double delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
         // arguments        
-        std::vector< Handle<BlackScholesStochasticProcess> > 
+        std::vector< boost::shared_ptr<BlackScholesStochasticProcess> > 
             blackScholesProcesses_;
         Matrix correlation_;
     };
@@ -71,7 +73,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        std::vector< Handle<BlackScholesStochasticProcess> > 
+        std::vector< boost::shared_ptr<BlackScholesStochasticProcess> > 
             blackScholesProcesses;
         Matrix correlation;
     };

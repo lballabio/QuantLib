@@ -32,7 +32,7 @@ namespace QuantLib {
         : public ForwardEngine<ArgumentsType, ResultsType> {
       public:
         ForwardPerformanceEngine(
-                    const Handle<GenericEngine<ArgumentsType,ResultsType> >&);
+          const boost::shared_ptr<GenericEngine<ArgumentsType,ResultsType> >&);
         void calculate() const;
         void getOriginalResults() const;
     };
@@ -43,7 +43,7 @@ namespace QuantLib {
     template<class ArgumentsType, class ResultsType>
     ForwardPerformanceEngine<ArgumentsType, ResultsType>::
     ForwardPerformanceEngine(
-        const Handle<GenericEngine<ArgumentsType, ResultsType> >&
+        const boost::shared_ptr<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
     : ForwardEngine<ArgumentsType, ResultsType>(originalEngine) {}
 

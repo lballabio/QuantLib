@@ -49,7 +49,7 @@ namespace QuantLib {
         };
       public:
         TARGET()
-        : Calendar(Handle<Calendar::Impl>(new TARGET::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new TARGET::Impl)) {}
     };
 
 }

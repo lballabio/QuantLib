@@ -41,22 +41,22 @@ namespace QuantLib {
         }
 
         //! Computes the present value of an asset using Arrow-Debrew prices
-        double presentValue(const Handle<DiscretizedAsset>& asset);
+        double presentValue(const boost::shared_ptr<DiscretizedAsset>& asset);
 
         //! Initialize a DiscretizedAsset object.
-        void initialize(const Handle<DiscretizedAsset>& asset,
+        void initialize(const boost::shared_ptr<DiscretizedAsset>& asset,
                         Time t) const;
 
         /*! Roll back a DiscretizedAsset object until a certain time,
           performing any needed adjustment 
         */
-        void rollback(const Handle<DiscretizedAsset>& asset,
+        void rollback(const boost::shared_ptr<DiscretizedAsset>& asset,
                       Time to) const;
 
         /*! Roll-back a DiscretizedAsset object until a certain time,
           but do not perform the final adjustment.
         */
-        void rollAlmostBack(const Handle<DiscretizedAsset>& asset,
+        void rollAlmostBack(const boost::shared_ptr<DiscretizedAsset>& asset,
                             Time to) const;
 
         virtual Size size(Size i) const = 0;

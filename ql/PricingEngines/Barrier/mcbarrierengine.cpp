@@ -22,15 +22,15 @@
 namespace QuantLib {
 
     BarrierPathPricer::BarrierPathPricer(
-                            Barrier::Type barrierType, 
-                            double barrier, 
-                            double rebate, 
-                            Option::Type type,
-                            double underlying, 
-                            double strike,
-                            const RelinkableHandle<TermStructure>& riskFreeTS,
-                            const Handle<DiffusionProcess>& diffProcess,
-                            const PseudoRandom::ursg_type& sequenceGen)
+                       Barrier::Type barrierType, 
+                       double barrier, 
+                       double rebate, 
+                       Option::Type type,
+                       double underlying, 
+                       double strike,
+                       const RelinkableHandle<TermStructure>& riskFreeTS,
+                       const boost::shared_ptr<DiffusionProcess>& diffProcess,
+                       const PseudoRandom::ursg_type& sequenceGen)
     : PathPricer<Path>(riskFreeTS), underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier), 
       rebate_(rebate), diffProcess_(diffProcess),

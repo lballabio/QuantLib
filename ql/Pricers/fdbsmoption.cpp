@@ -94,9 +94,9 @@ namespace QuantLib {
                                                 riskFreeRate_, dividendYield_, 
                                                 volatility_);
 
-        BCs_[0] = Handle<BoundaryCondition>(new NeumannBC(
+        BCs_[0] = boost::shared_ptr<BoundaryCondition>(new NeumannBC(
                   intrinsicValues_[1]-intrinsicValues_[0], NeumannBC::Lower));
-        BCs_[1] = Handle<BoundaryCondition>(new NeumannBC(
+        BCs_[1] = boost::shared_ptr<BoundaryCondition>(new NeumannBC(
             intrinsicValues_[gridPoints_-1] - intrinsicValues_[gridPoints_-2],
             NeumannBC::Upper));
     }

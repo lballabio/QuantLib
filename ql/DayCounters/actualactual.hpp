@@ -72,7 +72,8 @@ namespace QuantLib {
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const;
         };
-        static Handle<DayCounter::Impl> implementation(Convention c);
+        static boost::shared_ptr<DayCounter::Impl> implementation(
+                                                                Convention c);
       public:
         ActualActual(Convention c = ActualActual::ISMA)
         : DayCounter(implementation(c)) {}

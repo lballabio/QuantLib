@@ -32,10 +32,11 @@ namespace QuantLib {
     class OneAssetStrikedOption : public OneAssetOption {
       public:
         OneAssetStrikedOption(
-            const Handle<BlackScholesStochasticProcess>& stochProc,
-            const Handle<StrikedTypePayoff>& payoff,
-            const Handle<Exercise>& exercise,
-            const Handle<PricingEngine>& engine = Handle<PricingEngine>());
+            const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise,
+            const boost::shared_ptr<PricingEngine>& engine = 
+                                      boost::shared_ptr<PricingEngine>());
         //! \name greeks
         //@{
         double strikeSensitivity() const;

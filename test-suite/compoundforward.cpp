@@ -70,7 +70,7 @@ namespace {
     Size deposits, swaps;
     std::vector<Rate> rates;
     std::vector<Date> dates;
-    Handle<TermStructure> termStructure;
+    boost::shared_ptr<TermStructure> termStructure;
 }
 
 void CompoundForwardTest::setUp() {
@@ -108,7 +108,7 @@ void CompoundForwardTest::setUp() {
 					     rollingConvention);
     }
 
-    termStructure = Handle<TermStructure>(
+    termStructure = boost::shared_ptr<TermStructure>(
 	new CompoundForward(today,settlement,dates,rates,
 			    calendar,rollingConvention,frequency,dayCounter));
 }
@@ -120,7 +120,8 @@ void CompoundForwardTest::testSuppliedRates() {
 
     Size i;
     // check swaps against original
-    Handle<Xibor> index(new ZARLibor(12/frequency,Months,liborHandle));
+    boost::shared_ptr<Xibor> index(
+                               new ZARLibor(12/frequency,Months,liborHandle));
     for (i=0; i<swaps; i++) {
         SimpleSwap swap(true,settlement,swapData[i].n,swapData[i].units,
                         calendar,rollingConvention,100.0,
@@ -148,7 +149,8 @@ void CompoundForwardTest::testConvertedRates() {
     Size i;
     frequency = 4;
     // check swaps against quarterly rates
-    Handle<Xibor> index(new ZARLibor(12/frequency,Months,liborHandle));
+    boost::shared_ptr<Xibor> index(
+                               new ZARLibor(12/frequency,Months,liborHandle));
     for (i=0; i<swaps; i++) {
         SimpleSwap swap(true,settlement,swapData[i].n,swapData[i].units,
                         calendar,rollingConvention,100.0,

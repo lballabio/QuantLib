@@ -48,8 +48,10 @@ namespace QuantLib {
 
     }
 
-    Handle<SingleAssetOption> FdDividendEuropeanOption::clone() const{
-        return Handle<SingleAssetOption>(new FdDividendEuropeanOption(*this));
+    boost::shared_ptr<SingleAssetOption> 
+    FdDividendEuropeanOption::clone() const {
+        return boost::shared_ptr<SingleAssetOption>(
+                                         new FdDividendEuropeanOption(*this));
     }
 
     double FdDividendEuropeanOption::theta() const{

@@ -47,7 +47,7 @@ namespace QuantLib {
         double delta() const {return 0.0;}
         double gamma() const {return 0.0;}
         double theta() const {return 0.0;}
-        Handle<SingleAssetOption> clone() const;
+        boost::shared_ptr<SingleAssetOption> clone() const;
       private:
         static const CumulativeNormalDistribution f_;
         std::vector<Time> times_;
@@ -55,8 +55,10 @@ namespace QuantLib {
 
 
     // inline definitions
-    inline Handle<SingleAssetOption> DiscreteGeometricASO::clone() const {
-        return Handle<SingleAssetOption>(new DiscreteGeometricASO(*this));
+    inline boost::shared_ptr<SingleAssetOption> 
+    DiscreteGeometricASO::clone() const {
+        return boost::shared_ptr<SingleAssetOption>(
+                                             new DiscreteGeometricASO(*this));
     }
 
 }

@@ -41,31 +41,32 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 10.0));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -93,31 +94,32 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -145,31 +147,32 @@ void DigitalOptionTest::testGapEuropeanValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new GapPayoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(new GapPayoff(
             values[i].type, values[i].strike, 57.00));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+        boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -208,31 +211,33 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.00));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+                                                                    exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -270,31 +275,33 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(100.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.04));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.01));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.25));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+                                                                    exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -327,31 +334,34 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(100.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.04));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.01));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.25));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.0));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> amExercise(new AmericanExercise(today, exDate, true));
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+                                                                    exDate, 
+                                                                    true));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -390,31 +400,34 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(100.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.04));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.01));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.25));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> amExercise(new AmericanExercise(today, exDate, true));
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+                                                                    exDate, 
+                                                                    true));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -453,48 +466,54 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     double vols[] = { 0.11, 0.5, 1.2 };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
 
     Date today = Date::todaysDate();
 
     // there is no cycling on different residual times
     Date exDate = today.plusDays(360);
-    Handle<Exercise> exercise(new EuropeanExercise(exDate));
-    Handle<Exercise> amExercise(new AmericanExercise(today, exDate, false));
-    Handle<Exercise> exercises[] = { exercise, amExercise };
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
+    boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+                                                                exDate, 
+                                                                false));
+    boost::shared_ptr<Exercise> exercises[] = { exercise, amExercise };
     // time-shifted exercise dates
     Date exDateP = exDate.plusDays(1),
          exDateM = exDate.plusDays(-1);
     Time dT = Actual360().yearFraction(today, exDateP) -
               Actual360().yearFraction(today, exDateM);
-    Handle<Exercise> exerciseP(new EuropeanExercise(exDateP));
-    Handle<Exercise> amExerciseP(new AmericanExercise(today, exDateP, false));
-    Handle<Exercise> exercisesP[] = { exerciseP, amExerciseP };
-    Handle<Exercise> exerciseM(new EuropeanExercise(exDateM));
-    Handle<Exercise> amExerciseM(new AmericanExercise(today, exDateM, false));
-    Handle<Exercise> exercisesM[] = { exerciseP, amExerciseM };
+    boost::shared_ptr<Exercise> exerciseP(new EuropeanExercise(exDateP));
+    boost::shared_ptr<Exercise> amExerciseP(
+                                 new AmericanExercise(today, exDateP, false));
+    boost::shared_ptr<Exercise> exercisesP[] = { exerciseP, amExerciseP };
+    boost::shared_ptr<Exercise> exerciseM(new EuropeanExercise(exDateM));
+    boost::shared_ptr<Exercise> amExerciseM(
+                                 new AmericanExercise(today, exDateM, false));
+    boost::shared_ptr<Exercise> exercisesM[] = { exerciseP, amExerciseM };
 
-    Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
+    boost::shared_ptr<PricingEngine> euroEngine(
         new AnalyticEuropeanEngine());
 
-    Handle<PricingEngine> amEngine = Handle<PricingEngine>(
+    boost::shared_ptr<PricingEngine> amEngine(
         new AnalyticDigitalAmericanEngine());
 
-    Handle<PricingEngine> engines[] = { euroEngine, amEngine };
+    boost::shared_ptr<PricingEngine> engines[] = { euroEngine, amEngine };
 
     for (Size j=0; j<LENGTH(engines); j++) {
       for (Size i1=0; i1<LENGTH(types); i1++) {
         for (Size i6=0; i6<LENGTH(strikes); i6++) {
-            Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(types[i1],
-              strikes[i6], cashPayoff));
+            boost::shared_ptr<StrikedTypePayoff> payoff(
+                            new CashOrNothingPayoff(types[i1],
+                                                    strikes[i6], cashPayoff));
 
-            Handle<BlackScholesStochasticProcess> stochProcess(new
+            boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
                 BlackScholesStochasticProcess(
                     RelinkableHandle<Quote>(spot),
                     RelinkableHandle<TermStructure>(qTS),
@@ -612,13 +631,14 @@ void DigitalOptionTest::testMCCashAtHit() {
     };
 
     DayCounter dc = Actual360();
-    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = 
+        makeFlatVolatility(vol, dc);
 
     Size maxTimeStepsPerYear = 90;
     bool controlVariate = false;
@@ -626,21 +646,22 @@ void DigitalOptionTest::testMCCashAtHit() {
     long seed = 1;
 
     Date today = Date::todaysDate();
-    
+
     for (Size i=0; i<LENGTH(values); i++) {
 
-        Handle<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
+        boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.0));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+        boost::shared_ptr<Exercise> amExercise(
+                                         new AmericanExercise(today, exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        Handle<BlackScholesStochasticProcess> stochProcess(new
+        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
             BlackScholesStochasticProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
@@ -648,7 +669,7 @@ void DigitalOptionTest::testMCCashAtHit() {
                 RelinkableHandle<BlackVolTermStructure>(volTS)));
 
         bool antitheticVariate = true;
-        Handle<PricingEngine> mcEngine = Handle<PricingEngine>(new
+        boost::shared_ptr<PricingEngine> mcEngine(new
             MCDigitalEngine<PseudoRandom>(maxTimeStepsPerYear,
                                           antitheticVariate, controlVariate,
                                           Null<int>(), values[i].tol,
@@ -656,7 +677,7 @@ void DigitalOptionTest::testMCCashAtHit() {
 
         antitheticVariate = false;
         Size requiredSamples = Size(QL_POW(2.0, 14)-1);
-        Handle<PricingEngine> mcldEngine = Handle<PricingEngine>(new
+        boost::shared_ptr<PricingEngine> mcldEngine(new
             MCDigitalEngine<LowDiscrepancy>(maxTimeStepsPerYear,
                                             antitheticVariate, controlVariate,
                                             requiredSamples, Null<double>(),
@@ -675,7 +696,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         double calculatedLD = opt.NPV();
         std::cout << "\n MCLD: " << DoubleFormatter::toString(calculatedLD) << " with samples: " << requiredSamples;
 
-        Handle<PricingEngine> amEngine(new AnalyticDigitalAmericanEngine());
+        boost::shared_ptr<PricingEngine> amEngine(new AnalyticDigitalAmericanEngine());
         opt.setPricingEngine(amEngine);
         double calcAnalytic = opt.NPV();
         std::cout << "\n anal: " << DoubleFormatter::toString(calcAnalytic);

@@ -33,11 +33,12 @@ namespace QuantLib {
         : public GenericEngine<QuantoOptionArguments<ArgumentsType>,
                                QuantoOptionResults<ResultsType> > {
       public:
-        QuantoEngine(const Handle<GenericEngine<ArgumentsType,
-                                                ResultsType> >&);
+        QuantoEngine(const boost::shared_ptr<GenericEngine<ArgumentsType,
+                                                           ResultsType> >&);
         void calculate() const;
       protected:
-        Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
+        boost::shared_ptr<GenericEngine<ArgumentsType, 
+                                        ResultsType> > originalEngine_;
         ArgumentsType* originalArguments_;
         const ResultsType* originalResults_;
     };
@@ -47,10 +48,10 @@ namespace QuantLib {
 
     template<class ArgumentsType, class ResultsType>
     QuantoEngine<ArgumentsType, ResultsType>::QuantoEngine(
-        const Handle<GenericEngine<ArgumentsType, ResultsType> >&
+        const boost::shared_ptr<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
     : originalEngine_(originalEngine) {
-        QL_REQUIRE(!IsNull(originalEngine_),
+        QL_REQUIRE(originalEngine_,
                    "QuantoEngine::QuantoEngine : null engine");
         originalResults_ = dynamic_cast<const ResultsType*>(
             originalEngine_->results());
@@ -67,7 +68,7 @@ namespace QuantLib {
         originalEngine_->reset();
 
         // determine strike from payoff
-        Handle<StrikedTypePayoff> payoff =
+        boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "QuantoEngine: non-striked payoff given");
@@ -81,14 +82,15 @@ namespace QuantLib {
         originalArguments_->blackScholesProcess=arguments_.blackScholesProcess;
         // dividendTS needs modification
         originalArguments_->blackScholesProcess->dividendTS =
-            RelinkableHandle<TermStructure>(Handle<TermStructure>(new
-                QuantoTermStructure(
-                    arguments_.blackScholesProcess->dividendTS,
-                    arguments_.blackScholesProcess->riskFreeTS,
-                    arguments_.foreignRiskFreeTS,
-                    arguments_.blackScholesProcess->volTS, strike,
-                    arguments_.exchRateVolTS, exchangeRateATMlevel,
-                    arguments_.correlation)));
+            RelinkableHandle<TermStructure>(
+                boost::shared_ptr<TermStructure>(new
+                    QuantoTermStructure(
+                        arguments_.blackScholesProcess->dividendTS,
+                        arguments_.blackScholesProcess->riskFreeTS,
+                        arguments_.foreignRiskFreeTS,
+                        arguments_.blackScholesProcess->volTS, strike,
+                        arguments_.exchRateVolTS, exchangeRateATMlevel,
+                        arguments_.correlation)));
 
         originalArguments_->exercise      = arguments_.exercise;
 

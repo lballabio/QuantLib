@@ -25,7 +25,7 @@ namespace QuantLib {
         for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
             Time t = arguments_.fixedResetTimes[i];
             if (t >= 0.0 && isOnTime(t)) {
-                Handle<DiscretizedAsset> bond(
+                boost::shared_ptr<DiscretizedAsset> bond(
                                        new DiscretizedDiscountBond(method()));
                 method()->initialize(bond,
                                      arguments_.fixedPayTimes[i]);
@@ -45,7 +45,7 @@ namespace QuantLib {
         for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
             Time t = arguments_.floatingResetTimes[i];
             if (t >= 0.0 && isOnTime(t)) {
-                Handle<DiscretizedAsset> bond(
+                boost::shared_ptr<DiscretizedAsset> bond(
                                        new DiscretizedDiscountBond(method()));
                 method()->initialize(bond, 
                                      arguments_.floatingPayTimes[i]);

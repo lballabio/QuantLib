@@ -52,7 +52,7 @@ namespace QuantLib {
     }
 
     void FdDividendOption::initializeControlVariate() const{
-        analytic_ = Handle<SingleAssetOption>(
+        analytic_ = boost::shared_ptr<SingleAssetOption>(
              new FdDividendEuropeanOption(
                   payoff_.optionType(), underlying_ + addElements(dividends_),
                   payoff_.strike(), dividendYield_, riskFreeRate_,

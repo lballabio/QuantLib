@@ -39,15 +39,15 @@ namespace {
     int fixedFrequency_, floatingFrequency_;
     DayCounter fixedDayCount_;
     bool fixedIsAdjusted_;
-    Handle<Xibor> index_;
+    boost::shared_ptr<Xibor> index_;
     int settlementDays_, fixingDays_;
     RelinkableHandle<TermStructure> termStructure_;
 
     // utilities
 
-    Handle<SimpleSwap> makeSwap(int length, Rate fixedRate,
-                                Spread floatingSpread) {
-        return Handle<SimpleSwap>(
+    boost::shared_ptr<SimpleSwap> makeSwap(int length, Rate fixedRate,
+                                           Spread floatingSpread) {
+        return boost::shared_ptr<SimpleSwap>(
             new SimpleSwap(payFixed_,settlement_,length,Years,
                            calendar_,rollingConvention_,nominal_,
                            fixedFrequency_,fixedRate,fixedIsAdjusted_,
@@ -69,14 +69,14 @@ void SimpleSwapTest::setUp() {
     floatingFrequency_ = 2;
     fixedDayCount_ = Thirty360();
     fixedIsAdjusted_ = false;
-    index_ = Handle<Xibor>(new Euribor(12/floatingFrequency_,Months,
-                                       termStructure_));
+    index_ = boost::shared_ptr<Xibor>(new Euribor(12/floatingFrequency_,Months,
+                                                  termStructure_));
     calendar_ = index_->calendar();
     today_ = calendar_.roll(Date::todaysDate());
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(
-        Handle<TermStructure>(new FlatForward(today_,settlement_,0.05,
-                                              Actual365())));
+        boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
+                                                         0.05,Actual365())));
 }
 
 void SimpleSwapTest::testFairRate() {
@@ -87,7 +87,8 @@ void SimpleSwapTest::testFairRate() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(spreads); j++) {
 
-            Handle<SimpleSwap> swap = makeSwap(lengths[i],0.0,spreads[j]);
+            boost::shared_ptr<SimpleSwap> swap = 
+                makeSwap(lengths[i],0.0,spreads[j]);
             swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
             if (QL_FABS(swap->NPV()) > 1.0e-10) {
                 CPPUNIT_FAIL(
@@ -111,7 +112,8 @@ void SimpleSwapTest::testFairSpread() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(rates); j++) {
 
-            Handle<SimpleSwap> swap = makeSwap(lengths[i],rates[j],0.0);
+            boost::shared_ptr<SimpleSwap> swap = 
+                makeSwap(lengths[i],rates[j],0.0);
             swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
             if (QL_FABS(swap->NPV()) > 1.0e-10) {
                 CPPUNIT_FAIL(
@@ -138,7 +140,7 @@ void SimpleSwapTest::testRateDependency() {
             // store the results for different rates...
             std::vector<double> swap_values;
             for (Size k=0; k<LENGTH(rates); k++) {
-                Handle<SimpleSwap> swap = 
+                boost::shared_ptr<SimpleSwap> swap = 
                     makeSwap(lengths[i],rates[k],spreads[j]);
                 swap_values.push_back(swap->NPV());
             }
@@ -176,7 +178,7 @@ void SimpleSwapTest::testSpreadDependency() {
             // store the results for different spreads...
             std::vector<double> swap_values;
             for (Size k=0; k<LENGTH(spreads); k++) {
-                Handle<SimpleSwap> swap = 
+                boost::shared_ptr<SimpleSwap> swap = 
                     makeSwap(lengths[i],rates[j],spreads[k]);
                 swap_values.push_back(swap->NPV());
             }
@@ -208,12 +210,12 @@ void SimpleSwapTest::testCachedValue() {
     today_ = Date(17,June,2002);
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(
-        Handle<TermStructure>(new FlatForward(today_,settlement_,0.05,
-                                              Actual365())));
+        boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
+                                                         0.05,Actual365())));
 
-    Handle<SimpleSwap> swap = makeSwap(10, 0.06, 0.001);
+    boost::shared_ptr<SimpleSwap> swap = makeSwap(10, 0.06, 0.001);
     double cachedNPV   = -5.883663676727;
-    
+
     if (QL_FABS(swap->NPV()-cachedNPV) > 1.0e-11)
         CPPUNIT_FAIL(
             "failed to reproduce cached swap value:\n"
@@ -222,7 +224,8 @@ void SimpleSwapTest::testCachedValue() {
             "    expected:   " +
             DoubleFormatter::toString(cachedNPV,12));
 }
-        
+
+
 CppUnit::Test* SimpleSwapTest::suite() {
     CppUnit::TestSuite* tests = new CppUnit::TestSuite("Simple swap tests");
     tests->addTest(new CppUnit::TestCaller<SimpleSwapTest>

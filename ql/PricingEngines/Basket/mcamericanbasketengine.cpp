@@ -106,10 +106,10 @@ namespace QuantLib {
 
         class LinearCombo : public BasisFunction {
           private:
-            Handle<BasisFunction> bf1_, bf2_;
+            boost::shared_ptr<BasisFunction> bf1_, bf2_;
           public:
-            LinearCombo(const Handle<BasisFunction>& bf1, 
-                        const Handle<BasisFunction>& bf2) 
+            LinearCombo(const boost::shared_ptr<BasisFunction>& bf1, 
+                        const boost::shared_ptr<BasisFunction>& bf2) 
             : bf1_(bf1), bf2_(bf2) {}
             double calculate(const std::vector<double>& x) const {
                 return bf1_->calculate(x)*bf2_->calculate(x);
@@ -119,11 +119,11 @@ namespace QuantLib {
         class Polynomial : public BasisFunction {
           private:
             double factor_;
-            Handle<BasisFunction> bf1_, bf2_;
+            boost::shared_ptr<BasisFunction> bf1_, bf2_;
           public:
             Polynomial(double factor, 
-                       const Handle<BasisFunction>& bf1, 
-                       const Handle<BasisFunction>& bf2) 
+                       const boost::shared_ptr<BasisFunction>& bf1, 
+                       const boost::shared_ptr<BasisFunction>& bf2) 
             : factor_(factor), bf1_(bf1), bf2_(bf2) {}
             double calculate(const std::vector<double>& x) const {
                 return factor_*(bf1_->calculate(x) + bf2_->calculate(x));
@@ -133,10 +133,10 @@ namespace QuantLib {
         class MyPolynomial : public BasisFunction {
           private:
             double factor_;
-            std::vector<Handle<BasisFunction> > basisFunctions_;
+            std::vector<boost::shared_ptr<BasisFunction> > basisFunctions_;
           public:
             MyPolynomial(double factor, 
-                         const std::vector<Handle<BasisFunction> >& 
+                         const std::vector<boost::shared_ptr<BasisFunction> >& 
                                                            basisFunctions)
             : factor_(factor), basisFunctions_(basisFunctions) {}
             double calculate(const std::vector<double>& x) const;
@@ -182,7 +182,7 @@ namespace QuantLib {
     // calculate
     void MCAmericanBasketEngine::calculate() const {
 
-        Handle<PlainVanillaPayoff> payoff_handle =
+        boost::shared_ptr<PlainVanillaPayoff> payoff_handle =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff_handle,
                    "MCAmericanBasketEngine: non-plain payoff given");
@@ -207,7 +207,7 @@ namespace QuantLib {
         Size N = requiredSamples_;
 
         // set up the basis functions        
-        std::vector<Handle<BasisFunction> > basisFunctions;
+        std::vector<boost::shared_ptr<BasisFunction> > basisFunctions;
 
         bool monomial = true;
         bool legendre = false;
@@ -216,47 +216,52 @@ namespace QuantLib {
         if (numAssets == 1) {
             if (monomial) {
                 // monomials
-                basisFunctions.push_back(Handle<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                     (new Constant(1)));
 
-                basisFunctions.push_back(Handle<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                     (new Linear(0)));
 
-                basisFunctions.push_back(Handle<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                     (new Square(0)));
 /*
-                basisFunctions.push_back(Handle<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                     (new Cube(0)));
 
-                basisFunctions.push_back(Handle<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                     (new BasisPower(0, 4)));
 
-                basisFunctions.push_back(Handle<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                     (new BasisPower(0, 5)));
  */
             } else if (legendre) {
                 // legendre polynomials
-                Handle<BasisFunction> legendre_0(new Constant(1));
-                Handle<BasisFunction> legendre_1(new Linear(0));
-                Handle<BasisFunction> legendre_2(new Polynomial 
-                    (0.5, Handle<BasisFunction> (new Constant(-1)),
-                            Handle<BasisFunction> (new Square(0, 3))));
-                Handle<BasisFunction> legendre_3(new Polynomial 
-                    (0.5, Handle<BasisFunction> (new Linear(0, -3)), 
-                            Handle<BasisFunction> (new Cube(0, 5))));
+                boost::shared_ptr<BasisFunction> legendre_0(new Constant(1));
+                boost::shared_ptr<BasisFunction> legendre_1(new Linear(0));
+                boost::shared_ptr<BasisFunction> legendre_2(new Polynomial 
+                    (0.5, 
+                     boost::shared_ptr<BasisFunction>(new Constant(-1)),
+                     boost::shared_ptr<BasisFunction>(new Square(0, 3))));
+                boost::shared_ptr<BasisFunction> legendre_3(new Polynomial 
+                    (0.5, 
+                     boost::shared_ptr<BasisFunction>(new Linear(0, -3)), 
+                     boost::shared_ptr<BasisFunction>(new Cube(0, 5))));
 
-                std::vector<Handle<BasisFunction> > basis4(3);
-                basis4[0] = Handle<BasisFunction> (new Constant(3));
-                basis4[1] = Handle<BasisFunction> (new Square(0, -30));
-                basis4[2] = Handle<BasisFunction> (new BasisPower(0, 4, 35));
-                Handle<BasisFunction> legendre_4(
+                std::vector<boost::shared_ptr<BasisFunction> > basis4(3);
+                basis4[0] = boost::shared_ptr<BasisFunction>(new Constant(3));
+                basis4[1] = 
+                    boost::shared_ptr<BasisFunction>(new Square(0, -30));
+                basis4[2] = 
+                    boost::shared_ptr<BasisFunction>(new BasisPower(0, 4, 35));
+                boost::shared_ptr<BasisFunction> legendre_4(
                         new MyPolynomial(0.125, basis4));
 
-                std::vector<Handle<BasisFunction> > basis5(3);
-                basis5[0] = Handle<BasisFunction> (new Linear(0,15));
-                basis5[1] = Handle<BasisFunction> (new Cube(0, -70));
-                basis5[2] = Handle<BasisFunction> (new BasisPower(0, 5, 63));
-                Handle<BasisFunction> legendre_5(
+                std::vector<boost::shared_ptr<BasisFunction> > basis5(3);
+                basis5[0] = boost::shared_ptr<BasisFunction>(new Linear(0,15));
+                basis5[1] = boost::shared_ptr<BasisFunction>(new Cube(0, -70));
+                basis5[2] = 
+                    boost::shared_ptr<BasisFunction>(new BasisPower(0, 5, 63));
+                boost::shared_ptr<BasisFunction> legendre_5(
                         new MyPolynomial(0.125, basis5));
 
                 basisFunctions.push_back(legendre_0); 
@@ -268,24 +273,28 @@ namespace QuantLib {
 
             } else if (laguerre) {
                 // laguerre polynomials
-                Handle<BasisFunction> laguerre_0(new Constant(1));
-                Handle<BasisFunction> laguerre_1(new Polynomial 
-                    (1, Handle<BasisFunction> (new Constant(1)), 
-                        Handle<BasisFunction> (new Linear(0, -1))));
+                boost::shared_ptr<BasisFunction> laguerre_0(new Constant(1));
+                boost::shared_ptr<BasisFunction> laguerre_1(new Polynomial 
+                    (1, 
+                     boost::shared_ptr<BasisFunction> (new Constant(1)), 
+                     boost::shared_ptr<BasisFunction> (new Linear(0, -1))));
 
-                std::vector<Handle<BasisFunction> > basis2(3);
-                basis2[0] = Handle<BasisFunction> (new Constant(2));
-                basis2[1] = Handle<BasisFunction> (new Linear(0, -4));
-                basis2[2] = Handle<BasisFunction> (new Square(0, 1));
-                Handle<BasisFunction> laguerre_2(
+                std::vector<boost::shared_ptr<BasisFunction> > basis2(3);
+                basis2[0] = boost::shared_ptr<BasisFunction>(new Constant(2));
+                basis2[1] = 
+                    boost::shared_ptr<BasisFunction>(new Linear(0, -4));
+                basis2[2] = 
+                    boost::shared_ptr<BasisFunction>(new Square(0, 1));
+                boost::shared_ptr<BasisFunction> laguerre_2(
                     new MyPolynomial(0.5, basis2));
 
-                std::vector<Handle<BasisFunction> > basis3(4);
-                basis3[0] = Handle<BasisFunction> (new Constant(6));
-                basis3[1] = Handle<BasisFunction> (new Linear(0, -18));
-                basis3[2] = Handle<BasisFunction> (new Square(0, 9));
-                basis3[3] = Handle<BasisFunction> (new Cube(0, -1));
-                Handle<BasisFunction> laguerre_3(
+                std::vector<boost::shared_ptr<BasisFunction> > basis3(4);
+                basis3[0] = boost::shared_ptr<BasisFunction>(new Constant(6));
+                basis3[1] = 
+                    boost::shared_ptr<BasisFunction>(new Linear(0, -18));
+                basis3[2] = boost::shared_ptr<BasisFunction>(new Square(0, 9));
+                basis3[3] = boost::shared_ptr<BasisFunction>(new Cube(0, -1));
+                boost::shared_ptr<BasisFunction> laguerre_3(
                     new MyPolynomial(1.0/6.0, basis3));
 
                 basisFunctions.push_back(laguerre_0); 
@@ -296,79 +305,92 @@ namespace QuantLib {
 
         } else if (numAssets == 3) {
 
-            basisFunctions.push_back(Handle<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                 (new Constant(1)));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                 (new Linear(1)));
-            basisFunctions.push_back(Handle<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                 (new Linear(2)));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                 (new Square(1)));
-            basisFunctions.push_back(Handle<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                 (new Square(2)));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                 (new Cube(1)));
-            basisFunctions.push_back(Handle<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                 (new Cube(2)));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Square(1)), 
-                                 Handle<BasisFunction>(new Square(1)))));
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Square(2)), 
-                                 Handle<BasisFunction>(new Square(2)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                           boost::shared_ptr<BasisFunction>(new Square(1)), 
+                           boost::shared_ptr<BasisFunction>(new Square(1)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                           boost::shared_ptr<BasisFunction>(new Square(2)), 
+                           boost::shared_ptr<BasisFunction>(new Square(2)))));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Square(1)), 
-                                 Handle<BasisFunction>(new Cube(1)))));
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Square(2)), 
-                                 Handle<BasisFunction>(new Cube(2)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                             boost::shared_ptr<BasisFunction>(new Square(1)), 
+                             boost::shared_ptr<BasisFunction>(new Cube(1)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                             boost::shared_ptr<BasisFunction>(new Square(2)), 
+                             boost::shared_ptr<BasisFunction>(new Cube(2)))));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
                 (new LinearCombination(1,2)));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Linear(1)), 
-                                 Handle<BasisFunction>(new Square(2)))));
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Linear(2)), 
-                                 Handle<BasisFunction>(new Square(1)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                           boost::shared_ptr<BasisFunction>(new Linear(1)), 
+                           boost::shared_ptr<BasisFunction>(new Square(2)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                           boost::shared_ptr<BasisFunction>(new Linear(2)), 
+                           boost::shared_ptr<BasisFunction>(new Square(1)))));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Square(1)), 
-                                 Handle<BasisFunction>(new Square(2)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                           boost::shared_ptr<BasisFunction>(new Square(1)), 
+                           boost::shared_ptr<BasisFunction>(new Square(2)))));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Linear(1)), 
-                                 Handle<BasisFunction>(new Cube(2)))));
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Linear(2)), 
-                                 Handle<BasisFunction>(new Cube(1)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                             boost::shared_ptr<BasisFunction>(new Linear(1)), 
+                             boost::shared_ptr<BasisFunction>(new Cube(2)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                             boost::shared_ptr<BasisFunction>(new Linear(2)), 
+                             boost::shared_ptr<BasisFunction>(new Cube(1)))));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Square(1)), 
-                                 Handle<BasisFunction>(new Cube(2)))));
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Square(2)), 
-                                 Handle<BasisFunction>(new Cube(1)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                             boost::shared_ptr<BasisFunction>(new Square(1)), 
+                             boost::shared_ptr<BasisFunction>(new Cube(2)))));
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                             boost::shared_ptr<BasisFunction>(new Square(2)), 
+                             boost::shared_ptr<BasisFunction>(new Cube(1)))));
 
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Linear(1)), 
-                                 Handle<BasisFunction>
-                                 (new LinearCombo(Handle<BasisFunction>(
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                        boost::shared_ptr<BasisFunction>(new Linear(1)), 
+                        boost::shared_ptr<BasisFunction>
+                            (new LinearCombo(boost::shared_ptr<BasisFunction>(
                                                             new Cube(2)),
-                                                  Handle<BasisFunction>(
+                                             boost::shared_ptr<BasisFunction>(
                                                             new Cube(2)))))));
-            basisFunctions.push_back(Handle<BasisFunction> 
-                (new LinearCombo(Handle<BasisFunction>(new Linear(2)), 
-                                 Handle<BasisFunction>
-                                 (new LinearCombo(Handle<BasisFunction>(
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                (new LinearCombo(
+                        boost::shared_ptr<BasisFunction>(new Linear(2)), 
+                        boost::shared_ptr<BasisFunction>
+                            (new LinearCombo(boost::shared_ptr<BasisFunction>(
                                                             new Cube(2)),
-                                                  Handle<BasisFunction>(
+                                             boost::shared_ptr<BasisFunction>(
                                                             new Cube(2)))))));
         }
 
@@ -393,11 +415,11 @@ namespace QuantLib {
 
         // set up the diffuction processes
         std::vector<double> initialPrices (numAssets);
-        std::vector<Handle<DiffusionProcess> > diffusionProcs;
+        std::vector<boost::shared_ptr<DiffusionProcess> > diffusionProcs;
         for (j = 0; j < numAssets; j++) { 
             initialPrices[j] = arguments_.blackScholesProcesses[j]
                 ->stateVariable->value();
-            Handle<DiffusionProcess> bs(new
+            boost::shared_ptr<DiffusionProcess> bs(new
               BlackScholesProcess(
                 arguments_.blackScholesProcesses[j]->riskFreeTS,
                 arguments_.blackScholesProcesses[j]->dividendTS,
@@ -407,14 +429,14 @@ namespace QuantLib {
         }
 
         // create the MultiPathGenerator
-        Handle<MultiPathGenerator<GaussianRandomSequenceGenerator> > 
+        boost::shared_ptr<MultiPathGenerator<GaussianRandomSequenceGenerator> > 
             multipathGenerator(
                 new MultiPathGenerator<GaussianRandomSequenceGenerator> (
                                             diffusionProcs, 
                                             arguments_.correlation, grid, 
                                             gen, brownianBridge));
 
-        Handle<MultiPathGenerator<GaussianLowDiscrepancySequenceGenerator> >
+        boost::shared_ptr<MultiPathGenerator<GaussianLowDiscrepancySequenceGenerator> >
             quasiMultipathGenerator(
             new MultiPathGenerator<GaussianLowDiscrepancySequenceGenerator> (
                                             diffusionProcs, 

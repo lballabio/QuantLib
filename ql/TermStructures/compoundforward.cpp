@@ -88,7 +88,7 @@ namespace QuantLib {
                                          forwards_.begin());
     }
 
-    Handle<TermStructure> CompoundForward::bootstrap() const {
+    boost::shared_ptr<TermStructure> CompoundForward::bootstrap() const {
         needsBootstrap_ = false;
         QL_REQUIRE(compounding_ > 0,
                    "Continuous compounding needs no bootstrap.");
@@ -125,7 +125,7 @@ namespace QuantLib {
                 }
                 discounts.push_back(df);
             }
-            discountCurve_ = Handle<DiscountCurve>(
+            discountCurve_ = boost::shared_ptr<DiscountCurve>(
                      new ExtendedDiscountCurve(todaysDate_, dates_, discounts,
                                                calendar_, roll_, dayCounter_));
         }
@@ -200,7 +200,7 @@ namespace QuantLib {
         return discountCurve()->compoundForward(t,f,extrapolate);
     }
 
-    Handle<TermStructure> CompoundForward::discountCurve() const {
+    boost::shared_ptr<TermStructure> CompoundForward::discountCurve() const {
         QL_REQUIRE(compounding_ > 0,
                    "Continuous compounding needs no bootstrap.");
         if (needsBootstrap_)

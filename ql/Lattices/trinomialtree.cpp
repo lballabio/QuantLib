@@ -19,9 +19,10 @@
 
 namespace QuantLib {
 
-    TrinomialTree::TrinomialTree(const Handle<DiffusionProcess>& process,
-                                 const TimeGrid& timeGrid,
-                                 bool isPositive)
+    TrinomialTree::TrinomialTree(
+                           const boost::shared_ptr<DiffusionProcess>& process,
+                           const TimeGrid& timeGrid,
+                           bool isPositive)
     : Tree(timeGrid.size()), dx_(1, 0.0), timeGrid_(timeGrid) {
         x0_ = process->x0();
 
@@ -38,7 +39,8 @@ namespace QuantLib {
             double v = QL_SQRT(v2);
             dx_.push_back(v*QL_SQRT(3.0));
 
-            Handle<TrinomialBranching> branching(new TrinomialBranching());
+            boost::shared_ptr<TrinomialBranching> branching(
+                                                    new TrinomialBranching());
             for (int j=jMin; j<=jMax; j++) {
                 double x = x0_ + j*dx_[i];
                 double m = process->expectation(t, x, dt);

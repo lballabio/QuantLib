@@ -21,12 +21,13 @@
 
 namespace QuantLib {
 
-    CapFloor::CapFloor(CapFloor::Type type,
-                       const std::vector<Handle<CashFlow> >& floatingLeg,
-                       const std::vector<Rate>& capRates,
-                       const std::vector<Rate>& floorRates,
-                       const RelinkableHandle<TermStructure>& termStructure,
-                       const Handle<PricingEngine>& engine)
+    CapFloor::CapFloor(
+                 CapFloor::Type type,
+                 const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
+                 const std::vector<Rate>& capRates,
+                 const std::vector<Rate>& floorRates,
+                 const RelinkableHandle<TermStructure>& termStructure,
+                 const boost::shared_ptr<PricingEngine>& engine)
     : type_(type), floatingLeg_(floatingLeg),
       capRates_(capRates), floorRates_(floorRates),
       termStructure_(termStructure) {
@@ -43,7 +44,7 @@ namespace QuantLib {
             while (floorRates_.size() < floatingLeg_.size())
                 floorRates_.push_back(floorRates_.back());
         }
-        std::vector<Handle<CashFlow> >::const_iterator i;
+        std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);
         registerWith(termStructure);
@@ -78,7 +79,7 @@ namespace QuantLib {
         DayCounter counter = termStructure_->dayCounter();
 
         for (Size i=0; i<floatingLeg_.size(); i++) {
-            Handle<FloatingRateCoupon> coupon = 
+            boost::shared_ptr<FloatingRateCoupon> coupon = 
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
             QL_REQUIRE(coupon,
@@ -165,10 +166,10 @@ namespace QuantLib {
                          double targetValue)
     : termStructure_(termStructure), targetValue_(targetValue) {
 
-        vol_ = Handle<SimpleQuote>(new SimpleQuote(0.0));
+        vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         RelinkableHandle<Quote> h(vol_);
-        Handle<BlackModel> model(new BlackModel(h,termStructure_));
-        engine_ = Handle<PricingEngine>(new BlackCapFloor(model));
+        boost::shared_ptr<BlackModel> model(new BlackModel(h,termStructure_));
+        engine_ = boost::shared_ptr<PricingEngine>(new BlackCapFloor(model));
 
         cap.setupArguments(engine_->arguments());
 

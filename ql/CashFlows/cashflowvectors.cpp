@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    std::vector<Handle<CashFlow> > 
+    std::vector<boost::shared_ptr<CashFlow> > 
     FixedRateCouponVector(const Schedule& schedule,
                           const std::vector<double>& nominals,
                           const std::vector<Rate>& couponRates,
@@ -35,7 +35,7 @@ namespace QuantLib {
                    "FixedRateCouponVector: "
                    "unspecified nominals (size=0)");
 
-        std::vector<Handle<CashFlow> > leg;
+        std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();
         RollingConvention rollingConvention =
             schedule.rollingConvention();
@@ -51,7 +51,7 @@ namespace QuantLib {
                        firstPeriodDayCount == dayCount,
                        "regular first coupon "
                        "does not allow a first-period day count");
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new FixedRateCoupon(nominal, paymentDate, rate, dayCount,
                                     start, end, start, end)));
         } else {
@@ -61,7 +61,7 @@ namespace QuantLib {
             DayCounter dc = firstPeriodDayCount.isNull() ?
                             dayCount :
                             firstPeriodDayCount;
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new FixedRateCoupon(nominal, paymentDate, rate, 
                                     dc, start, end, reference, end)));
         }
@@ -77,7 +77,7 @@ namespace QuantLib {
                 nominal = nominals[i-1];
             else
                 nominal = nominals.back();
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
                                     start, end, start, end)));
         }
@@ -95,7 +95,7 @@ namespace QuantLib {
             else
                 nominal = nominals.back();
             if (schedule.isRegular(N-1)) {
-                leg.push_back(Handle<CashFlow>(
+                leg.push_back(boost::shared_ptr<CashFlow>(
                     new FixedRateCoupon(nominal, paymentDate, 
                                         rate, dayCount, 
                                         start, end, start, end)));
@@ -104,7 +104,7 @@ namespace QuantLib {
                     start.plusMonths(12/schedule.frequency());
                 if (isAdjusted)
                     reference = calendar.roll(reference,rollingConvention);
-                leg.push_back(Handle<CashFlow>(
+                leg.push_back(boost::shared_ptr<CashFlow>(
                     new FixedRateCoupon(nominal, paymentDate, 
                                         rate, dayCount, 
                                         start, end, start, reference)));
@@ -114,17 +114,17 @@ namespace QuantLib {
     }
 
 
-    std::vector<Handle<CashFlow> > 
+    std::vector<boost::shared_ptr<CashFlow> > 
     FloatingRateCouponVector(const Schedule& schedule,
                              const std::vector<double>& nominals,
-                             const Handle<Xibor>& index, 
+                             const boost::shared_ptr<Xibor>& index, 
                              int fixingDays,
                              const std::vector<Spread>& spreads) {
 
         QL_REQUIRE(nominals.size() != 0, 
                    "FloatingRateCouponVector: unspecified nominals");
 
-        std::vector<Handle<CashFlow> > leg;
+        std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();
         RollingConvention rollingConvention =
             schedule.rollingConvention();
@@ -139,14 +139,14 @@ namespace QuantLib {
             spread = 0.0;
         double nominal = nominals[0];
         if (schedule.isRegular(1)) {
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new ParCoupon(nominal, paymentDate, index, start, end, 
                               fixingDays, spread, start, end)));
         } else {
             Date reference = end.plusMonths(-12/schedule.frequency());
             reference =
                 calendar.roll(reference,rollingConvention);
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new ShortFloatingRateCoupon(nominal, paymentDate, 
                                             index, start, end, 
                                             fixingDays, spread, 
@@ -166,7 +166,7 @@ namespace QuantLib {
                 nominal = nominals[i-1];
             else
                 nominal = nominals.back();
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new ParCoupon(nominal, paymentDate, index, start, end, 
                               fixingDays, spread, start, end)));
         }
@@ -186,7 +186,7 @@ namespace QuantLib {
             else
                 nominal = nominals.back();
             if (schedule.isRegular(N-1)) {
-                leg.push_back(Handle<CashFlow>(
+                leg.push_back(boost::shared_ptr<CashFlow>(
                     new ParCoupon(nominal, paymentDate, index, start, end, 
                                   fixingDays, spread, start, end)));
             } else {
@@ -194,7 +194,7 @@ namespace QuantLib {
                     start.plusMonths(12/schedule.frequency());
                 reference =
                     calendar.roll(reference,rollingConvention);
-                leg.push_back(Handle<CashFlow>(
+                leg.push_back(boost::shared_ptr<CashFlow>(
                     new ShortFloatingRateCoupon(nominal, paymentDate, 
                                                 index, start, end, 
                                                 fixingDays, spread, 

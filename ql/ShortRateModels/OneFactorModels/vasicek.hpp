@@ -43,7 +43,7 @@ namespace QuantLib {
                                           Time maturity,
                                           Time bondMaturity) const;
 
-        virtual Handle<ShortRateDynamics> dynamics() const;
+        virtual boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
       protected:
         virtual double A(Time t, Time T) const;
@@ -72,7 +72,7 @@ namespace QuantLib {
                  double b,
                  double sigma,
                  double r0)
-        : ShortRateDynamics(Handle<DiffusionProcess>(
+        : ShortRateDynamics(boost::shared_ptr<DiffusionProcess>(
                              new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
           a_(a), b_(b), r0_(r0) {}
 
@@ -89,9 +89,9 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Handle<OneFactorModel::ShortRateDynamics> 
+    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics> 
     Vasicek::dynamics() const {
-        return Handle<ShortRateDynamics>(
+        return boost::shared_ptr<ShortRateDynamics>(
                                      new Dynamics(a(), b() , sigma(), r0_));
     }
 

@@ -52,7 +52,7 @@ namespace QuantLib {
         std::vector<Rate> riskFreeRate_;
         std::vector<Time> times_;
         Size numOptions_;
-        std::vector<Handle<EuropeanOption> > optionlet_;
+        std::vector<boost::shared_ptr<EuropeanOption> > optionlet_;
         std::vector<DiscountFactor> discounts_;
     };
 

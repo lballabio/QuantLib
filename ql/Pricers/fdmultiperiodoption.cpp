@@ -151,18 +151,18 @@ namespace QuantLib {
     }
 
     void FdMultiPeriodOption::initializeControlVariate() const{
-        analytic_ = Handle<SingleAssetOption>(new EuropeanOption(
+        analytic_ = boost::shared_ptr<SingleAssetOption>(new EuropeanOption(
                  payoff_.optionType(), underlying_, payoff_.strike(), 
                  dividendYield_, riskFreeRate_, residualTime_, volatility_));
     }
 
     void FdMultiPeriodOption::initializeStepCondition() const{
-        stepCondition_ = Handle<StandardStepCondition> (
+        stepCondition_ = boost::shared_ptr<StandardStepCondition> (
                                      new AmericanCondition(intrinsicValues_));
     }
 
     void FdMultiPeriodOption::initializeModel() const{
-        model_ = Handle<StandardFiniteDifferenceModel>(
+        model_ = boost::shared_ptr<StandardFiniteDifferenceModel>(
             new StandardFiniteDifferenceModel(finiteDifferenceOperator_,BCs_));
     }
 

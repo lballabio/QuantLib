@@ -45,8 +45,8 @@ namespace QuantLib {
         void calculate() const;
       protected:
         TimeGrid timeGrid() const;
-        Handle<PG> pathGenerator() const;
-        Handle<PathPricer<Path> > pathPricer() const;
+        boost::shared_ptr<PG> pathGenerator() const;
+        boost::shared_ptr<PathPricer<Path> > pathPricer() const;
       private:
         Size maxTimeStepPerYear_;
         SG sequenceGenerator_;
@@ -90,7 +90,7 @@ namespace QuantLib {
         }
 
         try {
-            Handle<BlackConstantVol> constVolTS = 
+            boost::shared_ptr<BlackConstantVol> constVolTS = 
                 (*(arguments.blackVolTS)).currentLink();
             return TimeGrid(resetTimes.begin(), resetTimes.end());
         } catch (...) {
@@ -102,23 +102,24 @@ namespace QuantLib {
 
     template<class S, class SG, class PG>
     inline
-    Handle<PG> McCliquetEngine<S, SG, PG>::pathGenerator() const {
-        Handle<DiffusionProcess> bs(
+    boost::shared_ptr<PG> McCliquetEngine<S, SG, PG>::pathGenerator() const {
+        boost::shared_ptr<DiffusionProcess> bs(
             new BlackScholesProcess(arguments_.riskFreeTS, 
                                     arguments_.dividendTS,
                                     arguments_.volTS, 
                                     arguments_.underlying));
 
-        return Handle<PG>(new PG(bs, timeGrid(), sequenceGenerator_));
+        return boost::shared_ptr<PG>(new PG(bs, timeGrid(), 
+                                            sequenceGenerator_));
 
     }
 
     template<class S, class SG, class PG>
     inline
-    Handle<PathPricer<Path> >
+    boost::shared_ptr<PathPricer<Path> >
     McCliquetEngine<S, SG, PG>::pathPricer() const {
         //! Initialize the path pricer
-        return Handle<PathPricer<Path> >(
+        return boost::shared_ptr<PathPricer<Path> >(
             new CliquetOptionPathPricer(arguments_.type,
                                         arguments_.underlying, 
                                         arguments_.moneyness,
@@ -141,14 +142,15 @@ namespace QuantLib {
         //! Initialize the one-factor Monte Carlo
         if (controlVariate_) {
 
-            Handle<PathPricer<Path> >
+            boost::shared_ptr<PathPricer<Path> >
                 controlPP = controlPathPricer();
             QL_REQUIRE(!controlPP.isNull(),
                        "MCCliquetEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
-            Handle<PricingEngine> controlPE = controlPricingEngine();
+            boost::shared_ptr<PricingEngine> controlPE = 
+                controlPricingEngine();
 
             QL_REQUIRE(!controlPE.isNull(),
                        "MCCliquetEngine::calculate() : "
@@ -166,16 +168,18 @@ namespace QuantLib {
                                                         controlPE->results());
             double controlVariateValue = controlResults->value;
 
-            mcModel_ = Handle<MonteCarloModel<S, PG, PathPricer<Path> > >(
-                new MonteCarloModel<S, PG, PathPricer<Path> >(
-                     pathGenerator(), pathPricer(), S(), antitheticVariate_,
-                     controlPP, controlVariateValue));
+            mcModel_ = 
+                boost::shared_ptr<MonteCarloModel<S, PG, PathPricer<Path> > >(
+                    new MonteCarloModel<S, PG, PathPricer<Path> >(
+                        pathGenerator(), pathPricer(), S(), antitheticVariate_,
+                        controlPP, controlVariateValue));
 
         } else {
-            mcModel_ = Handle<MonteCarloModel<S, PG, PathPricer<Path> > >(
-                new MonteCarloModel<S, PG, PathPricer<Path> >(
-                     pathGenerator(), pathPricer(), S(), 
-                     antitheticVariate_));
+            mcModel_ = 
+                boost::shared_ptr<MonteCarloModel<S, PG, PathPricer<Path> > >(
+                    new MonteCarloModel<S, PG, PathPricer<Path> >(
+                        pathGenerator(), pathPricer(), S(), 
+                        antitheticVariate_));
         }
 
         value(0.01);

@@ -71,7 +71,7 @@ namespace QuantLib {
         typedef BoundaryCondition<Operator> bcType;
         // constructors
         CrankNicolson(const Operator& L,
-                      const std::vector<Handle<bcType> >& bcs)
+                      const std::vector<boost::shared_ptr<bcType> >& bcs)
         : MixedScheme<Operator>(L, 0.5, bcs) {}
     };
 

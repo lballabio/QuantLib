@@ -35,8 +35,8 @@ namespace QuantLib {
     */
     class Swap : public Instrument {
       public:
-        Swap(const std::vector<Handle<CashFlow> >& firstLeg,
-             const std::vector<Handle<CashFlow> >& secondLeg,
+        Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
+             const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
              const RelinkableHandle<TermStructure>& termStructure);
         //! \name Instrument interface
         //@{
@@ -58,7 +58,7 @@ namespace QuantLib {
         void setupExpired() const;
         void performCalculations() const;
         // data members
-        std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
+        std::vector<boost::shared_ptr<CashFlow> > firstLeg_, secondLeg_;
         RelinkableHandle<TermStructure> termStructure_;
         mutable double firstLegBPS_, secondLegBPS_;
     };

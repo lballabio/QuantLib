@@ -29,21 +29,21 @@ namespace QuantLib {
         generateArguments();
     }
 
-    Handle<Lattice> ExtendedCoxIngersollRoss::tree(
+    boost::shared_ptr<Lattice> ExtendedCoxIngersollRoss::tree(
                                                  const TimeGrid& grid) const {
         TermStructureFittingParameter phi(termStructure());
-        Handle<Dynamics> numericDynamics(
+        boost::shared_ptr<Dynamics> numericDynamics(
                               new Dynamics(phi, theta(), k(), sigma(), x0()));
 
-        Handle<Tree> trinomial(
+        boost::shared_ptr<Tree> trinomial(
                    new TrinomialTree(numericDynamics->process(), grid, true));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        Handle<NumericalImpl> impl = 
+        boost::shared_ptr<NumericalImpl> impl = 
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
-        return Handle<Lattice>(new ShortRateTree(trinomial, numericDynamics, 
-                                                 impl, grid));
+        return boost::shared_ptr<Lattice>(
+                   new ShortRateTree(trinomial, numericDynamics, impl, grid));
     }
 
     double ExtendedCoxIngersollRoss::A(Time t, Time s) const {

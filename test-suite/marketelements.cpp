@@ -38,7 +38,7 @@ namespace {
 
 void MarketElementTest::testObservable() {
 
-    Handle<SimpleQuote> me(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.0));
     Flag f;
     f.registerWith(me);
     me->setValue(3.14);
@@ -50,7 +50,7 @@ void MarketElementTest::testObservable() {
 
 void MarketElementTest::testObservableHandle() {
 
-    Handle<SimpleQuote> me1(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);
     Flag f;
     f.registerWith(h);
@@ -60,7 +60,7 @@ void MarketElementTest::testObservableHandle() {
         CPPUNIT_FAIL("Observer was not notified of market element change");
 
     f.lower();
-    Handle<SimpleQuote> me2(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
     if (!f.isUp())
         CPPUNIT_FAIL("Observer was not notified of market element change");
@@ -72,7 +72,7 @@ void MarketElementTest::testDerived() {
     typedef double (*unary_f)(double);
     unary_f funcs[3] = { add10, mul10, sub10 };
 
-    Handle<Quote> me(new SimpleQuote(17.0));
+    boost::shared_ptr<Quote> me(new SimpleQuote(17.0));
     RelinkableHandle<Quote> h(me);
 
     for (int i=0; i<3; i++) {
@@ -93,8 +93,8 @@ void MarketElementTest::testComposite() {
     typedef double (*binary_f)(double,double);
     binary_f funcs[3] = { add, mul, sub };
 
-    Handle<Quote> me1(new SimpleQuote(12.0)),
-                  me2(new SimpleQuote(13.0));
+    boost::shared_ptr<Quote> me1(new SimpleQuote(12.0)),
+                             me2(new SimpleQuote(13.0));
     RelinkableHandle<Quote> h1(me1), h2(me2);
 
     for (int i=0; i<3; i++) {

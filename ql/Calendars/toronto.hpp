@@ -53,7 +53,7 @@ namespace QuantLib {
         };
       public:
         Toronto()
-        : Calendar(Handle<Calendar::Impl>(new Toronto::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Toronto::Impl)) {}
     };
 
 }

@@ -24,10 +24,10 @@ namespace QuantLib {
         double runningProduct,
         Size pastFixings,
         std::vector<Date> fixingDates,
-        const Handle<BlackScholesStochasticProcess>& stochProc,
-        const Handle<StrikedTypePayoff>& payoff,
-        const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine)
+        const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
+        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise,
+        const boost::shared_ptr<PricingEngine>& engine)
     : OneAssetStrikedOption(stochProc, payoff, exercise, engine), 
       averageType_(averageType), runningProduct_(runningProduct),
       pastFixings_(pastFixings), fixingDates_(fixingDates) {

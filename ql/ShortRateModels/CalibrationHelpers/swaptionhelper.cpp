@@ -26,7 +26,7 @@ namespace QuantLib {
                          const Period& maturity,
                          const Period& length,
                          const RelinkableHandle<Quote>& volatility,
-                         const Handle<Xibor>& index,
+                         const boost::shared_ptr<Xibor>& index,
                          const RelinkableHandle<TermStructure>& termStructure)
     : CalibrationHelper(volatility,termStructure) {
 
@@ -43,42 +43,33 @@ namespace QuantLib {
             QL_FAIL("index tenor not valid!");
         }
         Date startDate = index->calendar().advance(
-                                                   termStructure->referenceDate(),
-                                                   maturity.length(), maturity.units());
+                                         termStructure->referenceDate(),
+                                         maturity.length(), maturity.units());
         Rate fixedRate = 0.04;//dummy value
-        swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                                                  false,
-                                                  startDate,
-                                                  length.length(),
-                                                  length.units(),
-                                                  index->calendar(),
-                                                  index->rollingConvention(),
-                                                  1.0,
-                                                  frequency,
-                                                  fixedRate,
-                                                  false,
-                                                  index->dayCounter(),
-                                                  frequency,
-                                                  index,
-                                                  0,//FIXME
-                                                  0.0,
-                                                  termStructure));
+        swap_ = boost::shared_ptr<SimpleSwap>(
+             new SimpleSwap(false, startDate, length.length(), length.units(),
+                            index->calendar(), index->rollingConvention(),
+                            1.0, frequency, fixedRate, false, 
+                            index->dayCounter(), frequency, index,
+                            0, // FIXME
+                            0.0, termStructure));
         Rate fairFixedRate = swap_->fairRate();
-        swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                            false, startDate, length.length(), length.units(),
+        swap_ = boost::shared_ptr<SimpleSwap>(
+             new SimpleSwap(false, startDate, length.length(), length.units(),
                             index->calendar(), index->rollingConvention(),
                             1.0, frequency, fairFixedRate, false,
                             index->dayCounter(), frequency, index,
-                            0,//FIXME
+                            0, // FIXME
                             0.0, termStructure));
         exerciseRate_ = fairFixedRate;
-        engine_  = Handle<PricingEngine>(new BlackSwaption(blackModel_));
+        engine_  = boost::shared_ptr<PricingEngine>(
+                                              new BlackSwaption(blackModel_));
         Date exerciseDate = index->calendar().roll(
                                        startDate, index->rollingConvention());
 
-        swaption_ = Handle<Swaption>(new Swaption(
+        swaption_ = boost::shared_ptr<Swaption>(new Swaption(
             swap_,
-            Handle<Exercise>(new EuropeanExercise(exerciseDate)),
+            boost::shared_ptr<Exercise>(new EuropeanExercise(exerciseDate)),
             termStructure,
             engine_));
         marketValue_ = blackPrice(volatility_->value());
@@ -107,11 +98,11 @@ namespace QuantLib {
     }
 
     double SwaptionHelper::blackPrice(double sigma) const {
-        Handle<Quote> vol(new SimpleQuote(sigma));
-        Handle<BlackModel> blackModel(
+        boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
+        boost::shared_ptr<BlackModel> blackModel(
                          new BlackModel(RelinkableHandle<Quote>(vol), 
                                         termStructure_));
-        Handle<PricingEngine> black(new BlackSwaption(blackModel));
+        boost::shared_ptr<PricingEngine> black(new BlackSwaption(blackModel));
         swaption_->setPricingEngine(black);
         double value = swaption_->NPV();
         swaption_->setPricingEngine(engine_);

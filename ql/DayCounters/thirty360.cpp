@@ -19,15 +19,15 @@
 
 namespace QuantLib {
 
-    Handle<DayCounter::Impl>
+    boost::shared_ptr<DayCounter::Impl>
     Thirty360::implementation(Thirty360::Convention c) {
         switch (c) {
           case USA:
-            return Handle<DayCounter::Impl>(new US_Impl);
+            return boost::shared_ptr<DayCounter::Impl>(new US_Impl);
           case European:
-            return Handle<DayCounter::Impl>(new EU_Impl);
+            return boost::shared_ptr<DayCounter::Impl>(new EU_Impl);
           case Italian:
-            return Handle<DayCounter::Impl>(new IT_Impl);
+            return boost::shared_ptr<DayCounter::Impl>(new IT_Impl);
           default:
             QL_FAIL("Unknown 30/360 convention");
         }

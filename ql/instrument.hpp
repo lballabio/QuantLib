@@ -50,7 +50,7 @@ namespace QuantLib {
                      case the <b>performCalculation</b> method
                      was overridden in a derived class.
         */
-        void setPricingEngine(const Handle<PricingEngine>&);
+        void setPricingEngine(const boost::shared_ptr<PricingEngine>&);
         //@}
         /*! When a derived argument structure is defined for an instrument,
             this method should be overridden to fill it. This is mandatory
@@ -81,7 +81,7 @@ namespace QuantLib {
         mutable double NPV_, errorEstimate_;
         //@}
       protected:
-        Handle<PricingEngine> engine_;
+        boost::shared_ptr<PricingEngine> engine_;
     };
 
     //! pricing results
@@ -101,9 +101,10 @@ namespace QuantLib {
     inline Instrument::Instrument()
     : NPV_(0.0), errorEstimate_(Null<double>()) {}
 
-    inline void Instrument::setPricingEngine(const Handle<PricingEngine>& e) {
-        QL_REQUIRE(!IsNull(e), "Instrument: null pricing engine");
-        if (!IsNull(engine_))
+    inline void Instrument::setPricingEngine(
+                                  const boost::shared_ptr<PricingEngine>& e) {
+        QL_REQUIRE(e, "Instrument: null pricing engine");
+        if (engine_)
             unregisterWith(engine_);
         engine_ = e;
         registerWith(engine_);
@@ -129,7 +130,7 @@ namespace QuantLib {
     }
 
     inline void Instrument::performCalculations() const {
-        QL_REQUIRE(!IsNull(engine_), "Instrument: null pricing engine");
+        QL_REQUIRE(engine_, "Instrument: null pricing engine");
         engine_->reset();
         setupArguments(engine_->arguments());
         engine_->arguments()->validate();

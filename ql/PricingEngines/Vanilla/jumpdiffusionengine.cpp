@@ -23,22 +23,22 @@
 namespace QuantLib {
 
     JumpDiffusionEngine::JumpDiffusionEngine(
-        const Handle<VanillaEngine>& baseEngine,
+        const boost::shared_ptr<VanillaEngine>& baseEngine,
         double relativeAccuracy,
         Size maxIterations)
     : baseEngine_(baseEngine), relativeAccuracy_(relativeAccuracy),
       maxIterations_(maxIterations) {
-        QL_REQUIRE(!IsNull(baseEngine_),
+        QL_REQUIRE(baseEngine_,
                    "JumpDiffusionEngine: null base engine");
     }
 
 
     void JumpDiffusionEngine::calculate() const {
 
-        Handle<Merton76StochasticProcess> jdProcess =
+        boost::shared_ptr<Merton76StochasticProcess> jdProcess =
             boost::dynamic_pointer_cast<Merton76StochasticProcess>(
                                               arguments_.blackScholesProcess);
-        QL_REQUIRE(!IsNull(jdProcess),"not a jump diffusion process");
+        QL_REQUIRE(jdProcess, "not a jump diffusion process");
 
         double jumpSquareVol = jdProcess->logJumpVolatility->value()
             * jdProcess->logJumpVolatility->value();
@@ -69,7 +69,7 @@ namespace QuantLib {
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
         baseArguments->blackScholesProcess = 
-            Handle<BlackScholesStochasticProcess>(
+            boost::shared_ptr<BlackScholesStochasticProcess>(
                   new BlackScholesStochasticProcess(jdProcess->stateVariable, 
                                                     jdProcess->dividendTS,
                                                     jdProcess->riskFreeTS, 
@@ -103,11 +103,11 @@ namespace QuantLib {
                 + i*muPlusHalfSquareVol/t;
             baseArguments->blackScholesProcess->riskFreeTS =
                 RelinkableHandle<TermStructure>(
-                    Handle<TermStructure>(new
+                    boost::shared_ptr<TermStructure>(new
                         FlatForward(rateRefDate, rateRefDate, r, dc)));
             baseArguments->blackScholesProcess->volTS =
                 RelinkableHandle<BlackVolTermStructure>(
-                    Handle<BlackVolTermStructure>(new
+                    boost::shared_ptr<BlackVolTermStructure>(new
                         BlackConstantVol(rateRefDate, v, dc)));
 
 

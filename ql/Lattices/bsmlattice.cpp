@@ -20,7 +20,8 @@
 namespace QuantLib {
 
     BlackScholesLattice::BlackScholesLattice(
-                                  const Handle<Tree>& tree, Rate riskFreeRate,
+                                  const boost::shared_ptr<Tree>& tree, 
+                                  Rate riskFreeRate,
                                   Time end, Size steps)
     : Lattice(TimeGrid(end, steps), 2), 
       tree_(tree), discount_(QL_EXP(-riskFreeRate*(end/steps))) {

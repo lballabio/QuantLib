@@ -53,7 +53,7 @@ namespace QuantLib {
         };
       public:
         Milan()
-        : Calendar(Handle<Calendar::Impl>(new Milan::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Milan::Impl)) {}
     };
 
 }

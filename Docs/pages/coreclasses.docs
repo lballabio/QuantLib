@@ -42,7 +42,7 @@
     <ul>
     <li>numeric types such as Time, Rate, Spread, or DiscountFactor;</li>
 
-    <li>concrete data classes such as Date, Handle, Currency, or History;
+    <li>concrete data classes such as Date, Currency, or History;
     base classes such as Calendar or DayCounter; and helper classes such
     as Scheduler;
 

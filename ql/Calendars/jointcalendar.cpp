@@ -81,21 +81,22 @@ namespace QuantLib {
     JointCalendar::JointCalendar(const Calendar& c1,
                                  const Calendar& c2,
                                  JointCalendarRule r)
-    : Calendar(Handle<Calendar::Impl>(new JointCalendar::Impl(c1,c2,r))) {}
+    : Calendar(boost::shared_ptr<Calendar::Impl>(
+                                new JointCalendar::Impl(c1,c2,r))) {}
 
     JointCalendar::JointCalendar(const Calendar& c1,
                                  const Calendar& c2,
                                  const Calendar& c3,
                                  JointCalendarRule r)
-    : Calendar(Handle<Calendar::Impl>(
-                                   new JointCalendar::Impl(c1,c2,c3,r))) {}
+    : Calendar(boost::shared_ptr<Calendar::Impl>(
+                                new JointCalendar::Impl(c1,c2,c3,r))) {}
 
     JointCalendar::JointCalendar(const Calendar& c1,
                                  const Calendar& c2,
                                  const Calendar& c3,
                                  const Calendar& c4,
                                  JointCalendarRule r)
-    : Calendar(Handle<Calendar::Impl>(
+    : Calendar(boost::shared_ptr<Calendar::Impl>(
                                 new JointCalendar::Impl(c1,c2,c3,c4,r))) {}
 
 }

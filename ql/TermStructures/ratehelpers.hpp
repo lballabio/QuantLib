@@ -51,7 +51,7 @@ namespace QuantLib {
             return Null<double>();
         }
         //! sets the term structure to be used for pricing
-        /*! \warning Being a pointer and not a Handle, the term
+        /*! \warning Being a pointer and not a shared_ptr, the term
                      structure is not guaranteed to remain allocated
                      for the whole life of the rate helper. It is
                      responsibility of the programmer to ensure that
@@ -224,7 +224,7 @@ namespace QuantLib {
         bool fixedIsAdjusted_;
         DayCounter fixedDayCount_;
         Date settlement_;
-        Handle<SimpleSwap> swap_;
+        boost::shared_ptr<SimpleSwap> swap_;
         RelinkableHandle<TermStructure> termStructureHandle_;
     };
 

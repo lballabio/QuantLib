@@ -52,7 +52,7 @@ namespace QuantLib {
         };
       public:
         Oslo()
-        : Calendar(Handle<Calendar::Impl>(new Oslo::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Oslo::Impl)) {}
     };
 
 }

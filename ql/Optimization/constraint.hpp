@@ -40,8 +40,8 @@ namespace QuantLib {
       public:
         bool test(const Array& p) const { return impl_->test(p); }
         double update(Array& p, const Array& direction, double beta);
-        Constraint(const Handle<ConstraintImpl>& impl = 
-                   Handle<ConstraintImpl>());
+        Constraint(const boost::shared_ptr<ConstraintImpl>& impl = 
+                                      boost::shared_ptr<ConstraintImpl>());
     };
 
     //! No constraint 
@@ -55,7 +55,8 @@ namespace QuantLib {
         };
       public:
         NoConstraint() 
-        : Constraint(Handle<Constraint::Impl>(new NoConstraint::Impl)) {}
+        : Constraint(boost::shared_ptr<Constraint::Impl>(
+                                                   new NoConstraint::Impl)) {}
     };
 
     //! %Constraint imposing positivity to all arguments
@@ -73,7 +74,8 @@ namespace QuantLib {
         };
       public:
         PositiveConstraint() 
-        : Constraint(Handle<Constraint::Impl>(new PositiveConstraint::Impl)) {}
+        : Constraint(boost::shared_ptr<Constraint::Impl>(
+                                             new PositiveConstraint::Impl)) {}
     };
 
     //! %Constraint imposing all arguments to be in [low,high]
@@ -95,7 +97,7 @@ namespace QuantLib {
         };
       public:
         BoundaryConstraint(double low, double high) 
-        : Constraint(Handle<Constraint::Impl>(
+        : Constraint(boost::shared_ptr<Constraint::Impl>(
                                   new BoundaryConstraint::Impl(low, high))) {}
     };
 
@@ -114,14 +116,15 @@ namespace QuantLib {
         };
       public:
         CompositeConstraint(const Constraint& c1, const Constraint& c2)
-        : Constraint(Handle<Constraint::Impl>(
+        : Constraint(boost::shared_ptr<Constraint::Impl>(
                                      new CompositeConstraint::Impl(c1,c2))) {}
     };
 
 
     // inline definitions
 
-    inline Constraint::Constraint(const Handle<Constraint::Impl>& impl)
+    inline Constraint::Constraint(
+                              const boost::shared_ptr<Constraint::Impl>& impl)
     : Bridge<Constraint,ConstraintImpl>(impl) {}
 
     inline double Constraint::update(Array& params, const Array& direction, 

@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     //! helper function building a sequence of fixed rate coupons
-    std::vector<Handle<CashFlow> > FixedRateCouponVector(
+    std::vector<boost::shared_ptr<CashFlow> > FixedRateCouponVector(
         const Schedule& schedule,
         const std::vector<double>& nominals,
         const std::vector<Rate>& couponRates,
@@ -44,10 +44,10 @@ namespace QuantLib {
               calculation of the interpolated index fixing for a
               short/long first coupon.
     */
-    std::vector<Handle<CashFlow> > FloatingRateCouponVector(
+    std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
         const Schedule& schedule,
         const std::vector<double>& nominals,
-        const Handle<Xibor>& index, int fixingDays,
+        const boost::shared_ptr<Xibor>& index, int fixingDays,
         const std::vector<Spread>& spreads = std::vector<Spread>());
 
 }

@@ -28,16 +28,16 @@
 namespace QuantLib {
 
     template <class IndexedCouponType>
-    std::vector<Handle<CashFlow> > 
+    std::vector<boost::shared_ptr<CashFlow> > 
     IndexedCouponVector(const Schedule& schedule, 
                         const std::vector<double>& nominals,
-                        const Handle<Xibor>& index, int fixingDays,
+                        const boost::shared_ptr<Xibor>& index, int fixingDays,
                         const std::vector<Spread>& spreads,
                         const DayCounter& dayCounter = DayCounter()) {
 
         QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
 
-        std::vector<Handle<CashFlow> > leg;
+        std::vector<boost::shared_ptr<CashFlow> > leg;
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
         Calendar calendar = schedule.calendar();
@@ -51,7 +51,7 @@ namespace QuantLib {
             spread = 0.0;
         double nominal = nominals[0];
         if (schedule.isRegular(1)) {
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new IndexedCouponType(nominal, paymentDate, index, 
                                       start, end, fixingDays, spread, 
                                       start, end, dayCounter)));
@@ -59,7 +59,7 @@ namespace QuantLib {
             Date reference = end.plusMonths(-12/schedule.frequency());
             reference = calendar.roll(reference,rollingConvention);
             typedef Short<IndexedCouponType> ShortIndexedCouponType;
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new ShortIndexedCouponType(nominal, paymentDate, index, 
                                            start, end, fixingDays, spread, 
                                            reference, end, dayCounter)));
@@ -78,7 +78,7 @@ namespace QuantLib {
                 nominal = nominals[i-1];
             else
                 nominal = nominals.back();
-            leg.push_back(Handle<CashFlow>(
+            leg.push_back(boost::shared_ptr<CashFlow>(
                 new IndexedCouponType(nominal, paymentDate, index, 
                                       start, end, fixingDays, spread, 
                                       start, end, dayCounter)));
@@ -99,7 +99,7 @@ namespace QuantLib {
             else
                 nominal = nominals.back();
             if (schedule.isRegular(N-1)) {
-                leg.push_back(Handle<CashFlow>(
+                leg.push_back(boost::shared_ptr<CashFlow>(
                     new IndexedCouponType(nominal, paymentDate, index, 
                                           start, end, fixingDays, spread, 
                                           start, end, dayCounter)));
@@ -108,7 +108,7 @@ namespace QuantLib {
                     start.plusMonths(12/schedule.frequency());
                 reference = calendar.roll(reference,rollingConvention);
                 typedef Short<IndexedCouponType> ShortIndexedCouponType;
-                leg.push_back(Handle<CashFlow>(
+                leg.push_back(boost::shared_ptr<CashFlow>(
                     new ShortIndexedCouponType(nominal, paymentDate, index,
                                                start, end, fixingDays, 
                                                spread, start, reference,

@@ -43,8 +43,9 @@ namespace QuantLib {
         void initializeStepCondition() const;
 
         // This method must be implemented to imply volatilities
-        Handle<SingleAssetOption> clone() const{
-            return Handle<SingleAssetOption>(new FdAmericanOption(*this));
+        boost::shared_ptr<SingleAssetOption> clone() const{
+            return boost::shared_ptr<SingleAssetOption>(
+                                                 new FdAmericanOption(*this));
         }
     };
 
@@ -61,7 +62,7 @@ namespace QuantLib {
                             gridPoints) {}
 
     inline void FdAmericanOption::initializeStepCondition() const {
-        stepCondition_ = Handle<StandardStepCondition>(
+        stepCondition_ = boost::shared_ptr<StandardStepCondition>(
                                      new AmericanCondition(intrinsicValues_));
     }
 

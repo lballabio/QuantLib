@@ -42,11 +42,12 @@ namespace QuantLib {
       public:
         typedef T_impl Impl;
         bool isNull() const {
-            return IsNull(impl_);
+            return !impl_;
         }
       protected:
-        Bridge(const Handle<Impl>& impl = Handle<Impl>()) : impl_(impl) {}
-        Handle<Impl> impl_;
+        Bridge(const boost::shared_ptr<Impl>& impl = boost::shared_ptr<Impl>())
+        : impl_(impl) {}
+        boost::shared_ptr<Impl> impl_;
     };
 
 }

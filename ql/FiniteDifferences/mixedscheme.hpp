@@ -77,7 +77,7 @@ namespace QuantLib {
         // constructors
         MixedScheme(const Operator& L,
                     double theta,
-                    const std::vector<Handle<bcType> >& bcs)
+                    const std::vector<boost::shared_ptr<bcType> >& bcs)
         : L_(L), I_(Operator::identity(L.size())), 
           dt_(0.0), theta_(theta) , bcs_(bcs) {}
         void step(arrayType& a,
@@ -92,7 +92,7 @@ namespace QuantLib {
         Operator L_, I_, explicitPart_, implicitPart_;
         Time dt_;
         double theta_;
-        std::vector<Handle<bcType> > bcs_;
+        std::vector<boost::shared_ptr<bcType> > bcs_;
     };
 
 

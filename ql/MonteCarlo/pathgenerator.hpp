@@ -38,12 +38,12 @@ namespace QuantLib {
       public:
         typedef Sample<Path> sample_type;
         // constructors
-        PathGenerator(const Handle<DiffusionProcess>& diffProcess,
+        PathGenerator(const boost::shared_ptr<DiffusionProcess>& diffProcess,
                       Time length,
                       Size timeSteps,
                       const GSG& generator,
                       bool brownianBridge);
-        PathGenerator(const Handle<DiffusionProcess>& diffProcess,
+        PathGenerator(const boost::shared_ptr<DiffusionProcess>& diffProcess,
                       const TimeGrid& timeGrid,
                       const GSG& generator,
                       bool brownianBridge);
@@ -59,7 +59,7 @@ namespace QuantLib {
         GSG generator_;
         Size dimension_;
         TimeGrid timeGrid_;
-        Handle<DiffusionProcess> diffProcess_;
+        boost::shared_ptr<DiffusionProcess> diffProcess_;
         mutable sample_type next_;
         BrownianBridge<GSG> bb_;
         mutable double asset_;
@@ -67,7 +67,7 @@ namespace QuantLib {
 
     template <class GSG>
     PathGenerator<GSG>::PathGenerator(
-        const Handle<DiffusionProcess>& diffProcess,
+        const boost::shared_ptr<DiffusionProcess>& diffProcess,
         Time length,
         Size timeSteps,
         const GSG& generator,
@@ -88,7 +88,7 @@ namespace QuantLib {
 
     template <class GSG>
     PathGenerator<GSG>::PathGenerator(
-        const Handle<DiffusionProcess>& diffProcess,
+        const boost::shared_ptr<DiffusionProcess>& diffProcess,
         const TimeGrid& timeGrid,
         const GSG& generator,
         bool brownianBridge)
@@ -238,7 +238,7 @@ namespace QuantLib {
         //@}
       private:
         mutable Sample<Path> next_;
-        Handle<RandomArrayGenerator<RNG> > generator_;
+        boost::shared_ptr<RandomArrayGenerator<RNG> > generator_;
     };
 
     template <class RNG>
@@ -256,7 +256,7 @@ namespace QuantLib {
 
         QL_REQUIRE(variance >= 0.0, 
                    "PathGenerator_old: negative variance");
-        generator_ = Handle<RandomArrayGenerator<RNG> >(
+        generator_ = boost::shared_ptr<RandomArrayGenerator<RNG> >(
                          new RandomArrayGenerator<RNG>(
                                         Array(timeSteps, variance*dt), seed));
     }
@@ -275,7 +275,7 @@ namespace QuantLib {
             variancePerTime[i] = variance*times.dt(i);
         }
 
-        generator_ = Handle<RandomArrayGenerator<RNG> >(
+        generator_ = boost::shared_ptr<RandomArrayGenerator<RNG> >(
                          new RandomArrayGenerator<RNG>(variancePerTime, seed));
     }
 
@@ -301,7 +301,7 @@ namespace QuantLib {
             variancePerTime[i] = variance[i]*times.dt(i);
         }
 
-        generator_ = Handle<RandomArrayGenerator<RNG> >(
+        generator_ = boost::shared_ptr<RandomArrayGenerator<RNG> >(
                          new RandomArrayGenerator<RNG>(variancePerTime, seed));
     }
 

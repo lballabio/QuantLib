@@ -21,10 +21,10 @@
 namespace QuantLib {
 
     PiecewiseFlatForward::PiecewiseFlatForward(
-                          const Date& todaysDate,
-                          const Date& referenceDate,
-                          const std::vector<Handle<RateHelper> >& instruments,
-                          const DayCounter& dayCounter, double accuracy)
+               const Date& todaysDate,
+               const Date& referenceDate,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter, double accuracy)
     : dayCounter_(dayCounter), todaysDate_(todaysDate), 
       referenceDate_(referenceDate), instruments_(instruments), 
       accuracy_(accuracy) {
@@ -94,7 +94,7 @@ namespace QuantLib {
 
         // bootstrapping loop
         for (Size i=1; i<instruments_.size()+1; i++) {
-            Handle<RateHelper> instrument = instruments_[i-1];
+            boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
             // don't try this at home!
             instrument->setTermStructure(
                                      const_cast<PiecewiseFlatForward*>(this));
@@ -232,9 +232,9 @@ namespace QuantLib {
     }
 
     PiecewiseFlatForward::FFObjFunction::FFObjFunction(
-                                         const PiecewiseFlatForward* curve,
-                                         const Handle<RateHelper>& rateHelper,
-                                         int segment)
+                              const PiecewiseFlatForward* curve,
+                              const boost::shared_ptr<RateHelper>& rateHelper,
+                              int segment)
     : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
         // extend curve to next point
         curve_->dates_.push_back(rateHelper_->maturity());
@@ -267,8 +267,8 @@ namespace QuantLib {
     }
 
     bool PiecewiseFlatForward::RateHelperSorter::operator()(
-                                         const Handle<RateHelper>& h1, 
-                                         const Handle<RateHelper>& h2) const {
+                              const boost::shared_ptr<RateHelper>& h1, 
+                              const boost::shared_ptr<RateHelper>& h2) const {
         return (h1->maturity() < h2->maturity());
     }
 

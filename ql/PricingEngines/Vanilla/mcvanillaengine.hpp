@@ -28,7 +28,6 @@
 
 namespace QuantLib {
 
-
     //! Pricing engine for vanilla option using Monte Carlo simulation
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCVanillaEngine : public VanillaEngine,
@@ -51,7 +50,7 @@ namespace QuantLib {
                         Size maxSamples = Null<int>(),
                         long seed = 0);
         // McSimulation implementation
-        Handle<path_generator_type> pathGenerator() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
@@ -78,9 +77,10 @@ namespace QuantLib {
     // template definitions
 
     template<class RNG, class S>
-    inline Handle<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
+    inline 
+    boost::shared_ptr<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
     MCVanillaEngine<RNG,S>::pathGenerator() const {
-        Handle<DiffusionProcess> bs(new
+        boost::shared_ptr<DiffusionProcess> bs(new
             BlackScholesProcess(
                 arguments_.blackScholesProcess->riskFreeTS,
                 arguments_.blackScholesProcess->dividendTS,
@@ -91,7 +91,7 @@ namespace QuantLib {
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
         // BB here
-        return Handle<path_generator_type>(new
+        return boost::shared_ptr<path_generator_type>(new
             path_generator_type(bs, grid, gen, true));
     }
 
@@ -111,15 +111,16 @@ namespace QuantLib {
         //! Initialize the one-factor Monte Carlo
         if (controlVariate_) {
 
-            Handle<path_pricer_type> controlPP = controlPathPricer();
-            QL_REQUIRE(!IsNull(controlPP),
+            boost::shared_ptr<path_pricer_type> controlPP = 
+                controlPathPricer();
+            QL_REQUIRE(controlPP,
                        "MCVanillaEngine::calculate() : "
                        "engine does not provide "
                        "control variation path pricer");
 
-            Handle<PricingEngine> controlPE = controlPricingEngine();
-
-            QL_REQUIRE(!IsNull(controlPE),
+            boost::shared_ptr<PricingEngine> controlPE = 
+                controlPricingEngine();
+            QL_REQUIRE(controlPE,
                        "MCVanillaEngine::calculate() : "
                        "engine does not provide "
                        "control variation pricing engine");
@@ -136,7 +137,7 @@ namespace QuantLib {
             double controlVariateValue = controlResults->value;
 
             mcModel_ =
-                Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
+                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
                            pathGenerator(), pathPricer(), stats_type(),
                            antitheticVariate_, controlPP,
@@ -144,7 +145,7 @@ namespace QuantLib {
 
         } else {
             mcModel_ =
-                Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
+                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
                            pathGenerator(), pathPricer(), S(),
                            antitheticVariate_));

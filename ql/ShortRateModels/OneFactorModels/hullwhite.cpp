@@ -29,21 +29,21 @@ namespace QuantLib {
         generateArguments();
     }
 
-    Handle<Lattice> HullWhite::tree(const TimeGrid& grid) const {
+    boost::shared_ptr<Lattice> HullWhite::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
 
-        Handle<ShortRateDynamics> numericDynamics(
+        boost::shared_ptr<ShortRateDynamics> numericDynamics(
                                              new Dynamics(phi, a(), sigma()));
 
-        Handle<TrinomialTree> trinomial(
+        boost::shared_ptr<TrinomialTree> trinomial(
                          new TrinomialTree(numericDynamics->process(), grid));
 
-        Handle<ShortRateTree> numericTree(
+        boost::shared_ptr<ShortRateTree> numericTree(
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        Handle<NumericalImpl> impl = 
+        boost::shared_ptr<NumericalImpl> impl = 
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
         for (Size i=0; i<(grid.size() - 1); i++) {

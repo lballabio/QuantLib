@@ -128,7 +128,7 @@ namespace QuantLib {
       protected:
         /*! This protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
-        Calendar(const Handle<CalendarImpl>& impl) 
+        Calendar(const boost::shared_ptr<CalendarImpl>& impl) 
         : Bridge<Calendar,CalendarImpl>(impl) {}
     };
 

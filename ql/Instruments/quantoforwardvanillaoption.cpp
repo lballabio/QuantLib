@@ -25,14 +25,14 @@ namespace QuantLib {
         const RelinkableHandle<Quote>& correlation,
         double moneyness,
         Date resetDate,
-        const Handle<BlackScholesStochasticProcess>& stochProc,
-        const Handle<StrikedTypePayoff>& payoff,
-        const Handle<Exercise>& exercise,
-        const Handle<PricingEngine>& engine)
+        const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
+        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise,
+        const boost::shared_ptr<PricingEngine>& engine)
     : QuantoVanillaOption(foreignRiskFreeTS, exchRateVolTS, correlation,
                           stochProc, payoff, exercise, engine),
       moneyness_(moneyness), resetDate_(resetDate) {
-        QL_REQUIRE(!IsNull(engine),
+        QL_REQUIRE(engine,
                    "QuantoForwardVanillaOption::QuantoForwardVanillaOption : "
                    "null engine or wrong engine type");
     }
@@ -48,7 +48,7 @@ namespace QuantLib {
 
         arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
         arguments->exchRateVolTS = exchRateVolTS_;
-        QL_REQUIRE(!IsNull(correlation_),
+        QL_REQUIRE(correlation_,
                    "QuantoVanillaOption::setupArguments() : "
                    "null correlation given");
         arguments->correlation =

@@ -30,8 +30,10 @@ namespace QuantLib {
                       riskFreeRate, residualTime, volatility, dividends,
                       exdivdates, timeSteps, gridPoints){}
 
-    Handle<SingleAssetOption> FdDividendAmericanOption::clone() const {
-        return Handle<SingleAssetOption>(new FdDividendAmericanOption(*this));
+    boost::shared_ptr<SingleAssetOption> 
+    FdDividendAmericanOption::clone() const {
+        return boost::shared_ptr<SingleAssetOption>(
+                                         new FdDividendAmericanOption(*this));
     }
 
 }

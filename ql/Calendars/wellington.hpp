@@ -57,7 +57,7 @@ namespace QuantLib {
         };
       public:
         Wellington()
-        : Calendar(Handle<Calendar::Impl>(new Wellington::Impl)) {}
+        : Calendar(boost::shared_ptr<Calendar::Impl>(new Wellington::Impl)) {}
     };
 
 }

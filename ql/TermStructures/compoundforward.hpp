@@ -50,7 +50,7 @@ namespace QuantLib {
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& forwards() const;
-        Handle<TermStructure> discountCurve() const;
+        boost::shared_ptr<TermStructure> discountCurve() const;
         //! \name Observer interface
         //@{
         void update();
@@ -58,7 +58,7 @@ namespace QuantLib {
       protected:
         // methods
         void calibrateNodes() const;
-        Handle<TermStructure> bootstrap() const;
+        boost::shared_ptr<TermStructure> bootstrap() const;
         Rate zeroYieldImpl(Time, bool extrapolate = false) const;
         DiscountFactor discountImpl(Time, bool extrapolate = false) const;
         int referenceNode(Time, bool extrapolate = false) const;
@@ -77,7 +77,7 @@ namespace QuantLib {
         mutable std::vector<Rate> forwards_;
         mutable std::vector<Time> times_;
         mutable Interpolation fwdinterp_;
-        mutable Handle<TermStructure> discountCurve_;
+        mutable boost::shared_ptr<TermStructure> discountCurve_;
     };
 
     // inline definitions

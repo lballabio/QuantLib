@@ -23,22 +23,25 @@
 namespace QuantLib {
 
     MultiAssetOption::MultiAssetOption(
-        const std::vector<Handle<BlackScholesStochasticProcess> >& stochProcs,
-        const Handle<Payoff>& payoff,
-        const Handle<Exercise>& exercise,
+        const std::vector<
+            boost::shared_ptr<BlackScholesStochasticProcess> >& stochProcs,
+        const boost::shared_ptr<Payoff>& payoff,
+        const boost::shared_ptr<Exercise>& exercise,
         const Matrix& correlation,
-        const Handle<PricingEngine>& engine)
+        const boost::shared_ptr<PricingEngine>& engine)
     : Option(payoff, exercise, engine),
       blackScholesProcesses_(stochProcs), correlation_(correlation) {
 
         // register all the stochastic processes
-        Handle<BlackScholesStochasticProcess> blackScholesProcess; 
-        std::vector< Handle<BlackScholesStochasticProcess> >::const_iterator proc = stochProcs.begin();
+        boost::shared_ptr<BlackScholesStochasticProcess> blackScholesProcess; 
+        std::vector<
+            boost::shared_ptr<BlackScholesStochasticProcess> >::const_iterator
+                proc = stochProcs.begin();
         while (proc != stochProcs.end()) {
             blackScholesProcess = *proc;
-            registerWith(blackScholesProcess->stateVariable);        
-            registerWith(blackScholesProcess->dividendTS);        
-            registerWith(blackScholesProcess->riskFreeTS);        
+            registerWith(blackScholesProcess->stateVariable);
+            registerWith(blackScholesProcess->dividendTS);
+            registerWith(blackScholesProcess->riskFreeTS);
             registerWith(blackScholesProcess->volTS);
             ++proc;
         }
@@ -48,7 +51,8 @@ namespace QuantLib {
         // what to do about term structures of differnet length?
         // we could take the max, or min
         // we could enfore the reference date to be the same for each process??
-        return exercise_->lastDate() < blackScholesProcesses_[0]->riskFreeTS->referenceDate();
+        return exercise_->lastDate() < 
+            blackScholesProcesses_[0]->riskFreeTS->referenceDate();
         //return true;
     }
 
@@ -72,7 +76,7 @@ namespace QuantLib {
                    "MultiAssetOption: theta not provided");
         return theta_;
     }
-    
+
     double MultiAssetOption::vega() const {
         calculate();
         QL_REQUIRE(vega_ != Null<double>(),
@@ -93,7 +97,7 @@ namespace QuantLib {
                    "MultiAssetOption: dividend rho not provided");
         return dividendRho_;
     }
-    
+
     void MultiAssetOption::setupExpired() const {
         NPV_ = delta_ = gamma_ = theta_ =
             vega_ = rho_ = dividendRho_ =  0.0;
@@ -106,17 +110,17 @@ namespace QuantLib {
                    "MultiAssetOption::setupArguments : "
                    "wrong argument type");
 
-        arguments->payoff = payoff_;        
+        arguments->payoff = payoff_;
 
 
 /*
-        QL_REQUIRE(!IsNull(blackScholesProcess_->stateVariable->value()),
+        QL_REQUIRE(blackScholesProcess_->stateVariable->value(),
                    "MultiAssetOption::setupArguments : "
                    "null underlying price given");
 */
-        
+
         arguments->blackScholesProcesses = blackScholesProcesses_;
-        
+
         arguments->correlation = correlation_;
 
         arguments->exercise = exercise_;
@@ -127,17 +131,18 @@ namespace QuantLib {
         //
         // just take the times from the first blackScholesProcess....
         // Hmmmmm, not a very nice solution
-        Handle<BlackScholesStochasticProcess> blackScholesProcess; 
-        std::vector< Handle<BlackScholesStochasticProcess> >::const_iterator proc = 
-            blackScholesProcesses_.begin();
-        blackScholesProcess = *proc;                    
+        boost::shared_ptr<BlackScholesStochasticProcess> blackScholesProcess; 
+        std::vector<
+            boost::shared_ptr<BlackScholesStochasticProcess> >::const_iterator
+                proc = blackScholesProcesses_.begin();
+        blackScholesProcess = *proc;
         arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
             Time time = blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
                 blackScholesProcess->riskFreeTS->referenceDate(), exercise_->date(i));
             arguments->stoppingTimes.push_back(time);
         }
-    
+
     }
 
     void MultiAssetOption::performCalculations() const {
@@ -185,30 +190,29 @@ namespace QuantLib {
         */
 
         /*
-        QL_REQUIRE(!IsNull(correlation),
-                    "MultiAssetOption::arguments::validate() : "
-                    "no correlation given");
+        QL_REQUIRE(correlation,
+                   "MultiAssetOption::arguments::validate() : "
+                   "no correlation given");
 */
 
-        Handle<BlackScholesStochasticProcess> blackScholesProcess; 
-        std::vector< Handle<BlackScholesStochasticProcess> >::const_iterator proc = 
-            blackScholesProcesses.begin();
+        boost::shared_ptr<BlackScholesStochasticProcess> blackScholesProcess; 
+        std::vector<
+            boost::shared_ptr<BlackScholesStochasticProcess> >::const_iterator
+                proc = blackScholesProcesses.begin();
         while (proc != blackScholesProcesses.end()) {
-            blackScholesProcess = *proc;                    
-            QL_REQUIRE(!IsNull(blackScholesProcess->dividendTS),
+            blackScholesProcess = *proc;
+            QL_REQUIRE(blackScholesProcess->dividendTS,
                     "MultiAssetOption::arguments::validate() : "
                     "no dividend term structure given");
-            QL_REQUIRE(!IsNull(blackScholesProcess->riskFreeTS),
+            QL_REQUIRE(blackScholesProcess->riskFreeTS,
                     "MultiAssetOption::arguments::validate() : "
                     "no risk free term structure given");
-            QL_REQUIRE(!IsNull(blackScholesProcess->volTS),
+            QL_REQUIRE(blackScholesProcess->volTS,
                     "MultiAssetOption::arguments::validate() : "
                     "no vol term structure given");
             ++proc;
         }
     }
 
-
-    
 }
 

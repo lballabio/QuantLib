@@ -25,9 +25,9 @@ using namespace QuantLib;
 
 void InstrumentTest::testObservable() {
 
-    Handle<SimpleQuote> me1(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);
-    Handle<Instrument> s(new Stock(h));
+    boost::shared_ptr<Instrument> s(new Stock(h));
 
     Flag f;
     f.registerWith(s);
@@ -37,7 +37,7 @@ void InstrumentTest::testObservable() {
         CPPUNIT_FAIL("Observer was not notified of instrument change");
 
     f.lower();
-    Handle<SimpleQuote> me2(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
     if (!f.isUp())
         CPPUNIT_FAIL("Observer was not notified of instrument change");
