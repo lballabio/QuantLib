@@ -26,6 +26,7 @@ class EuropeanOptionTest : public CppUnit::TestFixture {
     void testGreeks();
     void testImpliedVol();
     void testBinomialEngines();
+    void testMcEngines();
     static CppUnit::Test* suite();
 };
 

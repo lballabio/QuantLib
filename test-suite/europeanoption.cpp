@@ -17,6 +17,7 @@
 
 #include "europeanoption.hpp"
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/PricingEngines/mcengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Calendars/target.hpp>
@@ -34,12 +35,15 @@ using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 using namespace QuantLib::DayCounters;
 using namespace QuantLib::Calendars;
+using namespace QuantLib::MonteCarlo;
 
 namespace {
 
     // utilities
 
-    enum EngineType { Analytic, JR, CRR, EQP, Trigeorgis, Tian};
+    enum EngineType { Analytic, 
+                      JR, CRR, EQP, Trigeorgis, Tian, 
+                      PseudoMonteCarlo, QuasiMonteCarlo };
 
     double relativeError(double x1, double x2, double reference) {
         if (reference != 0.0)
@@ -85,6 +89,19 @@ namespace {
             engine = Handle<PricingEngine>(
                 new BinomialVanillaEngine(
                     BinomialVanillaEngine::Tian, 800));
+            break;
+          case PseudoMonteCarlo:
+            engine = Handle<PricingEngine>(
+                MakeMCEuropeanEngine<PseudoRandom>()
+                    .withStepsPerYear(1)
+                    .withTolerance(0.05)
+                    .withSeed(42));
+            break;
+          case QuasiMonteCarlo:
+            engine = Handle<PricingEngine>(
+                MakeMCEuropeanEngine<LowDiscrepancy>()
+                    .withStepsPerYear(1)
+                    .withSamples(100));
             break;
           default:
             throw Error("Unknown engine type");
@@ -147,6 +164,10 @@ namespace {
             return "Trigeorgis";
           case Tian:
             return "Tian";
+          case PseudoMonteCarlo:
+            return "MonteCarlo";
+          case QuasiMonteCarlo:
+            return "Quasi-MonteCarlo";
           default:
             throw Error("unknown engine type");
         }
@@ -419,95 +440,111 @@ void EuropeanOptionTest::testImpliedVol() {
     }
 }
 
-void EuropeanOptionTest::testBinomialEngines() {
-    double tolerance = 0.1;
+// different engines
 
-    // test options
-    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-    double strikes[] = { 50.0, 100.0, 150.0 };
-    int lengths[] = { 1 };
+namespace {
 
-    // test data
-    double underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.00, 0.05 };
-    Rate rRates[] = { 0.01, 0.05, 0.15 };
-    double vols[] = { 0.11, 0.50, 1.20 };
+    void testEngines(EngineType *engines, Size N) {
+        
+        double tolerance = 0.1;
 
-    EngineType engines[] = { JR, CRR, EQP, Trigeorgis, Tian };
+        // test options
+        Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+        double strikes[] = { 50.0, 100.0, 150.0 };
+        int lengths[] = { 1 };
 
-    Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
-    Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
-    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
-    Handle<SimpleMarketElement> qRate(new SimpleMarketElement(0.0));
-    Handle<TermStructure> divCurve = makeFlatCurve(qRate);
-    Handle<SimpleMarketElement> rRate(new SimpleMarketElement(0.0));
-    Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
+        // test data
+        double underlyings[] = { 100.0 };
+        Rate qRates[] = { 0.00, 0.05 };
+        Rate rRates[] = { 0.01, 0.05, 0.15 };
+        double vols[] = { 0.11, 0.50, 1.20 };
 
-    Date today = Date::todaysDate();
-    Calendar calendar = TARGET();
+        Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
+        Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
+        Handle<BlackVolTermStructure> volCurve = 
+            makeFlatVolatility(volatility);
+        Handle<SimpleMarketElement> qRate(new SimpleMarketElement(0.0));
+        Handle<TermStructure> divCurve = makeFlatCurve(qRate);
+        Handle<SimpleMarketElement> rRate(new SimpleMarketElement(0.0));
+        Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
 
-    for (Size i=0; i<LENGTH(types); i++) {
-      for (Size j=0; j<LENGTH(strikes); j++) {
-        for (Size k=0; k<LENGTH(lengths); k++) {
-          Date exDate = calendar.advance(today,lengths[k],Years);
-          // reference option
-          Handle<VanillaOption> refOption =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volCurve);
-          // options to check
-          std::map<EngineType,Handle<VanillaOption> > options;
-          for (Size ii=0; ii<LENGTH(engines); ii++) {
-              options[engines[ii]] =
+        Date today = Date::todaysDate();
+        Calendar calendar = TARGET();
+
+        for (Size i=0; i<LENGTH(types); i++) {
+          for (Size j=0; j<LENGTH(strikes); j++) {
+            for (Size k=0; k<LENGTH(lengths); k++) {
+              Date exDate = calendar.advance(today,lengths[k],Years);
+              // reference option
+              Handle<VanillaOption> refOption =
                   makeEuropeanOption(types[i],underlying,strikes[j],
-                                     divCurve,rfCurve,exDate,volCurve,
-                                     engines[ii]);
-          }
+                                     divCurve,rfCurve,exDate,volCurve);
+              // options to check
+              std::map<EngineType,Handle<VanillaOption> > options;
+              for (Size ii=0; ii<N; ii++) {
+                  options[engines[ii]] =
+                      makeEuropeanOption(types[i],underlying,strikes[j],
+                                         divCurve,rfCurve,exDate,volCurve,
+                                         engines[ii]);
+              }
 
-          for (Size l=0; l<LENGTH(underlyings); l++) {
-            for (Size m=0; m<LENGTH(qRates); m++) {
-              for (Size n=0; n<LENGTH(rRates); n++) {
-                for (Size p=0; p<LENGTH(vols); p++) {
-                  double u = underlyings[l],
-                         q = qRates[m],
-                         r = rRates[n],
-                         v = vols[p];
-                  underlying->setValue(u);
-                  qRate->setValue(q);
-                  rRate->setValue(r);
-                  volatility->setValue(v);
+              for (Size l=0; l<LENGTH(underlyings); l++) {
+                for (Size m=0; m<LENGTH(qRates); m++) {
+                  for (Size n=0; n<LENGTH(rRates); n++) {
+                    for (Size p=0; p<LENGTH(vols); p++) {
+                      double u = underlyings[l],
+                             q = qRates[m],
+                             r = rRates[n],
+                             v = vols[p];
+                      underlying->setValue(u);
+                      qRate->setValue(q);
+                      rRate->setValue(r);
+                      volatility->setValue(v);
 
-                  double refValue = refOption->NPV();
-                  for (Size ii=0; ii<LENGTH(engines); ii++) {
-                      double value = options[engines[ii]]->NPV();
-                      if (relativeError(value,refValue,u) > tolerance) {
-                          CPPUNIT_FAIL(
-                              typeToString(types[i]) + " option :\n"
-                              "    underlying value: "
-                              + DoubleFormatter::toString(u) + "\n"
-                              "    strike:           "
-                              + DoubleFormatter::toString(strikes[j]) +"\n"
-                              "    dividend yield:   "
-                              + DoubleFormatter::toString(q) + "\n"
-                              "    risk-free rate:   "
-                              + DoubleFormatter::toString(r) + "\n"
-                              "    maturity:         "
-                              + DateFormatter::toString(exDate) + "\n"
-                              "    volatility:       "
-                              + DoubleFormatter::toString(v) + "\n\n"
-                              "    analytic value: "
-                              + DoubleFormatter::toString(refValue) + "\n"
-                              "    binomial ("
-                              + engineTypeToString(engines[ii]) + "):  "
-                              + DoubleFormatter::toString(value));
+                      double refValue = refOption->NPV();
+                      for (Size ii=0; ii<N; ii++) {
+                          double value = options[engines[ii]]->NPV();
+                          if (relativeError(value,refValue,u) > tolerance) {
+                              CPPUNIT_FAIL(
+                                  typeToString(types[i]) + " option :\n"
+                                  "    underlying value: "
+                                  + DoubleFormatter::toString(u) + "\n"
+                                  "    strike:           "
+                                  + DoubleFormatter::toString(strikes[j]) +"\n"
+                                  "    dividend yield:   "
+                                  + DoubleFormatter::toString(q) + "\n"
+                                  "    risk-free rate:   "
+                                  + DoubleFormatter::toString(r) + "\n"
+                                  "    maturity:         "
+                                  + DateFormatter::toString(exDate) + "\n"
+                                  "    volatility:       "
+                                  + DoubleFormatter::toString(v) + "\n\n"
+                                  "    analytic value: "
+                                  + DoubleFormatter::toString(refValue) + "\n"
+                                  "    " 
+                                  + engineTypeToString(engines[ii]) + ":  "
+                                  + DoubleFormatter::toString(value));
+                          }
                       }
+                    }
                   }
                 }
               }
             }
           }
         }
-      }
     }
+
+}
+
+void EuropeanOptionTest::testBinomialEngines() {
+    EngineType engines[] = { JR, CRR, EQP, Trigeorgis, Tian };
+    testEngines(engines,LENGTH(engines));
+}
+
+void EuropeanOptionTest::testMcEngines() {
+    EngineType engines[] = { PseudoMonteCarlo, QuasiMonteCarlo };
+    testEngines(engines,LENGTH(engines));
 }
 
 
@@ -524,6 +561,10 @@ CppUnit::Test* EuropeanOptionTest::suite() {
                    ("Testing binomial European engines "
                     "against analytic results",
                     &EuropeanOptionTest::testBinomialEngines));
+    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
+                   ("Testing Monte Carlo European engines "
+                    "against analytic results",
+                    &EuropeanOptionTest::testMcEngines));
     return tests;
 }
 

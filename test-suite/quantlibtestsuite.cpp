@@ -74,7 +74,13 @@ int main() {
     // to be deprecated
     runner.addTest(OldPricerTest::suite());
 
+    std::string quote = "\n"
+        "                    Testing can never demonstrate the absence   \n"
+        "                    of errors in software, only their presence. \n"
+        "                                           -- W.E. Dijkstra \n";
     std::string header = "Testing QuantLib " QL_VERSION ;
+
+    std::cerr << quote << std::endl;
     std::cerr << std::string(header.length(),'=') << std::endl;
     std::cerr << header << std::endl;
     std::cerr << std::string(header.length(),'=');
