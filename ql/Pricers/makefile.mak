@@ -15,20 +15,20 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = averagepriceasian.obj$(_D) \
+OBJS = \
+       averagepriceasian.obj$(_D) \
        averagestrikeasian.obj$(_D) \
        barrieroption.obj$(_D) \
        bermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
-       europeanoption.obj$(_D) \
        bsmnumericaloption.obj$(_D) \
-       singleassetoption.obj$(_D) \
        cliquetoption.obj$(_D) \
        dividendamericanoption.obj$(_D) \
        dividendeuropeanoption.obj$(_D) \
        dividendoption.obj$(_D) \
        dividendshoutoption.obj$(_D) \
-       everestengine.obj$(_D) \
+       europeanengine.obj$(_D) \
+       europeanoption.obj$(_D) \
        everestoption.obj$(_D) \
        finitedifferenceeuropean.obj$(_D) \
        himalaya.obj$(_D) \
@@ -36,6 +36,7 @@ OBJS = averagepriceasian.obj$(_D) \
        multiperiodoption.obj$(_D) \
        pagodaoption.obj$(_D) \
        plainbasketoption.obj$(_D) \
+       singleassetoption.obj$(_D) \
        stepconditionoption.obj$(_D)
 
 # Tools to be used
