@@ -108,7 +108,7 @@ namespace QuantLib {
                    "GeneralStatistics::percentile() : "
                    "empty sample set");
 
-        std::sort(samples_.begin(), samples_.end());
+        sort();
 
         std::vector<std::pair<double,double> >::iterator k, l;
         k = samples_.begin();
@@ -156,7 +156,7 @@ namespace QuantLib {
                    "GeneralStatistics::topPercentile() : "
                    "empty sample set");
 
-        std::sort(samples_.begin(), samples_.end());
+        sort();
 
         std::vector<std::pair<double,double> >::reverse_iterator k, l;
         k = samples_.rbegin();

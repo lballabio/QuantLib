@@ -160,11 +160,16 @@ namespace QuantLib {
             for (;begin!=end;++begin,++wbegin)
                 add(*begin, *wbegin);
         }
+
         //! resets the data to a null set
         void reset();
+
+        //! sort the data set in increasing order
+        void sort() const;
         //@}
       private:
         mutable std::vector<std::pair<double,double> > samples_;
+        mutable bool sorted_;
     };
 
 
@@ -210,10 +215,19 @@ namespace QuantLib {
         QL_REQUIRE(weight>=0.0,
                    "GeneralStatistics::add : negative weight not allowed");
         samples_.push_back(std::make_pair(value,weight));
+        sorted_ = false;
     }
 
     inline void GeneralStatistics::reset() {
         samples_ = std::vector<std::pair<double,double> >();
+        sorted_ = true;
+    }
+
+    inline void GeneralStatistics::sort() const {
+        if (!sorted_) {
+            std::sort(samples_.begin(), samples_.end());
+            sorted_ = true;
+        }
     }
 
 }
