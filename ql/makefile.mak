@@ -36,6 +36,7 @@ LATTICES_LIB         = Lattices\Lattices$(_D).lib
 MATH_LIB             = Math\Math$(_D).lib
 OPTIMIZATION_LIB     = Optimization\Optimization$(_D).lib
 PRICER_LIB           = Pricers\Pricers$(_D).lib
+PRICING_ENGINES_LIB  = PricingEngines\PricingEngines$(_D).lib
 ASIAN_ENGINES_LIB    = PricingEngines\Asian\AsianEngines$(_D).lib
 BARRIER_ENGINES_LIB  = PricingEngines\Barrier\BarrierEngines$(_D).lib
 BASKET_ENGINES_LIB   = PricingEngines\Basket\BasketEngines$(_D).lib
@@ -69,6 +70,7 @@ QUANTLIB_OBJS = \
     $(ONEFACTOR_LIB) \
     $(OPTIMIZATION_LIB) \
     $(PRICER_LIB) \
+    $(PRICING_ENGINES_LIB) \
     $(ASIAN_ENGINES_LIB) \
     $(BARRIER_ENGINES_LIB) \
     $(BASKET_ENGINES_LIB) \
@@ -148,6 +150,7 @@ SubLibraries:
     cd ..\Pricers
     $(MAKE)
     cd ..\PricingEngines
+    $(MAKE)
     cd Asian
     $(MAKE)
     cd ..\Barrier
@@ -203,6 +206,7 @@ clean::
     cd ..\Pricers
     $(MAKE) clean
     cd ..\PricingEngines
+    $(MAKE) clean
     cd Asian
     $(MAKE) clean
     cd ..\Barrier

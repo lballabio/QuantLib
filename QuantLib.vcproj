@@ -4968,16 +4968,25 @@
 			Name="PricingEngines"
 			Filter="">
 			<File
+				RelativePath=".\ql\PricingEngines\all.hpp">
+			</File>
+			<File
 				RelativePath="ql\PricingEngines\americanpayoffatexpiry.hpp">
 			</File>
 			<File
 				RelativePath="ql\PricingEngines\americanpayoffathit.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\PricingEngines\blackformula.cpp">
+			</File>
+			<File
 				RelativePath="ql\PricingEngines\blackformula.hpp">
 			</File>
 			<File
 				RelativePath="ql\PricingEngines\blackmodel.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\core.hpp">
 			</File>
 			<File
 				RelativePath="ql\PricingEngines\genericmodelengine.hpp">
@@ -5287,6 +5296,9 @@
 			<Filter
 				Name="Vanilla"
 				Filter="">
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\all.hpp">
+				</File>
 				<File
 					RelativePath="ql\PricingEngines\Vanilla\analyticdigitalamericanengine.cpp">
 					<FileConfiguration
@@ -6244,9 +6256,6 @@
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\primitivepolynomials.h">
-			</File>
-			<File
-				RelativePath="ql\RandomNumbers\randomarraygenerator.hpp">
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\randomsequencegenerator.hpp">
