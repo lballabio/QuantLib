@@ -80,8 +80,10 @@ namespace QuantLib {
             const std::vector<Date>& dates,
             const std::vector<double>& strikes,
             const QuantLib::Math::Matrix& blackVolMatrix,
-            BlackVarianceSurface<Interpolator2D>::Extrapolation lowerEx,
-            BlackVarianceSurface<Interpolator2D>::Extrapolation upperEx,
+            typename BlackVarianceSurface<Interpolator2D>::Extrapolation 
+                lowerEx,
+            typename BlackVarianceSurface<Interpolator2D>::Extrapolation 
+                upperEx,
             const DayCounter& dayCounter)
         : referenceDate_(referenceDate), dayCounter_(dayCounter),
           maxDate_(dates.back()), strikes_(strikes),

@@ -51,10 +51,9 @@ namespace QuantLib {
                                    const RandomAccessIterator1& xEnd,
                                    const RandomAccessIterator2& yBegin)
             : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
-		xBegin, xEnd, yBegin),
-	       logY_(xEnd-xBegin) {
-		 int i;
-                 for (i=0; i<xEnd-xBegin; i++) {
+                  xBegin, xEnd, yBegin),
+              logY_(xEnd-xBegin) {
+                 for (Size i=0; i<xEnd-xBegin; i++) {
                      QL_REQUIRE(*(yBegin+i)>0.0,
                         "LogLinearInterpolation::LogLinearInterpolation : "
                         "negative values not allowed");
@@ -65,26 +64,17 @@ namespace QuantLib {
                      new inner_interpolation(xBegin, xEnd, logY_.begin()));
              }
             result_type operator()(const argument_type& x,
-                bool allowExtrapolation = false) const;
+                                   bool allowExtrapolation = false) const {
+                result_type logResult = 
+                    (*linearInterpolation_)(x,allowExtrapolation);
+                return QL_EXP(logResult);
+            }
           private:
               std::vector<result_type> logY_;
               Handle<LinearInterpolation<RandomAccessIterator1,
                   typename std::vector<result_type>::const_iterator> >
                   linearInterpolation_;
         };
-
-
-        // inline definitions
-
-        template <class I1, class I2>
-        inline typename LogLinearInterpolation<I1,I2>::result_type
-        LogLinearInterpolation<I1,I2>::operator()(
-            const LogLinearInterpolation<I1,I2>::argument_type& x,
-            bool allowExtrapolation) const {
-                result_type logResult = (*linearInterpolation_)(x,
-                    allowExtrapolation);
-                return QL_EXP(logResult);
-        }
 
     }
 

@@ -61,12 +61,14 @@ namespace QuantLib {
         };
 
 
-        // inline definitions
+        // template definitions
 
         template <class I1, class I2, class M>
         double BilinearInterpolation<I1,I2,M>::operator()(
-            const BilinearInterpolation<I1,I2,M>::first_argument_type& x,
-            const BilinearInterpolation<I1,I2,M>::second_argument_type& y,
+            const typename 
+            BilinearInterpolation<I1,I2,M>::first_argument_type& x,
+            const typename 
+            BilinearInterpolation<I1,I2,M>::second_argument_type& y,
             bool allowExtrapolation) const {
 
                 locate(x, y);

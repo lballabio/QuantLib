@@ -61,7 +61,7 @@ namespace QuantLib {
                           Time from,
                           Time to,
                           Size steps,
-                          Handle<StepCondition<arrayType> > condition =
+                          const Handle<StepCondition<arrayType> >& condition =
                                      Handle<StepCondition<arrayType> >());
             const Evolver& evolver() const{return evolver_;};
           private:
@@ -72,9 +72,9 @@ namespace QuantLib {
         // template definitions
         template<class Evolver>
         void FiniteDifferenceModel<Evolver>::rollback(
-            FiniteDifferenceModel::arrayType& a,
+            typename FiniteDifferenceModel::arrayType& a,
             Time from, Time to, Size steps,
-            Handle<StepCondition<arrayType> > condition) {
+            const Handle<StepCondition<arrayType> >& condition) {
                 Time dt = (from-to)/steps, t = from;
                 evolver_.setStep(dt);
 

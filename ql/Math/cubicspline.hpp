@@ -51,7 +51,7 @@ namespace QuantLib {
                                    bool allowExtrapolation = false) const;
             result_type secondDerivative(const argument_type& x,
                                         bool allowExtrapolation = false) const;
-	    virtual ~CubicSpline() {}
+            virtual ~CubicSpline() {}
           private:
             // P[i](x) = y[i] +
             //           a[i]*(x-x[i]) +
@@ -145,7 +145,7 @@ namespace QuantLib {
         template <class I1, class I2>
         typename CubicSpline<I1,I2>::result_type
         CubicSpline<I1,I2>::operator()(
-            const CubicSpline<I1,I2>::argument_type& x,
+            const typename CubicSpline<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {
                 locate(x);
                 if (isOutOfRange_) {

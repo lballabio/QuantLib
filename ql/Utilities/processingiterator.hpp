@@ -106,139 +106,138 @@ namespace QuantLib {
 
         // inline definitions
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>::processing_iterator(
-          const Iterator& it, const UnaryFunction& f)
+        template <class I, class F>
+        inline processing_iterator<I,F>::processing_iterator(const I& it, 
+                                                             const F& f)
         : it_(it), f_(f) {}
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>&
-        processing_iterator<Iterator,UnaryFunction>::operator++() {
+        template <class I, class F>
+        inline processing_iterator<I,F>& 
+        processing_iterator<I,F>::operator++() {
             ++it_;
             return *this;
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>
-        processing_iterator<Iterator,UnaryFunction>::operator++(int ) {
-            processing_iterator<Iterator,UnaryFunction> temp = *this;
+        template <class I, class F>
+        inline processing_iterator<I,F>
+        processing_iterator<I,F>::operator++(int ) {
+            processing_iterator<I,F> temp = *this;
             ++it_;
             return temp;
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>&
-        processing_iterator<Iterator,UnaryFunction>::operator--() {
+        template <class I, class F>
+        inline processing_iterator<I,F>&
+        processing_iterator<I,F>::operator--() {
             --it_;
             return *this;
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>
-        processing_iterator<Iterator,UnaryFunction>::operator--(int ) {
-            processing_iterator<Iterator,UnaryFunction> temp = *this;
+        template <class I, class F>
+        inline processing_iterator<I,F>
+        processing_iterator<I,F>::operator--(int ) {
+            processing_iterator<I,F> temp = *this;
             --it_;
             return temp;
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>&
-        processing_iterator<Iterator,UnaryFunction>::operator+=(
-          processing_iterator<Iterator,UnaryFunction>::difference_type i) {
+        template <class I, class F>
+        inline processing_iterator<I,F>&
+        processing_iterator<I,F>::operator+=(
+                    typename processing_iterator<I,F>::difference_type i) {
             it_+=i;
             return *this;
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>&
-        processing_iterator<Iterator,UnaryFunction>::operator-=(
-          processing_iterator<Iterator,UnaryFunction>::difference_type i) {
+        template <class I, class F>
+        inline processing_iterator<I,F>&
+        processing_iterator<I,F>::operator-=(
+                    typename processing_iterator<I,F>::difference_type i) {
             it_-=i;
             return *this;
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline typename processing_iterator<Iterator,UnaryFunction>::reference
-        processing_iterator<Iterator,UnaryFunction>::operator*() const {
+        template <class I, class F>
+        inline typename processing_iterator<I,F>::reference
+        processing_iterator<I,F>::operator*() const {
             x_ = f_(*it_);
             return x_;
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline typename processing_iterator<Iterator,UnaryFunction>::pointer
-        processing_iterator<Iterator,UnaryFunction>::operator->() const {
+        template <class I, class F>
+        inline typename processing_iterator<I,F>::pointer
+        processing_iterator<I,F>::operator->() const {
             x_ = f_(*it_);
             return &x_;
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline typename processing_iterator<Iterator,UnaryFunction>::value_type
-        processing_iterator<Iterator,UnaryFunction>::operator[](int i) const {
+        template <class I, class F>
+        inline typename processing_iterator<I,F>::value_type
+        processing_iterator<I,F>::operator[](int i) const {
             return *(*this+i);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>
-        processing_iterator<Iterator,UnaryFunction>::operator+(
-          processing_iterator<Iterator,UnaryFunction>::difference_type i) {
-            return processing_iterator<Iterator,UnaryFunction>(it_+i,f_);
+        template <class I, class F>
+        inline processing_iterator<I,F>
+        processing_iterator<I,F>::operator+(
+                    typename processing_iterator<I,F>::difference_type i) {
+            return processing_iterator<I,F>(it_+i,f_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>
-        processing_iterator<Iterator,UnaryFunction>::operator-(
-          processing_iterator<Iterator,UnaryFunction>::difference_type i) {
-            return processing_iterator<Iterator,UnaryFunction>(it_-i,f_);
+        template <class I, class F>
+        inline processing_iterator<I,F>
+        processing_iterator<I,F>::operator-(
+                    typename processing_iterator<I,F>::difference_type i) {
+            return processing_iterator<I,F>(it_-i,f_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline 
-        typename processing_iterator<Iterator,UnaryFunction>::difference_type
-        processing_iterator<Iterator,UnaryFunction>::operator-(
-          const processing_iterator<Iterator,UnaryFunction>& i) {
+        template <class I, class F>
+        inline typename processing_iterator<I,F>::difference_type
+        processing_iterator<I,F>::operator-(
+          const processing_iterator<I,F>& i) {
             return (it_-i.it_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline bool processing_iterator<Iterator,UnaryFunction>::operator==(
-          const processing_iterator<Iterator,UnaryFunction>& i) {
+        template <class I, class F>
+        inline bool processing_iterator<I,F>::operator==(
+                                        const processing_iterator<I,F>& i) {
             return (it_ == i.it_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline bool processing_iterator<Iterator,UnaryFunction>::operator!=(
-          const processing_iterator<Iterator,UnaryFunction>& i) {
+        template <class I, class F>
+        inline bool processing_iterator<I,F>::operator!=(
+                                        const processing_iterator<I,F>& i) {
             return (it_ != i.it_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline bool processing_iterator<Iterator,UnaryFunction>::operator<(
-          const processing_iterator<Iterator,UnaryFunction>& i) {
+        template <class I, class F>
+        inline bool processing_iterator<I,F>::operator<(
+                                        const processing_iterator<I,F>& i) {
             return (it_ < i.it_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline bool processing_iterator<Iterator,UnaryFunction>::operator>(
-          const processing_iterator<Iterator,UnaryFunction>& i) {
+        template <class I, class F>
+        inline bool processing_iterator<I,F>::operator>(
+                                        const processing_iterator<I,F>& i) {
             return (it_ > i.it_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline bool processing_iterator<Iterator,UnaryFunction>::operator<=(
-          const processing_iterator<Iterator,UnaryFunction>& i) {
+        template <class I, class F>
+        inline bool processing_iterator<I,F>::operator<=(
+                                        const processing_iterator<I,F>& i) {
             return (it_ <= i.it_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline bool processing_iterator<Iterator,UnaryFunction>::operator>=(
-          const processing_iterator<Iterator,UnaryFunction>& i) {
+        template <class I, class F>
+        inline bool processing_iterator<I,F>::operator>=(
+                                        const processing_iterator<I,F>& i) {
             return (it_ >= i.it_);
         }
 
-        template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>
-        make_processing_iterator(Iterator it, UnaryFunction p) {
-            return processing_iterator<Iterator,UnaryFunction>(it,p);
+        template <class I, class F>
+        inline processing_iterator<I,F>
+        make_processing_iterator(I it, F p) {
+            return processing_iterator<I,F>(it,p);
         }
 
     }
