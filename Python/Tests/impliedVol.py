@@ -1,16 +1,16 @@
 """
 /*
  * Copyright (C) 2000-2001 QuantLib Group
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -22,9 +22,12 @@
 */
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.6  2001/02/15 11:57:20  nando
+    impliedVol require targetValue>0.0
+
     Revision 1.5  2001/01/08 16:19:29  nando
     more homogeneous format
 
@@ -76,6 +79,8 @@ for typ in typRange:
               bsm = BSMEuropeanOption(typ, under, strike, qRate, rRate,
                                                         resTime, vol)
               bsmValue = bsm.value()
+              if bsmValue==0.0 :
+                continue
               for dVol in dVolRange:
                 vol2 = vol*dVol
                 bsm2 = BSMEuropeanOption(typ, under, strike, qRate, rRate,
@@ -84,16 +89,16 @@ for typ in typRange:
                   for i in range(dummyiterations):
                     implVol = bsm2.impliedVolatility(bsmValue, tol, maxEval)
                 except Exception, e:
-                  print 'type=%s; under=%5.2f; strike=%5.2f; qRate=%4.2f;   \
-                        rRate=%4.2f; resTime=%5.3f;' % (typ, under, strike, \
+                  print "type=%s; under=%5.2f; strike=%5.2f; qRate=%4.2f;" \
+                        " rRate=%4.2f; resTime=%5.3f;" % (typ, under, strike, \
                         qRate, rRate, resTime)
-                  print 'at %18.16f vol the option value is %20.12e' %      \
+                  print 'at %18.16f vol the option value is %20.12e' % \
                         (vol, bsmValue)
-                  print 'at %18.16f vol the option value is %20.12e' %      \
+                  print 'at %18.16f vol the option value is %20.12e' % \
                         (vol2, bsm2.value())
                   print
-                  print 'while trying to calculate implied vol from'    \
-                        'value %20.12e' % (bsmValue)
+                  print 'while trying to calculate implied vol from' \
+                        ' value %20.12e' % (bsmValue)
                   print 'the following exception has been raised:'
                   raise e
                 err = abs(implVol-vol)
