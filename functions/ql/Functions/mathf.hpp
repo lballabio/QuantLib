@@ -22,6 +22,7 @@
 #ifndef quantlib_functions_math_h
 #define quantlib_functions_math_h
 
+#include <ql/Functions/qlfunctions.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>

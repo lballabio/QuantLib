@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,30 +15,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vols.hpp
-    \brief Volatility functions
+/*! \file calendars.hpp
+    \brief %calendar class non-member non-friend functions
 */
 
-#ifndef quantlib_functions_vols_h
-#define quantlib_functions_vols_h
+#ifndef quantlib_functions_calendar_h
+#define quantlib_functions_calendar_h
 
 #include <ql/Functions/qlfunctions.hpp>
-#include <ql/Math/matrix.hpp>
-#include <ql/daycounter.hpp>
+#include <ql/calendar.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    Volatility blackVol(const Date& refDate,
-                        const DayCounter& dc,
-                        const std::vector<Date>& dates,
-                        const std::vector<Real>& strikes,
-                        const Matrix& blackVolSurface,
-                        const Date& date1,
-                        const Date& date2,
-                        Real strike,
-                        Integer interpolation2DType,
-                        bool allowExtrapolation);
+    //! Returns the holidays between two dates
+    std::vector<Date> holidayList(const Calendar& calendar,
+                                  const Date& from,
+                                  const Date& to,
+                                  bool includeWeekEnds = false);
 
 }
 

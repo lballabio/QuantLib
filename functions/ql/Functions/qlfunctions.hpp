@@ -21,11 +21,6 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/Functions/daycounters.hpp>
-#include <ql/Functions/mathf.hpp>
-#include <ql/Functions/vols.hpp>
-
-
 #define QL_FUN_LIB_NAME "QuantLibFunctions-" QL_LIB_TOOLSET QL_LIB_THREAD_OPT QL_LIB_RT_OPT "-" QL_LIB_VERSION ".lib"
 
 #pragma comment(lib, QL_FUN_LIB_NAME)
