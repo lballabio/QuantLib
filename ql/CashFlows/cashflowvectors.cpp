@@ -131,7 +131,8 @@ namespace QuantLib {
           const Handle<Xibor>& index, int fixingDays,
           const std::vector<Spread>& spreads,
           const Date& stubDate) {
-            QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
+            QL_REQUIRE(nominals.size() != 0, 
+                       "FloatingRateCouponVector: unspecified nominals");
 
             std::vector<Handle<CashFlow> > leg;
             Scheduler scheduler(calendar, startDate, endDate, frequency,
