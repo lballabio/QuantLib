@@ -22,7 +22,10 @@
 #ifndef quantlib_quanto_engine_hpp
 #define quantlib_quanto_engine_hpp
 
+#include <ql/pricingengine.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/TermStructures/quantotermstructure.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 
@@ -64,7 +67,7 @@ namespace QuantLib {
         - the correctness of the returned greeks is tested by
           reproducing numerical derivatives.
     */
-    template<class ArgumentsType, class ResultsType>
+    template <class ArgumentsType, class ResultsType>
     class QuantoEngine
         : public GenericEngine<QuantoOptionArguments<ArgumentsType>,
                                QuantoOptionResults<ResultsType> > {
@@ -88,7 +91,7 @@ namespace QuantLib {
 
     // template definitions
 
-    template<class ArgumentsType>
+    template <class ArgumentsType>
     void QuantoOptionArguments<ArgumentsType>::validate() const {
         ArgumentsType::validate();
         QL_REQUIRE(!foreignRiskFreeTS.empty(),

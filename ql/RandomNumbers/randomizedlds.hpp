@@ -23,6 +23,7 @@
 #define quantlib_randomized_lds_hpp
 
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
+#include <ql/RandomNumbers/mt19937uniformrng.hpp>
 
 namespace QuantLib {
 

@@ -19,11 +19,12 @@
     \brief shout option exercise condition
 */
 
-#ifndef quantlib_fd_shout_condition_h
-#define quantlib_fd_shout_condition_h
+#ifndef quantlib_fd_shout_condition_hpp
+#define quantlib_fd_shout_condition_hpp
 
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/discretizedasset.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 

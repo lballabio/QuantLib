@@ -24,6 +24,8 @@
 #define quantlib_interpolation2D_hpp
 
 #include <ql/Patterns/bridge.hpp>
+#include <ql/errors.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 

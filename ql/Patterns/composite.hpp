@@ -24,10 +24,11 @@
 
 #include <ql/qldefines.hpp>
 #include <boost/shared_ptr.hpp>
+#include <list>
 
 namespace QuantLib {
 
-    //! %Composite pattern. 
+    //! %Composite pattern.
     /*! The typical use of this class is:
         \code
         class CompositeFoo : public Composite<Foo> {
@@ -46,7 +47,7 @@ namespace QuantLib {
         std::list<boost::shared_ptr<T> > components_;
         void add(const boost::shared_ptr<T>& c) { components_.push_back(c); }
         typedef typename std::list<boost::shared_ptr<T> >::iterator iterator;
-        typedef typename std::list<boost::shared_ptr<T> >::const_iterator 
+        typedef typename std::list<boost::shared_ptr<T> >::const_iterator
                                                               const_iterator;
     };
 

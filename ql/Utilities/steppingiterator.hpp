@@ -22,7 +22,7 @@
 #ifndef quantlib_stepping_iterator_hpp
 #define quantlib_stepping_iterator_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 #include <boost/iterator/iterator_adaptor.hpp>
 
 namespace QuantLib {

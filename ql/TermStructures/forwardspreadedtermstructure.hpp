@@ -23,6 +23,7 @@
 #define quantlib_forward_spreaded_term_structure_hpp
 
 #include <ql/TermStructures/forwardstructure.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 

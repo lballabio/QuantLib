@@ -23,6 +23,7 @@
 #define quantlib_forward_performance_engine_hpp
 
 #include <ql/PricingEngines/Forward/forwardengine.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
 

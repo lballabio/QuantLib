@@ -22,7 +22,7 @@
 #ifndef quantlib_comparison_hpp
 #define quantlib_comparison_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 

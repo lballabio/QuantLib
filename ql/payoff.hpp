@@ -19,10 +19,10 @@
     \brief Option payoff classes
 */
 
-#ifndef quantlib_payoff_h
-#define quantlib_payoff_h
+#ifndef quantlib_payoff_hpp
+#define quantlib_payoff_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 #include <functional>
 
 namespace QuantLib {

@@ -22,6 +22,8 @@
 #ifndef quantlib_strings_hpp
 #define quantlib_strings_hpp
 
+#include <string>
+
 namespace QuantLib {
 
     std::string lowercase(const std::string&);

@@ -23,7 +23,7 @@
 #define quantlib_caplet_constant_volatility_hpp
 
 #include <ql/capvolstructures.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 

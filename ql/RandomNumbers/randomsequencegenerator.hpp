@@ -24,13 +24,14 @@
 
 #include <ql/Math/array.hpp>
 #include <ql/MonteCarlo/sample.hpp>
+#include <vector>
 
 namespace QuantLib {
 
     //! Random sequence generator based on a pseudo-random number generator
     /*! Random sequence generator based on a pseudo-random number
         generator RNG.
-            
+
         Class RNG must implement the following interface:
         \code
             RNG::sample_type RNG::next() const;

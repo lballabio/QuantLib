@@ -19,8 +19,10 @@
     \brief Optimization criteria class
 */
 
-#ifndef quantlib_optimization_criteria_h
-#define quantlib_optimization_criteria_h
+#ifndef quantlib_optimization_criteria_hpp
+#define quantlib_optimization_criteria_hpp
+
+#include <ql/types.hpp>
 
 namespace QuantLib {
 

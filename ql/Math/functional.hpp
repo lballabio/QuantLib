@@ -19,10 +19,10 @@
     \brief functionals and combinators not included in the STL
 */
 
-#ifndef quantlib_functional_h
-#define quantlib_functional_h
+#ifndef quantlib_functional_hpp
+#define quantlib_functional_hpp
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 #include <functional>
 
 namespace QuantLib {

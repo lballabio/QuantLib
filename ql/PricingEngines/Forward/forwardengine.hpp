@@ -22,8 +22,11 @@
 #ifndef quantlib_forward_engine_hpp
 #define quantlib_forward_engine_hpp
 
+#include <ql/pricingengine.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/Volatilities/impliedvoltermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 
@@ -48,7 +51,7 @@ namespace QuantLib {
         - the correctness of the returned greeks is tested by
           reproducing numerical derivatives.
     */
-    template<class ArgumentsType, class ResultsType>
+    template <class ArgumentsType, class ResultsType>
     class ForwardEngine
         : public GenericEngine<ForwardOptionArguments<ArgumentsType>,
                                ResultsType> {
