@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -57,10 +57,11 @@ namespace QuantLib {
     class SobolRsg {
       public:
         typedef Sample<Array> sample_type;
-        // dimensionality must be <= PPMT_MAX_DIM
+        enum DirectionIntegers { Unit, Jaeckel, SobolLevitan };
+        //! \pre dimensionality must be <= PPMT_MAX_DIM
         SobolRsg(Size dimensionality,
                  unsigned long seed = 0,
-                 bool unitInitialization = false);
+                 DirectionIntegers directionIntegers = Jaeckel);
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const { return sequence_; }
         Size dimension() const { return dimensionality_; }

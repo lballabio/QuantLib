@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,6 +19,7 @@
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <ql/basicdataformatters.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -268,7 +269,7 @@ namespace QuantLib {
     0.5/(1UL<<(SobolRsg::bits_-1));
 
     SobolRsg::SobolRsg(Size dimensionality, unsigned long seed,
-                       bool unitInitialization)
+                       DirectionIntegers directionIntegers)
     : dimensionality_(dimensionality),
       sequenceCounter_(0),
       firstDraw_(true), sequence_(Array(dimensionality), 1.0),
@@ -315,23 +316,47 @@ namespace QuantLib {
             directionIntegers_[0][j] = (1UL<<(bits_-j-1));
 
 
-        // maxTabulated=32
-        Size maxTabulated =
-            sizeof(initializers)/sizeof(unsigned long *)+1;
-        // dimensions from 2 (k=1) to maxTabulated (k=maxTabulated-1)
-        // included are initialized from tabulated coefficients
-        for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
-            j = 0;
-            // 0UL marks the end of the coefficients for a given dimension
-            while (initializers[k-1][j] != 0UL) {
-                if (unitInitialization) {
-                    directionIntegers_[k][j] = 1UL;
-                } else {
-                    directionIntegers_[k][j] = initializers[k-1][j];
+        Size maxTabulated;
+        // dimensions from 2 (k=1) to maxTabulated (k=maxTabulated-1) included
+        // are initialized from tabulated coefficients
+        switch (directionIntegers) {
+            case Unit:
+                maxTabulated=dimensionality_;
+                for (k=1; k<maxTabulated; k++) {
+                    for (Size l=1; l<=degree[k]; l++) {
+                        directionIntegers_[k][l-1] = 1UL;
+                        directionIntegers_[k][l-1] <<= (bits_-l);
+                    }
                 }
-                directionIntegers_[k][j] <<= (bits_-j-1);
-                j++;
-            }
+                break;
+            case Jaeckel:
+                // maxTabulated=32
+                maxTabulated = sizeof(initializers)/sizeof(unsigned long *)+1;
+                for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
+                    j = 0;
+                    // 0UL marks the end of the coefficients for a given dimension
+                    while (initializers[k-1][j] != 0UL) {
+                        directionIntegers_[k][j] = initializers[k-1][j];
+                        directionIntegers_[k][j] <<= (bits_-j-1);
+                        j++;
+                    }
+                }
+                break;
+            case SobolLevitan:
+                // maxTabulated=40
+                maxTabulated = sizeof(SLinitializers)/sizeof(unsigned long *)+1;
+                for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
+                    j = 0;
+                    // 0UL marks the end of the coefficients for a given dimension
+                    while (SLinitializers[k-1][j] != 0UL) {
+                        directionIntegers_[k][j] = SLinitializers[k-1][j];
+                        directionIntegers_[k][j] <<= (bits_-j-1);
+                        j++;
+                    }
+                }
+                break;
+            default:
+                break;
         }
 
         // random initialization for higher dimensions
@@ -339,20 +364,17 @@ namespace QuantLib {
             MersenneTwisterUniformRng uniformRng(seed);
             for (k=maxTabulated; k<dimensionality_; k++) {
                 for (Size l=1; l<=degree[k]; l++) {
-                    if (unitInitialization)
-                        directionIntegers_[k][l-1] = 1UL;
-                    else {
-                        do {
-                            // u is in (0,1)
-                            double u = uniformRng.next().value;
-                            // the direction integer has at most the
-                            // rightmost l bits non-zero
-                            directionIntegers_[k][l-1] =
-                                (unsigned long)(u*(1UL<<l));
-                        } while (!(directionIntegers_[k][l-1] & 1UL));
-                        // iterate until the direction integer is odd
-                        // that is it has the rightmost bit set
-                    }
+                    do {
+                        // u is in (0,1)
+                        double u = uniformRng.next().value;
+                        // the direction integer has at most the
+                        // rightmost l bits non-zero
+                        directionIntegers_[k][l-1] =
+                            (unsigned long)(u*(1UL<<l));
+                    } while (!(directionIntegers_[k][l-1] & 1UL));
+                    // iterate until the direction integer is odd
+                    // that is it has the rightmost bit set
+
                     // shifting bits_-l bits to the left
                     // we are guaranteed that the l-th leftmost bit
                     // is set, and only the first l leftmost bit
