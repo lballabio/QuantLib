@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
         std::string method;
 
         double value, discrepancy, rightValue, relativeDiscrepancy;
-        rightValue = (type == Option::Put ? 4.486674 : 2.17372645);
+        rightValue = (type == Option::Put ? 4.48667344 : 2.17372645);
 
         std::cout << std::endl ;
 
@@ -148,7 +148,6 @@ int main(int argc, char* argv[])
         // American option
         VanillaOption option(stochasticProcess, payoff, amExercise);
 
-//        Size timeSteps = 512001;
         Size timeSteps = 801;
 
         // Binomial Method (JR)
