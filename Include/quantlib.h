@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.16  2001/01/23 11:08:51  lballabio
+    Renamed iterators in Include\Utilities and related files
+
     Revision 1.15  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -214,7 +217,7 @@
 #include "dataformatters.h"
 #include "steppingiterator.h"
 #include "filteringiterator.h"
-#include "mappingiterator.h"
+#include "processingiterator.h"
 
 
 /*** shortcuts for the full namespaces

@@ -1,5 +1,7 @@
 Many thanks to the QuantLib contributors:
 
+Christopher Baus
+Thomas Becker
 David Binderman
 Peter Schmitteckert
 Enrico Sirola

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/01/23 11:08:51  lballabio
+    Renamed iterators in Include\Utilities and related files
+
     Revision 1.8  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -242,14 +245,14 @@ namespace QuantLib {
         class DataValidator;
       public:
         //! bidirectional iterator on non-null history entries
-        typedef Utilities::FilteringIterator<const_iterator,DataValidator>
+        typedef Utilities::filtering_iterator<const_iterator,DataValidator>
             const_valid_iterator;
 
         //! random access iterator on historical data
         typedef std::vector<double>::const_iterator const_data_iterator;
 
         //! bidirectional iterator on non-null historical data
-        typedef Utilities::FilteringIterator<const_data_iterator,DataValidator>
+        typedef Utilities::filtering_iterator<const_data_iterator,DataValidator>
             const_valid_data_iterator;
 
         /*! \name Iterator access

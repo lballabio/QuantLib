@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/01/23 11:08:51  lballabio
+    Renamed iterators in Include\Utilities and related files
+
     Revision 1.5  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -72,7 +75,7 @@ namespace QuantLib {
             condition.
         */
         template <class Iterator, class UnaryPredicate>
-        class FilteringIterator {
+        class filtering_iterator {
           public:
             typedef typename std::iterator_traits<Iterator>::iterator_category
                 underlying_category;
@@ -86,7 +89,7 @@ namespace QuantLib {
                 pointer;
             typedef typename std::iterator_traits<Iterator>::reference
                 reference;
-            FilteringIterator(const Iterator&, const UnaryPredicate&,
+            filtering_iterator(const Iterator&, const UnaryPredicate&,
                 const Iterator& beforeBegin, const Iterator& end);
             //! \name Dereferencing
             //@{
@@ -95,15 +98,15 @@ namespace QuantLib {
             //@}
             //! \name Increment and decrement
             //@{
-            FilteringIterator& operator++();
-            FilteringIterator  operator++(int);
-            FilteringIterator& operator--();
-            FilteringIterator  operator--(int);
+            filtering_iterator& operator++();
+            filtering_iterator  operator++(int);
+            filtering_iterator& operator--();
+            filtering_iterator  operator--(int);
             //@}
             //! \name Comparisons
             //@{
-            bool operator==(const FilteringIterator<Iterator,UnaryPredicate>&);
-            bool operator!=(const FilteringIterator<Iterator,UnaryPredicate>&);
+            bool operator==(const filtering_iterator<Iterator,UnaryPredicate>&);
+            bool operator!=(const filtering_iterator<Iterator,UnaryPredicate>&);
             //@}
           private:
             UnaryPredicate p_;
@@ -115,7 +118,7 @@ namespace QuantLib {
         // inline definitions
 
         template<class Iterator, class UnaryPredicate>
-        inline FilteringIterator<Iterator,UnaryPredicate>::FilteringIterator(
+        inline filtering_iterator<Iterator,UnaryPredicate>::filtering_iterator(
           const Iterator& it, const UnaryPredicate& p,
           const Iterator& beforeBegin, const Iterator& end)
         : p_(p), it_(it), beforeBegin_(beforeBegin), end_(end) {
@@ -124,8 +127,8 @@ namespace QuantLib {
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline FilteringIterator<Iterator,UnaryPredicate>&
-        FilteringIterator<Iterator,UnaryPredicate>::operator++() {
+        inline filtering_iterator<Iterator,UnaryPredicate>&
+        filtering_iterator<Iterator,UnaryPredicate>::operator++() {
             do
                 it_++;
             while (!p_(*it_) && it_ != end_);
@@ -133,9 +136,9 @@ namespace QuantLib {
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline FilteringIterator<Iterator,UnaryPredicate>
-        FilteringIterator<Iterator,UnaryPredicate>::operator++(int) {
-            FilteringIterator<Iterator,UnaryPredicate> temp = *this;
+        inline filtering_iterator<Iterator,UnaryPredicate>
+        filtering_iterator<Iterator,UnaryPredicate>::operator++(int) {
+            filtering_iterator<Iterator,UnaryPredicate> temp = *this;
             do
                 it_++;
             while (!p_(*it_) && it_ != end_);
@@ -143,8 +146,8 @@ namespace QuantLib {
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline FilteringIterator<Iterator,UnaryPredicate>&
-        FilteringIterator<Iterator,UnaryPredicate>::operator--() {
+        inline filtering_iterator<Iterator,UnaryPredicate>&
+        filtering_iterator<Iterator,UnaryPredicate>::operator--() {
             do
                 it_--;
             while (!p_(*it_) && it_ != beforeBegin_);
@@ -152,9 +155,9 @@ namespace QuantLib {
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline FilteringIterator<Iterator,UnaryPredicate>
-        FilteringIterator<Iterator,UnaryPredicate>::operator--(int) {
-            FilteringIterator<Iterator,UnaryPredicate> temp = *this;
+        inline filtering_iterator<Iterator,UnaryPredicate>
+        filtering_iterator<Iterator,UnaryPredicate>::operator--(int) {
+            filtering_iterator<Iterator,UnaryPredicate> temp = *this;
             do
                 it_--;
             while (!p_(*it_) && it_ != beforeBegin_);
@@ -162,26 +165,26 @@ namespace QuantLib {
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline FilteringIterator<Iterator,UnaryPredicate>::reference
-        FilteringIterator<Iterator,UnaryPredicate>::operator*() const {
+        inline filtering_iterator<Iterator,UnaryPredicate>::reference
+        filtering_iterator<Iterator,UnaryPredicate>::operator*() const {
             return *it_;
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline FilteringIterator<Iterator,UnaryPredicate>::pointer
-        FilteringIterator<Iterator,UnaryPredicate>::operator->() const {
+        inline filtering_iterator<Iterator,UnaryPredicate>::pointer
+        filtering_iterator<Iterator,UnaryPredicate>::operator->() const {
             return it_.operator->();
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline bool FilteringIterator<Iterator,UnaryPredicate>::operator==(
-          const FilteringIterator<Iterator,UnaryPredicate>& i) {
+        inline bool filtering_iterator<Iterator,UnaryPredicate>::operator==(
+          const filtering_iterator<Iterator,UnaryPredicate>& i) {
             return (it_ == i.it_);
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline bool FilteringIterator<Iterator,UnaryPredicate>::operator!=(
-          const FilteringIterator<Iterator,UnaryPredicate>& i) {
+        inline bool filtering_iterator<Iterator,UnaryPredicate>::operator!=(
+          const filtering_iterator<Iterator,UnaryPredicate>& i) {
             return (it_ != i.it_);
         }
 

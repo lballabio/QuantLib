@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/23 11:08:51  lballabio
+    Renamed iterators in Include\Utilities and related files
+
     Revision 1.2  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -40,7 +43,6 @@
 #define quantlib_lexicographical_view_h
 
 #include "qldefines.h"
-#include "array.h"
 #include "steppingiterator.h"
 
 namespace QuantLib {
@@ -64,7 +66,8 @@ namespace QuantLib {
                 typename std::iterator_traits<RandomAccessIterator>::value_type)
                     reverse_x_iterator;
             //! iterates over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
-            typedef Utilities::SteppingIterator<RandomAccessIterator> y_iterator;
+            typedef Utilities::stepping_iterator<RandomAccessIterator> 
+                y_iterator;
             //! iterates backwards over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
             typedef QL_REVERSE_ITERATOR(y_iterator,
                 typename std::iterator_traits<RandomAccessIterator>::value_type)

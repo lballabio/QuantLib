@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/23 11:08:51  lballabio
+    Renamed iterators in Include\Utilities and related files
+
     Revision 1.3  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -35,7 +38,7 @@
     Fixed constructor calls with wrong arguments
 
     Revision 1.1  2001/01/11 11:43:52  lballabio
-    Renamed StepIterator to SteppingIterator
+    Renamed StepIterator to stepping_iterator
 
     Revision 1.1  2001/01/09 11:51:10  lballabio
     Added a couple of smart iterators
@@ -57,7 +60,7 @@ namespace QuantLib {
             \f$ n \f$ is an integer given upon construction.
         */
         template <class RandomAccessIterator>
-        class SteppingIterator {
+        class stepping_iterator {
           public:
             typedef std::iterator_traits<RandomAccessIterator> traits;
             typedef std::random_access_iterator_tag   iterator_category;
@@ -65,7 +68,8 @@ namespace QuantLib {
             typedef typename traits::difference_type  difference_type;
             typedef typename traits::pointer          pointer;
             typedef typename traits::reference        reference;
-            SteppingIterator(const RandomAccessIterator&, difference_type step);
+            stepping_iterator(const RandomAccessIterator&, 
+                difference_type step);
             //! \name Dereferencing
             //@{
             reference operator*()  const;
@@ -77,28 +81,28 @@ namespace QuantLib {
             //@}
             //! \name Increment and decrement
             //@{
-            SteppingIterator& operator++();
-            SteppingIterator  operator++(int);
-            SteppingIterator& operator--();
-            SteppingIterator  operator--(int);
-            SteppingIterator& operator+=(difference_type);
-            SteppingIterator& operator-=(difference_type);
-            SteppingIterator<RandomAccessIterator> operator+(difference_type);
-            SteppingIterator<RandomAccessIterator> operator-(difference_type);
+            stepping_iterator& operator++();
+            stepping_iterator  operator++(int);
+            stepping_iterator& operator--();
+            stepping_iterator  operator--(int);
+            stepping_iterator& operator+=(difference_type);
+            stepping_iterator& operator-=(difference_type);
+            stepping_iterator<RandomAccessIterator> operator+(difference_type);
+            stepping_iterator<RandomAccessIterator> operator-(difference_type);
             //@}
             //! \name Difference
             //@{
             difference_type operator-(
-                const SteppingIterator<RandomAccessIterator>&);
+                const stepping_iterator<RandomAccessIterator>&);
             //@}
             //! \name Comparisons
             //@{
-            bool operator==(const SteppingIterator<RandomAccessIterator>&);
-            bool operator!=(const SteppingIterator<RandomAccessIterator>&);
-            bool operator< (const SteppingIterator<RandomAccessIterator>&);
-            bool operator> (const SteppingIterator<RandomAccessIterator>&);
-            bool operator<=(const SteppingIterator<RandomAccessIterator>&);
-            bool operator>=(const SteppingIterator<RandomAccessIterator>&);
+            bool operator==(const stepping_iterator<RandomAccessIterator>&);
+            bool operator!=(const stepping_iterator<RandomAccessIterator>&);
+            bool operator< (const stepping_iterator<RandomAccessIterator>&);
+            bool operator> (const stepping_iterator<RandomAccessIterator>&);
+            bool operator<=(const stepping_iterator<RandomAccessIterator>&);
+            bool operator>=(const stepping_iterator<RandomAccessIterator>&);
             //@}
           private:
             difference_type dn_;
@@ -109,93 +113,93 @@ namespace QuantLib {
         // inline definitions
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>::SteppingIterator(
+        inline stepping_iterator<RandomAccessIterator>::stepping_iterator(
           const RandomAccessIterator& it,
-          SteppingIterator<RandomAccessIterator>::difference_type step)
+          stepping_iterator<RandomAccessIterator>::difference_type step)
         : dn_(step), it_(it) {}
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>&
-        SteppingIterator<RandomAccessIterator>::operator++() {
+        inline stepping_iterator<RandomAccessIterator>&
+        stepping_iterator<RandomAccessIterator>::operator++() {
             it_ += dn_;
             return *this;
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>
-        SteppingIterator<RandomAccessIterator>::operator++(int) {
-            SteppingIterator<RandomAccessIterator> temp = *this;
+        inline stepping_iterator<RandomAccessIterator>
+        stepping_iterator<RandomAccessIterator>::operator++(int) {
+            stepping_iterator<RandomAccessIterator> temp = *this;
             it_ += dn_;
             return temp;
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>&
-        SteppingIterator<RandomAccessIterator>::operator--() {
+        inline stepping_iterator<RandomAccessIterator>&
+        stepping_iterator<RandomAccessIterator>::operator--() {
             it_ -= dn_;
             return *this;
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>
-        SteppingIterator<RandomAccessIterator>::operator--(int) {
-            SteppingIterator<RandomAccessIterator> temp = *this;
+        inline stepping_iterator<RandomAccessIterator>
+        stepping_iterator<RandomAccessIterator>::operator--(int) {
+            stepping_iterator<RandomAccessIterator> temp = *this;
             it_ -= dn_;
             return temp;
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>&
-        SteppingIterator<RandomAccessIterator>::operator+=(
-          SteppingIterator<RandomAccessIterator>::difference_type i) {
+        inline stepping_iterator<RandomAccessIterator>&
+        stepping_iterator<RandomAccessIterator>::operator+=(
+          stepping_iterator<RandomAccessIterator>::difference_type i) {
             it_ += i*dn_;
             return *this;
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>&
-        SteppingIterator<RandomAccessIterator>::operator-=(
-          SteppingIterator<RandomAccessIterator>::difference_type i) {
+        inline stepping_iterator<RandomAccessIterator>&
+        stepping_iterator<RandomAccessIterator>::operator-=(
+          stepping_iterator<RandomAccessIterator>::difference_type i) {
             it_ -= i*dn_;
             return *this;
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>::reference
-        SteppingIterator<RandomAccessIterator>::operator*() const {
+        inline stepping_iterator<RandomAccessIterator>::reference
+        stepping_iterator<RandomAccessIterator>::operator*() const {
             return *it_;
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>::pointer
-        SteppingIterator<RandomAccessIterator>::operator->() const {
+        inline stepping_iterator<RandomAccessIterator>::pointer
+        stepping_iterator<RandomAccessIterator>::operator->() const {
             return it_;
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>::reference
-        SteppingIterator<RandomAccessIterator>::operator[](int i) const {
+        inline stepping_iterator<RandomAccessIterator>::reference
+        stepping_iterator<RandomAccessIterator>::operator[](int i) const {
             return it_[i*dn_];
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>
-        SteppingIterator<RandomAccessIterator>::operator+(
-          SteppingIterator<RandomAccessIterator>::difference_type i) {
-            return SteppingIterator<RandomAccessIterator>(it_+dn_*i,dn_);
+        inline stepping_iterator<RandomAccessIterator>
+        stepping_iterator<RandomAccessIterator>::operator+(
+          stepping_iterator<RandomAccessIterator>::difference_type i) {
+            return stepping_iterator<RandomAccessIterator>(it_+dn_*i,dn_);
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>
-        SteppingIterator<RandomAccessIterator>::operator-(
-          SteppingIterator<RandomAccessIterator>::difference_type i) {
-            return SteppingIterator<RandomAccessIterator>(it_-dn_*i,dn_);
+        inline stepping_iterator<RandomAccessIterator>
+        stepping_iterator<RandomAccessIterator>::operator-(
+          stepping_iterator<RandomAccessIterator>::difference_type i) {
+            return stepping_iterator<RandomAccessIterator>(it_-dn_*i,dn_);
         }
 
         template<class RandomAccessIterator>
-        inline SteppingIterator<RandomAccessIterator>::difference_type
-        SteppingIterator<RandomAccessIterator>::operator-(
-          const SteppingIterator<RandomAccessIterator>& i) {
+        inline stepping_iterator<RandomAccessIterator>::difference_type
+        stepping_iterator<RandomAccessIterator>::operator-(
+          const stepping_iterator<RandomAccessIterator>& i) {
             #ifdef QL_DEBUG
                 QL_REQUIRE((it_-i.it_)%dn_ == 0,
                   "Cannot subtract stepping iterators not reachable "
@@ -205,38 +209,38 @@ namespace QuantLib {
         }
 
         template<class RandomAccessIterator>
-        inline bool SteppingIterator<RandomAccessIterator>::operator==(
-          const SteppingIterator<RandomAccessIterator>& i) {
+        inline bool stepping_iterator<RandomAccessIterator>::operator==(
+          const stepping_iterator<RandomAccessIterator>& i) {
             return (it_ == i.it_);
         }
 
         template<class RandomAccessIterator>
-        inline bool SteppingIterator<RandomAccessIterator>::operator!=(
-          const SteppingIterator<RandomAccessIterator>& i) {
+        inline bool stepping_iterator<RandomAccessIterator>::operator!=(
+          const stepping_iterator<RandomAccessIterator>& i) {
             return (it_ != i.it_);
         }
 
         template<class RandomAccessIterator>
-        inline bool SteppingIterator<RandomAccessIterator>::operator<(
-          const SteppingIterator<RandomAccessIterator>& i) {
+        inline bool stepping_iterator<RandomAccessIterator>::operator<(
+          const stepping_iterator<RandomAccessIterator>& i) {
             return (it_ < i.it_);
         }
 
         template<class RandomAccessIterator>
-        inline bool SteppingIterator<RandomAccessIterator>::operator>(
-          const SteppingIterator<RandomAccessIterator>& i) {
+        inline bool stepping_iterator<RandomAccessIterator>::operator>(
+          const stepping_iterator<RandomAccessIterator>& i) {
             return (it_ > i.it_);
         }
 
         template<class RandomAccessIterator>
-        inline bool SteppingIterator<RandomAccessIterator>::operator<=(
-          const SteppingIterator<RandomAccessIterator>& i) {
+        inline bool stepping_iterator<RandomAccessIterator>::operator<=(
+          const stepping_iterator<RandomAccessIterator>& i) {
             return (it_ <= i.it_);
         }
 
         template<class RandomAccessIterator>
-        inline bool SteppingIterator<RandomAccessIterator>::operator>=(
-          const SteppingIterator<RandomAccessIterator>& i) {
+        inline bool stepping_iterator<RandomAccessIterator>::operator>=(
+          const stepping_iterator<RandomAccessIterator>& i) {
             return (it_ >= i.it_);
         }
 
