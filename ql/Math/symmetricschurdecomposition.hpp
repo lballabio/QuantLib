@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,7 +26,6 @@
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
-
     //! symmetric threshold Jacobi algorithm.
     /*! Given a real symmetric matrix S, the Schur decomposition
         finds the eigenvalues and eigenvectors of S. If D is the
@@ -37,48 +37,29 @@ namespace QuantLib {
         and  \f$ ^T  \f$ is the transpose operator.
         This class implements the Schur decomposition using the
         symmetric threshold Jacobi algorithm. For details on the
-        different Jacobi transfomations you can start from the great book
-        on matrix computations by Golub and Van Loan: Matrix computation,
-        second edition The Johns Hopkins University Press
+        different Jacobi transfomations see "Matrix computation,"
+        second edition, by Golub and Van Loan,
+        The Johns Hopkins University Press
     */
     class SymmetricSchurDecomposition {
       public:
         /* \pre s must be symmetric */
         SymmetricSchurDecomposition(const Matrix &s);
-        const Array& eigenvalues() const;
-        const Matrix& eigenvectors() const;
+        const Array& eigenvalues() const { return diagonal_; }
+        const Matrix& eigenvectors() const { return eigenVectors_; }
       private:
-        mutable Matrix s_;
-        int size_;
-        mutable Array diagonal_;
-        mutable Matrix eigenVectors_;
-        mutable bool hasBeenComputed_;
-        int maxIterations_;
-        double epsPrec_;
-        void compute() const;
-        void jacobiRotate(Matrix & m, double rot, double dil,
-                          int j1, int k1, int j2, int k2) const;
+        Array diagonal_;
+        Matrix eigenVectors_;
+        void jacobiRotate_(Matrix & m, double rot, double dil,
+            Size j1, Size k1, Size j2, Size k2) const;
     };
 
 
     // inline definitions
 
-    inline const Array& SymmetricSchurDecomposition::eigenvalues() const{
-        if(!hasBeenComputed_)
-            compute();
-        return diagonal_;
-    }
-
-    inline const Matrix& SymmetricSchurDecomposition::eigenvectors() const{
-        if(!hasBeenComputed_)
-            compute();
-        return eigenVectors_;
-    }
-
     //! This routines implements the Jacobi, a.k.a. Givens, rotation
-    inline void SymmetricSchurDecomposition::jacobiRotate(
-                                       Matrix &m, double rot, double dil, 
-                                       int j1, int k1, int j2, int k2) const {
+    inline void SymmetricSchurDecomposition::jacobiRotate_(Matrix &m,
+          double rot, double dil, Size j1, Size k1, Size j2, Size k2) const{
 
         double x1, x2;
         x1 = m[j1][k1];

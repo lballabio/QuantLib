@@ -156,12 +156,20 @@
 
 #define QL_PATCH_MICROSOFT
 
-/*** libraries to be linked***/
+/*** libraries to be linked ***/
 
-#ifdef _DEBUG
-    #pragma comment(lib,"QuantLib_d.lib")
+#ifdef _DLL
+    #ifdef _DEBUG
+        #pragma comment(lib,"QuantLib_MTDLL_d.lib")
+    #else
+        #pragma comment(lib,"QuantLib_MTDLL.lib")
+    #endif
 #else
-    #pragma comment(lib,"QuantLib.lib")
+    #ifdef _DEBUG
+        #pragma comment(lib,"QuantLib_d.lib")
+    #else
+        #pragma comment(lib,"QuantLib.lib")
+    #endif
 #endif
 
 #ifndef _CPPRTTI

@@ -36,7 +36,7 @@ bin_PROGRAMS = quantlib-test-suite
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = ../ql/libQuantLib.la
 TESTS = quantlib-test-suite
-EXTRA_DIST = README.txt CPPUNIT-COPYING
+EXTRA_DIST = README.txt CPPUNIT-COPYING testsuite.dsp makefile.mak
 
 else
 

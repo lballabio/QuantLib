@@ -25,7 +25,7 @@
 
 namespace QuantLib {
 
-    Disposable<Matrix> pseudoSqrt(const Matrix &realSymmMatrix, 
+    Disposable<Matrix> pseudoSqrt(const Matrix &realSymmMatrix,
                                   SalvagingAlgorithm sa) {
 
         Size size = realSymmMatrix.rows();
@@ -33,13 +33,12 @@ namespace QuantLib {
 
         double maxEv=0;
         Size i, j;
-        for (i = 0; i < size;i++) {
-            if (jd.eigenvalues()[i] >= maxEv)
-                maxEv = jd.eigenvalues()[i];
+        for (i=0; i<size; i++) {
+            maxEv = QL_MAX(jd.eigenvalues()[i], maxEv);
         }
 
-        Matrix diagonal(size,size,0);
-        for (i = 0; i < size; i++) {
+        Matrix diagonal(size, size, 0);
+        for (i=0; i<size; i++) {
             // eigenvalues smaller than relative tolerance
             // are considered zero
             double tolerance = 1e-15;
@@ -78,8 +77,7 @@ namespace QuantLib {
             }
         }
 
-        Matrix result(jd.eigenvectors() * diagonal *
-                      transpose(jd.eigenvectors()));
+        Matrix result(jd.eigenvectors() * diagonal);
 
         switch (sa) {
           case Spectral:

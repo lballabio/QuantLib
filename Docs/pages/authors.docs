@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000-2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -75,6 +76,13 @@
     </tr>
 
     <tr>
+    <td><em>Roman Gitlin</em></td>
+    <td></td>
+    <td>integration algorithms</td>
+    <td></td>
+    </tr>
+
+    <tr>
     <td><em>Marco Marchioro</em></td>
     <td>&#109;&#97;&#114;&#99;&#111;&#46;&#109;&#97;&#114;&#99;&#104;&#105;&#111;&#114;&#111;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#110;&#101;&#116;&#32;</td>
     <td> </td>
@@ -99,27 +107,29 @@
 
     <tr>
     <td><em>Liguo Song</em></td>
-    <td> </td>
+    <td>Liguo.Song AT vanderbilt.edu</td>
     <td>RPM maintainer</td>
-    <td> </td>
+    <td><a href=
+    "http://sourceforge.net/users/liguo/">liguo</a></td>
     </tr>
     </table>
     \endhtmlonly
 
     \latexonly
     \begin{itemize}
-        \item Ferdinando Ametrano (nando@NOSPAMametrano.net),
+        \item Ferdinando Ametrano (nando AT ametrano DOT net),
               project manager
         \item Luigi Ballabio (luigi.ballabio@riskmap.net), library designer
         \item Nicolas Di C\'esar\'e, spline and optimizer
         \item Dirk Eddelbuettel: Debian maintainer, RQuantLib
         \item Neil Firth: Monte Carlo: Longstaff-Schwartz American option,
               Barrier option
+        \item Roman Gitlin: integration algorithms
         \item Marco Marchioro (marco.marchioro@riskmap.net)
         \item Sadruddin Rejeb (sad@quantlib.org), interest
               rate models
         \item Niels Elken S{\o}nderby: Gauss-Kronrod integration
-        \item Liguo Song: RPM maintainer
+        \item Liguo Song (Liguo.Song AT vanderbilt.edu): RPM maintainer
     \end{itemize}
     \endlatexonly
 

@@ -24,6 +24,11 @@
 
 #include <ql/null.hpp>
 
+#define QL_MIN_VOLATILITY 0.0
+#define QL_MIN_DIVYIELD 1.0e-7
+#define QL_MAX_VOLATILITY 4.0
+#define QL_MAX_DIVYIELD 4.0
+
 namespace QuantLib {
 
     //! base class for generic argument groups

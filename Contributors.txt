@@ -8,7 +8,6 @@ David Binderman
 Jon Davidson
 Dirk Eddelbuettel
 Matteo Gallivanoni
-Roman Gitlin
 Tomoya Kawanishi
 Gilbert Peffer
 Peter Schmitteckert

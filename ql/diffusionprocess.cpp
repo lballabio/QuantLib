@@ -72,15 +72,17 @@ namespace QuantLib {
     }
 
     double BlackScholesProcess::drift(Time t, double x) const {
-        // this is a quick and dirty patch
+        // the extrapolation boolean = true is a quick and dirty patch
         // rethink how to handle extrapolation
-        double sigma = localVolTS_->localVol(t, x, true);
+        bool extrapolation = true;
+
+        double sigma = localVolTS_->localVol(t, x, extrapolation);
 
         // we could be more anticipatory if we know the right dt
         // for which the drift will be used
         double t1 = t + 0.0001;
-        return riskFreeTS_->forward(t, t1)
-            - dividendTS_->forward(t, t1)
+        return riskFreeTS_->forward(t, t1, extrapolation)
+            - dividendTS_->forward(t, t1, extrapolation)
             - 0.5 * sigma * sigma;
     }
 }

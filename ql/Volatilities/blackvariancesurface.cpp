@@ -27,27 +27,27 @@
 namespace QuantLib {
 
     BlackVarianceSurface::BlackVarianceSurface(
-                                  const Date& referenceDate,
-                                  const std::vector<Date>& dates,
-                                  const std::vector<double>& strikes,
-                                  const Matrix& blackVolMatrix,
-                                  BlackVarianceSurface::Extrapolation lowerEx,
-                                  BlackVarianceSurface::Extrapolation upperEx,
-                                  const DayCounter& dayCounter)
+        const Date& referenceDate,
+        const std::vector<Date>& dates,
+        const std::vector<double>& strikes,
+        const Matrix& blackVolMatrix,
+        BlackVarianceSurface::Extrapolation lowerEx,
+        BlackVarianceSurface::Extrapolation upperEx,
+        const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter),
       maxDate_(dates.back()), strikes_(strikes),
       lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
 
         QL_REQUIRE(dates.size()==blackVolMatrix.columns(),
-                   "BlackVarianceSurface::BlackVarianceSurface : "
-                   "mismatch between date vector and vol matrix colums");
+            "BlackVarianceSurface::BlackVarianceSurface : "
+            "mismatch between date vector and vol matrix colums");
         QL_REQUIRE(strikes_.size()==blackVolMatrix.rows(),
-                   "BlackVarianceSurface::BlackVarianceSurface : "
-                   "mismatch between money-strike vector and vol matrix rows");
+            "BlackVarianceSurface::BlackVarianceSurface : "
+            "mismatch between money-strike vector and vol matrix rows");
 
         QL_REQUIRE(dates[0]>=referenceDate,
-                   "BlackVarianceSurface::BlackVarianceSurface : "
-                   "cannot have dates[0]<=referenceDate");
+            "BlackVarianceSurface::BlackVarianceSurface : "
+            "cannot have dates[0]<=referenceDate");
 
         variances_ = Matrix(strikes_.size(), dates.size());
         times_ = std::vector<Time>(dates.size());
@@ -55,19 +55,19 @@ namespace QuantLib {
         for (j=0; j<blackVolMatrix.columns(); j++) {
             times_[j] = dayCounter_.yearFraction(referenceDate, dates[j]);
             QL_REQUIRE(j==0 || times_[j]>times_[j-1],
-                       "BlackVarianceSurface::BlackVarianceSurface : "
-                       "dates must be sorted unique!");
+                "BlackVarianceSurface::BlackVarianceSurface : "
+                "dates must be sorted unique!");
             for (i=0; i<blackVolMatrix.rows(); i++) {
                 variances_[i][j] = times_[j] *
                     blackVolMatrix[i][j]*blackVolMatrix[i][j];
                 if (j==0) {
-                    QL_REQUIRE(variances_[i][0]>0.0 || times_[0]==0.0,
-                               "BlackVarianceCurve::BlackVarianceCurve : "
-                               "variance must be positive");
+                    QL_REQUIRE(variances_[i][0]>=0.0 || times_[0]==0.0,
+                        "BlackVarianceCurve::BlackVarianceCurve : "
+                        "variance must be non negative");
                 } else {
                     QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
-                               "BlackVarianceCurve::BlackVarianceCurve : "
-                               "variance must be non-decreasing");
+                        "BlackVarianceCurve::BlackVarianceCurve : "
+                        "variance must be non-decreasing");
                 }
             }
         }

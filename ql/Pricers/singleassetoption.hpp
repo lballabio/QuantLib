@@ -25,11 +25,6 @@
 #include <ql/exercise.hpp>
 #include <ql/payoff.hpp>
 
-#define QL_MIN_VOLATILITY 1.0e-4
-#define QL_MIN_DIVYIELD 1.0e-7
-#define QL_MAX_VOLATILITY 4.0
-#define QL_MAX_DIVYIELD 4.0
-
 namespace QuantLib {
 
     //! \deprecated inner namespace aliases will be removed in next release

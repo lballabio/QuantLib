@@ -52,20 +52,20 @@ void CovarianceTest::testSalvagingCorrelation() {
     badCorr[2][0] = 0.7; badCorr[2][1] = 0.3; badCorr[2][2] = 1.0;
 
     Array expEigenValues(n), calcEigenValues(n);
-    expEigenValues[0]=-0.00735243940589643;
-    expEigenValues[1]= 2.29672779250086000;
-    expEigenValues[2]= 0.71062464690503600;
+    expEigenValues[0]= 2.29672779250086000;
+    expEigenValues[1]= 0.71062464690503600;
+    expEigenValues[2]=-0.00735243940589643;
 
     Matrix expEigenVectors(n, n), calcEigenVectors(n, n);
-    expEigenVectors[0][0] = 0.747670382924798;
-    expEigenVectors[0][1] = 0.659916844979967;
-    expEigenVectors[0][2] =-0.074153598758056;
-    expEigenVectors[1][0] =-0.563217098366739;
-    expEigenVectors[1][1] = 0.570995981829225;
-    expEigenVectors[1][2] =-0.597285600732372;
-    expEigenVectors[2][0] =-0.351817422258245;
-    expEigenVectors[2][1] = 0.488337328541005;
-    expEigenVectors[2][2] = 0.798593234975728;
+    expEigenVectors[0][0] = 0.659916844979967;
+    expEigenVectors[0][1] =-0.074153598758056;
+    expEigenVectors[0][2] = 0.747670382924798;
+    expEigenVectors[1][0] = 0.570995981829225;
+    expEigenVectors[1][1] =-0.597285600732372;
+    expEigenVectors[1][2] =-0.563217098366739;
+    expEigenVectors[2][0] = 0.488337328541005;
+    expEigenVectors[2][1] = 0.798593234975728;
+    expEigenVectors[2][2] =-0.351817422258245;
 
     SymmetricSchurDecomposition schur(badCorr);
 
@@ -76,6 +76,13 @@ void CovarianceTest::testSalvagingCorrelation() {
     nullMatrix[0][0] -= 1.0;
     nullMatrix[1][1] -= 1.0;
     nullMatrix[2][2] -= 1.0;
+
+    Matrix nullMatrix2(n, n, 0.0);
+    nullMatrix2[0][0] = calcEigenValues[0];
+    nullMatrix2[1][1] = calcEigenValues[1];
+    nullMatrix2[2][2] = calcEigenValues[2];
+    nullMatrix2 = calcEigenVectors * nullMatrix2;
+    nullMatrix2 -= (badCorr * calcEigenVectors);
 
     for (i=0; i<n; i++) {
         calculated = calcEigenValues[i];
@@ -106,6 +113,16 @@ void CovarianceTest::testSalvagingCorrelation() {
                              "[" + IntegerFormatter::toString(j) + "]:\n"
                              "    calculated: "
                              + DoubleFormatter::toString(nullMatrix[i][j],16) 
+                             + "\n"
+                             "    expected:   "
+                             + DoubleFormatter::toString(0.0,16));
+            if (QL_FABS(nullMatrix2[i][j]) > 1.0e-10)
+                CPPUNIT_FAIL("SymmetricSchurDecomposition "
+                             "nullMatrix2[" + 
+                             IntegerFormatter::toString(i) + "]"
+                             "[" + IntegerFormatter::toString(j) + "]:\n"
+                             "    calculated: "
+                             + DoubleFormatter::toString(nullMatrix2[i][j],16) 
                              + "\n"
                              "    expected:   "
                              + DoubleFormatter::toString(0.0,16));

@@ -1,4 +1,7 @@
 
+do not distribute html docs with the Win32 installer (chm is already included)
+support doc generation from Win32 distribution
+
 GENERAL
 - develop a framework for stochastic processes
 - merge NesQuant code
@@ -14,7 +17,7 @@ DOCUMENTATION
 - parts of the library badly need some more documentation
 
 UNIT TEST SUITE
-* add results of the test suite to web site ((semi-)automatically?) in order 
+* add results of the test suite to web site ((semi-)automatically?) in order
   to give the library some kind of certification
 - add covariance/correlation test for SequenceStatistics
 - add Gauss-Kronrod test

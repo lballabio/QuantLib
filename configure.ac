@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib], [0.3.5a1], 
+AC_INIT([QuantLib], [0.3.5a1],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib])
 AC_PREREQ(2.50)
@@ -104,7 +104,7 @@ AM_CONDITIONAL(EMACS_FOUND, test "${EMACS}" != "no")
 AC_ARG_ENABLE([extra-safety-checks],
               AC_HELP_STRING([--enable-extra-safety-checks],
                              [If enabled, extra run-time checks are added
-                              to a few functions. This can prevent their 
+                              to a few functions. This can prevent their
                               inlining and degrade performance.]),
               [ql_belt_and_braces=$enableval],
               [ql_belt_and_braces=no])
@@ -182,42 +182,42 @@ esac
 
 # done, output the configured files
 AC_CONFIG_FILES([
-    Makefile 
-    config/Makefile 
-    ql/Makefile 
-    ql/Calendars/Makefile 
-    ql/CashFlows/Makefile 
-    ql/DayCounters/Makefile 
-    ql/FiniteDifferences/Makefile 
-    ql/functions/Makefile 
-    ql/Indexes/Makefile 
-    ql/Instruments/Makefile 
-    ql/Lattices/Makefile 
-    ql/Math/Makefile 
-    ql/MonteCarlo/Makefile 
-    ql/Optimization/Makefile 
-    ql/Patterns/Makefile 
-    ql/Pricers/Makefile 
-    ql/PricingEngines/Makefile 
-    ql/RandomNumbers/Makefile 
-    ql/ShortRateModels/Makefile 
-    ql/ShortRateModels/CalibrationHelpers/Makefile 
-    ql/ShortRateModels/OneFactorModels/Makefile 
-    ql/ShortRateModels/TwoFactorModels/Makefile 
-    ql/Solvers1D/Makefile 
-    ql/TermStructures/Makefile 
-    ql/Utilities/Makefile 
-    ql/Volatilities/Makefile 
-    man/Makefile 
-    Docs/Makefile 
-    Docs/pages/Makefile 
-    Docs/Examples/Makefile 
-    Docs/images/Makefile 
-    Examples/Makefile 
-    Examples/AmericanOption/Makefile 
-    Examples/BermudanSwaption/Makefile 
-    Examples/DiscreteHedging/Makefile 
-    Examples/EuropeanOption/Makefile 
+    Makefile
+    config/Makefile
+    ql/Makefile
+    ql/Calendars/Makefile
+    ql/CashFlows/Makefile
+    ql/DayCounters/Makefile
+    ql/FiniteDifferences/Makefile
+    ql/functions/Makefile
+    ql/Indexes/Makefile
+    ql/Instruments/Makefile
+    ql/Lattices/Makefile
+    ql/Math/Makefile
+    ql/MonteCarlo/Makefile
+    ql/Optimization/Makefile
+    ql/Patterns/Makefile
+    ql/Pricers/Makefile
+    ql/PricingEngines/Makefile
+    ql/RandomNumbers/Makefile
+    ql/ShortRateModels/Makefile
+    ql/ShortRateModels/CalibrationHelpers/Makefile
+    ql/ShortRateModels/OneFactorModels/Makefile
+    ql/ShortRateModels/TwoFactorModels/Makefile
+    ql/Solvers1D/Makefile
+    ql/TermStructures/Makefile
+    ql/Utilities/Makefile
+    ql/Volatilities/Makefile
+    man/Makefile
+    Docs/Makefile
+    Docs/pages/Makefile
+    Docs/Examples/Makefile
+    Docs/images/Makefile
+    Examples/Makefile
+    Examples/AmericanOption/Makefile
+    Examples/BermudanSwaption/Makefile
+    Examples/DiscreteHedging/Makefile
+    Examples/EuropeanOption/Makefile
     Examples/Swap/Makefile
     test-suite/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])

@@ -72,28 +72,38 @@ namespace QuantLib {
         if (time2==time1) {
             if (time1==0.0) {
                 Time epsilon = 0.00001;
-                return QL_SQRT(
-                    (blackVarianceImpl(time1+epsilon, strike, extrapolate)-
-                     blackVarianceImpl(time1,         strike, extrapolate))/
-                        epsilon);
+                double var1 = blackVarianceImpl(time1,         strike,
+                    extrapolate);
+                double var2 = blackVarianceImpl(time1+epsilon, strike,
+                    extrapolate);
+                QL_REQUIRE(var2>=var1,
+                    "BlackVolTermStructure::blackForwardVol : "
+                    "variances must be non-decreasing");
+                return QL_SQRT((var2-var1)/epsilon);
             } else {
                 QL_REQUIRE(time1>0.0,
                     "BlackVolTermStructure::blackForwardVol : "
                     "negative times");
                 Time epsilon = QL_MIN(0.00001, time1);
-                return QL_SQRT(
-                    (blackVarianceImpl(time1+epsilon, strike, extrapolate)-
-                     blackVarianceImpl(time1-epsilon, strike, extrapolate))/
-                               (2*epsilon));
+                double var1 = blackVarianceImpl(time1-epsilon, strike,
+                    extrapolate);
+                double var2 = blackVarianceImpl(time1+epsilon, strike,
+                    extrapolate);
+                QL_REQUIRE(var2>=var1,
+                    "BlackVolTermStructure::blackForwardVol : "
+                    "variances must be non-decreasing");
+                return QL_SQRT((var2-var1)/(2*epsilon));
             }
         } else {
             QL_REQUIRE(time2>time1,
                 "BlackVolTermStructure::blackForwardVol : "
                 "time2<time1");
-            return QL_SQRT(
-                (blackVarianceImpl(time2, strike, extrapolate)-
-                 blackVarianceImpl(time1, strike, extrapolate))/
-                           (time2-time1));
+            double var1 = blackVarianceImpl(time1, strike, extrapolate);
+            double var2 = blackVarianceImpl(time2, strike, extrapolate);
+            QL_REQUIRE(var2>=var1,
+                "BlackVolTermStructure::blackForwardVol : "
+                "variances must be non-decreasing");
+            return QL_SQRT((var2-var1)/(time2-time1));
         }
     }
 
@@ -115,7 +125,11 @@ namespace QuantLib {
             "time2<=time1");
         double v1 = blackVarianceImpl(time1, strike, extrapolate);
         double v2 = blackVarianceImpl(time2, strike, extrapolate);
-        return (v2-v1);
+        double result = v2-v1;
+        QL_REQUIRE(result>=0.0,
+            "BlackVolTermStructure::blackForwardVariance : "
+            "variances must be non-decreasing");
+        return result;
     }
 
 

@@ -27,23 +27,23 @@
 namespace QuantLib {
 
     BlackVarianceCurve::BlackVarianceCurve(
-                                     const Date& referenceDate,
-                                     const std::vector<Date>& dates,
-                                     const std::vector<double>& blackVolCurve,
-                                     const DayCounter& dayCounter)
+        const Date& referenceDate,
+        const std::vector<Date>& dates,
+        const std::vector<double>& blackVolCurve,
+        const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter),
       maxDate_(dates.back()) {
 
         QL_REQUIRE(dates.size()==blackVolCurve.size(),
-                   "BlackVarianceCurve::BlackVarianceCurve : "
-                   "mismatch between date vector and black vol vector");
+            "BlackVarianceCurve::BlackVarianceCurve : "
+            "mismatch between date vector and black vol vector");
 
         // cannot have dates[0]==referenceDate, since the
         // value of the vol at dates[0] would be lost
         // (variance at referenceDate must be zero)
         QL_REQUIRE(dates[0]>referenceDate,
-                   "BlackVarianceCurve::BlackVarianceCurve : "
-                   "cannot have dates[0]<=referenceDate");
+            "BlackVarianceCurve::BlackVarianceCurve : "
+            "cannot have dates[0]<=referenceDate");
 
         variances_ = std::vector<double>(dates.size());
         times_ = std::vector<Time>(dates.size());
@@ -51,16 +51,19 @@ namespace QuantLib {
         for (j=0; j<blackVolCurve.size(); j++) {
             times_[j] = dayCounter_.yearFraction(referenceDate, dates[j]);
             QL_REQUIRE(j==0 || times_[j]>times_[j-1],
-                       "BlackVarianceCurve::BlackVarianceCurve : "
-                       "dates must be sorted unique!");
+                "BlackVarianceCurve::BlackVarianceCurve : "
+                "dates must be sorted unique!");
             variances_[j] = times_[j] *
                 blackVolCurve[j]*blackVolCurve[j];
-            if (j==0) QL_REQUIRE(variances_[0]>0.0,
-                                 "BlackVarianceCurve::BlackVarianceCurve : "
-                                 "variance must be positive");
-            if (j>0) QL_REQUIRE(variances_[j]>=variances_[j-1],
-                                "BlackVarianceCurve::BlackVarianceCurve : "
-                                "variance must be and non-decreasing");
+            if (j==0) {
+                QL_REQUIRE(variances_[0]>=0.0,
+                    "BlackVarianceCurve::BlackVarianceCurve : "
+                    "variance must be non negative");
+            } else {
+                QL_REQUIRE(variances_[j]>=variances_[j-1],
+                    "BlackVarianceCurve::BlackVarianceCurve : "
+                    "variance must be non-decreasing");
+            }
         }
 
         // default: linear interpolation
@@ -70,7 +73,6 @@ namespace QuantLib {
         setInterpolation<Linear>();
         #endif
     }
-
 
     double BlackVarianceCurve::blackVarianceImpl(Time t, double, 
                                                  bool extrapolate) const {

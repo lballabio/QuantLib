@@ -61,7 +61,6 @@ namespace QuantLib {
         RelinkableHandle<TermStructure> termStructure_;
         mutable double firstLegBPS_, secondLegBPS_;
     };
-
 }
 
 

@@ -72,8 +72,8 @@ namespace QuantLib {
         double impliedVolatility(double price,
                                  double accuracy = 1.0e-4,
                                  Size maxEvaluations = 100,
-                                 double minVol = 1.0e-4,
-                                 double maxVol = 4.0) const;
+                                 double minVol = QL_MIN_VOLATILITY,
+                                 double maxVol = QL_MAX_VOLATILITY) const;
         void setupArguments(Arguments*) const;
       protected:
         void setupExpired() const;

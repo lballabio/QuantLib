@@ -133,6 +133,7 @@ SectionIn 1 2 3
 
     SetOutPath $INSTDIR\lib\Win32\VisualStudio
     File "lib\Win32\VisualStudio\QuantLib.lib"
+    File "lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
 
     SetOutPath $INSTDIR\lib\Win32\Borland
     File "lib\Win32\Borland\QuantLib.lib"
@@ -270,9 +271,9 @@ SectionIn 1
   File /r "ql\TermStructures\*.cpp"
   File /r "ql\TermStructures\makefile.mak"
 
-#  SetOutPath  $INSTDIR\ql\Volatilities
-#  File /r "ql\Volatilities\*.cpp"
-#  File /r "ql\Volatilities\makefile.mak"
+  SetOutPath  $INSTDIR\ql\Volatilities
+  File /r "ql\Volatilities\*.cpp"
+  File /r "ql\Volatilities\makefile.mak"
 
   CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
                  "$INSTDIR\QuantLib.dsw"
