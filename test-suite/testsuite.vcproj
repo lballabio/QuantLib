@@ -1474,6 +1474,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\interestrates.cpp">
+			</File>
+			<File
 				RelativePath="interpolations.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2565,6 +2568,9 @@
 			</File>
 			<File
 				RelativePath="integrals.hpp">
+			</File>
+			<File
+				RelativePath=".\interestrates.hpp">
 			</File>
 			<File
 				RelativePath="interpolations.hpp">

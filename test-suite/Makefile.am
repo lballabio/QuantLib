@@ -21,6 +21,7 @@ QL_TESTS = \
 	forwardoption.hpp forwardoption.cpp \
 	instruments.hpp instruments.cpp \
 	integrals.hpp integrals.cpp \
+	interestrates.hpp interestrates.cpp \
 	interpolations.hpp interpolations.cpp \
 	jumpdiffusion.hpp jumpdiffusion.cpp \
 	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \

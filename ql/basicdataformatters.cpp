@@ -115,7 +115,7 @@ namespace QuantLib {
 
     std::string DecimalFormatter::toPercentage(Decimal x, Integer precision,
                                                Integer digits) {
-        return toString(x*100,precision,digits)+" %";
+        return toString(x*100,precision,digits)+"%";
     }
 
     std::string StringFormatter::toLowercase(const std::string& s) {

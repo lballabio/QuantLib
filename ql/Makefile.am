@@ -55,6 +55,7 @@ include_HEADERS = \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \
+    interestrate.hpp \
 	money.hpp \
 	null.hpp \
 	numericalmethod.hpp \
@@ -119,6 +120,7 @@ libQuantLib_la_SOURCES = \
 	exchangerate.cpp \
 	exercise.cpp \
     grid.cpp \
+    interestrate.cpp \
     money.cpp \
     schedule.cpp \
 	stochasticprocess.cpp \

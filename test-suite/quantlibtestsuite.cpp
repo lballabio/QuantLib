@@ -52,6 +52,7 @@
 #include "forwardoption.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
+#include "interestrates.hpp"
 #include "interpolations.hpp"
 #include "jumpdiffusion.hpp"
 #include "lowdiscrepancysequences.hpp"
@@ -106,6 +107,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(ForwardOptionTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
+    test->add(InterestRateTest::suite());
     test->add(InterpolationTest::suite());
     test->add(JumpDiffusionTest::suite());
     test->add(LowDiscrepancyTest::suite());
@@ -123,8 +125,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwapTest::suite());
     test->add(SwaptionTest::suite());
     test->add(TermStructureTest::suite());
-    // tests for deprecated (or generally old-style) classes
 
+    // tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
 
     return test;

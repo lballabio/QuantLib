@@ -83,7 +83,7 @@ Changes since release 0.3.7:
   methods to the class Date. Added nextIMM() for the calculation of the next IMM
   date.
 
-- Added WeekdayFormatter
+- Added WeekdayFormatter and FrequencyFormatter
 
 - Added "1/1" day counter. The Actual365 is deprecated: as per ISDA
   documentation "Actual/365" is the same as "Actual/Actual". Use the
@@ -93,3 +93,8 @@ Changes since release 0.3.7:
 
 - added CovarianceDecomposition class (decompose a covariance matrix into
   standard deviations and correlations)
+
+- added InterestRate class, which encapsulate the interest rate compounding
+  algebra. It manages daycounting convention, compounding convention,
+  conversion between different conventions, and discount and accrual
+  calculations. It also has its own formatter.

@@ -47,6 +47,7 @@ QL_TESTS = \
     "forwardoption.obj$(_mt)$(_D)" \
     "instruments.obj$(_mt)$(_D)" \
     "integrals.obj$(_mt)$(_D)" \
+    "interestrates.obj$(_mt)$(_D)" \
     "interpolations.obj$(_mt)$(_D)" \
     "jumpdiffusion.obj$(_mt)$(_D)" \
     "lowdiscrepancysequences.obj$(_mt)$(_D)" \

@@ -35,6 +35,7 @@ CORE_OBJS = \
     "exchangerate.obj$(_mt)$(_D)" \
     "exercise.obj$(_mt)$(_D)" \
     "grid.obj$(_mt)$(_D)" \
+    "interestrate.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
     "schedule.obj$(_mt)$(_D)" \
     "stochasticprocess.obj$(_mt)$(_D)" \
