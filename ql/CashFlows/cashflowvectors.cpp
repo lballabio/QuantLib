@@ -18,20 +18,22 @@
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
+#include <ql/CashFlows/upfrontindexedcoupon.hpp>
+#include <ql/CashFlows/indexcashflowvectors.hpp>
 
 namespace QuantLib {
 
-    std::vector<boost::shared_ptr<CashFlow> > 
+    std::vector<boost::shared_ptr<CashFlow> >
     FixedRateCouponVector(const Schedule& schedule,
                           BusinessDayConvention paymentAdjustment,
                           const std::vector<Real>& nominals,
                           const std::vector<Rate>& couponRates,
-                          const DayCounter& dayCount, 
+                          const DayCounter& dayCount,
                           const DayCounter& firstPeriodDayCount) {
 
-        QL_REQUIRE(couponRates.size() != 0, 
+        QL_REQUIRE(couponRates.size() != 0,
                    "unspecified coupon rates (size=0)");
-        QL_REQUIRE(nominals.size() != 0, 
+        QL_REQUIRE(nominals.size() != 0,
                    "unspecified nominals (size=0)");
         QL_REQUIRE(paymentAdjustment != Unadjusted,
                    "invalid business-day convention "
@@ -61,7 +63,7 @@ namespace QuantLib {
                             dayCount :
                             firstPeriodDayCount;
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new FixedRateCoupon(nominal, paymentDate, rate, 
+                new FixedRateCoupon(nominal, paymentDate, rate,
                                     dc, start, end, reference, end)));
         }
         // regular periods
@@ -77,7 +79,7 @@ namespace QuantLib {
             else
                 nominal = nominals.back();
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
+                new FixedRateCoupon(nominal, paymentDate, rate, dayCount,
                                     start, end, start, end)));
         }
         if (schedule.size() > 2) {
@@ -95,112 +97,46 @@ namespace QuantLib {
                 nominal = nominals.back();
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new FixedRateCoupon(nominal, paymentDate, 
-                                        rate, dayCount, 
+                    new FixedRateCoupon(nominal, paymentDate,
+                                        rate, dayCount,
                                         start, end, start, end)));
             } else {
-                Date reference = 
+                Date reference =
                     start.plusMonths(12/schedule.frequency());
                 reference = calendar.adjust(reference,
                                             schedule.businessDayConvention());
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new FixedRateCoupon(nominal, paymentDate, 
-                                        rate, dayCount, 
+                    new FixedRateCoupon(nominal, paymentDate,
+                                        rate, dayCount,
                                         start, end, start, reference)));
             }
         }
         return leg;
     }
 
-    std::vector<boost::shared_ptr<CashFlow> > 
+    std::vector<boost::shared_ptr<CashFlow> >
     FloatingRateCouponVector(const Schedule& schedule,
                              BusinessDayConvention paymentAdjustment,
                              const std::vector<Real>& nominals,
-                             const boost::shared_ptr<Xibor>& index, 
+                             const boost::shared_ptr<Xibor>& index,
                              Integer fixingDays,
-                             const std::vector<Spread>& spreads) {
+                             const std::vector<Spread>& spreads,
+                             const DayCounter& dayCounter) {
 
-        QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
-        QL_REQUIRE(paymentAdjustment != Unadjusted,
-                   "invalid business-day convention "
-                   "for payment-date adjustment");
+        #ifdef QL_USE_INDEXED_COUPON
+        typedef UpFrontIndexedCoupon coupon_type;
+        #else
+        typedef ParCoupon coupon_type;
+        #endif
 
-        std::vector<boost::shared_ptr<CashFlow> > leg;
-        Calendar calendar = schedule.calendar();
-
-        // first period might be short or long
-        Date start = schedule.date(0), end = schedule.date(1);
-        Date paymentDate = calendar.adjust(end,paymentAdjustment);
-        Spread spread;
-        if (spreads.size() > 0)
-            spread = spreads[0];
-        else
-            spread = 0.0;
-        Real nominal = nominals[0];
-        if (schedule.isRegular(1)) {
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new ParCoupon(nominal, paymentDate, index, start, end, 
-                              fixingDays, spread, start, end)));
-        } else {
-            Date reference = end.plusMonths(-12/schedule.frequency());
-            reference =
-                calendar.adjust(reference,schedule.businessDayConvention());
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new ShortFloatingRateCoupon(nominal, paymentDate, 
-                                            index, start, end, 
-                                            fixingDays, spread, 
-                                            reference, end)));
-        }
-        // regular periods
-        for (Size i=2; i<schedule.size()-1; i++) {
-            start = end; end = schedule.date(i);
-            paymentDate = calendar.adjust(end,paymentAdjustment);
-            if ((i-1) < spreads.size())
-                spread = spreads[i-1];
-            else if (spreads.size() > 0)
-                spread = spreads.back();
-            else
-                spread = 0.0;
-            if ((i-1) < nominals.size())
-                nominal = nominals[i-1];
-            else
-                nominal = nominals.back();
-            leg.push_back(boost::shared_ptr<CashFlow>(
-                new ParCoupon(nominal, paymentDate, index, start, end, 
-                              fixingDays, spread, start, end)));
-        }
-        if (schedule.size() > 2) {
-            // last period might be short or long
-            Size N = schedule.size();
-            start = end; end = schedule.date(N-1);
-            paymentDate = calendar.adjust(end,paymentAdjustment);
-            if ((N-2) < spreads.size())
-                spread = spreads[N-2];
-            else if (spreads.size() > 0)
-                spread = spreads.back();
-            else
-                spread = 0.0;
-            if ((N-2) < nominals.size())
-                nominal = nominals[N-2];
-            else
-                nominal = nominals.back();
-            if (schedule.isRegular(N-1)) {
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new ParCoupon(nominal, paymentDate, index, start, end, 
-                                  fixingDays, spread, start, end)));
-            } else {
-                Date reference = 
-                    start.plusMonths(12/schedule.frequency());
-                reference =
-                    calendar.adjust(reference,
-                                    schedule.businessDayConvention());
-                leg.push_back(boost::shared_ptr<CashFlow>(
-                    new ShortFloatingRateCoupon(nominal, paymentDate, 
-                                                index, start, end, 
-                                                fixingDays, spread, 
-                                                start, reference)));
-            }
-        }
+        std::vector<boost::shared_ptr<CashFlow> > leg =
+            IndexedCouponVector<coupon_type>(schedule,
+                                             paymentAdjustment,
+                                             nominals,
+                                             index, fixingDays,
+                                             spreads,
+                                             dayCounter,
+                                             (const coupon_type*) 0);
         return leg;
     }
 

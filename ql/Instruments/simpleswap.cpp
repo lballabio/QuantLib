@@ -19,10 +19,6 @@
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
-#ifdef QL_USE_INDEXED_COUPON
-#include <ql/CashFlows/indexcashflowvectors.hpp>
-#include <ql/CashFlows/upfrontindexedcoupon.hpp>
-#endif
 
 namespace QuantLib {
 
@@ -39,36 +35,28 @@ namespace QuantLib {
     : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
            std::vector<boost::shared_ptr<CashFlow> >(),
            termStructure),
-      payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
+      payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread),
       nominal_(nominal) {
 
         BusinessDayConvention convention =
             floatSchedule.businessDayConvention();
+
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
             FixedRateCouponVector(fixedSchedule,
                                   convention,
                                   std::vector<Real>(1,nominal),
                                   std::vector<Rate>(1,fixedRate),
                                   fixedDayCount);
-#ifndef QL_USE_INDEXED_COUPON
+
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
                                      convention,
                                      std::vector<Real>(1,nominal),
                                      index, indexFixingDays,
-                                     std::vector<Spread>(1,spread));
-#else
-		const UpFrontIndexedCoupon* msvc6_bug = 0;
-        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
-			IndexedCouponVector<UpFrontIndexedCoupon>(floatSchedule,
-													  convention,
-													  std::vector<Real>(1,nominal),
-													  index, indexFixingDays,
-													  std::vector<Spread>(1,spread),
-													  index->dayCounter(),
-													  msvc6_bug);
-#endif
+                                     std::vector<Spread>(1,spread),
+                                     index->dayCounter());
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
+
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);
 
@@ -97,7 +85,7 @@ namespace QuantLib {
         DayCounter counter = termStructure_->dayCounter();
         Size i;
 
-        const std::vector<boost::shared_ptr<CashFlow> >& fixedCoupons = 
+        const std::vector<boost::shared_ptr<CashFlow> >& fixedCoupons =
             fixedLeg();
 
         arguments->fixedResetTimes = arguments->fixedPayTimes =
@@ -105,35 +93,35 @@ namespace QuantLib {
         arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
         for (i=0; i<fixedCoupons.size(); i++) {
-            boost::shared_ptr<FixedRateCoupon> coupon = 
+            boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
 
             Time time = counter.yearFraction(settlement, coupon->date());
             arguments->fixedPayTimes[i] = time;
-            time = counter.yearFraction(settlement, 
+            time = counter.yearFraction(settlement,
                                         coupon->accrualStartDate());
             arguments->fixedResetTimes[i] = time;
             arguments->fixedCoupons[i] = coupon->amount();
         }
 
-        const std::vector<boost::shared_ptr<CashFlow> >& floatingCoupons = 
+        const std::vector<boost::shared_ptr<CashFlow> >& floatingCoupons =
             floatingLeg();
 
         arguments->floatingResetTimes = arguments->floatingPayTimes =
-            arguments->floatingAccrualTimes = 
+            arguments->floatingAccrualTimes =
             std::vector<Time>(floatingCoupons.size());
         arguments->floatingSpreads =
             std::vector<Spread>(floatingCoupons.size());
 
         for (i=0; i<floatingCoupons.size(); i++) {
-            boost::shared_ptr<FloatingRateCoupon> coupon = 
+            boost::shared_ptr<FloatingRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                           floatingCoupons[i]);
 
             Date resetDate = coupon->accrualStartDate(); // already adjusted
             Time resetTime = counter.yearFraction(settlement, resetDate);
             arguments->floatingResetTimes[i] = resetTime;
-            Time paymentTime = 
+            Time paymentTime =
                 counter.yearFraction(settlement, coupon->date());
             arguments->floatingPayTimes[i] = paymentTime;
             arguments->floatingAccrualTimes[i] = coupon->accrualPeriod();
@@ -147,19 +135,19 @@ namespace QuantLib {
     void SimpleSwap::arguments::validate() const {
         QL_REQUIRE(nominal != Null<Real>(),
                    "nominal null or not set");
-        QL_REQUIRE(fixedResetTimes.size() == fixedPayTimes.size(), 
+        QL_REQUIRE(fixedResetTimes.size() == fixedPayTimes.size(),
                    "number of fixed start times different from "
                    "number of fixed payment times");
-        QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(), 
+        QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(),
                    "number of fixed payment times different from "
                    "number of fixed coupon amounts");
-        QL_REQUIRE(floatingResetTimes.size() == floatingPayTimes.size(), 
+        QL_REQUIRE(floatingResetTimes.size() == floatingPayTimes.size(),
                    "number of floating start times different from "
                    "number of floating payment times");
-        QL_REQUIRE(floatingAccrualTimes.size() == floatingPayTimes.size(), 
+        QL_REQUIRE(floatingAccrualTimes.size() == floatingPayTimes.size(),
                    "number of floating accrual times different from "
                    "number of floating payment times");
-        QL_REQUIRE(floatingSpreads.size() == floatingPayTimes.size(), 
+        QL_REQUIRE(floatingSpreads.size() == floatingPayTimes.size(),
                    "number of floating spreads different from "
                    "number of floating payment times");
         QL_REQUIRE(currentFloatingCoupon != Null<Real>() || // unless...

@@ -38,8 +38,9 @@ namespace QuantLib {
         const DayCounter& firstPeriodDayCount = DayCounter());
 
     //! helper function building a sequence of par coupons
-    /*! \warning The passing of a non-null stub date - i.e., the creation
-                 of a short/long first coupon - is currently disabled.
+    /*! Either UpFrontIndexedCoupons or ParCoupons are used depending
+        on the library configuration.
+
         \todo A suitable algorithm should be implemented for the
               calculation of the interpolated index fixing for a
               short/long first coupon.
@@ -49,7 +50,8 @@ namespace QuantLib {
         BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
         const boost::shared_ptr<Xibor>& index, Integer fixingDays,
-        const std::vector<Spread>& spreads = std::vector<Spread>());
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        const DayCounter& dayCounter = DayCounter());
 
 }
 
