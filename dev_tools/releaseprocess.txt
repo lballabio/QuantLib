@@ -12,9 +12,10 @@
     review documentation
     create hidden sourceforge.net release
     last minute update of news.txt, history.txt, ChangeLog.txt, history.docs
-update news, changelog and date on the SF release page
-upload files on sourceforge.net
-alert Dirk, our Debian packager
+    update news, changelog and date on the SF release page
+    upload files on sourceforge.net
+    alert Dirk, our Debian packager
+fill in the files' size on the download page
 upload new version of quantlib.org
 unhide new release
 news on sourceforge.net
