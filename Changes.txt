@@ -23,3 +23,6 @@ Changes since latest release:
 - Added IndexManager as a singleton (will replace XiborManager--already
   obsoleted in library code.)
 
+- Added DayCounter parameter to ParCoupon (to be used for accruing spreads
+  and past fixings.) When missing, it defaults to that of the term structure.
+

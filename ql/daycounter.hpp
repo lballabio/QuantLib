@@ -67,15 +67,15 @@ namespace QuantLib {
                           const Date& refPeriodStart = Date(),
                           const Date& refPeriodEnd = Date()) const;
         //@}
-        /*! This default constructor returns a day counter with a null 
-            implementation, which is therefore unusable except as a 
+        /*! This default constructor returns a day counter with a null
+            implementation, which is therefore unusable except as a
             placeholder.
         */
         DayCounter() {}
       protected:
         /*! This protected constructor will only be invoked by derived
             classes which define a given DayCounter implementation */
-        DayCounter(const boost::shared_ptr<DayCounterImpl>& impl) 
+        DayCounter(const boost::shared_ptr<DayCounterImpl>& impl)
         : Bridge<DayCounter,DayCounterImpl>(impl) {}
     };
 
@@ -97,7 +97,7 @@ namespace QuantLib {
         return impl_->name();
     }
 
-    inline BigInteger DayCounter::dayCount(const Date& d1, 
+    inline BigInteger DayCounter::dayCount(const Date& d1,
                                            const Date& d2) const {
         return impl_->dayCount(d1,d2);
     }

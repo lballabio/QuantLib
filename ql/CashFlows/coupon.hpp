@@ -39,8 +39,8 @@ namespace QuantLib {
           which must already be a business day.
         */
         Coupon(Real nominal,
-               const Date& paymentDate, 
-               const Date& accrualStartDate, 
+               const Date& paymentDate,
+               const Date& accrualStartDate,
                const Date& accrualEndDate,
                const Date& refPeriodStart = Date(),
                const Date& refPeriodEnd = Date());
@@ -70,7 +70,7 @@ namespace QuantLib {
         //@}
       protected:
         Real nominal_;
-        Date paymentDate_, accrualStartDate_, accrualEndDate_, 
+        Date paymentDate_, accrualStartDate_, accrualEndDate_,
              refPeriodStart_, refPeriodEnd_;
     };
 
@@ -78,12 +78,12 @@ namespace QuantLib {
     // inline definitions
 
     inline Coupon::Coupon(Real nominal,
-                          const Date& paymentDate, 
-                          const Date& accrualStartDate, 
+                          const Date& paymentDate,
+                          const Date& accrualStartDate,
                           const Date& accrualEndDate,
-                          const Date& refPeriodStart, 
+                          const Date& refPeriodStart,
                           const Date& refPeriodEnd)
-    : nominal_(nominal), paymentDate_(paymentDate), 
+    : nominal_(nominal), paymentDate_(paymentDate),
       accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
       refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd) {
         if (refPeriodStart_ == Date())

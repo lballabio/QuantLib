@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    //! The %Bridge pattern made explicit. 
+    //! The %Bridge pattern made explicit.
     /*! The typical use of this class is:
         \code
         class FooImpl;

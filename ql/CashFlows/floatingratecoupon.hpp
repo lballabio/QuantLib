@@ -66,7 +66,7 @@ namespace QuantLib {
                          const Date& startDate, const Date& endDate,
                          Integer fixingDays, Spread spread,
                          const Date& refPeriodStart, const Date& refPeriodEnd)
-    : Coupon(nominal, paymentDate, 
+    : Coupon(nominal, paymentDate,
              startDate, endDate, refPeriodStart, refPeriodEnd),
       fixingDays_(fixingDays), spread_(spread) {}
 
@@ -91,7 +91,7 @@ namespace QuantLib {
     }
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {
-        Visitor<FloatingRateCoupon>* v1 = 
+        Visitor<FloatingRateCoupon>* v1 =
             dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
