@@ -41,7 +41,7 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! Generates a multipath from a random number generator
-        /*! MultiPathGenerator<RAG> is a class that returns a random 
+        /*! MultiPathGenerator<RAG> is a class that returns a random
             multi path.
             RAG is a sample generator which returns an array, must have the
             minimal interface,
@@ -126,7 +126,7 @@ namespace QuantLib {
             timeDelays_[0] = dates[0];
 
             if(timeDimension_ > 1){
-                for(int i = 1; i < timeDimension_; i++){
+                for(unsigned int i = 1; i < timeDimension_; i++){
                     QL_REQUIRE(dates[i] >= dates[i-1],
                         "MultiPathGenerator: date(" +
                         IntegerFormatter::toString(i-1)+")="+
