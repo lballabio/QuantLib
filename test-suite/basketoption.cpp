@@ -238,23 +238,23 @@ void BasketOptionTest::testEuroTwoValues() {
     };
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
 
     boost::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS1 = makeFlatCurve(qRate1, dc);
+    boost::shared_ptr<TermStructure> qTS1 = flatRate(today, qRate1, dc);
     boost::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS2 = makeFlatCurve(qRate2, dc);
+    boost::shared_ptr<TermStructure> qTS2 = flatRate(today, qRate2, dc);
 
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 =
-        makeFlatVolatility(vol1, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 =
-        makeFlatVolatility(vol2, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
     boost::shared_ptr<PricingEngine> engine(new StulzEngine);
 
@@ -265,8 +265,6 @@ void BasketOptionTest::testEuroTwoValues() {
         new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 10000,
                                                      Null<double>(), 100000,
                                                      false, 42));
-
-    Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -421,25 +419,24 @@ void BasketOptionTest::testBarraquandThreeValues() {
     };
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
 
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
 
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 =
-        makeFlatVolatility(vol1, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 =
-        makeFlatVolatility(vol2, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
     boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS3 =
-        makeFlatVolatility(vol3, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     Size maxSamples = 200000;
     double mcRelativeErrorTolerance = 0.01;
@@ -461,8 +458,6 @@ void BasketOptionTest::testBarraquandThreeValues() {
     long seed = 1;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
-
-    Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -565,25 +560,24 @@ void BasketOptionTest::testTavellaValues() {
     };
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
 
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.1));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
 
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 =
-        makeFlatVolatility(vol1, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 =
-        makeFlatVolatility(vol2, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
     boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS3 =
-        makeFlatVolatility(vol3, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     double mcRelativeErrorTolerance = 0.01;
     Size requiredSamples = 10000;
@@ -598,7 +592,6 @@ void BasketOptionTest::testTavellaValues() {
     boost::shared_ptr<PlainVanillaPayoff> payoff(new
         PlainVanillaPayoff(values[0].type, values[0].strike));
 
-    Date today = Date::todaysDate();
     Date exDate = today.plusDays(int(values[0].t*360+0.5));
     boost::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
@@ -710,25 +703,24 @@ void BasketOptionTest::testOneDAmericanValues() {
 
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
 
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
 
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 =
-        makeFlatVolatility(vol1, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
 
     Size requiredSamples = 10000;
     Size timeSteps = 52;
     long seed = 0;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
-
-    Date today = Date::todaysDate();
 
     boost::shared_ptr<BlackScholesProcess> stochProcess1(new
         BlackScholesProcess(

@@ -252,17 +252,16 @@ void EuropeanOptionTest::testValues() {
     };
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
-
-    Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -332,14 +331,15 @@ void EuropeanOptionTest::testGreekValues() {
     };
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(
@@ -347,9 +347,6 @@ void EuropeanOptionTest::testGreekValues() {
              RelinkableHandle<TermStructure>(qTS),
              RelinkableHandle<TermStructure>(rTS),
              RelinkableHandle<BlackVolTermStructure>(volTS)));
-
-
-    Date today = Date::todaysDate();
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
     Date exDate;
@@ -599,18 +596,17 @@ void EuropeanOptionTest::testGreeks() {
     double vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
-
-    Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -757,17 +753,15 @@ void EuropeanOptionTest::testImpliedVol() {
     double vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol,dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
-
-    Date today = Date::todaysDate();
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -873,17 +867,17 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     // test options
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     RelinkableHandle<Quote> underlying(spot);
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.05));
-    RelinkableHandle<TermStructure> qTS(makeFlatCurve(qRate, dc));
+    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.03));
-    RelinkableHandle<TermStructure> rTS(makeFlatCurve(rRate, dc));
+    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
-    RelinkableHandle<BlackVolTermStructure> volTS(makeFlatVolatility(vol,dc));
+    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    Date today = Date::todaysDate();
     Date exerciseDate = today.plusYears(1);
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
     boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -955,16 +949,15 @@ namespace {
         double vols[] = { 0.11, 0.50, 1.20 };
 
         DayCounter dc = Actual360();
+        Date today = Date::todaysDate();
+
         boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
         boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        boost::shared_ptr<BlackVolTermStructure> volTS = 
-            makeFlatVolatility(vol, dc);
+        boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
         boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+        boost::shared_ptr<TermStructure> qTS = flatRate(today,qRate,dc);
         boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
-
-        Date today = Date::todaysDate();
+        boost::shared_ptr<TermStructure> rTS = flatRate(today,rRate,dc);
 
         for (Size i=0; i<LENGTH(types); i++) {
           for (Size j=0; j<LENGTH(strikes); j++) {

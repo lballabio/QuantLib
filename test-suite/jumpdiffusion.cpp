@@ -297,14 +297,15 @@ void JumpDiffusionTest::testMerton76() {
 
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
@@ -323,8 +324,6 @@ void JumpDiffusionTest::testMerton76() {
                                                   new AnalyticEuropeanEngine);
     boost::shared_ptr<PricingEngine> engine(
                                          new JumpDiffusionEngine(baseEngine));
-
-    Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -400,14 +399,15 @@ void JumpDiffusionTest::testGreeks() {
     double jV[] = { 0.01, 0.25 };
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
@@ -423,8 +423,6 @@ void JumpDiffusionTest::testGreeks() {
                             RelinkableHandle<Quote>(jumpVol)));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
-
-    Date today = Date::todaysDate();
 
     boost::shared_ptr<VanillaOption::engine> baseEngine(
                                                   new AnalyticEuropeanEngine);

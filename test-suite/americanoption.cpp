@@ -88,58 +88,56 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
     */
     AmericanOptionData values[] = {
-        //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
-        { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.15,  0.0206, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8771, 1e-2 },
-        { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.15, 10.0089, 1e-2 },
-        { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.25,  0.3159, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1280, 1e-2 },
-        { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.25, 10.3919, 1e-2 },
-        { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.35,  0.9495, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3777, 1e-2 },
-        { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.35, 11.1679, 1e-2 },
-        { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.15,  0.8208, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.15,  4.0842, 1e-2 },
-        { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.15, 10.8087, 1e-2 },
-        { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.25,  2.7437, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.25,  6.8015, 1e-2 },
-        { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.25, 13.0170, 1e-2 },
-        { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.35,  5.0063, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.5106, 1e-2 },
-        { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.35, 15.5689, 1e-2 },
-        { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.15, 10.0000, 1e-2 },
-        { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8770, 1e-2 },
-        { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.15,  0.0410, 1e-2 },
-        { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.25, 10.2533, 1e-2 },
-        { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1277, 1e-2 },
-        { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.25,  0.4562, 1e-2 },
-        { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.35, 10.8787, 1e-2 },
-        { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3777, 1e-2 },
-        { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.35,  1.2402, 1e-2 },
-        { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.15, 10.5595, 1e-2 },
-        { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.15,  4.0842, 1e-2 },
-        { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.15,  1.0822, 1e-2 },
-        { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.25, 12.4419, 1e-2 },
-        { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.25,  6.8014, 1e-2 },
-        { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.25,  3.3226, 1e-2 },
-        { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.35, 14.6945, 1e-2 },
-        { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.5104, 1e-2 },
-        { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.35,  5.8823, 1e-2 }
+      //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.15,  0.0206, 1e-2 },
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8771, 1e-2 },
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.15, 10.0089, 1e-2 },
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.25,  0.3159, 1e-2 },
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1280, 1e-2 },
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.25, 10.3919, 1e-2 },
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.35,  0.9495, 1e-2 },
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3777, 1e-2 },
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.35, 11.1679, 1e-2 },
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.15,  0.8208, 1e-2 },
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.15,  4.0842, 1e-2 },
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.15, 10.8087, 1e-2 },
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.25,  2.7437, 1e-2 },
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.25,  6.8015, 1e-2 },
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.25, 13.0170, 1e-2 },
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.35,  5.0063, 1e-2 },
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.5106, 1e-2 },
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.35, 15.5689, 1e-2 },
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.15, 10.0000, 1e-2 },
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8770, 1e-2 },
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.15,  0.0410, 1e-2 },
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.25, 10.2533, 1e-2 },
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1277, 1e-2 },
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.25,  0.4562, 1e-2 },
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.35, 10.8787, 1e-2 },
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3777, 1e-2 },
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.35,  1.2402, 1e-2 },
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.15, 10.5595, 1e-2 },
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.15,  4.0842, 1e-2 },
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.15,  1.0822, 1e-2 },
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.25, 12.4419, 1e-2 },
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.25,  6.8014, 1e-2 },
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.25,  3.3226, 1e-2 },
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.35, 14.6945, 1e-2 },
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.5104, 1e-2 },
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.35,  5.8823, 1e-2 }
     };
 
+    Date today = Date::todaysDate();
     DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(
                                     new BaroneAdesiWhaleyApproximationEngine);
-
-    Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -183,23 +181,22 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
                   "for American options...");
 
     AmericanOptionData values[] = {
-          //      type, strike,   spot,    q,    r,    t,  vol,   value, tol
-          // from "Option pricing formulas", Haug, McGraw-Hill 1998, pag 27
-        { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.2704, 1e-4 },
-          // from "Option pricing formulas", Haug, McGraw-Hill 1998, VBA code
-        { Option::Put,   40.00,  36.00, 0.00, 0.06, 1.00, 0.20,  4.4531, 1e-4 }
+        //      type, strike,   spot,    q,    r,    t,  vol,   value, tol
+        // from "Option pricing formulas", Haug, McGraw-Hill 1998, pag 27
+      { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.2704, 1e-4 },
+        // from "Option pricing formulas", Haug, McGraw-Hill 1998, VBA code
+      { Option::Put,   40.00,  36.00, 0.00, 0.06, 1.00, 0.20,  4.4531, 1e-4 }
     };
 
+    Date today = Date::todaysDate();
     DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
-    Date today = Date::todaysDate();
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol, dc);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(
                                    new BjerksundStenslandApproximationEngine);
 

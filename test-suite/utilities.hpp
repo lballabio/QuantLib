@@ -23,6 +23,7 @@
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/Patterns/observable.hpp>
+#include <ql/DayCounters/actual365.hpp>
 #include <vector>
 #include <string>
 #include <numeric>
@@ -36,18 +37,24 @@ namespace QuantLib {
     std::string exerciseTypeToString(const boost::shared_ptr<Exercise>&);
 
     boost::shared_ptr<TermStructure> 
-    makeFlatCurve(const boost::shared_ptr<Quote>& forward,
-                  DayCounter dc);
+    flatRate(const Date& today,
+             const boost::shared_ptr<Quote>& forward,
+             const DayCounter& dc = Actual365());
 
     boost::shared_ptr<TermStructure> 
-    makeFlatCurve(Rate forward, DayCounter dc);
+    flatRate(const Date& today,
+             Rate forward, 
+             const DayCounter& dc = Actual365());
 
     boost::shared_ptr<BlackVolTermStructure> 
-    makeFlatVolatility(const boost::shared_ptr<Quote>& volatility,
-                       DayCounter dc);
+    flatVol(const Date& today,
+            const boost::shared_ptr<Quote>& volatility,
+            const DayCounter& dc = Actual365());
 
     boost::shared_ptr<BlackVolTermStructure> 
-    makeFlatVolatility(double volatility, DayCounter dc);
+    flatVol(const Date& today,
+            double volatility, 
+            const DayCounter& dc = Actual365());
 
     double relativeError(double x1, double x2, double reference);
 

@@ -56,30 +56,6 @@ using namespace boost::unit_test_framework;
                "    tolerance:        " \
                + DoubleFormatter::toString(tolerance));
 
-namespace {
-
-    // utilities
-
-    boost::shared_ptr<TermStructure> 
-    flatRate(const Date& today,
-             const boost::shared_ptr<Quote>& forward,
-             const DayCounter& dc = Actual365()) {
-        return boost::shared_ptr<TermStructure>(
-                       new FlatForward(today, today, 
-                                       RelinkableHandle<Quote>(forward), dc));
-    }
-
-    boost::shared_ptr<BlackVolTermStructure> 
-    flatVol(const Date& today,
-            const boost::shared_ptr<Quote>& vol,
-            const DayCounter& dc = Actual365()) {
-        return boost::shared_ptr<BlackVolTermStructure>(
-                      new BlackConstantVol(today, 
-                                           RelinkableHandle<Quote>(vol), dc));
-    }
-
-}
-
 // tests
 
 void CliquetOptionTest::testValues() {

@@ -562,12 +562,13 @@ void OldPricerTest::testMcSingleFactorPricers() {
         for (Size i=0; i<cases4[k].fixings; i++)
             timeIncrements[i] = i*dt + cases4[k].first;
 
+        Date today = Date::todaysDate();
         RelinkableHandle<TermStructure> riskFreeRate(
-                       makeFlatCurve(cases4[k].riskFreeRate, Actual365()));
+                                    flatRate(today, cases4[k].riskFreeRate));
         RelinkableHandle<TermStructure> dividendYield(
-                       makeFlatCurve(cases4[k].dividendYield, Actual365()));
+                                    flatRate(today, cases4[k].dividendYield));
         RelinkableHandle<BlackVolTermStructure> volatility(
-                       makeFlatVolatility(cases4[k].volatility, Actual365()));
+                                    flatVol(today, cases4[k].volatility));
 
         McDiscreteArithmeticAPO pricer(cases4[k].type,
                                        cases4[k].underlying,
@@ -674,12 +675,13 @@ void OldPricerTest::testMcSingleFactorPricers() {
         for (Size i=0; i<cases5[l].fixings; i++)
             timeIncrements[i] = i*dt + cases5[l].first;
 
+        Date today = Date::todaysDate();
         RelinkableHandle<TermStructure> riskFreeRate(
-                       makeFlatCurve(cases5[l].riskFreeRate, Actual365()));
+                                    flatRate(today, cases5[l].riskFreeRate));
         RelinkableHandle<TermStructure> dividendYield(
-                       makeFlatCurve(cases5[l].dividendYield, Actual365()));
+                                    flatRate(today, cases5[l].dividendYield));
         RelinkableHandle<BlackVolTermStructure> volatility(
-                       makeFlatVolatility(cases5[l].volatility, Actual365()));
+                                    flatVol(today, cases5[l].volatility));
 
         McDiscreteArithmeticASO pricer(cases5[l].type,
                                        cases5[l].underlying,
@@ -770,36 +772,30 @@ void OldPricerTest::testMcMultiFactorPricers() {
                                     correlation[3][2] = 0.60;
                                                     correlation[3][3] = 1.00;
 
+    Date today = Date::todaysDate();
     std::vector<RelinkableHandle<BlackVolTermStructure> > volatilities(4);
-    volatilities[0] = RelinkableHandle<BlackVolTermStructure>(
-                                       makeFlatVolatility(0.30, Actual365()));
-    volatilities[1] = RelinkableHandle<BlackVolTermStructure>(
-                                       makeFlatVolatility(0.35, Actual365()));
-    volatilities[2] = RelinkableHandle<BlackVolTermStructure>(
-                                       makeFlatVolatility(0.25, Actual365()));
-    volatilities[3] = RelinkableHandle<BlackVolTermStructure>(
-                                       makeFlatVolatility(0.20, Actual365()));
+    volatilities[0] = RelinkableHandle<BlackVolTermStructure>(flatVol(today,
+                                                                      0.30));
+    volatilities[1] = RelinkableHandle<BlackVolTermStructure>(flatVol(today,
+                                                                      0.35));
+    volatilities[2] = RelinkableHandle<BlackVolTermStructure>(flatVol(today,
+                                                                      0.25));
+    volatilities[3] = RelinkableHandle<BlackVolTermStructure>(flatVol(today,
+                                                                      0.20));
 
     std::vector<RelinkableHandle<TermStructure> > dividendYields(4);
-    dividendYields[0] = RelinkableHandle<TermStructure>(
-                                            makeFlatCurve(0.01, Actual365()));
-    dividendYields[1] = RelinkableHandle<TermStructure>(
-                                            makeFlatCurve(0.05, Actual365()));
-    dividendYields[2] = RelinkableHandle<TermStructure>(
-                                            makeFlatCurve(0.04, Actual365()));
-    dividendYields[3] = RelinkableHandle<TermStructure>(
-                                            makeFlatCurve(0.03, Actual365()));
+    dividendYields[0] = RelinkableHandle<TermStructure>(flatRate(today, 0.01));
+    dividendYields[1] = RelinkableHandle<TermStructure>(flatRate(today, 0.05));
+    dividendYields[2] = RelinkableHandle<TermStructure>(flatRate(today, 0.04));
+    dividendYields[3] = RelinkableHandle<TermStructure>(flatRate(today, 0.03));
 
-    RelinkableHandle<TermStructure> riskFreeRate(
-                                            makeFlatCurve(0.05, Actual365()));
+    RelinkableHandle<TermStructure> riskFreeRate(flatRate(today, 0.05));
     Time resTime = 1.0;
 
     // degenerate portfolio
     Matrix perfectCorrelation(4,4,1.0);
-    RelinkableHandle<BlackVolTermStructure> sameVol(
-                                       makeFlatVolatility(0.30, Actual365()));
-    RelinkableHandle<TermStructure> sameDividend(
-                                       makeFlatCurve(0.03, Actual365()));
+    RelinkableHandle<BlackVolTermStructure> sameVol(flatVol(today, 0.30));
+    RelinkableHandle<TermStructure> sameDividend(flatRate(today, 0.03));
 
     std::vector<RelinkableHandle<BlackVolTermStructure> > 
         sameAssetVols(4, sameVol);

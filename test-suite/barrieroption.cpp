@@ -216,17 +216,15 @@ void BarrierOptionTest::testHaugValues() {
 
 
     DayCounter dc = Actual360();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
-
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(vol, dc);
-
-    Date today = Date::todaysDate();
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
@@ -307,18 +305,19 @@ void BarrierOptionTest::testBabsiriValues() {
     };
 
     DayCounter dc = SimpleDayCounter();
+    Date today = Date::todaysDate();
     boost::shared_ptr<SimpleQuote> underlying(
                                             new SimpleQuote(underlyingPrice));
 
     boost::shared_ptr<SimpleQuote> qH_SME(new SimpleQuote(q));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> rH_SME(new SimpleQuote(r));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
     boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(volatility, dc);
+        flatVol(today, volatility, dc);
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
     boost::shared_ptr<PricingEngine> mcEngine(
@@ -327,7 +326,6 @@ void BarrierOptionTest::testBabsiriValues() {
                                           requiredTolerance, maxSamples,
                                           isBiased, 5));
 
-    Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
@@ -413,18 +411,20 @@ void BarrierOptionTest::testBeagleholeValues() {
     };
 
     DayCounter dc = SimpleDayCounter();
+    Date today = Date::todaysDate();
+
     boost::shared_ptr<SimpleQuote> underlying(
                                             new SimpleQuote(underlyingPrice));
 
     boost::shared_ptr<SimpleQuote> qH_SME(new SimpleQuote(q));
-    boost::shared_ptr<TermStructure> qTS = makeFlatCurve(qH_SME, dc);
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> rH_SME(new SimpleQuote(r));
-    boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rH_SME, dc);
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
     boost::shared_ptr<BlackVolTermStructure> volTS = 
-        makeFlatVolatility(volatility, dc);
+        flatVol(today, volatility, dc);
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
     boost::shared_ptr<PricingEngine> mcEngine(
@@ -433,7 +433,6 @@ void BarrierOptionTest::testBeagleholeValues() {
                                           requiredTolerance, maxSamples,
                                           isBiased, 10));
 
-    Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
