@@ -2,6 +2,5 @@
 We gratefully acknowledge contributions from Xavier Abulker, Toyin
 Akin, James Battle, Christopher Baus, Thomas Becker, Adolfo Benin,
 David Binderman, Jon Davidson, Matteo Gallivanoni, Roman Gitlin,
-Tomoya Kawanishi, Gilbert Peffer, Peter Schmitteckert, Maxim Sokolov,
-David Schwartz, Bernd Johannes Wuebben, and Jeff Yu.
-
+Tomoya Kawanishi, Gilbert Peffer, Gianni Piolanti, Peter Schmitteckert, Maxim
+Sokolov, David Schwartz, Bernd Johannes Wuebben, and Jeff Yu.
