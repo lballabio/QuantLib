@@ -26,8 +26,10 @@
     \brief observer/observable pattern
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.6  2001/03/21 13:53:10  lballabio
+    virtual destructors added
+
     Revision 1.5  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -56,11 +58,13 @@ namespace QuantLib {
 
         class Observer {
           public:
+            virtual ~Observer() {}
             virtual void update() = 0;
         };
 
         class Observable {
           public:
+            virtual ~Observable() {}
             virtual void registerObserver(Observer*);
             void registerObservers(std::set<Observer*>&);
             virtual void unregisterObserver(Observer*);
