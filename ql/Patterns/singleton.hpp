@@ -57,6 +57,7 @@ namespace QuantLib {
         Singleton() {}
         void initialize() {}
       private:
+        static boost::shared_ptr<T> instance_;
         Singleton(const Singleton&) {}
         void operator=(const Singleton&) {}
     };
@@ -65,15 +66,17 @@ namespace QuantLib {
     // template definitions
 
     template <class T>
+    boost::shared_ptr<T> Singleton<T>::instance_;
+
+    template <class T>
     T& Singleton<T>::instance() {
-        static boost::shared_ptr<T> instance_;
         if (!instance_) {
             instance_ = boost::shared_ptr<T>(new T);
             instance_->initialize();
         }
         return *instance_;
     }
-        
+
 }
 
 
