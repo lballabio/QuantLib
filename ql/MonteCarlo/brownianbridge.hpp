@@ -96,7 +96,7 @@ namespace QuantLib {
             //  The global step is constructed from the first variate.
             bridgeIndex_[0] = dimension_-1;
             //  The variance of the global step is numberOfSteps*1.0.
-            sigma_[0] = sqrt(dimension_);
+            sigma_[0] = QL_SQRT(dimension_);
             //  The global step to the last point in time is special.
             leftWeight_[0] = rightWeight_[0] = 0.;
             for (j=0, i=1; i<dimension_; ++i) {
