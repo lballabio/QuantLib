@@ -22,61 +22,59 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file hullandwhite.hpp
+/*! \file hullwhite.cpp
     \brief Hull & White model
 
     \fullpath
-    ql/%hullandwhite.hpp
+    ql/InterestRateModelling/OneFactorModels/%hullwhite.cpp
 */
 
 // $Id$
 
-#include "ql/InterestRateModelling/OneFactorModels/hullandwhite.hpp"
+#include "ql/InterestRateModelling/OneFactorModels/hullwhite.hpp"
 #include "ql/Math/normaldistribution.hpp"
 
 namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class HullAndWhite::Process : public StochasticProcess {
+        class HullWhite::Process : public ShortRateProcess {
           public:
-            Process(HullAndWhite * model) 
-            : StochasticProcess(ShortRate), model_(model) {}
+            Process(HullWhite * model) : model_(model) {}
+
+            virtual double variable(Rate r, Time t) const { 
+                return r - model_->alpha(t); 
+            }
+            virtual double shortRate(double x, Time t) const { 
+                return x + model_->alpha(t); 
+            }
 
             virtual double drift(double r, double t) const {
-                return model_->theta(t) - r*model_->alpha_;
+                return - model_->a_*r;
             }
             virtual double diffusion(double r, Time t) const {
                 return model_->sigma_;
             }
           private:
-            HullAndWhite * model_;
+            HullWhite * model_;
         };
 
-        HullAndWhite::HullAndWhite(
+        HullWhite::HullWhite(
             const RelinkableHandle<TermStructure>& termStructure) 
-        : OneFactorModel(2, termStructure), dt_(0.001) {
-            process_ = Handle<StochasticProcess>(new Process(this));
-
-            std::vector<double> lower(2), higher(2);
-            lower[0] = -2.0;
-            lower[1] = 0.0001;
-            higher[0] = 2.0;
-            higher[1] = 0.5;
-            constraint_ = Handle<Constraint>(new Constraint(lower, higher));
+        : OneFactorModel(2, termStructure), a_(params_[0]), 
+          sigma_(params_[1]), dt_(0.001) {
+            process_ = Handle<ShortRateProcess>(new Process(this));
+            constraint_ = Handle<Constraint>(new Constraint(2));
+            constraint_->setLowerBound(1, 0.000001);
         }
 
-        double HullAndWhite::theta(Time t) const {
-            //Implying piecewise constant forward term structure
-            if (t<0.0) return 0.0;
-            double forwardDerivative = 0.0;
+        double HullWhite::alpha(Time t) const {
             double forwardRate = termStructure()->forward(t);
-            double theta = forwardDerivative + alpha_*forwardRate +
-                0.5*sigma_*sigma_*B(2.0*t);
-            return theta;
+            double temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
+            return (forwardRate + 0.5*temp*temp);
         }
 
-        double HullAndWhite::lnA(Time T, Time s) const {
+        double HullWhite::lnA(Time T, Time s) const {
             double discountT = termStructure()->discount(T);
             double discountS = termStructure()->discount(s);
             double forwardT = termStructure()->forward(T);
@@ -86,11 +84,11 @@ namespace QuantLib {
             return value;
         }
 
-        double HullAndWhite::discountBond(Time T, Time s, Rate r) {
+        double HullWhite::discountBond(Time T, Time s, Rate r) {
             return QL_EXP(lnA(T,s) - B(s-T)*r);
         }
 
-        double HullAndWhite::discountBondOption(Option::Type type, 
+        double HullWhite::discountBondOption(Option::Type type, 
             double strike, Time maturity, Time bondMaturity) {
 
             double discountT = termStructure()->discount(maturity);

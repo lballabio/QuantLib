@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file blackkarasinski.hpp
-    \brief Black-Karasinski model
+/*! \file hullwhite.hpp
+    \brief Hull & White (HW) model
 
     \fullpath
-    ql/%blackkarasinski.hpp
+    ql/InterestRateModelling/OneFactorModels/%hullwhite.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_one_factor_models_hull_and_white_h
-#define quantlib_one_factor_models_hull_and_white_h
+#ifndef quantlib_one_factor_models_hull_white_h
+#define quantlib_one_factor_models_hull_white_h
 
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 
@@ -40,25 +40,13 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class HullAndWhite : public OneFactorModel {
+        class HullWhite : public OneFactorModel {
           public:
-            HullAndWhite(const RelinkableHandle<TermStructure>& termStructure);
-            virtual ~HullAndWhite() {}
+            HullWhite(const RelinkableHandle<TermStructure>& termStructure);
+            virtual ~HullWhite() {}
 
-            virtual void setParameters(const Array& params) {
-                QL_REQUIRE(params.size()==2,
-                    "Incorrect number of parameters for HW calibration");
-                alpha_ = params[0];
-                sigma_ = params[1];
-            }
-            virtual double theta(Time t) const;
+            virtual double alpha(Time t) const;
 
-            virtual double stateVariable(Rate r) const {
-                return r;
-            }
-            virtual Rate getRateFrom(double y) const {
-                return y;
-            }
             virtual double discountBond(Time T,
                                         Time s,
                                         Rate r);
@@ -68,18 +56,21 @@ namespace QuantLib {
                                               Time maturity,
                                               Time bondMaturity);
 
+            virtual std::string name() { return "Hull & White"; }
+
           private:
             inline double B(Time t) const {
-                if (alpha_ == 0.0)
+                if (a_ == 0.0)
                     return t;
                 else
-                    return (1.0 - QL_EXP(-alpha_*t))/alpha_;
+                    return (1.0 - QL_EXP(-a_*t))/a_;
             }
             double lnA(Time T, Time s) const;
             class Process;
             friend class Process;
 
-            double alpha_, sigma_;
+            const double& a_;
+            const double& sigma_;
             std::vector<double> theta_;
             double dt_;
         };

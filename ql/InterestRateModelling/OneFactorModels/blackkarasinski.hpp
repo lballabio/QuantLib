@@ -26,7 +26,7 @@
     \brief Black-Karasinski model
 
     \fullpath
-    ql/%blackkarasinski.hpp
+    ql/InterestRateModelling/OneFactorModels/%blackkarasinski.hpp
 */
 
 // $Id$
@@ -34,8 +34,9 @@
 #ifndef quantlib_one_factor_models_black_karasinski_h
 #define quantlib_one_factor_models_black_karasinski_h
 
-#include "ql/InterestRateModelling/onefactormodel.hpp"
-#include "ql/InterestRateModelling/OneFactorModels/tree.hpp"
+#include <ql/InterestRateModelling/onefactormodel.hpp>
+#include <ql/InterestRateModelling/timefunction.hpp>
+#include <ql/Lattices/tree.hpp>
 
 namespace QuantLib {
 
@@ -45,54 +46,33 @@ namespace QuantLib {
           public:
             BlackKarasinski(
                 const RelinkableHandle<TermStructure>& termStructure,
-                size_t timeSteps = 1000);
+                double dt);
             virtual ~BlackKarasinski() {}
 
-            virtual void setParameters(const Array& params) {
-                QL_REQUIRE(params.size()==2,
-                    "Incorrect number of parameters for BK calibration");
-                alpha_ = params[0];
-                sigma_ = params[1];
-                calculateTree();
-            }
+            Handle<Lattices::Tree> tree(
+                const Lattices::TimeGrid& timeGrid) const;
 
-            virtual double discountBond(Time now, Time maturity, Rate r);
-
-            virtual double discountBondOption(Option::Type type,
-                                              double strike,
-                                              Time maturity,
-                                              Time bondMaturity) {
-                throw("Not yet implemented");
-                QL_DUMMY_RETURN(0.0);
-            }
-
-            virtual double stateVariable(Rate r) const {
-                return QL_LOG(r);
-            }
-            virtual Rate getRateFrom(double y) const {
-                return QL_EXP(y);
-            }
+            virtual std::string name() { return "Black-Karasinski"; }
 
           private:
-            double theta(Time t) const {
-                unsigned index = (unsigned)(t/dt_);
-                return theta_[index];
+            double alpha(Time t) const {
+                return (*alpha_)(t);
             }
-
-            void calculateTree();
 
             class Process;
             friend class Process;
 
+            class PrivateTree;
+            friend class PrivateTree;
+
             class PrivateFunction;
             friend class PrivateFunction;
 
-            size_t timeSteps_;
-            std::vector<double> theta_, u_;
-            TrinomialTree tree_;
-            double alpha_;
-            double sigma_;
-            double dt_;
+            Handle<TimeFunction> alpha_;
+
+            const double& a_;
+            const double& sigma_;
+            double dtMax_;
         };
     }
 }
