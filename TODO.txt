@@ -1,5 +1,5 @@
 
-make unit test to work under VC++ and Borland
+make unit test to work under Borland
 
 clean up FDMultiPeriodOption
 update freshmeat description
@@ -23,12 +23,12 @@ COMPILING
 LIBRARY
 
     PRICING ENGINE FRAMEWORK
-        make forward/forward performance engine run
-        make combined quanto/forward engine run
+        create Arguments class not including strike and use it in forward options
         create vanilla FD example
         create vanilla MC example
-        add unit test
-        deprecate ported pricers
+        add to test-suite
+        deprecate old pricers
+        fix quantotermstructure problem
 
     MONTE CARLO FRAMEWORK
         allow for time dependant parameters
