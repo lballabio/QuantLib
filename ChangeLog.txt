@@ -1,3 +1,346 @@
+2002-01-10 16:21  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* News.txt (1.19): [no log message]
+
+2002-01-10 16:06  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/coreclasses.docs (1.4): wrong links removed
+
+2002-01-10 16:05  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/license.docs (1.6): new copyright and license
+	agreement
+
+2002-01-10 16:02  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/usage.docs (1.4): wrong links removed
+
+2002-01-10 14:56  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Authors.txt (1.9), Contributors.txt (1.15),
+	Docs/pages/authors.docs (1.8): new copyright and license agreement
+
+2002-01-10 14:55  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/: exercise.hpp (1.7), FiniteDifferences/onefactoroperator.cpp
+	(1.6), FiniteDifferences/onefactoroperator.hpp (1.6),
+	Instruments/capfloor.cpp (1.11), Instruments/capfloor.hpp (1.11),
+	Instruments/swaption.cpp (1.5), Instruments/swaption.hpp (1.4),
+	InterestRateModelling/model.cpp (1.11),
+	InterestRateModelling/trinomialtree.cpp (1.8),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.6),
+	Lattices/node.hpp (1.5), Lattices/timegrid.hpp (1.5),
+	Optimization/armijo.cpp (1.6), Optimization/armijo.hpp (1.7),
+	Optimization/conjugategradient.cpp (1.6),
+	Optimization/conjugategradient.hpp (1.6),
+	Optimization/costfunction.hpp (1.5), Optimization/criteria.hpp
+	(1.5), Optimization/leastsquare.hpp (1.11),
+	Optimization/linesearch.hpp (1.6), Optimization/optimizer.hpp
+	(1.6), Optimization/steepestdescent.cpp (1.5),
+	Optimization/steepestdescent.hpp (1.6),
+	Pricers/analyticalcapfloor.cpp (1.4),
+	Pricers/analyticalcapfloor.hpp (1.3),
+	Pricers/jamshidianswaption.cpp (1.4),
+	Pricers/jamshidianswaption.hpp (1.3), Pricers/treecapfloor.cpp
+	(1.6), Pricers/treecapfloor.hpp (1.4), Pricers/treeswaption.cpp
+	(1.10), Pricers/treeswaption.hpp (1.6): fixed copyright notices
+
+2002-01-10 14:48  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* LICENSE.TXT (1.8), Examples/DiscreteHedging/DiscreteHedging.cpp
+	(1.10), Examples/EuropeanOption/EuropeanOption.cpp (1.14): new
+	copyright and license agreement
+
+2002-01-10 14:16  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/Math/cubicspline.hpp (1.9): new copyright and license
+	agreement
+
+2002-01-10 14:08  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.mak (1.58): updated
+
+2002-01-10 11:40  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/array.hpp (1.7): typo/bug fixed
+
+2002-01-10 10:58  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/Pricers/treecapfloor.cpp (1.5): gcc warning avoided
+
+2002-01-10 10:15  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* ql/Math/normaldistribution.hpp (1.5): Added exp() guard for alpha
+
+2002-01-09 13:36  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* TODO.txt (1.78): updated
+
+2002-01-09 13:21  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/utilities.docs (1.4): added iterators sketched
+	documentation
+
+2002-01-09 12:47  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/: authors.docs (1.7), install.docs (1.4), license.docs
+	(1.5), overview.docs (1.4), platforms.docs (1.6): documentation
+	clean up
+
+2002-01-09 12:14  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.nsi (1.57): Added TwoFactorModel dir
+
+2002-01-09 11:16  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* LICENSE.TXT (1.7), Examples/DiscreteHedging/DiscreteHedging.cpp
+	(1.9), Examples/EuropeanOption/EuropeanOption.cpp (1.13): new
+	copyright and license agreement
+
+2002-01-09 08:05  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* ql/: asset.hpp (1.4), InterestRateModelling/calibrationhelper.cpp
+	(1.3), InterestRateModelling/calibrationhelper.hpp (1.3),
+	InterestRateModelling/grid.cpp (1.4),
+	InterestRateModelling/model.cpp (1.10),
+	InterestRateModelling/timefunction.cpp (1.4),
+	InterestRateModelling/timefunction.hpp (1.4),
+	InterestRateModelling/trinomialtree.cpp (1.7),
+	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.4),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.5),
+	Lattices/tree.cpp (1.6), Pricers/analyticalcapfloor.cpp (1.3),
+	Pricers/treecapfloor.cpp (1.4), Pricers/treecapfloor.hpp (1.3):
+	More size_t removed
+
+2002-01-08 18:34  'Adolfo Benin <adolfo.benin@riskmap.net>'
+
+	* ql/: constraint.hpp (1.10), exercise.hpp (1.6), minimizer.hpp
+	(1.10), FiniteDifferences/onefactoroperator.cpp (1.5),
+	InterestRateModelling/grid.cpp (1.3),
+	InterestRateModelling/model.cpp (1.9),
+	InterestRateModelling/model.hpp (1.13),
+	InterestRateModelling/onefactormodel.hpp (1.7),
+	InterestRateModelling/timefunction.cpp (1.3),
+	InterestRateModelling/trinomialtree.cpp (1.6),
+	InterestRateModelling/trinomialtree.hpp (1.5),
+	InterestRateModelling/twofactormodel.hpp (1.3),
+	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.13),
+	Lattices/node.hpp (1.4), Lattices/timegrid.hpp (1.4),
+	Lattices/tree.cpp (1.5), Lattices/tree.hpp (1.4),
+	Pricers/jamshidianswaption.cpp (1.3): unsigned int replaced by Size
+
+2002-01-08 17:42  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/: config.ansi.hpp (1.6), config.bcc.hpp (1.5), config.decc.hpp
+	(1.5), config.msvc.hpp (1.7), config.mwcw.hpp (1.5), constraint.hpp
+	(1.8), exercise.hpp (1.5), expressiontemplates.hpp (1.4),
+	forwardvolsurface.hpp (1.4), handle.hpp (1.6), history.hpp (1.8),
+	index.hpp (1.7), instrument.hpp (1.7), marketelement.hpp (1.6),
+	minimizer.hpp (1.8), null.hpp (1.4), option.cpp (1.6), option.hpp
+	(1.7), qldefines.hpp (1.27), quantlib.hpp (1.37),
+	relinkablehandle.hpp (1.6), riskstatistics.hpp (1.6), scheduler.cpp
+	(1.7), scheduler.hpp (1.7), solver1d.cpp (1.5), solver1d.hpp (1.6),
+	swaptionvolsurface.hpp (1.4), termstructure.hpp (1.16), types.hpp
+	(1.5), InterestRateModelling/calibrationhelper.cpp (1.2),
+	InterestRateModelling/calibrationhelper.hpp (1.2),
+	InterestRateModelling/grid.cpp (1.2),
+	InterestRateModelling/grid.hpp (1.10),
+	InterestRateModelling/model.cpp (1.8),
+	InterestRateModelling/model.hpp (1.12),
+	InterestRateModelling/onefactormodel.hpp (1.6),
+	InterestRateModelling/shortrateprocess.hpp (1.3),
+	InterestRateModelling/timefunction.cpp (1.2),
+	InterestRateModelling/timefunction.hpp (1.3),
+	InterestRateModelling/trinomialtree.cpp (1.5),
+	InterestRateModelling/trinomialtree.hpp (1.4),
+	InterestRateModelling/twofactormodel.hpp (1.2),
+	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.3),
+	InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.3),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.4),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.3),
+	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.12),
+	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.9),
+	InterestRateModelling/OneFactorModels/coxingersollrossplus.cpp
+	(1.2),
+	InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp
+	(1.2), InterestRateModelling/OneFactorModels/hullwhite.cpp (1.3),
+	InterestRateModelling/OneFactorModels/hullwhite.hpp (1.3),
+	InterestRateModelling/TwoFactorModels/g2.cpp (1.2),
+	InterestRateModelling/TwoFactorModels/g2.hpp (1.2),
+	Lattices/node.hpp (1.3), Lattices/timegrid.hpp (1.3),
+	Lattices/tree.cpp (1.4), Lattices/tree.hpp (1.3),
+	Optimization/armijo.cpp (1.5), Optimization/armijo.hpp (1.6),
+	Optimization/conjugategradient.cpp (1.5),
+	Optimization/conjugategradient.hpp (1.5),
+	Optimization/costfunction.hpp (1.4), Optimization/criteria.hpp
+	(1.4), Optimization/leastsquare.hpp (1.10),
+	Optimization/linesearch.hpp (1.5), Optimization/optimizer.hpp
+	(1.5), Optimization/steepestdescent.cpp (1.4),
+	Optimization/steepestdescent.hpp (1.5), asset.hpp (1.3),
+	constraint.hpp (1.9), diffusionprocess.hpp (1.3), minimizer.hpp
+	(1.9): new copyright and license agreement
+
+2002-01-08 17:32  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/: Solvers1D/bisection.cpp (1.4), Solvers1D/bisection.hpp
+	(1.4), Solvers1D/brent.cpp (1.5), Solvers1D/brent.hpp (1.4),
+	Solvers1D/falseposition.cpp (1.4), Solvers1D/falseposition.hpp
+	(1.4), Solvers1D/newton.cpp (1.4), Solvers1D/newton.hpp (1.4),
+	Solvers1D/newtonsafe.cpp (1.5), Solvers1D/newtonsafe.hpp (1.5),
+	Solvers1D/ridder.cpp (1.4), Solvers1D/ridder.hpp (1.4),
+	Solvers1D/secant.cpp (1.4), Solvers1D/secant.hpp (1.4),
+	TermStructures/flatforward.hpp (1.10),
+	TermStructures/piecewiseflatforward.cpp (1.15),
+	TermStructures/piecewiseflatforward.hpp (1.14),
+	TermStructures/ratehelpers.cpp (1.15),
+	TermStructures/ratehelpers.hpp (1.16),
+	Utilities/combiningiterator.hpp (1.3),
+	Utilities/couplingiterator.hpp (1.4),
+	Utilities/filteringiterator.hpp (1.3),
+	Utilities/iteratorcategories.hpp (1.4),
+	Utilities/processingiterator.hpp (1.3),
+	Utilities/steppingiterator.hpp (1.3): new copyright and license
+	agreement
+
+2002-01-08 17:29  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/: Calendars/frankfurt.cpp (1.8), Calendars/frankfurt.hpp
+	(1.7), Calendars/helsinki.cpp (1.7), Calendars/helsinki.hpp (1.7),
+	Calendars/london.cpp (1.7), Calendars/london.hpp (1.7),
+	Calendars/milan.cpp (1.7), Calendars/milan.hpp (1.7),
+	Calendars/newyork.cpp (1.7), Calendars/newyork.hpp (1.8),
+	Calendars/target.cpp (1.7), Calendars/target.hpp (1.7),
+	Calendars/wellington.cpp (1.7), Calendars/wellington.hpp (1.7),
+	Calendars/zurich.cpp (1.7), Calendars/zurich.hpp (1.7),
+	CashFlows/cashflowvectors.cpp (1.9), CashFlows/cashflowvectors.hpp
+	(1.8), CashFlows/coupon.hpp (1.5), CashFlows/fixedratecoupon.hpp
+	(1.8), CashFlows/floatingratecoupon.cpp (1.9),
+	CashFlows/floatingratecoupon.hpp (1.12),
+	CashFlows/simplecashflow.hpp (1.4), DayCounters/actual360.hpp
+	(1.7), DayCounters/actual365.hpp (1.7),
+	DayCounters/actualactual.cpp (1.9), DayCounters/actualactual.hpp
+	(1.10), DayCounters/thirty360.cpp (1.7), DayCounters/thirty360.hpp
+	(1.9), FiniteDifferences/americancondition.hpp (1.3),
+	FiniteDifferences/boundarycondition.hpp (1.4),
+	FiniteDifferences/bsmoperator.cpp (1.8),
+	FiniteDifferences/bsmoperator.hpp (1.8),
+	FiniteDifferences/cranknicolson.hpp (1.10),
+	FiniteDifferences/dminus.hpp (1.7), FiniteDifferences/dplus.hpp
+	(1.7), FiniteDifferences/dplusdminus.hpp (1.8),
+	FiniteDifferences/dzero.hpp (1.7),
+	FiniteDifferences/expliciteuler.hpp (1.6),
+	FiniteDifferences/fdtypedefs.hpp (1.4),
+	FiniteDifferences/finitedifferencemodel.hpp (1.10),
+	FiniteDifferences/impliciteuler.hpp (1.5),
+	FiniteDifferences/onefactoroperator.cpp (1.4),
+	FiniteDifferences/onefactoroperator.hpp (1.5),
+	FiniteDifferences/shoutcondition.hpp (1.3),
+	FiniteDifferences/stepcondition.hpp (1.4),
+	FiniteDifferences/tridiagonaloperator.cpp (1.10),
+	FiniteDifferences/tridiagonaloperator.hpp (1.14),
+	FiniteDifferences/valueatcenter.cpp (1.8),
+	FiniteDifferences/valueatcenter.hpp (1.4), Indexes/euribor.hpp
+	(1.6), Indexes/gbplibor.hpp (1.6), Indexes/usdlibor.hpp (1.6),
+	Indexes/xibor.cpp (1.5), Indexes/xibor.hpp (1.6),
+	Indexes/xibormanager.cpp (1.4), Indexes/xibormanager.hpp (1.4),
+	Instruments/capfloor.cpp (1.10), Instruments/capfloor.hpp (1.10),
+	Instruments/plainoption.cpp (1.7), Instruments/plainoption.hpp
+	(1.7), Instruments/simpleswap.cpp (1.11),
+	Instruments/simpleswap.hpp (1.14), Instruments/stock.cpp (1.4),
+	Instruments/stock.hpp (1.4), Instruments/swap.cpp (1.9),
+	Instruments/swap.hpp (1.5), Instruments/swaption.cpp (1.4),
+	Instruments/swaption.hpp (1.3), Math/cubicspline.hpp (1.8),
+	Math/interpolation.hpp (1.4), Math/lexicographicalview.hpp (1.4),
+	Math/linearinterpolation.hpp (1.4), Math/matrix.cpp (1.7),
+	Math/matrix.hpp (1.7), Math/multivariateaccumulator.cpp (1.9),
+	Math/multivariateaccumulator.hpp (1.9), Math/normaldistribution.cpp
+	(1.4), Math/normaldistribution.hpp (1.4), Math/riskmeasures.hpp
+	(1.4), Math/segmentintegral.cpp (1.7), Math/segmentintegral.hpp
+	(1.9), Math/statistics.cpp (1.4), Math/statistics.hpp (1.10),
+	Math/symmetriceigenvalues.hpp (1.4),
+	Math/symmetricschurdecomposition.cpp (1.5),
+	Math/symmetricschurdecomposition.hpp (1.4),
+	MonteCarlo/arithmeticapopathpricer.cpp (1.4),
+	MonteCarlo/arithmeticapopathpricer.hpp (1.3),
+	MonteCarlo/arithmeticasopathpricer.cpp (1.4),
+	MonteCarlo/arithmeticasopathpricer.hpp (1.3),
+	MonteCarlo/basketpathpricer.cpp (1.14),
+	MonteCarlo/basketpathpricer.hpp (1.10),
+	MonteCarlo/europeanpathpricer.cpp (1.11),
+	MonteCarlo/europeanpathpricer.hpp (1.9),
+	MonteCarlo/everestpathpricer.cpp (1.12),
+	MonteCarlo/everestpathpricer.hpp (1.10),
+	MonteCarlo/geometricapopathpricer.cpp (1.6),
+	MonteCarlo/geometricapopathpricer.hpp (1.3),
+	MonteCarlo/geometricasopathpricer.cpp (1.7),
+	MonteCarlo/geometricasopathpricer.hpp (1.3),
+	MonteCarlo/getcovariance.cpp (1.7), MonteCarlo/getcovariance.hpp
+	(1.5), MonteCarlo/himalayapathpricer.cpp (1.14),
+	MonteCarlo/himalayapathpricer.hpp (1.9),
+	MonteCarlo/maxbasketpathpricer.cpp (1.4),
+	MonteCarlo/maxbasketpathpricer.hpp (1.3), MonteCarlo/mctypedefs.hpp
+	(1.9), MonteCarlo/montecarlomodel.hpp (1.16),
+	MonteCarlo/multipath.hpp (1.9), MonteCarlo/multipathgenerator.hpp
+	(1.25), MonteCarlo/pagodapathpricer.cpp (1.10),
+	MonteCarlo/pagodapathpricer.hpp (1.11), MonteCarlo/path.hpp (1.8),
+	MonteCarlo/pathgenerator.hpp (1.18), MonteCarlo/pathpricer.hpp
+	(1.9), MonteCarlo/sample.hpp (1.3), Patterns/factory.hpp (1.4),
+	Patterns/observable.hpp (1.6), Pricers/analyticalcapfloor.cpp
+	(1.2), Pricers/analyticalcapfloor.hpp (1.2),
+	Pricers/barrieroption.cpp (1.6), Pricers/barrieroption.hpp (1.6),
+	Pricers/binaryoption.cpp (1.7), Pricers/binaryoption.hpp (1.6),
+	Pricers/cliquetoption.cpp (1.7), Pricers/cliquetoption.hpp (1.6),
+	Pricers/continuousgeometricapo.hpp (1.3),
+	Pricers/discretegeometricapo.cpp (1.5),
+	Pricers/discretegeometricapo.hpp (1.4),
+	Pricers/discretegeometricaso.cpp (1.5),
+	Pricers/discretegeometricaso.hpp (1.4), Pricers/europeanengine.cpp
+	(1.3), Pricers/europeanengine.hpp (1.4), Pricers/europeanoption.cpp
+	(1.6), Pricers/europeanoption.hpp (1.8),
+	Pricers/fdamericanoption.hpp (1.3), Pricers/fdbermudanoption.cpp
+	(1.2), Pricers/fdbermudanoption.hpp (1.2), Pricers/fdbsmoption.cpp
+	(1.3), Pricers/fdbsmoption.hpp (1.3),
+	Pricers/fddividendamericanoption.cpp (1.2),
+	Pricers/fddividendamericanoption.hpp (1.2),
+	Pricers/fddividendeuropeanoption.cpp (1.3),
+	Pricers/fddividendeuropeanoption.hpp (1.3),
+	Pricers/fddividendoption.cpp (1.2), Pricers/fddividendoption.hpp
+	(1.2), Pricers/fddividendshoutoption.cpp (1.4),
+	Pricers/fddividendshoutoption.hpp (1.4), Pricers/fdeuropean.cpp
+	(1.4), Pricers/fdeuropean.hpp (1.4),
+	Pricers/fdmultiperiodoption.cpp (1.4),
+	Pricers/fdmultiperiodoption.hpp (1.3), Pricers/fdshoutoption.hpp
+	(1.3), Pricers/fdstepconditionoption.cpp (1.2),
+	Pricers/fdstepconditionoption.hpp (1.2),
+	Pricers/jamshidianswaption.cpp (1.2),
+	Pricers/jamshidianswaption.hpp (1.2), Pricers/mcbasket.cpp (1.4),
+	Pricers/mcbasket.hpp (1.4), Pricers/mcdiscretearithmeticapo.cpp
+	(1.4), Pricers/mcdiscretearithmeticapo.hpp (1.4),
+	Pricers/mcdiscretearithmeticaso.cpp (1.5),
+	Pricers/mcdiscretearithmeticaso.hpp (1.4), Pricers/mceuropean.cpp
+	(1.5), Pricers/mceuropean.hpp (1.6), Pricers/mceverest.cpp (1.8),
+	Pricers/mceverest.hpp (1.4), Pricers/mchimalaya.cpp (1.7),
+	Pricers/mchimalaya.hpp (1.4), Pricers/mcmaxbasket.cpp (1.4),
+	Pricers/mcmaxbasket.hpp (1.3), Pricers/mcpagoda.cpp (1.6),
+	Pricers/mcpagoda.hpp (1.5), Pricers/mcpricer.hpp (1.15),
+	Pricers/singleassetoption.cpp (1.11), Pricers/singleassetoption.hpp
+	(1.12), Pricers/treecapfloor.cpp (1.3), Pricers/treecapfloor.hpp
+	(1.2), Pricers/treeswaption.cpp (1.9), Pricers/treeswaption.hpp
+	(1.5), RandomNumbers/boxmullergaussianrng.hpp (1.4),
+	RandomNumbers/centrallimitgaussianrng.hpp (1.4),
+	RandomNumbers/inversecumulativegaussianrng.hpp (1.4),
+	RandomNumbers/knuthuniformrng.cpp (1.3),
+	RandomNumbers/knuthuniformrng.hpp (1.6),
+	RandomNumbers/lecuyeruniformrng.cpp (1.3),
+	RandomNumbers/lecuyeruniformrng.hpp (1.4),
+	RandomNumbers/randomarraygenerator.hpp (1.7),
+	RandomNumbers/rngtypedefs.hpp (1.6): new copyright and license
+	agreement
+
+2002-01-08 17:27  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ChangeLog.txt (1.11): updated
+
 2002-01-08 17:23  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* TODO.txt (1.77), Docs/pages/authors.docs (1.6),
