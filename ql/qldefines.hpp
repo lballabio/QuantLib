@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -348,9 +347,9 @@
     struct.
 */
 /*! \def QL_SPECIALIZE_ITERATOR_TRAITS
-    When using the %QuantLib implementation of iterator_traits, this macro might
-    be needed to specialize QL_ITERATOR_TRAITS for a pointer to a user-defined
-    type.
+    When using the %QuantLib implementation of iterator_traits or 
+    Visual C++ .Net, this macro might be needed to specialize 
+    QL_ITERATOR_TRAITS for a pointer to a user-defined type.
 */
 #if !defined(QL_ITERATOR_TRAITS)
     template <class Iterator>
@@ -362,6 +361,10 @@
         typedef typename Iterator::iterator_category    iterator_category;
     };
     #define QL_ITERATOR_TRAITS  __quantlib_iterator_traits
+    #define MUST_SPECIALIZE_ITERATOR_TRAITS
+#endif
+
+#if defined(MUST_SPECIALIZE_ITERATOR_TRAITS)
     #define QL_SPECIALIZE_ITERATOR_TRAITS(T) \
     template<> \
     struct QL_ITERATOR_TRAITS<T*> { \

@@ -34,6 +34,7 @@
 // move inside here configs specific to VC++ .Net
 #define QL_ITERATOR         std::iterator
 #define QL_ITERATOR_TRAITS  std::iterator_traits
+#define MUST_SPECIALIZE_ITERATOR_TRAITS  // always new ways to surprise us...
 
 
 #endif
