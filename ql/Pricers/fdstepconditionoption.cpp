@@ -25,7 +25,7 @@ namespace QuantLib {
                          Option::Type type, double underlying, double strike, 
                          Spread dividendYield, Rate riskFreeRate, 
                          Time residualTime, double volatility,
-                         int timeSteps, int gridPoints)
+                         Size timeSteps, Size gridPoints)
     : FdBsmOption(type, underlying, strike, dividendYield,
                   riskFreeRate, residualTime, volatility, gridPoints),
       timeSteps_(timeSteps) {}

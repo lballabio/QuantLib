@@ -30,16 +30,16 @@ namespace QuantLib {
                        const std::vector<Time>& exdivdates,
                        int timeSteps, int gridPoints)
     : FdMultiPeriodOption(type, underlying - addElements(dividends),
-                          strike, dividendYield, riskFreeRate, 
+                          strike, dividendYield, riskFreeRate,
                           residualTime, volatility,
-                          gridPoints, exdivdates, timeSteps), 
+                          gridPoints, exdivdates, timeSteps),
       dividends_(dividends) {
 
         QL_REQUIRE(dateNumber_ == dividends.size(),
                    "the number of dividends(" +
-                   IntegerFormatter::toString((unsigned long)(dividends.size())) +
+                   SizeFormatter::toString(dividends.size()) +
                    ") is different from the number of dates(" +
-                   IntegerFormatter::toString((unsigned long)(dateNumber_)) +
+                   SizeFormatter::toString(dateNumber_) +
                    ")");
 
         QL_REQUIRE(underlying > addElements(dividends),
@@ -113,7 +113,7 @@ namespace QuantLib {
             }
         }
 
-        NaturalCubicSpline priceSpline(logOldGrid.begin(), logOldGrid.end(), 
+        NaturalCubicSpline priceSpline(logOldGrid.begin(), logOldGrid.end(),
                                        tmpPrices.begin());
         for (j = 0; j < gridSize; j++)
             prices[j] = priceSpline(QL_LOG(newGrid[j]), true);

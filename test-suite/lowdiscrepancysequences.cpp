@@ -85,9 +85,9 @@ void LowDiscrepancyTest::testSobol() {
         if (point.size()!=dimensionality) {
             BOOST_FAIL("Sobol sequence generator returns "
                        " a sequence of wrong dimensionality: " +
-                       IntegerFormatter::toString(point.size())
+                       SizeFormatter::toString(point.size())
                        + " instead of  " +
-                       IntegerFormatter::toString(dimensionality));
+                       SizeFormatter::toString(dimensionality));
         }
     }
 
@@ -107,11 +107,11 @@ void LowDiscrepancyTest::testSobol() {
         mean = stat.mean();
         for (i=0; i<dimensionality; i++) {
             if (mean[i] != 0.5) {
-                BOOST_FAIL(IntegerFormatter::toOrdinal(i+1) +
+                BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
                            " dimension mean (" +
                            DoubleFormatter::toString(mean[i]) +
                            ") at the end of the " +
-                           IntegerFormatter::toOrdinal(j+1) +
+                           SizeFormatter::toOrdinal(j+1) +
                            " cycle in Sobol sequence is not " +
                            DoubleFormatter::toString(0.5));
             }
@@ -139,7 +139,7 @@ void LowDiscrepancyTest::testSobol() {
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            BOOST_FAIL(IntegerFormatter::toOrdinal(i+1) +
+            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
                        " draw (" +
                        DoubleFormatter::toString(point[0]) +
                        ") in 1-D Sobol sequence is not in the "
@@ -166,9 +166,9 @@ void LowDiscrepancyTest::testHalton() {
         if (point.size()!=dimensionality) {
             BOOST_FAIL("Halton sequence generator returns "
                        " a sequence of wrong dimensionality: " +
-                       IntegerFormatter::toString(point.size())
+                       SizeFormatter::toString(point.size())
                        + " instead of  " +
-                       IntegerFormatter::toString(dimensionality));
+                       SizeFormatter::toString(dimensionality));
         }
     }
 
@@ -193,7 +193,7 @@ void LowDiscrepancyTest::testHalton() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            BOOST_FAIL(IntegerFormatter::toOrdinal(i+1) +
+            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
                        " draw (" +
                        DoubleFormatter::toString(point[0]) +
                        ") in 1-D Halton sequence is not in the "
@@ -222,7 +222,7 @@ void LowDiscrepancyTest::testHalton() {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
             BOOST_FAIL("First component of " +
-                       IntegerFormatter::toOrdinal(i+1) +
+                       SizeFormatter::toOrdinal(i+1) +
                        " draw (" +
                        DoubleFormatter::toString(point[0]) +
                        ") in 2-D Halton sequence is not in the "
@@ -233,7 +233,7 @@ void LowDiscrepancyTest::testHalton() {
         }
         if (QL_FABS(point[1]-vanderCorputSequenceModuloThree[i])>1.0e-15) {
             BOOST_FAIL("Second component of " +
-                       IntegerFormatter::toOrdinal(i+1) +
+                       SizeFormatter::toOrdinal(i+1) +
                        " draw (" +
                        DoubleFormatter::toString(point[1]) +
                        ") in 2-D Halton sequence is not in the "
@@ -262,7 +262,7 @@ void LowDiscrepancyTest::testHalton() {
             BOOST_FAIL("First dimension mean (" +
                        DoubleFormatter::toString(mean[0]) +
                        ") at the end of the " +
-                       IntegerFormatter::toOrdinal(j+1) +
+                       SizeFormatter::toOrdinal(j+1) +
                        " cycle in Halton sequence is not " +
                        DoubleFormatter::toString(0.5));
         }
@@ -283,7 +283,7 @@ void LowDiscrepancyTest::testHalton() {
             BOOST_FAIL("Second dimension mean (" +
                        DoubleFormatter::toString(mean[1]) +
                        ") at the end of the " +
-                       IntegerFormatter::toOrdinal(j+1) +
+                       SizeFormatter::toOrdinal(j+1) +
                        " cycle in Halton sequence is not " +
                        DoubleFormatter::toString(0.5));
         }
@@ -599,9 +599,8 @@ namespace {
                 if (QL_FABS(discr-discrepancy[i][j-jMin]) > tolerance*discr) {
                     BOOST_FAIL(generatorFactory.name() +
                                "discrepancy dimension " +
-                               IntegerFormatter::toString(
-                                                 dimensionality[i]) + " at " +
-                               IntegerFormatter::toString(points) +
+                               SizeFormatter::toString(dimensionality[i]) +
+                               " at " + SizeFormatter::toString(points) +
                                " samples is " +
                                DoubleFormatter::toExponential(discr,2) +
                                " instead of "+

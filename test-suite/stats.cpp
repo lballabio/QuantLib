@@ -47,7 +47,7 @@ namespace {
         if (s.samples() != LENGTH(data))
             BOOST_FAIL(name + ": wrong number of samples\n"
                        "    calculated: "
-                       + IntegerFormatter::toString(s.samples()) + "\n"
+                       + SizeFormatter::toString(s.samples()) + "\n"
                        "    expected:   "
                        + IntegerFormatter::toString(LENGTH(data)));
 
@@ -158,7 +158,7 @@ namespace {
             BOOST_FAIL("SequenceStatistics<" + name + ">: "
                        "wrong number of samples\n"
                        "    calculated: "
-                       + IntegerFormatter::toString(ss.samples()) + "\n"
+                       + SizeFormatter::toString(ss.samples()) + "\n"
                        "    expected:   "
                        + IntegerFormatter::toString(LENGTH(data)));
 
@@ -176,7 +176,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (calculated[i] != expected)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
-                           + IntegerFormatter::toOrdinal(i+1)+" dimension: "
+                           + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong minimum value\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated[i]) + "\n"
@@ -189,7 +189,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (calculated[i] != expected)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
-                           + IntegerFormatter::toOrdinal(i+1)+" dimension: "
+                           + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong maximun value\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated[i]) + "\n"
@@ -203,7 +203,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (QL_FABS(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
-                           + IntegerFormatter::toOrdinal(i+1)+" dimension: "
+                           + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong mean value\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated[i]) + "\n"
@@ -216,7 +216,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (QL_FABS(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
-                           + IntegerFormatter::toOrdinal(i+1)+" dimension: "
+                           + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong variance\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated[i]) + "\n"
@@ -229,7 +229,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (QL_FABS(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
-                           + IntegerFormatter::toOrdinal(i+1)+" dimension: "
+                           + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong standard deviation\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated[i]) + "\n"
@@ -242,7 +242,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (QL_FABS(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
-                           + IntegerFormatter::toOrdinal(i+1)+" dimension: "
+                           + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong skewness\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated[i]) + "\n"
@@ -255,7 +255,7 @@ namespace {
         for (i=0; i<dimension; i++) {
             if (QL_FABS(calculated[i]-expected) > tolerance)
                 BOOST_FAIL("SequenceStatistics<" + name + ">: "
-                           + IntegerFormatter::toOrdinal(i+1)+" dimension: "
+                           + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong kurtosis\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated[i]) + "\n"

@@ -37,9 +37,9 @@ using namespace boost::unit_test_framework;
                "    running product:  " \
                + DoubleFormatter::toString(runningProduct) + "\n" \
                "    past fixings:     " \
-               + IntegerFormatter::toString(pastFixings) + "\n" \
+               + SizeFormatter::toString(pastFixings) + "\n" \
                "    future fixings:   " \
-               + IntegerFormatter::toString(fixingDates.size()) + "\n" \
+               + SizeFormatter::toString(fixingDates.size()) + "\n" \
                "    underlying value: " \
                + DoubleFormatter::toString(s) + "\n" \
                "    strike:           " \

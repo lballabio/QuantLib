@@ -573,7 +573,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
         double value = pricer.valueWithSamples(fixedSamples);
         if (QL_FABS(value-cases4[k].result) > 2.0e-2)
             BOOST_FAIL(
-                "Batch 4, case " + IntegerFormatter::toString(k+1) + ":\n"
+                "Batch 4, case " + SizeFormatter::toString(k+1) + ":\n"
                 "    calculated value: "
                 + DoubleFormatter::toString(value,10) + "\n"
                 "    expected:         "
@@ -584,7 +584,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
         double accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
             BOOST_FAIL(
-                "Batch 4, case " + IntegerFormatter::toString(k+1) + ":\n"
+                "Batch 4, case " + SizeFormatter::toString(k+1) + ":\n"
                 "    reached accuracy: "
                 + DoubleFormatter::toString(accuracy,10) + "\n"
                 "    expected:         "
@@ -684,7 +684,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
         double value = pricer.valueWithSamples(fixedSamples);
         if (QL_FABS(value-cases5[l].result) > 2.0e-2)
             BOOST_FAIL(
-                "Batch 5, case " + IntegerFormatter::toString(l+1) + ":\n"
+                "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
                 "    calculated value: "
                 + DoubleFormatter::toString(value,10) + "\n"
                 "    expected:         "
@@ -695,7 +695,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
         double accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
             BOOST_FAIL(
-                "Batch 5, case " + IntegerFormatter::toString(l+1) + ":\n"
+                "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
                 "    reached accuracy: "
                 + DoubleFormatter::toString(accuracy,10) + "\n"
                 "    expected:         "

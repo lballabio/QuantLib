@@ -90,7 +90,7 @@ namespace QuantLib {
 
             QL_FAIL("Ridder::solveImpl: "
                     "maximum number of function evaluations (" +
-                    IntegerFormatter::toString(maxEvaluations_) + 
+                    SizeFormatter::toString(maxEvaluations_) + 
                     ") exceeded");
 
             QL_DUMMY_RETURN(0.0);

@@ -32,15 +32,16 @@ namespace QuantLib {
     //! Formats integers for output
     class IntegerFormatter {
       public:
-        static std::string toString(int l, int digits = 0);
-        static std::string toString(unsigned int l, int digits = 0);
         static std::string toString(long l, int digits = 0);
-        static std::string toString(unsigned long l, int digits = 0);
-        static std::string toOrdinal(unsigned long l);
-        static std::string toPowerOfTwo(int l, int digits = 0);
-        static std::string toPowerOfTwo(unsigned int l, int digits = 0);
         static std::string toPowerOfTwo(long l, int digits = 0);
-        static std::string toPowerOfTwo(unsigned long l, int digits = 0);
+    };
+
+    //! Formats unsigned integers for output
+    class SizeFormatter {
+      public:
+        static std::string toString(Size l, int digits = 0);
+        static std::string toOrdinal(Size l);
+        static std::string toPowerOfTwo(Size l, int digits = 0);
     };
 
     //! Formats doubles for output

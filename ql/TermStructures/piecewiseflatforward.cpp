@@ -137,9 +137,8 @@ namespace QuantLib {
                 }
 
                 QL_FAIL("Could not bootstrap curve. segment " +
-                    IntegerFormatter::toString((unsigned long)(i)) + " of " +
-                    IntegerFormatter::toString((unsigned long)
-                                                (instruments_.size())) +
+                    SizeFormatter::toString(i) + " of " +
+                    SizeFormatter::toString(instruments_.size()) +
                     ", last forward = " + forward_string +
                     ", last discount = " + discount_string +
                     ", last zero-yield = " + zeroYield_string  +

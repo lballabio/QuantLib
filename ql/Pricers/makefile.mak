@@ -27,10 +27,10 @@ OBJS = \
     "cliquetoption.obj$(_mt)$(_D)" \
     "discretegeometricapo.obj$(_mt)$(_D)" \
     "discretegeometricaso.obj$(_mt)$(_D)" \
+    "dividendeuropeanoption.obj$(_mt)$(_D)" \
     "fdbermudanoption.obj$(_mt)$(_D)" \
     "fdbsmoption.obj$(_mt)$(_D)" \
     "fddividendamericanoption.obj$(_mt)$(_D)" \
-    "fddividendeuropeanoption.obj$(_mt)$(_D)" \
     "fddividendoption.obj$(_mt)$(_D)" \
     "fddividendshoutoption.obj$(_mt)$(_D)" \
     "fdeuropean.obj$(_mt)$(_D)" \

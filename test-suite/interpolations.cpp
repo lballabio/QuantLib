@@ -228,7 +228,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         if (QL_FABS(result-tabulatedErrors[i]) > toleranceOnTabErr[i])
             BOOST_FAIL("Not-a-knot spline interpolation "
                        "\n    sample points:      " +
-                       IntegerFormatter::toString(n) +
+                       SizeFormatter::toString(n) +
                        "\n    norm of difference: " +
                        DoubleFormatter::toExponential(result,1) +
                        "\n    it should be:       " +
@@ -243,7 +243,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         if (QL_FABS(result-tabulatedMCErrors[i]) > toleranceOnTabMCErr[i])
             BOOST_FAIL("MC Not-a-knot spline interpolation "
                        "\n    sample points:      " +
-                       IntegerFormatter::toString(n) +
+                       SizeFormatter::toString(n) +
                        "\n    norm of difference: " +
                        DoubleFormatter::toExponential(result,1) +
                        "\n    it should be:       " +

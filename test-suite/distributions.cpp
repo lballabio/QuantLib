@@ -181,7 +181,7 @@ void DistributionTest::testBivariate() {
         if (QL_FABS(value-values[i].result)>=1e-6) {
           BOOST_FAIL("BivariateCumulativeDistribution \n"
               "case "
-              + IntegerFormatter::toString(i+1) + "\n"
+              + SizeFormatter::toString(i+1) + "\n"
               "    a:   "
               + DoubleFormatter::toString(values[i].a) + "\n"
               "    b:   "

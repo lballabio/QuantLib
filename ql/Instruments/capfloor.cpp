@@ -79,7 +79,7 @@ namespace QuantLib {
         DayCounter counter = termStructure_->dayCounter();
 
         for (Size i=0; i<floatingLeg_.size(); i++) {
-            boost::shared_ptr<FloatingRateCoupon> coupon = 
+            boost::shared_ptr<FloatingRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
             QL_REQUIRE(coupon,
@@ -95,7 +95,7 @@ namespace QuantLib {
             // this is passed explicitly for precision
             arguments->accrualTimes.push_back(coupon->accrualPeriod());
             // this is passed explicitly for precision
-            if (arguments->endTimes.back() >= 0.0)  // but only if needed 
+            if (arguments->endTimes.back() >= 0.0)  // but only if needed
                 arguments->forwards.push_back(coupon->fixing());
             else
                 arguments->forwards.push_back(Null<Rate>());
@@ -110,42 +110,42 @@ namespace QuantLib {
     void CapFloor::arguments::validate() const {
         QL_REQUIRE(endTimes.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
+                   SizeFormatter::toString(startTimes.size()) +
                    ") different from that of endTimes (" +
-                   IntegerFormatter::toString((unsigned long)(endTimes.size())) +
+                   SizeFormatter::toString(endTimes.size()) +
                    ")");
         QL_REQUIRE(accrualTimes.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
+                   SizeFormatter::toString(startTimes.size()) +
                    ") different from that of accrualTimes (" +
-                   IntegerFormatter::toString((unsigned long)(accrualTimes.size())) +
+                   SizeFormatter::toString(accrualTimes.size()) +
                    ")");
-        QL_REQUIRE(type == CapFloor::Floor || 
+        QL_REQUIRE(type == CapFloor::Floor ||
                    capRates.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
+                   SizeFormatter::toString(startTimes.size()) +
                    ") different from that of capRates (" +
-                   IntegerFormatter::toString((unsigned long)(capRates.size())) +
+                   SizeFormatter::toString(capRates.size()) +
                    ")");
         QL_REQUIRE(type == CapFloor::Cap ||
                    floorRates.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
+                   SizeFormatter::toString(startTimes.size()) +
                    ") different from that of floorRates (" +
-                   IntegerFormatter::toString((unsigned long)(floorRates.size())) +
+                   SizeFormatter::toString(floorRates.size()) +
                    ")");
         QL_REQUIRE(nominals.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
+                   SizeFormatter::toString(startTimes.size()) +
                    ") different from that of nominals (" +
-                   IntegerFormatter::toString((unsigned long)(nominals.size())) +
+                   SizeFormatter::toString(nominals.size()) +
                    ")");
     }
 
     double CapFloor::impliedVolatility(double targetValue,
-                                       double accuracy, 
+                                       double accuracy,
                                        Size maxEvaluations,
-                                       double minVol, 
+                                       double minVol,
                                        double maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(),
@@ -161,7 +161,7 @@ namespace QuantLib {
 
 
     CapFloor::ImpliedVolHelper::ImpliedVolHelper(
-                         const CapFloor& cap, 
+                         const CapFloor& cap,
                          const RelinkableHandle<TermStructure>& termStructure,
                          double targetValue)
     : termStructure_(termStructure), targetValue_(targetValue) {

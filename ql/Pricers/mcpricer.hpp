@@ -104,9 +104,9 @@ namespace QuantLib {
 
         QL_REQUIRE(samples>=minSample_,
                    "number of requested samples ("
-                   + IntegerFormatter::toString(samples) +
+                   + SizeFormatter::toString(samples) +
                    ") lower than minSample_ ("
-                   + IntegerFormatter::toString(minSample_) +
+                   + SizeFormatter::toString(minSample_) +
                    ")");
 
         Size sampleNumber =
@@ -114,10 +114,10 @@ namespace QuantLib {
 
         QL_REQUIRE(samples>=sampleNumber,
                    "number of already simulated samples ("
-                   + IntegerFormatter::toString(sampleNumber) +
+                   + SizeFormatter::toString(sampleNumber) +
                    ") greater than"
                    "requested samples ("
-                   + IntegerFormatter::toString(samples) +
+                   + SizeFormatter::toString(samples) +
                    ")");
 
         mcModel_->addSamples(samples-sampleNumber);

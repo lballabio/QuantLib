@@ -232,8 +232,8 @@ namespace QuantLib {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "BrownianBridge::BrownianBridge : "
                    "GSG/timeGrid dimension mismatch"
-                   "(" + IntegerFormatter::toString((unsigned long)(dimension_)) +
-                   "/" + IntegerFormatter::toString((unsigned long)(timeGrid_.size()-1)) +
+                   "(" + SizeFormatter::toString(dimension_) +
+                   "/" + SizeFormatter::toString(timeGrid_.size()-1) +
                    ")");
 
         std::vector<double> variances(dimension_);
@@ -252,8 +252,8 @@ namespace QuantLib {
         QL_REQUIRE(v.size()==dimension_,
                    "BrownianBridge::initialize : "
                    "GSG/variance vector dimension mismatch"
-                   "(" + IntegerFormatter::toString((unsigned long)(dimension_)) +
-                   "/" + IntegerFormatter::toString((unsigned long)(v.size())) +
+                   "(" + SizeFormatter::toString(dimension_) +
+                   "/" + SizeFormatter::toString(v.size()) +
                    ")");
 
         std::vector<Size> map(dimension_, 0);
@@ -297,10 +297,10 @@ namespace QuantLib {
             std::cout << std::endl
                 << "i: " << i << "\tbridge: " << bridgeIndex_[i] + 1
                 << "\tleft: "   <<  (j ? leftIndex_[i] : 0)
-                << "\tright: "  << rightIndex_[i] + 1 
+                << "\tright: "  << rightIndex_[i] + 1
                 << "\tleftW: "  <<  DoubleFormatter::toString(leftWeight_[i], 2)
                 << " rightW: "  << DoubleFormatter::toString(rightWeight_[i], 2);
-*/            
+*/
             j=k+1;
             if (j>=dimension_) j=0;	//	Wrap around.
         }

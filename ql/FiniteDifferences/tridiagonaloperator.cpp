@@ -36,8 +36,8 @@ namespace QuantLib {
         }
     }
 
-    TridiagonalOperator::TridiagonalOperator(const Array& low, 
-                                             const Array& mid, 
+    TridiagonalOperator::TridiagonalOperator(const Array& low,
+                                             const Array& mid,
                                              const Array& high)
     : diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high) {
         QL_REQUIRE(low.size() == mid.size()-1,
@@ -49,8 +49,8 @@ namespace QuantLib {
     Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
         QL_REQUIRE(v.size()==size(),
                    "TridiagonalOperator::applyTo: vector of the wrong size (" +
-                   IntegerFormatter::toString((unsigned long)(v.size())) + "instead of " +
-                   IntegerFormatter::toString((unsigned long)(size())) + ")"  );
+                   SizeFormatter::toString(v.size()) + "instead of " +
+                   SizeFormatter::toString(size()) + ")"  );
         Array result(size());
 
         // matricial product
@@ -64,7 +64,7 @@ namespace QuantLib {
         return result;
     }
 
-    Disposable<Array> 
+    Disposable<Array>
     TridiagonalOperator::solveFor(const Array& rhs) const {
         QL_REQUIRE(rhs.size()==size(),
                    "TridiagonalOperator::solveFor: rhs has the wrong size");
@@ -91,7 +91,7 @@ namespace QuantLib {
         return result;
     }
 
-    Disposable<Array> 
+    Disposable<Array>
     TridiagonalOperator::SOR(const Array& rhs, double tol) const {
         QL_REQUIRE(rhs.size()==size(),
                    "TridiagonalOperator::solveFor: rhs has the wrong size");
@@ -109,7 +109,7 @@ namespace QuantLib {
                        "TridiagonalOperator::SOR: tolerance ["
                        + DoubleFormatter::toString(tol) +
                        "] not reached in "
-                       + IntegerFormatter::toString((unsigned long)(sorIteration)) +
+                       + SizeFormatter::toString(sorIteration) +
                        " iterations. The error still is "
                        + DoubleFormatter::toString(err));
             err=0.0;
@@ -117,7 +117,7 @@ namespace QuantLib {
                 temp = omega * (rhs[i]     -
                                 upperDiagonal_[i]   * result[i+1]-
                                 diagonal_[i]        * result[i] -
-                                lowerDiagonal_[i-1] * result[i-1]) / 
+                                lowerDiagonal_[i-1] * result[i-1]) /
                     diagonal_[i];
                 err += temp * temp;
                 result[i] += temp;

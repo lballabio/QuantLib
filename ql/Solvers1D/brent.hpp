@@ -67,7 +67,7 @@ namespace QuantLib {
                 xMid=(xMax_-root_)/2.0;
                 if (QL_FABS(xMid) <= xAcc1 || froot == 0.0)
                     return root_;
-                if (QL_FABS(e) >= xAcc1 && 
+                if (QL_FABS(e) >= xAcc1 &&
                     QL_FABS(fxMin_) > QL_FABS(froot)) {
 
                     // Attempt inverse quadratic interpolation
@@ -108,7 +108,7 @@ namespace QuantLib {
             }
             QL_FAIL("Brent::solveImpl: "
                     " maximum number of function evaluations ("
-                    + IntegerFormatter::toString((unsigned long)(maxEvaluations_)) 
+                    + SizeFormatter::toString(maxEvaluations_)
                     + ") exceeded");
             QL_DUMMY_RETURN(0.0);
         }

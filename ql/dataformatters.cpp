@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,14 +25,6 @@
 
 namespace QuantLib {
 
-    std::string IntegerFormatter::toString(int l, int digits) {
-        return toString(long(l), digits);
-    }
-
-    std::string IntegerFormatter::toString(unsigned int l, int digits) {
-        return toString((unsigned long)l, digits);
-    }
-
     std::string IntegerFormatter::toString(long l, int digits) {
         static long null = long(Null<int>());
         if (l == null)
@@ -42,8 +34,17 @@ namespace QuantLib {
         return std::string(s);
     }
 
-    std::string IntegerFormatter::toString(unsigned long l, int digits) {
+    std::string IntegerFormatter::toPowerOfTwo(long l, int digits) {
+        if (l < 0L)
+            return "-" + SizeFormatter::toPowerOfTwo((unsigned long)(-l),digits);
+        else 
+            return SizeFormatter::toPowerOfTwo((unsigned long)(l),digits);
+    }
+
+
+    std::string SizeFormatter::toString(Size ll, int digits) {
         static unsigned long null = (unsigned long) Null<int>();
+        unsigned long l = (unsigned long)(ll);
         if (l == null)
             return std::string("null");
         char s[64];
@@ -51,8 +52,9 @@ namespace QuantLib {
         return std::string(s);
     }
 
-    std::string IntegerFormatter::toOrdinal(unsigned long l) {
+    std::string SizeFormatter::toOrdinal(Size ll) {
         std::string suffix;
+        unsigned long l = (unsigned long)(ll);
         if (l == 11UL || l == 12UL || l == 13UL) {
             suffix = "th";
         } else {
@@ -66,23 +68,9 @@ namespace QuantLib {
         return toString(l)+suffix;
     }
 
-    std::string IntegerFormatter::toPowerOfTwo(int l, int digits) {
-        return toPowerOfTwo(long(l), digits);
-    }
-
-    std::string IntegerFormatter::toPowerOfTwo(unsigned int l, int digits) {
-        return toPowerOfTwo((unsigned long)l, digits);
-    }
-
-    std::string IntegerFormatter::toPowerOfTwo(long l, int digits) {
-        if (l < 0L)
-            return "-" + toPowerOfTwo((unsigned long)(-l),digits);
-        else 
-            return toPowerOfTwo((unsigned long)(l),digits);
-    }
-
-    std::string IntegerFormatter::toPowerOfTwo(unsigned long l, int digits) {
+    std::string SizeFormatter::toPowerOfTwo(Size ll, int digits) {
         static unsigned long null = (unsigned long) Null<int>();
+        unsigned long l = (unsigned long)(ll);
         if (l == null)
             return std::string("null");
         int power = 0;

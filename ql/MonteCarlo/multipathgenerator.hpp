@@ -46,7 +46,7 @@ namespace QuantLib {
       public:
         typedef Sample<MultiPath> sample_type;
         MultiPathGenerator(
-                     const std::vector<boost::shared_ptr<DiffusionProcess> >& 
+                     const std::vector<boost::shared_ptr<DiffusionProcess> >&
                                                                diffusionProcs,
                      const Matrix& correlation,
                      const TimeGrid& timeGrid,
@@ -68,10 +68,10 @@ namespace QuantLib {
 
     template <class GSG>
     MultiPathGenerator<GSG>::MultiPathGenerator(
-                     const std::vector<boost::shared_ptr<DiffusionProcess> >& 
+                     const std::vector<boost::shared_ptr<DiffusionProcess> >&
                                                                diffusionProcs,
                      const Matrix& correlation,
-                     const TimeGrid& times, 
+                     const TimeGrid& times,
                      GSG generator,
                      bool brownianBridge)
     :   brownianBridge_(brownianBridge),
@@ -83,11 +83,11 @@ namespace QuantLib {
 
         QL_REQUIRE(generator_.dimension() == numAssets_*(times.size()-1),
                    "(2) MultiPathGenerator's dimension (" +
-                   IntegerFormatter::toString((unsigned long)(generator_.dimension())) + 
+                   SizeFormatter::toString(generator_.dimension()) +
                    ") is not equal to (" +
-                   IntegerFormatter::toString((unsigned long)(numAssets_)) + 
+                   SizeFormatter::toString(numAssets_) +
                    " * " +
-                   IntegerFormatter::toString((unsigned long)(times.size()-1)) + 
+                   SizeFormatter::toString(times.size()-1) +
                    ") the number of assets times the number of time steps");
         QL_REQUIRE(sqrtCorrelation_.columns() == numAssets_,
                    "MultiPathGenerator correlation is not "
@@ -109,13 +109,13 @@ namespace QuantLib {
 
             Time t = timeGrid_[1];
             double dt= timeGrid_.dt(0);
-            next_.value.drift()[0] = dt * 
+            next_.value.drift()[0] = dt *
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = stdDev_.value[0];
             for (Size i=1; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt * 
+                next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] =
                     stdDev_.value[i] - stdDev_.value[i-1];
@@ -149,13 +149,13 @@ namespace QuantLib {
                 temp = sqrtCorrelation_ * temp;
 
                 for (Size j=0; j<numAssets_; j++) {
-                    next_.value[j].drift()[i] = 
+                    next_.value[j].drift()[i] =
                         dt * diffusionProcs_[j]->drift(t, asset[j]);
-                    next_.value[j].diffusion()[i] = 
-                        temp[j] * 
+                    next_.value[j].diffusion()[i] =
+                        temp[j] *
                         QL_SQRT(diffusionProcs_[j]->variance(t, asset[j], dt));
-                    asset[j] *= 
-                        QL_EXP(next_.value[j].drift()[i] + 
+                    asset[j] *=
+                        QL_EXP(next_.value[j].drift()[i] +
                                next_.value[j].diffusion()[i]);
                 }
             }

@@ -99,9 +99,9 @@ namespace QuantLib {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "PathGenerator::PathGenerator :"
                    "sequence generator dimensionality ("
-                   + IntegerFormatter::toString((unsigned long)(dimension_)) +
+                   + SizeFormatter::toString(dimension_) +
                    ") != timeSteps ("
-                   + IntegerFormatter::toString((unsigned long)(timeGrid_.size()-1)) +
+                   + SizeFormatter::toString(timeGrid_.size()-1) +
                    ")");
     }
 
@@ -117,13 +117,13 @@ namespace QuantLib {
 
             Time t = timeGrid_[1];
             double dt= timeGrid_.dt(0);
-            next_.value.drift()[0] = dt * 
+            next_.value.drift()[0] = dt *
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = stdDev_.value[0];
             for (Size i=1; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt * 
+                next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] =
                     stdDev_.value[i] - stdDev_.value[i-1];
@@ -142,11 +142,11 @@ namespace QuantLib {
             for (Size i=0; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt * 
+                next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = sequence_.value[i] *
                     QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ *= QL_EXP(next_.value.drift()[i] + 
+                asset_ *= QL_EXP(next_.value.drift()[i] +
                                  next_.value.diffusion()[i]);
             }
 
@@ -166,13 +166,13 @@ namespace QuantLib {
 
             Time t = timeGrid_[1];
             double dt= timeGrid_.dt(0);
-            next_.value.drift()[0] = dt * 
+            next_.value.drift()[0] = dt *
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = - stdDev_.value[0];
             for (Size i=1; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt * 
+                next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] =
                     - stdDev_.value[i] + stdDev_.value[i-1];
@@ -191,11 +191,11 @@ namespace QuantLib {
             for (Size i=0; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt * 
+                next_.value.drift()[i] = dt *
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = - sequence_.value[i] *
                     QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ *= QL_EXP(next_.value.drift()[i] + 
+                asset_ *= QL_EXP(next_.value.drift()[i] +
                                  next_.value.diffusion()[i]);
             }
 

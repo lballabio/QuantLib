@@ -129,7 +129,7 @@ namespace QuantLib {
             }
 
             QL_FAIL("unable to bracket root in " +
-                    IntegerFormatter::toString(maxEvaluations_) +
+                    SizeFormatter::toString(maxEvaluations_) +
                     " function evaluations (last bracket attempt: f[" +
                     DoubleFormatter::toString(xMin_) + "," + 
                     DoubleFormatter::toString(xMax_) + "] -> [" +

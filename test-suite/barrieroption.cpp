@@ -358,7 +358,7 @@ void BarrierOptionTest::testBabsiriValues() {
         double expected = values[i].callValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
             BOOST_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
+                "Data at index " + SizeFormatter::toString(i) + ", "
                 "Barrier call option:\n"
                     "    value:    " +
                     DoubleFormatter::toString(calculated) + "\n"
@@ -370,7 +370,7 @@ void BarrierOptionTest::testBabsiriValues() {
         calculated = barrierCallOption.NPV();
         if (QL_FABS(calculated-expected) > maxMCErrorAllowed) {
             BOOST_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
+                "Data at index " + SizeFormatter::toString(i) + ", "
                 "Barrier call option MC:\n"
                     "    value:    " +
                     DoubleFormatter::toString(calculated) + "\n"
@@ -464,7 +464,7 @@ void BarrierOptionTest::testBeagleholeValues() {
         double expected = values[i].callValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
             BOOST_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
+                "Data at index " + SizeFormatter::toString(i) + ", "
                 "Barrier call option:\n"
                     "    value:    " +
                     DoubleFormatter::toString(calculated) + "\n"
@@ -476,7 +476,7 @@ void BarrierOptionTest::testBeagleholeValues() {
         calculated = barrierCallOption.NPV();
         if (QL_FABS(calculated-expected) > maxMCErrorAllowed) {
             BOOST_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
+                "Data at index " + SizeFormatter::toString(i) + ", "
                 "Barrier call option MC:\n"
                     "    value:    " +
                     DoubleFormatter::toString(calculated) + "\n"

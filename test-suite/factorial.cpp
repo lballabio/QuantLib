@@ -85,7 +85,7 @@ void FactorialTest::testGammaFunction() {
         calculated = GammaFunction().logValue(i+1);
         if (QL_FABS(calculated-expected)/expected > 1.0e-9)
             BOOST_FAIL("GammaFunction("
-                       + IntegerFormatter::toString(i) + ")"
+                       + SizeFormatter::toString(i) + ")"
                        "    calculated: "
                        + DoubleFormatter::toExponential(calculated,16) + "\n"
                        "    expected:   "

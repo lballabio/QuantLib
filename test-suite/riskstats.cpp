@@ -72,17 +72,17 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong number of samples\n"
                     "    calculated: "
-                    + IntegerFormatter::toString(igs.samples(),16) + "\n"
+                    + SizeFormatter::toString(igs.samples(),16) + "\n"
                     "    expected:   "
-                    + IntegerFormatter::toString(N,16));
+                    + SizeFormatter::toString(N,16));
             if (s.samples() != N)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong number of samples\n"
                     "    calculated: "
-                    + IntegerFormatter::toString(s.samples(),16) + "\n"
+                    + SizeFormatter::toString(s.samples(),16) + "\n"
                     "    expected:   "
-                    + IntegerFormatter::toString(N,16));
+                    + SizeFormatter::toString(N,16));
 
 
             // weightSum()

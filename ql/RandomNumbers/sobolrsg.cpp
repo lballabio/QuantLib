@@ -127,22 +127,22 @@ namespace QuantLib {
 
     const int SobolRsg::bits_ = 8*sizeof(unsigned long);
     // 1/(2^bits_) (written as (1/2)/(2^(bits_-1)) to avoid long overflow)
-    const double SobolRsg::normalizationFactor_ = 
+    const double SobolRsg::normalizationFactor_ =
     0.5/(1UL<<(SobolRsg::bits_-1));
 
     SobolRsg::SobolRsg(Size dimensionality, unsigned long seed,
                        bool unitInitialization)
     : dimensionality_(dimensionality),
-      sequenceCounter_(0), 
+      sequenceCounter_(0),
       firstDraw_(true), sequence_(Array(dimensionality), 1.0),
       integerSequence_(dimensionality, 0),
       directionIntegers_(dimensionality,std::vector<unsigned long>(bits_))
     {
         QL_REQUIRE(dimensionality<=PPMT_MAX_DIM,
                    "SobolRsg::SobolRsg : dimensionality "
-                   + IntegerFormatter::toString((unsigned long)(dimensionality)) +
+                   + SizeFormatter::toString(dimensionality) +
                    " exceeds the number of available "
-                   "primitive polynomials modulo two (" + 
+                   "primitive polynomials modulo two (" +
                    IntegerFormatter::toString(PPMT_MAX_DIM) +")");
 
         // initializes coefficient array of the k-th primitive polynomial
@@ -179,7 +179,7 @@ namespace QuantLib {
 
 
         // maxTabulated=32
-        Size maxTabulated = 
+        Size maxTabulated =
             sizeof(initializers)/sizeof(unsigned long *)+1;
         // dimensions from 2 (k=1) to maxTabulated (k=maxTabulated-1)
         // included are initialized from tabulated coefficients
@@ -267,7 +267,7 @@ namespace QuantLib {
                    }
                }
                outStream.close();
-           } 
+           }
         */
 
         // initialize the Sobol integer/double vectors

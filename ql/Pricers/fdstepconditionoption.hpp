@@ -38,12 +38,12 @@ namespace QuantLib {
                               Rate riskFreeRate,
                               Time residualTime,
                               double volatility,
-                              int timeSteps,
-                              int gridPoints);
+                              Size timeSteps,
+                              Size gridPoints);
         void calculate() const;
         virtual void initializeStepCondition() const = 0;
         mutable boost::shared_ptr<StandardStepCondition > stepCondition_;
-        int timeSteps_;
+        Size timeSteps_;
     };
 
 }

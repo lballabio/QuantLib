@@ -55,11 +55,11 @@ namespace QuantLib {
             for (j=0, jIt=volBegin; j<i; j++, jIt++){
                 QL_REQUIRE(QL_FABS(corr[i][j]-corr[j][i]) <= 1.0e-12,
                            "invalid correlation matrix:"
-                           "\nc[" + IntegerFormatter::toString(i) +
-                           ", "   + IntegerFormatter::toString(j) +
+                           "\nc[" + SizeFormatter::toString(i) +
+                           ", "   + SizeFormatter::toString(j) +
                            "] = " + DoubleFormatter::toString(corr[i][j]) +
-                           "\nc[" + IntegerFormatter::toString(j) +
-                           ", "   + IntegerFormatter::toString(i) +
+                           "\nc[" + SizeFormatter::toString(j) +
+                           ", "   + SizeFormatter::toString(i) +
                            "] = " + DoubleFormatter::toString(corr[j][i]));
                 covariance[i][i] = (*iIt) * (*iIt);
                 covariance[i][j] = (*iIt) * (*jIt) *
@@ -68,7 +68,7 @@ namespace QuantLib {
             }
             QL_REQUIRE(QL_FABS(corr[i][i]-1.0) <= 1.0e-12,
                        "invalid correlation matrix, diagonal element of the "
-                       + IntegerFormatter::toOrdinal(i) +
+                       + SizeFormatter::toOrdinal(i) +
                        " row is "
                        + DoubleFormatter::toString(corr[i][i]) +
                        " instead of 1.0");

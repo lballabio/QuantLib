@@ -54,8 +54,8 @@ void CovarianceTest::testSalvagingCorrelation() {
             calculated = calcCorr[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SalvagingCorrelation with spectral alg"
-                           "cor[" + IntegerFormatter::toString(i) + "]"
-                           "[" + IntegerFormatter::toString(j) + "]:\n"
+                           "cor[" + SizeFormatter::toString(i) + "]"
+                           "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated,16) + "\n"
                            "    expected:   "
@@ -112,8 +112,8 @@ void CovarianceTest::testCovariance() {
             calculated = calcCor[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SequenceStatistics "
-                           "cor[" + IntegerFormatter::toString(i) + "]"
-                           "[" + IntegerFormatter::toString(j) + "]:\n"
+                           "cor[" + SizeFormatter::toString(i) + "]"
+                           "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated,16) + "\n"
                            "    expected:   "
@@ -123,8 +123,8 @@ void CovarianceTest::testCovariance() {
             calculated = calcCov[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SequenceStatistics "
-                           "cov[" + IntegerFormatter::toString(i) + "]"
-                           "[" + IntegerFormatter::toString(j) + "]:\n"
+                           "cov[" + SizeFormatter::toString(i) + "]"
+                           "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated,16) + "\n"
                            "    expected:   "
@@ -140,8 +140,8 @@ void CovarianceTest::testCovariance() {
                    expected   = expCov[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10) {
                 BOOST_FAIL("getCovariance "
-                           "cov[" + IntegerFormatter::toString(i) + "]"
-                           "[" + IntegerFormatter::toString(j) + "]:\n"
+                           "cov[" + SizeFormatter::toString(i) + "]"
+                           "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
                            + DoubleFormatter::toString(calculated,11) + "\n"
                            "    expected:   "
