@@ -357,9 +357,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     bool monotonicityConstraint = false;
 
     // Natural spline values
-    CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> interp(
+    CubicSplineInterpolation<const double*, const double*> interp(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             Null<double>(), 0.0,
@@ -413,9 +411,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     }
 
     // Clamped spline values
-    interp = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
+    interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             0.0, Null<double>(),
@@ -470,9 +466,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // Not-a-knot spline values
-    interp = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
+    interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             Null<double>(), Null<double>(),
@@ -533,9 +527,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     monotonicityConstraint = true;
 
     // MC natural spline values
-    interp = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
+    interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             Null<double>(), 0.0,
@@ -565,11 +557,9 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     }
 
 
-    
+
     // MC clamped spline values
-    interp = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
+    interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             0.0, Null<double>(),
@@ -624,9 +614,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC not-a-knot spline values
-    interp = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
+    interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
             Null<double>(), Null<double>(),
@@ -666,9 +654,7 @@ void InterpolationTest::testSplineOnGenericValues() {
     std::vector<double> x35(3);
 
     // Natural spline
-    CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator> interp(
+    CubicSplineInterpolation<const double*, const double*> interp(
             generic_x, generic_x+n,
             generic_y,
             Null<double>(), generic_natural_y2[0],
@@ -745,9 +731,7 @@ void InterpolationTest::testSplineOnGenericValues() {
 
     // Clamped spline
     double y1a = 0.0, y1b = 0.0;
-    interp = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
+    interp = CubicSplineInterpolation<const double*, const double*>(
             generic_x, generic_x+n,
             generic_y,
             y1a, Null<double>(),
@@ -791,9 +775,7 @@ void InterpolationTest::testSplineOnGenericValues() {
 
 
     // Not-a-knot spline
-    interp = CubicSplineInterpolation<
-        std::vector<double>::const_iterator,
-        std::vector<double>::const_iterator>(
+    interp = CubicSplineInterpolation<const double*, const double*>(
             generic_x, generic_x+n,
             generic_y,
             Null<double>(), Null<double>(),
@@ -977,11 +959,11 @@ CppUnit::Test* InterpolationTest::suite() {
                    ("Testing spline interpolation on RPN15A data set",
                     &InterpolationTest::testSplineOnRPN15AValues));
     tests->addTest(new CppUnit::TestCaller<InterpolationTest>
-                   ("Testing spline interpolation on a gaussian data set",
+                   ("Testing spline interpolation on a Gaussian data set",
                     &InterpolationTest::testSplineOnGaussianValues));
 /*
     tests->addTest(new CppUnit::TestCaller<InterpolationTest>
-                   ("Testing spline interpolation error on gaussian data sets",
+                   ("Testing spline interpolation error on Gaussian data sets",
                     &InterpolationTest::testSplineErrorOnGaussianValues));
 */
     return tests;
