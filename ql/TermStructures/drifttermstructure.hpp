@@ -46,7 +46,7 @@ namespace QuantLib {
               DriftTermStructure(
                   const RelinkableHandle<TermStructure>& riskFreeTS,
                   const RelinkableHandle<TermStructure>& dividendTS,
-                  const RelinkableHandle<BlackVolTermStructure>& underlyingLocalVolTS);
+                  const RelinkableHandle<BlackVolTermStructure>& blackVolTS);
             //! \name TermStructure interface
             //@{
             DayCounter dayCounter() const;
