@@ -24,6 +24,7 @@
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
+#include <ql/Math/cubicspline.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <iomanip>
 
@@ -144,11 +145,12 @@ namespace {
 namespace {
 
     template <class T, class I>
-    void testCurveConsistency(const T&, const I&) {
+    void testCurveConsistency(const T&, const I& interpolator) {
 
         termStructure = boost::shared_ptr<YieldTermStructure>(
                           new PiecewiseYieldCurve<T,I>(settlement,instruments,
-                                                       Actual360()));
+                                                       Actual360(), 1.0e-12,
+                                                       interpolator));
 
         Handle<YieldTermStructure> euriborHandle;
         euriborHandle.linkTo(termStructure);
@@ -248,6 +250,21 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     QL_TEST_TEARDOWN
 }
 
+void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
+    BOOST_MESSAGE(
+        "Testing consistency of piecewise-spline zero-yield curve...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    testCurveConsistency(ZeroYield(),
+                         Cubic(CubicSpline::SecondDerivative,0.0,
+                               CubicSpline::SecondDerivative,0.0,
+                               true));
+
+    QL_TEST_TEARDOWN
+}
+
 void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
@@ -268,6 +285,21 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
     QL_TEST_SETUP
 
     testCurveConsistency(ForwardRate(), BackwardFlat());
+
+    QL_TEST_TEARDOWN
+}
+
+void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
+    BOOST_MESSAGE(
+        "Testing consistency of piecewise-spline forward-rate curve...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    testCurveConsistency(ForwardRate(),
+                         Cubic(CubicSpline::SecondDerivative,0.0,
+                               CubicSpline::SecondDerivative,0.0,
+                               true));
 
     QL_TEST_TEARDOWN
 }
@@ -313,9 +345,14 @@ test_suite* PiecewiseYieldCurveTest::suite() {
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearZeroConsistency));
     suite->add(BOOST_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testSplineZeroConsistency));
+    suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearForwardConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testFlatForwardConsistency));
+    // alas, doesn't bootstrap
+    // suite->add(BOOST_TEST_CASE(
+    //              &PiecewiseYieldCurveTest::testSplineForwardConsistency));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     return suite;
 }

@@ -111,6 +111,7 @@ namespace QuantLib {
         }
     };
 
+
     //! Forward-curve traits
     struct ForwardRate {
         // interpolated curve type

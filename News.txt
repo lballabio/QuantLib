@@ -35,7 +35,5 @@ Changes since release 0.3.8:
   PiecewiseYieldCurve<ZeroYield,Linear>
   PiecewiseYieldCurve<ForwardRate,Linear>
 
-  Global interpolations such as cubic splines are not yet supported.
-
 - Added Bratislava and Prague calendars.
 

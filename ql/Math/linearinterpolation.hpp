@@ -84,7 +84,7 @@ namespace QuantLib {
         }
     };
 
-    //! Linear interpolation factory
+    //! Linear interpolation factory and traits
     class Linear {
       public:
         template <class I1, class I2>
@@ -92,6 +92,7 @@ namespace QuantLib {
                                   const I2& yBegin) const {
             return LinearInterpolation(xBegin,xEnd,yBegin);
         }
+        enum { global = 0 };
     };
 
 }

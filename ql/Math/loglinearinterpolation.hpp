@@ -24,6 +24,7 @@
 #define quantlib_loglinear_interpolation_hpp
 
 #include <ql/Math/linearinterpolation.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -42,7 +43,8 @@ namespace QuantLib {
             void calculate() {
                 for (Size i=0; i<logY_.size(); i++) {
                     QL_REQUIRE(this->yBegin_[i]>0.0,
-                               "negative values not allowed");
+                               "negative or null value (" << this->yBegin_[i]
+                               << ") at " << io::ordinal(i) << " position");
                     logY_[i] = std::log(this->yBegin_[i]);
                 }
                 linearInterpolation_ = LinearInterpolation(this->xBegin_,
@@ -84,7 +86,7 @@ namespace QuantLib {
         }
     };
 
-    //! log-linear interpolation factory
+    //! log-linear interpolation factory and traits
     class LogLinear {
       public:
         template <class I1, class I2>
@@ -92,6 +94,7 @@ namespace QuantLib {
                                   const I2& yBegin) const {
             return LogLinearInterpolation(xBegin,xEnd,yBegin);
         }
+        enum { global = 0 };
     };
 
 }

@@ -163,7 +163,7 @@ namespace QuantLib {
                       true) {}
     };
 
-    //! %cubic-spline interpolation factory
+    //! %cubic-spline interpolation factory and traits
     class Cubic {
       public:
         Cubic(CubicSpline::BoundaryCondition leftCondition
@@ -184,6 +184,7 @@ namespace QuantLib {
                                rightCondition_,rightValue_,
                                monotone_);
         }
+        enum { global = 1 };
       private:
         CubicSpline::BoundaryCondition leftCondition_;
         Real leftValue_;

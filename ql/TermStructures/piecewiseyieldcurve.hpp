@@ -25,6 +25,7 @@
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/TermStructures/bootstraptraits.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
@@ -42,9 +43,6 @@ namespace QuantLib {
 
         \warning The bootstrapping algorithm will raise an exception if
                  any two instruments have the same maturity date.
-
-        \warning This class doesn't yet work with interpolations (such
-                 as cubic splines) which need a boostrapping cycle.
 
         \ingroup yieldtermstructures
 
@@ -207,29 +205,74 @@ namespace QuantLib {
 
     template <class C, class I>
     void PiecewiseYieldCurve<C,I>::performCalculations() const {
-        // values at reference date
-        dates_ = std::vector<Date>(1, referenceDate());
-        times_ = std::vector<Time>(1, 0.0);
-        data_ = std::vector<Real>(1, C::initialValue());
-
+        // setup vectors
+        Size n = instruments_.size();
+        dates_ = std::vector<Date>(n+1);
+        times_ = std::vector<Time>(n+1);
+        data_ = std::vector<Real>(n+1);
+        dates_[0] = referenceDate();
+        times_[0] = 0.0;
+        data_[0] = C::initialValue();
+        for (Size i=0; i<n; i++) {
+            dates_[i+1] = instruments_[i]->latestDate();
+            times_[i+1] = timeFromReference(dates_[i+1]);
+            data_[i+1] = data_[i];
+        }
         Brent solver;
+        Size maxIterations = 25;
         // bootstrapping loop
-        for (Size i=1; i<instruments_.size()+1; i++) {
-            boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
-            // don't try this at home!
-            instrument->setTermStructure(
+        for (Size iteration = 0; ; iteration++) {
+            std::vector<Real> previousData = data_;
+            Size i;
+            for (i=1; i<n+1; i++) {
+                if (iteration == 0) {
+                    // extend interpolation a point at a time
+                    if (I::global && i < 2) {
+                        // not enough points for splines
+                        interpolation_ = Linear().interpolate(
+                                           times_.begin(), times_.begin()+i+1,
+                                           data_.begin());
+                    } else {
+                        interpolation_ = interpolator_.interpolate(
+                                           times_.begin(), times_.begin()+i+1,
+                                           data_.begin());
+                    }
+                }
+                boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
+                // don't try this at home!
+                instrument->setTermStructure(
                                  const_cast<PiecewiseYieldCurve<C,I>*>(this));
-            Real guess;
-            if (i > 1) {    // we can extrapolate
-                guess = C::guess(this,instrument->latestDate());
-            } else {
-                guess = C::initialGuess();
+                Real guess;
+                if (iteration > 0) {
+                    // use perturbed value from previous loop
+                    guess = 0.99*data_[i];
+                } else if (i > 1) {
+                    // extrapolate
+                    guess = C::guess(this,dates_[i]);
+                } else {
+                    guess = C::initialGuess();
+                }
+                // bracket
+                Real min = C::minValueAfter(i, data_);
+                Real max = C::maxValueAfter(i, data_);
+                if (guess <= min || guess >= max)
+                    guess = (min+max)/2.0;
+                data_[i] = solver.solve(ObjectiveFunction(this,instrument,i),
+                                        accuracy_,guess,min,max);
             }
-            // bracket
-            Real min = C::minValueAfter(i, data_);
-            Real max = C::maxValueAfter(i, data_);
-            solver.solve(ObjectiveFunction(this,instrument,i),
-                         accuracy_,guess,min,max);
+            // check exit conditions
+            if (!I::global)
+                break;   // no need for convergence loop
+
+            Real improvement = 0.0;
+            for (i=1; i<n+1; i++)
+                improvement += std::abs(data_[i]-previousData[i]);
+            if (improvement <= n*accuracy_)  // convergence reached
+                break;
+
+            if (iteration > maxIterations)
+                QL_FAIL("convergence not reached after "
+                        << maxIterations << " iterations");
         }
     }
 
@@ -238,18 +281,7 @@ namespace QuantLib {
                               const PiecewiseYieldCurve<C,I>* curve,
                               const boost::shared_ptr<RateHelper>& rateHelper,
                               Size segment)
-    : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
-        // extend curve to next point
-        curve_->dates_.push_back(rateHelper_->latestDate());
-        curve_->times_.push_back(
-                            curve_->timeFromReference(curve_->dates_.back()));
-        // add dummy value for next point - will be reset by operator()
-        curve_->data_.push_back(curve_->data_.back());
-        curve_->interpolation_ =
-            curve_->interpolator_.interpolate(curve_->times_.begin(),
-                                              curve_->times_.end(),
-                                              curve_->data_.begin());
-    }
+    : curve_(curve), rateHelper_(rateHelper), segment_(segment) {}
 
     template <class C, class I>
     Real PiecewiseYieldCurve<C,I>::ObjectiveFunction::operator()(Real guess)

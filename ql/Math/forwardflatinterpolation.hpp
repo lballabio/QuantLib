@@ -81,7 +81,7 @@ namespace QuantLib {
         }
     };
 
-    //! Forward-flat interpolation factory
+    //! Forward-flat interpolation factory and traits
     class ForwardFlat {
       public:
         template <class I1, class I2>
@@ -89,6 +89,7 @@ namespace QuantLib {
                                   const I2& yBegin) const {
             return ForwardFlatInterpolation(xBegin,xEnd,yBegin);
         }
+        enum { global = 0 };
     };
 
 }
