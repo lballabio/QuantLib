@@ -22,6 +22,7 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using QuantLib::RandomNumbers::SobolRsg;
 
 CppUnit::Test* LDSTest::suite() {
     CppUnit::TestSuite* tests =
@@ -29,6 +30,9 @@ CppUnit::Test* LDSTest::suite() {
     tests->addTest(new CppUnit::TestCaller<LDSTest>
                    ("Testing primitive polynomials modulo two",
                     &LDSTest::testPolynomialsModuloTwo));
+    tests->addTest(new CppUnit::TestCaller<LDSTest>
+                   ("Extracting Sobol Sequences",
+                    &LDSTest::testSobol));
     return tests;
 }
 
@@ -61,6 +65,30 @@ void LDSTest::testPolynomialsModuloTwo() {
         ++j; // Increase index of polynomial in degree i+1
         ++n; // Increase overall polynomial counter
     }
+
+}
+
+void LDSTest::testSobol() {
+
+    // dummy test for the time being
+
+    Array point;
+    Size dimensionality = PPMT_MAX_DIM;
+    unsigned long seed = 123456;
+    SobolRsg rsg(dimensionality, seed);
+    unsigned long points = 100, i;
+    for (i=0; i<points; i++) {
+        point = rsg.nextSequence().value;
+    }
+
+    dimensionality = 100;
+    seed = 123456;
+    rsg = SobolRsg(dimensionality, seed);
+    points = 10000;
+    for (i=0; i<points; i++) {
+        point = rsg.nextSequence().value;
+    }
+
 
 }
 

@@ -49,6 +49,7 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(LDSTest::suite());
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
     runner.addTest(new CovarianceTest);
@@ -58,7 +59,6 @@ int main() {
     runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(new IntegralTest);
-    runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
     runner.addTest(new MatricesTest());
     runner.addTest(new MersenneTwisterTest());
