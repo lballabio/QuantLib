@@ -26,6 +26,10 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.])
 AC_PROG_AWK
 AC_PROG_INSTALL
 
+# Default compilation variables
+
+AC_SUBST([CXXFLAGS],[${CXXFLAGS='-g -O2 -Wall'}])
+
 # Help the compiler find external software
 
 AC_ARG_WITH([boost-include],
@@ -115,8 +119,7 @@ QL_CHECK_TEMPLATE_TYPE([iterator_traits],[double*],
                        [],[iterator])
 
 # Check for Boost components
-QL_CHECK_BOOST_DEVEL
-QL_CHECK_BOOST_UNIT_TEST
+QL_CHECK_BOOST
 
 # Check for optional features
 QL_CHECK_LONG_LONG

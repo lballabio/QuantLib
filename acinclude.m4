@@ -202,7 +202,7 @@ AC_DEFUN([QL_CHECK_GMTIME],
 ])
 
 # QL_CHECK_BOOST_DEVEL
-# -----------------------
+# --------------------
 # Check whether the Boost headers are available
 AC_DEFUN([QL_CHECK_BOOST_DEVEL],
 [AC_MSG_CHECKING([for Boost development files])
@@ -218,6 +218,26 @@ AC_DEFUN([QL_CHECK_BOOST_DEVEL],
     ])
 ])
 
+# QL_CHECK_BOOST_VERSION
+# ----------------------
+# Check whether the Boost installation is up to date
+AC_DEFUN([QL_CHECK_BOOST_VERSION],
+[AC_MSG_CHECKING([Boost version])
+ AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
+ AC_TRY_COMPILE(
+    [@%:@include <boost/version.hpp>],
+    [@%:@if BOOST_VERSION < 103100
+     @%:@error too old
+     @%:@endif],
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no])
+     AC_MSG_ERROR([outdated Boost installation])
+    ])
+])
+
+# QL_CHECK_BOOST_UNIT_TEST
+# ------------------------
+# Check whether the Boost unit-test framework is available
 AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
 [AC_MSG_CHECKING([for Boost unit-test framework])
  AC_REQUIRE([AC_PROG_CC])
@@ -247,3 +267,13 @@ AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
      AC_SUBST([BOOST_UNIT_TEST_LIB],[$boost_lib])
  fi
 ])
+
+# QL_CHECK_BOOST
+# ------------------------
+# Boost-related tests
+AC_DEFUN([QL_CHECK_BOOST],
+[AC_REQUIRE([QL_CHECK_BOOST_DEVEL])
+ AC_REQUIRE([QL_CHECK_BOOST_VERSION])
+ AC_REQUIRE([QL_CHECK_BOOST_UNIT_TEST])
+])
+
