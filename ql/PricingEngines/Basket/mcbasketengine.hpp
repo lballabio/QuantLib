@@ -24,7 +24,6 @@
 
 #include <ql/diffusionprocess.hpp>
 #include <ql/MonteCarlo/europeanmultipathpricer.hpp>
-#include <ql/Instruments/basketoption.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
 
 namespace QuantLib {

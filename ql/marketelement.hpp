@@ -23,7 +23,6 @@
 #define quantlib_market_element_hpp
 
 #include <ql/relinkablehandle.hpp>
-#include <ql/errors.hpp>
 
 namespace QuantLib {
 

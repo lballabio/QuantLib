@@ -23,7 +23,6 @@
 #ifndef quantlib_data_formatters_h
 #define quantlib_data_formatters_h
 
-#include <ql/date.hpp>
 #include <ql/currency.hpp>
 #include <ql/option.hpp>
 #include <ql/Math/matrix.hpp>

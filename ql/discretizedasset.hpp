@@ -23,7 +23,6 @@
 #define quantlib_discretized_asset_h
 
 #include <ql/numericalmethod.hpp>
-#include <ql/exercise.hpp>
 #include <ql/Math/comparison.hpp>
 
 namespace QuantLib {

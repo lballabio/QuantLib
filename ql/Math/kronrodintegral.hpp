@@ -23,7 +23,6 @@
 #ifndef quantlib_kronrod_integral_h
 #define quantlib_kronrod_integral_h
 
-#include <ql/types.hpp>
 #include <ql/errors.hpp>
 #include <ql/dataformatters.hpp>
 

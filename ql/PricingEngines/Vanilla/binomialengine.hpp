@@ -23,7 +23,6 @@
 #ifndef quantlib_binomial_engine_hpp
 #define quantlib_binomial_engine_hpp
 
-#include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Lattices/binomialtree.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>

@@ -22,7 +22,6 @@
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h
 
-#include <ql/exercise.hpp>
 #include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {

@@ -24,7 +24,6 @@
 #define quantlib_montecarlo_path_generator_h
 
 #include <ql/diffusionprocess.hpp>
-#include <ql/MonteCarlo/path.hpp>
 #include <ql/MonteCarlo/brownianbridge.hpp>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 

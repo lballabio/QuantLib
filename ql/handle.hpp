@@ -22,7 +22,8 @@
 #ifndef quantlib_handle_h
 #define quantlib_handle_h
 
-#include <ql/qldefines.hpp>
+#include <ql/errors.hpp>
+#include <typeinfo>
 
 #if defined(HAVE_BOOST)
 
@@ -44,8 +45,6 @@ namespace QuantLib {
 
 #else
 
-#include <ql/errors.hpp>
-#include <typeinfo>
 
 namespace QuantLib {
 

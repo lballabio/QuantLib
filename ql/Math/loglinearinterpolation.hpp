@@ -22,7 +22,6 @@
 #ifndef quantlib_loglinear_interpolation_h
 #define quantlib_loglinear_interpolation_h
 
-#include <ql/types.hpp>
 #include <ql/handle.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <vector>

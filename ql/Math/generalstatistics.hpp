@@ -25,7 +25,6 @@
 
 #include <ql/null.hpp>
 #include <ql/dataformatters.hpp>
-#include <vector>
 
 namespace QuantLib {
 
