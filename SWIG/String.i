@@ -75,7 +75,6 @@
 		int size = PyTuple_Size($source);
 		$target = new std::vector<std::string>(size);
 		for (int i=0; i<size; i++) {
-			std::string* d;
 			PyObject* o = PyTuple_GetItem($source,i);
 			if (PyString_Check(o)) {
 				(*$target)[i] = PyString_AsString(o);
@@ -89,7 +88,6 @@
 		int size = PyList_Size($source);
 		$target = new std::vector<std::string>(size);
 		for (int i=0; i<size; i++) {
-			std::string* d;
 			PyObject* o = PyList_GetItem($source,i);
 			if (PyString_Check(o)) {
 				(*$target)[i] = PyString_AsString(o);
