@@ -87,6 +87,7 @@ class DividendAmericanOption{
 	double value() const;
 	double delta() const;
 	double gamma() const;
+	double theta() const;	
 	double vega() const;
 	double rho() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
@@ -100,7 +101,9 @@ class DividendEuropeanOption{
 	double value() const;
 	double delta() const;
 	double gamma() const;
+	double theta() const;
 	double vega() const;
+	double rho() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
 };
 
