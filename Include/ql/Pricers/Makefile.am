@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.6  2001/08/07 07:49:45  nando
+# forgot to add the singleassetoption.* files
+#
 # Revision 1.5  2001/08/07 07:10:10  nando
 # trying to understand what is wrong ....
 #
@@ -14,7 +17,7 @@
 #
 
 includedir = $(prefix)/include/ql/Pricers
-include_HEADERS =
+include_HEADERS = \
     americancondition.hpp \
     averagepriceasian.hpp \
     averagestrikeasian.hpp \
@@ -33,7 +36,7 @@ include_HEADERS =
     finitedifferenceeuropean.hpp \
     geometricasianoption.hpp \
     himalaya.hpp \
-    mceuropeanpricer.hpp  \
+    mceuropeanpricer.hpp \
     multiperiodoption.hpp \
     plainbasketoption.hpp \
     pagodaoption.hpp \
