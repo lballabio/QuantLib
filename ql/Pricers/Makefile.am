@@ -47,8 +47,8 @@ EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
     analyticalcapfloor.cpp \
+    barrieroptionpricer.cpp \
     binaryoptionpricer.cpp \
-    binaryoption.cpp \
     blackcapfloor.cpp \
     blackswaption.cpp \
     capfloorpricer.cpp \
