@@ -1,31 +1,35 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file averagestrikeasian.cpp
-    
+
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.6  2001/04/04 13:32:54  enri
     tons of typos fixed
 
@@ -72,9 +76,9 @@ namespace QuantLib {
         using MonteCarlo::AverageStrikeAsianPathPricer;
         using MonteCarlo::GeometricAsianPathPricer;
 
-        AverageStrikeAsian::AverageStrikeAsian(Option::Type type, 
-          double underlying, double strike, Rate dividendYield, 
-          Rate riskFreeRate, double residualTime, double volatility, 
+        AverageStrikeAsian::AverageStrikeAsian(Option::Type type,
+          double underlying, double strike, Rate dividendYield,
+          Rate riskFreeRate, double residualTime, double volatility,
           int timesteps, long samples, long seed)
         : McPricer(samples, seed) {
             //! Initialize the path generator
@@ -85,8 +89,8 @@ namespace QuantLib {
 
             Handle<StandardPathGenerator> pathGenerator(
                     new StandardPathGenerator(timesteps, mu, variance, seed));
-            
-            //! Initialize the pricer on the single Path 
+
+            //! Initialize the pricer on the single Path
             Handle<PathPricer> spPricer(
                 new AverageStrikeAsianPathPricer(type, underlying, strike,
                     QL_EXP(-riskFreeRate*residualTime)));
@@ -96,11 +100,11 @@ namespace QuantLib {
                     QL_EXP(-riskFreeRate*residualTime)));
 
             double controlVariatePrice = GeometricAsianOption(type, underlying,
-                strike, dividendYield, riskFreeRate, residualTime, 
-                volatility).value(); 
+                strike, dividendYield, riskFreeRate, residualTime,
+                volatility).value();
 
             Handle<PathPricer> controlVariatedPricer(
-                new ControlVariatedPathPricer(spPricer, 
+                new ControlVariatedPathPricer(spPricer,
                     controlVariateSpPricer, controlVariatePrice));
 
             //! Initialize the one-dimensional Monte Carlo

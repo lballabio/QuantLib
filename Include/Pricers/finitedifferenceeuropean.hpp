@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file finitedifferenceeuropean.hpp
@@ -26,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -62,17 +66,17 @@ namespace QuantLib {
 
         class FiniteDifferenceEuropean : public BSMNumericalOption{
           public:
-            FiniteDifferenceEuropean(Type type, 
-                 double underlying, double strike, 
-                 Rate dividendYield, Rate riskFreeRate, 
-                 Time residualTime, double volatility, 
-                 int timeSteps = 200, int gridPoints = 800);            
+            FiniteDifferenceEuropean(Type type,
+                 double underlying, double strike,
+                 Rate dividendYield, Rate riskFreeRate,
+                 Time residualTime, double volatility,
+                 int timeSteps = 200, int gridPoints = 800);
            	Array getPrices() const;
-            Handle<BSMOption> clone() const{    
+            Handle<BSMOption> clone() const{
                 return Handle<BSMOption>(new FiniteDifferenceEuropean(*this));
             }
           protected:
-            void calculate() const;     
+            void calculate() const;
           private:
             int timeSteps_;
             mutable Array euroPrices_;
@@ -82,7 +86,7 @@ namespace QuantLib {
             value();
             return euroPrices_;
         }
-        
+
     }
 
 }

@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file pathmontecarlo.hpp
     \brief Create a sample generator from a path generator and a path pricer
@@ -26,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:22  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -59,23 +63,23 @@ namespace QuantLib {
             PG, a path generator, and
             PP, a path pricer.
         PathMonteCarlo<S, PG, PP> puts together these three elements.
-        The constructor accepts two safe references, i.e. two smart 
+        The constructor accepts two safe references, i.e. two smart
         pointers, one to a path generator and the other to a path pricer.
         The GeneralMonteCarlo is used to fill the statistic accumulator.
-        
+
         The minimal interfaces for the classes S, PG, and PP are:
-        
+
         class S{
-            void add(VALUE_TYPE sample, double weight) const;    
+            void add(VALUE_TYPE sample, double weight) const;
         };
 
         class PG{
             PATH_TYPE next() const;
             double weight() const;
         };
-    
+
         class PP{
-            VALUE_TYPE value(PATH_TYPE &) const;    
+            VALUE_TYPE value(PATH_TYPE &) const;
         };
 
     */
@@ -92,20 +96,20 @@ namespace QuantLib {
             GeneralMonteCarlo<S, OptionSample<PG,PP> > monteCarlo_;
         };
 
-        // inline definitions        
+        // inline definitions
         template<class S, class PG, class PP>
         inline PathMonteCarlo<S, PG, PP>::PathMonteCarlo(
                 Handle<PG> pathGenerator,
                 Handle<PP> pathPricer) :
-                sampleAccumulator_(), 
+                sampleAccumulator_(),
                 optionSample_(pathGenerator, pathPricer),
                 monteCarlo_(sampleAccumulator_, optionSample_),
                 isInitialized_(true){}
 
         template<class S, class PG, class PP>
         inline S PathMonteCarlo<S, PG, PP>::
-                    sampleAccumulator(long samples) const{        
-            QL_REQUIRE(isInitialized_ == true, 
+                    sampleAccumulator(long samples) const{
+            QL_REQUIRE(isInitialized_ == true,
                        "PathMonteCarlo must be initialized");
             return monteCarlo_.sampleAccumulator(samples);
         }

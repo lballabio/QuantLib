@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file couplingiterator.hpp
@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:23  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -52,8 +55,8 @@ namespace QuantLib {
     namespace Utilities {
 
         //! Iterator mapping a function to a pair of underlying sequences
-        /*! This iterator advances two underlying iterators and returns the 
-            values obtained by applying a function to the two values such 
+        /*! This iterator advances two underlying iterators and returns the
+            values obtained by applying a function to the two values such
             iterators point to.
         */
         template <class Iterator1, class Iterator2, class Function>
@@ -68,7 +71,7 @@ namespace QuantLib {
             const typename Function::result_type&>
         {
           public:
-            /* These typedefs are needed even though inherited from QL_ITERATOR 
+            /* These typedefs are needed even though inherited from QL_ITERATOR
                (see 14.6.2.3 of the standard).  */
             typedef typename Function::result_type value_type;
             typedef typename QL_ITERATOR_TRAITS<Iterator1>::difference_type
@@ -168,7 +171,7 @@ namespace QuantLib {
         make_coupling_iterator(It1 it1, It2 it2, Function f) {
             return coupling_iterator<It1,It2,Function>(it1,it2,f);
         }
-        
+
     }
 
 }

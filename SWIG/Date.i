@@ -1,29 +1,32 @@
 
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /* $Source$
    $Log$
+   Revision 1.27  2001/04/06 18:46:21  nando
+   changed Authors, Contributors, Licence and copyright header
+
    Revision 1.26  2001/03/26 12:41:23  lballabio
    Added ruby, ruby-install and ruby-test targets to makefile (and added calendars to Ruby module in the meantime)
 
@@ -149,7 +152,7 @@ using QuantLib::DateFormatter;
             $target = new Weekday(Friday);
         else if (s == "sat" || s == "saturday")
             $target = new Weekday(Saturday);
-        else 
+        else
             rb_raise(rb_eTypeError,"not a weekday");
     } else {
         rb_raise(rb_eTypeError,"not a weekday");
@@ -296,13 +299,13 @@ using QuantLib::December;
             $target = new Month(November);
         else if (s == "dec" || s == "december")
             $target = new Month(December);
-        else 
+        else
             rb_raise(rb_eTypeError,"not a month");
     } else if (TYPE($source) == T_FIXNUM) {
         int i = NUM2INT($source);
         if (i>=1 && i<=12)
             $target = new Month(Month(i));
-        else 
+        else
             rb_raise(rb_eTypeError,"not a month");
     } else {
         rb_raise(rb_eTypeError,"not a month");
@@ -396,7 +399,7 @@ using QuantLib::Years;
             $target = new TimeUnit(Months);
         else if (s == "y" || s == "year" || s == "years")
             $target = new TimeUnit(Years);
-        else 
+        else
             rb_raise(rb_eTypeError,"not a time unit");
     } else {
         rb_raise(rb_eTypeError,"not a time unit");
@@ -477,7 +480,7 @@ class Date {
         return DateFormatter::toString(*self);
     }
     #endif
-    
+
     #if defined(SWIGPYTHON)
     Date __iadd__(int days) {
         return self->plusDays(days);
@@ -489,7 +492,7 @@ class Date {
         return (*self == Date() ? 0 : 1);
     }
     #endif
-    
+
     #if defined(SWIGRUBY)
     Date succ() {
         return self->plusDays(1);
@@ -499,7 +502,7 @@ class Date {
 
 // typemap None to null Date
 
-%typemap(python,in) Date (Date temp), Date * (Date temp), 
+%typemap(python,in) Date (Date temp), Date * (Date temp),
   const Date & (Date temp), Date & (Date temp) {
     Date* x;
     if ($source == Py_None) {
@@ -608,15 +611,15 @@ class DateVector {
 
     #endif
 
-}; 
+};
 #endif
 
-%typemap(python,in) DateVector (DateVector temp), 
-  DateVector * (DateVector temp), const DateVector & (DateVector temp), 
+%typemap(python,in) DateVector (DateVector temp),
+  DateVector * (DateVector temp), const DateVector & (DateVector temp),
   DateVector & (DateVector temp) {
     DateVector* v;
     if (PyTuple_Check($source) || PyList_Check($source)) {
-        int size = (PyTuple_Check($source) ? 
+        int size = (PyTuple_Check($source) ?
             PyTuple_Size($source) :
             PyList_Size($source));
         temp = DateVector(size);

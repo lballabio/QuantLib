@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,56 +16,23 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.3  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file riskstatistics.hpp
     \brief Normal distribution risk analysis tool: VAR, (Average) Shortfall
-
-    $Source$
-    $Log$
-    Revision 1.2  2001/04/04 12:13:22  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.4  2001/03/05 10:42:19  nando
-    Expected Shortfall added to classes HVarTool and HRiskStatistics.
-    Expected Shortfall included in python test.
-
-    Revision 1.3  2001/02/21 13:16:20  lballabio
-    Removed unneeded default constructor
-
-    Revision 1.2  2001/02/20 13:58:59  nando
-    added class VarTool.
-    RiskStatistics was derived from Statistics:
-    now RiskStatistics includes VarTool and Statistics.
-    VarTool is not based on Statistics, but requires
-    mean and standardDeviation as input.
-
-    Revision 1.1  2001/01/19 09:33:57  nando
-    RiskTool is now RiskStatistics everywhere
-
-    Revision 1.4  2001/01/16 11:30:08  nando
-    restoring riskstatistics.h
-
-    Revision 1.2  2001/01/15 12:41:14  aleppo
-    bug fixed: shortfall(s) were not normalized
-
-    Revision 1.1  2001/01/12 17:30:29  nando
-    added RiskStatistics.
-    It provides VAR, shortfall, average shortfall methods.
-    It still needs test
-
 */
 
 #ifndef quantlib_riskstatistics_h
@@ -84,7 +50,7 @@ namespace QuantLib {
 
     //! Risk analysis tool
     /*! It can accumulate a set of data and return risk quantities
-        as Value-At-Risk, Expected Shortfall, 
+        as Value-At-Risk, Expected Shortfall,
         Shortfall, Average Shortfall, plus statistic
         quantitities as mean, variance, std. deviation, skewness, kurtosis.
     */

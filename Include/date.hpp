@@ -1,49 +1,38 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.2  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file date.hpp
-    \brief date- and time-related classes, typedefs and enumerations 
-    
-    $Source$
-    $Name$
-    $Log$
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.8  2001/02/09 19:16:21  lballabio
-    removed QL_PTR_CONST macro
-
-    Revision 1.7  2001/01/05 15:58:27  lballabio
-    Fixed Doxygen documentation
-
-    Revision 1.6  2001/01/04 20:09:31  nando
-    few changes: enumerations, tab/spaces, more checks, python test, bug fixed
-
-    Revision 1.5  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-    
+    \brief date- and time-related classes, typedefs and enumerations
 */
 
 #ifndef quantlib_date_h
@@ -56,7 +45,7 @@ namespace QuantLib {
 
     //! Continuous quantity with 1-year units
     typedef double Time;
-    
+
     typedef int Day;
 
     /*! Day's serial number MOD 7;
@@ -84,14 +73,14 @@ namespace QuantLib {
                  December  = 12 };
 
     typedef int Year;
-    
+
     //! Units used to describe time periods
     enum TimeUnit { Days   = 0,
                     Weeks  = 1,
                     Months = 2,
                     Years  = 3 };
-    
-    
+
+
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
     operators which implement a limited date algebra (increasing and decreasing
@@ -108,7 +97,7 @@ namespace QuantLib {
         //! More traditional constructor.
         Date(Day d, Month m, Year y);
         //@}
-        
+
         //! \name inspectors
         //@{
         Weekday weekday() const;
@@ -119,7 +108,7 @@ namespace QuantLib {
         Year year() const;
         int serialNumber() const;
         //@}
-        
+
         //! \name date algebra
         //@{
         //! increments date in place
@@ -139,7 +128,7 @@ namespace QuantLib {
         //! returns a new decremented date
         Date operator-(int days) const;
         //@}
-        
+
         //! \name other methods to increment/decrement dates
         //@{
         Date plusDays(int days) const;
@@ -148,7 +137,7 @@ namespace QuantLib {
         Date plusYears(int years) const;
         Date plus(int units, TimeUnit) const;
         //@}
-        
+
         //! \name static methods
         //@{
         static bool isLeap(Year y);
@@ -170,12 +159,12 @@ namespace QuantLib {
         static const Day* monthLength;
         static const Day* monthLeapLength;
     };
-    
+
     /*! \relates Date
         \brief Difference in days between dates
     */
     int operator-(const Date&, const Date&);
-    
+
     /*! \relates Date */
     bool operator==(const Date&, const Date&);
     /*! \relates Date */

@@ -1,30 +1,32 @@
 """
-/*
- * Copyright (C) 2000-2001 QuantLib Group
- * 
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
- *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
-*/
+ Copyright (C) 2000-2001 QuantLib Group
+
+ This file is part of QuantLib.
+ QuantLib is a C++ open source library for financial quantitative
+ analysts and developers --- http://quantlib.sourceforge.net/
+
+ QuantLib is free software and you are allowed to use, copy, modify, merge,
+ publish, distribute, and/or sell copies of it under the conditions stated
+ in the QuantLib License.
+
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+
+ You should have received a copy of the license along with this file;
+ if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 11:08:11  lballabio
     Python tests implemented on top of PyUnit
 
@@ -63,7 +65,7 @@ class BarrierOptionTest(unittest.TestCase):
         iv.append(("UpOut", "Call",  90, 105, (2.6789, 2.6341)))
         iv.append(("UpOut", "Call", 100, 105, (2.3580, 2.4389)))
         iv.append(("UpOut", "Call", 110, 105, (2.3453, 2.4315)))
-        
+
         iv.append(("DownIn", "Call",  90,  95, (7.7627, 9.0093)))
         iv.append(("DownIn", "Call", 100,  95, (4.0109, 5.1370)))
         iv.append(("DownIn", "Call", 110,  95, (2.0576, 2.8517)))
@@ -73,7 +75,7 @@ class BarrierOptionTest(unittest.TestCase):
         iv.append(("UpIn", "Call",  90, 105, (14.1112,15.2098)))
         iv.append(("UpIn", "Call", 100, 105, (8.4482, 9.7278)))
         iv.append(("UpIn", "Call", 110, 105, (4.5910, 5.8350)))
-        
+
         iv.append(("DownOut", "Put",  90,  95, (2.2798, 2.4170)))
         iv.append(("DownOut", "Put", 100,  95, (2.2947, 2.4258)))
         iv.append(("DownOut", "Put", 110,  95, (2.6252, 2.6246)))
@@ -83,7 +85,7 @@ class BarrierOptionTest(unittest.TestCase):
         iv.append(("UpOut", "Put",  90, 105, (3.7760, 4.2293)))
         iv.append(("UpOut", "Put", 100, 105, (5.4932, 5.8032)))
         iv.append(("UpOut", "Put", 110, 105, (7.5187, 7.5649)))
-        
+
         iv.append(("DownIn", "Put",  90,  95, (2.9586, 3.8769)))
         iv.append(("DownIn", "Put", 100,  95, (6.5677, 7.7989)))
         iv.append(("DownIn", "Put", 110,  95, (11.9752,13.3078)))

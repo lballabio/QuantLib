@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- *  http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file barrieroption.cpp
@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.7  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.6  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -76,7 +79,7 @@ namespace QuantLib {
                 "BarrierOption: rebate cannot be neagative");
 
         }
-        
+
         void BarrierOption::initialize() const {
             sigmaSqrtT_ = volatility_ * QL_SQRT(residualTime_);
 
@@ -84,7 +87,7 @@ namespace QuantLib {
                                 (volatility_ * volatility_) - 0.5;
             muSigma_ = (1 + mu_) * sigmaSqrtT_;
             dividendDiscount_ = QL_EXP(-dividendYield_*residualTime_);
-            riskFreeDiscount_ = QL_EXP(-riskFreeRate_*residualTime_);            
+            riskFreeDiscount_ = QL_EXP(-riskFreeRate_*residualTime_);
             greeksCalculated_ = false;
         }
 
@@ -155,7 +158,7 @@ namespace QuantLib {
         }
 
         void BarrierOption::calculate() const{
-        
+
             double underPlus = underlying_ * (1 + 0.0001);
             double underMinu = underlying_ * (1 - 0.0001);
             double timePlus = residualTime_ * (1 + 0.0001);
@@ -182,23 +185,23 @@ namespace QuantLib {
                                          (underPlus-underMinu);
             theta_ = (barrierTimePlus.value() - value())/
                             (timePlus - residualTime_);
-            greeksCalculated_ = true;                            
+            greeksCalculated_ = true;
         }
 
         double BarrierOption::delta() const {
-            if (!greeksCalculated_)  
+            if (!greeksCalculated_)
                 calculate();
             return delta_;
         }
-        
+
         double BarrierOption::gamma() const {
-            if(!greeksCalculated_) 
+            if(!greeksCalculated_)
                 calculate();
             return gamma_;
         }
-        
+
         double BarrierOption::theta() const {
-            if(!greeksCalculated_) 
+            if(!greeksCalculated_)
                 calculate();
             return theta_;
         }

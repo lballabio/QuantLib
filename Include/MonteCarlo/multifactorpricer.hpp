@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file multifactorpricer.hpp
@@ -26,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:22  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -46,10 +50,10 @@ namespace QuantLib {
 
     namespace Pricers {
         //! Base class for multi-factor Monte Carlo pricers
-        /*! MultiFactorPricer is the base class for the Monte Carlo pricers 
-            depending from more than one factor. Eventually it might be linked 
-            to the general tree of pricers, in order to have available tools 
-            like impliedVolaitlity. Also, it will, eventually, implement the 
+        /*! MultiFactorPricer is the base class for the Monte Carlo pricers
+            depending from more than one factor. Eventually it might be linked
+            to the general tree of pricers, in order to have available tools
+            like impliedVolaitlity. Also, it will, eventually, implement the
             calculation of greeks in montecarlo methods.
             Deriving a class from MultiFactorPricer gives an easy way to write
             a multi-factor Monte Carlo Pricer.

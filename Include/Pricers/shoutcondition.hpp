@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- *   http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file shoutcondition.hpp
@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -60,7 +63,7 @@
 
 namespace QuantLib {
     namespace Pricers {
-        class ShoutCondition : 
+        class ShoutCondition :
             public FiniteDifferences::StandardStepCondition {
         public:
             ShoutCondition(const Array& initialPrices, Time resTime,
@@ -73,9 +76,9 @@ namespace QuantLib {
         };
 
         inline ShoutCondition::ShoutCondition(
-            const Array& initialPrices, Time resTime, Rate rate) 
+            const Array& initialPrices, Time resTime, Rate rate)
             : initialPrices_(initialPrices), resTime_(resTime), rate_(rate) {}
-            
+
         inline void ShoutCondition::applyTo(Array& a, Time t) const {
             for (int i = 0; i < a.size(); i++)
                 a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) * initialPrices_[i] );

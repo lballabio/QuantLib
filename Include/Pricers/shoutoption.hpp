@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,8 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file shoutoption.hpp
@@ -26,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -65,36 +69,36 @@
 #include "shoutcondition.hpp"
 
 namespace QuantLib {
-    
+
     namespace Pricers {
-        
+
         class ShoutOption : public StepConditionOption {
         public:
             // constructor
-            ShoutOption(Type type, double underlying, double strike, 
-                           Rate dividendYield, Rate riskFreeRate, 
-                           Time residualTime, double volatility, 
+            ShoutOption(Type type, double underlying, double strike,
+                           Rate dividendYield, Rate riskFreeRate,
+                           Time residualTime, double volatility,
                            int timeSteps, int gridPoints);
                 void initializeStepCondition() const;
 
             // This method must be implemented to imply volatilities
-            Handle<BSMOption> clone() const{    
+            Handle<BSMOption> clone() const{
                 return Handle<BSMOption>(new ShoutOption(*this));
             }
         };
 
-        inline ShoutOption::ShoutOption(Type type, double underlying, 
+        inline ShoutOption::ShoutOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility, int timeSteps,
             int gridPoints)
-        : StepConditionOption(type, underlying, strike, dividendYield, 
-                             riskFreeRate, residualTime, volatility, 
+        : StepConditionOption(type, underlying, strike, dividendYield,
+                             riskFreeRate, residualTime, volatility,
                              timeSteps, gridPoints){}
 
         inline void ShoutOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
                 new ShoutCondition(initialPrices_, residualTime_,
-                    riskFreeRate_));   
+                    riskFreeRate_));
         }
 
     }

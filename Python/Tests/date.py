@@ -1,30 +1,32 @@
 """
-/*
- * Copyright (C) 2000-2001 QuantLib Group
- * 
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
- *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
-*/
+ Copyright (C) 2000-2001 QuantLib Group
+
+ This file is part of QuantLib.
+ QuantLib is a C++ open source library for financial quantitative
+ analysts and developers --- http://quantlib.sourceforge.net/
+
+ QuantLib is free software and you are allowed to use, copy, modify, merge,
+ publish, distribute, and/or sell copies of it under the conditions stated
+ in the QuantLib License.
+
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+
+ You should have received a copy of the license along with this file;
+ if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.6  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.5  2001/04/04 11:08:11  lballabio
     Python tests implemented on top of PyUnit
 
@@ -54,23 +56,23 @@ class DateTest(unittest.TestCase):
         "Testing dates"
         mindate = QuantLib.Date_minDate().serialNumber()
         maxdate = QuantLib.Date_maxDate().serialNumber() + 1 #excluded
-        
+
         dyold  = QuantLib.DateFromSerialNumber(mindate-1).dayOfYear()
         dold   = QuantLib.DateFromSerialNumber(mindate-1).dayOfMonth()
         mold   = QuantLib.DateFromSerialNumber(mindate-1).monthNumber()
         yold   = QuantLib.DateFromSerialNumber(mindate-1).year()
         wdnold = QuantLib.DateFromSerialNumber(mindate-1).weekdayNumber()
-        
+
         for i in range(mindate,maxdate):
             t = QuantLib.DateFromSerialNumber(i)
-            
+
             # check serial number consistency
             assert t.serialNumber() == i, \
                 "inconsistent serial number:\n" + \
                 "original:      %d\n" % i + \
                 "date:          %s\n" % t + \
                 "serial number: %d\n" % t.serialNumber()
-            
+
             dy  = t.dayOfYear()
             d   = t.dayOfMonth()
             m   = t.monthNumber()
@@ -78,7 +80,7 @@ class DateTest(unittest.TestCase):
             mm  = t.month()
             wd  = t.weekday()
             wdn = t.weekdayNumber()
-            
+
             # check if skipping any date
             assert (dy==dyold+1) or \
                    (dy==1 and dyold==365 \
@@ -89,7 +91,7 @@ class DateTest(unittest.TestCase):
                    "day of year: %d\n" % dy + \
                    "previous:    %d\n" % dyold
             dyold = dy
-            
+
             # check if skipping any date
             assert (d==dold+1 and m==mold      and y==yold  ) or \
                    (d==1      and m==mold+1    and y==yold  ) or \
@@ -101,19 +103,19 @@ class DateTest(unittest.TestCase):
             dold = d
             mold = m
             yold = y
-            
+
             # check month definition
             assert (m>=1 and  m<=12), \
                 "invalid month\n" + \
                 "date: %s\n" % t + \
                 "month: %d\n" % m
-            
+
             # check day definition
             assert d >= 1, \
                "invalid day of month\n" + \
                "date: %s\n" % t + \
                "day: %d\n" % d
-            
+
             # check day definition
             assert (m==1   and d<=31) or \
                    (m==2   and d<=28) or \
@@ -132,7 +134,7 @@ class DateTest(unittest.TestCase):
                    "date: %s\n" % t + \
                    "day: %d\n" % d + \
                    "month: %s\n" % mm
-            
+
             # check weekdayNumber definition
             assert (wdn==wdnold+1 or (wdn==1 and wdnold==7)), \
                "wrong weekday number increment\n" + \
@@ -140,7 +142,7 @@ class DateTest(unittest.TestCase):
                "weekday number: %d\n" % wdn + \
                "previous:       %d\n" % wdnold
             wdnold=wdn
-            
+
             # create the same date with a different constructor
             s = QuantLib.Date(d,m,y)
             # check serial number consistency
@@ -150,7 +152,7 @@ class DateTest(unittest.TestCase):
                 "serial number: %d\n" % i + \
                 "cloned date: %s\n" % s + \
                 "serial number: %d\n" % s.serialNumber()
-            
+
             # create the same date with a different constructor
             s = QuantLib.Date(d,mm,y)
             # check serial number consistency

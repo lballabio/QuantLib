@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,39 +16,23 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.2  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file handle.hpp
     \brief Reference-counted pointer
-
-    $Source$
-    $Log$
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.10  2001/03/13 11:11:52  lballabio
-    Removed comparison
-
-    Revision 1.9  2001/03/12 17:35:09  lballabio
-    Removed global IsNull function - could have caused very vicious loops
-
-    Revision 1.8  2001/03/07 15:27:50  lballabio
-    Modified Handle to allow keeping ownership
-
-    Revision 1.7  2001/02/09 19:16:21  lballabio
-    removed QL_PTR_CONST macro
-
-    Revision 1.6  2001/01/17 14:37:54  nando
-    tabs removed
-
-    Revision 1.5  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
 */
 
 #ifndef quantlib_handle_h
@@ -65,20 +48,20 @@ namespace QuantLib {
 
     //! Reference-counted pointer
     /*! This class acts as a proxy to a pointer contained in it. Such pointer is
-        owned by the handle, i.e., the handle will be responsible for its 
+        owned by the handle, i.e., the handle will be responsible for its
         deletion, unless explicitly stated by the programmer.
         A count of the references to the contained pointer is incremented every
-        time a handle is copied, and decremented every time a handle is deleted 
-        or goes out of scope. This mechanism ensures on one hand, that the 
-        pointer will not be deallocated as long as a handle refers to it, and on 
+        time a handle is copied, and decremented every time a handle is deleted
+        or goes out of scope. This mechanism ensures on one hand, that the
+        pointer will not be deallocated as long as a handle refers to it, and on
         the other hand, that it will be deallocated when no more handles do.
 
         \note The implementation of this class was originally taken from
-        "The C++ Programming Language", 3rd ed., B.Stroustrup, Addison-Wesley, 
+        "The C++ Programming Language", 3rd ed., B.Stroustrup, Addison-Wesley,
         1997.
 
-        \warning This mechanism will broke and result in untimely deallocation 
-        of the pointer (and very possible death of your executable) if two 
+        \warning This mechanism will broke and result in untimely deallocation
+        of the pointer (and very possible death of your executable) if two
         handles are explicitly initialized with the same pointer, as in
         \code
         SomeObj* so = new SomeObj;
@@ -86,21 +69,21 @@ namespace QuantLib {
         Handle<SomeObj> h2 = h1;    // this is safe.
         Handle<SomeObj> h3(so);     // this is definitely not.
         \endcode
-        It is good practice to create the pointer and immediately pass it to the 
+        It is good practice to create the pointer and immediately pass it to the
         handle, as in
         \code
         Handle<SomeObj> h1(new SomeObj);    // this is as safe as can be.
         \endcode
-        
-        \warning When the programmer keeps the ownership of the pointer, as 
+
+        \warning When the programmer keeps the ownership of the pointer, as
         explicitly declared in
         \code
         SomeObj so;
         Handle<SomeObj> h(&so,false);
         \endcode
-        it is responsibility of the programmer to make sure that the object 
-        remain in scope as long as there are handles pointing to it. Also, the 
-        programmer must explicitly delete the object if required. 
+        it is responsibility of the programmer to make sure that the object
+        remain in scope as long as there are handles pointing to it. Also, the
+        programmer must explicitly delete the object if required.
     */
     template <class Type>
     class Handle {
@@ -110,12 +93,12 @@ namespace QuantLib {
         //! Default constructor returning a null handle.
         Handle()
         : ptr_(0), n_(new int(1)), owns_(true) {}
-        //! Constructor taking a pointer. 
-        /*! If <b>owns</b> is set to <tt>true</tt> (the default), the handle 
-            will be responsible for the deletion of the pointer. If it is set to 
-            <tt>false</tt>, the programmer must make sure that the pointed 
-            object remains in scope for the lifetime of the handle and its 
-            copies. Destruction of the object is also responsibility of the 
+        //! Constructor taking a pointer.
+        /*! If <b>owns</b> is set to <tt>true</tt> (the default), the handle
+            will be responsible for the deletion of the pointer. If it is set to
+            <tt>false</tt>, the programmer must make sure that the pointed
+            object remains in scope for the lifetime of the handle and its
+            copies. Destruction of the object is also responsibility of the
             programmer.
         */
         explicit Handle(Type* ptr, bool owns=true)
@@ -140,7 +123,7 @@ namespace QuantLib {
         //! Checks if the contained pointer is actually allocated
         bool isNull() const;
         //@}
-        
+
       private:
         Type* ptr_;
         int* n_;
@@ -151,7 +134,7 @@ namespace QuantLib {
         class HandleCopier {
           public:
             HandleCopier() {}
-            template <class Type1, class Type2> void copy(Handle<Type1>& to, 
+            template <class Type1, class Type2> void copy(Handle<Type1>& to,
               Handle<Type2> from) const {
                 if (to.ptr_ != from.ptr_) {
                     if (--(*(to.n_)) == 0) {

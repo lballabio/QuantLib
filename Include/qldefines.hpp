@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,75 +16,23 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.3  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file qldefines.hpp
     \brief Global definitions and compiler switches.
-
-    This file and the compiler-specific config.h contain a few global 
-    definitions and quite a few macros which help porting the code to different 
-    compilers (each with its own non-standard behaviors and implementations).
-
-    $Source$
-    $Name$
-    $Log$
-    Revision 1.2  2001/04/06 16:19:12  lballabio
-    Fixed Doxygen-related stuff
-
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.35  2001/02/19 14:00:07  lballabio
-    Corrected documentation
-
-    Revision 1.34  2001/02/19 12:05:03  lballabio
-    Corrected documentation
-
-    Revision 1.33  2001/02/19 11:04:40  lballabio
-    Refined a few macros
-
-    Revision 1.32  2001/02/16 15:18:23  lballabio
-    Added QL_ITERATOR_TRAITS and QL_DECLARE_TEMPLATE_SPECIFICATIONS macros
-
-    Revision 1.31  2001/02/15 17:36:13  lballabio
-    Added checks for iterator and iterator_traits
-
-    Revision 1.30  2001/02/13 09:58:23  lballabio
-    Some more work on iterators
-
-    Revision 1.29  2001/02/12 19:00:39  lballabio
-    Some more work on iterators
-
-    Revision 1.28  2001/02/12 18:34:49  lballabio
-    Some work on iterators
-
-    Revision 1.27  2001/02/09 19:24:30  lballabio
-    Reorganized to include configuration file on all platforms
-
-    Revision 1.26  2001/02/08 17:20:37  lballabio
-    Fixed wrapping
-
-    Revision 1.25  2001/02/05 14:49:11  enri
-    added some files to Makefile.am files
-
-    Revision 1.24  2001/01/17 16:33:40  nando
-    bug fix.
-    It was
-    # define QL_MIN_DOUBLE  std::numeric_limits<double>::min()
-    now it is
-    # define QL_MIN_DOUBLE  -std::numeric_limits<double>::max()
-
-    Revision 1.23  2001/01/17 14:37:55  nando
-    tabs removed
-
-    Revision 1.22  2001/01/09 18:31:18  enri
-    gnu autotools files added. QuantLib autoconfiscation in progress....
-
 */
 
 /*! \mainpage
@@ -131,7 +78,7 @@
 #define quantlib_defines_h
 
 /*! \defgroup macros Global QuantLib macros
-    Global definitions and quite a few macros which help porting the code to 
+    Global definitions and quite a few macros which help porting the code to
     different compilers
     @{
 */
@@ -163,7 +110,7 @@
     else
         throw HideousError();
     \endcode
-    On the other hand, other compilers will issue a warning if it is present 
+    On the other hand, other compilers will issue a warning if it is present
     because it cannot be reached.
     For the code to be portable this macro should be used after the block.
 */
@@ -200,21 +147,21 @@
 
 /*! \defgroup limitMacros Numeric limits
     Some compilers do not give an implementation of <limits> yet.
-    For the code to be portable these macros should be used instead of the 
-    corresponding method of std::numeric_limits or the corresponding macro 
+    For the code to be portable these macros should be used instead of the
+    corresponding method of std::numeric_limits or the corresponding macro
     defined in <limits.h>.
     @{
 */
-/*! \def QL_MIN_INT 
+/*! \def QL_MIN_INT
     Defines the value of the maximum representable negative integer value
 */
-/*! \def QL_MAX_INT 
+/*! \def QL_MAX_INT
     Defines the value of the maximum representable integer value
 */
-/*! \def QL_MIN_DOUBLE 
+/*! \def QL_MIN_DOUBLE
     Defines the value of the maximum representable negative double value
 */
-/*! \def QL_MAX_DOUBLE 
+/*! \def QL_MAX_DOUBLE
     Defines the value of the maximum representable double value
 */
 /*! \def QL_EPSILON
@@ -257,8 +204,8 @@
     the actual functions.
     @{
 */
-/*! \def QL_CLOCK 
-    \brief clock value 
+/*! \def QL_CLOCK
+    \brief clock value
 */
 #if defined HAVE_CTIME
     #include <ctime>
@@ -266,7 +213,7 @@
     #include <time.h>
 #else
     #error Neither <ctime> nor <time.h> found
-#endif 
+#endif
 /*! @} */
 
 
@@ -285,12 +232,12 @@
     #include <ctype.h>
 #else
     #error Neither <cctype> nor <ctype.h> found
-#endif 
+#endif
 /*! @} */
 
 
 /*! \defgroup algoMacros Min and max functions
-    Some compilers still do not define std::min and std::max. Moreover, Visual 
+    Some compilers still do not define std::min and std::max. Moreover, Visual
     C++ defines them but for unfathomable reasons garble their names.
     For the code to be portable these macros should be used instead of
     the actual functions.
@@ -316,8 +263,8 @@
 
 /*! \defgroup templateMacros Template capabilities
     Some compilers still do not fully implement the template syntax.
-    These macros can be used to select between alternate implementations of 
-    blocks of code, namely, one that takes advantage of template programming 
+    These macros can be used to select between alternate implementations of
+    blocks of code, namely, one that takes advantage of template programming
     techniques and a less efficient one which is compatible with all compilers.
     @{
 */
@@ -326,8 +273,8 @@
 
     They decided that a declaration and a definition of a specialized template
     function amount to a redefinition and should issue a linker error.
-    For the code to be portable, template specializations should be declared (as 
-    opposed to defined) only if this macro is defined. 
+    For the code to be portable, template specializations should be declared (as
+    opposed to defined) only if this macro is defined.
 */
 #if !defined(BROKEN_TEMPLATE_SPECIALIZATION)
     #define QL_DECLARE_TEMPLATE_SPECIALIZATIONS
@@ -362,14 +309,14 @@
 
 
 /*! \defgroup iteratorMacros Iterator support
-    Some compilers still define the iterator struct outside the std namespace, 
-    only partially implement it, or do not implement it at all. 
+    Some compilers still define the iterator struct outside the std namespace,
+    only partially implement it, or do not implement it at all.
     For the code to be portable these macros should be used instead of
     the actual functions.
     @{
 */
-/*! \def QL_ITERATOR 
-    Custom iterators should be derived from this struct for the code to be 
+/*! \def QL_ITERATOR
+    Custom iterators should be derived from this struct for the code to be
     portable.
 */
 #include <iterator>
@@ -387,12 +334,12 @@
 #endif
 
 /*! \def QL_ITERATOR_TRAITS
-    For the code to be portable this macro should be used instead of the actual 
+    For the code to be portable this macro should be used instead of the actual
     struct.
 */
 /*! \def QL_SPECIALIZE_ITERATOR_TRAITS
-    When using the %QuantLib implementation of iterator_traits, this macro might 
-    be needed to specialize QL_ITERATOR_TRAITS for a pointer to a user-defined 
+    When using the %QuantLib implementation of iterator_traits, this macro might
+    be needed to specialize QL_ITERATOR_TRAITS for a pointer to a user-defined
     type.
 */
 #if !defined(QL_ITERATOR_TRAITS)
@@ -453,11 +400,11 @@
         std::reverse_iterator< iterator >
 #endif
 
-/*! \def QL_ITERATOR 
-    Some compilers (most notably, Visual C++) still do not fully support 
+/*! \def QL_ITERATOR
+    Some compilers (most notably, Visual C++) still do not fully support
     iterators in their STL implementation.
-    This macro can be used to select between alternate implementations of 
-    blocks of code, namely, one that takes advantage of full iterator support 
+    This macro can be used to select between alternate implementations of
+    blocks of code, namely, one that takes advantage of full iterator support
     and a less efficient one which is compatible with all compilers.
 */
 #if !defined(HAVE_INCOMPLETE_ITERATOR_SUPPORT)

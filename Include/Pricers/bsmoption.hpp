@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file bsmoption.hpp
@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:23  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -96,8 +99,8 @@ namespace QuantLib {
 
         class BSMOption : public Option {
           public:
-            BSMOption(Type type, double underlying, double strike, 
-                Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+            BSMOption(Type type, double underlying, double strike,
+                Rate dividendYield, Rate riskFreeRate, Time residualTime,
                 double volatility);
             virtual ~BSMOption() {}    // just in case
             // modifiers
@@ -110,9 +113,9 @@ namespace QuantLib {
             virtual double theta() const = 0;
             virtual double vega() const;
             virtual double rho() const;
-            double impliedVolatility(double targetValue, 
+            double impliedVolatility(double targetValue,
                 double accuracy = 1e-4, int maxEvaluations = 100,
-                double minVol = QL_MIN_VOLATILITY, 
+                double minVol = QL_MIN_VOLATILITY,
                 double maxVol = QL_MAX_VOLATILITY) const ;
             virtual Handle<BSMOption> clone() const = 0;
           protected:
@@ -124,7 +127,7 @@ namespace QuantLib {
             double volatility_;
             // results
             // declared as mutable to preserve the logical
-            mutable bool hasBeenCalculated_;    
+            mutable bool hasBeenCalculated_;
             mutable double value_;
             mutable double  rho_, vega_;
             mutable bool rhoComputed_, vegaComputed_;
@@ -148,7 +151,7 @@ namespace QuantLib {
             bsm = tempBSM;
             targetPrice_ = targetPrice;
         }
-        
+
         inline double BSMOption::BSMFunction::operator()(double x) const {
             bsm -> setVolatility(x);
             return (bsm -> value() - targetPrice_);

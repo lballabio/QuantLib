@@ -1,30 +1,32 @@
 """
-/*
- * Copyright (C) 2000-2001 QuantLib Group
- * 
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
- *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
-*/
+ Copyright (C) 2000-2001 QuantLib Group
+
+ This file is part of QuantLib.
+ QuantLib is a C++ open source library for financial quantitative
+ analysts and developers --- http://quantlib.sourceforge.net/
+
+ QuantLib is free software and you are allowed to use, copy, modify, merge,
+ publish, distribute, and/or sell copies of it under the conditions stated
+ in the QuantLib License.
+
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+
+ You should have received a copy of the license along with this file;
+ if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.8  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.7  2001/04/04 11:08:11  lballabio
     Python tests implemented on top of PyUnit
 
@@ -79,26 +81,26 @@ class DistributionTest(unittest.TestCase):
         normal = QuantLib.NormalDistribution(average, sigma)
         cum = QuantLib.CumulativeNormalDistribution(average, sigma)
         invCum = QuantLib.InvCumulativeNormalDistribution(average, sigma)
-        
+
         xMin = average - 4*sigma
         xMax = average + 4*sigma
         # odd in include average
         N = 10001
         h = (xMax-xMin)/(N-1)
-        
+
         x = [0]*N		# creates a list of N elements
         for i in range(N):
             x[i] = xMin+h*i
 
-        y = map(lambda x,average=average,sigma=sigma: 
+        y = map(lambda x,average=average,sigma=sigma:
             gaussian(x,average,sigma), x)
-        
+
         yIntegrated = map(cum, x)
         yTemp = map(normal, x)
         y2Temp = map(cum.derivative, x)
         xTemp = map(invCum, yIntegrated)
         yd = map(normal.derivative, x)
-        ydTemp = map(lambda x,average=average,sigma=sigma: 
+        ydTemp = map(lambda x,average=average,sigma=sigma:
             gaussianDerivative(x,average,sigma), x)
 
         #check norm=gaussian
@@ -107,27 +109,27 @@ class DistributionTest(unittest.TestCase):
             "norm of C++ NormalDistribution minus analytic gaussian: " + \
             "%5.2e\n" % e + \
             "tolerance exceeded\n"
-        
+
         #check invCum(cum) = Identity
         e = norm(map(lambda x,y:x-y,xTemp,x),h)
         assert e <= 1.0e-3, \
             "norm of C++ invCum(cum(.)) minus identity: %5.2e\n" % e + \
             "tolerance exceeded\n"
-        
+
         #check cum.derivative=normal
         e = norm(map(lambda x,y:x-y,y2Temp,y),h)
         assert e <= 1.0e-16, \
             "norm of C++ Cumulative.derivative minus analytic gaussian: " + \
             "%5.2e\n" % e + \
             "tolerance exceeded\n"
-        
+
         #check normal.derivative=gaussianDerivative
         e = norm(map(lambda x,y:x-y,ydTemp,yd),h)
         assert e <= 1.0e-16, \
             "norm of C++ NormalDist.derivative minus " + \
             "analytic gaussian.derivative: %5.2e\n" % e + \
             "tolerance exceeded\n"
-        
+
         # ... and now let's toy with finite difference
         # define the first derivative operators
         D = QuantLib.DZero(N,h)
@@ -135,15 +137,15 @@ class DistributionTest(unittest.TestCase):
         # and calculate the derivatives
         y3Temp  = D.applyTo(yIntegrated)
         yd2Temp = D2.applyTo(yIntegrated)
-        
+
         #check finite difference first order derivative operator = gaussian
         e = norm(map(lambda x,y:x-y,y3Temp,y),h)
         assert e <= 1.0e-6, \
            "norm of C++ FD 1st deriv. of cum minus analytic gaussian: " + \
            "%5.2e\n" % e + \
            "tolerance exceeded\n"
-        
-        # check finite difference second order derivative operator = 
+
+        # check finite difference second order derivative operator =
         # normal.derivative
         e = norm(map(lambda x,y:x-y,yd2Temp,yd),h)
         assert e <= 1.0e-4, \

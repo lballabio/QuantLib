@@ -1,30 +1,32 @@
 """
-/*
- * Copyright (C) 2000-2001 QuantLib Group
- * 
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
- *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
-*/
+ Copyright (C) 2000-2001 QuantLib Group
+
+ This file is part of QuantLib.
+ QuantLib is a C++ open source library for financial quantitative
+ analysts and developers --- http://quantlib.sourceforge.net/
+
+ QuantLib is free software and you are allowed to use, copy, modify, merge,
+ publish, distribute, and/or sell copies of it under the conditions stated
+ in the QuantLib License.
+
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+
+ You should have received a copy of the license along with this file;
+ if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 11:08:11  lballabio
     Python tests implemented on top of PyUnit
 
@@ -51,14 +53,14 @@ class PagodaOptionTest(unittest.TestCase):
                          c[5][4] = -0.35 ; c[5][5] =  1.0  ; c[5][6] =  0.381
         c[6][0] = 0.112; c[6][1] = -0.244; c[6][2] = -0.616; c[6][3] =  0.362;\
                          c[6][4] = -0.439; c[6][5] =  0.381; c[6][6] =  1.0
-        
+
         volatilities = [0.325, 0.365, 0.235, 0.426, 0.365, 0.377, 0.228]
         divYield  = [0.03807, 0.01227, 0.02489, 0.09885, \
                      0.01244, 0.00466, 0.10827]
         divYield  = [0.0003807, 0.0001227, 0.0002489, 0.0009885, \
                      0.0001244, 0.0000466, 0.0010827]
         portfolio = [0.10, 0.20, 0.20, 0.20, 0.10, 0.10, 0.10]
-        
+
         fraction = 0.62
         roof = 0.20
         residualTime = 1
@@ -66,15 +68,15 @@ class PagodaOptionTest(unittest.TestCase):
         timesteps = 12
         samples = 2000
         seed = 86421
-        
+
         cov = QuantLib.getCovariance(volatilities, c)
         storedValue = 0.0411470297914
         storedError = 0.000936103530233
-        
+
         pagoda = QuantLib.PagodaOption(portfolio,
                     fraction, roof, residualTime,
                     cov, divYield, riskFreeRate,
-                    timesteps, samples, seed);        
+                    timesteps, samples, seed);
 
         value = pagoda.value()
         error = pagoda.errorEstimate()

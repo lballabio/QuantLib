@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file actualactual.cpp
@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.16  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.15  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -64,10 +67,10 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        Time ActualActual::yearFraction(const Date& d1, const Date& d2, 
+        Time ActualActual::yearFraction(const Date& d1, const Date& d2,
           const Date& refPeriodStart,
           const Date& refPeriodEnd) const {
-            QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() && 
+            QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
                 refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
                 "Invalid reference period");
             double period = Thirty360European().yearFraction(
@@ -80,18 +83,18 @@ namespace QuantLib {
 
             if (d2 <= refPeriodEnd) {
                 if (d1 >= refPeriodStart)
-                    return (double)dayCount(d1,d2) / 
+                    return (double)dayCount(d1,d2) /
                         (double)dayCount(refPeriodStart,refPeriodEnd)*period;
                 else {
                     Date previousBDate = refPeriodStart.plusMonths(-months);
-                    double result = (double)(refPeriodStart-d1) / 
+                    double result = (double)(refPeriodStart-d1) /
                         (double)dayCount(previousBDate,refPeriodStart);
-                    result += (double)(d2-refPeriodStart) / 
+                    result += (double)(d2-refPeriodStart) /
                         (double)dayCount(refPeriodStart,refPeriodEnd);
                     return result*period;
                 }
             } else {
-                double result = (double)dayCount(d1,refPeriodStart) / 
+                double result = (double)dayCount(d1,refPeriodStart) /
                     (double)dayCount(refPeriodStart,refPeriodEnd)*period;
                 int i = 0;
                 Date tempd;
@@ -100,7 +103,7 @@ namespace QuantLib {
                 } while (tempd <= d2);
                 i--;
                 Date previoustemp = refPeriodEnd.plusMonths(months*i);
-                return result + i*period + 
+                return result + i*period +
                     yearFraction(previoustemp,d2,previoustemp,tempd);
             }
         }

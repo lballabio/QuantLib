@@ -16,17 +16,18 @@
 
  You should have received a copy of the license along with this file;
  if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 
- QuantLib license is also available at:
- http://quantlib.sourceforge.net/LICENSE.TXT
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
+=end
 
+=begin
+ $Id$
  $Source$
  $Log$
- Revision 1.2  2001/04/04 14:10:30  lballabio
- Ruby tests moved on top of RubyUnit
-
- Revision 1.1  2001/04/03 14:50:28  lballabio
- Forgotten makefile
+ Revision 1.3  2001/04/06 18:46:21  nando
+ changed Authors, Contributors, Licence and copyright header
 
 =end
 

@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file mcoptionsample.hpp
     \brief Create a sample generator from a path generator and a path pricer
@@ -26,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:22  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -60,8 +64,8 @@ namespace QuantLib {
     namespace MonteCarlo {
     /*!
     Given a path generator class PG, together with an instance "samplePath",
-    and a path pricer PP, again with an instance "pathpricer", a sample 
-    generator OptionSample<PG, PP> returns, at each next(), a value for the 
+    and a path pricer PP, again with an instance "pathpricer", a sample
+    generator OptionSample<PG, PP> returns, at each next(), a value for the
     option price.
 
     Minimal interfaces for PG and PP:
@@ -73,8 +77,8 @@ namespace QuantLib {
 
     class PP{
             // The value() method will eventually evolve into
-            // PP::ValueType value() const;        
-        double value(PATH_TYPE &) const;                                                
+            // PP::ValueType value() const;
+        double value(PATH_TYPE &) const;
     };
     */
 

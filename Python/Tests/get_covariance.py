@@ -1,30 +1,32 @@
 """
-/*
- * Copyright (C) 2000-2001 QuantLib Group
- * 
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
- *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
-*/
+ Copyright (C) 2000-2001 QuantLib Group
+
+ This file is part of QuantLib.
+ QuantLib is a C++ open source library for financial quantitative
+ analysts and developers --- http://quantlib.sourceforge.net/
+
+ QuantLib is free software and you are allowed to use, copy, modify, merge,
+ publish, distribute, and/or sell copies of it under the conditions stated
+ in the QuantLib License.
+
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+
+ You should have received a copy of the license along with this file;
+ if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 11:08:11  lballabio
     Python tests implemented on top of PyUnit
 
@@ -58,10 +60,10 @@ class CovarianceTest(unittest.TestCase):
         corr[0][0] = 1.0; corr[0][1] = 0.2; corr[0][2] = 0.5
         corr[1][0] = 0.2; corr[1][1] = 1.0; corr[1][2] = 0.8
         corr[2][0] = 0.5; corr[2][1] = 0.8; corr[2][2] = 1.0
-            
-        expectedCov = initCovariance(vol, corr) 
+
+        expectedCov = initCovariance(vol, corr)
         cov = QuantLib.getCovariance(vol, corr)
-            
+
         for i in range(3):
             for j in range(3):
                 assert abs(cov[i][j] - expectedCov[i][j]) <= 1e-10, \

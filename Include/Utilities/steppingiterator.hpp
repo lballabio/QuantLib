@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file steppingiterator.hpp
@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:23  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -80,7 +83,7 @@ namespace QuantLib {
             typename QL_ITERATOR_TRAITS<RandomAccessIterator>::reference>
         {
           public:
-            /* These typedefs are needed even though inherited from QL_ITERATOR 
+            /* These typedefs are needed even though inherited from QL_ITERATOR
                (see 14.6.2.3 of the standard).  */
             typedef typename QL_ITERATOR_TRAITS<
                 RandomAccessIterator>::difference_type difference_type;
@@ -89,7 +92,7 @@ namespace QuantLib {
             typedef typename QL_ITERATOR_TRAITS<
                 RandomAccessIterator>::reference reference;
 
-            stepping_iterator(const RandomAccessIterator&, 
+            stepping_iterator(const RandomAccessIterator&,
                 difference_type step);
             //! \name Dereferencing
             //@{
@@ -134,7 +137,7 @@ namespace QuantLib {
         /*! \relates stepping_iterator */
         template <class Iterator>
         stepping_iterator<Iterator>
-        make_stepping_iterator(Iterator it, 
+        make_stepping_iterator(Iterator it,
             typename stepping_iterator<Iterator>::difference_type step);
 
         // inline definitions
@@ -273,7 +276,7 @@ namespace QuantLib {
 
         template <class Iterator>
         inline stepping_iterator<Iterator>
-        make_stepping_iterator(Iterator it, 
+        make_stepping_iterator(Iterator it,
             typename stepping_iterator<Iterator>::difference_type step) {
                 return stepping_iterator<Iterator>(it,step);
         }

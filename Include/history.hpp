@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,49 +16,23 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.3  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file history.hpp
     \brief history class
-
-    $Source$
-    $Log$
-    Revision 1.2  2001/04/04 12:13:22  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.16  2001/03/12 17:35:09  lballabio
-    Removed global IsNull function - could have caused very vicious loops
-
-    Revision 1.15  2001/02/14 12:27:44  lballabio
-    Bug fixed and guidelines enforced
-
-    Revision 1.14  2001/02/14 10:38:28  lballabio
-    Found out what 14.6.2.3 of the standard means
-
-    Revision 1.13  2001/02/13 09:58:23  lballabio
-    Some more work on iterators
-
-    Revision 1.12  2001/02/12 19:00:39  lballabio
-    Some more work on iterators
-
-    Revision 1.11  2001/02/12 18:34:49  lballabio
-    Some work on iterators
-
-    Revision 1.10  2001/02/09 19:16:21  lballabio
-    removed QL_PTR_CONST macro
-
 */
 
 #ifndef quantlib_history_h
@@ -170,7 +143,7 @@ namespace QuantLib {
         {
             friend class History;
           public:
-            /* These typedefs are needed even though inherited from QL_ITERATOR 
+            /* These typedefs are needed even though inherited from QL_ITERATOR
                (see 14.6.2.3 of the standard).  */
             typedef Entry                           value_type;
             typedef int                             difference_type;
@@ -323,11 +296,11 @@ namespace QuantLib {
         std::vector<double> values_;
         class DataValidator {
           public:
-            bool operator()(double x) { 
-                return x != Null<double>(); 
+            bool operator()(double x) {
+                return x != Null<double>();
             }
-            bool operator()(const Entry& e) { 
-                return e.value() != Null<double>(); 
+            bool operator()(const Entry& e) {
+                return e.value() != Null<double>();
             }
         };
     };

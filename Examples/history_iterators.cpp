@@ -1,24 +1,35 @@
 
-#include "history.hpp"
-#include "Math/statistics.hpp"
-#include "qlerrors.hpp"
-#include <iostream>
-#include <algorithm>
+/*
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
+ * This file is part of QuantLib.
+ * QuantLib is a C++ open source library for financial quantitative
+ * analysts and developers --- http://quantlib.sourceforge.net/
+ *
+ * QuantLib is free software and you are allowed to use, copy, modify, merge,
+ * publish, distribute, and/or sell copies of it under the conditions stated
+ * in the QuantLib License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+ *
+ * You should have received a copy of the license along with this file;
+ * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ *
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
 
-using QuantLib::History;
-using QuantLib::Math::Statistics;
-using QuantLib::DateFormatter;
-using namespace std;
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.4  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
 
-void printHistoricalAnalysis(const History& h) {
-
-    // first of all, we check that the history makes some sense:
-    
-    QL_REQUIRE(h.size() >= 2, "History must contain at least two values");
-
-    /* now, the history could contain null data: we will use 
-       const_valid_iterator and const_valid_data_iterator to skip them. */
-    
+*/
     // print out the mean value and its standard deviation.
 
     Statistics s;
@@ -27,24 +38,24 @@ void printHistoricalAnalysis(const History& h) {
     cout << "Std. deviation:  " << s.standardDeviation() << endl;
 
     // Another possibility: print out the maximum value.
-    
+
     History::const_valid_iterator max = h.vbegin(), i=max, end = h.vend();
     for (i++; i!=end; i++)
         if (i->value() > max->value())
             max = i;
-    cout << "Maximum value: " << max->value() 
+    cout << "Maximum value: " << max->value()
          << " assumed " << DateFormatter::toString(max->date()) << endl;
 
     // or the minimum, this time the STL way:
-    
+
     double lessthan(const History::Entry& i, const History::Entry& j) {
         return i.value() < j.value();
     }
-    
-    History::const_valid_iterator min = 
+
+    History::const_valid_iterator min =
         std::min_element(h.vbegin(),h.vend(),lessthan);
-    cout << "Minimum value: " << min->value() 
+    cout << "Minimum value: " << min->value()
          << " assumed " << DateFormatter::toString(min->date()) << endl;
-        
+
 }
     

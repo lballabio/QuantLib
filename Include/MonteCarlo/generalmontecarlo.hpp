@@ -1,6 +1,6 @@
- /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+
+/*
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,16 +16,20 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file generalmontecarlo.hpp
     \brief A class useful in many different Monte-Carlo-type simulations
 
-  $Source$ 
+  $Source$
   $Name$
   $Log$
+  Revision 1.2  2001/04/06 18:46:20  nando
+  changed Authors, Contributors, Licence and copyright header
+
   Revision 1.1  2001/04/04 11:07:22  nando
   Headers policy part 1:
   Headers should have a .hpp (lowercase) filename extension
@@ -53,30 +57,30 @@ namespace QuantLib {
 
     namespace MonteCarlo {
     /*!
-    Given a sample-accumulator class SA and a sample-generator SG class, 
+    Given a sample-accumulator class SA and a sample-generator SG class,
     a GeneralMonteCarlo<SA, SG>  class is constructed. This class
-    can be used to sample over the generator and store the results in the 
+    can be used to sample over the generator and store the results in the
     accumulator. The accumulator itself can be returned upon request.
 
     The minimal interfaces that SA and SG should implements are
 
         class SA{
-            void add(SAMPLE_TYPE sample, double weight) const;    
+            void add(SAMPLE_TYPE sample, double weight) const;
         };
-    
+
         class SG{
             SAMPLE_TYPE next() const;
             double weight() const;
         };
-    
+
     */
         template<class SA, class SG>
         class GeneralMonteCarlo {
         public:
             GeneralMonteCarlo():isInitialized_(false){}
-            GeneralMonteCarlo(SA &statisticAccumulator, 
+            GeneralMonteCarlo(SA &statisticAccumulator,
                               SG &sampleGenerator);
-            SA sampleAccumulator(long iterations = 0) const; 
+            SA sampleAccumulator(long iterations = 0) const;
         private:
             mutable bool isInitialized_;
             mutable SA sampleAccumulator_;
@@ -85,19 +89,19 @@ namespace QuantLib {
 
         template<class SA, class SG>
         inline GeneralMonteCarlo<SA, SG>::GeneralMonteCarlo(
-                SA &sampleAccumulator, SG &sampleGenerator): 
+                SA &sampleAccumulator, SG &sampleGenerator):
                 sampleAccumulator_(sampleAccumulator),
                 sampleGenerator_(sampleGenerator),
                 isInitialized_(true){}
 
         template<class SA, class SG>
         inline SA GeneralMonteCarlo<SA, SG>::sampleAccumulator(long iterations) const{
-            QL_REQUIRE(isInitialized_ == true, 
+            QL_REQUIRE(isInitialized_ == true,
                        "GeneralMonteCarlo must be initialized");
             for(long j = 1; j <= iterations; j++){
                 sampleAccumulator_.add(sampleGenerator_.next(),
                                           sampleGenerator_.weight());
-            }                                            
+            }
             return sampleAccumulator_;
         }
 

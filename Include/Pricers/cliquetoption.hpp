@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,16 +16,20 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file cliquetoption.hpp
     \brief Textbook example of european-style multi-period option.
-  
+
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/06 16:19:12  lballabio
     Fixed Doxygen-related stuff
 
@@ -49,9 +52,9 @@
 #include "bsmoption.hpp"
 #include "bsmeuropeanoption.hpp"
 
-namespace QuantLib 
+namespace QuantLib
 {
-    namespace Pricers 
+    namespace Pricers
     {
      /*!
      A cliquet option, also known as Ratchet option, is a series
@@ -61,14 +64,14 @@ namespace QuantLib
      of the option is the same as that of a forward-starting option
      starting at the first date and expiring at the second date.
      */
-        class CliquetOption: public BSMOption 
+        class CliquetOption: public BSMOption
         {
         public:
-            CliquetOption(Type type, 
-                          double underlying, 
-                          Rate dividendYield, 
-                          Rate riskFreeRate, 
-                          const std::vector<Time> &dates, 
+            CliquetOption(Type type,
+                          double underlying,
+                          Rate dividendYield,
+                          Rate riskFreeRate,
+                          const std::vector<Time> &dates,
                           double volatility);
             double value() const;
             double delta() const;

@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- *   http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file multiperiodoption.cpp
@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.10  2001/04/06 18:46:22  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.9  2001/04/06 16:12:18  marmar
     Bug fixed in multi-period option
 
@@ -80,12 +83,12 @@ namespace QuantLib {
         MultiPeriodOption::MultiPeriodOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility,
-            const std::vector<Time>& dates, 
+            const std::vector<Time>& dates,
             int timeSteps, int gridPoints)
-        : dates_(dates), 
+        : dates_(dates),
           dateNumber_(dates.size()),
           timeStepPerPeriod_(timeSteps),
-          BSMNumericalOption(type, underlying, strike, dividendYield, 
+          BSMNumericalOption(type, underlying, strike, dividendYield,
           riskFreeRate, residualTime, volatility, gridPoints) {
 
             if (dateNumber_ > 0){
@@ -114,11 +117,11 @@ namespace QuantLib {
             controlPrices_ = initialPrices_;
 
             double dt;// = 0.0001;
-            if (dateNumber_ > 0)                
+            if (dateNumber_ > 0)
                 dt = residualTime_/(timeStepPerPeriod_*dateNumber_*100);
             else
                 dt = residualTime_/(timeStepPerPeriod_*100);
-            
+
             int j = dateNumber_ - 1;
             do{
                 initializeStepCondition();
@@ -151,16 +154,16 @@ namespace QuantLib {
             model_ -> rollback(controlPrices_, dt, 0, 1);
 
             // Option price and greeks are computed
-            value_ =   valueAtCenter(prices_) 
-                     - valueAtCenter(controlPrices_) 
+            value_ =   valueAtCenter(prices_)
+                     - valueAtCenter(controlPrices_)
                      + analytic_ -> value();
 
-            delta_ =   firstDerivativeAtCenter(prices_, grid_) 
-                     - firstDerivativeAtCenter(controlPrices_, grid_) 
+            delta_ =   firstDerivativeAtCenter(prices_, grid_)
+                     - firstDerivativeAtCenter(controlPrices_, grid_)
                      + analytic_ -> delta();
 
-            gamma_ =   secondDerivativeAtCenter(prices_, grid_) 
-                     - secondDerivativeAtCenter(controlPrices_, grid_) 
+            gamma_ =   secondDerivativeAtCenter(prices_, grid_)
+                     - secondDerivativeAtCenter(controlPrices_, grid_)
                      + analytic_ -> gamma();
 
             // calculating theta_
@@ -179,7 +182,7 @@ namespace QuantLib {
                             type_, underlying_, strike_, dividendYield_,
                             riskFreeRate_, residualTime_, volatility_));
         }
-        
+
         using FiniteDifferences::StandardStepCondition;
 
         void MultiPeriodOption::initializeStepCondition() const{

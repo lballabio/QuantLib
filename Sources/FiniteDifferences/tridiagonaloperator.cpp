@@ -1,25 +1,25 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file tridiagonaloperator.cpp
@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.12  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -54,10 +57,10 @@
 
     Revision 1.6  2000/12/27 14:05:57  lballabio
     Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-    
+
     Revision 1.5  2000/12/14 12:32:31  lballabio
     Added CVS tags in Doxygen file documentation blocks
-    
+
 */
 
 #include "FiniteDifferences/tridiagonaloperator.hpp"
@@ -70,16 +73,16 @@ namespace QuantLib {
 
         TridiagonalOperatorCommon::TridiagonalOperatorCommon(int size)
         : diagonal(size), belowDiagonal(size-1), aboveDiagonal(size-1) {
-            QL_ENSURE(diagonal.size() >= 3 || diagonal.size() == 0, 
+            QL_ENSURE(diagonal.size() >= 3 || diagonal.size() == 0,
                 "invalid size for tridiagonal operator (must be >= 3)");
         }
 
         TridiagonalOperatorCommon::TridiagonalOperatorCommon(
             const Array& low, const Array& mid, const Array& high)
         : diagonal(mid), belowDiagonal(low), aboveDiagonal(high) {
-            QL_ENSURE(low.size() == mid.size()-1, 
+            QL_ENSURE(low.size() == mid.size()-1,
                 "wrong size for lower diagonal vector");
-            QL_ENSURE(high.size() == mid.size()-1, 
+            QL_ENSURE(high.size() == mid.size()-1,
                 "wrong size for upper diagonal vector");
         }
 
@@ -98,7 +101,7 @@ namespace QuantLib {
                 break;
             }
         }
-        
+
         void TridiagonalOperatorCommon::setHigherBC(
           const BoundaryCondition& bc) {
             theHigherBC = bc;
@@ -114,24 +117,24 @@ namespace QuantLib {
                 break;
             }
         }
-        
-        
-        Array 
+
+
+        Array
         TridiagonalOperatorCommon::applyTo(const Array& v) const {
             QL_REQUIRE(v.size()==size(),
                 "TridiagonalOperator::applyTo: vector of the wrong size (" +
-                IntegerFormatter::toString(v.size()) + "instead of " + 
+                IntegerFormatter::toString(v.size()) + "instead of " +
                 IntegerFormatter::toString(size()) + ")"  );
             Array result(size());
-        
+
             // matricial product
             result[0] = diagonal[0]*v[0] + aboveDiagonal[0]*v[1];
             for (int j=1;j<=size()-2;j++)
                 result[j] = belowDiagonal[j-1]*v[j-1]+ diagonal[j]*v[j] +
                     aboveDiagonal[j]*v[j+1];
             result[size()-1] = belowDiagonal[size()-2]*v[size()-2] +
-                diagonal[size()-1]*v[size()-1]; 
-        
+                diagonal[size()-1]*v[size()-1];
+
             // apply lower boundary condition
             switch (theLowerBC.type()) {
               case BoundaryCondition::None:
@@ -144,7 +147,7 @@ namespace QuantLib {
                 result[0] = theLowerBC.value();
                 break;
             }
-            
+
             // apply higher boundary condition
             switch (theHigherBC.type()) {
               case BoundaryCondition::None:
@@ -157,16 +160,16 @@ namespace QuantLib {
                 result[size()-1] = theHigherBC.value();
                 break;
             }
-        
+
             return result;
         }
-        
-        Array 
+
+        Array
         TridiagonalOperatorCommon::solveFor(const Array& rhs) const {
             QL_REQUIRE(rhs.size()==size(),
                 "TridiagonalOperator::solveFor: rhs vector has the wrong size");
             Array bcRhs = rhs;
-        
+
             // apply lower boundary condition
             switch (theLowerBC.type()) {
               case BoundaryCondition::None:
@@ -177,7 +180,7 @@ namespace QuantLib {
                 bcRhs[0] = theLowerBC.value();
                 break;
             }
-            
+
             // apply higher boundary condition
             switch (theHigherBC.type()) {
               case BoundaryCondition::None:
@@ -188,28 +191,28 @@ namespace QuantLib {
                 bcRhs[size()-1] = theHigherBC.value();
                 break;
             }
-        
+
             // solve tridiagonal system
             Array result(size()), tmp(size());
-        
+
             double bet=diagonal[0];
-            QL_REQUIRE(bet != 0.0, 
-                "TridiagonalOperator::solveFor: division by zero"); 
+            QL_REQUIRE(bet != 0.0,
+                "TridiagonalOperator::solveFor: division by zero");
             result[0] = bcRhs[0]/bet;
             int j;
             for (j=1;j<=size()-1;j++){
                 tmp[j]=aboveDiagonal[j-1]/bet;
                 bet=diagonal[j]-belowDiagonal[j-1]*tmp[j];
-                QL_ENSURE(bet != 0.0, 
-                    "TridiagonalOperator::solveFor: division by zero"); 
+                QL_ENSURE(bet != 0.0,
+                    "TridiagonalOperator::solveFor: division by zero");
                 result[j] = (bcRhs[j]-belowDiagonal[j-1]*result[j-1])/bet;
             }
-            for (j=size()-2;j>=0;j--) 
+            for (j=size()-2;j>=0;j--)
                 result[j] -= tmp[j+1]*result[j+1];
-        
+
             return result;
         }
-    
+
     }
 
 }

@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- *  http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file barrieroption.hpp
@@ -26,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -73,10 +77,10 @@ namespace QuantLib {
         class BarrierOption : public BSMOption {
         public:
             // constructor
-            enum BarrierType { DownIn, UpIn, DownOut, UpOut };    
-            BarrierOption(BarrierType barrType, Type type, double underlying, 
+            enum BarrierType { DownIn, UpIn, DownOut, UpOut };
+            BarrierOption(BarrierType barrType, Type type, double underlying,
                 double strike, Rate dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility, double barrier, 
+                Time residualTime, double volatility, double barrier,
                 double rebate = 0.0);
             // accessors
             double value() const;
@@ -84,14 +88,14 @@ namespace QuantLib {
             double gamma() const;
             double theta() const;
             Handle<BSMOption> clone() const {
-                return Handle<BSMOption>(new BarrierOption(*this)); 
+                return Handle<BSMOption>(new BarrierOption(*this));
             }
         protected:
             void calculate() const;
             mutable double greeksCalculated_, delta_, gamma_, theta_;
         private:
-            BarrierType barrType_; 
-            double barrier_, rebate_;            
+            BarrierType barrType_;
+            double barrier_, rebate_;
             mutable double sigmaSqrtT_, mu_, muSigma_;
             mutable double dividendDiscount_, riskFreeDiscount_;
             Math::CumulativeNormalDistribution f_;
@@ -103,28 +107,28 @@ namespace QuantLib {
             double E(double eta, double phi) const;
             double F(double eta, double phi) const;
         };
-                                    
-       
+
+
         inline double BarrierOption::A(double eta, double phi) const{
-        
+
             double x1 = QL_LOG(underlying_/strike_)/sigmaSqrtT_ + muSigma_;
             double N1 = f_(phi*x1);
             double N2 = f_(phi*(x1-sigmaSqrtT_));
             return phi*(underlying_ * dividendDiscount_ * N1
                         - strike_ * riskFreeDiscount_ * N2);
-        }        
+        }
 
         inline double BarrierOption::B(double eta, double phi) const{
-        
+
             double x2 = QL_LOG(underlying_/barrier_)/sigmaSqrtT_ + muSigma_;
             double N1 = f_(phi*x2);
             double N2 = f_(phi*(x2-sigmaSqrtT_));
             return phi*(underlying_ * dividendDiscount_ * N1
                       - strike_ * riskFreeDiscount_ * N2);
-        }        
+        }
 
         inline double BarrierOption::C(double eta, double phi) const{
-        
+
             double HS = barrier_/underlying_;
             double powHS0 = QL_POW(HS, 2 * mu_);
             double powHS1 = powHS0 * HS * HS;
@@ -133,51 +137,51 @@ namespace QuantLib {
             double N2 = f_(eta*(y1-sigmaSqrtT_));
             return phi*(underlying_ * dividendDiscount_ * powHS1 * N1
                           - strike_ * riskFreeDiscount_ * powHS0 * N2);
-        }        
+        }
 
         inline double BarrierOption::D(double eta, double phi) const{
-        
+
             double HS = barrier_/underlying_;
             double powHS0 = QL_POW(HS, 2 * mu_);
             double powHS1 = powHS0 * HS * HS;
-            double y2 = QL_LOG(barrier_/underlying_)/sigmaSqrtT_ + muSigma_;            
+            double y2 = QL_LOG(barrier_/underlying_)/sigmaSqrtT_ + muSigma_;
             double N1 = f_(eta*y2);
             double N2 = f_(eta*(y2-sigmaSqrtT_));
             return phi*(underlying_ * dividendDiscount_ * powHS1 * N1
                           - strike_ * riskFreeDiscount_ * powHS0 * N2);
-        }        
+        }
 
         inline double BarrierOption::E(double eta, double phi) const{
 
-            if(rebate_ > 0){        
+            if(rebate_ > 0){
                 double powHS0 = QL_POW(barrier_/underlying_, 2 * mu_);
                 double x2 = QL_LOG(underlying_/barrier_)/sigmaSqrtT_ + muSigma_;
-                double y2 = QL_LOG(barrier_/underlying_)/sigmaSqrtT_ + muSigma_;            
+                double y2 = QL_LOG(barrier_/underlying_)/sigmaSqrtT_ + muSigma_;
                 double N1 = f_(eta*(x2 - sigmaSqrtT_));
                 double N2 = f_(eta*(y2 - sigmaSqrtT_));
                 return rebate_ * riskFreeDiscount_ * (N1 - powHS0 * N2);
             }else
-                return 0.0;                              
-        }        
+                return 0.0;
+        }
 
         inline double BarrierOption::F(double eta, double phi) const{
 
-            if(rebate_ > 0){        
+            if(rebate_ > 0){
                 double lambda = QL_SQRT(mu_*mu_ + 2.0*riskFreeRate_/
                                             (volatility_ * volatility_));
                 double HS = barrier_/underlying_;
                 double powHSplus = QL_POW(HS, mu_ + lambda);
                 double powHSminus = QL_POW(HS, mu_ - lambda);
 
-                double z = QL_LOG(barrier_/underlying_)/sigmaSqrtT_ 
+                double z = QL_LOG(barrier_/underlying_)/sigmaSqrtT_
                     + lambda * sigmaSqrtT_;
 
                 double N1 = f_(eta * z);
                 double N2 = f_(eta * (z - 2.0 * lambda * sigmaSqrtT_));
                 return rebate_ * (powHSplus * N1 + powHSminus * N2);
             }else
-                return 0.0;                              
-        }        
+                return 0.0;
+        }
 
     }
 

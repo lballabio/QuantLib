@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file multipath.hpp
     \brief MultiPath implements multiple paths evolving at the same time
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -53,7 +56,7 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-        
+
         /*!
         \brief MultiPath implements multiple paths evolving at the same time
         \typedef MultiPath
@@ -63,7 +66,7 @@ namespace QuantLib {
             \qquad \mathrm{and} \qquad j = 0, \ldots, m-1
         \f]
         where \f$ Y^j_i \f$ is the value of the underlying \f$ j \f$
-        at discretized time \f$ t_i \f$. The first index refers to the 
+        at discretized time \f$ t_i \f$. The first index refers to the
         underlying, the second to the time position MultiPath[j,i]
         */
         typedef QuantLib::Math::Matrix MultiPath;

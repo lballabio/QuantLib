@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file basketpathpricer.cpp
@@ -26,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.4  2001/04/04 13:32:54  enri
     tons of typos fixed
 
@@ -54,7 +58,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        BasketPathPricer::BasketPathPricer(const Array &underlying, 
+        BasketPathPricer::BasketPathPricer(const Array &underlying,
             double discount) : underlying_(underlying), discount_(discount) {
             QL_REQUIRE(discount_ > 0.0,
                 "SinglePathEuropeanPricer: discount must be positive");
@@ -69,7 +73,7 @@ namespace QuantLib {
                 "BasketPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
-            double maxPrice = -QL_MAX_DOUBLE;            
+            double maxPrice = -QL_MAX_DOUBLE;
             for(int i = 0; i < numAssets; i++){
                 double price = underlying_[i];
                 for(int j = 0; j < numSteps; j++)

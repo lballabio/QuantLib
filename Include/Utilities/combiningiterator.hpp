@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file combiningiterator.hpp
@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:23  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -75,13 +78,13 @@ namespace QuantLib {
     namespace Utilities {
 
         //! Iterator mapping a function to a set of underlying sequences
-        /*! This iterator advances a set of underlying iterators and 
-            returns the values obtained by applying a function to the 
+        /*! This iterator advances a set of underlying iterators and
+            returns the values obtained by applying a function to the
             sets of values such iterators point to.
-            
-            This class was implemented based on Christopher Baus and Thomas 
-            Becker, <i>Custom Iterators for the STL</i>, included in the 
-            proceedings of the First Workshop on C++ Template Programming, 
+
+            This class was implemented based on Christopher Baus and Thomas
+            Becker, <i>Custom Iterators for the STL</i>, included in the
+            proceedings of the First Workshop on C++ Template Programming,
             Erfurt, Germany, 2000 (http://www.oonumerics.org/tmpw00/)
         */
         template <class Iterator, class Function>
@@ -93,7 +96,7 @@ namespace QuantLib {
             const typename Function::result_type&>
         {
           public:
-            /* These typedefs are needed even though inherited from QL_ITERATOR 
+            /* These typedefs are needed even though inherited from QL_ITERATOR
                (see 14.6.2.3 of the standard).  */
             typedef typename Function::result_type value_type;
             typedef typename QL_ITERATOR_TRAITS<Iterator>::difference_type
@@ -102,7 +105,7 @@ namespace QuantLib {
             typedef const typename Function::result_type& reference;
             // construct a combining iterator from a collection of iterators
             template <class IteratorCollectionIterator>
-            combining_iterator(IteratorCollectionIterator it1, 
+            combining_iterator(IteratorCollectionIterator it1,
                 IteratorCollectionIterator it2, Function f)
             : iteratorVector_(it1,it2), f_(f) {}
             //! \name Dereferencing
@@ -147,10 +150,10 @@ namespace QuantLib {
         //! helper function to create combining iterators
         /*! \relates combining_iterator */
         template <class It, class Function>
-        combining_iterator<typename QL_ITERATOR_TRAITS<It>::value_type, 
+        combining_iterator<typename QL_ITERATOR_TRAITS<It>::value_type,
             Function>
         make_combining_iterator(It it1, It it2, Function f);
-            
+
 
         // inline definitions
 
@@ -212,7 +215,7 @@ namespace QuantLib {
         }
 
         template <class Iterator, class Function>
-        inline combining_iterator<Iterator,Function>::pointer 
+        inline combining_iterator<Iterator,Function>::pointer
         combining_iterator<Iterator,Function>::operator->() const {
             x_ = f_(iteratorVector_.begin(), iteratorVector_.end());
             return &x_;
@@ -244,13 +247,13 @@ namespace QuantLib {
         }
 
         template <class Iterator, class Function>
-        inline combining_iterator<Iterator,Function>::difference_type 
+        inline combining_iterator<Iterator,Function>::difference_type
         combining_iterator<Iterator,Function>::operator-(
             const combining_iterator<Iterator,Function>& rhs) const {
                 if (iteratorVector_.size()>0 && rhs.iteratorVector_.size()>0)
                     return iteratorVector_[0] - rhs.iteratorVector_[0];
-                else 
-                    return 0;     
+                else
+                    return 0;
         }
 
         template <class Iterator, class Function>
@@ -273,7 +276,7 @@ namespace QuantLib {
             typedef QL_ITERATOR_TRAITS<It>::value_type Iterator;
             return combining_iterator<Iterator,Function>(it1,it2,f);
         }
-        
+
     }
 
 }

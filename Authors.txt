@@ -1,6 +1,10 @@
-The QuantLib Group includes:
+The QuantLib Group is:
 
-Ferdinando Ametrano (ferdinando@ametrano.net)
+RiskMap (info@riskmap.net) - main sponsor
+Ferdinando Ametrano (ferdinando@ametrano.net) - admin
+
+Mario Aleppo (mario.aleppo@riskmap.net)
 Luigi Ballabio (luigi.ballabio@riskmap.net)
 Adolfo Benin (adolfo.benin@riskmap.net)
 Marco Marchioro (marco.marchioro@riskmap.net)
+Enrico Sirola (enrico.sirala@riskmap.net)

@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file stepconditionoption.cpp
@@ -26,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.8  2001/04/06 18:46:22  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.7  2001/04/05 13:06:55  marmar
     Code simplified
 
@@ -73,31 +77,31 @@
 
 namespace QuantLib {
     namespace Pricers {
-        
+
         using FiniteDifferences::StandardStepCondition;
         using FiniteDifferences::StandardFiniteDifferenceModel;
         using FiniteDifferences::valueAtCenter;
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
-        
+
         StepConditionOption::StepConditionOption(Type type, double underlying,
-                 double strike, Rate dividendYield, Rate riskFreeRate, 
-                 Time residualTime, double volatility, int timeSteps, 
+                 double strike, Rate dividendYield, Rate riskFreeRate,
+                 Time residualTime, double volatility, int timeSteps,
                  int gridPoints)
-            : BSMNumericalOption(type, underlying, strike, dividendYield, 
-                                 riskFreeRate, residualTime, volatility, 
-                                 gridPoints), 
+            : BSMNumericalOption(type, underlying, strike, dividendYield,
+                                 riskFreeRate, residualTime, volatility,
+                                 gridPoints),
             timeSteps_(timeSteps) {}
-            
+
         void StepConditionOption::calculate() const {
-            
+
             setGridLimits();
             initializeGrid();
-            initializeInitialCondition();                
+            initializeInitialCondition();
             initializeOperator();
             initializeStepCondition();
             /* StandardFiniteDifferenceModel is Crank-Nicolson.
-               Alternatively, BackwardEuler or ForwardEuler 
+               Alternatively, BackwardEuler or ForwardEuler
                could have been used instead*/
             StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
 
@@ -107,17 +111,17 @@ namespace QuantLib {
                                            strike_, dividendYield_,
                                            riskFreeRate_, residualTime_,
                                            volatility_);
-            
+
             // 2) Initialize prices on the grid
             Array europeanPrices = initialPrices_;
             Array americanPrices = initialPrices_;
-            
+
             // 3) Rollback until dt
             double dt = residualTime_/timeSteps_;
             model.rollback(europeanPrices,residualTime_,dt,timeSteps_-1);
             model.rollback(americanPrices, residualTime_, dt, timeSteps_ -1,
                            stepCondition_);
-            
+
             // 4) Store option value at time = dt for theta computation
             double europeanPlusDt = valueAtCenter(europeanPrices);
             double americanPlusDt = valueAtCenter(americanPrices);
@@ -129,16 +133,16 @@ namespace QuantLib {
             /* 6) Numerically calculate option value and greeks using
                   the european option as control variate                */
 
-            value_ =  valueAtCenter(americanPrices) 
-                    - valueAtCenter(europeanPrices) 
+            value_ =  valueAtCenter(americanPrices)
+                    - valueAtCenter(europeanPrices)
                     + analyticEuro.value();
-                    
-            delta_ =   firstDerivativeAtCenter(americanPrices, grid_) 
-                     - firstDerivativeAtCenter(europeanPrices, grid_) 
+
+            delta_ =   firstDerivativeAtCenter(americanPrices, grid_)
+                     - firstDerivativeAtCenter(europeanPrices, grid_)
                      + analyticEuro.delta();
-                     
-            gamma_ =   secondDerivativeAtCenter(americanPrices, grid_) 
-                     - secondDerivativeAtCenter(europeanPrices, grid_) 
+
+            gamma_ =   secondDerivativeAtCenter(americanPrices, grid_)
+                     - secondDerivativeAtCenter(europeanPrices, grid_)
                      + analyticEuro.gamma();
 
             // 7) Rollback another step to time = -dt for theta computation
@@ -152,7 +156,7 @@ namespace QuantLib {
 
             hasBeenCalculated_ = true;
         }
-            
+
     }
 
 }

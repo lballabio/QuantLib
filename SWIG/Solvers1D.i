@@ -1,29 +1,32 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /* $Source$
    $Log$
+   Revision 1.15  2001/04/06 18:46:21  nando
+   changed Authors, Contributors, Licence and copyright header
+
    Revision 1.14  2001/04/02 14:10:44  lballabio
    Added Brent solver to Ruby module
 
@@ -64,7 +67,7 @@ class PyObjectiveFunction : public ObjectiveFunction {
 		return result;
 	}
 	double derivative(double x) const {
-		PyObject* pyResult = 
+		PyObject* pyResult =
 		  PyObject_CallMethod(thePyFunction,"derivative","d",x);
 		QL_ENSURE(pyResult != NULL,
 		  "failed to call derivative() on Python object");
@@ -115,12 +118,12 @@ class Solver1D {
 
 #if defined(SWIGPYTHON)
 %addmethods Solver1D {
-    double solve(PyObject *pyFunction, double xAccuracy, double guess, 
+    double solve(PyObject *pyFunction, double xAccuracy, double guess,
         double step) {
             PyObjectiveFunction f(pyFunction);
             return self->solve(f, xAccuracy, guess, step);
     }
-    double bracketedSolve(PyObject *pyFunction, double xAccuracy, 
+    double bracketedSolve(PyObject *pyFunction, double xAccuracy,
         double guess, double xMin, double xMax) {
             PyObjectiveFunction f(pyFunction);
             return self->solve(f, xAccuracy, guess, xMin, xMax);
@@ -135,7 +138,7 @@ class Solver1D {
         RubyObjectiveFunction f;
         return self->solve(f, xAccuracy, guess, step);
     }
-    double bracketedSolve(double xAccuracy, double guess, 
+    double bracketedSolve(double xAccuracy, double guess,
       double xMin, double xMax) {
         RubyObjectiveFunction f;
         return self->solve(f, xAccuracy, guess, xMin, xMax);

@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,92 +16,21 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*
+    $Id$
     $Source$
-    $Name$
     $Log$
-    Revision 1.3  2001/04/05 13:33:59  nando
-    small fixes
-
-    Revision 1.2  2001/04/04 12:13:22  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.34  2001/03/28 07:37:20  marmar
-    file added
-
-    Revision 1.33  2001/03/26 09:59:33  lballabio
-    Added Helsinki and Wellington calendars
-
-    Revision 1.32  2001/03/22 12:24:27  marmar
-    Introducing pagoda options
-
-    Revision 1.31  2001/03/21 10:49:58  marmar
-    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
-    are no longer methods of BSMNumericalOption but separate
-    functions
-
-    Revision 1.30  2001/03/21 09:58:26  marmar
-    BermudanOption file added
-
-    Revision 1.29  2001/03/20 15:14:33  marmar
-    MultiPeriodOption is a generalization of DividendAmericanOption
-
-    Revision 1.28  2001/03/15 13:49:01  marmar
-    getCovariance function added
-
-    Revision 1.27  2001/03/09 12:40:39  lballabio
-    Spring cleaning for SWIG interfaces
-
-    Revision 1.26  2001/03/07 17:18:29  marmar
-    Example of european option using finite differences
-
-    Revision 1.25  2001/03/06 16:59:52  marmar
-    First, simplified version, of everest option
-
-    Revision 1.24  2001/03/02 08:36:44  enri
-    Shout options added:
-    	* BSMAmericanOption is now AmericanOption, same interface
-    	* ShoutOption added
-    	* both ShoutOption and AmericanOption inherit from
-    	  StepConditionOption
-    offline.doxy.linux added.
-
-    Revision 1.23  2001/03/01 12:57:37  enri
-    class BinaryOption added, test it with binary_option.py
-
-    Revision 1.22  2001/02/20 11:11:37  marmar
-    BarrierOption implements the analytical barrier option
-
-    Revision 1.21  2001/02/14 18:43:06  lballabio
-    Added coupling iterators
-
-    Revision 1.20  2001/01/25 11:57:32  lballabio
-    Included outer product and sqrt into matrix.h
-
-    Revision 1.19  2001/01/25 10:31:22  marmar
-    JacobiDecomposition renamed SymmetricSchurDecomposition
-
-    Revision 1.18  2001/01/24 16:02:56  marmar
-    math files added
-
-    Revision 1.17  2001/01/23 18:12:50  lballabio
-    Added matrix.h to Include/Math
+    Revision 1.4  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
 
 */
+
 
 #ifndef quantlib_h
 #define quantlib_h

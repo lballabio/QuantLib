@@ -1,48 +1,38 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.2  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file expressiontemplates.hpp
     \brief expression template implementation
-        
-    $Source$
-    $Name$
-    $Log$
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.8  2001/01/09 12:08:42  lballabio
-    Cleaned up style in a few files
-
-    Revision 1.7  2001/01/08 11:44:16  lballabio
-    Array back into QuantLib namespace - Math namespace broke expression 
-    templates, go figure
-
-    Revision 1.6  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-    
 */
 
 #ifndef quantlib_expression_templates_h
@@ -51,7 +41,7 @@
 #include "qldefines.hpp"
 #include <cmath>
 
-/* The concepts implemented here are from 
+/* The concepts implemented here are from
    T. L. Veldhuizen, "Expression templates", C++ Report, 7(5):26-31, June 1995
    http://extreme.indiana.edu/~tveldhui/papers/
 */
@@ -59,8 +49,8 @@
 namespace QuantLib {
 
     // iterator on generic vectorial expression
-    
-    template <class Iter> 
+
+    template <class Iter>
     class VectorialExpression {
       public:
         VectorialExpression(const Iter& i, int size) : i(i), n(size) {}
@@ -72,9 +62,9 @@ namespace QuantLib {
         mutable Iter i;
         int n;
     };
-    
+
     // dummy iterator on scalar
-    
+
     class Scalar {
       public:
         Scalar(double x) : x(x) {}
@@ -84,10 +74,10 @@ namespace QuantLib {
       private:
         double x;
     };
-    
+
     // iterator on unary vectorial expression
-    
-    template <class Iter1, class Operation> 
+
+    template <class Iter1, class Operation>
     class UnaryVectorialExpression {
       public:
         UnaryVectorialExpression(const Iter1& i, int size) : i(i), n(size) {}
@@ -99,16 +89,16 @@ namespace QuantLib {
         mutable Iter1 i;
         int n;
     };
-    
+
     // iterator on binary vectorial expression
-    
-    template <class Iter1, class Iter2, class Operation> 
+
+    template <class Iter1, class Iter2, class Operation>
     class BinaryVectorialExpression {
       public:
         BinaryVectorialExpression(const Iter1& i, const Iter2& j, int size)
         : i(i), j(j), n(size) {}
         double operator*() const { return Operation::apply(*i,*j); }
-        const BinaryVectorialExpression& operator++() const { 
+        const BinaryVectorialExpression& operator++() const {
             ++i; ++j; return *this; }
         // pre-increment operator not defined - inefficient
         int size() const { return n; }
@@ -117,71 +107,71 @@ namespace QuantLib {
         mutable Iter2 j;
         int n;
     };
-    
-    
+
+
     // unary operations
-    
+
     class Plus {
       public:
         static inline double apply(double a) { return +a; }
     };
-    
+
     class Minus {
       public:
         static inline double apply(double a) { return -a; }
     };
-    
-    
+
+
     // binary operations
-    
+
     class Add {
       public:
         static inline double apply(double a, double b) { return a+b; }
     };
-    
+
     class Subtract {
       public:
         static inline double apply(double a, double b) { return a-b; }
     };
-    
+
     class Multiply {
       public:
         static inline double apply(double a, double b) { return a*b; }
     };
-    
+
     class Divide {
       public:
         static inline double apply(double a, double b) { return a/b; }
     };
-    
-    
+
+
     // functions
-    
+
     class AbsoluteValue {
       public:
         static inline double apply(double a) { return QL_FABS(a); }
     };
-    
+
     class SquareRoot {
       public:
         static inline double apply(double a) { return QL_SQRT(a); }
     };
-    
+
     class Sine {
       public:
         static inline double apply(double a) { return QL_SIN(a); }
     };
-    
+
     class Cosine {
       public:
         static inline double apply(double a) { return QL_COS(a); }
     };
-    
+
     class Logarithm {
       public:
         static inline double apply(double a) { return QL_LOG(a); }
     };
-    
+
     class Exponential {
       public:
         static inline double apply(double a) { return QL_EXP(a); }

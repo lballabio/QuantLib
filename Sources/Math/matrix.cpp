@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file matrix.cpp
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.5  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -55,46 +59,46 @@
 #include "dataformatters.hpp"
 
 namespace QuantLib {
-  
+
   namespace Math {
-    
+
       Matrix matrixSqrt(const Matrix &realSymmMatrix) {
-        
+
           //! eigenvalues smaller than tolerance are considered zero
           const double tolerance = 1e-15;
-          
+
           Matrix inputMatrix(realSymmMatrix);
           int size = inputMatrix.rows();
-    
+
           QL_REQUIRE(size == inputMatrix.columns(),
               "sqrt input matrix must be square");
 
           SymmetricSchurDecomposition jd(inputMatrix);
           Matrix evectors(jd.eigenvectors());
           Array evalues(jd.eigenvalues());
-          
+
           double maxEv=0;
 		  int i;
           for(i = 0; i < size;i++)
-              if(evalues[i] >= maxEv) 
-                  maxEv = evalues[i];                
-          
+              if(evalues[i] >= maxEv)
+                  maxEv = evalues[i];
+
           Matrix diagonal(size,size,0);
           for(i = 0; i < size;i++){
-              if(QL_FABS(evalues[i]) <= tolerance*maxEv) 
+              if(QL_FABS(evalues[i]) <= tolerance*maxEv)
                   evalues[i] = 0;
-              QL_ENSURE(evalues[i] >=0, 
+              QL_ENSURE(evalues[i] >=0,
                   "sqrt: some eigenvalues("+
                   IntegerFormatter::toString(i) + ") = " +
                   DoubleFormatter::toString(evalues[i]) +
                   " are negative!");
               diagonal[i][i] = QL_SQRT(evalues[i]);
           }
-          
+
           Matrix result(evectors * diagonal * transpose(evectors));
           return result;
       }
-  
+
   }
 
 }

@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file symmetricschurdecomposition.cpp
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/04/06 18:46:21  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.5  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -55,53 +59,53 @@
 */
 
 /*
-    Note: because of the many levels of indentation required, 
+    Note: because of the many levels of indentation required,
     only 2 spaces are used for each indentation
 */
 
 #include "Math/symmetricschurdecomposition.hpp"
 
 namespace QuantLib {
-  
+
   namespace Math {
-    
+
     SymmetricSchurDecomposition::SymmetricSchurDecomposition(Matrix & s)
           : s_(s), hasBeenComputed_(false), size_(s.rows()),
           diagonal_(s.rows()), maxIterations_(100), epsPrec_(1e-15),
           eigenVectors_(s.rows(),s.columns(),0){
-            
-      QL_REQUIRE(s.rows() == s.columns(), 
+
+      QL_REQUIRE(s.rows() == s.columns(),
         "SymmetricSchurDecomposition: input matrix must be square");
-        
+
       for(int ite = 0; ite < size_; ite++){
           diagonal_[ite] = s[ite][ite];
           eigenVectors_[ite][ite] = 1.0;
       }
 
     }
-          
+
     void SymmetricSchurDecomposition::compute() const{
-        
+
       double threshold;
       Array tmpDiag(diagonal_);
       Array tmpAccumulate(size_,0);
       Matrix s(s_);
       bool keeplooping = true;
-  
+
       int ite = 1;
       do{ //main loop
         double sum = 0;
         for (int j = 0; j < size_-1; j++) {
             for (int k = j + 1; k < size_; k++){
                 sum += QL_FABS(s[j][k]);
-            }            
+            }
         }
 
         if (sum == 0){
           keeplooping = false;
         }
         else{
-        /*! To speed up computation a threshold is introduced to 
+        /*! To speed up computation a threshold is introduced to
            make sure it is worthy to perform the Jacobi rotation
         */
           if (ite < 5)
@@ -112,15 +116,15 @@ namespace QuantLib {
 		  int j;
           for (j = 0; j < size_-1; j++) {
             for (int k = j+1; k < size_; k++) {
-                
+
               double sine,rho,cosin,heig,tang,beta;
               double smll = QL_FABS(s[j][k]);
-              if( ite > 5 && 
+              if( ite > 5 &&
                   smll < epsPrec_ * QL_FABS(diagonal_[j]) &&
                   smll < epsPrec_ * QL_FABS(diagonal_[k]))
     	          s[j][k] = 0;
               else if (QL_FABS(s[j][k]) > threshold) {
-                heig = diagonal_[k]-diagonal_[j];	            
+                heig = diagonal_[k]-diagonal_[j];
                 if ( smll < epsPrec_ * QL_FABS(heig) )
     	            tang = s[j][k]/heig;
                 else {

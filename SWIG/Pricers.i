@@ -1,29 +1,32 @@
 
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- *   http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /* $Source$
    $Log$
+   Revision 1.28  2001/04/06 18:46:21  nando
+   changed Authors, Contributors, Licence and copyright header
+
    Revision 1.27  2001/04/04 09:51:18  marmar
    introducing cliquet option
 
@@ -67,8 +70,8 @@ using QuantLib::Pricers::ShoutOption;
 
 class BSMEuropeanOption {
   public:
-	BSMEuropeanOption(OptionType type, double underlying, double strike, 
-	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+	BSMEuropeanOption(OptionType type, double underlying, double strike,
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility);
 	~BSMEuropeanOption();
 	double value() const;
@@ -77,18 +80,18 @@ class BSMEuropeanOption {
 	double theta() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy = 1e-4, 
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
 	  int maxEvaluations = 100) const ;
 };
 
 
 class CliquetOption {
   public:
-	CliquetOption(OptionType type, 
-                  double underlying, 
-                  Rate dividendYield, 
-                  Rate riskFreeRate, 
-                  const DoubleVector &dates, 
+	CliquetOption(OptionType type,
+                  double underlying,
+                  Rate dividendYield,
+                  Rate riskFreeRate,
+                  const DoubleVector &dates,
                   double volatility);
 	~CliquetOption();
 	double value() const;
@@ -97,15 +100,15 @@ class CliquetOption {
 	double theta() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, 
-	                         double accuracy = 1e-4, 
+	double impliedVolatility(double targetValue,
+	                         double accuracy = 1e-4,
 	                         int maxEvaluations = 100) const ;
 };
 
 class FiniteDifferenceEuropean {
   public:
-	FiniteDifferenceEuropean(OptionType type, double underlying, double strike, 
-	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+	FiniteDifferenceEuropean(OptionType type, double underlying, double strike,
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, int timeSteps = 200, int gridPoints = 800);
 	~FiniteDifferenceEuropean();
 	double value() const;
@@ -116,14 +119,14 @@ class FiniteDifferenceEuropean {
 	double rho() const;
 	Array getGrid() const;
 	Array getPrices() const;
-	double impliedVolatility(double targetValue, double accuracy = 1e-4, 
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
 	  int maxEvaluations = 100) const ;
 };
 
 class BinaryOption {
   public:
-	BinaryOption(OptionType type, double underlying, double strike, 
-	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+	BinaryOption(OptionType type, double underlying, double strike,
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, double cashPayoff = 1);
 	~BinaryOption();
 	double value() const;
@@ -132,13 +135,13 @@ class BinaryOption {
 	double theta() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy = 1e-4, 
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
 	  int maxEvaluations = 100) const ;
 };
 
 class AmericanOption {
   public:
-	AmericanOption(OptionType type, double underlying, double strike, 
+	AmericanOption(OptionType type, double underlying, double strike,
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, int timeSteps = 100, int gridPoints = 100);
     ~AmericanOption();
@@ -153,7 +156,7 @@ class AmericanOption {
 };
 class ShoutOption {
   public:
-	ShoutOption(OptionType type, double underlying, double strike, 
+	ShoutOption(OptionType type, double underlying, double strike,
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, int timeSteps = 100, int gridPoints = 100);
     ~ShoutOption();
@@ -170,7 +173,7 @@ class ShoutOption {
 
 class BermudanOption{
   public:
-	BermudanOption(OptionType type, double underlying, double strike, 
+	BermudanOption(OptionType type, double underlying, double strike,
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, const DoubleVector &dates,
 	  int timeSteps = 100, int gridPoints = 100);
@@ -178,7 +181,7 @@ class BermudanOption{
 	double value() const;
 	double delta() const;
 	double gamma() const;
-	double theta() const;	
+	double theta() const;
 	double vega() const;
 	double rho() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4,
@@ -187,17 +190,17 @@ class BermudanOption{
 
 class DividendShoutOption{
   public:
-	DividendShoutOption(OptionType type, double underlying, double strike, 
+	DividendShoutOption(OptionType type, double underlying, double strike,
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
-	  double volatility, 
-	  const DoubleVector &dividends, 
+	  double volatility,
+	  const DoubleVector &dividends,
 	  const DoubleVector &exdivdates,
 	  int timeSteps = 100, int gridPoints = 100);
 	~DividendShoutOption();
 	double value() const;
 	double delta() const;
 	double gamma() const;
-	double theta() const;	
+	double theta() const;
 	double vega() const;
 	double rho() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4,
@@ -206,17 +209,17 @@ class DividendShoutOption{
 
 class DividendAmericanOption {
   public:
-	DividendAmericanOption(OptionType type, double underlying, double strike, 
+	DividendAmericanOption(OptionType type, double underlying, double strike,
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
-	  double volatility, 
-	  const DoubleVector &dividends, 
+	  double volatility,
+	  const DoubleVector &dividends,
 	  const DoubleVector &exdivdates,
 	  int timeSteps = 100, int gridPoints = 100);
 	~DividendAmericanOption();
 	double value() const;
 	double delta() const;
 	double gamma() const;
-	double theta() const;	
+	double theta() const;
 	double vega() const;
 	double rho() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4,
@@ -225,10 +228,10 @@ class DividendAmericanOption {
 
 class DividendEuropeanOption {
   public:
-	DividendEuropeanOption(OptionType type, double underlying, double strike, 
+	DividendEuropeanOption(OptionType type, double underlying, double strike,
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
-	  double volatility, 
-	  const DoubleVector &dividends, 
+	  double volatility,
+	  const DoubleVector &dividends,
 	  const DoubleVector &exdivdates);
 	~DividendEuropeanOption();
 	double value() const;
@@ -250,9 +253,9 @@ using QuantLib::Pricers::BarrierOption;
 
 class BarrierOption {
   public:
-    BarrierOption(BarrierType barrType, OptionType type, double underlying, 
+    BarrierOption(BarrierType barrType, OptionType type, double underlying,
         double strike, Rate dividendYield, Rate riskFreeRate,
-        Time residualTime, double volatility, double barrier, 
+        Time residualTime, double volatility, double barrier,
         double rebate = 0.0);
 	double delta() const;
 	double gamma() const;

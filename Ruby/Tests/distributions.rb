@@ -5,28 +5,29 @@
  This file is part of QuantLib.
  QuantLib is a C++ open source library for financial quantitative
  analysts and developers --- http://quantlib.sourceforge.net/
- 
+
  QuantLib is free software and you are allowed to use, copy, modify, merge,
- publish, distribute, and/or sell copies of it under the conditions stated 
+ publish, distribute, and/or sell copies of it under the conditions stated
  in the QuantLib License.
 
- This program is distributed in the hope that it will be useful, but 
+ This program is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
 
  You should have received a copy of the license along with this file;
  if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 
- QuantLib license is also available at:
- http://quantlib.sourceforge.net/LICENSE.TXT
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
+=end
 
+=begin
+ $Id$
  $Source$
  $Log$
- Revision 1.2  2001/04/04 14:10:30  lballabio
- Ruby tests moved on top of RubyUnit
-
- Revision 1.1  2001/03/27 17:39:39  lballabio
- Making sure dist target is complete (and added distributions to Ruby module)
+ Revision 1.3  2001/04/06 18:46:21  nando
+ changed Authors, Contributors, Licence and copyright header
 
 =end
 
@@ -80,7 +81,7 @@ class DistributionTest < RUNIT::TestCase
         normal = QuantLib::NormalDistribution.new(average, sigma)
         cum =    QuantLib::CumulativeNormalDistribution.new(average, sigma)
         invCum = QuantLib::InvCumulativeNormalDistribution.new(average, sigma)
-        
+
         xMin = average - 4*sigma
         xMax = average + 4*sigma
 
@@ -91,14 +92,14 @@ class DistributionTest < RUNIT::TestCase
         0.upto(n-1) { |i| x[i] = xMin+h*i }
 
         y = x.map { |z| gaussian(z,average,sigma) }
-        
+
         yIntegrated = x.map { |z| cum.call(z) }
         yTemp       = x.map { |z| normal.call(z) }
         y2Temp      = x.map { |z| cum.derivative(z) }
         xTemp       = yIntegrated.map { |z| invCum.call(z) }
         yd          = x.map { |z| normal.derivative(z) }
         ydTemp      = x.map { |z| gaussianDerivative(z,average,sigma) }
-        
+
         #check norm=gaussian
         e = yTemp.diff(y).norm(h)
         unless e <= 1.0e-16
@@ -106,7 +107,7 @@ class DistributionTest < RUNIT::TestCase
                   "norm of C++ NormalDistribution " + \
                   "minus analytic gaussian: #{e}\n"
         end
-        
+
         #check invCum(cum) = Identity
         e = xTemp.diff(x).norm(h)
         unless e <= 1.0e-3
@@ -114,7 +115,7 @@ class DistributionTest < RUNIT::TestCase
                   "norm of C++ invCum(cum(.)) " + \
                   "minus identity: #{e}\n"
         end
-        
+
         #check cum.derivative=normal
         e = y2Temp.diff(y).norm(h)
         unless e <= 1.0e-16
@@ -122,7 +123,7 @@ class DistributionTest < RUNIT::TestCase
                   "norm of C++ Cumulative.derivative " + \
                   "minus analytic gaussian: #{e}\n"
         end
-        
+
         #check normal.derivative=gaussianDerivative
         e = ydTemp.diff(yd).norm(h)
         unless e <= 1.0e-16

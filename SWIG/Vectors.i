@@ -1,28 +1,32 @@
+
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /* $Source$
    $Log$
+   Revision 1.23  2001/04/06 18:46:21  nando
+   changed Authors, Contributors, Licence and copyright header
+
    Revision 1.22  2001/03/30 15:45:42  lballabio
    Still working on make dist (and added IntVector and DoubleVector to Ruby module)
 
@@ -159,15 +163,15 @@ class IntVector {
             rb_yield(INT2NUM((*self)[i]));
     }
     #endif
-}; 
+};
 
 // typemap Python sequence of ints to std::vector<int>
 
-%typemap(python,in) IntVector (IntVector temp), IntVector * (IntVector temp), 
+%typemap(python,in) IntVector (IntVector temp), IntVector * (IntVector temp),
   const IntVector & (IntVector temp), IntVector & (IntVector temp) {
     IntVector* v;
     if (PyTuple_Check($source) || PyList_Check($source)) {
-        int size = (PyTuple_Check($source) ? 
+        int size = (PyTuple_Check($source) ?
             PyTuple_Size($source) :
             PyList_Size($source));
         temp = IntVector(size);
@@ -299,16 +303,16 @@ class DoubleVector {
             rb_yield(rb_float_new((*self)[i]));
     }
     #endif
-}; 
+};
 
 // typemap Python sequence of doubles to std::vector<double>
 
-%typemap(python,in) DoubleVector (DoubleVector temp), 
-  DoubleVector * (DoubleVector temp), const DoubleVector & (DoubleVector temp), 
+%typemap(python,in) DoubleVector (DoubleVector temp),
+  DoubleVector * (DoubleVector temp), const DoubleVector & (DoubleVector temp),
   DoubleVector & (DoubleVector temp) {
     DoubleVector* v;
     if (PyTuple_Check($source) || PyList_Check($source)) {
-        int size = (PyTuple_Check($source) ? 
+        int size = (PyTuple_Check($source) ?
             PyTuple_Size($source) :
             PyList_Size($source));
         temp = DoubleVector(size);

@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file filteringiterator.hpp
@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:23  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -88,11 +91,11 @@ namespace QuantLib {
             typename QL_ITERATOR_TRAITS<Iterator>::reference>
         {
           public:
-            /* These typedefs are needed even though inherited from QL_ITERATOR 
+            /* These typedefs are needed even though inherited from QL_ITERATOR
                (see 14.6.2.3 of the standard).  */
-            typedef typename QL_ITERATOR_TRAITS<Iterator>::pointer 
+            typedef typename QL_ITERATOR_TRAITS<Iterator>::pointer
                 pointer;
-            typedef typename QL_ITERATOR_TRAITS<Iterator>::reference 
+            typedef typename QL_ITERATOR_TRAITS<Iterator>::reference
                 reference;
             filtering_iterator(const Iterator&, const UnaryPredicate&,
                 const Iterator& beforeBegin, const Iterator& end);
@@ -123,7 +126,7 @@ namespace QuantLib {
         /*! \relates filtering_iterator */
         template <class Iterator, class UnaryPredicate>
         filtering_iterator<Iterator,UnaryPredicate>
-        make_filtering_iterator(Iterator it, UnaryPredicate p, 
+        make_filtering_iterator(Iterator it, UnaryPredicate p,
             Iterator beforeBegin, Iterator end);
 
 
@@ -203,7 +206,7 @@ namespace QuantLib {
 
         template <class Iterator, class UnaryPredicate>
         inline filtering_iterator<Iterator,UnaryPredicate>
-        make_filtering_iterator(Iterator it, UnaryPredicate p, 
+        make_filtering_iterator(Iterator it, UnaryPredicate p,
             Iterator beforeBegin, Iterator end) {
                 return filtering_iterator<Iterator,UnaryPredicate>(
                     it,p,beforeBegin,end);

@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,8 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file bsmeuropeanoption.cpp
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.25  2001/04/06 18:46:22  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.24  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -70,8 +74,8 @@ namespace QuantLib {
             riskFreeDiscount_ = (QL_EXP(-riskFreeRate_*residualTime_));
               standardDeviation_ = volatility_*QL_SQRT(residualTime_);
               Math::CumulativeNormalDistribution f;
-              double D1 = QL_LOG(underlying_/strike_)/standardDeviation_ + 
-                    standardDeviation_/2.0 + (riskFreeRate_ - dividendYield_)* 
+              double D1 = QL_LOG(underlying_/strike_)/standardDeviation_ +
+                    standardDeviation_/2.0 + (riskFreeRate_ - dividendYield_)*
                                             residualTime_/standardDeviation_;
               double D2 = D1 - standardDeviation_;
               double fD1 = f(D1), fD2 = f(D2);
@@ -96,7 +100,7 @@ namespace QuantLib {
                     "BSMEuropeanOption: invalid option type");
             }
             hasBeenCalculated_ = true;
-            value_ = underlying_ * dividendDiscount_ * alpha_ - 
+            value_ = underlying_ * dividendDiscount_ * alpha_ -
                                     strike_ * riskFreeDiscount_ * beta_;
           }
             return value_;
@@ -120,9 +124,9 @@ namespace QuantLib {
           if(!hasBeenCalculated_)
             value();
 
-            return -underlying_ * NID1_ * volatility_ * 
+            return -underlying_ * NID1_ * volatility_ *
                 dividendDiscount_/(2.0*QL_SQRT(residualTime_)) +
-                  dividendYield_*underlying_*alpha_*dividendDiscount_ - 
+                  dividendYield_*underlying_*alpha_*dividendDiscount_ -
                         riskFreeRate_*strike_*riskFreeDiscount_*beta_;
         }
 

@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,41 +16,23 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.2  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file solver1d.hpp
     \brief Abstract 1-D solver class
-
-    $Source$
-    $Log$
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.12  2001/04/02 10:59:47  lballabio
-    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
-
-    Revision 1.11  2001/03/23 08:44:12  aleppo
-    Small bug fixed
-
-    Revision 1.10  2001/01/17 13:53:35  nando
-    80 columns enforced
-    tabs removed
-    private data member now have trailing underscore
-
-    Revision 1.9  2000/12/27 14:05:56  lballabio
-    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
-    Revision 1.8  2000/12/20 17:00:57  enri
-    modified to use new macros
-
-    Revision 1.7  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
 */
 
 /*! \namespace QuantLib::Solvers1D

@@ -1,28 +1,32 @@
+
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /* $Source$
    $Log$
+   Revision 1.12  2001/04/06 18:46:21  nando
+   changed Authors, Contributors, Licence and copyright header
+
    Revision 1.11  2001/03/22 12:13:05  marmar
    Introducing pagoda options
 
@@ -31,13 +35,13 @@
 
 	Revision 1.9  2001/03/07 09:35:14  marmar
 	EverestOption interface changed
-	
+
 	Revision 1.8  2001/03/06 17:00:37  marmar
 	First, simplified version, of everest option introduced
-	
+
 	Revision 1.7  2001/02/26 17:05:30  lballabio
 	Ultimate Array interface and typemap for SWIG
-	
+
 */
 
 #ifndef quantlib_Montecarlo_Pricers_i
@@ -60,8 +64,8 @@ using QuantLib::Pricers::PagodaOption;
 
 class McEuropeanPricer {
   public:
-	McEuropeanPricer(OptionType type, double underlying, double strike, 
-		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
+	McEuropeanPricer(OptionType type, double underlying, double strike,
+		 Rate dividendYield,   Rate riskFreeRate, double residualTime,
 		 double volatility,	int timesteps, int confnumber, long seed);
     ~McEuropeanPricer();
 	double value() const;
@@ -70,7 +74,7 @@ class McEuropeanPricer {
 
 class GeometricAsianOption {
   public:
-	GeometricAsianOption(OptionType type, double underlying, double strike, 
+	GeometricAsianOption(OptionType type, double underlying, double strike,
 		Rate dividendYield, Rate exerciseRate,
 		double residualTime, double volatility);
     ~GeometricAsianOption();
@@ -80,8 +84,8 @@ class GeometricAsianOption {
 
 class AveragePriceAsian {
   public:
-	AveragePriceAsian(OptionType type, double underlying, double strike, 
-		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
+	AveragePriceAsian(OptionType type, double underlying, double strike,
+		 Rate dividendYield,   Rate riskFreeRate, double residualTime,
 		 double volatility,	int timesteps, int confnumber, long seed);
     ~AveragePriceAsian();
 	double value() const;
@@ -91,8 +95,8 @@ class AveragePriceAsian {
 
 class AverageStrikeAsian {
   public:
-	AverageStrikeAsian(OptionType type, double underlying, double strike, 
-		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
+	AverageStrikeAsian(OptionType type, double underlying, double strike,
+		 Rate dividendYield,   Rate riskFreeRate, double residualTime,
 		 double volatility,	int timesteps, int confnumber, long seed);
     ~AverageStrikeAsian();
 	double value() const;
@@ -102,9 +106,9 @@ class AverageStrikeAsian {
 
 class PlainBasketOption {
   public:
-    PlainBasketOption(const Array &underlying, 
-        const Array &dividendYield, const Matrix &covariance, 
-        Rate riskFreeRate,  double residualTime, 
+    PlainBasketOption(const Array &underlying,
+        const Array &dividendYield, const Matrix &covariance,
+        Rate riskFreeRate,  double residualTime,
         int timesteps, long samples, long seed = 0);
     ~PlainBasketOption();
 	double value() const;
@@ -126,8 +130,8 @@ class PagodaOption {
 
 class Himalaya {
   public:
-    Himalaya(const Array& underlying, const Array& dividendYield, 
-        const Matrix &covariance, Rate riskFreeRate, double strike, 
+    Himalaya(const Array& underlying, const Array& dividendYield,
+        const Matrix &covariance, Rate riskFreeRate, double strike,
         const DoubleVector &timeDelays, long samples, long seed=0);
     ~Himalaya();
 	double value() const;
@@ -137,7 +141,7 @@ class Himalaya {
 
 class EverestOption {
   public:
-    EverestOption(const Array& dividendYield, const Matrix &covariance, 
+    EverestOption(const Array& dividendYield, const Matrix &covariance,
                   Rate riskFreeRate, Time residualTime,
                   long samples, long seed=0);
     ~EverestOption();

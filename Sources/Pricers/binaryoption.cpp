@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,17 +16,21 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*!  \file binaryoption.cpp
    \brief European style cash-or-nothing option.
-  
+
   $Source$
 
   $Log$
+  Revision 1.4  2001/04/06 18:46:21  nando
+  changed Authors, Contributors, Licence and copyright header
+
   Revision 1.3  2001/04/04 12:13:24  nando
   Headers policy part 2:
   The Include directory is added to the compiler's include search path.
@@ -50,19 +53,19 @@
 
 namespace QuantLib
 {
-    namespace Pricers 
+    namespace Pricers
     {
-        BinaryOption::BinaryOption(Type type, double underlying, double strike, 
+        BinaryOption::BinaryOption(Type type, double underlying, double strike,
                                    Rate dividendYield, Rate
-                                   riskFreeRate, Time residualTime, 
+                                   riskFreeRate, Time residualTime,
                                    double volatility, double
                                    cashPayoff)
             : BSMOption(type, underlying, strike, dividendYield,
                         riskFreeRate, residualTime, volatility),
-            cashPayoff_(cashPayoff) 
+            cashPayoff_(cashPayoff)
         {
-            D1_ = QL_LOG(underlying_/strike_)/volSqrtTime_ + 
-                volSqrtTime_/2.0 + (riskFreeRate_ - dividendYield_)* 
+            D1_ = QL_LOG(underlying_/strike_)/volSqrtTime_ +
+                volSqrtTime_/2.0 + (riskFreeRate_ - dividendYield_)*
                 residualTime_/volSqrtTime_;
             discount_ = QL_EXP(-riskFreeRate_ * residualTime_);
 
@@ -75,7 +78,7 @@ namespace QuantLib
             Math::CumulativeNormalDistribution f;
 
             ND2_ = f(D2_);
-            
+
             switch (type_) {
             case Option::Call:
                 optionSign_ = 1.0;
@@ -94,7 +97,7 @@ namespace QuantLib
                 break;
             default:
                 throw IllegalArgumentError("AnalyticBSM: invalid option type");
-            
+
             }
         }
 
@@ -110,14 +113,14 @@ namespace QuantLib
 //                       "BinaryOption::value() : BinaryOption must be initialized");
             double inTheMoneyProbability;
             switch (type_) {
-            case Option::Call:      
+            case Option::Call:
                 inTheMoneyProbability = ND2_;
                 break;
-            case Option::Put:       
-                inTheMoneyProbability = 1.0 - ND2_;  
+            case Option::Put:
+                inTheMoneyProbability = 1.0 - ND2_;
                 break;
-            case Option::Straddle:  
-                inTheMoneyProbability = 1.0;      
+            case Option::Straddle:
+                inTheMoneyProbability = 1.0;
                 break;
             default:
                 throw IllegalArgumentError("AnalyticBSM: invalid option type");
@@ -132,9 +135,9 @@ namespace QuantLib
 
         double BinaryOption::gamma() const {
 //            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
-            return -cashPayoff_ * discount_ * optionSign_ * NID2_ * 
+            return -cashPayoff_ * discount_ * optionSign_ * NID2_ *
                 ( 1.0 + D2_/volSqrtTime_) / (underlying_ *
-                                             underlying_ * 
+                                             underlying_ *
                                              volSqrtTime_);
         }
 
@@ -145,10 +148,10 @@ namespace QuantLib
                 return cashPayoff_*discount_*riskFreeRate_;
             } else {
                 double D2IT = (-QL_LOG(underlying_ / strike_) / volSqrtTime_
-                               + (riskFreeRate_ - dividendYield_) * 
+                               + (riskFreeRate_ - dividendYield_) *
                                residualTime_ / volSqrtTime_
                                - volSqrtTime_ / 2.0)/(2.0 * residualTime_);
-                return -cashPayoff_ * discount_ * optionSign_ * 
+                return -cashPayoff_ * discount_ * optionSign_ *
                     ( D2IT * NID2_ - riskFreeRate_ * beta_);
             }
         }

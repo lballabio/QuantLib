@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000, 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,8 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file bsmnumericaloption.hpp
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -94,8 +98,8 @@ namespace QuantLib {
 
         class BSMNumericalOption : public BSMOption {
           public:
-                BSMNumericalOption(Type type, double underlying, double strike, 
-                    Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+                BSMNumericalOption(Type type, double underlying, double strike,
+                    Rate dividendYield, Rate riskFreeRate, Time residualTime,
                     double volatility, int gridPoints);
                 // accessors
                 virtual void calculate() const = 0;
@@ -132,16 +136,16 @@ namespace QuantLib {
         //! This is a safety check to be sure we have enough grid points.
         #define QL_NUM_OPT_GRID_POINTS_PER_YEAR        50
 
-            // The following is a safety check to be sure we have enough grid 
+            // The following is a safety check to be sure we have enough grid
             // points.
-        inline int BSMNumericalOption::safeGridPoints(int gridPoints, 
+        inline int BSMNumericalOption::safeGridPoints(int gridPoints,
                                                         Time residualTime){
-            return QL_MAX(gridPoints, 
-              residualTime>1.0 ? (int)(QL_NUM_OPT_MIN_GRID_POINTS + 
+            return QL_MAX(gridPoints,
+              residualTime>1.0 ? (int)(QL_NUM_OPT_MIN_GRID_POINTS +
               (residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) :
               QL_NUM_OPT_MIN_GRID_POINTS);
         }
-        
+
     }
 
 }

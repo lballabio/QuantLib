@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at
- *          http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file multipathgenerator.hpp
     \brief Generates a multi path from a random-point generator
@@ -26,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.1  2001/04/04 11:07:22  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -73,7 +77,7 @@ namespace QuantLib {
             Array next();
             double weight();
         };
-        
+
     */
 
         template <class RAG>
@@ -82,13 +86,13 @@ namespace QuantLib {
         // typedef MultiPath SampleType;
         // this typedef would make MultiPathGenerator into a sample generator
             MultiPathGenerator();
-            MultiPathGenerator(int timeDimension, 
-                               const Math::Matrix &covariance, 
-                               const Array &average = Array(), 
+            MultiPathGenerator(int timeDimension,
+                               const Math::Matrix &covariance,
+                               const Array &average = Array(),
                                long seed=0);
-            MultiPathGenerator(const std::vector<Time> &dates, 
-                               const Math::Matrix &covariance, 
-                               const Array &average = Array(), 
+            MultiPathGenerator(const std::vector<Time> &dates,
+                               const Math::Matrix &covariance,
+                               const Array &average = Array(),
                                long seed=0);
             MultiPath next() const;
             double weight() const{return weight_;}
@@ -107,7 +111,7 @@ namespace QuantLib {
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
             int timeDimension,
-            const Math::Matrix &covariance, 
+            const Math::Matrix &covariance,
             const Array &average,
             long seed):
             timeDimension_(timeDimension),
@@ -120,7 +124,7 @@ namespace QuantLib {
                 "Time dimension("+
                 DoubleFormatter::toString(timeDimension_)+
                 ") too small");
-                
+
             if(average.size() != 0){
                 QL_REQUIRE(average.size() == average_.size(),
                            "MultiPathGenerator covariance and average "
@@ -132,9 +136,9 @@ namespace QuantLib {
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            const std::vector<Time> &dates, 
-            const Math::Matrix &covariance, 
-            const Array &average, 
+            const std::vector<Time> &dates,
+            const Math::Matrix &covariance,
+            const Array &average,
             long seed):
             timeDimension_(dates.size()),
             timeDelays_(dates.size()),
@@ -153,11 +157,11 @@ namespace QuantLib {
                 "Time dimension("+
                 IntegerFormatter::toString(timeDimension_)+
                 ") too small");
-                             
+
              QL_REQUIRE(dates[0] >= 0,
                  "MultiPathGenerator: first date(" +
                  DoubleFormatter::toString(dates[0])+
-                 ") must be positive");                             
+                 ") must be positive");
             timeDelays_[0] = dates[0];
 
             if(timeDimension_ > 1){
@@ -168,10 +172,10 @@ namespace QuantLib {
                         DoubleFormatter::toString(dates[i-1])+
                         " is later than date("+
                         IntegerFormatter::toString(i)+")="+
-                        DoubleFormatter::toString(dates[i]));                    
-                    timeDelays_[i] = dates[i] - dates[i-1];                    
+                        DoubleFormatter::toString(dates[i]));
+                    timeDelays_[i] = dates[i] - dates[i-1];
                 }
-            }                    
+            }
         }
 
         template <class RAG>
@@ -183,10 +187,10 @@ namespace QuantLib {
             Array nextArray(numAssets_);
             weight_ = 1.0;
             for(int i = 0; i < timeDimension_; i++){
-                nextArray = average_ * timeDelays_[i] 
+                nextArray = average_ * timeDelays_[i]
                             + rndArray_.next()* QL_SQRT(timeDelays_[i]);
                 weight_ *= rndArray_.weight();
-                std::copy(nextArray.begin(), nextArray.end(),     
+                std::copy(nextArray.begin(), nextArray.end(),
                           multiPath.column_begin(i));
             }
             return multiPath;

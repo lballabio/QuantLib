@@ -1,24 +1,25 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file matrix.hpp
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -71,12 +75,12 @@
 #include <algorithm>
 
 namespace QuantLib {
-    
+
     namespace Math {
-        
+
         //! %matrix used in linear algebra.
-        /*! This class implements the concept of vector as used in linear 
-            algebra. As such, it is <b>not</b> meant to be used as a 
+        /*! This class implements the concept of vector as used in linear
+            algebra. As such, it is <b>not</b> meant to be used as a
             container.
         */
         class Matrix {
@@ -95,7 +99,7 @@ namespace QuantLib {
             //@}
 
             //! \name Algebraic operators
-            /*! \pre all matrices involved in an algebraic expression must have 
+            /*! \pre all matrices involved in an algebraic expression must have
                 the same size.
             */
             //@{
@@ -112,14 +116,14 @@ namespace QuantLib {
                 const_reverse_iterator;
             typedef double* row_iterator;
             typedef const double* const_row_iterator;
-            typedef QL_REVERSE_ITERATOR(row_iterator,double) 
+            typedef QL_REVERSE_ITERATOR(row_iterator,double)
                 reverse_row_iterator;
             typedef QL_REVERSE_ITERATOR(const_row_iterator,double)
                 const_reverse_row_iterator;
             typedef Utilities::stepping_iterator<double*> column_iterator;
-            typedef Utilities::stepping_iterator<const double*> 
+            typedef Utilities::stepping_iterator<const double*>
                 const_column_iterator;
-            typedef QL_REVERSE_ITERATOR(column_iterator,double) 
+            typedef QL_REVERSE_ITERATOR(column_iterator,double)
                 reverse_column_iterator;
             typedef QL_REVERSE_ITERATOR(const_column_iterator,double)
                 const_reverse_column_iterator;
@@ -171,9 +175,9 @@ namespace QuantLib {
             double* pointer_;
             int rows_, columns_;
         };
-        
+
         // algebraic operators
-        
+
         /*! \relates Matrix */
         Matrix operator+(const Matrix&, const Matrix&);
         /*! \relates Matrix */
@@ -197,7 +201,7 @@ namespace QuantLib {
 
 
         // misc. operations
-        
+
         /*! \relates Matrix */
         Matrix transpose(const Matrix&);
         /*! \relates Matrix */
@@ -208,23 +212,23 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline Matrix::Matrix()
         : pointer_(0), rows_(0), columns_(0) {}
-    
+
         inline Matrix::Matrix(int rows, int columns)
         : pointer_(0), rows_(0), columns_(0) {
             if (rows > 0 && columns > 0)
                 allocate(rows,columns);
         }
-    
+
         inline Matrix::Matrix(int rows, int columns, double value)
         : pointer_(0), rows_(0), columns_(0) {
             if (rows > 0 && columns > 0)
                 allocate(rows,columns);
             std::fill(begin(),end(),value);
         }
-    
+
         inline Matrix::Matrix(const Matrix& from)
         : pointer_(0), rows_(0), columns_(0) {
             allocate(from.rows(), from.columns());
@@ -237,7 +241,7 @@ namespace QuantLib {
             pointer_ = 0;
             rows_ = columns_ = 0;
         }
-    
+
         inline Matrix& Matrix::operator=(const Matrix& from) {
             if (this != &from) {
                 allocate(from.rows(),from.columns());
@@ -245,7 +249,7 @@ namespace QuantLib {
             }
             return *this;
         }
-        
+
         inline void Matrix::allocate(int rows, int columns) {
             if (rows_ == rows && columns_ == columns)
                 return;
@@ -260,11 +264,11 @@ namespace QuantLib {
                 columns_ = columns;
             }
         }
-    
+
         inline void Matrix::copy(const Matrix& from) {
             std::copy(from.begin(),from.end(),begin());
         }
-        
+
         inline Matrix& Matrix::operator+=(const Matrix& m) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
@@ -273,7 +277,7 @@ namespace QuantLib {
             std::transform(begin(),end(),m.begin(),begin(),std::plus<double>());
             return *this;
         }
-    
+
         inline Matrix& Matrix::operator-=(const Matrix& m) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
@@ -283,13 +287,13 @@ namespace QuantLib {
                 std::minus<double>());
             return *this;
         }
-    
+
         inline Matrix& Matrix::operator*=(double x) {
             std::transform(begin(),end(),begin(),
                 std::bind2nd(std::multiplies<double>(),x));
             return *this;
         }
-    
+
         inline Matrix& Matrix::operator/=(double x) {
             std::transform(begin(),end(),begin(),
                 std::bind2nd(std::divides<double>(),x));
@@ -299,99 +303,99 @@ namespace QuantLib {
         inline Matrix::const_iterator Matrix::begin() const {
             return pointer_;
         }
-    
+
         inline Matrix::iterator Matrix::begin() {
             return pointer_;
         }
-    
+
         inline Matrix::const_iterator Matrix::end() const {
             return pointer_+rows_*columns_;
         }
-    
+
         inline Matrix::iterator Matrix::end() {
             return pointer_+rows_*columns_;
         }
-    
+
         inline Matrix::const_reverse_iterator Matrix::rbegin() const {
             return const_reverse_iterator(end());
         }
-    
+
         inline Matrix::reverse_iterator Matrix::rbegin() {
             return reverse_iterator(end());
         }
-    
+
         inline Matrix::const_reverse_iterator Matrix::rend() const {
             return const_reverse_iterator(begin());
         }
-    
+
         inline Matrix::reverse_iterator Matrix::rend() {
             return reverse_iterator(begin());
         }
-    
+
         inline Matrix::const_row_iterator Matrix::row_begin(int i) const {
             return pointer_+columns_*i;
         }
-    
+
         inline Matrix::row_iterator Matrix::row_begin(int i) {
             return pointer_+columns_*i;
         }
-    
+
         inline Matrix::const_row_iterator Matrix::row_end(int i) const {
             return pointer_+columns_*(i+1);
         }
-    
+
         inline Matrix::row_iterator Matrix::row_end(int i) {
             return pointer_+columns_*(i+1);
         }
-    
-        inline Matrix::const_reverse_row_iterator 
+
+        inline Matrix::const_reverse_row_iterator
         Matrix::row_rbegin(int i) const {
             return const_reverse_row_iterator(row_end(i));
         }
-    
+
         inline Matrix::reverse_row_iterator Matrix::row_rbegin(int i) {
             return reverse_row_iterator(row_end(i));
         }
-    
-        inline Matrix::const_reverse_row_iterator 
+
+        inline Matrix::const_reverse_row_iterator
         Matrix::row_rend(int i) const {
             return const_reverse_row_iterator(row_begin(i));
         }
-    
+
         inline Matrix::reverse_row_iterator Matrix::row_rend(int i) {
             return reverse_row_iterator(row_begin(i));
         }
-    
+
         inline Matrix::const_column_iterator Matrix::column_begin(int i) const {
             return const_column_iterator(pointer_+i,columns_);
         }
-    
+
         inline Matrix::column_iterator Matrix::column_begin(int i) {
             return column_iterator(pointer_+i,columns_);
         }
-    
+
         inline Matrix::const_column_iterator Matrix::column_end(int i) const {
             return column_begin(i)+rows_;
         }
-    
+
         inline Matrix::column_iterator Matrix::column_end(int i) {
             return column_begin(i)+rows_;
         }
-    
+
         inline Matrix::const_reverse_column_iterator
         Matrix::column_rbegin(int i) const {
             return const_reverse_column_iterator(column_end(i));
         }
-    
+
         inline Matrix::reverse_column_iterator Matrix::column_rbegin(int i) {
             return reverse_column_iterator(column_end(i));
         }
-    
-        inline Matrix::const_reverse_column_iterator 
+
+        inline Matrix::const_reverse_column_iterator
         Matrix::column_rend(int i) const {
             return const_reverse_column_iterator(column_begin(i));
         }
-    
+
         inline Matrix::reverse_column_iterator Matrix::column_rend(int i) {
             return reverse_column_iterator(column_begin(i));
         }
@@ -399,30 +403,30 @@ namespace QuantLib {
         inline Matrix::const_row_iterator Matrix::operator[](int i) const {
             return row_begin(i);
         }
-    
+
         inline Matrix::row_iterator Matrix::operator[](int i) {
             return row_begin(i);
         }
-        
+
         inline Array Matrix::diagonal(void) const{
-            int arraySize = QL_MIN(rows(),columns());            
+            int arraySize = QL_MIN(rows(),columns());
             Array tmp(arraySize);
             for(int i = 0; i < arraySize; i++)
                 tmp[i] = (*this)[i][i];
             return tmp;
         }
-    
+
         inline int Matrix::rows() const {
             return rows_;
         }
-    
+
         inline int Matrix::columns() const {
             return columns_;
         }
 
         inline Matrix operator+(const Matrix& m1, const Matrix& m2) {
             #ifdef QL_DEBUG
-                QL_REQUIRE(m1.rows() == m2.rows() && 
+                QL_REQUIRE(m1.rows() == m2.rows() &&
                     m1.columns() == m2.columns(),
                     "matrices with different sizes cannot be added");
             #endif
@@ -431,10 +435,10 @@ namespace QuantLib {
                 std::plus<double>());
             return temp;
         }
-    
+
         inline Matrix operator-(const Matrix& m1, const Matrix& m2) {
             #ifdef QL_DEBUG
-                QL_REQUIRE(m1.rows() == m2.rows() && 
+                QL_REQUIRE(m1.rows() == m2.rows() &&
                     m1.columns() == m2.columns(),
                     "matrices with different sizes cannot be subtracted");
             #endif
@@ -443,21 +447,21 @@ namespace QuantLib {
                 std::minus<double>());
             return temp;
         }
-    
+
         inline Matrix operator*(const Matrix& m, double x) {
             Matrix temp(m.rows(),m.columns());
             std::transform(m.begin(),m.end(),temp.begin(),
                 std::bind2nd(std::multiplies<double>(),x));
             return temp;
         }
-    
+
         inline Matrix operator*(double x, const Matrix& m) {
             Matrix temp(m.rows(),m.columns());
             std::transform(m.begin(),m.end(),temp.begin(),
                 std::bind2nd(std::multiplies<double>(),x));
             return temp;
         }
-    
+
         inline Matrix operator/(const Matrix& m, double x) {
             Matrix temp(m.rows(),m.columns());
             std::transform(m.begin(),m.end(),temp.begin(),
@@ -490,7 +494,7 @@ namespace QuantLib {
                     std::inner_product(v.begin(),v.end(),m.row_begin(i),0.0);
             return result;
         }
-    
+
         inline Matrix operator*(const Matrix& m1, const Matrix& m2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(m1.columns() == m2.rows(),
@@ -499,12 +503,12 @@ namespace QuantLib {
             Matrix result(m1.rows(),m2.columns());
             for (int i=0; i<result.rows(); i++)
                 for (int j=0; j<result.columns(); j++)
-                    result[i][j] = 
+                    result[i][j] =
                         std::inner_product(m1.row_begin(i), m1.row_end(i),
                             m2.column_begin(j), 0.0);
             return result;
         }
-        
+
         inline Matrix transpose(const Matrix& m) {
             Matrix result(m.columns(),m.rows());
             for (int i=0; i<m.rows(); i++)
@@ -513,7 +517,7 @@ namespace QuantLib {
         }
 
         inline Matrix outerProduct(const Array &v1, const Array &v2){
-            QL_REQUIRE(v1.size() > 0 && v2.size() > 0, 
+            QL_REQUIRE(v1.size() > 0 && v2.size() > 0,
                     "outerProduct: vectors must have non-null dimension");
             Matrix result(v1.size(),v2.size());
             for(int i = 0; i < v1.size(); i++)

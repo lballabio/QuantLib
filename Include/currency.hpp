@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,36 +16,23 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.2  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file currency.hpp
     \brief Abstract currency class
-
-    $Source$
-    $Log$
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.10  2001/03/12 17:35:09  lballabio
-    Removed global IsNull function - could have caused very vicious loops
-
-    Revision 1.9  2001/02/16 15:19:52  lballabio
-    Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
-
-    Revision 1.8  2001/02/09 19:21:09  lballabio
-    removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
-
-    Revision 1.7  2001/01/17 14:37:54  nando
-    tabs removed
-
-    Revision 1.6  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
 */
 
 /*! \namespace QuantLib::Currencies
@@ -75,7 +61,7 @@ namespace QuantLib {
     class Currency {
       public:
         //! Returns the name of the currency.
-        /*! \warning This method is used for output and comparison between 
+        /*! \warning This method is used for output and comparison between
             currencies.
             It is <b>not</b> meant to be used for writing switch-on-type code.
         */
@@ -103,17 +89,17 @@ namespace QuantLib {
         return settlementCalendar()->advance(d,settlementDays(),Days);
     }
 
-    /*! Returns <tt>true</tt> iff the two currencies belong to the same derived 
+    /*! Returns <tt>true</tt> iff the two currencies belong to the same derived
         class.
         \relates Currency
     */
-    inline bool operator==(const Handle<Currency>& c1, 
+    inline bool operator==(const Handle<Currency>& c1,
         const Handle<Currency>& c2) {
             return (c1->name() == c2->name());
     }
 
     /*! \relates Currency */
-    inline bool operator!=(const Handle<Currency>& c1, 
+    inline bool operator!=(const Handle<Currency>& c1,
         const Handle<Currency>& c2) {
             return (c1->name() != c2->name());
     }

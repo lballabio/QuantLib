@@ -1,30 +1,32 @@
 """
-/*
- * Copyright (C) 2000-2001 QuantLib Group
- * 
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
- *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
-*/
+ Copyright (C) 2000-2001 QuantLib Group
+
+ This file is part of QuantLib.
+ QuantLib is a C++ open source library for financial quantitative
+ analysts and developers --- http://quantlib.sourceforge.net/
+
+ QuantLib is free software and you are allowed to use, copy, modify, merge,
+ publish, distribute, and/or sell copies of it under the conditions stated
+ in the QuantLib License.
+
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+
+ You should have received a copy of the license along with this file;
+ if not, contact ferdinando@ametrano.net
+ The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+
+ The members of the QuantLib Group are listed in the Authors.txt file, also
+ available at http://quantlib.sourceforge.net/Authors.txt
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.7  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.6  2001/04/04 11:08:11  lballabio
     Python tests implemented on top of PyUnit
 
@@ -59,14 +61,14 @@ class EuropeanOptionTest(unittest.TestCase):
     def runTest(self):
         "Testing European option pricer"
         pricer = QuantLib.BSMEuropeanOption
-        
+
         rangeUnder = [100]
         rangeQrate = [0.05]
         rangeResTime = [1.0]
         rangeStrike = [50, 99.5, 100, 100.5, 150]
         rangeVol = [ 0.11, 0.5, 1.2]
         rangeRrate = [ 0.01, 0.05, 0.15]
-        
+
         err_delta = 5e-5
         err_gamma = 5e-5
         err_theta = 5e-5
@@ -76,7 +78,7 @@ class EuropeanOptionTest(unittest.TestCase):
         for typ in ['Call','Put','Straddle']:
           for under in rangeUnder:
             for Qrate in rangeQrate:
-              for resTime in rangeResTime:        
+              for resTime in rangeResTime:
                 for Rrate in rangeRrate:
                   for strike in rangeStrike:
                     for vol in rangeVol:
@@ -88,29 +90,29 @@ class EuropeanOptionTest(unittest.TestCase):
                       opt = pricer(typ,under,strike,Qrate,Rrate,resTime,vol)
                       opt_val = opt.value()
                       if opt_val>0.00001*under:
-                        optPs = pricer(typ, under+dS, strike, Qrate, 
+                        optPs = pricer(typ, under+dS, strike, Qrate,
                           Rrate,    resTime ,   vol)
-                        optMs = pricer(typ, under-dS, strike, Qrate, 
+                        optMs = pricer(typ, under-dS, strike, Qrate,
                           Rrate,    resTime ,   vol)
-                        optPt = pricer(typ, under   , strike, Qrate, 
+                        optPt = pricer(typ, under   , strike, Qrate,
                           Rrate,    resTime+dT, vol)
-                        optMt = pricer(typ, under   , strike, Qrate, 
+                        optMt = pricer(typ, under   , strike, Qrate,
                           Rrate,    resTime-dT, vol)
-                        optPr = pricer(typ, under   , strike, Qrate, 
+                        optPr = pricer(typ, under   , strike, Qrate,
                           Rrate+dR, resTime   , vol)
-                        optMr = pricer(typ, under   , strike, Qrate, 
+                        optMr = pricer(typ, under   , strike, Qrate,
                           Rrate-dR, resTime   , vol)
-                        optPv = pricer(typ, under   , strike, Qrate, 
+                        optPv = pricer(typ, under   , strike, Qrate,
                           Rrate   , resTime   , vol+dVol)
-                        optMv = pricer(typ, under   , strike, Qrate, 
+                        optMv = pricer(typ, under   , strike, Qrate,
                           Rrate   , resTime   , vol-dVol)
-                        
+
                         deltaNum = (optPs.value()-optMs.value())/(2*dS)
                         gammaNum = (optPs.delta()-optMs.delta())/(2*dS)
                         thetaNum =-(optPt.value()-optMt.value())/(2*dT)
                         rhoNum   = (optPr.value()-optMr.value())/(2*dR)
                         vegaNum  = (optPv.value()-optMv.value())/(2*dVol)
-                            
+
                         assert (relErr(opt.delta(),deltaNum,under)<=err_delta \
                             and relErr(opt.gamma(),gammaNum,under)<=err_gamma \
                             and relErr(opt.theta(),thetaNum,under)<=err_theta \
@@ -120,19 +122,19 @@ class EuropeanOptionTest(unittest.TestCase):
                               (typ,under,strike,Qrate,Rrate,resTime,vol) + \
                             '\tvalue=%+9.5f\n' % (opt_val) + \
                             '\tdelta=%+9.5f, deltaNum=%+9.5f err=%7.2e\n' % \
-                              (opt.delta(), deltaNum, 
+                              (opt.delta(), deltaNum,
                                relErr(opt.delta(),deltaNum,under)) + \
                             '\tgamma=%+9.5f, gammaNum=%+9.5f err=%7.2e\n' % \
-                              (opt.gamma(), gammaNum, 
+                              (opt.gamma(), gammaNum,
                                relErr(opt.gamma(),gammaNum,under)) + \
                             '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e\n' % \
-                              (opt.theta(), thetaNum, 
+                              (opt.theta(), thetaNum,
                                relErr(opt.theta(),thetaNum,under)) + \
                             '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e\n' % \
-                              (opt.rho(), rhoNum, 
+                              (opt.rho(), rhoNum,
                                relErr(opt.rho(),rhoNum,under)) + \
                             '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e\n' % \
-                              (opt.vega(), vegaNum, 
+                              (opt.vega(), vegaNum,
                                relErr(opt.vega(),vegaNum,under))
 
 

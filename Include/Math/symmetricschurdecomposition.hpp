@@ -1,6 +1,6 @@
+
 /*
- * Copyright (C) 2001
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -16,9 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
 /*! \file symmetricschurdecomposition.hpp
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/04/06 18:46:20  nando
+    changed Authors, Contributors, Licence and copyright header
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -65,18 +69,18 @@ namespace QuantLib {
     namespace Math {
 
         //! symmetric threshold Jacobi algorithm.
-        /*! Given a real symmetric matrix S, the Schur decomposition 
-            finds the eigenvalues and eigenvectors of S. If D is the 
+        /*! Given a real symmetric matrix S, the Schur decomposition
+            finds the eigenvalues and eigenvectors of S. If D is the
             diagonal matrix formed by the eigenvalues and U the
             unitarian matrix of th eigenvector we can write the
-            Schur decomposition as 
+            Schur decomposition as
             \f[ S = U \cdot D \cdot U^T \, ,\f]
-            where \f$ \cdot \f$ is the standard matrix product 
+            where \f$ \cdot \f$ is the standard matrix product
             and  \f$ ^T  \f$ is the transpose operator.
             This class implements the Schur decomposition using the
-            symmetric threshold Jacobi algorithm. For details on the 
-            different Jacobi transfomations you can start from the great book 
-            on matrix computations by Golub and Van Loan: Matrix computation, 
+            symmetric threshold Jacobi algorithm. For details on the
+            different Jacobi transfomations you can start from the great book
+            on matrix computations by Golub and Van Loan: Matrix computation,
             second edition The Johns Hopkins University Press
         */
         class SymmetricSchurDecomposition {
@@ -90,31 +94,31 @@ namespace QuantLib {
             int maxIterations_;
             double epsPrec_;
             Matrix s_;
-            mutable bool hasBeenComputed_;  
+            mutable bool hasBeenComputed_;
             mutable Array diagonal_;
-            mutable Matrix eigenVectors_; 
+            mutable Matrix eigenVectors_;
             void compute() const;
             void jacobiRotate(Matrix & m, double rot, double dil,
                 int j1, int k1, int j2, int k2) const;
         };
-        
+
         inline Array SymmetricSchurDecomposition::eigenvalues() const{
             if(!hasBeenComputed_)
                 compute();
             return diagonal_;
         }
-        
+
         inline Matrix SymmetricSchurDecomposition::eigenvectors() const{
             if(!hasBeenComputed_)
                 compute();
-            return eigenVectors_;            
+            return eigenVectors_;
         }
 
         //! This routines implements the Jacobi, a.k.a. Givens, rotation
         inline void SymmetricSchurDecomposition::jacobiRotate(Matrix &m,
               double rot, double dil, int j1, int k1, int j2, int k2) const{
-            
-            double x1, x2;            
+
+            double x1, x2;
             x1 = m[j1][k1];
             x2 = m[j2][k2];
             m[j1][k1] = x1 - dil*(x2 + x1*rot);

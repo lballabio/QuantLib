@@ -1,7 +1,6 @@
 
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
@@ -17,36 +16,23 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at 
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
+*/
+
+/*
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.2  2001/04/06 18:46:19  nando
+    changed Authors, Contributors, Licence and copyright header
+
 */
 
 /*! \file calendar.hpp
     \brief Abstract calendar class
-
-    $Source$
-    $Log$
-    Revision 1.1  2001/04/04 11:07:21  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.10  2001/03/12 17:35:09  lballabio
-    Removed global IsNull function - could have caused very vicious loops
-
-    Revision 1.9  2001/02/16 15:19:52  lballabio
-    Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
-
-    Revision 1.8  2001/02/09 19:21:09  lballabio
-    removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
-
-    Revision 1.7  2001/01/17 14:37:54  nando
-    tabs removed
-
-    Revision 1.6  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
 */
 
 /*! \namespace QuantLib::Calendars
@@ -69,35 +55,35 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         calendar classes which will be derived from this one.
 
-        It provides methods for determining whether a date is a business day 
-        or a holiday for a given market, and for incrementing/decrementing a 
+        It provides methods for determining whether a date is a business day
+        or a holiday for a given market, and for incrementing/decrementing a
         date of a given number of business days.
     */
     class Calendar {
       public:
         //! Returns the name of the calendar.
-        /*! \warning This method is used for output and comparison between 
+        /*! \warning This method is used for output and comparison between
             calendars.
             It is <b>not</b> meant to be used for writing switch-on-type code.
         */
         virtual std::string name() const = 0;
-        /*! Returns <tt>true</tt> iff the date is a business day for the given 
-            market. 
+        /*! Returns <tt>true</tt> iff the date is a business day for the given
+            market.
         */
         virtual bool isBusinessDay(const Date&) const = 0;
-        /*! Returns <tt>true</tt> iff the date is a holiday for the given 
+        /*! Returns <tt>true</tt> iff the date is a holiday for the given
             market.
         */
         bool isHoliday(const Date& d) const { return !isBusinessDay(d); }
-        /*! Returns the next business day on the given market with respect to 
+        /*! Returns the next business day on the given market with respect to
             the given date and convention.
         */
         Date roll(const Date&, bool modified = false) const;
-        /*! Advances the given date of the given number of business days and 
+        /*! Advances the given date of the given number of business days and
             returns the result.
             \note The input date is not modified.
         */
-        Date advance(const Date&, int n, TimeUnit unit, 
+        Date advance(const Date&, int n, TimeUnit unit,
             bool modified = false) const;
     };
 
@@ -120,17 +106,17 @@ namespace QuantLib {
 
     // inline definitions
 
-    /*! Returns <tt>true</tt> iff the two calendars belong to the same derived 
+    /*! Returns <tt>true</tt> iff the two calendars belong to the same derived
         class.
         \relates Calendar
     */
-    inline bool operator==(const Handle<Calendar>& h1, 
+    inline bool operator==(const Handle<Calendar>& h1,
         const Handle<Calendar>& h2) {
             return (h1->name() == h2->name());
     }
 
     /*! \relates Calendar */
-    inline bool operator!=(const Handle<Calendar>& h1, 
+    inline bool operator!=(const Handle<Calendar>& h1,
         const Handle<Calendar>& h2) {
             return (h1->name() != h2->name());
     }
