@@ -46,10 +46,10 @@ namespace QuantLib {
                                      public Patterns::Observer {
           public:
             BlackVarianceSurface(const Date& referenceDate,
-                                 const DayCounter& dayCounter,
                                  const std::vector<Date>& dates,
                                  const std::vector<double>& strikes,
-                                 const QuantLib::Math::Matrix& blackVolMatrix);
+                                 const QuantLib::Math::Matrix& blackVolMatrix,
+                                 const DayCounter& dayCounter = DayCounters::Actual365());
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date minDate() const { return referenceDate_; }
@@ -73,10 +73,10 @@ namespace QuantLib {
         template<class Interpolator2D>
         BlackVarianceSurface<Interpolator2D>::BlackVarianceSurface(
             const Date& referenceDate,
-            const DayCounter& dayCounter,
             const std::vector<Date>& dates,
             const std::vector<double>& strikes,
-            const QuantLib::Math::Matrix& blackVolMatrix)
+            const QuantLib::Math::Matrix& blackVolMatrix,
+            const DayCounter& dayCounter)
         : referenceDate_(referenceDate), dayCounter_(dayCounter),
           maxDate_(dates.back()), strikes_(strikes) {
 

@@ -40,16 +40,16 @@ namespace QuantLib {
 
             The calculation is performed interpolating on the variance curve.
 
-            For dependance see BlackVarianceCurve
+            For strike dependance see BlackVarianceSurface
         */
         template<class Interpolator1D>
         class BlackVarianceCurve : public VarianceTermStructure,
                                    public Patterns::Observer {
           public:
             BlackVarianceCurve(const Date& referenceDate,
-                               const DayCounter& dayCounter,
                                const std::vector<Date>& dates,
-                               const std::vector<double>& blackVolCurve);
+                               const std::vector<double>& blackVolCurve,
+                               const DayCounter& dayCounter = DayCounters::Actual365());
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date minDate() const { return referenceDate_; }
@@ -72,9 +72,9 @@ namespace QuantLib {
         template<class Interpolator1D>
         BlackVarianceCurve<Interpolator1D>::BlackVarianceCurve(
             const Date& referenceDate,
-            const DayCounter& dayCounter,
             const std::vector<Date>& dates,
-            const std::vector<double>& blackVolCurve)
+            const std::vector<double>& blackVolCurve,
+            const DayCounter& dayCounter)
         : referenceDate_(referenceDate), dayCounter_(dayCounter),
           maxDate_(dates.back()) {
 
@@ -112,10 +112,10 @@ namespace QuantLib {
         double BlackVarianceCurve<Interpolator1D>::
             blackVarianceImpl(Time t, double, bool extrapolate) const {
 
-            QL_REQUIRE(t>=0.0,
-                "BlackVarianceCurve::blackVarianceImpl : "
-                "negative time (" + DoubleFormatter::toString(t) +
-                ") not allowed");
+            QL_REQUIRE(t>=minTime(),
+                "evaluation time (" + DoubleFormatter::toString(t) +
+                ") < minTime (" + DoubleFormatter::toString(minTime()) +
+                ")");
 
             if (t<=times_[0])
                 return (*varianceSurface_)(times_[0], extrapolate)*

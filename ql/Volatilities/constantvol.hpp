@@ -27,6 +27,7 @@
 #define quantlib_constantvol_hpp
 
 #include <ql/voltermstructure.hpp>
+#include <ql/DayCounters/actual365.hpp>
 #include <ql/dataformatters.hpp>
 
 namespace QuantLib {
@@ -42,11 +43,11 @@ namespace QuantLib {
           public:
             // constructors
             ConstantVol(const Date& referenceDate,
-                        const DayCounter& dayCounter,
-                        double volatility);
+                        double volatility,
+                        const DayCounter& dayCounter = DayCounters::Actual365());
             ConstantVol(const Date& referenceDate,
-                        const DayCounter& dayCounter,
-                        const RelinkableHandle<MarketElement>& volatility);
+                        const RelinkableHandle<MarketElement>& volatility,
+                        const DayCounter& dayCounter = DayCounters::Actual365());
             // inspectors
             Date referenceDate() const;
             DayCounter dayCounter() const;
@@ -66,7 +67,7 @@ namespace QuantLib {
         // inline definitions
 
         inline ConstantVol::ConstantVol(const Date& referenceDate,
-            const DayCounter& dayCounter, double volatility)
+            double volatility, const DayCounter& dayCounter)
         : referenceDate_(referenceDate), dayCounter_(dayCounter) {
             volatility_.linkTo(Handle<MarketElement>(new
                 SimpleMarketElement(volatility)));
@@ -74,8 +75,8 @@ namespace QuantLib {
         }
 
         inline ConstantVol::ConstantVol(const Date& referenceDate,
-            const DayCounter& dayCounter,
-            const RelinkableHandle<MarketElement>& volatility)
+            const RelinkableHandle<MarketElement>& volatility,
+            const DayCounter& dayCounter)
         : referenceDate_(referenceDate), dayCounter_(dayCounter),
           volatility_(volatility) {
             registerWith(volatility_);
