@@ -57,7 +57,7 @@ namespace QuantLib {
         Singleton() {}
         void initialize() {}
       private:
-        #ifdef QL_PATCH_MICROSOFT
+        #ifdef QL_PATCH_MSVC
         static boost::shared_ptr<T> instance_;
         #endif
         Singleton(const Singleton&) {}
@@ -67,14 +67,14 @@ namespace QuantLib {
 
     // template definitions
 
-    #ifdef QL_PATCH_MICROSOFT
+    #ifdef QL_PATCH_MSVC
     template <class T>
     boost::shared_ptr<T> Singleton<T>::instance_;
     #endif
 
     template <class T>
     T& Singleton<T>::instance() {
-        #ifndef QL_PATCH_MICROSOFT
+        #ifndef QL_PATCH_MSVC
         static boost::shared_ptr<T> instance_;
         #endif
         if (!instance_) {
