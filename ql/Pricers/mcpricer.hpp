@@ -85,7 +85,7 @@ namespace QuantLib {
                 result;
             while (accuracy > tolerance) {
                 order = accuracy*accuracy/tolerance/tolerance;
-                nextBatch = sampleNumber*order-sampleNumber+10.0;
+                nextBatch = size_t(sampleNumber*order-sampleNumber+10);
                 sampleNumber += nextBatch;
                 QL_REQUIRE(sampleNumber<maxSamples,
                     "max number of samples exceeded");
