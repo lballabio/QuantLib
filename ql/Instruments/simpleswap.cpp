@@ -21,11 +21,13 @@
 
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/coupon.hpp>
 
 namespace QuantLib {
 
     using CashFlows::FixedRateCouponVector;
     using CashFlows::FloatingRateCouponVector;
+    using CashFlows::Coupon;
     using Indexes::Xibor;
 
     namespace Instruments {
@@ -84,6 +86,64 @@ namespace QuantLib {
             }
         }
 
+        SimpleSwap::SimpleSwap(bool payFixedRate,
+          const Date& startDate, const Date& maturity,
+          const Calendar& calendar,
+          RollingConvention rollingConvention,
+          double nominal,
+          int fixedFrequency,
+          Rate fixedRate,
+          bool fixedIsAdjusted,
+          const DayCounter& fixedDayCount,
+          int floatingFrequency,
+          const Handle<Xibor>& index,
+          int indexFixingDays,
+          Spread spread,
+          const RelinkableHandle<TermStructure>& termStructure,
+	  const Date& fixedStubDate, bool fixedFromEnd, bool fixedLongFinal,
+	  const Date& floatStubDate, bool floatFromEnd, bool floatLongFinal,
+          const std::string& isinCode, const std::string& description)
+        : Swap(std::vector<Handle<CashFlow> >(),
+               std::vector<Handle<CashFlow> >(),
+               termStructure, isinCode, description),
+          payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
+          nominal_(nominal), maturity_(maturity) {
+
+            std::vector<Handle<CashFlow> >::const_iterator i;
+            if (payFixedRate_) {
+                firstLeg_ = FixedRateCouponVector(
+                    std::vector<double>(1,nominal),
+                    std::vector<Rate>(1,fixedRate), startDate, maturity_, 
+                    fixedFrequency, calendar, rollingConvention, 
+                    fixedIsAdjusted, fixedDayCount, fixedDayCount,
+		    fixedStubDate, fixedFromEnd, fixedLongFinal);
+                secondLeg_ = FloatingRateCouponVector(
+                    std::vector<double>(1,nominal),
+		    startDate, maturity_, 
+                    floatingFrequency, calendar, rollingConvention, 
+                    index, indexFixingDays, std::vector<Spread>(1,spread),
+		    floatStubDate, floatFromEnd, floatLongFinal);
+                for (i = secondLeg_.begin(); i < secondLeg_.end(); ++i)
+                    registerWith(*i);
+            } else {
+                // I know I'm duplicating the initializations, but the 
+                // alternative is to duplicate data
+                firstLeg_ = FloatingRateCouponVector(
+                    std::vector<double>(1,nominal),
+		    startDate, maturity_, 
+                    floatingFrequency, calendar, rollingConvention, 
+                    index, indexFixingDays, std::vector<Spread>(1,spread),
+		    floatStubDate, floatFromEnd, floatLongFinal);
+                secondLeg_ = FixedRateCouponVector(
+                    std::vector<double>(1,nominal), 
+                    std::vector<Rate>(1,fixedRate), startDate, maturity_, 
+                    fixedFrequency, calendar, rollingConvention, 
+                    fixedIsAdjusted, fixedDayCount, fixedDayCount,
+		    fixedStubDate, fixedFromEnd, fixedLongFinal);
+                for (i = firstLeg_.begin(); i < firstLeg_.end(); ++i)
+                    registerWith(*i);
+	    }
+	}
     }
 
 }

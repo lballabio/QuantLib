@@ -53,6 +53,31 @@ namespace QuantLib {
                 // description
                 const std::string& isinCode = "",
                 const std::string& description = "");
+            SimpleSwap(bool payFixedRate,
+                // dates
+                const Date& startDate, const Date& maturity,
+                const Calendar& calendar,
+                RollingConvention rollingConvention,
+                double nominal,
+                // fixed leg
+                int fixedFrequency,
+                Rate fixedRate,
+                bool fixedIsAdjusted,
+                const DayCounter& fixedDayCount,
+                // floating leg
+                int floatingFrequency,
+                const Handle<Indexes::Xibor>& index,
+                int indexFixingDays,
+                Spread spread,
+                // hook to term structure
+                const RelinkableHandle<TermStructure>& termStructure,
+		const Date& fixedStubDate = Date(),
+		bool fixedFromEnd = 0, bool fixedLongFinal = 0,
+		const Date& floatStubDate = Date(),
+		bool floatFromEnd = 0, bool floatLongFinal = 0,
+                // description
+                const std::string& isinCode = "",
+                const std::string& description = "");
             // results
             Rate fairRate() const;
             Spread fairSpread() const;
