@@ -8,6 +8,7 @@ l  can be a,b,f for alpha, beta, final respectively
 n  is an ordinal number
 
 e.g. R000300a2 stands for Release 0.3.1a2
+e.g. R000300f0 stands for Release 0.3.1f0
 
 The version number is in:
     QuantLib/configure.in,
@@ -17,7 +18,7 @@ The version number is in:
     QuantLib-Python/setup.py
     QuantLib-Python/QuantLib/SWIG/ql.i
 
-It's also in some script used for automatic building:
+It's also in some script used by RiskMap for automatic building:
     release-job.sh
     release-job.bat
     night-job.bat
