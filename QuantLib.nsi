@@ -89,11 +89,23 @@ SectionIn 1 2 3
     SetOutPath  $INSTDIR\ql\Instruments
     File /r "ql\Instruments\*.hpp"
 
+    SetOutPath  $INSTDIR\ql\InterestRateModelling
+    File /r "ql\InterestRateModelling\*.hpp"
+
+    SetOutPath  $INSTDIR\ql\InterestRateModelling\CalibrationHelpers
+    File /r "ql\InterestRateModelling\CalibrationHelpers\*.hpp"
+
+    SetOutPath  $INSTDIR\ql\InterestRateModelling\OneFactorModels
+    File /r "ql\InterestRateModelling\OneFactorModels\*.hpp"
+
     SetOutPath  $INSTDIR\ql\Math
     File /r "ql\Math\*.hpp"
 
     SetOutPath  $INSTDIR\ql\MonteCarlo
     File /r "ql\MonteCarlo\*.hpp"
+
+    SetOutPath  $INSTDIR\ql\Optimization
+    File /r "ql\Optimization\*.hpp"
 
     SetOutPath  $INSTDIR\ql\Patterns
     File /r "ql\Patterns\*.hpp"
@@ -205,6 +217,18 @@ SectionIn 1
   File /r "ql\Instruments\*.cpp"
   File /r "ql\Instruments\makefile.mak"
 
+  SetOutPath  $INSTDIR\ql\InterestRateModelling
+  File /r "ql\InterestRateModelling\*.cpp"
+  File /r "ql\InterestRateModelling\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\InterestRateModelling\CalibrationHelpers
+  File /r "ql\InterestRateModelling\CalibrationHelpers\*.cpp"
+  File /r "ql\InterestRateModelling\CalibrationHelpers\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\InterestRateModelling\OneFactorModels
+  File /r "ql\InterestRateModelling\OneFactorModels\*.cpp"
+  File /r "ql\InterestRateModelling\OneFactorModels\makefile.mak"
+
   SetOutPath  $INSTDIR\ql\Math
   File /r "ql\Math\*.cpp"
   File /r "ql\Math\makefile.mak"
@@ -212,6 +236,10 @@ SectionIn 1
   SetOutPath  $INSTDIR\ql\MonteCarlo
   File /r "ql\MonteCarlo\*.cpp"
   File /r "ql\MonteCarlo\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\Optimization
+  File /r "ql\Optimization\*.cpp"
+  File /r "ql\Optimization\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\Pricers
   File /r "ql\Pricers\*.cpp"
