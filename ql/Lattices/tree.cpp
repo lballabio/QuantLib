@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -33,8 +31,24 @@ namespace QuantLib {
         using std::cout;
         using std::endl;
 
-        double Tree::presentValue(const Handle<Asset>& asset) const {
+        void Tree::computeStatePrices(Size until) {
+            for (Size i=statePricesLimit_; i<until; i++) {
+                for (int j=jMin(i); j<=jMax(i); j++) {
+                    for (Size n=0; n<n_; n++) {
+                        node(i,j).descendant(n).statePrice() +=
+                            node(i,j).statePrice()*
+                            node(i,j).probability(n)*
+                            discount(i,j);
+                    }
+                }
+            }
+            statePricesLimit_ = until;
+        }
+
+        double Tree::presentValue(const Handle<Asset>& asset) {
             Size i = t_.findIndex(asset->time());
+            if (i>statePricesLimit_)
+                computeStatePrices(i);
             double value = 0.0;
             Size l = 0;
             for (int j=jMin(i); j<=jMax(i); j++, l++) {
@@ -43,26 +57,38 @@ namespace QuantLib {
             return value;
         }
 
+        void Tree::initialize(const Handle<Asset>& asset, Time t) const {
+            Size i = t_.findIndex(t);
+            Size width = jMax(i) - jMin(i) + 1;
+            asset->setTime(t);
+            asset->reset(width);
+        }
+
+        void Tree::rollback(const Handle<Asset>& asset, Time to) const {
+            std::vector<Handle<Asset> > assets(1, asset);
+            rollback(assets, to);
+        }
+
         void Tree::rollback(
             const std::vector<Handle<Asset> >& assets,
-            Time from, Time to) const {
+            Time to) const {
+
+            std::vector<Handle<Asset> >::const_iterator begin;
+            Time from = (*begin)->time();
+            ++begin;
+            for (; begin != assets.end(); ++begin) {
+                QL_REQUIRE((*begin)->time()==from,
+                    "Assets must be at the same time!");
+            }
 
             QL_REQUIRE(from>=to, "Wrong rollback extremities");
-
             Size iFrom = t_.findIndex(from);
             Size iTo = t_.findIndex(to);
 
-            Size width = jMax(iFrom) - jMin(iFrom) + 1;
-            std::vector<Handle<Asset> >::const_iterator begin;
-            for (begin = assets.begin(); begin != assets.end(); ++begin) {
-                (*begin)->setTime(t(iFrom));
-                (*begin)->reset(width);
-            }
-
             for (int i=(int)(iFrom-1); i>=(int)iTo; i--) {
                 for (begin = assets.begin(); begin != assets.end(); ++begin) {
-                    width = jMax(i) - jMin(i) + 1;
-                    (*begin)->newValues() = Array(width);
+                    Size width = jMax(i) - jMin(i) + 1;
+                    Array newValues(width);
                     Size l = 0;
                     for (int j=jMin(i); j<=jMax(i); j++, l++) {
                         double value = 0.0;
@@ -72,10 +98,11 @@ namespace QuantLib {
                             value += node(i,j).probability(k)
                                 *(*begin)->values()[index];
                         }
-                        value *= node(i,j).discount();
-                        (*begin)->newValues()[l] = value;
+                        value *= discount(i, j);
+                        newValues[l] = value;
                     }
                     (*begin)->setTime(t(i));
+                    (*begin)->setValues(newValues);
                     (*begin)->applyCondition();
                 }
             }

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -35,10 +33,15 @@ namespace QuantLib {
 
     namespace Lattices {
 
-        class TimeGrid : public std::vector<Time> {
+        class TimeGrid : private std::vector<Time> {
           public:
-            TimeGrid() : std::vector<Time>(0) {}
+            using std::vector<Time>::operator[];
+            using std::vector<Time>::size;
+            using std::vector<Time>::begin;
+            using std::vector<Time>::end;
+            using std::vector<Time>::const_iterator;
 
+            TimeGrid() {}
             TimeGrid(const std::list<Time>& times, Size steps)
             : std::vector<Time>(0) {
                 Time last = times.back();
@@ -59,12 +62,9 @@ namespace QuantLib {
             }
 
             Size findIndex(Time t) const {
-                for (Size i=0; i<size(); i++) {
-                    if ((*this)[i] == t)
-                        return i;
-                }
-                throw Error("Using inadequate tree");
-                QL_DUMMY_RETURN(0);
+                const_iterator result = find(begin(), end(), t);
+                QL_REQUIRE(result==end(), "Using inadequate tree");
+                return result - begin();
             }
 
             Time dt(Size i) {

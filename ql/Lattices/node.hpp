@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -39,7 +37,7 @@ namespace QuantLib {
           public:
             Node(Size nDescendants, Size i, int j)
             : descendants_(nDescendants), probabilities_(nDescendants),
-              i_(i), j_(j), discount_(0.0), statePrice_(0.0) {}
+              i_(i), j_(j), statePrice_(0.0) {}
 
             Size i() const { return i_; }
             int j() const { return j_; }
@@ -60,9 +58,6 @@ namespace QuantLib {
                 descendants_[branch] = &node;
             }
 
-            double discount() const { return discount_; }
-            void setDiscount(double discount) { discount_ = discount; }
-
             double& statePrice() { return statePrice_; }
             const double& statePrice() const { return statePrice_; }
 
@@ -73,7 +68,6 @@ namespace QuantLib {
             Size i_;
             int j_;
 
-            double discount_;
             double statePrice_;
         };
 

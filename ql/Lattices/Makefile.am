@@ -7,11 +7,13 @@ includedir = $(prefix)/include/ql/Lattices
 include_HEADERS = \
     node.hpp \
     timegrid.hpp \
-    tree.hpp
+    tree.hpp \
+    trinomialtree.hpp
 
 EXTRA_DIST=makefile.mak
 
 libLattices_la_SOURCES = \
-    tree.cpp
+    tree.cpp \
+    trinomialtree.cpp
 
 noinst_LTLIBRARIES = libLattices.la

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -39,23 +37,30 @@ namespace QuantLib {
           public:
             Tree() {}
             Tree(Size n)
-            : n_(n), dx_(0) {
+            : dx_(0), n_(n) {
+                QL_REQUIRE(n>0, "There is no zeronomial tree!");
                 nodes_.push_back(std::vector<Handle<Node> >());
                 nodes_[0].push_back(Handle<Node>(new Node(n,0,0)));
                 nodes_[0][0]->statePrice() = 1.0;
+                statePricesLimit_ = 0;
             }
             virtual ~Tree() {}
+
+            double presentValue(const Handle<Asset>& asset);
+
+            void initialize(const Handle<Asset>& assets, Time t) const;
+            void rollback(const Handle<Asset>& asset, Time to) const;
+            void rollback(const std::vector<Handle<Asset> >& assets,
+                          Time to) const;
+
+          protected:
+            virtual DiscountFactor discount(Size i, int j) const = 0;
 
             virtual const Node& node(Size i, int j) const = 0;
 
             virtual Node& node(Size i, int j) = 0;
 
             const TimeGrid& timeGrid() const { return t_; }
-
-            double presentValue(const Handle<Asset>& asset) const;
-
-            void rollback(const std::vector<Handle<Asset> >& assets,
-                          Time from, Time to) const;
 
             //! Returns t_i
             Time t(Size i) const { return t_[i]; }
@@ -72,12 +77,14 @@ namespace QuantLib {
             //! Returns jMax
             int jMax(Size i) const { return nodes_[i].back()->j(); }
 
-          protected:
-            Size n_;
+            void computeStatePrices(Size until);
             TimeGrid t_;
             std::vector<double> dx_;
             std::vector<std::vector<Handle<Node> > > nodes_;
 
+          private:
+            Size n_;
+            Size statePricesLimit_;
         };
 
     }
