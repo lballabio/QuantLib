@@ -76,8 +76,8 @@ namespace QuantLib {
         inline ConstantVol::ConstantVol(const Date& referenceDate,
             const RelinkableHandle<MarketElement>& volatility,
             const DayCounter& dayCounter)
-        : referenceDate_(referenceDate), dayCounter_(dayCounter),
-          volatility_(volatility) {
+        : referenceDate_(referenceDate), volatility_(volatility), 
+          dayCounter_(dayCounter) {
             registerWith(volatility_);
         }
 
