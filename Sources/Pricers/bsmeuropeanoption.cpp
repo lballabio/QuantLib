@@ -73,11 +73,11 @@ double BSMEuropeanOption::value() const {
 		}
 
 		// build evolution operator
-		BSMOperator bsmOperat(theGridPoints, dx, theRiskFreeRate, theUnderlyingGrowthRate, theVolatility);
-		bsmOperat.setLowerBC(BoundaryCondition(BoundaryCondition::Neumann,(thePrices[theGridPoints-1]-thePrices[theGridPoints-2])));
-		bsmOperat.setHigherBC(BoundaryCondition(BoundaryCondition::Neumann,(thePrices[1]-thePrices[0])));
+		BSMOperator D(theGridPoints, dx, theRiskFreeRate, theUnderlyingGrowthRate, theVolatility);
+		D.setLowerBC(BoundaryCondition(BoundaryCondition::Neumann,thePrices[1]-thePrices[0]));
+		D.setHigherBC(BoundaryCondition(BoundaryCondition::Neumann,thePrices[theGridPoints-1]-thePrices[theGridPoints-2]));
 		// rollback
-		FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> > model(bsmOperat);
+		FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> > model(D);
 		model.rollback(thePrices,theResidualTime,0.0,theTimeSteps);
 		int midPoint = theGridPoints/2;
 		if (theGridPoints % 2 == 1)
