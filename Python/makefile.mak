@@ -126,6 +126,7 @@ quantlib_wrap.cpp:: \
     $(SWIG_DIR)\Distributions.i \
     $(SWIG_DIR)\Financial.i \
     $(SWIG_DIR)\History.i \
+    $(SWIG_DIR)\Indexes.i \
     $(SWIG_DIR)\Instruments.i \
     $(SWIG_DIR)\Interpolation.i \
     $(SWIG_DIR)\Matrix.i \
@@ -133,9 +134,11 @@ quantlib_wrap.cpp:: \
     $(SWIG_DIR)\MontecarloTools.i \
     $(SWIG_DIR)\Operators.i \
     $(SWIG_DIR)\Options.i \
+    $(SWIG_DIR)\PiecewiseFlatForward.i \
     $(SWIG_DIR)\Pricers.i \
     $(SWIG_DIR)\QLArray.i \
     $(SWIG_DIR)\RandomGenerators.i \
+    $(SWIG_DIR)\RateHelpers.i \
     $(SWIG_DIR)\RiskStatistics.i \
     $(SWIG_DIR)\Solvers1D.i \
     $(SWIG_DIR)\Statistics.i \

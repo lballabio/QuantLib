@@ -28,6 +28,7 @@ CORE_OBJS        = calendar.obj$(_D) \
 CALENDAR_LIB     = Calendars\Calendars$(_D).lib
 DAYCOUNTER_LIB   = DayCounters\DayCounters$(_D).lib
 FDM_LIB          = FiniteDifferences\FiniteDifferences$(_D).lib
+INDEXES_LIB      = Indexes\Indexes$(_D).lib
 MATH_LIB         = Math\Math$(_D).lib
 MONTECARLO_LIB   = MonteCarlo\MonteCarlo$(_D).lib
 PRICER_LIB       = Pricers\Pricers$(_D).lib
@@ -38,6 +39,7 @@ QUANTLIB_OBJS    = $(CORE_OBJS) \
                    $(CALENDAR_LIB) \
                    $(DAYCOUNTER_LIB) \
                    $(FDM_LIB) \
+                   $(INDEXES_LIB) \
                    $(MATH_LIB) \
                    $(MONTECARLO_LIB) \
                    $(PRICER_LIB) \
@@ -87,6 +89,8 @@ SubLibraries:
     $(MAKE)
     cd ..\FiniteDifferences
     $(MAKE)
+    cd ..\Indexes
+    $(MAKE)
     cd ..\Math
     $(MAKE)
     cd ..\MonteCarlo
@@ -107,6 +111,8 @@ clean::
     cd ..\DayCounters
     $(MAKE) clean
     cd ..\FiniteDifferences
+    $(MAKE) clean
+    cd ..\Indexes
     $(MAKE) clean
     cd ..\Math
     $(MAKE) clean

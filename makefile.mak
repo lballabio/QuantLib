@@ -5,6 +5,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.14  2001/05/16 09:57:26  lballabio
+# Added indexes and piecewise flat forward curve
+#
 # Revision 1.13  2001/05/16 08:35:45  nando
 # reverted "make python" to old style, not ready for distutils with borland compiler
 #
@@ -48,7 +51,7 @@ install::
 python::
     cd Python
     $(MAKE) Python
-#    python setup.py build --compiler
+    # python setup.py build --compiler
     cd ..
 
 # Install Python module

@@ -138,35 +138,37 @@ QL_CHECK_TEMPLATE_CLASS([iterator_traits],[int*],[iterator],[])
 
 
 AC_OUTPUT(Makefile \
-	Include/Makefile \
-	Include/ql/Makefile \
-	Include/ql/Calendars/Makefile \
-        Include/ql/Currencies/Makefile \
-        Include/ql/DayCounters/Makefile \
-	Include/ql/FiniteDifferences/Makefile \
-        Include/ql/Instruments/Makefile \
-        Include/ql/Math/Makefile \
-	Include/ql/MonteCarlo/Makefile \
-        Include/ql/Patterns/Makefile \
-	Include/ql/Pricers/Makefile \
-        Include/ql/Solvers1D/Makefile \
-        Include/ql/TermStructures/Makefile \
-	Include/ql/Utilities/Makefile \
-	Sources/Makefile \
-	Sources/Calendars/Makefile \
-	Sources/DayCounters/Makefile \
-	Sources/FiniteDifferences/Makefile \
-	Sources/Math/Makefile \
-	Sources/MonteCarlo/Makefile \
-	Sources/Pricers/Makefile \
-	Sources/Solvers1D/Makefile \
-	Sources/TermStructures/Makefile \
-	Python/Makefile \
-	Python/Tests/Makefile \
-	Python/COM/Makefile \
-	Ruby/Makefile \
-	Ruby/Tests/Makefile \
-	SWIG/Makefile \
-	Docs/Makefile \
-	Examples/Makefile)
+    Include/Makefile \
+    Include/ql/Makefile \
+    Include/ql/Calendars/Makefile \
+    Include/ql/Currencies/Makefile \
+    Include/ql/DayCounters/Makefile \
+    Include/ql/FiniteDifferences/Makefile \
+    Include/ql/Indexes/Makefile \
+    Include/ql/Instruments/Makefile \
+    Include/ql/Math/Makefile \
+    Include/ql/MonteCarlo/Makefile \
+    Include/ql/Patterns/Makefile \
+    Include/ql/Pricers/Makefile \
+    Include/ql/Solvers1D/Makefile \
+    Include/ql/TermStructures/Makefile \
+    Include/ql/Utilities/Makefile \
+    Sources/Makefile \
+    Sources/Calendars/Makefile \
+    Sources/DayCounters/Makefile \
+    Sources/FiniteDifferences/Makefile \
+    Sources/Indexes/Makefile \
+    Sources/Math/Makefile \
+    Sources/MonteCarlo/Makefile \
+    Sources/Pricers/Makefile \
+    Sources/Solvers1D/Makefile \
+    Sources/TermStructures/Makefile \
+    Python/Makefile \
+    Python/Tests/Makefile \
+    Python/COM/Makefile \
+    Ruby/Makefile \
+    Ruby/Tests/Makefile \
+    SWIG/Makefile \
+    Docs/Makefile \
+    Examples/Makefile)
 

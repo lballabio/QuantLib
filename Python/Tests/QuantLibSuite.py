@@ -27,6 +27,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.9  2001/05/16 09:57:27  lballabio
+    Added indexes and piecewise flat forward curve
+
     Revision 1.8  2001/05/10 15:32:18  nando
     now when it runs as main it doesn't stop waiting for user keystroke anymore
 
@@ -98,6 +101,9 @@ def test():
 
     from pagoda_option import PagodaOptionTest
     suite.addTest(PagodaOptionTest())
+
+    from piecewiseflatforward import PiecewiseFlatForwardTest
+    suite.addTest(PiecewiseFlatForwardTest())
 
     from plain_basket_option import PlainBasketOptionTest
     suite.addTest(PlainBasketOptionTest())

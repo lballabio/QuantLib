@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.5  2001/05/16 09:57:27  lballabio
+    Added indexes and piecewise flat forward curve
+
     Revision 1.4  2001/05/14 10:10:17  lballabio
     *** empty log message ***
 
@@ -47,7 +50,6 @@
 #ifndef quantlib_h
 #define quantlib_h
 
-//alphabetical order PLEASE
 #include "ql/array.hpp"
 #include "ql/calendar.hpp"
 #include "ql/currency.hpp"
@@ -60,6 +62,7 @@
 #include "ql/forwardvolsurface.hpp"
 #include "ql/handle.hpp"
 #include "ql/history.hpp"
+#include "ql/index.hpp"
 #include "ql/instrument.hpp"
 #include "ql/null.hpp"
 #include "ql/options.hpp"
@@ -72,7 +75,6 @@
 #include "ql/swaptionvolsurface.hpp"
 #include "ql/termstructure.hpp"
 
-//alphabetical order PLEASE
 #include "ql/Calendars/frankfurt.hpp"
 #include "ql/Calendars/helsinki.hpp"
 #include "ql/Calendars/london.hpp"
@@ -83,7 +85,6 @@
 #include "ql/Calendars/westerncalendar.hpp"
 #include "ql/Calendars/zurich.hpp"
 
-//alphabetical order PLEASE
 #include "ql/Currencies/aud.hpp"
 #include "ql/Currencies/cad.hpp"
 #include "ql/Currencies/chf.hpp"
@@ -96,7 +97,6 @@
 #include "ql/Currencies/sek.hpp"
 #include "ql/Currencies/usd.hpp"
 
-//alphabetical order PLEASE
 #include "ql/DayCounters/actual360.hpp"
 #include "ql/DayCounters/actual365.hpp"
 #include "ql/DayCounters/actualactual.hpp"
@@ -104,7 +104,6 @@
 #include "ql/DayCounters/thirty360european.hpp"
 #include "ql/DayCounters/thirty360italian.hpp"
 
-//alphabetical order PLEASE
 #include "ql/FiniteDifferences/backwardeuler.hpp"
 #include "ql/FiniteDifferences/boundarycondition.hpp"
 #include "ql/FiniteDifferences/bsmoperator.hpp"
@@ -124,10 +123,13 @@
 #include "ql/FiniteDifferences/tridiagonaloperator.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
 
-//alphabetical order PLEASE
+#include "ql/Indexes/euribor.hpp"
+#include "ql/Indexes/libor.hpp"
+#include "ql/Indexes/libormanager.hpp"
+#include "ql/Indexes/xibor.hpp"
+
 #include "ql/Instruments/stock.hpp"
 
-//alphabetical order PLEASE
 #include "ql/Math/cubicspline.hpp"
 #include "ql/Math/interpolation.hpp"
 #include "ql/Math/lexicographicalview.hpp"
@@ -140,7 +142,6 @@
 #include "ql/Math/symmetricschurdecomposition.hpp"
 #include "ql/Math/vartool.hpp"
 
-//alphabetical order PLEASE
 #include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
 #include "ql/MonteCarlo/avgstrikeasianpathpricer.hpp"
 #include "ql/MonteCarlo/basketpathpricer.hpp"
@@ -173,10 +174,8 @@
 #include "ql/MonteCarlo/standardpathgenerator.hpp"
 #include "ql/MonteCarlo/uniformrandomgenerator.hpp"
 
-//alphabetical order PLEASE
 #include "ql/Patterns/observable.hpp"
 
-//alphabetical order PLEASE
 #include "ql/Pricers/americancondition.hpp"
 #include "ql/Pricers/americanoption.hpp"
 #include "ql/Pricers/averagepriceasian.hpp"
@@ -204,7 +203,6 @@
 #include "ql/Pricers/shoutoption.hpp"
 #include "ql/Pricers/stepconditionoption.hpp"
 
-//alphabetical order PLEASE
 #include "ql/Solvers1D/bisection.hpp"
 #include "ql/Solvers1D/brent.hpp"
 #include "ql/Solvers1D/falseposition.hpp"
@@ -213,11 +211,11 @@
 #include "ql/Solvers1D/ridder.hpp"
 #include "ql/Solvers1D/secant.hpp"
 
-//alphabetical order PLEASE
 #include "ql/TermStructures/flatforward.hpp"
 #include "ql/TermStructures/piecewiseconstantforwards.hpp"
+#include "ql/TermStructures/piecewiseflatforward.hpp"
+#include "ql/TermStructures/ratehelpers.hpp"
 
-//alphabetical order PLEASE
 #include "ql/Utilities/combiningiterator.hpp"
 #include "ql/Utilities/couplingiterator.hpp"
 #include "ql/Utilities/filteringiterator.hpp"
@@ -230,6 +228,7 @@ namespace QL    = QuantLib;
 namespace QLCAL = QuantLib::Calendars;
 namespace QLCUR = QuantLib::Currencies;
 namespace QLDCO = QuantLib::DayCounters;
+namespace QLIDX = QuantLib::Indexes;
 namespace QLINS = QuantLib::Instruments;
 namespace QLFDM = QuantLib::FiniteDifferences;
 namespace QLMTH = QuantLib::Math;

@@ -2,7 +2,7 @@
 # $Id$
 # $Source$
 #
-# makefile for QuantLib term structure library under Borland C++
+# makefile for QuantLib finite differences library under Borland C++
 #
 
 .autodepend
@@ -19,9 +19,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = piecewiseconstantforwards.obj$(_D) \
-       piecewiseflatforward.obj$(_D) \
-       ratehelpers.obj$(_D)
+OBJS = libormanager.obj$(_D) \
+       xibor.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
@@ -49,9 +48,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-TermStructures$(_D).lib:: $(OBJS)
-    if exist TermStructures$(_D).lib     del TermStructures$(_D).lib
-    $(TLIB) $(TLIB_OPTS) TermStructures$(_D).lib /a $(OBJS)
+Indexes$(_D).lib:: $(OBJS)
+    if exist Indexes$(_D).lib     del Indexes$(_D).lib
+    $(TLIB) $(TLIB_OPTS) Indexes$(_D).lib /a $(OBJS)
 
 
 # Clean up

@@ -2,9 +2,9 @@
 # $Id$
 # $Source$
 
-SUBDIRS = Calendars Currencies DayCounters FiniteDifferences Instruments \
-	Math Patterns Pricers Solvers1D TermStructures MonteCarlo \
-	Utilities
+SUBDIRS = Calendars Currencies DayCounters FiniteDifferences Indexes \
+    Instruments Math MonteCarlo Patterns Pricers Solvers1D \
+    TermStructures Utilities
 
 EXTRA_DIST=config.ansi.hpp config.bcc.hpp config.decc.hpp \
 	config.msvc.hpp config.mwcw.hpp

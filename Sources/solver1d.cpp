@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.21  2001/05/16 09:57:27  lballabio
+    Added indexes and piecewise flat forward curve
+
     Revision 1.20  2001/05/09 11:06:19  nando
     A few comments modified/removed
 
@@ -79,6 +82,7 @@ namespace QuantLib {
                 if (fxMin_ == 0.0)    return xMin_;
                 if (fxMax_ == 0.0)    return xMax_;
                 root_ = (xMax_+xMin_)/2.0;
+                // check whether we really want to pass epsilon
                 return solve_(f, QL_MAX(QL_FABS(xAccuracy), QL_EPSILON));
             }
             if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.44  2001/05/16 09:57:27  lballabio
+    Added indexes and piecewise flat forward curve
+
     Revision 1.43  2001/04/23 12:29:29  lballabio
     Fixed linking in setup.py (and some tweakings in SWIG interfaces)
 
@@ -117,18 +120,15 @@ using QuantLib::IndexError;
 
 #if defined(SWIGPYTHON)
 %include Barrier.i
+%include Indexes.i
 %include Instruments.i
 %include Matrix.i
 %include MontecarloPricers.i
 %include MontecarloTools.i
 %include Options.i
+%include PiecewiseFlatForward.i
 %include Pricers.i
+%include RateHelpers.i
 %include TermStructures.i
 #endif
-
-
-
-
-
-
 
