@@ -12,11 +12,8 @@ dist_m4data_DATA = quantlib.m4
 
 EXTRA_DIST = \
 	Authors.txt \
-	BUGS.txt \
 	ChangeLog.txt \
 	Contributors.txt \
-	History.txt \
-	INSTALL.txt \
 	LICENSE.TXT \
 	News.txt \
 	QuantLib.dsp \
@@ -26,7 +23,6 @@ EXTRA_DIST = \
 	QuantLib.sln \
 	QuantLib.vcproj \
 	Readme.txt \
-	TODO.txt \
 	bootstrap \
 	makefile.mak
 

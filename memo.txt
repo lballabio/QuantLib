@@ -1,6 +1,9 @@
 
 The notes below are just hard to read memos to self.
 
+[ Then why don't you keep them on your computer?
+                                                 Luigi ]
+
 - Edgeworth expansion
   www.wilmott.com/messageview.cfm?catid=8&threadid=608&FTVAR_MSGDBTABLE=
 - e-mail: zdrezner@fullerton.edu
@@ -27,3 +30,4 @@ The notes below are just hard to read memos to self.
 - && (_MSC_VER >= 1200)
 - move all (Multi)PathPricer under a folder MultiAssetPathPricers?
 - introduce compound path pricer?
+

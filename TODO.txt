@@ -1,8 +1,0 @@
-
-The "to do" list is splitted between the Docs\pages\overviews.docs file and
-the "\todo" comments you can find in the header files.
-
-For the last official release the overview is available online at
-http://www.quantlib.org/html/overview.html), and the "\todo" comments are
-automatically collected by Doxygen and available online at
-http://www.quantlib.org/html/todo.html).
