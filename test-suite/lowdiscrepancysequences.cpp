@@ -508,7 +508,9 @@ namespace {
         7.08e-004, 5.31e-004, 3.60e-004, 2.18e-004,
         1.57e-004, 1.12e-004, 6.39e-005
     };
-    const Real dim010DiscrSobLev_Sobol[] = {7.41e-004};
+    const Real dim010DiscrSobLev_Sobol[] = {
+        7.41e-004, 5.10e-004, 3.28e-004, 2.21e-004,
+        1.57e-004, 1.08e-004, 6.38e-005};
     const Real dim010DiscrMersenneTwis[] = {
         8.83e-004, 6.56e-004, 4.87e-004, 3.37e-004,
         3.06e-004, 1.73e-004, 1.43e-004
@@ -529,7 +531,10 @@ namespace {
         1.59e-004, 1.23e-004, 7.73e-005, 5.51e-005,
         3.91e-005, 2.73e-005, 1.96e-005
     };
-    const Real dim015DiscrSobLev_Sobol[] = {1.48e-004};
+    const Real dim015DiscrSobLev_Sobol[] = {
+        1.48e-004, 1.06e-004, 8.19e-005, 6.29e-005,
+        4.16e-005, 2.54e-005, 1.73e-005
+    };
     const Real dim015DiscrMersenneTwis[] = {
         1.63e-004, 1.12e-004, 8.36e-005, 6.09e-005,
         4.34e-005, 2.95e-005, 2.10e-005
@@ -550,7 +555,10 @@ namespace {
         6.43e-007, 5.28e-007, 3.88e-007, 2.49e-007,
         2.09e-007, 1.55e-007, 1.07e-007
     };
-    const Real dim030DiscrSobLev_Sobol[] = {6.13e-007};
+    const Real dim030DiscrSobLev_Sobol[] = {
+        6.13e-007, 6.06e-007, 3.81e-007, 2.71e-007,
+        2.68e-007, 1.73e-007, 1.21e-007
+    };
     const Real dim030DiscrMersenneTwis[] = {
         4.38e-007, 3.25e-007, 4.47e-007, 2.85e-007,
         2.03e-007, 1.50e-007, 1.17e-007
