@@ -309,53 +309,53 @@ void LDSTest::testHalton() {
 
 void LDSTest::testDiscrepancy() {
 
-    const double discrRandDim2[]   = { 0.011651900, 0.008237110, 0.005823800, 0.004117800, 0.0029116400, 0.0020588100, 0.0014557800};
-    const double discrMersDim2[]   = { 0.008843060, 0.005420340, 0.005228870, 0.004472290, 0.0047513100, 0.0031086200, 0.0029713900};
-    const double discrHaltDim2[]   = { 0.001257530, 0.000673163, 0.000334633, 0.000190806, 0.0001114830, 5.05162e-005, 2.42083e-005};
-    const double discrSoboDim2[]   = { 0.000832648, 0.000431559, 0.000223876, 0.000111926, 5.69138e-005, 2.14101e-005}; // the last one is -1.#IND ???
-    const double discrUnSoDim2[]   = { 0.000832648, 0.000431559, 0.000223876, 0.000111926, 5.69138e-005, 2.14101e-005}; // the last one is -1.#IND ???
+    const double discrRandDim2[]   = { 1.16519e-002, 8.23711e-003, 5.82380e-003, 4.11780e-003, 2.91164e-003, 2.05881e-003, 1.45578e-003};
+    const double discrMersDim2[]   = { 8.84306e-003, 5.42034e-003, 5.22887e-003, 4.47229e-003, 4.75131e-003, 3.10862e-003, 2.97139e-003};
+    const double discrHaltDim2[]   = { 1.25753e-003, 6.73163e-004, 3.34633e-004, 1.90806e-004, 1.11483e-004, 5.05162e-005, 2.42083e-005};
+    const double discrSoboDim2[]   = { 8.32648e-004, 4.31559e-004, 2.23876e-004, 1.11926e-004, 5.69138e-005, 2.14101e-005}; // the last one is -1.#IND ???
+    const double discrUnSoDim2[]   = { 8.32648e-004, 4.31559e-004, 2.23876e-004, 1.11926e-004, 5.69138e-005, 2.14101e-005}; // the last one is -1.#IND ???
 
-    const double discrRandDim3[]   = { 0.00927283, 0.006555280, 0.004634710, 0.003277040, 0.0023171400, 0.0016384400};
-    const double discrMersDim3[]   = { 0.00701655, 0.004944720, 0.004821020, 0.004906070, 0.0033307600, 0.0027990900};
-    const double discrSoboDim3[]   = { 0.00120968, 0.000636850, 0.000339578, 0.000174813, 9.21381e-005, 4.79305e-005};
-    const double discrUnSoDim3[]   = { 0.00120968, 0.000636850, 0.000339578, 0.000174813, 9.21381e-005, 4.79305e-005};
-    const double discrHaltDim3[]   = { 0.00162592, 0.000961606, 0.000482840, 0.000266769, 0.0001405420, 7.63577e-005};
+    const double discrRandDim3[]   = { 9.27283e-003, 6.55528e-003, 4.63471e-003, 3.27704e-003, 2.31714e-003, 1.63844e-003, 1.15855e-003};
+    const double discrMersDim3[]   = { 7.01655e-003, 4.94472e-003, 4.82102e-003, 4.90607e-003, 3.33076e-003, 2.79909e-003, 2.62083e-003};
+    const double discrHaltDim3[]   = { 1.62592e-003, 9.61606e-004, 4.82840e-004, 2.66769e-004, 1.40542e-004, 7.63577e-005, 3.92584e-005};
+    const double discrSoboDim3[]   = { 1.20968e-003, 6.36850e-004, 3.39578e-004, 1.74813e-004, 9.21381e-005, 4.79305e-005, 2.55803e-005};
+    const double discrUnSoDim3[]   = { 1.20968e-003, 6.36850e-004, 3.39578e-004, 1.74813e-004, 9.21381e-005, 4.79305e-005, 2.55803e-005};
 
-    const double discrRandDim5[]   = { 0.00515021};
-    const double discrMersDim5[]   = { 0.00428155};
-    const double discrSoboDim5[]   = { 0.0201095};
-    const double discrUnSoDim5[]   = { 0.0119804};
-    const double discrHaltDim5[]   = { 0.00193329};
+    const double discrRandDim5[]   = { 5.15021e-003, 3.64086e-003, 2.57416e-003, 1.82010e-003, 1.28696e-003, 9.10007e-004, 6.43467e-004};
+    const double discrMersDim5[]   = { 4.28155e-003, 3.47563e-003, 2.47862e-003, 1.98171e-003, 1.56723e-003, 1.39142e-003, 6.33197e-004};
+    const double discrHaltDim5[]   = { 1.93329e-003, 1.22508e-003, 6.89233e-004, 4.21737e-004, 2.12928e-004, 1.25177e-004, 7.17258e-005};
+    const double discrSoboDim5[]   = { 2.01095e-002, 2.01790e-002, 2.02408e-002, 2.02626e-002, 2.02739e-002, 2.02811e-002, 2.02825e-002};
+    const double discrUnSoDim5[]   = { 1.19804e-002, 1.20071e-002, 1.20408e-002, 1.20533e-002, 1.20640e-002, 1.20681e-002, 1.20705e-002};
 
-    const double discrRandDim10[]  = { 0.000968531};
-    const double discrMersDim10[]  = { 0.000883079};
-    const double discrSoboDim10[]  = { 0.00167361};
-    const double discrUnSoDim10[]  = { 0.00124387};
-    const double discrHaltDim10[]  = { 0.00123382};
+    const double discrRandDim10[]  = { 9.68531e-004, 6.84688e-004, 4.84088e-004, 3.42281e-004, 2.42022e-004, 1.71133e-004, 1.21008e-004};
+    const double discrMersDim10[]  = { 8.83079e-004, 6.55531e-004, 4.86688e-004, 3.36795e-004, 3.06489e-004, 1.73377e-004, 1.42887e-004};
+    const double discrHaltDim10[]  = { 1.23382e-003, 6.89371e-004, 4.02918e-004, 2.82652e-004, 1.60818e-004, 1.07954e-004, 6.68686e-005};
+    const double discrSoboDim10[]  = { 1.67361e-003, 1.69016e-003, 1.67837e-003, 1.66587e-003, 1.68271e-003, 1.69468e-003, 1.69607e-003};
+    const double discrUnSoDim10[]  = { 1.24387e-003, 1.22087e-003, 1.17548e-003, 1.17424e-003, 1.17591e-003, 1.17819e-003, 1.17935e-003};
 
-    const double discrRandDim15[]  = { 0.000172521};
-    const double discrMersDim15[]  = { 0.000163131};
-    const double discrSoboDim15[]  = { 0.000315283};
-    const double discrUnSoDim15[]  = { 0.000196365};
-    const double discrHaltDim15[]  = { 0.000574585};
+    const double discrRandDim15[]  = { 1.72521e-004, 1.21961e-004, 8.62287e-005, 6.09691e-005, 4.31104e-005, 3.04832e-005, 2.15547e-005};
+    const double discrMersDim15[]  = { 1.63131e-004, 1.12392e-004, 8.35828e-005, 6.08550e-005, 4.33797e-005, 2.94889e-005, 2.10316e-005};
+    const double discrHaltDim15[]  = { 5.74585e-004, 3.12068e-004, 1.70246e-004, 9.88729e-005, 5.33232e-005, 3.45373e-005, 2.11297e-005};
+    const double discrSoboDim15[]  = { 3.15283e-004, 3.12619e-004, 2.96913e-004, 2.79193e-004, 2.89383e-004, 2.94596e-004, 2.97494e-004};
+    const double discrUnSoDim15[]  = { 1.96365e-004, 1.93437e-004, 1.59220e-004, 1.39165e-004, 1.40769e-004, 1.37988e-004, 1.36549e-004};
 
-    const double discrRandDim30[]  = { 9.54138e-007};
-    const double discrMersDim30[]  = { 4.38406e-007};
-    const double discrSoboDim30[]  = { 7.39576e-007};
-    const double discrUnSoDim30[]  = { 0.0000275078};
-    const double discrHaltDim30[]  = { 0.0004453450};
+    const double discrRandDim30[]  = { 9.54138e-007, 6.74513e-007, 4.76894e-007, 3.37194e-007, 2.38425e-007, 1.68590e-007, 1.19210e-007};
+    const double discrMersDim30[]  = { 4.38406e-007, 3.25086e-007, 4.47206e-007, 2.85141e-007, 2.03432e-007, 1.50003e-007, 1.17126e-007};
+    const double discrHaltDim30[]  = { 4.45345e-004, 2.22563e-004, 1.11257e-004, 5.56243e-005, 2.78125e-005, 1.39068e-005, 6.95399e-006};
+    const double discrSoboDim30[]  = { 7.39576e-007, 2.26656e-006, 1.30958e-006, 8.29286e-007, 8.56462e-007, 5.43148e-007, 4.48368e-007};
+    const double discrUnSoDim30[]  = { 2.75078e-005, 1.37584e-005, 6.87822e-006, 3.44616e-006, 1.76593e-006, 8.99183e-007, 5.44834e-007};
 
-    const double discrRandDim50[]  = { 9.31778e-010};
-    const double discrMersDim50[]  = { 3.27135e-010};
-    const double discrSoboDim50[]  = { 6.85048e-010};
-    const double discrUnSoDim50[]  = { 9.53743e-006};
-    const double discrHaltDim50[]  = { 0.0004040710};
+    const double discrRandDim50[]  = { 9.31778e-010, 6.58705e-010, 4.65718e-010, 3.29292e-010, 2.32838e-010, 1.64639e-010};
+    const double discrMersDim50[]  = { 3.27135e-010, 2.42291e-010, 1.46748e-010, 1.97764e-010, 2.31423e-010, 1.30260e-010};
+    const double discrHaltDim50[]  = { 4.04071e-004, 2.01937e-004, 1.00944e-004, 5.04658e-005, 2.52313e-005, 1.26153e-005};
+    const double discrSoboDim50[]  = { 6.85048e-010, 3.66033e-009, 1.87978e-009, 1.45576e-009, 7.74236e-010, 1.08362e-009};
+    const double discrUnSoDim50[]  = { 9.53743e-006, 4.76639e-006, 2.38261e-006, 1.19116e-006, 5.95544e-007, 2.97763e-007};
 
-    const double discrRandDim100[] = { 2.77691e-017, 1.96309e-017, 1.38795e-017, 9.81368e-018, 6.93911e-018};
-    const double discrMersDim100[] = { 5.29737e-019, 7.29315e-019, 3.70998e-019, 3.33356e-019, 1.32975e-017};
-    const double discrSoboDim100[] = { 2.26680e-018, 1.18441e-018, 6.02094e-019, 2.06352e-018, 2.26136e-018};
-    const double discrUnSoDim100[] = { 1.54476e-006, 7.72003e-007, 3.85907e-007, 1.92930e-007, 9.64591e-008};
-    const double discrHaltDim100[] = { 0.0003628720, 0.0001813480, 9.06517e-005, 4.53203e-005, 2.26588e-005};
+    const double discrRandDim100[] = { 2.77691e-017, 1.96309e-017, 1.38795e-017, 9.81368e-018, 6.93911e-018, 4.90661e-018};
+    const double discrMersDim100[] = { 5.29737e-019, 7.29315e-019, 3.70998e-019, 3.33356e-019, 1.32975e-017, 6.69502e-018};
+    const double discrHaltDim100[] = { 3.62872e-004, 1.81348e-004, 9.06517e-005, 4.53203e-005, 2.26588e-005, 1.13290e-005};
+    const double discrSoboDim100[] = { 2.26680e-018, 1.18441e-018, 6.02094e-019, 2.06352e-018, 2.26136e-018, 3.46598e-018};
+    const double discrUnSoDim100[] = { 1.54476e-006, 7.72003e-007, 3.85907e-007, 1.92930e-007, 9.64591e-008, 4.82281e-008};
 
     const double * const discrRand[8] = { discrRandDim2,  discrRandDim3,
         discrRandDim5,  discrRandDim10, discrRandDim15, discrRandDim30,
@@ -378,115 +378,168 @@ void LDSTest::testDiscrepancy() {
     Array point;
     unsigned long dim;
     unsigned long seed = 123456;
-    double trueRandomFactor;
+    double trueRandomFactor, discr, tolerance=1e-4;
 
-    std::ofstream outStream("discrepancyDim100.txt");
+    std::ofstream outStream("discrepancy.txt");
     for (int i = 0; i<8; i++) {
+        outStream << std::endl;
         dim = dimensionality[i];
+        DiscrepancyStatistics stat(dim);
+
         trueRandomFactor = (1.0/QL_POW(2.0, int(dim))
             -1.0/QL_POW(3.0, int(dim)));
-
-        outStream << "******" << dim << std::endl;
         MersenneTwisterUniformRsg mer(dim, seed);
         HaltonRsg                 hal(dim);
         SobolRsg                  sob(dim, seed);
         SobolRsg                  unS(dim, seed, true);
 
-        DiscrepancyStatistics merStat(dim);
-        DiscrepancyStatistics halStat(dim);
-        DiscrepancyStatistics sobStat(dim);
-        DiscrepancyStatistics unSStat(dim);
-
-        double ranDiscr, merDiscr, halDiscr, sobDiscr, unSDiscr;
-        double tolerance=1e-4;
-
-        Size k = 0;
-        Size sampleLoops, jMin = 10;
-        // it would take too long for usual/frequent test running
-//        sampleLoops = 7;
+        Size j, k, sampleLoops = 7, jMin = 10;
+        // 7 loops would take too long for usual/frequent test running
         sampleLoops = 1;
-        for (int j=jMin; j<jMin+sampleLoops; j++) {
-            Size points = Size(QL_POW(2.0, j))-1;
-            for (; k<points; k++) {
-                point = mer.nextSequence().value;
-                merStat.add(point);
-                point = hal.nextSequence().value;
-                halStat.add(point);
-                point = sob.nextSequence().value;
-                sobStat.add(point);
-                point = unS.nextSequence().value;
-                unSStat.add(point);
-            }
 
-            ranDiscr = QL_SQRT(trueRandomFactor/points);
-            if (QL_FABS(ranDiscr-discrRand[i][j-jMin])>tolerance*ranDiscr) {
+        // true random numbers
+        k = 0;
+        stat.reset();
+        outStream << "discrRandDim" << dim << "[] = { " ;
+        for (j=jMin; j<jMin+sampleLoops; j++) {
+            Size points = Size(QL_POW(2.0, j))-1;
+
+            discr = QL_SQRT(trueRandomFactor/points);
+
+            if (j!=jMin) outStream << ", ";
+            outStream << discr;
+
+            if (QL_FABS(discr-discrRand[i][j-jMin])>tolerance*discr) {
                 CPPUNIT_FAIL("True random discrepancy dimension " +
                              IntegerFormatter::toString(dimensionality[i]) +
                              " at " +
                              IntegerFormatter::toString(points) +
                              " samples is " +
-                             DoubleFormatter::toString(ranDiscr, 16) +
+                             DoubleFormatter::toString(discr, 16) +
                              " instead of " +
                              DoubleFormatter::toString(discrRand[i][j-jMin], 16));
             }
+        }
+        outStream << "};" << std::endl;
 
-            merDiscr = merStat.discrepancy();
-            if (QL_FABS(merDiscr-discrMers[i][j-jMin])>tolerance*merDiscr) {
+        // Mersenne sequences
+        k = 0;
+        stat.reset();
+        outStream << "discrMersDim" << dim << "[] = { " ;
+        for (j=jMin; j<jMin+sampleLoops; j++) {
+            Size points = Size(QL_POW(2.0, j))-1;
+            for (; k<points; k++) {
+                point = mer.nextSequence().value;
+                stat.add(point);
+            }
+
+            discr = stat.discrepancy();
+
+            if (j!=jMin) outStream << ", ";
+            outStream << discr;
+
+            if (QL_FABS(discr-discrMers[i][j-jMin])>tolerance*discr) {
                 CPPUNIT_FAIL("Mersenne discrepancy dimension " +
                              IntegerFormatter::toString(dimensionality[i]) +
                              " at " +
                              IntegerFormatter::toString(points) +
                              " samples is " +
-                             DoubleFormatter::toString(merDiscr, 16) +
+                             DoubleFormatter::toString(discr, 16) +
                              " instead of " +
                              DoubleFormatter::toString(discrMers[i][j-jMin], 16));
             }
+        }
+        outStream << "};" << std::endl;
 
-            halDiscr = halStat.discrepancy();
-            if (QL_FABS(halDiscr-discrHalt[i][j-jMin])>tolerance*halDiscr) {
+        // Halton sequences
+        k = 0;
+        stat.reset();
+        outStream << "discrHaltDim" << dim << "[] = { " ;
+        for (j=jMin; j<jMin+sampleLoops; j++) {
+            Size points = Size(QL_POW(2.0, j))-1;
+            for (; k<points; k++) {
+                point = hal.nextSequence().value;
+                stat.add(point);
+            }
+
+            discr = stat.discrepancy();
+
+            if (j!=jMin) outStream << ", ";
+            outStream << discr;
+
+            if (QL_FABS(discr-discrHalt[i][j-jMin])>tolerance*discr) {
                 CPPUNIT_FAIL("Halton discrepancy dimension " +
                              IntegerFormatter::toString(dimensionality[i]) +
                              " at " +
                              IntegerFormatter::toString(points) +
                              " samples is " +
-                             DoubleFormatter::toString(halDiscr, 16) +
+                             DoubleFormatter::toString(discr, 16) +
                              " instead of " +
                              DoubleFormatter::toString(discrHalt[i][j-jMin], 16));
             }
+        }
+        outStream << "};" << std::endl;
 
-            sobDiscr = sobStat.discrepancy();
-            if (QL_FABS(sobDiscr-discrSobo[i][j-jMin])>tolerance*sobDiscr) {
+        // Sobol sequences
+        k = 0;
+        stat.reset();
+        outStream << "discrSoboDim" << dim << "[] = { " ;
+        for (j=jMin; j<jMin+sampleLoops; j++) {
+            Size points = Size(QL_POW(2.0, j))-1;
+            for (; k<points; k++) {
+                point = sob.nextSequence().value;
+                stat.add(point);
+            }
+
+            discr = stat.discrepancy();
+
+            if (j!=jMin) outStream << ", ";
+            outStream << discr;
+
+            if (QL_FABS(discr-discrSobo[i][j-jMin])>tolerance*discr) {
                 CPPUNIT_FAIL("Sobol discrepancy dimension " +
                              IntegerFormatter::toString(dimensionality[i]) +
                              " at " +
                              IntegerFormatter::toString(points) +
                              " samples is " +
-                             DoubleFormatter::toString(sobDiscr, 16) +
+                             DoubleFormatter::toString(discr, 16) +
                              " instead of " +
                              DoubleFormatter::toString(discrSobo[i][j-jMin], 16));
             }
 
-            unSDiscr = unSStat.discrepancy();
-            if (QL_FABS(unSDiscr-discrUnSo[i][j-jMin])>tolerance*unSDiscr) {
+        }
+        outStream << "};" << std::endl;
+
+        // Unit Sobol sequences
+        k = 0;
+        stat.reset();
+        outStream << "discrUnSoDim" << dim << "[] = { " ;
+        for (j=jMin; j<jMin+sampleLoops; j++) {
+            Size points = Size(QL_POW(2.0, j))-1;
+            for (; k<points; k++) {
+                point = unS.nextSequence().value;
+                stat.add(point);
+            }
+
+            discr = stat.discrepancy();
+
+            if (j!=jMin) outStream << ", ";
+            outStream << discr;
+
+            if (QL_FABS(discr-discrUnSo[i][j-jMin])>tolerance*discr) {
                 CPPUNIT_FAIL("Unit Sobol discrepancy dimension " +
                              IntegerFormatter::toString(dimensionality[i]) +
                              " at " +
                              IntegerFormatter::toString(points) +
                              " samples is " +
-                             DoubleFormatter::toString(unSDiscr, 16) +
+                             DoubleFormatter::toString(discr, 16) +
                              " instead of " +
                              DoubleFormatter::toString(discrUnSo[i][j-jMin], 16));
             }
 
-            outStream << "points: " << points << std::endl;
-            outStream <<
-                "ra " << ranDiscr <<
-                " M " << merDiscr <<
-                " H " << halDiscr <<
-                " S " << sobDiscr <<
-                " U " << unSDiscr <<
-                std::endl;
         }
+        outStream << "};" << std::endl;
+
     }
     outStream.close();
 
