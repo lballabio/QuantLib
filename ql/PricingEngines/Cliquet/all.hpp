@@ -19,7 +19,7 @@
 #define quantlib_pricing_engines_cliquet_all_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/PricingEngines/Cliquet/mccliquetengine.hpp>
+#include <ql/PricingEngines/Cliquet/analyticcliquetengine.hpp>
 
 
 #endif

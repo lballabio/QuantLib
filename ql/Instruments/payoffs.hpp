@@ -46,7 +46,6 @@ namespace QuantLib {
                        "negative strike given");
         }
         double strike() const { return strike_; };
-        void setStrike(double strike) { strike_ = strike; };
       protected:
         double strike_;
     };

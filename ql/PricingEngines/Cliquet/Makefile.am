@@ -4,11 +4,11 @@ includedir = $(prefix)/include/ql/PricingEngines/Cliquet
 
 include_HEADERS = \
 	all.hpp \
-    mccliquetengine.hpp
+	analyticcliquetengine.hpp
 
 EXTRA_DIST=makefile.mak
 
 libCliquetEngines_la_SOURCES = \
-    mccliquetengine.cpp
+    analyticcliquetengine.cpp
 
 noinst_LTLIBRARIES = libCliquetEngines.la

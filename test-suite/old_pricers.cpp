@@ -39,6 +39,7 @@
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
+#ifndef QL_DISABLE_DEPRECATED
 void OldPricerTest::testCliquetPricer() {
 
     BOOST_MESSAGE("Testing old-style cliquet option pricer...");
@@ -64,6 +65,7 @@ void OldPricerTest::testCliquetPricer() {
             "expected:         " +
             DoubleFormatter::toString(expected));
 }
+#endif
 
 #ifndef QL_DISABLE_DEPRECATED
 void OldPricerTest::testDividendEuropeanPricer() {

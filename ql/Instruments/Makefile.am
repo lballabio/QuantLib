@@ -32,6 +32,7 @@ libInstruments_la_SOURCES = \
     barrieroption.cpp \
     basketoption.cpp \
     capfloor.cpp \
+    cliquetoption.cpp \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
     forwardvanillaoption.cpp \

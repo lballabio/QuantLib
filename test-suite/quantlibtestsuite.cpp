@@ -46,6 +46,7 @@
 #include "basketoption.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
+#include "cliquetoption.hpp"
 #include "compoundforward.hpp"
 #include "covariance.hpp"
 #include "dates.hpp"
@@ -92,6 +93,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BasketOptionTest::suite());
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
+    test->add(CliquetOptionTest::suite());
     test->add(CompoundForwardTest::suite());
     test->add(CovarianceTest::suite());
     test->add(DateTest::suite());

@@ -2,7 +2,8 @@
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/PricingEngines
 
-SUBDIRS = Asian Barrier Basket CapFloor Forward Quanto Swaption Vanilla
+SUBDIRS = Asian Barrier Basket CapFloor Cliquet \
+          Forward Quanto Swaption Vanilla
 
 include_HEADERS = \
     all.hpp \
@@ -27,5 +28,6 @@ libPricingEngines_la_LIBADD = \
     Barrier/libBarrierEngines.la \
     Basket/libBasketEngines.la \
     CapFloor/libCapFloorEngines.la \
+    Cliquet/libCliquetEngines.la \
     Swaption/libSwaptionEngines.la \
     Vanilla/libVanillaEngines.la

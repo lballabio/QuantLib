@@ -19,6 +19,8 @@
     \brief Monte Carlo Cliquet option engine
 */
 
+/*
+
 #ifndef quantlib_mc_cliquet_engine_hpp
 #define quantlib_mc_cliquet_engine_hpp
 
@@ -26,8 +28,6 @@
 #include <ql/PricingEngines/mcsimulation.hpp>
 
 namespace QuantLib {
-
-    /*
 
     //! Monte Carlo cliquet engine
     template<class S, class SG, class PG>
@@ -186,8 +186,9 @@ namespace QuantLib {
             mcModel_->sampleAccumulator().errorEstimate();
     }
 
-    */
 }
 
 
 #endif
+
+*/

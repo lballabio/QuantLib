@@ -26,6 +26,8 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
+
     //! cliquet (Ratchet) option
     /*! A cliquet option, also known as Ratchet option, is a series of
         forward-starting (a.k.a. deferred strike) options where the
@@ -35,6 +37,8 @@ namespace QuantLib {
         In the particular case in which only two dates are given, the
         cliquet option is the same as a forward-starting option
         starting at the first date and expiring at the second date.
+
+        \deprecated use CliquetOption with AnalyticCliquetPricer instead
     */
     class CliquetOptionPricer {
       public:
@@ -59,6 +63,8 @@ namespace QuantLib {
         double vega_;
         double rho_, dividendRho_;
     };
+
+#endif
 
 }
 

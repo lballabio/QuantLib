@@ -22,72 +22,56 @@
 #ifndef ql_cliquet_option_hpp
 #define ql_cliquet_option_hpp
 
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/oneassetstrikedoption.hpp>
 
 namespace QuantLib {
 
-    // currently just a container for inner classes
-    class CliquetOption {
+    //! cliquet (Ratchet) option
+    /*! A cliquet option, also known as Ratchet option, is a series of
+        forward-starting (a.k.a. deferred strike) options where the
+        strike for each forward start option is set equal to a fixed
+        percentage of the spot price at the beginning of each period.
+
+        \todo add local/global caps/floors
+        \todo add accrued coupon and last fixing
+
+        \ingroup instruments
+    */
+    class CliquetOption : public OneAssetStrikedOption {
       public:
         class arguments;
-        // class results;
         class engine;
+        CliquetOption(const boost::shared_ptr<BlackScholesProcess>&,
+                      const boost::shared_ptr<PercentageStrikePayoff>&,
+                      const boost::shared_ptr<EuropeanExercise>& maturity,
+                      const std::vector<Date>& resetDates,
+                      const boost::shared_ptr<PricingEngine>& engine =
+                          boost::shared_ptr<PricingEngine>());
+        void setupArguments(Arguments*) const;
+      private:
+        std::vector<Date> resetDates_;
     };
 
     //! %Arguments for cliquet option calculation
     // should inherit from a strikeless version of VanillaOption::arguments
-    class CliquetOption::arguments : public VanillaOption::arguments {
+    class CliquetOption::arguments : public OneAssetStrikedOption::arguments {
       public:
-        arguments() : moneyness(Null<double>()),
-                      accruedCoupon(Null<double>()),
+        arguments() : accruedCoupon(Null<double>()),
                       lastFixing(Null<double>()),
                       localCap(Null<double>()),
                       localFloor(Null<double>()),
                       globalCap(Null<double>()),
                       globalFloor(Null<double>()) {}
         void validate() const;
-        double moneyness, accruedCoupon, lastFixing;
+        double accruedCoupon, lastFixing;
         double localCap, localFloor, globalCap, globalFloor;
         std::vector<Date> resetDates;
     };
 
     //! Cliquet engine base class
-    class CliquetOption:engine 
+    class CliquetOption::engine 
         : public GenericEngine<CliquetOption::arguments,
-                               VanillaOption::results> {};
-
-
-    // inline definitions
-
-    inline void CliquetOption::arguments::validate() const {
-        #if defined(QL_PATCH_MICROSOFT)
-        VanillaOption::arguments copy = *this;
-        copy.validate();
-        #else
-        VanillaOption::arguments::validate();
-        #endif
-
-        QL_REQUIRE(moneyness != Null<double>(),
-                   "null moneyness given");
-        QL_REQUIRE(moneyness > 0.0,
-                   "negative or zero moneyness given");
-        QL_REQUIRE(accruedCoupon == Null<double>() || accruedCoupon >= 0.0,
-                   "negative accrued coupon");
-        QL_REQUIRE(localCap == Null<double>() || localCap >= 0.0,
-                   "negative local cap");
-        QL_REQUIRE(localFloor == Null<double>() || localFloor >= 0.0,
-                   "negative local floor");
-        QL_REQUIRE(globalCap == Null<double>() || globalCap >= 0.0,
-                   "negative global cap");
-        QL_REQUIRE(globalFloor == Null<double>() || globalFloor >= 0.0,
-                   "negative global floor");
-        QL_REQUIRE(resetDates.size()>0,
-                   "no reset dates given");
-        // sort resetDates here ???
-        for (Size i = 0; i < resetDates.size(); i++)
-            QL_REQUIRE(exercise->lastDate() >= resetDates[i],
-                       "reset date greater than exercise last date");
-    }
+                               CliquetOption::results> {};
 
 }
 

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,24 +15,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_old_pricers_hpp
-#define quantlib_test_old_pricers_hpp
+/*! \file analyticcliquetengine.hpp
+    \brief Analytic Cliquet engine
+*/
 
-#include <ql/qldefines.hpp>  // needed for QL_DISABLE_DEPRECATED
-#include <boost/test/unit_test.hpp>
+#ifndef quantlib_analytic_cliquet_engine_hpp
+#define quantlib_analytic_cliquet_engine_hpp
 
-class OldPricerTest {
-  public:
-#ifndef QL_DISABLE_DEPRECATED
-    static void testCliquetPricer();
-    static void testDividendEuropeanPricer();
-#endif
-    static void testFdEuropeanPricer();
-    static void testAmericanPricers();
-    static void testMcSingleFactorPricers();
-    static void testMcMultiFactorPricers();
-    static boost::unit_test_framework::test_suite* suite();
-};
+#include <ql/Instruments/cliquetoption.hpp>
+
+namespace QuantLib {
+
+    //! Pricing engine for Cliquet options using analytical formulae
+    class AnalyticCliquetEngine : public CliquetOption::engine {
+      public:
+        void calculate() const;
+    };
+
+}
 
 
 #endif

@@ -21,6 +21,8 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
+
     CliquetOptionPricer::CliquetOptionPricer(
                                  Option::Type type,
                                  double underlying, double moneyness,
@@ -76,6 +78,8 @@ namespace QuantLib {
             vega_ += weight * black.vega(dt);
         }
     }
+
+#endif
 
 }
 

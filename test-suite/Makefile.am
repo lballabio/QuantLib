@@ -7,6 +7,7 @@ QL_TESTS = \
 	basketoption.hpp basketoption.cpp \
 	calendars.hpp calendars.cpp \
 	capfloor.hpp capfloor.cpp \
+	cliquetoption.hpp cliquetoption.cpp \
 	compoundforward.hpp compoundforward.cpp \
 	covariance.hpp covariance.cpp \
 	dates.hpp dates.cpp \

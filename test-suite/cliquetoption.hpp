@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,22 +15,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_old_pricers_hpp
-#define quantlib_test_old_pricers_hpp
+#ifndef quantlib_test_cliquet_option_hpp
+#define quantlib_test_cliquet_option_hpp
 
-#include <ql/qldefines.hpp>  // needed for QL_DISABLE_DEPRECATED
 #include <boost/test/unit_test.hpp>
 
-class OldPricerTest {
+class CliquetOptionTest {
   public:
-#ifndef QL_DISABLE_DEPRECATED
-    static void testCliquetPricer();
-    static void testDividendEuropeanPricer();
-#endif
-    static void testFdEuropeanPricer();
-    static void testAmericanPricers();
-    static void testMcSingleFactorPricers();
-    static void testMcMultiFactorPricers();
+    static void testValues();
+    static void testGreeks();
     static boost::unit_test_framework::test_suite* suite();
 };
 
