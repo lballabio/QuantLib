@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.9  2001/05/22 13:43:23  nando
+# 80 columns enforced
+#
 # Revision 1.8  2001/05/21 13:12:44  nando
 # upgraded to NSIS 1.41
 #
@@ -12,12 +15,12 @@
 
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"
-OutFile "..\QuantLib-inst.exe"
+OutFile "..\QuantLib-200105221249-inst.exe"
 SilentInstall normal
 CRCCheck on
 UninstallText "This will uninstall QuantLib. Hit next to continue."
 UninstallExeName "QuantLibUninstall.exe"
-LicenseText "This installer will install QuantLib. Please read the license below."
+LicenseText "This installer will install QuantLib. Please read the license."
 LicenseData License.txt
 ComponentText "Select which optional components you want installed."
 DirShow show
@@ -67,9 +70,18 @@ SetOutPath  $INSTDIR\Include\ql\TermStructures
 File /r "Include\ql\TermStructures\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Utilities
 File /r "Include\ql\Utilities\*.hpp"
-WriteRegStr HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir" "$INSTDIR"
-WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" "DisplayName" "QuantLib (remove only)"
-WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" "UninstallString" '"QuantLibUninstall.exe"'
+WriteRegStr HKEY_LOCAL_MACHINE \
+            "SOFTWARE\QuantLib" \
+            "Install_Dir" \
+            "$INSTDIR"
+WriteRegStr HKEY_LOCAL_MACHINE \
+            "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
+            "DisplayName" \
+            "QuantLib (remove only)"
+WriteRegStr HKEY_LOCAL_MACHINE \
+            "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
+            "UninstallString" \
+            '"QuantLibUninstall.exe"'
 SectionEnd
 
 Section "Documentation"
@@ -81,12 +93,16 @@ SectionEnd
 
 Section "Start Menu Shortcuts"
 CreateDirectory "$SMPROGRAMS\QuantLib"
-CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" "$INSTDIR\QuantLibUninstall.exe" "" "$INSTDIR\QuantLibUninstall.exe" 0
+CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" \
+               "$INSTDIR\QuantLibUninstall.exe" \
+               "" "$INSTDIR\QuantLibUninstall.exe" 0
 SectionEnd
 
 Section "Uninstall"
-DeleteRegKey HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
-DeleteRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib
+DeleteRegKey HKEY_LOCAL_MACHINE \
+             "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
+DeleteRegKey HKEY_LOCAL_MACHINE \
+             SOFTWARE\QuantLib
 Delete "$SMPROGRAMS\QuantLib\*.*"
 RMDir "$SMPROGRAMS\QuantLib"
 RMDir /r $INSTDIR\Docs
