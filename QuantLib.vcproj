@@ -558,12 +558,6 @@
 				RelativePath="ql\Calendars\frankfurt.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\greatbritain.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\Calendars\greatbritain.hpp">
-			</File>
-			<File
 				RelativePath="ql\Calendars\helsinki.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -765,19 +759,7 @@
 				RelativePath="ql\Calendars\jointcalendar.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\london.cpp">
-			</File>
-			<File
 				RelativePath="ql\Calendars\london.hpp">
-			</File>
-			<File
-				RelativePath="ql\Calendars\milan.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\Calendars\milanstockexchange.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\Calendars\milanstockexchange.hpp">
 			</File>
 			<File
 				RelativePath="ql\Calendars\newyork.hpp">
@@ -1188,16 +1170,16 @@
 				RelativePath="ql\Calendars\toronto.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\usexchange.cpp">
+				RelativePath=".\ql\Calendars\unitedkingdom.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\usexchange.hpp">
+				RelativePath=".\ql\Calendars\unitedkingdom.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\usgovernmentbondmarket.cpp">
+				RelativePath=".\ql\Calendars\unitedstates.cpp">
 			</File>
 			<File
-				RelativePath=".\ql\Calendars\usgovernmentbondmarket.hpp">
+				RelativePath=".\ql\Calendars\unitedstates.hpp">
 			</File>
 			<File
 				RelativePath="ql\Calendars\warsaw.cpp">
