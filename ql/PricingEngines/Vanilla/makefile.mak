@@ -21,7 +21,8 @@ OBJS = \
     baroneadesiwhaleyengine.obj$(_D) \
     bjerksundstenslandengine.obj$(_D) \
     discretizedvanillaoption.obj$(_D) \
-    integralengines.obj$(_D)
+    integralengines.obj$(_D) \
+    jumpdiffusionengine.obj$(_D)
 
 
 # Tools to be used

@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/PricingEngines/Vanilla
 include_HEADERS = \
     americanmcengines.hpp \
     discretizedvanillaoption.hpp \
+    jumpdiffusionengine.hpp \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
     mcvanillaengine.hpp \
@@ -19,6 +20,7 @@ libVanillaEngines_la_SOURCES = \
     baroneadesiwhaleyengine.cpp \
     bjerksundstenslandengine.cpp \
     discretizedvanillaoption.cpp \
-    integralengines.cpp
+    integralengines.cpp \
+    jumpdiffusionengine.cpp
 
 noinst_LTLIBRARIES = libVanillaEngines.la
