@@ -5,6 +5,7 @@ Christopher Baus - inspiration for custom iterators
 Thomas Becker - inspiration for custom iterators
 David Binderman
 Toyin Akin
+James Battle
 Matteo Gallivanoni
 Maxim Sokolov - examples
 Gilbert Peffer

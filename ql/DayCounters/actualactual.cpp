@@ -176,11 +176,15 @@ namespace QuantLib {
             }
 
             double den = 365.0;
-            if ((Date::isLeap(newD2.year()) &&
-                    newD2>Date(29, (Month)2, newD2.year()))
-                || (Date::isLeap(d1.year()) &&
-                    d1<=Date(29, (Month)2, d1.year()))) {
-                den += 1.0;
+
+            if (Date::isLeap(newD2.year())) {
+                temp = Date(29, (Month)2, newD2.year());
+                if (newD2>temp && d1<=temp)
+                    den += 1.0;
+            } else if (Date::isLeap(d1.year())) {
+                temp = Date(29, (Month)2, d1.year());
+                if (newD2>temp && d1<=temp)
+                    den += 1.0;
             }
 
             return sum+dayCount(d1, newD2)/den;

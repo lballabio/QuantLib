@@ -108,7 +108,7 @@
         \item Adolfo Benin (adolfo.benin@libero.it)
         \item Nicolas Di C\'esar\'e, spline and optimizer
         \item Marco Marchioro (marco.marchioro@riskmap.net)
-        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), single factor interest 
+        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), single factor interest
               rate models
         \item Enrico Sirola (enrico.sirola@riskmap.net)
     \end{itemize}
@@ -150,6 +150,13 @@
 
     <tr>
     <td><em>Toyin Akin</em></td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    </tr>
+
+    <tr>
+    <td><em>James Battle</em></td>
     <td> </td>
     <td> </td>
     <td> </td>
@@ -207,6 +214,7 @@
         \item Christopher Baus, inspiration for custom iterators
         \item Thomas Becker, inspiration for custom iterators
         \item Toyin Akin
+        \item James Battle
         \item David Binderman
         \item Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
         \item Gilbert Peffer
