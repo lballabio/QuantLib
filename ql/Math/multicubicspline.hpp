@@ -450,6 +450,9 @@ namespace QuantLib {
     typedef MultiSplineDetails::SplineGrid SplineGrid;
 
     //| N-dimensional cubic spline interpolation between discrete points
+    /*! \test interpolated values are checked against the original
+              function.
+    */
     template <Size i> class MultiCubicSpline {
         typedef typename MultiSplineDetails::Int2Type<i>::c_spline c_spline;
         typedef typename MultiSplineDetails::Int2Type<i>::c_splint c_splint;
@@ -520,6 +523,7 @@ namespace QuantLib {
         d2_.swap(tmp2);
     }
 
+    #ifndef __DOXYGEN__
     // the argument value is checked and, in out of boundaries case,
     // exception is thrown BEFORE the main body of interpolation begins
     template <Size i>
@@ -545,6 +549,7 @@ namespace QuantLib {
             }
         }
     }
+    #endif
 
 }
 

@@ -166,7 +166,7 @@
 /*! \defgroup limitMacros Numeric limits
 
     Some compilers do not give an implementation of
-    <code>&lt;limits&gt;</code> yet.  For the code to be portable
+    <code>\<limits\></code> yet.  For the code to be portable
     these macros should be used instead of the corresponding method of
     <code>std::numeric_limits</code> or the corresponding macro
     defined in <code><limits.h></code>.
