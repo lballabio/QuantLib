@@ -1,9 +1,4 @@
-1) switch to BrownianBridge
-2) american at-hit lambda: is Haug wrong? Probably not, anyway...
-3) report errors to Haug:
-    - case 3, 4 of binary barriers
-    - jump diffusion values (termination criterium)
-4) add Edgeworth expansion
+add Edgeworth expansion
 american at-expiry greeks
 american at-hit greeks to be completed
 review MC engine for american options
@@ -26,6 +21,7 @@ http://www.wilmott.com/messageview.cfm?catid=8&threadid=608&FTVAR_MSGDBTABLE=
 investigate quanto-forward bug
 add tests for quanto and forward (Haug cases)
 
+allow Incremental/BrownianBridge selection
 make check as macro (so that cppunit reports the right line)
 introduce plain American Exercise (no from_date, no payoffAtExpiry)
 digitaloption testEngineConsistency as in in europeanoption test
