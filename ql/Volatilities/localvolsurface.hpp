@@ -119,29 +119,43 @@ namespace QuantLib {
             double dwdy = (wp-wm)/(2.0*dy);
             double d2wdy2 = (wp-2.0*w+wm)/(dy*dy);
 
-            double dt = 0.0001;
-            double wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
-            double wmt = blackTS_->blackVariance(t-dt, strike, extrapolate);
-            QL_REQUIRE(wpt>=w,
-                "LocalVolSurface::localVolImpl : "
-                "decreasing variance");
-            QL_REQUIRE(w>=wmt,
-                "LocalVolSurface::localVolImpl : "
-                "decreasing variance");
-            double dwdt = (wpt-wmt)/(2.0*dt);
+            double dt, wpt, wmt, dwdt;
+            if (t==0.0) {
+                dt = 0.0001;
+                wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
+                QL_REQUIRE(wpt>=w,
+                    "LocalVolSurface::localVolImpl : "
+                    "decreasing variance");
+                dwdt = (wpt-w)/dt;
+            } else {
+                dt = QL_MIN(0.0001, t);
+                wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
+                wmt = blackTS_->blackVariance(t-dt, strike, extrapolate);
+                QL_REQUIRE(wpt>=w,
+                    "LocalVolSurface::localVolImpl : "
+                    "decreasing variance");
+                QL_REQUIRE(w>=wmt,
+                    "LocalVolSurface::localVolImpl : "
+                    "decreasing variance");
+                dwdt = (wpt-wmt)/(2.0*dt);
+            }
 
-            double den1 = 1.0 - y/w*dwdy;
-            double den2 = 0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy;
-            double den3 = 0.5*d2wdy2;
-            double den = den1+den2+den3;
-            double result = dwdt / den;
-            QL_REQUIRE(result>=0.0,
-                "LocalVolSurface::localVolImpl : "
-                "negative vol^2, "
-                "the black vol surface is not smooth enough");
-            return QL_SQRT(result);
-//            return QL_SQRT(dwdt / (1.0 - y/w*dwdy +
-//                0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy + 0.5*d2wdy2));
+            if (dwdy==0.0 && d2wdy2==0.0) { // avoid /w where w might be 0.0
+                return QL_SQRT(dwdt);
+            } else {
+                double den1 = 1.0 - y/w*dwdy;
+                double den2 = 0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy;
+                double den3 = 0.5*d2wdy2;
+                double den = den1+den2+den3;
+                double result = dwdt / den;
+                QL_REQUIRE(result>=0.0,
+                    "LocalVolSurface::localVolImpl : "
+                    "negative vol^2, "
+                    "the black vol surface is not smooth enough");
+                return QL_SQRT(result);
+    //            return QL_SQRT(dwdt / (1.0 - y/w*dwdy +
+    //                0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy + 0.5*d2wdy2));
+            }
         }
 
     }
