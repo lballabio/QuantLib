@@ -34,6 +34,8 @@ namespace QuantLib {
         \f]
         where \f$ \alpha \f$ and \f$ \sigma \f$ are constants.
 
+        \test calibration results are tested against cached values
+
         \bug When the term structure is relinked, the r0 parameter of
              the underlying Vasicek model is not updated.
 

@@ -5,6 +5,7 @@ QL_TESTS = \
 	asianoptions.hpp asianoptions.cpp \
 	barrieroption.hpp barrieroption.cpp \
 	basketoption.hpp basketoption.cpp \
+	bermudanswaption.hpp bermudanswaption.cpp \
 	bonds.hpp bonds.cpp \
 	calendars.hpp calendars.cpp \
 	capfloor.hpp capfloor.cpp \
@@ -37,6 +38,7 @@ QL_TESTS = \
 	riskstats.hpp riskstats.cpp \
 	rngtraits.hpp rngtraits.cpp \
 	rounding.hpp rounding.cpp \
+	shortratemodels.hpp shortratemodels.cpp \
 	solvers.hpp solvers.cpp \
 	stats.hpp stats.cpp \
 	swap.hpp swap.cpp \

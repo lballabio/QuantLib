@@ -35,6 +35,7 @@
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "basketoption.hpp"
+#include "bermudanswaption.hpp"
 #include "bonds.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
@@ -67,6 +68,7 @@
 #include "riskstats.hpp"
 #include "rngtraits.hpp"
 #include "rounding.hpp"
+#include "shortratemodels.hpp"
 #include "solvers.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
@@ -128,6 +130,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(AsianOptionTest::suite());
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
+    test->add(BermudanSwaptionTest::suite());
     test->add(BondTest::suite());
     test->add(CalendarTest::suite());
     test->add(CapFloorTest::suite());
@@ -160,6 +163,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(RiskStatisticsTest::suite());
     test->add(RngTraitsTest::suite());
     test->add(RoundingTest::suite());
+    test->add(ShortRateModelTest::suite());
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SwapTest::suite());

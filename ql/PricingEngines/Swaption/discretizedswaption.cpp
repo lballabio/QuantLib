@@ -20,8 +20,45 @@
 
 namespace QuantLib {
 
+    DiscretizedSwap::DiscretizedSwap(const SimpleSwap::arguments& args)
+    : arguments_(args) {}
+
+    void DiscretizedSwap::reset(Size size) {
+        values_ = Array(size, 0.0);
+        adjustValues();
+    }
+
+    std::vector<Time> DiscretizedSwap::mandatoryTimes() const {
+        std::vector<Time> times;
+        Time t;
+        Size i;
+        for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
+            t = arguments_.fixedResetTimes[i];
+            if (t >= 0.0)
+                times.push_back(t);
+        }
+        for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
+            t = arguments_.fixedPayTimes[i];
+            if (t >= 0.0)
+                times.push_back(t);
+        }
+        for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
+            t = arguments_.floatingResetTimes[i];
+            if (t >= 0.0)
+                times.push_back(t);
+        }
+        for (i=0; i<arguments_.floatingPayTimes.size(); i++) {
+            t = arguments_.floatingPayTimes[i];
+            if (t >= 0.0)
+                times.push_back(t);
+        }
+        return times;
+    }
+
     void DiscretizedSwap::preAdjustValuesImpl() {
-        for (Size i=0; i<arguments_.floatingResetTimes.size(); i++) {
+        Size i;
+        // floating payments
+        for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
             Time t = arguments_.floatingResetTimes[i];
             if (t >= 0.0 && isOnTime(t)) {
                 DiscretizedDiscountBond bond;
@@ -38,12 +75,33 @@ namespace QuantLib {
                 }
             }
         }
+        // fixed payments
+        for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
+            Time t = arguments_.fixedResetTimes[i];
+            if (t >= 0.0 && isOnTime(t)) {
+                DiscretizedDiscountBond bond;
+                bond.initialize(method(),arguments_.fixedPayTimes[i]);
+                bond.rollback(time_);
+
+                Real fixedCoupon = arguments_.fixedCoupons[i];
+                for (Size j=0; j<values_.size(); j++) {
+                    Real coupon = fixedCoupon*bond.values()[j];
+                    if (arguments_.payFixed)
+                        values_[j] -= coupon;
+                    else
+                        values_[j] += coupon;
+                }
+            }
+        }
     }
 
     void DiscretizedSwap::postAdjustValuesImpl() {
+        // fixed coupons whose reset time is in the past won't be managed
+        // in preAdjustValues()
         for (Size i=0; i<arguments_.fixedPayTimes.size(); i++) {
             Time t = arguments_.fixedPayTimes[i];
-            if (t >= 0.0 && isOnTime(t)) {
+            Time reset = arguments_.fixedResetTimes[i];
+            if (t >= 0.0 && isOnTime(t) && reset < 0.0) {
                 Real fixedCoupon = arguments_.fixedCoupons[i];
                 if (arguments_.payFixed)
                     values_ -= fixedCoupon;
@@ -51,17 +109,16 @@ namespace QuantLib {
                     values_ += fixedCoupon;
             }
         }
+        // the same applies to floating payments whose rate is already fixed
         if (arguments_.currentFloatingCoupon != Null<Real>()) {
             for (Size i=0; i<arguments_.floatingPayTimes.size(); i++) {
                 Time t = arguments_.floatingPayTimes[i];
-                if (t >= 0.0 && isOnTime(t)) {
-                    if (arguments_.floatingResetTimes[i] < 0.0) {
-                        if (arguments_.payFixed)
-                            values_ += arguments_.currentFloatingCoupon;
-                        else
-                            values_ -= arguments_.currentFloatingCoupon;
-                        break;
-                    }
+                Time reset = arguments_.floatingResetTimes[i];
+                if (t >= 0.0 && isOnTime(t) && reset < 0.0) {
+                    if (arguments_.payFixed)
+                        values_ += arguments_.currentFloatingCoupon;
+                    else
+                        values_ -= arguments_.currentFloatingCoupon;
                 }
             }
         }
@@ -89,17 +146,26 @@ namespace QuantLib {
       arguments_(args) {
 
         // Date adjustments can get time vectors out of synch.
-        // Here, we try and collapse similar dates.
+        // Here, we try and collapse similar dates which could cause
+        // a mispricing.
         for (Size i=0; i<arguments_.stoppingTimes.size(); i++) {
             Time exercise = arguments_.stoppingTimes[i];
-            for (Size j=0; j<arguments_.fixedPayTimes.size(); j++) {
-                if (withinNextWeek(exercise, arguments_.fixedPayTimes[j]))
+            Size j;
+            for (j=0; j<arguments_.fixedPayTimes.size(); j++) {
+                if (withinNextWeek(exercise, arguments_.fixedPayTimes[j])
+                    // coupons in the future are dealt with below
+                    && arguments_.fixedResetTimes[j] < 0.0)
                     arguments_.fixedPayTimes[j] = exercise;
             }
-            for (Size k=0; k<arguments_.floatingResetTimes.size(); k++) {
+            for (j=0; j<arguments_.fixedResetTimes.size(); j++) {
                 if (withinPreviousWeek(exercise,
-                                       arguments_.floatingResetTimes[k]))
-                    arguments_.floatingResetTimes[k] = exercise;
+                                       arguments_.fixedResetTimes[j]))
+                    arguments_.fixedResetTimes[j] = exercise;
+            }
+            for (j=0; j<arguments_.floatingResetTimes.size(); j++) {
+                if (withinPreviousWeek(exercise,
+                                       arguments_.floatingResetTimes[j]))
+                    arguments_.floatingResetTimes[j] = exercise;
             }
         }
 

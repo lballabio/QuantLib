@@ -43,6 +43,8 @@ namespace QuantLib {
           correspondingly adjusted fixed rate.
         - the correctness of the returned value is tested by checking
           it against a known good value.
+
+        \todo add explicit exercise lag
     */
     class Swaption : public Option {
       public:

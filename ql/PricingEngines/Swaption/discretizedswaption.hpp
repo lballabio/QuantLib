@@ -20,8 +20,8 @@
     \brief Discretized swaption class
 */
 
-#ifndef quantlib_pricers_swaption_pricer_h
-#define quantlib_pricers_swaption_pricer_h
+#ifndef quantlib_pricers_swaption_pricer_hpp
+#define quantlib_pricers_swaption_pricer_hpp
 
 #include <ql/Instruments/swaption.hpp>
 #include <ql/discretizedasset.hpp>
@@ -30,35 +30,9 @@ namespace QuantLib {
 
     class DiscretizedSwap : public DiscretizedAsset {
       public:
-        DiscretizedSwap(const SimpleSwap::arguments& args)
-        : arguments_(args) {}
-
-        void reset(Size size) {
-            values_ = Array(size, 0.0);
-            adjustValues();
-        }
-
-        std::vector<Time> mandatoryTimes() const {
-            std::vector<Time> times;
-            Time t;
-            Size i;
-            for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
-                t = arguments_.fixedPayTimes[i];
-                if (t >= 0.0)
-                    times.push_back(t);
-            }
-            for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
-                t = arguments_.floatingResetTimes[i];
-                if (t >= 0.0)
-                    times.push_back(t);
-            }
-            for (i=0; i<arguments_.floatingPayTimes.size(); i++) {
-                t = arguments_.floatingPayTimes[i];
-                if (t >= 0.0)
-                    times.push_back(t);
-            }
-            return times;
-        }
+        DiscretizedSwap(const SimpleSwap::arguments&);
+        void reset(Size size);
+        std::vector<Time> mandatoryTimes() const;
       protected:
         void preAdjustValuesImpl();
         void postAdjustValuesImpl();
@@ -68,7 +42,7 @@ namespace QuantLib {
 
     class DiscretizedSwaption : public DiscretizedOption {
       public:
-        DiscretizedSwaption(const Swaption::arguments& args);
+        DiscretizedSwaption(const Swaption::arguments&);
         void reset(Size size);
       private:
         Swaption::arguments arguments_;

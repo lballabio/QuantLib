@@ -63,10 +63,9 @@ namespace QuantLib {
 
         arguments->exercise = exercise_;
         arguments->stoppingTimes.clear();
-//        const std::vector<Date> dates = exercise_->dates();
         for (Size i=0; i<exercise_->dates().size(); i++) {
             Time time = counter.yearFraction(settlement,
-                exercise_->dates()[i]);
+                                             exercise_->dates()[i]);
             arguments->stoppingTimes.push_back(time);
         }
     }

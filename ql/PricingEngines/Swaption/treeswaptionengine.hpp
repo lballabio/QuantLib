@@ -28,14 +28,22 @@
 namespace QuantLib {
 
     //! Numerical lattice engine for swaptions
-    /*! \ingroup swaptionengines */
+    /*! \ingroup swaptionengines
+
+        \warning This engine is not guaranteed to work if the
+                 underlying swap has a start date in the past. When
+                 using this engine, prune the initial part of the swap
+                 so that it starts at \f$ t \geq 0 \f$.
+
+        \test calculations are checked against cached results
+    */
     class TreeSwaptionEngine
     : public LatticeShortRateModelEngine<Swaption::arguments,
                                          Swaption::results> {
       public:
-        TreeSwaptionEngine(const boost::shared_ptr<ShortRateModel>& model, 
+        TreeSwaptionEngine(const boost::shared_ptr<ShortRateModel>& model,
                            Size timeSteps);
-        TreeSwaptionEngine(const boost::shared_ptr<ShortRateModel>& model, 
+        TreeSwaptionEngine(const boost::shared_ptr<ShortRateModel>& model,
                            const TimeGrid& timeGrid) ;
         void calculate() const;
     };
