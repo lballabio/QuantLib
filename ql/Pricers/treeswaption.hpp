@@ -14,7 +14,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file treeswaption.hpp
-    \brief Swaption calculated using a tree
+    \brief Swaption computed using a lattice
 
     \fullpath
     ql/Pricers/%treeswaption.hpp
@@ -25,17 +25,17 @@
 #ifndef quantlib_pricers_tree_swaption_h
 #define quantlib_pricers_tree_swaption_h
 
-#include <ql/Pricers/swaptionpricer.hpp>
+#include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 #include <ql/ShortRateModels/model.hpp>
+#include <ql/Instruments/swaption.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! Swaption priced in a tree
+        //! Swaption priced on a lattice
         class TreeSwaption : public
-            PricingEngines::GenericModelEngine<
-                    ShortRateModels::Model, 
+            PricingEngines::LatticeShortRateModelEngine<
                     Instruments::SwaptionArguments,
                     Instruments::SwaptionResults > {
           public:
@@ -44,12 +44,7 @@ namespace QuantLib {
 
             TreeSwaption(const Handle<ShortRateModels::Model>& model,
                          const TimeGrid& timeGrid) ;
-            void update();
             void calculate() const;
-          private:
-            TimeGrid timeGrid_;
-            Size timeSteps_;
-            Handle<Lattices::Lattice> tree_;
         };
 
     }

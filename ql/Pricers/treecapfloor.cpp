@@ -24,6 +24,7 @@
 
 #include "ql/Pricers/treecapfloor.hpp"
 #include "ql/ShortRateModels/onefactormodel.hpp"
+#include <ql/Pricers/capfloorpricer.hpp>
 
 namespace QuantLib {
 
@@ -32,36 +33,24 @@ namespace QuantLib {
         using namespace Instruments;
         using namespace ShortRateModels;
         using namespace Lattices;
+        using namespace PricingEngines;
 
         TreeCapFloor::TreeCapFloor(const Handle<Model>& model, Size timeSteps) 
-        : PricingEngines::GenericModelEngine<
-                Model, 
-                Instruments::CapFloorArguments,
-                Instruments::CapFloorResults >(model), 
-          timeSteps_(timeSteps) {}
+        : LatticeShortRateModelEngine<CapFloorArguments, CapFloorResults >
+                (model, timeSteps){}
 
         TreeCapFloor::TreeCapFloor(const Handle<Model>& model,
                                    const TimeGrid& timeGrid) 
-        : PricingEngines::GenericModelEngine<
-                Model, 
-                Instruments::CapFloorArguments,
-                Instruments::CapFloorResults >(model), 
-            timeGrid_(timeGrid), timeSteps_(0) {
-            tree_ = model_->tree(timeGrid);
-        }
-
-        void TreeCapFloor::update() {
-            if (timeGrid_.size() > 0)
-                tree_ = model_->tree(timeGrid_);
-            notifyObservers();
+        : LatticeShortRateModelEngine<CapFloorArguments, CapFloorResults >(model, timeGrid)
+        {
         }
 
         void TreeCapFloor::calculate() const {
 
-            QL_REQUIRE(!model_.isNull(), "TreeCapFloor: No model");
-            Handle<Lattice> tree;
+            QL_REQUIRE(!model_.isNull(), "TreeCapFloor: No model specified");
+            Handle<Lattice> lattice;
 
-            if (tree_.isNull()) {
+            if (lattice_.isNull()) {
                 std::list<Time> times(0);
                 Size nPeriods = arguments_.startTimes.size();
                 Size i;
@@ -73,18 +62,18 @@ namespace QuantLib {
                 times.unique();
 
                 TimeGrid timeGrid(times, timeSteps_);
-                tree = model_->tree(timeGrid);
+                lattice = model_->tree(timeGrid);
             } else {
-                tree = tree_;
+                lattice = lattice_;
             }
 
             Handle<DiscretizedAsset> capfloor(
-                new DiscretizedCapFloor(tree, arguments_));
+                new DiscretizedCapFloor(lattice, arguments_));
 
-            tree->initialize(capfloor, arguments_.endTimes.back());
-            tree->rollback(capfloor, arguments_.startTimes.front());
+            lattice->initialize(capfloor, arguments_.endTimes.back());
+            lattice->rollback(capfloor, arguments_.startTimes.front());
 
-            results_.value = tree->presentValue(capfloor);
+            results_.value = lattice->presentValue(capfloor);
         }
 
     }

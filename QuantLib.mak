@@ -1,7 +1,7 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on QuantLib.dsp
 !IF "$(CFG)" == ""
-CFG=QuantLib - Win32 Release
-!MESSAGE No configuration specified. Defaulting to QuantLib - Win32 Release.
+CFG=QuantLib - Win32 OnTheEdgeDebug
+!MESSAGE No configuration specified. Defaulting to QuantLib - Win32 OnTheEdgeDebug.
 !ENDIF 
 
 !IF "$(CFG)" != "QuantLib - Win32 Release" && "$(CFG)" != "QuantLib - Win32 Debug" && "$(CFG)" != "QuantLib - Win32 OnTheEdgeRelease" && "$(CFG)" != "QuantLib - Win32 OnTheEdgeDebug"

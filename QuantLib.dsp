@@ -1575,6 +1575,10 @@ SOURCE=.\ql\PricingEngines\genericengine.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\quantoengines.hpp
 # End Source File
 # Begin Source File

@@ -14,7 +14,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file treeswaption.cpp
-    \brief European swaption calculated using finite differences
+    \brief European swaption computed on a lattice
 
     \fullpath
     ql/Pricers/%treeswaption.cpp
@@ -23,6 +23,7 @@
 // $Id$
 
 #include "ql/Pricers/treeswaption.hpp"
+#include <ql/Pricers/swaptionpricer.hpp>
 
 namespace QuantLib {
 
@@ -30,39 +31,27 @@ namespace QuantLib {
 
         using namespace ShortRateModels;
         using namespace Lattices;
+        using namespace PricingEngines;
+        using namespace Instruments;
 
         TreeSwaption::TreeSwaption(
             const Handle<ShortRateModels::Model>& model,
             Size timeSteps) 
-        : PricingEngines::GenericModelEngine<
-                    ShortRateModels::Model, 
-                    Instruments::SwaptionArguments,
-                    Instruments::SwaptionResults >(model), 
-          timeSteps_(timeSteps) {} 
+        : LatticeShortRateModelEngine<SwaptionArguments, SwaptionResults> 
+                (model, timeSteps) {} 
 
         TreeSwaption::TreeSwaption(
             const Handle<ShortRateModels::Model>& model,
             const TimeGrid& timeGrid) 
-        : PricingEngines::GenericModelEngine<
-                    ShortRateModels::Model, 
-                    Instruments::SwaptionArguments,
-                    Instruments::SwaptionResults >(model), 
-          timeGrid_(timeGrid), timeSteps_(0) {
-            tree_ = model_->tree(timeGrid);
-        }
-
-        void TreeSwaption::update() {
-            if (timeGrid_.size() > 0)
-                tree_ = model_->tree(timeGrid_);
-            notifyObservers();
-        }
+        : LatticeShortRateModelEngine<SwaptionArguments, SwaptionResults> 
+                (model, timeGrid) {}
 
         void TreeSwaption::calculate() const {
 
-            QL_REQUIRE(!model_.isNull(), "TreeSwaption: No model");
-            Handle<Lattice> tree;
+            QL_REQUIRE(!model_.isNull(), "TreeSwaption: No model was specified");
+            Handle<Lattice> lattice;
 
-            if (tree_.isNull()) {
+            if (lattice_.isNull()) {
                 std::list<Time> times(0);
                 Size i;
                 for (i=0; i<arguments_.exerciseTimes.size(); i++)
@@ -81,18 +70,18 @@ namespace QuantLib {
                 times.unique();
 
                 TimeGrid timeGrid(times, timeSteps_);
-                tree = model_->tree(timeGrid);
+                lattice = model_->tree(timeGrid);
             } else {
-                tree = tree_;
+                lattice = lattice_;
             }
 
             Handle<DiscretizedAsset> swaption(
-            new DiscretizedSwaption(tree, arguments_));
+            new DiscretizedSwaption(lattice, arguments_));
 
-            tree->initialize(swaption, arguments_.exerciseTimes.back());
-            tree->rollback(swaption, arguments_.exerciseTimes.front());
+            lattice->initialize(swaption, arguments_.exerciseTimes.back());
+            lattice->rollback(swaption, arguments_.exerciseTimes.front());
 
-            results_.value = tree->presentValue(swaption);
+            results_.value = lattice->presentValue(swaption);
         }
 
     }
