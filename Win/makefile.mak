@@ -389,17 +389,18 @@ install::
 test::
     cd ..\Python\Tests
     python american_option.py -b
-    python barrieroption.py -b
+    python barrier_option.py -b
     python date.py -b
     python distributions.py -b
     python european_option.py -b
     python european_with_dividends.py -b
-    python himalaya.py -b
-    python impliedVol.py -b
-    python mcpricers.py -b
-    python RiskStatistics.py -b
-    python statistics_test.py -b
-    python TermStructure.py -b
-    python testRNGs.py -b
+    python himalaya_option.py -b
+    python implied_volatility.py -b
+    python montecarlo_pricers.py -b
+    python plain_basket_option.py -b
+    python random_generators.py -b
+    python risk_statistics.py -b
+    python statistics.py -b
+    python term_structures.py -b
     cd ..\..\Win
 

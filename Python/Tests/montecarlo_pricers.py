@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.1  2001/02/22 14:43:36  lballabio
+    Renamed test script to follow a single naming scheme
+
     Revision 1.6  2001/02/22 14:27:26  lballabio
     Implemented new test framework
 
