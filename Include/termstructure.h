@@ -125,7 +125,7 @@ namespace QuantLib {
 		DiscountFactor discount(const Date&) const;
 	};
 	
-	//! Implied term structure at a given rate in the future
+	//! Implied term structure at a given date in the future
 	/*! This term structure will remain linked to the original structure, i.e., any changes
 		in the latter will be reflected in this structure as well.
 	*/
