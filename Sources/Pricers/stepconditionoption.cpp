@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.11  2001/05/22 13:24:01  marmar
+    setGridLimits interface changed
+
     Revision 1.10  2001/04/26 16:05:42  marmar
     underlying_ not mutable anymore, setGridLimits accepts the value for center
 
@@ -101,7 +104,7 @@ namespace QuantLib {
 
         void StepConditionOption::calculate() const {
 
-            setGridLimits(underlying_);
+            setGridLimits(underlying_, residualTime_);
             initializeGrid();
             initializeInitialCondition();
             initializeOperator();
