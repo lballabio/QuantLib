@@ -29,9 +29,10 @@
 namespace QuantLib {
 
     //! Interest rate coumpounding rule
-    enum Compounding { Simple = 0,     //!< \f$ 1+rt \f$
-                       Compounded = 1, //!< \f$ (1+r)^t \f$
-                       Continuous = 2  //!< \f$ e^{rt} \f$
+    enum Compounding { Simple = 0,          //!< \f$ 1+rt \f$
+                       Compounded = 1,      //!< \f$ (1+r)^t \f$
+                       Continuous = 2,      //!< \f$ e^{rt} \f$
+                       SimpleThenCompounded //!< Simple then Compounded
     };
 
     //! Concrete interest rate class
@@ -60,7 +61,7 @@ namespace QuantLib {
         DayCounter dayCounter() { return dc_; }
         Compounding compounding() { return comp_; }
         Frequency frequency() {
-            return comp_==Compounded ? Frequency(Integer(freq_)) : NoFrequency;
+            return freqMakesSense_ ? Frequency(Integer(freq_)) : NoFrequency;
         }
         //@}
         //! \name discount/compound factor calculations
@@ -219,6 +220,7 @@ namespace QuantLib {
         Rate r_;
         DayCounter dc_;
         Compounding comp_;
+        bool freqMakesSense_;
         Real freq_;
     };
 

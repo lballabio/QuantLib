@@ -29,9 +29,10 @@ namespace QuantLib {
 
     InterestRate::InterestRate(Rate r, const DayCounter& dc,
                                Compounding comp, Frequency freq)
-    : r_(r), dc_(dc), comp_(comp) {
+    : r_(r), dc_(dc), comp_(comp), freqMakesSense_(false) {
 
-        if (comp_==Compounded) {
+        if (comp_==Compounded || comp_==SimpleThenCompounded) {
+            freqMakesSense_ = true;
             QL_REQUIRE(freq!=Once && freq!=NoFrequency,
                        "frequency not allowed for InterestRate");
             freq_ = Real(freq);
@@ -39,6 +40,8 @@ namespace QuantLib {
     }
 
     Real InterestRate::compoundFactor(Time t) const {
+
+        QL_REQUIRE(t>=0.0, "negative time not allowed");
         QL_REQUIRE(r_ != Null<Rate>(), "null interest rate");
         switch (comp_) {
           case Simple:
@@ -47,6 +50,11 @@ namespace QuantLib {
             return QL_POW(1.0+r_/freq_, freq_*t);
           case Continuous:
             return QL_EXP(r_*t);
+          case SimpleThenCompounded:
+            if (t<=1.0/Real(freq_))
+                return 1.0 + r_*t;
+            else
+                return QL_POW(1.0+r_/freq_, freq_*t);
           default:
             QL_FAIL("unknown compounding convention");
         }
@@ -54,6 +62,10 @@ namespace QuantLib {
 
     Rate InterestRate::impliedRate(Real compound, Time t,
                                    Compounding comp, Frequency freq) {
+
+        QL_REQUIRE(compound>0.0, "positive compound factor required");
+        QL_REQUIRE(t>0.0, "positive time required");
+
         switch (comp) {
           case Simple:
             return (compound - 1.0)/t;
@@ -61,6 +73,11 @@ namespace QuantLib {
             return (QL_POW(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
           case Continuous:
             return QL_LOG(compound)/t;
+          case SimpleThenCompounded:
+            if (t<=1.0/Real(freq))
+                return (compound - 1.0)/t;
+            else
+                return (QL_POW(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
           default:
             QL_FAIL("unknown compounding convention ("+
                 IntegerFormatter::toString(comp)+")");
@@ -96,6 +113,19 @@ namespace QuantLib {
             }
           case Continuous:
             return std::string("continuous compounding");
+          case SimpleThenCompounded:
+            switch (freq) {
+              case NoFrequency:
+              case Once:
+                QL_FAIL(FrequencyFormatter::toString(freq) +
+                        " frequency not allowed for interest rate");
+              default:
+                return std::string("simple compounding up to " +
+                                   IntegerFormatter::toString(Integer(12/freq))
+                                   + " months, then "
+                                   + FrequencyFormatter::toString(freq) +
+                                   " compounding");
+            }
           default:
             QL_FAIL("unknown compounding convention (" +
                     IntegerFormatter::toString(comp) + ")");
