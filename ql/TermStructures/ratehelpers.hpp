@@ -224,7 +224,8 @@ namespace QuantLib {
                            // floating leg
                            int floatingFrequency);
             double impliedQuote() const;
-            // double discountGuess() const; // null for the time being
+            // implementing discountGuess() is not worthwhile,
+            // and may not avoid the root-finding process
             Date maturity() const;
             void setTermStructure(TermStructure*);
           private:
