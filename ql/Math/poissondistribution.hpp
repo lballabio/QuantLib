@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file poisson.hpp
+/*! \file poissondistribution.hpp
     \brief Poisson distribution
 */
 
