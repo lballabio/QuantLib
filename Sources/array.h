@@ -48,6 +48,7 @@ class Array {
 		#endif
 		iterator i = begin(), j = end();
 		while (i != j) { *i += *e; ++i; ++e; }
+		return *this;
 	}
 	Array& operator-=(const Array&);
 	Array& operator-=(Type);
@@ -57,6 +58,7 @@ class Array {
 		#endif
 		iterator i = begin(), j = end();
 		while (i != j) { *i -= *e; ++i; ++e; }
+		return *this;
 	}
 	Array& operator*=(const Array&);
 	Array& operator*=(double);
@@ -66,6 +68,7 @@ class Array {
 		#endif
 		iterator i = begin(), j = end();
 		while (i != j) { *i *= *e; ++i; ++e; }
+		return *this;
 	}
 	Array& operator/=(const Array&);
 	Array& operator/=(double);
@@ -75,6 +78,7 @@ class Array {
 		#endif
 		iterator i = begin(), j = end();
 		while (i != j) { *i /= *e; ++i; ++e; }
+		return *this;
 	}
 	// element access
 	const Type& operator[](int) const;
