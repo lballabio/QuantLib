@@ -1694,9 +1694,6 @@
 				RelativePath="ql\DayCounters\actual360.hpp">
 			</File>
 			<File
-				RelativePath="ql\DayCounters\actual365.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\DayCounters\actual365fixed.hpp">
 			</File>
 			<File
