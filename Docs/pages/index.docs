@@ -25,7 +25,8 @@
 
     \htmlonly
     <center>
-    <img src="QL-largish.jpg" alt="QuantLib Logo">
+    <img src="QL.jpg" alt="QuantLib Logo">
+    <h1>QuantLib<h2>
     <h2>An open source library for quantitative finance</h2>
     </center>
     \endhtmlonly
