@@ -105,8 +105,8 @@ namespace QuantLib {
                     if (fxMax_ == 0.0)    return xMax_;
                     root_ = (xMax_+xMin_)/2.0;
                     // check whether we really want to pass epsilon
-                    return impl().solveImpl(f, QL_MAX(QL_FABS(accuracy),
-                                                      QL_EPSILON));
+                    return CuriouslyRecurringTemplate<Impl>::impl().solveImpl(
+                        f, QL_MAX(QL_FABS(accuracy), QL_EPSILON));
                 }
                 if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {
                     xMin_ = enforceBounds_(xMin_+growthFactor*(xMin_ - xMax_));
@@ -197,7 +197,8 @@ namespace QuantLib {
 
             root_ = guess;
 
-            return impl().solveImpl(f, QL_MAX(QL_FABS(accuracy), QL_EPSILON));
+            return CuriouslyRecurringTemplate<Impl>::impl().solveImpl(
+                f, QL_MAX(QL_FABS(accuracy), QL_EPSILON));
         }
 
         /*! This method sets the maximum number of function

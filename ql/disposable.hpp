@@ -71,17 +71,17 @@ namespace QuantLib {
 
     template <class T>
     inline Disposable<T>::Disposable(T& t) {
-        swap(t);
+        T::swap(t);
     }
 
     template <class T>
     inline Disposable<T>::Disposable(const Disposable<T>& t) {
-        swap(const_cast<Disposable<T>&>(t));
+        T::swap(const_cast<Disposable<T>&>(t));
     }
 
     template <class T>
     inline Disposable<T>& Disposable<T>::operator=(const Disposable<T>& t) {
-        swap(const_cast<Disposable<T>&>(t));
+        T::swap(const_cast<Disposable<T>&>(t));
         return *this;
     }
 
