@@ -29,16 +29,16 @@ namespace QuantLib {
             double          s0      = arguments_.underlying;
             double          strike  = arg_payoff->strike();
             Time            T       = arguments_.maturity;
-            double          vol     = arguments_.volTS->blackVol(T, s0);
+//            double          vol     = arguments_.volTS->blackVol(T, s0);
             Rate            r       = arguments_.riskFreeTS->zeroYield(T);            
-            Rate            q       = arguments_.dividendTS->zeroYield(T);
+//            Rate            q       = arguments_.dividendTS->zeroYield(T);
             //unsigned long   seed    = 1000L;
             PlainVanillaPayoff payoff(type, strike);
 
             // counter
-            Size i = 0;
-            Size j = 0;
-            Size k = 0;
+            Size i;
+            Size j;
+//            Size k = 0;
 
             // Number of paths
             Size N = requiredSamples_;
@@ -54,7 +54,7 @@ namespace QuantLib {
 
             // Number of exercise opportunities for calculation
             Size timeSteps = 3;
-            Size timeStep = 0;
+            Size timeStep;
     
             // simulate the paths          
             Handle<DiffusionProcess> bs(new
@@ -332,7 +332,7 @@ namespace QuantLib {
             vector<double> asset(n);
             asset[0] = s0;
 
-            double log_drift = 0.0, log_random = 0.0;
+            double log_drift, log_random;
             log_drift = path.drift()[0];
             log_random = path.diffusion()[0];
             asset[0] = s0*QL_EXP(log_drift + log_random);                

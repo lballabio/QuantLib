@@ -44,9 +44,8 @@ namespace QuantLib {
     std::vector<std::string> DateParser::split(const std::string& str,
 					       const char delim) {
        std::vector<std::string> list;
-       Size sx=0, so=0;
+       Size sx= str.find(delim), so=0;
 
-       sx = str.find(delim);
        while (sx != std::string::npos) {
 	  list.push_back(str.substr(so,sx));
 	  so += sx+1;

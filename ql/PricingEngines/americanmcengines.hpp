@@ -71,11 +71,13 @@ namespace QuantLib {
 
         // put all the asset prices into a vector.
         // s0 is not included in the vector
-        vector<double> getAssetSequence (const double s0, const MonteCarlo::Path& path);
+        vector<double> getAssetSequence (const double s0,
+                                         const MonteCarlo::Path& path);
         
         // get the Longstaff-Schwartz exampe asset prices
         // s0 is not included in the vector
-        void getLSAssetsExample (AssetGrid& assetPaths, const int timeSteps);
+        void getLSAssetsExample (AssetGrid& assetPaths,
+                                 const int timeSteps);
     }
 }
 

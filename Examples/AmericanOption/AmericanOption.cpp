@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
         Spread dividendYield = 0.00;
         Rate riskFreeRate = 0.06;
         Size mcSeed = 12345;
-        Size nSamples = 2000;
+        Size nSamples = 200000;
         double volatility = 0.20;
 
         Date todaysDate(15, May, 1998);
