@@ -48,7 +48,7 @@
 
     We examine the range of possibilities, computing the replication error.
 
-    \fullpath 
+    \fullpath
     Examples/HedgingError/%HedgingError.cpp
 */
 
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
     double underlying = 100;
     double volatility = 0.20; // 20%
     Rate riskFreeRate = 0.05; // 5%
-    ReplicationError rp(Option::Type::Call, maturity, strike, underlying,
+    ReplicationError rp(Option::Call, maturity, strike, underlying,
         volatility, riskFreeRate);
 
     int scenarios = 50000;

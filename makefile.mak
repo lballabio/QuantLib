@@ -4,6 +4,10 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.21  2001/08/22 17:57:40  nando
+# Examples compiles under borland
+# added borland makefile
+#
 # Revision 1.20  2001/05/28 13:17:21  nando
 # I'm confused, but it seems like we don't need to mkdir
 #
@@ -25,6 +29,8 @@
 # QuantLib library
 quantlib::
     cd Sources
+    $(MAKE)
+    cd ..\Examples
     $(MAKE)
     cd ..
 
@@ -65,6 +71,8 @@ docs-ps:
 # Clean up
 clean::
     cd Sources
+    $(MAKE) clean
+    cd ..\Examples
     $(MAKE) clean
     cd ..\Docs
     $(MAKE) clean

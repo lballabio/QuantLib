@@ -28,6 +28,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.16  2001/08/22 17:57:54  nando
+// Examples compiles under borland
+// added borland makefile
+//
 // Revision 1.15  2001/08/22 15:28:19  nando
 // added AntitheticPathGenerator
 //
@@ -136,15 +140,15 @@ class Payoff : public QL::ObjectiveFunction{
                double s0,
                double sigma,
                Rate r)
-        : maturity_(maturity), 
+        : maturity_(maturity),
         strike_(strike),
         s0_(s0),
         sigma_(sigma),r_(r){}
-        
+
         double operator()(double x) const {
            double nuT = (r_-0.5*sigma_*sigma_)*maturity_;
            return QL_EXP(-r_*maturity_)
-               *ExercisePayoff(Option::Call, s0_*QL_EXP(x), strike_)               
+               *ExercisePayoff(Option::Call, s0_*QL_EXP(x), strike_)
                *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
                /QL_SQRT(2.0*3.141592*sigma_*sigma_*maturity_);
         }
@@ -179,44 +183,43 @@ int main(int argc, char* argv[])
         "\tRel. Discr." << endl;
 
 
-    
-    // first method: Black Scholes analytic solution    
+
+    // first method: Black Scholes analytic solution
     string method ="Black Scholes";
     double value = EuropeanOption(Option::Call, underlying, strike,
         dividendYield, riskFreeRate, maturity, volatility).value();
     double estimatedError = 0.0;
     double discrepancy = 0.0;
     double relativeDiscrepancy = 0.0;
-    cout << method << "\t" 
+    cout << method << "\t"
          << DoubleFormatter::toString(value, 4) << "\t"
          << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
          << DoubleFormatter::toString(discrepancy, 6) << "\t"
          << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
 
 
-    // store the Black Scholes value as the correct one    
+    // store the Black Scholes value as the correct one
     double rightValue = value;
 
 
 
 
 
-    // second method: Call-Put parity    
+    // second method: Call-Put parity
     method ="Call-Put parity";
     value = EuropeanOption(Option::Put, underlying, strike,
         dividendYield, riskFreeRate, maturity, volatility).value()
         + underlying - strike*QL_EXP(- riskFreeRate*maturity);
-    estimatedError = 0.0;
     discrepancy = QL_FABS(value-rightValue);
     relativeDiscrepancy = discrepancy/rightValue;
-    cout << method << "\t" 
+    cout << method << "\t"
          << DoubleFormatter::toString(value, 4) << "\t"
          << "N/A\t\t"
          << discrepancy << "\t"
          << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
 
 
-    // third method: Integral    
+    // third method: Integral
     method ="Integral";
     using QuantLib::Math::SegmentIntegral;
     Payoff po(maturity, strike, underlying, volatility, riskFreeRate);
@@ -226,10 +229,9 @@ int main(int argc, char* argv[])
     double infinity = 10.0*volatility*QL_SQRT(maturity);
 
     value = integrator(po, nuT-infinity, nuT+infinity);
-    estimatedError = 0.0;
     discrepancy = QL_FABS(value-rightValue);
     relativeDiscrepancy = discrepancy/rightValue;
-    cout << method << "\t" 
+    cout << method << "\t"
          << DoubleFormatter::toString(value, 4) << "\t"
          << "N/A\t\t"
          << DoubleFormatter::toString(discrepancy, 6) << "\t"
@@ -238,15 +240,14 @@ int main(int argc, char* argv[])
 
 
 
-    // fourth method: Finite Differences    
+    // fourth method: Finite Differences
     method ="Finite Diff.";
     int grid = 100;
     value = FiniteDifferenceEuropean(Option::Call, underlying, strike,
         dividendYield, riskFreeRate, maturity, volatility, grid).value();
-    estimatedError = 0.0;
     discrepancy = QL_FABS(value-rightValue);
     relativeDiscrepancy = discrepancy/rightValue;
-    cout << method << "\t" 
+    cout << method << "\t"
          << DoubleFormatter::toString(value, 4) << "\t"
          << "N/A\t\t"
          << DoubleFormatter::toString(discrepancy, 6) << "\t"
@@ -266,11 +267,11 @@ int main(int argc, char* argv[])
 	double drift = riskFreeRate * tau - 0.5*sigma*sigma;
     // The European path pricer
     Handle<PathPricer> myEuropeanPathPricer =
-        Handle<PathPricer>(new EuropeanPathPricer(Option::Type::Call,
+        Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
         underlying, strike, exp(-riskFreeRate*maturity)));
     Statistics samples;
 
-    
+
     // fifth method:  MonteCarlo
     method ="Monte Carlo";
     Handle<GaussianPathGenerator> myPathGenerator(
@@ -288,7 +289,7 @@ int main(int argc, char* argv[])
     estimatedError = mc.sampleAccumulator().errorEstimate();
     discrepancy = QL_FABS(value-rightValue);
     relativeDiscrepancy = discrepancy/rightValue;
-    cout << method << "\t" 
+    cout << method << "\t"
          << DoubleFormatter::toString(value, 4) << "\t"
          << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
          << DoubleFormatter::toString(discrepancy, 6) << "\t"
@@ -302,11 +303,11 @@ int main(int argc, char* argv[])
     typedef AntitheticPathGenerator<GaussianPathGenerator>
         ImprovedPathGenerator;
     Handle<ImprovedPathGenerator> myImprovedPathGenerator(
-        new ImprovedPathGenerator(drift, 
+        new ImprovedPathGenerator(drift,
             GaussianPathGenerator(nTimeSteps, 0.0, sigma*sigma, seed)));
     // This time MontecarloModel generates paths using
     // myImprovedPathGenerator.
-	MonteCarloModel<Statistics, ImprovedPathGenerator, PathPricer> 
+	MonteCarloModel<Statistics, ImprovedPathGenerator, PathPricer>
         improvedMC(myImprovedPathGenerator, myEuropeanPathPricer, samples);
     // the model simulates nSamples paths
     improvedMC.addSamples(nSamples);
@@ -316,7 +317,7 @@ int main(int argc, char* argv[])
     estimatedError = improvedMC.sampleAccumulator().errorEstimate();
     discrepancy = QL_FABS(value-rightValue);
     relativeDiscrepancy = discrepancy/rightValue;
-    cout << method << "\t" 
+    cout << method << "\t"
          << DoubleFormatter::toString(value, 4) << "\t"
          << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
          << DoubleFormatter::toString(discrepancy, 6) << "\t"
