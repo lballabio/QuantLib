@@ -33,7 +33,7 @@
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
-%echo "Warning: this is a Python module!!"
+%echo "Warning: Operators is a Python module!!"
 %echo "Exporting it to any other language is not advised"
 %echo "as it could lead to unpredicted results."
 #endif
@@ -65,12 +65,40 @@ class TridiagonalOperator {
     void setLastRow(double, double);
 };
 
+%addmethods TridiagonalOperator {
+    TridiagonalOperator __add__(const TridiagonalOperator& O) {
+        return *self+O;
+    }
+    TridiagonalOperator __sub__(const TridiagonalOperator& O) {
+        return *self-O;
+    }
+    TridiagonalOperator __mul__(double a) {
+        return *self*a;
+    }
+    TridiagonalOperator __rmul__(double a) {
+        return *self*a;
+    }
+    TridiagonalOperator __div__(double a) {
+        return *self/a;
+    }
+};
+
 %{
+TridiagonalOperator TridiagonalIdentity(int gridPoints) {
+    TridiagonalOperator I(gridPoints);
+    I.setFirstRow(1.0,0.0);
+    I.setMidRows(0.0,1.0,0.0);
+    I.setLastRow(0.0,1.0);
+    return I;
+}
+
 using QuantLib::FiniteDifferences::DPlus;
 using QuantLib::FiniteDifferences::DMinus;
 using QuantLib::FiniteDifferences::DZero;
 using QuantLib::FiniteDifferences::DPlusDMinus;
 %}
+
+%name(Identity) TridiagonalOperator TridiagonalIdentity(int gridPoints);
 
 class DPlus : public TridiagonalOperator {
   public:
