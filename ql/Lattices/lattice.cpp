@@ -75,20 +75,26 @@ namespace QuantLib {
             Time from = asset->time();
 
             QL_REQUIRE(from >= to, 
-                       "Lattice: Wrong rollback extremities");
-            Size iFrom = t_.findIndex(from);
-            Size iTo = t_.findIndex(to);
+                       "Lattice: cannot roll the asset back to" +
+                       DoubleFormatter::toString(to) +
+                       " (it is already at t = " +
+                       DoubleFormatter::toString(from) + ")");
 
-            for (int i=(int)(iFrom-1); i>=(int)iTo; i--) {
-                Array newValues(size(i));
-                stepback(i, asset->values(), newValues);
-                asset->time() = t_[i];
-                asset->values() = newValues;
-                // skip the very last post-adjustment
-                if (i != iTo)
-                    asset->adjustValues();
-                else
-                    asset->preAdjustValues();
+            if (from > to) {
+                Size iFrom = t_.findIndex(from);
+                Size iTo = t_.findIndex(to);
+
+                for (int i=int(iFrom)-1; i>=int(iTo); i--) {
+                    Array newValues(size(i));
+                    stepback(i, asset->values(), newValues);
+                    asset->time() = t_[i];
+                    asset->values() = newValues;
+                    // skip the very last post-adjustment
+                    if (i != iTo)
+                        asset->adjustValues();
+                    else
+                        asset->preAdjustValues();
+                }
             }
         }
 
