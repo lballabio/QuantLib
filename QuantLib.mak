@@ -52,18 +52,18 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
 	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -250,6 +250,10 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.sbr"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -514,8 +518,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -544,6 +546,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
 	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
+	"$(INTDIR)\faurersg.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -588,7 +591,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\faurersg.sbr"
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -701,8 +707,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -731,6 +735,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
+	"$(INTDIR)\faurersg.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -775,7 +780,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\faurersg.obj"
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -805,18 +813,18 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
 	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -1003,6 +1011,10 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.sbr"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -1268,8 +1280,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -1298,6 +1308,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
 	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
+	"$(INTDIR)\faurersg.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1342,7 +1353,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\faurersg.sbr"
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1455,8 +1469,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -1485,6 +1497,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
+	"$(INTDIR)\faurersg.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1529,7 +1542,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\faurersg.obj"
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1559,18 +1575,18 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
 	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -1757,6 +1773,10 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.sbr"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -2021,8 +2041,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -2051,6 +2069,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
 	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
+	"$(INTDIR)\faurersg.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2095,7 +2114,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\faurersg.sbr"
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2208,8 +2230,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -2238,6 +2258,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
+	"$(INTDIR)\faurersg.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2282,7 +2303,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\faurersg.obj"
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2312,18 +2336,18 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
 	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -2510,6 +2534,10 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.sbr"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -2775,8 +2803,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -2805,6 +2831,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
 	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
+	"$(INTDIR)\faurersg.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2849,7 +2876,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\faurersg.sbr"
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2962,8 +2992,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -2992,6 +3020,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
+	"$(INTDIR)\faurersg.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -3036,7 +3065,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\faurersg.obj"
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3066,18 +3098,18 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
 	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -3264,6 +3296,10 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.sbr"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -3528,8 +3564,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -3558,6 +3592,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
 	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
+	"$(INTDIR)\faurersg.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -3602,7 +3637,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\faurersg.sbr"
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3715,8 +3753,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -3745,6 +3781,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
+	"$(INTDIR)\faurersg.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -3789,7 +3826,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\faurersg.obj"
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3819,18 +3859,18 @@ CLEAN :
 	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
 	-@erase "$(INTDIR)\americanpayoffathit.obj"
 	-@erase "$(INTDIR)\americanpayoffathit.sbr"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_cont_geom_av_price.sbr"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\analytic_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticcapfloorengine.obj"
 	-@erase "$(INTDIR)\analyticcapfloorengine.sbr"
 	-@erase "$(INTDIR)\analyticcliquetengine.obj"
 	-@erase "$(INTDIR)\analyticcliquetengine.sbr"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.obj"
-	-@erase "$(INTDIR)\analyticcontinuousasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.obj"
-	-@erase "$(INTDIR)\analyticdiscreteasianengine.sbr"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -4017,6 +4057,10 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\localvolsurface.obj"
 	-@erase "$(INTDIR)\localvolsurface.sbr"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_arith_av_price.sbr"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.obj"
+	-@erase "$(INTDIR)\mc_discr_geom_av_price.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -4282,8 +4326,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -4312,6 +4354,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanpayoffatexpiry.sbr" \
 	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
+	"$(INTDIR)\faurersg.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -4356,7 +4399,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\faurersg.sbr"
+	"$(INTDIR)\mc_discr_geom_av_price.sbr" \
+	"$(INTDIR)\analytic_discr_geom_av_price.sbr" \
+	"$(INTDIR)\mc_discr_arith_av_price.sbr" \
+	"$(INTDIR)\analytic_cont_geom_av_price.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4469,8 +4515,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -4499,6 +4543,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
+	"$(INTDIR)\faurersg.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -4543,7 +4588,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\faurersg.obj"
+	"$(INTDIR)\mc_discr_geom_av_price.obj" \
+	"$(INTDIR)\analytic_discr_geom_av_price.obj" \
+	"$(INTDIR)\mc_discr_arith_av_price.obj" \
+	"$(INTDIR)\analytic_cont_geom_av_price.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -5214,15 +5262,27 @@ SOURCE=.\ql\Pricers\singleassetoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Asian\analyticcontinuousasianengine.cpp
+SOURCE=.\ql\PricingEngines\Asian\analytic_cont_geom_av_price.cpp
 
-"$(INTDIR)\analyticcontinuousasianengine.obj"	"$(INTDIR)\analyticcontinuousasianengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\analytic_cont_geom_av_price.obj"	"$(INTDIR)\analytic_cont_geom_av_price.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Asian\analyticdiscreteasianengine.cpp
+SOURCE=.\ql\PricingEngines\Asian\analytic_discr_geom_av_price.cpp
 
-"$(INTDIR)\analyticdiscreteasianengine.obj"	"$(INTDIR)\analyticdiscreteasianengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\analytic_discr_geom_av_price.obj"	"$(INTDIR)\analytic_discr_geom_av_price.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Asian\mc_discr_arith_av_price.cpp
+
+"$(INTDIR)\mc_discr_arith_av_price.obj"	"$(INTDIR)\mc_discr_arith_av_price.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Asian\mc_discr_geom_av_price.cpp
+
+"$(INTDIR)\mc_discr_geom_av_price.obj"	"$(INTDIR)\mc_discr_geom_av_price.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

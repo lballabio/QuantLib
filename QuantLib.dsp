@@ -1474,19 +1474,39 @@ SOURCE=.\ql\PricingEngines\Asian\all.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Asian\analyticcontinuousasianengine.cpp
+SOURCE=.\ql\PricingEngines\Asian\analytic_cont_geom_av_price.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Asian\analyticcontinuousasianengine.hpp
+SOURCE=.\ql\PricingEngines\Asian\analytic_cont_geom_av_price.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Asian\analyticdiscreteasianengine.cpp
+SOURCE=.\ql\PricingEngines\Asian\analytic_discr_geom_av_price.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Asian\analyticdiscreteasianengine.hpp
+SOURCE=.\ql\PricingEngines\Asian\analytic_discr_geom_av_price.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\mc_discr_arith_av_price.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\mc_discr_arith_av_price.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\mc_discr_geom_av_price.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\mc_discr_geom_av_price.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\mcdiscreteasianengine.hpp
 # End Source File
 # End Group
 # Begin Group "Barrier"
@@ -2429,6 +2449,10 @@ SOURCE=.\ql\schedule.cpp
 # Begin Source File
 
 SOURCE=.\ql\schedule.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\settings.hpp
 # End Source File
 # Begin Source File
 
