@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.9  2001/05/28 14:54:25  lballabio
+# Deposit rates are always adjusted
+#
 # Revision 1.8  2001/05/24 12:52:01  nando
 # smoothing #include xx.hpp
 #
@@ -36,6 +39,7 @@ include_HEADERS = \
 	qlerrors.hpp \
 	quantlib.hpp \
 	rate.hpp \
+	relinkablehandle.hpp \
 	riskstatistics.hpp \
 	solver1d.hpp spread.hpp \
 	swaptionvolsurface.hpp \

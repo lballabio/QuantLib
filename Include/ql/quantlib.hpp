@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/05/28 14:54:25  lballabio
+// Deposit rates are always adjusted
+//
 // Revision 1.11  2001/05/28 13:09:55  nando
 // R019-branch-merge3 merged into trunk
 //
@@ -57,6 +60,7 @@
 #include "ql/qldefines.hpp"
 #include "ql/qlerrors.hpp"
 #include "ql/rate.hpp"
+#include "ql/relinkablehandle.hpp"
 #include "ql/riskstatistics.hpp"
 #include "ql/solver1d.hpp"
 #include "ql/spread.hpp"

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/05/28 14:54:25  lballabio
+// Deposit rates are always adjusted
+//
 // Revision 1.6  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -73,8 +76,7 @@ namespace QuantLib {
           public:
             DepositRateHelper(Rate rate, const Date& settlement,
                 int n, TimeUnit units, const Handle<Calendar>& calendar,
-                bool isAdjusted, bool isModifiedFollowing,
-                const Handle<DayCounter>& dayCounter);
+                bool isModifiedFollowing, const Handle<DayCounter>& dayCounter);
             double rateError() const;
             double discountGuess() const;
             Date maturity() const;
@@ -84,7 +86,7 @@ namespace QuantLib {
             int n_;
             TimeUnit units_;
             Handle<Calendar> calendar_;
-            bool isAdjusted_, isModified_;
+            bool isModified_;
             Handle<DayCounter> dayCounter_;
             Date maturity_;
             double yearFraction_;

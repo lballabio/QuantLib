@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/05/28 14:54:25  lballabio
+// Deposit rates are always adjusted
+//
 // Revision 1.7  2001/05/28 12:52:58  lballabio
 // Simplified Instrument interface
 //
@@ -54,14 +57,11 @@ namespace QuantLib {
 
         DepositRateHelper::DepositRateHelper(Rate rate, const Date& settlement,
             int n, TimeUnit units, const Handle<Calendar>& calendar,
-            bool isAdjusted, bool isModifiedFollowing,
-            const Handle<DayCounter>& dayCounter)
+            bool isModifiedFollowing, const Handle<DayCounter>& dayCounter)
         : rate_(rate), settlement_(settlement), n_(n), units_(units),
-          calendar_(calendar), isAdjusted_(isAdjusted),
-          isModified_(isModifiedFollowing), dayCounter_(dayCounter) {
-            maturity_ = settlement_.plus(n_,units_);
-            if (isAdjusted_)
-                maturity_ = calendar_->roll(maturity_,isModified_);
+          calendar_(calendar), isModified_(isModifiedFollowing), 
+          dayCounter_(dayCounter) {
+            maturity_ = calendar_->advance(settlement_,n_,units_,isModified_);
             yearFraction_ = dayCounter_->yearFraction(settlement_,maturity_);
         }
 
