@@ -29,7 +29,7 @@
 ****************************************************************/
 
 /* Define this if error messages should include file and line information. */
-#define QL_ERROR_LINES 1
+// #define QL_ERROR_LINES 1
 
 /* Define this if tracing messages should be allowed (whether they are
    actually emitted will depend on run-time settings.) */
@@ -52,6 +52,7 @@
 
 /* Define this to use indexed coupons instead of par coupons in floating
    legs. */
-//#define QL_USE_INDEXED_COUPON
+// #define QL_USE_INDEXED_COUPON
+
 
 #endif
