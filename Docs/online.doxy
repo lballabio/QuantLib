@@ -1,9 +1,5 @@
-# Doxyfile 1.2.3-20001203
-# This file describes the settings to be used by doxygen for the QuantLib project
 
-#---------------------------------------------------------------------------
 # General configuration options
-#---------------------------------------------------------------------------
 
 PROJECT_NAME           = QuantLib
 PROJECT_NUMBER         = 0.1.1
@@ -38,10 +34,10 @@ ENABLED_SECTIONS       =
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = YES
 ALIASES                = 
+MAX_INITIALIZER_LINES  = 30
+OPTIMIZE_OUTPUT_FOR_C  = NO
 
-#---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
-#---------------------------------------------------------------------------
 
 QUIET                  = YES
 WARNINGS               = YES
@@ -49,9 +45,7 @@ WARN_IF_UNDOCUMENTED   = NO
 WARN_FORMAT            = "$file:$line: $text"
 WARN_LOGFILE           = 
 
-#---------------------------------------------------------------------------
 # configuration options related to the input files
-#---------------------------------------------------------------------------
 
 INPUT                  = ..\Include ..\Sources
 FILE_PATTERNS          = *.h *.cpp
@@ -64,22 +58,18 @@ IMAGE_PATH             =
 INPUT_FILTER           = 
 FILTER_SOURCE_FILES    = NO
 
-#---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
-#---------------------------------------------------------------------------
 
 ALPHABETICAL_INDEX     = YES
 COLS_IN_ALPHA_INDEX    = 3
 IGNORE_PREFIX          = 
 
-#---------------------------------------------------------------------------
 # configuration options related to the HTML output
-#---------------------------------------------------------------------------
 
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_HEADER            = 
-HTML_FOOTER            = qlfooter.html
+HTML_FOOTER            = onlinefooter.html
 HTML_STYLESHEET        = 
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
@@ -88,9 +78,7 @@ ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = YES
 TREEVIEW_WIDTH         = 250
 
-#---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
-#---------------------------------------------------------------------------
 
 GENERATE_LATEX         = YES
 LATEX_OUTPUT           = latex
@@ -102,9 +90,7 @@ PDF_HYPERLINKS         = YES
 USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = NO
 
-#---------------------------------------------------------------------------
 # configuration options related to the RTF output
-#---------------------------------------------------------------------------
 
 GENERATE_RTF           = NO
 RTF_OUTPUT             = rtf
@@ -112,23 +98,13 @@ COMPACT_RTF            = NO
 RTF_HYPERLINKS         = NO
 RTF_STYLESHEET_FILE    = 
 
-#---------------------------------------------------------------------------
 # configuration options related to the man page output
-#---------------------------------------------------------------------------
 
 GENERATE_MAN           = NO
 MAN_OUTPUT             = man
 MAN_EXTENSION          = .3
 
-#---------------------------------------------------------------------------
-# configuration options related to the XML output
-#---------------------------------------------------------------------------
-
-GENERATE_XML           = NO
-
-#---------------------------------------------------------------------------
 # Configuration options related to the preprocessor   
-#---------------------------------------------------------------------------
 
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
@@ -145,18 +121,14 @@ PREDEFINED             = __DOXYGEN__ \
                          "QL_PTR_CONST=* const"
 EXPAND_AS_DEFINED      = 
 
-#---------------------------------------------------------------------------
-# Configuration::addtions related to external references   
-#---------------------------------------------------------------------------
+# Configuration::additions related to external references   
 
 TAGFILES               = 
 GENERATE_TAGFILE       = 
 ALLEXTERNALS           = NO
 PERL_PATH              = /usr/bin/perl
 
-#---------------------------------------------------------------------------
 # Configuration options related to the dot tool   
-#---------------------------------------------------------------------------
 
 HAVE_DOT               = YES
 CLASS_GRAPH            = YES
@@ -169,9 +141,7 @@ MAX_DOT_GRAPH_WIDTH    = 800
 MAX_DOT_GRAPH_HEIGHT   = 600
 GENERATE_LEGEND        = YES
 
-#---------------------------------------------------------------------------
 # Configuration::additions related to the search engine   
-#---------------------------------------------------------------------------
 
 SEARCHENGINE           = NO
 CGI_NAME               = search.cgi
