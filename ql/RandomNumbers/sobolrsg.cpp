@@ -25,6 +25,7 @@
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <ql/dataformatters.hpp>
+#include <fstream>
 
 namespace QuantLib {
 
@@ -34,101 +35,101 @@ namespace QuantLib {
 
             // coefficients of the free direction integers as given
             // by Jäckel
-            const unsigned long degree01initializers[] = {
+            const unsigned long dim02initializers[] = {
                 1UL, 0UL };
-            const unsigned long degree02initializers[] = {
+            const unsigned long dim03initializers[] = {
                 1UL, 1UL, 0UL };
-            const unsigned long degree03initializers[] = {
+            const unsigned long dim04initializers[] = {
                 1UL, 3UL, 7UL, 0UL };
-            const unsigned long degree04initializers[] = {
+            const unsigned long dim05initializers[] = {
                 1UL, 1UL, 5UL, 0UL };
-            const unsigned long degree05initializers[] = {
+            const unsigned long dim06initializers[] = {
                 1UL, 3UL, 1UL, 1UL, 0UL };
-            const unsigned long degree06initializers[] = {
+            const unsigned long dim07initializers[] = {
                 1UL, 1UL, 3UL, 7UL, 0UL };
-            const unsigned long degree07initializers[] = {
+            const unsigned long dim08initializers[] = {
                 1UL, 3UL, 3UL, 9UL, 9UL, 0UL };
-            const unsigned long degree08initializers[] = {
+            const unsigned long dim09initializers[] = {
                 1UL, 3UL, 7UL, 7UL, 21UL, 0UL };
-            const unsigned long degree09initializers[] = {
+            const unsigned long dim10initializers[] = {
                 1UL, 1UL, 5UL, 11UL, 27UL, 0UL };
-            const unsigned long degree10initializers[] = {
+            const unsigned long dim11initializers[] = {
                 1UL, 1UL, 7UL, 3UL, 29UL, 0UL };
-            const unsigned long degree11initializers[] = {
+            const unsigned long dim12initializers[] = {
                 1UL, 3UL, 7UL, 13UL, 3UL, 0UL };
-            const unsigned long degree12initializers[] = {
+            const unsigned long dim13initializers[] = {
                 1UL, 3UL, 5UL, 1UL, 15UL, 0UL };
-            const unsigned long degree13initializers[] = {
+            const unsigned long dim14initializers[] = {
                 1UL, 1UL, 1UL, 9UL, 23UL, 37UL, 0UL };
-            const unsigned long degree14initializers[] = {
+            const unsigned long dim15initializers[] = {
                 1UL, 1UL, 3UL, 13UL, 11UL, 7UL, 0UL };
-            const unsigned long degree15initializers[] = {
+            const unsigned long dim16initializers[] = {
                 1UL, 3UL, 3UL, 5UL, 19UL, 33UL, 0UL };
-            const unsigned long degree16initializers[] = {
+            const unsigned long dim17initializers[] = {
                 1UL, 1UL, 7UL, 13UL, 25UL, 5UL, 0UL };
-            const unsigned long degree17initializers[] = {
+            const unsigned long dim18initializers[] = {
                 1UL, 1UL, 1UL, 3UL, 13UL, 39UL, 0UL };
-            const unsigned long degree18initializers[] = {
+            const unsigned long dim19initializers[] = {
                 1UL, 3UL, 5UL, 11UL, 7UL, 11UL, 0UL };
-            const unsigned long degree19initializers[] = {
+            const unsigned long dim20initializers[] = {
                 1UL, 3UL, 1UL, 7UL, 3UL, 23UL, 79UL, 0UL };
-            const unsigned long degree20initializers[] = {
+            const unsigned long dim21initializers[] = {
                 1UL, 3UL, 1UL, 15UL, 17UL, 63UL, 13UL, 0UL };
-            const unsigned long degree21initializers[] = {
+            const unsigned long dim22initializers[] = {
                 1UL, 3UL, 3UL, 3UL, 25UL, 17UL, 115UL, 0UL };
-            const unsigned long degree22initializers[] = {
+            const unsigned long dim23initializers[] = {
                 1UL, 3UL, 7UL, 9UL, 31UL, 29UL, 17UL, 0UL };
-            const unsigned long degree23initializers[] = {
+            const unsigned long dim24initializers[] = {
                 1UL, 1UL, 3UL, 15UL, 29UL, 15UL, 41UL, 0UL };
-            const unsigned long degree24initializers[] = {
+            const unsigned long dim25initializers[] = {
                 1UL, 3UL, 1UL, 9UL, 5UL, 21UL, 119UL, 0UL };
-            const unsigned long degree25initializers[] = {
+            const unsigned long dim26initializers[] = {
                 1UL, 1UL, 5UL, 5UL, 1UL, 27UL, 33UL, 0UL };
-            const unsigned long degree26initializers[] = {
+            const unsigned long dim27initializers[] = {
                 1UL, 1UL, 3UL, 1UL, 23UL, 13UL, 75UL, 0UL };
-            const unsigned long degree27initializers[] = {
+            const unsigned long dim28initializers[] = {
                 1UL, 1UL, 7UL, 7UL, 19UL, 25UL, 105UL, 0UL };
-            const unsigned long degree28initializers[] = {
+            const unsigned long dim29initializers[] = {
                 1UL, 3UL, 5UL, 5UL, 21UL, 9UL, 7UL, 0UL };
-            const unsigned long degree29initializers[] = {
+            const unsigned long dim30initializers[] = {
                 1UL, 1UL, 1UL, 15UL, 5UL, 49UL, 59UL, 0UL };
-            const unsigned long degree30initializers[] = {
+            const unsigned long dim31initializers[] = {
                 1UL, 3UL, 5UL, 15UL, 17UL, 19UL, 21UL, 0UL };
-            const unsigned long degree31initializers[] = {
+            const unsigned long dim32initializers[] = {
                 1UL, 1UL, 7UL, 11UL, 13UL, 29UL, 3UL, 0UL };
 
             const unsigned long * const initializers[31] = {
-                degree01initializers,
-                degree02initializers,
-                degree03initializers,
-                degree04initializers,
-                degree05initializers,
-                degree06initializers,
-                degree07initializers,
-                degree08initializers,
-                degree09initializers,
-                degree10initializers,
-                degree11initializers,
-                degree12initializers,
-                degree13initializers,
-                degree14initializers,
-                degree15initializers,
-                degree16initializers,
-                degree17initializers,
-                degree18initializers,
-                degree19initializers,
-                degree20initializers,
-                degree21initializers,
-                degree22initializers,
-                degree23initializers,
-                degree24initializers,
-                degree25initializers,
-                degree26initializers,
-                degree27initializers,
-                degree28initializers,
-                degree29initializers,
-                degree30initializers,
-                degree31initializers
+                dim02initializers,
+                dim03initializers,
+                dim04initializers,
+                dim05initializers,
+                dim06initializers,
+                dim07initializers,
+                dim08initializers,
+                dim09initializers,
+                dim10initializers,
+                dim11initializers,
+                dim12initializers,
+                dim13initializers,
+                dim14initializers,
+                dim15initializers,
+                dim16initializers,
+                dim17initializers,
+                dim18initializers,
+                dim19initializers,
+                dim20initializers,
+                dim21initializers,
+                dim22initializers,
+                dim23initializers,
+                dim24initializers,
+                dim25initializers,
+                dim26initializers,
+                dim27initializers,
+                dim28initializers,
+                dim29initializers,
+                dim30initializers,
+                dim31initializers,
+                dim32initializers
             };
 
         }
@@ -152,18 +153,20 @@ namespace QuantLib {
                 " exceeds the number of available primitive polynomials modulo"
                 " two (" + IntegerFormatter::toString(PPMT_MAX_DIM) +")");
 
-            std::vector<unsigned int> degree(dimensionality_);
-            std::vector<long> ppmt(dimensionality_);
             // initializes coefficient array of the k-th primitive polynomial
             // and degree of the k-th primitive polynomial
+            std::vector<unsigned int> degree(dimensionality_);
+            std::vector<long> ppmt(dimensionality_);
+            // degree 0 is not used
+            ppmt[0]=0;
+            degree[0]=0;
             Size k, index, currentDegree;
-            for (k=0, index=0, currentDegree = 0;
-                      k<dimensionality_; k++, index++) {
-                ppmt[k] = PrimitivePolynomials[currentDegree][index];
+            for (k=1,index=0,currentDegree=1; k<dimensionality_; k++,index++){
+                ppmt[k] = PrimitivePolynomials[currentDegree-1][index];
                 if (ppmt[k]==-1) {
                     ++currentDegree;
                     index=0;
-                    ppmt[k] = PrimitivePolynomials[currentDegree][index];
+                    ppmt[k] = PrimitivePolynomials[currentDegree-1][index];
                 }
                 degree[k] = currentDegree;
             }
@@ -176,12 +179,13 @@ namespace QuantLib {
             // provided that only the l leftmost bits can be non-zero, and
             // that the l-th leftmost bit must be set
 
-            // degenerate (no free integers) first dimension
+            // degenerate (no free direction integers) first dimension
             int j;
             for (j=0; j<bits_; j++)
                 directionIntegers_[0][j] = (1UL<<(bits_-j-1));
 
 
+            // maxTabulated=32
             unsigned long maxTabulated = 
                 sizeof(initializers)/sizeof(unsigned long *)+1;
             // dimensions from 2 (k=1) to maxTabulated (k=maxTabulated-1)
@@ -243,12 +247,48 @@ namespace QuantLib {
                 }
             }
 
+/* equivalent NR-like code
+            for (k=1; k<dimensionality_; k++) {
+                for (Size j=degree[k];j<bits_;j++) {
+                    long ipp=ppmt[k];
+                    unsigned long i=directionIntegers_[k][j-degree[k]];
+                    i ^= (i >> degree[k]);
+                    for (Size l=degree[k]-1;l>=1;l--) {
+                        if (ipp & 1) i ^= directionIntegers_[k][j-l];
+                        ipp >>= 1;
+                    }
+                    directionIntegers_[k][j]=i;
+                }
+            }
+*/
+
+            
+            
+            // in case one needs to check the directionIntegers used
+            #define PRINT_DIRECTION_INTEGER
+            #ifdef PRINT_DIRECTION_INTEGER
+            std::ofstream outStream("directionIntegers.txt");
+            for (k=0; k<QL_MIN(32UL,dimensionality_); k++) {
+                outStream << std::endl << k+1       << "\t"
+                                       << degree[k] << "\t"
+                                       << ppmt[k]   << "\t";
+                for (j=0; j<10; j++) {
+                    outStream << IntegerFormatter::toPowerOfTwo(
+                        directionIntegers_[k][j], 3) << "\t";
+                }
+            }
+            outStream.close();
+            #endif
+            
+            
+            
             // initialize the Sobol integer/double vectors
             for (k=0; k<dimensionality_; k++) {
                 integerSequence_[k]=directionIntegers_[k][0];
                 // first draw
                 sequence_.value[k] = integerSequence_[k]*normalizationFactor_;
             }
+
 
         }
 

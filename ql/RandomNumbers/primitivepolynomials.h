@@ -1,4 +1,7 @@
-//
+
+// $Id$
+
+// taken from
 // PrimitivePolynomialsModuloTwoUpToDegree27.h
 //
 // © 2002 "Monte Carlo Methods in Finance"
