@@ -33,22 +33,28 @@ namespace QuantLib {
 
         void BlackCapFloor::calculate() const {
             double value = 0.0;
+            Instruments::VanillaCapFloor::Type type = parameters_.type;
+
             for (Size i=0; i<parameters_.startTimes.size(); i++) {
-                Rate exerciseRate = parameters_.exerciseRates[i];
                 Time start = parameters_.startTimes[i];
                 Time end = parameters_.endTimes[i];
                 double tenor = end - start;
                 double p = model_->termStructure()->discount(start);
                 double q = model_->termStructure()->discount(end);
                 double forward = QL_LOG(p/q)/tenor;
-                double w;
-                switch(parameters_.type) {
-                    case VanillaCapFloor::Cap: w = 1; break;
-                    case VanillaCapFloor::Floor: w= -1; break;
+                if ((type == Instruments::VanillaCapFloor::Cap) ||
+                    (type == Instruments::VanillaCapFloor::Collar)) {
+                    value +=  q*tenor*BlackModel::formula(
+                        parameters_.capRates[i], forward, 
+                        model_->volatility()*QL_SQRT(start), 1);
+
                 }
-                value += q*tenor*BlackModel::formula(
-                    exerciseRate, forward, 
-                    model_->volatility()*QL_SQRT(start), w);
+                if ((type == Instruments::VanillaCapFloor::Floor) ||
+                    (type == Instruments::VanillaCapFloor::Collar)) {
+                    value +=  q*tenor*BlackModel::formula(
+                        parameters_.floorRates[i], forward, 
+                        model_->volatility()*QL_SQRT(start), -1);
+                }
             }
             results_.value = value;
 

@@ -32,34 +32,29 @@ namespace QuantLib {
             QL_REQUIRE(!model_.isNull(), 
                        "AnalyticalCapFloor: cannot price without model!");
 
-            Option::Type optionType;
-            switch (parameters_.type) {
-              case Instruments::VanillaCapFloor::Cap:
-                optionType = Option::Put;
-                break;
-              case Instruments::VanillaCapFloor::Floor:
-                optionType = Option::Call;
-                break;
-              default:
-                throw Error("Invalid cap/floor type");
-            }
-
             double value = 0.0;
+            Instruments::VanillaCapFloor::Type type = parameters_.type;
             Size nPeriods = parameters_.endTimes.size();
             for (Size i=0; i<nPeriods; i++) {
-                Rate exerciseRate = parameters_.exerciseRates[i];
-
                 Time maturity = parameters_.startTimes[i];
                 Time bond = parameters_.endTimes[i];
                 Time tenor = bond - maturity;
-                double optionStrike = 1.0/(1.0+exerciseRate*tenor);
 
-                double optionValue = model_->discountBondOption(
-                    optionType, optionStrike, maturity, bond);
+                if ((type == Instruments::VanillaCapFloor::Cap) ||
+                    (type == Instruments::VanillaCapFloor::Collar)) {
+                    double temp = 1.0+parameters_.capRates[i]*tenor;
+                    value += parameters_.nominals[i]*temp*
+                        model_->discountBondOption(Option::Put, 1.0/temp, 
+                                                   maturity, bond);
+                }
+                if ((type == Instruments::VanillaCapFloor::Floor) ||
+                    (type == Instruments::VanillaCapFloor::Collar)) {
+                    double temp = 1.0+parameters_.floorRates[i]*tenor;
+                    value += parameters_.nominals[i]*temp*
+                        model_->discountBondOption(Option::Call, 1.0/temp, 
+                                                   maturity, bond);
+                }
 
-                double capletValue = parameters_.nominals[i]*
-                    (1.0+exerciseRate*tenor)*optionValue;
-                value += capletValue;
             }
             results_.value = value;
         }
