@@ -22,12 +22,12 @@
 #ifndef quantlib_discount_curve_h
 #define quantlib_discount_curve_h
 
-#include <map>
 #include <ql/termstructure.hpp>
 #include <ql/TermStructures/compoundforward.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/DayCounters/actual365.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
+#include <map>
 
 namespace QuantLib {
 
