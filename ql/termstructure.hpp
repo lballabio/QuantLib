@@ -25,10 +25,9 @@
 
 #include <ql/basetermstructure.hpp>
 #include <ql/basicdataformatters.hpp>
-#include <ql/quote.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/relinkablehandle.hpp>
 #include <ql/Math/extrapolation.hpp>
-#include <vector>
 
 namespace QuantLib {
 
@@ -286,6 +285,7 @@ namespace QuantLib {
                                                   const Calendar& calendar)
     : BaseTermStructure(settlementDays, calendar) {}
 
+
     inline Rate YieldTermStructure::zeroYield(const Date& d,
                                               bool extrapolate) const {
         checkRange(d, extrapolate);
@@ -298,109 +298,98 @@ namespace QuantLib {
     }
 
 
-
-
-
-
-
     inline Rate YieldTermStructure::zeroRate(const Date& d,
-        const DayCounter& resultDayCounter, Compounding comp, Frequency freq,
-        bool extrapolate) const {
+                                             const DayCounter& dayCounter,
+                                             Compounding comp,
+                                             Frequency freq,
+                                             bool extrapolate) const {
 
         Real compound = 1.0/discount(d, extrapolate);
         return InterestRate::impliedRate(compound,
-                                         referenceDate(), d, resultDayCounter,
+                                         referenceDate(), d, dayCounter,
                                          comp, freq);
     }
 
-    inline Rate YieldTermStructure::zeroRate(Time t, Compounding comp,
-        Frequency freq, bool extrapolate) const {
+    inline Rate YieldTermStructure::zeroRate(Time t,
+                                             Compounding comp,
+                                             Frequency freq,
+                                             bool extrapolate) const {
 
         Real compound = 1.0/discount(t, extrapolate);
         return InterestRate::impliedRate(compound, t, comp, freq);
     }
 
-    inline InterestRate YieldTermStructure::zeroInterestRate(const Date& d,
-        const DayCounter& resultDayCounter, Compounding comp, Frequency freq,
-        bool extrapolate) const {
+    inline InterestRate YieldTermStructure::zeroInterestRate(
+                                                 const Date& d,
+                                                 const DayCounter& dayCounter,
+                                                 Compounding comp,
+                                                 Frequency freq,
+                                                 bool extrapolate) const {
 
         Real compound = 1.0/discount(d, extrapolate);
         return InterestRate::impliedInterestRate(compound,
-            referenceDate(), d, resultDayCounter, comp, freq);
+                                                 referenceDate(), d,
+                                                 dayCounter, comp, freq);
     }
 
-    inline InterestRate YieldTermStructure::zeroInterestRate(Time t, Compounding comp,
-        Frequency freq, bool extrapolate) const {
+    inline InterestRate YieldTermStructure::zeroInterestRate(
+                                                     Time t,
+                                                     Compounding comp,
+                                                     Frequency freq,
+                                                     bool extrapolate) const {
 
         Real r = zeroRate(t, comp, freq, extrapolate);
         return InterestRate(r, Settings::instance().dayCounter(), comp, freq);
     }
 
 
-
-
-
-
-
-
-
-
     inline Rate YieldTermStructure::forwardRate(const Date& d1,
-        const Date& d2, const DayCounter& resultDayCounter, Compounding comp,
-        Frequency freq, bool extrapolate) const {
+                                                const Date& d2,
+                                                const DayCounter& dayCounter,
+                                                Compounding comp,
+                                                Frequency freq,
+                                                bool extrapolate) const {
 
         Real compound = discount(d1, extrapolate)/discount(d2, extrapolate);
         return InterestRate::impliedRate(compound,
-                                         d1, d2, resultDayCounter,
+                                         d1, d2, dayCounter,
                                          comp, freq);
     }
 
     inline Rate YieldTermStructure::forwardRate(Time t1,
-        Time t2, Compounding comp, Frequency freq, bool extrapolate) const {
+                                                Time t2,
+                                                Compounding comp,
+                                                Frequency freq,
+                                                bool extrapolate) const {
 
         Real compound = discount(t1, extrapolate)/discount(t2, extrapolate);
         return InterestRate::impliedRate(compound, t2-t1, comp, freq);
     }
 
-    inline InterestRate YieldTermStructure::forwardInterestRate(const Date& d1,
-        const Date& d2, const DayCounter& resultDayCounter, Compounding comp,
-        Frequency freq, bool extrapolate) const {
+    inline InterestRate YieldTermStructure::forwardInterestRate(
+                                                 const Date& d1,
+                                                 const Date& d2,
+                                                 const DayCounter& dayCounter,
+                                                 Compounding comp,
+                                                 Frequency freq,
+                                                 bool extrapolate) const {
 
         Real compound = discount(d1, extrapolate)/discount(d2, extrapolate);
         return InterestRate::impliedInterestRate(compound,
-            d1, d2, resultDayCounter, comp, freq);
+                                                 d1, d2, dayCounter,
+                                                 comp, freq);
     }
 
-    inline InterestRate YieldTermStructure::forwardInterestRate(Time t1,
-        Time t2, Compounding comp, Frequency freq, bool extrapolate) const {
+    inline InterestRate YieldTermStructure::forwardInterestRate(
+                                                     Time t1,
+                                                     Time t2,
+                                                     Compounding comp,
+                                                     Frequency freq,
+                                                     bool extrapolate) const {
 
         Real r = forwardRate(t1, t2, comp, freq, extrapolate);
         return InterestRate(r, Settings::instance().dayCounter(), comp, freq);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     inline DiscountFactor YieldTermStructure::discount(const Date& d,
@@ -417,6 +406,7 @@ namespace QuantLib {
         return discountImpl(t);
     }
 
+
     inline Rate YieldTermStructure::instantaneousForward(const Date& d,
                                                          bool extrapolate)
                                                                        const {
@@ -431,6 +421,7 @@ namespace QuantLib {
         return forwardImpl(t);
     }
 
+
     inline Rate YieldTermStructure::compoundForward(const Date& d, Integer f,
                                                     bool extrapolate) const {
         checkRange(d, extrapolate);
@@ -442,6 +433,7 @@ namespace QuantLib {
         checkRange(t, extrapolate);
         return compoundForwardImpl(t,f);
     }
+
 
     inline Rate YieldTermStructure::forward(const Date& d1, const Date& d2,
                                             bool extrapolate) const {
@@ -466,6 +458,7 @@ namespace QuantLib {
             return QL_LOG(discountImpl(t1)/discountImpl(t2))/(t2-t1);
     }
 
+
     inline Rate YieldTermStructure::zeroCoupon(const Date& d, Integer f,
                                                bool extrapolate) const {
         return zeroCoupon(timeFromReference(d),f,extrapolate);
@@ -483,9 +476,11 @@ namespace QuantLib {
             return Rate((QL_POW(1.0/df,1.0/(t*f))-1.0)*f);
     }
 
+
     inline Time YieldTermStructure::maxTime() const {
         return timeFromReference(maxDate());
     }
+
 
     inline void YieldTermStructure::checkRange(const Date& d,
                                                bool extrapolate) const {
@@ -504,7 +499,6 @@ namespace QuantLib {
                    ") is past max curve time (" +
                    DecimalFormatter::toString(maxTime()) + ")");
     }
-
 
 }
 

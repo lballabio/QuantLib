@@ -19,10 +19,11 @@
     \brief Abstract class for Black-type models (market models)
 */
 
-#ifndef quantlib_black_model_h
-#define quantlib_black_model_h
+#ifndef quantlib_black_model_hpp
+#define quantlib_black_model_hpp
 
 #include <ql/termstructure.hpp>
+#include <ql/quote.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {

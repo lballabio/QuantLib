@@ -19,9 +19,10 @@
     \brief rate helpers base class
 */
 
-#ifndef quantlib_ratehelper_h
-#define quantlib_ratehelper_h
+#ifndef quantlib_ratehelper_hpp
+#define quantlib_ratehelper_hpp
 
+#include <ql/quote.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 
 namespace QuantLib {
