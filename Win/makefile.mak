@@ -51,12 +51,6 @@ LATEX		= latex
 PDFLATEX	= pdflatex
 MAKEINDEX	= makeindex
 DVIPS		= dvips
-MAKEEXE		= make
-!ifdef DEBUG
-	MAKE	= $(MAKEEXE) -DDEBUG
-!else
-	MAKE	= $(MAKEEXE)
-!endif
 
 # Options
 CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
