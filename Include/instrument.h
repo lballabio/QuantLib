@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.16  2001/03/22 16:01:40  lballabio
+    Improved up-to-date condition
+
     Revision 1.15  2001/03/13 15:28:22  lballabio
     Recalculation control mechanism fixed
 
@@ -396,26 +399,31 @@ namespace QuantLib {
     }
 
     inline void Instrument::calculate() const {
-        isCalculating = true;
-        if (useTermStructure() && termStructureHasChanged) {
-            QL_REQUIRE(!theTermStructure.isNull(),
-                "term structure not set");
-            performTermStructureCalculations();
+        try {
+            isCalculating = true;
+            if (useTermStructure() && termStructureHasChanged) {
+                QL_REQUIRE(!theTermStructure.isNull(),
+                    "term structure not set");
+                performTermStructureCalculations();
+            }
+            if (useSwaptionVolatility() && swaptionVolHasChanged) {
+                QL_REQUIRE(!theSwaptionVol.isNull(), 
+                    "swaption volatility surface not set");
+                performSwaptionVolCalculations();
+            }
+            if (useForwardVolatility() && forwardVolHasChanged) {
+                QL_REQUIRE(!theForwardVol.isNull(),
+                    "forward volatility surface not set");
+                performForwardVolCalculations();
+            }
+            if (needsFinalCalculations())
+                performFinalCalculations();
+            termStructureHasChanged = swaptionVolHasChanged = 
+                forwardVolHasChanged = isCalculating = false;
+        } catch (...) {
+            isCalculating = false;
+            throw;
         }
-        if (useSwaptionVolatility() && swaptionVolHasChanged) {
-            QL_REQUIRE(!theSwaptionVol.isNull(), 
-                "swaption volatility surface not set");
-            performSwaptionVolCalculations();
-        }
-        if (useForwardVolatility() && forwardVolHasChanged) {
-            QL_REQUIRE(!theForwardVol.isNull(),
-                "forward volatility surface not set");
-            performForwardVolCalculations();
-        }
-        if (needsFinalCalculations())
-            performFinalCalculations();
-        termStructureHasChanged = swaptionVolHasChanged = 
-            forwardVolHasChanged = isCalculating = false;
     }
 
     // comparisons
