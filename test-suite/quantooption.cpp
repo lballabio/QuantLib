@@ -17,7 +17,6 @@
 
 #include "quantooption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/quantovanillaoption.hpp>
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
@@ -411,7 +410,7 @@ void QuantoOptionTest::testForwardValues() {
         {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.00,      0.5, 0.20,              0.05,   0.10,  0.3,     8.1636, 1.0e-4 }
     };
 
-    DayCounter dc = SimpleDayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
