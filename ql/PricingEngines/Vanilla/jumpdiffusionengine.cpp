@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     JumpDiffusionEngine::JumpDiffusionEngine(
-        const boost::shared_ptr<VanillaEngine>& baseEngine,
+        const boost::shared_ptr<VanillaOption::engine>& baseEngine,
         double relativeAccuracy,
         Size maxIterations)
     : baseEngine_(baseEngine), relativeAccuracy_(relativeAccuracy),

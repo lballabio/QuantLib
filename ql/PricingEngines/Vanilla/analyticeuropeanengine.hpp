@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     //! Pricing engine for European vanilla options using analytical formulae
-    class AnalyticEuropeanEngine : public VanillaEngine {
+    class AnalyticEuropeanEngine : public VanillaOption::engine {
       public:
         void calculate() const;
     };

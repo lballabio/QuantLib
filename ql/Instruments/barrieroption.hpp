@@ -21,8 +21,8 @@
     \brief Barrier option on a single asset
 */
 
-#ifndef quantlib_barrier_option_h
-#define quantlib_barrier_option_h
+#ifndef quantlib_barrier_option_hpp
+#define quantlib_barrier_option_hpp
 
 #include <ql/Instruments/oneassetstrikedoption.hpp>
 
@@ -41,6 +41,7 @@ namespace QuantLib {
     class BarrierOption : public OneAssetStrikedOption {
       public:
         class arguments;
+        class engine;
         BarrierOption(Barrier::Type barrierType,
                       double barrier,
                       double rebate,
@@ -68,8 +69,9 @@ namespace QuantLib {
     };
 
     //! %Barrier engine base class
-    class BarrierEngine : public GenericEngine<BarrierOption::arguments,
-                                               BarrierOption::results> {};
+    class BarrierOption::engine 
+        : public GenericEngine<BarrierOption::arguments,
+                               BarrierOption::results> {};
 
 }
 

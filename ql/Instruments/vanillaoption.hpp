@@ -19,8 +19,8 @@
     \brief Vanilla option on a single asset
 */
 
-#ifndef quantlib_vanilla_option_h
-#define quantlib_vanilla_option_h
+#ifndef quantlib_vanilla_option_hpp
+#define quantlib_vanilla_option_hpp
 
 #include <ql/Instruments/oneassetstrikedoption.hpp>
 
@@ -30,6 +30,7 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class VanillaOption : public OneAssetStrikedOption {
       public:
+        class engine;
         VanillaOption(const boost::shared_ptr<BlackScholesStochasticProcess>&,
                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
                       const boost::shared_ptr<Exercise>& exercise,
@@ -41,8 +42,9 @@ namespace QuantLib {
     };
 
     //! Vanilla option engine base class
-    class VanillaEngine : public GenericEngine<VanillaOption::arguments,
-                                               VanillaOption::results> {};
+    class VanillaOption::engine 
+        : public GenericEngine<VanillaOption::arguments,
+                               VanillaOption::results> {};
 
 }
 

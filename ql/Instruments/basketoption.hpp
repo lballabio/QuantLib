@@ -19,8 +19,8 @@
     \brief Basket option on a number of assets
 */
 
-#ifndef quantlib_basket_option_h
-#define quantlib_basket_option_h
+#ifndef quantlib_basket_option_hpp
+#define quantlib_basket_option_hpp
 
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/Instruments/multiassetoption.hpp>
@@ -32,6 +32,7 @@ namespace QuantLib {
     class BasketOption : public MultiAssetOption {
       public:
         class arguments;
+        class engine;
         enum BasketType { Min, Max };
         BasketOption(
                const BasketType basketType,
@@ -62,8 +63,9 @@ namespace QuantLib {
 
 
     //! %Basket option engine base class
-    class BasketEngine : public GenericEngine<BasketOption::arguments,
-                                               BasketOption::results> {};
+    class BasketOption::engine 
+        : public GenericEngine<BasketOption::arguments,
+                               BasketOption::results> {};
 
 }
 

@@ -32,7 +32,7 @@ namespace QuantLib {
 
         \todo add more greeks (as of now only delta and rho available)
     */
-    class AnalyticDigitalAmericanEngine : public VanillaEngine {
+    class AnalyticDigitalAmericanEngine : public VanillaOption::engine {
       public:
         void calculate() const;
     };

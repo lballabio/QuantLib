@@ -29,7 +29,8 @@ namespace QuantLib {
     /*! Pricing engine for American vanilla options with 
         Bjerksund and Stensland approximation (1993)
     */
-    class BjerksundStenslandApproximationEngine : public VanillaEngine {
+    class BjerksundStenslandApproximationEngine 
+        : public VanillaOption::engine {
       public:
         void calculate() const;
     };

@@ -20,8 +20,8 @@
     \brief Asian option on a single asset
 */
 
-#ifndef quantlib_asian_option_h
-#define quantlib_asian_option_h
+#ifndef quantlib_asian_option_hpp
+#define quantlib_asian_option_hpp
 
 #include <ql/Instruments/oneassetstrikedoption.hpp>
 #include <vector>
@@ -37,7 +37,9 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class DiscreteAveragingAsianOption : public OneAssetStrikedOption {
       public:
-          DiscreteAveragingAsianOption(
+        class arguments;
+        class engine;
+        DiscreteAveragingAsianOption(
                 Average::Type averageType,
                 double runningProduct,
                 Size pastFixings,
@@ -47,10 +49,6 @@ namespace QuantLib {
                 const boost::shared_ptr<Exercise>& exercise,
                 const boost::shared_ptr<PricingEngine>& engine = 
                                            boost::shared_ptr<PricingEngine>());
-        //! \name Instrument interface
-        //@{
-        class arguments;
-        //@}
         void setupArguments(Arguments*) const;
       protected:
         // enforce in this class any check on engine/payoff
@@ -74,7 +72,7 @@ namespace QuantLib {
     };
 
     //! Discrete averaging asian engine base class
-    class DiscreteAveragingAsianEngine 
+    class DiscreteAveragingAsianOption::engine 
         : public GenericEngine<DiscreteAveragingAsianOption::arguments, 
                                DiscreteAveragingAsianOption::results> {};
 

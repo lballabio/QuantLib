@@ -44,7 +44,7 @@ namespace QuantLib {
         </i>
     */
     template <class RNG = PseudoRandom, class S = Statistics>
-    class MCBarrierEngine : public BarrierEngine,
+    class MCBarrierEngine : public BarrierOption::engine,
                             public McSimulation<SingleAsset<RNG>, S> {
       public:
         MCBarrierEngine(Size maxTimeStepsPerYear,

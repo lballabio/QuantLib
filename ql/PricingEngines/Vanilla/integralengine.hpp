@@ -31,7 +31,7 @@ namespace QuantLib {
 
         \todo define tolerance for calculate()
     */
-    class IntegralEngine : public VanillaEngine {
+    class IntegralEngine : public VanillaOption::engine {
       public:
         void calculate() const;
     };

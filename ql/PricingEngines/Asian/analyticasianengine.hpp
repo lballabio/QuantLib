@@ -34,7 +34,7 @@ namespace QuantLib {
 
     */
     class AnalyticDiscreteAveragingAsianEngine 
-        : public DiscreteAveragingAsianEngine {
+        : public DiscreteAveragingAsianOption::engine {
       public:
         void calculate() const;
     };

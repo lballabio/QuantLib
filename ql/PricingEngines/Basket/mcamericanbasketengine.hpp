@@ -33,7 +33,7 @@ namespace QuantLib {
         \bug This engine does not yet work for put options. More problems
              might surface.
     */
-    class MCAmericanBasketEngine : public BasketEngine {
+    class MCAmericanBasketEngine : public BasketOption::engine {
       public:
         MCAmericanBasketEngine(Size requiredSamples,
                                 Size timeSteps,

@@ -32,7 +32,7 @@ namespace QuantLib {
             Rene Stulz, 
             Journal of Financial Ecomomics (1982) 10, 161-185.
     */
-    class StulzEngine : public BasketEngine {
+    class StulzEngine : public BasketOption::engine {
       public:
         void calculate() const;
     };

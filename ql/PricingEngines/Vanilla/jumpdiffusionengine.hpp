@@ -26,14 +26,14 @@
 
 namespace QuantLib {
 
-    class JumpDiffusionEngine : public VanillaEngine {
+    class JumpDiffusionEngine : public VanillaOption::engine {
       public:
-        JumpDiffusionEngine(const boost::shared_ptr<VanillaEngine>&,
+        JumpDiffusionEngine(const boost::shared_ptr<VanillaOption::engine>&,
                             double relativeAccuracy_ = 1e-4,
                             Size maxIterations = 100);
         void calculate() const;
       private:
-        boost::shared_ptr<VanillaEngine> baseEngine_;
+        boost::shared_ptr<VanillaOption::engine> baseEngine_;
         double relativeAccuracy_;
         Size maxIterations_;
     };

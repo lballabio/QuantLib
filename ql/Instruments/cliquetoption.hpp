@@ -26,11 +26,12 @@
 
 namespace QuantLib {
 
-    // currently just a container for arguments and results
+    // currently just a container for inner classes
     class CliquetOption {
       public:
         class arguments;
         // class results;
+        class engine;
     };
 
     //! %Arguments for cliquet option calculation
@@ -51,8 +52,9 @@ namespace QuantLib {
     };
 
     //! Cliquet engine base class
-    class CliquetEngine : public GenericEngine<CliquetOption::arguments,
-                                               VanillaOption::results> {};
+    class CliquetOption:engine 
+        : public GenericEngine<CliquetOption::arguments,
+                               VanillaOption::results> {};
 
 
     // inline definitions

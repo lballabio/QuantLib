@@ -34,7 +34,7 @@ namespace QuantLib {
     /*! The formulas are taken from "Option pricing formulas",
          E.G. Haug, McGraw-Hill, p.69 and following.
     */
-    class AnalyticBarrierEngine : public BarrierEngine {
+    class AnalyticBarrierEngine : public BarrierOption::engine {
       public:
         void calculate() const;
       private:

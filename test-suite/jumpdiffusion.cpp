@@ -320,12 +320,12 @@ void JumpDiffusionTest::testMerton76() {
             RelinkableHandle<Quote>(meanLogJump),
             RelinkableHandle<Quote>(jumpVol)));
 
-    boost::shared_ptr<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<VanillaOption::engine> baseEngine(
+                                                  new AnalyticEuropeanEngine);
     boost::shared_ptr<PricingEngine> engine(
                                          new JumpDiffusionEngine(baseEngine));
 
     Date today = Date::todaysDate();
-
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -431,7 +431,8 @@ void JumpDiffusionTest::testGreeks() {
 
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
+    boost::shared_ptr<VanillaOption::engine> baseEngine(
+                                                  new AnalyticEuropeanEngine);
     boost::shared_ptr<PricingEngine> engine(
                                          new JumpDiffusionEngine(baseEngine));
 
