@@ -35,15 +35,15 @@ namespace QuantLib {
         : public McPricer<SingleAsset<PseudoRandom> >{
       public:
         McDiscreteArithmeticAPO(
-                    Option::Type type,
-                    Real underlying,
-                    Real strike,
-                    const RelinkableHandle<TermStructure>& dividendYield,
-                    const RelinkableHandle<TermStructure>& riskFreeRate,
-                    const RelinkableHandle<BlackVolTermStructure>& volatility,
-                    const std::vector<Time>& times,
-                    bool controlVariate,
-                    BigNatural seed = 0);
+                            Option::Type type,
+                            Real underlying,
+                            Real strike,
+                            const Handle<TermStructure>& dividendYield,
+                            const Handle<TermStructure>& riskFreeRate,
+                            const Handle<BlackVolTermStructure>& volatility,
+                            const std::vector<Time>& times,
+                            bool controlVariate,
+                            BigNatural seed = 0);
     };
 
 }

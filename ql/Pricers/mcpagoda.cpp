@@ -25,7 +25,7 @@ namespace QuantLib {
           public:
             PagodaPathPricer(const std::vector<Real>& underlying,
                              Real roof, Real fraction,
-                             const RelinkableHandle<TermStructure>& discountTS)
+                             const Handle<TermStructure>& discountTS)
             : PathPricer<MultiPath>(discountTS),
               underlying_(underlying), roof_(roof), fraction_(fraction) {}
 
@@ -60,10 +60,9 @@ namespace QuantLib {
                  const std::vector<Real>& underlying,
                  Real fraction,
                  Real roof,
-                 const std::vector<RelinkableHandle<TermStructure> >& 
-                                                             dividendYield,
-                 const RelinkableHandle<TermStructure>& riskFreeRate,
-                 const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                 const std::vector<Handle<TermStructure> >& dividendYield,
+                 const Handle<TermStructure>& riskFreeRate,
+                 const std::vector<Handle<BlackVolTermStructure> >& 
                                                              volatilities,
                  const Matrix& correlation,
                  const std::vector<Time>& times,
@@ -88,7 +87,7 @@ namespace QuantLib {
         Size n = underlying.size();
         std::vector<boost::shared_ptr<StochasticProcess> > processes(n);
         for (Size i=0; i<n; i++) {
-            RelinkableHandle<Quote> u(
+            Handle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
             processes[i] = boost::shared_ptr<StochasticProcess>(
                                     new BlackScholesProcess(u, 

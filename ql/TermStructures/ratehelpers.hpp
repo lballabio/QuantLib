@@ -39,7 +39,7 @@ namespace QuantLib {
 
     class RateHelper : public Observer, public Observable {
       public:
-        RateHelper(const RelinkableHandle<Quote>& quote);
+        RateHelper(const Handle<Quote>& quote);
         RateHelper(Real quote);
         virtual ~RateHelper() {}
         //! \name RateHelper interface
@@ -69,7 +69,7 @@ namespace QuantLib {
         void update() { notifyObservers(); }
         //@}
       protected:
-        RelinkableHandle<Quote> quote_;
+        Handle<Quote> quote_;
         TermStructure* termStructure_;
     };
 
@@ -80,7 +80,7 @@ namespace QuantLib {
     */
     class DepositRateHelper : public RateHelper {
       public:
-        DepositRateHelper(const RelinkableHandle<Quote>& rate,
+        DepositRateHelper(const Handle<Quote>& rate,
                           Integer n, TimeUnit units,
                           Integer settlementDays,
                           const Calendar& calendar,
@@ -116,7 +116,7 @@ namespace QuantLib {
     */
     class FraRateHelper : public RateHelper {
       public:
-        FraRateHelper(const RelinkableHandle<Quote>& rate,
+        FraRateHelper(const Handle<Quote>& rate,
                       Integer monthsToStart, Integer monthsToEnd,
                       Integer settlementDays,
                       const Calendar& calendar,
@@ -149,20 +149,20 @@ namespace QuantLib {
     */
     class FuturesRateHelper : public RateHelper {
       public:
-        FuturesRateHelper(const RelinkableHandle<Quote>& price,
-                          const Date& ImmDate,
+        FuturesRateHelper(const Handle<Quote>& price,
+                          const Date& immDate,
                           Integer nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter);
-	    FuturesRateHelper(const RelinkableHandle<Quote>& price,
-                          const Date& ImmDate,
-                          const Date& MatDate,
+	    FuturesRateHelper(const Handle<Quote>& price,
+                          const Date& immDate,
+                          const Date& matDate,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
                           const DayCounter& dayCounter);
         FuturesRateHelper(Real price,
-                          const Date& ImmDate,
+                          const Date& immDate,
                           Integer nMonths,
                           const Calendar& calendar,
                           BusinessDayConvention convention,
@@ -171,7 +171,7 @@ namespace QuantLib {
         DiscountFactor discountGuess() const;
         Date maturity() const;
       private:
-        Date ImmDate_;
+        Date immDate_;
         Integer nMonths_;
         Calendar calendar_;
         BusinessDayConvention convention_;
@@ -187,7 +187,7 @@ namespace QuantLib {
     */
     class SwapRateHelper : public RateHelper {
       public:
-        SwapRateHelper(const RelinkableHandle<Quote>& rate,
+        SwapRateHelper(const Handle<Quote>& rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,
                        const Calendar& calendar,
@@ -224,7 +224,7 @@ namespace QuantLib {
         DayCounter fixedDayCount_;
         Date settlement_;
         boost::shared_ptr<SimpleSwap> swap_;
-        RelinkableHandle<TermStructure> termStructureHandle_;
+        Handle<TermStructure> termStructureHandle_;
     };
 
 }

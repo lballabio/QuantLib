@@ -73,22 +73,21 @@ namespace QuantLib {
     }
 
     McPerformanceOption::McPerformanceOption(
-                    Option::Type type,
-                    Real underlying,
-                    Real moneyness,
-                    const RelinkableHandle<TermStructure>& dividendYield,
-                    const RelinkableHandle<TermStructure>& riskFreeRate,
-                    const RelinkableHandle<BlackVolTermStructure>& volatility,
-                    const std::vector<Time>& times,
-                    BigNatural seed) {
+                              Option::Type type,
+                              Real underlying,
+                              Real moneyness,
+                              const Handle<TermStructure>& dividendYield,
+                              const Handle<TermStructure>& riskFreeRate,
+                              const Handle<BlackVolTermStructure>& volatility,
+                              const std::vector<Time>& times,
+                              BigNatural seed) {
 
         std::vector<DiscountFactor> discounts(times.size());
         for (Size i = 0; i<times.size(); i++)
             discounts[i] = riskFreeRate->discount(times[i]);
 
         // Initialize the path generator
-        RelinkableHandle<Quote> u(
-                    boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
+        Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
         boost::shared_ptr<StochasticProcess> diffusion(
                                       new BlackScholesProcess(u, 
                                                               dividendYield,

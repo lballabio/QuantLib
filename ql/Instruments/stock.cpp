@@ -19,7 +19,7 @@
 
 namespace QuantLib {
 
-    Stock::Stock(const RelinkableHandle<Quote>& quote)
+    Stock::Stock(const Handle<Quote>& quote)
     : quote_(quote) {
         registerWith(quote_);
     }

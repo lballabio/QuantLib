@@ -106,10 +106,10 @@ namespace QuantLib {
     class BlackScholesProcess : public StochasticProcess {
       public:
         BlackScholesProcess(
-            const RelinkableHandle<Quote>& x0,
-            const RelinkableHandle<TermStructure>& dividendTS,
-            const RelinkableHandle<TermStructure>& riskFreeTS,
-            const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
+            const Handle<Quote>& x0,
+            const Handle<TermStructure>& dividendTS,
+            const Handle<TermStructure>& riskFreeTS,
+            const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<StochasticProcess::discretization>& d =
                     boost::shared_ptr<StochasticProcess::discretization>(
                                                     new EulerDiscretization));
@@ -136,10 +136,10 @@ namespace QuantLib {
                                                      localVolatility() const;
         //@}
       private:
-        RelinkableHandle<Quote> x0_;
-        RelinkableHandle<TermStructure> riskFreeRate_, dividendYield_;
-        RelinkableHandle<BlackVolTermStructure> blackVolatility_;
-        mutable RelinkableHandle<LocalVolTermStructure> localVolatility_;
+        Handle<Quote> x0_;
+        Handle<TermStructure> riskFreeRate_, dividendYield_;
+        Handle<BlackVolTermStructure> blackVolatility_;
+        mutable Handle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_;
     };
 
@@ -148,13 +148,13 @@ namespace QuantLib {
     class Merton76Process : public BlackScholesProcess {
       public:
         Merton76Process(
-            const RelinkableHandle<Quote>& stateVariable,
-            const RelinkableHandle<TermStructure>& dividendTS,
-            const RelinkableHandle<TermStructure>& riskFreeTS,
-            const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
-            const RelinkableHandle<Quote>& jumpInt,
-            const RelinkableHandle<Quote>& logJMean,
-            const RelinkableHandle<Quote>& logJVol,
+            const Handle<Quote>& stateVariable,
+            const Handle<TermStructure>& dividendTS,
+            const Handle<TermStructure>& riskFreeTS,
+            const Handle<BlackVolTermStructure>& blackVolTS,
+            const Handle<Quote>& jumpInt,
+            const Handle<Quote>& logJMean,
+            const Handle<Quote>& logJVol,
             const boost::shared_ptr<StochasticProcess::discretization>& d =
                     boost::shared_ptr<StochasticProcess::discretization>(
                                                     new EulerDiscretization));
@@ -170,8 +170,7 @@ namespace QuantLib {
         const boost::shared_ptr<Quote>& logJumpVolatility() const;
         //@}
       private:
-        RelinkableHandle<Quote> jumpIntensity_, logMeanJump_, 
-                                logJumpVolatility_;
+        Handle<Quote> jumpIntensity_, logMeanJump_, logJumpVolatility_;
     };
 
 

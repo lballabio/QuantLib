@@ -90,7 +90,7 @@ namespace QuantLib {
                       Option::Type type,
                       Real underlying,
                       Real strike,
-                      const RelinkableHandle<TermStructure>& discountTS,
+                      const Handle<TermStructure>& discountTS,
                       const boost::shared_ptr<StochasticProcess>& diffProcess,
                       const PseudoRandom::ursg_type& sequenceGen);
         Real operator()(const Path& path) const;
@@ -107,14 +107,13 @@ namespace QuantLib {
 
     class BiasedBarrierPathPricer : public PathPricer<Path> {
       public:
-        BiasedBarrierPathPricer(
-                           Barrier::Type barrierType, 
-                           Real barrier, 
-                           Real rebate, 
-                           Option::Type type,
-                           Real underlying,
-                           Real strike,
-                           const RelinkableHandle<TermStructure>& discountTS);
+        BiasedBarrierPathPricer(Barrier::Type barrierType, 
+                                Real barrier, 
+                                Real rebate, 
+                                Option::Type type,
+                                Real underlying,
+                                Real strike,
+                                const Handle<TermStructure>& discountTS);
         Real operator()(const Path& path) const;
       private:
         Real underlying_;
@@ -176,21 +175,21 @@ namespace QuantLib {
         if (isBiased_) {
             return boost::shared_ptr<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
-                    arguments_.barrierType,
-                    arguments_.barrier,
-                    arguments_.rebate,
-                    payoff->optionType(),
-                    payoff->strike(),
-                    process->stateVariable()->value(),
-                    RelinkableHandle<TermStructure>(process->riskFreeRate())));
+                             arguments_.barrierType,
+                             arguments_.barrier,
+                             arguments_.rebate,
+                             payoff->optionType(),
+                             payoff->strike(),
+                             process->stateVariable()->value(),
+                             Handle<TermStructure>(process->riskFreeRate())));
         } else {
             TimeGrid grid = timeGrid();
             PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
                                                 PseudoRandom::urng_type(5));
 
-            RelinkableHandle<TermStructure> riskFree(process->riskFreeRate());
-            RelinkableHandle<TermStructure> dividend(process->dividendYield());
-            RelinkableHandle<BlackVolTermStructure> volatility(
+            Handle<TermStructure> riskFree(process->riskFreeRate());
+            Handle<TermStructure> dividend(process->dividendYield());
+            Handle<BlackVolTermStructure> volatility(
                                                   process->blackVolatility());
             return boost::shared_ptr<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(

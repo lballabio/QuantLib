@@ -38,11 +38,9 @@ namespace QuantLib {
       public:
         McHimalaya(
                const std::vector<Real>& underlyings,
-               const std::vector<RelinkableHandle<TermStructure> >& 
-                                                             dividendYields,
-               const RelinkableHandle<TermStructure>& riskFreeRate,
-               const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
-                                                             volatilities,
+               const std::vector<Handle<TermStructure> >& dividendYields,
+               const Handle<TermStructure>& riskFreeRate,
+               const std::vector<Handle<BlackVolTermStructure> >& volatilities,
                const Matrix& correlation,
                Real strike,
                const std::vector<Time>& times,

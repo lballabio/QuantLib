@@ -21,7 +21,7 @@
 
 namespace QuantLib {
 
-    HullWhite::HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
+    HullWhite::HullWhite(const Handle<TermStructure>& termStructure, 
                          Real a, Real sigma)
     : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma), 
       TermStructureConsistentModel(termStructure) {

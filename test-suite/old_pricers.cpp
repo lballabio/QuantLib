@@ -386,11 +386,11 @@ void OldPricerTest::testMcSingleFactorPricers() {
             timeIncrements[i] = i*dt + cases4[k].first;
 
         Date today = Date::todaysDate();
-        RelinkableHandle<TermStructure> riskFreeRate(
+        Handle<TermStructure> riskFreeRate(
                                     flatRate(today, cases4[k].riskFreeRate));
-        RelinkableHandle<TermStructure> dividendYield(
+        Handle<TermStructure> dividendYield(
                                     flatRate(today, cases4[k].dividendYield));
-        RelinkableHandle<BlackVolTermStructure> volatility(
+        Handle<BlackVolTermStructure> volatility(
                                     flatVol(today, cases4[k].volatility));
 
         McDiscreteArithmeticAPO pricer(cases4[k].type,
@@ -499,11 +499,11 @@ void OldPricerTest::testMcSingleFactorPricers() {
             timeIncrements[i] = i*dt + cases5[l].first;
 
         Date today = Date::todaysDate();
-        RelinkableHandle<TermStructure> riskFreeRate(
+        Handle<TermStructure> riskFreeRate(
                                     flatRate(today, cases5[l].riskFreeRate));
-        RelinkableHandle<TermStructure> dividendYield(
+        Handle<TermStructure> dividendYield(
                                     flatRate(today, cases5[l].dividendYield));
-        RelinkableHandle<BlackVolTermStructure> volatility(
+        Handle<BlackVolTermStructure> volatility(
                                     flatVol(today, cases5[l].volatility));
 
         McDiscreteArithmeticASO pricer(cases5[l].type,
@@ -596,34 +596,28 @@ void OldPricerTest::testMcMultiFactorPricers() {
                                                     correlation[3][3] = 1.00;
 
     Date today = Date::todaysDate();
-    std::vector<RelinkableHandle<BlackVolTermStructure> > volatilities(4);
-    volatilities[0] = RelinkableHandle<BlackVolTermStructure>(flatVol(today,
-                                                                      0.30));
-    volatilities[1] = RelinkableHandle<BlackVolTermStructure>(flatVol(today,
-                                                                      0.35));
-    volatilities[2] = RelinkableHandle<BlackVolTermStructure>(flatVol(today,
-                                                                      0.25));
-    volatilities[3] = RelinkableHandle<BlackVolTermStructure>(flatVol(today,
-                                                                      0.20));
+    std::vector<Handle<BlackVolTermStructure> > volatilities(4);
+    volatilities[0] = Handle<BlackVolTermStructure>(flatVol(today, 0.30));
+    volatilities[1] = Handle<BlackVolTermStructure>(flatVol(today, 0.35));
+    volatilities[2] = Handle<BlackVolTermStructure>(flatVol(today, 0.25));
+    volatilities[3] = Handle<BlackVolTermStructure>(flatVol(today, 0.20));
 
-    std::vector<RelinkableHandle<TermStructure> > dividendYields(4);
-    dividendYields[0] = RelinkableHandle<TermStructure>(flatRate(today, 0.01));
-    dividendYields[1] = RelinkableHandle<TermStructure>(flatRate(today, 0.05));
-    dividendYields[2] = RelinkableHandle<TermStructure>(flatRate(today, 0.04));
-    dividendYields[3] = RelinkableHandle<TermStructure>(flatRate(today, 0.03));
+    std::vector<Handle<TermStructure> > dividendYields(4);
+    dividendYields[0] = Handle<TermStructure>(flatRate(today, 0.01));
+    dividendYields[1] = Handle<TermStructure>(flatRate(today, 0.05));
+    dividendYields[2] = Handle<TermStructure>(flatRate(today, 0.04));
+    dividendYields[3] = Handle<TermStructure>(flatRate(today, 0.03));
 
-    RelinkableHandle<TermStructure> riskFreeRate(flatRate(today, 0.05));
+    Handle<TermStructure> riskFreeRate(flatRate(today, 0.05));
     Time resTime = 1.0;
 
     // degenerate portfolio
     Matrix perfectCorrelation(4,4,1.0);
-    RelinkableHandle<BlackVolTermStructure> sameVol(flatVol(today, 0.30));
-    RelinkableHandle<TermStructure> sameDividend(flatRate(today, 0.03));
+    Handle<BlackVolTermStructure> sameVol(flatVol(today, 0.30));
+    Handle<TermStructure> sameDividend(flatRate(today, 0.03));
 
-    std::vector<RelinkableHandle<BlackVolTermStructure> > 
-        sameAssetVols(4, sameVol);
-    std::vector<RelinkableHandle<TermStructure> > 
-        sameAssetDividend(4, sameDividend);
+    std::vector<Handle<BlackVolTermStructure> > sameAssetVols(4, sameVol);
+    std::vector<Handle<TermStructure> > sameAssetDividend(4, sameDividend);
 
     BigNatural seed = 86421;
 

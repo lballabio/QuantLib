@@ -67,12 +67,11 @@ namespace QuantLib {
 
     class EuropeanMultiPathPricer : public PathPricer<MultiPath> {
       public:
-        EuropeanMultiPathPricer(
-                BasketOption::BasketType basketType,
-                Option::Type type,
-                Real strike,
-                Array underlying,
-                const RelinkableHandle<TermStructure>& discountTS);
+        EuropeanMultiPathPricer(BasketOption::BasketType basketType,
+                                Option::Type type,
+                                Real strike,
+                                Array underlying,
+                                const Handle<TermStructure>& discountTS);
         Real operator()(const MultiPath& multiPath) const;
       private:
         BasketOption::BasketType basketType_;
@@ -150,7 +149,7 @@ namespace QuantLib {
                 payoff->optionType(),
                 payoff->strike(),
                 underlying,
-                RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
                        arguments_.blackScholesProcesses[0]->riskFreeRate())));
     }
 

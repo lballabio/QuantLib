@@ -32,9 +32,9 @@ namespace QuantLib {
       public:
         //Constructor for ATM cap
         CapHelper(const Period& length,
-                  const RelinkableHandle<Quote>& volatility,
+                  const Handle<Quote>& volatility,
                   const boost::shared_ptr<Xibor>& index,
-                  const RelinkableHandle<TermStructure>& termStructure);
+                  const Handle<TermStructure>& termStructure);
 
         virtual void addTimesTo(std::list<Time>& times) const;
 

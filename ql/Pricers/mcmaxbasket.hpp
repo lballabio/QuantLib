@@ -33,11 +33,9 @@ namespace QuantLib {
       public:
         McMaxBasket(
                const std::vector<Real>& underlyings,
-               const std::vector<RelinkableHandle<TermStructure> >& 
-                                                             dividendYields,
-               const RelinkableHandle<TermStructure>& riskFreeRate,
-               const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
-                                                             volatilities,
+               const std::vector<Handle<TermStructure> >& dividendYields,
+               const Handle<TermStructure>& riskFreeRate,
+               const std::vector<Handle<BlackVolTermStructure> >& volatilities,
                const Matrix& correlation,
                Time residualTime,
                BigNatural seed = 0);

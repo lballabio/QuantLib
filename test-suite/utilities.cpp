@@ -55,8 +55,7 @@ namespace QuantLib {
              const boost::shared_ptr<Quote>& forward,
              const DayCounter& dc) {
         return boost::shared_ptr<TermStructure>(
-                       new FlatForward(today, today, 
-                                       RelinkableHandle<Quote>(forward), dc));
+                   new FlatForward(today, today, Handle<Quote>(forward), dc));
     }
 
     boost::shared_ptr<TermStructure> 
@@ -70,8 +69,7 @@ namespace QuantLib {
             const boost::shared_ptr<Quote>& vol,
             const DayCounter& dc) {
         return boost::shared_ptr<BlackVolTermStructure>(
-                      new BlackConstantVol(today, 
-                                           RelinkableHandle<Quote>(vol), dc));
+                      new BlackConstantVol(today, Handle<Quote>(vol), dc));
     }
 
     boost::shared_ptr<BlackVolTermStructure> 

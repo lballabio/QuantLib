@@ -113,11 +113,10 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
@@ -167,11 +166,10 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
@@ -221,11 +219,10 @@ void DigitalOptionTest::testGapEuropeanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
 
@@ -288,11 +285,10 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
@@ -354,11 +350,10 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
@@ -416,11 +411,10 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
@@ -484,11 +478,10 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
                           engine);
@@ -529,11 +522,11 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     // there is no cycling on different residual times
     Date exDate = today.plusDays(360);
@@ -558,8 +551,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                                                     strikes[i6], cashPayoff));
 
           boost::shared_ptr<BlackScholesProcess> stochProcess(new
-                BlackScholesProcess(
-                    RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+                BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
           VanillaOption opt(stochProcess, payoff, exercises[j], engines[j]);
 
@@ -712,11 +704,10 @@ void DigitalOptionTest::testMCCashAtHit() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         bool antitheticVariate = true;
         boost::shared_ptr<PricingEngine> mcEngine(new

@@ -66,13 +66,13 @@ namespace QuantLib {
             arguments_.blackScholesProcess->riskFreeRate()->dayCounter();
 
         // binomial trees with constant coefficient
-        RelinkableHandle<TermStructure> flatRiskFree(
+        Handle<TermStructure> flatRiskFree(
             boost::shared_ptr<TermStructure>(
                 new FlatForward(todaysDate, referenceDate, r, dc)));
-        RelinkableHandle<TermStructure> flatDividends(
+        Handle<TermStructure> flatDividends(
             boost::shared_ptr<TermStructure>(
                 new FlatForward(todaysDate, referenceDate, q, dc)));
-        RelinkableHandle<BlackVolTermStructure> flatVol(
+        Handle<BlackVolTermStructure> flatVol(
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, v, dc)));
 
@@ -85,8 +85,7 @@ namespace QuantLib {
 
         boost::shared_ptr<StochasticProcess> bs(
             new BlackScholesProcess(
-                   RelinkableHandle<Quote>(
-                             arguments_.blackScholesProcess->stateVariable()),
+               Handle<Quote>(arguments_.blackScholesProcess->stateVariable()),
                    flatDividends, flatRiskFree, flatVol));
         boost::shared_ptr<Tree> tree(new T(bs, maturity, timeSteps_,
                                            payoff->strike()));

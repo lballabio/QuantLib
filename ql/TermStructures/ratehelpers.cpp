@@ -23,14 +23,13 @@ namespace QuantLib {
         void no_deletion(TermStructure*) {}
     }
 
-    RateHelper::RateHelper(const RelinkableHandle<Quote>& quote)
+    RateHelper::RateHelper(const Handle<Quote>& quote)
     : quote_(quote), termStructure_(0) {
         registerWith(quote_);
     }
 
     RateHelper::RateHelper(Real quote)
-    : quote_(RelinkableHandle<Quote>(
-                           boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
+    : quote_(Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
       termStructure_(0) {
         registerWith(quote_);
     }
@@ -47,7 +46,7 @@ namespace QuantLib {
 
 
     DepositRateHelper::DepositRateHelper(
-                       const RelinkableHandle<Quote>& rate,
+                       const Handle<Quote>& rate,
                        Integer n, TimeUnit units, Integer settlementDays,
                        const Calendar& calendar, 
                        BusinessDayConvention convention,
@@ -99,7 +98,7 @@ namespace QuantLib {
 
 
 
-    FraRateHelper::FraRateHelper(const RelinkableHandle<Quote>& rate,
+    FraRateHelper::FraRateHelper(const Handle<Quote>& rate,
                                  Integer monthsToStart, Integer monthsToEnd,
                                  Integer settlementDays,
                                  const Calendar& calendar, 
@@ -155,49 +154,49 @@ namespace QuantLib {
     }
 
 
-    FuturesRateHelper::FuturesRateHelper(
-                       const RelinkableHandle<Quote>& price,
-                       const Date& ImmDate, Integer nMonths,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention,
-                       const DayCounter& dayCounter)
-    : RateHelper(price), ImmDate_(ImmDate),
+    FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
+                                         const Date& immDate,
+                                         Integer nMonths,
+                                         const Calendar& calendar,
+                                         BusinessDayConvention convention,
+                                         const DayCounter& dayCounter)
+    : RateHelper(price), immDate_(immDate),
       nMonths_(nMonths),
       calendar_(calendar), convention_(convention),
       dayCounter_(dayCounter) {
-        maturity_ = calendar_.advance(ImmDate_, nMonths_, Months, convention_);
-        yearFraction_ = dayCounter_.yearFraction(ImmDate_, maturity_);
+        maturity_ = calendar_.advance(immDate_, nMonths_, Months, convention_);
+        yearFraction_ = dayCounter_.yearFraction(immDate_, maturity_);
     }
 
-    FuturesRateHelper::FuturesRateHelper(
-                       const RelinkableHandle<Quote>& price,
-                       const Date& ImmDate, const Date& MatDate,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention,
-                       const DayCounter& dayCounter)
-    : RateHelper(price), ImmDate_(ImmDate),
+    FuturesRateHelper::FuturesRateHelper(const Handle<Quote>& price,
+                                         const Date& immDate,
+                                         const Date& matDate,
+                                         const Calendar& calendar,
+                                         BusinessDayConvention convention,
+                                         const DayCounter& dayCounter)
+    : RateHelper(price), immDate_(immDate),
       calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter), maturity_(MatDate) {
-        yearFraction_ = dayCounter_.yearFraction(ImmDate_, maturity_);
+      dayCounter_(dayCounter), maturity_(matDate) {
+        yearFraction_ = dayCounter_.yearFraction(immDate_, maturity_);
     }
 
     FuturesRateHelper::FuturesRateHelper(Real price,
-                                         const Date& ImmDate, Integer nMonths,
+                                         const Date& immDate,
+                                         Integer nMonths,
                                          const Calendar& calendar, 
                                          BusinessDayConvention convention,
                                          const DayCounter& dayCounter)
-    : RateHelper(price), ImmDate_(ImmDate),
+    : RateHelper(price), immDate_(immDate),
       nMonths_(nMonths),
       calendar_(calendar), convention_(convention),
       dayCounter_(dayCounter) {
-        maturity_ = calendar_.advance(
-                                      ImmDate_, nMonths_, Months, convention_);
-        yearFraction_ = dayCounter_.yearFraction(ImmDate_, maturity_);
+        maturity_ = calendar_.advance(immDate_, nMonths_, Months, convention_);
+        yearFraction_ = dayCounter_.yearFraction(immDate_, maturity_);
     }
 
     Real FuturesRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
-        return 100 * (1.0-(termStructure_->discount(ImmDate_) /
+        return 100 * (1.0-(termStructure_->discount(immDate_) /
                            termStructure_->discount(maturity_)-1.0) /
                       yearFraction_);
     }
@@ -206,7 +205,7 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // extrapolation shouldn't be needed if the input makes sense
         // but we'll play it safe
-        return termStructure_->discount(ImmDate_,true) /
+        return termStructure_->discount(immDate_,true) /
             (1.0+(100.0-quote_->value())/100.0*yearFraction_);
     }
 
@@ -215,15 +214,15 @@ namespace QuantLib {
     }
 
 
-    SwapRateHelper::SwapRateHelper(
-                            const RelinkableHandle<Quote>& rate,
-                            Integer n, TimeUnit units, Integer settlementDays,
-                            const Calendar& calendar, 
-                            Frequency fixedFrequency,
-                            BusinessDayConvention fixedConvention,
-                            const DayCounter& fixedDayCount,
-                            Frequency floatingFrequency,
-                            BusinessDayConvention floatingConvention)
+    SwapRateHelper::SwapRateHelper(const Handle<Quote>& rate,
+                                   Integer n, TimeUnit units,
+                                   Integer settlementDays,
+                                   const Calendar& calendar, 
+                                   Frequency fixedFrequency,
+                                   BusinessDayConvention fixedConvention,
+                                   const DayCounter& fixedDayCount,
+                                   Frequency floatingFrequency,
+                                   BusinessDayConvention floatingConvention)
     : RateHelper(rate), 
       n_(n), units_(units), settlementDays_(settlementDays),
       calendar_(calendar), fixedConvention_(fixedConvention),

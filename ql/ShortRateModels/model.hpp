@@ -55,13 +55,13 @@ namespace QuantLib {
     class TermStructureConsistentModel : public virtual Observable {
       public:
         TermStructureConsistentModel(
-                         const RelinkableHandle<TermStructure>& termStructure)
+                                 const Handle<TermStructure>& termStructure)
         : termStructure_(termStructure) {}
-        const RelinkableHandle<TermStructure>& termStructure() const {
+        const Handle<TermStructure>& termStructure() const {
             return termStructure_;
         }
       private:
-        RelinkableHandle<TermStructure> termStructure_;
+        Handle<TermStructure> termStructure_;
     };
 
     //! Abstract short-rate model class

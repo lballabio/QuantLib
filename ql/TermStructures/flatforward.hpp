@@ -38,7 +38,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter = Actual365());
         FlatForward(const Date& todaysDate,
                     const Date& referenceDate,
-                    const RelinkableHandle<Quote>& forward,
+                    const Handle<Quote>& forward,
                     const DayCounter& dayCounter = Actual365());
         // inspectors
         DayCounter dayCounter() const;
@@ -55,7 +55,7 @@ namespace QuantLib {
       private:
         Date todaysDate_, referenceDate_;
         DayCounter dayCounter_;
-        RelinkableHandle<Quote> forward_;
+        Handle<Quote> forward_;
     };
 
     // inline definitions
@@ -71,7 +71,7 @@ namespace QuantLib {
 
     inline FlatForward::FlatForward(const Date& todaysDate,
                                     const Date& referenceDate,
-                                    const RelinkableHandle<Quote>& forward,
+                                    const Handle<Quote>& forward,
                                     const DayCounter& dayCounter)
     : todaysDate_(todaysDate), referenceDate_(referenceDate),
       dayCounter_(dayCounter), forward_(forward) {

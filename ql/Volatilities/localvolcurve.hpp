@@ -30,7 +30,7 @@ namespace QuantLib {
     class LocalVolCurve : public LocalVolTermStructure,
                           public Observer {
       public:
-        LocalVolCurve(const RelinkableHandle<BlackVarianceCurve>& curve)
+        LocalVolCurve(const Handle<BlackVarianceCurve>& curve)
         : blackVarianceCurve_(curve) {
             registerWith(blackVarianceCurve_);
         }
@@ -65,7 +65,7 @@ namespace QuantLib {
       protected:
         Volatility localVolImpl(Time, Real) const;
       private:
-        RelinkableHandle<BlackVarianceCurve> blackVarianceCurve_;
+        Handle<BlackVarianceCurve> blackVarianceCurve_;
     };
 
 

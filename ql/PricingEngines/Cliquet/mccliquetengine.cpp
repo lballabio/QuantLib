@@ -26,7 +26,7 @@ namespace QuantLib {
         Real lastFixing, Real localCap, Real localFloor,
         Real globalCap, Real globalFloor,
         bool redemptionOnly,
-        const RelinkableHandle<TermStructure>& riskFreeTS)
+        const Handle<TermStructure>& riskFreeTS)
     : PathPricer<Path>(riskFreeTS), type_(type),
       underlying_(underlying), moneyness_(moneyness),
       accruedCoupon_(accruedCoupon), lastFixing_(lastFixing),

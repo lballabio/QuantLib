@@ -26,8 +26,7 @@ namespace QuantLib {
           public:
             HimalayaPathPricer(const std::vector<Real>& underlying,
                                Real strike,
-                               const RelinkableHandle<TermStructure>& 
-                                                                discountTS)
+                               const Handle<TermStructure>& discountTS)
             : PathPricer<MultiPath>(discountTS),
               underlying_(underlying), strike_(strike) {
                 for (Size j=0; j<underlying_.size(); j++) {
@@ -100,11 +99,9 @@ namespace QuantLib {
 
     McHimalaya::McHimalaya(
                const std::vector<Real>& underlying,
-               const std::vector<RelinkableHandle<TermStructure> >& 
-                                                             dividendYield,
-               const RelinkableHandle<TermStructure>& riskFreeRate,
-               const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
-                                                             volatilities,
+               const std::vector<Handle<TermStructure> >& dividendYield,
+               const Handle<TermStructure>& riskFreeRate,
+               const std::vector<Handle<BlackVolTermStructure> >& volatilities,
                const Matrix& correlation,
                Real strike,
                const std::vector<Time>& times,
@@ -125,7 +122,7 @@ namespace QuantLib {
         // initialize the path generator
         std::vector<boost::shared_ptr<StochasticProcess> > processes(n);
         for (Size i=0; i<n; i++) {
-            RelinkableHandle<Quote> u(
+            Handle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
             processes[i] = boost::shared_ptr<StochasticProcess>(
                                     new BlackScholesProcess(u, 

@@ -38,7 +38,7 @@ namespace QuantLib {
     class BlackKarasinski : public OneFactorModel,
                             public TermStructureConsistentModel {
       public:
-        BlackKarasinski(const RelinkableHandle<TermStructure>& termStructure,
+        BlackKarasinski(const Handle<TermStructure>& termStructure,
                         Real a = 0.1, Real sigma = 0.1);
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const {

@@ -122,7 +122,7 @@ void CompoundForwardTest::testSuppliedRates() {
 
     initialize();
 
-    RelinkableHandle<TermStructure> liborHandle;
+    Handle<TermStructure> liborHandle;
     liborHandle.linkTo(termStructure);
 
     Size i;
@@ -159,7 +159,7 @@ void CompoundForwardTest::testConvertedRates() {
 
     initialize();
 
-    RelinkableHandle<TermStructure> liborHandle;
+    Handle<TermStructure> liborHandle;
     liborHandle.linkTo(termStructure);
 
     Size i;

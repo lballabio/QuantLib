@@ -31,8 +31,8 @@ namespace QuantLib {
     //! liquid market instrument used during calibration
     class CalibrationHelper : public Observer, public Observable {
       public:
-        CalibrationHelper(const RelinkableHandle<Quote>& volatility,
-                          const RelinkableHandle<TermStructure>& termStructure)
+        CalibrationHelper(const Handle<Quote>& volatility,
+                          const Handle<TermStructure>& termStructure)
         : volatility_(volatility), termStructure_(termStructure) {
             blackModel_ = boost::shared_ptr<BlackModel>(
                                   new BlackModel(volatility_,termStructure_));
@@ -73,8 +73,8 @@ namespace QuantLib {
 
       protected:
         Real marketValue_;
-        RelinkableHandle<Quote> volatility_;
-        RelinkableHandle<TermStructure> termStructure_;
+        Handle<Quote> volatility_;
+        Handle<TermStructure> termStructure_;
         boost::shared_ptr<BlackModel> blackModel_;
         boost::shared_ptr<PricingEngine> engine_;
 

@@ -239,11 +239,10 @@ void BarrierOptionTest::testHaugValues() {
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         BarrierOption barrierOption(
                 values[i].barrierType,
@@ -337,11 +336,10 @@ void BarrierOptionTest::testBabsiriValues() {
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(underlying),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(underlying),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         // analytic
         BarrierOption barrierCallOption(
@@ -444,11 +442,10 @@ void BarrierOptionTest::testBeagleholeValues() {
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(underlying),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(underlying),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         // analytic
         BarrierOption barrierCallOption(

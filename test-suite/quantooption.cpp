@@ -165,16 +165,16 @@ void QuantoOptionTest::testValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
@@ -184,11 +184,10 @@ void QuantoOptionTest::testValues() {
                                    VanillaOption::results>(underlyingEngine));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(
-                 RelinkableHandle<Quote>(spot),
-                 RelinkableHandle<TermStructure>(qTS),
-                 RelinkableHandle<TermStructure>(rTS),
-                 RelinkableHandle<BlackVolTermStructure>(volTS)));
+            new BlackScholesProcess(Handle<Quote>(spot),
+                                    Handle<TermStructure>(qTS),
+                                    Handle<TermStructure>(rTS),
+                                    Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -207,7 +206,7 @@ void QuantoOptionTest::testValues() {
         correlation->setValue(values[i].corr);
 
         QuantoVanillaOption option(fxrTS, fxVolTS,
-                                   RelinkableHandle<Quote>(correlation),
+                                   Handle<Quote>(correlation),
                                    stochProcess, payoff, exercise, engine);
 
         Real calculated = option.NPV();
@@ -254,20 +253,19 @@ void QuantoOptionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-                 new BlackScholesProcess(
-                             RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);
@@ -286,7 +284,7 @@ void QuantoOptionTest::testGreeks() {
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
           QuantoVanillaOption option(fxrTS, fxVolTS, 
-                                     RelinkableHandle<Quote>(correlation),
+                                     Handle<Quote>(correlation),
                                      stochProcess, payoff, exercise, engine);
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -460,16 +458,16 @@ void QuantoOptionTest::testForwardValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
@@ -482,11 +480,10 @@ void QuantoOptionTest::testForwardValues() {
                                ForwardVanillaOption::results>(forwardEngine));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(
-                 RelinkableHandle<Quote>(spot),
-                 RelinkableHandle<TermStructure>(qTS),
-                 RelinkableHandle<TermStructure>(rTS),
-                 RelinkableHandle<BlackVolTermStructure>(volTS)));
+            new BlackScholesProcess(Handle<Quote>(spot),
+                                    Handle<TermStructure>(qTS),
+                                    Handle<TermStructure>(rTS),
+                                    Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -507,7 +504,7 @@ void QuantoOptionTest::testForwardValues() {
         correlation->setValue(values[i].corr);
 
         QuantoForwardVanillaOption option(fxrTS, fxVolTS,
-                                          RelinkableHandle<Quote>(correlation),
+                                          Handle<Quote>(correlation),
                                           values[i].moneyness, reset,
                                           stochProcess, payoff, exercise, 
                                           engine);
@@ -558,20 +555,19 @@ void QuantoOptionTest::testForwardGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-                 new BlackScholesProcess(
-                             RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);
@@ -595,12 +591,11 @@ void QuantoOptionTest::testForwardGreeks() {
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                        new PlainVanillaPayoff(types[i], 0.0));
 
-            QuantoForwardVanillaOption option(
-                                         fxrTS, fxVolTS, 
-                                         RelinkableHandle<Quote>(correlation),
-                                         moneyness[j], reset,
-                                         stochProcess, payoff, 
-                                         exercise, engine);
+            QuantoForwardVanillaOption option(fxrTS, fxVolTS, 
+                                              Handle<Quote>(correlation),
+                                              moneyness[j], reset,
+                                              stochProcess, payoff, 
+                                              exercise, engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
               for (Size m=0; m<LENGTH(qRates); m++) {
@@ -775,16 +770,16 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
@@ -797,11 +792,10 @@ void QuantoOptionTest::testForwardPerformanceValues() {
                                ForwardVanillaOption::results>(forwardPerformanceEngine));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(
-                 RelinkableHandle<Quote>(spot),
-                 RelinkableHandle<TermStructure>(qTS),
-                 RelinkableHandle<TermStructure>(rTS),
-                 RelinkableHandle<BlackVolTermStructure>(volTS)));
+            new BlackScholesProcess(Handle<Quote>(spot),
+                                    Handle<TermStructure>(qTS),
+                                    Handle<TermStructure>(rTS),
+                                    Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -822,7 +816,7 @@ void QuantoOptionTest::testForwardPerformanceValues() {
         correlation->setValue(values[i].corr);
 
         QuantoForwardVanillaOption option(fxrTS, fxVolTS,
-                                          RelinkableHandle<Quote>(correlation),
+                                          Handle<Quote>(correlation),
                                           values[i].moneyness, reset,
                                           stochProcess, payoff, exercise, 
                                           engine);

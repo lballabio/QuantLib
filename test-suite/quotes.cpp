@@ -54,7 +54,7 @@ void QuoteTest::testObservableHandle() {
     BOOST_MESSAGE("Testing observability of quote handles...");
 
     boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
-    RelinkableHandle<Quote> h(me1);
+    Handle<Quote> h(me1);
     Flag f;
     f.registerWith(h);
 
@@ -78,7 +78,7 @@ void QuoteTest::testDerived() {
     unary_f funcs[3] = { add10, mul10, sub10 };
 
     boost::shared_ptr<Quote> me(new SimpleQuote(17.0));
-    RelinkableHandle<Quote> h(me);
+    Handle<Quote> h(me);
 
     for (Integer i=0; i<3; i++) {
         DerivedQuote<unary_f> derived(h,funcs[i]);
@@ -101,7 +101,7 @@ void QuoteTest::testComposite() {
 
     boost::shared_ptr<Quote> me1(new SimpleQuote(12.0)),
                              me2(new SimpleQuote(13.0));
-    RelinkableHandle<Quote> h1(me1), h2(me2);
+    Handle<Quote> h1(me1), h2(me2);
 
     for (Integer i=0; i<3; i++) {
         CompositeQuote<binary_f> composite(h1,h2,funcs[i]);

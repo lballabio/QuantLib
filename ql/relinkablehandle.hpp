@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -71,14 +71,14 @@ namespace QuantLib {
         \pre Class "Type" must inherit from Observable
     */
     template <class Type>
-    class RelinkableHandle : public boost::shared_ptr<Link<Type> > {
+    class Handle : public boost::shared_ptr<Link<Type> > {
       public:
         /*! \warning see the documentation of <tt>Link</tt> for issues
                      relatives to <tt>registerAsObserver</tt>.
         */
-        explicit RelinkableHandle(const boost::shared_ptr<Type>& h =
+        explicit Handle(const boost::shared_ptr<Type>& h =
                                                     boost::shared_ptr<Type>(),
-                                  bool registerAsObserver = true);
+                        bool registerAsObserver = true);
         /*! \warning see the documentation of <tt>Link</tt> for issues
                      relatives to <tt>registerAsObserver</tt>.
         */
@@ -91,6 +91,10 @@ namespace QuantLib {
         bool isNull() const;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to Handle */
+    #define RelinkableHandle Handle
+    #endif
 
     // inline definitions
 
@@ -122,32 +126,30 @@ namespace QuantLib {
 
 
     template <class Type>
-    inline RelinkableHandle<Type>::RelinkableHandle(
-                                            const boost::shared_ptr<Type>& h,
-                                            bool registerAsObserver)
+    inline Handle<Type>::Handle(const boost::shared_ptr<Type>& h,
+                                bool registerAsObserver)
     : boost::shared_ptr<Link<Type> >(new Link<Type>(h,registerAsObserver)) {}
 
     template <class Type>
-    inline void RelinkableHandle<Type>::linkTo(
-                                            const boost::shared_ptr<Type>& h,
-                                            bool registerAsObserver) {
+    inline void Handle<Type>::linkTo(const boost::shared_ptr<Type>& h,
+                                     bool registerAsObserver) {
         (**this).linkTo(h,registerAsObserver);
     }
 
     template <class Type>
     inline const boost::shared_ptr<Type>&
-    RelinkableHandle<Type>::currentLink() const {
+    Handle<Type>::currentLink() const {
         return (**this).currentLink();
     }
 
     template <class Type>
     inline const boost::shared_ptr<Type>&
-    RelinkableHandle<Type>::operator->() const {
+    Handle<Type>::operator->() const {
         return (**this).currentLink();
     }
 
     template <class Type>
-    inline bool RelinkableHandle<Type>::isNull() const {
+    inline bool Handle<Type>::isNull() const {
         return (**this).isNull();
     }
 

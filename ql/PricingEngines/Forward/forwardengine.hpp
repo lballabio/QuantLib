@@ -110,28 +110,28 @@ namespace QuantLib {
         // maybe the forward value is "better", in some fashion
         // the right level is needed in order to interpolate
         // the vol
-        RelinkableHandle<Quote> spot(process->stateVariable());
-        RelinkableHandle<TermStructure> dividendYield(
+        Handle<Quote> spot(process->stateVariable());
+        Handle<TermStructure> dividendYield(
             boost::shared_ptr<TermStructure>(
                new ImpliedTermStructure(
-                   RelinkableHandle<TermStructure>(process->dividendYield()), 
-                   arguments_.resetDate,
-                   arguments_.resetDate)));
-        RelinkableHandle<TermStructure> riskFreeRate(
+                             Handle<TermStructure>(process->dividendYield()), 
+                             arguments_.resetDate,
+                             arguments_.resetDate)));
+        Handle<TermStructure> riskFreeRate(
             boost::shared_ptr<TermStructure>(
                new ImpliedTermStructure(
-                   RelinkableHandle<TermStructure>(process->riskFreeRate()), 
-                   arguments_.resetDate,
-                   arguments_.resetDate)));
+                              Handle<TermStructure>(process->riskFreeRate()), 
+                              arguments_.resetDate,
+                              arguments_.resetDate)));
         // The following approach is ok if the vol is at most
         // time dependant. It is plain wrong if it is asset dependant.
         // In the latter case the right solution would be stochastic
         // volatility or at least local volatility (which unfortunately
         // implies an unrealistic time-decreasing smile)
-        RelinkableHandle<BlackVolTermStructure> blackVolatility(
+        Handle<BlackVolTermStructure> blackVolatility(
             boost::shared_ptr<BlackVolTermStructure>(
                new ImpliedVolTermStructure(
-                                  RelinkableHandle<BlackVolTermStructure>(
+                                  Handle<BlackVolTermStructure>(
                                                   process->blackVolatility()),
                                   arguments_.resetDate)));
 

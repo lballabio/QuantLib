@@ -38,15 +38,15 @@ namespace QuantLib {
         typedef QuantoEngine<ForwardVanillaOption::arguments,
                              ForwardVanillaOption::results> engine;
         QuantoForwardVanillaOption(
-                 const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-                 const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
-                 const RelinkableHandle<Quote>& correlation,
-                 Real moneyness,
-                 Date resetDate,
-                 const boost::shared_ptr<BlackScholesProcess>&,
-                 const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                 const boost::shared_ptr<Exercise>& exercise,
-                 const boost::shared_ptr<PricingEngine>& engine);
+                           const Handle<TermStructure>& foreignRiskFreeTS,
+                           const Handle<BlackVolTermStructure>& exchRateVolTS,
+                           const Handle<Quote>& correlation,
+                           Real moneyness,
+                           Date resetDate,
+                           const boost::shared_ptr<BlackScholesProcess>&,
+                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                           const boost::shared_ptr<Exercise>& exercise,
+                           const boost::shared_ptr<PricingEngine>& engine);
         void setupArguments(Arguments*) const;
       private:
         void performCalculations() const;

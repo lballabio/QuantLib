@@ -24,9 +24,9 @@
 namespace QuantLib {
 
     CapHelper::CapHelper(const Period& length,
-                         const RelinkableHandle<Quote>& volatility,
+                         const Handle<Quote>& volatility,
                          const boost::shared_ptr<Xibor>& index,
-                         const RelinkableHandle<TermStructure>& termStructure)
+                         const Handle<TermStructure>& termStructure)
     : CalibrationHelper(volatility,termStructure) {
 
         Period indexTenor = index->tenor();
@@ -94,8 +94,7 @@ namespace QuantLib {
     Real CapHelper::blackPrice(Volatility sigma) const {
         boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
         boost::shared_ptr<BlackModel> blackModel(
-                         new BlackModel(RelinkableHandle<Quote>(vol), 
-                                        termStructure_));
+                         new BlackModel(Handle<Quote>(vol), termStructure_));
         boost::shared_ptr<PricingEngine> black(
                                          new BlackCapFloorEngine(blackModel));
         cap_->setPricingEngine(black);

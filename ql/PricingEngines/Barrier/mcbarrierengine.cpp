@@ -28,7 +28,7 @@ namespace QuantLib {
                        Option::Type type,
                        Real underlying, 
                        Real strike,
-                       const RelinkableHandle<TermStructure>& discountTS,
+                       const Handle<TermStructure>& discountTS,
                        const boost::shared_ptr<StochasticProcess>& diffProcess,
                        const PseudoRandom::ursg_type& sequenceGen)
     : PathPricer<Path>(discountTS), underlying_(underlying),
@@ -150,13 +150,13 @@ namespace QuantLib {
 
 
     BiasedBarrierPathPricer::BiasedBarrierPathPricer(
-                            Barrier::Type barrierType, 
-                            Real barrier, 
-                            Real rebate, 
-                            Option::Type type,
-                            Real underlying, 
-                            Real strike,
-                            const RelinkableHandle<TermStructure>& discountTS)
+                                      Barrier::Type barrierType, 
+                                      Real barrier, 
+                                      Real rebate, 
+                                      Option::Type type,
+                                      Real underlying, 
+                                      Real strike,
+                                      const Handle<TermStructure>& discountTS)
     : PathPricer<Path>(discountTS), underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier), 
       rebate_(rebate), payoff_(type, strike) {

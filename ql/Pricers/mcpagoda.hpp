@@ -38,10 +38,9 @@ namespace QuantLib {
         McPagoda(const std::vector<Real>& underlyings,
                  Real fraction,
                  Real roof,
-                 const std::vector<RelinkableHandle<TermStructure> >& 
-                                                             dividendYields,
-                 const RelinkableHandle<TermStructure>& riskFreeRate,
-                 const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                 const std::vector<Handle<TermStructure> >& dividendYields,
+                 const Handle<TermStructure>& riskFreeRate,
+                 const std::vector<Handle<BlackVolTermStructure> >& 
                                                              volatilities,
                  const Matrix& correlation,
                  const std::vector<Time>& times,

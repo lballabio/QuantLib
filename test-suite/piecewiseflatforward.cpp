@@ -112,14 +112,14 @@ namespace {
         std::vector<boost::shared_ptr<RateHelper> > 
             instruments(deposits+swaps);
         for (i=0; i<deposits; i++) {
-            RelinkableHandle<Quote> r(rates[i]);
+            Handle<Quote> r(rates[i]);
             instruments[i] = boost::shared_ptr<RateHelper>(
               new DepositRateHelper(r, depositData[i].n, depositData[i].units,
                                     settlementDays, calendar,
                                     depoConvention, depoDayCounter));
         }
         for (i=0; i<swaps; i++) {
-            RelinkableHandle<Quote> r(rates[i+deposits]);
+            Handle<Quote> r(rates[i+deposits]);
             instruments[i+deposits] = boost::shared_ptr<RateHelper>(
                 new SwapRateHelper(r, swapData[i].n, swapData[i].units,
                                    settlementDays, calendar,
@@ -142,7 +142,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
 
     initialize();
 
-    RelinkableHandle<TermStructure> euriborHandle;
+    Handle<TermStructure> euriborHandle;
     euriborHandle.linkTo(termStructure);
 
     Size i;

@@ -93,7 +93,7 @@ namespace QuantLib {
                        const boost::shared_ptr<CashOrNothingPayoff>& payoff,
                        const boost::shared_ptr<AmericanExercise>& exercise,
                        Real underlying,
-                       const RelinkableHandle<TermStructure>& discountTS,
+                       const Handle<TermStructure>& discountTS,
                        const boost::shared_ptr<StochasticProcess>& diffProcess,
                        const PseudoRandom::ursg_type& sequenceGen);
         Real operator()(const Path& path) const;
@@ -169,7 +169,7 @@ namespace QuantLib {
             payoff,
             exercise,
             arguments_.blackScholesProcess->stateVariable()->value(),
-            RelinkableHandle<TermStructure>(
+            Handle<TermStructure>(
                               arguments_.blackScholesProcess->riskFreeRate()),
             arguments_.blackScholesProcess,
             sequenceGen));

@@ -24,8 +24,7 @@ namespace QuantLib {
         class MaxBasketPathPricer : public PathPricer<MultiPath> {
           public:
             MaxBasketPathPricer(const std::vector<Real>& underlying,
-                                const RelinkableHandle<TermStructure>& 
-                                                                discountTS)
+                                const Handle<TermStructure>& discountTS)
             : PathPricer<MultiPath>(discountTS),
               underlying_(underlying) {
                 for (Size i=0; i<underlying_.size(); i++) {
@@ -65,11 +64,9 @@ namespace QuantLib {
 
     McMaxBasket::McMaxBasket(
                const std::vector<Real>& underlying,
-               const std::vector<RelinkableHandle<TermStructure> >& 
-                                                             dividendYield,
-               const RelinkableHandle<TermStructure>& riskFreeRate,
-               const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
-                                                             volatilities,
+               const std::vector<Handle<TermStructure> >& dividendYield,
+               const Handle<TermStructure>& riskFreeRate,
+               const std::vector<Handle<BlackVolTermStructure> >& volatilities,
                const Matrix& correlation,
                Time residualTime,
                BigNatural seed) {
@@ -89,7 +86,7 @@ namespace QuantLib {
         Size n = underlying.size();
         std::vector<boost::shared_ptr<StochasticProcess> > processes(n);
         for (Size i=0; i<n; i++) {
-            RelinkableHandle<Quote> u(
+            Handle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
             processes[i] = boost::shared_ptr<StochasticProcess>(
                                     new BlackScholesProcess(u, 

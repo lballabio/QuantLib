@@ -147,7 +147,7 @@ namespace QuantLib {
       public:
         class NumericalImpl : public Parameter::Impl {
           public:
-            NumericalImpl(const RelinkableHandle<TermStructure>& termStructure)
+            NumericalImpl(const Handle<TermStructure>& termStructure)
             : times_(0), values_(0), termStructure_(termStructure) {}
 
             void set(Time t, Real x) {
@@ -168,21 +168,20 @@ namespace QuantLib {
                            "fitting parameter not set!");
                 return values_[result - times_.begin()];
             }
-            const RelinkableHandle<TermStructure>& termStructure() const {
+            const Handle<TermStructure>& termStructure() const {
                 return termStructure_;
             }
           private:
             std::vector<Time> times_;
             std::vector<Real> values_;
-            RelinkableHandle<TermStructure> termStructure_;
+            Handle<TermStructure> termStructure_;
         };
 
         TermStructureFittingParameter(
                                const boost::shared_ptr<Parameter::Impl>& impl)
         : Parameter(0, impl, NoConstraint()) {}
 
-        TermStructureFittingParameter(
-                                  const RelinkableHandle<TermStructure>& term)
+        TermStructureFittingParameter(const Handle<TermStructure>& term)
         : Parameter(
                   0, 
                   boost::shared_ptr<Parameter::Impl>(new NumericalImpl(term)),

@@ -103,19 +103,19 @@ int main(int, char* [])
         boost::shared_ptr<Exercise> berExercise(new BermudanExercise(exDates));
 
 
-        RelinkableHandle<Quote> underlyingH(
+        Handle<Quote> underlyingH(
             boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
         // bootstrap the yield/dividend/vol curves
-        RelinkableHandle<TermStructure> flatTermStructure(
+        Handle<TermStructure> flatTermStructure(
             boost::shared_ptr<TermStructure>(
                 new FlatForward(todaysDate, settlementDate,
                                 riskFreeRate, rateDayCounter)));
-        RelinkableHandle<TermStructure> flatDividendTS(
+        Handle<TermStructure> flatDividendTS(
             boost::shared_ptr<TermStructure>(
                 new FlatForward(todaysDate, settlementDate,
                                 dividendYield, rateDayCounter)));
-        RelinkableHandle<BlackVolTermStructure> flatVolTS(
+        Handle<BlackVolTermStructure> flatVolTS(
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(settlementDate, volatility)));
 
@@ -148,7 +148,7 @@ int main(int, char* [])
                                   vols[3][2] = volatility*0.9;
                                                vols[3][3] = volatility*0.8;
 
-        RelinkableHandle<BlackVolTermStructure> blackSurface(
+        Handle<BlackVolTermStructure> blackSurface(
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackVarianceSurface(settlementDate, dates,
                                          strikes, vols)));

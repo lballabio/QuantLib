@@ -312,13 +312,13 @@ void JumpDiffusionTest::testMerton76() {
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-           new Merton76Process(RelinkableHandle<Quote>(spot),
-                               RelinkableHandle<TermStructure>(qTS),
-                               RelinkableHandle<TermStructure>(rTS),
-                               RelinkableHandle<BlackVolTermStructure>(volTS),
-                               RelinkableHandle<Quote>(jumpIntensity),
-                               RelinkableHandle<Quote>(meanLogJump),
-                               RelinkableHandle<Quote>(jumpVol)));
+           new Merton76Process(Handle<Quote>(spot),
+                               Handle<TermStructure>(qTS),
+                               Handle<TermStructure>(rTS),
+                               Handle<BlackVolTermStructure>(volTS),
+                               Handle<Quote>(jumpIntensity),
+                               Handle<Quote>(meanLogJump),
+                               Handle<Quote>(jumpVol)));
 
     boost::shared_ptr<VanillaOption::engine> baseEngine(
                                                   new AnalyticEuropeanEngine);
@@ -403,21 +403,21 @@ void JumpDiffusionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-          new Merton76Process(RelinkableHandle<Quote>(spot), qTS, rTS, volTS,
-                              RelinkableHandle<Quote>(jumpIntensity),
-                              RelinkableHandle<Quote>(meanLogJump),
-                              RelinkableHandle<Quote>(jumpVol)));
+          new Merton76Process(Handle<Quote>(spot), qTS, rTS, volTS,
+                              Handle<Quote>(jumpIntensity),
+                              Handle<Quote>(meanLogJump),
+                              Handle<Quote>(jumpVol)));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
 

@@ -135,11 +135,10 @@ namespace {
 
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(u),
-                RelinkableHandle<TermStructure>(q),
-                RelinkableHandle<TermStructure>(r),
-                RelinkableHandle<BlackVolTermStructure>(vol)));
+            BlackScholesProcess(Handle<Quote>(u),
+                                Handle<TermStructure>(q),
+                                Handle<TermStructure>(r),
+                                Handle<BlackVolTermStructure>(vol)));
 
         return boost::shared_ptr<VanillaOption>(new
             EuropeanOption(stochProcess, payoff, exercise, engine));
@@ -260,11 +259,10 @@ void EuropeanOptionTest::testValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                 RelinkableHandle<Quote>(spot),
-                 RelinkableHandle<TermStructure>(qTS),
-                 RelinkableHandle<TermStructure>(rTS),
-                 RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
 
@@ -326,11 +324,10 @@ void EuropeanOptionTest::testGreekValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
-        BlackScholesProcess(
-             RelinkableHandle<Quote>(spot),
-             RelinkableHandle<TermStructure>(qTS),
-             RelinkableHandle<TermStructure>(rTS),
-             RelinkableHandle<BlackVolTermStructure>(volTS)));
+        BlackScholesProcess(Handle<Quote>(spot),
+                            Handle<TermStructure>(qTS),
+                            Handle<TermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
     Date exDate;
@@ -584,11 +581,11 @@ void EuropeanOptionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
 
@@ -615,8 +612,8 @@ void EuropeanOptionTest::testGreeks() {
               }
 
               boost::shared_ptr<BlackScholesProcess> stochProcess(
-                      new BlackScholesProcess(
-                             RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+                                 new BlackScholesProcess(Handle<Quote>(spot), 
+                                                         qTS, rTS, volTS));
 
               EuropeanOption option(stochProcess, payoff, exercise);
 
@@ -857,13 +854,13 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    RelinkableHandle<Quote> underlying(spot);
+    Handle<Quote> underlying(spot);
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.05));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.03));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     Date exerciseDate = today.plusYears(1);
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));

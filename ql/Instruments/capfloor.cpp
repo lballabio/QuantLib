@@ -26,7 +26,7 @@ namespace QuantLib {
                  const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
-                 const RelinkableHandle<TermStructure>& termStructure,
+                 const Handle<TermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine)
     : type_(type), floatingLeg_(floatingLeg),
       capRates_(capRates), floorRates_(floorRates),
@@ -155,13 +155,13 @@ namespace QuantLib {
 
 
     CapFloor::ImpliedVolHelper::ImpliedVolHelper(
-                         const CapFloor& cap,
-                         const RelinkableHandle<TermStructure>& termStructure,
-                         Real targetValue)
+                                   const CapFloor& cap,
+                                   const Handle<TermStructure>& termStructure,
+                                   Real targetValue)
     : termStructure_(termStructure), targetValue_(targetValue) {
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
-        RelinkableHandle<Quote> h(vol_);
+        Handle<Quote> h(vol_);
         boost::shared_ptr<BlackModel> model(new BlackModel(h,termStructure_));
         engine_ = boost::shared_ptr<PricingEngine>(
                                               new BlackCapFloorEngine(model));

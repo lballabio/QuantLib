@@ -38,10 +38,9 @@ namespace QuantLib {
     class DriftTermStructure : public ZeroYieldStructure,
                                public Observer {
       public:
-        DriftTermStructure(
-                   const RelinkableHandle<TermStructure>& riskFreeTS,
-                   const RelinkableHandle<TermStructure>& dividendTS,
-                   const RelinkableHandle<BlackVolTermStructure>& blackVolTS);
+        DriftTermStructure(const Handle<TermStructure>& riskFreeTS,
+                           const Handle<TermStructure>& dividendTS,
+                           const Handle<BlackVolTermStructure>& blackVolTS);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
@@ -57,8 +56,8 @@ namespace QuantLib {
         //! returns the discount factor as seen from the evaluation date
         Rate zeroYieldImpl(Time) const;
       private:
-        RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
-        RelinkableHandle<BlackVolTermStructure> blackVolTS_;
+        Handle<TermStructure> riskFreeTS_, dividendTS_;
+        Handle<BlackVolTermStructure> blackVolTS_;
         Real underlyingLevel_;
         Date maxDate_;
     };
@@ -66,9 +65,9 @@ namespace QuantLib {
 
 
     inline DriftTermStructure::DriftTermStructure(
-                    const RelinkableHandle<TermStructure>& riskFreeTS,
-                    const RelinkableHandle<TermStructure>& dividendTS,
-                    const RelinkableHandle<BlackVolTermStructure>& blackVolTS)
+                              const Handle<TermStructure>& riskFreeTS,
+                              const Handle<TermStructure>& dividendTS,
+                              const Handle<BlackVolTermStructure>& blackVolTS)
     : riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS),
       blackVolTS_(blackVolTS) {

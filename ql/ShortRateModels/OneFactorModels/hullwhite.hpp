@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class HullWhite : public Vasicek, public TermStructureConsistentModel {
       public:
-        HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
+        HullWhite(const Handle<TermStructure>& termStructure, 
                   Real a = 0.1, Real sigma = 0.01);
 
         boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
@@ -105,7 +105,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const RelinkableHandle<TermStructure>& termStructure,
+            Impl(const Handle<TermStructure>& termStructure,
                  Real a, Real sigma) 
             : termStructure_(termStructure), a_(a), sigma_(sigma) {}
 
@@ -116,11 +116,11 @@ namespace QuantLib {
                 return (forwardRate + 0.5*temp*temp);
             }
           private:
-            RelinkableHandle<TermStructure> termStructure_;
+            Handle<TermStructure> termStructure_;
             Real a_, sigma_;
         };
       public:
-        FittingParameter(const RelinkableHandle<TermStructure>& termStructure,
+        FittingParameter(const Handle<TermStructure>& termStructure,
                          Real a, Real sigma)
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                       new FittingParameter::Impl(termStructure, a, sigma))) {}

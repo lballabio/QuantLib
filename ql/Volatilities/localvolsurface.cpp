@@ -20,10 +20,10 @@
 namespace QuantLib {
 
     LocalVolSurface::LocalVolSurface(
-                       const RelinkableHandle<BlackVolTermStructure>& blackTS,
-                       const RelinkableHandle<TermStructure>& riskFreeTS,
-                       const RelinkableHandle<TermStructure>& dividendTS,
-                       const RelinkableHandle<Quote>& underlying)
+                                 const Handle<BlackVolTermStructure>& blackTS,
+                                 const Handle<TermStructure>& riskFreeTS,
+                                 const Handle<TermStructure>& dividendTS,
+                                 const Handle<Quote>& underlying)
     : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS), underlying_(underlying) {
         registerWith(blackTS_);
@@ -34,10 +34,10 @@ namespace QuantLib {
 
 
     LocalVolSurface::LocalVolSurface(
-                       const RelinkableHandle<BlackVolTermStructure>& blackTS,
-                       const RelinkableHandle<TermStructure>& riskFreeTS,
-                       const RelinkableHandle<TermStructure>& dividendTS,
-                       Real underlying)
+                                 const Handle<BlackVolTermStructure>& blackTS,
+                                 const Handle<TermStructure>& riskFreeTS,
+                                 const Handle<TermStructure>& dividendTS,
+                                 Real underlying)
     : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
         registerWith(blackTS_);

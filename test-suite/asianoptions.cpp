@@ -100,11 +100,10 @@ void AsianOptionTest::testGeometricContinuousAverage() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
-        BlackScholesProcess(
-            RelinkableHandle<Quote>(spot),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS)));
+        BlackScholesProcess(Handle<Quote>(spot),
+                            Handle<TermStructure>(qTS),
+                            Handle<TermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<PricingEngine> engine(
                                   new AnalyticContinuousAveragingAsianEngine);
@@ -158,15 +157,14 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate));
+    Handle<TermStructure> qTS(flatRate(today, qRate));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate));
+    Handle<TermStructure> rTS(flatRate(today, rRate));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
 
     boost::shared_ptr<BlackScholesProcess> process(
-                       new BlackScholesProcess(
-                             RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -309,11 +307,10 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
-        BlackScholesProcess(
-            RelinkableHandle<Quote>(spot),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS)));
+        BlackScholesProcess(Handle<Quote>(spot),
+                            Handle<TermStructure>(qTS),
+                            Handle<TermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<PricingEngine> engine(
                                     new AnalyticDiscreteAveragingAsianEngine);
@@ -382,15 +379,14 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate));
+    Handle<TermStructure> qTS(flatRate(today, qRate));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate));
+    Handle<TermStructure> rTS(flatRate(today, rRate));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
 
     boost::shared_ptr<BlackScholesProcess> process(
-                       new BlackScholesProcess(
-                             RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {

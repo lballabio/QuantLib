@@ -33,7 +33,7 @@ namespace QuantLib {
     class CADLibor : public Xibor {
       public:
         CADLibor(Integer n, TimeUnit units,
-                 const RelinkableHandle<TermStructure>& h,
+                 const Handle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
         : Xibor("CADLibor", n, units, 2, CAD,
                 Toronto(), ModifiedFollowing, dc, h) {}

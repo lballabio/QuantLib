@@ -33,7 +33,7 @@ namespace QuantLib {
     class ZARLibor : public Xibor {
       public:
         ZARLibor(Integer n, TimeUnit units,
-                 const RelinkableHandle<TermStructure>& h,
+                 const Handle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
         : Xibor("ZARLibor", n, units, 0, ZAR,
                 Johannesburg(), ModifiedFollowing, dc, h) {}

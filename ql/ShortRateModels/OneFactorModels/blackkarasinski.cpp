@@ -53,8 +53,8 @@ namespace QuantLib {
     };
 
     BlackKarasinski::BlackKarasinski(
-                         const RelinkableHandle<TermStructure>& termStructure,
-                         Real a, Real sigma)
+                                 const Handle<TermStructure>& termStructure,
+                                 Real a, Real sigma)
     : OneFactorModel(2), TermStructureConsistentModel(termStructure), 
       a_(arguments_[0]), sigma_(arguments_[1]) {
         a_ = ConstantParameter(a, PositiveConstraint());

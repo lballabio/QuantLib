@@ -27,8 +27,7 @@ namespace QuantLib {
             ArithmeticAPOPathPricer(Option::Type type,
                                     Real underlying,
                                     Real strike,
-                                    const RelinkableHandle<TermStructure>&
-                                                                   discountTS)
+                                    const Handle<TermStructure>& discountTS)
             : PathPricer<Path>(discountTS),
               underlying_(underlying), payoff_(type, strike) {
                 QL_REQUIRE(underlying>0.0,
@@ -71,8 +70,7 @@ namespace QuantLib {
             GeometricAPOPathPricer(Option::Type type,
                                    Real underlying,
                                    Real strike,
-                                   const RelinkableHandle<TermStructure>&
-                                                                   discountTS)
+                                   const Handle<TermStructure>& discountTS)
             : PathPricer<Path>(discountTS),
               underlying_(underlying), payoff_(type, strike) {
                 QL_REQUIRE(underlying>0.0,
@@ -109,22 +107,21 @@ namespace QuantLib {
 
 
     McDiscreteArithmeticAPO::McDiscreteArithmeticAPO(
-                    Option::Type type,
-                    Real underlying,
-                    Real strike,
-                    const RelinkableHandle<TermStructure>& dividendYield,
-                    const RelinkableHandle<TermStructure>& riskFreeRate,
-                    const RelinkableHandle<BlackVolTermStructure>& volatility,
-                    const std::vector<Time>& times,
-                    bool controlVariate,
-                    BigNatural seed) {
+                              Option::Type type,
+                              Real underlying,
+                              Real strike,
+                              const Handle<TermStructure>& dividendYield,
+                              const Handle<TermStructure>& riskFreeRate,
+                              const Handle<BlackVolTermStructure>& volatility,
+                              const std::vector<Time>& times,
+                              bool controlVariate,
+                              BigNatural seed) {
 
         QL_REQUIRE(times.size() >= 2,
                    "you must have at least 2 time-steps");
 
         // initialize the path generator
-        RelinkableHandle<Quote> u(
-                    boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
+        Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
         boost::shared_ptr<StochasticProcess> diffusion(
                                      new BlackScholesProcess(u, 
                                                              dividendYield,

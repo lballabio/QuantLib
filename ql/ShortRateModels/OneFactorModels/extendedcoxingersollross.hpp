@@ -41,12 +41,11 @@ namespace QuantLib {
     class ExtendedCoxIngersollRoss : public CoxIngersollRoss,
                                      public TermStructureConsistentModel {
       public:
-        ExtendedCoxIngersollRoss(
-                         const RelinkableHandle<TermStructure>& termStructure,
-                         Real theta = 0.1,
-                         Real k = 0.1,
-                         Real sigma = 0.1,
-                         Real x0 = 0.05);
+        ExtendedCoxIngersollRoss(const Handle<TermStructure>& termStructure,
+                                 Real theta = 0.1,
+                                 Real k = 0.1,
+                                 Real sigma = 0.1,
+                                 Real x0 = 0.05);
 
         boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
@@ -112,7 +111,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const RelinkableHandle<TermStructure>& termStructure,
+            Impl(const Handle<TermStructure>& termStructure,
                  Real theta, Real k, Real sigma, Real x0) 
             : termStructure_(termStructure), 
               theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
@@ -129,11 +128,11 @@ namespace QuantLib {
                 return phi;
             }
           private:
-            RelinkableHandle<TermStructure> termStructure_;
+            Handle<TermStructure> termStructure_;
             Real theta_, k_, sigma_, x0_;
         };
       public:
-        FittingParameter(const RelinkableHandle<TermStructure>& termStructure,
+        FittingParameter(const Handle<TermStructure>& termStructure,
                          Real theta, Real k, Real sigma, Real x0) 
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                  new FittingParameter::Impl(

@@ -52,7 +52,7 @@ namespace QuantLib {
                public AffineModel,
                public TermStructureConsistentModel {
       public:
-        G2(const RelinkableHandle<TermStructure>& termStructure,
+        G2(const Handle<TermStructure>& termStructure,
            Real a = 0.1, 
            Real sigma = 0.01,
            Real b = 0.1, 
@@ -142,7 +142,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const RelinkableHandle<TermStructure>& termStructure,
+            Impl(const Handle<TermStructure>& termStructure,
                  Real a,
                  Real sigma,
                  Real b,
@@ -161,11 +161,11 @@ namespace QuantLib {
             }
 
           private:
-            RelinkableHandle<TermStructure> termStructure_;
+            Handle<TermStructure> termStructure_;
             Real a_, sigma_, b_, eta_, rho_;
         };
       public:
-        FittingParameter(const RelinkableHandle<TermStructure>& termStructure,
+        FittingParameter(const Handle<TermStructure>& termStructure,
                          Real a,
                          Real sigma,
                          Real b, 

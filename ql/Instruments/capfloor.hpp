@@ -40,7 +40,7 @@ namespace QuantLib {
                  const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
-                 const RelinkableHandle<TermStructure>& termStructure,
+                 const Handle<TermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine);
         //! \name Instrument interface
         //@{
@@ -72,17 +72,17 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg_;
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
-        RelinkableHandle<TermStructure> termStructure_;
+        Handle<TermStructure> termStructure_;
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
           public:
             ImpliedVolHelper(const CapFloor&,
-                             const RelinkableHandle<TermStructure>&,
+                             const Handle<TermStructure>&,
                              Real targetValue);
             Real operator()(Volatility x) const;
           private:
             boost::shared_ptr<PricingEngine> engine_;
-            RelinkableHandle<TermStructure> termStructure_;
+            Handle<TermStructure> termStructure_;
             Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
             const Value* results_;
@@ -95,7 +95,7 @@ namespace QuantLib {
       public:
         Cap(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
             const std::vector<Rate>& exerciseRates,
-            const RelinkableHandle<TermStructure>& termStructure,
+            const Handle<TermStructure>& termStructure,
             const boost::shared_ptr<PricingEngine>& engine)
         : CapFloor(CapFloor::Cap, floatingLeg, 
                    exerciseRates, std::vector<Rate>(),
@@ -108,7 +108,7 @@ namespace QuantLib {
       public:
         Floor(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
               const std::vector<Rate>& exerciseRates,
-              const RelinkableHandle<TermStructure>& termStructure,
+              const Handle<TermStructure>& termStructure,
               const boost::shared_ptr<PricingEngine>& engine)
         : CapFloor(CapFloor::Floor, floatingLeg, 
                    std::vector<Rate>(), exerciseRates,
@@ -122,7 +122,7 @@ namespace QuantLib {
         Collar(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
                const std::vector<Rate>& capRates,
                const std::vector<Rate>& floorRates,
-               const RelinkableHandle<TermStructure>& termStructure,
+               const Handle<TermStructure>& termStructure,
                const boost::shared_ptr<PricingEngine>& engine)
         : CapFloor(CapFloor::Collar, floatingLeg, capRates, floorRates,
                    termStructure, engine) {}

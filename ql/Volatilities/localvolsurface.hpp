@@ -41,13 +41,13 @@ namespace QuantLib {
     class LocalVolSurface : public LocalVolTermStructure,
                             public Observer {
       public:
-        LocalVolSurface(const RelinkableHandle<BlackVolTermStructure>& blackTS,
-                        const RelinkableHandle<TermStructure>& riskFreeTS,
-                        const RelinkableHandle<TermStructure>& dividendTS,
-                        const RelinkableHandle<Quote>& underlying);
-        LocalVolSurface(const RelinkableHandle<BlackVolTermStructure>& blackTS,
-                        const RelinkableHandle<TermStructure>& riskFreeTS,
-                        const RelinkableHandle<TermStructure>& dividendTS,
+        LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
+                        const Handle<TermStructure>& riskFreeTS,
+                        const Handle<TermStructure>& dividendTS,
+                        const Handle<Quote>& underlying);
+        LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
+                        const Handle<TermStructure>& riskFreeTS,
+                        const Handle<TermStructure>& dividendTS,
                         Real underlying);
         //! \name LocalVolTermStructure interface
         //@{
@@ -72,9 +72,9 @@ namespace QuantLib {
       protected:
         Volatility localVolImpl(Time, Real) const;
       private:
-        RelinkableHandle<BlackVolTermStructure> blackTS_;
-        RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
-        RelinkableHandle<Quote> underlying_;
+        Handle<BlackVolTermStructure> blackTS_;
+        Handle<TermStructure> riskFreeTS_, dividendTS_;
+        Handle<Quote> underlying_;
     };
 
 }

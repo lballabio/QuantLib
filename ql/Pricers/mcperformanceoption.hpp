@@ -37,15 +37,14 @@ namespace QuantLib {
     class McPerformanceOption 
         : public McPricer<SingleAsset<PseudoRandom> >{
       public:
-        McPerformanceOption(
-                    Option::Type type,
-                    Real underlying,
-                    Real moneyness,
-                    const RelinkableHandle<TermStructure>& dividendYield,
-                    const RelinkableHandle<TermStructure>& riskFreeRate,
-                    const RelinkableHandle<BlackVolTermStructure>& volatility,
-                    const std::vector<Time>& times,
-                    BigNatural seed = 0);
+        McPerformanceOption(Option::Type type,
+                            Real underlying,
+                            Real moneyness,
+                            const Handle<TermStructure>& dividendYield,
+                            const Handle<TermStructure>& riskFreeRate,
+                            const Handle<BlackVolTermStructure>& volatility,
+                            const std::vector<Time>& times,
+                            BigNatural seed = 0);
     };
 
 }

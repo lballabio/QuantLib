@@ -43,7 +43,7 @@ namespace {
     DayCounter fixedDayCount_;
     boost::shared_ptr<Xibor> index_;
     Integer settlementDays_, fixingDays_;
-    RelinkableHandle<TermStructure> termStructure_;
+    Handle<TermStructure> termStructure_;
 
     // utilities
 
@@ -69,7 +69,7 @@ namespace {
                                     const Date& exercise, 
                                     Volatility volatility) {
         boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
-        RelinkableHandle<Quote> vol_rh(vol_me);
+        Handle<Quote> vol_rh(vol_me);
         boost::shared_ptr<BlackModel> model(
                                        new BlackModel(vol_rh,termStructure_));
         boost::shared_ptr<PricingEngine> engine(

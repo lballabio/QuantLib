@@ -62,10 +62,10 @@ namespace QuantLib {
     // Black-Scholes process
 
     BlackScholesProcess::BlackScholesProcess(
-             const RelinkableHandle<Quote>& x0,
-             const RelinkableHandle<TermStructure>& dividendTS,
-             const RelinkableHandle<TermStructure>& riskFreeTS,
-             const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
+             const Handle<Quote>& x0,
+             const Handle<TermStructure>& dividendTS,
+             const Handle<TermStructure>& riskFreeTS,
+             const Handle<BlackVolTermStructure>& blackVolTS,
              const boost::shared_ptr<StochasticProcess::discretization>& disc)
     : StochasticProcess(disc), x0_(x0), riskFreeRate_(riskFreeTS), 
       dividendYield_(dividendTS), blackVolatility_(blackVolTS), 
@@ -148,7 +148,7 @@ namespace QuantLib {
                 localVolatility_.linkTo(
                     boost::shared_ptr<LocalVolTermStructure>(
                         new LocalVolCurve(
-                            RelinkableHandle<BlackVarianceCurve>(volCurve))));
+                                      Handle<BlackVarianceCurve>(volCurve))));
                 updated_ = true;
                 return localVolatility_.currentLink();
             }
@@ -170,13 +170,13 @@ namespace QuantLib {
     // Merton 76 process
 
     Merton76Process::Merton76Process(
-             const RelinkableHandle<Quote>& stateVariable,
-             const RelinkableHandle<TermStructure>& dividendTS,
-             const RelinkableHandle<TermStructure>& riskFreeTS,
-             const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
-             const RelinkableHandle<Quote>& jumpInt,
-             const RelinkableHandle<Quote>& logJMean,
-             const RelinkableHandle<Quote>& logJVol,
+             const Handle<Quote>& stateVariable,
+             const Handle<TermStructure>& dividendTS,
+             const Handle<TermStructure>& riskFreeTS,
+             const Handle<BlackVolTermStructure>& blackVolTS,
+             const Handle<Quote>& jumpInt,
+             const Handle<Quote>& logJMean,
+             const Handle<Quote>& logJVol,
              const boost::shared_ptr<StochasticProcess::discretization>& disc)
     : BlackScholesProcess(stateVariable, dividendTS, riskFreeTS, 
                           blackVolTS, disc),

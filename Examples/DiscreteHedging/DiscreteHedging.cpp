@@ -287,15 +287,15 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
        throughout time.
     */
     Date today = Date::todaysDate();
-    RelinkableHandle<Quote> stateVariable(
+    Handle<Quote> stateVariable(
                           boost::shared_ptr<Quote>(new SimpleQuote(s0_)));
-    RelinkableHandle<TermStructure> riskFreeRate(
+    Handle<TermStructure> riskFreeRate(
                           boost::shared_ptr<TermStructure>(
                                         new FlatForward(today, today, r_)));
-    RelinkableHandle<TermStructure> dividendYield(
+    Handle<TermStructure> dividendYield(
                           boost::shared_ptr<TermStructure>(
                                         new FlatForward(today, today, 0.0)));
-    RelinkableHandle<BlackVolTermStructure> volatility(
+    Handle<BlackVolTermStructure> volatility(
                           boost::shared_ptr<BlackVolTermStructure>(
                                         new BlackConstantVol(today, sigma_)));
     boost::shared_ptr<StochasticProcess> diffusion(

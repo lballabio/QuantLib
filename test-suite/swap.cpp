@@ -39,7 +39,7 @@ namespace {
     DayCounter fixedDayCount_;
     boost::shared_ptr<Xibor> index_;
     Integer settlementDays_, fixingDays_;
-    RelinkableHandle<TermStructure> termStructure_;
+    Handle<TermStructure> termStructure_;
 
     // utilities
 

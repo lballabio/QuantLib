@@ -24,7 +24,7 @@ namespace QuantLib {
 
     Swaption::Swaption(const boost::shared_ptr<SimpleSwap>& swap, 
                        const boost::shared_ptr<Exercise>& exercise,
-                       const RelinkableHandle<TermStructure>& termStructure,
+                       const Handle<TermStructure>& termStructure,
                        const boost::shared_ptr<PricingEngine>& engine)
     : Option(boost::shared_ptr<Payoff>(), exercise, engine), swap_(swap),
       termStructure_(termStructure) {

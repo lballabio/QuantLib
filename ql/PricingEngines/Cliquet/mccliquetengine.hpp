@@ -66,14 +66,14 @@ namespace QuantLib {
                            Real globalCap,
                            Real globalFloor,
                            bool redemptionOnly,
-                           const RelinkableHandle<TermStructure>& riskFreeTS);
+                           const Handle<TermStructure>& riskFreeTS);
         Real operator()(const Path& path) const;
       private:
         Option::Type type_;
         Real underlying_, moneyness_, accruedCoupon_;
         Real lastFixing_, localCap_, localFloor_, globalCap_, globalFloor_;
         bool redemptionOnly_;
-        RelinkableHandle<TermStructure> riskFreeTS_;
+        Handle<TermStructure> riskFreeTS_;
     };
 
 

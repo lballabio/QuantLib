@@ -155,11 +155,10 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
@@ -216,11 +215,10 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
@@ -341,17 +339,16 @@ void AmericanOptionTest::testJuValues() {
         vol  ->setValue(values[i].v);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS)));
+            BlackScholesProcess(Handle<Quote>(spot),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
 
         Real calculated = option.NPV();
-        Real error = QL_FABS(calculated-values[i].result);        
+        Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result, 

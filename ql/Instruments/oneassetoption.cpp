@@ -221,13 +221,13 @@ namespace QuantLib {
         // Making it work for a generic process would need some reflection
         // technique (which is possible, but requires some thought, hence
         // its postponement.)
-        RelinkableHandle<Quote> stateVariable(
+        Handle<Quote> stateVariable(
                             arguments_->blackScholesProcess->stateVariable());
-        RelinkableHandle<TermStructure> dividendYield(
+        Handle<TermStructure> dividendYield(
                             arguments_->blackScholesProcess->dividendYield());
-        RelinkableHandle<TermStructure> riskFreeRate(
+        Handle<TermStructure> riskFreeRate(
                             arguments_->blackScholesProcess->riskFreeRate());
-        RelinkableHandle<BlackVolTermStructure> volatility;
+        Handle<BlackVolTermStructure> volatility;
         boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(stateVariable, dividendYield,
                                        riskFreeRate, volatility));
@@ -236,7 +236,7 @@ namespace QuantLib {
         volatility.linkTo(boost::shared_ptr<BlackVolTermStructure>(
                     new BlackConstantVol(arguments_->blackScholesProcess
                                          ->blackVolatility()->referenceDate(),
-                                         RelinkableHandle<Quote>(vol_),
+                                         Handle<Quote>(vol_),
                                          arguments_->blackScholesProcess
                                          ->blackVolatility()->dayCounter())));
         arguments_->blackScholesProcess = process;

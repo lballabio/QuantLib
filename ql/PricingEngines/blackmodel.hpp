@@ -30,30 +30,29 @@ namespace QuantLib {
     //! Black-model for vanilla interest-rate derivatives
     class BlackModel : public Observable, public Observer {
       public:
-        BlackModel(const RelinkableHandle<Quote>& volatility,
-                   const RelinkableHandle<TermStructure>& termStructure);
+        BlackModel(const Handle<Quote>& volatility,
+                   const Handle<TermStructure>& termStructure);
 
         void update() { notifyObservers(); }
 
         //Returns the Black volatility
         Volatility volatility() const;
 
-        const RelinkableHandle<TermStructure>& termStructure() const;
+        const Handle<TermStructure>& termStructure() const;
 
         //! General Black formula
         static Real formula(Real f, Real k, Real v, Real w);
         //! In-the-money cash probability
         static Real itmProbability(Real f, Real k, Real v, Real w);
       private:
-        RelinkableHandle<Quote> volatility_;
-        RelinkableHandle<TermStructure> termStructure_;
+        Handle<Quote> volatility_;
+        Handle<TermStructure> termStructure_;
     };
 
     // inline definitions
 
-    inline BlackModel::BlackModel(
-        const RelinkableHandle<Quote>& volatility,
-        const RelinkableHandle<TermStructure>& termStructure)
+    inline BlackModel::BlackModel(const Handle<Quote>& volatility,
+                                  const Handle<TermStructure>& termStructure)
     : volatility_(volatility), termStructure_(termStructure) {
         registerWith(volatility_);
         registerWith(termStructure_);
@@ -64,7 +63,7 @@ namespace QuantLib {
     }
 
     inline 
-    const RelinkableHandle<TermStructure>& BlackModel::termStructure() const {
+    const Handle<TermStructure>& BlackModel::termStructure() const {
         return termStructure_;
     }
 

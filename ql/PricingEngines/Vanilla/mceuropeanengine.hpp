@@ -79,7 +79,7 @@ namespace QuantLib {
         EuropeanPathPricer(Option::Type type,
                            Real underlying,
                            Real strike,
-                           const RelinkableHandle<TermStructure>& discountTS);
+                           const Handle<TermStructure>& discountTS);
         Real operator()(const Path& path) const;
       private:
         Real underlying_;
@@ -121,7 +121,7 @@ namespace QuantLib {
                 payoff->optionType(),
                 arguments_.blackScholesProcess->stateVariable()->value(),
                 payoff->strike(),
-                RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
                             arguments_.blackScholesProcess->riskFreeRate())));
     }
 
@@ -251,7 +251,7 @@ namespace QuantLib {
     inline EuropeanPathPricer::EuropeanPathPricer(
                             Option::Type type,
                             Real underlying, Real strike,
-                            const RelinkableHandle<TermStructure>& discountTS)
+                            const Handle<TermStructure>& discountTS)
     : PathPricer<Path>(discountTS), underlying_(underlying),
       payoff_(type, strike) {
         QL_REQUIRE(underlying>0.0,

@@ -38,17 +38,16 @@ namespace QuantLib {
     class QuantoTermStructure : public ZeroYieldStructure,
                                 public Observer {
       public:
-        QuantoTermStructure(
-                  const RelinkableHandle<TermStructure>& underlyingDividendTS,
-                  const RelinkableHandle<TermStructure>& riskFreeTS,
-                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-                  const RelinkableHandle<BlackVolTermStructure>& 
-                  underlyingBlackVolTS,
-                  Real strike,
-                  const RelinkableHandle<BlackVolTermStructure>& 
-                  exchRateBlackVolTS,
-                  Real exchRateATMlevel,
-                  Real underlyingExchRateCorrelation);
+        QuantoTermStructure(const Handle<TermStructure>& underlyingDividendTS,
+                            const Handle<TermStructure>& riskFreeTS,
+                            const Handle<TermStructure>& foreignRiskFreeTS,
+                            const Handle<BlackVolTermStructure>& 
+                            underlyingBlackVolTS,
+                            Real strike,
+                            const Handle<BlackVolTermStructure>& 
+                            exchRateBlackVolTS,
+                            Real exchRateATMlevel,
+                            Real underlyingExchRateCorrelation);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
@@ -64,10 +63,10 @@ namespace QuantLib {
         //! returns the zero yield as seen from the evaluation date
         Rate zeroYieldImpl(Time) const;
       private:
-        RelinkableHandle<TermStructure> underlyingDividendTS_, riskFreeTS_,
-            foreignRiskFreeTS_;
-        RelinkableHandle<BlackVolTermStructure> underlyingBlackVolTS_,
-            exchRateBlackVolTS_;
+        Handle<TermStructure> underlyingDividendTS_, riskFreeTS_,
+                              foreignRiskFreeTS_;
+        Handle<BlackVolTermStructure> underlyingBlackVolTS_,
+                                      exchRateBlackVolTS_;
         Real underlyingExchRateCorrelation_, strike_, exchRateATMlevel_;
         Date maxDate_;
     };
@@ -76,16 +75,16 @@ namespace QuantLib {
     // inline definitions
 
     inline QuantoTermStructure::QuantoTermStructure(
-                  const RelinkableHandle<TermStructure>& underlyingDividendTS,
-                  const RelinkableHandle<TermStructure>& riskFreeTS,
-                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-                  const RelinkableHandle<BlackVolTermStructure>& 
-                  underlyingBlackVolTS,
-                  Real strike,
-                  const RelinkableHandle<BlackVolTermStructure>& 
-                  exchRateBlackVolTS,
-                  Real exchRateATMlevel,
-                  Real underlyingExchRateCorrelation)
+                            const Handle<TermStructure>& underlyingDividendTS,
+                            const Handle<TermStructure>& riskFreeTS,
+                            const Handle<TermStructure>& foreignRiskFreeTS,
+                            const Handle<BlackVolTermStructure>& 
+                            underlyingBlackVolTS,
+                            Real strike,
+                            const Handle<BlackVolTermStructure>& 
+                            exchRateBlackVolTS,
+                            Real exchRateATMlevel,
+                            Real underlyingExchRateCorrelation)
     : underlyingDividendTS_(underlyingDividendTS),
       riskFreeTS_(riskFreeTS), foreignRiskFreeTS_(foreignRiskFreeTS),
       underlyingBlackVolTS_(underlyingBlackVolTS),

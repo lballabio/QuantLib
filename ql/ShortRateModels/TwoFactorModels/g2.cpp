@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    G2::G2(const RelinkableHandle<TermStructure>& termStructure,
+    G2::G2(const Handle<TermStructure>& termStructure,
            Real a, Real sigma, Real b, Real eta, Real rho)
     : TwoFactorModel(5), TermStructureConsistentModel(termStructure),
       a_(arguments_[0]), sigma_(arguments_[1]), b_(arguments_[2]),

@@ -23,8 +23,7 @@ namespace QuantLib {
 
         class EverestPathPricer : public PathPricer<MultiPath> {
           public:
-            EverestPathPricer(const RelinkableHandle<TermStructure>& 
-                                                                discountTS)
+            EverestPathPricer(const Handle<TermStructure>& discountTS)
             : PathPricer<MultiPath>(discountTS) {}
 
             Real operator()(const MultiPath& multiPath) const {
@@ -50,10 +49,9 @@ namespace QuantLib {
     }
 
     McEverest::McEverest(
-                  const std::vector<RelinkableHandle<TermStructure> >& 
-                                                             dividendYield,
-                  const RelinkableHandle<TermStructure>& riskFreeRate,
-                  const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                  const std::vector<Handle<TermStructure> >& dividendYield,
+                  const Handle<TermStructure>& riskFreeRate,
+                  const std::vector<Handle<BlackVolTermStructure> >& 
                                                              volatilities,
                   const Matrix& correlation,
                   Time residualTime,
@@ -70,8 +68,7 @@ namespace QuantLib {
 
         // initialize the path generator
         std::vector<boost::shared_ptr<StochasticProcess> > processes(n);
-        RelinkableHandle<Quote> u(
-                              boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
+        Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
         for (Size i=0; i<n; i++)
             processes[i] = boost::shared_ptr<StochasticProcess>(
                                     new BlackScholesProcess(u, 

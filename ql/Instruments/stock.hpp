@@ -31,12 +31,12 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class Stock : public Instrument {
       public:
-        Stock(const RelinkableHandle<Quote>& quote);
+        Stock(const Handle<Quote>& quote);
         bool isExpired() const { return false; }
       protected:
         void performCalculations() const;
       private:
-        RelinkableHandle<Quote> quote_;
+        Handle<Quote> quote_;
     };
 
 }

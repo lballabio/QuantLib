@@ -102,11 +102,11 @@ void ForwardOptionTest::testValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);
@@ -115,11 +115,10 @@ void ForwardOptionTest::testValues() {
                                    VanillaOption::results>(underlyingEngine));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(
-                 RelinkableHandle<Quote>(spot),
-                 RelinkableHandle<TermStructure>(qTS),
-                 RelinkableHandle<TermStructure>(rTS),
-                 RelinkableHandle<BlackVolTermStructure>(volTS)));
+            new BlackScholesProcess(Handle<Quote>(spot),
+                                    Handle<TermStructure>(qTS),
+                                    Handle<TermStructure>(rTS),
+                                    Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -171,11 +170,11 @@ void ForwardOptionTest::testPerformanceValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);
@@ -184,11 +183,10 @@ void ForwardOptionTest::testPerformanceValues() {
                                    VanillaOption::results>(underlyingEngine));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-            new BlackScholesProcess(
-                 RelinkableHandle<Quote>(spot),
-                 RelinkableHandle<TermStructure>(qTS),
-                 RelinkableHandle<TermStructure>(rTS),
-                 RelinkableHandle<BlackVolTermStructure>(volTS)));
+            new BlackScholesProcess(Handle<Quote>(spot),
+                                    Handle<TermStructure>(qTS),
+                                    Handle<TermStructure>(rTS),
+                                    Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -248,15 +246,14 @@ namespace {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
-                 new BlackScholesProcess(
-                             RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);

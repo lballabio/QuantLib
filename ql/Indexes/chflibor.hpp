@@ -33,7 +33,7 @@ namespace QuantLib {
     class CHFLibor : public Xibor {
       public:
         CHFLibor(Integer n, TimeUnit units,
-                 const RelinkableHandle<TermStructure>& h,
+                 const Handle<TermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Xibor("CHFLibor", n, units, 2, CHF,
                 Zurich(), ModifiedFollowing, dc, h) {}

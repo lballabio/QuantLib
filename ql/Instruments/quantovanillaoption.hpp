@@ -36,13 +36,13 @@ namespace QuantLib {
         typedef QuantoEngine<VanillaOption::arguments,
                              VanillaOption::results> engine;
         QuantoVanillaOption(
-            const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-            const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
-            const RelinkableHandle<Quote>& correlation,
-            const boost::shared_ptr<BlackScholesProcess>& stochProc,
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise,
-            const boost::shared_ptr<PricingEngine>& engine);
+                      const Handle<TermStructure>& foreignRiskFreeTS,
+                      const Handle<BlackVolTermStructure>& exchRateVolTS,
+                      const Handle<Quote>& correlation,
+                      const boost::shared_ptr<BlackScholesProcess>& stochProc,
+                      const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                      const boost::shared_ptr<Exercise>& exercise,
+                      const boost::shared_ptr<PricingEngine>& engine);
         //! \name greeks
         //@{
         Real qvega() const;
@@ -54,9 +54,9 @@ namespace QuantLib {
         void setupExpired() const;
         void performCalculations() const;
         // arguments
-        RelinkableHandle<TermStructure> foreignRiskFreeTS_;
-        RelinkableHandle<BlackVolTermStructure> exchRateVolTS_;
-        RelinkableHandle<Quote> correlation_;
+        Handle<TermStructure> foreignRiskFreeTS_;
+        Handle<BlackVolTermStructure> exchRateVolTS_;
+        Handle<Quote> correlation_;
         // results
         mutable Real qvega_, qrho_, qlambda_;
     };

@@ -82,11 +82,11 @@ void DividendEuropeanOptionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    RelinkableHandle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    RelinkableHandle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -109,8 +109,7 @@ void DividendEuropeanOptionTest::testGreeks() {
                                           new AnalyticDividendEuropeanEngine);
 
           boost::shared_ptr<BlackScholesProcess> stochProcess(
-              new BlackScholesProcess(
-                             RelinkableHandle<Quote>(spot), qTS, rTS, volTS));
+              new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
           DividendVanillaOption option(stochProcess, payoff, exercise, 
                                        dividendDates, dividends, engine);

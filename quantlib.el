@@ -47,7 +47,7 @@
                 "TimeUnit" "Frequency" "Period" 
                 "DayCounter" 
                 "Calendar" "BusinessDayConvention" "RollingConvention"
-                "RelinkableHandle")))
+                "Handle" "RelinkableHandle")))
 ; from Boost:
 (setq c++-font-lock-extra-types
       (append c++-font-lock-extra-types

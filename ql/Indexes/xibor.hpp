@@ -36,7 +36,7 @@ namespace QuantLib {
               const Calendar& calendar,
               BusinessDayConvention convention,
               const DayCounter& dayCounter, 
-              const RelinkableHandle<TermStructure>& h)
+              const Handle<TermStructure>& h)
         : familyName_(familyName), n_(n), units_(units),
           settlementDays_(settlementDays),
           currency_(currency), calendar_(calendar),
@@ -74,7 +74,7 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention convention_;
         DayCounter dayCounter_;
-        RelinkableHandle<TermStructure> termStructure_;
+        Handle<TermStructure> termStructure_;
     };
 
 

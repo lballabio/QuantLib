@@ -22,17 +22,16 @@
 
 namespace QuantLib {
 
-    SimpleSwap::SimpleSwap(
-                         bool payFixedRate,
-                         Real nominal,
-                         const Schedule& fixedSchedule,
-                         Rate fixedRate,
-                         const DayCounter& fixedDayCount,
-                         const Schedule& floatSchedule,
-                         const boost::shared_ptr<Xibor>& index,
-                         Integer indexFixingDays,
-                         Spread spread,
-                         const RelinkableHandle<TermStructure>& termStructure)
+    SimpleSwap::SimpleSwap(bool payFixedRate,
+                           Real nominal,
+                           const Schedule& fixedSchedule,
+                           Rate fixedRate,
+                           const DayCounter& fixedDayCount,
+                           const Schedule& floatSchedule,
+                           const boost::shared_ptr<Xibor>& index,
+                           Integer indexFixingDays,
+                           Spread spread,
+                           const Handle<TermStructure>& termStructure)
     : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
            std::vector<boost::shared_ptr<CashFlow> >(),
            termStructure),

@@ -77,8 +77,8 @@ int main(int, char* [])
         boost::shared_ptr<Quote> flatRate(new SimpleQuote(0.04875825));
         boost::shared_ptr<FlatForward> myTermStructure(new
             FlatForward(todaysDate, settlementDate,
-            RelinkableHandle<Quote>(flatRate)));
-        RelinkableHandle<TermStructure> rhTermStructure;
+            Handle<Quote>(flatRate)));
+        Handle<TermStructure> rhTermStructure;
         rhTermStructure.linkTo(myTermStructure);
 
         // Define the ATM/OTM/ITM swaps
@@ -148,7 +148,7 @@ int main(int, char* [])
             swaptions.push_back(boost::shared_ptr<CalibrationHelper>(new
                 SwaptionHelper(swaptionMaturities[i],
                                Period(swapLenghts[j], Years),
-                               RelinkableHandle<Quote>(vol),
+                               Handle<Quote>(vol),
                                indexSixMonths,
                                rhTermStructure)));
             swaptions.back()->addTimesTo(times);

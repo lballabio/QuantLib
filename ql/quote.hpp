@@ -56,7 +56,7 @@ namespace QuantLib {
     template <class UnaryFunction>
     class DerivedQuote : public Quote, public Observer {
       public:
-        DerivedQuote(const RelinkableHandle<Quote>& element,
+        DerivedQuote(const Handle<Quote>& element,
                      const UnaryFunction& f);
         //! \name Market element interface
         //@{
@@ -67,7 +67,7 @@ namespace QuantLib {
         void update();
         //@}
       private:
-        RelinkableHandle<Quote> element_;
+        Handle<Quote> element_;
         UnaryFunction f_;
     };
 
@@ -77,8 +77,8 @@ namespace QuantLib {
     class CompositeQuote : public Quote, public Observer {
       public:
         CompositeQuote(
-            const RelinkableHandle<Quote>& element1,
-            const RelinkableHandle<Quote>& element2,
+            const Handle<Quote>& element1,
+            const Handle<Quote>& element2,
             const BinaryFunction& f);
         //! \name Quote interface
         //@{
@@ -89,7 +89,7 @@ namespace QuantLib {
         void update();
         //@}
       private:
-        RelinkableHandle<Quote> element1_, element2_;
+        Handle<Quote> element1_, element2_;
         BinaryFunction f_;
     };
 
@@ -117,8 +117,8 @@ namespace QuantLib {
 
     template <class UnaryFunction>
     inline DerivedQuote<UnaryFunction>::DerivedQuote(
-                                       const RelinkableHandle<Quote>& element,
-                                       const UnaryFunction& f)
+                                                 const Handle<Quote>& element,
+                                                 const UnaryFunction& f)
     : element_(element), f_(f) {
         registerWith(element_);
     }
@@ -140,9 +140,9 @@ namespace QuantLib {
 
     template <class BinaryFunction>
     inline CompositeQuote<BinaryFunction>::CompositeQuote(
-                                      const RelinkableHandle<Quote>& element1,
-                                      const RelinkableHandle<Quote>& element2,
-                                      const BinaryFunction& f)
+                                                const Handle<Quote>& element1,
+                                                const Handle<Quote>& element2,
+                                                const BinaryFunction& f)
     : element1_(element1), element2_(element2), f_(f) {
         registerWith(element1_);
         registerWith(element2_);

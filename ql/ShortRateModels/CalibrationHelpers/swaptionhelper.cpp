@@ -23,12 +23,11 @@
 
 namespace QuantLib {
 
-    SwaptionHelper::SwaptionHelper(
-                         const Period& maturity,
-                         const Period& length,
-                         const RelinkableHandle<Quote>& volatility,
-                         const boost::shared_ptr<Xibor>& index,
-                         const RelinkableHandle<TermStructure>& termStructure)
+    SwaptionHelper::SwaptionHelper(const Period& maturity,
+                                   const Period& length,
+                                   const Handle<Quote>& volatility,
+                                   const boost::shared_ptr<Xibor>& index,
+                                   const Handle<TermStructure>& termStructure)
     : CalibrationHelper(volatility,termStructure) {
 
         Calendar calendar = index->calendar();
@@ -85,8 +84,7 @@ namespace QuantLib {
     Real SwaptionHelper::blackPrice(Volatility sigma) const {
         boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
         boost::shared_ptr<BlackModel> blackModel(
-                         new BlackModel(RelinkableHandle<Quote>(vol), 
-                                        termStructure_));
+                         new BlackModel(Handle<Quote>(vol), termStructure_));
         boost::shared_ptr<PricingEngine> black(
                                         new BlackSwaptionEngine(blackModel));
         swaption_->setPricingEngine(black);

@@ -22,12 +22,12 @@
 namespace QuantLib {
 
     DigitalPathPricer::DigitalPathPricer(
-        const boost::shared_ptr<CashOrNothingPayoff>& payoff,
-        const boost::shared_ptr<AmericanExercise>& exercise,
-        Real underlying,
-        const RelinkableHandle<TermStructure>& discountTS,
-        const boost::shared_ptr<StochasticProcess>& diffProcess,
-        const PseudoRandom::ursg_type& sequenceGen)
+                      const boost::shared_ptr<CashOrNothingPayoff>& payoff,
+                      const boost::shared_ptr<AmericanExercise>& exercise,
+                      Real underlying,
+                      const Handle<TermStructure>& discountTS,
+                      const boost::shared_ptr<StochasticProcess>& diffProcess,
+                      const PseudoRandom::ursg_type& sequenceGen)
     : PathPricer<Path>(discountTS),
       payoff_(payoff), exercise_(exercise),
       underlying_(underlying),

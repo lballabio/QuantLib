@@ -283,18 +283,16 @@ void BasketOptionTest::testEuroTwoValues() {
         vol2  ->setValue(values[i].v2);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess1(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot1),
-                RelinkableHandle<TermStructure>(qTS1),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS1)));
+            BlackScholesProcess(Handle<Quote>(spot1),
+                                Handle<TermStructure>(qTS1),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS1)));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess2(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot2),
-                RelinkableHandle<TermStructure>(qTS2),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS2)));
+            BlackScholesProcess(Handle<Quote>(spot2),
+                                Handle<TermStructure>(qTS2),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS2)));
 
         std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
         procs.push_back(stochProcess1);
@@ -478,25 +476,22 @@ void BasketOptionTest::testBarraquandThreeValues() {
         vol3  ->setValue(values[i].v3);
 
         boost::shared_ptr<BlackScholesProcess> stochProcess1(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot1),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS1)));
+            BlackScholesProcess(Handle<Quote>(spot1),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS1)));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess2(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot2),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS2)));
+            BlackScholesProcess(Handle<Quote>(spot2),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS2)));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess3(new
-            BlackScholesProcess(
-                RelinkableHandle<Quote>(spot3),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS3)));
+            BlackScholesProcess(Handle<Quote>(spot3),
+                                Handle<TermStructure>(qTS),
+                                Handle<TermStructure>(rTS),
+                                Handle<BlackVolTermStructure>(volTS3)));
 
         std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
         procs.push_back(stochProcess1);
@@ -603,25 +598,22 @@ void BasketOptionTest::testTavellaValues() {
     vol3  ->setValue(values[0].v3);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess1(new
-        BlackScholesProcess(
-            RelinkableHandle<Quote>(spot1),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS1)));
+        BlackScholesProcess(Handle<Quote>(spot1),
+                            Handle<TermStructure>(qTS),
+                            Handle<TermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS1)));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess2(new
-        BlackScholesProcess(
-            RelinkableHandle<Quote>(spot2),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS2)));
+        BlackScholesProcess(Handle<Quote>(spot2),
+                            Handle<TermStructure>(qTS),
+                            Handle<TermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS2)));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess3(new
-        BlackScholesProcess(
-            RelinkableHandle<Quote>(spot3),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS3)));
+        BlackScholesProcess(Handle<Quote>(spot3),
+                            Handle<TermStructure>(qTS),
+                            Handle<TermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS3)));
 
     std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
     procs.push_back(stochProcess1);
@@ -723,12 +715,10 @@ void BasketOptionTest::testOneDAmericanValues() {
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess1(new
-        BlackScholesProcess(
-            RelinkableHandle<Quote>(spot1),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS1)));
-
+        BlackScholesProcess(Handle<Quote>(spot1),
+                            Handle<TermStructure>(qTS),
+                            Handle<TermStructure>(rTS),
+                            Handle<BlackVolTermStructure>(volTS1)));
 
     std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
     procs.push_back(stochProcess1);

@@ -38,7 +38,7 @@ namespace QuantLib {
     class ImpliedTermStructure : public DiscountStructure,
                                  public Observer {
       public:
-        ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
+        ImpliedTermStructure(const Handle<TermStructure>&,
                              const Date& newTodaysDate,
                              const Date& newReferenceDate);
         //! \name TermStructure interface
@@ -57,16 +57,16 @@ namespace QuantLib {
         //! returns the discount factor as seen from the evaluation date
         DiscountFactor discountImpl(Time) const;
       private:
-        RelinkableHandle<TermStructure> originalCurve_;
+        Handle<TermStructure> originalCurve_;
         Date newTodaysDate_, newReferenceDate_;
     };
 
 
 
     inline ImpliedTermStructure::ImpliedTermStructure(
-                                     const RelinkableHandle<TermStructure>& h,
-                                     const Date& newTodaysDate, 
-                                     const Date& newReferenceDate)
+                                               const Handle<TermStructure>& h,
+                                               const Date& newTodaysDate, 
+                                               const Date& newReferenceDate)
     : originalCurve_(h), newTodaysDate_(newTodaysDate),
       newReferenceDate_(newReferenceDate) {
         registerWith(originalCurve_);

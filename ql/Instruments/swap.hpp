@@ -39,7 +39,7 @@ namespace QuantLib {
       public:
         Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
              const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
-             const RelinkableHandle<TermStructure>& termStructure);
+             const Handle<TermStructure>& termStructure);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -61,7 +61,7 @@ namespace QuantLib {
         void performCalculations() const;
         // data members
         std::vector<boost::shared_ptr<CashFlow> > firstLeg_, secondLeg_;
-        RelinkableHandle<TermStructure> termStructure_;
+        Handle<TermStructure> termStructure_;
         mutable Real firstLegBPS_, secondLegBPS_;
     };
 }

@@ -41,8 +41,8 @@ namespace QuantLib {
                                     public Observer {
       public:
         ImpliedVolTermStructure(
-                    const RelinkableHandle<BlackVolTermStructure>& originalTS,
-                    const Date& newReferenceDate);
+                              const Handle<BlackVolTermStructure>& originalTS,
+                              const Date& newReferenceDate);
         //! \name BlackVolTermStructure interface
         //@{
         Date referenceDate() const { 
@@ -64,15 +64,15 @@ namespace QuantLib {
       protected:
         virtual Real blackVarianceImpl(Time t, Real strike) const;
       private:
-        RelinkableHandle<BlackVolTermStructure> originalTS_;
+        Handle<BlackVolTermStructure> originalTS_;
         Date newReferenceDate_;
     };
 
 
 
     inline ImpliedVolTermStructure::ImpliedVolTermStructure(
-                    const RelinkableHandle<BlackVolTermStructure>& originalTS,
-                    const Date& newReferenceDate)
+                              const Handle<BlackVolTermStructure>& originalTS,
+                              const Date& newReferenceDate)
     : originalTS_(originalTS), newReferenceDate_(newReferenceDate) {
         registerWith(originalTS_);
     }

@@ -40,7 +40,7 @@ namespace QuantLib {
                          Volatility volatility,
                          const DayCounter& dayCounter = Actual365());
         LocalConstantVol(const Date& referenceDate,
-                         const RelinkableHandle<Quote>& volatility,
+                         const Handle<Quote>& volatility,
                          const DayCounter& dayCounter = Actual365());
         //! \name LocalVolTermStructure interface
         //@{
@@ -61,7 +61,7 @@ namespace QuantLib {
       private:
         Volatility localVolImpl(Time, Real) const;
         Date referenceDate_;
-        RelinkableHandle<Quote> volatility_;
+        Handle<Quote> volatility_;
         DayCounter dayCounter_;
     };
 
@@ -75,10 +75,9 @@ namespace QuantLib {
                        boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
     }
 
-    inline LocalConstantVol::LocalConstantVol(
-                            const Date& referenceDate, 
-                            const RelinkableHandle<Quote>& volatility, 
-                            const DayCounter& dayCounter)
+    inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
+                                              const Handle<Quote>& volatility, 
+                                              const DayCounter& dayCounter)
     : referenceDate_(referenceDate), volatility_(volatility), 
       dayCounter_(dayCounter) {
         registerWith(volatility_);

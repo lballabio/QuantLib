@@ -38,7 +38,7 @@ namespace QuantLib {
                           public Visitor<CashFlow>,
                           public Visitor<Coupon> {
       public:
-        BPSCalculator(const RelinkableHandle<TermStructure>& ts) 
+        BPSCalculator(const Handle<TermStructure>& ts) 
         : termStructure_(ts), result_(0.0) {}
         //! \name Visitor interface
         //@{
@@ -47,14 +47,14 @@ namespace QuantLib {
         //@}
         Real result() const { return result_; }
       private:
-        RelinkableHandle<TermStructure> termStructure_;
+        Handle<TermStructure> termStructure_;
         Real result_;
     };
 
     //! Collective basis-point sensitivity of a cash-flow sequence
     Real BasisPointSensitivity(
                              const std::vector<boost::shared_ptr<CashFlow> >&,
-                             const RelinkableHandle<TermStructure>&);
+                             const Handle<TermStructure>&);
 
 
     /*! \bug this class must still be checked. It is not guaranteed
@@ -65,7 +65,7 @@ namespace QuantLib {
                                 public Visitor<Coupon>,
                                 public Visitor<FixedRateCoupon> {
       public:
-        BPSBasketCalculator(const RelinkableHandle<TermStructure>& ts,
+        BPSBasketCalculator(const Handle<TermStructure>& ts,
                             Integer basis)
         : termStructure_(ts), basis_(basis) {}
         //! \name Visitor interface
@@ -77,7 +77,7 @@ namespace QuantLib {
         //@}
         const TimeBasket& result() const { return result_; }
       private:
-        RelinkableHandle<TermStructure> termStructure_;
+        Handle<TermStructure> termStructure_;
         Integer basis_;
         TimeBasket result_;
     };
@@ -87,7 +87,7 @@ namespace QuantLib {
     */
     TimeBasket BasisPointSensitivityBasket(
                              const std::vector<boost::shared_ptr<CashFlow> >&,
-                             const RelinkableHandle<TermStructure>&,
+                             const Handle<TermStructure>&,
                              Integer basis);
 
 }

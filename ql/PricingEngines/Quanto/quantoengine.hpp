@@ -26,7 +26,6 @@
 
 namespace QuantLib {
 
-
     //! %Arguments for quanto option calculation
     template<class ArgumentsType>
     class QuantoOptionArguments : public ArgumentsType {
@@ -34,8 +33,8 @@ namespace QuantLib {
         QuantoOptionArguments() : correlation(Null<Real>()) {}
         void validate() const;
         Real correlation;
-        RelinkableHandle<TermStructure> foreignRiskFreeTS;
-        RelinkableHandle<BlackVolTermStructure> exchRateVolTS;
+        Handle<TermStructure> foreignRiskFreeTS;
+        Handle<BlackVolTermStructure> exchRateVolTS;
     };
 
     //! %Results from quanto option calculation
@@ -126,21 +125,19 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
 
-        RelinkableHandle<Quote> spot(process->stateVariable());
-        RelinkableHandle<TermStructure> riskFreeRate(process->riskFreeRate());
+        Handle<Quote> spot(process->stateVariable());
+        Handle<TermStructure> riskFreeRate(process->riskFreeRate());
         // dividendTS needs modification
-        RelinkableHandle<TermStructure> dividendYield(
+        Handle<TermStructure> dividendYield(
             boost::shared_ptr<TermStructure>(
                 new QuantoTermStructure(
-                    RelinkableHandle<TermStructure>(process->dividendYield()),
-                    RelinkableHandle<TermStructure>(process->riskFreeRate()),
+                    Handle<TermStructure>(process->dividendYield()),
+                    Handle<TermStructure>(process->riskFreeRate()),
                     arguments_.foreignRiskFreeTS,
-                    RelinkableHandle<BlackVolTermStructure>(
-                                                  process->blackVolatility()),
+                    Handle<BlackVolTermStructure>(process->blackVolatility()),
                     strike, arguments_.exchRateVolTS, exchangeRateATMlevel,
                     arguments_.correlation)));
-        RelinkableHandle<BlackVolTermStructure> blackVol(
-                                                  process->blackVolatility());
+        Handle<BlackVolTermStructure> blackVol(process->blackVolatility());
         originalArguments_->blackScholesProcess = 
             boost::shared_ptr<BlackScholesProcess>(
                              new BlackScholesProcess(spot, dividendYield, 

@@ -38,7 +38,7 @@ namespace {
     boost::shared_ptr<Xibor> index_;
     Calendar calendar_;
     Integer settlementDays_, fixingDays_;
-    RelinkableHandle<TermStructure> termStructure_;
+    Handle<TermStructure> termStructure_;
 
     // utilities
 
@@ -51,8 +51,8 @@ namespace {
     }
 
     boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
-        RelinkableHandle<Quote> vol(
-            boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
+        Handle<Quote> vol(
+                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
         boost::shared_ptr<BlackModel> model(
                                          new BlackModel(vol, termStructure_));
         return boost::shared_ptr<PricingEngine>(

@@ -22,11 +22,11 @@
 namespace QuantLib {
 
     EuropeanMultiPathPricer::EuropeanMultiPathPricer(
-                BasketOption::BasketType basketType,
-                Option::Type type,
-                Real strike,
-                Array underlying, 
-                const RelinkableHandle<TermStructure>& discountTS)
+                                      BasketOption::BasketType basketType,
+                                      Option::Type type,
+                                      Real strike,
+                                      Array underlying, 
+                                      const Handle<TermStructure>& discountTS)
     : PathPricer<MultiPath>(discountTS), basketType_(basketType), 
         underlying_(underlying), payoff_(type, strike) {
 
