@@ -99,7 +99,7 @@ namespace QuantLib {
                    requiredSamples_ != Null<Size>(),
                    "neither tolerance nor number of samples set");
 
-        // a vanilla option is not necessary european
+        // a vanilla option is not necessarily european
         /*
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
