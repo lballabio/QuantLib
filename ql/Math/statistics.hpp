@@ -52,7 +52,7 @@ namespace QuantLib {
             //! \name Inspectors
             //@{
             //! number of samples collected
-            double samples() const;
+            size_t samples() const;
             //! sum of data weights
             double weightSum() const;
             /*! returns the mean, defined as
@@ -119,7 +119,7 @@ namespace QuantLib {
             void reset();
             //@}
           private:
-            double sampleNumber_;
+            size_t sampleNumber_;
             double sampleWeight_;
             double sum_, quadraticSum_, downsideQuadraticSum_,
                    cubicSum_, fourthPowerSum_;
@@ -148,7 +148,7 @@ namespace QuantLib {
           max_=QL_MAX(value, max_);
         }
 
-        inline double Statistics::samples() const {
+        inline size_t Statistics::samples() const {
           return sampleNumber_;
         }
 
@@ -188,8 +188,8 @@ namespace QuantLib {
 
         inline double Statistics::errorEstimate() const {
             double var = variance();
-            QL_REQUIRE(samples() != 0.0,
-                       "Statistics: samples are not sufficient");
+            QL_REQUIRE(samples() > 0,
+                       "Statistics: zero samples are not sufficient");
             if(QL_FABS(var) < 1e-12) var =0.0;
             QL_REQUIRE(var >= 0.0,
                        "Statistics: variance, " +

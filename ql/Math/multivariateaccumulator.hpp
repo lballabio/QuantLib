@@ -57,7 +57,9 @@ namespace QuantLib {
             //! size of each sample
             size_t size() const;
             //! number of samples collected
-            double samples() const;
+            size_t samples() const;
+            //! sum of data weights
+            double weightSum() const;
             //! returns the mean as an Array
             Array mean() const;
             //! returns the mean as a std::vector<double>
@@ -102,8 +104,12 @@ namespace QuantLib {
             return size_;
         }
 
-        inline double MultivariateAccumulator::samples() const {
+        inline size_t MultivariateAccumulator::samples() const {
           return sampleNumber_;
+        }
+
+        inline double MultivariateAccumulator::weightSum() const {
+          return sampleWeight_;
         }
 
         inline Array MultivariateAccumulator::mean() const {
