@@ -116,6 +116,12 @@ namespace QuantLib {
                 for (i=0; i<blackVolMatrix.rows(); i++) {
                     variances_[i][j] = times_[j] *
                         blackVolMatrix[i][j]*blackVolMatrix[i][j];
+                    if (j==0) QL_REQUIRE(variances_[i][0]>0.0,
+                        "BlackVarianceCurve::BlackVarianceCurve : "
+                        "variance must be positive");
+                    if (j>0) QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
+                        "BlackVarianceCurve::BlackVarianceCurve : "
+                        "variance must be and non-decreasing");
                 }
             }
             varianceSurface_ = Handle<Interpolator2D> (new

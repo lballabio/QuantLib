@@ -1691,6 +1691,10 @@ SOURCE=.\ql\Volatilities\localvolcurve.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\localvolsurface.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
 # End Source File
 # End Group

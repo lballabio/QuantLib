@@ -97,6 +97,12 @@ namespace QuantLib {
                     "dates must be sorted unique!");
                 variances_[j] = times_[j] *
                     blackVolCurve[j]*blackVolCurve[j];
+                if (j==0) QL_REQUIRE(variances_[0]>0.0,
+                    "BlackVarianceCurve::BlackVarianceCurve : "
+                    "variance must be positive");
+                if (j>0) QL_REQUIRE(variances_[j]>=variances_[j-1],
+                    "BlackVarianceCurve::BlackVarianceCurve : "
+                    "variance must be and non-decreasing");
             }
             varianceSurface_ = Handle<Interpolator1D> (new
                 Interpolator1D(times_.begin(), times_.end(),

@@ -12,4 +12,5 @@ include_HEADERS = \
     impliedvoltermstructure.hpp \
     localconstantvol.hpp \
     localvolcurve.hpp \
+    localvolsurface.hpp \
     swaptionvolmatrix.hpp

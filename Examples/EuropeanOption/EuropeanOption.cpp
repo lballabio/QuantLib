@@ -251,6 +251,56 @@ int main(int argc, char* argv[])
             Handle<BlackVolTermStructure>(
                 new BlackConstantVol(settlementDate, volatility)));
 
+        std::vector<Date> dates(3);
+        dates[0] = settlementDate.plusMonths(6);
+        dates[1] = settlementDate.plusMonths(12);
+        dates[2] = settlementDate.plusMonths(18);
+        std::vector<double> strikes(3);
+        strikes[0] = underlying*0.9;
+        strikes[1] = underlying;
+        strikes[2] = underlying*1.1;
+
+        Matrix vols(3,3);
+        vols[0][0] = 0.2; vols[0][1] = 0.18; vols[0][2] = 0.16; 
+        vols[1][0] = 0.2; vols[1][1] = 0.18; vols[1][2] = 0.16; 
+        vols[2][0] = 0.2; vols[2][1] = 0.18; vols[2][2] = 0.16; 
+        Handle<BlackVolTermStructure> blackSurface(new
+            VolTermStructures::BlackVarianceSurface<
+            Math::BilinearInterpolation<
+            std::vector<double>::const_iterator,
+			std::vector<double>::const_iterator,
+            Math::Matrix> >(settlementDate, dates, strikes, vols));
+
+        VolTermStructures::LocalVolSurface locVol(blackSurface,
+            flatTermStructure, flatDividendTS, underlyingH);
+
+        double dt = 0.0001;
+        std::cout << strikes[0] << "\t"
+             << locVol.localVol(0.5, strikes[0], true) -
+                blackSurface->blackForwardVol(0.5-dt, 0.5+dt,strikes[0], true)  << "\t"
+             << locVol.localVol(1.0, strikes[0], true) -
+                blackSurface->blackForwardVol(1.0-dt, 1.0+dt,strikes[0], true) << "\t"
+             << locVol.localVol(1.5, strikes[0], true) -
+                blackSurface->blackForwardVol(1.5-dt, 1.5+dt,strikes[0], true) << "\t"
+             << std::endl;
+
+        std::cout << strikes[1] << "\t"
+             << locVol.localVol(0.5, strikes[1], true) -
+                blackSurface->blackForwardVol(0.5-dt, 0.5+dt,strikes[1], true)  << "\t"
+             << locVol.localVol(1.0, strikes[1], true) -
+                blackSurface->blackForwardVol(1.0-dt, 1.0+dt,strikes[1], true)  << "\t"
+             << locVol.localVol(1.5, strikes[1], true) -
+                blackSurface->blackForwardVol(1.5-dt, 1.5+dt,strikes[1], true)  << "\t"
+             << std::endl;
+
+        std::cout << strikes[2] << "\t"
+             << locVol.localVol(0.5, strikes[2], true) -
+                blackSurface->blackForwardVol(0.5-dt, 0.5+dt,strikes[2], true)  << "\t"
+             << locVol.localVol(1.0, strikes[2], true) -
+                blackSurface->blackForwardVol(1.0-dt, 1.0+dt,strikes[2], true)  << "\t"
+             << locVol.localVol(1.5, strikes[2], true) -
+                blackSurface->blackForwardVol(1.5-dt, 1.5+dt,strikes[2], true)  << "\t"
+             << std::endl;
 
         Instruments::VanillaOption option(
             Option::Call,

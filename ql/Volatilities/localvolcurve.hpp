@@ -33,9 +33,6 @@ namespace QuantLib {
     namespace VolTermStructures {
 
         //! Local volatility curve derived from a Black curve
-        /*! A LocalVarianceSurface class will be developed in the
-            future with time/asset dependence.
-        */
         template<class Interpolator1D>
         class LocalVolCurve : public LocalVolTermStructure,
                               public Patterns::Observer {
@@ -86,12 +83,12 @@ namespace QuantLib {
         */
         template<class Interpolator1D>
         double LocalVolCurve<Interpolator1D>::localVolImpl(
-            Time t, double strike, bool extrapolate) const {
+            Time t, double dummyValue, bool extrapolate) const {
 
             double dt = (1.0/365.0);
-            double var1 = blackVarianceCurve_->blackVariance(t, strike,
+            double var1 = blackVarianceCurve_->blackVariance(t, dummyValue,
                 extrapolate);
-            double var2 = blackVarianceCurve_->blackVariance(t+dt, strike,
+            double var2 = blackVarianceCurve_->blackVariance(t+dt, dummyValue,
                 true);
             double derivative = (var2-var1)/dt;
             return QL_SQRT(derivative);
