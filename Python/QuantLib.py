@@ -680,22 +680,39 @@ class GeometricAsianOptionPtr(GeometricAsianOption):
 
 GeometricAsianOption.value = new.instancemethod(QuantLibc.GeometricAsianOption_value, None, GeometricAsianOption)
 
-class McAsianPricer:
+class AveragePriceAsian:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_McAsianPricer,args,kwargs)
+        self.this = apply(QuantLibc.new_AveragePriceAsian,args,kwargs)
         self.thisown = 1
 
     def __repr__(self):
-        return "<C McAsianPricer instance at %s>" % (self.this,)
-class McAsianPricerPtr(McAsianPricer):
+        return "<C AveragePriceAsian instance at %s>" % (self.this,)
+class AveragePriceAsianPtr(AveragePriceAsian):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = McAsianPricer
+        self.__class__ = AveragePriceAsian
 
 
-McAsianPricer.value = new.instancemethod(QuantLibc.McAsianPricer_value, None, McAsianPricer)
-McAsianPricer.errorEstimate = new.instancemethod(QuantLibc.McAsianPricer_errorEstimate, None, McAsianPricer)
+AveragePriceAsian.value = new.instancemethod(QuantLibc.AveragePriceAsian_value, None, AveragePriceAsian)
+AveragePriceAsian.errorEstimate = new.instancemethod(QuantLibc.AveragePriceAsian_errorEstimate, None, AveragePriceAsian)
+
+class AverageStrikeAsian:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_AverageStrikeAsian,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C AverageStrikeAsian instance at %s>" % (self.this,)
+class AverageStrikeAsianPtr(AverageStrikeAsian):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = AverageStrikeAsian
+
+
+AverageStrikeAsian.value = new.instancemethod(QuantLibc.AverageStrikeAsian_value, None, AverageStrikeAsian)
+AverageStrikeAsian.errorEstimate = new.instancemethod(QuantLibc.AverageStrikeAsian_errorEstimate, None, AverageStrikeAsian)
 
 class PlainBasketOption:
     def __init__(self,*args,**kwargs):
