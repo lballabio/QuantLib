@@ -97,7 +97,7 @@ namespace QuantLib {
             }
 
             Option::Type optionType;
-            switch (parameters_.type==Instruments::VanillaCapFloor::Cap) {
+            switch (parameters_.type) {
               case Instruments::VanillaCapFloor::Cap:
                 optionType = Option::Put;
                 break;

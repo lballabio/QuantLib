@@ -35,7 +35,7 @@ namespace QuantLib {
                 "No analytical formula for discount bond options");
 
             Option::Type optionType;
-            switch (parameters_.type==Instruments::VanillaCapFloor::Cap) {
+            switch (parameters_.type) {
               case Instruments::VanillaCapFloor::Cap:
                 optionType = Option::Put;
                 break;
