@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/15 15:27:10  marmar
+    New constructor with default values for maxVolatility
+    and minVolatility
+
     Revision 1.8  2001/02/14 13:54:23  marmar
     Some spaces have been added
 
@@ -80,7 +84,8 @@ namespace QuantLib {
             virtual double vega() const = 0;
             virtual double rho() const = 0;
             double impliedVolatility(double targetValue, 
-                double accuracy = 1e-4, int maxEvaluations = 100) const ;
+                double accuracy = 1e-4, int maxEvaluations = 100,
+                double minVol = 0.0005, double maxVol = 3.0) const ;
             virtual Handle<BSMOption> clone() const = 0;
           protected:
             // input data
@@ -132,6 +137,5 @@ namespace QuantLib {
     }
 
 }
-
 
 #endif
