@@ -185,6 +185,7 @@ namespace QuantLib {
             else if (i == size()-1)
                 return finalIsRegular_;
         }
+        QL_DUMMY_RETURN(true);
     }
 
 }
