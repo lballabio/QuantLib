@@ -1,6 +1,6 @@
 
 #include "history.hpp"
-#include "statistics.hpp"
+#include "Math/statistics.hpp"
 #include "qlerrors.hpp"
 #include <iostream>
 #include <algorithm>

@@ -27,6 +27,13 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/04/04 12:13:23  nando
+    Headers policy part 2:
+    The Include directory is added to the compiler's include search path.
+    Then both your code and user code specifies the sub-directory in
+    #include directives, as in
+    #include <Solvers1d/newton.hpp>
+
     Revision 1.4  2001/04/04 11:07:24  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -52,7 +59,7 @@
     only 2 spaces are used for each indentation
 */
 
-#include "symmetricschurdecomposition.hpp"
+#include "Math/symmetricschurdecomposition.hpp"
 
 namespace QuantLib {
   

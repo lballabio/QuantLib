@@ -26,6 +26,13 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/04 12:13:22  nando
+    Headers policy part 2:
+    The Include directory is added to the compiler's include search path.
+    Then both your code and user code specifies the sub-directory in
+    #include directives, as in
+    #include <Solvers1d/newton.hpp>
+
     Revision 1.1  2001/04/04 11:07:21  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -121,53 +128,53 @@
 
 // day counters
 #include "daycounter.hpp"
-#include "actual360.hpp"
-#include "actual365.hpp"
-#include "actualactual.hpp"
-#include "thirty360.hpp"
-#include "thirty360european.hpp"
-#include "thirty360italian.hpp"
+#include "DayCounters/actual360.hpp"
+#include "DayCounters/actual365.hpp"
+#include "DayCounters/actualactual.hpp"
+#include "DayCounters/thirty360.hpp"
+#include "DayCounters/thirty360european.hpp"
+#include "DayCounters/thirty360italian.hpp"
 
 // calendars
 #include "calendar.hpp"
-#include "westerncalendar.hpp"
-#include "frankfurt.hpp"
-#include "helsinki.hpp"
-#include "london.hpp"
-#include "milan.hpp"
-#include "newyork.hpp"
-#include "target.hpp"
-#include "wellington.hpp"
-#include "zurich.hpp"
+#include "Calendars/westerncalendar.hpp"
+#include "Calendars/frankfurt.hpp"
+#include "Calendars/helsinki.hpp"
+#include "Calendars/london.hpp"
+#include "Calendars/milan.hpp"
+#include "Calendars/newyork.hpp"
+#include "Calendars/target.hpp"
+#include "Calendars/wellington.hpp"
+#include "Calendars/zurich.hpp"
 
 
 /*** currencies ***/
 
 #include "currency.hpp"
-#include "dem.hpp"
-#include "eur.hpp"
-#include "gbp.hpp"
-#include "itl.hpp"
-#include "usd.hpp"
-#include "aud.hpp"
-#include "cad.hpp"
-#include "chf.hpp"
-#include "dkk.hpp"
-#include "jpy.hpp"
-#include "sek.hpp"
+#include "Currencies/aud.hpp"
+#include "Currencies/cad.hpp"
+#include "Currencies/chf.hpp"
+#include "Currencies/dkk.hpp"
+#include "Currencies/dem.hpp"
+#include "Currencies/eur.hpp"
+#include "Currencies/gbp.hpp"
+#include "Currencies/itl.hpp"
+#include "Currencies/jpy.hpp"
+#include "Currencies/sek.hpp"
+#include "Currencies/usd.hpp"
 
 
 /*** instruments ***/
 
 #include "instrument.hpp"
-#include "stock.hpp"
+#include "Instruments/stock.hpp"
 
 
 /*** term structures ***/
 
 #include "termstructure.hpp"
-#include "piecewiseconstantforwards.hpp"
-#include "flatforward.hpp"
+#include "TermStructures/piecewiseconstantforwards.hpp"
+#include "TermStructures/flatforward.hpp"
 
 
 /*** volatility surfaces ***/
@@ -184,95 +191,95 @@
 /*** math ***/
 
 #include "array.hpp"
-#include "matrix.hpp"
-#include "symmetricschurdecomposition.hpp"
-#include "symmetriceigenvalues.hpp"
-#include "multivariateaccumulator.hpp"
+#include "Math/matrix.hpp"
+#include "Math/symmetricschurdecomposition.hpp"
+#include "Math/symmetriceigenvalues.hpp"
+#include "Math/multivariateaccumulator.hpp"
 
 // math tools
-#include "normaldistribution.hpp"
-#include "statistics.hpp"
-#include "interpolation.hpp"
-#include "linearinterpolation.hpp"
-#include "cubicspline.hpp"
-#include "lexicographicalview.hpp"
+#include "Math/cubicspline.hpp"
+#include "Math/interpolation.hpp"
+#include "Math/lexicographicalview.hpp"
+#include "Math/linearinterpolation.hpp"
+#include "Math/normaldistribution.hpp"
+#include "Math/statistics.hpp"
 
 // Monte Carlo tools
-#include "boxmuller.hpp"
-#include "centrallimitgaussian.hpp"
-#include "gaussianarraygenerator.hpp"
-#include "gaussianrandomgenerator.hpp"
-#include "getcovariance.hpp"
-#include "lecuyerrandomgenerator.hpp"
-#include "pagodapathpricer.hpp"
-#include "standardmultipathgenerator.hpp"
-#include "standardpathgenerator.hpp"
-#include "uniformrandomgenerator.hpp"
+#include "MonteCarlo/boxmuller.hpp"
+#include "MonteCarlo/centrallimitgaussian.hpp"
+#include "MonteCarlo/gaussianarraygenerator.hpp"
+#include "MonteCarlo/gaussianrandomgenerator.hpp"
+#include "MonteCarlo/getcovariance.hpp"
+#include "MonteCarlo/lecuyerrandomgenerator.hpp"
+#include "MonteCarlo/pagodapathpricer.hpp"
+#include "MonteCarlo/standardmultipathgenerator.hpp"
+#include "MonteCarlo/standardpathgenerator.hpp"
+#include "MonteCarlo/uniformrandomgenerator.hpp"
 
 // finite difference tools
-#include "backwardeuler.hpp"
-#include "bsmoperator.hpp"
-#include "boundarycondition.hpp"
-#include "cranknicolson.hpp"
-#include "dminus.hpp"
-#include "dplus.hpp"
-#include "dplusdminus.hpp"
-#include "dzero.hpp"
-#include "finitedifferencemodel.hpp"
-#include "forwardeuler.hpp"
-#include "identity.hpp"
-#include "operator.hpp"
-#include "operatortraits.hpp"
-#include "stepcondition.hpp"
-#include "tridiagonaloperator.hpp"
-#include "valueatcenter.hpp"
+#include "FiniteDifferences/backwardeuler.hpp"
+#include "FiniteDifferences/bsmoperator.hpp"
+#include "FiniteDifferences/boundarycondition.hpp"
+#include "FiniteDifferences/cranknicolson.hpp"
+#include "FiniteDifferences/dminus.hpp"
+#include "FiniteDifferences/dplus.hpp"
+#include "FiniteDifferences/dplusdminus.hpp"
+#include "FiniteDifferences/dzero.hpp"
+#include "FiniteDifferences/finitedifferencemodel.hpp"
+#include "FiniteDifferences/forwardeuler.hpp"
+#include "FiniteDifferences/identity.hpp"
+#include "FiniteDifferences/operator.hpp"
+#include "FiniteDifferences/operatortraits.hpp"
+#include "FiniteDifferences/stepcondition.hpp"
+#include "FiniteDifferences/tridiagonaloperator.hpp"
+#include "FiniteDifferences/valueatcenter.hpp"
 
 
 // 1-D solvers
 #include "solver1d.hpp"
-#include "bisection.hpp"
-#include "brent.hpp"
-#include "falseposition.hpp"
-#include "newton.hpp"
-#include "newtonsafe.hpp"
-#include "ridder.hpp"
-#include "secant.hpp"
+#include "Solvers1D/bisection.hpp"
+#include "Solvers1D/brent.hpp"
+#include "Solvers1D/falseposition.hpp"
+#include "Solvers1D/newton.hpp"
+#include "Solvers1D/newtonsafe.hpp"
+#include "Solvers1D/ridder.hpp"
+#include "Solvers1D/secant.hpp"
 
 
 /*** patterns ***/
 
-#include "observable.hpp"
+#include "Patterns/observable.hpp"
 
 
 /*** pricers ***/
 
-#include "americancondition.hpp"
-#include "americanoption.hpp"
-#include "averagepriceasian.hpp"
-#include "averagestrikeasian.hpp"
-#include "binaryoption.hpp"
-#include "barrieroption.hpp"
-#include "bsmoption.hpp"
-#include "bermudanoption.hpp"
-#include "bsmeuropeanoption.hpp"
-#include "bsmnumericaloption.hpp"
-#include "cliquetoption.hpp"
-#include "dividendoption.hpp"
-#include "dividendshoutoption.hpp"
-#include "dividendeuropeanoption.hpp"
-#include "dividendamericanoption.hpp"
-#include "everestoption.hpp"
-#include "finitedifferenceeuropean.hpp"
-#include "geometricasianoption.hpp"
-#include "himalaya.hpp"
-#include "mceuropeanpricer.hpp"
-#include "multiperiodoption.hpp"
+#include "Pricers/americancondition.hpp"
+#include "Pricers/americanoption.hpp"
+#include "Pricers/averagepriceasian.hpp"
+#include "Pricers/averagestrikeasian.hpp"
+#include "Pricers/binaryoption.hpp"
+#include "Pricers/barrieroption.hpp"
+#include "Pricers/bsmoption.hpp"
+#include "Pricers/bermudanoption.hpp"
+#include "Pricers/bsmeuropeanoption.hpp"
+#include "Pricers/bsmnumericaloption.hpp"
+#include "Pricers/cliquetoption.hpp"
+#include "Pricers/dividendoption.hpp"
+#include "Pricers/dividendshoutoption.hpp"
+#include "Pricers/dividendeuropeanoption.hpp"
+#include "Pricers/dividendamericanoption.hpp"
+#include "Pricers/everestoption.hpp"
+#include "Pricers/finitedifferenceeuropean.hpp"
+#include "Pricers/geometricasianoption.hpp"
+#include "Pricers/himalaya.hpp"
+#include "Pricers/mceuropeanpricer.hpp"
+#include "Pricers/multiperiodoption.hpp"
 #include "options.hpp"
-#include "plainbasketoption.hpp"
-#include "pagodaoption.hpp"
-#include "shoutcondition.hpp"
-#include "stepconditionoption.hpp"
-#include "shoutoption.hpp"
+#include "Pricers/plainbasketoption.hpp"
+#include "Pricers/pagodaoption.hpp"
+#include "Pricers/shoutcondition.hpp"
+#include "Pricers/stepconditionoption.hpp"
+#include "Pricers/shoutoption.hpp"
 
 
 
@@ -281,12 +288,12 @@
 #include "handle.hpp"
 #include "null.hpp"
 #include "dataformatters.hpp"
-#include "combiningiterator.hpp"
-#include "couplingiterator.hpp"
-#include "steppingiterator.hpp"
-#include "filteringiterator.hpp"
-#include "processingiterator.hpp"
-#include "iteratorcategories.hpp"
+#include "Utilities/combiningiterator.hpp"
+#include "Utilities/couplingiterator.hpp"
+#include "Utilities/steppingiterator.hpp"
+#include "Utilities/filteringiterator.hpp"
+#include "Utilities/processingiterator.hpp"
+#include "Utilities/iteratorcategories.hpp"
 
 
 /*** shortcuts for the full namespaces
