@@ -28,7 +28,6 @@
 #define quantlib_pricingengine_h
 
 #include <ql/argsandresults.hpp>
-#include <ql/null.hpp>
 
 namespace QuantLib {
 

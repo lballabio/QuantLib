@@ -28,8 +28,6 @@
 
 #include <ql/option.hpp>
 #include <ql/types.hpp>
-#include <ql/argsandresults.hpp>
-#include <ql/pricingengine.hpp>
 
 
 namespace QuantLib {
@@ -55,13 +53,13 @@ namespace QuantLib {
             method
         */
         template<class ModelType, class ArgumentsType, class ResultsType>
-        class GenericModelEngine : 
+        class GenericModelEngine :
             public GenericEngine<ArgumentsType, ResultsType>,
             public Patterns::Observer,
             public Patterns::Observable {
           public:
             GenericModelEngine() {}
-            GenericModelEngine(const Handle<ModelType>& model) 
+            GenericModelEngine(const Handle<ModelType>& model)
             : model_(model) {
                 registerWith(model_);
             }
@@ -70,7 +68,7 @@ namespace QuantLib {
             void setModel(const Handle<ModelType>& model) {
                 unregisterWith(model_);
                 model_ = model;
-                QL_REQUIRE(!model_.isNull(), 
+                QL_REQUIRE(!model_.isNull(),
                            "GenericModelEngine: Not an adequate model given");
                 registerWith(model_);
                 update();

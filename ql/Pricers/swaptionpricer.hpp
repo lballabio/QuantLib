@@ -25,7 +25,6 @@
 #ifndef quantlib_pricers_swaption_pricer_h
 #define quantlib_pricers_swaption_pricer_h
 
-#include <ql/numericalmethod.hpp>
 #include <ql/Instruments/swaption.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
 
@@ -35,7 +34,7 @@ namespace QuantLib {
 
         class DiscretizedSwap : public DiscretizedAsset {
           public:
-            DiscretizedSwap(const Handle<NumericalMethod>& method, 
+            DiscretizedSwap(const Handle<NumericalMethod>& method,
                             const Instruments::SwaptionArguments& params)
             : DiscretizedAsset(method), arguments_(params) {}
 
@@ -65,7 +64,7 @@ namespace QuantLib {
             DiscretizedSwaption(
                 const Handle<NumericalMethod>& method,
                 const Instruments::SwaptionArguments& params)
-            : DiscretizedAsset(method), arguments_(params), 
+            : DiscretizedAsset(method), arguments_(params),
               swap_(new DiscretizedSwap(method, params)) {
                 Time lastFixedPay = arguments_.fixedPayTimes.back();
                 Time lastFloatPay = arguments_.floatingPayTimes.back();
@@ -98,20 +97,20 @@ namespace QuantLib {
         };
 
         template<class ModelType>
-        class SpecificSwaptionPricer : 
+        class SpecificSwaptionPricer :
             public PricingEngines::GenericModelEngine<
-                    ModelType, 
+                    ModelType,
                     Instruments::SwaptionArguments,
                     Instruments::SwaptionResults > {
           public:
-            SpecificSwaptionPricer(const Handle<ModelType>& model) 
+            SpecificSwaptionPricer(const Handle<ModelType>& model)
             : PricingEngines::GenericModelEngine<
-                    ModelType, 
+                    ModelType,
                     Instruments::SwaptionArguments,
                     Instruments::SwaptionResults >(model) {}
 
-            void calculate() const { 
-                results_.value = model_->swaption(arguments_); 
+            void calculate() const {
+                results_.value = model_->swaption(arguments_);
             }
         };
 

@@ -30,7 +30,6 @@
 #include <ql/qldefines.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/Optimization/constraint.hpp>
-#include <ql/Patterns/bridge.hpp>
 
 namespace QuantLib {
 
@@ -46,24 +45,24 @@ namespace QuantLib {
         //! Base class for model arguments
         class Parameter : public Patterns::Bridge<Parameter,ParameterImpl> {
           public:
-            Parameter() 
+            Parameter()
             : Patterns::Bridge<Parameter,ParameterImpl>(
                 Handle<ParameterImpl>()),
               constraint_(Optimization::NoConstraint()) {}
-            Parameter(Size size, 
-                      const Handle<ParameterImpl>& impl, 
+            Parameter(Size size,
+                      const Handle<ParameterImpl>& impl,
                       const Optimization::Constraint& constraint)
             : Patterns::Bridge<Parameter,ParameterImpl>(impl),
               params_(size), constraint_(constraint) {}
 
             const Array& params() const { return params_; }
             void setParam(Size i, double x) { params_[i] = x; }
-            bool testParams(const Array& params) const { 
+            bool testParams(const Array& params) const {
                 return constraint_.test(params);
             }
             Size size() const { return params_.size(); }
-            double operator()(Time t) const { 
-                return impl_->value(params_, t); 
+            double operator()(Time t) const {
+                return impl_->value(params_, t);
             }
 
             const Handle<ParameterImpl>& implementation() const {return impl_;}
@@ -83,20 +82,20 @@ namespace QuantLib {
             };
           public:
             ConstantParameter(
-                const Optimization::Constraint& constraint) 
-            : Parameter(1, 
-                        Handle<Parameter::Impl>(new ConstantParameter::Impl), 
-                        constraint) 
+                const Optimization::Constraint& constraint)
+            : Parameter(1,
+                        Handle<Parameter::Impl>(new ConstantParameter::Impl),
+                        constraint)
             {}
 
             ConstantParameter(
                 double value,
-                const Optimization::Constraint& constraint) 
-            : Parameter(1, 
-                        Handle<Parameter::Impl>(new ConstantParameter::Impl), 
+                const Optimization::Constraint& constraint)
+            : Parameter(1,
+                        Handle<Parameter::Impl>(new ConstantParameter::Impl),
                         constraint) {
                 params_[0] = value;
-                QL_REQUIRE(testParams(params_), 
+                QL_REQUIRE(testParams(params_),
                            "ConstantParameter: invalid value in constructor");
             }
 
@@ -112,16 +111,16 @@ namespace QuantLib {
                 }
             };
           public:
-            NullParameter() 
-            : Parameter(0, 
-                        Handle<Parameter::Impl>(new NullParameter::Impl), 
-                        Optimization::NoConstraint()) 
+            NullParameter()
+            : Parameter(0,
+                        Handle<Parameter::Impl>(new NullParameter::Impl),
+                        Optimization::NoConstraint())
             {}
         };
 
-        //! Piecewise constant parameter 
+        //! Piecewise constant parameter
         /*! \f$ a(t) = a_i if t_{i-1} \geq t < t_i \f$.
-            This kind of parameter is usually used to enhance the fitting of a 
+            This kind of parameter is usually used to enhance the fitting of a
             model
         */
         class PiecewiseConstantParameter : public Parameter {
@@ -143,11 +142,11 @@ namespace QuantLib {
                 std::vector<Time> times_;
             };
           public:
-            PiecewiseConstantParameter(const std::vector<Time>& times) 
-            : Parameter(times.size()+1, 
+            PiecewiseConstantParameter(const std::vector<Time>& times)
+            : Parameter(times.size()+1,
                         Handle<Parameter::Impl>(
                             new PiecewiseConstantParameter::Impl(times)),
-                        Optimization::NoConstraint()) 
+                        Optimization::NoConstraint())
             {}
         };
 
@@ -172,7 +171,7 @@ namespace QuantLib {
                     values_.clear();
                 }
                 double value(const Array& params, Time t) const {
-                    std::vector<Time>::const_iterator result = 
+                    std::vector<Time>::const_iterator result =
                         std::find(times_.begin(), times_.end(), t);
                     QL_REQUIRE(result!=times_.end(),
                                "Fitting parameter not set!");
@@ -194,7 +193,7 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& term)
             : Parameter(0, Handle<Parameter::Impl>(new NumericalImpl(term)),
                         Optimization::NoConstraint())
-            {} 
+            {}
         };
 
 

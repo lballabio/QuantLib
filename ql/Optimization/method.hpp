@@ -23,7 +23,6 @@
 #ifndef quantlib_optimization_method_h
 #define quantlib_optimization_method_h
 
-#include <ql/handle.hpp>
 #include <ql/Optimization/constraint.hpp>
 #include <ql/Optimization/costfunction.hpp>
 #include <ql/Optimization/criteria.hpp>
@@ -101,7 +100,7 @@ namespace QuantLib {
             x_ = initialValue;
             searchDirection_ = Array(x_.size ());
         }
-        
+
     }
 
 }

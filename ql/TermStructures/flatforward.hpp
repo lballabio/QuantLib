@@ -28,7 +28,6 @@
 #define quantlib_flat_forward_curve_h
 
 #include <ql/termstructure.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 

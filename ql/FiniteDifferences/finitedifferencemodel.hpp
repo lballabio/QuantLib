@@ -28,8 +28,6 @@
 
 #include <ql/FiniteDifferences/stepcondition.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
-#include <ql/handle.hpp>
-#include <ql/null.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -49,7 +47,7 @@ namespace QuantLib {
             // constructor
             FiniteDifferenceModel(const operatorType& L,
                                   const std::vector<Handle<bcType> >& bcs,
-                                  const std::vector<Time>& stoppingTimes=std::vector<Time>()) 
+                                  const std::vector<Time>& stoppingTimes=std::vector<Time>())
             : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {}
             // methods
             // arrayType grid() const { return evolver.xGrid(); }
@@ -87,7 +85,7 @@ namespace QuantLib {
                         if (!condition.isNull())
                             condition->applyTo(a,t-dt);
                     }
-                    else  
+                    else
                     {   // A stopping time was hit
 
                         // First baby step from t to stoppingTimes_[j]

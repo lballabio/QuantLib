@@ -26,10 +26,6 @@
 #define quantlib_exercise_type_h
 
 #include <ql/calendar.hpp>
-#include <ql/date.hpp>
-
-#include <ql/Calendars/target.hpp>
-
 #include <vector>
 
 namespace QuantLib {

@@ -27,7 +27,6 @@
 #define quantlib_blackvariancecurve_hpp
 
 #include <ql/voltermstructure.hpp>
-#include <vector>
 
 namespace QuantLib {
 

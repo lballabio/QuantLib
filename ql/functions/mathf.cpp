@@ -24,11 +24,9 @@
 // $Id$
 
 #include <ql/functions/mathf.hpp>
-#include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
-#include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/riskmeasures.hpp>
 
 using QuantLib::Array;

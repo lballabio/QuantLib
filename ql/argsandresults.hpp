@@ -27,7 +27,6 @@
 #ifndef quantlib_args_and_results_h
 #define quantlib_args_and_results_h
 
-#include <ql/qldefines.hpp>
 #include <ql/null.hpp>
 
 namespace QuantLib {
@@ -49,7 +48,7 @@ namespace QuantLib {
 
     //! %option pricing results
     /*! It must be noted that there's no result data specifying
-        whether the option is expired. The expiry condition should be 
+        whether the option is expired. The expiry condition should be
         checked before calling the engine.
     */
     class OptionValue : public virtual Results {

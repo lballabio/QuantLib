@@ -28,7 +28,6 @@
 #define quantlib_solver1d_h
 
 #include <ql/null.hpp>
-#include <ql/types.hpp>
 #include <ql/dataformatters.hpp>
 
 namespace QuantLib {

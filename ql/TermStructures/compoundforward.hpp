@@ -28,9 +28,7 @@
 #define quantlib_compoundforward_curve_h
 
 #include <ql/termstructure.hpp>
-#include <ql/calendar.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
-#include <ql/Math/linearinterpolation.hpp>
 
 namespace QuantLib {
 

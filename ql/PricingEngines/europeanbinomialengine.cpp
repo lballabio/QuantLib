@@ -24,7 +24,6 @@
 
 // $Id$
 
-#include <ql/PricingEngines/vanillaengines.hpp>
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 
 using QuantLib::Pricers::ExercisePayoff;

@@ -27,7 +27,6 @@
 #define quantlib_functions_vols_h
 
 #include <ql/Math/matrix.hpp>
-#include <ql/date.hpp>
 #include <ql/daycounter.hpp>
 #include <vector>
 

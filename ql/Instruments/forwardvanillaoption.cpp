@@ -25,7 +25,6 @@
 // $Id$
 
 #include <ql/Instruments/forwardvanillaoption.hpp>
-#include <ql/PricingEngines/forwardengines.hpp>
 
 namespace QuantLib {
 

@@ -25,9 +25,7 @@
 
 #include <ql/functions/vols.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>
-#include <ql/Volatilities/blackvariancecurve.hpp>
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/blackvariancesurface.hpp>
 
@@ -57,14 +55,14 @@ namespace QuantLib {
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
                         Matrix> > surface_t;
-                        
+
             double result = 0.0;
 
             switch (interpolation2DType) {
                 case 1:
                     result = surface_t(refDate, dates, strikes,
                         blackVolSurface, surface_t::DefaultExtrapolation,
-                        surface_t::DefaultExtrapolation, 
+                        surface_t::DefaultExtrapolation,
                         dc).blackForwardVol(date1, date2,
                         strike, allowExtrapolation);
                     break;

@@ -29,7 +29,6 @@
 #define quantlib_normal_distribution_h
 
 #include <ql/dataformatters.hpp>
-#include <functional>
 
 namespace QuantLib {
 

@@ -49,11 +49,11 @@ namespace QuantLib {
                     "implemented yet");
             }
             Handle<SingleAssetOption> clone() const;
+            double riskless(Rate r, std::vector<double> divs,
+                            std::vector<Time> divDates) const;
           private:
             std::vector<double> dividends_;
             std::vector<Time> exDivDates_;
-            double riskless(Rate r, std::vector<double> divs,
-                            std::vector<Time> divDates) const;
         };
 
 

@@ -25,7 +25,6 @@
 // $Id$
 
 #include <ql/TermStructures/compoundforward.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
     using Math::LinearInterpolation;
@@ -42,7 +41,7 @@ namespace QuantLib {
                                          const int compoundFrequency,
                                          const DayCounter & dayCounter)
         : todaysDate_(todaysDate), referenceDate_(referenceDate),
-          calendar_(calendar), roll_(roll), 
+          calendar_(calendar), roll_(roll),
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), inputDates_(dates),
           dates_(dates), forwards_(forwards) {
@@ -66,7 +65,7 @@ namespace QuantLib {
                                  const int compoundFrequency,
                                  const DayCounter& dayCounter)
         : todaysDate_(todaysDate), referenceDate_(referenceDate),
-          calendar_(calendar), roll_(roll), 
+          calendar_(calendar), roll_(roll),
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), forwards_(forwards) {
 
@@ -95,7 +94,7 @@ namespace QuantLib {
                                       const int compoundFrequency,
                                       const DayCounter& dayCounter)
         : todaysDate_(todaysDate), referenceDate_(referenceDate),
-          calendar_(calendar), roll_(roll), 
+          calendar_(calendar), roll_(roll),
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), forwards_(forwards)  {
 
@@ -213,7 +212,7 @@ namespace QuantLib {
                         forwards_.insert(forwards_.begin() + i, r);
                         i++;
                         tmpDate = calendar_.advance(referenceDate_,
-                                                    compoundFrequency_*(++ci), 
+                                                    compoundFrequency_*(++ci),
                                                     Months, roll_);
                     }
                 }

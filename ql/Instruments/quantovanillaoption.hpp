@@ -26,9 +26,6 @@
 #ifndef quantlib_quanto_vanilla_option_h
 #define quantlib_quanto_vanilla_option_h
 
-#include <ql/option.hpp>
-#include <ql/termstructure.hpp>
-#include <ql/solver1d.hpp>
 #include <ql/PricingEngines/quantoengines.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 

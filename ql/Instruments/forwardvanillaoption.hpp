@@ -26,9 +26,6 @@
 #ifndef quantlib_forward_vanilla_option_h
 #define quantlib_forward_vanilla_option_h
 
-#include <ql/option.hpp>
-#include <ql/termstructure.hpp>
-#include <ql/solver1d.hpp>
 #include <ql/PricingEngines/forwardengines.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 
