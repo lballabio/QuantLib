@@ -38,8 +38,8 @@ namespace QuantLib {
         //! \name CashFlow interface
         //@{
         //! returns the amount of the cash flow
-        /*! \note The amount is not discounted, i.e., it is the actual amount
-            paid at the cash flow date.
+        /*! \note The amount is not discounted, i.e., it is the actual
+                  amount paid at the cash flow date.
         */
         virtual Real amount() const = 0;
         //! returns the date at which the cash flow is settled

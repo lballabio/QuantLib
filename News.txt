@@ -76,3 +76,6 @@ Changes since release 0.3.7:
 - IndexedCoupon can now take a generic index rather than a Libor
   (thanks to Daniele De Francesco.)
 
+- Added hooks for convexity adjustment in floating-rate coupons;
+  implemented adjustment for InArrearIndexedCoupon.
+

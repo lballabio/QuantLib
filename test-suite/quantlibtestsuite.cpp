@@ -17,7 +17,6 @@
 */
 
 #include <ql/qldefines.hpp>
-#include <ql/quantlib.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/progress.hpp>
 

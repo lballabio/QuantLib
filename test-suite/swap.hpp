@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,6 +29,7 @@ class SwapTest {
     static void testFairSpread();
     static void testRateDependency();
     static void testSpreadDependency();
+    static void testInArrears();
     static void testCachedValue();
     static boost::unit_test_framework::test_suite* suite();
 };

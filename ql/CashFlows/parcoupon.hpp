@@ -54,8 +54,11 @@ namespace QuantLib {
         //@}
         //! \name FloatingRateCoupon interface
         //@{
-        Rate fixing() const;
+        Rate indexFixing() const;
         Date fixingDate() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        Rate fixing() const;
+        #endif
         //@}
         //! \name Inspectors
         //@{
@@ -83,15 +86,17 @@ namespace QuantLib {
             dayCounter_;
     }
 
-    inline Rate ParCoupon::fixing() const {
-        return amount()/(nominal()*accrualPeriod());
-    }
-
     inline Date ParCoupon::fixingDate() const {
         return index_->calendar().advance(accrualStartDate_,
                                           -fixingDays_, Days,
                                           Preceding);
     }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline Rate ParCoupon::fixing() const {
+        return amount()/(nominal()*accrualPeriod());
+    }
+    #endif
 
     inline const boost::shared_ptr<Xibor>& ParCoupon::index() const {
         return index_;

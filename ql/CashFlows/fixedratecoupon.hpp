@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,14 +29,14 @@ namespace QuantLib {
     //! %Coupon paying a fixed interest rate
     class FixedRateCoupon : public Coupon {
       public:
-        FixedRateCoupon(Real nominal, 
+        FixedRateCoupon(Real nominal,
                         const Date& paymentDate,
                         Rate rate,
                         const DayCounter& dayCounter,
                         const Date& startDate, const Date& endDate,
                         const Date& refPeriodStart = Date(),
                         const Date& refPeriodEnd = Date())
-        : Coupon(nominal, paymentDate, startDate, endDate, 
+        : Coupon(nominal, paymentDate, startDate, endDate,
                  refPeriodStart, refPeriodEnd),
           rate_(rate), dayCounter_(dayCounter) {}
         //! \name CashFlow interface
@@ -45,12 +45,9 @@ namespace QuantLib {
         //@}
         //! \name Coupon interface
         //@{
+        Rate rate() const;
         DayCounter dayCounter() const;
         Real accruedAmount(const Date&) const;
-        //@}
-        //! \name Inspectors
-        //@{
-        Rate rate() const;
         //@}
         //! \name Visitability
         //@{
@@ -89,7 +86,7 @@ namespace QuantLib {
     }
 
     inline void FixedRateCoupon::accept(AcyclicVisitor& v) {
-        Visitor<FixedRateCoupon>* v1 = 
+        Visitor<FixedRateCoupon>* v1 =
             dynamic_cast<Visitor<FixedRateCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! Cap/floor at-the-money flat volatility vector
+    //! Cap/floor at-the-money term-volatility vector
     /*! This class provides the at-the-money volatility for a given
         cap by interpolating a volatility vector whose elements are
         the market volatilities of a set of caps/floors with given
@@ -40,26 +40,26 @@ namespace QuantLib {
               the length vector but an interpolation pointing to the
               original ones.
     */
-    class CapFlatVolatilityVector : public CapFlatVolatilityStructure {
+    class CapVolatilityVector : public CapVolatilityStructure {
       public:
         #ifndef QL_DISABLE_DEPRECATED
         /*! \deprecated use one of the other constructors */
-        CapFlatVolatilityVector(const Date& todaysDate,
-                                const Calendar& calendar,
-                                Integer settlementDays,
-                                const std::vector<Period>& lengths,
-                                const std::vector<Volatility>& volatilities,
-                                const DayCounter& dayCounter = Thirty360());
+        CapVolatilityVector(const Date& todaysDate,
+                            const Calendar& calendar,
+                            Integer settlementDays,
+                            const std::vector<Period>& lengths,
+                            const std::vector<Volatility>& volatilities,
+                            const DayCounter& dayCounter = Thirty360());
         #endif
-        CapFlatVolatilityVector(const Date& settlementDate,
-                                const std::vector<Period>& lengths,
-                                const std::vector<Volatility>& volatilities,
-                                const DayCounter& dayCounter = Thirty360());
-        CapFlatVolatilityVector(Integer settlementDays,
-                                const Calendar& calendar,
-                                const std::vector<Period>& lengths,
-                                const std::vector<Volatility>& volatilities,
-                                const DayCounter& dayCounter = Thirty360());
+        CapVolatilityVector(const Date& settlementDate,
+                            const std::vector<Period>& lengths,
+                            const std::vector<Volatility>& volatilities,
+                            const DayCounter& dayCounter = Thirty360());
+        CapVolatilityVector(Integer settlementDays,
+                            const Calendar& calendar,
+                            const std::vector<Period>& lengths,
+                            const std::vector<Volatility>& volatilities,
+                            const DayCounter& dayCounter = Thirty360());
         // inspectors
         DayCounter dayCounter() const;
         // observability
@@ -74,18 +74,23 @@ namespace QuantLib {
         Volatility volatilityImpl(Time length, Rate strike) const;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to CapVolatilityVector */
+    typedef CapVolatilityVector CapFlatVolatilityVector;
+    #endif
+
 
     // inline definitions
 
     #ifndef QL_DISABLE_DEPRECATED
-    inline CapFlatVolatilityVector::CapFlatVolatilityVector(
+    inline CapVolatilityVector::CapVolatilityVector(
                             const Date& today,
                             const Calendar& calendar, Integer settlementDays,
                             const std::vector<Period>& lengths,
                             const std::vector<Volatility>& vols,
                             const DayCounter& dayCounter)
-    : CapFlatVolatilityStructure(today,
-                                 calendar.advance(today,settlementDays,Days)),
+    : CapVolatilityStructure(today,
+                             calendar.advance(today,settlementDays,Days)),
       dayCounter_(dayCounter), lengths_(lengths),
       timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
         QL_REQUIRE(lengths.size() == vols.size(),
@@ -97,12 +102,12 @@ namespace QuantLib {
     }
     #endif
 
-    inline CapFlatVolatilityVector::CapFlatVolatilityVector(
+    inline CapVolatilityVector::CapVolatilityVector(
                                           const Date& settlementDate,
                                           const std::vector<Period>& lengths,
                                           const std::vector<Volatility>& vols,
                                           const DayCounter& dayCounter)
-    : CapFlatVolatilityStructure(settlementDate),
+    : CapVolatilityStructure(settlementDate),
       dayCounter_(dayCounter), lengths_(lengths),
       timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
         QL_REQUIRE(lengths.size() == vols.size(),
@@ -113,13 +118,13 @@ namespace QuantLib {
         interpolate();
     }
 
-    inline CapFlatVolatilityVector::CapFlatVolatilityVector(
+    inline CapVolatilityVector::CapVolatilityVector(
                                           Integer settlementDays,
                                           const Calendar& calendar,
                                           const std::vector<Period>& lengths,
                                           const std::vector<Volatility>& vols,
                                           const DayCounter& dayCounter)
-    : CapFlatVolatilityStructure(settlementDays,calendar),
+    : CapVolatilityStructure(settlementDays,calendar),
       dayCounter_(dayCounter), lengths_(lengths),
       timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
         QL_REQUIRE(lengths.size() == vols.size(),
@@ -130,16 +135,16 @@ namespace QuantLib {
         interpolate();
     }
 
-    inline DayCounter CapFlatVolatilityVector::dayCounter() const {
+    inline DayCounter CapVolatilityVector::dayCounter() const {
         return dayCounter_;
     }
 
-    inline void CapFlatVolatilityVector::update() {
-        CapFlatVolatilityStructure::update();
+    inline void CapVolatilityVector::update() {
+        CapVolatilityStructure::update();
         interpolate();
     }
 
-    inline void CapFlatVolatilityVector::interpolate() {
+    inline void CapVolatilityVector::interpolate() {
         timeLengths_[0] = 0.0;
         for (Size i=0; i<lengths_.size(); i++) {
             Date endDate = referenceDate().plus(lengths_[i]);
@@ -151,7 +156,7 @@ namespace QuantLib {
                                        volatilities_.begin());
     }
 
-    inline Volatility CapFlatVolatilityVector::volatilityImpl(
+    inline Volatility CapVolatilityVector::volatilityImpl(
                                                     Time length, Rate) const {
         return interpolation_(length, false);
     }

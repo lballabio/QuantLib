@@ -25,6 +25,7 @@ EXTRA_DIST=makefile.mak
 libCashFlows_la_SOURCES = \
     basispointsensitivity.cpp \
     cashflowvectors.cpp \
+    inarrearindexedcoupon.cpp \
     parcoupon.cpp \
     shortfloatingcoupon.cpp \
     timebasket.cpp

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,17 +16,18 @@
 */
 
 /*! \file floatingratecoupon.hpp
-    \brief Coupon at par on a term structure
+    \brief Coupon paying a variable rate
 */
 
 #ifndef quantlib_floating_rate_coupon_hpp
 #define quantlib_floating_rate_coupon_hpp
 
 #include <ql/CashFlows/coupon.hpp>
+#include <ql/null.hpp>
 
 namespace QuantLib {
 
-    //! %Coupon at par on a term structure
+    //! %Coupon paying a variable rate
     /*! \warning This class does not perform any date adjustment,
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
@@ -40,13 +41,22 @@ namespace QuantLib {
                            const Date& refPeriodEnd = Date());
         //! \name Coupon interface
         //@{
+        Rate rate() const;
         Real accruedAmount(const Date&) const;
         //@}
         //! \name Inspectors
         //@{
+        //! fixing days
         Integer fixingDays() const;
+        //! spread paid over the fixing of the underlying index
         virtual Spread spread() const;
+        //! fixing of the underlying index
+        virtual Rate indexFixing() const = 0;
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use rate() instead */
         virtual Rate fixing() const = 0;
+        #endif
+        //! fixing date
         virtual Date fixingDate() const = 0;
         //@}
         //! \name Visitability
@@ -54,6 +64,8 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
+        //! convexity adjustment for the given index fixing
+        virtual Rate convexityAdjustment(Rate fixing) const;
         Integer fixingDays_;
         Spread spread_;
     };
@@ -70,6 +82,23 @@ namespace QuantLib {
              startDate, endDate, refPeriodStart, refPeriodEnd),
       fixingDays_(fixingDays), spread_(spread) {}
 
+    inline Rate FloatingRateCoupon::rate() const {
+        Rate f = indexFixing();
+        return f + convexityAdjustment(f) + spread();
+    }
+
+    inline Real FloatingRateCoupon::accruedAmount(const Date& d) const {
+        if (d <= accrualStartDate_ || d > paymentDate_) {
+            return 0.0;
+        } else {
+            return nominal() * rate() *
+                dayCounter().yearFraction(accrualStartDate_,
+                                          QL_MIN(d,accrualEndDate_),
+                                          refPeriodStart_,
+                                          refPeriodEnd_);
+        }
+    }
+
     inline Integer FloatingRateCoupon::fixingDays() const {
         return fixingDays_;
     }
@@ -78,16 +107,8 @@ namespace QuantLib {
         return spread_;
     }
 
-    inline Real FloatingRateCoupon::accruedAmount(const Date& d) const {
-        if (d <= accrualStartDate_ || d > paymentDate_) {
-            return 0.0;
-        } else {
-            return nominal()*fixing()*
-                dayCounter().yearFraction(accrualStartDate_,
-                                          QL_MIN(d,accrualEndDate_),
-                                          refPeriodStart_,
-                                          refPeriodEnd_);
-        }
+    inline Rate FloatingRateCoupon::convexityAdjustment(Rate) const {
+        return 0.0;
     }
 
     inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,14 +29,14 @@
 namespace QuantLib {
 
     //! %coupon accruing over a fixed period
-    /*! This class implements part of the CashFlow interface but it
-      is still abstract and provides derived classes with methods for
-      accrual period calculations.
+    /*! This class implements part of the CashFlow interface but it is
+        still abstract and provides derived classes with methods for
+        accrual period calculations.
     */
     class Coupon : public CashFlow {
       public:
-        /*! \warning the coupon does not adjust the payment date
-          which must already be a business day.
+        /*! \warning the coupon does not adjust the payment date which
+                     must already be a business day.
         */
         Coupon(Real nominal,
                const Date& paymentDate,
@@ -59,6 +59,8 @@ namespace QuantLib {
         Time accrualPeriod() const;
         //! accrual period in days
         Integer accrualDays() const;
+        //! accrued rate
+        virtual Rate rate() const = 0;
         //! day counter for accrual calculation
         virtual DayCounter dayCounter() const = 0;
         //! accrued amount at the given date

@@ -16,20 +16,24 @@
 */
 
 /*! \file inarrearindexedcoupon.hpp
-    \brief in arrear indexed coupon
+    \brief in-arrear floating-rate coupon
 */
 
 #ifndef quantlib_in_arrear_indexed_coupon_hpp
 #define quantlib_in_arrear_indexed_coupon_hpp
 
 #include <ql/CashFlows/indexedcoupon.hpp>
+#include <ql/capvolstructures.hpp>
 
 namespace QuantLib {
 
-    //! In-arrear indexed coupon class
+    //! In-arrear floating-rate coupon
     /*! \warning This class does not perform any date adjustment,
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
+
+        \test The class is tested by comparing the value of an in-arrear
+              swap against a known good value.
     */
     class InArrearIndexedCoupon : public IndexedCoupon {
       public:
@@ -44,19 +48,24 @@ namespace QuantLib {
                               const DayCounter& dayCounter = DayCounter())
         : IndexedCoupon(nominal, paymentDate, index, startDate, endDate,
                         fixingDays, spread, refPeriodStart, refPeriodEnd,
-                        dayCounter) {
-            calendar_ = index->calendar();
-        }
+                        dayCounter),
+          xibor_(index) {}
         //! \name FloatingRateCoupon interface
         //@{
         Date fixingDate() const;
+        //@}
+        //! \name Modifiers
+        //@{
+        void setCapletVolatility(const Handle<CapletVolatilityStructure>&);
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        Calendar calendar_;
+        Rate convexityAdjustment(Rate fixing) const;
+        boost::shared_ptr<Xibor> xibor_;
+        Handle<CapletVolatilityStructure> capletVolatility_;
     };
 
 
@@ -64,13 +73,12 @@ namespace QuantLib {
 
     inline Date InArrearIndexedCoupon::fixingDate() const {
         // fix at the end of period
-        return calendar_.advance(accrualEndDate_, 
-                                 -fixingDays_, Days,
-                                 Preceding);
+        return xibor_->calendar().advance(accrualEndDate_,
+                                          -fixingDays_, Days,
+                                          Preceding);
     }
 
-    inline 
-    void InArrearIndexedCoupon::accept(AcyclicVisitor& v) {
+    inline void InArrearIndexedCoupon::accept(AcyclicVisitor& v) {
         Visitor<InArrearIndexedCoupon>* v1 =
             dynamic_cast<Visitor<InArrearIndexedCoupon>*>(&v);
         if (v1 != 0)

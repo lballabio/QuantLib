@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,9 +19,15 @@
 #include "utilities.hpp"
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/TermStructures/flatforward.hpp>
+#include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Indexes/euribor.hpp>
+#include <ql/CashFlows/inarrearindexedcoupon.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/Volatilities/capletconstantvol.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -239,6 +245,74 @@ void SwapTest::testSpreadDependency() {
     QL_TEST_TEARDOWN
 }
 
+void SwapTest::testInArrears() {
+
+    BOOST_MESSAGE("Testing in-arrears swap calculation...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    // See Hull, page 550
+
+    Date maturity = today_.plusYears(5);
+    Calendar calendar = NullCalendar();
+    DayCounter dayCounter = SimpleDayCounter();
+
+    Schedule schedule(calendar, today_, maturity, Annual, Following);
+    std::vector<Real> nominals(1, 100000000.0);
+    boost::shared_ptr<Xibor> index(new Xibor("dummy", 1, Years, 0,
+                                             EURCurrency(), calendar,
+                                             Following, dayCounter,
+                                             termStructure_));
+    std::vector<Rate> spreads;
+    Integer fixingDays = 0;
+
+    Rate oneYear = 0.05;
+    Rate r = -QL_LOG(1.0/(1.0+oneYear));
+    termStructure_.linkTo(flatRate(today_,r,dayCounter));
+
+
+    std::vector<Rate> coupons(1, oneYear);
+    std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
+        FixedRateCouponVector(schedule, Following, nominals,
+                              coupons, dayCounter);
+
+
+    std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
+        IndexedCouponVector<InArrearIndexedCoupon>(schedule, Following,
+                                                   nominals, index, fixingDays,
+                                                   spreads, dayCounter);
+
+    Swap swap(floatingLeg,fixedLeg,termStructure_);
+
+    if (QL_FABS(swap.NPV()) > 1.0e-4)
+        BOOST_FAIL("While setting up test:\n"
+                   "    expected swap NPV: 0.0\n"
+                   "    calculated:        "
+                   + DecimalFormatter::toExponential(swap.NPV()));
+
+    Volatility capletVolatility = 0.22;
+    Handle<CapletVolatilityStructure> vol(
+        boost::shared_ptr<CapletVolatilityStructure>(
+            new CapletConstantVolatility(today_,capletVolatility,dayCounter)));
+    for (Size i=0; i<floatingLeg.size(); i++) {
+        boost::dynamic_pointer_cast<InArrearIndexedCoupon>(floatingLeg[i])
+            ->setCapletVolatility(vol);
+    }
+
+    Decimal storedValue = -144813.0;
+    Real tolerance = 1.0;
+
+    if (QL_FABS(swap.NPV()-storedValue) > tolerance)
+        BOOST_FAIL("Wrong NPV calculation:\n"
+                   "    expected:   "
+                   + DecimalFormatter::toString(storedValue,0) + "\n"
+                   "    calculated: "
+                   + DecimalFormatter::toString(swap.NPV(),0));
+
+    QL_TEST_TEARDOWN
+}
+
 void SwapTest::testCachedValue() {
 
     BOOST_MESSAGE("Testing simple swap calculation against cached value...");
@@ -259,12 +333,11 @@ void SwapTest::testCachedValue() {
 #endif
 
     if (QL_FABS(swap->NPV()-cachedNPV) > 1.0e-11)
-        BOOST_FAIL(
-            "failed to reproduce cached swap value:\n"
-            "    calculated: " +
-            DecimalFormatter::toString(swap->NPV(),12) + "\n"
-            "    expected:   " +
-            DecimalFormatter::toString(cachedNPV,12));
+        BOOST_FAIL("failed to reproduce cached swap value:\n"
+                   "    calculated: " +
+                   DecimalFormatter::toString(swap->NPV(),12) + "\n"
+                   "    expected:   " +
+                   DecimalFormatter::toString(cachedNPV,12));
 
     QL_TEST_TEARDOWN
 }
@@ -276,6 +349,7 @@ test_suite* SwapTest::suite() {
     suite->add(BOOST_TEST_CASE(&SwapTest::testFairSpread));
     suite->add(BOOST_TEST_CASE(&SwapTest::testRateDependency));
     suite->add(BOOST_TEST_CASE(&SwapTest::testSpreadDependency));
+    suite->add(BOOST_TEST_CASE(&SwapTest::testInArrears));
     suite->add(BOOST_TEST_CASE(&SwapTest::testCachedValue));
     return suite;
 }

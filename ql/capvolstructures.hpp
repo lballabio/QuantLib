@@ -26,11 +26,11 @@
 
 namespace QuantLib {
 
-    //! Cap/floor flat volatility structure
+    //! Cap/floor term-volatility structure
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapFlatVolatilityStructure : public BaseTermStructure {
+    class CapVolatilityStructure : public BaseTermStructure {
       public:
         /*! \name Constructors
             See the BaseTermStructure documentation for issues regarding
@@ -42,18 +42,18 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapFlatVolatilityStructure();
+        CapVolatilityStructure();
         #ifndef QL_DISABLE_DEPRECATED
         //! initialize with a fixed today and reference date
-        CapFlatVolatilityStructure(const Date& today,
-                                   const Date& referenceDate);
+        CapVolatilityStructure(const Date& today,
+                               const Date& referenceDate);
         #endif
         //! initialize with a fixed reference date
-        CapFlatVolatilityStructure(const Date& referenceDate);
+        CapVolatilityStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
-        CapFlatVolatilityStructure(Integer settlementDays, const Calendar&);
+        CapVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
-        virtual ~CapFlatVolatilityStructure() {}
+        virtual ~CapVolatilityStructure() {}
         //! \name Volatility
         //@{
         Volatility volatility(const Date& end, Rate strike) const;
@@ -67,12 +67,16 @@ namespace QuantLib {
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to CapVolatilityStructure */
+    typedef CapVolatilityStructure CapFlatVolatilityStructure;
+    #endif
 
-    //! Caplet/floorlet forward volatility structure
-    /*! This class is purely abstract and defines the interface of concrete
-        structures which will be derived from this one.
+    //! Caplet/floorlet forward-volatility structure
+    /*! This class is purely abstract and defines the interface of
+        concrete structures which will be derived from this one.
     */
-    class CapletForwardVolatilityStructure : public BaseTermStructure {
+    class CapletVolatilityStructure : public BaseTermStructure {
       public:
         /*! \name Constructors
             See the BaseTermStructure documentation for issues regarding
@@ -84,19 +88,18 @@ namespace QuantLib {
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        CapletForwardVolatilityStructure();
+        CapletVolatilityStructure();
         #ifndef QL_DISABLE_DEPRECATED
         //! initialize with a fixed today and reference date
-        CapletForwardVolatilityStructure(const Date& today,
-                                         const Date& referenceDate);
+        CapletVolatilityStructure(const Date& today,
+                                  const Date& referenceDate);
         #endif
         //! initialize with a fixed reference date
-        CapletForwardVolatilityStructure(const Date& referenceDate);
+        CapletVolatilityStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
-        CapletForwardVolatilityStructure(Integer settlementDays,
-                                         const Calendar&);
+        CapletVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
-        virtual ~CapletForwardVolatilityStructure() {}
+        virtual ~CapletVolatilityStructure() {}
         //! \name Volatility
         //@{
         //! returns the volatility for a given start date and strike rate
@@ -109,72 +112,71 @@ namespace QuantLib {
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated renamed to CapletVolatilityStructure */
+    typedef CapletVolatilityStructure CapletForwardVolatilityStructure;
+    #endif
+
+
     // inline definitions
 
-    inline CapFlatVolatilityStructure::CapFlatVolatilityStructure() {}
+    inline CapVolatilityStructure::CapVolatilityStructure() {}
 
-    inline CapFlatVolatilityStructure::CapFlatVolatilityStructure(
+    inline CapVolatilityStructure::CapVolatilityStructure(
                                                    const Date& referenceDate)
     : BaseTermStructure(referenceDate) {}
 
     #ifndef QL_DISABLE_DEPRECATED
-    inline CapFlatVolatilityStructure::CapFlatVolatilityStructure(
+    inline CapVolatilityStructure::CapVolatilityStructure(
                                  const Date& today, const Date& referenceDate)
     : BaseTermStructure(today,referenceDate) {}
     #endif
 
-    inline CapFlatVolatilityStructure::CapFlatVolatilityStructure(
+    inline CapVolatilityStructure::CapVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)
     : BaseTermStructure(settlementDays,calendar) {}
 
-    inline Volatility CapFlatVolatilityStructure::volatility(const Date& end,
-                                                             Rate strike)
-                                                                     const {
+    inline Volatility CapVolatilityStructure::volatility(const Date& end,
+                                                         Rate strike) const {
         return volatilityImpl(timeFromReference(end),strike);
     }
 
-    inline Volatility CapFlatVolatilityStructure::volatility(
-                                                        const Period& length,
-                                                        Rate strike) const {
+    inline Volatility CapVolatilityStructure::volatility(const Period& length,
+                                                         Rate strike) const {
         Date end = referenceDate().plus(length);
         return volatilityImpl(timeFromReference(end),strike);
     }
 
-    inline Volatility CapFlatVolatilityStructure::volatility(Time t,
-                                                             Rate strike)
-                                                                     const {
+    inline Volatility CapVolatilityStructure::volatility(Time t,
+                                                         Rate strike) const {
         return volatilityImpl(t,strike);
     }
 
 
 
-    inline
-    CapletForwardVolatilityStructure::CapletForwardVolatilityStructure() {}
+    inline CapletVolatilityStructure::CapletVolatilityStructure() {}
 
-    inline
-    CapletForwardVolatilityStructure::CapletForwardVolatilityStructure(
+    inline CapletVolatilityStructure::CapletVolatilityStructure(
                                                    const Date& referenceDate)
     : BaseTermStructure(referenceDate) {}
 
     #ifndef QL_DISABLE_DEPRECATED
-    inline
-    CapletForwardVolatilityStructure::CapletForwardVolatilityStructure(
+    inline CapletVolatilityStructure::CapletVolatilityStructure(
                                  const Date& today, const Date& referenceDate)
     : BaseTermStructure(today,referenceDate) {}
     #endif
 
-    inline
-    CapletForwardVolatilityStructure::CapletForwardVolatilityStructure(
+    inline CapletVolatilityStructure::CapletVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)
     : BaseTermStructure(settlementDays,calendar) {}
 
-    inline Volatility CapletForwardVolatilityStructure::volatility(
+    inline Volatility CapletVolatilityStructure::volatility(
                                                         const Date& start,
                                                         Rate strike) const {
         return volatilityImpl(timeFromReference(start),strike);
     }
 
-    inline Volatility CapletForwardVolatilityStructure::volatility(
+    inline Volatility CapletVolatilityStructure::volatility(
                                                         Time t,
                                                         Rate strike) const {
         return volatilityImpl(t,strike);
