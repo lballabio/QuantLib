@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.5  2001/04/18 07:55:57  marmar
+    Test is now faster
+
     Revision 1.4  2001/04/09 11:28:17  nando
     updated copyright notice header and improved CVS tags
 
@@ -42,36 +45,24 @@
 import QuantLib
 import unittest
 
-def initCovariance(corr, vol):
-    n = len(vol)
-    cov = QuantLib.Matrix(n,n)
-    assert n == corr.rows(), \
-        "correlation matrix and volatility vector have different size"
-    for i in range(n):
-        cov[i][i] = vol[i]*vol[i]
-        for j in range(i):
-            cov[i][j] = corr[i][j]*vol[i]*vol[j]
-            cov[j][i] = cov[i][j]
-    return cov
-
 class EverestOptionTest(unittest.TestCase):
     def runTest(self):
         "Testing Everest option pricer"
         cor = QuantLib.Matrix(4,4)
-        cor[0][0] = 1.00
-        cor[1][0] = 0.50; cor[1][1] = 1.00
-        cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00
+        cor[0][0] = 1.00; cor[0][1] = 0.50; cor[0][2] = 0.30; cor[0][3] = 0.10
+        cor[1][0] = 0.50; cor[1][1] = 1.00; cor[1][2] = 0.20; cor[1][3] = 0.40
+        cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00; cor[2][3] = 0.60
         cor[3][0] = 0.10; cor[3][1] = 0.40; cor[3][2] = 0.60; cor[3][3] = 1.00
-
+         
         volatility = [ 0.3,  0.3,  0.3,  0.3]
-        covariance = initCovariance(cor,volatility)
-
+        covariance = QuantLib.getCovariance(volatility, cor)
+         
         dividendYields = [0.010, 0.005, 0.008, 0.011]
         riskFreeRate = 0.05
         resTime = 10.0
         samples = 400000
         seed = 765432123
-
+         
         everest = QuantLib.EverestOption(dividendYields, covariance,
                             riskFreeRate, resTime,
                             samples, seed)
@@ -79,6 +70,7 @@ class EverestOptionTest(unittest.TestCase):
         error = everest.errorEstimate()
         storedValue = 0.363309646566
         storedError = 0.000501529768684
+         
         assert abs(value-storedValue) <= 1e-10, \
             "calculated value: %g\n" % value + \
             "stored value:     %g\n" % storedValue + \
