@@ -19,8 +19,8 @@
     \brief Instrument rate class
 */
 
-#ifndef quantlib_interest_rate_h
-#define quantlib_interest_rate_h
+#ifndef quantlib_interest_rate_hpp
+#define quantlib_interest_rate_hpp
 
 #include <ql/date.hpp>
 #include <ql/types.hpp>
@@ -69,17 +69,8 @@ namespace QuantLib {
             compounded at time t
         */
         DiscountFactor discountFactor(Time t) const {
-            return 1.0/compoundFactor(t);
+            return 1.0/compoundingFactor(t);
         }
-        /*! returns the compound (a.k.a capitalization) factor implied by
-            the rate compounded at time t
-        */
-        Real compoundFactor(Time t) const;
-        //! returns the equivalent rate for the compounding period t
-        Rate equivalentRate(Time t,
-                            DayCounter dc,
-                            Compounding comp,
-                            Frequency freq = Annual) const;
         /*! returns the discount factor implied by the rate
             compounded between two dates
         */
@@ -87,13 +78,22 @@ namespace QuantLib {
             Time t = dc_.yearFraction(d1, d2);
             return discountFactor(t);
         }
+        /*! returns the compounding (a.k.a capitalization) factor
+            implied by the rate compounded at time t
+        */
+        Real compoundingFactor(Time t) const;
         /*! returns the compound factor implied by the rate
             compounded between two dates
         */
-        Real compoundFactor(Date d1, Date d2) const {
+        Real compoundingFactor(Date d1, Date d2) const {
             Time t = dc_.yearFraction(d1, d2);
-            return compoundFactor(t);
+            return compoundingFactor(t);
         }
+        //! returns the equivalent rate for the compounding period t
+        Rate equivalentRate(Time t,
+                            DayCounter dc,
+                            Compounding comp,
+                            Frequency freq = Annual) const;
         /*! returns the equivalent rate for the
             compounding period between two dates
         */
@@ -113,7 +113,7 @@ namespace QuantLib {
         Real freq_;
     };
 
-    //! Formats coompounding rule for output
+    //! Formats compounding rule for output
     /*! Uses FrequencyFormatter and adds compounding informations */
     class CompoundingRuleFormatter {
       public:

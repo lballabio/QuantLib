@@ -38,7 +38,7 @@ namespace QuantLib {
         }
     }
 
-    Real InterestRate::compoundFactor(Time t) const {
+    Real InterestRate::compoundingFactor(Time t) const {
         QL_REQUIRE(r_, "null InterestRate");
         switch (comp_) {
           case Simple:
@@ -64,7 +64,7 @@ namespace QuantLib {
 
         QL_REQUIRE(r_, "null InterestRate");
 
-        Real compounded = compoundFactor(t);
+        Real compounded = compoundingFactor(t);
         switch (comp) {
           case Simple:
             return (compounded - 1.0)/t;
