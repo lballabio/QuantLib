@@ -62,3 +62,5 @@ dist-hook:
 	cp $(srcdir)/Docs/pages/*.docs $(distdir)/Docs/pages/
 	cp $(srcdir)/Docs/pages/*.am $(distdir)/Docs/pages/
 
+tags:
+	cd ql && find . -name '*.[hc]pp' -print | etags --members -
