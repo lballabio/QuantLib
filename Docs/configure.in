@@ -6,7 +6,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 
 AC_INIT(quantlib.doxy)
-AM_INIT_AUTOMAKE(QuantLib-docs, 0.3.0a9-cvs)
+AM_INIT_AUTOMAKE(QuantLib-docs, 0.3.0b1-cvs)
 
 dnl Check for programs
 
