@@ -32,7 +32,7 @@ namespace QuantLib {
         //! default constructor
         Problem(CostFunction& f,// Function and it gradient vector
                 Constraint& c,  // Constraint
-                Method& meth)   // Optimization method
+                OptimizationMethod& meth)   // Optimization method
         : costFunction_(f), constraint_(c), method_(meth) {}
 
         //! call cost function computation and increment evaluation counter
@@ -46,7 +46,7 @@ namespace QuantLib {
         double valueAndGradient(Array& grad_f, const Array& x) const;
 
         //! Constrained optimization method
-        Method& method() const { return method_; }
+        OptimizationMethod& method() const { return method_; }
 
         //! Constraint
         Constraint& constraint() const { return constraint_; }
@@ -65,7 +65,7 @@ namespace QuantLib {
         //! Constraint
         Constraint& constraint_;
         //! constrained optimization method
-        Method& method_;
+        OptimizationMethod& method_;
     };
 
 

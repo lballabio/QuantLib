@@ -33,13 +33,13 @@
 namespace QuantLib {
 
     //! Multi-dimensional Simplex class
-    class Simplex : public Method {
+    class Simplex : public OptimizationMethod {
       public:
         /*! Constructor taking as input lambda as the
           characteristic length and tol as the precision
         */
         Simplex(double lambda, double tol) 
-        : Method(), lambda_(lambda), tol_(tol) {}
+        : lambda_(lambda), tol_(tol) {}
         virtual ~Simplex() {}
 
         virtual void minimize(const Problem& P) const;

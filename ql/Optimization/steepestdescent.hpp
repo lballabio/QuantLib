@@ -31,16 +31,15 @@ namespace QuantLib {
 
         search direction \f$ = - f'(x) \f$
     */
-    class SteepestDescent : public Method {
+    class SteepestDescent : public OptimizationMethod {
       public:
         //! default default constructor (msvc bug)
         SteepestDescent()
-        : Method(), 
-          lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
+        : lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
 
         //! default constructor
         SteepestDescent(const Handle<LineSearch>& lineSearch)
-        : Method(), lineSearch_(lineSearch) {}
+        : lineSearch_(lineSearch) {}
         //! destructor
         virtual ~SteepestDescent() {}
 

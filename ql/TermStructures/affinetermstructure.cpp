@@ -25,7 +25,7 @@ namespace QuantLib {
 
     class AffineTermStructure::CalibrationFunction : public CostFunction {
       public:
-        CalibrationFunction(const Handle<Model>& model,
+        CalibrationFunction(const Handle<ShortRateModel>& model,
                             const std::vector<Handle<RateHelper> >& helpers)
         : model_(model), instruments_(helpers) {}
         virtual ~CalibrationFunction() {}
@@ -42,7 +42,7 @@ namespace QuantLib {
         }
         virtual double finiteDifferenceEpsilon() const { return 1e-7; }
       private:
-        Handle<Model> model_;
+        Handle<ShortRateModel> model_;
         const std::vector<Handle<RateHelper> >& instruments_;
     };
 
@@ -59,7 +59,7 @@ namespace QuantLib {
                           const Date& referenceDate,
                           const Handle<AffineModel>& model,
                           const std::vector<Handle<RateHelper> >& instruments,
-                          const Handle<Method>& method,
+                          const Handle<OptimizationMethod>& method,
                           const DayCounter& dayCounter)
     : dayCounter_(dayCounter), todaysDate_(todaysDate), 
       referenceDate_(referenceDate), needsRecalibration_(true), 
@@ -69,7 +69,7 @@ namespace QuantLib {
     }
 
     void AffineTermStructure::calibrate() const {
-        Handle<Model> model = model_;
+        Handle<ShortRateModel> model = model_;
         CalibrationFunction f(model, instruments_);
 
         method_->setInitialValue(model->params());

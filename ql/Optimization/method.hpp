@@ -31,12 +31,12 @@ namespace QuantLib {
     class Problem;
 
     //! Optimization Method abstract class for constrained optimization pb
-    class Method {
+    class OptimizationMethod {
       public:
-        Method()
+        OptimizationMethod()
         : iterationNumber_(0), functionEvaluation_(0),
           gradientEvaluation_(0), functionValue_(1), squaredNorm_(1) {}
-        virtual ~Method() {}
+        virtual ~OptimizationMethod() {}
 
         //! Set initial value
         void setInitialValue(const Array& initialValue);
@@ -85,14 +85,19 @@ namespace QuantLib {
         mutable Array x_, searchDirection_;
     };
 
+    /*! \deprecated use OptimizationMethod */
+    typedef OptimizationMethod Method;
+
 
     // inline definitions
 
-    inline void Method::setEndCriteria(const EndCriteria& endCriteria) {
+    inline void OptimizationMethod::setEndCriteria(
+                                        const EndCriteria& endCriteria) {
         endCriteria_ = endCriteria;
     }
 
-    inline void Method::setInitialValue(const Array& initialValue) {
+    inline void OptimizationMethod::setInitialValue(
+                                        const Array& initialValue) {
         iterationNumber_ = 0;
         initialValue_ = initialValue;
         x_ = initialValue;

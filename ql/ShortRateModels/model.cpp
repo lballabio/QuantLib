@@ -23,14 +23,14 @@
 
 namespace QuantLib {
 
-    Model::Model(Size nArguments) 
+    ShortRateModel::ShortRateModel(Size nArguments) 
     : arguments_(nArguments),
       constraint_(new PrivateConstraint(arguments_)) {}
 
-    class Model::CalibrationFunction : public CostFunction {
+    class ShortRateModel::CalibrationFunction : public CostFunction {
       public:
         CalibrationFunction( 
-                  Model* model,
+                  ShortRateModel* model,
                   const std::vector<Handle<CalibrationHelper> >& instruments) 
         : model_(model, false), instruments_(instruments) {}
         virtual ~CalibrationFunction() {}
@@ -48,13 +48,13 @@ namespace QuantLib {
         }
         virtual double finiteDifferenceEpsilon() const { return 1e-6; }
       private:
-        Handle<Model> model_;
+        Handle<ShortRateModel> model_;
         const std::vector<Handle<CalibrationHelper> >& instruments_;
     };
 
-    void Model::calibrate(
+    void ShortRateModel::calibrate(
                    const std::vector<Handle<CalibrationHelper> >& instruments,
-                   Method& method, 
+                   OptimizationMethod& method, 
                    const Constraint& additionalConstraint) {
 
         Constraint c;
@@ -74,7 +74,7 @@ namespace QuantLib {
         setParams(result);
     }
 
-    Disposable<Array> Model::params() const {
+    Disposable<Array> ShortRateModel::params() const {
         Size size = 0, i;
         for (i=0; i<arguments_.size(); i++)
             size += arguments_[i].size();
@@ -88,7 +88,7 @@ namespace QuantLib {
         return params; 
     }
 
-    void Model::setParams(const Array& params) {
+    void ShortRateModel::setParams(const Array& params) {
         Array::const_iterator p = params.begin();
         for (Size i=0; i<arguments_.size(); i++) {
             for (Size j=0; j<arguments_[i].size(); j++, p++) {

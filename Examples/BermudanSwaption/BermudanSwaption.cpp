@@ -38,7 +38,7 @@ double swaptionVols[] = {
     12.00, 11.40, 11.5, 10.8, 10.3, 10.00,  9.80,  9.60,  9.5,  9.10,
     11.50, 11.20, 11.3, 10.6, 10.2, 10.10,  9.70,  9.50,  9.4,  8.60};
 
-void calibrateModel(const Handle<Model>& model,
+void calibrateModel(const Handle<ShortRateModel>& model,
                     CalibrationSet& calibs,
                     double lambda) {
 
@@ -219,9 +219,9 @@ int main(int argc, char* argv[])
         // Building time-grid
         TimeGrid grid(times.begin(), times.end(), 30);
 
-        Handle<Model> modelHW(new HullWhite(rhTermStructure));
-        Handle<Model> modelHW2(new HullWhite(rhTermStructure));
-        Handle<Model> modelBK(new BlackKarasinski(rhTermStructure));
+        Handle<ShortRateModel> modelHW(new HullWhite(rhTermStructure));
+        Handle<ShortRateModel> modelHW2(new HullWhite(rhTermStructure));
+        Handle<ShortRateModel> modelBK(new BlackKarasinski(rhTermStructure));
 
         std::cout << "Calibrating to swaptions" << std::endl;
 

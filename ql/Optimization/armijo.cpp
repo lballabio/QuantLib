@@ -27,7 +27,7 @@ namespace QuantLib {
             const Problem& P,       // Optimization problem
             double t_ini)           // initial value of line-search step
     {
-        Method& method = P.method();
+        OptimizationMethod& method = P.method();
         Constraint& constraint = P.constraint();
 
         bool maxIter = false;

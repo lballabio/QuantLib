@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     //! Single-factor short-rate model abstract class
-    class OneFactorModel : public Model {
+    class OneFactorModel : public ShortRateModel {
       public:
         OneFactorModel(Size nArguments);
         virtual ~OneFactorModel() {}

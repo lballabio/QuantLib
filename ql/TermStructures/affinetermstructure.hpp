@@ -51,7 +51,7 @@ namespace QuantLib {
                             const Date& referenceDate,
                             const Handle<AffineModel>& model,
                             const std::vector<Handle<RateHelper> >&,
-                            const Handle<Method>& method,
+                            const Handle<OptimizationMethod>& method,
                             const DayCounter& dayCounter);
 
         // inspectors
@@ -75,7 +75,7 @@ namespace QuantLib {
         mutable bool needsRecalibration_;
         Handle<AffineModel> model_;
         std::vector<Handle<RateHelper> > instruments_;
-        Handle<Method> method_;
+        Handle<OptimizationMethod> method_;
     };
 
     inline DayCounter AffineTermStructure::dayCounter() const {

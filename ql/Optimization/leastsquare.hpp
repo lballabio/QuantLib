@@ -97,7 +97,7 @@ namespace QuantLib {
         inline NonLinearLeastSquare(Constraint& c,
                                     double accuracy,
                                     int maxiter,
-                                    Handle<Method> om);
+                                    Handle<OptimizationMethod> om);
         //! Destructor
         inline ~NonLinearLeastSquare () {}
 
@@ -134,7 +134,7 @@ namespace QuantLib {
         //! maximum and real number of iterations
         Size maxIterations_, nbIterations_;
         //! Optimization method
-        Handle<Method> om_;
+        Handle<OptimizationMethod> om_;
         //constraint
         Constraint& c_;
 
@@ -183,17 +183,18 @@ namespace QuantLib {
         return DotProduct(diff, diff);
     }
 
-    inline NonLinearLeastSquare::NonLinearLeastSquare (Constraint& c, 
-                                                       double accuracy, 
-                                                       int maxiter)
+    inline NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c, 
+                                                      double accuracy, 
+                                                      int maxiter)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-      om_ (Handle<Method>(new ConjugateGradient())), c_(c)
+      om_ (Handle<OptimizationMethod>(new ConjugateGradient())), c_(c)
     {}
 
-    inline NonLinearLeastSquare::NonLinearLeastSquare (Constraint& c, 
-                                                       double accuracy, 
-                                                       int maxiter, 
-                                                       Handle<Method> om)
+    inline NonLinearLeastSquare::NonLinearLeastSquare(
+                                            Constraint& c, 
+                                            double accuracy, 
+                                            int maxiter, 
+                                            Handle<OptimizationMethod> om)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
       om_ (om), c_(c) {}
 

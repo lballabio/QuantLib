@@ -60,9 +60,9 @@ namespace QuantLib {
     };
 
     //! Abstract short-rate model class
-    class Model : public Observer, public Observable {
+    class ShortRateModel : public Observer, public Observable {
       public:
-        Model(Size nArguments);
+        ShortRateModel(Size nArguments);
 
         void update() { 
             generateArguments();
@@ -77,7 +77,7 @@ namespace QuantLib {
         */
         void calibrate(
                    const std::vector<Handle<CalibrationHelper> >& instruments,
-                   Method& method,
+                   OptimizationMethod& method,
                    const Constraint& constraint = Constraint());
 
         const Handle<Constraint>& constraint() const;
@@ -99,14 +99,17 @@ namespace QuantLib {
         friend class CalibrationFunction;
     };
 
+    /*! \deprecated use ShortRateModel */
+    typedef ShortRateModel Model;
+
 
     // inline definitions
 
-    inline const Handle<Constraint>& Model::constraint() const {
+    inline const Handle<Constraint>& ShortRateModel::constraint() const {
         return constraint_;
     }
 
-    class Model::PrivateConstraint : public Constraint {
+    class ShortRateModel::PrivateConstraint : public Constraint {
       private:
         class Impl :  public Constraint::Impl {
           public:
