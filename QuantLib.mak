@@ -46,16 +46,14 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
-	-@erase "$(INTDIR)\americanmcengines.obj"
-	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticamericanengine.obj"
-	-@erase "$(INTDIR)\analyticamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
@@ -120,6 +118,8 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\chisquaredistribution.obj"
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
+	-@erase "$(INTDIR)\choleskydecomposition.obj"
+	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
@@ -246,8 +246,6 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\mathf.sbr"
-	-@erase "$(INTDIR)\matrix.obj"
-	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
@@ -306,6 +304,8 @@ CLEAN :
 	-@erase "$(INTDIR)\primenumbers.sbr"
 	-@erase "$(INTDIR)\primitivepolynomials.obj"
 	-@erase "$(INTDIR)\primitivepolynomials.sbr"
+	-@erase "$(INTDIR)\pseudosqrt.obj"
+	-@erase "$(INTDIR)\pseudosqrt.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -467,7 +467,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\generalstatistics.sbr" \
 	"$(INTDIR)\incompletegamma.sbr" \
 	"$(INTDIR)\incrementalstatistics.sbr" \
-	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\svd.sbr" \
@@ -526,15 +525,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
-	"$(INTDIR)\americanmcengines.sbr" \
-	"$(INTDIR)\analyticamericanengine.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
-	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -574,7 +572,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mcamericanbasketengine.sbr"
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -650,7 +650,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\generalstatistics.obj" \
 	"$(INTDIR)\incompletegamma.obj" \
 	"$(INTDIR)\incrementalstatistics.obj" \
-	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\svd.obj" \
@@ -709,15 +708,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
-	"$(INTDIR)\americanmcengines.obj" \
-	"$(INTDIR)\analyticamericanengine.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
-	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -757,7 +755,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mcamericanbasketengine.obj"
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
+	"$(INTDIR)\pseudosqrt.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -783,16 +783,14 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
-	-@erase "$(INTDIR)\americanmcengines.obj"
-	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticamericanengine.obj"
-	-@erase "$(INTDIR)\analyticamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
@@ -857,6 +855,8 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\chisquaredistribution.obj"
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
+	-@erase "$(INTDIR)\choleskydecomposition.obj"
+	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
@@ -983,8 +983,6 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\mathf.sbr"
-	-@erase "$(INTDIR)\matrix.obj"
-	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
@@ -1043,6 +1041,8 @@ CLEAN :
 	-@erase "$(INTDIR)\primenumbers.sbr"
 	-@erase "$(INTDIR)\primitivepolynomials.obj"
 	-@erase "$(INTDIR)\primitivepolynomials.sbr"
+	-@erase "$(INTDIR)\pseudosqrt.obj"
+	-@erase "$(INTDIR)\pseudosqrt.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -1205,7 +1205,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\generalstatistics.sbr" \
 	"$(INTDIR)\incompletegamma.sbr" \
 	"$(INTDIR)\incrementalstatistics.sbr" \
-	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\svd.sbr" \
@@ -1264,15 +1263,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
-	"$(INTDIR)\americanmcengines.sbr" \
-	"$(INTDIR)\analyticamericanengine.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
-	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1312,7 +1310,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mcamericanbasketengine.sbr"
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1388,7 +1388,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\generalstatistics.obj" \
 	"$(INTDIR)\incompletegamma.obj" \
 	"$(INTDIR)\incrementalstatistics.obj" \
-	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\svd.obj" \
@@ -1447,15 +1446,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
-	"$(INTDIR)\americanmcengines.obj" \
-	"$(INTDIR)\analyticamericanengine.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
-	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1495,7 +1493,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mcamericanbasketengine.obj"
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
+	"$(INTDIR)\pseudosqrt.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1521,16 +1521,14 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
-	-@erase "$(INTDIR)\americanmcengines.obj"
-	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticamericanengine.obj"
-	-@erase "$(INTDIR)\analyticamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
@@ -1595,6 +1593,8 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\chisquaredistribution.obj"
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
+	-@erase "$(INTDIR)\choleskydecomposition.obj"
+	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
@@ -1721,8 +1721,6 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\mathf.sbr"
-	-@erase "$(INTDIR)\matrix.obj"
-	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
@@ -1781,6 +1779,8 @@ CLEAN :
 	-@erase "$(INTDIR)\primenumbers.sbr"
 	-@erase "$(INTDIR)\primitivepolynomials.obj"
 	-@erase "$(INTDIR)\primitivepolynomials.sbr"
+	-@erase "$(INTDIR)\pseudosqrt.obj"
+	-@erase "$(INTDIR)\pseudosqrt.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -1942,7 +1942,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\generalstatistics.sbr" \
 	"$(INTDIR)\incompletegamma.sbr" \
 	"$(INTDIR)\incrementalstatistics.sbr" \
-	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\svd.sbr" \
@@ -2001,15 +2000,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
-	"$(INTDIR)\americanmcengines.sbr" \
-	"$(INTDIR)\analyticamericanengine.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
-	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2049,7 +2047,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mcamericanbasketengine.sbr"
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2125,7 +2125,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\generalstatistics.obj" \
 	"$(INTDIR)\incompletegamma.obj" \
 	"$(INTDIR)\incrementalstatistics.obj" \
-	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\svd.obj" \
@@ -2184,15 +2183,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
-	"$(INTDIR)\americanmcengines.obj" \
-	"$(INTDIR)\analyticamericanengine.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
-	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2232,7 +2230,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mcamericanbasketengine.obj"
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
+	"$(INTDIR)\pseudosqrt.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2258,16 +2258,14 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
-	-@erase "$(INTDIR)\americanmcengines.obj"
-	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
-	-@erase "$(INTDIR)\analyticamericanengine.obj"
-	-@erase "$(INTDIR)\analyticamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
+	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
@@ -2332,6 +2330,8 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\chisquaredistribution.obj"
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
+	-@erase "$(INTDIR)\choleskydecomposition.obj"
+	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
@@ -2458,8 +2458,6 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\mathf.sbr"
-	-@erase "$(INTDIR)\matrix.obj"
-	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
@@ -2518,6 +2516,8 @@ CLEAN :
 	-@erase "$(INTDIR)\primenumbers.sbr"
 	-@erase "$(INTDIR)\primitivepolynomials.obj"
 	-@erase "$(INTDIR)\primitivepolynomials.sbr"
+	-@erase "$(INTDIR)\pseudosqrt.obj"
+	-@erase "$(INTDIR)\pseudosqrt.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -2680,7 +2680,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\generalstatistics.sbr" \
 	"$(INTDIR)\incompletegamma.sbr" \
 	"$(INTDIR)\incrementalstatistics.sbr" \
-	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\svd.sbr" \
@@ -2739,15 +2738,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
-	"$(INTDIR)\americanmcengines.sbr" \
-	"$(INTDIR)\analyticamericanengine.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
-	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2787,7 +2785,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mcamericanbasketengine.sbr"
+	"$(INTDIR)\analyticdigitalamericanengine.sbr" \
+	"$(INTDIR)\choleskydecomposition.sbr" \
+	"$(INTDIR)\pseudosqrt.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2863,7 +2863,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\generalstatistics.obj" \
 	"$(INTDIR)\incompletegamma.obj" \
 	"$(INTDIR)\incrementalstatistics.obj" \
-	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\svd.obj" \
@@ -2922,15 +2921,14 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
-	"$(INTDIR)\americanmcengines.obj" \
-	"$(INTDIR)\analyticamericanengine.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
-	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2970,7 +2968,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mcamericanbasketengine.obj"
+	"$(INTDIR)\analyticdigitalamericanengine.obj" \
+	"$(INTDIR)\choleskydecomposition.obj" \
+	"$(INTDIR)\pseudosqrt.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -3377,6 +3377,12 @@ SOURCE=.\ql\Math\chisquaredistribution.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Math\choleskydecomposition.cpp
+
+"$(INTDIR)\choleskydecomposition.obj"	"$(INTDIR)\choleskydecomposition.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Math\discrepancystatistics.cpp
 
 "$(INTDIR)\discrepancystatistics.obj"	"$(INTDIR)\discrepancystatistics.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3419,12 +3425,6 @@ SOURCE=.\ql\Math\incrementalstatistics.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Math\matrix.cpp
-
-"$(INTDIR)\matrix.obj"	"$(INTDIR)\matrix.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Math\normaldistribution.cpp
 
 "$(INTDIR)\normaldistribution.obj"	"$(INTDIR)\normaldistribution.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3434,6 +3434,12 @@ SOURCE=.\ql\Math\normaldistribution.cpp
 SOURCE=.\ql\Math\primenumbers.cpp
 
 "$(INTDIR)\primenumbers.obj"	"$(INTDIR)\primenumbers.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Math\pseudosqrt.cpp
+
+"$(INTDIR)\pseudosqrt.obj"	"$(INTDIR)\pseudosqrt.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3811,15 +3817,21 @@ SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.cpp
+SOURCE=.\ql\PricingEngines\Basket\mcamericanbasketengine.cpp
 
-"$(INTDIR)\americanmcengines.obj"	"$(INTDIR)\americanmcengines.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\mcamericanbasketengine.obj"	"$(INTDIR)\mcamericanbasketengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.cpp
+SOURCE=.\ql\PricingEngines\Basket\stulzengine.cpp
 
-"$(INTDIR)\analyticamericanengine.obj"	"$(INTDIR)\analyticamericanengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\stulzengine.obj"	"$(INTDIR)\stulzengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\analyticdigitalamericanengine.cpp
+
+"$(INTDIR)\analyticdigitalamericanengine.obj"	"$(INTDIR)\analyticdigitalamericanengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3856,18 +3868,6 @@ SOURCE=.\ql\PricingEngines\Vanilla\integralengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp
 
 "$(INTDIR)\jumpdiffusionengine.obj"	"$(INTDIR)\jumpdiffusionengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\Basket\mcamericanbasketengine.cpp
-
-"$(INTDIR)\mcamericanbasketengine.obj"	"$(INTDIR)\mcamericanbasketengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\Basket\stulzengine.cpp
-
-"$(INTDIR)\stulzengine.obj"	"$(INTDIR)\stulzengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

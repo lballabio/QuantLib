@@ -7,21 +7,21 @@
 CFG=QuantLib - Win32 Debug MTDLL
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Debug MTDLL"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -142,7 +142,7 @@ PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
 # End Special Build Tool
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
@@ -827,6 +827,14 @@ SOURCE=.\ql\Math\chisquaredistribution.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\choleskydecomposition.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\choleskydecomposition.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\comparison.hpp
 # End Source File
 # Begin Source File
@@ -927,10 +935,6 @@ SOURCE=.\ql\Math\loglinearinterpolation.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\matrix.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Math\matrix.hpp
 # End Source File
 # Begin Source File
@@ -956,6 +960,14 @@ SOURCE=.\ql\Math\primenumbers.cpp
 # Begin Source File
 
 SOURCE=.\ql\Math\primenumbers.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\pseudosqrt.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\pseudosqrt.hpp
 # End Source File
 # Begin Source File
 
@@ -1446,7 +1458,7 @@ SOURCE=.\ql\Pricers\mcbasket.cpp
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
 
-!ENDIF
+!ENDIF 
 
 # End Source File
 # Begin Source File
@@ -1654,19 +1666,11 @@ SOURCE=.\ql\PricingEngines\Quanto\quantoengine.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\analyticdigitalamericanengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.hpp
+SOURCE=.\ql\PricingEngines\Vanilla\analyticdigitalamericanengine.hpp
 # End Source File
 # Begin Source File
 

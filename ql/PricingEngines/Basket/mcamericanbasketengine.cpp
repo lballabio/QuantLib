@@ -23,7 +23,6 @@
 #include <ql/Instruments/basketoption.hpp>
 #include <ql/Math/statistics.hpp>
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
-#include <ql/PricingEngines/Vanilla/americanmcengines.hpp>
 
 namespace QuantLib {
 
