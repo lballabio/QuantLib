@@ -83,18 +83,19 @@ namespace QuantLib {
             dtMax = last/steps;
         }
 
-        Time begin = 0.0;
+        Time periodBegin = 0.0;
         std::list<Time>::const_iterator t;
         for (t = times.begin(); t != times.end(); t++) {
-            Time end = *t;
-            if (begin == end) continue;
-            Size nSteps = (Size)((end - begin)/dtMax + 1.0);
-            double dt = (end - begin)/nSteps;
+            Time periodEnd = *t;
+            if (periodBegin >= periodEnd) // Should we use a QL_REQUIRE?
+                continue;
+            Size nSteps = (Size)((periodEnd - periodBegin)/dtMax + 1.0);
+            double dt = (periodEnd - periodBegin)/nSteps;
             for (Size n=0; n<nSteps; n++)
-                push_back(begin + n*dt);
-            begin = end;
+                push_back(periodBegin + n*dt);
+            periodBegin = periodEnd;
         }
-        push_back(begin);
+        push_back(periodBegin); // Note periodBegin = periodEnd
     }
 
     inline Size TimeGrid::findIndex(Time t) const {
