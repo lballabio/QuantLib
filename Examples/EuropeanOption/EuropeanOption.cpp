@@ -25,12 +25,9 @@ using namespace QuantLib::PricingEngines;
 using namespace QuantLib::Math;
 using namespace QuantLib::MonteCarlo;
 using namespace QuantLib::RandomNumbers;
-
-using QuantLib::Pricers::EuropeanOption;
-using QuantLib::Pricers::McEuropean;
-using QuantLib::Pricers::FdEuropean;
-using QuantLib::TermStructures::FlatForward;
-using QuantLib::VolTermStructures::BlackConstantVol;
+using namespace QuantLib::Pricers;
+using namespace QuantLib::TermStructures;
+using namespace QuantLib::VolTermStructures;
 
 // This will be included in the library after a bit of redesign
 class Payoff : public QL::ObjectiveFunction{
@@ -404,12 +401,11 @@ int main(int argc, char* argv[])
         timeSteps = 365;
         TimeGrid timeGrid(maturity, timeSteps);
         method = "MC (crude)";
-        UniformRandomGenerator rng(mcSeed);
 
-        UniformRandomSequenceGenerator rsg(timeSteps, rng);
-        UniformLowDiscrepancySequenceGenerator ldsg(timeSteps);
-
+        UniformRandomSequenceGenerator rsg(timeSteps, mcSeed);
         GaussianRandomSequenceGenerator grsg(rsg);
+
+        UniformLowDiscrepancySequenceGenerator ldsg(timeSteps);
         GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
 
         option.setPricingEngine(Handle<PricingEngine>(
