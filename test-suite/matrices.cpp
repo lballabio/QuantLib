@@ -88,6 +88,7 @@ void MatricesTest::testEigenvectors() {
         SymmetricSchurDecomposition dec(M);
         Array eigenValues = dec.eigenvalues();
         Matrix eigenVectors = dec.eigenvectors();
+        Real minHolder = QL_MAX_REAL;
 
         for (Size i=0; i<N; i++) {
             Array v(N);
@@ -98,6 +99,13 @@ void MatricesTest::testEigenvectors() {
             Array b = eigenValues[i]*v;
             if (norm(a-b) > 1.0e-15)
                 BOOST_FAIL("Eigenvector definition not satisfied");
+            // check decreasing ordering
+            if (eigenValues[i] >= minHolder)
+                BOOST_FAIL("Eigenvalues nor ordered: "
+                + ArrayFormatter::toString(eigenValues.begin(),
+                                           eigenValues.end()));
+            else
+                minHolder = eigenValues[i];
         }
 
         // check normalization
