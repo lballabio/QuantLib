@@ -260,7 +260,7 @@ namespace QuantLib {
                 }
             }
 
-/* equivalent NR-like code
+/* equivalent NumericalRecipes-like code
             for (k=1; k<dimensionality_; k++) {
                 for (Size j=degree[k];j<bits_;j++) {
                     long ipp=ppmt[k];
