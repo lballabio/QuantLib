@@ -303,8 +303,8 @@ namespace QuantLib {
                            "different values in history for " +
                            DateFormatter::toString(lastDate_));
             } else {
-                while (d-lastDate_ > 1) {
-                    lastDate_ = lastDate_.plusDays(1);
+                while (d > lastDate_ + 1) {
+                    ++lastDate_;
                     values_.push_back(Null<Real>());
                 }
                 lastDate_ = d;

@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -88,10 +88,10 @@ namespace QuantLib {
 
     //! Units used to describe time periods
     /*! \ingroup datetime */
-    enum TimeUnit { Days   = 0,
-                    Weeks  = 1,
-                    Months = 2,
-                    Years  = 3
+    enum TimeUnit { Days,
+                    Weeks,
+                    Months,
+                    Years
     };
 
     //! Time period described by a number of a given time unit
@@ -110,6 +110,11 @@ namespace QuantLib {
     };
 
     /*! \relates Period */
+    Period operator*(Integer n, TimeUnit units);
+    /*! \relates Period */
+    Period operator*(TimeUnit units, Integer n);
+
+    /*! \relates Period */
     bool operator<(const Period&, const Period&);
     /*! \relates Period */
     bool operator==(const Period&, const Period&);
@@ -121,26 +126,6 @@ namespace QuantLib {
     bool operator<=(const Period&, const Period&);
     /*! \relates Period */
     bool operator>=(const Period&, const Period&);
-
-    inline bool operator==(const Period& p1, const Period& p2) {
-        return !(p1 < p2 || p2 < p1);
-    }
-
-    inline bool operator!=(const Period& p1, const Period& p2) {
-        return !(p1 == p2);
-    }
-
-    inline bool operator>(const Period& p1, const Period& p2) {
-        return p2 < p1;
-    }
-
-    inline bool operator<=(const Period& p1, const Period& p2) {
-        return !(p1 > p2);
-    }
-
-    inline bool operator>=(const Period& p1, const Period& p2) {
-        return !(p1 < p2);
-    }
 
 
     //! Concrete date class
@@ -169,9 +154,6 @@ namespace QuantLib {
         //@{
         Weekday weekday() const;
         Day dayOfMonth() const;
-        bool isEndOfMonth() const;
-        bool isIMMdate() const;
-        Day lastDayOfMonth() const;
         //! One-based (Jan 1st = 1)
         Day dayOfYear() const;
         Month month() const;
@@ -180,19 +162,27 @@ namespace QuantLib {
         /*! returns the 1st delivery date for next contract listed in the
             International Money Market section of the Chicago Mercantile
             Exchange.
-            
+
             \warning The result date is following or equal to the original date
         */
-        //! next IMM date
-        Date nextIMMdate() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the static isEOM() method instead */
+        bool isEndOfMonth() const;
+        /*! \deprecated use the static endOfMonth() method instead */
+        Day lastDayOfMonth() const;
+        #endif
         //@}
 
         //! \name date algebra
         //@{
-        //! increments date in place
+        //! increments date by the given number of days
         Date& operator+=(BigInteger days);
-        //! decrement date in place
+        //! increments date by the given period
+        Date& operator+=(const Period&);
+        //! decrement date by the given number of days
         Date& operator-=(BigInteger days);
+        //! decrements date by the given period
+        Date& operator-=(const Period&);
         //! 1-day pre-increment
         Date& operator++();
         //! 1-day post-increment
@@ -201,51 +191,70 @@ namespace QuantLib {
         Date& operator--();
         //! 1-day post-decrement
         Date operator--(int );
-        //! returns a new incremented date
+        //! returns a new date incremented by the given number of days
         Date operator+(BigInteger days) const;
-        //! returns a new decremented date
+        //! returns a new date incremented by the given period
+        Date operator+(const Period&) const;
+        //! returns a new date decremented by the given number of days
         Date operator-(BigInteger days) const;
+        //! returns a new date decremented by the given period
+        Date operator-(const Period&) const;
         //@}
 
+        #ifndef QL_DISABLE_DEPRECATED
         //! \name other methods to increment/decrement dates
         //@{
-        Date plusDays(Integer days) const;
-        Date plusWeeks(Integer weeks) const;
-        Date plusMonths(Integer months) const;
-        Date plusYears(Integer years) const;
-        Date plus(Integer units, TimeUnit) const;
+        /*! \deprecated use date + n*Days instead */
+        Date plusDays(Integer n) const;
+        /*! \deprecated use date + n*Weeks instead */
+        Date plusWeeks(Integer n) const;
+        /*! \deprecated use date + n*Months instead */
+        Date plusMonths(Integer n) const;
+        /*! \deprecated use date + n*Years instead */
+        Date plusYears(Integer n) const;
+        /*! \deprecated use date + n*units instead */
+        Date plus(Integer units, TimeUnit units) const;
+        /*! \deprecated use date + period instead */
         Date plus(const Period&) const;
         //@}
+        #endif
 
         //! \name static methods
         //@{
-        static bool isLeap(Year y);
+        //! today's date.
+        static Date todaysDate();
         //! earliest allowed date
         static Date minDate();
         //! latest allowed date
         static Date maxDate();
-        /*! returns the date of the next day of week following (or equal to)
-            a given date.
-            (e.g. the Friday following Tuesday 15-Jan-2002 is 18-Jan-2002)
+        //! whether the given year is a leap one
+        static bool isLeap(Year y);
+        //! last day of the month to which the given date belongs
+        static Date endOfMonth(const Date& d);
+        //! whether a date is the last day of its month
+        static bool isEOM(const Date& d);
+        //! next given weekday following or equal to the given date
+        /*! E.g., the Friday following January 15th, 20 (a Tuesday)
+            was January 18th, 2002.
 
             see http://www.cpearson.com/excel/DateTimeWS.htm
         */
-        static Date nextDayOfWeekAfterDate(const Date& d,
-                                           Weekday dayOfWeek);
-        /*! returns the date of Nth weekday in a given month and year
-            (e.g. 26-March-98 for the 4th Thursday of March, 1998)
+        static Date nextWeekday(const Date& d, Weekday);
+        //! n-th given weekday in the given month and year
+        /*! E.g., the 4th Thursday of March, 1998 was March 26th,
+            1998.
 
             see http://www.cpearson.com/excel/DateTimeWS.htm
         */
-        static Date nthDayOfWeekForMonthAndYear(Size n,
-                                                Weekday dayOfWeek,
-                                                Month m,
-                                                Year y);
-        //! today's date.
-        static Date todaysDate();
+        static Date nthWeekday(Size n, Weekday, Month m, Year y);
+        //! whether or not the given date is an IMM date
+        static bool isIMMdate(const Date& d);
+        //! next IMM date following (or equal to) the given date
+        static Date nextIMMdate(const Date& d);
         //@}
       private:
         BigInteger serialNumber_;
+        static Date advance(const Date& d, Integer units, TimeUnit);
         static Integer monthLength(Month m, bool leapYear);
         static Integer monthOffset(Month m, bool leapYear);
         static BigInteger yearOffset(Year y);
@@ -285,20 +294,46 @@ namespace QuantLib {
 
     //! Formats weekday for output
     /*! Formatting can be in Long (full name), Short (three letters),
-        of VeryShort (two letters) form.
+        of Shortest (two letters) form.
     */
     class WeekdayFormatter {
       public:
-        enum Format { Long, Short, VeryShort };
+        enum Format { Long, Short, Shortest };
         static std::string toString(Weekday wd,
                                     Format f = Long);
-        static std::string toString(const Date& d,
-                                    Format f = Long) {
-            return WeekdayFormatter::toString(d.weekday(), f);
-        }
     };
 
+
     // inline definitions
+
+    inline Period operator*(Integer n, TimeUnit units) {
+        return Period(n,units);
+    }
+
+    inline Period operator*(TimeUnit units, Integer n) {
+        return Period(n,units);
+    }
+
+    inline bool operator==(const Period& p1, const Period& p2) {
+        return !(p1 < p2 || p2 < p1);
+    }
+
+    inline bool operator!=(const Period& p1, const Period& p2) {
+        return !(p1 == p2);
+    }
+
+    inline bool operator>(const Period& p1, const Period& p2) {
+        return p2 < p1;
+    }
+
+    inline bool operator<=(const Period& p1, const Period& p2) {
+        return !(p1 > p2);
+    }
+
+    inline bool operator>=(const Period& p1, const Period& p2) {
+        return !(p1 < p2);
+    }
+
 
     inline Weekday Date::weekday() const {
         Integer w = serialNumber_ % 7;
@@ -309,21 +344,6 @@ namespace QuantLib {
         return dayOfYear() - monthOffset(month(),isLeap(year()));
     }
 
-    inline bool Date::isEndOfMonth() const {
-       return (dayOfMonth() == monthLength(month(), isLeap(year())));
-    }
-
-    inline bool Date::isIMMdate() const {
-        Day d = this->dayOfMonth();
-        Month m = this->month();
-        return ((this->weekday() == Wednesday) && (d >= 15 && d <= 21) && 
-                (m == March || m == June || m == September || m == December));
-    }
-
-    inline Day Date::lastDayOfMonth() const {
-       return monthLength(month(), isLeap(year()));
-    }
-
     inline Day Date::dayOfYear() const {
         return serialNumber_ - yearOffset(year());
     }
@@ -331,6 +351,16 @@ namespace QuantLib {
     inline BigInteger Date::serialNumber() const {
         return serialNumber_;
     }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline Day Date::lastDayOfMonth() const {
+        return endOfMonth(*this).dayOfMonth();
+    }
+
+    inline bool Date::isEndOfMonth() const {
+        return isEOM(*this);
+    }
+    #endif
 
     inline Date Date::operator+(BigInteger days) const {
         return Date(serialNumber_+days);
@@ -340,16 +370,54 @@ namespace QuantLib {
         return Date(serialNumber_-days);
     }
 
+    inline Date Date::operator+(const Period& p) const {
+        return advance(*this,p.length(),p.units());
+    }
+
+    inline Date Date::operator-(const Period& p) const {
+        return advance(*this,-p.length(),p.units());
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
     inline Date Date::plusDays(Integer days) const {
-        return Date(serialNumber_+days);
+        return advance(*this,days,Days);
     }
 
     inline Date Date::plusWeeks(Integer weeks) const {
-        return Date(serialNumber_+weeks*7);
+        return advance(*this,weeks,Weeks);
     }
 
+    inline Date Date::plusMonths(Integer months) const {
+        return advance(*this,months,Months);
+    }
+
+    inline Date Date::plusYears(Integer years) const {
+        return advance(*this,years,Years);
+    }
+
+    inline Date Date::plus(Integer n, TimeUnit units) const {
+        return advance(*this,n,units);
+    }
     inline Date Date::plus(const Period& p) const {
-        return plus(p.length(),p.units());
+        return advance(*this,p);
+    }
+    #endif
+
+    inline Date Date::endOfMonth(const Date& d) {
+        Month m = d.month();
+        Year y = d.year();
+        return Date(monthLength(m, isLeap(y)), m, y);
+    }
+
+    inline bool Date::isEOM(const Date& d) {
+       return (d.dayOfMonth() == monthLength(d.month(), isLeap(d.year())));
+    }
+
+    inline bool Date::isIMMdate(const Date& date) {
+        Day d = date.dayOfMonth();
+        Month m = date.month();
+        return ((date.weekday() == Wednesday) && (d >= 15 && d <= 21) &&
+                (m == March || m == June || m == September || m == December));
     }
 
     inline BigInteger operator-(const Date& d1, const Date& d2) {

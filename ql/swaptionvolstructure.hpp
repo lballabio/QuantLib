@@ -109,7 +109,7 @@ namespace QuantLib {
     SwaptionVolatilityStructure::convertDates(const Date& start,
                                               const Period& length) const {
         Time startTime = timeFromReference(start);
-        Date end = start.plus(length);
+        Date end = start + length;
         Time timeLength = dayCounter().yearFraction(start,end);
         return std::make_pair(startTime,timeLength);
     }

@@ -86,7 +86,7 @@ namespace QuantLib {
         }
         for (i=0; i<lengths_.size(); i++) {
             Date startDate = exerciseDates_[0]; // as good as any
-            Date endDate = startDate.plus(lengths_[i]);
+            Date endDate = startDate + lengths_[i];
             timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
         }
         interpolation_ =
@@ -120,7 +120,7 @@ namespace QuantLib {
                               const Date& start, const Period& length) const {
         Time exerciseTime = timeFromReference(start);
         Date startDate = exerciseDates_[0]; // for consistency
-        Date endDate = startDate.plus(length);
+        Date endDate = startDate + length;
         Time timeLength = dayCounter_.yearFraction(startDate,endDate);
         return std::make_pair(exerciseTime,timeLength);
     }

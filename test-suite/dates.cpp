@@ -27,34 +27,35 @@ void DateTest::immDates() {
     BOOST_MESSAGE("Testing IMM dates...");
 
     Date counter = Date::minDate();
-    Date last = Date::maxDate().plusMonths(-4);
+    Date last = Date::maxDate() - 4*Months;
     Date imm;
 
     while (counter<=last) {
-        imm = counter.nextIMMdate();
+        imm = Date::nextIMMdate(counter);
         // check that imm is greater than or equal to counter
         if (imm<counter)
-            BOOST_FAIL("\n  " + WeekdayFormatter::toString(imm) + " "
+            BOOST_FAIL("\n  " + WeekdayFormatter::toString(imm.weekday()) + " "
                        + DateFormatter::toString(imm) +
                        " is not greater than or equal to "
-                       + WeekdayFormatter::toString(counter) + " "
+                       + WeekdayFormatter::toString(counter.weekday()) + " "
                        + DateFormatter::toString(counter));
         // check that imm is an IMM date
-        if (!imm.isIMMdate())
-            BOOST_FAIL("\n  " + WeekdayFormatter::toString(imm) + " "
+        if (!Date::isIMMdate(imm))
+            BOOST_FAIL("\n  " + WeekdayFormatter::toString(imm.weekday()) + " "
                        + DateFormatter::toString(imm) +
                        " is not an IMM date (calculated from "
-                       + WeekdayFormatter::toString(counter) + " "
+                       + WeekdayFormatter::toString(counter.weekday()) + " "
                        + DateFormatter::toString(counter) + ")");
         // check that if counter is an IMM date, then imm==counter
-        if (counter.isIMMdate() && (imm!=counter))
-            BOOST_FAIL("\n  " + WeekdayFormatter::toString(counter) + " "
+        if (Date::isIMMdate(counter) && (imm!=counter))
+            BOOST_FAIL("\n  "
+                       + WeekdayFormatter::toString(counter.weekday()) + " "
                        + DateFormatter::toString(counter) +
                        " is already an IMM date, while nextIMM() returns "
-                       + WeekdayFormatter::toString(imm) + " "
+                       + WeekdayFormatter::toString(imm.weekday()) + " "
                        + DateFormatter::toString(imm));
 
-        counter = counter.plusDays(1);
+        counter = counter + 1;
     }
 }
 

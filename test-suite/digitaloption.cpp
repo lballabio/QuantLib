@@ -109,7 +109,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 10.0));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -162,7 +162,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -215,7 +215,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new GapPayoff(
             values[i].type, values[i].strike, 57.00));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -280,7 +280,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.00));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
@@ -345,7 +345,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
@@ -405,7 +405,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.0));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate,
                                                                     true));
@@ -472,7 +472,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new AssetOrNothingPayoff(
             values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate,
                                                                     true));
@@ -537,7 +537,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     // there is no cycling on different residual times
-    Date exDate = today.plusDays(360);
+    Date exDate = today + 360;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
     boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                 exDate,
@@ -699,7 +699,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new CashOrNothingPayoff(
             values[i].type, values[i].strike, 15.0));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> amExercise(
                                          new AmericanExercise(today, exDate));
 

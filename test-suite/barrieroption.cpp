@@ -227,7 +227,7 @@ void BarrierOptionTest::testHaugValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);

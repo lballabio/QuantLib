@@ -102,7 +102,7 @@ void CalendarTest::testJointCalendars() {
 
     // test one year, starting today
     Date firstDate = Date::todaysDate(),
-         endDate = firstDate.plusYears(1);
+         endDate = firstDate + 1*Years;
 
     for (Date d = firstDate; d < endDate; d++) {
 

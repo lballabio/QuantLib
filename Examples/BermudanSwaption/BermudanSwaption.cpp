@@ -76,8 +76,9 @@ int main(int, char* [])
 
         // flat yield term structure impling 1x5 swap at 5%
         boost::shared_ptr<Quote> flatRate(new SimpleQuote(0.04875825));
-        boost::shared_ptr<FlatForward> myTermStructure(new
-            FlatForward(settlementDate, Handle<Quote>(flatRate)));
+        boost::shared_ptr<FlatForward> myTermStructure(
+                      new FlatForward(settlementDate, Handle<Quote>(flatRate),
+                                      Actual365Fixed()));
         Handle<YieldTermStructure> rhTermStructure;
         rhTermStructure.linkTo(myTermStructure);
 

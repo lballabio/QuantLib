@@ -147,7 +147,7 @@ namespace QuantLib {
     inline void CapVolatilityVector::interpolate() {
         timeLengths_[0] = 0.0;
         for (Size i=0; i<lengths_.size(); i++) {
-            Date endDate = referenceDate().plus(lengths_[i]);
+            Date endDate = referenceDate() + lengths_[i];
             timeLengths_[i+1] = timeFromReference(endDate);
         }
         interpolation_ =

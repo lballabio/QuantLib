@@ -145,9 +145,9 @@ void TermStructureTest::testImplied() {
 
     Real tolerance = 1.0e-10;
     Date today = Settings::instance().evaluationDate();
-    Date newToday = today.plusYears(3);
+    Date newToday = today + 3*Years;
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
-    Date testDate = newSettlement.plusYears(5);
+    Date testDate = newSettlement + 5*Years;
     boost::shared_ptr<YieldTermStructure> implied(
         new ImpliedTermStructure(Handle<YieldTermStructure>(termStructure_),
                                  newSettlement));
@@ -173,7 +173,7 @@ void TermStructureTest::testImpliedObs() {
     QL_TEST_SETUP
 
     Date today = Settings::instance().evaluationDate();
-    Date newToday = today.plusYears(3);
+    Date newToday = today + 3*Years;
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
     Handle<YieldTermStructure> h;
     boost::shared_ptr<YieldTermStructure> implied(
@@ -200,7 +200,7 @@ void TermStructureTest::testFSpreaded() {
     boost::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(
             Handle<YieldTermStructure>(termStructure_),mh));
-    Date testDate = termStructure_->referenceDate().plusYears(5);
+    Date testDate = termStructure_->referenceDate() + 5*Years;
     Rate forward = termStructure_->instantaneousForward(testDate);
     Rate spreadedForward = spreaded->instantaneousForward(testDate);
     if (QL_FABS(forward - (spreadedForward-me->value())) > tolerance)
@@ -253,7 +253,7 @@ void TermStructureTest::testZSpreaded() {
     boost::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(
             Handle<YieldTermStructure>(termStructure_),mh));
-    Date testDate = termStructure_->referenceDate().plusYears(5);
+    Date testDate = termStructure_->referenceDate() + 5*Years;
     Rate zero = termStructure_->zeroYield(testDate);
     Rate spreadedZero = spreaded->zeroYield(testDate);
     if (QL_FABS(zero - (spreadedZero-me->value())) > tolerance)

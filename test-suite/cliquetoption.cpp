@@ -88,8 +88,8 @@ void CliquetOptionTest::testValues() {
                                        Handle<BlackVolTermStructure>(volTS)));
 
     std::vector<Date> reset;
-    reset.push_back(today.plusMonths(3));
-    Date maturity = today.plusYears(1);
+    reset.push_back(today + 3*Months);
+    Date maturity = today + 1*Years;
     Option::Type type = Option::Call;
     Real moneyness = 1.1;
 
@@ -155,16 +155,16 @@ namespace {
           for (Size kk=0; kk<LENGTH(frequencies); kk++) {
 
             boost::shared_ptr<EuropeanExercise> maturity(
-                           new EuropeanExercise(today.plusYears(lengths[k])));
+                              new EuropeanExercise(today + lengths[k]*Years));
 
             boost::shared_ptr<PercentageStrikePayoff> payoff(
                           new PercentageStrikePayoff(types[i], moneyness[j]));
 
             std::vector<Date> reset;
             Integer months = 12/frequencies[kk];
-            for (Date d = today.plusMonths(months);
+            for (Date d = today + months*Months;
                  d < maturity->lastDate();
-                 d = d.plusMonths(months))
+                 d += months*Months)
                 reset.push_back(d);
 
             boost::shared_ptr<PricingEngine> engine(new T);

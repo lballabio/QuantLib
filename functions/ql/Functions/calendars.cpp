@@ -30,12 +30,12 @@ namespace QuantLib {
                 if (includeWeekEnds) {
                     result.push_back(d);
                 } else if (d.weekday()==Saturday) {
-                    d = d.plusDays(1);
+                    d += 1;
                 } else if (d.weekday()!=Sunday) {
                     result.push_back(d);
                 }
             }
-            d = d.plusDays(1);
+            d += 1;
        }
 
        return result;

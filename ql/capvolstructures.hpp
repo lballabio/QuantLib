@@ -143,7 +143,7 @@ namespace QuantLib {
 
     inline Volatility CapVolatilityStructure::volatility(const Period& length,
                                                          Rate strike) const {
-        Date end = referenceDate().plus(length);
+        Date end = referenceDate() + length;
         return volatilityImpl(timeFromReference(end),strike);
     }
 

@@ -50,12 +50,12 @@ int main(int, char* [])
 
         todaysDate = Settings::instance().evaluationDate();
         std::cout << "Today: "
-            << WeekdayFormatter::toString(todaysDate)
+            << WeekdayFormatter::toString(todaysDate.weekday())
             << ", " + DateFormatter::toString(todaysDate)
             << std::endl;
 
         std::cout << "Settlement date: "
-            << WeekdayFormatter::toString(settlementDate)
+            << WeekdayFormatter::toString(settlementDate.weekday())
             << ", " + DateFormatter::toString(settlementDate)
             << std::endl;
 
@@ -178,49 +178,49 @@ int main(int, char* [])
 
         // setup futures
         Integer futMonths = 3;
-        Date imm = settlementDate.nextIMMdate();
+        Date imm = Date::nextIMMdate(settlementDate);
         boost::shared_ptr<RateHelper> fut1(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMMdate();
+        imm = Date::nextIMMdate(imm+1);
         boost::shared_ptr<RateHelper> fut2(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMMdate();
+        imm = Date::nextIMMdate(imm+1);
         boost::shared_ptr<RateHelper> fut3(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMMdate();
+        imm = Date::nextIMMdate(imm+1);
         boost::shared_ptr<RateHelper> fut4(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMMdate();
+        imm = Date::nextIMMdate(imm+1);
         boost::shared_ptr<RateHelper> fut5(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMMdate();
+        imm = Date::nextIMMdate(imm+1);
         boost::shared_ptr<RateHelper> fut6(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMMdate();
+        imm = Date::nextIMMdate(imm+1);
         boost::shared_ptr<RateHelper> fut7(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
-        imm = imm.plusDays(1).nextIMMdate();
+        imm = Date::nextIMMdate(imm+1);
         boost::shared_ptr<RateHelper> fut8(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
             imm,

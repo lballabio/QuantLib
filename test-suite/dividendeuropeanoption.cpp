@@ -102,13 +102,14 @@ void DividendEuropeanOptionTest::testGreeks() {
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(lengths); k++) {
-          Date exDate = today.plusYears(lengths[k]);
+          Date exDate = today + lengths[k]*Years;
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
           std::vector<Date> dividendDates;
           std::vector<Real> dividends;
-          for (Date d = today.plusMonths(3); d < exercise->lastDate();
-                    d = d.plusMonths(6)) {
+          for (Date d = today + 3*Months;
+                    d < exercise->lastDate();
+                    d += 6*Months) {
               dividendDates.push_back(d);
               dividends.push_back(5.0);
           }

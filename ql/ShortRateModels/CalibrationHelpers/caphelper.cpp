@@ -32,10 +32,8 @@ namespace QuantLib {
         Period indexTenor = index->tenor();
         Frequency frequency = index->frequency();
         Rate fixedRate = 0.04;//dummy value
-        Date startDate = termStructure->referenceDate().
-            plus(indexTenor.length(), indexTenor.units());
-        Date maturity = termStructure->referenceDate().
-            plus(length.length(), length.units());
+        Date startDate = termStructure->referenceDate() + indexTenor;
+        Date maturity = termStructure->referenceDate() + length;
 
         boost::shared_ptr<Xibor> dummyIndex(
                                      new Xibor("dummy",

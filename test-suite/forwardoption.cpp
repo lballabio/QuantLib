@@ -128,9 +128,9 @@ void ForwardOptionTest::testValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today.plusDays(Integer(values[i].start*360+0.5));
+        Date reset = today + Integer(values[i].start*360+0.5);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -196,9 +196,9 @@ void ForwardOptionTest::testPerformanceValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today.plusDays(Integer(values[i].start*360+0.5));
+        Date reset = today + Integer(values[i].start*360+0.5);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -269,10 +269,10 @@ namespace {
         for (Size k=0; k<LENGTH(lengths); k++) {
           for (Size h=0; h<LENGTH(startMonths); h++) {
 
-            Date exDate = today.plusYears(lengths[k]);
+            Date exDate = today + lengths[k]*Years;
             boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
-            Date reset = today.plusMonths(startMonths[h]);
+            Date reset = today + startMonths[h]*Months;
 
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                        new PlainVanillaPayoff(types[i], 0.0));

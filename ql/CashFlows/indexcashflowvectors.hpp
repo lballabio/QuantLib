@@ -76,7 +76,8 @@ namespace QuantLib {
                                       start, end, fixingDays, spread,
                                       start, end, dayCounter)));
         } else {
-            Date reference = end.plusMonths(-12/schedule.frequency());
+            Integer tenor = 12/schedule.frequency();
+            Date reference = end - tenor*Months;
             reference = calendar.adjust(reference,
                                         schedule.businessDayConvention());
             typedef Short<IndexedCouponType> ShortIndexedCouponType;
@@ -125,8 +126,8 @@ namespace QuantLib {
                                           start, end, fixingDays, spread,
                                           start, end, dayCounter)));
             } else {
-                Date reference =
-                    start.plusMonths(12/schedule.frequency());
+                Integer tenor = 12/schedule.frequency();
+                Date reference = start + tenor*Months;
                 reference = calendar.adjust(reference,
                                             schedule.businessDayConvention());
                 typedef Short<IndexedCouponType> ShortIndexedCouponType;

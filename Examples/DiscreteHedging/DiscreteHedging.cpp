@@ -287,17 +287,18 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
        throughout time.
     */
     Date today = Date::todaysDate();
+    DayCounter dayCount = Actual365Fixed();
     Handle<Quote> stateVariable(
                           boost::shared_ptr<Quote>(new SimpleQuote(s0_)));
     Handle<YieldTermStructure> riskFreeRate(
                           boost::shared_ptr<YieldTermStructure>(
-                                        new FlatForward(today, r_)));
+                                      new FlatForward(today, r_, dayCount)));
     Handle<YieldTermStructure> dividendYield(
                           boost::shared_ptr<YieldTermStructure>(
-                                        new FlatForward(today, 0.0)));
+                                      new FlatForward(today, 0.0, dayCount)));
     Handle<BlackVolTermStructure> volatility(
                           boost::shared_ptr<BlackVolTermStructure>(
-                                        new BlackConstantVol(today, sigma_)));
+                               new BlackConstantVol(today, sigma_,dayCount)));
     boost::shared_ptr<StochasticProcess> diffusion(
                          new BlackScholesProcess(stateVariable, dividendYield,
                                                  riskFreeRate, volatility));

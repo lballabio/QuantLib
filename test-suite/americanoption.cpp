@@ -145,7 +145,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -205,7 +205,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -328,7 +328,7 @@ void AmericanOptionTest::testJuValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 

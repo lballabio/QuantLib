@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -115,96 +115,6 @@ namespace QuantLib {
         return y;
     }
 
-    Date Date::plusMonths(Integer months) const {
-        Day d = dayOfMonth();
-        Integer m = Integer(month())+months;
-        Year y = year();
-        while (m > 12) {
-            m -= 12;
-            y += 1;
-        }
-        while (m < 1) {
-            m += 12;
-            y -= 1;
-        }
-
-        QL_ENSURE(y >= 1900 && y <= 2099,
-                  "year " + IntegerFormatter::toString(y) +
-                  " out of bound. It must be in [1901,2099]");
-
-        Integer length = monthLength(Month(m), isLeap(y));
-        if (d > length)
-            d = length;
-        return Date(d,Month(m),y);
-    }
-
-    Date Date::plusYears(Integer years) const {
-        Day d = dayOfMonth();
-        Month m = month();
-        Year y = year()+years;
-
-        QL_ENSURE(y >= 1900 && y <= 2099,
-                  "year " + IntegerFormatter::toString(y) +
-                  " out of bound. It must be in [1901,2099]");
-
-        if (d == 29 && m == February && !isLeap(y))
-            d = 28;
-        return Date(d,m,y);
-    }
-
-    Date Date::plus(Integer units, TimeUnit theUnit) const {
-        Date d;
-        switch (theUnit) {
-          case Days:
-            d = plusDays(units);
-            break;
-          case Weeks:
-            d = plusWeeks(units);
-            break;
-          case Months:
-            d = plusMonths(units);
-            break;
-          case Years:
-            d = plusYears(units);
-            break;
-          default:
-            QL_FAIL("undefined time units");
-        }
-        return d;
-    }
-
-    Date Date::nextIMMdate() const {
-        Year y = this->year();
-        Month m = this->month();
-
-        Size skipMonths = 3-(m%3);
-        if (skipMonths != 3 || this->dayOfMonth() > 21) {
-            skipMonths += Size(m);
-            if (skipMonths<=12)
-                m=(Month)skipMonths;
-            else {
-                m=(Month)(skipMonths-12);
-                y+=1;
-            }
-        // (*this) is in a IMM month and in the IMM week [15,21]
-        } else if (this->dayOfMonth() > 14) {
-            Date nextWednesday = nextDayOfWeekAfterDate(*this, Wednesday);
-            if (nextWednesday.dayOfMonth() <= 21)
-                return nextWednesday;
-            else {
-                if (m<=9)
-                    m=Month(Size(m)+3);
-                else {
-                    m=Month(Size(m)-9);
-                    y+=1;
-                }
-            }
-        }
-
-        return nthDayOfWeekForMonthAndYear(3, Wednesday, m, y);
-
-    }
-
     Date& Date::operator+=(BigInteger days) {
         BigInteger serial = serialNumber_ + days;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
@@ -217,6 +127,11 @@ namespace QuantLib {
         return *this;
     }
 
+    Date& Date::operator+=(const Period& p) {
+        serialNumber_ = advance(*this,p.length(),p.units()).serialNumber();
+        return *this;
+    }
+
     Date& Date::operator-=(BigInteger days) {
         BigInteger serial = serialNumber_ - days;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
@@ -226,6 +141,11 @@ namespace QuantLib {
                    DateFormatter::toString(minDate()) + "-" +
                    DateFormatter::toString(maxDate()) + "]");
         serialNumber_ = serial;
+        return *this;
+    }
+
+    Date& Date::operator-=(const Period& p) {
+        serialNumber_ = advance(*this,-p.length(),p.units()).serialNumber();
         return *this;
     }
 
@@ -279,23 +199,6 @@ namespace QuantLib {
         return temp;
     }
 
-    Date Date::nextDayOfWeekAfterDate(const Date& d, Weekday dayOfWeek) {
-
-        Weekday wd = d.weekday();
-        return d.plusDays((wd>dayOfWeek ? 7 : 0) - wd + dayOfWeek);
-    }
-
-    Date Date::nthDayOfWeekForMonthAndYear(Size nth, Weekday dayOfWeek,
-        Month m, Year y) {
-
-        QL_REQUIRE(nth>0,
-                   "zeroth day of week in a given (month, year) is undefined");
-        Weekday first = Date(1, m, y).weekday();
-        Size skip = nth - (dayOfWeek>=first ? 1 : 0);
-
-        return Date(1 + dayOfWeek-first + skip*7, m, y);
-    }
-
     Date Date::todaysDate() {
         QL_TIME_T t;
 
@@ -315,6 +218,55 @@ namespace QuantLib {
     Date Date::maxDate() {
         static const Date maximumDate(maximumSerialNumber());
         return maximumDate;
+    }
+
+    Date Date::advance(const Date& date, Integer n, TimeUnit units) {
+        switch (units) {
+          case Days:
+            return date + n;
+          case Weeks:
+            return date + 7*n;
+            break;
+          case Months: {
+            Day d = date.dayOfMonth();
+            Integer m = Integer(date.month())+n;
+            Year y = date.year();
+            while (m > 12) {
+                m -= 12;
+                y += 1;
+            }
+            while (m < 1) {
+                m += 12;
+                y -= 1;
+            }
+
+            QL_ENSURE(y >= 1900 && y <= 2099,
+                      "year " + IntegerFormatter::toString(y) +
+                      " out of bound. It must be in [1901,2099]");
+
+            Integer length = monthLength(Month(m), isLeap(y));
+            if (d > length)
+                d = length;
+
+            return Date(d, Month(m), y);
+          }
+          case Years: {
+              Day d = date.dayOfMonth();
+              Month m = date.month();
+              Year y = date.year()+n;
+
+              QL_ENSURE(y >= 1900 && y <= 2099,
+                        "year " + IntegerFormatter::toString(y) +
+                        " out of bound. It must be in [1901,2099]");
+
+              if (d == 29 && m == February && !isLeap(y))
+                  d = 28;
+
+              return Date(d,m,y);
+          }
+          default:
+            QL_FAIL("undefined time units");
+        }
     }
 
     bool Date::isLeap(Year y) {
@@ -365,6 +317,51 @@ namespace QuantLib {
             false
         };
         return YearIsLeap[y-1900];
+    }
+
+    Date Date::nextIMMdate(const Date& date) {
+        Year y = date.year();
+        Month m = date.month();
+
+        Size skipMonths = 3-(m%3);
+        if (skipMonths != 3 || date.dayOfMonth() > 21) {
+            skipMonths += Size(m);
+            if (skipMonths<=12) {
+                m = Month(skipMonths);
+            } else {
+                m = Month(skipMonths-12);
+                y += 1;
+            }
+        // date is in a IMM month and in the IMM week [15,21]
+        } else if (date.dayOfMonth() > 14) {
+            Date nextWednesday = nextWeekday(date, Wednesday);
+            if (nextWednesday.dayOfMonth() <= 21)
+                return nextWednesday;
+            else {
+                if (m <= 9) {
+                    m = Month(Size(m)+3);
+                } else {
+                    m = Month(Size(m)-9);
+                    y += 1;
+                }
+            }
+        }
+
+        return nthWeekday(3, Wednesday, m, y);
+    }
+
+    Date Date::nextWeekday(const Date& d, Weekday dayOfWeek) {
+        Weekday wd = d.weekday();
+        return d + ((wd>dayOfWeek ? 7 : 0) - wd + dayOfWeek);
+    }
+
+    Date Date::nthWeekday(Size nth, Weekday dayOfWeek,
+                          Month m, Year y) {
+        QL_REQUIRE(nth>0,
+                   "zeroth day of week in a given (month, year) is undefined");
+        Weekday first = Date(1, m, y).weekday();
+        Size skip = nth - (dayOfWeek>=first ? 1 : 0);
+        return Date(1 + dayOfWeek-first + skip*7, m, y);
     }
 
     Integer Date::monthLength(Month m, bool leapYear) {
@@ -506,31 +503,34 @@ namespace QuantLib {
         return output;
     }
 
+
     std::string WeekdayFormatter::toString(Weekday wd,
                                            WeekdayFormatter::Format f) {
-        static const std::string weekDaysLongNames[] = { "Sunday", "Monday",
-            "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+        static const std::string weekDaysLongNames[] = {
+            "Sunday", "Monday", "Tuesday", "Wednesday",
+            "Thursday", "Friday", "Saturday"
         };
-        static const std::string weekDaysShortNames[] = { "Sun", "Mon",
-            "Tue", "Wed", "Thu", "Fri", "Sat"
+        static const std::string weekDaysShortNames[] = {
+            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
         };
-        static const std::string weekDaysVeryShortNames[] = { "Su", "Mo",
-            "Tu", "We", "Th", "Fr", "Sa"
+        static const std::string weekDaysVeryShortNames[] = {
+            "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"
         };
         std::string output;
         switch (f) {
-            case Long:
+          case Long:
             output = weekDaysLongNames[wd-1];
             break;
-            case Short:
+          case Short:
             output = weekDaysShortNames[wd-1];
             break;
-            case VeryShort:
+          case Shortest:
             output = weekDaysVeryShortNames[wd-1];
             break;
-            default:
+          default:
             QL_FAIL("unknown weekday format");
         }
         return output;
     }
+
 }

@@ -257,7 +257,7 @@ void SwapTest::testInArrears() {
        adjustment and you'll get 0.05 + 0.000115 T1)
     */
 
-    Date maturity = today_.plusYears(5);
+    Date maturity = today_ + 5*Years;
     Calendar calendar = NullCalendar();
     DayCounter dayCounter = SimpleDayCounter();
 

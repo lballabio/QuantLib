@@ -103,10 +103,10 @@ int main(int, char* [])
                 new BlackConstantVol(settlementDate, volatility)));
 
         std::vector<Date> dates(4);
-        dates[0] = settlementDate.plusMonths(1);
+        dates[0] = settlementDate + 1*Months;
         dates[1] = exerciseDate;
-        dates[2] = exerciseDate.plusMonths(6);
-        dates[3] = exerciseDate.plusMonths(12);
+        dates[2] = exerciseDate + 6*Months;
+        dates[3] = exerciseDate + 12*Months;
         std::vector<Real> strikes(4);
         strikes[0] = underlying*0.9;
         strikes[1] = underlying;

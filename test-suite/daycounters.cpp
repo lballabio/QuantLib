@@ -179,7 +179,7 @@ void DayCounterTest::testSimple() {
 
     for (Date start = first; start <= last; start++) {
         for (Size i=0; i<n; i++) {
-            Date end = start.plus(p[i]);
+            Date end = start + p[i];
             Time calculated = dayCounter.yearFraction(start,end);
             if (QL_FABS(calculated-expected[i]) > 1.0e-12) {
                 BOOST_FAIL("from " + DateFormatter::toString(start) +
@@ -207,7 +207,7 @@ void DayCounterTest::testOne() {
 
     for (Date start = first; start <= last; start++) {
         for (Size i=0; i<n; i++) {
-            Date end = start.plus(p[i]);
+            Date end = start + p[i];
             Time calculated = dayCounter.yearFraction(start,end);
             if (QL_FABS(calculated-expected[i]) > 1.0e-12) {
                 BOOST_FAIL("from " + DateFormatter::toString(start) +

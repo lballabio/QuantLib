@@ -256,7 +256,7 @@ void EuropeanOptionTest::testValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
-        Date exDate = today.plusDays(timeToDays(values[i].t));
+        Date exDate = today + timeToDays(values[i].t);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -346,7 +346,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -366,7 +366,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -385,7 +385,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -405,7 +405,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -424,7 +424,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -444,7 +444,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -464,7 +464,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -484,7 +484,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -504,7 +504,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -524,7 +524,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -544,7 +544,7 @@ void EuropeanOptionTest::testGreekValues() {
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
         PlainVanillaPayoff(values[i].type, values[i].strike));
-    exDate = today.plusDays(timeToDays(values[i].t));
+    exDate = today + timeToDays(values[i].t);
     exercise = boost::shared_ptr<Exercise>(new EuropeanExercise(exDate));
     spot ->setValue(values[i].s);
     qRate->setValue(values[i].q);
@@ -601,7 +601,7 @@ void EuropeanOptionTest::testGreeks() {
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(residualTimes); k++) {
-          Date exDate = today.plusDays(timeToDays(residualTimes[k]));
+          Date exDate = today + timeToDays(residualTimes[k]);
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
           for (Size kk=0; kk<4; kk++) {
               // option to check
@@ -756,7 +756,7 @@ void EuropeanOptionTest::testImpliedVol() {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(lengths); k++) {
           // option to check
-          Date exDate = today.plusDays(lengths[k]);
+          Date exDate = today + lengths[k];
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
           boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
@@ -868,7 +868,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    Date exerciseDate = today.plusYears(1);
+    Date exerciseDate = today + 1*Years;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(Option::Call, 100.0));
@@ -954,7 +954,7 @@ namespace {
         for (Size i=0; i<LENGTH(types); i++) {
           for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(lengths); k++) {
-              Date exDate = today.plusDays(lengths[k]*360);
+              Date exDate = today + lengths[k]*360;
               boost::shared_ptr<Exercise> exercise(
                                                 new EuropeanExercise(exDate));
               boost::shared_ptr<StrikedTypePayoff> payoff(new

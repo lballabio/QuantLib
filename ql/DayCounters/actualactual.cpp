@@ -86,7 +86,7 @@ namespace QuantLib {
                 // this case is long first coupon
 
                 // the last notional payment date
-                Date previousRef = refPeriodStart.plusMonths(-months);
+                Date previousRef = refPeriodStart - months*Months;
                 if (d2 > refPeriodStart)
                     return yearFraction(d1, refPeriodStart, previousRef,
                                         refPeriodStart) +
@@ -113,8 +113,8 @@ namespace QuantLib {
             Integer i=0;
             Date newRefStart, newRefEnd;
             do {
-                newRefStart = refPeriodEnd.plusMonths(months*i);
-                newRefEnd   = refPeriodEnd.plusMonths(months*(i+1));
+                newRefStart = refPeriodEnd + (months*i)*Months;
+                newRefEnd = refPeriodEnd + (months*(i+1))*Months;
                 if (d2 < newRefEnd) {
                     break;
                 } else {
@@ -161,10 +161,10 @@ namespace QuantLib {
         Date newD2=d2, temp=d2;
         Time sum = 0.0;
         while (temp > d1) {
-            temp = newD2.plusYears(-1);
+            temp = newD2 - 1*Years;
             if (temp.dayOfMonth()==28 && temp.month()==2
                 && Date::isLeap(temp.year())) {
-                temp.plusDays(1);
+                temp += 1;
             }
             if (temp>=d1) {
                 sum += 1.0;

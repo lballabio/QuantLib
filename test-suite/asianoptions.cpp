@@ -117,7 +117,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     Average::Type averageType = Average::Geometric;
     Option::Type type = Option::Put;
     Real strike = 85.0;
-    Date exerciseDate = today.plusDays(90);
+    Date exerciseDate = today + 90;
 
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
@@ -142,7 +142,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     Size pastFixings = 0;
     std::vector<Date> fixingDates(exerciseDate-today+1);
     for (Size i=0; i<fixingDates.size(); i++) {
-        fixingDates[i]=today.plusDays(i);
+        fixingDates[i] = today + i;
     }
     boost::shared_ptr<PricingEngine> engine2(new
         AnalyticDiscreteGeometricAveragePriceAsianEngine);
@@ -206,7 +206,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
         for (Size k=0; k<LENGTH(lengths); k++) {
 
             boost::shared_ptr<EuropeanExercise> maturity(
-                           new EuropeanExercise(today.plusYears(lengths[k])));
+                              new EuropeanExercise(today + lengths[k]*Years));
 
             boost::shared_ptr<PlainVanillaPayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
@@ -356,14 +356,14 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
 
-    Date exerciseDate = today.plusDays(360);
+    Date exerciseDate = today + 360;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
     Integer dt = Integer(360/futureFixings+0.5);
-    fixingDates[0]=today.plusDays(dt);
+    fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
-        fixingDates[j]=fixingDates[j-1].plusDays(dt);
+        fixingDates[j] = fixingDates[j-1] + dt;
 
     DiscreteAveragingAsianOption option(averageType, runningAccumulator,
                                         pastFixings, fixingDates,
@@ -429,14 +429,14 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
 
-    Date exerciseDate = today.plusDays(360);
+    Date exerciseDate = today + 360;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
     Integer dt = Integer(360/futureFixings+0.5);
-    fixingDates[0]=today.plusDays(dt);
+    fixingDates[0] = today + dt;
     for (Size j=1; j<futureFixings; j++)
-        fixingDates[j]=fixingDates[j-1].plusDays(dt);
+        fixingDates[j] = fixingDates[j-1] + dt;
 
     DiscreteAveragingAsianOption option(averageType, runningAccumulator,
                                         pastFixings, fixingDates,
@@ -582,10 +582,10 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
         std::vector<Time> timeIncrements(cases4[l].fixings);
         std::vector<Date> fixingDates(cases4[l].fixings);
         timeIncrements[0] = cases4[l].first;
-        fixingDates[0]=today.plusDays(Integer(timeIncrements[0]*360+0.5));
+        fixingDates[0] = today + Integer(timeIncrements[0]*360+0.5);
         for (Size i=1; i<cases4[l].fixings; i++) {
             timeIncrements[i] = i*dt + cases4[l].first;
-            fixingDates[i]=today.plusDays(Integer(timeIncrements[i]*360+0.5));
+            fixingDates[i] = today + Integer(timeIncrements[i]*360+0.5);
         }
         boost::shared_ptr<Exercise> exercise(new
             EuropeanExercise(fixingDates[cases4[l].fixings-1]));
@@ -660,7 +660,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
         for (Size k=0; k<LENGTH(lengths); k++) {
 
             boost::shared_ptr<EuropeanExercise> maturity(
-                           new EuropeanExercise(today.plusYears(lengths[k])));
+                              new EuropeanExercise(today + lengths[k]*Years));
 
             boost::shared_ptr<PlainVanillaPayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
@@ -669,9 +669,9 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
             Size pastFixings = 0;
 
             std::vector<Date> fixingDates;
-            for (Date d = today.plusMonths(3);
+            for (Date d = today + 3*Months;
                       d <= maturity->lastDate();
-                      d = d.plusMonths(3))
+                      d += 3*Months)
                 fixingDates.push_back(d);
 
 
