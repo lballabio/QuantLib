@@ -180,7 +180,7 @@ namespace QuantLib {
     bool operator>(const Date&, const Date&);
     /*! \relates Date */
     bool operator>=(const Date&, const Date&);
-    /*! outputs the date */
+    /*! \relates Date */
     std::ostream& operator<< (std::ostream& stream, const Date& result);
 
 }
