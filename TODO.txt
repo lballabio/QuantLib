@@ -10,14 +10,6 @@ COMPILING
     Borland projects
 
 LIBRARY
-    coupon restructuring:
-        rename AccruingCoupon to Coupon
-        derive FloatingRateCoupon from Coupon
-            Index no longer a default parameter
-    swap restructuring:
-        each leg = upfront CashFlow + Coupon vector + end CashFlow
-        calculate BPS sensitivity for both legs
-            remove BPS calculation from SimpleSwap
     timer class
     switch false/true antithetic variate
     add futures (and convexity adjustment) to the bootstrapping method
@@ -33,7 +25,7 @@ LIBRARY
     implement currency as per OMG definition
     implement round as per OMG enumeration/definition
     add one-touch option (american binary)
-    GuassianPathGenerator, etc: allow for more general random walks
+    GaussianPathGenerator, etc: allow for more general random walks
     implement dividendRho for dividendOption
     redesign payoff class for integral (Green) option pricing, step
         condition, etc

@@ -32,9 +32,12 @@
 // $Id$
 
 #include "ql/Instruments/swap.hpp"
+#include "ql/CashFlows/coupon.hpp"
 
 namespace QuantLib {
 
+    using CashFlows::Coupon;
+    
     namespace Instruments {
 
         Swap::Swap(const std::vector<Handle<CashFlow> >& firstLeg,
@@ -65,24 +68,53 @@ namespace QuantLib {
                 "trying to price swap on null term structure");
             Date settlement = termStructure_->settlementDate();
             NPV_ = 0.0;
+            firstLegBPS_ = 0.0;
+            secondLegBPS_ = 0.0;
             isExpired_ = true;
-            // subtract first leg cash flows
+            // subtract first leg cash flows and BPS
             for (unsigned int i=0; i<firstLeg_.size(); i++) {
                 Date cashFlowDate = firstLeg_[i]->date();
                 if (cashFlowDate >= settlement) {
-                    isExpired_ = false;  // keeping track of whether it was set 
-                                         // already isn't worth the effort
+                    isExpired_ = false;  // keeping track of whether this
+                                         // was already set isn't worth the 
+                                         // effort
                     NPV_ -= firstLeg_[i]->amount() *
                         termStructure_->discount(cashFlowDate);
+                    const Coupon* coupon = 
+                    #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+                        firstLeg_[i].downcast<Coupon>();
+                    #else
+                        dynamic_cast<const Coupon*>(firstLeg_[i].pointer());
+                    #endif
+                    // check that the downcast succeeded 
+                    // and subtract coupon sensitivity
+                    if (coupon != 0) {
+                        firstLegBPS_ -= coupon->accrualPeriod() * 
+                            coupon->nominal() *
+                            termStructure_->discount(coupon->date());
+                    }
                 }
             }
-            // add second leg cash flows
+            // add second leg cash flows and BPS
             for (unsigned int j=0; j<secondLeg_.size(); j++) {
                 Date cashFlowDate = secondLeg_[j]->date();
                 if (cashFlowDate >= settlement) {
                     isExpired_ = false;
                     NPV_ += secondLeg_[j]->amount() *
                         termStructure_->discount(cashFlowDate);
+                    const Coupon* coupon = 
+                    #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+                        secondLeg_[j].downcast<Coupon>();
+                    #else
+                        dynamic_cast<const Coupon*>(secondLeg_[j].pointer());
+                    #endif
+                    // check that the downcast succeeded 
+                    // and add coupon sensitivity
+                    if (coupon != 0) {
+                        secondLegBPS_ += coupon->accrualPeriod() * 
+                            coupon->nominal() *
+                            termStructure_->discount(coupon->date());
+                    }
                 }
             }
         }

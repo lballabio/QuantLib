@@ -49,7 +49,8 @@ namespace QuantLib {
         */
         class Coupon : public CashFlow {
           public:
-            Coupon(const Handle<Calendar>& calendar,
+            Coupon(double nominal, 
+                const Handle<Calendar>& calendar,
                 RollingConvention rollingConvention,
                 const Handle<DayCounter>& dayCounter,
                 const Date& startDate, const Date& endDate,
@@ -61,6 +62,7 @@ namespace QuantLib {
             //@}
             //! \name Inspectors
             //@{
+            double nominal() const;
             //! start of the accrual period
             const Date& accrualStartDate() const;
             //! end of the accrual period
@@ -71,6 +73,7 @@ namespace QuantLib {
             int accrualDays() const;
             //@}
           protected:
+            double nominal_;
             Date startDate_, endDate_, refPeriodStart_, refPeriodEnd_;
             Handle<Calendar> calendar_;
             RollingConvention rollingConvention_;
@@ -80,20 +83,23 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Coupon::Coupon(const Handle<Calendar>& calendar,
+        inline Coupon::Coupon(double nominal, 
+            const Handle<Calendar>& calendar,
             RollingConvention rollingConvention,
             const Handle<DayCounter>& dayCounter,
             const Date& startDate, const Date& endDate,
             const Date& refPeriodStart, const Date& refPeriodEnd)
-        : startDate_(startDate), endDate_(endDate),
-          refPeriodStart_(refPeriodStart),
-          refPeriodEnd_(refPeriodEnd),
-          calendar_(calendar),
-          rollingConvention_(rollingConvention),
+        : nominal_(nominal), startDate_(startDate), endDate_(endDate),
+          refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd),
+          calendar_(calendar), rollingConvention_(rollingConvention),
           dayCounter_(dayCounter) {}
 
         inline Date Coupon::date() const {
             return calendar_->roll(endDate_,rollingConvention_);
+        }
+
+        inline double Coupon::nominal() const { 
+            return nominal_; 
         }
 
         inline const Date& Coupon::accrualStartDate() const { 

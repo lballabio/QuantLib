@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
         Date startDate = myTermStructure->settlementDate();
         int lenghtInYears = 5;
         std::vector<double> nominals;
-        nominals.push_back(100000);
+        nominals.push_back(1);
 
         // fixed leg
         int fixedLegFrequency = 1;
@@ -160,10 +160,34 @@ int main(int argc, char* argv[])
 
 
         rhTermStructure.linkTo(myTermStructure);
-        Rate fairFixedRate = fixedRate-mySwap.NPV()/mySwap.BPS();
+        Rate fairFixedRate = fixedRate-mySwap.NPV()/mySwap.fixedLegBPS();
+        Spread fairFloatingSpread = -mySwap.NPV()/mySwap.floatingLegBPS();
 
-        std::cout << DoubleFormatter::toString(fairFixedRate*100,4) 
+        SimpleSwap testSwap1(payFixedRate, startDate, lenghtInYears, Years,
+            calendar, roll, nominals, fixedLegFrequency, 
+            std::vector<double>(1, fairFixedRate),  // pass fair fixed rate
+            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
+            euriborIndex, spreads, rhTermStructure);
+        SimpleSwap testSwap2(payFixedRate, startDate, lenghtInYears, Years,
+            calendar, roll, nominals, fixedLegFrequency, couponRates,
+            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
+            euriborIndex, 
+            std::vector<double>(1, fairFloatingSpread),  // pass fair spread
+            rhTermStructure);
+
+        std::cout << "Swap priced on given term structure:" << std::endl;
+        std::cout << "Fair fixed rate:              " 
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
+        std::cout << "    (checked: NPV is " 
+            << testSwap1.NPV()
+            << " per unit nominal)" << std::endl;
+        std::cout << "Fair spread on floating leg: " 
+            << RateFormatter::toString(fairFloatingSpread,4) 
+            << std::endl;
+        std::cout << "    (checked: NPV is " 
+            << testSwap2.NPV()
+            << " per unit nominal)" << std::endl << std::endl;
 
         // let's price the same swap on a different term structure
         // e.g. Flat Forward at 5.0%
@@ -172,9 +196,34 @@ int main(int argc, char* argv[])
             calendar, settlementDays, 0.05));
 
         rhTermStructure.linkTo(newTermStructure);
-        fairFixedRate = fixedRate-mySwap.NPV()/mySwap.BPS();
-        std::cout << DoubleFormatter::toString(fairFixedRate*100,4)
+        fairFixedRate = fixedRate-mySwap.NPV()/mySwap.fixedLegBPS();
+        fairFloatingSpread = -mySwap.NPV()/mySwap.floatingLegBPS();
+
+        SimpleSwap testSwap3(payFixedRate, startDate, lenghtInYears, Years,
+            calendar, roll, nominals, fixedLegFrequency, 
+            std::vector<double>(1, fairFixedRate),  // pass fair fixed rate
+            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
+            euriborIndex, spreads, rhTermStructure);
+        SimpleSwap testSwap4(payFixedRate, startDate, lenghtInYears, Years,
+            calendar, roll, nominals, fixedLegFrequency, couponRates,
+            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
+            euriborIndex, 
+            std::vector<double>(1, fairFloatingSpread),  // pass fair spread
+            rhTermStructure);
+
+        std::cout << "Swap priced on flat term structure:" << std::endl;
+        std::cout << "Fair fixed rate:              " << 
+            RateFormatter::toString(fairFixedRate,4) 
             << std::endl;
+        std::cout << "    (checked: NPV is " 
+            << testSwap3.NPV()
+            << " per unit nominal)" << std::endl;
+        std::cout << "Fair spread on floating leg: " << 
+            RateFormatter::toString(fairFloatingSpread,4) 
+            << std::endl;
+        std::cout << "    (checked: NPV is " 
+            << testSwap4.NPV()
+            << " per unit nominal)" << std::endl;
 
         return 0;
 

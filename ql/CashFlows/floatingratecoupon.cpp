@@ -47,11 +47,10 @@ namespace QuantLib {
           const Date& startDate, const Date& endDate,
           Spread spread, 
           const Date& refPeriodStart, const Date& refPeriodEnd)
-        : Coupon(index->calendar(),index->rollingConvention(),
+        : Coupon(nominal, index->calendar(),index->rollingConvention(),
               index->dayCounter(), startDate, endDate,
               refPeriodStart, refPeriodEnd), 
-          nominal_(nominal), termStructure_(termStructure),
-          index_(index), spread_(spread) {
+          termStructure_(termStructure), index_(index), spread_(spread) {
             termStructure_.registerObserver(this);
         }
 
@@ -66,7 +65,7 @@ namespace QuantLib {
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + index_->name() + " fixing for " +
                         DateFormatter::toString(startDate_));
-                return (pastFixing+spread_)*accrualPeriod()*nominal_;
+                return (pastFixing+spread_)*accrualPeriod()*nominal();
             }
             if (startDate_ == settlementDate) {
                 // might have been fixed
@@ -74,7 +73,8 @@ namespace QuantLib {
                     Rate pastFixing = XiborManager::getHistory(
                         index_->name())[startDate_];
                     if (pastFixing != Null<double>())
-                        return (pastFixing+spread_)*accrualPeriod()*nominal_;
+                        return (pastFixing+spread_) * 
+                            accrualPeriod() * nominal();
                     else
                         ;   // fall through and forecast
                 } catch (Error&) {
@@ -86,10 +86,10 @@ namespace QuantLib {
             DiscountFactor endDiscount =
                 termStructure_->discount(endDate_);
             if (spread_ == 0.0)
-                return (startDiscount/endDiscount-1.0) * nominal_;
+                return (startDiscount/endDiscount-1.0) * nominal();
             else
                 return ((startDiscount/endDiscount-1.0) +
-                    spread_*accrualPeriod()) * nominal_;
+                    spread_*accrualPeriod()) * nominal();
         }
 
     }

@@ -62,7 +62,8 @@ namespace QuantLib {
                std::vector<Handle<CashFlow> >(),
                termStructure, isinCode, description), 
           payFixedRate_(payFixedRate) {
-            maturity_ = calendar->advance(startDate,n,units,rollingConvention);
+            maturity_ = calendar->advance(
+                startDate,n,units,rollingConvention);
             if (payFixedRate_) {
                 firstLeg_ = FixedRateCouponVector(nominals, 
                     couponRates, startDate, maturity_, 
@@ -85,39 +86,8 @@ namespace QuantLib {
             // we should register as observer with the cash flows. However,
             // the base Swap class already registers as observer with 
             // the term structure, which is also the same passed to floating 
-            // rate coupons; the index is only used for past fixings; and fixed
-            // rate coupons are not modifiable.
-        }
-
-        void SimpleSwap::performCalculations() const {
-            Swap::performCalculations();
-            BPS_ = 0.0;
-            std::vector<Handle<CashFlow> >::const_iterator begin, end;
-            if (payFixedRate_) {
-                begin = firstLeg_.begin();
-                end   = firstLeg_.end();
-            } else {
-                begin = secondLeg_.begin();
-                end   = secondLeg_.end();
-            }
-            for (; begin != end; ++begin) {
-                // the following should be safe as long as nobody 
-                // messed with the coupons
-                const FixedRateCoupon* coupon = 
-                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                    begin->downcast<FixedRateCoupon>();
-                #else
-                    dynamic_cast<const FixedRateCoupon*>(begin->pointer());
-                #endif
-                // however, we will check that it succeeded
-                if (coupon != 0) {
-                    BPS_ += coupon->accrualPeriod() * 
-                            coupon->nominal() *
-                            termStructure_->discount(coupon->date());
-                }
-            }
-            if (payFixedRate_)
-                BPS_ = -BPS_;
+            // rate coupons; the index is only used for past fixings; and 
+            // fixed rate coupons are not modifiable.
         }
 
     }

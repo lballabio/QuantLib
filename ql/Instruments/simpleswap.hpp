@@ -72,21 +72,23 @@ namespace QuantLib {
                 // description
                 const std::string& isinCode = "",
                 const std::string& description = "");
-            double BPS() const;
+            double fixedLegBPS() const;
+            double floatingLegBPS() const;
             const Date& maturity() const { return maturity_; }
           private:
-            void performCalculations() const;
             bool payFixedRate_;
             Date maturity_;
-            mutable double BPS_;
         };
 
 
         // inline definitions
         
-        inline double SimpleSwap::BPS() const {
-            calculate();
-            return BPS_;
+        inline double SimpleSwap::fixedLegBPS() const {
+            return (payFixedRate_ ? firstLegBPS() : secondLegBPS());
+        }
+
+        inline double SimpleSwap::floatingLegBPS() const {
+            return (payFixedRate_ ? secondLegBPS() : firstLegBPS());
         }
 
     }

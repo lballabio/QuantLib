@@ -64,7 +64,6 @@ namespace QuantLib {
             //@}
             //! \name Inspectors
             //@{
-            double nominal() const;
             const Handle<Indexes::Xibor>& index() const;
             Spread spread() const;
             //@}
@@ -73,7 +72,6 @@ namespace QuantLib {
             void update();
             //@}
           private:
-            double nominal_;
             RelinkableHandle<TermStructure> termStructure_;
             Handle<Indexes::Xibor> index_;
             Spread spread_;
@@ -84,10 +82,6 @@ namespace QuantLib {
 
         inline FloatingRateCoupon::~FloatingRateCoupon() {
             termStructure_.unregisterObserver(this);
-        }
-
-        inline double FloatingRateCoupon::nominal() const {
-            return nominal_;
         }
 
         inline const Handle<Indexes::Xibor>& 

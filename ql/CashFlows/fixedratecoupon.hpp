@@ -50,20 +50,18 @@ namespace QuantLib {
                 const Date& startDate, const Date& endDate,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date())
-            : Coupon(calendar, rollingConvention, dayCounter, 
+            : Coupon(nominal, calendar, rollingConvention, dayCounter, 
               startDate, endDate, refPeriodStart, refPeriodEnd), 
-              nominal_(nominal), rate_(rate) {}
+              rate_(rate) {}
             //! \name CashFlow interface
             //@{
             double amount() const;
             //@}
             //! \name Inspectors
             //@{
-            double nominal() const;
             Rate rate() const;
             //@}
           private:
-            double nominal_;
             Rate rate_;
         };
 
@@ -71,11 +69,7 @@ namespace QuantLib {
         // inline definitions
 
         inline double FixedRateCoupon::amount() const {
-            return nominal_*rate_*accrualPeriod();
-        }
-
-        inline double FixedRateCoupon::nominal() const { 
-            return nominal_; 
+            return nominal()*rate_*accrualPeriod();
         }
 
         inline Rate FixedRateCoupon::rate() const { 

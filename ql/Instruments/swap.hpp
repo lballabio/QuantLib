@@ -53,11 +53,30 @@ namespace QuantLib {
                  const std::string& isinCode = "",
                  const std::string& description = "");
             ~Swap();
+            // added interface
+            double firstLegBPS() const;
+            double secondLegBPS() const;
           protected:
+            // methods
+            void performCalculations() const;
+            // data members
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
             RelinkableHandle<TermStructure> termStructure_;
-            void performCalculations() const;
+            mutable double firstLegBPS_, secondLegBPS_;
         };
+
+
+        // inline definitions
+        
+        inline double Swap::firstLegBPS() const {
+            calculate();
+            return firstLegBPS_;
+        }
+
+        inline double Swap::secondLegBPS() const {
+            calculate();
+            return secondLegBPS_;
+        }
 
     }
 
