@@ -78,6 +78,8 @@ CLEAN :
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
+	-@erase "$(INTDIR)\brownianbridge.obj"
+	-@erase "$(INTDIR)\brownianbridge.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -505,7 +507,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\brownianbridge.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -665,7 +668,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\brownianbridge.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -720,6 +724,8 @@ CLEAN :
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
+	-@erase "$(INTDIR)\brownianbridge.obj"
+	-@erase "$(INTDIR)\brownianbridge.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -1148,7 +1154,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\brownianbridge.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1308,7 +1315,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\brownianbridge.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1363,6 +1371,8 @@ CLEAN :
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
+	-@erase "$(INTDIR)\brownianbridge.obj"
+	-@erase "$(INTDIR)\brownianbridge.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -1790,7 +1800,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\brownianbridge.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1950,7 +1961,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\brownianbridge.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2005,6 +2017,8 @@ CLEAN :
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
+	-@erase "$(INTDIR)\brownianbridge.obj"
+	-@erase "$(INTDIR)\brownianbridge.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -2433,7 +2447,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\brownianbridge.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2593,7 +2608,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\brownianbridge.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2988,6 +3004,12 @@ SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.cpp
 SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
 
 "$(INTDIR)\basketpathpricer.obj"	"$(INTDIR)\basketpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\MonteCarlo\brownianbridge.cpp
+
+"$(INTDIR)\brownianbridge.obj"	"$(INTDIR)\brownianbridge.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

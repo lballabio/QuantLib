@@ -8,6 +8,7 @@ include_HEADERS = \
     arithmeticapopathpricer.hpp \
     arithmeticasopathpricer.hpp \
 	basketpathpricer.hpp \
+	brownianbridge.hpp \
     cliquetoptionpathpricer.hpp \
 	europeanpathpricer.hpp \
 	everestpathpricer.hpp \
@@ -34,6 +35,7 @@ libMonteCarlo_la_SOURCES = \
     arithmeticapopathpricer.cpp \
     arithmeticasopathpricer.cpp \
 	basketpathpricer.cpp    \
+	brownianbridge.cpp    \
     cliquetoptionpathpricer.cpp \
 	europeanpathpricer.cpp \
 	everestpathpricer.cpp \
