@@ -34,6 +34,8 @@ namespace QuantLib {
 
         //! Distribution over a number of dates
         class TimeBasket : private std::map<Date,double> {
+            // this is needed for Visual C++ 6
+            typedef std::map<Date,double> super;
           public:
             TimeBasket() {}
             TimeBasket(const std::vector<Date>& dates,
@@ -41,13 +43,13 @@ namespace QuantLib {
             //! \name Map interface
             //@{
             //! returns the number of entries
-            using std::map<Date,double>::size;
+            using super::size;
             //! element access
-            using std::map<Date,double>::operator[];
-            using std::map<Date,double>::begin;
-            using std::map<Date,double>::end;
-            using std::map<Date,double>::rbegin;
-            using std::map<Date,double>::rend;
+            using super::operator[];
+            using super::begin;
+            using super::end;
+            using super::rbegin;
+            using super::rend;
             //@}
             //! \name Algebra
             //@{
