@@ -911,6 +911,10 @@ SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\mctraits.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\mctypedefs.hpp
 # End Source File
 # Begin Source File
