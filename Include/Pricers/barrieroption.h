@@ -25,8 +25,10 @@
     \brief barrier option
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.5  2001/03/28 12:41:58  lballabio
+    Added constness to initialize() and mutableness to data members (how did this compile before?)
+
     Revision 1.4  2001/03/27 17:18:55  marmar
     Bug fixed in calculation of rho and vega
 
@@ -78,10 +80,10 @@ namespace QuantLib {
         private:
             BarrierType barrType_; 
             double barrier_, rebate_;            
-            double sigmaSqrtT_, mu_, muSigma_;
-            double dividendDiscount_, riskFreeDiscount_;
+            mutable double sigmaSqrtT_, mu_, muSigma_;
+            mutable double dividendDiscount_, riskFreeDiscount_;
             Math::CumulativeNormalDistribution f_;
-            void initialize();
+            void initialize() const;
             double A(double eta, double phi) const;
             double B(double eta, double phi) const;
             double C(double eta, double phi) const;

@@ -26,8 +26,10 @@
     \brief barrier option
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.4  2001/03/28 12:40:42  lballabio
+    Added constness to initialize() and mutableness to data members (how did this compile before?)
+
     Revision 1.3  2001/03/27 17:19:12  marmar
     Bug fixed in calculation of rho and vega
 
@@ -63,7 +65,7 @@ namespace QuantLib {
 
         }
         
-        void BarrierOption::initialize(){
+        void BarrierOption::initialize() const {
             sigmaSqrtT_ = volatility_ * QL_SQRT(residualTime_);
 
             mu_ = (riskFreeRate_ - dividendYield_)/
