@@ -44,9 +44,9 @@ namespace {
             Settings::instance().tracing().disable();
         Settings::instance().tracing().setLevel(level);
         Settings::instance().tracing().setStream(output);
-        QL_TRACE(Tracing::Coarse, "C");
-        QL_TRACE(Tracing::Normal, "N");
-        QL_TRACE(Tracing::Detailed, "D");
+        QL_TRACE(Tracing::Warning, "W");
+        QL_TRACE(Tracing::Info,    "I");
+        QL_TRACE(Tracing::Finest,  "F");
 
         #if defined(QL_ENABLE_TRACING)
         std::string expected = result;
@@ -73,12 +73,12 @@ void TracingTest::testOutput() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    testTraceOutput(false, Tracing::Coarse, "");
-    testTraceOutput(false, Tracing::Normal, "");
-    testTraceOutput(false, Tracing::Detailed, "");
-    testTraceOutput(true, Tracing::Coarse, "C\n");
-    testTraceOutput(true, Tracing::Normal, "C\nN\n");
-    testTraceOutput(true, Tracing::Detailed, "C\nN\nD\n");
+    testTraceOutput(false, Tracing::Warning, "");
+    testTraceOutput(false, Tracing::Fine,    "");
+    testTraceOutput(false, Tracing::All,     "");
+    testTraceOutput(true,  Tracing::Warning, "W\n");
+    testTraceOutput(true,  Tracing::Fine,    "W\nI\n");
+    testTraceOutput(true,  Tracing::All,     "W\nI\nF\n");
 
     QL_TEST_TEARDOWN
 }

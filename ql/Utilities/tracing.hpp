@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file tracing.hpp
+/*! \file ql/Utilities/tracing.hpp
     \brief tracing facilities
 */
 
@@ -31,10 +31,20 @@ namespace QuantLib {
     //! placeholder for tracing level enumeration
     struct Tracing {
         //! trace level
-        enum Level { Coarse, Normal, Detailed };
+        enum Level { Severe,   //!< Trace a possible error
+                     Warning,  //!< Trace something fishy
+                     Info,     //!< Generic tracing information
+                     Fine,     //!< Detailed tracing information
+                     Finer,    //!< Detailed tracing information
+                     Finest,   //!< Detailed tracing information
+                     All       //!< Trace everything
+        };
     };
 
     //! tracing class
+    /*! \test the facility is tested by comparing actual output
+              against expected traces.
+    */
     class Tracer : public boost::noncopyable {
         friend class Settings;
       private:
@@ -81,7 +91,7 @@ namespace QuantLib {
 
     The statement
     \code
-    QL_TRACE(level, message)
+    QL_TRACE(level, message);
     \endcode
     can be used to output a trace of the code being executed. If
     tracing was disabled during configuration, such statements are

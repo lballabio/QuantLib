@@ -23,7 +23,7 @@ namespace QuantLib {
     Settings::Settings() {
         evaluationDateGuard_ = boost::shared_ptr<Observable>(new Observable);
         tracing_.enable();
-        tracing_.setLevel(Tracing::Normal);
+        tracing_.setLevel(Tracing::Info);
         tracing_.setStream(std::cerr);
     }
 
