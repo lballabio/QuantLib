@@ -71,7 +71,7 @@ class Array {
         } else if (i<0 && -i<=self->size()) {
             return (*self)[self->size()+i];
         } else {
-            throw std::domain_error("Array index out of range");
+            throw QuantLib::IndexError("Array index out of range");
         }
     }
     void __setitem__(int i, double x) {
@@ -80,7 +80,7 @@ class Array {
         } else if (i<0 && -i<=self->size()) {
             (*self)[self->size()+i] = x;
         } else {
-            throw std::domain_error("Array index out of range");
+            throw QuantLib::IndexError("Array index out of range");
         }
     }
     Array __getslice__(int i, int j) {

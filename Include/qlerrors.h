@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/02/26 18:22:36  lballabio
+    Replaced std::domain_error with QuantLib::IndexError
+
     Revision 1.11  2001/02/26 16:59:01  lballabio
     Wrapped license line
 
@@ -94,6 +97,16 @@ namespace QuantLib {
     class PostconditionNotSatisfiedError : public Error {
       public:
         explicit PostconditionNotSatisfiedError(const std::string& what = "")
+        : Error(what) {}
+    };
+
+    //! Specialized error
+    /*! Thrown upon accessing an array or container
+        outside its range.
+    */
+    class IndexError : public Error {
+      public:
+        explicit IndexError(const std::string& what = "")
         : Error(what) {}
     };
 

@@ -119,7 +119,6 @@ QL_CHECK_FUNCTION([clock],[$ql_time],[])
 QL_CHECK_FUNCTION([max],[algorithm],[1,2])
 QL_CHECK_FUNCTION([min],[algorithm],[1,2])
 
-
 QL_CHECK_TEMPLATE_CLASS([iterator],[std::input_iterator_tag,double],\
     [iterator],[])
 QL_CHECK_TEMPLATE_CLASS([iterator_traits],[int*],[iterator],[])

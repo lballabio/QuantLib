@@ -39,11 +39,14 @@
 %except(python) {
     try {
         $function
-    } catch (std::domain_error& de) {
-        PyErr_SetString(PyExc_IndexError,de.what());
+    } catch (QuantLib::IndexError& e) {
+        PyErr_SetString(PyExc_IndexError,e.what());
         return NULL;
-    } catch (std::exception& ex) {
-        PyErr_SetString(PyExc_Exception,ex.what());
+    } catch (QuantLib::Error& e) {
+        PyErr_SetString(PyExc_Exception,e.what());
+        return NULL;
+    } catch (std::exception& e) {
+        PyErr_SetString(PyExc_Exception,e.what());
         return NULL;
     } catch (...) {
         PyErr_SetString(PyExc_Exception,"unknown error");

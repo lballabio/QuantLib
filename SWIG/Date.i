@@ -345,7 +345,7 @@ class DateVector {
         } else if (i<0 && -i<=self->size()) {
             return (*self)[self->size()+i];
         } else {
-            throw std::domain_error("DateVector");
+            throw QuantLib::IndexError("DateVector");
         }
     }
     void __setitem__(int i, Date d) {
