@@ -22,6 +22,7 @@ EXTRA_DIST = \
 	QuantLib.dsw \
 	QuantLib.mak \
 	QuantLib.nsi \
+	QuantLib.spec \
 	Readme.txt \
 	TODO.txt \
 	bootstrap \
