@@ -17,6 +17,7 @@
 INCLUDE_DIR    = ..\Include
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
+$(OUTPUT_DIR)  = ..\lib\Win32\Borland
 
 # Object files
 CORE_OBJS        = calendar.obj$(_D) \
@@ -76,9 +77,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # QuantLib library
-..\lib\Win32\Borland\QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
-    if exist ..\lib\Win32\Borland\QuantLib$(_D).lib del ..\lib\Win32\Borland\QuantLib$(_D).lib
-    $(TLIB) $(TLIB_OPTS) ..\lib\Win32\Borland\QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
+$(OUTPUT_DIR)\QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
+    if exist $(OUTPUT_DIR)\QuantLib$(_D).lib del $(OUTPUT_DIR)\QuantLib$(_D).lib
+    $(TLIB) $(TLIB_OPTS) $(OUTPUT_DIR)\QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
 
 SubLibraries:
     cd Calendars
@@ -121,5 +122,5 @@ clean::
     cd ..
     if exist *.obj      del /q *.obj
     if exist *.obj_d    del /q *.obj
-    if exist ..\lib\Win32\Borland\*.lib  del /q ..\lib\Win32\Borland\*.lib
+    if exist $(OUTPUT_DIR)\*.lib  del /q $(OUTPUT_DIR)\*.lib
 
