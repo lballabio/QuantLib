@@ -69,9 +69,9 @@ namespace QuantLib {
 
         template <class RNG>
         inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
-            unsigned int dimension, double variance, 
-            long seed) 
-        : next_(dimension), generator_(seed), {
+            unsigned int dimension, double variance,
+            long seed)
+        : next_(dimension), generator_(seed) {
             QL_REQUIRE(variance >= 0,
                 "RandomArrayGenerator: negative variance");
             sqrtVariance_ = Array(dimension, QL_SQRT(variance));
@@ -79,14 +79,14 @@ namespace QuantLib {
 
         template <class RNG>
         inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
-            const Array& variance, long seed) 
+            const Array& variance, long seed)
         : next_(variance.size()), generator_(seed),
           sqrtVariance_(variance.size()) {
             for (unsigned int i=0; i<variance.size(); i++) {
                 QL_REQUIRE(variance[i] >= 0,
                     "RandomArrayGenerator: negative variance"
                     + DoubleFormatter::toString(variance[i])
-                    + "in position " 
+                    + "in position "
                     + IntegerFormatter::toString(i));
                 sqrtVariance_[i] = QL_SQRT(variance[i]);
             }
@@ -100,7 +100,7 @@ namespace QuantLib {
                 "Covariance matrix must be square (is "+
                 IntegerFormatter::toString(covariance.rows())+ " x "+
                 IntegerFormatter::toString(covariance.columns())+ ")");
-            QL_REQUIRE(covariance.rows() > 0, 
+            QL_REQUIRE(covariance.rows() > 0,
                 "Null covariance matrix given");
             sqrtCovariance_ = Math::matrixSqrt(covariance);
         }
