@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2001/01/04 20:06:27  nando
+	no real change
+
 	Revision 1.8  2000/12/28 11:40:20  aleppo
 	Modified QL_REQUIRE and others
-
+	
 	Revision 1.7  2000/12/27 17:18:35  lballabio
 	Changes for compiling under Linux and Alpha Linux
 	
@@ -129,7 +132,8 @@ namespace QuantLib {
 	\relates Error
 */
 #define QL_REQUIRE(condition,description) \
-    (condition) || (throw QuantLib::PreconditionNotSatisfiedError(description),false)
+    (condition) || \
+    (throw QuantLib::PreconditionNotSatisfiedError(description),false)
 
 
 /*! \def QL_ENSURE
@@ -137,7 +141,8 @@ namespace QuantLib {
 	\relates Error
 */
 #define QL_ENSURE(condition,description) \
-    (condition) || (throw QuantLib::PostconditionNotSatisfiedError(description),false)
+    (condition) || \
+    (throw QuantLib::PostconditionNotSatisfiedError(description),false)
 
 
 
