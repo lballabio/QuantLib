@@ -19,8 +19,6 @@
     \brief piecewise flat forward term structure
 */
 
-// $Id$
-
 #ifndef quantlib_piecewise_flat_forward_curve_h
 #define quantlib_piecewise_flat_forward_curve_h
 

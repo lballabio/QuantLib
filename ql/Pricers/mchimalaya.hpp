@@ -19,8 +19,6 @@
     \brief Himalayan-type option pricer
 */
 
-// $Id$
-
 #ifndef quantlib_himalaya_h
 #define quantlib_himalaya_h
 

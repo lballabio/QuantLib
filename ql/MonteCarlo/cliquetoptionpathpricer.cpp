@@ -19,8 +19,6 @@
     \brief path pricer for cliquet options
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/cliquetoptionpathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 

@@ -19,8 +19,6 @@
     \brief Ridder 1-D solver
 */
 
-// $Id$
-
 /* The implementation of the algorithm was inspired by
    Press, Teukolsky, Vetterling, and Flannery,
    "Numerical Recipes in C", 2nd edition, 

@@ -19,8 +19,6 @@
     \brief Calibration helper class
 */
 
-// $Id$
-
 #ifndef quantlib_interest_rate_modelling_calibration_helper_h
 #define quantlib_interest_rate_modelling_calibration_helper_h
 

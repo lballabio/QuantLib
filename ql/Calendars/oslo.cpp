@@ -19,8 +19,6 @@
     \brief Oslo calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/oslo.hpp>
 
 namespace QuantLib {

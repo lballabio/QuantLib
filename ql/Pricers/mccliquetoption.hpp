@@ -19,8 +19,6 @@
     \brief Cliquet option priced with Monte Carlo simulation
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_cliquetoption_pricer_h
 #define quantlib_montecarlo_cliquetoption_pricer_h
 

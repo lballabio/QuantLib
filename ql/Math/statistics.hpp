@@ -19,8 +19,6 @@
     \brief statistics tool with risk measures
 */
 
-// $Id$
-
 #ifndef quantlib_statistics_h
 #define quantlib_statistics_h
 

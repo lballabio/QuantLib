@@ -19,8 +19,6 @@
     \brief abstract base classes for 2-D interpolations
 */
 
-// $Id$
-
 #ifndef quantlib_interpolation2D_h
 #define quantlib_interpolation2D_h
 

@@ -19,8 +19,6 @@
     \brief common code for option evaluation
 */
 
-// $Id$
-
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Solvers1D/brent.hpp>
 

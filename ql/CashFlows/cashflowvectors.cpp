@@ -19,8 +19,6 @@
     \brief Cash flow vector builders
 */
 
-// $Id$
-
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>

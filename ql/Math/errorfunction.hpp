@@ -19,8 +19,6 @@
     \brief Error function
 */
 
-// $Id$
-
 #ifndef quantlib_error_function_h
 #define quantlib_error_function_h
 

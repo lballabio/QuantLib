@@ -19,8 +19,6 @@
     \brief L'Ecuyer uniform random number generator
 */
 
-// $Id$
-
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 
 namespace QuantLib {

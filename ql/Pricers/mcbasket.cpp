@@ -19,8 +19,6 @@
     \brief simple example of multi-factor Monte Carlo pricer
 */
 
-// $Id$
-
 #include <ql/handle.hpp>
 #include <ql/MonteCarlo/basketpathpricer.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>

@@ -19,8 +19,6 @@
     \brief Oslo calendar
 */
 
-// $Id$
-
 #ifndef quantlib_oslo_calendar_h
 #define quantlib_oslo_calendar_h
 

@@ -19,8 +19,6 @@
     \brief Wellington calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/wellington.hpp>
 
 namespace QuantLib {

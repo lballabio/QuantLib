@@ -19,8 +19,6 @@
     \brief Cap/Floor volatility structures
 */
 
-// $Id$
-
 #ifndef quantlib_cap_volatility_structures_h
 #define quantlib_cap_volatility_structures_h
 

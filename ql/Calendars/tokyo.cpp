@@ -20,8 +20,6 @@
     \brief Tokyo calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/tokyo.hpp>
 
 namespace QuantLib {

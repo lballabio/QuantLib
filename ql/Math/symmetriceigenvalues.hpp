@@ -19,8 +19,6 @@
     \brief Eigenvalues / eigenvectors of a real symmetric matrix
 */
 
-// $Id$
-
 #ifndef quantlib_symmetric_eigenvalues_h
 #define quantlib_symmetric_eigenvalues_h
 

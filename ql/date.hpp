@@ -19,8 +19,6 @@
     \brief date- and time-related classes, typedefs and enumerations
 */
 
-// $Id$
-
 #ifndef quantlib_date_h
 #define quantlib_date_h
 

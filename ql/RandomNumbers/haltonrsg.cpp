@@ -30,8 +30,6 @@
     \brief Halton low-discrepancy sequence generator
 */
 
-// $Id$
-
 #include <ql/RandomNumbers/haltonrsg.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/Math/primenumbers.hpp>

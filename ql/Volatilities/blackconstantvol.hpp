@@ -19,8 +19,6 @@
     \brief Black constant volatility, no time dependence, no strike dependence
 */
 
-// $Id$
-
 #ifndef quantlib_blackconstantvol_hpp
 #define quantlib_blackconstantvol_hpp
 

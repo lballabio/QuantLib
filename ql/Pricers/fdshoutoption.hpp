@@ -19,8 +19,6 @@
     \brief shout option
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_shout_option_h
 #define quantlib_pricers_shout_option_h
 

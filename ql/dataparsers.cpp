@@ -19,8 +19,6 @@
     \brief classes used to parse data for input
 */
 
-// $Id$
-
 #include <ql/dataparsers.hpp>
 
 namespace QuantLib {

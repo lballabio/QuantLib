@@ -1,8 +1,4 @@
 
-# $Id$
-
-
-
 .autodepend
 .silent
 

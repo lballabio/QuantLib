@@ -19,8 +19,6 @@
     \brief arithmetic average strike option path pricer
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_arithmetic_average_strike_option_path_pricer_h
 #define quantlib_montecarlo_arithmetic_average_strike_option_path_pricer_h
 

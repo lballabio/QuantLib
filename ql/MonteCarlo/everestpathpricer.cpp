@@ -19,8 +19,6 @@
     \brief path pricer for European-type Everest option
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/everestpathpricer.hpp>
 #include <ql/dataformatters.hpp>
 

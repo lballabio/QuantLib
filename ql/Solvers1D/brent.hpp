@@ -19,8 +19,6 @@
     \brief Brent 1-D solver
 */
 
-// $Id$
-
 #ifndef quantlib_solver1d_brent_h
 #define quantlib_solver1d_brent_h
 

@@ -19,8 +19,6 @@
     \brief Affine term-structure
 */
 
-// $Id$
-
 #include <ql/TermStructures/affinetermstructure.hpp>
 
 namespace QuantLib {

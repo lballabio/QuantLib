@@ -19,8 +19,6 @@
     \brief Trinomial tree class
 */
 
-// $Id$
-
 #include "ql/Lattices/trinomialtree.hpp"
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief compute value, first, and second derivatives at grid center
 */
 
-// $Id$
-
 #ifndef quantlib_finite_difference_value_at_center_h
 #define quantlib_finite_difference_value_at_center_h
 

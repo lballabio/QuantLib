@@ -19,8 +19,6 @@
     \brief Warsaw calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/warsaw.hpp>
 
 namespace QuantLib {

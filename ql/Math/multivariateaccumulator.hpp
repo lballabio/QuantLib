@@ -20,8 +20,6 @@
     \brief A simple accumulator for vector-type samples
 */
 
-// $Id$
-
 #ifndef quantlib_math_multivariate_accumulator_h
 #define quantlib_math_multivariate_accumulator_h
 

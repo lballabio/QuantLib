@@ -19,8 +19,6 @@
     \brief Gamma distribution
 */
 
-// $Id$
-
 #ifndef quantlib_math_gamma_distribution_h
 #define quantlib_math_gamma_distribution_h
 

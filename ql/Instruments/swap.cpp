@@ -19,8 +19,6 @@
     \brief Interest rate swap
 */
 
-// $Id$
-
 #include <ql/Instruments/swap.hpp>
 #include <ql/CashFlows/coupon.hpp>
 #include <ql/CashFlows/basispointsensitivity.hpp>

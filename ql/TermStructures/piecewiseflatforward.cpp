@@ -19,8 +19,6 @@
     \brief piecewise flat forward term structure
 */
 
-// $Id$
-
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/Solvers1D/brent.hpp>
 

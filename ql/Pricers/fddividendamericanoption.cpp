@@ -19,8 +19,6 @@
     \brief american option with discrete deterministic dividends
 */
 
-// $Id$
-
 #include <ql/Pricers/fddividendamericanoption.hpp>
 
 namespace QuantLib {

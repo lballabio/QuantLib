@@ -19,8 +19,6 @@
     \brief Abstract two-factor interest rate model class
 */
 
-// $Id$
-
 #include <ql/ShortRateModels/twofactormodel.hpp>
 
 namespace QuantLib {

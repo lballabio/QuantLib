@@ -19,8 +19,6 @@
     \brief Tokyo calendar
 */
 
-// $Id$
-
 #ifndef quantlib_tokyo_calendar_h
 #define quantlib_tokyo_calendar_h
 

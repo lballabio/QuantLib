@@ -19,8 +19,6 @@
     \brief Coupon paying a fixed annual rate
 */
 
-// $Id$
-
 #ifndef quantlib_fixed_rate_coupon_hpp
 #define quantlib_fixed_rate_coupon_hpp
 

@@ -19,8 +19,6 @@
     \brief Abstract calendar class
 */
 
-// $Id$
-
 #include <ql/calendar.hpp>
 
 namespace QuantLib {

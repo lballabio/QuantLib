@@ -19,8 +19,6 @@
     \brief Cliquet option engines
 */
 
-// $Id$
-
 #ifndef quantlib_cliquet_engines_h
 #define quantlib_cliquet_engines_h
 

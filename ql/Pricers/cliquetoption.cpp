@@ -20,8 +20,6 @@
     \brief Cliquet option
 */
 
-// $Id$
-
 #include <ql/Pricers/cliquetoption.hpp>
 
 namespace QuantLib

@@ -19,8 +19,6 @@
     \brief Statistic tool for sequences with discrepancy calculation
 */
 
-// $Id$
-
 #ifndef quantlib_dicrepancy_statistics_hpp
 #define quantlib_dicrepancy_statistics_hpp
 

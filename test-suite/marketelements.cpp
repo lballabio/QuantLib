@@ -15,8 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-// $Id$
-
 #include "marketelements.hpp"
 #include "utilities.hpp"
 #include <ql/marketelement.hpp>

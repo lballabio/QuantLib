@@ -19,8 +19,6 @@
     \brief base class for option with dividends
 */
 
-// $Id$
-
 #ifndef quantlib_dividend_option_pricer_h
 #define quantlib_dividend_option_pricer_h
 

@@ -19,8 +19,6 @@
     \brief shout option exercise condition
 */
 
-// $Id$
-
 #ifndef quantlib_fd_shout_condition_h
 #define quantlib_fd_shout_condition_h
 

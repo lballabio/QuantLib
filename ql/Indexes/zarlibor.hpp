@@ -19,8 +19,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
     \brief %ZAR %Libor index (also known as JIBAR)
 */
 
-// $Id$
-
 #ifndef quantlib_zar_libor_hpp
 #define quantlib_zar_libor_hpp
 

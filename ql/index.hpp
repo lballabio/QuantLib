@@ -19,8 +19,6 @@
     \brief purely virtual base class for indexes
 */
 
-// $Id$
-
 #ifndef quantlib_index_hpp
 #define quantlib_index_hpp
 

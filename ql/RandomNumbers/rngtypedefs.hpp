@@ -20,8 +20,6 @@
     \brief Default choices for template instantiations
 */
 
-// $Id$
-
 #ifndef quantlib_rng_typedefs_h
 #define quantlib_rng_typedefs_h
 

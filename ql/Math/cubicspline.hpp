@@ -20,8 +20,6 @@
     \brief cubic spline interpolation between discrete points
 */
 
-// $Id$
-
 #ifndef quantlib_cubic_spline_h
 #define quantlib_cubic_spline_h
 

@@ -19,8 +19,6 @@
     \brief Short (or long) coupon at par on a term structure
 */
 
-// $Id$
-
 #ifndef quantlib_short_floating_rate_coupon_hpp
 #define quantlib_short_floating_rate_coupon_hpp
 

@@ -19,8 +19,6 @@
     \brief Safe (braketed) Newton 1-D solver
 */
 
-// $Id$
-
 #ifndef quantlib_solver1d_newtonsafe_h
 #define quantlib_solver1d_newtonsafe_h
 

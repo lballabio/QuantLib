@@ -19,8 +19,6 @@
     \brief path pricer for performance option
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_performanceoption_path_pricer_h
 #define quantlib_montecarlo_performanceoption_path_pricer_h
 

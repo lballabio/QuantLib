@@ -19,8 +19,6 @@
     \brief Iterator filtering undesired data
 */
 
-// $Id$
-
 #ifndef quantlib_filtering_iterator_h
 #define quantlib_filtering_iterator_h
 

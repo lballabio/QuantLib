@@ -20,8 +20,6 @@
     \brief Option exercise classes and payoff function
 */
 
-// $Id$
-
 #ifndef quantlib_exercise_type_h
 #define quantlib_exercise_type_h
 

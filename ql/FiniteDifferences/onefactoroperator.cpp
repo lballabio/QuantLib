@@ -19,8 +19,6 @@
     \brief differential operator for one-factor interest rate models
 */
 
-// $Id$
-
 #include "ql/FiniteDifferences/onefactoroperator.hpp"
 
 namespace QuantLib {

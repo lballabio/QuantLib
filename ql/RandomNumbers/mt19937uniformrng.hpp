@@ -19,8 +19,6 @@
     \brief Mersenne Twister uniform random number generator
 */
 
-// $Id$
-
 #ifndef quantlib_mersennetwister_uniform_rng_h
 #define quantlib_mersennetwister_uniform_rng_h
 

@@ -19,8 +19,6 @@
     \brief Discrete Geometric Average Strike Option
 */
 
-// $Id$
-
 #include <ql/Pricers/discretegeometricaso.hpp>
 #include <numeric>
 

@@ -19,8 +19,6 @@
     \brief Abstract 1-D solver class
 */
 
-// $Id$
-
 #include <ql/solver1d.hpp>
 
 namespace QuantLib {

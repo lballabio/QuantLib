@@ -19,8 +19,6 @@
     \brief Joint calendar
 */
 
-// $Id$
-
 #ifndef quantlib_joint_calendar_h
 #define quantlib_joint_calendar_h
 

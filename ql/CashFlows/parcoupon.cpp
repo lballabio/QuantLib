@@ -19,8 +19,6 @@
     \brief Coupon at par on a term structure
 */
 
-// $Id$
-
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 

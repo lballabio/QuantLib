@@ -19,8 +19,6 @@
     \brief Discrete Arithmetic Average Strike Option
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_mc_discrete_arithmetic_average_strike_mcpricer_h
 #define quantlib_pricers_mc_discrete_arithmetic_average_strike_mcpricer_h
 

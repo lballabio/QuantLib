@@ -19,8 +19,6 @@
     \brief Volatility functions
 */
 
-// $Id$
-
 #ifndef quantlib_functions_vols_h
 #define quantlib_functions_vols_h
 

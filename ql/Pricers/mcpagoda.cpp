@@ -19,8 +19,6 @@
     \brief Roofed multi asset Asian option
 */
 
-// $Id$
-
 #include <ql/handle.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
 #include <ql/MonteCarlo/pagodapathpricer.hpp>

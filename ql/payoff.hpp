@@ -19,8 +19,6 @@
     \brief Option payoff classes
 */
 
-// $Id$
-
 #ifndef quantlib_payoff_h
 #define quantlib_payoff_h
 

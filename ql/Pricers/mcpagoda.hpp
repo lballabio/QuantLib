@@ -19,8 +19,6 @@
     \brief Roofed multi asset Asian option
 */
 
-// $Id$
-
 #ifndef quantlib_pagoda_pricer_h
 #define quantlib_pagoda_pricer_h
 

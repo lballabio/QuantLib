@@ -19,8 +19,6 @@
     \brief Abstract one-factor interest rate model class
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/onefactormodel.hpp"
 #include "ql/Lattices/trinomialtree.hpp"
 #include "ql/Solvers1D/brent.hpp"

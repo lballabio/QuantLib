@@ -19,8 +19,6 @@
     \brief false-position 1-D solver
 */
 
-// $Id$
-
 #ifndef quantlib_solver1d_falseposition_h
 #define quantlib_solver1d_falseposition_h
 

@@ -19,8 +19,6 @@
     \brief Random sequence generator based on a pseudo-random number generator
 */
 
-// $Id$
-
 #ifndef quantlib_random_sequence_generator_h
 #define quantlib_random_sequence_generator_h
 

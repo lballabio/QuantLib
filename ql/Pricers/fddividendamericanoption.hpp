@@ -19,8 +19,6 @@
     \brief american option with discrete deterministic dividends
 */
 
-// $Id$
-
 #ifndef quantlib_dividend_american_option_pricer_h
 #define quantlib_dividend_american_option_pricer_h
 

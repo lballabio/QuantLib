@@ -20,8 +20,6 @@
     \brief single factor random walk
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_path_h
 #define quantlib_montecarlo_path_h
 

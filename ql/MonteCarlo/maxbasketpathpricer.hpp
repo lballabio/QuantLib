@@ -19,8 +19,6 @@
     \brief multipath pricer for max basket option
 */
 
-// $Id$
-
 #ifndef quantlib_max_basket_path_pricer_h
 #define quantlib_max_basket_path_pricer_h
 

@@ -19,8 +19,6 @@
     \brief boundary conditions for differential operators
 */
 
-// $Id$
-
 #ifndef quantlib_boundary_condition_h
 #define quantlib_boundary_condition_h
 

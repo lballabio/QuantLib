@@ -19,8 +19,6 @@
     \brief A simple accumulator for vector-type samples
 */
 
-// $Id$
-
 #include <ql/Math/multivariateaccumulator.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief Mersenne Twister uniform random number generator
 */
 
-// $Id$
-
 
 // NOTE: The following copyright notice applies to
 // the original C implementation that has been used for this class

@@ -19,8 +19,6 @@
     \brief Discrete Arithmetic Average Price Option
 */
 
-// $Id$
-
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/MonteCarlo/arithmeticapopathpricer.hpp>

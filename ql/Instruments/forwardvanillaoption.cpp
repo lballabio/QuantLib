@@ -19,8 +19,6 @@
     \brief Forward version of a vanilla option
 */
 
-// $Id$
-
 #include <ql/Instruments/forwardvanillaoption.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief Option requiring additional code to be executed at each time step
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_stepconditionoption_h
 #define quantlib_pricers_stepconditionoption_h
 

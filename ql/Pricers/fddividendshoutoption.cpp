@@ -19,8 +19,6 @@
     \brief base class for shout options with dividends
 */
 
-// $Id$
-
 #include <ql/Pricers/fddividendshoutoption.hpp>
 
 namespace QuantLib {

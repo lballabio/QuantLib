@@ -19,8 +19,6 @@
     \brief Swaption pricer class
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_swaption_pricer_h
 #define quantlib_pricers_swaption_pricer_h
 

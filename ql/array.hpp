@@ -19,8 +19,6 @@
     \brief 1-D array used in linear algebra.
 */
 
-// $Id$
-
 #ifndef quantlib_array_h
 #define quantlib_array_h
 

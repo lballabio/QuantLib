@@ -19,8 +19,6 @@
     \brief log-linear interpolation between discrete points
 */
 
-// $Id$
-
 #ifndef quantlib_loglinear_interpolation_h
 #define quantlib_loglinear_interpolation_h
 

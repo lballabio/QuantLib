@@ -19,8 +19,6 @@
     \brief Sydney calendar
 */
 
-// $Id$
-
 #ifndef quantlib_sydney_calendar_h
 #define quantlib_sydney_calendar_h
 

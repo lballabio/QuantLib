@@ -19,8 +19,6 @@
     \brief Drift term structure
 */
 
-// $Id$
-
 #ifndef quantlib_drift_term_structure_hpp
 #define quantlib_drift_term_structure_hpp
 

@@ -19,8 +19,6 @@
     \brief 30/360 day counters
 */
 
-// $Id$
-
 #ifndef quantlib_thirty360_day_counter_h
 #define quantlib_thirty360_day_counter_h
 

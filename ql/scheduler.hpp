@@ -19,8 +19,6 @@
     \brief date scheduler
 */
 
-// $Id$
-
 #ifndef quantlib_scheduler_hpp
 #define quantlib_scheduler_hpp
 

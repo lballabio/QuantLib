@@ -19,8 +19,6 @@
     \brief Iterator mapping a unary function to an underlying sequence
 */
 
-// $Id$
-
 #ifndef quantlib_processing_iterator_h
 #define quantlib_processing_iterator_h
 

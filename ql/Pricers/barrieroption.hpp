@@ -19,8 +19,6 @@
     \brief barrier option
 */
 
-// $Id$
-
 #ifndef quantlib_barrier_option_pricer_h
 #define quantlib_barrier_option_pricer_h
 

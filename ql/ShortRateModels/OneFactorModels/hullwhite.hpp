@@ -19,8 +19,6 @@
     \brief Hull & White (HW) model
 */
 
-// $Id$
-
 #ifndef quantlib_one_factor_models_hull_white_h
 #define quantlib_one_factor_models_hull_white_h
 

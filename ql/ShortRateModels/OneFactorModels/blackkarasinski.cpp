@@ -19,8 +19,6 @@
     \brief Black-Karasinski model
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp"
 #include "ql/Lattices/trinomialtree.hpp"
 #include "ql/Solvers1D/brent.hpp"

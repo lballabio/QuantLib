@@ -19,8 +19,6 @@
     \brief history class
 */
 
-// $Id$
-
 #ifndef quantlib_history_h
 #define quantlib_history_h
 

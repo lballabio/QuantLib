@@ -19,8 +19,6 @@
     \brief %Everest-type option pricer
 */
 
-// $Id$
-
 #include <ql/handle.hpp>
 #include <ql/MonteCarlo/everestpathpricer.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>

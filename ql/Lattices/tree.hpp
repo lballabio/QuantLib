@@ -19,8 +19,6 @@
     \brief Tree class
 */
 
-// $Id$
-
 #ifndef quantlib_lattices_tree_h
 #define quantlib_lattices_tree_h
 

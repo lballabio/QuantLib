@@ -19,8 +19,6 @@
     \brief multipath pricer for European-type basket option
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/basketpathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 

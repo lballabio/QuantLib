@@ -19,8 +19,6 @@
     \brief math functions
 */
 
-// $Id$
-
 #include <ql/functions/mathf.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>

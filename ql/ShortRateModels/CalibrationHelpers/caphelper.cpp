@@ -19,8 +19,6 @@
     \brief Cap calibration helper
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/CalibrationHelpers/caphelper.hpp"
 #include "ql/CashFlows/cashflowvectors.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"

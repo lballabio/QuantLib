@@ -19,8 +19,6 @@
     \brief Max Basket Monte Carlo pricer
 */
 
-// $Id$
-
 #include <ql/handle.hpp>
 #include <ql/MonteCarlo/maxbasketpathpricer.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>

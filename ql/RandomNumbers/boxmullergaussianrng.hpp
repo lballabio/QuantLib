@@ -20,8 +20,6 @@
     \brief Box-Muller Gaussian random-number generator
 */
 
-// $Id$
-
 #ifndef quantlib_box_muller_gaussian_rng_h
 #define quantlib_box_muller_gaussian_rng_h
 

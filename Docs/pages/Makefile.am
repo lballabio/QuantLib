@@ -1,6 +1,4 @@
 
-# $Id$
-
 EXTRA_DIST = \
              authors.docs \
              coreclasses.docs \

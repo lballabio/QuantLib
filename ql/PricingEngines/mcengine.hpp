@@ -20,8 +20,6 @@
     \brief base class for Monte Carlo engines
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_engine_h
 #define quantlib_montecarlo_engine_h
 

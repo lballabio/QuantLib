@@ -19,8 +19,6 @@
     \brief %Euribor index
 */
 
-// $Id$
-
 #ifndef quantlib_euribor_hpp
 #define quantlib_euribor_hpp
 

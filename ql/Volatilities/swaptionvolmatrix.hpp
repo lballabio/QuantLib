@@ -19,8 +19,6 @@
     \brief Swaption at-the-money volatility matrix
 */
 
-// $Id$
-
 #ifndef quantlib_swaption_volatility_matrix_h
 #define quantlib_swaption_volatility_matrix_h
 

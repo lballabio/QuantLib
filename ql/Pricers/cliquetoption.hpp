@@ -19,8 +19,6 @@
     \brief Cliquet option
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_cliquet_option_h
 #define quantlib_pricers_cliquet_option_h
 

@@ -19,8 +19,6 @@
     \brief path pricer for geometric average price option
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_geometric_average_price_option_path_pricer_h
 #define quantlib_montecarlo_geometric_average_price_option_path_pricer_h
 

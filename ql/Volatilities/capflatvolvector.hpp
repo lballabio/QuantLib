@@ -19,8 +19,6 @@
     \brief Cap/floor at-the-money flat volatility vector
 */
 
-// $Id$
-
 #ifndef quantlib_cap_volatility_vector_h
 #define quantlib_cap_volatility_vector_h
 

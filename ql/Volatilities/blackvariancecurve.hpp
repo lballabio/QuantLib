@@ -19,8 +19,6 @@
     \brief Black volatility curve modelled as variance curve
 */
 
-// $Id$
-
 #ifndef quantlib_blackvariancecurve_hpp
 #define quantlib_blackvariancecurve_hpp
 

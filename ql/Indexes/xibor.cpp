@@ -19,8 +19,6 @@
     \brief purely virtual base class for libor indexes
 */
 
-// $Id$
-
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 

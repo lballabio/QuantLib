@@ -19,8 +19,6 @@
     \brief European swaption calculated using Black formula
 */
 
-// $Id$
-
 #include "ql/Pricers/blackswaption.hpp"
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief general differential operator for one-factor interest rate models
 */
 
-// $Id$
-
 #ifndef quantlib_finite_differences_one_factor_operator_h
 #define quantlib_finite_differences_one_factor_operator_h
 

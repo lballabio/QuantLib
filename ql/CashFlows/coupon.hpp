@@ -19,8 +19,6 @@
     \brief Coupon accruing over a fixed period
 */
 
-// $Id$
-
 #ifndef quantlib_coupon_hpp
 #define quantlib_coupon_hpp
 

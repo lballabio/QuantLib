@@ -19,8 +19,6 @@
     \brief global repository for %Xibor histories
 */
 
-// $Id$
-
 #include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {

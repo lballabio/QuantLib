@@ -30,8 +30,6 @@
     \brief Prime numbers calculator
 */
 
-// $Id$
-
 #include "ql/Math/primenumbers.hpp"
 #include <cmath>
 

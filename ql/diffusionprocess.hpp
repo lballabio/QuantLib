@@ -20,8 +20,6 @@
     \brief Diffusion process
 */
 
-// $Id$
-
 #ifndef quantlib_diffusion_process_h
 #define quantlib_diffusion_process_h
 

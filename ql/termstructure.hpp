@@ -19,8 +19,6 @@
     \brief Term structure
 */
 
-// $Id$
-
 #ifndef quantlib_term_structure_hpp
 #define quantlib_term_structure_hpp
 

@@ -19,8 +19,6 @@
     \brief TARGET calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/target.hpp>
 
 namespace QuantLib {

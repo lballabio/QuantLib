@@ -19,8 +19,6 @@
     \brief Volatility functions
 */
 
-// $Id$
-
 #include <ql/functions/vols.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>

@@ -14,7 +14,6 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-// $Id$
 
 #include "europeanoption.hpp"
 #include <ql/Instruments/vanillaoption.hpp>

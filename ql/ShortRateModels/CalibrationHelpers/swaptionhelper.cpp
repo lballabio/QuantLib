@@ -19,8 +19,6 @@
     \brief Swaption calibration helper
 */
 
-// $Id$
-
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp"
 #include "ql/Pricers/blackswaption.hpp"

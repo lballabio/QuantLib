@@ -19,8 +19,6 @@
     \brief Cox-Ingersoll-Ross model
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/OneFactorModels/coxingersollross.hpp"
 #include "ql/Lattices/trinomialtree.hpp"
 #include "ql/Math/chisquaredistribution.hpp"

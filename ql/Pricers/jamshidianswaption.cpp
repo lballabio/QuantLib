@@ -19,8 +19,6 @@
     \brief Swaption pricer using Jamshidian's decomposition
 */
 
-// $Id$
-
 #include "ql/Pricers/jamshidianswaption.hpp"
 #include "ql/Solvers1D/brent.hpp"
 

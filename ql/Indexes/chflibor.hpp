@@ -19,8 +19,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
     \brief %CHF %Libor index (Also known as ZIBOR)
 */
 
-// $Id$
-
 #ifndef quantlib_chf_libor_hpp
 #define quantlib_chf_libor_hpp
 

@@ -19,8 +19,6 @@
     \brief act/act day counters
 */
 
-// $Id$
-
 #ifndef quantlib_actualactual_day_counter_h
 #define quantlib_actualactual_day_counter_h
 

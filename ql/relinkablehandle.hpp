@@ -19,8 +19,6 @@
     \brief Globally accessible relinkable pointer
 */
 
-// $Id$
-
 #ifndef quantlib_relinkable_handle_h
 #define quantlib_relinkable_handle_h
 

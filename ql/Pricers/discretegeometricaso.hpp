@@ -19,8 +19,6 @@
     \brief Discrete Geometric Average Strike Option
 */
 
-// $Id$
-
 #ifndef quantlib_discrete_geometric_average_strike_option_h
 #define quantlib_discrete_geometric_average_strike_option_h
 

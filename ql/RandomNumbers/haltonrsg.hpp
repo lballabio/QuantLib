@@ -19,8 +19,6 @@
     \brief Halton low-discrepancy sequence generator
 */
 
-// $Id$
-
 #ifndef quantlib_halton_ld_rsg_h
 #define quantlib_halton_ld_rsg_h
 

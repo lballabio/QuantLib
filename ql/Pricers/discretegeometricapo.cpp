@@ -19,8 +19,6 @@
     \brief Discrete Geometric Average Price Option
 */
 
-// $Id$
-
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <numeric>
 

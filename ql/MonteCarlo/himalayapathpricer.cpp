@@ -19,8 +19,6 @@
     \brief multipath pricer for European-type Himalaya option
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/himalayapathpricer.hpp>
 #include <ql/dataformatters.hpp>
 

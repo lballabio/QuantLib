@@ -19,8 +19,6 @@
     \brief Swaption class
 */
 
-// $Id$
-
 #ifndef quantlib_instruments_swaption_h
 #define quantlib_instruments_swaption_h
 

@@ -19,8 +19,6 @@
     \brief Chi-square (central and non-central) distributions
 */
 
-// $Id$
-
 #ifndef quantlib_chi_square_distribution_h
 #define quantlib_chi_square_distribution_h
 

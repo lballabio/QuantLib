@@ -1,6 +1,4 @@
 
-# $Id$
-
 SUBDIRS = pages Examples images
 
 EXTRA_DIST = \

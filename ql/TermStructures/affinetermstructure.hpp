@@ -19,8 +19,6 @@
     \brief Affine term structure
 */
 
-// $Id$
-
 #ifndef quantlib_term_structures_affine_h
 #define quantlib_term_structures_affine_h
 

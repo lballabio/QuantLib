@@ -20,8 +20,6 @@
     \brief base class for single-path pricers
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_path_pricer_h
 #define quantlib_montecarlo_path_pricer_h
 

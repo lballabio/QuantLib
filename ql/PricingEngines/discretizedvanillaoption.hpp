@@ -19,8 +19,6 @@
     \brief discretized vanilla option
 */
 
-// $Id$
-
 #ifndef quantlib_discretized_vanilla_option_h
 #define quantlib_discretized_vanilla_option_h
 

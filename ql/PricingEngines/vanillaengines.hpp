@@ -21,8 +21,6 @@
     \brief Vanilla option engines
 */
 
-// $Id$
-
 #ifndef quantlib_vanilla_engines_h
 #define quantlib_vanilla_engines_h
 

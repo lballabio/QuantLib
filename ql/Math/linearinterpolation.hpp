@@ -19,8 +19,6 @@
     \brief linear interpolation between discrete points
 */
 
-// $Id$
-
 #ifndef quantlib_linear_interpolation_h
 #define quantlib_linear_interpolation_h
 

@@ -19,8 +19,6 @@
     \brief compounded forward term structure
 */
 
-// $Id$
-
 #ifndef quantlib_compoundforward_curve_h
 #define quantlib_compoundforward_curve_h
 

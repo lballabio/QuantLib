@@ -21,8 +21,6 @@
     \brief Option exercise classes and exercise payoff function
 */
 
-// $Id$
-
 #include <ql/exercise.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief Discrete Arithmetic Average Strike Option
 */
 
-// $Id$
-
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
 #include <ql/MonteCarlo/arithmeticasopathpricer.hpp>

@@ -19,8 +19,6 @@
     \brief bridge pattern (a.k.a. handle-body idiom)
 */
 
-// $Id$
-
 #ifndef quantlib_bridge_h
 #define quantlib_bridge_h
 

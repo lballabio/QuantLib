@@ -19,8 +19,6 @@
     \brief finite-difference evaluation of Bermudan option
 */
 
-// $Id$
-
 #include <ql/Pricers/fdbermudanoption.hpp>
 #include <ql/Pricers/europeanoption.hpp>
 

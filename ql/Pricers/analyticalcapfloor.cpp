@@ -19,8 +19,6 @@
     \brief Analytical pricer for caps/floors
 */
 
-// $Id$
-
 #include "ql/Pricers/analyticalcapfloor.hpp"
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief Johannesburg calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/johannesburg.hpp>
 
 namespace QuantLib {

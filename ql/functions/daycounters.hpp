@@ -19,8 +19,6 @@
     \brief day counters functions
 */
 
-// $Id$
-
 #ifndef quantlib_functions_daycounters_h
 #define quantlib_functions_daycounters_h
 

@@ -27,8 +27,6 @@
     \brief Error function
 */
 
-// $Id$
-
 #include <ql/Math/errorfunction.hpp>
 #include <float.h>
 

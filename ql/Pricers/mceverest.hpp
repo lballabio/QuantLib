@@ -19,8 +19,6 @@
     \brief %Everest-type option pricer
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_everest_pricer_h
 #define quantlib_pricers_everest_pricer_h
 

@@ -19,8 +19,6 @@
     \brief flat forward rate term structure
 */
 
-// $Id$
-
 #ifndef quantlib_flat_forward_curve_h
 #define quantlib_flat_forward_curve_h
 

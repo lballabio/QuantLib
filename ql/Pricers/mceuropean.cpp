@@ -19,8 +19,6 @@
     \brief simple example of Monte Carlo pricer
 */
 
-// $Id$
-
 #include <ql/Pricers/mceuropean.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
 

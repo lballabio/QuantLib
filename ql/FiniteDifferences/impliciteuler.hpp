@@ -19,8 +19,6 @@
     \brief implicit Euler scheme for finite difference methods
 */
 
-// $Id$
-
 #ifndef quantlib_backward_euler_h
 #define quantlib_backward_euler_h
 

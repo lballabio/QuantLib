@@ -19,8 +19,6 @@
     \brief Quanto version of a vanilla option
 */
 
-// $Id$
-
 #include <ql/Instruments/quantovanillaoption.hpp>
 
 namespace QuantLib {

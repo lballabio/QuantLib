@@ -19,8 +19,6 @@
     \brief secant 1-D solver
 */
 
-// $Id$
-
 #ifndef quantlib_solver1d_secant_h
 #define quantlib_solver1d_secant_h
 

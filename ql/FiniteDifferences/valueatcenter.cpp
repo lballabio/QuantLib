@@ -19,8 +19,6 @@
     \brief compute value, first, and second derivatives at grid center
 */
 
-// $Id$
-
 #include <ql/array.hpp>
 
 namespace QuantLib {

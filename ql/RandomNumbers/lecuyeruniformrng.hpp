@@ -19,8 +19,6 @@
     \brief L'Ecuyer uniform random number generator
 */
 
-// $Id$
-
 #ifndef quantlib_lecuyer_uniform_rng_h
 #define quantlib_lecuyer_uniform_rng_h
 

@@ -19,8 +19,6 @@
     \brief Quanto term structure
 */
 
-// $Id$
-
 #ifndef quantlib_quanto_term_structure_hpp
 #define quantlib_quanto_term_structure_hpp
 

@@ -19,8 +19,6 @@
     \brief base class for Monte Carlo pricers
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_pricer_h
 #define quantlib_montecarlo_pricer_h
 

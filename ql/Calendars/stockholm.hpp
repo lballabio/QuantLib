@@ -19,8 +19,6 @@
     \brief Stockholm calendar
 */
 
-// $Id$
-
 #ifndef quantlib_stockholm_calendar_h
 #define quantlib_stockholm_calendar_h
 

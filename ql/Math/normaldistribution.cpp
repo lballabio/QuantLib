@@ -20,8 +20,6 @@
     \brief normal, cumulative and inverse cumulative distributions
 */
 
-// $Id$
-
 #include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {

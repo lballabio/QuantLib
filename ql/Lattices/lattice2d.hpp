@@ -19,8 +19,6 @@
     \brief Two-dimensional tree class
 */
 
-// $Id$
-
 #ifndef quantlib_lattices_lattice2d_h
 #define quantlib_lattices_lattice2d_h
 

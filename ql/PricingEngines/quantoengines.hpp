@@ -19,8 +19,6 @@
     \brief Quanto option engines
 */
 
-// $Id$
-
 #ifndef quantlib_quanto_engines_h
 #define quantlib_quanto_engines_h
 

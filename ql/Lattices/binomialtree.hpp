@@ -20,8 +20,6 @@
     \brief Binomial tree class
 */
 
-// $Id$
-
 #ifndef quantlib_lattices_binomial_tree_h
 #define quantlib_lattices_binomial_tree_h
 

@@ -19,8 +19,6 @@
     \brief Abstract interest rate model class
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/calibrationhelper.hpp"
 
 namespace QuantLib {

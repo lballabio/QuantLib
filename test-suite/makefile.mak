@@ -1,6 +1,4 @@
 # makefile for test-suite.cpp under Borland C++
-#
-# $Id$
 
 .autodepend
 .silent

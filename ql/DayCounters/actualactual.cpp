@@ -19,8 +19,6 @@
     \brief act/act day counters
 */
 
-// $Id$
-
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/dataformatters.hpp>
 

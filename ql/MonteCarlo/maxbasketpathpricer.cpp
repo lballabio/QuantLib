@@ -19,8 +19,6 @@
     \brief multipath pricer for max basket option
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/maxbasketpathpricer.hpp>
 #include <ql/dataformatters.hpp>
 

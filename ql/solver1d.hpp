@@ -19,8 +19,6 @@
     \brief Abstract 1-D solver class
 */
 
-// $Id$
-
 #ifndef quantlib_solver1d_h
 #define quantlib_solver1d_h
 

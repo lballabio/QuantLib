@@ -19,8 +19,6 @@
     \brief Base classes for generic arguments and results
 */
 
-// $Id$
-
 #ifndef quantlib_args_and_results_h
 #define quantlib_args_and_results_h
 

@@ -19,8 +19,6 @@
     \brief Local volatility surface derived from a Black vol surface
 */
 
-// $Id$
-
 #ifndef quantlib_localvolsurface_hpp
 #define quantlib_localvolsurface_hpp
 

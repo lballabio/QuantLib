@@ -19,8 +19,6 @@
     \brief day counter class
 */
 
-// $Id$
-
 #ifndef quantlib_day_counter_h
 #define quantlib_day_counter_h
 

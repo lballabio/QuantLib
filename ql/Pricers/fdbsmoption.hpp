@@ -19,8 +19,6 @@
     \brief common code for numerical option evaluation
 */
 
-// $Id$
-
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h
 

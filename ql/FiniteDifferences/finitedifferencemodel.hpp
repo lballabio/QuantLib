@@ -19,8 +19,6 @@
     \brief generic finite difference model
 */
 
-// $Id$
-
 #ifndef quantlib_finite_difference_model_h
 #define quantlib_finite_difference_model_h
 

@@ -19,8 +19,6 @@
     \brief differential operator for Black-Scholes-Merton equation
 */
 
-// $Id$
-
 #ifndef quantlib_bsm_operator_h
 #define quantlib_bsm_operator_h
 

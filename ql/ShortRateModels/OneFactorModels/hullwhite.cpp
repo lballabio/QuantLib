@@ -19,8 +19,6 @@
     \brief Hull & White model
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/OneFactorModels/hullwhite.hpp"
 #include "ql/Lattices/trinomialtree.hpp"
 #include "ql/blackmodel.hpp"

@@ -19,8 +19,6 @@
     \brief Cash flow vector builders
 */
 
-// $Id$
-
 #ifndef quantlib_cash_flow_vectors_hpp
 #define quantlib_cash_flow_vectors_hpp
 

@@ -19,8 +19,6 @@
     \brief Global definitions and compiler switches.
 */
 
-// $Id$
-
 /*! \namespace QuantLib
     \brief a.k.a. the %QuantLib Foundation
 

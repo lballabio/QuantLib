@@ -19,8 +19,6 @@
     \brief european option with discrete deterministic dividends
 */
 
-// $Id$
-
 #ifndef BSM_dividend_european_option_pricer_h
 #define BSM_dividend_european_option_pricer_h
 

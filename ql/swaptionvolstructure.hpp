@@ -19,8 +19,6 @@
     \brief Swaption volatility structure
 */
 
-// $Id$
-
 #ifndef quantlib_swaption_volatility_structure_h
 #define quantlib_swaption_volatility_structure_h
 

@@ -20,8 +20,6 @@
     \brief Vanilla option on a single asset
 */
 
-// $Id$
-
 #ifndef quantlib_vanilla_option_h
 #define quantlib_vanilla_option_h
 

@@ -19,8 +19,6 @@
     \brief Binomial trees under the BSM model
 */
 
-// $Id$
-
 #ifndef quantlib_lattices_bsm_lattice_h
 #define quantlib_lattices_bsm_lattice_h
 

@@ -17,8 +17,6 @@
 #ifndef primitivepolynomials_h
 #define primitivepolynomials_h
 
-// $Id$
-
 // This file is provided for the use with Sobol' sequences of higher
 // dimensions. The dimensionality of the Sobol' sequence can be extended to
 // virtually any size you ever might need by the aid of the table of

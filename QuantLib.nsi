@@ -7,8 +7,6 @@
 #       makensis-bz2 QuantLib.nsi
 
 
-# $Id$
-
 !define VER_NUMBER "0.3.2a2-cvs"
 
 # HEADER CONFIGURATION COMMANDS

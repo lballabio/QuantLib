@@ -19,8 +19,6 @@
     \brief Custom types
 */
 
-// $Id$
-
 #ifndef quantlib_types_hpp
 #define quantlib_types_hpp
 

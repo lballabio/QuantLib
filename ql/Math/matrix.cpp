@@ -20,8 +20,6 @@
     \brief matrix used in linear algebra.
 */
 
-// $Id$
-
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <ql/dataformatters.hpp>
 

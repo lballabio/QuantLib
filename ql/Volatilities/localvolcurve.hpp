@@ -19,8 +19,6 @@
     \brief Local volatility curve derived from a Black curve
 */
 
-// $Id$
-
 #ifndef quantlib_localvolcurve_hpp
 #define quantlib_localvolcurve_hpp
 

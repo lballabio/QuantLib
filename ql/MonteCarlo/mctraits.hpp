@@ -19,8 +19,6 @@
     \brief Monte Carlo policy descriptors
 */
 
-// $Id$
-
 #ifndef quantlib_mc_traits_h
 #define quantlib_mc_traits_h
 

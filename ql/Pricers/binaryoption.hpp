@@ -19,8 +19,6 @@
     \brief European style cash-or-nothing option.
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_binaryoption_h
 #define quantlib_pricers_binaryoption_h
 

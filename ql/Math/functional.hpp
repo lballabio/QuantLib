@@ -19,8 +19,6 @@
     \brief functionals and combinators not included in the STL
 */
 
-// $Id$
-
 #ifndef quantlib_functional_h
 #define quantlib_functional_h
 

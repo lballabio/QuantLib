@@ -19,8 +19,6 @@
     \brief Forward spreaded term structure
 */
 
-// $Id$
-
 #ifndef quantlib_forward_spreaded_term_structure_hpp
 #define quantlib_forward_spreaded_term_structure_hpp
 

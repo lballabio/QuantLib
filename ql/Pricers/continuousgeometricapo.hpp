@@ -19,8 +19,6 @@
     \brief Continuous Geometric Average Price Option (European exercise)
 */
 
-// $Id$
-
 #ifndef quantlib_continous_geometric_average_price_option_h
 #define quantlib_continous_geometric_average_price_option_h
 

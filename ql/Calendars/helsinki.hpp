@@ -19,8 +19,6 @@
     \brief Helsinki calendar
 */
 
-// $Id$
-
 #ifndef quantlib_helsinki_calendar_h
 #define quantlib_helsinki_calendar_h
 

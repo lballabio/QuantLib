@@ -19,8 +19,6 @@
     \brief Two-factor additive Gaussian Model G2++
 */
 
-// $Id$
-
 #ifndef quantlib_two_factor_models_g2_h
 #define quantlib_two_factor_models_g2_h
 

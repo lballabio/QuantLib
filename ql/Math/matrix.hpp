@@ -20,8 +20,6 @@
     \brief matrix used in linear algebra.
 */
 
-// $Id$
-
 #ifndef quantlib_matrix_h
 #define quantlib_matrix_h
 

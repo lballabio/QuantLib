@@ -20,8 +20,6 @@
     \brief statistics tool based on incremental accumulation
 */
 
-// $Id$
-
 #include <ql/Math/incrementalstatistics.hpp>
 
 namespace QuantLib {

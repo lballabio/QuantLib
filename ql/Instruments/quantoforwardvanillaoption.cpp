@@ -19,8 +19,6 @@
     \brief Quanto version of a forward vanilla option
 */
 
-// $Id$
-
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
 #include <ql/PricingEngines/forwardengines.hpp>
 #include <ql/PricingEngines/quantoengines.hpp>

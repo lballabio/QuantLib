@@ -19,8 +19,6 @@
     \brief Base class for cash flows
 */
 
-// $Id$
-
 #ifndef quantlib_cash_flow_hpp
 #define quantlib_cash_flow_hpp
 

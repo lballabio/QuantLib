@@ -19,8 +19,6 @@
     \brief base class for libor indexes
 */
 
-// $Id$
-
 #ifndef quantlib_xibor_hpp
 #define quantlib_xibor_hpp
 

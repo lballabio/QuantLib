@@ -19,8 +19,6 @@
     \brief Performance option priced with Monte Carlo simulation
 */
 
-// $Id$
-
 #include <ql/Pricers/mcperformanceoption.hpp>
 #include <ql/MonteCarlo/performanceoptionpathpricer.hpp>
 

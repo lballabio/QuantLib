@@ -19,8 +19,6 @@
     \brief Analytical pricer for caps/floors
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_analytical_cap_floor_h
 #define quantlib_pricers_analytical_cap_floor_h
 

@@ -19,8 +19,6 @@
     \brief Risk functions
 */
 
-// $Id$
-
 #ifndef quantlib_risk_measures_h
 #define quantlib_risk_measures_h
 

@@ -19,8 +19,6 @@
     \brief path pricer for cliquet options
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_cliquetoption_path_pricer_h
 #define quantlib_montecarlo_cliquetoption_path_pricer_h
 

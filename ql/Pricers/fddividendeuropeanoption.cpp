@@ -19,8 +19,6 @@
     \brief european option with discrete deterministic dividends
 */
 
-// $Id$
-
 #include <ql/Pricers/fddividendeuropeanoption.hpp>
 
 namespace QuantLib {

@@ -15,8 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-// $Id$
-
 #ifndef quantlib_test_lowdiscrepancysequences_hpp
 #define quantlib_test_lowdiscrepancysequences_hpp
 

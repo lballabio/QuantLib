@@ -19,8 +19,6 @@
     \brief empirical-distribution risk measures
 */
 
-// $Id$
-
 #ifndef quantlib_risk_statistics_h
 #define quantlib_risk_statistics_h
 

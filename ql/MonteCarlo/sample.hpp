@@ -19,8 +19,6 @@
     \brief weighted sample
 */
 
-// $Id$
-
 #ifndef quantlib_sample_h
 #define quantlib_sample_h
 

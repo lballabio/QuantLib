@@ -19,8 +19,6 @@
     \brief CapFloor calculated using the Black formula
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_black_capfloor_h
 #define quantlib_pricers_black_capfloor_h
 

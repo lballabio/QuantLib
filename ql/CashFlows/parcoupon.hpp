@@ -19,8 +19,6 @@
     \brief Coupon at par on a term structure
 */
 
-// $Id$
-
 #ifndef quantlib_par_coupon_hpp
 #define quantlib_par_coupon_hpp
 

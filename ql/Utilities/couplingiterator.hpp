@@ -19,8 +19,6 @@
     \brief Iterator mapping a function to a pair of underlying sequences
 */
 
-// $Id$
-
 #ifndef quantlib_coupling_iterator_h
 #define quantlib_coupling_iterator_h
 

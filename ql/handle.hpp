@@ -19,8 +19,6 @@
     \brief Reference-counted pointer
 */
 
-// $Id$
-
 #ifndef quantlib_handle_h
 #define quantlib_handle_h
 

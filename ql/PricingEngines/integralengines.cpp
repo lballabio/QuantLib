@@ -19,8 +19,6 @@
     \brief Option engines using the integral approach
 */
 
-// $Id$
-
 #include <ql/PricingEngines/vanillaengines.hpp>
 #include <ql/Math/segmentintegral.hpp>
 

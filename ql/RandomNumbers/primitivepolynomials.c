@@ -1,6 +1,4 @@
 
-// $Id$
-
 // This file contains 21200 polinomials. Another version does contain
 // 8129334 polinomials. Both are slightly edited versions of
 // PrimitivePolynomialsModuloTwoUpToDegree27.c
@@ -8,12 +6,12 @@
 // © 2002 "Monte Carlo Methods in Finance"
 //
 //
-// ================================================================================
+// =========================================================================
 // Copyright (C) 2002 "Monte Carlo Methods in Finance". All rights reserved.
 //
-// Permission to use, copy, modify, and distribute this software is freely granted,
-// provided that this notice is preserved.
-// ================================================================================
+// Permission to use, copy, modify, and distribute this software is freely
+// granted, provided that this notice is preserved.
+// =========================================================================
 
 #include "primitivepolynomials.h"
 

@@ -19,8 +19,6 @@
     \brief Engine for a short-rate model specialized on a lattice
 */
 
-// $Id$
-
 #ifndef quantlib_lattice_short_rate_model_engine_hpp
 #define quantlib_lattice_short_rate_model_engine_hpp
 

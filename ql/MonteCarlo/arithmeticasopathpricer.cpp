@@ -19,8 +19,6 @@
     \brief arithmetic average strike option path pricer
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/arithmeticasopathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 

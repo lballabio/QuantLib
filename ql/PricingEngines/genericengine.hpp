@@ -19,8 +19,6 @@
     \brief Generic option engine
 */
 
-// $Id$
-
 #ifndef quantlib_generic_engine_h
 #define quantlib_generic_engine_h
 

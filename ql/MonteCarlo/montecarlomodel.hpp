@@ -19,8 +19,6 @@
     \brief General purpose Monte Carlo model
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_model_h
 #define quantlib_montecarlo_model_h
 

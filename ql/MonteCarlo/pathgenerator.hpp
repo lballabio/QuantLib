@@ -20,8 +20,6 @@
     \brief Generates random paths using a sequence generator
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_path_generator_h
 #define quantlib_montecarlo_path_generator_h
 

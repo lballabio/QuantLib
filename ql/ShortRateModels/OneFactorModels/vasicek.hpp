@@ -19,8 +19,6 @@
     \brief Vasicek model class
 */
 
-// $Id$
-
 #ifndef quantlib_one_factor_models_vasicek_h
 #define quantlib_one_factor_models_vasicek_h
 

@@ -19,8 +19,6 @@
     \brief Frankfurt calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/frankfurt.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief Calibration helper class
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/calibrationhelper.hpp"
 #include "ql/Solvers1D/brent.hpp"
 

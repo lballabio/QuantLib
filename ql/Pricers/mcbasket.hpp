@@ -19,8 +19,6 @@
     \brief simple example of multi-factor Monte Carlo pricer
 */
 
-// $Id$
-
 #ifndef quantlib_basket_pricer_h
 #define quantlib_basket_pricer_h
 

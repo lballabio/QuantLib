@@ -19,8 +19,6 @@
     \brief date- and time-related classes, typedefs and enumerations
 */
 
-// $Id$
-
 #include <ql/dataformatters.hpp>
 #include <ql/dataparsers.hpp>
 

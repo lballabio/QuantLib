@@ -19,8 +19,6 @@
     \brief Statistic tool for sequences with discrepancy calculation
 */
 
-// $Id$
-
 #include <ql/Math/discrepancystatistics.hpp>
 
 namespace QuantLib {

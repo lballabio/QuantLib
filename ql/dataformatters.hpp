@@ -20,8 +20,6 @@
     \brief Classes used to format data for output
 */
 
-// $Id$
-
 #ifndef quantlib_data_formatters_h
 #define quantlib_data_formatters_h
 

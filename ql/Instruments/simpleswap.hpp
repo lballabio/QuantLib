@@ -19,8 +19,6 @@
     \brief Simple fixed-rate vs Libor swap
 */
 
-// $Id$
-
 #ifndef quantlib_simple_swap_h
 #define quantlib_simple_swap_h
 

@@ -20,8 +20,6 @@
     \brief Base class for pricing engines
 */
 
-// $Id$
-
 #ifndef quantlib_pricingengine_h
 #define quantlib_pricingengine_h
 

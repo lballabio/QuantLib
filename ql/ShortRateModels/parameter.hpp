@@ -19,8 +19,6 @@
     \brief Model parameter classes
 */
 
-// $Id$
-
 #ifndef quantlib_interest_rate_modelling_parameter_h
 #define quantlib_interest_rate_modelling_parameter_h
 

@@ -19,8 +19,6 @@
     \brief Implied Black Vol Term Structure
 */
 
-// $Id$
-
 #ifndef quantlib_implied_vol_term_structure_hpp
 #define quantlib_implied_vol_term_structure_hpp
 

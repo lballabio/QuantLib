@@ -19,8 +19,6 @@
     \brief Wellington calendar
 */
 
-// $Id$
-
 #ifndef quantlib_wellington_calendar_h
 #define quantlib_wellington_calendar_h
 

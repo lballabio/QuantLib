@@ -19,8 +19,6 @@
     \brief american option
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_american_option_h
 #define quantlib_pricers_american_option_h
 

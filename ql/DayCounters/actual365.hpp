@@ -19,8 +19,6 @@
     \brief act/365 day counter
 */
 
-// $Id$
-
 #ifndef quantlib_actual365_day_counter_h
 #define quantlib_actual365_day_counter_h
 

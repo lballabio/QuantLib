@@ -19,8 +19,6 @@
     \brief global repository for %Xibor histories
 */
 
-// $Id$
-
 #ifndef quantlib_xibor_manager_hpp
 #define quantlib_xibor_manager_hpp
 

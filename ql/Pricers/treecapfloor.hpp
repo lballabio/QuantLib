@@ -19,8 +19,6 @@
     \brief Cap/Floor calculated using a tree
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_tree_cap_floor_h
 #define quantlib_pricers_tree_cap_floor_h
 

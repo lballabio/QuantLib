@@ -19,8 +19,6 @@
     \brief Cap/Floor calculated using a tree
 */
 
-// $Id$
-
 #include "ql/Pricers/treecapfloor.hpp"
 #include "ql/ShortRateModels/onefactormodel.hpp"
 #include <ql/Pricers/capfloorpricer.hpp>

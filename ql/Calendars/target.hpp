@@ -19,8 +19,6 @@
     \brief TARGET calendar
 */
 
-// $Id$
-
 #ifndef quantlib_target_calendar_h
 #define quantlib_target_calendar_h
 

@@ -19,8 +19,6 @@
     \brief Newton 1-D solver
 */
 
-// $Id$
-
 #ifndef quantlib_solver1d_newton_h
 #define quantlib_solver1d_newton_h
 

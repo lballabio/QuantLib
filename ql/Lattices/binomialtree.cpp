@@ -20,8 +20,6 @@
     \brief Binomial tree class
 */
 
-// $Id$
-
 #include "ql/Lattices/binomialtree.hpp"
 
 namespace QuantLib {

@@ -1,8 +1,6 @@
 
 #
 # makefile for swapvaluation.cpp under Borland C++
-#
-# $Id$
 
 .autodepend
 .silent

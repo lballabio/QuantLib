@@ -19,8 +19,6 @@
     \brief path pricer for European-type Everest option
 */
 
-// $Id$
-
 #ifndef quantlib_everest_path_pricer_h
 #define quantlib_everest_path_pricer_h
 

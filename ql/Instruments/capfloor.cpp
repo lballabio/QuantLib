@@ -19,8 +19,6 @@
     \brief European cap and floor class
 */
 
-// $Id$
-
 #include "ql/Instruments/capfloor.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
 

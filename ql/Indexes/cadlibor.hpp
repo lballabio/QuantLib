@@ -19,8 +19,6 @@
     \brief %CAD %Libor index (Also known as CDOR)
 */
 
-// $Id$
-
 #ifndef quantlib_cad_libor_hpp
 #define quantlib_cad_libor_hpp
 

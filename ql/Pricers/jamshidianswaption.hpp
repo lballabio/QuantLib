@@ -19,8 +19,6 @@
     \brief Swaption pricer using Jamshidian's decomposition
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_jamshidian_swaption_h
 #define quantlib_pricers_jamshidian_swaption_h
 

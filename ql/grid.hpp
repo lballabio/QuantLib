@@ -19,8 +19,6 @@
     \brief Grid classes with useful constructors for trees and finite diffs
 */
 
-// $Id$
-
 #ifndef quantlib_time_grid_h
 #define quantlib_time_grid_h
 

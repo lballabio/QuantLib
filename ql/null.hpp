@@ -19,8 +19,6 @@
     \brief null values
 */
 
-// $Id$
-
 #ifndef quantlib_null_h
 #define quantlib_null_h
 

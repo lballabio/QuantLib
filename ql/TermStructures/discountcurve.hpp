@@ -19,8 +19,6 @@
     \brief pre-bootstrapped discount factor structure
 */
 
-// $Id$
-
 #ifndef quantlib_discount_curve_h
 #define quantlib_discount_curve_h
 

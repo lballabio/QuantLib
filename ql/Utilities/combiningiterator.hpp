@@ -19,8 +19,6 @@
     \brief Iterator mapping a function to a set of underlying sequences
 */
 
-// $Id$
-
 #ifndef quantlib_combining_iterator_h
 #define quantlib_combining_iterator_h
 

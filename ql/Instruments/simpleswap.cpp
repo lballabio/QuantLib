@@ -19,8 +19,6 @@
     \brief Simple fixed-rate vs Libor swap
 */
 
-// $Id$
-
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 

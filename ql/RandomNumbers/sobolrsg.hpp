@@ -19,8 +19,6 @@
     \brief Sobol low-discrepancy sequence generator
 */
 
-// $Id$
-
 #ifndef quantlib_sobol_ld_rsg_h
 #define quantlib_sobol_ld_rsg_h
 

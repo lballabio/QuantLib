@@ -19,8 +19,6 @@
     \brief basis point sensitivity calculator
 */
 
-// $Id$
-
 #ifndef quantlib_bps_calculator_hpp
 #define quantlib_bps_calculator_hpp
 

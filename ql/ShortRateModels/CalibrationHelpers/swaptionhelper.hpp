@@ -19,8 +19,6 @@
     \brief Swaption calibration helper
 */
 
-// $Id$
-
 #ifndef quantlib_interest_rate_modelling_calibration_helpers_swaption_h
 #define quantlib_interest_rate_modelling_calibration_helpers_swaption_h
 

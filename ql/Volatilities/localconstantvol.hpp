@@ -19,8 +19,6 @@
     \brief Local constant volatility, no time dependence, no asset dependence
 */
 
-// $Id$
-
 #ifndef quantlib_localconstantvol_hpp
 #define quantlib_localconstantvol_hpp
 

@@ -19,8 +19,6 @@
     \brief Statistics tools for sequence (vector, list, array) samples
 */
 
-// $Id$
-
 #ifndef quantlib_sequence_statistics_hpp
 #define quantlib_sequence_statistics_hpp
 

@@ -19,8 +19,6 @@
     \brief Predetermined cash flow
 */
 
-// $Id$
-
 #ifndef quantlib_simple_cash_flow_hpp
 #define quantlib_simple_cash_flow_hpp
 

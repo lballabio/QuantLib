@@ -19,8 +19,6 @@
     \brief Zurich calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/zurich.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief CapHelper calibration helper
 */
 
-// $Id$
-
 #ifndef quantlib_interest_rate_modelling_calibration_helpers_cap_h
 #define quantlib_interest_rate_modelling_calibration_helpers_cap_h
 

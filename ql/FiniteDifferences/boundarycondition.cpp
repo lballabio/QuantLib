@@ -19,8 +19,6 @@
     \brief boundary conditions for differential operators
 */
 
-// $Id$
-
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 
 namespace QuantLib {

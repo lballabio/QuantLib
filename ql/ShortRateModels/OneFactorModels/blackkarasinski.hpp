@@ -19,8 +19,6 @@
     \brief Black-Karasinski model
 */
 
-// $Id$
-
 #ifndef quantlib_one_factor_models_black_karasinski_h
 #define quantlib_one_factor_models_black_karasinski_h
 

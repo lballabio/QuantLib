@@ -19,8 +19,6 @@
     \brief Grid classes with useful constructors for trees and finite diffs
 */
 
-// $Id$
-
 #include <ql/grid.hpp>
 
 namespace {

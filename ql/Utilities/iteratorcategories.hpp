@@ -19,8 +19,6 @@
     \brief Lowest common denominator between two iterator categories
 */
 
-// $Id$
-
 #ifndef quantlib_iterator_categories_h
 #define quantlib_iterator_categories_h
 

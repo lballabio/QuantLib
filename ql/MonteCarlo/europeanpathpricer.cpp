@@ -20,8 +20,6 @@
     \brief path pricer for European options
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 

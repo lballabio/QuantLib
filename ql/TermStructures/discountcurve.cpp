@@ -19,8 +19,6 @@
     \brief Term structure based on loglinear interpolation of discount factors
 */
 
-// $Id$
-
 #include <ql/TermStructures/discountcurve.hpp>
 
 namespace QuantLib {

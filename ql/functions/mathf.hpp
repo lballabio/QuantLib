@@ -19,8 +19,6 @@
     \brief math functions
 */
 
-// $Id$
-
 #ifndef quantlib_functions_math_h
 #define quantlib_functions_math_h
 

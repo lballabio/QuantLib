@@ -19,8 +19,6 @@
     \brief Vasicek model class
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/OneFactorModels/vasicek.hpp"
 #include "ql/blackmodel.hpp"
 

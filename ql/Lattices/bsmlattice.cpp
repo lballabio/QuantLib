@@ -19,8 +19,6 @@
     \brief Binomial trees under the BSM model
 */
 
-// $Id$
-
 #include "ql/Lattices/bsmlattice.hpp"
 
 namespace QuantLib {

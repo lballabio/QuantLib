@@ -19,8 +19,6 @@
     \brief Knuth uniform random number generator
 */
 
-// $Id$
-
 #ifndef quantlib_knuth_uniform_rng_h
 #define quantlib_knuth_uniform_rng_h
 

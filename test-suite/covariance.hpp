@@ -15,7 +15,6 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-// $Id$
 
 #ifndef quantlib_test_covariance_hpp
 #define quantlib_test_covariance_hpp

@@ -19,8 +19,6 @@
     \brief generic disposable object with move semantics
 */
 
-// $Id$
-
 #ifndef quantlib_disposable_h
 #define quantlib_disposable_h
 

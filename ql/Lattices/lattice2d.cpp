@@ -19,8 +19,6 @@
     \brief Trinomial tree class
 */
 
-// $Id$
-
 #include "ql/Lattices/lattice2d.hpp"
 
 namespace QuantLib {

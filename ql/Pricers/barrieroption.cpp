@@ -19,8 +19,6 @@
     \brief barrier option
 */
 
-// $Id$
-
 #include <ql/Pricers/barrieroption.hpp>
 
 namespace QuantLib {

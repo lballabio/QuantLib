@@ -19,8 +19,6 @@
     \brief tridiagonal operator
 */
 
-// $Id$
-
 #ifndef quantlib_tridiagonal_operator_h
 #define quantlib_tridiagonal_operator_h
 

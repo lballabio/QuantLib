@@ -19,8 +19,6 @@
     \brief concrete stock class
 */
 
-// $Id$
-
 #include <ql/Instruments/stock.hpp>
 
 namespace QuantLib {

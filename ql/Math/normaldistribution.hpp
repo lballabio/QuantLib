@@ -20,8 +20,6 @@
     \brief normal, cumulative and inverse cumulative distributions
 */
 
-// $Id$
-
 #ifndef quantlib_normal_distribution_h
 #define quantlib_normal_distribution_h
 

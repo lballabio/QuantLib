@@ -20,8 +20,6 @@
     \brief Covariance matrix calculation
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_get_covariance_h
 #define quantlib_montecarlo_get_covariance_h
 

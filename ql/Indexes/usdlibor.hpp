@@ -19,8 +19,6 @@
     \brief %USD %Libor index
 */
 
-// $Id$
-
 #ifndef quantlib_usd_libor_hpp
 #define quantlib_usd_libor_hpp
 

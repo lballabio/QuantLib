@@ -19,8 +19,6 @@
     \brief Ridder 1-D solver
 */
 
-// $Id$
-
 #ifndef quantlib_solver1d_ridder_h
 #define quantlib_solver1d_ridder_h
 

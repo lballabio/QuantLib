@@ -19,8 +19,6 @@
     \brief path pricer for geometric average price option
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/geometricapopathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 

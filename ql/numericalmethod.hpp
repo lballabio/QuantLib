@@ -19,8 +19,6 @@
     \brief Numerical method class
 */
 
-// $Id$
-
 #ifndef quantlib_numerical_method_h
 #define quantlib_numerical_method_h
 

@@ -19,8 +19,6 @@
     \brief \f$ D_{0} \f$ matricial representation
 */
 
-// $Id$
-
 #ifndef quantlib_d_zero_h
 #define quantlib_d_zero_h
 

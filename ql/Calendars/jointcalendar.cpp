@@ -19,8 +19,6 @@
     \brief Joint calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/jointcalendar.hpp>
 
 namespace QuantLib {

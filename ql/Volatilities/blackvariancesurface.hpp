@@ -19,8 +19,6 @@
     \brief Black volatility surface modelled as variance surface
 */
 
-// $Id$
-
 #ifndef quantlib_blackvariancesurface_hpp
 #define quantlib_blackvariancesurface_hpp
 

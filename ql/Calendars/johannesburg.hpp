@@ -19,8 +19,6 @@
     \brief Johannesburg calendar
 */
 
-// $Id$
-
 #ifndef quantlib_johannesburg_calendar_h
 #define quantlib_johannesburg_calendar_h
 

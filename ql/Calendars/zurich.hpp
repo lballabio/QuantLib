@@ -19,8 +19,6 @@
     \brief Zurich calendar
 */
 
-// $Id$
-
 #ifndef quantlib_zurich_calendar_h
 #define quantlib_zurich_calendar_h
 

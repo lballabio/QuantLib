@@ -15,8 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-//! $Id$
-
 /*  This example shows how to set up a Term Structure and then price a simple
     swap.
 */

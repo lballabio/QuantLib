@@ -19,8 +19,6 @@
     \brief path pricer for pagoda options
 */
 
-// $Id$
-
 #ifndef quantlib_pagoda_path_pricer_h
 #define quantlib_pagoda_path_pricer_h
 

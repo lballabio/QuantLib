@@ -1,8 +1,6 @@
 
 #
 # makefile for DiscreteHedging.cpp under Borland C++
-#
-# $Id$
 
 .autodepend
 .silent

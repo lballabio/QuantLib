@@ -19,8 +19,6 @@
     \brief observer/observable pattern
 */
 
-// $Id$
-
 #ifndef quantlib_observable_h
 #define quantlib_observable_h
 

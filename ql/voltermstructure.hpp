@@ -19,8 +19,6 @@
     \brief Volatility term structures
 */
 
-// $Id$
-
 #ifndef quantlib_vol_term_structure_hpp
 #define quantlib_vol_term_structure_hpp
 

@@ -19,8 +19,6 @@
     \brief Crank-Nicolson scheme for finite difference methods
 */
 
-// $Id$
-
 #ifndef quantlib_crank_nicolson_h
 #define quantlib_crank_nicolson_h
 

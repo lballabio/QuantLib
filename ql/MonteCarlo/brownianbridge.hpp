@@ -19,8 +19,6 @@
     \brief Browian bridge
 */
 
-// $Id$
-
 // ===========================================================================
 // NOTE: The following copyright notice applies to the original code of
 // the brownian bridge construction, which was taken from

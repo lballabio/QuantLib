@@ -19,8 +19,6 @@
     \brief base class for option with events happening at different periods
 */
 
-// $Id$
-
 #include <ql/Pricers/europeanoption.hpp>
 #include <ql/FiniteDifferences/americancondition.hpp>
 #include <ql/Pricers/fdmultiperiodoption.hpp>

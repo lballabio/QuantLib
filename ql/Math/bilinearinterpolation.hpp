@@ -19,8 +19,6 @@
     \brief bilinear interpolation between discrete points
 */
 
-// $Id$
-
 #ifndef quantlib_bilinear_interpolation_h
 #define quantlib_bilinear_interpolation_h
 

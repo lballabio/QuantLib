@@ -19,8 +19,6 @@
     \brief simple example of Monte Carlo pricer
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_european_pricer_h
 #define quantlib_montecarlo_european_pricer_h
 

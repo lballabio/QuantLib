@@ -19,8 +19,6 @@
     \brief american option exercise condition
 */
 
-// $Id$
-
 #ifndef quantlib_fd_american_condition_h
 #define quantlib_fd_american_condition_h
 

@@ -19,8 +19,6 @@
     \brief degenerate base class for the Acyclic Visitor pattern
 */
 
-// $Id$
-
 #ifndef quantlib_visitor_h
 #define quantlib_visitor_h
 

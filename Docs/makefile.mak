@@ -1,7 +1,5 @@
 
 # makefile for QuantLib documentation under Borland C++
-#
-# $Id$
 
 .autodepend
 .silent

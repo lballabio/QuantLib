@@ -19,8 +19,6 @@
     \brief Eigenvalues / eigenvectors of a real symmetric matrix
 */
 
-// $Id$
-
 /*
     Note: because of the many levels of indentation required,
     only 2 spaces are used for each indentation

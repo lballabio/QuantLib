@@ -19,8 +19,6 @@
     \brief Cap and Floor class
 */
 
-// $Id$
-
 #ifndef quantlib_instruments_capfloor_h
 #define quantlib_instruments_capfloor_h
 

@@ -19,8 +19,6 @@
     \brief Zero spreaded term structure
 */
 
-// $Id$
-
 #ifndef quantlib_zero_spreaded_term_structure_hpp
 #define quantlib_zero_spreaded_term_structure_hpp
 

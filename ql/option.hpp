@@ -19,8 +19,6 @@
     \brief Base option class
 */
 
-// $Id$
-
 #ifndef quantlib_option_h
 #define quantlib_option_h
 

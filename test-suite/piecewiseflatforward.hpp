@@ -14,7 +14,6 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-// $Id$
 
 #ifndef quantlib_test_piecewise_flat_forward_hpp
 #define quantlib_test_piecewise_flat_forward_hpp

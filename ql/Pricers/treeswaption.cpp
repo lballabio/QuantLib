@@ -19,8 +19,6 @@
     \brief European swaption computed on a lattice
 */
 
-// $Id$
-
 #include "ql/Pricers/treeswaption.hpp"
 #include <ql/Pricers/swaptionpricer.hpp>
 

@@ -19,8 +19,6 @@
     \brief Classes used to parse data for input
 */
 
-// $Id$
-
 #ifndef quantlib_data_parsers_h
 #define quantlib_data_parsers_h
 

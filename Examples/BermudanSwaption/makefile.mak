@@ -1,8 +1,6 @@
 
 #
 # makefile for BermudanSwaption.cpp under Borland C++
-#
-# $Id$
 
 .autodepend
 .silent

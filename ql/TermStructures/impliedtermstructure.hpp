@@ -19,8 +19,6 @@
     \brief Implied term structure
 */
 
-// $Id$
-
 #ifndef quantlib_implied_term_structure_hpp
 #define quantlib_implied_term_structure_hpp
 

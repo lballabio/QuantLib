@@ -20,8 +20,6 @@
     \brief Vanilla option engine using binomial tree
 */
 
-// $Id$
-
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/Lattices/binomialtree.hpp>
 #include <ql/TermStructures/flatforward.hpp>

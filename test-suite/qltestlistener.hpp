@@ -14,7 +14,6 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-// $Id$
 
 #ifndef QL_TEST_LISTENER_H
 #define QL_TEST_LISTENER_H

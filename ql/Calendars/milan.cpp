@@ -19,8 +19,6 @@
       \brief Milan calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/milan.hpp>
 
 namespace QuantLib {

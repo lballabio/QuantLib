@@ -19,8 +19,6 @@
     \brief Warsaw calendar
 */
 
-// $Id$
-
 #ifndef quantlib_warsaw_calendar_h
 #define quantlib_warsaw_calendar_h
 

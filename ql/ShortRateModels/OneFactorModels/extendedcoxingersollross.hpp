@@ -19,8 +19,6 @@
     \brief Extended Cox-Ingersoll-Ross model
 */
 
-// $Id$
-
 #ifndef quantlib_one_factor_models_extended_cox_ingersoll_ross_h
 #define quantlib_one_factor_models_extended_cox_ingersoll_ross_h
 

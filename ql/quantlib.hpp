@@ -16,8 +16,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-// $Id$
-
 #ifndef quantlib_h
 #define quantlib_h
 

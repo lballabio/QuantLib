@@ -19,8 +19,6 @@
     \brief Interest rate swap
 */
 
-// $Id$
-
 #ifndef quantlib_swap_h
 #define quantlib_swap_h
 

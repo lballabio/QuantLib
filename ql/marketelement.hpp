@@ -19,8 +19,6 @@
     \brief purely virtual base class for market observables
 */
 
-// $Id$
-
 #ifndef quantlib_market_element_hpp
 #define quantlib_market_element_hpp
 

@@ -19,8 +19,6 @@
     \brief London calendar
 */
 
-// $Id$
-
 #include <ql/Calendars/london.hpp>
 
 namespace QuantLib {

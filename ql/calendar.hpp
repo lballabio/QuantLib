@@ -19,8 +19,6 @@
     \brief %calendar class
 */
 
-// $Id$
-
 #ifndef quantlib_calendar_h
 #define quantlib_calendar_h
 

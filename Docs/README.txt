@@ -1,6 +1,4 @@
 
-$Id$
-
 The documentation is automatically extracted from the source code using
 Doxygen (http://www.doxygen.org). The suggested version is 1.3; versions 
 as back as 1.2.14 should still work.

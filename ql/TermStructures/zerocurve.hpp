@@ -19,8 +19,6 @@
     \brief pre-bootstrapped zero curve structure
 */
 
-// $Id$
-
 #ifndef quantlib_zero_curve_h
 #define quantlib_zero_curve_h
 

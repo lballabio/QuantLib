@@ -1,8 +1,6 @@
 
 #
 # makefile for EuropeanOption.cpp under Borland C++
-#
-# $Id$
 
 .autodepend
 .silent

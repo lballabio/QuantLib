@@ -19,8 +19,6 @@
     \brief Abstract instrument class
 */
 
-// $Id$
-
 #ifndef quantlib_instrument_h
 #define quantlib_instrument_h
 

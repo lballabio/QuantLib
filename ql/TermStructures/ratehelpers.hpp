@@ -19,8 +19,6 @@
     \brief rate helpers base class
 */
 
-// $Id$
-
 #ifndef quantlib_ratehelper_h
 #define quantlib_ratehelper_h
 

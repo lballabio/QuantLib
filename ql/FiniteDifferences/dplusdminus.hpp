@@ -19,8 +19,6 @@
     \brief \f$ D_{+}D_{-} \f$ matricial representation
 */
 
-// $Id$
-
 #ifndef quantlib_d_plus_d_minus_h
 #define quantlib_d_plus_d_minus_h
 

@@ -19,8 +19,6 @@
     \brief bicubic spline interpolation between discrete points
 */
 
-// $Id$
-
 #ifndef quantlib_bicubicspline_interpolation_h
 #define quantlib_bicubicspline_interpolation_h
 

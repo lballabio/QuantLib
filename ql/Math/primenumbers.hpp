@@ -30,8 +30,6 @@
     \brief Prime numbers calculator
 */
 
-// $Id$
-
 #ifndef quantlib_primenumbers_h
 #define quantlib_primenumbers_h
 

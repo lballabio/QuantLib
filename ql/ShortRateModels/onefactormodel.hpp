@@ -19,8 +19,6 @@
     \brief Abstract one-factor interest rate model class
 */
 
-// $Id$
-
 #ifndef quantlib_interest_rate_modelling_one_factor_model_h
 #define quantlib_interest_rate_modelling_one_factor_model_h
 

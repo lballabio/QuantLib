@@ -19,8 +19,6 @@
     \brief Example of European option calculated using finite differences
 */
 
-// $Id$
-
 #include <ql/Pricers/fdeuropean.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 

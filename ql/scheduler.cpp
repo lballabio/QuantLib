@@ -19,8 +19,6 @@
     \brief date scheduler
 */
 
-// $Id$
-
 #include <ql/scheduler.hpp>
 #include <ql/dataformatters.hpp>
 

@@ -19,8 +19,6 @@
     \brief day counters functions
 */
 
-// $Id$
-
 #include <ql/functions/daycounters.hpp>
 
 using QuantLib::DayCounter;

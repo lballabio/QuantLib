@@ -19,8 +19,6 @@
     \brief Lattice class
 */
 
-// $Id$
-
 #include "ql/Lattices/lattice.hpp"
 
 namespace QuantLib {

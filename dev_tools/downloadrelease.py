@@ -1,6 +1,4 @@
 #! /usr/bin/env python
-#
-# $Id$
 
 __doc__ = """download a QuantLib release"""
 

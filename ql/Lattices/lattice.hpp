@@ -19,8 +19,6 @@
     \brief Lattice method class
 */
 
-// $Id$
-
 #ifndef quantlib_lattices_lattice_h
 #define quantlib_lattices_lattice_h
 

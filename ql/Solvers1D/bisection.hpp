@@ -19,8 +19,6 @@
     \brief bisection 1-D solver
 */
 
-// $Id$
-
 #ifndef quantlib_solver1d_bisection_h
 #define quantlib_solver1d_bisection_h
 

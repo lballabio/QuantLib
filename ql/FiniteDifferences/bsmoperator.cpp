@@ -19,8 +19,6 @@
     \brief differential operator for Black-Scholes-Merton equation
 */
 
-// $Id$
-
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 
 namespace QuantLib {

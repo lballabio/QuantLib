@@ -19,8 +19,6 @@
     \brief Classes and functions for error handling.
 */
 
-// $Id$
-
 #ifndef quantlib_errors_hpp
 #define quantlib_errors_hpp
 

@@ -20,8 +20,6 @@
     \brief Inverse cumulative Gaussian random sequence generator
 */
 
-// $Id$
-
 #ifndef quantlib_inversecumulative_gaussian_rsg_h
 #define quantlib_inversecumulative_gaussian_rsg_h
 

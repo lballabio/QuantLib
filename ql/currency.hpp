@@ -19,8 +19,6 @@
     \brief Known currencies
 */
 
-// $Id$
-
 #ifndef quantlib_currency_h
 #define quantlib_currency_h
 

@@ -19,8 +19,6 @@
     \brief Abstract constraint class
 */
 
-// $Id$
-
 #ifndef quantlib_optimization_constraint_h
 #define quantlib_optimization_constraint_h
 

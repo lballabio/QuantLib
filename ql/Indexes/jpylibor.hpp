@@ -19,8 +19,6 @@
     \brief %JPY %Libor index (Also known as TIBOR, check settlement days)
 */
 
-// $Id$
-
 #ifndef quantlib_jpy_libor_hpp
 #define quantlib_jpy_libor_hpp
 

@@ -19,8 +19,6 @@
     \brief London calendar
 */
 
-// $Id$
-
 #ifndef quantlib_london_calendar_h
 #define quantlib_london_calendar_h
 

@@ -20,8 +20,6 @@
     \brief statistics tool
 */
 
-// $Id$
-
 #ifndef quantlib_general_statistics_h
 #define quantlib_general_statistics_h
 

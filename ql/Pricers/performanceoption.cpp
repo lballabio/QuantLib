@@ -19,8 +19,6 @@
     \brief Performance option.computed using Monte Carlo simulation
 */
 
-// $Id$
-
 #include <ql/Pricers/performanceoption.hpp>
 
 namespace QuantLib

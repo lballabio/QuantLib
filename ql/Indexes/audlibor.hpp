@@ -19,8 +19,6 @@
     \brief %AUD %Libor index (check settlement days)
 */
 
-// $Id$
-
 #ifndef quantlib_aud_libor_hpp
 #define quantlib_aud_libor_hpp
 

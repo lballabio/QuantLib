@@ -19,8 +19,6 @@
     \brief Iterator advancing in constant steps
 */
 
-// $Id$
-
 #ifndef quantlib_stepping_iterator_h
 #define quantlib_stepping_iterator_h
 

@@ -19,8 +19,6 @@
     \brief Forward (strike-resetting) option engines
 */
 
-// $Id$
-
 #ifndef quantlib_forward_engines_h
 #define quantlib_forward_engines_h
 

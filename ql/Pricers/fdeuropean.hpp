@@ -19,8 +19,6 @@
     \brief Example of European option calculated using finite differences
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_finite_difference_european_option_h
 #define quantlib_pricers_finite_difference_european_option_h
 

@@ -19,8 +19,6 @@
     \brief Gamma function
 */
 
-// $Id$
-
 #include <ql/Math/gammadistribution.hpp>
 
 namespace QuantLib {

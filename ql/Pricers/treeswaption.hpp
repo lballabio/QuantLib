@@ -19,8 +19,6 @@
     \brief Swaption computed using a lattice
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_tree_swaption_h
 #define quantlib_pricers_tree_swaption_h
 

@@ -19,8 +19,6 @@
     \brief Option requiring additional code to be executed at each time step
 */
 
-// $Id$
-
 #include <ql/Pricers/fdstepconditionoption.hpp>
 #include <ql/Pricers/europeanoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>

@@ -19,8 +19,6 @@
     \brief European option engine using analytic formulas
 */
 
-// $Id$
-
 #include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {

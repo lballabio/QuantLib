@@ -19,8 +19,6 @@
     \brief cap and floor pricer class
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_capfloor_pricer_h
 #define quantlib_pricers_capfloor_pricer_h
 

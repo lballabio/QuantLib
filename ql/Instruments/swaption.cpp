@@ -19,8 +19,6 @@
     \brief Swaption
 */
 
-// $Id$
-
 #include <ql/Instruments/swaption.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/parcoupon.hpp>

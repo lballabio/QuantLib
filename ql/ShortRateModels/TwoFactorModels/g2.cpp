@@ -19,8 +19,6 @@
     \brief Two-factor additive Gaussian Model G2++
 */
 
-// $Id$
-
 #include "ql/ShortRateModels/TwoFactorModels/g2.hpp"
 #include "ql/blackmodel.hpp"
 #include "ql/Math/segmentintegral.hpp"

@@ -15,8 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-// $Id$
-
 #include "mersennetwister.hpp"
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <ql/dataformatters.hpp>

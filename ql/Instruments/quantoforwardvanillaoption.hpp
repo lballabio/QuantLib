@@ -19,8 +19,6 @@
     \brief Quanto version of a forward vanilla option
 */
 
-// $Id$
-
 #ifndef quantlib_quanto_forward_vanilla_option_h
 #define quantlib_quanto_forward_vanilla_option_h
 

@@ -19,8 +19,6 @@
     \brief Base option class
 */
 
-// $Id$
-
 #include <ql/option.hpp>
 
 namespace QuantLib {

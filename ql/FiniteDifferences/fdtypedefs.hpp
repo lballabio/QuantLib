@@ -19,8 +19,6 @@
     \brief default choices for template instantiations
 */
 
-// $Id$
-
 #ifndef quantlib_fd_typedefs_h
 #define quantlib_fd_typedefs_h
 

@@ -19,8 +19,6 @@
     \brief Discrete Arithmetic Average Price Option
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_mc_discrete_arithmetic_average_price_option_h
 #define quantlib_pricers_mc_discrete_arithmetic_average_price_option_h
 

@@ -19,8 +19,6 @@
     \brief european option
 */
 
-// $Id$
-
 #ifndef BSM_european_option_pricer_h
 #define BSM_european_option_pricer_h
 

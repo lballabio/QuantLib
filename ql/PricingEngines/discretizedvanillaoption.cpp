@@ -19,8 +19,6 @@
     \brief discretized vanilla option
 */
 
-// $Id$
-
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <vector>
 

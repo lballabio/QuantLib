@@ -19,8 +19,6 @@
     \brief European style cash-or-nothing option.
 */
 
-// $Id$
-
 #include <ql/Pricers/binaryoption.hpp>
 #include <ql/Math/normaldistribution.hpp>
 

@@ -19,8 +19,6 @@
     \brief finite-difference evaluation of Bermudan option
 */
 
-// $Id$
-
 #ifndef quantlib_bermudan_option_pricer_h
 #define quantlib_bermudan_option_pricer_h
 

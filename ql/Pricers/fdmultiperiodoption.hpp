@@ -19,8 +19,6 @@
     \brief base class for option with events happening at different periods
 */
 
-// $Id$
-
 #ifndef quantlib_multi_period_option_pricer_h
 #define quantlib_multi_period_option_pricer_h
 

@@ -19,8 +19,6 @@
     \brief Knuth uniform random number generator
 */
 
-// $Id$
-
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief Frankfurt calendar
 */
 
-// $Id$
-
 #ifndef quantlib_frankfurt_calendar_h
 #define quantlib_frankfurt_calendar_h
 

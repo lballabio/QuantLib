@@ -19,8 +19,6 @@
     \brief Discrete Geometric Average Price Option
 */
 
-// $Id$
-
 #ifndef quantlib_discrete_geometric_average_price_option_h
 #define quantlib_discrete_geometric_average_price_option_h
 

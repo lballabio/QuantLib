@@ -19,8 +19,6 @@
     \brief multipath pricer for European-type Himalaya option
 */
 
-// $Id$
-
 #ifndef quantlib_himalaya_path_pricer_h
 #define quantlib_himalaya_path_pricer_h
 

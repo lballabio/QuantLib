@@ -15,8 +15,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-//! $Id$
-
 /*  This example computes profit and loss of a discrete interval hedging
     strategy and compares with the results of Derman & Kamal's (Goldman Sachs
     Equity Derivatives Research) Research Note: "When You Cannot Hedge

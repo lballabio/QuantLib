@@ -19,8 +19,6 @@
     \brief rate helpers base class
 */
 
-// $Id$
-
 #include <ql/TermStructures/ratehelpers.hpp>
 
 namespace QuantLib {

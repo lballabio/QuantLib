@@ -20,8 +20,6 @@
     \brief statistics tool based on incremental accumulation
 */
 
-// $Id$
-
 #ifndef quantlib_incremental_statistics_h
 #define quantlib_incremental_statistics_h
 

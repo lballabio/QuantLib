@@ -19,8 +19,6 @@
     \brief Swaption pricer
 */
 
-// $Id$
-
 #include <ql/Pricers/swaptionpricer.hpp>
 
 namespace QuantLib {

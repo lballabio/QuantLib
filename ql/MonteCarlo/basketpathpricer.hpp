@@ -19,8 +19,6 @@
     \brief multipath pricer for European-type basket option
 */
 
-// $Id$
-
 #ifndef quantlib_basket_path_pricer_h
 #define quantlib_basket_path_pricer_h
 

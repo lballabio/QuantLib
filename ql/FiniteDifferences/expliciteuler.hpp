@@ -19,8 +19,6 @@
     \brief explicit Euler scheme for finite difference methods
 */
 
-// $Id$
-
 #ifndef quantlib_forward_euler_h
 #define quantlib_forward_euler_h
 

@@ -19,8 +19,6 @@
     \brief path pricer for performance options
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/performanceoptionpathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 

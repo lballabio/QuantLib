@@ -19,8 +19,6 @@
     \brief Milan calendar
 */
 
-// $Id$
-
 #ifndef quantlib_milan_calendar_h
 #define quantlib_milan_calendar_h
 

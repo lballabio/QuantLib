@@ -20,8 +20,6 @@
     \brief Vanilla option on a single asset
 */
 
-// $Id$
-
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Solvers1D/brent.hpp>

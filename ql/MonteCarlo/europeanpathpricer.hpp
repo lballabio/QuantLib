@@ -20,8 +20,6 @@
     \brief path pricer for European options
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_european_path_pricer_h
 #define quantlib_montecarlo_european_path_pricer_h
 

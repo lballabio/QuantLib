@@ -20,8 +20,6 @@
     \brief Generates a multi path from a random-array generator
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_multi_path_generator_h
 #define quantlib_montecarlo_multi_path_generator_h
 

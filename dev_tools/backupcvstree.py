@@ -1,8 +1,6 @@
 
 #! /usr/bin/env python
 #
-# $Id$
-#
 # test the module used to backed up cvs repository for QuantLib
 #
 

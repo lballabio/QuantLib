@@ -20,8 +20,6 @@
     \brief abstract base classes for interpolations
 */
 
-// $Id$
-
 #ifndef quantlib_interpolation_h
 #define quantlib_interpolation_h
 

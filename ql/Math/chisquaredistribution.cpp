@@ -19,8 +19,6 @@
     \brief normal, cumulative and inverse cumulative distributions
 */
 
-// $Id$
-
 #include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/Math/normaldistribution.hpp>

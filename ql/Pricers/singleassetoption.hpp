@@ -19,8 +19,6 @@
     \brief common code for option evaluation
 */
 
-// $Id$
-
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h
 

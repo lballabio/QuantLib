@@ -19,8 +19,6 @@
   \brief compounded forward term structure
 */
 
-// $Id$
-
 #include <ql/TermStructures/compoundforward.hpp>
 
 namespace QuantLib {

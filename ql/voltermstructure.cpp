@@ -19,8 +19,6 @@
     \brief Volatility term structures
 */
 
-// $Id$
-
 #include <ql/voltermstructure.hpp>
 
 namespace QuantLib {

@@ -20,8 +20,6 @@
     \brief statistics tool for gaussian-assumption risk measures
 */
 
-// $Id$
-
 #ifndef quantlib_gaussian_statistics_h
 #define quantlib_gaussian_statistics_h
 

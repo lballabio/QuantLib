@@ -19,8 +19,6 @@
     \brief framework for calculation on demand and result caching
 */
 
-// $Id$
-
 #ifndef quantlib_lazy_object_h
 #define quantlib_lazy_object_h
 

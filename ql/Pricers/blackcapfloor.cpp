@@ -19,8 +19,6 @@
     \brief European capfloor calculated using Black formula
 */
 
-// $Id$
-
 #include "ql/Pricers/blackcapfloor.hpp"
 
 namespace QuantLib {

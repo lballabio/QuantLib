@@ -19,8 +19,6 @@
     \brief Normal distribution risk analysis tool: VAR, (average) shortfall
 */
 
-// $Id$
-
 #ifndef quantlib_risk_statistics_old_h
 #define quantlib_risk_statistics_old_h
 

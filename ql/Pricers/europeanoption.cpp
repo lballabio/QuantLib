@@ -19,8 +19,6 @@
     \brief european option
 */
 
-// $Id$
-
 #include <ql/Pricers/europeanoption.hpp>
 
 namespace QuantLib {

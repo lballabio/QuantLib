@@ -19,8 +19,6 @@
     \brief conditions to be applied at every time step
 */
 
-// $Id$
-
 #ifndef quantlib_step_condition_h
 #define quantlib_step_condition_h
 

@@ -19,8 +19,6 @@
     \brief Term structure based on linear interpolation of zero yields
 */
 
-// $Id$
-
 #include <ql/TermStructures/zerocurve.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief Generates random arrays from a random number generator
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_random_array_generator_h
 #define quantlib_montecarlo_random_array_generator_h
 

@@ -19,8 +19,6 @@
     \brief Eigenvalues / eigenvectors of a real symmetric matrix
 */
 
-// $Id$
-
 #ifndef quantlib_math_jacobi_decomposition_h
 #define quantlib_math_jacobi_decomposition_h
 

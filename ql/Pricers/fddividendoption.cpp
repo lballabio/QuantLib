@@ -19,8 +19,6 @@
     \brief base class for options with dividends
 */
 
-// $Id$
-
 #include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Pricers/fddividendeuropeanoption.hpp>

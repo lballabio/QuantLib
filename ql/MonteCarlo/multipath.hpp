@@ -19,8 +19,6 @@
     \brief Correlated multiple asset paths
 */
 
-// $Id$
-
 #ifndef quantlib_montecarlo_multi_path_h
 #define quantlib_montecarlo_multi_path_h
 

@@ -20,8 +20,6 @@
     \brief tridiagonal operator
 */
 
-// $Id$
-
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/dataformatters.hpp>
 

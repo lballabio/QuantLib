@@ -19,8 +19,6 @@
     \brief Trinomial tree class
 */
 
-// $Id$
-
 #ifndef quantlib_lattices_trinomial_tree_h
 #define quantlib_lattices_trinomial_tree_h
 

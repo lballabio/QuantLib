@@ -19,8 +19,6 @@
     \brief concrete stock class
 */
 
-// $Id$
-
 #ifndef quantlib_stock_hpp
 #define quantlib_stock_hpp
 

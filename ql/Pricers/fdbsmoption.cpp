@@ -19,8 +19,6 @@
     \brief common code for numerical option evaluation
 */
 
-// $Id$
-
 #include <ql/Pricers/fdbsmoption.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>

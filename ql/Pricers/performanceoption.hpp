@@ -19,8 +19,6 @@
     \brief Performance option
 */
 
-// $Id$
-
 #ifndef quantlib_pricers_performance_option_h
 #define quantlib_pricers_performance_option_h
 

@@ -19,8 +19,6 @@
     \brief Abstract class for Black-type models (market models)
 */
 
-// $Id$
-
 #ifndef quantlib_black_model_h
 #define quantlib_black_model_h
 

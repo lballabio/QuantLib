@@ -19,8 +19,6 @@
     \brief path pricer for geometric average strike option
 */
 
-// $Id$
-
 #include <ql/MonteCarlo/geometricasopathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 

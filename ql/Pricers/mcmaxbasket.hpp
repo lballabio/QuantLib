@@ -19,8 +19,6 @@
     \brief Max Basket Monte Carlo pricer
 */
 
-// $Id$
-
 #ifndef quantlib_max_basket_pricer_h
 #define quantlib_max_basket_pricer_h
 

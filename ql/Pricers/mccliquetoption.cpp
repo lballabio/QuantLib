@@ -19,8 +19,6 @@
     \brief Cliquet option priced with Monte Carlo simulation
 */
 
-// $Id$
-
 #include <ql/Pricers/mccliquetoption.hpp>
 #include <ql/MonteCarlo/cliquetoptionpathpricer.hpp>
 

@@ -20,8 +20,6 @@
     \brief Mixed (explicit/implicit) scheme for finite difference methods
 */
 
-// $Id$
-
 #ifndef quantlib_mixed_scheme_h
 #define quantlib_mixed_scheme_h
 

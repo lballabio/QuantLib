@@ -19,8 +19,6 @@
     \brief Lexicographical 2-D view of a contiguous set of data.
 */
 
-// $Id$
-
 #ifndef quantlib_lexicographical_view_h
 #define quantlib_lexicographical_view_h
 

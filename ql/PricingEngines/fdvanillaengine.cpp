@@ -19,8 +19,6 @@
     \brief vanilla option engine using finite differences
 */
 
-// $Id$
-
 #include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief Budapest calendar
 */
 
-// $Id$
-
 #ifndef quantlib_budapest_calendar_h
 #define quantlib_budapest_calendar_h
 

@@ -19,8 +19,6 @@
     \brief base class for shout option with dividends
 */
 
-// $Id$
-
 #ifndef quantlib_dividend_shout_option_pricer_h
 #define quantlib_dividend_shout_option_pricer_h
 

@@ -20,8 +20,6 @@
     \brief classes used to format data for output
 */
 
-// $Id$
-
 #include <ql/dataformatters.hpp>
 #include <ql/null.hpp>
 

@@ -20,8 +20,6 @@
     \brief statistics tool
 */
 
-// $Id$
-
 #include <ql/Math/generalstatistics.hpp>
 #include <ql/Math/functional.hpp>
 

@@ -19,8 +19,6 @@
     \brief cap and floor pricer class
 */
 
-// $Id$
-
 #include <ql/Pricers/capfloorpricer.hpp>
 
 namespace QuantLib {

@@ -19,8 +19,6 @@
     \brief 30/360 day counters
 */
 
-// $Id$
-
 #include <ql/DayCounters/thirty360.hpp>
 
 namespace QuantLib {

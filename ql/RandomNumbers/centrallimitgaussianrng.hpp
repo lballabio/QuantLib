@@ -20,8 +20,6 @@
     \brief Central limit Gaussian random-number generator
 */
 
-// $Id$
-
 #ifndef quantlib_central_limit_gaussian_rng_h
 #define quantlib_central_limit_gaussian_rng_h
 
