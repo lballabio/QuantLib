@@ -412,7 +412,7 @@ void LDSTest::testDiscrepancy() {
                 if (j!=jMin)
                     outStream << ", ";
                 else
-                    outStream << discr;
+                    outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if(QL_FABS(discr-discrRand[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("True random discrepancy dimension " +
@@ -420,9 +420,9 @@ void LDSTest::testDiscrepancy() {
                     " at " +
                     IntegerFormatter::toString(points) +
                     " samples is " +
-                    DoubleFormatter::toString(discr, 16) +
+                    DoubleFormatter::toExponential(discr) +
                     " instead of " +
-                    DoubleFormatter::toString(discrRand[i][j-jMin], 16));
+                    DoubleFormatter::toExponential(discrRand[i][j-jMin]));
                 }
             }
         }
@@ -447,17 +447,17 @@ void LDSTest::testDiscrepancy() {
                 if (j!=jMin)
                     outStream << ", ";
                 else
-                    outStream << discr;
+                    outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if (QL_FABS(discr-discrMers[i][j-jMin])>tolerance*discr) {
-                      CPPUNIT_FAIL("Mersenne discrepancy dimension " +
-                         IntegerFormatter::toString(dimensionality[i]) +
-                         " at " +
-                         IntegerFormatter::toString(points) +
-                         " samples is " +
-                         DoubleFormatter::toString(discr, 16) +
-                         " instead of " +
-                         DoubleFormatter::toString(discrMers[i][j-jMin], 16));
+                  CPPUNIT_FAIL("Mersenne discrepancy dimension " +
+                    IntegerFormatter::toString(dimensionality[i]) +
+                    " at " +
+                    IntegerFormatter::toString(points) +
+                    " samples is " +
+                    DoubleFormatter::toExponential(discr) +
+                    " instead of " +
+                    DoubleFormatter::toExponential(discrMers[i][j-jMin]));
                 }
             }
         }
@@ -482,7 +482,7 @@ void LDSTest::testDiscrepancy() {
                 if (j!=jMin)
                     outStream << ", ";
                 else
-                    outStream << discr;
+                    outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if (QL_FABS(discr-discrHalt[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("Halton discrepancy dimension " +
@@ -490,9 +490,9 @@ void LDSTest::testDiscrepancy() {
                     " at " +
                     IntegerFormatter::toString(points) +
                     " samples is " +
-                    DoubleFormatter::toString(discr, 16) +
+                    DoubleFormatter::toExponential(discr) +
                     " instead of " +
-                    DoubleFormatter::toString(discrHalt[i][j-jMin], 16));
+                    DoubleFormatter::toExponential(discrHalt[i][j-jMin]));
                 }
             }
         }
@@ -517,7 +517,7 @@ void LDSTest::testDiscrepancy() {
                 if (j!=jMin)
                     outStream << ", ";
                 else
-                    outStream << discr;
+                    outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if (QL_FABS(discr-discrSobo[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("Sobol discrepancy dimension " +
@@ -525,9 +525,9 @@ void LDSTest::testDiscrepancy() {
                     " at " +
                     IntegerFormatter::toString(points) +
                     " samples is " +
-                    DoubleFormatter::toString(discr, 16) +
+                    DoubleFormatter::toExponential(discr) +
                     " instead of " +
-                    DoubleFormatter::toString(discrSobo[i][j-jMin], 16));
+                    DoubleFormatter::toExponential(discrSobo[i][j-jMin]));
                 }
             }
         }
@@ -552,7 +552,7 @@ void LDSTest::testDiscrepancy() {
                 if (j!=jMin)
                     outStream << ", ";
                 else
-                    outStream << discr;
+                    outStream << DoubleFormatter::toExponential(discr);
             } else {
                 if (QL_FABS(discr-discrUnSo[i][j-jMin])>tolerance*discr) {
                   CPPUNIT_FAIL("Unit Sobol discrepancy dimension " +
@@ -560,9 +560,9 @@ void LDSTest::testDiscrepancy() {
                     " at " +
                     IntegerFormatter::toString(points) +
                     " samples is " +
-                    DoubleFormatter::toString(discr, 16) +
+                    DoubleFormatter::toExponential(discr) +
                     " instead of " +
-                    DoubleFormatter::toString(discrUnSo[i][j-jMin], 16));
+                    DoubleFormatter::toExponential(discrUnSo[i][j-jMin]));
                 }
             }
         }
