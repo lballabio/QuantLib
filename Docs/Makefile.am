@@ -24,7 +24,7 @@ EXTRA_DIST = makefile.mak \
              quantlibheader.tex \
              README.txt
 
-docs-all: docs-pdf
+docs-all: docs-pdf docs-ps
 docs-html: docs-html-offline
 docs-html-offline:
 	$(SED) -e "s/_MAN           = NO/_MAN           = YES/" \
@@ -60,8 +60,6 @@ tex-files: docs-html
 	$(SED) -e "/Page Index/d" \
 	       -e "/input{pages}/d" \
 	       -e "/Page Documentation/d" \
-	       -e "/input{hierarchy}/d" \
-	       -e "/Hierarchical Index/d" \
 	       -e "64,$$ s/input{index}/ /" \
 	       -e "64,$$ s/include{index}/ /" \
 	       -e "64,$$ s/input{overview}/ /" \
@@ -98,9 +96,10 @@ tex-files: docs-html
 # removing the %%BoundingBox line and rerunning epstopdf fixes them.
 pdf-figures: docs-html
 	for i in latex/a0*.eps ; do \
-		sed -e "/%%BoundingBox/d" $$i > $$i.tmp ; \
-		mv $$i.tmp $$i ; \
+		mv $$i $$i.bak ; \
+		sed -e "/%%BoundingBox/d" $$i.bak > $$i ; \
 		epstopdf $$i 2> /dev/null ; \
+                mv $$i.bak $$i ; \
 	done
 
 
