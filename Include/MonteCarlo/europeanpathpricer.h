@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/02 10:48:10  marmar
+    Destructor already implemented in base class
+
     Revision 1.2  2001/01/17 11:54:02  marmar
     Some documentation added and 80 columns format enforced.
 
@@ -56,10 +59,9 @@ namespace QuantLib {
 
         class EuropeanPathPricer : public PathPricer {
           public:
-            EuropeanPathPricer() {}
+            EuropeanPathPricer():PathPricer(){}
             EuropeanPathPricer(Option::Type type, double underlying, 
                 double strike, double discount);
-            ~EuropeanPathPricer() {}
             double value(const Path &path) const;
             double computePlainVanilla(Option::Type type, double price, 
                 double strike, double discount) const;
