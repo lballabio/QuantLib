@@ -37,6 +37,7 @@ namespace QuantLib {
         double value() const;
         double delta() const;
         double deltaForward() const;
+        double elasticity() const;
         double gamma() const;
         double theta(double maturity) const;
         double vega(double maturity) const;
@@ -194,6 +195,11 @@ namespace QuantLib {
 
     inline double BlackFormula::deltaForward() const {
         return discount_ * alpha_;
+    }
+
+    //! Sensitivity in percent to a percent movement in the underlying price
+    inline double BlackFormula::elasticity() const {
+        return delta()/value()*spot_;
     }
 
     inline double BlackFormula::gamma() const {
