@@ -1,3 +1,226 @@
+2002-03-25 18:18  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.70): Borland and MS VC++ catching up with the
+	latest commit
+
+2002-03-25 17:00  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.87), QuantLib.mak (1.77): now compiles with MS
+	VC++
+
+2002-03-25 15:38  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/ShortRateModels/OneFactorModels/coxingersollross.hpp (1.3):
+	ConxIngersollRoss::Dynamics public
+
+2002-03-25 14:10  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/ShortRateModels/: model.cpp (1.4),
+	OneFactorModels/blackkarasinski.cpp (1.3): Bugfix. BermudanSwaption
+	should run now...
+
+2002-03-25 13:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/ShortRateModels/OneFactorModels/: coxingersollross.cpp (1.3),
+	coxingersollross.cpp (1.4): MS VC small fix
+
+2002-03-25 13:41  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/pages/utilities.docs (1.5): [no log message]
+
+2002-03-25 12:00  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: blackmodel.hpp (1.4), Pricers/blackcapfloor.cpp (1.7),
+	Pricers/blackswaption.cpp (1.5): Refixed BlackModel::formula the
+	other way around
+
+2002-03-25 11:52  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* makefile.mak (1.30), ql/blackmodel.hpp (1.3): Fixed
+	BlackModel::formula
+
+2002-03-25 10:41  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: Lattices/trinomialtree.cpp (1.10), ShortRateModels/model.cpp
+	(1.3), ShortRateModels/onefactormodel.cpp (1.2),
+	ShortRateModels/OneFactorModels/blackkarasinski.cpp (1.2),
+	ShortRateModels/OneFactorModels/coxingersollross.cpp (1.2),
+	ShortRateModels/OneFactorModels/coxingersollross.hpp (1.2): Removed
+	warnings and verbose.
+
+2002-03-25 10:10  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: blackmodel.hpp (1.2), makefile.mak (1.16),
+	Math/gammadistribution.cpp (1.2), Math/makefile.mak (1.6),
+	Pricers/makefile.mak (1.18), ShortRateModels/model.hpp (1.4),
+	ShortRateModels/OneFactorModels/hullwhite.hpp (1.2): Compiles and
+	links under bcc
+
+2002-03-25 09:12  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.76), Examples/makefile.mak (1.10),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.4): Borland and
+	MS VC++ catching up with the latest commit Welcome back Sad
+
+2002-03-25 09:01  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.86), QuantLib.mak (1.75), makefile.mak (1.29),
+	Examples/Examples.dsw (1.5),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.2),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.22),
+	Examples/EuropeanOption/EuropeanOption.mak (1.17),
+	Examples/Swap/Swap.mak (1.18), ql/makefile.mak (1.15),
+	ql/Lattices/makefile.mak (1.12), ql/ShortRateModels/model.hpp
+	(1.3), ql/ShortRateModels/TwoFactorModels/g2.cpp (1.2): Borland and
+	MS VC++ catching up with the latest commit Welcome back Sad
+
+2002-03-25 08:45  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.3): small fix
+
+2002-03-25 08:38  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.2),
+	ql/ShortRateModels/model.cpp (1.2), ql/ShortRateModels/model.hpp
+	(1.2): Small fix
+
+2002-03-25 08:10  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: makefile.mak (1.14), Lattices/makefile.mak (1.11),
+	Pricers/makefile.mak (1.17), ShortRateModels/makefile.mak (1.2):
+	Updated makefile.mak files
+
+2002-03-25 07:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/Lattices/: Makefile.am (1.6), twodimensionaltree.cpp (1.1),
+	twodimensionaltree.hpp (1.1): Added missing files
+
+2002-03-25 00:09  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/Math/: chisquaredistribution.cpp (1.1),
+	chisquaredistribution.hpp (1.1), gammadistribution.cpp (1.1),
+	gammadistribution.hpp (1.1): Added non-central chi-square
+	distribution function.
+
+2002-03-24 23:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* configure.in (1.76), Docs/pages/fixedincome.docs (1.4),
+	Docs/pages/instruments.docs (1.5), Docs/pages/math.docs (1.6),
+	Examples/Makefile.am (1.15), Examples/makefile.mak (1.9),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.1),
+	Examples/BermudanSwaption/BermudanSwaption.dsp (1.1),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.1),
+	Examples/BermudanSwaption/Makefile.am (1.1),
+	Examples/BermudanSwaption/ReadMe.txt (1.1),
+	Examples/BermudanSwaption/makefile.mak (1.1): Added Bermudan
+	Swaption example and updated docs
+
+2002-03-24 23:53  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: Makefile.am (1.19), blackmodel.hpp (1.1),
+	diffusionprocess.hpp (1.10), exercise.hpp (1.12), grid.hpp (1.2),
+	makefile.mak (1.13), numericalmethod.hpp (1.2), quantlib.hpp
+	(1.55), FiniteDifferences/onefactoroperator.cpp (1.11),
+	FiniteDifferences/onefactoroperator.hpp (1.11),
+	Instruments/capfloor.cpp (1.25), Instruments/capfloor.hpp (1.25),
+	Instruments/swaption.cpp (1.15), Instruments/swaption.hpp (1.16),
+	InterestRateModelling/Makefile.am (1.7),
+	InterestRateModelling/blackmodel.hpp (1.4),
+	InterestRateModelling/calibrationhelper.cpp (1.8),
+	InterestRateModelling/calibrationhelper.hpp (1.11),
+	InterestRateModelling/makefile.mak (1.9),
+	InterestRateModelling/model.cpp (1.19),
+	InterestRateModelling/model.hpp (1.22),
+	InterestRateModelling/onefactormodel.cpp (1.14),
+	InterestRateModelling/onefactormodel.hpp (1.16),
+	InterestRateModelling/parameter.hpp (1.4),
+	InterestRateModelling/shortrateprocess.hpp (1.10),
+	InterestRateModelling/twofactormodel.hpp (1.10),
+	InterestRateModelling/CalibrationHelpers/Makefile.am (1.3),
+	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.10),
+	InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.9),
+	InterestRateModelling/CalibrationHelpers/makefile.mak (1.4),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.13),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.10),
+	InterestRateModelling/OneFactorModels/Makefile.am (1.5),
+	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.20),
+	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.17),
+	InterestRateModelling/OneFactorModels/coxingersollross.cpp (1.5),
+	InterestRateModelling/OneFactorModels/coxingersollross.hpp (1.6),
+	InterestRateModelling/OneFactorModels/hullwhite.cpp (1.8),
+	InterestRateModelling/OneFactorModels/hullwhite.hpp (1.12),
+	InterestRateModelling/OneFactorModels/makefile.mak (1.7),
+	InterestRateModelling/TwoFactorModels/Makefile.am (1.2),
+	InterestRateModelling/TwoFactorModels/g2.cpp (1.9),
+	InterestRateModelling/TwoFactorModels/g2.hpp (1.10),
+	InterestRateModelling/TwoFactorModels/makefile.mak (1.3),
+	Lattices/Makefile.am (1.5), Lattices/binomialtree.cpp (1.3),
+	Lattices/binomialtree.hpp (1.3), Lattices/column.hpp (1.1),
+	Lattices/makefile.mak (1.10), Lattices/node.hpp (1.11),
+	Lattices/tree.cpp (1.13), Lattices/tree.hpp (1.11),
+	Lattices/trinomialtree.cpp (1.9), Lattices/trinomialtree.hpp (1.4),
+	Math/Makefile.am (1.6), Optimization/Makefile.am (1.5),
+	Optimization/armijo.cpp (1.10), Optimization/armijo.hpp (1.11),
+	Optimization/conjugategradient.cpp (1.11),
+	Optimization/conjugategradient.hpp (1.10),
+	Optimization/constraint.hpp (1.2), Optimization/criteria.hpp (1.9),
+	Optimization/leastsquare.hpp (1.16), Optimization/linesearch.hpp
+	(1.10), Optimization/method.hpp (1.1), Optimization/optimizer.hpp
+	(1.12), Optimization/problem.hpp (1.1), Optimization/simplex.cpp
+	(1.5), Optimization/simplex.hpp (1.6),
+	Optimization/steepestdescent.cpp (1.10),
+	Optimization/steepestdescent.hpp (1.11), Pricers/Makefile.am
+	(1.24), Pricers/analyticalcapfloor.hpp (1.8),
+	Pricers/blackcapfloor.cpp (1.6), Pricers/blackcapfloor.hpp (1.4),
+	Pricers/blackswaption.cpp (1.4), Pricers/blackswaption.hpp (1.2),
+	Pricers/capfloorpricer.cpp (1.1), Pricers/capfloorpricer.hpp (1.1),
+	Pricers/jamshidianswaption.cpp (1.10),
+	Pricers/jamshidianswaption.hpp (1.8), Pricers/swaptionpricer.cpp
+	(1.1), Pricers/swaptionpricer.hpp (1.1), Pricers/treecapfloor.cpp
+	(1.14), Pricers/treecapfloor.hpp (1.9), Pricers/treeswaption.cpp
+	(1.17), Pricers/treeswaption.hpp (1.11),
+	ShortRateModels/Makefile.am (1.1),
+	ShortRateModels/calibrationhelper.cpp (1.1),
+	ShortRateModels/calibrationhelper.hpp (1.1),
+	ShortRateModels/makefile.mak (1.1), ShortRateModels/model.cpp
+	(1.1), ShortRateModels/model.hpp (1.1),
+	ShortRateModels/onefactormodel.cpp (1.1),
+	ShortRateModels/onefactormodel.hpp (1.1),
+	ShortRateModels/parameter.hpp (1.1),
+	ShortRateModels/twofactormodel.cpp (1.1),
+	ShortRateModels/twofactormodel.hpp (1.1),
+	ShortRateModels/CalibrationHelpers/Makefile.am (1.1),
+	ShortRateModels/CalibrationHelpers/caphelper.cpp (1.1),
+	ShortRateModels/CalibrationHelpers/caphelper.hpp (1.1),
+	ShortRateModels/CalibrationHelpers/makefile.mak (1.1),
+	ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.1),
+	ShortRateModels/CalibrationHelpers/swaptionhelper.hpp (1.1),
+	ShortRateModels/OneFactorModels/Makefile.am (1.1),
+	ShortRateModels/OneFactorModels/blackkarasinski.cpp (1.1),
+	ShortRateModels/OneFactorModels/blackkarasinski.hpp (1.1),
+	ShortRateModels/OneFactorModels/coxingersollross.cpp (1.1),
+	ShortRateModels/OneFactorModels/coxingersollross.hpp (1.1),
+	ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp (1.1),
+	ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp (1.1),
+	ShortRateModels/OneFactorModels/hullwhite.cpp (1.1),
+	ShortRateModels/OneFactorModels/hullwhite.hpp (1.1),
+	ShortRateModels/OneFactorModels/makefile.mak (1.1),
+	ShortRateModels/OneFactorModels/vasicek.cpp (1.1),
+	ShortRateModels/OneFactorModels/vasicek.hpp (1.1),
+	ShortRateModels/TwoFactorModels/Makefile.am (1.1),
+	ShortRateModels/TwoFactorModels/g2.cpp (1.1),
+	ShortRateModels/TwoFactorModels/g2.hpp (1.1),
+	ShortRateModels/TwoFactorModels/makefile.mak (1.1): In brief,
+	restructured lattice implementation, renamed InterestRateModelling
+	to ShortRateModels, moved pricing stuff for Swaption and CapFloor
+	to Pricers/, removed Optimization prefix in a few optimization
+	classes (the namespace is sufficient, no?) and a few fixes here and
+	there.
+
+2002-03-23 21:01  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.19): updated
+
 2002-03-22 16:29  Luigi Ballabio <luigi.ballabio@riskmap.net>
 
 	* Examples/Swap/swapvaluation.cpp (1.21): Fixed errors in cutting
