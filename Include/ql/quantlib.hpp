@@ -25,40 +25,6 @@
 */
 
 // $Id$
-// $Log$
-// Revision 1.34  2001/08/29 15:18:04  nando
-// _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
-//
-// Revision 1.33  2001/08/28 14:46:01  enri
-// .am files for examples added, minor changes to permit compilation on unixes
-//
-// Revision 1.32  2001/08/22 15:28:20  nando
-// added AntitheticPathGenerator
-//
-// Revision 1.31  2001/08/22 11:00:06  nando
-// removed useless gaussianarraygenerator.hpp
-// It was a clone of gaussianpathgenerator.hpp
-//
-// Revision 1.30  2001/08/22 10:59:21  nando
-// removed useless gaussianarraygenerator.hpp
-// It was a clone of gaussianpathgenerator.hpp
-//
-// Revision 1.29  2001/08/09 14:59:45  sigmud
-// header modification
-//
-// Revision 1.28  2001/08/08 15:47:10  marmar
-// Class SegmentIntegral computes the integral of a function over an interval
-//
-// Revision 1.27  2001/08/07 17:33:03  nando
-// 1) StandardPathGenerator now is GaussianPathGenerator;
-// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
-// 3) PathMonteCarlo now is MonteCarloModel;
-// 4) added ICGaussian, a Gaussian distribution that use
-//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
-//    distribution extractions into gaussian distribution extractions;
-// 5) added a few trailing underscore to private members
-// 6) style enforced here and there ....
-//
 
 #ifndef quantlib_h
 #define quantlib_h
@@ -111,6 +77,8 @@
 #include "ql/DayCounters/actual360.hpp"
 #include "ql/DayCounters/actual365.hpp"
 #include "ql/DayCounters/actualactual.hpp"
+#include "ql/DayCounters/actualactualeuro.hpp"
+#include "ql/DayCounters/actualactualhistorical.hpp"
 #include "ql/DayCounters/thirty360.hpp"
 #include "ql/DayCounters/thirty360european.hpp"
 #include "ql/DayCounters/thirty360italian.hpp"

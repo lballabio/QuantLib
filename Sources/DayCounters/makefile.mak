@@ -3,6 +3,10 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.6  2001/08/29 18:12:59  nando
+# added 2 more ActualActual day count convention
+# not finished yet
+#
 # Revision 1.5  2001/05/24 12:52:02  nando
 # smoothing #include xx.hpp
 #
@@ -24,9 +28,12 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = actualactual.obj$(_D) \
-       thirty360.obj$(_D) \
-       thirty360italian.obj$(_D)
+OBJS = \
+    actualactual.obj$(_D) \
+    actualactualeuro.obj$(_D) \
+    actualactualhistorical.obj$(_D) \
+    thirty360.obj$(_D) \
+    thirty360italian.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
