@@ -1658,6 +1658,14 @@ SOURCE=.\ql\PricingEngines\Vanilla\integralengines.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\mcdigitalengine.hpp
 # End Source File
 # Begin Source File
@@ -1676,6 +1684,10 @@ SOURCE=.\ql\PricingEngines\Vanilla\vanillaengines.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\americanpayoffatexpiry.hpp
 # End Source File
 # Begin Source File
 

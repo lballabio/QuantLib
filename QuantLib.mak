@@ -232,6 +232,8 @@ CLEAN :
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
 	-@erase "$(INTDIR)\jointcalendar.sbr"
+	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
+	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -528,6 +530,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -708,6 +711,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -957,6 +961,8 @@ CLEAN :
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
 	-@erase "$(INTDIR)\jointcalendar.sbr"
+	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
+	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -1254,6 +1260,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1434,6 +1441,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1683,6 +1691,8 @@ CLEAN :
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
 	-@erase "$(INTDIR)\jointcalendar.sbr"
+	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
+	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -1979,6 +1989,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2159,6 +2170,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2408,6 +2420,8 @@ CLEAN :
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\jointcalendar.obj"
 	-@erase "$(INTDIR)\jointcalendar.sbr"
+	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
+	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -2705,6 +2719,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2885,6 +2900,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -3808,6 +3824,12 @@ SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\integralengines.cpp
 
 "$(INTDIR)\integralengines.obj"	"$(INTDIR)\integralengines.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp
+
+"$(INTDIR)\jumpdiffusionengine.obj"	"$(INTDIR)\jumpdiffusionengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
