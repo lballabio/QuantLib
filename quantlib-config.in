@@ -42,7 +42,7 @@ while test $# -gt 0; do
       echo -I@includedir@
       ;;
     --libs)
-      echo -L@libdir@ -lQuantLib
+      echo -L@libdir@ -lQuantLib -lboost_regex
       ;;
     *)
       echo "${usage}" 1>&2
