@@ -32,6 +32,7 @@ DOCUMENTATION
     add reference to FAQ to DoxyGen
     add CVS reference to DoxyGen
     add Coding standards reference to DoxyGen
+    add status.html content into DoxyGen documentation
     add Debian mention to DoxyGen
     insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
     add mailing list reference to DoxyGen
