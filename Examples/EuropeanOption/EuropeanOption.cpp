@@ -408,6 +408,41 @@ int main(int argc, char* argv[])
         UniformLowDiscrepancySequenceGenerator ldsg(timeSteps);
         GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
 
+        Sample<std::vector<double> > wp(std::vector<double>(),1.0);
+        BrownianBridge<GaussianRandomSequenceGenerator> b1(grsg);
+        wp = b1.next();
+        wp = b1.antithetic();
+        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b2(gldsg);
+        wp = b2.next();
+        wp = b2.antithetic();
+        BrownianBridge<GaussianRandomSequenceGenerator> b3(maturity, timeSteps, grsg);
+        wp = b3.next();
+        wp = b3.antithetic();
+        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b4(maturity, timeSteps, gldsg);
+        wp = b4.next();
+        wp = b4.antithetic();
+        BrownianBridge<GaussianRandomSequenceGenerator> b5(timeGrid, grsg);
+        wp = b5.next();
+        wp = b5.antithetic();
+        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b6(timeGrid, gldsg);
+        wp = b6.next();
+        wp = b6.antithetic();
+        BrownianBridge<GaussianRandomSequenceGenerator> b7(flatVolTS, timeGrid, grsg);
+        wp = b7.next();
+        wp = b7.antithetic();
+        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b8(flatVolTS, timeGrid, gldsg);
+        wp = b8.next();
+        wp = b8.antithetic();
+        BrownianBridge<GaussianRandomSequenceGenerator> b9(blackSurface, timeGrid, grsg);
+        wp = b9.next();
+        wp = b9.antithetic();
+        BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b10(blackSurface, timeGrid, gldsg);
+        wp = b10.next();
+        wp = b10.antithetic();
+=======
+        GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
+>>>>>>> 1.60
+
         option.setPricingEngine(Handle<PricingEngine>(
             new MCEuropeanEngine<
                 Statistics,

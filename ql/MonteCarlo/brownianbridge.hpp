@@ -247,41 +247,30 @@ namespace QuantLib {
 
             Size i, j, k, l;
             // The global step.
-            next_[dimension_-1] = sigma_[0]*sequence_.value[0];
+            next_.value[dimension_-1] = stdDev_[0] * sequence_.value[0];
             for (i=1; i<dimension_; i++) {
                 j = leftIndex_[i];
                 k = rightIndex_[i];
                 l = bridgeIndex_[i];
                 // using only the drift component here for the time being ....
-                if (j) next_[l] =
-                     leftWeight_[i] * next_[j-1] +
-                    rightWeight_[i] * next_[k]   +
-                          sigma_[i] * sequence_.value[i];
-                else   next_[l] =
-                    rightWeight_[i] * next_[k]   +
-                          sigma_[i] * sequence_.value[i];
+                if (j) next_.value[l] =
+                     leftWeight_[i] * next_.value[j-1] +
+                    rightWeight_[i] * next_.value[k]   +
+                          stdDev_[i] * sequence_.value[i];
+                else   next_.value[l] =
+                    rightWeight_[i] * next_.value[k]   +
+                          stdDev_[i] * sequence_.value[i];
             }
+
+            return next_;
         }
 
         template <class GSG>
         inline const typename BrownianBridge<GSG>::sample_type&
         BrownianBridge<GSG>::antithetic() const {
 
-            Size i, j, k, l;
-            // The global step.
-            next_[dimension_-1] = sigma_[0]*sequence_.value[0];
-            for (i=1; i<dimension_; i++) {
-                j = leftIndex_[i];
-                k = rightIndex_[i];
-                l = bridgeIndex_[i];
-                if (j) next_[l] =
-                     leftWeight_[i] * next_[j-1] +
-                    rightWeight_[i] * next_[k]   +
-                          sigma_[i] * sequence_.value[i];
-                else   next_[l] =
-                    rightWeight_[i] * next_[k]   +
-                          sigma_[i] * sequence_.value[i];
-            }
+            return next_;
+
 
         }
 
