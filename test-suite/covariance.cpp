@@ -31,7 +31,7 @@ CppUnit::Test* CovarianceTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Covariance/correlation tests");
     tests->addTest(new CppUnit::TestCaller<CovarianceTest>
-                   ("Testing correlation salvaging algorithms",
+                   ("Testing correlation-salvaging algorithms",
                     &CovarianceTest::testSalvagingCorrelation));
     tests->addTest(new CppUnit::TestCaller<CovarianceTest>
                    ("Testing covariance calculation",
