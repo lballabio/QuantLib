@@ -63,9 +63,9 @@ namespace QuantLib {
                  }
                  linearInterpolation_ =
                      Handle<LinearInterpolation<RandomAccessIterator1,
-                     std::vector<result_type>::const_iterator> >(
+                     typename std::vector<result_type>::const_iterator> >(
                      new LinearInterpolation<RandomAccessIterator1,
-                     std::vector<result_type>::const_iterator>(xBegin,
+                     typename std::vector<result_type>::const_iterator>(xBegin,
                      xEnd, logY_.begin()));
              }
             result_type operator()(const argument_type& x,
@@ -73,7 +73,7 @@ namespace QuantLib {
           private:
               std::vector<result_type> logY_;
               Handle<LinearInterpolation<RandomAccessIterator1,
-                  std::vector<result_type>::const_iterator> >
+                  typename std::vector<result_type>::const_iterator> >
                   linearInterpolation_;
         };
 
