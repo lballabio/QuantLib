@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -45,6 +45,14 @@ namespace {
 void DistributionTest::testNormal() {
 
     BOOST_MESSAGE("Testing normal distributions...");
+
+    InverseCumulativeNormal invCumStandardNormal;
+    Real check = invCumStandardNormal(0.5);
+    if (check != 0.0e0) {
+        BOOST_FAIL("C++ inverse cumulative of the standard normal at 0.5 is "
+                   + DecimalFormatter::toExponential(check,2) +
+                   "\n instead of zero: something is wrong!");
+    }
 
     NormalDistribution normal(average,sigma);
     CumulativeNormalDistribution cum(average,sigma);
