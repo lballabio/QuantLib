@@ -80,11 +80,15 @@ namespace {
             QL_FAIL("unknown averaging");
     }
 
+    void teardown() {
+        Settings::instance().setEvaluationDate(Date());
+    }
+
 }
 
 void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
-    BOOST_MESSAGE("Testing analytic continuous geometric average price "
+    BOOST_MESSAGE("Testing analytic continuous geometric average-price "
                   "Asians...");
 
     // data from "Option Pricing Formulas", Haug, pag.96-97
@@ -161,8 +165,10 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
 void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
 
-    BOOST_MESSAGE("Testing analytic continuous geometric average price Asian "
+    BOOST_MESSAGE("Testing analytic continuous geometric average-price Asian "
                   "greeks...");
+
+    QL_TEST_BEGIN
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
@@ -181,14 +187,15 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     Date today = Date::todaysDate();
+    Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate));
+    Handle<YieldTermStructure> qTS(flatRate(qRate));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate));
+    Handle<YieldTermStructure> rTS(flatRate(rRate));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol));
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
@@ -273,17 +280,11 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
 
                           // perturb date and get theta
                           Time dT = 1.0/365;
-                          qTS.linkTo(flatRate(today-1,qRate));
-                          rTS.linkTo(flatRate(today-1,rRate));
-                          volTS.linkTo(flatVol(today-1, vol));
+                          Settings::instance().setEvaluationDate(today-1);
                           value_m = option.NPV();
-                          qTS.linkTo(flatRate(today+1,qRate));
-                          rTS.linkTo(flatRate(today+1,rRate));
-                          volTS.linkTo(flatVol(today+1, vol));
+                          Settings::instance().setEvaluationDate(today+1);
                           value_p = option.NPV();
-                          qTS.linkTo(flatRate(today,qRate));
-                          rTS.linkTo(flatRate(today,rRate));
-                          volTS.linkTo(flatVol(today, vol));
+                          Settings::instance().setEvaluationDate(today);
                           expected["theta"] = (value_p - value_m)/(2*dT);
 
                           // compare
@@ -312,12 +313,14 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
         }
       }
     }
+
+    QL_TEST_TEARDOWN
 }
 
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
-    BOOST_MESSAGE("Testing analytic discrete geometric average price "
+    BOOST_MESSAGE("Testing analytic discrete geometric average-price "
                   "Asians...");
 
     // data from "Implementing Derivatives Model",
@@ -380,7 +383,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
 void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
-    BOOST_MESSAGE("Testing Monte Carlo discrete geometric average price "
+    BOOST_MESSAGE("Testing Monte Carlo discrete geometric average-price "
                   "Asians...");
 
     // data from "Implementing Derivatives Model",
@@ -469,7 +472,7 @@ namespace {
 
 void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
-    BOOST_MESSAGE("Testing Monte Carlo discrete arithmetic average price "
+    BOOST_MESSAGE("Testing Monte Carlo discrete arithmetic average-price "
                   "Asians...");
 
     // data from "Asian Option", Levy, 1997
@@ -617,6 +620,8 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
     BOOST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
 
+    QL_TEST_BEGIN
+
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
@@ -634,14 +639,15 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     Date today = Date::todaysDate();
+    Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate));
+    Handle<YieldTermStructure> qTS(flatRate(qRate));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate));
+    Handle<YieldTermStructure> rTS(flatRate(rRate));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol));
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
@@ -661,8 +667,8 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
             std::vector<Date> fixingDates;
             for (Date d = today.plusMonths(3);
-                 d <= maturity->lastDate();
-                 d = d.plusMonths(3))
+                      d <= maturity->lastDate();
+                      d = d.plusMonths(3))
                 fixingDates.push_back(d);
 
 
@@ -737,17 +743,11 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
                           // perturb date and get theta
                           Time dT = 1.0/365;
-                          qTS.linkTo(flatRate(today-1,qRate));
-                          rTS.linkTo(flatRate(today-1,rRate));
-                          volTS.linkTo(flatVol(today-1, vol));
+                          Settings::instance().setEvaluationDate(today-1);
                           value_m = option.NPV();
-                          qTS.linkTo(flatRate(today+1,qRate));
-                          rTS.linkTo(flatRate(today+1,rRate));
-                          volTS.linkTo(flatVol(today+1, vol));
+                          Settings::instance().setEvaluationDate(today+1);
                           value_p = option.NPV();
-                          qTS.linkTo(flatRate(today,qRate));
-                          rTS.linkTo(flatRate(today,rRate));
-                          volTS.linkTo(flatVol(today, vol));
+                          Settings::instance().setEvaluationDate(today);
                           expected["theta"] = (value_p - value_m)/(2*dT);
 
                           // compare
@@ -776,6 +776,8 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
         }
       }
     }
+
+    QL_TEST_TEARDOWN
 }
 
 test_suite* AsianOptionTest::suite() {

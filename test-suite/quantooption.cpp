@@ -141,6 +141,10 @@ namespace {
         Real tol;        // tolerance
     };
 
+    void teardown() {
+        Settings::instance().setEvaluationDate(Date());
+    }
+
 }
 
 // tests
@@ -228,6 +232,8 @@ void QuantoOptionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing quanto option greeks...");
 
+    QL_TEST_BEGIN
+
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]   = 1.0e-5;
     tolerance["gamma"]   = 1.0e-5;
@@ -250,18 +256,19 @@ void QuantoOptionTest::testGreeks() {
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
+    Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<YieldTermStructure> fxrTS(flatRate(fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
@@ -389,23 +396,11 @@ void QuantoOptionTest::testGreeks() {
 
                           // perturb date and get theta
                           Time dT = 1.0/360;
-                          qTS.linkTo(flatRate(today-1,qRate,dc));
-                          rTS.linkTo(flatRate(today-1,rRate,dc));
-                          volTS.linkTo(flatVol(today-1,vol,dc));
-                          fxrTS.linkTo(flatRate(today-1,fxRate,dc));
-                          fxVolTS.linkTo(flatVol(today-1,fxVol,dc));
+                          Settings::instance().setEvaluationDate(today-1);
                           value_m = option.NPV();
-                          qTS.linkTo(flatRate(today+1,qRate,dc));
-                          rTS.linkTo(flatRate(today+1,rRate,dc));
-                          volTS.linkTo(flatVol(today+1,vol,dc));
-                          fxrTS.linkTo(flatRate(today+1,fxRate,dc));
-                          fxVolTS.linkTo(flatVol(today+1,fxVol,dc));
+                          Settings::instance().setEvaluationDate(today+1);
                           value_p = option.NPV();
-                          qTS.linkTo(flatRate(today,qRate,dc));
-                          rTS.linkTo(flatRate(today,rRate,dc));
-                          volTS.linkTo(flatVol(today,vol,dc));
-                          fxrTS.linkTo(flatRate(today,fxRate,dc));
-                          fxVolTS.linkTo(flatVol(today,fxVol,dc));
+                          Settings::instance().setEvaluationDate(today);
                           expected["theta"] = (value_p - value_m)/(2*dT);
 
                           // compare
@@ -435,6 +430,8 @@ void QuantoOptionTest::testGreeks() {
         }
       }
     }
+
+    QL_TEST_TEARDOWN
 }
 
 
@@ -529,6 +526,8 @@ void QuantoOptionTest::testForwardGreeks() {
 
     BOOST_MESSAGE("Testing quanto-forward option greeks...");
 
+    QL_TEST_BEGIN
+
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]   = 1.0e-5;
     tolerance["gamma"]   = 1.0e-5;
@@ -552,18 +551,19 @@ void QuantoOptionTest::testForwardGreeks() {
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
+    Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<YieldTermStructure> fxrTS(flatRate(fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
@@ -700,23 +700,11 @@ void QuantoOptionTest::testForwardGreeks() {
 
                             // perturb date and get theta
                             Time dT = 1.0/360;
-                            qTS.linkTo(flatRate(today-1,qRate,dc));
-                            rTS.linkTo(flatRate(today-1,rRate,dc));
-                            volTS.linkTo(flatVol(today-1,vol,dc));
-                            fxrTS.linkTo(flatRate(today-1,fxRate,dc));
-                            fxVolTS.linkTo(flatVol(today-1,fxVol,dc));
+                            Settings::instance().setEvaluationDate(today-1);
                             value_m = option.NPV();
-                            qTS.linkTo(flatRate(today+1,qRate,dc));
-                            rTS.linkTo(flatRate(today+1,rRate,dc));
-                            volTS.linkTo(flatVol(today+1,vol,dc));
-                            fxrTS.linkTo(flatRate(today+1,fxRate,dc));
-                            fxVolTS.linkTo(flatVol(today+1,fxVol,dc));
+                            Settings::instance().setEvaluationDate(today+1);
                             value_p = option.NPV();
-                            qTS.linkTo(flatRate(today,qRate,dc));
-                            rTS.linkTo(flatRate(today,rRate,dc));
-                            volTS.linkTo(flatVol(today,vol,dc));
-                            fxrTS.linkTo(flatRate(today,fxRate,dc));
-                            fxVolTS.linkTo(flatVol(today,fxVol,dc));
+                            Settings::instance().setEvaluationDate(today);
                             expected["theta"] = (value_p - value_m)/(2*dT);
 
                             // compare
@@ -747,6 +735,8 @@ void QuantoOptionTest::testForwardGreeks() {
         }
       }
     }
+
+    QL_TEST_TEARDOWN
 }
 
 
@@ -841,7 +831,8 @@ test_suite* QuantoOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testGreeks));
     suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testForwardValues));
     suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testForwardGreeks));
-    suite->add(BOOST_TEST_CASE(&QuantoOptionTest::testForwardPerformanceValues));
+    suite->add(BOOST_TEST_CASE(
+                            &QuantoOptionTest::testForwardPerformanceValues));
     return suite;
 }
 

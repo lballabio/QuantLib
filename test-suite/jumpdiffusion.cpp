@@ -117,6 +117,10 @@ namespace {
         Real tol;      // tolerance
     };
 
+    void teardown() {
+        Settings::instance().setEvaluationDate(Date());
+    }
+
 }
 
 
@@ -379,6 +383,8 @@ void JumpDiffusionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing jump-diffusion option greeks...");
 
+    QL_TEST_BEGIN
+
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-4;
     tolerance["gamma"]  = 1.0e-4;
@@ -400,14 +406,15 @@ void JumpDiffusionTest::testGreeks() {
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
+    Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
@@ -547,6 +554,8 @@ void JumpDiffusionTest::testGreeks() {
       }
       }
     } // type loop
+
+    QL_TEST_TEARDOWN
 }
 
 

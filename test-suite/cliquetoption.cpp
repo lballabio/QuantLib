@@ -56,6 +56,14 @@ using namespace boost::unit_test_framework;
                "    tolerance:        " \
                + DecimalFormatter::toString(tolerance));
 
+namespace {
+
+    void teardown() {
+        Settings::instance().setEvaluationDate(Date());
+    }
+
+}
+
 // tests
 
 void CliquetOptionTest::testValues() {
@@ -129,14 +137,15 @@ namespace {
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     Date today = Date::todaysDate();
+    Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate));
+    Handle<YieldTermStructure> qTS(flatRate(qRate));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate));
+    Handle<YieldTermStructure> rTS(flatRate(rRate));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol));
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
@@ -226,17 +235,11 @@ namespace {
 
                           // perturb date and get theta
                           Time dT = 1.0/365;
-                          qTS.linkTo(flatRate(today-1,qRate));
-                          rTS.linkTo(flatRate(today-1,rRate));
-                          volTS.linkTo(flatVol(today-1, vol));
+                          Settings::instance().setEvaluationDate(today-1);
                           value_m = option.NPV();
-                          qTS.linkTo(flatRate(today+1,qRate));
-                          rTS.linkTo(flatRate(today+1,rRate));
-                          volTS.linkTo(flatVol(today+1, vol));
+                          Settings::instance().setEvaluationDate(today+1);
                           value_p = option.NPV();
-                          qTS.linkTo(flatRate(today,qRate));
-                          rTS.linkTo(flatRate(today,rRate));
-                          volTS.linkTo(flatVol(today, vol));
+                          Settings::instance().setEvaluationDate(today);
                           expected["theta"] = (value_p - value_m)/(2*dT);
 
                           // compare
@@ -269,14 +272,26 @@ namespace {
 
 
 void CliquetOptionTest::testGreeks() {
+
     BOOST_MESSAGE("Testing Cliquet option greeks...");
+
+    QL_TEST_BEGIN
+
     testOptionGreeks<AnalyticCliquetEngine>();
+
+    QL_TEST_TEARDOWN
 }
 
 
 void CliquetOptionTest::testPerformanceGreeks() {
+
     BOOST_MESSAGE("Testing performance option greeks...");
+
+    QL_TEST_BEGIN
+
     testOptionGreeks<AnalyticPerformanceEngine>();
+
+    QL_TEST_TEARDOWN
 }
 
 

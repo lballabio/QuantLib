@@ -19,6 +19,7 @@
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Calendars/nullcalendar.hpp>
 
 #define CHECK_DOWNCAST(Derived,Description) { \
     boost::shared_ptr<Derived> hd = boost::dynamic_pointer_cast<Derived>(h); \
@@ -64,6 +65,20 @@ namespace QuantLib {
                today, boost::shared_ptr<Quote>(new SimpleQuote(forward)), dc);
     }
 
+    boost::shared_ptr<YieldTermStructure>
+    flatRate(const boost::shared_ptr<Quote>& forward,
+             const DayCounter& dc) {
+        return boost::shared_ptr<YieldTermStructure>(
+              new FlatForward(0, NullCalendar(), Handle<Quote>(forward), dc));
+    }
+
+    boost::shared_ptr<YieldTermStructure>
+    flatRate(Rate forward, const DayCounter& dc) {
+        return flatRate(boost::shared_ptr<Quote>(new SimpleQuote(forward)),
+                        dc);
+    }
+
+
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
             const boost::shared_ptr<Quote>& vol,
@@ -77,6 +92,19 @@ namespace QuantLib {
         return flatVol(
                    today, boost::shared_ptr<Quote>(new SimpleQuote(vol)), dc);
     }
+
+    boost::shared_ptr<BlackVolTermStructure>
+    flatVol(const boost::shared_ptr<Quote>& vol,
+            const DayCounter& dc) {
+        return boost::shared_ptr<BlackVolTermStructure>(
+             new BlackConstantVol(0, NullCalendar(), Handle<Quote>(vol), dc));
+    }
+
+    boost::shared_ptr<BlackVolTermStructure>
+    flatVol(Volatility vol, const DayCounter& dc) {
+        return flatVol(boost::shared_ptr<Quote>(new SimpleQuote(vol)), dc);
+    }
+
 
     Real relativeError(Real x1, Real x2, Real reference) {
         if (reference != 0.0)

@@ -58,9 +58,19 @@ using namespace boost::unit_test_framework;
 
 // tests
 
+namespace {
+
+    void teardown() {
+        Settings::instance().setEvaluationDate(Date());
+    }
+
+}
+
 void DividendEuropeanOptionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing dividend European option greeks...");
+
+    QL_TEST_BEGIN
 
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"] = 1.0e-5;
@@ -79,14 +89,15 @@ void DividendEuropeanOptionTest::testGreeks() {
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
+    Settings::instance().setEvaluationDate(today);
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -167,17 +178,11 @@ void DividendEuropeanOptionTest::testGreeks() {
 
                         // perturb date and get theta
                         Time dT = 1.0/360;
-                        qTS.linkTo(flatRate(today-1,qRate,dc));
-                        rTS.linkTo(flatRate(today-1,rRate,dc));
-                        volTS.linkTo(flatVol(today-1,vol,dc));
+                        Settings::instance().setEvaluationDate(today-1);
                         value_m = option.NPV();
-                        qTS.linkTo(flatRate(today+1,qRate,dc));
-                        rTS.linkTo(flatRate(today+1,rRate,dc));
-                        volTS.linkTo(flatVol(today+1,vol,dc));
+                        Settings::instance().setEvaluationDate(today+1);
                         value_p = option.NPV();
-                        qTS.linkTo(flatRate(today,qRate,dc));
-                        rTS.linkTo(flatRate(today,rRate,dc));
-                        volTS.linkTo(flatVol(today,vol,dc));
+                        Settings::instance().setEvaluationDate(today);
                         expected["theta"] = (value_p - value_m)/(2*dT);
 
                         // compare
@@ -203,6 +208,8 @@ void DividendEuropeanOptionTest::testGreeks() {
         }
       }
     }
+
+    QL_TEST_TEARDOWN
 }
 
 

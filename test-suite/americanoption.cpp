@@ -236,8 +236,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
 
 void AmericanOptionTest::testJuValues() {
 
-    BOOST_MESSAGE("Testing Ju approximation "
-                  "for American options...");
+    BOOST_MESSAGE("Testing Ju approximation for American options...");
 
     /* The data below are from
         An Approximate Formula for Pricing American Options
