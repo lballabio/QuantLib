@@ -47,6 +47,8 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanmcengines.obj"
+	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -285,6 +287,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\svd.obj"
+	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
 	-@erase "$(INTDIR)\swaption.obj"
@@ -494,7 +498,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\svd.sbr" \
+	"$(INTDIR)\americanmcengines.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -650,7 +656,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\svd.obj" \
+	"$(INTDIR)\americanmcengines.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -673,6 +681,8 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanmcengines.obj"
+	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -911,6 +921,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\svd.obj"
+	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
 	-@erase "$(INTDIR)\swaption.obj"
@@ -1121,7 +1133,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\svd.sbr" \
+	"$(INTDIR)\americanmcengines.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1277,7 +1291,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\svd.obj" \
+	"$(INTDIR)\americanmcengines.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1300,6 +1316,8 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanmcengines.obj"
+	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -1538,6 +1556,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\svd.obj"
+	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
 	-@erase "$(INTDIR)\swaption.obj"
@@ -1747,7 +1767,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\svd.sbr" \
+	"$(INTDIR)\americanmcengines.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1903,7 +1925,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\svd.obj" \
+	"$(INTDIR)\americanmcengines.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1926,6 +1950,8 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanmcengines.obj"
+	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -2164,6 +2190,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\svd.obj"
+	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
 	-@erase "$(INTDIR)\swaption.obj"
@@ -2374,7 +2402,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\svd.sbr" \
+	"$(INTDIR)\americanmcengines.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2530,7 +2560,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\svd.obj" \
+	"$(INTDIR)\americanmcengines.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2553,6 +2585,8 @@ CLEAN :
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanmcengines.obj"
+	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -2791,6 +2825,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\svd.obj"
+	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
 	-@erase "$(INTDIR)\swaption.obj"
@@ -3000,7 +3036,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\svd.sbr" \
+	"$(INTDIR)\americanmcengines.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3156,7 +3194,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\svd.obj" \
+	"$(INTDIR)\americanmcengines.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3542,6 +3582,12 @@ SOURCE=.\ql\Math\primenumbers.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Math\svd.cpp
+
+"$(INTDIR)\svd.obj"	"$(INTDIR)\svd.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
 
 "$(INTDIR)\symmetricschurdecomposition.obj"	"$(INTDIR)\symmetricschurdecomposition.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3899,6 +3945,12 @@ SOURCE=.\ql\Pricers\treecapfloor.cpp
 SOURCE=.\ql\Pricers\treeswaption.cpp
 
 "$(INTDIR)\treeswaption.obj"	"$(INTDIR)\treeswaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\americanmcengines.cpp
+
+"$(INTDIR)\americanmcengines.obj"	"$(INTDIR)\americanmcengines.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

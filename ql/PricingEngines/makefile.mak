@@ -13,6 +13,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
+       americanmcengines.obj$(_D) \
        analyticeuropeanengine.obj$(_D) \
        binomialvanillaengine.obj$(_D) \
        discretizedvanillaoption.obj$(_D) \

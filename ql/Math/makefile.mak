@@ -21,7 +21,8 @@ OBJS = chisquaredistribution.obj$(_D) \
        multivariateaccumulator.obj$(_D) \
        normaldistribution.obj$(_D) \
        primenumbers.obj$(_D) \
-       symmetricschurdecomposition.obj$(_D)
+       symmetricschurdecomposition.obj$(_D) \
+       svd.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

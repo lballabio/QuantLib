@@ -30,7 +30,8 @@ include_HEADERS = \
 	sequencestatistics.hpp \
 	statistics.hpp \
 	symmetriceigenvalues.hpp \
-	symmetricschurdecomposition.hpp
+	symmetricschurdecomposition.hpp \
+	svd.hpp
 
 EXTRA_DIST=makefile.mak
 
@@ -45,6 +46,7 @@ libMath_la_SOURCES = \
 	multivariateaccumulator.cpp \
 	normaldistribution.cpp \
 	primenumbers.cpp \
-	symmetricschurdecomposition.cpp
+	symmetricschurdecomposition.cpp \
+	svd.cpp
 
 noinst_LTLIBRARIES = libMath.la

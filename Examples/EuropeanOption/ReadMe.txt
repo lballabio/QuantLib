@@ -1,2 +1,2 @@
-Calculates European Call options using different methods
+Calculates European options using different methods
 Tests call-put parity

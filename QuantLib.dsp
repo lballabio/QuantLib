@@ -832,6 +832,14 @@ SOURCE=.\ql\Math\statistics.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\svd.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\svd.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\symmetriceigenvalues.hpp
 # End Source File
 # Begin Source File
@@ -1393,6 +1401,14 @@ SOURCE=.\ql\Pricers\treeswaption.hpp
 # Begin Group "PricingEngines"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\americanmcengines.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\americanmcengines.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\analyticeuropeanengine.cpp
