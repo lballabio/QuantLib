@@ -1,23 +1,42 @@
 
-Currently known bugs in QuantLib 0.3.5:
+Currently known bugs in QuantLib:
 
-- class AmericanMCVanillaEngine:
-    the engine is known not to work for deeply out-of-the-money options.
+- class AnalyticDiscreteAveragingAsianEngine:
+    calculated Greeks do not match numerical results.
+
+- class BlackFormula: 
+    When the variance is null, division by zero occur during the
+    calculation of delta, delta forward, gamma, gamma forward, rho,
+    dividend rho, vega, and strike sensitivity.
+
+- class BPSBasketCalculator;
+  function BasisPointSensitivityBasket;
+  method Swap::sensitivity:
+    not tested enough to guarantee their functionality.
 
 - class CoxIngersollRoss;
   class ExtendedCoxIngersollRoss;
   class G2:
     not tested enough to guarantee their functionality.
 
-- class BPSBasketCalculator;
-  function BasisPointSensitivityBasket;
-  method Swap::sensitivity:
-    not tested enough to guarantee their functionality.
-    Also, the copyright attribution must be checked.
+- class DiscretizedSwap: 
+    floating coupons which have already fixed are not included
+    during rollback.
 
 - class FdDividendAmericanOption:
     - sometimes yields negative vega when deeply in-the-money
-    - method impliedVolatility() utterly fails
+    - method impliedVolatility() utterly fails.
 
-- class OneAssetOption:
-    - method impliedVolatility() crashes (Borland compiler only)
+- class HullWhite:
+    When the term structure is relinked, the r0 parameter of the
+    underlying Vasicek model is not updated.
+
+- class LocalVolSurface:
+    not tested enough to guarantee its functionality.
+
+- class MCAmericanBasketEngine:
+    this engine does not yet work for put options. More problems might
+    surface.
+
+- class TreeCapFloorEngine:
+    caplets which have already fixed are not included in the cap value.

@@ -1,4 +1,6 @@
 *.obj*
-*.obj
 *.lib
+*.lo
+*.la
 Makefile.in
+Makefile

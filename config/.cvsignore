@@ -1,4 +1,7 @@
+Makefile.in
+Makefile
 config.sub
+config.guess
 depcomp
 install-sh
 ltmain.sh

@@ -9,11 +9,10 @@ SUBDIRS =  \
     Swap
 
 EXTRA_DIST = \
-    Examples.dsw \
-    Examples.sln \
     makefile.mak \
     README.txt
 
-examples:
-	for d in $(SUBDIRS); do $(MAKE) -C $$d examples; done
-
+.PHONY: examples $(SUBDIRS)
+examples: $(SUBDIRS)
+$(SUBDIRS):
+	$(MAKE) -C $@ examples

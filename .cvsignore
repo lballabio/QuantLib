@@ -1,4 +1,5 @@
 Makefile.in
+Makefile
 QuantLib*.ncb
 QuantLib*.opt
 QuantLib.dep
@@ -6,7 +7,13 @@ QuantLib.plg
 QuantLib.spec
 QuantLib.suo
 autom4te.cache
-build
+aclocal.m4
+config.log
+config.status
+configure
+libtool
+quantlib.elc
 elc-stamp
 lib
 quantlib-config
+build

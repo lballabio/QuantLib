@@ -25,18 +25,16 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.])
 
 AC_PROG_AWK
 AC_PROG_INSTALL
+AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_LIBTOOL
-AM_PATH_LISPDIR
-AC_PATH_PROG([SED], [sed])
-AC_PATH_PROG([DOXYGEN], [doxygen])
-AC_PATH_PROG([LATEX], [latex])
-AC_PATH_PROG([PDFLATEX], [pdflatex])
-AC_PATH_PROG([MAKEINDEX], [makeindex])
-AC_PATH_PROG([DVIPS], [dvips])
 
 AC_LANG([C++])
+
+# Check for mandatory features and header files
+
+QL_CHECK_NAMESPACES
 
 QL_CHECK_HEADER([stdlib])
 QL_CHECK_TYPE([size_t],[],[$ql_stdlib])
@@ -93,13 +91,25 @@ QL_CHECK_TEMPLATE_TYPE([iterator],[std::input_iterator_tag,double],
 QL_CHECK_TEMPLATE_TYPE([iterator_traits],[double*],
                        [],[iterator])
 
+# Check for Boost components
+QL_CHECK_BOOST_DEVEL
+QL_CHECK_BOOST_UNIT_TEST
+
+# Check for optional features
 QL_CHECK_LONG_LONG
-QL_CHECK_NAMESPACES
-QL_CHECK_STRING
 
-QL_CHECK_BOOST
-
+# Check for Emacs
+AM_PATH_LISPDIR
 AM_CONDITIONAL(EMACS_FOUND, test "${EMACS}" != "no")
+
+# Check for tools needed for building documentation
+AC_PATH_PROG([DOXYGEN], [doxygen])
+AC_PATH_PROG([SED], [sed])
+AC_PATH_PROG([LATEX], [latex])
+AC_PATH_PROG([PDFLATEX], [pdflatex])
+AC_PATH_PROG([MAKEINDEX], [makeindex])
+AC_PATH_PROG([DVIPS], [dvips])
+
 
 # site configuration
 

@@ -1,17 +1,7 @@
-Many thanks to the QuantLib contributors:
 
-Toyin Akin
-James Battle
-Christopher Baus
-Thomas Becker
-David Binderman
-Jon Davidson
-Dirk Eddelbuettel
-Matteo Gallivanoni
-Tomoya Kawanishi
-Gilbert Peffer
-Peter Schmitteckert
-David Schwartz
-Maxim Sokolov
-Bernd Johannes Wuebben
+We gratefully acknowledge contributions from Xavier Abulker, Toyin
+Akin, James Battle, Christopher Baus, Thomas Becker, Adolfo Benin,
+David Binderman, Jon Davidson, Matteo Gallivanoni, Roman Gitlin,
+Tomoya Kawanishi, Gilbert Peffer, Peter Schmitteckert, Maxim Sokolov,
+David Schwartz, Bernd Johannes Wuebben, and Jeff Yu.
 

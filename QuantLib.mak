@@ -29,9 +29,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -412,7 +409,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -588,9 +618,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\schedule.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -772,9 +802,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1166,7 +1196,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_7" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1342,9 +1405,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\schedule.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1526,9 +1589,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1919,7 +1982,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2095,9 +2191,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\schedule.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2279,9 +2375,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2673,7 +2769,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_7" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2849,9 +2978,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\schedule.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3033,9 +3162,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3426,7 +3555,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -3602,9 +3764,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\schedule.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3786,9 +3948,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4180,7 +4342,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_7" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -4356,9 +4551,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\errors.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\schedule.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4540,9 +4735,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\errors.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\schedule.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4554,36 +4749,6 @@ LIB32_OBJS= \
 SOURCE="$(InputPath)"
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"

@@ -36,8 +36,9 @@
     all classes and function in the respective subdirectory.
 
     Under the Examples folder you can find examples of %QuantLib usage,
-    including makefiles for gcc, the Borland free compiler,
-    and Microsoft Visual C++. For the latter project files are also available.
+    including input files for automake and makefiles for the Borland
+    free compiler and Microsoft Visual C++. For the latter, project
+    files are also available.
 
     \section microsoftvisual Microsoft Visual C++
     A few suggestions for Visual C++ users wanting to use %QuantLib into their

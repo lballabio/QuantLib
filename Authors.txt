@@ -1,10 +1,12 @@
-Ferdinando Ametrano (nando AT ametrano DOT net) - admin
-Luigi Ballabio (luigi.ballabio@riskmap.net) - library designer
+Ferdinando Ametrano, Monte Paschi Asset Management sgr, administrator
+Luigi Ballabio, StatPro Italia srl, administrator
+Mario Aleppo, StatPro Italia srl
 Nicolas Di Césaré
 Dirk Eddelbuettel
-Neil Firth
-Roman Gitlin
-Marco Marchioro (marco DOT marchioro AT riskmap DOT net)
-Sadruddin Rejeb (sad@quantlib.org)
-Niels Elken Sonderby
-Liguo Song (Liguo.Song AT vanderbilt.edu)
+Neil Firth, Mathematical Institute, University of Oxford
+André Louw, Decillion Pty
+Marco Marchioro, StatPro Italia srl
+Sadruddin Rejeb
+Niels Elken Sønderby
+Enrico Sirola, StatPro Italia srl
+Liguo Song

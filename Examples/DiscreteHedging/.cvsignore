@@ -1,6 +1,9 @@
 DiscreteHedging
 Makefile.in
+Makefile
 build
+.deps
+.libs
 *.plg
 *.dep
 *.tds

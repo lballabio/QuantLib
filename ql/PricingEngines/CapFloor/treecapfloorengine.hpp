@@ -28,7 +28,11 @@
 namespace QuantLib {
 
     //! Numerical lattice engine for cap/floors
-    /*! \ingroup capfloorengines */
+    /*! \bug caplets which have already fixed are not included in
+             the cap value.
+
+        \ingroup capfloorengines
+    */
     class TreeCapFloorEngine
         : public LatticeShortRateModelEngine<CapFloor::arguments,
                                              CapFloor::results> {

@@ -81,7 +81,7 @@ depend:
 
 
 lib_LTLIBRARIES = libQuantLib.la
-libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION) -lboost_regex
+libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)
 
 libQuantLib_la_LIBADD = \
     Calendars/libCalendars.la \

@@ -28,25 +28,26 @@
 
     The %QuantLib Group members are:
 
-    - Ferdinando Ametrano (nando AT ametrano DOT net), project manager
-    - Luigi Ballabio (luigi.ballabio AT statpro.com), library designer
-    - Nicolas Di Césaré, spline and optimizer
-    - Dirk Eddelbuettel: Debian maintainer, RQuantLib
-    - Neil Firth: Monte Carlo, Longstaff-Schwartz American option,
-                  Barrier option
-    - Marco Marchioro (marco.marchioro AT statpro.com)
-    - Sadruddin Rejeb (sad AT quantlib.org), interest rate models
-    - Niels Elken Sønderby: Gauss-Kronrod integration
-    - Liguo Song (Liguo.Song AT vanderbilt.edu): RPM maintainer
-
+    - Ferdinando Ametrano, Monte Paschi Asset Management sgr, administrator
+    - Luigi Ballabio, StatPro Italia srl, administrator
+    - Mario Aleppo, StatPro Italia srl
+    - Nicolas Di Césaré
+    - Dirk Eddelbuettel
+    - Neil Firth, Mathematical Institute, University of Oxford
+    - André Louw, Decillion Pty
+    - Marco Marchioro, StatPro Italia srl
+    - Sadruddin Rejeb
+    - Niels Elken Sønderby
+    - Enrico Sirola, StatPro Italia srl
+    - Liguo Song
 
     \section contributors Contributors
 
     We gratefully acknowledge contributions from Xavier Abulker, 
-    Mario Aleppo, Toyin Akin, James Battle, Christopher Baus, 
+    Toyin Akin, James Battle, Christopher Baus, 
     Thomas Becker, Adolfo Benin, David Binderman, Jon Davidson, 
     Matteo Gallivanoni, Roman Gitlin, Tomoya Kawanishi, 
-    Gilbert Peffer, Peter Schmitteckert, Enrico Sirola, Maxim Sokolov,
+    Gilbert Peffer, Peter Schmitteckert, Maxim Sokolov,
     David Schwartz, Bernd Johannes Wuebben, and Jeff Yu.
 
 */

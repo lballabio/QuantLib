@@ -73,8 +73,6 @@ SectionIn 1 2
     File /r "Examples\*.dsp"
     File /r "Examples\*.txt"
     File /r "Examples\*.mak"
-    File /r "Examples\Examples.dsw"
-    File /r "Examples\Examples.sln"
     File /r "Examples\*.vcproj"
 
     SetOutPath $INSTDIR\Docs
@@ -114,12 +112,6 @@ SectionIn 1 2
                    "$INSTDIR\LICENSE.txt"
     CreateShortCut "$SMPROGRAMS\QuantLib\What's new.lnk" \
                    "$INSTDIR\News.txt"
-
-    CreateShortCut "$SMPROGRAMS\QuantLib\Examples VC 6 workspace.lnk" \
-                   "$INSTDIR\Examples\Examples.dsw"
-
-    CreateShortCut "$SMPROGRAMS\QuantLib\Examples VC 7 workspace.lnk" \
-                   "$INSTDIR\Examples\Examples.sln"
 
     CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib VC 6 project workspace.lnk" \
                    "$INSTDIR\QuantLib.dsw"

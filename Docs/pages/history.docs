@@ -23,6 +23,55 @@
 
 /*! \page history Version history
 
+    <strong>Release 0.3.7 - July 2004</strong>
+
+    <center>IMPORTANT</center>
+
+    QuantLib now depends on the Boost library (www.boost.org).
+
+    You will need a working Boost installation in order to compile and
+    use QuantLib. Instructions for installing Boost from sources are
+    available at <http://www.boost.org/more/getting_started.html>.
+    Pre-packaged binaries might be available from other sources.
+    Google is your friend (or Debian, or Fink...)
+
+    <HR>
+
+    DATE, CALENDARS, AND DAY COUNT CONVENTIONS
+    - Working on differentiating calendars depending on country or
+      exchange, instead of city.
+    - Added Italy (Settlement, Exchange),
+      United Kingdom (Settlement, Exchange, Metals),
+      United States (Settlement, Exchange, GovermentBond), Xetra.
+    - Milan, London, and NewYork calendars have been deprecated.
+    - Added (old-style) calendars: Beijing, Hong Kong, Riyadh, Seoul,
+      Singapore, Taiwan.
+    - RollingConvention has been renamed BusinessDayConvention, as for
+      ISDA definitions.
+
+    MATH
+    - Added rounding algorythms as per OMG enumeration/definition.
+
+    TEST SUITE
+    - Moved to Boost unit test framework. CppUnit is no longer needed.
+    - Added test for quanto and forward compound engines.
+    - Added test for roundings.
+    - Added test for discrete dividend European options.
+    - Added test for cliquet options.
+
+    MISCELLANEA
+    - enable/disableExtrapolation() methods were added to a few classes
+      such as TermStructure. They make it possible to persistently allow
+      extrapolation without the need of specifying it at every method
+      call.
+    - Added user configured #define to disable usage of deprecated
+      classes.
+
+    PORTABILITY
+    - Fink package available
+    - Visual C++ 7.x project files added
+
+
     <strong>Release 0.3.6 - April 15th, 2004</strong>
 
     Bug-fix release for QuantLib 0.3.5. A bug was removed where calls

@@ -28,6 +28,9 @@
 
 namespace QuantLib {
 
+    /*! \bug floating coupons which have already fixed are not included
+             during rollback
+    */
     class DiscretizedSwap : public DiscretizedAsset {
       public:
         #ifndef QL_DISABLE_DEPRECATED

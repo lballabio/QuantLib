@@ -1,8 +1,12 @@
 Makefile.in
+Makefile
 config.hpp
 config.hpp.in
 stamp-h1
 .qldefines.hpp
-*.obj
 *.obj*
 *.lib
+*.lo
+*.la
+.deps
+.libs

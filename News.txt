@@ -1,96 +1,55 @@
-June 2004 Release 0.3.7
+July 2004 Release 0.3.7
 Changes since Release 0.3.6:
 
-    **************************************************************
-    ***                                                        ***
-    *** QuantLib depends on the Boost library (www.boost.org). ***
-    *** You will need to download, build, and install Boost    ***
-    *** before compiling and using QuantLib.                   ***
-    ***                                                        ***
-    **************************************************************
+                             IMPORTANT:
 
-    Date, calendars, and day count conventions
-    - Working on differentiating calendars depending on country or exchange,
-      instead of city.
+    QuantLib now depends on the Boost library (www.boost.org).
+
+    You will need a working Boost installation in order to compile and
+    use QuantLib. Instructions for installing Boost from sources are
+    available at <http://www.boost.org/more/getting_started.html>.
+    Pre-packaged binaries might be available from other sources.
+    Google is your friend (or Debian, or Fink...)
+
+    ------------------------------------------------------------------
+
+    DATE, CALENDARS, AND DAY COUNT CONVENTIONS
+    - Working on differentiating calendars depending on country or
+      exchange, instead of city.
     - Added Italy (Settlement, Exchange),
       United Kingdom (Settlement, Exchange, Metals),
       United States (Settlement, Exchange, GovermentBond), Xetra.
-    - Added (old-style) calendars: Beijing, Hong Kong, Riyadh, Seoul, Singapore,
-      Taiwan.
     - Milan, London, and NewYork calendars have been deprecated.
-    - RollingConvention has been renamed BusinessDayConvention, as in ISDA
-      definitions.
-
-    Math
-    - Added rounding algorythms.
-
-    1-dimensional solvers
-    -
-
-    Optimization
-	-
-
-    Random-number generation
-    -
-
-    Patterns
-	-
-
-    Finite differences
-    -
-
-    Lattices
-    -
-
-    Monte Carlo
-    -
-
-    Pricing engines
-    -
-
-    Pricers
-    -
-
-    Financial Instruments
-    -
-
-    Yield term structures
-    -
-
-    Volatility
-    -
-
-    Short rate models
-    -
-
-    Credit derivatives
-    -
+    - Added (old-style) calendars: Beijing, Hong Kong, Riyadh, Seoul,
+      Singapore, Taiwan.
+    - RollingConvention has been renamed BusinessDayConvention, as for
+      ISDA definitions.
 
 
-    Test suite
-    - Moved to Boost unit test framework. CppUnit unsupported.
+    MATH
+    - Added rounding algorythms as per OMG enumeration/definition.
+
+
+    TEST SUITE
+    - Moved to Boost unit test framework. CppUnit is no longer needed.
     - Added test for quanto and forward compound engines.
     - Added test for roundings.
     - Added test for discrete dividend European options.
     - Added test for cliquet options.
 
 
-    Miscellanea
-    - The couple enable/disableExtrapolation() has been encapsulated in base
-      class methods, setting a corresponding data member. The relevant classes
-      inherit from the base class and check that data member besides the
-      local argument.
-    - Round implemented as per OMG enumeration/definition
-    - Removed deprecated classes.
-    - Added user configured #define to disable usage of deprecated classe.
-    - Straddle in the {Call, Put, Straddle} enumeration has been deprecated.
+    MISCELLANEA
+    - enable/disableExtrapolation() methods were added to a few classes
+      such as TermStructure. They make it possible to persistently allow
+      extrapolation without the need of specifying it at every method
+      call.
+    - Added user configured #define to disable usage of deprecated
+      classes.
 
-    Documentation
-    -
 
-    Distribution
+    PORTABILITY
     - Fink package available
-
+    - Visual C++ 7.x project files added
 
 =====================================================
 

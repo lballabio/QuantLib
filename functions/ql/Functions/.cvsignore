@@ -1,7 +1,11 @@
 *.obj*
-*.obj
 *.lib
+*.lo
+*.la
 Makefile.in
+Makefile
 QuantLibFunctions.dep
 QuantLibFunctions.plg
 build
+.deps
+.libs

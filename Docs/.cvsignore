@@ -1,6 +1,9 @@
 Makefile.in
+Makefile
 docswarnings.txt
-html
+html-online
+html-offline
 latex
 man
+.time-stamp*
 .auto

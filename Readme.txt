@@ -82,7 +82,9 @@ in: NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Release"
 QuantLib.sln and QuantLib.vcproj are MS VC++ 7.1 solution and project files.
 
 makefile.mak is the Borland command line makefile. You can download the
-Borland Free compiler from: <http://www.borland.com/bcppbuilder/freecompiler/>
+Borland Free compiler from: <http://www.borland.com/bcppbuilder/freecompiler/>.
+Build using the directive:
+make -D_RTLDLL all
 
 QuantLib.nsi is a script file used to generate the Win32 binary installer. It
 has to be used by NSIS, the great free Nullsoft Scriptable Install System,

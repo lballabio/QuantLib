@@ -1,9 +1,11 @@
 *.obj*
-*.obj
-*.lib
+Makefile.in
+Makefile
 testsuite.dep
 testsuite.plg
 test-suite.tds
 test-suite.exe
 quantlib-test-suite
 build
+.deps
+.libs

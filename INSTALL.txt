@@ -12,6 +12,10 @@ Linux/Unix/Mac OS X/Cygwin
 
 Windows
 
+    Before compiling the library, you might want to edit the file
+    "ql/userconfig.hpp" and enable additional features by uncommenting
+    the relevant lines.
+
     Visual C++ 6.0/7.1 projects files are supplied for building the library.
 
     If you use Borland command line compiler (5.5.1) the make options are:
@@ -27,7 +31,5 @@ Windows
     make -D__MT__ -D_RTLDLL all
     make -D__MT__ -D_RTLDLL -D_DEBUG all
 
-    Before compiling the library, you might want to edit the file
-    "ql/userconfig.hpp" and enable additional features by uncommenting
-    the relevant lines.
-
+    Only "make -D_RTLDLL all" does work: any help about the other configurations
+    would be appreciated

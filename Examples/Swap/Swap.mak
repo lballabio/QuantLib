@@ -581,72 +581,72 @@ SOURCE=.\swapvaluation.cpp
 !IF  "$(CFG)" == "Swap - Win32 Release"
 
 "QuantLib - Win32 Release" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
    cd ".\Examples\Swap"
 
 "QuantLib - Win32 ReleaseCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
    cd ".\Examples\Swap"
 
 !ELSEIF  "$(CFG)" == "Swap - Win32 Debug"
 
 "QuantLib - Win32 Debug" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
    cd ".\Examples\Swap"
 
 "QuantLib - Win32 DebugCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\Examples\Swap"
 
 !ELSEIF  "$(CFG)" == "Swap - Win32 Release MTDLL"
 
 "QuantLib - Win32 Release MTDLL" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" 
    cd ".\Examples\Swap"
 
 "QuantLib - Win32 Release MTDLLCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" RECURSE=1 CLEAN 
    cd ".\Examples\Swap"
 
 !ELSEIF  "$(CFG)" == "Swap - Win32 Debug MTDLL"
 
 "QuantLib - Win32 Debug MTDLL" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" 
    cd ".\Examples\Swap"
 
 "QuantLib - Win32 Debug MTDLLCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" RECURSE=1 CLEAN 
    cd ".\Examples\Swap"
 
 !ELSEIF  "$(CFG)" == "Swap - Win32 Release SingleThread"
 
 "QuantLib - Win32 Release SingleThread" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" 
    cd ".\Examples\Swap"
 
 "QuantLib - Win32 Release SingleThreadCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" RECURSE=1 CLEAN 
    cd ".\Examples\Swap"
 
 !ELSEIF  "$(CFG)" == "Swap - Win32 Debug SingleThread"
 
 "QuantLib - Win32 Debug SingleThread" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" 
    cd ".\Examples\Swap"
 
 "QuantLib - Win32 Debug SingleThreadCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Branches\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" RECURSE=1 CLEAN 
    cd ".\Examples\Swap"
 

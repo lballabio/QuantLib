@@ -36,9 +36,6 @@
 
 
 
-
-
-
     <strong>Date, calendars, and day count conventions</strong>
     - Date class.
     - Weekday, month, frequency, time unit enumerations.
@@ -59,18 +56,10 @@
       AFB), 30/360 (US, European, Italian).
 
     To do:
-    - Differentiate calendars depending on country or exchange, instead of
+    - Differentiate more calendars depending on country or exchange, instead of
       city.
     - enable business day calculation in addition to calendar days calculation
       in DayCounter::daycount(). See DayTypeEnum in FpML.
-
-
-
-
-
-
-
-
 
 
 
@@ -136,16 +125,10 @@
 
 
 
-
-
-
     <strong>Optimization</strong>
 	- Conjugate gradient, simplex, steepest descent, line search,
       Armijo line search, least squares.
     - Constrained (positive, boundary, etc.) and unconstrained optimization
-
-
-
 
 
 
@@ -167,9 +150,13 @@
     - Randomized low-discrepancy sequences.
 
 
+
+
     <strong>Patterns</strong>
 	- Bridge, composite, lazy object, observer/observable, strategy,
       visitor.
+
+
 
 
     <strong>Finite differences</strong>
@@ -198,6 +185,8 @@
       their own equations
 
 
+
+
     <strong>Lattices</strong>
     - Binomial trees: Cox-Ross-Rubinstein, Jarrow-Rudd, additive
       equiprobabilities, Trigeorgis, Tian, Leisen-Reimer.
@@ -214,6 +203,8 @@
     - Calculate binomial tree greeks
 
 
+
+
     <strong>Monte Carlo</strong>
     - One-factor and multi-factor path classes.
     - Path-generator classes: incremental and Brownian-bridge one-factor
@@ -224,7 +215,6 @@
     - Control variate technique.
 
     To do:
-    - Use StochasticProcess class instead of DiffusionProcess.
     - Greeks calculation.
     - Allow easier selection between Incremental/BrownianBridge path
       generation.
@@ -239,10 +229,10 @@
 
 
 
-
     <strong>Pricing engines</strong>
     - Analytic Black formula (plus greeks) for different payoffs.
-    - Analytic formula for American-style digital options with payoff at expiry.
+    - Analytic formula for American-style digital options with payoff
+      at expiry.
     - Analytic formula for American-style digital options with payoff at hit.
     - Monte Carlo simulation base engine.
     - Lattice short rate model base engine.
@@ -283,6 +273,8 @@
     - Define dividendRho for discrete dividends.
 
 
+
+
     <strong>Pricers</strong>
     - Cliquet option
     - Analytic continuous geometric average-price option (European exercise).
@@ -310,6 +302,8 @@
     - All pricers should be moved to the pricing engine framework.
 
 
+
+
     <strong>Financial Instruments</strong>
     - Instrument base class: npv(), isExpired(), etc.
     - Interest-rate swap: simple, normal.
@@ -330,6 +324,8 @@
     To do:
     - Forward (stock) and FRA (forward-rate agreement).
     - Bond.
+
+
 
 
     <strong>Yield term structures</strong>
@@ -355,10 +351,6 @@
 
 
 
-
-
-
-
     <strong>Volatility</strong>
     - Interface for cap/floor Black volatility term structures (unstable).
     - Interface for swaption Black volatility term structures (unstable).
@@ -375,15 +367,10 @@
 
 
 
-
-
     <strong>Short rate models</strong>
     - Single factor models: Hull-White, Black-Karasinski, Vasichek (untested),
       CIR (untested), Extended CIR (untested).
     - Two factor models: G2 (untested).
-
-
-
 
 
 
@@ -398,55 +385,21 @@
 
 
 
+    <strong>Test suite</strong>
 
-
-    <strong>Test suite (Boost Unit Test Framework)</strong>
-
-    More than 120 automated tests covering:
-    - American options.
-    - Asian options.
-    - Barrier options.
-    - Basket options (Stulz two-assets, etc.)
-    - Calendars.
-    - Caps/floors (implied volatility, etc.)
-    - Cliquet options.
-    - Covariance matrices.
-    - Dates.
-    - Day counters.
-    - Digital options (Monte Carlo American cash-at-hit, etc.)
-    - Distributions.
-    - Discrete-dividend European options.
-    - European options (implied volatility, etc.)
-    - Factorials, gamma, Poisson distribution.
-    - Forward and Forward-Performance options.
-    - Instruments observability.
-    - Integration algorithms.
-    - Cubic spline interpolations.
-	- Jump-diffusion engine.
-	- Low-discrepancy sequences.
-	- Matrices (eigenvalues, eigenvectors, pseudo-square root,
-	  singular value decompostion).
-	- Mersenne-twister random-number generator.
-	- Finite-difference operators.
-	- Piecewise flat-forward yield curve term structure bootstrapping.
-	- Quantos (plain, quanto-forward, quanto-forward-performance).
-	- Quotes.
-	- Risk statistics.
-	- Roundings.
-	- 1-dimensional solvers.
-	- Statistics.
-	- Swaps.
-	- Swaptions.
-	- Term structures.
-	- A number of old-style (to be deprecated) pricers.
+    Implemented by means of the Boost unit-test framework.
+    More than 120 automated tests.
+    \htmlonly
+    An automatically-generated list is available <a href="test.html">here</a>.
+    \endhtmlonly
+    \latexonly
+    An automatically-generated list is available in chapter~\ref{test}.
+    \endlatexonly
 
 	To do:
     - Add covariance/correlation test for SequenceStatistics.
     - Add single factor calibration and Bermudan pricing tests.
 	- Increase coverage.
-
-
-
 
 
 
@@ -466,14 +419,13 @@
     - History class for handling of historical data.
     - Quote class for mutable data.
     - Null types.
-    - Added user configured #define to disable usage of deprecated classe.
+    - User-configurable #define to disable usage of deprecated classes.
 
     To do:
     - IRR, duration, convexity, etc. for a sequence of cash flows
     - Currency as class with methods returning related info
     - Implement currency as per OMG definition
     - Implement round as per OMG enumeration/definition
-
 
 
 
@@ -486,7 +438,6 @@
     - Add a "Getting started" page to the site
     - Enable forums?
     - Create a FAQ
-
 
 
 

@@ -168,31 +168,6 @@ AC_DEFUN([QL_CHECK_NAMESPACES],
     ])
 ])
 
-# QL_CHECK_STRING
-# ----------------------------------------------
-# Check whether strings are correctly supported.
-AC_DEFUN([QL_CHECK_STRING],
-[AC_MSG_CHECKING([string class])
- AC_TRY_LINK(
-    [@%:@include <string>
-     using namespace std;
-     class foo {
-       public:
-         void f(const string &s);
-     };
-     void foo::f(const string &s) {
-       f(s.c_str());
-     }
-    ],
-    [foo f1;
-     f1.f("test");
-    ],
-    [AC_MSG_RESULT([yes])],
-    [AC_MSG_RESULT([no])
-     AC_MSG_ERROR([string not correctly supported])
-    ])
-])
-
 # QL_CHECK_GMTIME
 # -------------------------------
 # Check whether std::gmtime exists. It falls back on gmtime if it 
@@ -226,14 +201,49 @@ AC_DEFUN([QL_CHECK_GMTIME],
     ])
 ])
 
-# QL_CHECK_BOOST
+# QL_CHECK_BOOST_DEVEL
 # -----------------------
-# Check whether the Boost libraries are available.
-AC_DEFUN([QL_CHECK_BOOST],
-[AC_CHECK_HEADER(
-    [boost/shared_ptr.hpp],
+# Check whether the Boost headers are available
+AC_DEFUN([QL_CHECK_BOOST_DEVEL],
+[AC_MSG_CHECKING([for Boost development files])
+ AC_TRY_COMPILE(
+    [@%:@include <boost/version.hpp>
+     @%:@include <boost/shared_ptr.hpp>
+     @%:@include <boost/assert.hpp>
+     @%:@include <boost/current_function.hpp>],
     [],
-    [AC_MSG_ERROR([Boost not found])
+    [AC_MSG_RESULT([yes])],
+    [AC_MSG_RESULT([no])
+     AC_MSG_ERROR([Boost development files not found])
     ])
 ])
 
+AC_DEFUN([QL_CHECK_BOOST_UNIT_TEST],
+[AC_MSG_CHECKING([for Boost unit-test framework])
+ AC_REQUIRE([AC_PROG_CC])
+ ql_original_LIBS=$LIBS
+ for boost_lib in boost_unit_test_framework-$CC boost_unit_test_framework ; do
+     LIBS="$ql_original_LIBS -l$boost_lib"
+     boost_unit_found=no
+     AC_LINK_IFELSE(
+         [@%:@include <boost/test/unit_test.hpp>
+          using namespace boost::unit_test_framework;
+          test_suite*
+          init_unit_test_suite(int argc, char** argv)
+          {
+              return (test_suite*) 0;
+          }
+         ],
+         [boost_unit_found=$boost_lib
+          break],
+         [])
+ done
+ LIBS="$ql_original_LIBS"
+ if test "$boost_unit_found" = no ; then
+     AC_MSG_RESULT([no])
+     AC_MSG_ERROR([Boost development files not found])
+ else
+     AC_MSG_RESULT([yes])
+     AC_SUBST([BOOST_UNIT_TEST_LIB],[$boost_lib])
+ fi
+])

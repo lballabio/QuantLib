@@ -47,7 +47,7 @@ quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = \
 	${top_builddir}/ql/libQuantLib.la \
 	${top_builddir}/functions/ql/Functions/libQuantLibFunctions.la
-quantlib_test_suite_LDFLAGS = -lboost_unit_test_framework
+quantlib_test_suite_LDFLAGS = -l${BOOST_UNIT_TEST_LIB}
 
 TESTS = quantlib-test-suite
 

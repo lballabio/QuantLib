@@ -17,7 +17,7 @@ INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
 STRIP_FROM_PATH        = ql_basepath
 STRIP_FROM_INC_PATH    = ql_basepath
-SHORT_NAMES            = NO
+SHORT_NAMES            = YES
 JAVADOC_AUTOBRIEF      = NO
 MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = YES
@@ -107,7 +107,7 @@ IGNORE_PREFIX          =
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
-HTML_OUTPUT            = html
+HTML_OUTPUT            = html-offline
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = quantlibheader.html
 HTML_FOOTER            = quantlibfooter.html

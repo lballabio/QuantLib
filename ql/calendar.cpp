@@ -17,11 +17,6 @@
 */
 
 #include <ql/calendar.hpp>
-#if !(defined(QL_PATCH_MICROSOFT) || defined(QL_PATCH_BORLAND))
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
-#include <fstream>
-#endif
 
 namespace QuantLib {
 

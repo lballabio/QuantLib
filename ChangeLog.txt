@@ -1,3 +1,423 @@
+2004-06-09 18:16  Ferdinando Ametrano
+
+	* QuantLib.dsp (1.241), QuantLib.mak (1.220):
+
+	catching up
+
+2004-06-09 17:26  Ferdinando Ametrano
+
+	* QuantLib.sln (1.6), QuantLib.vcproj (1.24), ql/makefile.mak
+	(1.58):
+
+	catching up
+
+2004-06-09 10:43  Luigi Ballabio
+
+	* ql/: PricingEngines/blackformula.hpp (1.18),
+	ShortRateModels/OneFactorModels/hullwhite.hpp (1.21):
+
+	Added known bugs to docs
+
+2004-06-08 16:33  Luigi Ballabio
+
+	* ql/Makefile.am (1.58), ql/core.hpp (1.4), ql/marketelement.hpp
+	(1.23), ql/quote.hpp (1.1), ql/schedule.cpp (1.1), ql/schedule.hpp
+	(1.1), ql/scheduler.cpp (1.28), ql/scheduler.hpp (1.26),
+	ql/termstructure.hpp (1.43), ql/voltermstructure.hpp (1.27),
+	ql/CashFlows/cashflowvectors.hpp (1.28),
+	ql/CashFlows/indexcashflowvectors.hpp (1.17),
+	ql/Instruments/simpleswap.hpp (1.45), ql/Instruments/stock.hpp
+	(1.16), test-suite/quotes.cpp (1.4), test-suite/quotes.hpp (1.3):
+
+	Renamed files named after obsolete classes
+
+2004-06-08 15:50  Luigi Ballabio
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.110),
+	ql/PricingEngines/Vanilla/mceuropeanengine.hpp (1.19),
+	test-suite/europeanoption.cpp (1.67):
+
+	Made syntax palatable to VC6
+
+2004-06-08 11:31  Ferdinando Ametrano
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.62):
+
+	lighter and easier example
+
+2004-06-08 11:28  Ferdinando Ametrano
+
+	* ql/PricingEngines/Swaption/makefile.mak (1.10), QuantLib.vcproj
+	(1.23):
+
+	catching up
+
+2004-06-08 11:28  Ferdinando Ametrano
+
+	* ql/ShortRateModels/TwoFactorModels/g2.cpp (1.22):
+
+	(-1.0, 1.0) constraint for rho
+
+2004-06-08 11:26  Ferdinando Ametrano
+
+	* ql/Optimization/criteria.hpp (1.19):
+
+	no message
+
+2004-06-07 18:32  Ferdinando Ametrano
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.61):
+
+	more readable inputs
+
+2004-06-07 17:54  Ferdinando Ametrano
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.60):
+
+	more readable inputs
+
+2004-06-07 17:41  Ferdinando Ametrano
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.59):
+
+	using G2 (with unsatisfactory results...)
+
+2004-06-07 17:39  Ferdinando Ametrano
+
+	* ql/ShortRateModels/TwoFactorModels/: g2.cpp (1.21), g2.hpp
+	(1.25):
+
+	default value for rho (-0.75) acceptable given the bounday
+	constraint on rho (-1.0, -0.65)
+
+2004-06-07 14:31  Luigi Ballabio
+
+	* ql/PricingEngines/Swaption/: Makefile.am (1.5),
+	g2swaptionengine.cpp (1.2), g2swaptionengine.hpp (1.2):
+
+	Saved a file (it was but one line after all)
+
+2004-06-07 14:30  Luigi Ballabio
+
+	* ql/ShortRateModels/TwoFactorModels/: g2.cpp (1.20), g2.hpp
+	(1.24):
+
+	untabified
+
+2004-06-07 14:04  Ferdinando Ametrano
+
+	* QuantLib.nsi (1.100):
+
+	updated
+
+2004-06-07 12:51  Ferdinando Ametrano
+
+	* QuantLib.mak (1.219), Examples/AmericanOption/AmericanOption.mak
+	(1.13), Examples/BermudanSwaption/BermudanSwaption.mak (1.34),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.52),
+	Examples/EuropeanOption/EuropeanOption.mak (1.52),
+	Examples/Swap/Swap.mak (1.50),
+	functions/ql/Functions/QuantLibFunctions.mak (1.5),
+	test-suite/testsuite.mak (1.57):
+
+	updated
+
+2004-06-07 12:49  Ferdinando Ametrano
+
+	* QuantLib.vcproj (1.22), ql/PricingEngines/Swaption/Makefile.am
+	(1.4), ql/PricingEngines/Swaption/all.hpp (1.4),
+	ql/PricingEngines/Swaption/g2swaptionengine.cpp (1.1),
+	ql/PricingEngines/Swaption/g2swaptionengine.hpp (1.1),
+	ql/PricingEngines/Swaption/makefile.mak (1.9),
+	ql/ShortRateModels/TwoFactorModels/g2.cpp (1.19),
+	ql/ShortRateModels/TwoFactorModels/g2.hpp (1.23):
+
+	Mike Parker's G2 contribution added
+
+2004-06-07 12:48  Ferdinando Ametrano
+
+	* ql/ShortRateModels/parameter.hpp (1.19):
+
+	richer error message
+
+2004-06-07 12:18  Ferdinando Ametrano
+
+	* ql/Calendars/unitedstates.cpp (1.4):
+
+	removing unused variables
+
+2004-06-07 11:27  Luigi Ballabio
+
+	* test-suite/calendars.hpp (1.11):
+
+	Added test description
+
+2004-06-04 19:49  Ferdinando Ametrano
+
+	* test-suite/: calendars.cpp (1.16), calendars.hpp (1.10):
+
+	more tests added
+
+2004-06-04 19:49  Ferdinando Ametrano
+
+	* ql/Calendars/unitedkingdom.hpp (1.2):
+
+	to do
+
+2004-06-04 19:48  Ferdinando Ametrano
+
+	* ql/Calendars/: unitedstates.cpp (1.3), unitedstates.hpp (1.3):
+
+	bug fix
+
+2004-06-04 19:41  Ferdinando Ametrano
+
+	* ql/makefile.mak (1.57):
+
+	it doesn't purge VC files anymore
+
+2004-06-04 18:50  Luigi Ballabio
+
+	* functions/ql/Functions/Makefile.am (1.3),
+	ql/Calendars/Makefile.am (1.24), test-suite/.cvsignore (1.14),
+	test-suite/Makefile.am (1.38):
+
+	Fixes for autotools
+
+2004-06-04 18:43  Luigi Ballabio
+
+	* ql/calendar.cpp (1.29), ql/calendar.hpp (1.42),
+	test-suite/calendars.cpp (1.15):
+
+	Removed function reading from file
+
+2004-06-04 17:49  Ferdinando Ametrano
+
+	* QuantLib.dsp (1.240), QuantLib.dsw (1.12), QuantLib.mak (1.218),
+	functions/ql/Functions/QuantLibFunctions.dsp (1.6),
+	functions/ql/Functions/QuantLibFunctions.mak (1.4),
+	test-suite/testsuite.dsp (1.40), test-suite/testsuite.mak (1.56):
+
+	VC6 catching up
+
+2004-06-04 17:46  Ferdinando Ametrano
+
+	* test-suite/calendars.cpp (1.14), test-suite/calendars.hpp (1.9),
+	QuantLib.sln (1.5), QuantLib.vcproj (1.21),
+	ql/Calendars/germany.hpp (1.2):
+
+	Frankfurt calendar deprecated.	Germany calendars added: public,
+	Frankfurt Stock Exchange, Xetra, Eurex
+
+2004-06-04 17:35  Ferdinando Ametrano
+
+	* ql/Calendars/: Makefile.am (1.23), all.hpp (1.7), frankfurt.cpp
+	(1.18), frankfurt.hpp (1.19), germany.cpp (1.1), germany.hpp (1.1),
+	makefile.mak (1.29), xetra.cpp (1.2), xetra.hpp (1.3):
+
+	Frankfurt calendar deprecated.	Germany calendars added: public,
+	Frankfurt Stock Exchange, Xetra, Eurex
+
+2004-06-04 13:42  Ferdinando Ametrano
+
+	* test-suite/: calendars.cpp (1.13), calendars.hpp (1.8),
+	makefile.mak (1.42), testsuite.vcproj (1.15):
+
+	added check for TARGET and US calendars.  Test-suite now also
+	depends on QuantLibFunctions
+
+2004-06-04 13:40  Ferdinando Ametrano
+
+	* functions/ql/Functions/: QuantLibFunctions.vcproj (1.3),
+	calendars.cpp (1.1), calendars.hpp (1.1), daycounters.hpp (1.3),
+	makefile.mak (1.4), mathf.hpp (1.3), qlfunctions.hpp (1.2),
+	vols.hpp (1.3):
+
+	added holidayList as non-member, non-friend Calendar function
+
+2004-06-04 12:54  Ferdinando Ametrano
+
+	* ql/Calendars/: target.cpp (1.18), target.hpp (1.20):
+
+	more info
+
+2004-06-04 10:33  Ferdinando Ametrano
+
+	* Docs/pages/overview.docs (1.16):
+
+	updated
+
+2004-06-04 10:27  Ferdinando Ametrano
+
+	* ql/Calendars/: unitedstates.cpp (1.2), unitedstates.hpp (1.2):
+
+	bug Fix: new year's eve is not holiday, even if January 1st is on
+	Saturday
+
+2004-06-03 11:14  Luigi Ballabio
+
+	* Examples/AmericanOption/AmericanOption.dsp (1.8),
+	Examples/AmericanOption/AmericanOption.mak (1.12),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.58),
+	Examples/BermudanSwaption/BermudanSwaption.dsp (1.15),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.33),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.17),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.51),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.15),
+	Examples/EuropeanOption/EuropeanOption.mak (1.51),
+	Examples/Swap/Swap.dsp (1.16), Examples/Swap/Swap.mak (1.49),
+	QuantLib.mak (1.217), functions/ql/Functions/QuantLibFunctions.dsp
+	(1.5), ql/dataformatters.cpp (1.36), ql/dataformatters.hpp (1.35),
+	test-suite/testsuite.mak (1.55):
+
+	Disabled code causing internal compiler error (not essential
+	anyway--just an operator <<)
+
+2004-05-31 16:42  Luigi Ballabio
+
+	* Docs/Makefile.am (1.67), Docs/quantlib.doxy (1.86),
+	Docs/quantlibheader.html (1.24), test-suite/americanoption.hpp
+	(1.4), test-suite/asianoptions.cpp (1.24),
+	test-suite/asianoptions.hpp (1.4), test-suite/barrieroption.hpp
+	(1.4), test-suite/basketoption.hpp (1.6), test-suite/calendars.hpp
+	(1.7), test-suite/capfloor.hpp (1.8), test-suite/cliquetoption.hpp
+	(1.3), test-suite/compoundforward.hpp (1.5),
+	test-suite/covariance.hpp (1.8), test-suite/dates.hpp (1.6),
+	test-suite/daycounters.hpp (1.7), test-suite/digitaloption.hpp
+	(1.7), test-suite/distributions.hpp (1.7),
+	test-suite/dividendeuropeanoption.hpp (1.2),
+	test-suite/europeanoption.hpp (1.14), test-suite/factorial.hpp
+	(1.4), test-suite/forwardoption.hpp (1.2),
+	test-suite/instruments.hpp (1.6), test-suite/integrals.hpp (1.7),
+	test-suite/interpolations.hpp (1.4), test-suite/jumpdiffusion.hpp
+	(1.5), test-suite/lowdiscrepancysequences.cpp (1.47),
+	test-suite/lowdiscrepancysequences.hpp (1.10),
+	test-suite/matrices.hpp (1.9), test-suite/mersennetwister.hpp
+	(1.7), test-suite/operators.hpp (1.6),
+	test-suite/piecewiseflatforward.hpp (1.7),
+	test-suite/quantooption.hpp (1.3), test-suite/quotes.hpp (1.2),
+	test-suite/riskstats.hpp (1.10), test-suite/rounding.hpp (1.3),
+	test-suite/solvers.hpp (1.6), test-suite/stats.hpp (1.13),
+	test-suite/swap.hpp (1.6), test-suite/swaption.hpp (1.6),
+	test-suite/termstructures.hpp (1.7):
+
+	Documented test suite
+
+2004-05-28 16:08  Luigi Ballabio
+
+	* ql/calendar.cpp (1.28), ql/Instruments/simpleswap.cpp (1.47),
+	ql/TermStructures/extendeddiscountcurve.hpp (1.13),
+	test-suite/compoundforward.cpp (1.17),
+	test-suite/piecewiseflatforward.cpp (1.21):
+
+	Removed last traces of 'rolling convention'
+
+2004-05-28 15:10  Luigi Ballabio
+
+	* ql/: exercise.hpp (1.31), grid.hpp (1.22), option.hpp (1.31),
+	scheduler.hpp (1.25), solver1d.hpp (1.24),
+	CashFlows/basispointsensitivity.hpp (1.17),
+	FiniteDifferences/americancondition.hpp (1.24),
+	FiniteDifferences/mixedscheme.hpp (1.16),
+	FiniteDifferences/shoutcondition.hpp (1.20), Indexes/xibor.hpp
+	(1.30), Instruments/swap.hpp (1.29),
+	Math/loglinearinterpolation.hpp (1.27), Math/pseudosqrt.hpp (1.5),
+	MonteCarlo/multipath.hpp (1.22),
+	Pricers/mcdiscretearithmeticapo.hpp (1.24),
+	PricingEngines/Basket/mcamericanbasketengine.hpp (1.11),
+	ShortRateModels/OneFactorModels/coxingersollross.hpp (1.23),
+	ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.22), ShortRateModels/TwoFactorModels/g2.hpp (1.22),
+	Volatilities/capflatvolvector.hpp (1.18),
+	Volatilities/localvolsurface.hpp (1.20),
+	Volatilities/swaptionvolmatrix.hpp (1.22):
+
+	Documentation clean-up
+
+2004-05-28 15:09  Luigi Ballabio
+
+	* Examples/: BermudanSwaption/BermudanSwaption.cpp (1.57),
+	Swap/swapvaluation.cpp (1.50):
+
+	Removed dependency from deprecated features
+
+2004-05-28 14:00  Luigi Ballabio
+
+	* ql/scheduler.cpp (1.27), ql/scheduler.hpp (1.24),
+	ql/CashFlows/cashflowvectors.cpp (1.35),
+	ql/CashFlows/cashflowvectors.hpp (1.27),
+	ql/CashFlows/indexcashflowvectors.hpp (1.16),
+	ql/Indexes/audlibor.hpp (1.17), ql/Indexes/cadlibor.hpp (1.17),
+	ql/Indexes/chflibor.hpp (1.15), ql/Indexes/euribor.hpp (1.20),
+	ql/Indexes/gbplibor.hpp (1.22), ql/Indexes/jpylibor.hpp (1.16),
+	ql/Indexes/usdlibor.hpp (1.22), ql/Indexes/xibor.cpp (1.20),
+	ql/Indexes/xibor.hpp (1.29), ql/Indexes/zarlibor.hpp (1.15),
+	ql/Instruments/simpleswap.cpp (1.46), ql/Instruments/simpleswap.hpp
+	(1.44), ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.36),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.36),
+	ql/TermStructures/ratehelpers.cpp (1.50),
+	ql/TermStructures/ratehelpers.hpp (1.41), test-suite/capfloor.cpp
+	(1.35), test-suite/compoundforward.cpp (1.16),
+	test-suite/piecewiseflatforward.cpp (1.20), test-suite/swap.cpp
+	(1.21), test-suite/swaption.cpp (1.27),
+	test-suite/termstructures.cpp (1.19):
+
+	Removed some redudant 'isAdjusted' parameter---Unadjusted can be
+	used instead
+
+2004-05-27 17:06  Luigi Ballabio
+
+	* ql/Calendars/zurich.cpp (1.17):
+
+	Fixed erroneous check (thanks to Francesco Perissin)
+
+2004-05-27 14:11  Luigi Ballabio
+
+	* ql/: basicdataformatters.cpp (1.8), basicdataformatters.hpp
+	(1.3), currency.hpp (1.14), Indexes/xibor.hpp (1.28):
+
+	Renamed Currency to CurrencyTag in order to free the name for after
+	next release
+
+2004-05-27 11:59  Luigi Ballabio
+
+	* quantlib.el (1.9), ql/calendar.cpp (1.27), ql/calendar.hpp
+	(1.41):
+
+	QuantLib::None is too general a name for a business day convention
+
+2004-05-26 16:18  Ferdinando Ametrano
+
+	* ql/: calendar.cpp (1.26), calendar.hpp (1.40):
+
+	RollingConvention has been renamed BusinessDayConvention, as in
+	ISDA definitions.
+
+2004-05-26 16:03  Ferdinando Ametrano
+
+	* News.txt (1.39), Examples/BermudanSwaption/BermudanSwaption.cpp
+	(1.56), Examples/Swap/swapvaluation.cpp (1.49), ql/calendar.cpp
+	(1.25), ql/calendar.hpp (1.39), ql/scheduler.cpp (1.26),
+	ql/scheduler.hpp (1.23), ql/CashFlows/cashflowvectors.cpp (1.34),
+	ql/CashFlows/coupon.hpp (1.21),
+	ql/CashFlows/indexcashflowvectors.hpp (1.15), ql/Indexes/xibor.hpp
+	(1.27), ql/Instruments/simpleswap.cpp (1.45),
+	ql/Instruments/simpleswap.hpp (1.43),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.35),
+	ql/TermStructures/compoundforward.cpp (1.41),
+	ql/TermStructures/compoundforward.hpp (1.30),
+	ql/TermStructures/extendeddiscountcurve.cpp (1.14),
+	ql/TermStructures/extendeddiscountcurve.hpp (1.12),
+	ql/TermStructures/ratehelpers.cpp (1.49),
+	ql/TermStructures/ratehelpers.hpp (1.40), test-suite/capfloor.cpp
+	(1.34), test-suite/compoundforward.cpp (1.15),
+	test-suite/piecewiseflatforward.cpp (1.19), test-suite/swap.cpp
+	(1.20), test-suite/swaption.cpp (1.26),
+	test-suite/termstructures.cpp (1.18):
+
+	RollingConvention has been renamed BusinessDayConvention, as in
+	ISDA definitions.
+
 2004-05-26 14:38  Ferdinando Ametrano
 
 	* ql/basicdataformatters.cpp (1.7), ql/option.hpp (1.30),
