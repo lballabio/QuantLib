@@ -31,18 +31,16 @@ namespace QuantLib {
 
     // constructors
     Date::Date()
-    : serialNumber_(0) {}
+    : serialNumber_(0L) {}
 
-    Date::Date(int serialNumber)
+    Date::Date(long serialNumber)
     : serialNumber_(serialNumber) {
-        #ifdef QL_DEBUG
-            QL_REQUIRE(serialNumber >= int(minimumSerialNumber()) &&
-                       serialNumber <= int(maximumSerialNumber()),
-                "Date " + IntegerFormatter::toString(serialNumber) +
-                "outside allowed range [" +
-                DateFormatter::toString(minDate()) + "-" +
-                DateFormatter::toString(maxDate()) + "]");
-        #endif
+        QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
+                   serialNumber <= maximumSerialNumber(),
+                   "Date " + IntegerFormatter::toString(serialNumber) +
+                   "outside allowed range [" +
+                   DateFormatter::toString(minDate()) + "-" +
+                   DateFormatter::toString(maxDate()) + "]");
     }
 
     Date::Date(Day d, Month m, Year y) {
@@ -62,10 +60,6 @@ namespace QuantLib {
             "[1," + IntegerFormatter::toString(int(len)) + "]");
 
         serialNumber_ = d + offset + yearOffset(y);
-        #ifdef QL_DEBUG
-            QL_REQUIRE(*this >= minDate() && *this <= maxDate(),
-                "Date outside allowed range 1901-2099");
-        #endif
     }
 
     Month Date::month() const {
@@ -145,6 +139,80 @@ namespace QuantLib {
         return d;
     }
 
+    Date& Date::operator+=(int days) {
+        long serial = serialNumber_ + days;
+        QL_REQUIRE(serial >= minimumSerialNumber() &&
+                   serial <= maximumSerialNumber(),
+                   "Date " + IntegerFormatter::toString(serial) +
+                   "outside allowed range [" +
+                   DateFormatter::toString(minDate()) + "-" +
+                   DateFormatter::toString(maxDate()) + "]");
+        serialNumber_ = serial;
+        return *this;
+    }
+
+    Date& Date::operator-=(int days) {
+        long serial = serialNumber_ - days;
+        QL_REQUIRE(serial >= minimumSerialNumber() &&
+                   serial <= maximumSerialNumber(),
+                   "Date " + IntegerFormatter::toString(serial) +
+                   "outside allowed range [" +
+                   DateFormatter::toString(minDate()) + "-" +
+                   DateFormatter::toString(maxDate()) + "]");
+        serialNumber_ = serial;
+        return *this;
+    }
+
+    Date& Date::operator++() {
+        long serial = serialNumber_ + 1;
+        QL_REQUIRE(serial >= minimumSerialNumber() &&
+                   serial <= maximumSerialNumber(),
+                   "Date " + IntegerFormatter::toString(serial) +
+                   "outside allowed range [" +
+                   DateFormatter::toString(minDate()) + "-" +
+                   DateFormatter::toString(maxDate()) + "]");
+        serialNumber_ = serial;
+        return *this;
+    }
+
+    Date Date::operator++(int ) {
+        Date temp = *this;
+        long serial = serialNumber_ + 1;
+        QL_REQUIRE(serial >= minimumSerialNumber() &&
+                   serial <= maximumSerialNumber(),
+                   "Date " + IntegerFormatter::toString(serial) +
+                   "outside allowed range [" +
+                   DateFormatter::toString(minDate()) + "-" +
+                   DateFormatter::toString(maxDate()) + "]");
+        serialNumber_ = serial;
+        return temp;
+    }
+
+    Date& Date::operator--() {
+        long serial = serialNumber_ - 1;
+        QL_REQUIRE(serial >= minimumSerialNumber() &&
+                   serial <= maximumSerialNumber(),
+                   "Date " + IntegerFormatter::toString(serial) +
+                   "outside allowed range [" +
+                   DateFormatter::toString(minDate()) + "-" +
+                   DateFormatter::toString(maxDate()) + "]");
+        serialNumber_ = serial;
+        return *this;
+    }
+
+    Date Date::operator--(int ) {
+        Date temp = *this;
+        long serial = serialNumber_ - 1;
+        QL_REQUIRE(serial >= minimumSerialNumber() &&
+                   serial <= maximumSerialNumber(),
+                   "Date " + IntegerFormatter::toString(serial) +
+                   "outside allowed range [" +
+                   DateFormatter::toString(minDate()) + "-" +
+                   DateFormatter::toString(maxDate()) + "]");
+        serialNumber_ = serial;
+        return temp;
+    }
+
     Date Date::todaysDate() {
         QL_TIME_T t;
 
@@ -216,23 +284,23 @@ namespace QuantLib {
         return YearIsLeap[y-1900];
     }
 
-    Size Date::monthLength(Month m, bool leapYear) {
-        static const Size MonthLength[] = {
+    int Date::monthLength(Month m, bool leapYear) {
+        static const int MonthLength[] = {
             31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
         };
-        static const Size MonthLeapLength[] = {
+        static const int MonthLeapLength[] = {
             31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
         };
         return (leapYear? MonthLeapLength[m-1] : MonthLength[m-1]);
     }
 
-    Size Date::monthOffset(Month m, bool leapYear) {
-        static const Size MonthOffset[] = {
+    int Date::monthOffset(Month m, bool leapYear) {
+        static const int MonthOffset[] = {
               0,  31,  59,  90, 120, 151,   // Jan - Jun
             181, 212, 243, 273, 304, 334,   // Jun - Dec
             365     // used in dayOfMonth to bracket day
         };
-        static const Size MonthLeapOffset[] = {
+        static const int MonthLeapOffset[] = {
               0,  31,  60,  91, 121, 152,   // Jan - Jun
             182, 213, 244, 274, 305, 335,   // Jun - Dec
             366     // used in dayOfMonth to bracket day
@@ -240,10 +308,10 @@ namespace QuantLib {
         return (leapYear? MonthLeapOffset[m-1] : MonthOffset[m-1]);
     }
 
-    Size Date::yearOffset(Year y) {
+    long Date::yearOffset(Year y) {
         // the list of all December 31st in the preceding year
         // e.g. for 1901 yearOffset[1] is 366, that is, December 31 1900
-        static const Size YearOffset[] = {
+        static const long YearOffset[] = {
             // 1900-1909
                 0,  366,  731, 1096, 1461, 1827, 2192, 2557, 2922, 3288,
             // 1910-1919
@@ -290,11 +358,11 @@ namespace QuantLib {
         return YearOffset[y-1900];
     }
 
-    Size Date::minimumSerialNumber() {
+    long Date::minimumSerialNumber() {
         return 367;       // Jan 1st, 1901
     }
 
-    Size Date::maximumSerialNumber() {
+    long Date::maximumSerialNumber() {
         return 73050;    // Dec 31st, 2099
     }
 

@@ -98,7 +98,7 @@ namespace QuantLib {
         //! Default constructor returning a null date.
         Date();
         //! Constructor taking a serial number as given by Applix or Excel.
-        explicit Date(int serialNumber);
+        explicit Date(long serialNumber);
         //! More traditional constructor.
         Date(Day d, Month m, Year y);
         //@}
@@ -111,7 +111,7 @@ namespace QuantLib {
         Day dayOfYear() const;
         Month month() const;
         Year year() const;
-        int serialNumber() const;
+        long serialNumber() const;
         //@}
 
         //! \name date algebra
@@ -155,18 +155,18 @@ namespace QuantLib {
         static Date todaysDate();
         //@}
       private:
-        int serialNumber_;
-        static Size monthLength(Month m, bool leapYear);
-        static Size monthOffset(Month m, bool leapYear);
-        static Size yearOffset(Year y);
-        static Size minimumSerialNumber();
-        static Size maximumSerialNumber();
+        long serialNumber_;
+        static int monthLength(Month m, bool leapYear);
+        static int monthOffset(Month m, bool leapYear);
+        static long yearOffset(Year y);
+        static long minimumSerialNumber();
+        static long maximumSerialNumber();
     };
 
     /*! \relates Date
         \brief Difference in days between dates
     */
-    int operator-(const Date&, const Date&);
+    long operator-(const Date&, const Date&);
 
     /*! \relates Date */
     bool operator==(const Date&, const Date&);
@@ -197,40 +197,8 @@ namespace QuantLib {
         return serialNumber_ - yearOffset(year());
     }
 
-    inline int Date::serialNumber() const {
+    inline long Date::serialNumber() const {
         return serialNumber_;
-    }
-
-    inline Date& Date::operator+=(int days) {
-        serialNumber_ += days;
-        return *this;
-    }
-
-    inline Date& Date::operator-=(int days) {
-        serialNumber_ -= days;
-        return *this;
-    }
-
-    inline Date& Date::operator++() {
-        serialNumber_++;
-        return *this;
-    }
-
-    inline Date Date::operator++(int ) {
-        Date temp = *this;
-        serialNumber_++;
-        return temp;
-    }
-
-    inline Date& Date::operator--() {
-        serialNumber_--;
-        return *this;
-    }
-
-    inline Date Date::operator--(int ) {
-        Date temp = *this;
-        serialNumber_--;
-        return temp;
     }
 
     inline Date Date::operator+(int days) const {
@@ -253,7 +221,7 @@ namespace QuantLib {
         return plus(p.length(),p.units());
     }
 
-    inline int operator-(const Date& d1, const Date& d2) {
+    inline long operator-(const Date& d1, const Date& d2) {
         return d1.serialNumber()-d2.serialNumber();
     }
 
