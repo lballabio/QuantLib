@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file marketelement.hpp
+/*! \file quote.hpp
     \brief purely virtual base class for market observables
 */
 
-#ifndef quantlib_market_element_hpp
-#define quantlib_market_element_hpp
+#ifndef quantlib_quote_hpp
+#define quantlib_quote_hpp
 
 #include <ql/relinkablehandle.hpp>
 

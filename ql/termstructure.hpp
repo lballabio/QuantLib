@@ -24,8 +24,8 @@
 
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
+#include <ql/quote.hpp>
 #include <ql/dataformatters.hpp>
-#include <ql/marketelement.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <vector>
 

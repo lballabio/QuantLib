@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/scheduler.hpp>
+#include <ql/schedule.hpp>
 #include <ql/dataformatters.hpp>
 
 namespace QuantLib {

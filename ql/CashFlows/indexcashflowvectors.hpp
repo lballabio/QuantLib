@@ -24,7 +24,7 @@
 #define quantlib_index_cash_flow_vectors_hpp
 
 #include <ql/CashFlows/shortindexedcoupon.hpp>
-#include <ql/scheduler.hpp>
+#include <ql/schedule.hpp>
 
 namespace QuantLib {
 

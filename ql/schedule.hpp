@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file scheduler.hpp
-    \brief date scheduler
+/*! \file schedule.hpp
+    \brief date schedule
 */
 
-#ifndef quantlib_scheduler_hpp
-#define quantlib_scheduler_hpp
+#ifndef quantlib_schedule_hpp
+#define quantlib_schedule_hpp
 
 #include <ql/calendar.hpp>
 #include <ql/null.hpp>

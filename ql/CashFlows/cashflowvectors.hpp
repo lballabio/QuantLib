@@ -24,7 +24,7 @@
 
 #include <ql/cashflow.hpp>
 #include <ql/Indexes/xibor.hpp>
-#include <ql/scheduler.hpp>
+#include <ql/schedule.hpp>
 
 namespace QuantLib {
 

@@ -23,7 +23,7 @@
 #define quantlib_stock_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/marketelement.hpp>
+#include <ql/quote.hpp>
 
 namespace QuantLib {
 

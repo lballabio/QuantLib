@@ -54,7 +54,6 @@ include_HEADERS = \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \
-	marketelement.hpp \
 	null.hpp \
 	numericalmethod.hpp \
 	option.hpp \
@@ -62,8 +61,9 @@ include_HEADERS = \
 	pricingengine.hpp \
 	qldefines.hpp \
 	quantlib.hpp \
+	quote.hpp \
 	relinkablehandle.hpp \
-	scheduler.hpp \
+	schedule.hpp \
 	solver1d.hpp \
 	stochasticprocess.hpp \
 	swaptionvolstructure.hpp \
@@ -112,6 +112,6 @@ libQuantLib_la_SOURCES = \
 	errors.cpp \
 	exercise.cpp \
     grid.cpp \
-    scheduler.cpp \
+    schedule.cpp \
 	stochasticprocess.cpp \
     voltermstructure.cpp

@@ -39,14 +39,14 @@
 #include <ql/history.hpp>
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
-#include <ql/marketelement.hpp>
 #include <ql/null.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/payoff.hpp>
 #include <ql/pricingengine.hpp>
+#include <ql/quote.hpp>
 #include <ql/relinkablehandle.hpp>
-#include <ql/scheduler.hpp>
+#include <ql/schedule.hpp>
 #include <ql/solver1d.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/swaptionvolstructure.hpp>

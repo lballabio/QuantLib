@@ -17,7 +17,7 @@
 
 #include "quotes.hpp"
 #include "utilities.hpp"
-#include <ql/marketelement.hpp>
+#include <ql/quote.hpp>
 #include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
