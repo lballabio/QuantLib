@@ -1,7 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,16 +15,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Instruments/vanillaoption.hpp>
+#ifndef quantlib_test_dividend_european_option_hpp
+#define quantlib_test_dividend_european_option_hpp
 
-namespace QuantLib {
+#include <boost/test/unit_test.hpp>
 
-    VanillaOption::VanillaOption(
-        const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine) {}
+class DividendEuropeanOptionTest {
+  public:
+    static void testGreeks();
+    static boost::unit_test_framework::test_suite* suite();
+};
 
-}
 
+#endif

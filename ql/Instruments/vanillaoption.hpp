@@ -36,9 +36,6 @@ namespace QuantLib {
                       const boost::shared_ptr<Exercise>& exercise,
                       const boost::shared_ptr<PricingEngine>& engine =
                           boost::shared_ptr<PricingEngine>());
-      protected:
-        // enforce in this class any check on engine/payoff
-        void performCalculations() const;
     };
 
     //! Vanilla option engine base class

@@ -13,6 +13,7 @@ QL_TESTS = \
 	daycounters.hpp daycounters.cpp \
 	digitaloption.hpp digitaloption.cpp \
 	distributions.hpp distributions.cpp \
+	dividendeuropeanoption.hpp dividendeuropeanoption.cpp \
 	europeanoption.hpp europeanoption.cpp \
 	factorial.hpp factorial.cpp \
 	instruments.hpp instruments.cpp \

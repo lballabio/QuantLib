@@ -23,7 +23,7 @@ namespace QuantLib {
     void AnalyticEuropeanEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "not an European Option");
+                   "not an European option");
 
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);

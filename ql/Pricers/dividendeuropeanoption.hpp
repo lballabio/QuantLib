@@ -27,6 +27,9 @@
 namespace QuantLib {
 
     //! European option with dividends
+    /*! \deprecated use DividendVanillaOption with 
+                    AnalyticDividendEuropeanEngine instead
+    */
     class DividendEuropeanOption {
       public:
         DividendEuropeanOption(Option::Type type, double underlying,

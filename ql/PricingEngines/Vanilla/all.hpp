@@ -20,6 +20,7 @@
 
 #include <ql/qldefines.hpp>
 #include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
+#include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>

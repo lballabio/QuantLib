@@ -52,6 +52,7 @@
 #include "daycounters.hpp"
 #include "digitaloption.hpp"
 #include "distributions.hpp"
+#include "dividendeuropeanoption.hpp"
 #include "europeanoption.hpp"
 #include "factorial.hpp"
 #include "instruments.hpp"
@@ -97,6 +98,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DayCounterTest::suite());
     test->add(DigitalOptionTest::suite());
     test->add(DistributionTest::suite());
+    test->add(DividendEuropeanOptionTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(FactorialTest::suite());
     test->add(InstrumentTest::suite());

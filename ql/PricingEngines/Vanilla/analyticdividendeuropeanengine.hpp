@@ -1,7 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,16 +15,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Instruments/vanillaoption.hpp>
+/*! \file analyticdividendeuropeanengine.hpp
+    \brief Analytic discrete-dividend European engine
+*/
+
+#ifndef quantlib_analytic_dividend_european_engine_hpp
+#define quantlib_analytic_dividend_european_engine_hpp
+
+#include <ql/Instruments/dividendvanillaoption.hpp>
 
 namespace QuantLib {
 
-    VanillaOption::VanillaOption(
-        const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        const boost::shared_ptr<Exercise>& exercise,
-        const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine) {}
+    //! Analytic pricing engine for European options with discrete dividends
+    class AnalyticDividendEuropeanEngine 
+        : public DividendVanillaOption::engine {
+      public:
+        void calculate() const;
+    };
 
 }
 
+
+#endif
