@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.20  2001/08/23 15:13:18  nando
+# improving ....
+#
 # Revision 1.19  2001/08/23 14:39:50  nando
 # miscellanea
 #
@@ -33,9 +36,11 @@ Section "-QuantLib"
 SetOutPath $INSTDIR
 File "Authors.txt"
 File "Contributors.txt"
+File "History.txt"
 File "README.txt"
 File "LICENSE.txt"
 File "News.txt"
+File "TODO.txt"
 SetOutPath $INSTDIR\lib\Win32\VisualStudio
 File "lib\Win32\VisualStudio\QuantLib.lib"
 SetOutPath $INSTDIR\lib\Win32\Borland
@@ -92,7 +97,6 @@ Section "Examples"
 SetOutPath $INSTDIR\Examples
 File /r "Examples\*.txt"
 File /r "Examples\*.mak"
-File /r "Examples\*.am"
 File /r "Examples\*.dsw"
 SetOutPath $INSTDIR\Examples\HedgingError
 File /r "Examples\HedgingError\*.cpp"
@@ -114,7 +118,7 @@ Function .onInstSuccess
   MessageBox MB_YESNO|MB_ICONQUESTION \
              "Setup has completed. View Readme.txt now?" \
              IDNO NoReadme
-    ExecShell open '$INSTDIR\Readme.txt'
+    ExecShell open "$INSTDIR\Readme.txt"
   NoReadme:
 FunctionEnd
 
