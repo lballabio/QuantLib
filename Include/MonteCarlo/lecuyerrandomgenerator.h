@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/17 14:37:56  nando
+    tabs removed
+
     Revision 1.3  2001/01/17 11:54:02  marmar
     Some documentation added and 80 columns format enforced.
 
@@ -51,18 +54,18 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-	    /*! Random number generator of L'Ecuyer with added Bays-Durham shuffle.
-	        For more details see Section 7.1 of Numerical Recipes in C, 2nd 
-	        Edition, Cambridge University Press (available at         
-	        http://www.nr.com/)
-		*/
+        /*! Random number generator of L'Ecuyer with added Bays-Durham shuffle.
+            For more details see Section 7.1 of Numerical Recipes in C, 2nd
+            Edition, Cambridge University Press (available at
+            http://www.nr.com/)
+        */
 
         class LecuyerRandomGenerator {
           public:
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit LecuyerRandomGenerator(long seed = 0);
-			typedef double SampleType;
+            typedef double SampleType;
             //! returns a random number uniformly chosen from (0.0,1.0)
             double next() const;
             //! uniformly returns 1.0

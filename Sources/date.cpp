@@ -2,16 +2,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -22,19 +22,22 @@
 */
 
 /*! \file date.cpp
-	\brief date- and time-related classes, typedefs and enumerations 
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.10  2001/01/04 20:09:31  nando
-	few changes: enumerations, tab/spaces, more checks, python test, bug fixed
+    \brief date- and time-related classes, typedefs and enumerations
 
-	Revision 1.9  2000/12/27 14:05:57  lballabio
-	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-	
-	Revision 1.8  2000/12/14 12:32:31  lballabio
-	Added CVS tags in Doxygen file documentation blocks
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.11  2001/01/17 14:37:56  nando
+    tabs removed
+
+    Revision 1.10  2001/01/04 20:09:31  nando
+    few changes: enumerations, tab/spaces, more checks, python test, bug fixed
+
+    Revision 1.9  2000/12/27 14:05:57  lballabio
+    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
+    Revision 1.8  2000/12/14 12:32:31  lballabio
+    Added CVS tags in Doxygen file documentation blocks
 */
 
 #include "date.h"
@@ -46,7 +49,7 @@ namespace QuantLib {
     const int Date::maximumSerialNumber = 73050;    // December 31st, 2099 included
     const Date Date::MinimumDate = Date(Date::minimumSerialNumber);
     const Date Date::MaximumDate = Date(Date::maximumSerialNumber);
-    
+
     const Day Date::monthOffsetStorage[]     = {
                                      0,  31,  59,  90, 120, 151, // Jan - Jun
                                    181, 212, 243, 273, 304, 334, // Jun - Dec
@@ -66,7 +69,7 @@ namespace QuantLib {
     const Day Date::monthLeapLengthStorage[] = {
                                    31, 29, 31, 30, 31, 30,
                                    31, 31, 30, 31, 30, 31 };
-    
+
     const Day QL_PTR_CONST Date::monthOffset      = Date::monthOffsetStorage-1;
     const Day QL_PTR_CONST Date::monthLeapOffset  = Date::monthLeapOffsetStorage-1;
     const Day QL_PTR_CONST Date::monthLength      = Date::monthLengthStorage-1;
@@ -120,7 +123,7 @@ namespace QuantLib {
         // 2090-2099
         69398, 69763, 70128, 70494, 70859, 71224, 71589, 71955, 72320, 72685,
         // 2100
-        73050 };                                                                    
+        73050 };
 
     static const bool yearIsLeap[] = {
         // 1900 is leap to accord with Excel's bug
@@ -136,35 +139,35 @@ namespace QuantLib {
         // 1940-1949
          true,false,false,false, true,false,false,false, true,false,
         // 1950-1959
-        false,false, true,false,false,false, true,false,false,false,   
+        false,false, true,false,false,false, true,false,false,false,
         // 1960-1969
-         true,false,false,false, true,false,false,false, true,false,   
+         true,false,false,false, true,false,false,false, true,false,
         // 1970-1979
-        false,false, true,false,false,false, true,false,false,false,   
+        false,false, true,false,false,false, true,false,false,false,
         // 1980-1989
-         true,false,false,false, true,false,false,false, true,false,   
+         true,false,false,false, true,false,false,false, true,false,
         // 1990-1999
-        false,false, true,false,false,false, true,false,false,false,   
+        false,false, true,false,false,false, true,false,false,false,
         // 2000-2009
-         true,false,false,false, true,false,false,false, true,false,   
+         true,false,false,false, true,false,false,false, true,false,
         // 2010-2019
-        false,false, true,false,false,false, true,false,false,false,   
+        false,false, true,false,false,false, true,false,false,false,
         // 2020-2029
-         true,false,false,false, true,false,false,false, true,false,   
+         true,false,false,false, true,false,false,false, true,false,
         // 2030-2039
-        false,false, true,false,false,false, true,false,false,false,   
+        false,false, true,false,false,false, true,false,false,false,
         // 2040-2049
-         true,false,false,false, true,false,false,false, true,false,   
+         true,false,false,false, true,false,false,false, true,false,
         // 2050-2059
-        false,false, true,false,false,false, true,false,false,false,   
+        false,false, true,false,false,false, true,false,false,false,
         // 2060-2069
-         true,false,false,false, true,false,false,false, true,false,   
+         true,false,false,false, true,false,false,false, true,false,
         // 2070-2079
-        false,false, true,false,false,false, true,false,false,false,   
+        false,false, true,false,false,false, true,false,false,false,
         // 2080-2089
-         true,false,false,false, true,false,false,false, true,false,   
+         true,false,false,false, true,false,false,false, true,false,
         // 2090-2099
-        false,false, true,false,false,false, true,false,false,false,   
+        false,false, true,false,false,false, true,false,false,false,
         // 2100
         false };
 
@@ -172,7 +175,7 @@ namespace QuantLib {
     // constructors
     Date::Date()
     : serialNumber_(0) {}
-    
+
     Date::Date(int serialNumber)
     : serialNumber_(serialNumber) {
         #ifdef QL_DEBUG
@@ -180,7 +183,7 @@ namespace QuantLib {
                         "Date outside allowed range");
         #endif
     }
-    
+
     Date::Date(Day d, Month m, Year y) {
         QL_REQUIRE(int(y) > 1900 && int(y) < 2100,
             "Date outside allowed range 1901-2099");
@@ -198,31 +201,31 @@ namespace QuantLib {
         }
         QL_REQUIRE(int(d) <= len && int(d) > 0,
             "day greater than last day in month");
-        
+
         serialNumber_ = d + offset + yearOffset[y-1900];
         #ifdef QL_DEBUG
             QL_REQUIRE(*this >= minDate() && *this <= maxDate(),
                 "Date outside allowed range 1901-2099");
         #endif
     }
-    
+
     // 1 based, Sunday = 1
     Weekday Date::weekday() const {
         int w = serialNumber_ % 7;
         return Weekday(w == 0 ? 7 : w);
     }
-    
+
     // 1 based, February 1st = 1
     Day Date::dayOfMonth() const {
         return dayOfYear() -
           (isLeap(year()) ? monthLeapOffset[month()] : monthOffset[month()]);
     }
-    
+
     // 1 based, January 1st = 1
     Day Date::dayOfYear() const {
         return serialNumber_ - yearOffset[year()-1900];
     }
-    
+
     Month Date::month() const {
         Day d = dayOfYear(); // dayOfYear is 1 based
         int m = d/30 + 1;
@@ -239,7 +242,7 @@ namespace QuantLib {
         }
         return Month(m);
     }
-    
+
     Year Date::year() const {
         Year y = serialNumber_ / 365;
         // yearOffset[y] is the December 31st of the preceding year
@@ -247,61 +250,61 @@ namespace QuantLib {
             y--;
         return y+1900;
     }
-    
+
     int Date::serialNumber() const {
         return serialNumber_;
     }
-    
+
 
     // operators
     Date& Date::operator+=(int days) {
         serialNumber_ += days;
         return *this;
     }
-    
+
     Date& Date::operator-=(int days) {
         serialNumber_ -= days;
         return *this;
     }
-    
+
     Date& Date::operator++() {
         serialNumber_++;
         return *this;
     }
-    
+
     Date Date::operator++(int) {
         Date temp = *this;
         serialNumber_++;
         return temp;
     }
-    
+
     Date& Date::operator--() {
         serialNumber_--;
         return *this;
     }
-    
+
     Date Date::operator--(int) {
         Date temp = *this;
         serialNumber_--;
         return temp;
     }
-    
+
     Date Date::operator+(int days) const {
         return Date(serialNumber_+days);
     }
-    
+
     Date Date::operator-(int days) const {
         return Date(serialNumber_-days);
     }
-    
+
     Date Date::plusDays(int days) const {
         return Date(serialNumber_+days);
     }
-    
+
     Date Date::plusWeeks(int weeks) const {
         return Date(serialNumber_+weeks*7);
     }
-    
+
     Date Date::plusMonths(int months) const {
         Day d = dayOfMonth();
         int m = int(month())+months;
@@ -314,29 +317,29 @@ namespace QuantLib {
             m += 12;
             y -= 1;
         }
-    
+
         QL_ENSURE(y >= 1900 && y <= 2099, "Date::plusMonths() : "
                 "result must be between Jan. 1st, 1901 and Dec. 31, 2099");
-    
+
         int length = (isLeap(y) ? monthLeapLength[m] : monthLength[m]);
         if (d > length)
             d = length;
         return Date(d,Month(m),y);
     }
-    
+
     Date Date::plusYears(int years) const {
         Day d = dayOfMonth();
         Month m = month();
         Year y = year()+years;
-    
+
         QL_ENSURE(y >= 1900 && y <= 2099, "Date::plusYears() : "
                 "result must be between Jan. 1st, 1901 and Dec. 31, 2099");
-    
+
         if (d == 29 && m == February && !isLeap(y))
             d = 28;
         return Date(d,m,y);
     }
-    
+
     Date Date::plus(int units, TimeUnit theUnit) const {
         Date d;
         switch (theUnit) {
@@ -357,43 +360,43 @@ namespace QuantLib {
         }
         return d;
     }
-    
+
     Date Date::minDate() {
         return MinimumDate;
     }
-    
+
     Date Date::maxDate() {
         return MaximumDate;
     }
-    
+
     bool Date::isLeap(Year y) {
         return yearIsLeap[y-1900];
     }
-    
+
     int operator-(const Date& d1, const Date& d2) {
         return d1.serialNumber()-d2.serialNumber();
     }
-    
+
     bool operator==(const Date& d1, const Date& d2) {
         return (d1.serialNumber() == d2.serialNumber());
     }
-    
+
     bool operator!=(const Date& d1, const Date& d2) {
         return (d1.serialNumber() != d2.serialNumber());
     }
-    
+
     bool operator<(const Date& d1, const Date& d2) {
         return (d1.serialNumber() < d2.serialNumber());
     }
-    
+
     bool operator<=(const Date& d1, const Date& d2) {
         return (d1.serialNumber() <= d2.serialNumber());
     }
-    
+
     bool operator>(const Date& d1, const Date& d2) {
         return (d1.serialNumber() > d2.serialNumber());
     }
-    
+
     bool operator>=(const Date& d1, const Date& d2) {
         return (d1.serialNumber() >= d2.serialNumber());
     }

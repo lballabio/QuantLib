@@ -2,16 +2,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/17 14:37:55  nando
+    tabs removed
+
     Revision 1.1  2001/01/04 11:57:07  lballabio
     Differential operators added
 
@@ -41,11 +44,11 @@
 namespace QuantLib {
 
     namespace FiniteDifferences {
-	
+
         //! \f$ D_{-} \f$ matricial representation
         /*! The differential operator \f$ D_{-} \f$ discretizes the
             first derivative with the first-order formula
-            \f[ \frac{\partial u_{i}}{\partial x} = 
+            \f[ \frac{\partial u_{i}}{\partial x} =
                 \frac{u_{i}-u_{i-1}}{h} \equiv D_{-} u_{i}
             \f]
         */

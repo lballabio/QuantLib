@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -20,17 +20,20 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 /*! \file standardpathgenerator.h
-	\brief Generates path from random points
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.2  2001/01/17 11:54:02  marmar
-	Some documentation added and 80 columns format enforced.
+    \brief Generates path from random points
 
-	Revision 1.1  2001/01/04 17:31:22  marmar
-	Alpha version of the Monte Carlo tools.
-	
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.3  2001/01/17 14:37:56  nando
+    tabs removed
+
+    Revision 1.2  2001/01/17 11:54:02  marmar
+    Some documentation added and 80 columns format enforced.
+
+    Revision 1.1  2001/01/04 17:31:22  marmar
+    Alpha version of the Monte Carlo tools.
+
 */
 
 
@@ -42,16 +45,16 @@
 
 namespace QuantLib {
 
-	namespace MonteCarlo {
+    namespace MonteCarlo {
 
     /*! \typedef StandardPathGenerator
-    	The following is the default choice for the standard path generator
+        The following is the default choice for the standard path generator
         See the corresponding class for documentation.
-	*/	
+    */
 
-		typedef PathGenerator<GaussianRandomGenerator > StandardPathGenerator;
+        typedef PathGenerator<GaussianRandomGenerator > StandardPathGenerator;
 
-	}
+    }
 }
 
 #endif

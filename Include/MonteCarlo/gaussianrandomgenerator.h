@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/17 14:37:56  nando
+    tabs removed
+
     Revision 1.3  2001/01/04 17:31:22  marmar
     Alpha version of the Monte Carlo tools.
 
@@ -43,9 +46,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
     /*! \typedef GaussianRandomGenerator
-    	Default choice for the gaussian random number 
-		generator. See the corresponding class for documentation.
-	*/
+        Default choice for the gaussian random number
+        generator. See the corresponding class for documentation.
+    */
         typedef BoxMuller<UniformRandomGenerator> GaussianRandomGenerator;
 
     }

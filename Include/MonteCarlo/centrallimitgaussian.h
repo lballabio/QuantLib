@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -21,13 +21,16 @@
 */
 
 /*! \file centrallimitgaussian.h
-	\brief Central limit Gaussian random-number generator
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.4  2001/01/04 17:31:22  marmar
-	Alpha version of the Monte Carlo tools.
+    \brief Central limit Gaussian random-number generator
+
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.5  2001/01/17 14:37:56  nando
+    tabs removed
+
+    Revision 1.4  2001/01/04 17:31:22  marmar
+    Alpha version of the Monte Carlo tools.
 
 */
 
@@ -38,58 +41,58 @@
 
 namespace QuantLib {
 
-	namespace MonteCarlo {
+    namespace MonteCarlo {
 
-		//! Gaussian random number generator
-		/*! It uses the well-known fact that the sum of 12 uniform deviate 
-			in (-.5,.5) is approximately a Gaussian deviate with average 0.0
-			and standard deviation 1.0, 
-			The uniform deviate is supplied by U.
-		
-			Class U should satisfies
-			\code
-				U::U(long seed);	
-				double U::next() const;	
-			    double U::weight() const;
-			\endcode
-		*/
-	
-		template <class U>
-		class CLGaussian {
-		  public:
-			typedef double SampleType;
-			CLGaussian(long seed=0);
-			//! returns next sample from the Gaussian distribution
-			double next() const;
-			//! returns the weight of the last extracted sample
-	        double weight() const;
-		  private:		
-			U basicGenerator;		
-			mutable double gaussWeight_;
-		};
+        //! Gaussian random number generator
+        /*! It uses the well-known fact that the sum of 12 uniform deviate
+            in (-.5,.5) is approximately a Gaussian deviate with average 0.0
+            and standard deviation 1.0,
+            The uniform deviate is supplied by U.
 
-		template <class U>
-		CLGaussian<U>::CLGaussian(long seed): 
-			basicGenerator(seed), gaussWeight_(0.0) {}
+            Class U should satisfies
+            \code
+                U::U(long seed);
+                double U::next() const;
+                double U::weight() const;
+            \endcode
+        */
 
-		template <class U>
-		inline double CLGaussian<U>::next() const {
+        template <class U>
+        class CLGaussian {
+          public:
+            typedef double SampleType;
+            CLGaussian(long seed=0);
+            //! returns next sample from the Gaussian distribution
+            double next() const;
+            //! returns the weight of the last extracted sample
+            double weight() const;
+          private:
+            U basicGenerator;
+            mutable double gaussWeight_;
+        };
 
-			double gaussPoint = -6.0;
-			gaussWeight_ = 1.0;
-			for(int i=1;i<=12;i++){
-				gaussPoint += basicGenerator.next();
-				gaussWeight_ *= basicGenerator.weight();
-			}
-			return gaussPoint;
-		}
+        template <class U>
+        CLGaussian<U>::CLGaussian(long seed):
+            basicGenerator(seed), gaussWeight_(0.0) {}
 
-		template <class U>
+        template <class U>
+        inline double CLGaussian<U>::next() const {
+
+            double gaussPoint = -6.0;
+            gaussWeight_ = 1.0;
+            for(int i=1;i<=12;i++){
+                gaussPoint += basicGenerator.next();
+                gaussWeight_ *= basicGenerator.weight();
+            }
+            return gaussPoint;
+        }
+
+        template <class U>
         inline double CLGaussian<U>::weight() const {
             return gaussWeight_;
         }
 
-	}
+    }
 
 }
 

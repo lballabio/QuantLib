@@ -2,16 +2,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -22,17 +22,20 @@
 */
 
 /*! \file spread.h
-	\brief spread on interest rates
+    \brief spread on interest rates
 
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.7  2000/12/20 15:26:04  lballabio
-	Temporarily removed debug implementations
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.8  2001/01/17 14:37:55  nando
+    tabs removed
 
-	Revision 1.6  2000/12/14 12:32:29  lballabio
-	Added CVS tags in Doxygen file documentation blocks
-	
+    Revision 1.7  2000/12/20 15:26:04  lballabio
+    Temporarily removed debug implementations
+
+    Revision 1.6  2000/12/14 12:32:29  lballabio
+    Added CVS tags in Doxygen file documentation blocks
+
 */
 
 #ifndef quantlib_spread_h
@@ -42,8 +45,8 @@
 
 namespace QuantLib {
 
-	//! used to describe spreads on interest rates.
-	typedef double Spread;
+    //! used to describe spreads on interest rates.
+    typedef double Spread;
 
 }
 

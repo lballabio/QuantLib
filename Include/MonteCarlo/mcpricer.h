@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -21,10 +21,13 @@
 */
 
 /*! \file mcpricer.h
-    
+
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/17 14:37:56  nando
+    tabs removed
+
     Revision 1.3  2001/01/17 11:54:02  marmar
     Some documentation added and 80 columns format enforced.
 
@@ -33,7 +36,7 @@
 
     Revision 1.1  2001/01/04 17:31:22  marmar
     Alpha version of the Monte Carlo tools.
-    
+
 */
 
 #ifndef quantlib_montecarlo_pricer_h
@@ -54,7 +57,7 @@ namespace QuantLib {
             Deriving a class from McPricer gives an easy way to write
             a Monte Carlo Pricer.
             See EuropeanPathPricer as an example
-    	*/	
+        */
 
         using MonteCarlo::MonteCarlo1D;
 
@@ -65,7 +68,7 @@ namespace QuantLib {
             ~McPricer(){}
             virtual double value() const;
             virtual double errorEstimate() const;
-        protected:        
+        protected:
             bool isInitialized_;
             long seed_;
             mutable long samples_;
@@ -80,11 +83,11 @@ namespace QuantLib {
                 "McPricer::value has not been initialized");
             return montecarloPricer_.value(samples_);
         }
-        
-        inline double McPricer::errorEstimate() const { 
+
+        inline double McPricer::errorEstimate() const {
             QL_REQUIRE(isInitialized_,
                 "McPricer::errorEstimate has not been initialized");
-            return montecarloPricer_.errorEstimate(); 
+            return montecarloPricer_.errorEstimate();
         }
 
     }

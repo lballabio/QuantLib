@@ -2,16 +2,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -22,39 +22,42 @@
 */
 
 /*
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.14  2001/01/15 17:06:20  lballabio
-	Added MappingIterator class
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.15  2001/01/17 14:37:55  nando
+    tabs removed
 
-	Revision 1.13  2001/01/15 13:40:32  lballabio
-	Added new files
-	
-	Revision 1.12  2001/01/11 11:51:58  lballabio
-	Added QLUTL alias for QuantLib::Utilities::
-	
-	Revision 1.11  2001/01/04 11:58:10  lballabio
-	Differential operators added
-	
-	Revision 1.10  2000/12/28 15:25:38  marmar
-	QLMNT QuantLib::MonteCarlo::
-	
-	Revision 1.9  2000/12/27 17:18:35  lballabio
-	Changes for compiling under Linux and Alpha Linux
-	
-	Revision 1.8  2000/12/27 15:23:38  marmar
-	Random number generators has been updated and documented.
-	Now the Sample Generator idea is fully implemented
-	
-	Revision 1.7  2000/12/15 12:17:58  marmar
-	Adding uniform and gaussian random number generators
-	
-	Revision 1.6  2000/12/14 12:57:55  lballabio
-	Removed Doxygen file documentation block
-	
-	Revision 1.5  2000/12/14 12:32:29  lballabio
-	Added CVS tags in Doxygen file documentation blocks
+    Revision 1.14  2001/01/15 17:06:20  lballabio
+    Added MappingIterator class
+
+    Revision 1.13  2001/01/15 13:40:32  lballabio
+    Added new files
+
+    Revision 1.12  2001/01/11 11:51:58  lballabio
+    Added QLUTL alias for QuantLib::Utilities::
+
+    Revision 1.11  2001/01/04 11:58:10  lballabio
+    Differential operators added
+
+    Revision 1.10  2000/12/28 15:25:38  marmar
+    QLMNT QuantLib::MonteCarlo::
+
+    Revision 1.9  2000/12/27 17:18:35  lballabio
+    Changes for compiling under Linux and Alpha Linux
+
+    Revision 1.8  2000/12/27 15:23:38  marmar
+    Random number generators has been updated and documented.
+    Now the Sample Generator idea is fully implemented
+
+    Revision 1.7  2000/12/15 12:17:58  marmar
+    Adding uniform and gaussian random number generators
+
+    Revision 1.6  2000/12/14 12:57:55  lballabio
+    Removed Doxygen file documentation block
+
+    Revision 1.5  2000/12/14 12:32:29  lballabio
+    Added CVS tags in Doxygen file documentation blocks
 */
 
 #ifndef quantlib_h
@@ -151,8 +154,8 @@
 
 
 // Monte Carlo tools
-#include "boxmuller.h"		
-#include "centrallimitgaussian.h"		
+#include "boxmuller.h"
+#include "centrallimitgaussian.h"
 #include "gaussianrandomgenerator.h"
 #include "lecuyerrandomgenerator.h"
 #include "uniformrandomgenerator.h"
@@ -214,7 +217,7 @@
 #include "mappingiterator.h"
 
 
-/*** shortcuts for the full namespaces 
+/*** shortcuts for the full namespaces
      - just to get us up and running quickly ***/
 
 #define QL    QuantLib::

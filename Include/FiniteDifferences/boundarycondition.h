@@ -2,16 +2,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -22,17 +22,20 @@
 */
 
 /*! \file boundarycondition.h
-	\brief boundary conditions for differential operators
+    \brief boundary conditions for differential operators
 
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.4  2000/12/27 14:05:56  lballabio
-	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.5  2001/01/17 14:37:55  nando
+    tabs removed
 
-	Revision 1.3  2000/12/14 12:32:30  lballabio
-	Added CVS tags in Doxygen file documentation blocks
-	
+    Revision 1.4  2000/12/27 14:05:56  lballabio
+    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
+
+    Revision 1.3  2000/12/14 12:32:30  lballabio
+    Added CVS tags in Doxygen file documentation blocks
+
 */
 
 #ifndef quantlib_boundary_condition
@@ -44,31 +47,31 @@
 
 namespace QuantLib {
 
-	namespace FiniteDifferences {
-	
-		// WARNING: for Neumann conditions. the value passed must not be the value of the derivative.
-		// Instead, it must be comprehensive of the grid step between the first two points--i.e., it must 
-		// be the difference between f[0] and f[1].
-		
-		class BoundaryCondition {
-		  public:
-			// enumeration
-			enum Type { None, Neumann, Dirichlet };
-			// constructors
-			BoundaryCondition(Type type = None, double value = Null<double>())
-			: theType(type), theValue(value) {
-				if (theType != None)
-					QL_REQUIRE(!IsNull(value), "A value must be supplied for this type of boundary condition");
-			}
-			// access methods
-			Type type() const { return theType; }
-			double value() const { return theValue; }
-		  private:
-			Type theType;
-			double theValue;
-		};
-	
-	}
+    namespace FiniteDifferences {
+
+        // WARNING: for Neumann conditions. the value passed must not be the value of the derivative.
+        // Instead, it must be comprehensive of the grid step between the first two points--i.e., it must
+        // be the difference between f[0] and f[1].
+
+        class BoundaryCondition {
+          public:
+            // enumeration
+            enum Type { None, Neumann, Dirichlet };
+            // constructors
+            BoundaryCondition(Type type = None, double value = Null<double>())
+            : theType(type), theValue(value) {
+                if (theType != None)
+                    QL_REQUIRE(!IsNull(value), "A value must be supplied for this type of boundary condition");
+            }
+            // access methods
+            Type type() const { return theType; }
+            double value() const { return theValue; }
+          private:
+            Type theType;
+            double theValue;
+        };
+
+    }
 
 }
 

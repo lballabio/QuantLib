@@ -2,16 +2,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -22,13 +22,16 @@
 */
 
 /*! \file target.h
-	\brief TARGET calendar
+    \brief TARGET calendar
 
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.4  2000/12/14 12:32:29  lballabio
-	Added CVS tags in Doxygen file documentation blocks
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.5  2001/01/17 14:37:55  nando
+    tabs removed
+
+    Revision 1.4  2000/12/14 12:32:29  lballabio
+    Added CVS tags in Doxygen file documentation blocks
 
 */
 
@@ -40,29 +43,29 @@
 
 namespace QuantLib {
 
-	namespace Calendars {
-	
-		//! %TARGET calendar
-		/*! Holidays:
-			<ul>
-			<li>Saturdays</li>
-			<li>Sundays</li>
-			<li>New Year's Day, January 1st</li>
-			<li>Good Friday</li>
-			<li>Easter Monday</li>
-			<li>Labour Day, May 1st</li>
-			<li>Christmas, December 25th</li>
-			<li>Day of Goodwill, December 26th</li>
-			</ul>
-		*/
-		class TARGET : public WesternCalendar {
-		  public:
-			TARGET() {}
-			std::string name() const { return "TARGET"; }
-			bool isBusinessDay(const Date&) const;
-		};
-	
-	}
+    namespace Calendars {
+
+        //! %TARGET calendar
+        /*! Holidays:
+            <ul>
+            <li>Saturdays</li>
+            <li>Sundays</li>
+            <li>New Year's Day, January 1st</li>
+            <li>Good Friday</li>
+            <li>Easter Monday</li>
+            <li>Labour Day, May 1st</li>
+            <li>Christmas, December 25th</li>
+            <li>Day of Goodwill, December 26th</li>
+            </ul>
+        */
+        class TARGET : public WesternCalendar {
+          public:
+            TARGET() {}
+            std::string name() const { return "TARGET"; }
+            bool isBusinessDay(const Date&) const;
+        };
+
+    }
 
 }
 

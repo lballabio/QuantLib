@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/17 14:37:56  nando
+    tabs removed
+
     Revision 1.3  2001/01/04 17:31:22  marmar
     Alpha version of the Monte Carlo tools.
 
@@ -43,9 +46,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
     /*! \typedef UniformRandomGenerator
-    	The following is the default choice for the uniform random number 
+        The following is the default choice for the uniform random number
         generator. See the corresponding class for documentation.
-	*/	
+    */
         typedef LecuyerRandomGenerator UniformRandomGenerator;
 
     }
