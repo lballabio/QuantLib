@@ -1,7 +1,7 @@
 
 /*! \page license Copyright and License
 
-The BSD License
+The QuantLib License 1.0
 
 Copyright (c) 2000, 2001, 2002 Nicolas Di Césaré
 Copyright (c) 2000, 2001, 2002 Sadruddin Rejeb
@@ -18,7 +18,7 @@ modification, are permitted provided that the following conditions are met:
     this list of conditions and the following disclaimer in the documentation
     and/or other materials provided with the distribution.
 
-    Neither the name of the copyright holders nor the names of the %QuantLib
+    Neither the name of the copyright holders nor the names of the QuantLib
     Group and its contributors may be used to endorse or promote products
     derived from this software without specific prior written permission.
 

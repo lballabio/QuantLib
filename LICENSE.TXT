@@ -1,4 +1,4 @@
-The BSD License
+The QuantLib License 1.0
 
 Copyright (c) 2000, 2001, 2002 Nicolas Di Césaré
 Copyright (c) 2000, 2001, 2002 Sadruddin Rejeb
