@@ -52,7 +52,7 @@ namespace QuantLib {
                 return dayCount(d1,d2)/365.0;
             }
           private:
-            class Act365Factory : public factory {
+              class Act365Factory : public DayCounter::factory {
               public:
                 Handle<DayCounter> create() const {
                     return Handle<DayCounter>(new Actual365);

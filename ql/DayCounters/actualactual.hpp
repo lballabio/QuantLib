@@ -62,7 +62,7 @@ namespace QuantLib {
                 const Date& refPeriodStart, const Date& refPeriodEnd) const;
             //@}
           private:
-            class ActActFactory : public factory {
+              class ActActFactory : public DayCounter::factory {
               public:
                 ActActFactory(Convention c) : convention_(c) {}
                 Handle<DayCounter> create() const {

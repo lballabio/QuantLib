@@ -122,7 +122,7 @@ namespace QuantLib {
             //! always returns <tt>true</tt>
             bool isBusinessDay(const Date& d) const {return true; }
           private:
-            class NullCalendarFactory : public factory {
+              class NullCalendarFactory : public Calendar::factory {
               public:
                 Handle<Calendar> create() const {
                     return Handle<Calendar>(new NullCalendar);

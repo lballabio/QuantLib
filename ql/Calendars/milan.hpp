@@ -63,7 +63,7 @@ namespace QuantLib {
             std::string name() const { return "Milan"; }
             bool isBusinessDay(const Date&) const;
           private:
-            class MilCalendarFactory : public factory {
+            class MilCalendarFactory : public Calendar::factory {
               public:
                 Handle<Calendar> create() const {
                     return Handle<Calendar>(new Milan);
