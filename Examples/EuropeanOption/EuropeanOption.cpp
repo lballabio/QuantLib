@@ -439,9 +439,6 @@ int main(int argc, char* argv[])
         BrownianBridge<GaussianLowDiscrepancySequenceGenerator> b10(blackSurface, timeGrid, gldsg);
         wp = b10.next();
         wp = b10.antithetic();
-=======
-        GaussianLowDiscrepancySequenceGenerator gldsg(ldsg);
->>>>>>> 1.60
 
         option.setPricingEngine(Handle<PricingEngine>(
             new MCEuropeanEngine<
