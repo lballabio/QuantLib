@@ -105,15 +105,13 @@ namespace QuantLib {
                 (dividendTS_->discount(t, extrapolate)/
                  riskFreeTS_->discount(t, extrapolate));
 
-            if (t==0.0) t=0.000001;
-
 
             // strike derivatives
             double strike, y, dy, strikep, strikem;
             double w, wp, wm, dwdy, d2wdy2;
             strike = underlyingLevel;
             y = QL_LOG(strike/forwardValue);
-            dy = (y*0.000001 ? y*0.000001 : 0.000001);
+            dy = ((y!=0.0) ? y*0.000001 : 0.000001);
 //            double yp = y+dy;
 //            double ym = y-dy;
 //            double strikep=QL_EXP(yp)*forwardValue;
@@ -128,16 +126,25 @@ namespace QuantLib {
 
             // time derivative
             double dt, wpt, wmt, dwdt;
-            dt = QL_MIN(0.0001, t/2.0);
-            wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
-            wmt = blackTS_->blackVariance(t-dt, strike, extrapolate);
-            QL_REQUIRE(wpt>=w,
-                "LocalVolSurface::localVolImpl : "
-                "decreasing variance");
-            QL_REQUIRE(w>=wmt,
-                "LocalVolSurface::localVolImpl : "
-                "decreasing variance");
-            dwdt = (wpt-wmt)/(2.0*dt);
+            if (t==0.0) {
+                dt = 0.0001;
+                wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
+                QL_REQUIRE(wpt>=w,
+                    "LocalVolSurface::localVolImpl : "
+                    "decreasing variance");
+                dwdt = (wpt-w)/dt;
+            } else {
+                dt = QL_MIN(0.0001, t/2.0);
+                wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
+                wmt = blackTS_->blackVariance(t-dt, strike, extrapolate);
+                QL_REQUIRE(wpt>=w,
+                    "LocalVolSurface::localVolImpl : "
+                    "decreasing variance");
+                QL_REQUIRE(w>=wmt,
+                    "LocalVolSurface::localVolImpl : "
+                    "decreasing variance");
+                dwdt = (wpt-wmt)/(2.0*dt);
+            }
 
             if (dwdy==0.0 && d2wdy2==0.0) { // avoid /w where w might be 0.0
                 return QL_SQRT(dwdt);
