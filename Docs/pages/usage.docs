@@ -68,7 +68,7 @@
     -# To compile in "Win32 Debug" configuration you will need the %QuantLib
     debug libraries, available for download from
     http://quantlib.org/download.html
-    -# The "Win32 OnTheEdgeRelease" and "Win 32 OnTheEdgeDebug" configurations
+    -# The "Win32 OnTheEdgeRelease" and "Win32 OnTheEdgeDebug" configurations
     are equivalent to "Win32 Release" and "Win32 Debug" respectively, except
     that they do not use the installed %QuantLib libraries, but look for the
     hpp and lib %QuantLib files in a relative ..\\%QuantLib path. This is
