@@ -36,7 +36,6 @@
 
 #include <ql/InterestRateModelling/model.hpp>
 #include <ql/InterestRateModelling/shortrateprocess.hpp>
-#include <ql/InterestRateModelling/timefunction.hpp>
 #include <ql/InterestRateModelling/trinomialtree.hpp>
 
 namespace QuantLib {

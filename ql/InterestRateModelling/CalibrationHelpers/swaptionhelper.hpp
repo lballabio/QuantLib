@@ -34,9 +34,10 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helpers_swaption_h
 #define quantlib_interest_rate_modelling_calibration_helpers_swaption_h
 
-#include "ql/Instruments/simpleswap.hpp"
-#include "ql/InterestRateModelling/model.hpp"
-#include "ql/Pricers/treeswaption.hpp"
+#include <ql/InterestRateModelling/calibrationhelper.hpp>
+#include <ql/Instruments/simpleswap.hpp>
+#include <ql/Instruments/swaption.hpp>
+
 
 namespace QuantLib {
 
@@ -46,51 +47,25 @@ namespace QuantLib {
 
             class SwaptionHelper : public CalibrationHelper {
               public:
-                //!Constructor for any swaption
-                SwaptionHelper(
-                    const Period& tenorPeriod,
-                    const Period& swapPeriod,
-                    const Handle<Indexes::Xibor>& index,
-                    Rate exerciseRate,
-                    const RelinkableHandle<TermStructure>& termStructure);
-
                 //!Constructor for ATM swaption
                 SwaptionHelper(
-                    const Period& tenorPeriod,
-                    const Period& swapPeriod,
+                    const Period& maturity,
+                    const Period& tenor,
                     const Handle<Indexes::Xibor>& index,
                     const RelinkableHandle<TermStructure>& termStructure);
 
                 virtual ~SwaptionHelper() {}
 
                 virtual double modelValue(const Handle<Model>& model);
-                virtual double marketValue() { return marketValue_; }
 
-                void setVolatility(double volatility) {
-                    volatility_ = volatility;
-                    marketValue_ = blackPrice(volatility);
-                }
-
-                void setMarketValue(double value) {
-                    volatility_ = Null<double>();
-                    marketValue_ = value;
-                }
- 
-              private:
                 virtual double blackPrice(double volatility) const;
-                
-                double marketValue_;
-                double volatility_;
 
+              private:
                 Rate exerciseRate_;
                 RelinkableHandle<TermStructure> termStructure_;
                 Handle<Instruments::SimpleSwap> swap_;
-                unsigned int nbOfPeriods_;
-                std::vector<Time> startTimes_;
-                std::vector<Time> endTimes_;
-                std::vector<double> coupons_;
-                std::list<Time> times_;
-                Pricers::TreeSwaption pricer_;
+                Handle<Instruments::Swaption> swaption_;
+                Handle<Pricers::SwaptionPricingEngine> engine_;
             };
         }
     }

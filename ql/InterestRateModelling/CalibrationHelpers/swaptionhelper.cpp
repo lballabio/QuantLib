@@ -34,6 +34,8 @@
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/Math/normaldistribution.hpp"
 #include "ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp"
+#include "ql/Pricers/jamshidianswaption.hpp"
+#include "ql/Pricers/treeswaption.hpp"
 
 namespace QuantLib {
 
@@ -41,18 +43,20 @@ namespace QuantLib {
 
         namespace CalibrationHelpers {
 
-            using CashFlows::FloatingRateCoupon;
             using Instruments::SimpleSwap;
+            using Instruments::Swaption;
+            using Instruments::SwaptionParameters;
+
+            using Pricers::SwaptionPricingEngine;
+            using Pricers::JamshidianSwaption;
             using Pricers::TreeSwaption;
 
             SwaptionHelper::SwaptionHelper(
-                const Period& tenorPeriod,
-                const Period& swapPeriod,
+                const Period& maturity,
+                const Period& tenor,
                 const Handle<Indexes::Xibor>& index,
-                Rate exerciseRate,
-                const RelinkableHandle<TermStructure>& termStructure) :
-                exerciseRate_(exerciseRate),
-                termStructure_(termStructure) {
+                const RelinkableHandle<TermStructure>& termStructure) 
+            : termStructure_(termStructure) {
 
                 Period indexTenor = index->tenor();
                 int frequency;
@@ -62,19 +66,19 @@ namespace QuantLib {
                     frequency = 1/indexTenor.length();
                 else
                     throw Error("index tenor not valid!");
-                Date startDate = termStructure->settlementDate().plus(
-                    tenorPeriod.length(),
-                    tenorPeriod.units());
+                Date startDate = termStructure->settlementDate().
+                    plus(maturity.length(), maturity.units());
+                Rate fixedRate = 0.04;//dummy value
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
                   false,
                   startDate,
-                  swapPeriod.length(),
-                  swapPeriod.units(),
+                  tenor.length(),
+                  tenor.units(),
                   index->calendar(),
                   index->rollingConvention(),
                   std::vector<double>(1, 1.0),
                   frequency,
-                  std::vector<double>(1, exerciseRate_),
+                  std::vector<double>(1, fixedRate),
                   false,
                   index->dayCounter(),
                   frequency,
@@ -82,76 +86,13 @@ namespace QuantLib {
                   0,//FIXME
                   std::vector<double>(1, 0.0),
                   termStructure));
-
-                std::vector<Handle<CashFlow> > floatingLeg =
-                    swap_->floatingLeg();
-                std::vector<Handle<CashFlow> >::const_iterator begin, end;
-                begin = floatingLeg.begin();
-                end   = floatingLeg.end();
-                Date today = termStructure_->minDate();
-                DayCounter counter = termStructure_->dayCounter();
-                unsigned int i=0;
-                for (; begin != end; ++begin) {
-                    Handle<FloatingRateCoupon> coupon = *begin;
-                    QL_ENSURE(!coupon.isNull(),
-                        "not a floating rate coupon");
-                    Date beginDate = coupon->accrualStartDate();
-                    Date endDate = coupon->date();
-                    startTimes_.resize(i+1);
-                    endTimes_.resize(i+1);
-                    startTimes_[i] = counter.yearFraction(today, beginDate);
-                    endTimes_[i] = counter.yearFraction(today, endDate);
-                    times_.push_back(startTimes_[i]);
-                    times_.push_back(endTimes_[i]);
-                    i++;
-                }
-                times_.unique();
-                times_.sort();
-                nbOfPeriods_ = i;
-            }
-
-            SwaptionHelper::SwaptionHelper(
-                const Period& tenorPeriod,
-                const Period& swapPeriod,
-                const Handle<Indexes::Xibor>& index,
-                const RelinkableHandle<TermStructure>& termStructure) :
-                termStructure_(termStructure) {
-
-                Period indexTenor = index->tenor();
-                int frequency;
-                if (indexTenor.units() == Months)
-                    frequency = 12/indexTenor.length();
-                else if (indexTenor.units() == Years)
-                    frequency = 1/indexTenor.length();
-                else
-                    throw Error("index tenor not valid!");
-                Date startDate = termStructure->settlementDate().plus(
-                    tenorPeriod.length(),
-                    tenorPeriod.units());
-                swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                  false,
-                  startDate,
-                  swapPeriod.length(),
-                  swapPeriod.units(),
-                  index->calendar(),
-                  index->rollingConvention(),
-                  std::vector<double>(1, 1.0),
-                  frequency,
-                  std::vector<double>(1, 0.05),
-                  false,
-                  index->dayCounter(),
-                  frequency,
-                  index,
-                  0,//FIXME
-                  std::vector<double>(1, 0.0),
-                  termStructure));
-                Rate fairFixedRate = 0.05 - 
+                Rate fairFixedRate = fixedRate - 
                     swap_->NPV()/swap_->fixedLegBPS();
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
                   false, 
                   startDate,
-                  swapPeriod.length(),
-                  swapPeriod.units(),
+                  tenor.length(),
+                  tenor.units(),
                   index->calendar(),
                   index->rollingConvention(),
                   std::vector<double>(1, 1.0),
@@ -165,68 +106,49 @@ namespace QuantLib {
                   std::vector<double>(1, 0.0),
                   termStructure));
                 exerciseRate_ = fairFixedRate;
- 
-                std::vector<Handle<CashFlow> > floatingLeg =
-                    swap_->floatingLeg();
-                std::vector<Handle<CashFlow> >::const_iterator begin, end;
-                begin = floatingLeg.begin();
-                end   = floatingLeg.end();
-                Date today = termStructure_->minDate();
-                DayCounter counter = termStructure_->dayCounter();
-                std::vector<double> coupons;
-                unsigned int i=0;
-                double nominal = 0.0;
-                for (; begin != end; ++begin) {
-                    Handle<FloatingRateCoupon> coupon = *begin;
-                    QL_ENSURE(!coupon.isNull(),
-                        "not a floating rate coupon");
-                    Date beginDate = coupon->accrualStartDate();
-                    Date endDate = coupon->date();
-                    coupons.push_back(coupon->amount());
-                    nominal = coupon->nominal();
-                    startTimes_.resize(i+1);
-                    endTimes_.resize(i+1);
-                    startTimes_[i] = counter.yearFraction(today, beginDate);
-                    endTimes_[i] = counter.yearFraction(today, endDate);
-                    times_.push_back(startTimes_[i]);
-                    times_.push_back(endTimes_[i]);
-                    i++;
-                }
-                times_.unique();
-                times_.sort();
-                nbOfPeriods_ = i;
-                pricer_ = TreeSwaption(
-                    false, 
-                    Exercise::European,
-                    std::vector<Time>(1, startTimes_[0]),
-                    startTimes_[0],
-                    endTimes_,
-                    coupons_,
-                    nominal,
-                    200);
-                    
- 
+
+                engine_ = Handle<SwaptionPricingEngine>(new
+                    TreeSwaption(100));
+
+                swaption_ = Handle<Swaption>(new 
+                    Swaption(*swap_, EuropeanExercise(startDate), termStructure,
+                             engine_));
+                swaption_->setPricingEngine(engine_);
             }
 
             double SwaptionHelper::modelValue(const Handle<Model>& model) {
-                pricer_.useModel(model);
-                pricer_.calculate();
-                return pricer_.value();
+/*                if (model->hasDiscountBondFormula() && 
+                    model->hasDiscountBondOptionFormula())
+                    engine_ = Handle<SwaptionPricingEngine>(new
+                        JamshidianSwaption());
+                else*/
+                engine_ = Handle<SwaptionPricingEngine>(new
+                    TreeSwaption(100));
+                engine_->setModel(model);
+                swaption_->setPricingEngine(engine_);
+                swaption_->recalculate();
+                return swaption_->NPV();
             }
 
             double SwaptionHelper::blackPrice(double sigma) const {
-                //FIXME: check
-                double p = 0;
-                for (unsigned i=0; i<nbOfPeriods_; i++)
-                    p += termStructure_->discount(endTimes_[i]);
-                Time start = startTimes_[0];
+                //FIXME: not completed, to check
+                SwaptionParameters* params = dynamic_cast<SwaptionParameters*>(
+                    engine_->parameters());
+                QL_REQUIRE(params!=0, "These are not swaption parameters");
+                const std::vector<Time>& times = params->fixedPayTimes;
+                double p = 0.0;
+                for (size_t i=0; i<times.size(); i++) {
+                    p += termStructure_->discount(times[i]);
+                }
                 double swapRate = 
                     exerciseRate_ - swap_->NPV()/swap_->fixedLegBPS();
+                Time start = params->floatingResetTimes[0];
                 double value;
                 if (start>0.0) {
                     Math::CumulativeNormalDistribution f;
-                    double d1 = (QL_LOG(swapRate/exerciseRate_)+
-                        0.5*sigma*sigma*start)/(sigma*QL_SQRT(start));
+                    double d1 = QL_LOG(swapRate/exerciseRate_)/
+                        (sigma*QL_SQRT(start))
+                        + 0.5*sigma*QL_SQRT(start);
                     double d2 = d1 - sigma*QL_SQRT(start);
                     value = p*(swapRate*f(d1) - exerciseRate_*f(d2));
                 } else {

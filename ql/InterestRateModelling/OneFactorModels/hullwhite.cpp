@@ -42,17 +42,17 @@ namespace QuantLib {
           public:
             Process(HullWhite * model) : model_(model) {}
 
-            virtual double variable(Rate r, Time t) const { 
+            virtual double variable(Time t, Rate r) const { 
                 return r - model_->alpha(t); 
             }
-            virtual double shortRate(double x, Time t) const { 
+            virtual double shortRate(Time t, double x) const { 
                 return x + model_->alpha(t); 
             }
 
-            virtual double drift(double r, double t) const {
+            virtual double drift(Time t, double r) const {
                 return - model_->a_*r;
             }
-            virtual double diffusion(double r, Time t) const {
+            virtual double diffusion(Time t, double r) const {
                 return model_->sigma_;
             }
           private:
@@ -62,7 +62,7 @@ namespace QuantLib {
         HullWhite::HullWhite(
             const RelinkableHandle<TermStructure>& termStructure) 
         : OneFactorModel(2, termStructure), a_(params_[0]), 
-          sigma_(params_[1]), dt_(0.001) {
+          sigma_(params_[1]) {
             process_ = Handle<ShortRateProcess>(new Process(this));
             constraint_ = Handle<Constraint>(new Constraint(2));
             constraint_->setLowerBound(1, 0.000001);

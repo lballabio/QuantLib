@@ -47,10 +47,10 @@ namespace QuantLib {
 
             virtual double alpha(Time t) const;
 
-            virtual double discountBond(Time T,
-                                        Time s,
-                                        Rate r);
+            virtual bool hasDiscountBondFormula() { return true; }
+            virtual double discountBond(Time T, Time s, Rate r);
 
+            virtual bool hasDiscountBondOptionFormula() { return true; }
             virtual double discountBondOption(Option::Type type,
                                               double strike,
                                               Time maturity,
@@ -71,8 +71,6 @@ namespace QuantLib {
 
             const double& a_;
             const double& sigma_;
-            std::vector<double> theta_;
-            double dt_;
         };
 
     }

@@ -39,8 +39,6 @@
 #include <ql/option.hpp>
 #include <ql/termstructure.hpp>
 
-#include <iostream>
-#include <list>
 #include <vector>
 
 namespace QuantLib {
@@ -48,30 +46,9 @@ namespace QuantLib {
     namespace InterestRateModelling {
 
         class CalibrationHelper;
-/*
-        class TermStructureConsistentModel {
-          public:
-            TermStructureConsistentModel(
-                double dt,
-                const RelinkableHandle<TermStructure>& termStructure)
-            : dt_(dt), termStructure_(termStructure) {}
-            virtual ~TermStructureConsistentModel() {}
 
-            virtual void setCalibrationParameters() {}
-            void calibrate(
-                const Handle<Minimizer>& minimizer,
-                std::vector<Handle<CalibrationHelper> > instruments,
-                std::vector<double> volatilities) {}
-
-            const RelinkableHandle<TermStructure>& termStructure() const {
-                return termStructure_;
-
-            virtual double theta(Time t) = 0;
-        };
-*/
         class Model {
           public:
-
             enum Type { OneFactor, TwoFactor, Market };
 
             Model(unsigned nParams, Type type,
@@ -79,6 +56,12 @@ namespace QuantLib {
             : params_(nParams), termStructure_(termStructure) {}
             virtual ~Model() {}
 
+            virtual bool hasDiscountBondFormula() {
+                return false;
+            }
+            virtual bool hasDiscountBondOptionFormula() {
+                return false;
+            }
             virtual double discountBondOption(Option::Type type, 
                                               double strike,
                                               Time maturity, 
@@ -110,12 +93,6 @@ namespace QuantLib {
             friend class CalibrationProblem;
             const RelinkableHandle<TermStructure>& termStructure_;
             Type type_;
-        };
-
-        class CalibrationHelper {
-          public:
-            virtual double marketValue() = 0;
-            virtual double modelValue(const Handle<Model>& model) = 0;
         };
 
     }

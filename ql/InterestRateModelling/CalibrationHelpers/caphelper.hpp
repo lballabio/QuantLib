@@ -34,8 +34,9 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helpers_cap_h
 #define quantlib_interest_rate_modelling_calibration_helpers_cap_h
 
+#include "ql/InterestRateModelling/calibrationhelper.hpp"
 #include "ql/Instruments/capfloor.hpp"
-#include "ql/InterestRateModelling/model.hpp"
+
 
 namespace QuantLib {
 
@@ -45,14 +46,6 @@ namespace QuantLib {
 
             class CapHelper : public CalibrationHelper {
               public:
-                //Constructor for any cap
-                CapHelper(
-                    const Period& wait,
-                    const Period& tenor,
-                    const Handle<Indexes::Xibor>& index,
-                    Rate exerciseRate,
-                    const RelinkableHandle<TermStructure>& termStructure);
-
                 //Constructor for ATM cap
                 CapHelper(
                     const Period& tenor,
@@ -62,30 +55,14 @@ namespace QuantLib {
                 virtual ~CapHelper() {}
 
                 virtual double modelValue(const Handle<Model>& model);
-                virtual double marketValue() { return marketValue_; }
 
-                void setVolatility(double volatility) {
-                    volatility_ = volatility;
-                    marketValue_ = blackPrice(volatility);
-                }
-
-                void setMarketValue(double value) {
-                    volatility_ = Null<double>();
-                    marketValue_ = value;
-                }
-
-              private:
                 virtual double blackPrice(double volatility) const;
 
-                double volatility_;
-                double marketValue_;
-                Rate exerciseRate_;
+              private:
                 RelinkableHandle<TermStructure> termStructure_;
                 Handle<Instruments::SimpleSwap> swap_;
-                Handle<Instruments::EuropeanCap> cap_;
-                unsigned int nbOfPeriods_;
-                std::vector<Time> startTimes_;
-                std::vector<Time> endTimes_;
+                Handle<Instruments::VanillaCap> cap_;
+                Handle<Pricers::CapFloorPricingEngine> engine_;
             };
         }
     }

@@ -45,8 +45,7 @@ namespace QuantLib {
         class BlackKarasinski : public OneFactorModel {
           public:
             BlackKarasinski(
-                const RelinkableHandle<TermStructure>& termStructure,
-                double dt);
+                const RelinkableHandle<TermStructure>& termStructure);
             virtual ~BlackKarasinski() {}
 
             Handle<Lattices::Tree> tree(
@@ -72,7 +71,6 @@ namespace QuantLib {
 
             const double& a_;
             const double& sigma_;
-            double dtMax_;
         };
     }
 }

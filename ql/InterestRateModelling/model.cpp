@@ -1,9 +1,43 @@
 
-#include "ql/Math/matrix.hpp"
+/*
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
+ * This file is part of QuantLib.
+ * QuantLib is a C++ open source library for financial quantitative
+ * analysts and developers --- http://quantlib.org/
+ *
+ * QuantLib is free software and you are allowed to use, copy, modify, merge,
+ * publish, distribute, and/or sell copies of it under the conditions stated
+ * in the QuantLib License.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+ *
+ * You should have received a copy of the license along with this file;
+ * if not, please email quantlib-users@lists.sourceforge.net
+ * The license is also available at http://quantlib.org/LICENSE.TXT
+ *
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.org/group.html
+*/
+
+/*! \file model.cpp
+    \brief Abstract interest rate model class
+
+    \fullpath
+    ql/InterestRateModelling/%model.cpp
+*/
+
+// $Id$
+
 #include "ql/InterestRateModelling/model.hpp"
+
+#include "ql/Math/matrix.hpp"
+#include "ql/InterestRateModelling/calibrationhelper.hpp"
 #include "ql/Optimization/leastsquare.hpp"
-using std::cout;
-using std::endl;
+
+#include <iostream>
 
 namespace QuantLib {
 
@@ -22,7 +56,6 @@ namespace QuantLib {
                 for (unsigned i=0; i<instruments_.size(); i++)
                     prices_[i] = instruments_[i]->marketValue();
             }
-            //! Destructor
             virtual ~CalibrationProblem() {}
 
             //! Size of the least square problem
@@ -39,20 +72,20 @@ namespace QuantLib {
             }
 
             //! return function, target and first derivatives values
-            virtual void targetValueAndfirstDerivative(const Array& params, 
+            virtual void targetValueAndGradient(const Array& params, 
                 Matrix& grad_fct2fit, Array& target, Array& fct2fit) { 
                 target = prices_;
                 model_->setParams(params);
                 Array newParams(params);
-                for (signed i=0; i<size(); i++)
+                int i;
+                for (i=0; i<size(); i++)
                     fct2fit[i] = instruments_[i]->modelValue(model_);
 
-                for (unsigned j=0; j<params.size(); j++) {
+                for (size_t j=0; j<params.size(); j++) {
                     double off = 1e-6;
                     newParams[j] -= off;
                     model_->setParams(newParams);
                     Array newValues(size());
-                    int i;
                     for (i=0; i<size(); i++) 
                         newValues[i] = instruments_[i]->modelValue(model_);
                     newParams[j] += 2.0*off;
@@ -88,16 +121,16 @@ namespace QuantLib {
             CalibrationProblem problem(this, instruments);
          
             // Set initial values
-            std::cout << "param size " << params_.size() << endl;
             lsqnonlin.setInitialValue(Array(params_.size(), 0.1));
+
             // perform fitting
-            Array solution = lsqnonlin.Perform(problem);
+            Array solution = lsqnonlin.perform(problem);
 
             setParams(solution);
 
-            cout << "Model calibrated to the following values:" << endl;
+            std::cout << "Model calibrated to the following values:" << std::endl;
             for (unsigned i=0; i<params_.size(); i++)
-                cout << i << "    " << solution[i]*100.0 << "%" << endl;
+                std::cout << i << "    " << solution[i]*100.0 << "%" << std::endl;
         }
 
     }

@@ -43,8 +43,8 @@ namespace QuantLib {
     //describes a process followed by the short rate or a function of it
     class ShortRateProcess : public DiffusionProcess {
       public:
-        virtual double variable(Rate r, Time t) const = 0;
-        virtual Rate shortRate(double variable, Time t) const = 0;
+        virtual double variable(Time t, Rate r) const = 0;
+        virtual Rate shortRate(Time t, double variable) const = 0;
     };
 
 }

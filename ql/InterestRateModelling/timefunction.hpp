@@ -35,43 +35,59 @@
 #define quantlib_time_function_h
 
 #include <ql/qldefines.hpp>
+#include <ql/Math/cubicspline.hpp>
+#include <ql/InterestRateModelling/onefactormodel.hpp>
 
-#include <map>
+#include <iostream>
 
 namespace QuantLib {
 
-    struct timestr {
-        bool operator()(Time t1, Time t2) const { 
-            return t1<t2;
-        }
-    };
+    namespace InterestRateModelling {
 
-    class TimeFunction {
-      public:
-        TimeFunction() : values_() {}
-        double  operator()(Time t) {
-            std::map<Time, double, timestr>::iterator upper = 
-                values_.upper_bound(t);
-            Time high = upper->first;
-            double highValue = upper->second;
-            --upper;
-            Time low = upper->first;
-            double lowValue = upper->second;
-            Time dt = high - low;
-            Time weight = 1.0 - (t - low)/dt;
-            return lowValue*weight + highValue*(1.0 - weight);
-        }
-        void set(Time t, double value) {
-            values_[t] = value;
-        }
+        class TimeFunction {
+          public:
+            typedef Math::CubicSpline<std::vector<Time>::iterator,
+                                      std::vector<double>::iterator> Spline;
+            TimeFunction() 
+            : updated_(false), times_(0), values_(0) {}
+            ~TimeFunction() {}
+            void set(Time t, double x) {
+                updated_ = false;
+                times_.push_back(t);
+                values_.push_back(x);
+            }
+            void update() {
+                interpolation_ = Handle<Spline>(new Spline(
+                    times_.begin(), times_.end(), values_.begin()));
+                updated_ = true;
+            }
+            void reset() {
+                times_.clear();
+                values_.clear();
+                updated_ = false;
+            }
+            double operator()(Time t) {
+                if (!updated_) {
+                    for (size_t i=0; i<times_.size(); i++)
+                        if (times_[i] == t)
+                            return values_[i];
+                    std::cout << "interpolating at time " << t << std::endl;
+                    update();
+                }
+                return (*interpolation_)(t);
+            }
+            void fitToTermStructure(const OneFactorModel& model, 
+                                    size_t timeSteps);
+          private:
+            class FitFunction;
 
-        void clear() {
-            values_.clear();
-        }
+            bool updated_;
+            Handle<Spline> interpolation_;
+            std::vector<Time> times_;
+            std::vector<double> values_;
+        };
 
-      private:
-        std::map<Time, double, timestr > values_;
-    };
+    }
 
 }
 

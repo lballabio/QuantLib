@@ -38,10 +38,8 @@
 #include <ql/qldefines.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/InterestRateModelling/shortrateprocess.hpp>
-#include <ql/InterestRateModelling/timefunction.hpp>
 #include <ql/Lattices/tree.hpp>
 
-#include <list>
 #include <vector>
 
 namespace QuantLib {
@@ -51,20 +49,18 @@ namespace QuantLib {
         class TrinomialTree : public Lattices::Tree {
           public:
             TrinomialTree() : Lattices::Tree(3) {}
-/*            TrinomialTree(
-                const Handle<ShortRateProcess>& process,
-                const RelinkableHandle<TermStructure>& termStructure,
-                Handle<TimeFunction>& theta,
-                Time dtMax,
-                const std::list<Time>& times);*/
 
-            TrinomialTree(
-                const Handle<ShortRateProcess>& process,
-                const Lattices::TimeGrid& timeGrid);
+            TrinomialTree(const Handle<ShortRateProcess>& process,
+                          const Lattices::TimeGrid& timeGrid);
 
             void addLevel(const std::vector<int>& k);
 
             virtual Lattices::Node& node(unsigned int i, int j) {
+                int jMin = nodes_[i][0]->j();
+                return *(nodes_[i][j-jMin]);
+            }
+
+            virtual const Lattices::Node& node(unsigned int i, int j) const {
                 int jMin = nodes_[i][0]->j();
                 return *(nodes_[i][j-jMin]);
             }

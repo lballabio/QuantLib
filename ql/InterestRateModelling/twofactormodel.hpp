@@ -22,49 +22,40 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file grid.hpp
-    \brief Grid constructor for finite differences pricers
+/*! \file twofactormodel.hpp
+    \brief Abstract two-factor interest rate model class
 
     \fullpath
-    ql/InterestRateModelling/%grid.hpp
+    ql/InterestRateModelling/%twofactormodel.hpp
 */
 
 // $Id$
 
+#ifndef quantlib_interest_rate_modelling_two_factor_model_h
+#define quantlib_interest_rate_modelling_two_factor_model_h
 
-#ifndef quantlib_interest_rate_modelling_grid_h
-#define quantlib_interest_rate_modelling_grid_h
-
-#include "ql/InterestRateModelling/onefactormodel.hpp"
+#include <ql/InterestRateModelling/model.hpp>
 
 namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class Grid : public Array {
+        class TwoFactorModel : public Model {
           public:
-            Grid(Size gridPoints,
-                 double initialCenter,
-                 double strikeCenter,
-                 Time residualTime,
-                 Time timeDelay,
-                 const OneFactorModel& model);
-            double dx() { return dx_;}
-            Size index() const {return index_;}
-            Size safeGridPoints(Size gridPoints, Time residualTime) const;
-          private:
-            void initialize(Size gridPoints,
-                            double initialCenter,
-                            double strikeCenter,
-                            Time residualTime,
-                            Time timeDelay,
-                            const OneFactorModel& model);
-            double dx_;
-            Size index_;
+            TwoFactorModel(
+                unsigned nParams,
+                const RelinkableHandle<TermStructure>& termStructure)
+            : Model(nParams, TwoFactor, termStructure) {}
+            virtual ~TwoFactorModel() {}
+
+            virtual double discountBondOption(Option::Type type, 
+                                              double strike,
+                                              Time maturity, 
+                                              Time bondMaturity) = 0;
 
         };
+
     }
 
 }
-
 #endif
