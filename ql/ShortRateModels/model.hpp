@@ -97,7 +97,7 @@ namespace QuantLib {
 
         class Model::PrivateConstraint : public Optimization::Constraint {
           public:
-            class Implementation :  public ConstraintImpl {
+            class Implementation :  public Optimization::Constraint::ConstraintImpl {
               public:
                 Implementation(const std::vector<Parameter>& parameters)
                 : parameters_(parameters) {}
@@ -117,7 +117,7 @@ namespace QuantLib {
                 const std::vector<Parameter>& parameters_;
             };
             PrivateConstraint(const std::vector<Parameter>& parameters)
-            : Constraint(Handle<ConstraintImpl>(new Implementation(parameters)))
+            : Optimization::Constraint(Handle<ConstraintImpl>(new Implementation(parameters)))
             {}
         };
 

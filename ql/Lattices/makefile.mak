@@ -17,7 +17,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 OBJS = \
        tree.obj$(_D) \
        trinomialtree.obj$(_D) \
-       twodimensionaltree.pbj$(_D)
+       twodimensionaltree.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

@@ -2,7 +2,7 @@
 # $Id$
 
 .autodepend
-.silent
+#.silent
 
 # Debug version
 !ifdef DEBUG
@@ -105,23 +105,11 @@ SubLibraries:
     $(MAKE)
     cd ..\DayCounters
     $(MAKE)
-    cd ..\FiniteDifferences
-    $(MAKE)
     cd ..\functions
     $(MAKE)
     cd ..\Indexes
     $(MAKE)
     cd ..\Instruments
-    $(MAKE)
-    cd ..\ShortRateModels
-    $(MAKE)
-    cd CalibrationHelpers
-    $(MAKE)
-    cd ..\OneFactorModels
-    $(MAKE)
-    cd ..\TwoFactorModels
-    $(MAKE)
-    cd ..\..\Lattices
     $(MAKE)
     cd ..\Math
     $(MAKE)
@@ -133,10 +121,23 @@ SubLibraries:
     $(MAKE)
     cd ..\RandomNumbers
     $(MAKE)
+    cd ..\Lattices
+    $(MAKE)
     cd ..\Solvers1D
     $(MAKE)
     cd ..\TermStructures
     $(MAKE)
+    cd ..\FiniteDifferences
+    $(MAKE)
+    cd ..\ShortRateModels
+    $(MAKE)
+    cd CalibrationHelpers
+    $(MAKE)
+    cd ..\OneFactorModels
+    $(MAKE)
+    cd ..\TwoFactorModels
+    $(MAKE)
+    cd ..
     cd ..
 
 

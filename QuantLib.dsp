@@ -499,7 +499,23 @@ SOURCE=.\ql\Math\bilinearinterpolation.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\chisquaredistribution.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\chisquaredistribution.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\cubicspline.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\gammadistribution.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\gammadistribution.hpp
 # End Source File
 # Begin Source File
 
@@ -751,6 +767,14 @@ SOURCE=.\ql\Pricers\blackswaption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\capfloorpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\capfloorpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\cliquetoption.cpp
 # End Source File
 # Begin Source File
@@ -959,6 +983,14 @@ SOURCE=.\ql\Pricers\singleassetoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\swaptionpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\swaptionpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\treecapfloor.cpp
 # End Source File
 # Begin Source File
@@ -1126,110 +1158,6 @@ SOURCE=.\ql\Utilities\processingiterator.hpp
 SOURCE=.\ql\Utilities\steppingiterator.hpp
 # End Source File
 # End Group
-# Begin Group "InterestRateModellling"
-
-# PROP Default_Filter ""
-# Begin Group "OneFactorModels"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollross.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollross.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullwhite.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullwhite.hpp
-# End Source File
-# End Group
-# Begin Group "CalibrationHelpers"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\caphelper.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\caphelper.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.hpp
-# End Source File
-# End Group
-# Begin Group "TwoFactorModels"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\TwoFactorModels\g2.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\TwoFactorModels\g2.hpp
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\blackmodel.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\calibrationhelper.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\calibrationhelper.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\model.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\model.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\onefactormodel.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\onefactormodel.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\parameter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\shortrateprocess.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\InterestRateModelling\twofactormodel.hpp
-# End Source File
-# End Group
 # Begin Group "Optimization"
 
 # PROP Default_Filter ""
@@ -1271,7 +1199,11 @@ SOURCE=.\ql\Optimization\linesearch.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Optimization\optimizer.hpp
+SOURCE=.\ql\Optimization\method.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\problem.hpp
 # End Source File
 # Begin Source File
 
@@ -1295,15 +1227,7 @@ SOURCE=.\ql\Optimization\steepestdescent.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\Lattices\binomialtree.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\binomialtree.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\node.hpp
+SOURCE=.\ql\Lattices\column.hpp
 # End Source File
 # Begin Source File
 
@@ -1320,6 +1244,10 @@ SOURCE=.\ql\Lattices\trinomialtree.cpp
 # Begin Source File
 
 SOURCE=.\ql\Lattices\trinomialtree.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\twodimensionaltree.hpp
 # End Source File
 # End Group
 # Begin Group "functions"
@@ -1354,6 +1282,122 @@ SOURCE=.\ql\Volatilities\capflatvolvector.hpp
 SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
 # End Source File
 # End Group
+# Begin Group "ShortRateModels"
+
+# PROP Default_Filter ""
+# Begin Group "CalibrationHelpers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.hpp
+# End Source File
+# End Group
+# Begin Group "OneFactorModels"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\coxingersollross.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\coxingersollross.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\hullwhite.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\hullwhite.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.hpp
+# End Source File
+# End Group
+# Begin Group "TwoFactorModels"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.hpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\calibrationhelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\calibrationhelper.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\model.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\model.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\onefactormodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\onefactormodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\parameter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\twofactormodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\twofactormodel.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp
@@ -1361,6 +1405,10 @@ SOURCE=.\ql\argsandresults.hpp
 # Begin Source File
 
 SOURCE=.\ql\array.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\blackmodel.hpp
 # End Source File
 # Begin Source File
 

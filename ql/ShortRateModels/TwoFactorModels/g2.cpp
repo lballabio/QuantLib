@@ -142,7 +142,8 @@ namespace QuantLib {
                 double txy = QL_SQRT(1.0 - rhoxy_*rhoxy_);
 
                 Array lambda(size_);
-                for (Size i=0; i<size_; i++) {
+                Size i;
+                for (i=0; i<size_; i++) {
                     double tau = (i==0 ? t_[0] - T_ : t_[i] - t_[i-1]);
                     lambda[i] = (1.0+rate_*tau)*A_[i]*QL_EXP(-Ba_[i]*x);
                 }
@@ -156,7 +157,7 @@ namespace QuantLib {
                             rhoxy_*(x  - mux_)/(sigmax_*txy);
                 double value = phi(-w_*h1);
 
-                for (Size i=0; i<size_; i++) {
+                for (i=0; i<size_; i++) {
                     double h2 = h1 + 
                                 Bb_[i]*sigmay_*QL_SQRT(1.0-rhoxy_*rhoxy_);
                     double kappa = - Bb_[i]*(muy_ - 
