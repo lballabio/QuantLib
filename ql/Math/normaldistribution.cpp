@@ -43,14 +43,20 @@ namespace QuantLib {
         const double CumulativeNormalDistribution::precision_ = 1e-6;
 
         double CumulativeNormalDistribution::operator()(double x) const {
+            QL_REQUIRE(x >= average_ && 2.0*average_-x >= average_,
+                "CumulativeNormalDistribution: not a real number. "
+                "Cannot process x = " +
+                DoubleFormatter::toString(x));
             if (x >= average_) {
                 double xn = (x - average_) / sigma_;
                 double k = 1.0/(1.0+gamma_*xn);
                 double temp = gaussian_(xn) * k *
                                 (a1_ + k*(a2_ + k*(a3_ + k*(a4_ + k*a5_))));
-                if (temp<precision_) return 1.0;
-                temp = 1.0-temp;
-                if (temp<precision_) return 0.0;
+                if (temp < precision_) 
+                    return 1.0;
+                temp = 1.0 - temp;
+                if (temp < precision_) 
+                    return 0.0;
                 return temp;
             } else {
                 return 1.0-(*this)(2.0*average_-x);
