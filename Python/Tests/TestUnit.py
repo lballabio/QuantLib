@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.4  2001/03/08 14:48:55  marmar
+    printDetails now takes multiple arguments
+
     Revision 1.3  2001/02/28 12:45:38  lballabio
     Print exception type besides the message
 
@@ -47,9 +50,11 @@ class TestUnit:
     prints the string to screen if the -v switch was selected from the command 
     line, or prints nothing otherwise.
     """
-    def printDetails(self,s):
+    def printDetails(self, *args):
         if self.verbose:
-            print s
+            for item in args:
+                print item,
+            print
     def test(self, description):
         # parse arguments
         import sys
