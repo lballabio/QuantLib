@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/16 14:16:09  lballabio
+    Using more meaningful rates
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -39,11 +42,11 @@ class PiecewiseFlatForwardTest(unittest.TestCase):
         gmt = time.gmtime(time.time())
         self.today =  Date(gmt[2],gmt[1],gmt[0])
         self.ns = \
-            [    1,     1,      1,       2,       3,       6,       9,     1]
+            [     1,      1,       2,       3,       6,       9,     1]
         self.units = \
-            ['day','week','month','months','months','months','months','year']
+            ['week','month','months','months','months','months','year']
         self.rates = \
-            [  2.5,   2.7,    3.0,     3.2,     3.5,     4.0,     4.5,   5.0]
+            [ 4.591,  4.593,   4.583,   4.572,   4.490,   4.455, 4.433]
         self.modified = 1
         self.dayCount = Actual360()
         self.instruments = map(
