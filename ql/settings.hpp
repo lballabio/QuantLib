@@ -63,7 +63,7 @@ namespace QuantLib {
                      etc.) and to avoid the non-strictly monotone ones (e.g.
                      Thirty360, "1/1", etc.)
         */
-        virtual DayCounter dayCounter() const { return dc_; }
+        DayCounter dayCounter() const { return dc_; }
       private:
         Date evaluationDate_;
         boost::shared_ptr<Observable> evaluationDateGuard_;
