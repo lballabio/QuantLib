@@ -29,7 +29,10 @@
 namespace QuantLib {
 
     //! Pricing engine for discrete average Asians using Monte Carlo simulation
-    /*! \ingroup asianengines */
+    /*! \warning control-variate calculation is disabled under VC++6
+    
+        \ingroup asianengines
+    */
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCDiscreteAveragingAsianEngine :
                                 public DiscreteAveragingAsianOption::engine,
@@ -90,7 +93,12 @@ namespace QuantLib {
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge), seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {
+
+        #if defined(QL_PATCH_MSVC6)
+        this->controlVariate_ = false;
+        #endif
+    }
 
     template <class RNG, class S>
     inline TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {
