@@ -57,7 +57,14 @@ namespace QuantLib {
                 ", end = " + DateFormatter::toString(d2));
             QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
                 refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
-                "Invalid reference period");
+                "Invalid reference period."
+                "Date 1: " + DateFormatter::toString(d1) +
+                "  Date 2: " + DateFormatter::toString(d2) +
+                "  Reference period Start: " +
+                 DateFormatter::toString(refPeriodStart) +
+                ",  Reference period end: " +
+                 DateFormatter::toString(refPeriodEnd)
+                );
 
             if (d1 == d2)
                 return 0.0;
