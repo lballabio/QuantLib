@@ -3,7 +3,7 @@ INCLUDES = -I../..
 
 bin_PROGRAMS = DiscreteHedging
 DiscreteHedging_SOURCES = DiscreteHedging.cpp
-DiscreteHedging_LDADD = ../../Sources/libQuantLib.la
+DiscreteHedging_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     DiscreteHedging.dep \

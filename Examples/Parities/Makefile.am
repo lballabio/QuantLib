@@ -3,7 +3,7 @@ INCLUDES = -I../..
 
 bin_PROGRAMS = Parities
 Parities_SOURCES = Parities.cpp
-Parities_LDADD = ../../Sources/libQuantLib.la
+Parities_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     Parities.dep \
