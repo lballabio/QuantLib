@@ -23,7 +23,7 @@ namespace QuantLib {
 
     namespace {
 
-        const double firstFactorials[] = {
+        const Real firstFactorials[] = {
                                    1.0,                                   1.0,
                                    2.0,                                   6.0,
                                   24.0,                                 120.0,
@@ -40,12 +40,12 @@ namespace QuantLib {
          403291461126605635584000000.0,       10888869450418352160768000000.0
         };
 
-        const unsigned int tabulated = 
+        const Size tabulated = 
             sizeof(firstFactorials)/sizeof(firstFactorials[0])-1;
 
     }
 
-    double Factorial::get(unsigned int i) {
+    Real Factorial::get(Natural i) {
         if (i<=tabulated) {
             return firstFactorials[i];
         } else {
@@ -53,7 +53,7 @@ namespace QuantLib {
         }
     }
 
-    double Factorial::ln(unsigned int i) {
+    Real Factorial::ln(Natural i) {
         if (i<=tabulated) {
             return QL_LOG(firstFactorials[i]);
         } else {

@@ -51,18 +51,18 @@ namespace QuantLib {
       private:
         Array diagonal_;
         Matrix eigenVectors_;
-        void jacobiRotate_(Matrix & m, double rot, double dil,
-            Size j1, Size k1, Size j2, Size k2) const;
+        void jacobiRotate_(Matrix & m, Real rot, Real dil,
+                           Size j1, Size k1, Size j2, Size k2) const;
     };
 
 
     // inline definitions
 
     //! This routines implements the Jacobi, a.k.a. Givens, rotation
-    inline void SymmetricSchurDecomposition::jacobiRotate_(Matrix &m,
-          double rot, double dil, Size j1, Size k1, Size j2, Size k2) const{
-
-        double x1, x2;
+    inline void SymmetricSchurDecomposition::jacobiRotate_(
+                                      Matrix &m, Real rot, Real dil, Size j1, 
+                                      Size k1, Size j2, Size k2) const {
+        Real x1, x2;
         x1 = m[j1][k1];
         x2 = m[j2][k2];
         m[j1][k1] = x1 - dil*(x2 + x1*rot);

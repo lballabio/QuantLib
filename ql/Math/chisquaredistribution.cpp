@@ -21,25 +21,25 @@
 
 namespace QuantLib {
 
-    double ChiSquareDistribution::operator()(double x) const {
+    Real ChiSquareDistribution::operator()(Real x) const {
         return GammaDistribution(0.5*df_)(0.5*x);
     }
 
-    double NonCentralChiSquareDistribution::operator()(double x) const {
+    Real NonCentralChiSquareDistribution::operator()(Real x) const {
         if (x <= 0.0)
             return 0.0;
 
-        const double errmax = 1e-12;
-        const int itrmax = 10000;
-        double lam = 0.5*ncp_;
+        const Real errmax = 1e-12;
+        const Size itrmax = 10000;
+        Real lam = 0.5*ncp_;
 
-        double u = QL_EXP(-lam);
-        double v = u;
-        double x2 = 0.5*x;
-        double f2 = 0.5*df_;
-        double f_x_2n = df_ - x;
+        Real u = QL_EXP(-lam);
+        Real v = u;
+        Real x2 = 0.5*x;
+        Real f2 = 0.5*df_;
+        Real f_x_2n = df_ - x;
 
-        double t = 0.0;
+        Real t = 0.0;
         if (f2*QL_EPSILON > 0.125 &&
             QL_FABS(x2-f2) < QL_SQRT(QL_EPSILON)*f2) {
             t = QL_EXP((1 - t)*(2 - t/(f2+1)))/QL_SQRT(2.0*M_PI*(f2 + 1.0));
@@ -49,14 +49,14 @@ namespace QuantLib {
                        GammaFunction().logValue(f2 + 1));
         }
 
-        double ans = v*t;
+        Real ans = v*t;
 
         bool flag = false;
-        int n = 1;
-        double f_2n = df_ + 2.0;
+        Size n = 1;
+        Real f_2n = df_ + 2.0;
         f_x_2n += 2.0;
 
-        double bound;
+        Real bound;
         for (;;) {
             if (f_x_2n > 0) {
                 flag = true;

@@ -60,44 +60,44 @@ namespace QuantLib {
         //! \name 1-D inspectors lifted from underlying statistics class
         //@{
         Size samples() const;
-        double weightSum() const;
+        Real weightSum() const;
         //@}
         //! \name N-D inspectors lifted from underlying statistics class
         //@{
         // void argument list
-        std::vector<double> mean() const;
-        std::vector<double> variance() const;
-        std::vector<double> standardDeviation() const;
-        std::vector<double> downsideVariance() const;
-        std::vector<double> downsideDeviation() const;
-        std::vector<double> semiVariance() const;
-        std::vector<double> semiDeviation() const;
-        std::vector<double> errorEstimate() const;
-        std::vector<double> skewness() const;
-        std::vector<double> kurtosis() const;
-        std::vector<double> min() const;
-        std::vector<double> max() const;
+        std::vector<Real> mean() const;
+        std::vector<Real> variance() const;
+        std::vector<Real> standardDeviation() const;
+        std::vector<Real> downsideVariance() const;
+        std::vector<Real> downsideDeviation() const;
+        std::vector<Real> semiVariance() const;
+        std::vector<Real> semiDeviation() const;
+        std::vector<Real> errorEstimate() const;
+        std::vector<Real> skewness() const;
+        std::vector<Real> kurtosis() const;
+        std::vector<Real> min() const;
+        std::vector<Real> max() const;
 
-        // single double argument list
-        std::vector<double> gaussianPercentile(double y) const;
-        std::vector<double> percentile(double y) const;
+        // single argument list
+        std::vector<Real> gaussianPercentile(Real y) const;
+        std::vector<Real> percentile(Real y) const;
 
-        std::vector<double> gaussianPotentialUpside(double percentile) const;
-        std::vector<double> potentialUpside(double percentile) const;
+        std::vector<Real> gaussianPotentialUpside(Real percentile) const;
+        std::vector<Real> potentialUpside(Real percentile) const;
 
-        std::vector<double> gaussianValueAtRisk(double percentile) const;
-        std::vector<double> valueAtRisk(double percentile) const;
+        std::vector<Real> gaussianValueAtRisk(Real percentile) const;
+        std::vector<Real> valueAtRisk(Real percentile) const;
 
-        std::vector<double> gaussianExpectedShortfall(double percentile) const;
-        std::vector<double> expectedShortfall(double percentile) const;
+        std::vector<Real> gaussianExpectedShortfall(Real percentile) const;
+        std::vector<Real> expectedShortfall(Real percentile) const;
 
-        std::vector<double> regret(double target) const;
+        std::vector<Real> regret(Real target) const;
 
-        std::vector<double> gaussianShortfall(double target) const;
-        std::vector<double> shortfall(double target) const;
+        std::vector<Real> gaussianShortfall(Real target) const;
+        std::vector<Real> shortfall(Real target) const;
 
-        std::vector<double> gaussianAverageShortfall(double target) const;
-        std::vector<double> averageShortfall(double target) const;
+        std::vector<Real> gaussianAverageShortfall(Real target) const;
+        std::vector<Real> averageShortfall(Real target) const;
 
         //@}
         //! \name Modifiers
@@ -105,14 +105,14 @@ namespace QuantLib {
         void reset(Size dimension = 0);
         template <class Sequence>
         void add(const Sequence& sample,
-                 double weight = 1.0) {
+                 Real weight = 1.0) {
             add(sample.begin(),sample.end(),weight);
         }
         template <class Iterator>
         void add(Iterator begin,
                  Iterator end,
-                 double weight = 1.0) {
-            QL_REQUIRE(std::distance(begin, end) == int(dimension_),
+                 Real weight = 1.0) {
+            QL_REQUIRE(std::distance(begin, end) == Integer(dimension_),
                        "sample size mismatch");
 
             quadraticSum_ += weight * outerProduct(begin, end,
@@ -126,7 +126,7 @@ namespace QuantLib {
       protected:
         Size dimension_;
         std::vector<statistics_type> stats_;
-        mutable std::vector<double> results_;
+        mutable std::vector<Real> results_;
         Matrix quadraticSum_;
     };
 
@@ -145,7 +145,7 @@ namespace QuantLib {
     }
 
     template <class Stat>
-    inline double SequenceStatistics<Stat>::weightSum() const {
+    inline Real SequenceStatistics<Stat>::weightSum() const {
         return stats_[0].weightSum();
     }
 
@@ -155,7 +155,7 @@ namespace QuantLib {
     // N-D methods' definition with void argument list
     #define DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(METHOD) \
     template <class Stat> \
-    std::vector<double> \
+    std::vector<Real> \
     SequenceStatistics<Stat>::METHOD() const { \
         for (Size i=0; i<dimension_; i++) \
             results_[i] = stats_[i].METHOD(); \
@@ -176,11 +176,11 @@ namespace QuantLib {
     #undef DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID
 
 
-    // N-D methods' definition with single double argument
+    // N-D methods' definition with single argument
     #define DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(METHOD) \
     template <class Stat> \
-    std::vector<double> \
-    SequenceStatistics<Stat>::METHOD(double x) const { \
+    std::vector<Real> \
+    SequenceStatistics<Stat>::METHOD(Real x) const { \
         for (Size i=0; i<dimension_; i++) \
             results_[i] = stats_[i].METHOD(x); \
         return results_; \
@@ -214,7 +214,7 @@ namespace QuantLib {
         } else {
             dimension_ = dimension;
             stats_ = std::vector<Stat>(dimension);
-            results_ = std::vector<double>(dimension);
+            results_ = std::vector<Real>(dimension);
         }
         quadraticSum_ = Matrix(dimension_, dimension_, 0.0);
     }
@@ -223,16 +223,16 @@ namespace QuantLib {
 
     template <class Stat>
     Disposable<Matrix> SequenceStatistics<Stat>::covariance() const {
-        double sampleWeight = weightSum();
+        Real sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight > 0.0,
                    "sampleWeight=0, unsufficient");
 
-        double sampleNumber = samples();
+        Real sampleNumber = samples();
         QL_REQUIRE(sampleNumber > 1.0,
                    "sample number <=1, unsufficient");
 
-        std::vector<double> m = mean();
-        double inv = 1.0/sampleWeight;
+        std::vector<Real> m = mean();
+        Real inv = 1.0/sampleWeight;
 
         Matrix result = inv*quadraticSum_;
         result -= outerProduct(m.begin(), m.end(),

@@ -36,32 +36,32 @@ namespace QuantLib {
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
               primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {
                 primitiveConst_[0] = 0.0;
-                for (int i=1; i<xEnd-xBegin; i++) {
-                    double dx = xBegin_[i]-xBegin_[i-1];
+                for (Size i=1; i<xEnd-xBegin; i++) {
+                    Real dx = xBegin_[i]-xBegin_[i-1];
                     s_[i-1] = (yBegin_[i]-yBegin_[i-1])/dx;
                     primitiveConst_[i] = primitiveConst_[i-1]
                         + dx*(yBegin_[i-1] +0.5*dx*s_[i-1]);
                 }
             }
-            double value(double x) const {
+            Real value(Real x) const {
                 Size i = locate(x);
                 return yBegin_[i] + (x-xBegin_[i])*s_[i];
             }
-            double primitive(double x) const {
+            Real primitive(Real x) const {
                 Size i = locate(x);
-                double dx = x-xBegin_[i];
+                Real dx = x-xBegin_[i];
                 return primitiveConst_[i] +
                     dx*(yBegin_[i] + 0.5*dx*s_[i]);
             }
-            double derivative(double x) const {
+            Real derivative(Real x) const {
                 Size i = locate(x);
                 return s_[i];
             }
-            double secondDerivative(double) const {
+            Real secondDerivative(Real) const {
                 return 0.0;
             }
           private:
-            std::vector<double> primitiveConst_, s_;
+            std::vector<Real> primitiveConst_, s_;
         };
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */

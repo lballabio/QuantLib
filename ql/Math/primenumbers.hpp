@@ -44,11 +44,11 @@ namespace QuantLib {
     class PrimeNumbers {
       public:
         //! Get and store one after another.
-        static unsigned long get(Size absoluteIndex);
+        static BigNatural get(Size absoluteIndex);
       private:
         PrimeNumbers() {}
-        static unsigned long nextPrimeNumber();
-        static std::vector<unsigned long> primeNumbers_;
+        static BigNatural nextPrimeNumber();
+        static std::vector<BigNatural> primeNumbers_;
     };
 
 }

@@ -46,8 +46,8 @@ namespace QuantLib {
                     splines_.push_back(NaturalCubicSpline(
                                            xBegin, xEnd, zData_.row_begin(i)));
             }
-            double value(double x, double y) const {
-                std::vector<double> section(splines_.size());
+            Real value(Real x, Real y) const {
+                std::vector<Real> section(splines_.size());
                 for (Size i=0; i<splines_.size(); i++)
                     section[i]=splines_[i](x,true);
 

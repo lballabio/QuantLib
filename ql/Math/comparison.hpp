@@ -34,7 +34,7 @@ namespace QuantLib {
         \f]
         where \f$ \varepsilon \f$ is \f$ n \f$ times the machine accuracy.
     */
-    bool close(double x, double y, Size n = 42);
+    bool close(Real x, Real y, Size n = 42);
 
     /*! Follows somewhat the advice of Knuth on checking for floating-point 
         equality. The closeness relationship is:
@@ -44,18 +44,18 @@ namespace QuantLib {
         \f]
         where \f$ \varepsilon \f$ is \f$ n \f$ times the machine accuracy.
     */
-    bool close_enough(double x, double y, Size n = 42);
+    bool close_enough(Real x, Real y, Size n = 42);
 
 
     // inline definitions
 
-    inline bool close(double x, double y, Size n) {
-        double diff = QL_FABS(x-y), tolerance = n*QL_EPSILON;
+    inline bool close(Real x, Real y, Size n) {
+        Real diff = QL_FABS(x-y), tolerance = n*QL_EPSILON;
         return diff <= tolerance*x && diff <= tolerance*y;
     }
 
-    inline bool close_enough(double x, double y, Size n) {
-        double diff = QL_FABS(x-y), tolerance = n*QL_EPSILON;
+    inline bool close_enough(Real x, Real y, Size n) {
+        Real diff = QL_FABS(x-y), tolerance = n*QL_EPSILON;
         return diff <= tolerance*x || diff <= tolerance*y;
     }
 

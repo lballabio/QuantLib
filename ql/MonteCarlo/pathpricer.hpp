@@ -35,7 +35,7 @@ namespace QuantLib {
 
         \ingroup mcarlo
     */
-    template<class PathType, class ValueType=double>
+    template<class PathType, class ValueType=Real>
     class PathPricer : public std::unary_function<PathType, ValueType> {
       public:
         explicit PathPricer(const RelinkableHandle<TermStructure>& discountTS =

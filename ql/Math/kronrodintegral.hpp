@@ -37,11 +37,11 @@ namespace QuantLib {
     */
     class KronrodIntegral {
       public:
-        KronrodIntegral(double tolerance,
+        KronrodIntegral(Real tolerance,
                         Size maxFunctionEvaluations = Null<Size>());
 
         template <class F>
-        double operator()(const F& f, double a, double b) const {
+        Real operator()(const F& f, Real a, Real b) const {
 
             if (a == b)
                 return 0.0;
@@ -56,48 +56,48 @@ namespace QuantLib {
 
       private:
         template <class F>
-        double GaussKronrod(const F& f,
-                            const double a, const double b,
-                            const double tolerance) const {
+        Real GaussKronrod(const F& f,
+                          Real a, Real b,
+                          Real tolerance) const {
             // weights for 7-point Gauss-Legendre integration
             // (only 4 values out of 7 are given as they are symmetric)
-            static const double g7w[] = { 0.417959183673469,
-                                          0.381830050505119,
-                                          0.279705391489277,
-                                          0.129484966168870 };
+            static const Real g7w[] = { 0.417959183673469,
+                                        0.381830050505119,
+                                        0.279705391489277,
+                                        0.129484966168870 };
             // weights for 15-point Gauss-Kronrod integration
-            static const double k15w[] = { 0.209482141084728,
-                                           0.204432940075298,
-                                           0.190350578064785,
-                                           0.169004726639267,
-                                           0.140653259715525,
-                                           0.104790010322250,
-                                           0.063092092629979,
-                                           0.022935322010529 };
+            static const Real k15w[] = { 0.209482141084728,
+                                         0.204432940075298,
+                                         0.190350578064785,
+                                         0.169004726639267,
+                                         0.140653259715525,
+                                         0.104790010322250,
+                                         0.063092092629979,
+                                         0.022935322010529 };
             // abscissae (evaluation points)
             // for 15-point Gauss-Kronrod integration
-            static const double k15t[] = { 0.000000000000000,
-                                           0.207784955007898,
-                                           0.405845151377397,
-                                           0.586087235467691,
-                                           0.741531185599394,
-                                           0.864864423359769,
-                                           0.949107912342758,
-                                           0.991455371120813 };
+            static const Real k15t[] = { 0.000000000000000,
+                                         0.207784955007898,
+                                         0.405845151377397,
+                                         0.586087235467691,
+                                         0.741531185599394,
+                                         0.864864423359769,
+                                         0.949107912342758,
+                                         0.991455371120813 };
 
-            const double halflength = (b - a) / 2;
-            const double center = (a + b) / 2;
+            Real halflength = (b - a) / 2;
+            Real center = (a + b) / 2;
 
-            double g7; // will be result of G7 integral
-            double k15; // will be result of K15 integral
+            Real g7; // will be result of G7 integral
+            Real k15; // will be result of K15 integral
 
-            double t, fsum; // t (abscissa) and f(t)
-            double fc = f(center);
+            Real t, fsum; // t (abscissa) and f(t)
+            Real fc = f(center);
             g7 = fc * g7w[0];
             k15 = fc * k15w[0];
 
             // calculate g7 and half of k15
-            int j, j2;
+            Integer j, j2;
             for (j = 1, j2 = 2; j < 4; j++, j2 += 2) {
                 t = halflength * k15t[j2];
                 fsum = f(center - t) + f(center + t);
@@ -134,12 +134,12 @@ namespace QuantLib {
             }
         }
 
-        double tolerance_;
+        Real tolerance_;
         mutable Size functionEvaluations_;
         Size maxFunctionEvaluations_;
     };
 
-    inline KronrodIntegral::KronrodIntegral(double tolerance,
+    inline KronrodIntegral::KronrodIntegral(Real tolerance,
                                             Size maxFunctionEvaluations)
     : tolerance_(tolerance),
       maxFunctionEvaluations_(maxFunctionEvaluations) {

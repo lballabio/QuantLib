@@ -32,12 +32,12 @@ namespace QuantLib {
     class Interpolation2DImpl {
       public:
         virtual ~Interpolation2DImpl() {}
-        virtual double xMin() const = 0;
-        virtual double xMax() const = 0;
-        virtual double yMin() const = 0;
-        virtual double yMax() const = 0;
-        virtual bool isInRange(double x, double y) const = 0;
-        virtual double value(double x, double y) const = 0;
+        virtual Real xMin() const = 0;
+        virtual Real xMax() const = 0;
+        virtual Real yMin() const = 0;
+        virtual Real yMax() const = 0;
+        virtual bool isInRange(Real x, Real y) const = 0;
+        virtual Real value(Real x, Real y) const = 0;
     };
 
     //! base class for 2-D interpolations.
@@ -50,9 +50,9 @@ namespace QuantLib {
     class Interpolation2D 
         : public Bridge<Interpolation2D,Interpolation2DImpl> {
       public:
-        typedef double first_argument_type;
-        typedef double second_argument_type;
-        typedef double result_type;
+        typedef Real first_argument_type;
+        typedef Real second_argument_type;
+        typedef Real result_type;
       #if defined(QL_PATCH_MICROSOFT)
       public:
       #else
@@ -76,23 +76,23 @@ namespace QuantLib {
                     QL_REQUIRE(*l > *k, "unsorted y values");
                 #endif
             }
-            double xMin() const {
+            Real xMin() const {
                 return *xBegin_;
             }
-            double xMax() const {
+            Real xMax() const {
                 return *(xEnd_-1);
             }
-            double yMin() const {
+            Real yMin() const {
                 return *yBegin_;
             }
-            double yMax() const {
+            Real yMax() const {
                 return *(yEnd_-1);
             }
-            bool isInRange(double x, double y) const {
+            bool isInRange(Real x, Real y) const {
                 return x>=xMin() && x<=xMax() && y>=yMin() && y<=yMax();
             }
           protected:
-            Size locateX(double x) const {
+            Size locateX(Real x) const {
                 if (x < *xBegin_)
                     return 0;
                 else if (x > *(xEnd_-1))
@@ -100,7 +100,7 @@ namespace QuantLib {
                 else
                     return std::upper_bound(xBegin_,xEnd_-1,x)-xBegin_-1;
             }
-            Size locateY(double y) const {
+            Size locateY(Real y) const {
                 if (y < *yBegin_)
                     return 0;
                 else if (y > *(yEnd_-1))
@@ -114,20 +114,20 @@ namespace QuantLib {
         };
       public:
         Interpolation2D() {}
-        double operator()(double x, double y,
-                          bool allowExtrapolation = false) const {
+        Real operator()(Real x, Real y,
+                        bool allowExtrapolation = false) const {
             checkRange(x,y,allowExtrapolation);
             return impl_->value(x,y);
         }
-        double xMin() const { return impl_->xMin(); }
-        double xMax() const { return impl_->xMax(); }
-        double yMin() const { return impl_->yMin(); }
-        double yMax() const { return impl_->yMax(); }
-        bool isInRange(double x, double y) const {
+        Real xMin() const { return impl_->xMin(); }
+        Real xMax() const { return impl_->xMax(); }
+        Real yMin() const { return impl_->yMin(); }
+        Real yMax() const { return impl_->yMax(); }
+        bool isInRange(Real x, Real y) const {
             return impl_->isInRange(x,y);
         }
       protected:
-        void checkRange(double x, double y, bool allowExtrapolation) const {
+        void checkRange(Real x, Real y, bool allowExtrapolation) const {
             QL_REQUIRE(allowExtrapolation || impl_->isInRange(x,y),
                        "interpolation range is ["
                        + DecimalFormatter::toString(impl_->xMin()) +

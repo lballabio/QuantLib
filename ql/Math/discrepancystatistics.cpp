@@ -19,14 +19,14 @@
 
 namespace QuantLib {
 
-    double DiscrepancyStatistics::discrepancy() const {
+    Real DiscrepancyStatistics::discrepancy() const {
         Size N = samples();
         /*
         Size i;
-        double r_ik, r_jk, cdiscr = adiscr = 0.0, temp = 1.0;
+        Real r_ik, r_jk, cdiscr = adiscr = 0.0, temp = 1.0;
 
         for (i=0; i<N; i++) {
-            double temp = 1.0;
+            Real temp = 1.0;
             for (Size k=0; k<dimension_; k++) {
                 r_ik = stats_[k].sampleData()[i].first;
                 temp *= (1.0 - r_ik*r_ik);
@@ -36,7 +36,7 @@ namespace QuantLib {
 
         for (i=0; i<N; i++) {
             for (Size j=0; j<N; j++) {
-                double temp = 1.0;
+                Real temp = 1.0;
                 for (Size k=0; k<dimension_; k++) {
                     r_jk = stats_[k].sampleData()[j].first;
                     r_ik = stats_[k].sampleData()[i].first;

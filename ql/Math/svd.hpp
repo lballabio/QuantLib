@@ -55,13 +55,13 @@ namespace QuantLib {
         const Matrix& V() const;
         const Array& singularValues() const;
         Disposable<Matrix> S() const;
-        double norm2();
-        double cond();
-        int rank();
+        Real norm2();
+        Real cond();
+        Integer rank();
       private:
         Matrix U_, V_;
         Array s_;
-        int m_, n_;
+        Integer m_, n_;
         bool transpose_;
     };
 

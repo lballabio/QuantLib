@@ -32,7 +32,7 @@ namespace QuantLib {
 
     namespace {
 
-        const unsigned long firstPrimes[] = {
+        const BigNatural firstPrimes[] = {
             // the first two primes are mandatory for bootstrapping
             2,  3, 
             // optional additional precomputed primes
@@ -40,9 +40,9 @@ namespace QuantLib {
             31, 37, 41, 43, 47 };
     }
 
-    std::vector<unsigned long> PrimeNumbers::primeNumbers_;
+    std::vector<BigNatural> PrimeNumbers::primeNumbers_;
 
-    unsigned long PrimeNumbers::get(Size absoluteIndex) {
+    BigNatural PrimeNumbers::get(Size absoluteIndex) {
         if (primeNumbers_.empty()) {
             Size n = sizeof(firstPrimes)/sizeof(firstPrimes[0]);
             std::copy(firstPrimes, firstPrimes+n,
@@ -53,12 +53,12 @@ namespace QuantLib {
         return primeNumbers_[absoluteIndex];
     }
 
-    unsigned long PrimeNumbers::nextPrimeNumber() {
-        unsigned long p, n, m = primeNumbers_.back();
+    BigNatural PrimeNumbers::nextPrimeNumber() {
+        BigNatural p, n, m = primeNumbers_.back();
         do {
             // skip the even numbers
             m += 2;
-            n = static_cast<unsigned long>(QL_SQRT(double(m)));
+            n = static_cast<BigNatural>(QL_SQRT(Real(m)));
             // i=1 since the even numbers have already been skipped
             Size i = 1;
             do {

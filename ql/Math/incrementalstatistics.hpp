@@ -44,23 +44,23 @@ namespace QuantLib {
         Size samples() const;
 
         //! sum of data weights
-        double weightSum() const;
+        Real weightSum() const;
 
         /*! returns the mean, defined as
             \f[ \langle x \rangle = \frac{\sum w_i x_i}{\sum w_i}. \f]
         */
-        double mean() const;
+        Real mean() const;
 
         /*! returns the variance, defined as
             \f[ \frac{N}{N-1} \left\langle \left(
                 x-\langle x \rangle \right)^2 \right\rangle. \f]
         */
-        double variance() const;
+        Real variance() const;
 
         /*! returns the standard deviation \f$ \sigma \f$, defined as the
             square root of the variance.
         */
-        double standardDeviation() const;
+        Real standardDeviation() const;
 
         /*! returns the downside variance, defined as
             \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
@@ -68,25 +68,25 @@ namespace QuantLib {
             where \f$ \theta \f$ = 0 if x > 0 and
             \f$ \theta \f$ =1 if x <0
         */
-        double downsideVariance() const;
+        Real downsideVariance() const;
 
         /*! returns the downside deviation, defined as the
             square root of the downside variance.
         */
-        double downsideDeviation() const;
+        Real downsideDeviation() const;
 
         /*! returns the error estimate \f$ \epsilon \f$, defined as the
             square root of the ratio of the variance to the number of
             samples.
         */
-        double errorEstimate() const;
+        Real errorEstimate() const;
 
         /*! returns the skewness, defined as
             \f[ \frac{N^2}{(N-1)(N-2)} \frac{\left\langle \left(
                 x-\langle x \rangle \right)^3 \right\rangle}{\sigma^3}. \f]
             The above evaluates to 0 for a Gaussian distribution.
         */
-        double skewness() const;
+        Real skewness() const;
 
         /*! returns the excess kurtosis, defined as
             \f[ \frac{N^2(N+1)}{(N-1)(N-2)(N-3)}
@@ -94,13 +94,13 @@ namespace QuantLib {
                 \right\rangle}{\sigma^4} - \frac{3(N-1)^2}{(N-2)(N-3)}. \f]
             The above evaluates to 0 for a Gaussian distribution.
         */
-        double kurtosis() const;
+        Real kurtosis() const;
 
         /*! returns the minimum sample value */
-        double min() const;
+        Real min() const;
 
         /*! returns the maximum sample value */
-        double max() const;
+        Real max() const;
 
         //@}
 
@@ -108,7 +108,7 @@ namespace QuantLib {
         //@{
         //! adds a datum to the set, possibly with a weight
         /*! \pre weight must be positive or null */
-        void add(double value, double weight = 1.0);
+        void add(Real value, Real weight = 1.0);
         //! adds a sequence of data to the set, with default weight
         template <class DataIterator>
         void addSequence(DataIterator begin, DataIterator end) {
@@ -128,10 +128,10 @@ namespace QuantLib {
         //@}
       protected:
         Size sampleNumber_, downsideSampleNumber_;
-        double sampleWeight_, downsideSampleWeight_;
-        double sum_, quadraticSum_, downsideQuadraticSum_,
+        Real sampleWeight_, downsideSampleWeight_;
+        Real sum_, quadraticSum_, downsideQuadraticSum_,
             cubicSum_, fourthPowerSum_;
-        double min_, max_;
+        Real min_, max_;
     };
 
     // inline definitions
@@ -140,36 +140,36 @@ namespace QuantLib {
         return sampleNumber_;
     }
 
-    inline double IncrementalStatistics::weightSum() const {
+    inline Real IncrementalStatistics::weightSum() const {
         return sampleWeight_;
     }
 
-    inline double IncrementalStatistics::mean() const {
+    inline Real IncrementalStatistics::mean() const {
         QL_REQUIRE(sampleWeight_>0.0,
                    "sampleWeight_=0, unsufficient");
         return sum_/sampleWeight_;
     }
 
-    inline double IncrementalStatistics::standardDeviation() const {
+    inline Real IncrementalStatistics::standardDeviation() const {
         return QL_SQRT(variance());
     }
 
-    inline double IncrementalStatistics::downsideDeviation() const {
+    inline Real IncrementalStatistics::downsideDeviation() const {
         return QL_SQRT(downsideVariance());
     }
 
-    inline double IncrementalStatistics::errorEstimate() const {
-        double var = variance();
+    inline Real IncrementalStatistics::errorEstimate() const {
+        Real var = variance();
         QL_REQUIRE(samples() > 0, "empty sample set");
         return QL_SQRT(var/samples());
     }
 
-    inline double IncrementalStatistics::min() const {
+    inline Real IncrementalStatistics::min() const {
         QL_REQUIRE(samples() > 0, "empty sample set");
         return min_;
     }
 
-    inline double IncrementalStatistics::max() const {
+    inline Real IncrementalStatistics::max() const {
         QL_REQUIRE(samples() > 0, "empty sample set");
         return max_;
     }

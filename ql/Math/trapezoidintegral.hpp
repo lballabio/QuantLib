@@ -44,13 +44,13 @@ namespace QuantLib {
     class TrapezoidIntegral {
       public:
         enum Method { Default, MidPoint };
-        TrapezoidIntegral(double accuracy, 
+        TrapezoidIntegral(Real accuracy, 
                           Method method = Default,
                           Size maxIterations = Null<Size>())
         : accuracy_(accuracy), method_(method), 
           maxIterations_(maxIterations) {}
         template <class F>
-        double operator()(const F& f, double a, double b) const {
+        Real operator()(const F& f, Real a, Real b) const {
 
             if (a == b)
                 return 0.0;
@@ -59,7 +59,7 @@ namespace QuantLib {
 
             // start from the coarsest trapezoid...
             Size N = 1;
-            double I = (f(a)+f(b))*(b-a)/2.0, newI;
+            Real I = (f(a)+f(b))*(b-a)/2.0, newI;
             // ...and refine it
             Size i = 1;
             do {
@@ -84,33 +84,33 @@ namespace QuantLib {
             QL_FAIL("max number of iterations reached");
         }
         // calculation parameters
-        double accuracy() const { return accuracy_; }
-        double& accuracy() { return accuracy_; }
+        Real accuracy() const { return accuracy_; }
+        Real& accuracy() { return accuracy_; }
         Method method() const { return method_; }
         Method& method() { return method_; }
         Size maxIterations() const { return maxIterations_; }
         Size& maxIterations() { return maxIterations_; }
       protected:
-        double accuracy_;
+        Real accuracy_;
         Method method_;
         Size maxIterations_;
         template <class F>
-        double defaultIteration(const F& f, double a, double b,
-                                double I, Size N) const {
-            double sum = 0.0;
-            double dx = (b-a)/N;
-            double x = a + dx/2.0;
+        Real defaultIteration(const F& f, Real a, Real b,
+                              Real I, Size N) const {
+            Real sum = 0.0;
+            Real dx = (b-a)/N;
+            Real x = a + dx/2.0;
             for (Size i=0; i<N; x += dx, ++i) 
                 sum += f(x);
             return (I + dx*sum)/2.0;
         }
         template <class F>
-        double midPointIteration(const F& f, double a, double b,
-                                 double I, Size N) const {
-            double sum = 0.0;
-            double dx = (b-a)/N;
-            double x = a + dx/6.0;
-            double D = 2.0*dx/3.0;
+        Real midPointIteration(const F& f, Real a, Real b,
+                               Real I, Size N) const {
+            Real sum = 0.0;
+            Real dx = (b-a)/N;
+            Real x = a + dx/6.0;
+            Real D = 2.0*dx/3.0;
             for (Size i=0; i<N; x += dx, ++i) 
                 sum += f(x) + f(x+D);
             return (I + dx*sum)/3.0;

@@ -30,15 +30,16 @@ namespace QuantLib {
 
     //! Normal distribution function
     /*! formula here ...
-        Given an integer k it returns its probability in a Poisson distribution.
+        Given an integer \f$ k \f$, it returns its probability 
+        in a Poisson distribution.
     */
-    class PoissonDistribution : public std::unary_function<double,double> {
+    class PoissonDistribution : public std::unary_function<Real,Real> {
       public:
-        PoissonDistribution(double mu);
+        PoissonDistribution(Real mu);
         // function
-        double operator()(unsigned long k) const;
+        Real operator()(BigNatural k) const;
       private:
-        double mu_, logMu_;
+        Real mu_, logMu_;
     };
 
 
@@ -52,21 +53,22 @@ namespace QuantLib {
         Press, Teukolsky, Vetterling, Flannery, chapter 6
     */
     class CumulativePoissonDistribution
-    : public std::unary_function<double,double> {
+    : public std::unary_function<Real,Real> {
       public:
-        CumulativePoissonDistribution(double mu) : mu_(mu) {}
+        CumulativePoissonDistribution(Real mu) : mu_(mu) {}
         // function
-        double operator()(unsigned long k) const {
-            return 1.0 - incompleteGammaFunction(k+1, mu_); }
+        Real operator()(BigNatural k) const {
+            return 1.0 - incompleteGammaFunction(k+1, mu_);
+        }
       private:
-        double mu_;
+        Real mu_;
     };
 
 
 
     // inline definitions
 
-    inline PoissonDistribution::PoissonDistribution(double mu)
+    inline PoissonDistribution::PoissonDistribution(Real mu)
     : mu_(mu) {
 
         QL_REQUIRE(mu_>=0.0,
@@ -76,12 +78,12 @@ namespace QuantLib {
         if (mu_!=0.0) logMu_ = QL_LOG(mu_);
     }
 
-    inline double PoissonDistribution::operator()(unsigned long k) const {
+    inline Real PoissonDistribution::operator()(BigNatural k) const {
         if (mu_==0.0) {
             if (k==0) return 1.0;
             else      return 0.0;
         }
-        double logFactorial = Factorial::ln(k); 
+        Real logFactorial = Factorial::ln(k); 
         return QL_EXP(k*QL_LOG(mu_) - logFactorial - mu_);
     }
 

@@ -35,14 +35,14 @@ namespace QuantLib {
         }
         Matrix ss = s;
 
-        std::vector<double> tmpDiag(diagonal_.begin(), diagonal_.end());
-        std::vector<double> tmpAccumulate(size, 0.0);
-        double threshold, epsPrec = 1e-15;
+        std::vector<Real> tmpDiag(diagonal_.begin(), diagonal_.end());
+        std::vector<Real> tmpAccumulate(size, 0.0);
+        Real threshold, epsPrec = 1e-15;
         bool keeplooping = true;
         Size maxIterations = 100, ite = 1;
         do {
             //main loop
-            double sum = 0;
+            Real sum = 0;
             for (Size a=0; a<size-1; a++) {
                 for (Size b=a+1; b<size; b++) {
                     sum += QL_FABS(ss[a][b]);
@@ -61,8 +61,8 @@ namespace QuantLib {
                 Size j, k, l;
                 for (j=0; j<size-1; j++) {
                     for (k=j+1; k<size; k++) {
-                        double sine, rho, cosin, heig, tang, beta;
-                        double smll = QL_FABS(ss[j][k]);
+                        Real sine, rho, cosin, heig, tang, beta;
+                        Real smll = QL_FABS(ss[j][k]);
                         if(ite> 5 &&
                            smll<epsPrec*QL_FABS(diagonal_[j]) &&
                            smll<epsPrec*QL_FABS(diagonal_[k])) {
@@ -87,7 +87,7 @@ namespace QuantLib {
                             diagonal_[j] -= heig;
                             diagonal_[k] += heig;
                             ss[j][k] = 0.0;
-                            for (l=0;   int(l)<=int(j)-1; l++)
+                            for (l=0; l+1<=j; l++)
                                 jacobiRotate_(ss, rho, sine, l, j, l, k);
                             for (l=j+1; l<=k-1; l++)
                                 jacobiRotate_(ss, rho, sine, j, l, l, k);
@@ -112,8 +112,8 @@ namespace QuantLib {
 
 
         // sort (eigenvalues, eigenvectors)
-        std::vector<std::pair<double, std::vector<double> > > temp(size);
-        std::vector<double> eigenVector(size);
+        std::vector<std::pair<Real, std::vector<Real> > > temp(size);
+        std::vector<Real> eigenVector(size);
         Size row, col;
         for (col=0; col<size; col++) {
             #if defined(QL_PATCH_BORLAND)
@@ -125,17 +125,17 @@ namespace QuantLib {
             std::copy(eigenVectors_.column_begin(col),
                       eigenVectors_.column_end(col), eigenVector.begin());
             #endif
-            temp[col] = std::make_pair<double, std::vector<double> >(
+            temp[col] = std::make_pair<Real, std::vector<Real> >(
                 diagonal_[col], eigenVector);
         }
         std::sort(temp.begin(), temp.end(),
-            std::greater<std::pair<double, std::vector<double> > >());
-        double maxEv = temp[0].first;
+            std::greater<std::pair<Real, std::vector<Real> > >());
+        Real maxEv = temp[0].first;
         for (col=0; col<size; col++) {
             // check for round-off errors
             diagonal_[col] = 
                 (QL_FABS(temp[col].first/maxEv)<1e-16 ? 0.0 : temp[col].first);
-            double sign = 1.0;
+            Real sign = 1.0;
             if (temp[col].second[0]<0.0)
                 sign = -1.0;
             // doesn't work at all :(

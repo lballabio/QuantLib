@@ -27,8 +27,8 @@
 namespace QuantLib {
 
 
-    double incompleteGammaFunction(double a, double x, double accuracy,
-        int maxIteration) {
+    Real incompleteGammaFunction(Real a, Real x, Real accuracy,
+                                 Integer maxIteration) {
 
         QL_REQUIRE(a>0.0, "non-positive a is not allowed");
 
@@ -47,16 +47,16 @@ namespace QuantLib {
     }
 
 
-    double incompleteGammaFunctionSeriesRepr(double a, double x, double accuracy,
-        int maxIteration) {
+    Real incompleteGammaFunctionSeriesRepr(Real a, Real x, Real accuracy,
+                                           Integer maxIteration) {
 
         if (x==0.0) return 0.0;
 
-        double gln = GammaFunction().logValue(a);
-        double ap=a;
-        double del=1.0/a;
-        double sum=del;
-        for (int n=1; n<=maxIteration; n++) {
+        Real gln = GammaFunction().logValue(a);
+        Real ap=a;
+        Real del=1.0/a;
+        Real sum=del;
+        for (Integer n=1; n<=maxIteration; n++) {
             ++ap;
             del *= x/ap;
             sum += del;
@@ -67,12 +67,13 @@ namespace QuantLib {
         QL_FAIL("accuracy not reached");
     }
 
-    double incompleteGammaFunctionContinuedFractionRepr(double a, double x,
-        double accuracy, int maxIteration) {
+    Real incompleteGammaFunctionContinuedFractionRepr(Real a, Real x,
+                                                      Real accuracy, 
+                                                      Integer maxIteration) {
 
-        int i;
-        double an, b, c, d, del, h;
-        double gln = GammaFunction().logValue(a);
+        Integer i;
+        Real an, b, c, d, del, h;
+        Real gln = GammaFunction().logValue(a);
         b=x+1.0-a;
         c=1.0/QL_EPSILON;
         d=1.0/b;

@@ -45,15 +45,15 @@ namespace QuantLib {
     class Rounding {
       public:
 	  Rounding() {}
-	  Rounding(const long precision,
-               const RoundingType type = ROUND_UP,
-               const int digit = 5)
+	  Rounding(Integer precision,
+               RoundingType type = ROUND_UP,
+               Integer digit = 5)
 	  : precision_(precision),type_(type),digit_(digit) {}
 	  Decimal round(const Decimal value) const;
     private:
-	  long precision_;
+	  Integer precision_;
 	  RoundingType type_;
-	  int digit_;
+	  Integer digit_;
     };
 
     //! Ceiling truncation.
@@ -63,8 +63,8 @@ namespace QuantLib {
 
     class CeilingTruncation : public Rounding {
       public:
-    	CeilingTruncation(const long precision,
-	                      const int digit = 5)
+    	CeilingTruncation(Integer precision,
+	                      Integer digit = 5)
 	    : Rounding(precision,ROUND_CEILING,digit) {}
     };
 
@@ -75,18 +75,18 @@ namespace QuantLib {
 
     class FloorTruncation : public Rounding {
       public:
-	    FloorTruncation(const long precision,
-	                    const int digit = 5)
+	    FloorTruncation(Integer precision,
+	                    Integer digit = 5)
         : Rounding(precision,ROUND_FLOOR,digit) {}
     };
 
     inline Decimal Rounding::round(const Decimal value) const {
     	if (type_ == DONT_ROUND) return value;
-    	double mult = pow(10.0,precision_);
+    	Decimal mult = pow(10.0,precision_);
     	bool neg = (value < 0.0);
-    	double lvalue = QL_FABS(value)*mult;
-    	double integral = 0.0;
-    	double modVal = QL_MODF(lvalue,&integral);
+    	Decimal lvalue = QL_FABS(value)*mult;
+    	Decimal integral = 0.0;
+    	Decimal modVal = QL_MODF(lvalue,&integral);
     	switch (type_) {
           case ROUND_UP:
     		lvalue -= modVal;

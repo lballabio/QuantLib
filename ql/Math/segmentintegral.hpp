@@ -44,17 +44,17 @@ namespace QuantLib {
       public:
         SegmentIntegral(Size intervals);
         template <class F>
-        double operator()(const F& f, double a, double b) const {
+        Real operator()(const F& f, Real a, Real b) const {
 
             if (a == b)
                 return 0.0;
             if (a > b)
                 return -(*this)(f,b,a);
 
-            double dx = (b-a)/intervals_;
-            double sum = 0.5*(f(a)+f(b));
-            double end = b - 0.5*dx;
-            for (double x = a+dx; x < end; x += dx)
+            Real dx = (b-a)/intervals_;
+            Real sum = 0.5*(f(a)+f(b));
+            Real end = b - 0.5*dx;
+            for (Real x = a+dx; x < end; x += dx)
                 sum += f(x);
             return sum*dx;
         }

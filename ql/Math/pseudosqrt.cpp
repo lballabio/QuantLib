@@ -61,7 +61,7 @@ namespace QuantLib {
             result = jd.eigenvectors() * diagonal;
             // row normalization
             for (i = 0; i < size;i++) {
-                double norm = 0.0;
+                Real norm = 0.0;
                 for (j = 0; j < size; j++)
                     norm += result[i][j]*result[i][j];
                 norm = QL_SQRT(norm);
@@ -92,7 +92,7 @@ namespace QuantLib {
     const Disposable<Matrix> rankReducedSqrt(
                                          const Matrix& matrix,
                                          Size maxRank, 
-                                         double componentRetainedPercentage,
+                                         Real componentRetainedPercentage,
                                          SalvagingAlgorithm::Type sa) {
 
         QL_REQUIRE(matrix.rows() == matrix.columns(),
@@ -129,8 +129,8 @@ namespace QuantLib {
         // output is granted to have a rank<=maxRank
         // if maxRank>=size, then the required percentage of eigenvalues
         // is retained
-        double enough = componentRetainedPercentage * size;
-        double components = 0.0;
+        Real enough = componentRetainedPercentage * size;
+        Real components = 0.0;
         for (i=0; i<QL_MIN(size, maxRank); i++) {
             diagonal[i][i] =
                 (components<enough ? QL_SQRT(jd.eigenvalues()[i]) : 0.0);
@@ -141,7 +141,7 @@ namespace QuantLib {
 
         // row normalization
         for (i = 0; i < size;i++) {
-            double norm = 0.0;
+            Real norm = 0.0;
             for (j = 0; j < size; j++)
                 norm += result[i][j]*result[i][j];
             norm = QL_SQRT(norm);

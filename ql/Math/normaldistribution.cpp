@@ -20,18 +20,18 @@
 
 namespace QuantLib {
 
-    double CumulativeNormalDistribution::operator()(double z) const {
+    Real CumulativeNormalDistribution::operator()(Real z) const {
         /// ???
         QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
                    "not a real number. ");
         z = (z - average_) / sigma_;
 
-        double result = 0.5 * ( 1 + errorFunction_( z*M_SQRT_2 ) );
+        Real result = 0.5 * ( 1 + errorFunction_( z*M_SQRT_2 ) );
         if (result<=QL_EPSILON) {
             // Asymptotic expansion for very negative z following (26.2.12)
             // on page 408 in M. Abramowitz and A. Stegun,
             // Pocketbook of Mathematical Functions, ISBN 3-87144818-4.
-            double sum=1, zsqr=z*z, i=1, g=1, x, y, 
+            Real sum=1, zsqr=z*z, i=1, g=1, x, y, 
                 a=QL_MAX_DOUBLE, lasta;
             do {
                 lasta=a;
@@ -53,42 +53,42 @@ namespace QuantLib {
     #endif
 
     // Coefficients for the rational approximation.
-    const double InverseCumulativeNormal::a1_ = -3.969683028665376e+01;
-    const double InverseCumulativeNormal::a2_ =  2.209460984245205e+02;
-    const double InverseCumulativeNormal::a3_ = -2.759285104469687e+02;
-    const double InverseCumulativeNormal::a4_ =  1.383577518672690e+02;
-    const double InverseCumulativeNormal::a5_ = -3.066479806614716e+01;
-    const double InverseCumulativeNormal::a6_ =  2.506628277459239e+00;
+    const Real InverseCumulativeNormal::a1_ = -3.969683028665376e+01;
+    const Real InverseCumulativeNormal::a2_ =  2.209460984245205e+02;
+    const Real InverseCumulativeNormal::a3_ = -2.759285104469687e+02;
+    const Real InverseCumulativeNormal::a4_ =  1.383577518672690e+02;
+    const Real InverseCumulativeNormal::a5_ = -3.066479806614716e+01;
+    const Real InverseCumulativeNormal::a6_ =  2.506628277459239e+00;
 
-    const double InverseCumulativeNormal::b1_ = -5.447609879822406e+01;
-    const double InverseCumulativeNormal::b2_ =  1.615858368580409e+02;
-    const double InverseCumulativeNormal::b3_ = -1.556989798598866e+02;
-    const double InverseCumulativeNormal::b4_ =  6.680131188771972e+01;
-    const double InverseCumulativeNormal::b5_ = -1.328068155288572e+01;
+    const Real InverseCumulativeNormal::b1_ = -5.447609879822406e+01;
+    const Real InverseCumulativeNormal::b2_ =  1.615858368580409e+02;
+    const Real InverseCumulativeNormal::b3_ = -1.556989798598866e+02;
+    const Real InverseCumulativeNormal::b4_ =  6.680131188771972e+01;
+    const Real InverseCumulativeNormal::b5_ = -1.328068155288572e+01;
 
-    const double InverseCumulativeNormal::c1_ = -7.784894002430293e-03;
-    const double InverseCumulativeNormal::c2_ = -3.223964580411365e-01;
-    const double InverseCumulativeNormal::c3_ = -2.400758277161838e+00;
-    const double InverseCumulativeNormal::c4_ = -2.549732539343734e+00;
-    const double InverseCumulativeNormal::c5_ =  4.374664141464968e+00;
-    const double InverseCumulativeNormal::c6_ =  2.938163982698783e+00;
+    const Real InverseCumulativeNormal::c1_ = -7.784894002430293e-03;
+    const Real InverseCumulativeNormal::c2_ = -3.223964580411365e-01;
+    const Real InverseCumulativeNormal::c3_ = -2.400758277161838e+00;
+    const Real InverseCumulativeNormal::c4_ = -2.549732539343734e+00;
+    const Real InverseCumulativeNormal::c5_ =  4.374664141464968e+00;
+    const Real InverseCumulativeNormal::c6_ =  2.938163982698783e+00;
 
-    const double InverseCumulativeNormal::d1_ =  7.784695709041462e-03;
-    const double InverseCumulativeNormal::d2_ =  3.224671290700398e-01;
-    const double InverseCumulativeNormal::d3_ =  2.445134137142996e+00;
-    const double InverseCumulativeNormal::d4_ =  3.754408661907416e+00;
+    const Real InverseCumulativeNormal::d1_ =  7.784695709041462e-03;
+    const Real InverseCumulativeNormal::d2_ =  3.224671290700398e-01;
+    const Real InverseCumulativeNormal::d3_ =  2.445134137142996e+00;
+    const Real InverseCumulativeNormal::d4_ =  3.754408661907416e+00;
 
     // Limits of the approximation regions
-    const double InverseCumulativeNormal::x_low_ = 0.02425;
-    const double InverseCumulativeNormal::x_high_= 1.0 - x_low_;
+    const Real InverseCumulativeNormal::x_low_ = 0.02425;
+    const Real InverseCumulativeNormal::x_high_= 1.0 - x_low_;
 
-    double InverseCumulativeNormal::operator()(double x) const {
+    Real InverseCumulativeNormal::operator()(Real x) const {
         QL_REQUIRE(x > 0.0 && x < 1.0, 
                    "InverseCumulativeNormal(" +
                    DecimalFormatter::toString(x) + 
                    ") undefined: must be 0 < x < 1");
 
-        double z, r;
+        Real z, r;
 
         if (x < x_low_) {
             // Rational approximation for the lower region 0<x<u_low
@@ -124,34 +124,34 @@ namespace QuantLib {
     }
 
 
-    const double MoroInverseCumulativeNormal::a0_ =  2.50662823884;
-    const double MoroInverseCumulativeNormal::a1_ =-18.61500062529;
-    const double MoroInverseCumulativeNormal::a2_ = 41.39119773534;
-    const double MoroInverseCumulativeNormal::a3_ =-25.44106049637;
+    const Real MoroInverseCumulativeNormal::a0_ =  2.50662823884;
+    const Real MoroInverseCumulativeNormal::a1_ =-18.61500062529;
+    const Real MoroInverseCumulativeNormal::a2_ = 41.39119773534;
+    const Real MoroInverseCumulativeNormal::a3_ =-25.44106049637;
 
-    const double MoroInverseCumulativeNormal::b0_ = -8.47351093090;
-    const double MoroInverseCumulativeNormal::b1_ = 23.08336743743;
-    const double MoroInverseCumulativeNormal::b2_ =-21.06224101826;
-    const double MoroInverseCumulativeNormal::b3_ =  3.13082909833;
+    const Real MoroInverseCumulativeNormal::b0_ = -8.47351093090;
+    const Real MoroInverseCumulativeNormal::b1_ = 23.08336743743;
+    const Real MoroInverseCumulativeNormal::b2_ =-21.06224101826;
+    const Real MoroInverseCumulativeNormal::b3_ =  3.13082909833;
 
-    const double MoroInverseCumulativeNormal::c0_ = 0.3374754822726147;
-    const double MoroInverseCumulativeNormal::c1_ = 0.9761690190917186;
-    const double MoroInverseCumulativeNormal::c2_ = 0.1607979714918209;
-    const double MoroInverseCumulativeNormal::c3_ = 0.0276438810333863;
-    const double MoroInverseCumulativeNormal::c4_ = 0.0038405729373609;
-    const double MoroInverseCumulativeNormal::c5_ = 0.0003951896511919;
-    const double MoroInverseCumulativeNormal::c6_ = 0.0000321767881768;
-    const double MoroInverseCumulativeNormal::c7_ = 0.0000002888167364;
-    const double MoroInverseCumulativeNormal::c8_ = 0.0000003960315187;
+    const Real MoroInverseCumulativeNormal::c0_ = 0.3374754822726147;
+    const Real MoroInverseCumulativeNormal::c1_ = 0.9761690190917186;
+    const Real MoroInverseCumulativeNormal::c2_ = 0.1607979714918209;
+    const Real MoroInverseCumulativeNormal::c3_ = 0.0276438810333863;
+    const Real MoroInverseCumulativeNormal::c4_ = 0.0038405729373609;
+    const Real MoroInverseCumulativeNormal::c5_ = 0.0003951896511919;
+    const Real MoroInverseCumulativeNormal::c6_ = 0.0000321767881768;
+    const Real MoroInverseCumulativeNormal::c7_ = 0.0000002888167364;
+    const Real MoroInverseCumulativeNormal::c8_ = 0.0000003960315187;
 
-    double MoroInverseCumulativeNormal::operator()(double x) const {
+    Real MoroInverseCumulativeNormal::operator()(Real x) const {
         QL_REQUIRE(x > 0.0 && x < 1.0, 
                    "MoroInverseCumulativeNormal(" +
                    DecimalFormatter::toString(x) + 
                    ") undefined: must be 0<x<1");
 
-        double result;
-        double temp=x-0.5;
+        Real result;
+        Real temp=x-0.5;
 
         if (QL_FABS(temp) < 0.42) {
             // Beasley and Springer, 1977

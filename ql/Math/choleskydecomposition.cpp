@@ -33,11 +33,11 @@ namespace QuantLib {
         #endif
 
         Matrix result(size, size, 0.0);
-        double sum;
+        Real sum;
         for (i=0; i<size; i++) {
             for (j=i; j<size; j++) {
                 sum = S[i][j];
-                for (int k=0; k<=int(i)-1; k++) {
+                for (Integer k=0; k<=Integer(i)-1; k++) {
                     sum -= result[i][k]*result[j][k];
                 }
                 if (i == j) {

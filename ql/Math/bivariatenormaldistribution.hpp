@@ -38,7 +38,8 @@ namespace QuantLib {
                  Mathematics of Computation 32, pp. 277-279.
               2) Drezner, Z. and Wesolowsky, G. O. (1990)
                  `On the Computation of the Bivariate Normal Integral',
-                 Journal of Statistical Computation and Simulation 35, pp. 101-107.
+                 Journal of Statistical Computation and Simulation 35, 
+                 pp. 101-107.
               3) Drezner, Z (1992)
                  Computation of the Multivariate Normal Integral,
                  ACM Transactions on Mathematics Software 18, pp. 450-460.
@@ -46,23 +47,23 @@ namespace QuantLib {
                  Computation of the Trivariate Normal Integral,
                  Mathematics of Computation 62, pp. 289-294.
               5) Genz, A. (1992)
-                `Numerical Computation of the Multivariate Normal Probabilities',
-                 J. Comput. Graph. Stat. 1, pp. 141-150.
+                `Numerical Computation of the Multivariate Normal 
+                 Probabilities', J. Comput. Graph. Stat. 1, pp. 141-150.
 
     */
     class BivariateCumulativeNormalDistribution {
       public:
-        BivariateCumulativeNormalDistribution(double rho);
+        BivariateCumulativeNormalDistribution(Real rho);
         // function
-        double operator()(double a, double b) const;
+        Real operator()(Real a, Real b) const;
       private:
-        double rho_, rho2_;
-        static const double x_[], y_[];
+        Real rho_, rho2_;
+        static const Real x_[], y_[];
     };
 
 
     inline BivariateCumulativeNormalDistribution::BivariateCumulativeNormalDistribution(
-                                                 double rho)
+                                                 Real rho)
     : rho_(rho), rho2_(rho*rho) {
 
         QL_REQUIRE(rho>=-1.0,

@@ -29,8 +29,8 @@ namespace QuantLib {
     //! %Factorial numbers calculator
     class Factorial {
       public:
-        static double get(unsigned int n);
-        static double ln(unsigned int n);
+        static Real get(Natural n);
+        static Real ln(Natural n);
       private:
         Factorial() {}
     };

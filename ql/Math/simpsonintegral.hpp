@@ -30,11 +30,11 @@ namespace QuantLib {
     //! Integral of a one-dimensional function
     class SimpsonIntegral : public TrapezoidIntegral {
       public:
-        SimpsonIntegral(double accuracy, 
+        SimpsonIntegral(Real accuracy, 
                         Size maxIterations = Null<Size>())
         : TrapezoidIntegral(accuracy,Default,maxIterations) {}
         template <class F>
-        double operator()(const F& f, double a, double b) const {
+        Real operator()(const F& f, Real a, Real b) const {
 
             if (a == b)
                 return 0.0;
@@ -43,8 +43,8 @@ namespace QuantLib {
 
             // start from the coarsest trapezoid...
             Size N = 1;
-            double I = (f(a)+f(b))*(b-a)/2.0, newI;
-            double adjI = I, newAdjI;
+            Real I = (f(a)+f(b))*(b-a)/2.0, newI;
+            Real adjI = I, newAdjI;
             // ...and refine it
             Size i = 1;
             do {

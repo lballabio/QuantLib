@@ -47,7 +47,7 @@ namespace QuantLib {
     template <class GSG> // Gaussian Sequence Generator
     class BrownianBridge {
       public:
-        typedef Sample<std::vector<double> > sample_type;
+        typedef Sample<std::vector<Real> > sample_type;
         //! normalised (unit time, unit variance) Wiener process paths
         BrownianBridge(const GSG& generator);
         //! unit variance Wiener process paths
@@ -58,7 +58,7 @@ namespace QuantLib {
         BrownianBridge(const TimeGrid& timeGrid,
                        const GSG& generator);
         //! general Wiener process paths
-        BrownianBridge(const std::vector<double>& sigma,
+        BrownianBridge(const std::vector<Real>& sigma,
                        const TimeGrid& timeGrid,
                        const GSG& generator);
         BrownianBridge(const boost::shared_ptr<BlackVolTermStructure>&,
@@ -75,13 +75,13 @@ namespace QuantLib {
         const TimeGrid& timeGrid() const { return timeGrid_; }
         //@}
       private:
-        void initialize(const std::vector<double>& v);
+        void initialize(const std::vector<Real>& v);
         GSG generator_;
         Size dimension_;
         TimeGrid timeGrid_;
-        mutable Sample<std::vector<double> > next_;
+        mutable Sample<std::vector<Real> > next_;
         std::vector<Size> bridgeIndex_, leftIndex_, rightIndex_;
-        std::vector<double> leftWeight_, rightWeight_, stdDev_;
+        std::vector<Real> leftWeight_, rightWeight_, stdDev_;
     };
 
 
@@ -89,12 +89,12 @@ namespace QuantLib {
     BrownianBridge<GSG>::BrownianBridge(const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),
       timeGrid_(Time(dimension_), dimension_),
-      next_(std::vector<double>(dimension_), 1.0),
+      next_(std::vector<Real>(dimension_), 1.0),
       bridgeIndex_(dimension_),
       leftIndex_(dimension_),  rightIndex_(dimension_),
       leftWeight_(dimension_), rightWeight_(dimension_),
       stdDev_(dimension_) {
-        initialize(std::vector<double>(dimension_, 1.0));
+        initialize(std::vector<Real>(dimension_, 1.0));
     }
 
     template <class GSG>
@@ -103,7 +103,7 @@ namespace QuantLib {
                                         const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),
       timeGrid_(length, timeSteps),
-      next_(std::vector<double>(dimension_), 1.0),
+      next_(std::vector<Real>(dimension_), 1.0),
       bridgeIndex_(dimension_),
       leftIndex_(dimension_),  rightIndex_(dimension_),
       leftWeight_(dimension_), rightWeight_(dimension_),
@@ -118,7 +118,7 @@ namespace QuantLib {
                    "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
                    ")");
 
-        initialize(std::vector<double>(dimension_, 1.0));
+        initialize(std::vector<Real>(dimension_, 1.0));
     }
 
     template <class GSG>
@@ -126,7 +126,7 @@ namespace QuantLib {
                                         const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),
       timeGrid_(timeGrid),
-      next_(std::vector<double>(dimension_), 1.0),
+      next_(std::vector<Real>(dimension_), 1.0),
       bridgeIndex_(dimension_),
       leftIndex_(dimension_),  rightIndex_(dimension_),
       leftWeight_(dimension_), rightWeight_(dimension_),
@@ -141,16 +141,16 @@ namespace QuantLib {
                    "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
                    ")");
 
-        initialize(std::vector<double>(dimension_, 1.0));
+        initialize(std::vector<Real>(dimension_, 1.0));
     }
 
     template <class GSG>
-    BrownianBridge<GSG>::BrownianBridge(const std::vector<double>& variances,
+    BrownianBridge<GSG>::BrownianBridge(const std::vector<Real>& variances,
                                         const TimeGrid& timeGrid,
                                         const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),
       timeGrid_(timeGrid),
-      next_(std::vector<double>(dimension_), 1.0),
+      next_(std::vector<Real>(dimension_), 1.0),
       bridgeIndex_(dimension_),
       leftIndex_(dimension_),  rightIndex_(dimension_),
       leftWeight_(dimension_), rightWeight_(dimension_),
@@ -181,7 +181,7 @@ namespace QuantLib {
         const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),
       timeGrid_(timeGrid),
-      next_(std::vector<double>(dimension_), 1.0),
+      next_(std::vector<Real>(dimension_), 1.0),
       bridgeIndex_(dimension_),
       leftIndex_(dimension_),  rightIndex_(dimension_),
       leftWeight_(dimension_), rightWeight_(dimension_),
@@ -196,7 +196,7 @@ namespace QuantLib {
                    "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
                    ")");
 
-        std::vector<double> variances(dimension_);
+        std::vector<Real> variances(dimension_);
         for (Size i=0; i<dimension_; i++) {
             // problems here if the blackVol is asset dependant
             variances[i]=blackVol->blackVariance(timeGrid_[i+1], 1.0);
@@ -212,7 +212,7 @@ namespace QuantLib {
         const GSG& generator)
     : generator_(generator), dimension_(generator_.dimension()),
       timeGrid_(timeGrid),
-      next_(std::vector<double>(dimension_), 1.0),
+      next_(std::vector<Real>(dimension_), 1.0),
       bridgeIndex_(dimension_),
       leftIndex_(dimension_),  rightIndex_(dimension_),
       leftWeight_(dimension_), rightWeight_(dimension_),
@@ -227,7 +227,7 @@ namespace QuantLib {
                    "/" + SizeFormatter::toString(timeGrid_.size()-1) +
                    ")");
 
-        std::vector<double> variances(dimension_);
+        std::vector<Real> variances(dimension_);
         for (Size i=0; i<dimension_; i++) {
             // problems here if the blackVol is asset dependant
             // dummy asset level is used
@@ -238,7 +238,7 @@ namespace QuantLib {
     }
 
     template <class GSG>
-    void BrownianBridge<GSG>::initialize(const std::vector<double>& v) {
+    void BrownianBridge<GSG>::initialize(const std::vector<Real>& v) {
 
         QL_REQUIRE(v.size()==dimension_,
                    "GSG/variance vector dimension mismatch"
@@ -283,14 +283,6 @@ namespace QuantLib {
                 rightWeight_[i] =  v[l]        /v[k];
                 stdDev_[i] = QL_SQRT(v[l]*(v[k]-v[l])/v[k]);
             }
-/*
-            std::cout << std::endl
-                << "i: " << i << "\tbridge: " << bridgeIndex_[i] + 1
-                << "\tleft: "   <<  (j ? leftIndex_[i] : 0)
-                << "\tright: "  << rightIndex_[i] + 1
-                << "\tleftW: "  <<  DoubleFormatter::toString(leftWeight_[i], 2)
-                << " rightW: "  << DoubleFormatter::toString(rightWeight_[i], 2);
-*/
             j=k+1;
             if (j>=dimension_) j=0;	//	Wrap around.
         }

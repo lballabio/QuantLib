@@ -38,7 +38,7 @@ namespace QuantLib {
         fourthPowerSum_ = 0.0;
     }
 
-    void IncrementalStatistics::add(double value, double weight) {
+    void IncrementalStatistics::add(Real value, Real weight) {
         QL_REQUIRE(weight>=0.0,
                    "negative weight (" +
                    DecimalFormatter::toString(weight) + ") not allowed");
@@ -50,7 +50,7 @@ namespace QuantLib {
 
         sampleWeight_ += weight;
 
-        double temp = weight*value;
+        Real temp = weight*value;
         sum_ += temp;
         temp *= value;
         quadraticSum_ += temp;
@@ -72,14 +72,14 @@ namespace QuantLib {
     }
 
 
-    double IncrementalStatistics::variance() const {
+    Real IncrementalStatistics::variance() const {
         QL_REQUIRE(sampleWeight_>0.0,
                    "sampleWeight_=0, unsufficient");
         QL_REQUIRE(sampleNumber_>1,
                    "sample number <=1, unsufficient");
 
-        double m = mean();
-        double v = quadraticSum_/sampleWeight_;
+        Real m = mean();
+        Real v = quadraticSum_/sampleWeight_;
         v -= m*m;
         v *= sampleNumber_/(sampleNumber_-1.0);
 
@@ -91,7 +91,7 @@ namespace QuantLib {
         return v;
     }
 
-    double IncrementalStatistics::downsideVariance() const {
+    Real IncrementalStatistics::downsideVariance() const {
         if (downsideSampleWeight_==0.0) {
             QL_REQUIRE(sampleWeight_>0.0,
                        "sampleWeight_=0, unsufficient");
@@ -105,15 +105,15 @@ namespace QuantLib {
             (downsideQuadraticSum_ /downsideSampleWeight_);
     }
 
-    double IncrementalStatistics::skewness() const {
+    Real IncrementalStatistics::skewness() const {
         QL_REQUIRE(sampleNumber_>2,
                    "sample number <=2, unsufficient");
-        double s = standardDeviation();
+        Real s = standardDeviation();
 
         if (s==0.0) return 0.0;
 
-        double m = mean();
-        double result = cubicSum_/sampleWeight_;
+        Real m = mean();
+        Real result = cubicSum_/sampleWeight_;
         result -= 3.0*m*(quadraticSum_/sampleWeight_);
         result += 2.0*m*m*m;
         result /= s*s*s;
@@ -123,20 +123,20 @@ namespace QuantLib {
     }
 
 
-    double IncrementalStatistics::kurtosis() const {
+    Real IncrementalStatistics::kurtosis() const {
         QL_REQUIRE(sampleNumber_>3,
                    "sample number <=3, unsufficient");
 
-        double m = mean();
-        double v = variance();
+        Real m = mean();
+        Real v = variance();
 
-        double c = (sampleNumber_-1.0)/(sampleNumber_-2.0);
+        Real c = (sampleNumber_-1.0)/(sampleNumber_-2.0);
         c *= (sampleNumber_-1.0)/(sampleNumber_-3.0);
         c *= 3.0;
 
         if (v==0) return c;
 
-        double result = fourthPowerSum_/sampleWeight_;
+        Real result = fourthPowerSum_/sampleWeight_;
         result -= 4.0*m*(cubicSum_/sampleWeight_);
         result += 6.0*m*m*(quadraticSum_/sampleWeight_);
         result -= 3.0*m*m*m*m;

@@ -45,14 +45,14 @@ namespace QuantLib {
             where \f$ \theta \f$ = 0 if x > 0 and
             \f$ \theta \f$ =1 if x <0
         */
-        double gaussianDownsideVariance() const {
+        Real gaussianDownsideVariance() const {
             return gaussianRegret(0.0);
         }
 
         /*! returns the downside deviation, defined as the
             square root of the downside variance.
         */
-        double gaussianDownsideDeviation() const {
+        Real gaussianDownsideDeviation() const {
             return QL_SQRT(gaussianDownsideVariance());
         }
 
@@ -61,29 +61,29 @@ namespace QuantLib {
 
             See Dembo, Freeman "The Rules Of Risk", Wiley (2001)
         */
-        double gaussianRegret(double target) const;
+        Real gaussianRegret(Real target) const;
 
 
         /*! gaussian-assumption y-th percentile, defined as the value x
             such that \f[ y = \frac{1}{\sqrt{2 \pi}}
                                       \int_{-\infty}^{x} \exp (-u^2/2) du \f]
         */
-        double gaussianPercentile(double percentile) const;
+        Real gaussianPercentile(Real percentile) const;
 
         //! gaussian-assumption Potential-Upside at a given percentile
-        double gaussianPotentialUpside(double percentile) const;
+        Real gaussianPotentialUpside(Real percentile) const;
 
         //! gaussian-assumption Value-At-Risk at a given percentile
-        double gaussianValueAtRisk(double percentile) const;
+        Real gaussianValueAtRisk(Real percentile) const;
 
         //! gaussian-assumption Expected Shortfall at a given percentile
-        double gaussianExpectedShortfall(double percentile) const;
+        Real gaussianExpectedShortfall(Real percentile) const;
 
         //! gaussian-assumption Shortfall (observations below target)
-        double gaussianShortfall(double target) const;
+        Real gaussianShortfall(Real target) const;
 
         //! gaussian-assumption Average Shortfall (averaged shortfallness)
-        double gaussianAverageShortfall(double target) const;
+        Real gaussianAverageShortfall(Real target) const;
         //@}
     };
 
@@ -91,14 +91,14 @@ namespace QuantLib {
     //! Helper class for precomputed distributions
     class StatsHolder {
     public:
-        StatsHolder(double mean,
-                    double standardDeviation)
+        StatsHolder(Real mean,
+                    Real standardDeviation)
                     : mean_(mean), standardDeviation_(standardDeviation) {}
         ~StatsHolder() {}
-        double mean() const { return mean_; }
-        double standardDeviation() const { return standardDeviation_; }
+        Real mean() const { return mean_; }
+        Real standardDeviation() const { return standardDeviation_; }
     private:
-        double mean_, standardDeviation_;
+        Real mean_, standardDeviation_;
     };
 
 
@@ -106,24 +106,24 @@ namespace QuantLib {
 
     template<class Stat>
     inline
-    double GaussianStatistics<Stat>::gaussianRegret(double target) const {
-        double m = mean();
-        double std = standardDeviation();
-        double variance = std*std;
+    Real GaussianStatistics<Stat>::gaussianRegret(Real target) const {
+        Real m = mean();
+        Real std = standardDeviation();
+        Real variance = std*std;
         CumulativeNormalDistribution gIntegral(m, std);
         NormalDistribution g(m, std);
-        double firstTerm = variance + m*m - 2.0*target*m + target*target;
-        double alfa = gIntegral(target);
-        double secondTerm = m - target;
-        double beta = variance*g(target);
-        double result = alfa*firstTerm - beta*secondTerm;
+        Real firstTerm = variance + m*m - 2.0*target*m + target*target;
+        Real alfa = gIntegral(target);
+        Real secondTerm = m - target;
+        Real beta = variance*g(target);
+        Real result = alfa*firstTerm - beta*secondTerm;
         return result/alfa;
     }
 
     /*! \pre percentile must be in range (0%-100%) extremes excluded */
     template<class Stat>
-    inline double GaussianStatistics<Stat>::gaussianPercentile(
-                                                     double percentile) const {
+    inline Real GaussianStatistics<Stat>::gaussianPercentile(
+                                                     Real percentile) const {
 
         QL_REQUIRE(percentile>0.0,
                    "percentile (" +
@@ -142,8 +142,8 @@ namespace QuantLib {
 
     /*! \pre percentile must be in range [90%-100%) */
     template<class Stat>
-    inline double GaussianStatistics<Stat>::gaussianPotentialUpside(
-                                                    double percentile) const {
+    inline Real GaussianStatistics<Stat>::gaussianPotentialUpside(
+                                                    Real percentile) const {
 
         QL_REQUIRE(percentile>=0.9,
                    "percentile (" +
@@ -154,7 +154,7 @@ namespace QuantLib {
                    DecimalFormatter::toString(percentile) +
                    ") must be < 1.0");
 
-        double result = gaussianPercentile(percentile);
+        Real result = gaussianPercentile(percentile);
         // PotenzialUpSide must be a gain
         // this means that it has to be MAX(dist(percentile), 0.0)
         return QL_MAX(result, 0.0);
@@ -163,8 +163,8 @@ namespace QuantLib {
 
     /*! \pre percentile must be in range [90%-100%) */
     template<class Stat>
-    inline double GaussianStatistics<Stat>::gaussianValueAtRisk(
-                                                    double percentile) const {
+    inline Real GaussianStatistics<Stat>::gaussianValueAtRisk(
+                                                    Real percentile) const {
 
         QL_REQUIRE(percentile>=0.9,
                    "percentile (" +
@@ -175,7 +175,7 @@ namespace QuantLib {
                    DecimalFormatter::toString(percentile) +
                    ") must be < 1.0");
 
-        double result = gaussianPercentile(1.0-percentile);
+        Real result = gaussianPercentile(1.0-percentile);
         // VAR must be a loss
         // this means that it has to be MIN(dist(1.0-percentile), 0.0)
         // VAR must also be a positive quantity, so -MIN(*)
@@ -185,19 +185,19 @@ namespace QuantLib {
 
     /*! \pre percentile must be in range 90%-100% */
     template<class Stat>
-    inline double GaussianStatistics<Stat>::gaussianExpectedShortfall(
-                                                    double percentile) const {
+    inline Real GaussianStatistics<Stat>::gaussianExpectedShortfall(
+                                                    Real percentile) const {
         QL_REQUIRE(percentile<1.0 && percentile>=0.9,
                    "percentile (" +
                    DecimalFormatter::toString(percentile) +
                    ") out of range 90%-100%");
 
-        double m = mean();
-        double std = standardDeviation();
+        Real m = mean();
+        Real std = standardDeviation();
         InverseCumulativeNormal gInverse(m, std);
-        double var = gInverse(1.0-percentile);
+        Real var = gInverse(1.0-percentile);
         NormalDistribution g(m, std);
-        double result = m - std*std*g(var)/(1.0-percentile);
+        Real result = m - std*std*g(var)/(1.0-percentile);
         // expectedShortfall must be a loss
         // this means that it has to be MIN(result, 0.0)
         // expectedShortfall must also be a positive quantity, so -MIN(*)
@@ -206,8 +206,8 @@ namespace QuantLib {
 
 
     template<class Stat>
-    inline double GaussianStatistics<Stat>::gaussianShortfall(
-                                                        double target) const {
+    inline Real GaussianStatistics<Stat>::gaussianShortfall(
+                                                        Real target) const {
         CumulativeNormalDistribution gIntegral(mean(),
                                                standardDeviation());
         return gIntegral(target);
@@ -215,10 +215,10 @@ namespace QuantLib {
 
 
     template<class Stat>
-    inline double GaussianStatistics<Stat>::gaussianAverageShortfall(
-                                                        double target) const {
-        double m = mean();
-        double std = standardDeviation();
+    inline Real GaussianStatistics<Stat>::gaussianAverageShortfall(
+                                                        Real target) const {
+        Real m = mean();
+        Real std = standardDeviation();
         CumulativeNormalDistribution gIntegral(m, std);
         NormalDistribution g(m, std);
         return ( (target-m) + std*std*g(target)/gIntegral(target) );

@@ -39,16 +39,16 @@ namespace QuantLib {
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
                                                      zData) {}
-            double value(double x, double y) const {
+            Real value(Real x, Real y) const {
                 Size i = locateX(x), j = locateY(y);
 
-                double z1=zData_[j][i];
-                double z2=zData_[j][i+1];
-                double z3=zData_[j+1][i];
-                double z4=zData_[j+1][i+1];
+                Real z1=zData_[j][i];
+                Real z2=zData_[j][i+1];
+                Real z3=zData_[j+1][i];
+                Real z4=zData_[j+1][i+1];
 
-                double t=(x-xBegin_[i])/(xBegin_[i+1]-xBegin_[i]);
-                double u=(y-yBegin_[j])/(yBegin_[j+1]-yBegin_[j]);
+                Real t=(x-xBegin_[i])/(xBegin_[i+1]-xBegin_[i]);
+                Real u=(y-yBegin_[j])/(yBegin_[j+1]-yBegin_[j]);
 
                 return (1.0-t)*(1.0-u)*z1 + t*(1.0-u)*z2 
                      + (1.0-t)*u*z3 + t*u*z4;

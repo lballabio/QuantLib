@@ -26,18 +26,17 @@
 
 namespace QuantLib {
 
-    inline double betaFunction(double z,
-                        double w) {
+    inline Real betaFunction(Real z, Real w) {
     	return QL_EXP(GammaFunction().logValue(z) +
                       GammaFunction().logValue(w) -
                       GammaFunction().logValue(z+w));
     }
 
-    double betaContinuedFraction(double a,
-                                 double b,
-                                 double x,
-                                 double accuracy = 1e-16,
-                                 int maxIteration = 100);
+    Real betaContinuedFraction(Real a,
+                               Real b,
+                               Real x,
+                               Real accuracy = 1e-16,
+                               Integer maxIteration = 100);
 
     //! Incomplete Beta function
     /*! Incomplete Beta function
@@ -46,11 +45,13 @@ namespace QuantLib {
         "Numerical Recipes in C", 2nd edition,
         Press, Teukolsky, Vetterling, Flannery, chapter 6
     */
-    double incompleteBetaFunction(double a,
-                                  double b,
-                                  double x,
-                                  double accuracy = 1e-16,
-                                  int maxIteration = 100);
+    Real incompleteBetaFunction(Real a,
+                                Real b,
+                                Real x,
+                                Real accuracy = 1e-16,
+                                Integer maxIteration = 100);
 
 }
+
+
 #endif

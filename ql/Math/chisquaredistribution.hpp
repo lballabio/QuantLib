@@ -26,22 +26,22 @@
 
 namespace QuantLib {
 
-    class ChiSquareDistribution : public std::unary_function<double,double> {
+    class ChiSquareDistribution : public std::unary_function<Real,Real> {
       public:
-        ChiSquareDistribution(double df) : df_(df) {}
-        double operator()(double x) const;
+        ChiSquareDistribution(Real df) : df_(df) {}
+        Real operator()(Real x) const;
       private:
-        double df_;
+        Real df_;
     };
 
     class NonCentralChiSquareDistribution
-    : public std::unary_function<double,double> {
+    : public std::unary_function<Real,Real> {
       public:
-        NonCentralChiSquareDistribution(double df, double ncp) 
+        NonCentralChiSquareDistribution(Real df, Real ncp) 
         : df_(df), ncp_(ncp) {}
-        double operator()(double x) const;
+        Real operator()(Real x) const;
       private:
-        double df_, ncp_;
+        Real df_, ncp_;
     };
 
 }

@@ -63,7 +63,7 @@ namespace QuantLib {
         boost::shared_ptr<StochasticProcess> diffProcess_;
         mutable sample_type next_;
         BrownianBridge<GSG> bb_;
-        mutable double asset_;
+        mutable Real asset_;
     };
 
     template <class GSG>
@@ -116,7 +116,7 @@ namespace QuantLib {
             next_.weight = stdDev_.weight;
 
             Time t = timeGrid_[1];
-            double dt= timeGrid_.dt(0);
+            Time dt= timeGrid_.dt(0);
             next_.value.drift()[0] = dt *
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = stdDev_.value[0];
@@ -137,8 +137,7 @@ namespace QuantLib {
 
             // starting point for asset value
             asset_ = diffProcess_->x0();
-            double dt;
-            Time t;
+            Time t,  dt;
             for (Size i=0; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
@@ -164,7 +163,7 @@ namespace QuantLib {
             next_.weight = stdDev_.weight;
 
             Time t = timeGrid_[1];
-            double dt= timeGrid_.dt(0);
+            Time dt= timeGrid_.dt(0);
             next_.value.drift()[0] = dt *
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = - stdDev_.value[0];
@@ -185,8 +184,7 @@ namespace QuantLib {
 
             // starting point for asset value
             asset_ = diffProcess_->x0();
-            double dt;
-            Time t;
+            Time t, dt;
             for (Size i=0; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);

@@ -42,7 +42,7 @@ namespace QuantLib {
         //! creates a matrix with the given dimensions
         Matrix(Size rows, Size columns);
         //! creates the matrix and fills it with <tt>value</tt>
-        Matrix(Size rows, Size columns, double value);
+        Matrix(Size rows, Size columns, Real value);
         Matrix(const Matrix&);
         Matrix(const Disposable<Matrix>&);
         ~Matrix();
@@ -57,27 +57,27 @@ namespace QuantLib {
         //@{
         const Matrix& operator+=(const Matrix&);
         const Matrix& operator-=(const Matrix&);
-        const Matrix& operator*=(double);
-        const Matrix& operator/=(double);
+        const Matrix& operator*=(Real);
+        const Matrix& operator/=(Real);
         //@}
 
-        typedef double* iterator;
-        typedef const double* const_iterator;
-        typedef QL_REVERSE_ITERATOR(iterator,double) reverse_iterator;
-        typedef QL_REVERSE_ITERATOR(const_iterator,double)
+        typedef Real* iterator;
+        typedef const Real* const_iterator;
+        typedef QL_REVERSE_ITERATOR(iterator,Real) reverse_iterator;
+        typedef QL_REVERSE_ITERATOR(const_iterator,Real)
             const_reverse_iterator;
-        typedef double* row_iterator;
-        typedef const double* const_row_iterator;
-        typedef QL_REVERSE_ITERATOR(row_iterator,double)
+        typedef Real* row_iterator;
+        typedef const Real* const_row_iterator;
+        typedef QL_REVERSE_ITERATOR(row_iterator,Real)
             reverse_row_iterator;
-        typedef QL_REVERSE_ITERATOR(const_row_iterator,double)
+        typedef QL_REVERSE_ITERATOR(const_row_iterator,Real)
             const_reverse_row_iterator;
-        typedef stepping_iterator<double*> column_iterator;
-        typedef stepping_iterator<const double*>
+        typedef stepping_iterator<Real*> column_iterator;
+        typedef stepping_iterator<const Real*>
         const_column_iterator;
-        typedef QL_REVERSE_ITERATOR(column_iterator,double)
+        typedef QL_REVERSE_ITERATOR(column_iterator,Real)
             reverse_column_iterator;
-        typedef QL_REVERSE_ITERATOR(const_column_iterator,double)
+        typedef QL_REVERSE_ITERATOR(const_column_iterator,Real)
             const_reverse_column_iterator;
         //! \name Iterator access
         //@{
@@ -127,7 +127,7 @@ namespace QuantLib {
       private:
         void allocate(Size rows, Size columns);
         void copy(const Matrix&);
-        double* pointer_;
+        Real* pointer_;
         Size rows_, columns_;
     };
 
@@ -138,11 +138,11 @@ namespace QuantLib {
     /*! \relates Matrix */
     const Disposable<Matrix> operator-(const Matrix&, const Matrix&);
     /*! \relates Matrix */
-    const Disposable<Matrix> operator*(const Matrix&, double);
+    const Disposable<Matrix> operator*(const Matrix&, Real);
     /*! \relates Matrix */
-    const Disposable<Matrix> operator*(double, const Matrix&);
+    const Disposable<Matrix> operator*(Real, const Matrix&);
     /*! \relates Matrix */
-    const Disposable<Matrix> operator/(const Matrix&, double);
+    const Disposable<Matrix> operator/(const Matrix&, Real);
 
 
     // vectorial products
@@ -180,7 +180,7 @@ namespace QuantLib {
 
     inline Matrix::Matrix(Size rows,
                           Size columns,
-                          double value)
+                          Real value)
     : pointer_(0), rows_(0), columns_(0) {
         if (rows > 0 && columns > 0)
             allocate(rows,columns);
@@ -233,7 +233,7 @@ namespace QuantLib {
             pointer_ = 0;
             rows_ = columns_ = 0;
         } else {
-            pointer_ = new double[rows*columns];
+            pointer_ = new Real[rows*columns];
             rows_ = rows;
             columns_ = columns;
         }
@@ -247,7 +247,7 @@ namespace QuantLib {
         QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
                    "matrices with different sizes cannot be added");
         std::transform(begin(),end(),m.begin(),
-                       begin(),std::plus<double>());
+                       begin(),std::plus<Real>());
         return *this;
     }
 
@@ -255,19 +255,19 @@ namespace QuantLib {
         QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
                    "matrices with different sizes cannot be subtracted");
         std::transform(begin(),end(),m.begin(),begin(),
-                       std::minus<double>());
+                       std::minus<Real>());
         return *this;
     }
 
-    inline const Matrix& Matrix::operator*=(double x) {
+    inline const Matrix& Matrix::operator*=(Real x) {
         std::transform(begin(),end(),begin(),
-                       std::bind2nd(std::multiplies<double>(),x));
+                       std::bind2nd(std::multiplies<Real>(),x));
         return *this;
     }
 
-    inline const Matrix& Matrix::operator/=(double x) {
+    inline const Matrix& Matrix::operator/=(Real x) {
         std::transform(begin(),end(),begin(),
-                       std::bind2nd(std::divides<double>(),x));
+                       std::bind2nd(std::divides<Real>(),x));
         return *this;
     }
 
@@ -440,7 +440,7 @@ namespace QuantLib {
                    "matrices with different sizes cannot be added");
         Matrix temp(m1.rows(),m1.columns());
         std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
-                       std::plus<double>());
+                       std::plus<Real>());
         return temp;
     }
 
@@ -451,28 +451,28 @@ namespace QuantLib {
                    "matrices with different sizes cannot be subtracted");
         Matrix temp(m1.rows(),m1.columns());
         std::transform(m1.begin(),m1.end(),m2.begin(),temp.begin(),
-                       std::minus<double>());
+                       std::minus<Real>());
         return temp;
     }
 
-    inline const Disposable<Matrix> operator*(const Matrix& m, double x) {
+    inline const Disposable<Matrix> operator*(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
-                       std::bind2nd(std::multiplies<double>(),x));
+                       std::bind2nd(std::multiplies<Real>(),x));
         return temp;
     }
 
-    inline const Disposable<Matrix> operator*(double x, const Matrix& m) {
+    inline const Disposable<Matrix> operator*(Real x, const Matrix& m) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
-                       std::bind2nd(std::multiplies<double>(),x));
+                       std::bind2nd(std::multiplies<Real>(),x));
         return temp;
     }
 
-    inline const Disposable<Matrix> operator/(const Matrix& m, double x) {
+    inline const Disposable<Matrix> operator/(const Matrix& m, Real x) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
-                       std::bind2nd(std::divides<double>(),x));
+                       std::bind2nd(std::divides<Real>(),x));
         return temp;
     }
 
@@ -540,7 +540,7 @@ namespace QuantLib {
 
         for (Size i=0; v1begin!=v1end; i++, v1begin++)
             std::transform(v2begin, v2end, result.row_begin(i),
-                           std::bind1st(std::multiplies<double>(), *v1begin));
+                           std::bind1st(std::multiplies<Real>(), *v1begin));
 
         return result;
     }

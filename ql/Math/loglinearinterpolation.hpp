@@ -48,20 +48,20 @@ namespace QuantLib {
                 linearInterpolation_ = LinearInterpolation(xBegin, xEnd, 
                                                            logY_.begin());
             }
-            double value(double x) const {
+            Real value(Real x) const {
                 return QL_EXP(linearInterpolation_(x,true));
             }
-            double primitive(double) const {
+            Real primitive(Real) const {
                 QL_FAIL("not implemented");
             }
-            double derivative(double) const {
+            Real derivative(Real) const {
                 QL_FAIL("not implemented");
             }
-            double secondDerivative(double) const {
+            Real secondDerivative(Real) const {
                 QL_FAIL("not implemented");
             }
           private:
-            std::vector<double> logY_;
+            std::vector<Real> logY_;
             Interpolation linearInterpolation_;
         };
       public:

@@ -29,14 +29,14 @@
 namespace QuantLib {
 
     class GammaDistribution
-        : public std::unary_function<double,double> {
+        : public std::unary_function<Real,Real> {
       public:
-        GammaDistribution(double a) : a_(a) {
+        GammaDistribution(Real a) : a_(a) {
             QL_REQUIRE(a>0.0, "invalid parameter for gamma distribution");
         }
-        double operator()(double x) const;
+        Real operator()(Real x) const;
       private:
-        double a_;
+        Real a_;
     };
 
     //! Gamma function class
@@ -49,11 +49,11 @@ namespace QuantLib {
         "Numerical Recipes in C", 2nd edition,
         Press, Teukolsky, Vetterling, Flannery, chapter 6
     */
-    class GammaFunction : public std::unary_function<double,double> {
+    class GammaFunction : public std::unary_function<Real,Real> {
       public:
-        double logValue(double x) const;
+        Real logValue(Real x) const;
       private:
-        static const double c1_, c2_, c3_, c4_, c5_, c6_;
+        static const Real c1_, c2_, c3_, c4_, c5_, c6_;
     };
 
 }

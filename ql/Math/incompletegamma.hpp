@@ -35,18 +35,19 @@ namespace QuantLib {
         "Numerical Recipes in C", 2nd edition,
         Press, Teukolsky, Vetterling, Flannery, chapter 6
     */
-    double incompleteGammaFunction(double a,
-                                   double x,
-                                   double accuracy = 1.0e-13,
-                                   int maxIteration = 100);
-    double incompleteGammaFunctionSeriesRepr(double a,
-                                             double x,
-                                             double accuracy = 1.0e-13,
-                                             int maxIteration = 100);
-    double incompleteGammaFunctionContinuedFractionRepr(double a,
-                                                        double x,
-                                                        double accuracy = 1.0e-13,
-                                                        int maxIteration = 100);
+    Real incompleteGammaFunction(Real a,
+                                 Real x,
+                                 Real accuracy = 1.0e-13,
+                                 Integer maxIteration = 100);
+    Real incompleteGammaFunctionSeriesRepr(Real a,
+                                           Real x,
+                                           Real accuracy = 1.0e-13,
+                                           Integer maxIteration = 100);
+    Real incompleteGammaFunctionContinuedFractionRepr(
+                                                  Real a,
+                                                  Real x,
+                                                  Real accuracy = 1.0e-13,
+                                                  Integer maxIteration = 100);
 
 }
 

@@ -47,23 +47,23 @@ namespace QuantLib {
 
             See Markowitz (1959).
         */
-        double semiVariance() const;
+        Real semiVariance() const;
 
         /*! returns the semi deviation, defined as the
             square root of the semi variance.
         */
-        double semiDeviation() const;
+        Real semiDeviation() const;
 
         /*! returns the variance of observations below 0.0,
             \f[ \frac{N}{N-1} 
                 \mathrm{E}\left[ x^2 \;|\; x < 0\right]. \f]
         */
-        double downsideVariance() const;
+        Real downsideVariance() const;
 
         /*! returns the downside deviation, defined as the
             square root of the downside variance.
         */
-        double downsideDeviation() const;
+        Real downsideDeviation() const;
 
         /*! returns the variance of observations below target,
             \f[ \frac{N}{N-1} 
@@ -72,13 +72,13 @@ namespace QuantLib {
 
             See Dembo and Freeman, "The Rules Of Risk", Wiley (2001).
         */
-        double regret(double target) const;
+        Real regret(Real target) const;
 
         //! potential upside (the reciprocal of VAR) at a given percentile
-        double potentialUpside(double percentile) const;
+        Real potentialUpside(Real percentile) const;
 
         //! value-at-risk at a given percentile
-        double valueAtRisk(double percentile) const;
+        Real valueAtRisk(Real percentile) const;
 
         //! expected shortfall at a given percentile
         /*! returns the expected loss in case that the loss exceeded
@@ -93,7 +93,7 @@ namespace QuantLib {
             See Artzner, Delbaen, Eber and Heath,
             "Coherent measures of risk", Mathematical Finance 9 (1999)
         */
-        double expectedShortfall(double percentile) const;
+        Real expectedShortfall(Real percentile) const;
 
         /*! probability of missing the given target, defined as
             \f[ \mathrm{E}\left[ \Theta \;|\; (-\infty,\infty) \right] \f]
@@ -105,12 +105,12 @@ namespace QuantLib {
                 \end{array}
                 \right. \f]
         */
-        double shortfall(double target) const;
+        Real shortfall(Real target) const;
 
         /*! averaged shortfallness, defined as
             \f[ \mathrm{E}\left[ t-x \;|\; x<t \right] \f]
         */
-        double averageShortfall(double target) const;
+        Real averageShortfall(Real target) const;
     };
 
 
@@ -123,38 +123,37 @@ namespace QuantLib {
     // inline definitions
 
     template <class S>
-    inline double GenericRiskStatistics<S>::semiVariance() const {
+    inline Real GenericRiskStatistics<S>::semiVariance() const {
         return regret(mean());
     }
 
     template <class S>
-    inline double GenericRiskStatistics<S>::semiDeviation() const {
+    inline Real GenericRiskStatistics<S>::semiDeviation() const {
         return QL_SQRT(semiVariance());
     }
 
     template <class S>
-    inline double GenericRiskStatistics<S>::downsideVariance() const {
+    inline Real GenericRiskStatistics<S>::downsideVariance() const {
         return regret(0.0);
     }
  
     template <class S>
-    inline double GenericRiskStatistics<S>::downsideDeviation() const {
+    inline Real GenericRiskStatistics<S>::downsideDeviation() const {
         return QL_SQRT(downsideVariance());
     }
 
     // template definitions
 
     template <class S>
-    double GenericRiskStatistics<S>::regret(double target) const {
+    Real GenericRiskStatistics<S>::regret(Real target) const {
         // average over the range below the target
-        std::pair<double,Size> result =
-            expectationValue(compose(square<double>(),
-                                     std::bind2nd(
-                                                  std::minus<double>(),
+        std::pair<Real,Size> result =
+            expectationValue(compose(square<Real>(),
+                                     std::bind2nd(std::minus<Real>(),
                                                   target)),
-                             std::bind2nd(std::less<double>(),
+                             std::bind2nd(std::less<Real>(),
                                           target));
-        double x = result.first;
+        Real x = result.first;
         Size N = result.second;
         QL_REQUIRE(N > 1,
                    "samples under target <= 1, unsufficient");
@@ -163,7 +162,7 @@ namespace QuantLib {
 
     /*! \pre percentile must be in range [90%-100%) */
     template <class S>
-    double GenericRiskStatistics<S>::potentialUpside(double centile)
+    Real GenericRiskStatistics<S>::potentialUpside(Real centile)
         const {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
@@ -176,7 +175,7 @@ namespace QuantLib {
 
     /*! \pre percentile must be in range [90%-100%) */
     template <class S>
-    double GenericRiskStatistics<S>::valueAtRisk(double centile) const {
+    Real GenericRiskStatistics<S>::valueAtRisk(Real centile) const {
 
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
@@ -189,18 +188,18 @@ namespace QuantLib {
 
     /*! \pre percentile must be in range [90%-100%) */
     template <class S>
-    double GenericRiskStatistics<S>::expectedShortfall(double centile) const {
+    Real GenericRiskStatistics<S>::expectedShortfall(Real centile) const {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
                    DecimalFormatter::toString(centile) +
                    ") must be in [0.9,1.0)");
         QL_ENSURE(samples() != 0, "empty sample set");
-        double target = -valueAtRisk(centile);
-        std::pair<double,Size> result = 
-            expectationValue(identity<double>(),
-                             std::bind2nd(std::less<double>(),
+        Real target = -valueAtRisk(centile);
+        std::pair<Real,Size> result = 
+            expectationValue(identity<Real>(),
+                             std::bind2nd(std::less<Real>(),
                                           target));
-        double x = result.first;
+        Real x = result.first;
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");
         // must be a loss, i.e., capped at 0.0 and negated
@@ -208,23 +207,23 @@ namespace QuantLib {
     }
 
     template <class S>
-    double GenericRiskStatistics<S>::shortfall(double target) const {
+    Real GenericRiskStatistics<S>::shortfall(Real target) const {
         QL_ENSURE(samples() != 0, "empty sample set");
-        return expectationValue(clip(constant<double,double>(1.0),
-                                     std::bind2nd(std::less<double>(),
+        return expectationValue(clip(constant<Real,Real>(1.0),
+                                     std::bind2nd(std::less<Real>(),
                                                   target)),
                                 everywhere()).first;
     }
 
     template <class S>
-    double GenericRiskStatistics<S>::averageShortfall(double target) 
+    Real GenericRiskStatistics<S>::averageShortfall(Real target) 
         const {
-        std::pair<double,Size> result = 
-            expectationValue(std::bind1st(std::minus<double>(),
+        std::pair<Real,Size> result = 
+            expectationValue(std::bind1st(std::minus<Real>(),
                                           target),
-                             std::bind2nd(std::less<double>(),
+                             std::bind2nd(std::less<Real>(),
                                           target));
-        double x = result.first;
+        Real x = result.first;
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");
         return x;

@@ -27,17 +27,15 @@
 
 namespace QuantLib {
 
-    inline double binomialCoefficientLn(unsigned long n, unsigned long k) {
+    inline Real binomialCoefficientLn(BigNatural n, BigNatural k) {
 
-        QL_REQUIRE(n>=0, "negative n not allowed");
-        QL_REQUIRE(k>=0, "negative k not allowed");
         QL_REQUIRE(n>=k, "n<k not allowed");
 
         return Factorial::ln(n)-Factorial::ln(k)-Factorial::ln(n-k);
 
     }
 
-    inline double binomialCoefficient(unsigned long n, unsigned long k) {
+    inline Real binomialCoefficient(BigNatural n, BigNatural k) {
 
         return QL_FLOOR(0.5+QL_EXP(binomialCoefficientLn(n, k)));
 
@@ -48,14 +46,14 @@ namespace QuantLib {
         Given an integer k it returns its probability in a Binomial
         distribution with parameters p and n.
     */
-    class BinomialDistribution : public std::unary_function<double,double> {
+    class BinomialDistribution : public std::unary_function<Real,Real> {
       public:
-        BinomialDistribution(double p, unsigned long n);
+        BinomialDistribution(Real p, BigNatural n);
         // function
-        double operator()(unsigned long k) const;
+        Real operator()(BigNatural k) const;
       private:
-        unsigned long n_;
-        double logP_, logOneMinusP_;
+        BigNatural n_;
+        Real logP_, logOneMinusP_;
     };
 
     //! Cumulative binomial distribution function
@@ -65,26 +63,25 @@ namespace QuantLib {
 
     */
     class CumulativeBinomialDistribution
-    : public std::unary_function<double,double> {
+    : public std::unary_function<Real,Real> {
       public:
-        CumulativeBinomialDistribution(double p, unsigned long n);
+        CumulativeBinomialDistribution(Real p, BigNatural n);
         // function
-        double operator()(unsigned long k) const {
-            if (k >= n_) return 1.0;
-            QL_REQUIRE(k>=0, "negative k not allowed");
-            return 1.0 - incompleteBetaFunction(k+1, n_-k, p_);
+        Real operator()(BigNatural k) const {
+            if (k >= n_)
+                return 1.0;
+            else
+                return 1.0 - incompleteBetaFunction(k+1, n_-k, p_);
         }
       private:
-        unsigned long n_;
-        double p_;
+        BigNatural n_;
+        Real p_;
     };
 
 
-    inline BinomialDistribution::BinomialDistribution(double p, 
-                                                      unsigned long n)
+    inline BinomialDistribution::BinomialDistribution(Real p, 
+                                                      BigNatural n)
     : n_(n) {
-
-        QL_REQUIRE(n>=0, "negative n not allowed");
 
         if (p==0.0) {
             logOneMinusP_ = 0.0;
@@ -101,20 +98,18 @@ namespace QuantLib {
 
 
     inline 
-    CumulativeBinomialDistribution::CumulativeBinomialDistribution(double p,
-        unsigned long n)
+    CumulativeBinomialDistribution::CumulativeBinomialDistribution(
+                                                       Real p, BigNatural n)
     : n_(n), p_(p) {
 
-        QL_REQUIRE(n>=0, "negative n not allowed");
         QL_REQUIRE(p>=0, "negative p not allowed");
         QL_REQUIRE(p<=1.0, "p>1.0 not allowed");
 
     }
 
-    inline double BinomialDistribution::operator()(unsigned long k) const {
+    inline Real BinomialDistribution::operator()(BigNatural k) const {
 
         if (k > n_) return 0.0;
-        QL_REQUIRE(k>=0, "negative k not allowed");
 
         // p==1.0
         if (logP_==0.0)
@@ -135,13 +130,13 @@ namespace QuantLib {
 
         \pre n must be odd
     */
-    inline double PeizerPrattMethod2Inversion(double z, unsigned long n) {
+    inline Real PeizerPrattMethod2Inversion(Real z, BigNatural n) {
 
         QL_REQUIRE(n%2==1,
                    "n must be an odd number" +
                    IntegerFormatter::toString(n) + " not allowed");
 
-        double result = (z/(n+1.0/3.0+0.1/(n+1.0)));
+        Real result = (z/(n+1.0/3.0+0.1/(n+1.0)));
         result *= result;
         result = QL_EXP(-result*(n+1.0/6.0));
         result = 0.5 + (z>0 ? 1 : -1) * QL_SQRT((0.25 * (1.0-result)));

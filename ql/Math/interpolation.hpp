@@ -32,13 +32,13 @@ namespace QuantLib {
     class InterpolationImpl {
       public:
         virtual ~InterpolationImpl() {}
-        virtual double xMin() const = 0;
-        virtual double xMax() const = 0;
-        virtual bool isInRange(double) const = 0;
-        virtual double value(double) const = 0;
-        virtual double primitive(double) const = 0;
-        virtual double derivative(double) const = 0;
-        virtual double secondDerivative(double) const = 0;
+        virtual Real xMin() const = 0;
+        virtual Real xMax() const = 0;
+        virtual bool isInRange(Real) const = 0;
+        virtual Real value(Real) const = 0;
+        virtual Real primitive(Real) const = 0;
+        virtual Real derivative(Real) const = 0;
+        virtual Real secondDerivative(Real) const = 0;
     };
 
     //! base class for 1-D interpolations.
@@ -49,8 +49,8 @@ namespace QuantLib {
     */
     class Interpolation : public Bridge<Interpolation,InterpolationImpl> {
       public:
-        typedef double argument_type;
-        typedef double result_type;
+        typedef Real argument_type;
+        typedef Real result_type;
       #if defined(QL_PATCH_MICROSOFT)
       public:
       #else
@@ -69,17 +69,17 @@ namespace QuantLib {
                     QL_REQUIRE(*j > *i, "unsorted x values");
                 #endif
             }
-            double xMin() const {
+            Real xMin() const {
                 return *xBegin_;
             }
-            double xMax() const {
+            Real xMax() const {
                 return *(xEnd_-1);
             }
-            bool isInRange(double x) const {
+            bool isInRange(Real x) const {
                 return x >= xMin() && x <= xMax();
             }
           protected:
-            Size locate(double x) const {
+            Size locate(Real x) const {
                 if (x < *xBegin_)
                     return 0;
                 else if (x > *(xEnd_-1))
@@ -92,28 +92,27 @@ namespace QuantLib {
         };
       public:
         Interpolation() {}
-        double operator()(double x, bool allowExtrapolation = false) const {
+        Real operator()(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
             return impl_->value(x);
         }
-        double primitive(double x, bool allowExtrapolation = false) const {
+        Real primitive(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
             return impl_->primitive(x);
         }
-        double derivative(double x, bool allowExtrapolation = false) const {
+        Real derivative(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
             return impl_->derivative(x);
         }
-        double secondDerivative(double x, 
-                                bool allowExtrapolation = false) const {
+        Real secondDerivative(Real x, bool allowExtrapolation = false) const {
             checkRange(x,allowExtrapolation);
             return impl_->secondDerivative(x);
         }
-        double xMin() const { return impl_->xMin(); }
-        double xMax() const { return impl_->xMax(); }
-        bool isInRange(double x) const { return impl_->isInRange(x); }
+        Real xMin() const { return impl_->xMin(); }
+        Real xMax() const { return impl_->xMax(); }
+        bool isInRange(Real x) const { return impl_->isInRange(x); }
       protected:
-        void checkRange(double x, bool allowExtrapolation) const {
+        void checkRange(Real x, bool allowExtrapolation) const {
             QL_REQUIRE(allowExtrapolation || impl_->isInRange(x),
                        "interpolation range is ["
                        + DecimalFormatter::toString(impl_->xMin()) +

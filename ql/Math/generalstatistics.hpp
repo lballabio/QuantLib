@@ -47,38 +47,38 @@ namespace QuantLib {
         Size samples() const;
 
         //! collected data
-        const std::vector<std::pair<double,double> >& data() const;
+        const std::vector<std::pair<Real,Real> >& data() const;
 
         //! sum of data weights
-        double weightSum() const;
+        Real weightSum() const;
 
         /*! returns the mean, defined as
             \f[ \langle x \rangle = \frac{\sum w_i x_i}{\sum w_i}. \f]
         */
-        double mean() const;
+        Real mean() const;
 
         /*! returns the variance, defined as
             \f[ \sigma^2 = \frac{N}{N-1} \left\langle \left(
                 x-\langle x \rangle \right)^2 \right\rangle. \f]
         */
-        double variance() const;
+        Real variance() const;
 
         /*! returns the standard deviation \f$ \sigma \f$, defined as the
             square root of the variance.
         */
-        double standardDeviation() const;
+        Real standardDeviation() const;
 
         /*! returns the error estimate on the mean value, defined as
             \f$ \epsilon = \sigma/\sqrt{N}. \f$
         */
-        double errorEstimate() const;
+        Real errorEstimate() const;
 
         /*! returns the skewness, defined as
             \f[ \frac{N^2}{(N-1)(N-2)} \frac{\left\langle \left(
                 x-\langle x \rangle \right)^3 \right\rangle}{\sigma^3}. \f]
             The above evaluates to 0 for a Gaussian distribution.
         */
-        double skewness() const;
+        Real skewness() const;
 
         /*! returns the excess kurtosis, defined as
             \f[ \frac{N^2(N+1)}{(N-1)(N-2)(N-3)}
@@ -86,13 +86,13 @@ namespace QuantLib {
                 \right\rangle}{\sigma^4} - \frac{3(N-1)^2}{(N-2)(N-3)}. \f]
             The above evaluates to 0 for a Gaussian distribution.
         */
-        double kurtosis() const;
+        Real kurtosis() const;
 
         /*! returns the minimum sample value */
-        double min() const;
+        Real min() const;
 
         /*! returns the maximum sample value */
-        double max() const;
+        Real max() const;
 
         /*! Expectation value of a function \f$ f \f$ on a given
             range \f$ \mathcal{R} \f$, i.e., 
@@ -107,14 +107,14 @@ namespace QuantLib {
             the number of observations in the given range.
         */
         template <class Func, class Predicate> 
-        std::pair<double,Size> expectationValue(const Func& f,
-                                                const Predicate& inRange)
+        std::pair<Real,Size> expectationValue(const Func& f,
+                                              const Predicate& inRange)
             const {
-            double num = 0.0, den = 0.0;
+            Real num = 0.0, den = 0.0;
             Size N = 0;
-            std::vector<std::pair<double,double> >::const_iterator i;
+            std::vector<std::pair<Real,Real> >::const_iterator i;
             for (i=samples_.begin(); i!=samples_.end(); ++i) {
-                double x = i->first, w = i->second;
+                Real x = i->first, w = i->second;
                 if (inRange(x)) {
                     num += f(x)*w;
                     den += w;
@@ -134,7 +134,7 @@ namespace QuantLib {
 
             \pre \f$ y \f$ must be in the range \f$ (0-1]. \f$
         */
-        double percentile(double y) const;
+        Real percentile(Real y) const;
 
         /*! \f$ y \f$-th top percentile, defined as the value 
             \f$ \bar{x} \f$ such that 
@@ -143,13 +143,13 @@ namespace QuantLib {
 
             \pre \f$ y \f$ must be in the range \f$ (0-1]. \f$
         */
-        double topPercentile(double y) const;
+        Real topPercentile(Real y) const;
         //@}
 
         //! \name Modifiers
         //@{
         //! adds a datum to the set, possibly with a weight
-        void add(double value, double weight = 1.0);
+        void add(Real value, Real weight = 1.0);
         //! adds a sequence of data to the set, with default weight
         template <class DataIterator>
         void addSequence(DataIterator begin, DataIterator end) {
@@ -171,7 +171,7 @@ namespace QuantLib {
         void sort() const;
         //@}
       private:
-        mutable std::vector<std::pair<double,double> > samples_;
+        mutable std::vector<std::pair<Real,Real> > samples_;
         mutable bool sorted_;
     };
 
@@ -186,40 +186,40 @@ namespace QuantLib {
         return samples_.size(); 
     }
 
-    inline const std::vector<std::pair<double,double> >& 
+    inline const std::vector<std::pair<Real,Real> >& 
     GeneralStatistics::data() const {
         return samples_;
     }
 
-    inline double GeneralStatistics::standardDeviation() const {
+    inline Real GeneralStatistics::standardDeviation() const {
         return QL_SQRT(variance());
     }
 
-    inline double GeneralStatistics::errorEstimate() const {
+    inline Real GeneralStatistics::errorEstimate() const {
         return QL_SQRT(variance()/samples());
     }
 
-    inline double GeneralStatistics::min() const {
+    inline Real GeneralStatistics::min() const {
         QL_REQUIRE(samples() > 0, "empty sample set");
         return std::min_element(samples_.begin(), 
                                 samples_.end())->first;
     }
 
-    inline double GeneralStatistics::max() const {
+    inline Real GeneralStatistics::max() const {
         QL_REQUIRE(samples() > 0, "empty sample set");
         return std::max_element(samples_.begin(), 
                                 samples_.end())->first;
     }
 
     /*! \pre weights must be positive or null */
-    inline void GeneralStatistics::add(double value, double weight) {
+    inline void GeneralStatistics::add(Real value, Real weight) {
         QL_REQUIRE(weight>=0.0, "negative weight not allowed");
         samples_.push_back(std::make_pair(value,weight));
         sorted_ = false;
     }
 
     inline void GeneralStatistics::reset() {
-        samples_ = std::vector<std::pair<double,double> >();
+        samples_ = std::vector<std::pair<Real,Real> >();
         sorted_ = true;
     }
 

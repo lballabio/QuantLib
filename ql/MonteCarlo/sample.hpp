@@ -22,7 +22,7 @@
 #ifndef quantlib_sample_h
 #define quantlib_sample_h
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
@@ -32,10 +32,10 @@ namespace QuantLib {
     struct Sample {
       public:
         typedef T value_type;
-        Sample(const T& value, double weight)
+        Sample(const T& value, Real weight)
         : value(value), weight(weight) {}
         T value;
-        double weight;
+        Real weight;
     };
 
 }

@@ -119,8 +119,8 @@ namespace QuantLib {
     //         	erfc(0) = 1, erfc(inf) = 0, erfc(-inf) = 2,
     //	   	erfc/erf(NaN) is NaN
 
-    const double
-    ErrorFunction::tiny =  1e-300,
+    const Real
+    ErrorFunction::tiny =  QL_EPSILON,
         ErrorFunction::one =  1.00000000000000000000e+00, /* 0x3FF00000, 0x00000000 */
         /* c = (float)0.84506291151 */
         ErrorFunction::erx =  8.45062911510467529297e-01, /* 0x3FEB0AC1, 0x60000000 */
@@ -192,9 +192,9 @@ namespace QuantLib {
         ErrorFunction::sb6  =  4.74528541206955367215e+02, /* 0x407DA874, 0xE79FE763 */
         ErrorFunction::sb7  = -2.24409524465858183362e+01; /* 0xC03670E2, 0x42712D62 */
 
-    double ErrorFunction::operator()(double x) const {
+    Real ErrorFunction::operator()(Real x) const {
 
-        double R,S,P,Q,s,y,z,r, ax;
+        Real R,S,P,Q,s,y,z,r, ax;
 
         /* not portable!
 

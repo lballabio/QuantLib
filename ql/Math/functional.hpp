@@ -65,14 +65,14 @@ namespace QuantLib {
 
     // predicates
 
-    class everywhere : public constant<double,bool> {
+    class everywhere : public constant<Real,bool> {
       public:
-        everywhere() : constant<double,bool>(true) {}
+        everywhere() : constant<Real,bool>(true) {}
     };
 
-    class nowhere : public constant<double,bool> {
+    class nowhere : public constant<Real,bool> {
       public:
-        nowhere() : constant<double,bool>(false) {}
+        nowhere() : constant<Real,bool>(false) {}
     };
 
 

@@ -42,11 +42,11 @@ namespace QuantLib {
             using (a * sqrt( 1 + (b/a) * (b/a))), rather than
             sqrt(a*a + b*b).
         */
-        double hypot(const double &a, const double &b) {	
+        Real hypot(const Real &a, const Real &b) {	
             if (a == 0) {
                 return QL_FABS(b);
             } else {
-                double c = b/a;
+                Real c = b/a;
                 return QL_FABS(a) * sqrt(1 + c*c);
             }
         }
@@ -92,13 +92,13 @@ namespace QuantLib {
         V_ = Matrix(n_,n_);
         Array e(n_);
         Array work(m_);
-        int i, j, k;
+        Integer i, j, k;
 
         // Reduce A to bidiagonal form, storing the diagonal elements
         // in s and the super-diagonal elements in e.
 
-        int nct = QL_MIN(m_-1,n_);
-        int nrt = QL_MAX(0,n_-2);
+        Integer nct = QL_MIN(m_-1,n_);
+        Integer nrt = QL_MAX(0,n_-2);
         for (k = 0; k < QL_MAX(nct,nrt); k++) {
             if (k < nct) {
 
@@ -125,7 +125,7 @@ namespace QuantLib {
 
                     // Apply the transformation.
 
-                    double t = 0;
+                    Real t = 0;
                     for (i = k; i < m_; i++) {
                         t += A[i][k]*A[i][j];
                     }
@@ -181,7 +181,7 @@ namespace QuantLib {
                         }
                     }
                     for (j = k+1; j < n_; j++) {
-                        double t = -e[j]/e[k+1];
+                        Real t = -e[j]/e[k+1];
                         for (i = k+1; i < m_; i++) {
                             A[i][j] += t*work[i];
                         }
@@ -218,7 +218,7 @@ namespace QuantLib {
         for (k = nct-1; k >= 0; k--) {
             if (s_[k] != 0.0) {
                 for (j = k+1; j < n_; j++) {
-                    double t = 0;
+                    Real t = 0;
                     for (i = k; i < m_; i++) {
                         t += U_[i][k]*U_[i][j];
                     }
@@ -247,7 +247,7 @@ namespace QuantLib {
         for (k = n_-1; k >= 0; k--) {
             if ((k < nrt) & (e[k] != 0.0)) {
                 for (j = k+1; j < n_; j++) {
-                    double t = 0;
+                    Real t = 0;
                     for (i = k+1; i < n_; i++) {
                         t += V_[i][k]*V_[i][j];
                     }
@@ -265,12 +265,12 @@ namespace QuantLib {
 
         // Main iteration loop for the singular values.
 
-        int p = n_, pp = p-1;
-        int iter = 0;
-        double eps = pow(2.0,-52.0);
+        Integer p = n_, pp = p-1;
+        Integer iter = 0;
+        Real eps = QL_POW(2.0,-52.0);
         while (p > 0) {
-            int k;
-            int kase;
+            Integer k;
+            Integer kase;
 
             // Here is where a test for too many iterations would go.
 
@@ -296,12 +296,12 @@ namespace QuantLib {
             if (k == p-2) {
                 kase = 4;
             } else {
-                int ks;
+                Integer ks;
                 for (ks = p-1; ks >= k; ks--) {
                     if (ks == k) {
                         break;
                     }
-                    double t = (ks != p ? QL_FABS(e[ks]) : 0.) + 
+                    Real t = (ks != p ? QL_FABS(e[ks]) : 0.) + 
                         (ks != k+1 ? QL_FABS(e[ks-1]) : 0.);
                     if (QL_FABS(s_[ks]) <= eps*t)  {
                         s_[ks] = 0.0;
@@ -326,12 +326,12 @@ namespace QuantLib {
                 // Deflate negligible s(p).
 
               case 1: {
-                  double f = e[p-2];
+                  Real f = e[p-2];
                   e[p-2] = 0.0;
                   for (j = p-2; j >= k; j--) {
-                      double t = hypot(s_[j],f);
-                      double cs = s_[j]/t;
-                      double sn = f/t;
+                      Real t = hypot(s_[j],f);
+                      Real cs = s_[j]/t;
+                      Real sn = f/t;
                       s_[j] = t;
                       if (j != k) {
                           f = -sn*e[j-1];
@@ -349,12 +349,12 @@ namespace QuantLib {
                 // Split at negligible s(k).
 
               case 2: {
-                  double f = e[k-1];
+                  Real f = e[k-1];
                   e[k-1] = 0.0;
                   for (j = k; j < p; j++) {
-                      double t = hypot(s_[j],f);
-                      double cs = s_[j]/t;
-                      double sn = f/t;
+                      Real t = hypot(s_[j],f);
+                      Real cs = s_[j]/t;
+                      Real sn = f/t;
                       s_[j] = t;
                       f = -sn*e[j];
                       e[j] = cs*e[j];
@@ -372,7 +372,7 @@ namespace QuantLib {
               case 3: {
 
                   // Calculate the shift.
-                  double scale = QL_MAX(
+                  Real scale = QL_MAX(
                                      QL_MAX(
                                          QL_MAX(
                                              QL_MAX(QL_FABS(s_[p-1]),
@@ -380,14 +380,14 @@ namespace QuantLib {
                                              QL_FABS(e[p-2])), 
                                          QL_FABS(s_[k])),
                                      QL_FABS(e[k]));
-                  double sp = s_[p-1]/scale;
-                  double spm1 = s_[p-2]/scale;
-                  double epm1 = e[p-2]/scale;
-                  double sk = s_[k]/scale;
-                  double ek = e[k]/scale;
-                  double b = ((spm1 + sp)*(spm1 - sp) + epm1*epm1)/2.0;
-                  double c = (sp*epm1)*(sp*epm1);
-                  double shift = 0.0;
+                  Real sp = s_[p-1]/scale;
+                  Real spm1 = s_[p-2]/scale;
+                  Real epm1 = e[p-2]/scale;
+                  Real sk = s_[k]/scale;
+                  Real ek = e[k]/scale;
+                  Real b = ((spm1 + sp)*(spm1 - sp) + epm1*epm1)/2.0;
+                  Real c = (sp*epm1)*(sp*epm1);
+                  Real shift = 0.0;
                   if ((b != 0.0) | (c != 0.0)) {
                       shift = sqrt(b*b + c);
                       if (b < 0.0) {
@@ -395,15 +395,15 @@ namespace QuantLib {
                       }
                       shift = c/(b + shift);
                   }
-                  double f = (sk + sp)*(sk - sp) + shift;
-                  double g = sk*ek;
+                  Real f = (sk + sp)*(sk - sp) + shift;
+                  Real g = sk*ek;
 
                   // Chase zeros.
 
                   for (j = k; j < p-1; j++) {
-                      double t = hypot(f,g);
-                      double cs = f/t;
-                      double sn = g/t;
+                      Real t = hypot(f,g);
+                      Real cs = f/t;
+                      Real sn = g/t;
                       if (j != k) {
                           e[j-1] = t;
                       }
@@ -491,8 +491,8 @@ namespace QuantLib {
 
     Disposable<Matrix> SVD::S() const {
         Matrix S(n_,n_);
-        for (int i = 0; i < n_; i++) {
-            for (int j = 0; j < n_; j++) {
+        for (Size i = 0; i < n_; i++) {
+            for (Size j = 0; j < n_; j++) {
                 S[i][j] = 0.0;
             }
             S[i][i] = s_[i];
@@ -500,18 +500,18 @@ namespace QuantLib {
         return S;
     }
 
-    double SVD::norm2() {
+    Real SVD::norm2() {
         return s_[0];
     }
 
-    double SVD::cond() {
+    Real SVD::cond() {
         return s_[0]/s_[n_-1];
     }
 
-    int SVD::rank() {
-        double eps = pow(2.0,-52.0);
-        double tol = m_*s_[0]*eps;
-        int r = 0;
+    Integer SVD::rank() {
+        Real eps = QL_POW(2.0,-52.0);
+        Real tol = m_*s_[0]*eps;
+        Integer r = 0;
         for (Size i = 0; i < s_.size(); i++) {
             if (s_[i] > tol) {
                 r++;

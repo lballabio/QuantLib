@@ -24,20 +24,20 @@ namespace QuantLib {
         "Numerical Recipes in C", 2nd edition,
         Press, Teukolsky, Vetterling, Flannery, chapter 6
     */
-    double betaContinuedFraction(double a, double  b, double  x,
-        double accuracy, int maxIteration) {
+    Real betaContinuedFraction(Real a, Real  b, Real  x,
+                               Real accuracy, Integer maxIteration) {
 
-    	double aa, del;
-    	double qab=a+b;
-    	double qap=a+1.0;
-    	double qam=a-1.0;
-    	double c=1.0;
-    	double d=1.0-qab*x/qap;
+    	Real aa, del;
+    	Real qab=a+b;
+    	Real qap=a+1.0;
+    	Real qam=a-1.0;
+    	Real c=1.0;
+    	Real d=1.0-qab*x/qap;
     	if (QL_FABS(d) < QL_EPSILON) d=QL_EPSILON;
     	d=1.0/d;
-    	double result=d;
+    	Real result=d;
 
-    	int m, m2;
+    	Integer m, m2;
     	for (m=1; m<=maxIteration; m++) {
     		m2=2*m;
     		aa=m*(b-m)*x/((qam+m2)*(a+m2));
@@ -62,9 +62,9 @@ namespace QuantLib {
     }
 
 
-    double incompleteBetaFunction(double a, double b, 
-                                  double x, double accuracy,
-                                  int maxIteration) {
+    Real incompleteBetaFunction(Real a, Real b, 
+                                Real x, Real accuracy,
+                                Integer maxIteration) {
 
     	QL_REQUIRE(a > 0.0, "a must be greater than zero");
     	QL_REQUIRE(b > 0.0, "b must be greater than zero");
@@ -77,7 +77,7 @@ namespace QuantLib {
     	else
     	    QL_REQUIRE(x>0.0 && x<1.0, "x must be in [0,1]");
 
-    	double result = QL_EXP(GammaFunction().logValue(a+b) -
+    	Real result = QL_EXP(GammaFunction().logValue(a+b) -
     		GammaFunction().logValue(a) - GammaFunction().logValue(b) +
     		a*QL_LOG(x) + b*QL_LOG(1.0-x));
 

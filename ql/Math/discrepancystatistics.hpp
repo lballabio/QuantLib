@@ -36,22 +36,22 @@ namespace QuantLib {
         DiscrepancyStatistics(Size dimension);
         //! \name 1-dimensional inspectors
         //@{
-        double discrepancy() const;
+        Real discrepancy() const;
         //@}
         template <class Sequence>
         void add(const Sequence& sample,
-                 double weight = 1.0) {
+                 Real weight = 1.0) {
             add(sample.begin(),sample.end(),weight);
         }
         template <class Iterator>
         void add(Iterator begin,
                  Iterator end,
-                 double weight = 1.0) {
+                 Real weight = 1.0) {
             SequenceStatistics<Statistics>::add(begin,end,weight);
 
             Size k, m, N = samples();
 
-            double r_ik, r_jk, temp = 1.0;
+            Real r_ik, r_jk, temp = 1.0;
             Iterator it;
             for (k=0, it=begin; k<dimension_; ++it, ++k) {
                 r_ik = *it; //i=N
@@ -90,8 +90,8 @@ namespace QuantLib {
         }
         void reset(Size dimension = 0);
       private:
-        mutable double adiscr_, cdiscr_;
-        double bdiscr_, ddiscr_;
+        mutable Real adiscr_, cdiscr_;
+        Real bdiscr_, ddiscr_;
     };
 
 
@@ -111,9 +111,9 @@ namespace QuantLib {
         SequenceStatistics<Statistics>::reset(dimension);
 
         adiscr_ = 0.0;
-        bdiscr_ = 1.0/QL_POW(2.0, int(dimension-1));
+        bdiscr_ = 1.0/QL_POW(2.0, Integer(dimension-1));
         cdiscr_ = 0.0;
-        ddiscr_ = 1.0/QL_POW(3.0, int(dimension));
+        ddiscr_ = 1.0/QL_POW(3.0, Integer(dimension));
     }
 
 }

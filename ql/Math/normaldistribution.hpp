@@ -33,15 +33,15 @@ namespace QuantLib {
         Given x it returns its probability in a Gaussian normal distribution.
         It provides the first derivative too.
     */
-    class NormalDistribution : public std::unary_function<double,double> {
+    class NormalDistribution : public std::unary_function<Real,Real> {
       public:
-        NormalDistribution(double average = 0.0,
-                           double sigma = 1.0);
+        NormalDistribution(Real average = 0.0,
+                           Real sigma = 1.0);
         // function
-        double operator()(double x) const;
-        double derivative(double x) const;
+        Real operator()(Real x) const;
+        Real derivative(Real x) const;
       private:
-        double average_, sigma_, normalizationFactor_, denominator_,
+        Real average_, sigma_, normalizationFactor_, denominator_,
             derNormalizationFactor_;
     };
 
@@ -58,15 +58,15 @@ namespace QuantLib {
         Dover Publications, New York (1972)
     */
     class CumulativeNormalDistribution
-    : public std::unary_function<double,double> {
+    : public std::unary_function<Real,Real> {
       public:
-        CumulativeNormalDistribution(double average = 0.0,
-                                     double sigma   = 1.0);
+        CumulativeNormalDistribution(Real average = 0.0,
+                                     Real sigma   = 1.0);
         // function
-        double operator()(double x) const;
-        double derivative(double x) const;
+        Real operator()(Real x) const;
+        Real derivative(Real x) const;
       private:
-        double average_, sigma_;
+        Real average_, sigma_;
         NormalDistribution gaussian_;
         ErrorFunction errorFunction_;
     };
@@ -91,42 +91,42 @@ namespace QuantLib {
 
     */
     class InverseCumulativeNormal
-        : public std::unary_function<double,double> {
+        : public std::unary_function<Real,Real> {
       public:
-        InverseCumulativeNormal(double average = 0.0,
-                                double sigma   = 1.0);
+        InverseCumulativeNormal(Real average = 0.0,
+                                Real sigma   = 1.0);
         // function
-        double operator()(double x) const;
+        Real operator()(Real x) const;
       private:
         #if defined(QL_PATCH_SOLARIS)
         CumulativeNormalDistribution f_;
         #else
         static const CumulativeNormalDistribution f_;
         #endif
-        double average_, sigma_;
-        static const double a1_;
-        static const double a2_;
-        static const double a3_;
-        static const double a4_;
-        static const double a5_;
-        static const double a6_;
-        static const double b1_;
-        static const double b2_;
-        static const double b3_;
-        static const double b4_;
-        static const double b5_;
-        static const double c1_;
-        static const double c2_;
-        static const double c3_;
-        static const double c4_;
-        static const double c5_;
-        static const double c6_;
-        static const double d1_;
-        static const double d2_;
-        static const double d3_;
-        static const double d4_;
-        static const double x_low_;
-        static const double x_high_;
+        Real average_, sigma_;
+        static const Real a1_;
+        static const Real a2_;
+        static const Real a3_;
+        static const Real a4_;
+        static const Real a5_;
+        static const Real a6_;
+        static const Real b1_;
+        static const Real b2_;
+        static const Real b3_;
+        static const Real b4_;
+        static const Real b5_;
+        static const Real c1_;
+        static const Real c2_;
+        static const Real c3_;
+        static const Real c4_;
+        static const Real c5_;
+        static const Real c6_;
+        static const Real d1_;
+        static const Real d2_;
+        static const Real d3_;
+        static const Real d4_;
+        static const Real x_low_;
+        static const Real x_high_;
     };
 
     // backward compatibility
@@ -153,38 +153,38 @@ namespace QuantLib {
         as QuantLib::InverseCumulativeNormal
     */
     class MoroInverseCumulativeNormal
-    : public std::unary_function<double,double> {
+    : public std::unary_function<Real,Real> {
       public:
-        MoroInverseCumulativeNormal(double average = 0.0,
-                                    double sigma   = 1.0);
+        MoroInverseCumulativeNormal(Real average = 0.0,
+                                    Real sigma   = 1.0);
         // function
-        double operator()(double x) const;
+        Real operator()(Real x) const;
       private:
-        double average_, sigma_;
-        static const double a0_;
-        static const double a1_;
-        static const double a2_;
-        static const double a3_;
-        static const double b0_;
-        static const double b1_;
-        static const double b2_;
-        static const double b3_;
-        static const double c0_;
-        static const double c1_;
-        static const double c2_;
-        static const double c3_;
-        static const double c4_;
-        static const double c5_;
-        static const double c6_;
-        static const double c7_;
-        static const double c8_;
+        Real average_, sigma_;
+        static const Real a0_;
+        static const Real a1_;
+        static const Real a2_;
+        static const Real a3_;
+        static const Real b0_;
+        static const Real b1_;
+        static const Real b2_;
+        static const Real b3_;
+        static const Real c0_;
+        static const Real c1_;
+        static const Real c2_;
+        static const Real c3_;
+        static const Real c4_;
+        static const Real c5_;
+        static const Real c6_;
+        static const Real c7_;
+        static const Real c8_;
     };
 
 
     // inline definitions
 
-    inline NormalDistribution::NormalDistribution(double average,
-                                                  double sigma)
+    inline NormalDistribution::NormalDistribution(Real average,
+                                                  Real sigma)
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
@@ -196,20 +196,20 @@ namespace QuantLib {
         denominator_ = 2.0*derNormalizationFactor_;
     }
 
-    inline double NormalDistribution::operator()(double x) const {
-        double deltax = x-average_;
-        double exponent = -(deltax*deltax)/denominator_;
+    inline Real NormalDistribution::operator()(Real x) const {
+        Real deltax = x-average_;
+        Real exponent = -(deltax*deltax)/denominator_;
         // debian alpha had some strange problem in the very-low range
         return exponent <= -690.0 ? 0.0 :  // exp(x) < 1.0e-300 anyway
             normalizationFactor_*QL_EXP(exponent);
     }
 
-    inline double NormalDistribution::derivative(double x) const {
+    inline Real NormalDistribution::derivative(Real x) const {
         return ((*this)(x) * (average_ - x)) / derNormalizationFactor_;
     }
 
     inline CumulativeNormalDistribution::CumulativeNormalDistribution(
-                                                 double average, double sigma)
+                                                 Real average, Real sigma)
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
@@ -217,13 +217,13 @@ namespace QuantLib {
                    DecimalFormatter::toString(sigma_) + " not allowed)");
     }
 
-    inline double CumulativeNormalDistribution::derivative(double x) const {
-        double xn = (x - average_) / sigma_;
+    inline Real CumulativeNormalDistribution::derivative(Real x) const {
+        Real xn = (x - average_) / sigma_;
         return gaussian_(xn) / sigma_;
     }
 
     inline InverseCumulativeNormal::InverseCumulativeNormal(
-                                                 double average, double sigma)
+                                                 Real average, Real sigma)
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
@@ -232,7 +232,7 @@ namespace QuantLib {
     }
 
     inline MoroInverseCumulativeNormal::MoroInverseCumulativeNormal(
-                                                 double average, double sigma)
+                                                 Real average, Real sigma)
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,

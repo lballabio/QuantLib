@@ -75,7 +75,7 @@ namespace QuantLib {
             //           a[i]*(x-x[i]) +
             //           b[i]*(x-x[i])^2 +
             //           c[i]*(x-x[i])^3
-            std::vector<double> primitiveConst_, a_, b_, c_;
+            std::vector<Real> primitiveConst_, a_, b_, c_;
         };
         template <class I1, class I2>
         class Impl : public Interpolation::templateImpl<I1,I2>,
@@ -83,9 +83,9 @@ namespace QuantLib {
           public:
             Impl(const I1& xBegin, const I1& xEnd, const I2& yBegin,
                  CubicSpline::BoundaryCondition leftCondition,
-                 double leftConditionValue,
+                 Real leftConditionValue,
                  CubicSpline::BoundaryCondition rightCondition,
-                 double rightConditionValue,
+                 Real rightConditionValue,
                  bool monotonicityConstraint)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin), 
               CoefficientHolder(xEnd-xBegin),
@@ -93,7 +93,7 @@ namespace QuantLib {
 
                 TridiagonalOperator L(n_);
                 Array tmp(n_);
-                std::vector<double> dx(n_-1), S(n_-1);
+                std::vector<Real> dx(n_-1), S(n_-1);
 
                 Size i=0;
                 dx[i]= xBegin_[i+1] - xBegin_[i];
@@ -162,8 +162,8 @@ namespace QuantLib {
                 tmp = L.solveFor(tmp);
 
                 if (monotonicityConstraint) {
-                    double correction;
-                    double pm, pu, pd, M;
+                    Real correction;
+                    Real pm, pu, pd, M;
                     for (i=0; i<n_; i++) {
                         if (i==0) {
                             if (tmp[i]*S[0]>0.0) {
@@ -238,25 +238,25 @@ namespace QuantLib {
                           (b_[i-1]/3.0 + dx[i-1] * c_[i-1]/4.0)));
                 }
             }
-            double value(double x) const {
+            Real value(Real x) const {
                 Size j = locate(x);
-                double dx = x-xBegin_[j];
+                Real dx = x-xBegin_[j];
                 return yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
             }
-            double primitive(double x) const {
+            Real primitive(Real x) const {
                 Size j = locate(x);
-                double dx = x-xBegin_[j];
+                Real dx = x-xBegin_[j];
                 return primitiveConst_[j] + dx*(yBegin_[j] + dx*(a_[j]/2.0 
                                           + dx*(b_[j]/3.0 + dx*c_[j]/4.0)));
             }
-            double derivative(double x) const {
+            Real derivative(Real x) const {
                 Size j = locate(x);
-                double dx = x-xBegin_[j];
+                Real dx = x-xBegin_[j];
                 return a_[j] + (2.0*b_[j] + 3.0*c_[j]*dx)*dx;
             }
-            double secondDerivative(double x) const {
+            Real secondDerivative(Real x) const {
                 Size j = locate(x);
-                double dx = x-xBegin_[j];
+                Real dx = x-xBegin_[j];
                 return 2.0*b_[j] + 6.0*c_[j]*dx;
             }
           private:
@@ -269,9 +269,9 @@ namespace QuantLib {
         template <class I1, class I2>
         CubicSpline(const I1& xBegin, const I1& xEnd, const I2& yBegin,
                     CubicSpline::BoundaryCondition leftCondition,
-                    double leftConditionValue,
+                    Real leftConditionValue,
                     CubicSpline::BoundaryCondition rightCondition,
-                    double rightConditionValue,
+                    Real rightConditionValue,
                     bool monotonicityConstraint) {
             impl_ = boost::shared_ptr<Interpolation::Impl>(
                         new CubicSpline::Impl<I1,I2>(
@@ -281,13 +281,13 @@ namespace QuantLib {
                                           monotonicityConstraint));
             coeffs_ = boost::dynamic_pointer_cast<CoefficientHolder>(impl_);
         }
-        const std::vector<double>& aCoefficients() const {
+        const std::vector<Real>& aCoefficients() const {
             return coeffs_->a_;
         }
-        const std::vector<double>& bCoefficients() const {
+        const std::vector<Real>& bCoefficients() const {
             return coeffs_->b_;
         }
-        const std::vector<double>& cCoefficients() const {
+        const std::vector<Real>& cCoefficients() const {
             return coeffs_->c_;
         }
     };
@@ -303,9 +303,9 @@ namespace QuantLib {
         MonotonicCubicSpline(const I1& xBegin, const I1& xEnd, 
                              const I2& yBegin,
                              CubicSpline::BoundaryCondition leftCondition,
-                             double leftConditionValue,
+                             Real leftConditionValue,
                              CubicSpline::BoundaryCondition rightCondition,
-                             double rightConditionValue)
+                             Real rightConditionValue)
         : CubicSpline(xBegin,xEnd,yBegin,
                       leftCondition,leftConditionValue,
                       rightCondition,rightConditionValue,
