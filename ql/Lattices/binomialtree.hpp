@@ -37,7 +37,7 @@ namespace QuantLib {
         Size size(Size i) const {
             return i+1;
         }
-        Size descendant(Size i, Size index, Size branch) const {
+        Size descendant(Size, Size index, Size branch) const {
             return index + branch;
         }
         virtual double underlying(Size i, Size index) const = 0;

@@ -76,10 +76,10 @@ namespace QuantLib {
                              new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
           a_(a), b_(b), r0_(r0) {}
 
-        virtual double variable(Time t, Rate r) const {
+        virtual double variable(Time, Rate r) const {
             return r - b_;
         }
-        virtual double shortRate(Time t, double x) const {
+        virtual double shortRate(Time, double x) const {
             return x + b_;
         }
       private:

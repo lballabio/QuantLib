@@ -37,7 +37,7 @@ namespace QuantLib {
             double constant_;
           public:
             Constant(double constant) : constant_(constant) {}
-            double calculate(const std::vector<double>& x) const {
+            double calculate(const std::vector<double>&) const {
                 return constant_;
             }
         };

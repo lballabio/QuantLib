@@ -111,16 +111,16 @@ namespace QuantLib {
                                  double x0 = 0.0)
         : DiffusionProcess(x0), speed_(speed), volatility_(vol)  {}
 
-        double drift(Time t, double x) const {
+        double drift(Time, double x) const {
             return - speed_*x;
         }
-        double diffusion(Time t, double x) const {
+        double diffusion(Time, double) const {
             return volatility_;
         }
-        double expectation(Time t0, double x0, Time dt) const {
+        double expectation(Time, double x0, Time dt) const {
             return x0*QL_EXP(-speed_*dt);
         }
-        double variance(Time t0, double x0, Time dt) const {
+        double variance(Time, double, Time dt) const {
             return 0.5*volatility_*volatility_/speed_*
                    (1.0 - QL_EXP(-2.0*speed_*dt));
         }
@@ -142,10 +142,10 @@ namespace QuantLib {
                           double x0 = 0)
         : DiffusionProcess(x0), mean_(b), speed_(a), volatility_(sigma)  {}
 
-        double drift(Time t, double x) const {
+        double drift(Time, double x) const {
             return speed_*(mean_ - x);
         }
-        double diffusion(Time t, double x) const {
+        double diffusion(Time, double x) const {
             return volatility_*QL_SQRT(x);
         }
       private:

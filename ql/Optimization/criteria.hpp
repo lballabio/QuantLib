@@ -102,7 +102,7 @@ namespace QuantLib {
                         double normgold,
                         double fnew,
                         double normgnew,
-                        double normdiff) {
+                        double) {
             return 
                 checkIterationNumber(iteration) ||
                 checkStationaryValue(fold, fnew) ||

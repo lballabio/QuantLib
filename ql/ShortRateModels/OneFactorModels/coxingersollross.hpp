@@ -76,11 +76,11 @@ namespace QuantLib {
         HelperProcess(double theta, double k, double sigma, double y0) 
         : DiffusionProcess(y0), theta_(theta), k_(k), sigma_(sigma) {}
 
-        double drift(Time t, double y) const {
+        double drift(Time, double y) const {
             return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y 
                 - 0.5*k_*y;
         }
-        double diffusion(Time t, double y) const {
+        double diffusion(Time, double) const {
             return 0.5*sigma_;
         }
 
@@ -106,10 +106,10 @@ namespace QuantLib {
         : ShortRateDynamics(boost::shared_ptr<DiffusionProcess>(
                           new HelperProcess(theta, k, sigma, QL_SQRT(x0)))) {}
 
-        virtual double variable(Time t, Rate r) const {
+        virtual double variable(Time, Rate r) const {
             return QL_SQRT(r);
         }
-        virtual double shortRate(Time t, double y) const {
+        virtual double shortRate(Time, double y) const {
             return y*y;
         }
     };

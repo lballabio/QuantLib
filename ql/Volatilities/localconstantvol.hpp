@@ -96,7 +96,7 @@ namespace QuantLib {
     }
 
     inline double LocalConstantVol::localVolImpl(Time t, double, 
-                                                 bool extrapolate) const {
+                                                 bool) const {
         QL_REQUIRE(t >= 0.0,
                    "LocalConstantVol::localVolImpl : "
                    "negative time given");

@@ -53,7 +53,7 @@ namespace QuantLib {
     inline AmericanCondition::AmericanCondition(const Array& intrinsicValues)
     : intrinsicValues_(intrinsicValues) {}
 
-    inline void AmericanCondition::applyTo(Array& a, Time t) const {
+    inline void AmericanCondition::applyTo(Array& a, Time) const {
 
         if (intrinsicValues_.size()!=0) {
             QL_REQUIRE(intrinsicValues_.size() == a.size(),

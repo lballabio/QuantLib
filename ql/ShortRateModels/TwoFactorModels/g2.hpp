@@ -136,7 +136,7 @@ namespace QuantLib {
             : termStructure_(termStructure), 
               a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho) {}
 
-            double value(const Array& params, Time t) const {
+            double value(const Array&, Time t) const {
                 double forward = termStructure_->instantaneousForward(t);
                 double temp1 = sigma_*(1.0-QL_EXP(-a_*t))/a_;
                 double temp2 = eta_*(1.0-QL_EXP(-b_*t))/b_;

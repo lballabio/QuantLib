@@ -67,7 +67,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            double value(const Array& params, Time t) const {
+            double value(const Array& params, Time) const {
                 return params[0];
             }
         };
@@ -97,7 +97,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            double value(const Array& params, Time t) const {
+            double value(const Array&, Time) const {
                 return 0.0;
             }
         };
@@ -161,7 +161,7 @@ namespace QuantLib {
                 times_.clear();
                 values_.clear();
             }
-            double value(const Array& params, Time t) const {
+            double value(const Array&, Time t) const {
                 std::vector<Time>::const_iterator result =
                     std::find(times_.begin(), times_.end(), t);
                 QL_REQUIRE(result!=times_.end(),

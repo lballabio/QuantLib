@@ -76,7 +76,7 @@ namespace QuantLib {
         void applyAfterApplying(Array&) const;
         void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const;
         void applyAfterSolving(Array&) const;
-        void setTime(Time t) {}
+        void setTime(Time) {}
       private:
         double value_;
         Side side_;
@@ -93,7 +93,7 @@ namespace QuantLib {
         void applyAfterApplying(Array&) const;
         void applyBeforeSolving(TridiagonalOperator&, Array& rhs) const;
         void applyAfterSolving(Array&) const;
-        void setTime(Time t) {}
+        void setTime(Time) {}
       private:
         double value_;
         Side side_;

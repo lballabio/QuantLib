@@ -36,7 +36,7 @@ namespace QuantLib {
                             Size steps);
 
         Size size(Size i) const { return tree_->size(i); }
-        DiscountFactor discount(Size i, Size j) const { return discount_; }
+        DiscountFactor discount(Size, Size) const { return discount_; }
 
         const boost::shared_ptr<Tree>& tree() const { return tree_; }
       protected:

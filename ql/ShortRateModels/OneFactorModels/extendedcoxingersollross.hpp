@@ -115,7 +115,7 @@ namespace QuantLib {
             : termStructure_(termStructure), 
               theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
 
-            double value(const Array& params, Time t) const {
+            double value(const Array&, Time t) const {
                 double forwardRate = 
                     termStructure_->instantaneousForward(t);
                 double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);

@@ -65,7 +65,7 @@ namespace QuantLib {
             postAdjustValues();
         }
 
-        virtual void addTimesTo(std::list<Time>& times) const {}
+        virtual void addTimesTo(std::list<Time>&) const {}
       protected:
         bool isOnTime(Time t) const;
 
