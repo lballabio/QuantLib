@@ -18,6 +18,7 @@ OBJS = \
     arithmeticapopathpricer.obj$(_D) \
     arithmeticasopathpricer.obj$(_D) \
     basketpathpricer.obj$(_D) \
+    cliquetoptionpathpricer.obj$(_D) \
     europeanpathpricer.obj$(_D) \
     everestpathpricer.obj$(_D) \
     geometricapopathpricer.obj$(_D) \
@@ -25,7 +26,8 @@ OBJS = \
     getcovariance.obj$(_D) \
     himalayapathpricer.obj$(_D) \
 	maxbasketpathpricer.obj$(_D) \
-    pagodapathpricer.obj$(_D)
+    pagodapathpricer.obj$(_D) \
+	performanceoptionpathpricer.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

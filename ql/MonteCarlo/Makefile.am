@@ -8,6 +8,7 @@ include_HEADERS = \
     arithmeticapopathpricer.hpp \
     arithmeticasopathpricer.hpp \
 	basketpathpricer.hpp \
+    cliquetoptionpathpricer.hpp \
 	europeanpathpricer.hpp \
 	everestpathpricer.hpp \
 	geometricapopathpricer.hpp \
@@ -23,6 +24,7 @@ include_HEADERS = \
 	path.hpp \
 	pathgenerator.hpp \
 	pathpricer.hpp \
+	performanceoptionpathpricer.hpp \
 	sample.hpp
 
 
@@ -32,6 +34,7 @@ libMonteCarlo_la_SOURCES = \
     arithmeticapopathpricer.cpp \
     arithmeticasopathpricer.cpp \
 	basketpathpricer.cpp    \
+    cliquetoptionpathpricer.cpp \
 	europeanpathpricer.cpp \
 	everestpathpricer.cpp \
 	geometricapopathpricer.cpp \
@@ -39,6 +42,7 @@ libMonteCarlo_la_SOURCES = \
 	getcovariance.cpp \
 	himalayapathpricer.cpp \
 	maxbasketpathpricer.cpp \
-	pagodapathpricer.cpp
+	pagodapathpricer.cpp \
+	performanceoptionpathpricer.cpp
 
 noinst_LTLIBRARIES = libMonteCarlo.la

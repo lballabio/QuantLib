@@ -31,6 +31,7 @@ include_HEADERS = \
     fdstepconditionoption.hpp \
     jamshidianswaption.hpp \
     mcbasket.hpp \
+    mccliquetoption.hpp \
     mcdiscretearithmeticapo.hpp \
     mcdiscretearithmeticaso.hpp \
     mceuropean.hpp \
@@ -38,7 +39,9 @@ include_HEADERS = \
     mchimalaya.hpp \
     mcmaxbasket.hpp \
     mcpagoda.hpp \
+    mcperformanceoption.hpp \
     mcpricer.hpp \
+    performanceoption.hpp \
     singleassetoption.hpp \
     swaptionpricer.hpp \
     treecapfloor.hpp \
@@ -70,6 +73,7 @@ libPricers_la_SOURCES = \
     fdstepconditionoption.cpp \
     jamshidianswaption.cpp \
     mcbasket.cpp \
+    mccliquetoption.cpp \
     mcdiscretearithmeticapo.cpp \
     mcdiscretearithmeticaso.cpp \
     mceuropean.cpp \
@@ -77,6 +81,8 @@ libPricers_la_SOURCES = \
     mchimalaya.cpp \
     mcmaxbasket.cpp \
     mcpagoda.cpp \
+    mcperformanceoption.cpp \
+    performanceoption.cpp \
     singleassetoption.cpp \
     swaptionpricer.cpp \
     treecapfloor.cpp \

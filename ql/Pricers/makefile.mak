@@ -37,6 +37,7 @@ OBJS = \
        fdstepconditionoption.obj$(_D) \
        jamshidianswaption.obj$(_D) \
        mcbasket.obj$(_D) \
+       mccliquetoption.obj$(_D) \
        mcdiscretearithmeticapo.obj$(_D) \
        mcdiscretearithmeticaso.obj$(_D) \
        mceuropean.obj$(_D) \
@@ -44,6 +45,8 @@ OBJS = \
        mchimalaya.obj$(_D) \
        mcmaxbasket.obj$(_D) \
        mcpagoda.obj$(_D) \
+       mcperformanceoption.obj$(_D) \
+       performanceoption.obj$(_D) \
        singleassetoption.obj$(_D) \
        swaptionpricer.obj$(_D) \
        treeswaption.obj$(_D)
