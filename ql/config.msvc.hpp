@@ -133,7 +133,7 @@
 #  error "unsupported Microsoft compiler"
 #elif (_MSC_VER == 1200)
 // move inside here configs specific to VC++ 6.0
-#  define QL_PATCH_MICROSOFT
+#  define QL_PATCH_MSVC6
 #  define QL_LIB_TOOLSET "vc6"
 #  define GARBLED_REVERSE_ITERATOR
 #  define CHOKES_ON_TYPENAME
