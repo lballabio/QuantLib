@@ -89,7 +89,7 @@ namespace QuantLib {
                 ") must be greater than zero");
             QL_REQUIRE(length > 0, "MultiPathGenerator: length must be > 0");
             Time dt = length/timeSteps;
-            timeDelays_ = std::vector<Time>(timeSteps, dt),
+            timeDelays_ = std::vector<Time>(timeSteps, dt);
             for (size_t j = 0; j< numAssets_; j++) {
                 for (size_t i = 0; i< timeSteps; i++) {
                     next_.value[j].times()[i] = (i+1)*dt;
