@@ -28,6 +28,7 @@
 #include <ql/TermStructures/drifttermstructure.hpp>
 #include <ql/TermStructures/extendeddiscountcurve.hpp>
 #include <ql/TermStructures/flatforward.hpp>
+#include <ql/TermStructures/forwardcurve.hpp>
 #include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 #include <ql/TermStructures/piecewiseflatforward.hpp>

@@ -11,6 +11,7 @@ include_HEADERS = \
     drifttermstructure.hpp \
     extendeddiscountcurve.hpp \
     flatforward.hpp \
+    forwardcurve.hpp \
     forwardspreadedtermstructure.hpp \
     forwardstructure.hpp \
     impliedtermstructure.hpp \
