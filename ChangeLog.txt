@@ -1,6 +1,6 @@
 2003-07-22 15:35  Ferdinando Ametrano <ferdinando@ametrano.net>
 
-	* ChangeLog.txt (1.33): updated
+	* ChangeLog.txt (1.33), ChangeLog.txt (1.34): updated
 
 2003-07-22 10:44  andrelouw
 
