@@ -30,7 +30,6 @@ namespace QuantLib {
     /*! \ingroup instruments */
     class EuropeanOption : public VanillaOption {
       public:
-        class engine;
         EuropeanOption(const boost::shared_ptr<BlackScholesProcess>&,
                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
                        const boost::shared_ptr<Exercise>& exercise,

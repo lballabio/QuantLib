@@ -11,3 +11,4 @@ bin
 *.dep
 *.obj
 *.mak
+BermudanSwaption
