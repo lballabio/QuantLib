@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/05/31 13:54:29  lballabio
+// Rewritten Handle downcast to be gcc-compatible
+//
 // Revision 1.8  2001/05/28 13:21:45  lballabio
 // Trying to get g++ to compile
 //
@@ -110,11 +113,12 @@ namespace QuantLib {
 
         //! \name Casting
         //@{
+        /*! Returns a null pointer in case of failure.
+            \warning The returned pointer is not guaranteed to remain 
+            allocated and should be discarded immediately after being used */
         template <class Type2>
-        Handle<Type2> downcast() const {
-            Handle<Type2> to;
-            HandleConverter().cast(*this,to);
-            return to;
+        Type2* downcast() const {
+            return dynamic_cast<Type2*>(ptr_);
         }
         //@}
         
@@ -127,27 +131,6 @@ namespace QuantLib {
       private:
         Type* ptr_;
         int* n_;
-        // used to convert handles to different but compatible types
-        class HandleConverter;
-        friend class HandleConverter;
-        class HandleConverter {
-          public:
-            template <class ToType, class FromType> 
-            void cast(Handle<FromType> from, Handle<ToType>& to) const {
-                if (--(*to.n_) == 0) {
-                    if (to.ptr_ != 0)
-                        delete to.ptr_;
-                    delete to.n_;
-                }
-                to.ptr_ = dynamic_cast<ToType*>(from.ptr_);
-                if (to.ptr_ == 0) {
-                    to.n_ = new int(1);
-                } else {
-                    to.n_    = from.n_;
-                    (*(to.n_))++;
-                }
-            }
-        };
     };
 
 

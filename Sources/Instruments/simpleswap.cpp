@@ -95,11 +95,11 @@ namespace QuantLib {
             }
             for (; begin != end; ++begin) {
                 // the following should be safe as long as nobody 
-                // messes with the coupons
-                Handle<FixedRateCoupon> coupon = 
+                // messed with the coupons
+                FixedRateCoupon* coupon = 
                     begin->downcast<FixedRateCoupon>();
                 // however, we will check that it succeeded
-                if (!coupon.isNull()) {
+                if (coupon != 0) {
                     BPS_ += coupon->accrualPeriod() * 
                             coupon->nominal() *
                             termStructure_->discount(coupon->date());
