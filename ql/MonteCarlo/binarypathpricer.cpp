@@ -34,7 +34,7 @@ namespace QuantLib {
             double barrier, 
             double cashPayoff, 
             Option::Type type,
-            double underlying,             
+            double underlying,
             const RelinkableHandle<TermStructure>& riskFreeTS,
             const Handle<DiffusionProcess>& diffProcess,
             UniformRandomSequenceGenerator sequenceGen)
@@ -45,87 +45,95 @@ namespace QuantLib {
           diffProcess_(diffProcess), sequenceGen_(sequenceGen) {
             QL_REQUIRE(underlying>0.0,
                 "BinaryPathPricer: "
-                "underlying less/equal zero not allowed");            
+                "underlying less/equal zero not allowed");
             QL_REQUIRE(barrier>0.0,
                 "BinaryPathPricer: "
                 "barrier less/equal zero not allowed");
           }
-            
+
         // price a path
         double BinaryPathPricer::operator()(const Path& path) const {
             Size n = path.size();
             QL_REQUIRE(n>0,
                 "BinaryPathPricer: the path cannot be empty");
-                        
+
             double asset_price = underlying_;
             double new_asset_price = 0.0;
             double x = 0.0;
-            double y = 0.0;            
+            double y = 0.0;
             double vol = 0.0;
             TimeGrid timeGrid = path.timeGrid();
             Time dt = 0.0;
-            double log_drift = 0.0, log_random = 0.0;            
-            Array u = sequenceGen_.nextSequence().value;            
+            double log_drift = 0.0, log_random = 0.0;
+            Array u = sequenceGen_.nextSequence().value;
 
             switch (type_) {
-              case Option::Type::Call:
+              case Option::Call:
                 for (Size i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
-                    new_asset_price = asset_price * QL_EXP(log_drift+log_random);
+                    new_asset_price = 
+                        asset_price * QL_EXP(log_drift+log_random);
                     // terminal or initial vol?                        
                     vol = diffProcess_->diffusion(timeGrid.at(i),asset_price);
                     dt = timeGrid.dt(i);
-                    
+
                     x = QL_LOG (new_asset_price / asset_price);
-                    y = 0.5*(x + QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG((1-u[i]))));
+                    y = 0.5*(x + QL_SQRT (x*x-2*vol*vol*dt*QL_LOG((1-u[i]))));
                     y = asset_price * QL_EXP (y);
                     // cross the barrier
                     if (y >= barrier_) {
-                        if (binaryType_ == Binary::Type::CashAtExpiry) {
-                            return cashPayoff_*riskFreeTS_->discount(path.timeGrid().back());   
+                        if (binaryType_ == Binary::CashAtExpiry) {
+                            return cashPayoff_ * 
+                                riskFreeTS_->discount(path.timeGrid().back());
 
-                        } else if (binaryType_ == Binary::Type::CashAtHit) {
-                            return cashPayoff_*riskFreeTS_->discount(path.timeGrid().at(i));   
+                        } else if (binaryType_ == Binary::CashAtHit) {
+                            return cashPayoff_ * 
+                                riskFreeTS_->discount(path.timeGrid()[i]);
 
                         } else {
-                            throw Error("BinaryPathPricer: unknown BinaryType");  
+                            throw Error("BinaryPathPricer: "
+                                        "unknown binary type");
                         }
                     }
                     asset_price = new_asset_price;
-                }                   
-                break;    
-              case Option::Type::Put:                                    
+                }
+                break;
+              case Option::Put:
                 for (Size i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
-                    new_asset_price = asset_price * QL_EXP(log_drift+log_random);
+                    new_asset_price = 
+                        asset_price * QL_EXP(log_drift+log_random);
                     // terminal or initial vol?                        
                     vol = diffProcess_->diffusion(timeGrid.at(i),asset_price);
                     dt = timeGrid.dt(i);
-                    
+
                     x = QL_LOG (new_asset_price / asset_price);
                     y = 0.5*(x - QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG(u[i])));
                     y = asset_price * QL_EXP (y);
-                    if (y <= barrier_) {                                
-                        if (binaryType_ == Binary::Type::CashAtExpiry) {
-                            return cashPayoff_*riskFreeTS_->discount(path.timeGrid().back());   
+                    if (y <= barrier_) {
+                        if (binaryType_ == Binary::CashAtExpiry) {
+                            return cashPayoff_ * 
+                                riskFreeTS_->discount(path.timeGrid().back());
 
-                        } else if (binaryType_ == Binary::Type::CashAtHit) {
-                            return cashPayoff_*riskFreeTS_->discount(path.timeGrid().at(i));   
+                        } else if (binaryType_ == Binary::CashAtHit) {
+                            return cashPayoff_ 
+                                * riskFreeTS_->discount(path.timeGrid()[i]);
 
                         } else {
-                            throw Error("BinaryPathPricer: unknown BinaryType");  
+                            throw Error("BinaryPathPricer: "
+                                        "unknown binary type");
                         }
                     }
                     asset_price = new_asset_price;
-                }   
-                break;                            
+                }
+                break;
               default:
-                throw Error("BinaryPathPricer: unknown Option::Type");
+                throw Error("BinaryPathPricer: unknown option type");
             }
-            
-            return 0.0;     
+
+            return 0.0;
         }
     }
 }

@@ -15,6 +15,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 # Object files
 OBJS = \
     barrieroption.obj$(_D) \
+    binaryoption.obj$(_D) \
     capfloor.obj$(_D) \
     forwardvanillaoption.obj$(_D) \
     quantoforwardvanillaoption.obj$(_D) \

@@ -21,6 +21,7 @@ BCC_LIBS            = $(MAKEDIR)\..\lib
 # Object files
 QL_TESTS = \
     barrieroption.obj$(_D) \
+    binaryoption.obj$(_D) \
     calendars.obj$(_D) \
     capfloor.obj$(_D) \
     compoundforward.obj$(_D) \

@@ -153,7 +153,7 @@ namespace QuantLib {
                 new path_generator_type(bs, grid, gen));
         }
 
-        
+
         template <class RNG, class S>
         inline
         Handle<QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>
@@ -162,19 +162,19 @@ namespace QuantLib {
             // do this with Template Parameters?
             if (isBiased_) {
                 return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
-                    new MonteCarlo::BiasedBarrierPathPricer(                
+                    new MonteCarlo::BiasedBarrierPathPricer(
                         arguments_.barrierType, arguments_.barrier, 
                         arguments_.rebate, payoff->optionType(), 
                         payoff->strike(), arguments_.underlying, 
                         arguments_.riskFreeTS));
-            } else {                   
+            } else {
                 TimeGrid grid = timeGrid();
                 RandomNumbers::UniformRandomSequenceGenerator 
                 sequenceGen(grid.size()-1, 
                             RandomNumbers::UniformRandomGenerator(5));
 
                 return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
-                    new MonteCarlo::BarrierPathPricer(                
+                    new MonteCarlo::BarrierPathPricer(
                         arguments_.barrierType, arguments_.barrier, 
                         arguments_.rebate, payoff->optionType(), 
                         payoff->strike(), arguments_.underlying, 

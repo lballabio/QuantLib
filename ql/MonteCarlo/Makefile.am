@@ -8,6 +8,7 @@ include_HEADERS = \
 	barrierpathpricer.hpp \
 	basketpathpricer.hpp \
 	biasedbarrierpathpricer.hpp \
+	binarypathpricer.hpp \
 	brownianbridge.hpp \
     cliquetoptionpathpricer.hpp \
 	europeanpathpricer.hpp \
@@ -38,6 +39,7 @@ libMonteCarlo_la_SOURCES = \
 	barrierpathpricer.cpp \
 	basketpathpricer.cpp \
 	biasedbarrierpathpricer.cpp \
+	binarypathpricer.cpp \
     cliquetoptionpathpricer.cpp \
 	europeanpathpricer.cpp \
 	everestpathpricer.cpp \

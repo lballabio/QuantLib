@@ -48,19 +48,18 @@ namespace QuantLib {
         class BinaryEngine 
             : public GenericEngine<Instruments::BinaryOption::arguments,
             Instruments::BinaryOption::results> {};
-        
-        //! Pricing engine for Binary options using analytical formulae
+
+        //! Pricing engine for European binary options using analytic formulae
         class AnalyticEuropeanBinaryEngine : public BinaryEngine {
           public:
             void calculate() const;
-          private:            
         };
 
-        //! Pricing engine for American Binary options using analytical formulae
+        //! Pricing engine for American binary options using analytic formulae
         class AnalyticAmericanBinaryEngine : public BinaryEngine {
           public:
             void calculate() const;
-          private:            
+          private:
             #if defined(QL_PATCH_SOLARIS)
             Math::CumulativeNormalDistribution f_;
             #else
@@ -104,7 +103,7 @@ namespace QuantLib {
             double forwardPrice = arguments_.underlying *
                 dividendDiscount / riskFreeDiscount;
 
-            
+
             Pricers::BinaryOption pricer = Pricers::BinaryOption(
                           payoff->optionType(),
                           underlying,
@@ -112,8 +111,8 @@ namespace QuantLib {
                           dividendRate,
                           riskFreeRate,
                           maturity,
-                          vol,                          
-                          cashPayoff);                       
+                          vol,
+                          cashPayoff);
 
             results_.value = pricer.value();
             results_.delta = pricer.delta();
@@ -122,7 +121,7 @@ namespace QuantLib {
             results_.rho = pricer.rho();
             results_.dividendRho = pricer.dividendRho();
             results_.vega = pricer.vega();
-            
+
         }
 
 
@@ -154,17 +153,17 @@ namespace QuantLib {
             typedef typename
             McSimulation<MonteCarlo::SingleAsset<RNG>,S>::stats_type
                 stats_type;
-            
+
             // the uniform generator to use in path generation and
             // path correction
             //typedef typename RNG::ursg_type ursg_type;
             typedef typename RNG::ursg_type my_sequence_type;
 
             // McSimulation implementation
-            Handle<path_generator_type> pathGenerator() const;            
+            Handle<path_generator_type> pathGenerator() const;
             TimeGrid timeGrid() const;
             Handle<path_pricer_type> pathPricer() const;
-            
+
             // data members            
             //my_sequence_type uniformGenerator_;
             Size maxTimeStepsPerYear_;
@@ -174,7 +173,7 @@ namespace QuantLib {
             long seed_;
         };
 
-        // Constructor
+
         template<class RNG, class S>
         inline
         MCBinaryEngine<RNG,S>::MCBinaryEngine(Size maxTimeStepsPerYear,
@@ -195,7 +194,6 @@ namespace QuantLib {
           seed_(seed) {}
 
 
-        // pathGenerator()
         template<class RNG, class S>
         inline
         Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_generator_type> 
@@ -208,17 +206,16 @@ namespace QuantLib {
                                     arguments_.underlying));
 
             TimeGrid grid = timeGrid();
-            
-            typename RNG::ursg_type uGen = RNG::ursg_type(grid.size()-1, seed_);            
 
-            typename RNG::rsg_type gen = RNG::rsg_type(uGen);
+            typename RNG::rsg_type gen =
+                RNG::make_sequence_generator(grid.size()-1, seed_);
+
             return Handle<path_generator_type>(
-               new path_generator_type(bs, grid, gen));
-            
+                new path_generator_type(bs, grid, gen));
+
         }
 
-        
-        //   pathPricer() 
+
         template <class RNG, class S>
         inline
         Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_pricer_type>
@@ -233,14 +230,14 @@ namespace QuantLib {
                         payoff->strike(), arguments_.underlying, 
                         arguments_.riskFreeTS));
             } else {                   
-*/              
+            */
                 TimeGrid grid = timeGrid();
                 RandomNumbers::UniformRandomSequenceGenerator 
                 sequenceGen(grid.size()-1, 
                             RandomNumbers::UniformRandomGenerator(76));
 
                 return Handle<MCBinaryEngine<RNG,S>::path_pricer_type>(
-                    new MonteCarlo::BinaryPathPricer(                
+                    new MonteCarlo::BinaryPathPricer(
                         arguments_.binaryType, arguments_.barrier, 
                         arguments_.cashPayoff, payoff->optionType(), 
                         arguments_.underlying, arguments_.riskFreeTS,
@@ -251,20 +248,18 @@ namespace QuantLib {
                                     arguments_.underlying)),
                         sequenceGen));
 //            }
-  
-      }
+
+        }
 
 
-        // timeGrid() 
         template <class RNG, class S>
         inline
         TimeGrid MCBinaryEngine<RNG,S>::timeGrid() const {
             return TimeGrid(arguments_.maturity, 
                                 Size(arguments_.maturity * 
-                                     maxTimeStepsPerYear_));            
+                                     maxTimeStepsPerYear_));
         }
 
-        // calculate()
         template<class RNG, class S>
         inline
         void MCBinaryEngine<RNG,S>::calculate() const {
@@ -273,7 +268,7 @@ namespace QuantLib {
                     int(requiredSamples_) != Null<int>(),
                     "MCBinaryEngine::calculate: "
                     "neither tolerance nor number of samples set");
-            
+
             //! Initialize the one-factor Monte Carlo
             if (controlVariate_) {
 
@@ -322,7 +317,7 @@ namespace QuantLib {
                 results_.errorEstimate = 
                     mcModel_->sampleAccumulator().errorEstimate();
         }
-    
+
     }
 
 }

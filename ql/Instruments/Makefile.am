@@ -4,6 +4,7 @@ includedir = $(prefix)/include/ql/Instruments
 
 include_HEADERS = \
     barrieroption.hpp \
+    binaryoption.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
     forwardvanillaoption.hpp \
@@ -19,6 +20,7 @@ EXTRA_DIST=makefile.mak
 
 libInstruments_la_SOURCES = \
     barrieroption.cpp \
+    binaryoption.cpp \
     capfloor.cpp \
     forwardvanillaoption.cpp \
     quantoforwardvanillaoption.cpp \

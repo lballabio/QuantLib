@@ -1,5 +1,6 @@
 
 QL_TESTS = barrieroption.hpp barrieroption.cpp \
+           binaryoption.hpp binaryoption.cpp \
            calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \
            compoundforward.hpp compoundforward.cpp \
