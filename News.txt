@@ -18,26 +18,40 @@ Changes since Release 0.2.1:
     YIELD TERM STRUCTURE AND FIXED INCOME
     - added single factor interest rate model (Ho-Lee, Hull-White,
       Black-Derman-Toy, Black-Karasinski)
+    - added two factor interest rate models framework
     - Bermudan swaption finite difference pricer
     - cap/floor and swaption calibration helpers
     - discount factor accuracy in the yield curve bootstrapping is an input
     - yield curves can be spreaded in term of zeros
      (ZeroSpreadedTermStructure) and forwards (ForwardSpreadedTermStructure)
+    - Added	accruedAmount() to coupons
+    - Added dates() and times() to PiecewiseFlatForward
 
     OPTIMIZATION FRAMEWORK
     - added conjugate gradient
 
     PATTERNS
+    - implemented QuEP 8 and 10
 
     MISCELLANEA
+    - added isExpired() to Instrument interface
+    - added functions folder and namespace for QuantLib-Excel and any other
+      function-like interface to QuantLib
     - Handle is now castable to an Handle of a compatible type
     - better spline interpolation algorithm
     - added downsideVariance to the Statistics class
     - kustosis() and skewness() now handles the case of stddev == 0 and/or
       variance == 0
+    - added Correlation Matrix to MultiVariateAccumulator
     - enforced MS VC compilation settings
     - added "-debug" to the QL_VERSION version string ifdef QL_DEBUG
     - "make check" runs the example programs under Borland C++
+    - fixed compilation with "g++ -pedantic"
+    - Spread as market element
+    - new calendars introduced
+    - new Xibor Indexes introduced
+    - Shortened file names within 31 char limit to support HFS
+
 
 2001-12-03 Release 0.2.1
 
