@@ -8,7 +8,8 @@ FINITE DIFFERENCE FRAMEWORK
 - clean up FDMultiPeriodOption
 - check american with discrete dividends
 - merge rollback scheme with tree rollback scheme
--*use DicretisedAsset instaed of array
+-*use DicretisedAsset instead of array
+-*use TimeGrid
 
 MONTE CARLO FRAMEWORK
 - add example of Martingale control variate
@@ -19,6 +20,7 @@ MONTE CARLO FRAMEWORK
 -*revise multidimensional MonteCarlo
 -*time-dependant parameter in path generator
 -*asset-dependant parameters in path generator
+-*revise extrapolation in diffusion process
 
 VOLATILITY
 -*local volatility
