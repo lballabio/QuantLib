@@ -38,9 +38,9 @@ namespace QuantLib {
         using Math::Matrix;
         using MonteCarlo::MultiPath;
         using MonteCarlo::GaussianMultiPathGenerator;
-        using MonteCarlo::PathPricer;
+        using MonteCarlo::PathPricer_old;
         using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::EverestPathPricer;
+        using MonteCarlo::EverestPathPricer_old;
 
         McEverest::McEverest(const Array& dividendYield,
             const Matrix& covariance,
@@ -65,15 +65,15 @@ namespace QuantLib {
                 std::vector<Time>(1, residualTime), seed));
 
             //! Initialize the pricer on the path pricer
-            Handle<PathPricer<MultiPath> > pathPricer(
-                new EverestPathPricer(QL_EXP(-riskFreeRate*residualTime),
+            Handle<PathPricer_old<MultiPath> > pathPricer(
+                new EverestPathPricer_old(QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
             mcModel_ = Handle<MonteCarloModel<Statistics,
-                GaussianMultiPathGenerator, PathPricer<MultiPath> > > (
+                GaussianMultiPathGenerator, PathPricer_old<MultiPath> > > (
                 new MonteCarloModel<Statistics,
-                GaussianMultiPathGenerator, PathPricer<MultiPath> > (
+                GaussianMultiPathGenerator, PathPricer_old<MultiPath> > (
                 pathGenerator, pathPricer, Statistics()));
 
         }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -32,23 +31,23 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        GeometricAPOPathPricer::GeometricAPOPathPricer(Option::Type type,
+        GeometricAPOPathPricer_old::GeometricAPOPathPricer_old(Option::Type type,
             double underlying, double strike,
             DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer<Path>(discount, useAntitheticVariance), type_(type),
+        : PathPricer_old<Path>(discount, useAntitheticVariance), type_(type),
           underlying_(underlying), strike_(strike) {
             QL_REQUIRE(underlying>0.0,
-                "GeometricAPOPathPricer: "
+                "GeometricAPOPathPricer_old: "
                 "underlying less/equal zero not allowed");
             QL_REQUIRE(strike>0.0,
-                "GeometricAPOPathPricer: "
+                "GeometricAPOPathPricer_old: "
                 "strike less/equal zero not allowed");
         }
 
-        double GeometricAPOPathPricer::operator()(const Path& path) const {
+        double GeometricAPOPathPricer_old::operator()(const Path& path) const {
 
             Size n = path.size();
-            QL_REQUIRE(n>0,"GeometricAPOPathPricer: the path cannot be empty");
+            QL_REQUIRE(n>0,"GeometricAPOPathPricer_old: the path cannot be empty");
 
             double geoLogDrift = 0.0, geoLogDiffusion = 0.0;
             Size i;

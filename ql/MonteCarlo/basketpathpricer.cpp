@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -32,27 +31,27 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        BasketPathPricer::BasketPathPricer(Option::Type type,
+        BasketPathPricer_old::BasketPathPricer_old(Option::Type type,
             const Array& underlying, double strike,
             DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer<MultiPath>(discount, useAntitheticVariance), type_(type),
+        : PathPricer_old<MultiPath>(discount, useAntitheticVariance), type_(type),
           underlying_(underlying), strike_(strike) {
             for (Size j=0; j<underlying_.size(); j++) {
                 QL_REQUIRE(underlying_[j]>0.0,
-                    "BasketPathPricer: "
+                    "BasketPathPricer_old: "
                     "underlying less/equal zero not allowed");
             QL_REQUIRE(strike>0.0,
-                "BasketPathPricer: "
+                "BasketPathPricer_old: "
                 "strike less/equal zero not allowed");
             }
         }
 
-        double BasketPathPricer::operator()(const MultiPath& multiPath)
+        double BasketPathPricer_old::operator()(const MultiPath& multiPath)
           const {
             Size numAssets = multiPath.assetNumber();
             Size numSteps = multiPath.pathSize();
             QL_REQUIRE(underlying_.size() == numAssets,
-                "BasketPathPricer: the multi-path must contain "
+                "BasketPathPricer_old: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
             std::vector<double> log_drift(numAssets, 0.0);

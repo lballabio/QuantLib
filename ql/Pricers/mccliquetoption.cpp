@@ -33,10 +33,10 @@ namespace QuantLib {
 
         using Math::Statistics;
         using MonteCarlo::Path;
-        using MonteCarlo::GaussianPathGenerator;
-        using MonteCarlo::PathPricer;
+        using MonteCarlo::GaussianPathGenerator_old;
+        using MonteCarlo::PathPricer_old;
         using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::CliquetOptionPathPricer;
+        using MonteCarlo::CliquetOptionPathPricer_old;
 
         McCliquetOption::McCliquetOption(Option::Type type,
           double underlying, double moneyness,
@@ -70,21 +70,21 @@ namespace QuantLib {
             }
 
 
-            Handle<GaussianPathGenerator> pathGenerator(
-                new GaussianPathGenerator(mu, diffusion,
+            Handle<GaussianPathGenerator_old> pathGenerator(
+                new GaussianPathGenerator_old(mu, diffusion,
                     times, seed));
 
             //! Initialize the pricer on the single Path
-            Handle<PathPricer<Path> > cliquetPathPricer(
-                new CliquetOptionPathPricer(type,
+            Handle<PathPricer_old<Path> > cliquetPathPricer(
+                new CliquetOptionPathPricer_old(type,
                 underlying, moneyness, discounts,
                 antitheticVariance));
 
             //! Initialize the one-factor Monte Carlo
             mcModel_ = Handle<MonteCarloModel<Statistics,
-                GaussianPathGenerator, PathPricer<Path> > > (
+                GaussianPathGenerator_old, PathPricer_old<Path> > > (
                 new MonteCarloModel<Statistics,
-                GaussianPathGenerator, PathPricer<Path> > (
+                GaussianPathGenerator_old, PathPricer_old<Path> > (
                 pathGenerator, cliquetPathPricer,
                 Statistics()));
 

@@ -39,8 +39,8 @@ namespace QuantLib {
         //! example of Monte Carlo pricer using a control variate
         /*! \todo Continous Averaging version     */
          class McDiscreteArithmeticAPO : public McPricer<Math::Statistics,
-            MonteCarlo::GaussianPathGenerator,
-            MonteCarlo::PathPricer<MonteCarlo::Path> > {
+            MonteCarlo::GaussianPathGenerator_old,
+            MonteCarlo::PathPricer_old<MonteCarlo::Path> > {
           public:
             McDiscreteArithmeticAPO(Option::Type type,
                                     double underlying,

@@ -33,10 +33,10 @@ namespace QuantLib {
 
         using Math::Statistics;
         using MonteCarlo::Path;
-        using MonteCarlo::GaussianPathGenerator;
-        using MonteCarlo::PathPricer;
+        using MonteCarlo::GaussianPathGenerator_old;
+        using MonteCarlo::PathPricer_old;
         using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::EuropeanPathPricer;
+        using MonteCarlo::EuropeanPathPricer_old;
 
         McEuropean::McEuropean(Option::Type type,
           double underlying, double strike, Spread dividendYield,
@@ -48,21 +48,21 @@ namespace QuantLib {
             double mu = riskFreeRate - dividendYield
                                      - 0.5 * volatility * volatility;
 
-            Handle<GaussianPathGenerator> pathGenerator(
-                new GaussianPathGenerator(mu, volatility*volatility,
+            Handle<GaussianPathGenerator_old> pathGenerator(
+                new GaussianPathGenerator_old(mu, volatility*volatility,
                     residualTime, 1, seed));
 
             //! Initialize the path pricer
-            Handle<PathPricer<Path> > euroPathPricer(
-                new EuropeanPathPricer(type,
+            Handle<PathPricer_old<Path> > euroPathPricer(
+                new EuropeanPathPricer_old(type,
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
             //! Initialize the one-factor Monte Carlo
             mcModel_ = Handle<MonteCarloModel<Statistics,
-                GaussianPathGenerator, PathPricer<Path> > > (
+                GaussianPathGenerator_old, PathPricer_old<Path> > > (
                 new MonteCarloModel<Statistics,
-                GaussianPathGenerator, PathPricer<Path> > (
+                GaussianPathGenerator_old, PathPricer_old<Path> > (
                 pathGenerator, euroPathPricer,
                 Statistics()));
 

@@ -35,11 +35,11 @@ namespace QuantLib {
 
         using Math::Statistics;
         using MonteCarlo::Path;
-        using MonteCarlo::GaussianPathGenerator;
-        using MonteCarlo::PathPricer;
+        using MonteCarlo::GaussianPathGenerator_old;
+        using MonteCarlo::PathPricer_old;
         using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::ArithmeticAPOPathPricer;
-        using MonteCarlo::GeometricAPOPathPricer;
+        using MonteCarlo::ArithmeticAPOPathPricer_old;
+        using MonteCarlo::GeometricAPOPathPricer_old;
 
         McDiscreteArithmeticAPO::McDiscreteArithmeticAPO(Option::Type type,
             double underlying, double strike,
@@ -53,20 +53,20 @@ namespace QuantLib {
             double mu = riskFreeRate - dividendYield
                                      - 0.5 * volatility * volatility;
 
-            Handle<GaussianPathGenerator> pathGenerator(
-                new GaussianPathGenerator(mu, volatility*volatility,
+            Handle<GaussianPathGenerator_old> pathGenerator(
+                new GaussianPathGenerator_old(mu, volatility*volatility,
                     times, seed));
 
 
             //! Initialize the Path Pricer
-            Handle<PathPricer<Path> > spPricer(
-                new ArithmeticAPOPathPricer(type, underlying, strike,
+            Handle<PathPricer_old<Path> > spPricer(
+                new ArithmeticAPOPathPricer_old(type, underlying, strike,
                     QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
 
 
             if (controlVariate) {
-                Handle<PathPricer<Path> > controlVariateSpPricer(
-                    new GeometricAPOPathPricer(type, underlying, strike,
+                Handle<PathPricer_old<Path> > controlVariateSpPricer(
+                    new GeometricAPOPathPricer_old(type, underlying, strike,
                         QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
 
                 double controlVariatePrice = DiscreteGeometricAPO(type,
@@ -75,17 +75,17 @@ namespace QuantLib {
 
                 //! Initialize the Monte Carlo model
                 mcModel_ = Handle<MonteCarloModel<Statistics,
-                    GaussianPathGenerator, PathPricer<Path> > > (
+                    GaussianPathGenerator_old, PathPricer_old<Path> > > (
                     new MonteCarloModel<Statistics,
-                    GaussianPathGenerator, PathPricer<Path> > (
+                    GaussianPathGenerator_old, PathPricer_old<Path> > (
                     pathGenerator, spPricer, Statistics(),
                     controlVariateSpPricer, controlVariatePrice));
             } else {
                 //! Initialize the Monte Carlo model
                 mcModel_ = Handle<MonteCarloModel<Statistics,
-                    GaussianPathGenerator, PathPricer<Path> > > (
+                    GaussianPathGenerator_old, PathPricer_old<Path> > > (
                     new MonteCarloModel<Statistics,
-                    GaussianPathGenerator, PathPricer<Path> > (
+                    GaussianPathGenerator_old, PathPricer_old<Path> > (
                     pathGenerator, spPricer, Statistics()));
             }
 

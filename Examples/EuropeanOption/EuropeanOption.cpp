@@ -416,7 +416,7 @@ int main(int argc, char* argv[])
             new MCEuropeanEngine<
                 Statistics,
                 GaussianRandomSequenceGenerator,
-                GaussianPathGenerator2,
+                GaussianPathGenerator,
                 PathPricer<Path> >(false, false, timeGrid, grsg)));
         value = option.NPV();
         double errorEstimate = option.errorEstimate();

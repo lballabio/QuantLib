@@ -31,7 +31,7 @@ namespace QuantLib {
         //! simple example of multi-factor Monte Carlo pricer
         class McMaxBasket : public McPricer<Math::Statistics,
             MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
+            MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:
             McMaxBasket(const Array& underlying,
                         const Array& dividendYield,

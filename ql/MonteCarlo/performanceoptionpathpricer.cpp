@@ -31,31 +31,31 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        PerformanceOptionPathPricer::PerformanceOptionPathPricer(
+        PerformanceOptionPathPricer_old::PerformanceOptionPathPricer_old(
             Option::Type type,
             double underlying, double moneyness,
             const std::vector<DiscountFactor>& discounts,
             bool useAntitheticVariance)
-        : PathPricer<Path>(1.0, useAntitheticVariance), type_(type),
+        : PathPricer_old<Path>(1.0, useAntitheticVariance), type_(type),
           underlying_(underlying), moneyness_(moneyness),
           discounts_(discounts) {
             QL_REQUIRE(underlying>0.0,
-                "PerformanceOptionPathPricer: "
+                "PerformanceOptionPathPricer_old: "
                 "underlying less/equal zero not allowed");
             QL_REQUIRE(moneyness>0.0,
-                "PerformanceOptionPathPricer: "
+                "PerformanceOptionPathPricer_old: "
                 "moneyness less/equal zero not allowed");
         }
 
-        double PerformanceOptionPathPricer::operator()(const Path& path) const{
+        double PerformanceOptionPathPricer_old::operator()(const Path& path) const{
             Size n = path.size();
             QL_REQUIRE(n>0,
-                "PerformanceOptionPathPricer: at least one option is required");
+                "PerformanceOptionPathPricer_old: at least one option is required");
             QL_REQUIRE(n==2,
-                "PerformanceOptionPathPricer: only one option for the time"
+                "PerformanceOptionPathPricer_old: only one option for the time"
                 " being");
             QL_REQUIRE(n==discounts_.size(),
-                "PerformanceOptionPathPricer: discounts/options mismatch");
+                "PerformanceOptionPathPricer_old: discounts/options mismatch");
 
             std::vector<double> result(n);
             std::vector<double> assetValue(n);

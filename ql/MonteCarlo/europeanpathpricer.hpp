@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -34,10 +34,33 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+
         //! %path pricer for European options
+        /* %Path pricer for European options
+            
+        */
         class EuropeanPathPricer : public PathPricer<Path> {
           public:
-            EuropeanPathPricer(Option::Type type,
+            EuropeanPathPricer(
+                Option::Type type,
+                double underlying,
+                double strike,
+                const RelinkableHandle<TermStructure>& riskFreeTS);
+            double operator()(const Path& path) const;
+          private:
+            Option::Type type_;
+            double underlying_, strike_;
+        };
+
+
+        //! %path pricer for European options
+        /* %Path pricer for European options
+            
+           \deprecated use EuropeanPathPricer instead
+        */
+        class EuropeanPathPricer_old : public PathPricer_old<Path> {
+          public:
+            EuropeanPathPricer_old(Option::Type type,
                                double underlying,
                                double strike,
                                DiscountFactor discount,

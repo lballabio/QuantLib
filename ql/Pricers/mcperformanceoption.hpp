@@ -43,8 +43,8 @@ namespace QuantLib {
 
         */
         class McPerformanceOption : public McPricer<Math::Statistics,
-            MonteCarlo::GaussianPathGenerator,
-            MonteCarlo::PathPricer<MonteCarlo::Path> > {
+            MonteCarlo::GaussianPathGenerator_old,
+            MonteCarlo::PathPricer_old<MonteCarlo::Path> > {
           public:
             McPerformanceOption(Option::Type type,
                        double underlying,

@@ -38,7 +38,7 @@ namespace QuantLib {
         */
         class McHimalaya : public McPricer<Math::Statistics,
             MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
+            MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
         public:
             McHimalaya(const Array& underlying,
                        const Array& dividendYield,

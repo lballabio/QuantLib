@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -32,11 +32,12 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+
         EuropeanPathPricer::EuropeanPathPricer(Option::Type type,
-          double underlying, double strike, DiscountFactor discount,
-          bool useAntitheticVariance)
-        : PathPricer<Path>(discount, useAntitheticVariance), type_(type),
-          underlying_(underlying), strike_(strike) {
+            double underlying, double strike,
+            const RelinkableHandle<TermStructure>& riskFreeTS)
+        : PathPricer<Path>(riskFreeTS), type_(type), underlying_(underlying),
+          strike_(strike) {
             QL_REQUIRE(underlying>0.0,
                 "EuropeanPathPricer: "
                 "underlying less/equal zero not allowed");
@@ -49,6 +50,40 @@ namespace QuantLib {
             Size n = path.size();
             QL_REQUIRE(n>0,
                 "EuropeanPathPricer: the path cannot be empty");
+
+            double log_drift = 0.0, log_random = 0.0;
+            for (Size i = 0; i < n; i++) {
+                log_drift += path.drift()[i];
+                log_random += path.diffusion()[i];
+            }
+
+            return ExercisePayoff(type_, underlying_ *
+                    QL_EXP(log_drift+log_random), strike_) *
+                riskFreeTS_->discount(path.times().back());
+        }
+
+
+
+
+
+
+        EuropeanPathPricer_old::EuropeanPathPricer_old(Option::Type type,
+          double underlying, double strike, DiscountFactor discount,
+          bool useAntitheticVariance)
+        : PathPricer_old<Path>(discount, useAntitheticVariance), type_(type),
+          underlying_(underlying), strike_(strike) {
+            QL_REQUIRE(underlying>0.0,
+                "EuropeanPathPricer_old: "
+                "underlying less/equal zero not allowed");
+            QL_REQUIRE(strike>0.0,
+                "EuropeanPathPricer_old: "
+                "strike less/equal zero not allowed");
+        }
+
+        double EuropeanPathPricer_old::operator()(const Path& path) const {
+            Size n = path.size();
+            QL_REQUIRE(n>0,
+                "EuropeanPathPricer_old: the path cannot be empty");
 
             double log_drift = 0.0, log_random = 0.0;
             for (Size i = 0; i < n; i++) {

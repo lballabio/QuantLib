@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -39,11 +39,11 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! default choice for Gaussian path generator.
-        typedef PathGenerator<RandomNumbers::GaussianRandomGenerator>
-            GaussianPathGenerator;
+        typedef PathGenerator_old<RandomNumbers::GaussianRandomGenerator>
+            GaussianPathGenerator_old;
 
-        typedef PathGenerator2<RandomNumbers::GaussianRandomSequenceGenerator>
-            GaussianPathGenerator2;
+        typedef PathGenerator<RandomNumbers::GaussianRandomSequenceGenerator>
+            GaussianPathGenerator;
 
         //! default choice for Gaussian multi-path generator.
         typedef
@@ -53,14 +53,14 @@ namespace QuantLib {
 
         //! default choice for one-factor Monte Carlo model.
         typedef MonteCarloModel<Math::Statistics,
-                                GaussianPathGenerator,
-                                PathPricer<Path> >
-                                    OneFactorMonteCarloOption;
+                                GaussianPathGenerator_old,
+                                PathPricer_old<Path> >
+                                    OneFactorMonteCarloOption_old;
 
         //! default choice for multi-factor Monte Carlo model.
         typedef MonteCarloModel<Math::Statistics,
                                 GaussianMultiPathGenerator,
-                                PathPricer<MultiPath> >
+                                PathPricer_old<MultiPath> >
                                     MultiFactorMonteCarloOption;
 
     }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -39,9 +38,9 @@ namespace QuantLib {
         /*! The payoff of an Everest option is given by the
             final-price initial-price ratio of the worst performer.
         */
-        class EverestPathPricer : public PathPricer<MultiPath> {
+        class EverestPathPricer_old : public PathPricer_old<MultiPath> {
           public:
-            EverestPathPricer(DiscountFactor discount,
+            EverestPathPricer_old(DiscountFactor discount,
                               bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;
         };

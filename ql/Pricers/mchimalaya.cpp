@@ -37,9 +37,9 @@ namespace QuantLib {
         using Math::Matrix;
         using MonteCarlo::MultiPath;
         using MonteCarlo::GaussianMultiPathGenerator;
-        using MonteCarlo::PathPricer;
+        using MonteCarlo::PathPricer_old;
         using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::HimalayaPathPricer;
+        using MonteCarlo::HimalayaPathPricer_old;
 
         McHimalaya::McHimalaya(const Array& underlying,
             const Array& dividendYield, const Math::Matrix& covariance,
@@ -71,15 +71,15 @@ namespace QuantLib {
             double residualTime = times[times.size()-1];
 
             //! Initialize the pricer on the path pricer
-            Handle<PathPricer<MultiPath> > pathPricer(new HimalayaPathPricer(
+            Handle<PathPricer_old<MultiPath> > pathPricer(new HimalayaPathPricer_old(
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
             mcModel_ = Handle<MonteCarloModel<Statistics,
-                GaussianMultiPathGenerator, PathPricer<MultiPath> > > (
+                GaussianMultiPathGenerator, PathPricer_old<MultiPath> > > (
                 new MonteCarloModel<Statistics,
-                GaussianMultiPathGenerator, PathPricer<MultiPath> > (
+                GaussianMultiPathGenerator, PathPricer_old<MultiPath> > (
                 pathGenerator, pathPricer, Statistics()));
 
         }

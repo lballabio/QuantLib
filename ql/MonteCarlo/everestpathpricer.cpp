@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -32,12 +31,12 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        EverestPathPricer::EverestPathPricer(DiscountFactor discount,
+        EverestPathPricer_old::EverestPathPricer_old(DiscountFactor discount,
             bool useAntitheticVariance)
-        : PathPricer<MultiPath>(discount, useAntitheticVariance) {}
+        : PathPricer_old<MultiPath>(discount, useAntitheticVariance) {}
 
 
-        double EverestPathPricer::operator()(const MultiPath& multiPath) const {
+        double EverestPathPricer_old::operator()(const MultiPath& multiPath) const {
             Size numAssets = multiPath.assetNumber();
             Size numSteps = multiPath.pathSize();
 

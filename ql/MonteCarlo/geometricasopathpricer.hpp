@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -36,9 +35,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! %path pricer for geometric average strike option
-        class GeometricASOPathPricer : public PathPricer<Path> {
+        class GeometricASOPathPricer_old : public PathPricer_old<Path> {
           public:
-            GeometricASOPathPricer(Option::Type type,
+            GeometricASOPathPricer_old(Option::Type type,
                                    double underlying,
                                    DiscountFactor discount,
                                    bool useAntitheticVariance);

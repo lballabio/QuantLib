@@ -40,7 +40,7 @@ namespace QuantLib {
         */
         class McEverest : public McPricer<Math::Statistics,
             MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
+            MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:
             McEverest(const Array& dividendYield,
                       const Math::Matrix& covariance,

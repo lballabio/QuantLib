@@ -35,11 +35,11 @@ namespace QuantLib {
 
         using Math::Statistics;
         using MonteCarlo::Path;
-        using MonteCarlo::GaussianPathGenerator;
-        using MonteCarlo::PathPricer;
+        using MonteCarlo::GaussianPathGenerator_old;
+        using MonteCarlo::PathPricer_old;
         using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::ArithmeticASOPathPricer;
-        using MonteCarlo::GeometricASOPathPricer;
+        using MonteCarlo::ArithmeticASOPathPricer_old;
+        using MonteCarlo::GeometricASOPathPricer_old;
 
         McDiscreteArithmeticASO::McDiscreteArithmeticASO(Option::Type type,
           double underlying,
@@ -53,18 +53,18 @@ namespace QuantLib {
             double mu = riskFreeRate - dividendYield
                                      - 0.5 * volatility * volatility;
 
-            Handle<GaussianPathGenerator> pathGenerator(
-                new GaussianPathGenerator(mu, volatility*volatility,
+            Handle<GaussianPathGenerator_old> pathGenerator(
+                new GaussianPathGenerator_old(mu, volatility*volatility,
                     times, seed));
 
             //! Initialize the Path Pricer
-            Handle<PathPricer<Path> > spPricer(
-                new ArithmeticASOPathPricer(type, underlying,
+            Handle<PathPricer_old<Path> > spPricer(
+                new ArithmeticASOPathPricer_old(type, underlying,
                     QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
 
             if (controlVariate) {
-                Handle<PathPricer<Path> > controlVariateSpPricer(
-                    new GeometricASOPathPricer(type, underlying,
+                Handle<PathPricer_old<Path> > controlVariateSpPricer(
+                    new GeometricASOPathPricer_old(type, underlying,
                     QL_EXP(-riskFreeRate*times.back()),
                     antitheticVariance));
 
@@ -74,21 +74,21 @@ namespace QuantLib {
 
                 //! Initialize the one-dimensional Monte Carlo
                 mcModel_ = Handle<MonteCarloModel<Statistics,
-                    GaussianPathGenerator,
-                    PathPricer<Path> > > (
+                    GaussianPathGenerator_old,
+                    PathPricer_old<Path> > > (
                     new MonteCarloModel<Statistics,
-                    GaussianPathGenerator,
-                    PathPricer<Path> > (pathGenerator, spPricer,
+                    GaussianPathGenerator_old,
+                    PathPricer_old<Path> > (pathGenerator, spPricer,
                     Statistics(),
                     controlVariateSpPricer, controlVariatePrice));
             } else {
                 //! Initialize the one-dimensional Monte Carlo
                 mcModel_ = Handle<MonteCarloModel<Statistics,
-                    GaussianPathGenerator,
-                    PathPricer<Path> > > (
+                    GaussianPathGenerator_old,
+                    PathPricer_old<Path> > > (
                     new MonteCarloModel<Statistics,
-                    GaussianPathGenerator,
-                    PathPricer<Path> > (pathGenerator, spPricer,
+                    GaussianPathGenerator_old,
+                    PathPricer_old<Path> > (pathGenerator, spPricer,
                     Statistics()));
             }
 

@@ -32,17 +32,17 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        PagodaPathPricer::PagodaPathPricer(const Array& underlying,
+        PagodaPathPricer_old::PagodaPathPricer_old(const Array& underlying,
             double roof,
             DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer<MultiPath>(discount, useAntitheticVariance),
+        : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
           underlying_(underlying), roof_(roof) {}
 
-        double PagodaPathPricer::operator()(const MultiPath& multiPath) const {
+        double PagodaPathPricer_old::operator()(const MultiPath& multiPath) const {
             Size numAssets = multiPath.assetNumber();
             Size numSteps = multiPath.pathSize();
             QL_REQUIRE(underlying_.size() == numAssets,
-                "PagodaPathPricer: the multi-path must contain "
+                "PagodaPathPricer_old: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
 

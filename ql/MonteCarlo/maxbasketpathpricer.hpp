@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -39,9 +38,9 @@ namespace QuantLib {
         /*! The value of the option at expiration is given by the value
             of the underlying which has best performed.
         */
-        class MaxBasketPathPricer : public PathPricer<MultiPath> {
+        class MaxBasketPathPricer_old : public PathPricer_old<MultiPath> {
           public:
-            MaxBasketPathPricer(const Array& underlying,
+            MaxBasketPathPricer_old(const Array& underlying,
                                 DiscountFactor discount,
                                 bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;

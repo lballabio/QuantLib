@@ -38,8 +38,8 @@ namespace QuantLib {
 
         //! simple example of Monte Carlo pricer
         class McCliquetOption : public McPricer<Math::Statistics,
-            MonteCarlo::GaussianPathGenerator,
-            MonteCarlo::PathPricer<MonteCarlo::Path> > {
+            MonteCarlo::GaussianPathGenerator_old,
+            MonteCarlo::PathPricer_old<MonteCarlo::Path> > {
           public:
             McCliquetOption(Option::Type type,
                        double underlying,

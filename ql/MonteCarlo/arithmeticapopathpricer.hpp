@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -35,9 +34,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! %path pricer for arithmetic average price option
-        class ArithmeticAPOPathPricer : public PathPricer<Path> {
+        class ArithmeticAPOPathPricer_old : public PathPricer_old<Path> {
           public:
-            ArithmeticAPOPathPricer(Option::Type type,
+            ArithmeticAPOPathPricer_old(Option::Type type,
                                     double underlying,
                                     double strike,
                                     DiscountFactor discount,

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
 
@@ -35,9 +34,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! %path pricer for cliquet options
-        class CliquetOptionPathPricer : public PathPricer<Path> {
+        class CliquetOptionPathPricer_old : public PathPricer_old<Path> {
           public:
-            CliquetOptionPathPricer(Option::Type type,
+            CliquetOptionPathPricer_old(Option::Type type,
                                double underlying,
                                double moneyness,
                                const std::vector<DiscountFactor>& discounts,

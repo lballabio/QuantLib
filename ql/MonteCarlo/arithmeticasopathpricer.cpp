@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -31,20 +30,20 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        ArithmeticASOPathPricer::ArithmeticASOPathPricer(
+        ArithmeticASOPathPricer_old::ArithmeticASOPathPricer_old(
           Option::Type type, double underlying,
           DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer<Path>(discount, useAntitheticVariance), type_(type),
+        : PathPricer_old<Path>(discount, useAntitheticVariance), type_(type),
           underlying_(underlying) {
             QL_REQUIRE(underlying>0.0,
-                "ArithmeticASOPathPricer: "
+                "ArithmeticASOPathPricer_old: "
                 "underlying less/equal zero not allowed");
         }
 
-        double ArithmeticASOPathPricer::operator()(const Path& path) const {
+        double ArithmeticASOPathPricer_old::operator()(const Path& path) const {
 
             Size n = path.size();
-            QL_REQUIRE(n>0,"ArithmeticASOPathPricer: the path cannot be empty");
+            QL_REQUIRE(n>0,"ArithmeticASOPathPricer_old: the path cannot be empty");
 
             double price1 = underlying_;
             double averageStrike1 = 0.0;

@@ -32,23 +32,23 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        MaxBasketPathPricer::MaxBasketPathPricer(const Array& underlying,
+        MaxBasketPathPricer_old::MaxBasketPathPricer_old(const Array& underlying,
             DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer<MultiPath>(discount, useAntitheticVariance),
+        : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
           underlying_(underlying) {
             for (Size i=0; i<underlying_.size(); i++) {
                 QL_REQUIRE(underlying_[i]>0.0,
-                    "MaxBasketPathPricer: "
+                    "MaxBasketPathPricer_old: "
                     "underlying less/equal zero not allowed");
             }
         }
 
-        double MaxBasketPathPricer::operator()(const MultiPath& multiPath)
+        double MaxBasketPathPricer_old::operator()(const MultiPath& multiPath)
           const {
             Size numAssets = multiPath.assetNumber();
             Size numSteps = multiPath.pathSize();
             QL_REQUIRE(underlying_.size() == numAssets,
-                "MaxBasketPathPricer: the multi-path must contain "
+                "MaxBasketPathPricer_old: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
             double log_drift, log_diffusion;

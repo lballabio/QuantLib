@@ -35,9 +35,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! %path pricer for performance options
-        class PerformanceOptionPathPricer : public PathPricer<Path> {
+        class PerformanceOptionPathPricer_old : public PathPricer_old<Path> {
           public:
-            PerformanceOptionPathPricer(Option::Type type,
+            PerformanceOptionPathPricer_old(Option::Type type,
                                double underlying,
                                double moneyness,
                                const std::vector<DiscountFactor>& discounts,

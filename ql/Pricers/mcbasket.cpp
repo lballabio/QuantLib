@@ -32,10 +32,10 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using MonteCarlo::PathPricer;
+        using MonteCarlo::PathPricer_old;
         using MonteCarlo::MultiPath;
         using MonteCarlo::GaussianMultiPathGenerator;
-        using MonteCarlo::BasketPathPricer;
+        using MonteCarlo::BasketPathPricer_old;
         using MonteCarlo::MultiFactorMonteCarloOption;
         using MonteCarlo::MonteCarloModel;
         using Math::Statistics;
@@ -66,7 +66,7 @@ namespace QuantLib {
                 std::vector<Time>(1, residualTime), seed));
 
             //! Initialize the pricer on the path pricer
-            Handle<PathPricer<MultiPath> > pathPricer(new BasketPathPricer(
+            Handle<PathPricer_old<MultiPath> > pathPricer(new BasketPathPricer_old(
                 type, underlying, strike,
                 QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
@@ -74,10 +74,10 @@ namespace QuantLib {
              //! Initialize the multi-factor Monte Carlo
             mcModel_ = Handle<MonteCarloModel<Statistics,
                 GaussianMultiPathGenerator,
-                PathPricer<MultiPath> > > (
+                PathPricer_old<MultiPath> > > (
                 new MonteCarloModel<Math::Statistics,
                 GaussianMultiPathGenerator,
-                PathPricer<MultiPath> > (pathGenerator,
+                PathPricer_old<MultiPath> > (pathGenerator,
                 pathPricer, Math::Statistics()));
 
         }

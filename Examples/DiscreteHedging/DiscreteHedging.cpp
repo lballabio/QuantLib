@@ -75,13 +75,13 @@ using QuantLib::Math::Statistics;
 using QuantLib::MonteCarlo::Path;
 
 // the pricer computes final portfolio's value for each random variable path
-using QuantLib::MonteCarlo::PathPricer;
+using QuantLib::MonteCarlo::PathPricer_old;
 
 // the path generator
-using QuantLib::MonteCarlo::GaussianPathGenerator;
+using QuantLib::MonteCarlo::GaussianPathGenerator_old;
 
 // the Montecarlo pricing model for option on a single asset
-using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
+using QuantLib::MonteCarlo::OneFactorMonteCarloOption_old;
 
 // to format the output of doubles
 using QuantLib::DoubleFormatter;
@@ -134,10 +134,10 @@ private:
     double vega_;
 };
 
-// The key for the MonteCarlo simulation is to have a PathPricer that
+// The key for the MonteCarlo simulation is to have a PathPricer_old that
 // implements a value(const Path& path) method.
 // This method prices the portfolio for each Path of the random variable
-class ReplicationPathPricer : public PathPricer<Path>
+class ReplicationPathPricer : public PathPricer_old<Path>
 {
   public:
     // real constructor
@@ -147,7 +147,7 @@ class ReplicationPathPricer : public PathPricer<Path>
                           Rate r,
                           Time maturity,
                           double sigma)
-    : PathPricer<Path>(1.0, false), type_(type), underlying_(underlying),
+    : PathPricer_old<Path>(1.0, false), type_(type), underlying_(underlying),
       strike_(strike), r_(r), maturity_(maturity), sigma_(sigma) {
         QL_REQUIRE(strike_ > 0.0,
             "ReplicationPathPricer: strike must be positive");
@@ -324,15 +324,15 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // Black Scholes equation rules the path generator:
     // at each step the log of the stock
     // will have drift and sigma^2 variance
-    Handle<GaussianPathGenerator> myPathGenerator(
-        new GaussianPathGenerator(drift, sigma_*sigma_,
+    Handle<GaussianPathGenerator_old> myPathGenerator(
+        new GaussianPathGenerator_old(drift, sigma_*sigma_,
             maturity_, nTimeSteps));
 
     // The replication strategy's Profit&Loss is computed for each path
     // of the stock. The path pricer knows how to price a path using its
     // value() method
-    Handle<PathPricer<Path> > myPathPricer =
-        Handle<PathPricer<Path> >(new ReplicationPathPricer(type_, s0_, strike_, r_,
+    Handle<PathPricer_old<Path> > myPathPricer =
+        Handle<PathPricer_old<Path> >(new ReplicationPathPricer(type_, s0_, strike_, r_,
             maturity_, sigma_));
 
     // a statistic accumulator for the path-dependant Profit&Loss values
@@ -341,13 +341,13 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // The OneFactorMontecarloModel generates paths using myPathGenerator
     // each path is priced using myPathPricer
     // prices will be accumulated into statisticAccumulator
-    OneFactorMonteCarloOption MCSimulation(myPathGenerator,
+    OneFactorMonteCarloOption_old MCSimulation(myPathGenerator,
         myPathPricer, statisticAccumulator);
 
     // the model simulates nSamples paths
     MCSimulation.addSamples(nSamples);
 
-    // the sampleAccumulator method of OneFactorMonteCarloOption
+    // the sampleAccumulator method of OneFactorMonteCarloOption_old
     // gives access to all the methods of statisticAccumulator
     double PLMean  = MCSimulation.sampleAccumulator().mean();
     double PLStDev = MCSimulation.sampleAccumulator().standardDeviation();

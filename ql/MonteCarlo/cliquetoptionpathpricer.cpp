@@ -31,29 +31,29 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        CliquetOptionPathPricer::CliquetOptionPathPricer(Option::Type type,
+        CliquetOptionPathPricer_old::CliquetOptionPathPricer_old(Option::Type type,
           double underlying, double moneyness,
           const std::vector<DiscountFactor>& discounts,
           bool useAntitheticVariance)
-        : PathPricer<Path>(1.0, useAntitheticVariance), type_(type),
+        : PathPricer_old<Path>(1.0, useAntitheticVariance), type_(type),
           underlying_(underlying), moneyness_(moneyness),
           discounts_(discounts) {
             QL_REQUIRE(underlying>0.0,
-                "CliquetOptionPathPricer: "
+                "CliquetOptionPathPricer_old: "
                 "underlying less/equal zero not allowed");
             QL_REQUIRE(moneyness>0.0,
-                "CliquetOptionPathPricer: "
+                "CliquetOptionPathPricer_old: "
                 "moneyness less/equal zero not allowed");
         }
 
-        double CliquetOptionPathPricer::operator()(const Path& path) const {
+        double CliquetOptionPathPricer_old::operator()(const Path& path) const {
             Size n = path.size();
             QL_REQUIRE(n>0,
-                "CliquetOptionPathPricer: at least one option is required");
+                "CliquetOptionPathPricer_old: at least one option is required");
             QL_REQUIRE(n==2,
-                "CliquetOptionPathPricer: only one option for the time being");
+                "CliquetOptionPathPricer_old: only one option for the time being");
             QL_REQUIRE(n==discounts_.size(),
-                "CliquetOptionPathPricer: discounts/options mismatch");
+                "CliquetOptionPathPricer_old: discounts/options mismatch");
 
             std::vector<double> result(n);
             std::vector<double> assetValue(n);

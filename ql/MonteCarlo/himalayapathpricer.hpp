@@ -44,9 +44,9 @@ namespace QuantLib {
             M periods the option pays the max between the strike and the
             average of the best performers.
         */
-        class HimalayaPathPricer : public PathPricer<MultiPath> {
+        class HimalayaPathPricer_old : public PathPricer_old<MultiPath> {
           public:
-            HimalayaPathPricer(const Array& underlying,
+            HimalayaPathPricer_old(const Array& underlying,
                                double strike,
                                DiscountFactor discount,
                                bool useAntitheticVariance);

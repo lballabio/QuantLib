@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -31,30 +30,30 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        HimalayaPathPricer::HimalayaPathPricer(const Array& underlying,
+        HimalayaPathPricer_old::HimalayaPathPricer_old(const Array& underlying,
             double strike,
             DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer<MultiPath>(discount, useAntitheticVariance),
+        : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
           underlying_(underlying), strike_(strike) {
             for (Size j=0; j<underlying_.size(); j++) {
                 QL_REQUIRE(underlying_[j]>0.0,
-                    "HimalayaPathPricer: "
+                    "HimalayaPathPricer_old: "
                     "underlying less/equal zero not allowed");
             QL_REQUIRE(strike>0.0,
-                "HimalayaPathPricer: "
+                "HimalayaPathPricer_old: "
                 "strike less/equal zero not allowed");
             }
         }
 
-        double HimalayaPathPricer::operator()(const MultiPath& multiPath)
+        double HimalayaPathPricer_old::operator()(const MultiPath& multiPath)
           const {
             Size numAssets = multiPath.assetNumber();
             Size numSteps = multiPath.pathSize();
             QL_REQUIRE(underlying_.size() == numAssets,
-                "HimalayaPathPricer: the multi-path must contain "
+                "HimalayaPathPricer_old: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
             QL_REQUIRE(numAssets>0,
-                "HimalayaPathPricer: no asset given");
+                "HimalayaPathPricer_old: no asset given");
 
 
             Array prices(underlying_);

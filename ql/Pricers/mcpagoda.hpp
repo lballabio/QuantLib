@@ -39,7 +39,7 @@ namespace QuantLib {
         */
         class McPagoda : public McPricer<Math::Statistics,
             MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
+            MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:
             McPagoda(const Array& portfolio,
                      double fraction,

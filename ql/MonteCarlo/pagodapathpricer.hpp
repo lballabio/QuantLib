@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -41,9 +40,9 @@ namespace QuantLib {
             arithmetic average of the portfolio performance,
             with a maximum cap given by the roof.
         */
-        class PagodaPathPricer : public PathPricer<MultiPath> {
+        class PagodaPathPricer_old : public PathPricer_old<MultiPath> {
           public:
-            PagodaPathPricer(const Array& underlying,
+            PagodaPathPricer_old(const Array& underlying,
                              double roof,
                              DiscountFactor discount,
                              bool useAntitheticVariance);
