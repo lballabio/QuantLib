@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file qlerrors.h
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/26 16:59:01  lballabio
+    Wrapped license line
+
     Revision 1.10  2001/01/17 14:37:55  nando
     tabs removed
 
