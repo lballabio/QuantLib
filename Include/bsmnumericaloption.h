@@ -50,6 +50,9 @@ namespace QuantLib {
 			double valueAtCenter(const Array& a) const;
 			double firstDerivativeAtCenter(const Array& a, const Array& g) const;
 			double secondDerivativeAtCenter(const Array& a, const Array& g) const;
+			void initializeGrid(double smin, double smax);
+			void initializeInitialCondition();
+			void initializeOperator();
 			// input data
 			int theGridPoints;
 			// results
@@ -63,9 +66,6 @@ namespace QuantLib {
 		  private:
 			// methods
 			void setGridLimits();
-			void initializeGrid();
-			void initializeInitialCondition();
-			void initializeOperator();
 			// temporaries
 			double sMin, sMax;
 			double theGridLogSpacing;

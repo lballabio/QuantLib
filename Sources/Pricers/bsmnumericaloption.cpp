@@ -37,10 +37,10 @@ namespace QuantLib {
 		BSMNumericalOption::BSMNumericalOption(BSMOption::Type type, double underlying, double strike, 
 		  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility, int gridPoints)
 		: BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility), 
-		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false) {
+		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false),theGrid(theGridPoints){
 			// common setup
 			setGridLimits();
-			initializeGrid();
+			initializeGrid(sMin,sMax);
 			initializeInitialCondition();
 			initializeOperator();
 			hasBeenCalculated = false;
@@ -63,16 +63,7 @@ namespace QuantLib {
 				value();
 			return theTheta;
 		}
-		/*
-		double BSMNumericalOption::vega() const {
-			return 0.0;
-		}
-		
-		double BSMNumericalOption::rho() const {
-			return 0.0;
-		}
-		
-		*/
+
 		double BSMNumericalOption::vega() const {
 		
 			if(!vegaComputed){
@@ -119,11 +110,10 @@ namespace QuantLib {
 			}
 		}
 
-		void BSMNumericalOption::initializeGrid() {
-			theGrid = Array(theGridPoints);
-			theGridLogSpacing = (QL_LOG(sMax)-QL_LOG(sMin))/(theGridPoints-1);
+		void BSMNumericalOption::initializeGrid(double min, double max) {			
+			theGridLogSpacing = (QL_LOG(max)-QL_LOG(min))/(theGridPoints-1);
 			double edx = QL_EXP(theGridLogSpacing);
-			theGrid[0] = sMin;
+			theGrid[0] = min;
 			int j;
 			for (j=1; j<theGridPoints; j++)
 				theGrid[j] = theGrid[j-1]*edx;
@@ -165,8 +155,7 @@ namespace QuantLib {
 			else 
 				return (a[jmid]+a[jmid-1])/2.0;
 		}
-		
-		
+			
 		double BSMNumericalOption::firstDerivativeAtCenter(const Array& a, const Array& g) const{
 			Require(a.size()==g.size(),"BSMNumericalOption::firstDerivativeAtCenter, a and g must be of the same size");
 			Require(a.size()>=3,"BSMNumericalOption::firstDerivativeAtCenter, the size of the two vectors must be at least 3");
