@@ -28,72 +28,66 @@
 
 namespace QuantLib {
 
-    //! Base exercise class
+    //! Base exercise base class
     class Exercise {
       public:
+
         enum Type { American, Bermudan, European };
-        Exercise();
-        bool isNull() const;
-        Type type() const;
-        Date date(Size index) const;
-        const std::vector<Date>& dates() const;
-        Date lastDate() const;
+
+        Exercise() { type_ = Type(-1); }
+
+        // inspectors
+        bool isNull() const { return type_==Type(-1); }
+        Type type() const { return type_; }
+        Date date(Size index) const { return dates_[index]; }
+        const std::vector<Date>& dates() const { return dates_; }
+        Date lastDate() const { return dates_.back(); }
+
       protected:
         std::vector<Date> dates_;
         Type type_;
     };
 
+    //! Early exercise base class
+    /*! The payoff can be at exercise (default case) or at expiry
+    */
+    class EarlyExercise : public Exercise {
+      public:
+          EarlyExercise(bool payoffAtExpiry = false)
+          : payoffAtExpiry_(payoffAtExpiry) {}
+        bool payoffAtExpiry() const { return payoffAtExpiry_; }
+      private:
+        bool payoffAtExpiry_;
+    };  
+
     //! American exercise
     /*! An American option can be exercised at any time between two predefined
         dates
     */
-    class AmericanExercise : public Exercise {
+    class AmericanExercise : public EarlyExercise {
       public:
-        AmericanExercise(Date earliestDate, Date latestDate);
+        AmericanExercise(Date earliestDate,
+                         Date latestDate,
+                         bool payoffAtExpiry = false);
     };
 
     //! Bermudan exercise
     /*! A Bermudan option can only be exercised at a set of fixed dates.
     */
-    class BermudanExercise : public Exercise {
+    class BermudanExercise : public EarlyExercise {
       public:
-        BermudanExercise(const std::vector<Date>& dates);
+        BermudanExercise(const std::vector<Date>& dates,
+                         bool payoffAtExpiry = false);
     };
 
     //! European exercise
-    /*! A European option can only be exercised at one date.
+    /*! A European option can only be exercised at one (expiry) date.
     */
     class EuropeanExercise : public Exercise {
       public:
         EuropeanExercise(Date date);
     };
 
-
-    // inline definitions
-
-    inline Exercise::Exercise() { 
-        type_ = Type(-1); 
-    }
-
-    inline bool Exercise::isNull() const { 
-        return type_==Type(-1); 
-    }
-
-    inline Exercise::Type Exercise::type() const {
-        return type_;
-    }
-
-    inline Date Exercise::date(Size index) const {
-        return dates_[index];
-    }
-
-    inline const std::vector<Date>& Exercise::dates() const {
-        return dates_;
-    }
-
-    inline Date Exercise::lastDate() const { 
-        return dates_.back(); 
-    }
 
 }
 

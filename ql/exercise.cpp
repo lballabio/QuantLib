@@ -25,16 +25,18 @@
 
 namespace QuantLib {
 
-    AmericanExercise::AmericanExercise(Date earliest, Date latest)
-    : Exercise() {
+    AmericanExercise::AmericanExercise(Date earliest, Date latest,
+        bool payoffAtExpiry)
+    : EarlyExercise(payoffAtExpiry) {
         type_ = American;
         dates_ = std::vector<Date>(2);
         dates_[0] = earliest;
         dates_[1] = latest;
     }
 
-    BermudanExercise::BermudanExercise(const std::vector<Date>& dates)
-    : Exercise() {
+    BermudanExercise::BermudanExercise(const std::vector<Date>& dates,
+        bool payoffAtExpiry)
+    : EarlyExercise(payoffAtExpiry) {
 
         QL_REQUIRE(dates.size()>0,
             "BermudanExercise::BermudanExercise : "
