@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/12 14:22:19  lballabio
+    Optimized operator++/--
+
     Revision 1.1  2001/04/09 14:07:00  nando
     all the *.hpp moved below the Include/ql level
 
@@ -104,21 +107,21 @@ namespace QuantLib {
             //! \name Increment and decrement
             //@{
             coupling_iterator& operator++() {
-                it1_++; it2_++;
+                ++it1_; ++it2_;
                 return *this;
             }
             coupling_iterator  operator++(int) {
                 coupling_iterator tmp = *this;
-                it1_++; it2_++;
+                ++it1_; ++it2_;
                 return tmp;
             }
             coupling_iterator& operator--() {
-                it1_--; it2_--;
+                --it1_; --it2_;
                 return *this;
             }
             coupling_iterator  operator--(int) {
                 coupling_iterator tmp = *this;
-                it1_--; it2_--;
+                --it1_; --it2_;
                 return tmp;
             }
             coupling_iterator& operator+=(difference_type n) {

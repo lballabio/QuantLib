@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/12 14:22:19  lballabio
+    Optimized operator++/--
+
     Revision 1.1  2001/04/09 14:07:00  nando
     all the *.hpp moved below the Include/ql level
 
@@ -142,14 +145,14 @@ namespace QuantLib {
           const Iterator& beforeBegin, const Iterator& end)
         : p_(p), it_(it), beforeBegin_(beforeBegin), end_(end) {
             while (!p_(*it_) && it_ != end_)
-                it_++;
+                ++it_;
         }
 
         template<class Iterator, class UnaryPredicate>
         inline filtering_iterator<Iterator,UnaryPredicate>&
         filtering_iterator<Iterator,UnaryPredicate>::operator++() {
             do
-                it_++;
+                ++it_;
             while (!p_(*it_) && it_ != end_);
             return *this;
         }
@@ -159,7 +162,7 @@ namespace QuantLib {
         filtering_iterator<Iterator,UnaryPredicate>::operator++(int) {
             filtering_iterator<Iterator,UnaryPredicate> temp = *this;
             do
-                it_++;
+                ++it_;
             while (!p_(*it_) && it_ != end_);
             return temp;
         }
@@ -168,7 +171,7 @@ namespace QuantLib {
         inline filtering_iterator<Iterator,UnaryPredicate>&
         filtering_iterator<Iterator,UnaryPredicate>::operator--() {
             do
-                it_--;
+                --it_;
             while (!p_(*it_) && it_ != beforeBegin_);
             return *this;
         }
@@ -178,7 +181,7 @@ namespace QuantLib {
         filtering_iterator<Iterator,UnaryPredicate>::operator--(int) {
             filtering_iterator<Iterator,UnaryPredicate> temp = *this;
             do
-                it_--;
+                --it_;
             while (!p_(*it_) && it_ != beforeBegin_);
             return temp;
         }
