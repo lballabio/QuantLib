@@ -669,7 +669,7 @@ void DigitalOptionTest::testMCCashAtHit() {
     BOOST_MESSAGE("Testing Monte Carlo cash-(at-hit)-or-nothing "
                   "American engine...");
 
-    boost::progress_timer t;  // start timing
+    QL_TEST_START_TIMING
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol

@@ -16,6 +16,7 @@
 */
 
 #include "lowdiscrepancysequences.hpp"
+#include "utilities.hpp"
 #include <ql/Math/discrepancystatistics.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 #include <ql/RandomNumbers/faurersg.hpp>
@@ -730,7 +731,7 @@ namespace {
                                   const std::string& fileName,
                                   const std::string& arrayName) {
 
-        boost::progress_timer t;  // start timing
+        QL_TEST_START_TIMING
 
         #ifndef PRINT_ONLY
         Real tolerance = 1.0e-2;

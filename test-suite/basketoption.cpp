@@ -341,7 +341,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
     BOOST_MESSAGE("Testing three-asset basket options "
                   "against Barraquand's values...");
 
-    boost::progress_timer t;  // start timing
+    QL_TEST_START_TIMING
+
     /*
         Data from:
         "Numerical Valuation of High Dimensional American Securities"
@@ -550,7 +551,8 @@ void BasketOptionTest::testTavellaValues() {
     BOOST_MESSAGE("Testing three-asset American basket options "
                   "against Tavella's values...");
 
-    boost::progress_timer t;  // start timing
+    QL_TEST_START_TIMING
+
     /*
         Data from:
         "Quantitative Methods in Derivatives Pricing"
@@ -658,7 +660,7 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     BOOST_MESSAGE("Testing basket American options against 1-D case...");
 
-    boost::progress_timer t;  // start timing
+    QL_TEST_START_TIMING
 
     BasketOptionOneData values[] = {
         //        type, strike,   spot,    q,    r,    t,  vol,   value, tol

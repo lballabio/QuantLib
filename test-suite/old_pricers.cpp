@@ -41,7 +41,7 @@ void OldPricerTest::testFdEuropeanPricer() {
 
     BOOST_MESSAGE("Testing old-style finite-difference European pricer...");
 
-    boost::progress_timer t;  // start timing
+    QL_TEST_START_TIMING
     Real under = 100.0;
     Real strikeMin = 60.0, strikeRange = 100.0;
     Rate rRateMin = 0.0,  rRateRange = 0.18;
@@ -192,7 +192,7 @@ void OldPricerTest::testAmericanPricers() {
 
     BOOST_MESSAGE("Testing old-style American-type pricers...");
 
-    boost::progress_timer t;  // start timing
+    QL_TEST_START_TIMING
 
     Option::Type types[] = { Option::Call, Option::Put };
     Real underlyings[] = { 100 };
@@ -255,7 +255,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
     BOOST_MESSAGE("Testing old-style Monte Carlo single-factor pricers...");
 
-    boost::progress_timer t;  // start timing
+    QL_TEST_START_TIMING
 
     BigNatural seed = 3456789;
 
@@ -589,7 +589,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
     BOOST_MESSAGE("Testing old-style Monte Carlo multi-factor pricers...");
 
-    boost::progress_timer t;  // start timing
+    QL_TEST_START_TIMING
 
     Matrix correlation(4,4);
     correlation[0][0] = 1.00;

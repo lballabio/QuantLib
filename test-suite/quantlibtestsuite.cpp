@@ -17,23 +17,15 @@
 */
 
 #include <ql/qldefines.hpp>
+#include <ql/quantlib.hpp>
 #include <boost/test/unit_test.hpp>
 #include <boost/progress.hpp>
 
-/* auto_link was not available in Boost version 1.30.x.  Therefore, we
-   require Boost 1.31 under Visual C++ and Borland (for the test
-   suite, not the whole library! 1.30.x is fine for the latter) while
-   we just skip the inclusion for Unixen since it's not needed.
-
-   Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
+/* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
 
 */
-//#if (defined(BOOST_MSVC) || defined(__BORLANDC__))
 #ifdef BOOST_MSVC
-#  if BOOST_VERSION < 103100
-     #error Boost 1.31 or later is required for the test suite.
-#  endif
 #  define BOOST_LIB_DIAGNOSTIC
 #  define BOOST_LIB_NAME boost_unit_test_framework
 #  include <boost/config/auto_link.hpp>
@@ -83,7 +75,9 @@
 
 using namespace boost::unit_test_framework;
 
+#if defined(QL_DISPLAY_TEST_TIME)
 static boost::progress_timer t;  // start timing
+#endif
 
 test_suite* init_unit_test_suite(int, char* []) {
 

@@ -927,7 +927,7 @@ namespace {
                                Size samples,
                                Real tolerance) {
 
-        boost::progress_timer t;  // start timing
+        QL_TEST_START_TIMING
 
         // test options
         Option::Type types[] = { Option::Call, Option::Put };
