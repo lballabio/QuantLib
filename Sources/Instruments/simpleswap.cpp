@@ -40,7 +40,7 @@ namespace QuantLib {
     namespace Instruments {
 
         SimpleSwap::SimpleSwap(bool payFixedRate,
-          const Date& startDate, const Date& endDate, 
+          const Date& startDate, int n, TimeUnit units,
           const Handle<Calendar>& calendar, 
           const std::vector<double>& nominals, 
           int fixedFrequency, 
@@ -63,22 +63,24 @@ namespace QuantLib {
             
             if (payFixedRate_) {
                 firstLeg_ = FixedRateCouponVector(nominals, 
-                    couponRates, startDate, endDate, fixedFrequency, 
-                    calendar, fixedRollingConvention, fixedIsAdjusted, 
-                    fixedDayCount);
+                    couponRates, startDate, startDate.plus(n,units), 
+                    fixedFrequency, calendar, fixedRollingConvention, 
+                    fixedIsAdjusted, fixedDayCount);
                 secondLeg_ = IndexLinkedCouponVector(nominals, 
-                    index, fixingDays, spreads, startDate, endDate, 
-                    floatingFrequency, calendar, floatingRollingConvention, 
-                    floatingIsAdjusted, floatingDayCount);
+                    index, fixingDays, spreads, startDate, 
+                    startDate.plus(n,units), floatingFrequency, calendar, 
+                    floatingRollingConvention, floatingIsAdjusted, 
+                    floatingDayCount);
             } else {
                 firstLeg_ = IndexLinkedCouponVector(nominals, 
-                    index, fixingDays, spreads, startDate, endDate, 
-                    floatingFrequency, calendar, floatingRollingConvention, 
-                    floatingIsAdjusted, floatingDayCount);
+                    index, fixingDays, spreads, startDate, 
+                    startDate.plus(n,units), floatingFrequency, calendar, 
+                    floatingRollingConvention, floatingIsAdjusted, 
+                    floatingDayCount);
                 secondLeg_ = FixedRateCouponVector(nominals, 
-                    couponRates, startDate, endDate, fixedFrequency, 
-                    calendar, fixedRollingConvention, fixedIsAdjusted, 
-                    fixedDayCount);
+                    couponRates, startDate, startDate.plus(n,units), 
+                    fixedFrequency, calendar, fixedRollingConvention, 
+                    fixedIsAdjusted, fixedDayCount);
             }
         }
 

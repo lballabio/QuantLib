@@ -45,7 +45,7 @@ namespace QuantLib {
           public:
             SimpleSwap(bool payFixedRate,
                 // dates
-                const Date& startDate, const Date& endDate, 
+                const Date& startDate, int n, TimeUnit units,
                 const Handle<Calendar>& calendar, 
                 // nominals
                 const std::vector<double>& nominals, 
