@@ -166,7 +166,8 @@ namespace QuantLib
 
       void CompoundForward::validateInputs() const
       {
-         for(Size i = 0; i < dates_.size(); i++)
+         Size i,ci; // needed here to compile with VC++
+         for(i = 0; i < dates_.size(); i++)
             times_.push_back(dayCounter_.yearFraction(settlementDate_,
                                                       dates_[i]));
 
@@ -180,7 +181,7 @@ namespace QuantLib
                                                Months,
                                                roll_);
 
-         for(Size i = 0, ci = 1; i < dates_.size(); i++)
+         for(i = 0, ci = 1; i < dates_.size(); i++)
          {
             Date rateDate;
 
