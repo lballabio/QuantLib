@@ -32,7 +32,6 @@
 // $Id$
 
 #include "ql/Pricers/mceuropeanpricer.hpp"
-#include "ql/handle.hpp"
 #include "ql/MonteCarlo/europeanpathpricer.hpp"
 
 namespace QuantLib {

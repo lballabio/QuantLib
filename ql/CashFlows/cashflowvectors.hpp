@@ -35,7 +35,6 @@
 #define quantlib_cash_flow_vectors_hpp
 
 #include "ql/cashflow.hpp"
-#include "ql/termstructure.hpp"
 #include "ql/Indexes/xibor.hpp"
 
 namespace QuantLib {

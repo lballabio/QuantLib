@@ -35,7 +35,6 @@
 
 #include "ql/MonteCarlo/path.hpp"
 #include "ql/MonteCarlo/randomarraygenerator.hpp"
-#include "ql/dataformatters.hpp"
 
 namespace QuantLib {
 

@@ -31,7 +31,6 @@
 
 // $Id$
 
-#include "ql/dataformatters.hpp"
 #include "ql/solver1d.hpp"
 #include <functional>
 

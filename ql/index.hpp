@@ -37,7 +37,6 @@
 #include "ql/calendar.hpp"
 #include "ql/currency.hpp"
 #include "ql/daycounter.hpp"
-#include "ql/types.hpp"
 
 /*! \namespace QuantLib::Indexes
     \brief Concrete implementations of the Index interface

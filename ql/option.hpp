@@ -34,7 +34,6 @@
 #ifndef quantlib_option_h
 #define quantlib_option_h
 
-#include "ql/qldefines.hpp"
 #include "ql/instrument.hpp"
 #include "ql/argsandresults.hpp"
 #include "ql/handle.hpp"

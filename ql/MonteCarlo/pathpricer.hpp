@@ -34,7 +34,6 @@
 #ifndef quantlib_montecarlo_path_pricer_h
 #define quantlib_montecarlo_path_pricer_h
 
-#include <functional>
 #include "ql/MonteCarlo/path.hpp"
 
 namespace QuantLib {

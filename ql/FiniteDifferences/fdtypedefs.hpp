@@ -34,10 +34,8 @@
 #ifndef quantlib_fd_typedefs_h
 #define quantlib_fd_typedefs_h
 
-#include "ql/FiniteDifferences/finitedifferencemodel.hpp"
 #include "ql/FiniteDifferences/cranknicolson.hpp"
 #include "ql/FiniteDifferences/tridiagonaloperator.hpp"
-#include "ql/FiniteDifferences/stepcondition.hpp"
 
 namespace QuantLib {
 

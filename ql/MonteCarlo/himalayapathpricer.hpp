@@ -35,7 +35,6 @@
 #ifndef quantlib_himalaya_path_pricer_h
 #define quantlib_himalaya_path_pricer_h
 
-#include <vector>
 
 #include "ql/MonteCarlo/multipathpricer.hpp"
 

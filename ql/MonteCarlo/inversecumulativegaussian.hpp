@@ -34,7 +34,6 @@
 #ifndef quantlib_inversecumulative_gaussian_h
 #define quantlib_inversecumulative_gaussian_h
 
-#include "ql/qldefines.hpp"
 #include "ql/Math/normaldistribution.hpp"
 
 namespace QuantLib {

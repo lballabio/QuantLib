@@ -35,7 +35,6 @@
 #ifndef quantlib_montecarlo_control_variated_path_pricer_h
 #define quantlib_montecarlo_control_variated_path_pricer_h
 
-#include "ql/handle.hpp"
 #include "ql/MonteCarlo/pathpricer.hpp"
 
 namespace QuantLib {
