@@ -61,7 +61,7 @@ namespace QuantLib {
             //! end of the accrual period
             const Date& accrualEndDate() const;
             //! accrual period as fraction of year
-            double accrualPeriod() const;
+            Time accrualPeriod() const;
             //! accrual period in days
             int accrualDays() const;
             //! accrued amount at the given date
@@ -105,7 +105,7 @@ namespace QuantLib {
             return endDate_;
         }
 
-        inline double Coupon::accrualPeriod() const {
+        inline Time Coupon::accrualPeriod() const {
             return dayCounter_.yearFraction(startDate_,endDate_,
                 refPeriodStart_,refPeriodEnd_);
         }

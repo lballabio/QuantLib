@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file capfloor.hpp
     \brief Cap and Floor class
 
@@ -104,29 +106,20 @@ namespace QuantLib {
             CapFloorParameters() : type(VanillaCapFloor::Type(-1)),
                                    startTimes(0),
                                    endTimes(0),
+                                   accrualTimes(0),
                                    capRates(0),
                                    floorRates(0),
+                                   forwards(0),
                                    nominals(0) {}
             VanillaCapFloor::Type type;
             std::vector<Time> startTimes;
             std::vector<Time> endTimes;
+            std::vector<Time> accrualTimes;
             std::vector<Rate> capRates;
             std::vector<Rate> floorRates;
+            std::vector<Rate> forwards;
             std::vector<double> nominals;
-            void validate() const {
-                QL_REQUIRE(
-                    endTimes.size() == startTimes.size(),
-                    "Invalid pricing parameters: size of startTimes(" +
-                    IntegerFormatter::toString(startTimes.size()) +
-                    ") different from that of endTimes(" +
-                    IntegerFormatter::toString(endTimes.size()) +
-                    ")");
-                QL_REQUIRE(capRates.size()==startTimes.size(),
-                    "Invalid pricing parameters");
-                QL_REQUIRE(floorRates.size()==startTimes.size(),
-                    "Invalid pricing parameters");
-            }
-
+            void validate() const;
         };
 
         //! %results from cap/floor calculation

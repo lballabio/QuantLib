@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file capfloor.cpp
     \brief European cap and floor class
 
@@ -29,7 +31,6 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        using CashFlows::FloatingRateCouponVector;
         using CashFlows::FloatingRateCoupon;
 
         void VanillaCapFloor::setupEngine() const {
@@ -44,6 +45,8 @@ namespace QuantLib {
             parameters->floorRates.clear();
             parameters->startTimes.clear();
             parameters->endTimes.clear();
+            parameters->accrualTimes.clear();
+            parameters->forwards.clear();
             parameters->nominals.clear();
 
             Date settlement = termStructure_->settlementDate();
@@ -63,6 +66,10 @@ namespace QuantLib {
                 parameters->startTimes.push_back(time);
                 time = counter.yearFraction(settlement, coupon->date());
                 parameters->endTimes.push_back(time);
+                // this is passed explicitly for precision
+                parameters->accrualTimes.push_back(coupon->accrualPeriod());
+                // this is passed explicitly for precision
+                parameters->forwards.push_back(coupon->fixing());
                 parameters->nominals.push_back(coupon->nominal());
                 if (caps == capRates_.end()) {
                     parameters->capRates.push_back(capRates_.back());
@@ -91,7 +98,46 @@ namespace QuantLib {
             QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
                       "null value returned from cap/floor pricer");
         }
-    
+
+
+        void CapFloorParameters::validate() const {
+            QL_REQUIRE(
+                endTimes.size() == startTimes.size(),
+                "Invalid pricing parameters: size of startTimes (" +
+                IntegerFormatter::toString(startTimes.size()) +
+                ") different from that of endTimes (" +
+                IntegerFormatter::toString(endTimes.size()) +
+                ")");
+            QL_REQUIRE(
+                accrualTimes.size() == startTimes.size(),
+                "Invalid pricing parameters: size of startTimes (" +
+                IntegerFormatter::toString(startTimes.size()) +
+                ") different from that of accrualTimes (" +
+                IntegerFormatter::toString(accrualTimes.size()) +
+                ")");
+            QL_REQUIRE(
+                capRates.size() == startTimes.size(),
+                "Invalid pricing parameters: size of startTimes (" +
+                IntegerFormatter::toString(startTimes.size()) +
+                ") different from that of capRates (" +
+                IntegerFormatter::toString(capRates.size()) +
+                ")");
+            QL_REQUIRE(
+                floorRates.size() == startTimes.size(),
+                "Invalid pricing parameters: size of startTimes (" +
+                IntegerFormatter::toString(startTimes.size()) +
+                ") different from that of floorRates (" +
+                IntegerFormatter::toString(floorRates.size()) +
+                ")");
+            QL_REQUIRE(
+                nominals.size() == startTimes.size(),
+                "Invalid pricing parameters: size of startTimes (" +
+                IntegerFormatter::toString(startTimes.size()) +
+                ") different from that of nominals (" +
+                IntegerFormatter::toString(nominals.size()) +
+                ")");
+        }
+
     }
 
 }

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file blackcapfloor.cpp
     \brief European capfloor calculated using Black formula
 
@@ -36,24 +38,32 @@ namespace QuantLib {
             Instruments::VanillaCapFloor::Type type = parameters_.type;
 
             for (Size i=0; i<parameters_.startTimes.size(); i++) {
-                Time start = parameters_.startTimes[i];
-                Time end = parameters_.endTimes[i];
-                double tenor = end - start;
-                double p = model_->termStructure()->discount(start);
-                double q = model_->termStructure()->discount(end);
-                double forward = QL_LOG(p/q)/tenor;
+                Time start = parameters_.startTimes[i],
+                     end = parameters_.endTimes[i],
+                     accrualTime = parameters_.accrualTimes[i];
+                double nominal = parameters_.nominals[i];
+                DiscountFactor q = model_->termStructure()->discount(end);
+                Rate forward = parameters_.forwards[i];
                 if ((type == Instruments::VanillaCapFloor::Cap) ||
                     (type == Instruments::VanillaCapFloor::Collar)) {
-                    value +=  q*tenor*BlackModel::formula(
-                        parameters_.capRates[i], forward, 
-                        model_->volatility()*QL_SQRT(start), 1);
+                    value += q * accrualTime * nominal *
+                        BlackModel::formula(
+                            parameters_.capRates[i], forward, 
+                            model_->volatility()*QL_SQRT(start), 1);
 
                 }
-                if ((type == Instruments::VanillaCapFloor::Floor) ||
-                    (type == Instruments::VanillaCapFloor::Collar)) {
-                    value +=  q*tenor*BlackModel::formula(
-                        parameters_.floorRates[i], forward, 
-                        model_->volatility()*QL_SQRT(start), -1);
+                if (type == Instruments::VanillaCapFloor::Floor) {
+                    value += q * accrualTime * nominal *
+                        BlackModel::formula(
+                            parameters_.floorRates[i], forward, 
+                            model_->volatility()*QL_SQRT(start), -1);
+                }
+                // a collar is long a cap and short a floor
+                if (type == Instruments::VanillaCapFloor::Collar) {
+                    value -= q * accrualTime * nominal *
+                        BlackModel::formula(
+                            parameters_.floorRates[i], forward, 
+                            model_->volatility()*QL_SQRT(start), -1);
                 }
             }
             results_.value = value;
