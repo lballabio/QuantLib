@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -43,8 +41,6 @@ namespace QuantLib {
             Handle<Lattices::Tree> tree(
                 const Lattices::TimeGrid& timeGrid) const;
 
-            virtual std::string name() { return "Black-Karasinski"; }
-
           private:
             double alpha(Time t) const {
                 return (*alpha_)(t);
@@ -61,8 +57,8 @@ namespace QuantLib {
 
             Handle<TimeFunction> alpha_;
 
-            const double& a_;
-            const double& sigma_;
+            double& a_;
+            double& sigma_;
         };
     }
 }

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -28,7 +26,8 @@
 #define quantlib_interest_rate_modelling_one_factor_model_h
 
 #include <ql/InterestRateModelling/model.hpp>
-#include <ql/InterestRateModelling/trinomialtree.hpp>
+#include <ql/InterestRateModelling/shortrateprocess.hpp>
+#include <ql/Lattices/trinomialtree.hpp>
 
 namespace QuantLib {
 
@@ -38,33 +37,22 @@ namespace QuantLib {
           public:
             OneFactorModel(
                 Size nParams,
-                const RelinkableHandle<TermStructure>& termStructure)
-            : Model(nParams, OneFactor, termStructure) {}
+                const RelinkableHandle<TermStructure>& termStructure);
             virtual ~OneFactorModel() {}
-            virtual double minStateVariable() const { return -QL_MAX_DOUBLE;}
-            virtual double maxStateVariable() const { return QL_MAX_DOUBLE;}
 
             const Handle<ShortRateProcess>& process() const {
                 return process_;
             }
 
             virtual Handle<Lattices::Tree> tree(
-                const Lattices::TimeGrid& timeGrid) const {
-                return Handle<Lattices::Tree>(
-                    new TrinomialTree(process(), timeGrid));
-            }
-
-            //!Used by Jamshidian's decomposition pricing
-            virtual double discountBond(Time now, Time maturity, Rate r) {
-                return Null<double>();
-            }
+                const Lattices::TimeGrid& timeGrid) const;
 
           protected:
             Handle<ShortRateProcess> process_;
 
           private:
-            class FitFunction;
-            friend class FitFunction;
+            class StandardConstraint;
+            class PrivateTree;
         };
 
     }

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -26,7 +24,7 @@
 
 
 #include "ql/InterestRateModelling/calibrationhelper.hpp"
-#include "ql/Optimization/leastsquare.hpp"
+#include "ql/Optimization/optimizer.hpp"
 
 #include <iostream>
 
@@ -34,96 +32,56 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        using Math::Matrix;
-        using Optimization::LeastSquareProblem;
-        using Optimization::NonLinearLeastSquare;
+        using namespace Optimization;
 
-        class Model::CalibrationProblem : public LeastSquareProblem {
+        class Model::CalibrationFunction : public CostFunction {
           public:
-            CalibrationProblem(Model* model,
-                std::vector<Handle<CalibrationHelper> >& instruments)
-            : model_(model, false), instruments_(instruments),
-              prices_(instruments.size()) {
-                for (Size i=0; i<instruments_.size(); i++)
+            CalibrationFunction( 
+              Model* model,
+              const std::vector<Handle<CalibrationHelper> >& instruments) 
+            : model_(model, false),
+              instruments_(instruments), prices_(instruments.size()) {
+                for (Size i=0; i<prices_.size(); i++)
                     prices_[i] = instruments_[i]->marketValue();
             }
-            virtual ~CalibrationProblem() {}
-
-            //! Size of the least square problem
-            virtual int size() { return instruments_.size(); }
-
-            //! return function and target values
-            virtual void targetAndValue(const Array& params, Array& target,
-                Array& fct2fit) {
-                target = prices_;
-                std::cout << "volatility set to " << params[1] << std::endl;
+            virtual ~CalibrationFunction() {}
+            
+            virtual double Model::CalibrationFunction::value(
+                const Array& params) {
                 model_->setParams(params);
-                for (signed i=0; i<size(); i++) {
-                    fct2fit[i] = instruments_[i]->modelValue(model_);
+
+                double value = 0.0;
+                for (Size i=0; i<prices_.size(); i++) {
+                    double diff = (instruments_[i]->modelValue(model_) - 
+                        prices_[i])/prices_[i];
+                    value += diff*diff;
                 }
+                return QL_SQRT(value);
             }
-
-            //! return function, target and first derivatives values
-            virtual void targetValueAndGradient(const Array& params,
-                Matrix& grad_fct2fit, Array& target, Array& fct2fit) {
-                target = prices_;
-                std::cout << "volatility set to " << params[1] << std::endl;
-                model_->setParams(params);
-                Array newParams(params);
-                int i;
-                for (i=0; i<size(); i++)
-                    fct2fit[i] = instruments_[i]->modelValue(model_);
-
-                for (Size j=0; j<params.size(); j++) {
-                    double off = 1e-6;
-                    newParams[j] -= off;
-                    model_->setParams(newParams);
-                    Array newValues(size());
-                    for (i=0; i<size(); i++)
-                        newValues[i] = instruments_[i]->modelValue(model_);
-                    newParams[j] += 2.0*off;
-                    model_->setParams(newParams);
-                    for (i=0; i<size(); i++) {
-                        double diffValue = instruments_[i]->modelValue(model_);
-                        diffValue -= newValues[i];
-                        grad_fct2fit[i][j] = diffValue/(2.0*off);
-                    }
-                    newParams[j] = params[j];
-                }
-            }
-
+            virtual double finiteDifferenceEpsilon() { return 1e-6; }
           private:
             Handle<Model> model_;
-            std::vector<Handle<CalibrationHelper> >& instruments_;
+            const std::vector<Handle<CalibrationHelper> >& instruments_;
             Array prices_;
         };
 
         void Model::calibrate(
-            const Handle<Minimizer>&,
-            std::vector<Handle<CalibrationHelper> >& instruments) {
+            const std::vector<Handle<CalibrationHelper> >& instruments,
+            const Handle<OptimizationMethod>& method) {
 
-            // Accuracy of the optimization method
-            double accuracy = 1e-5;
-            // Maximum number of iterations
-            int maxiter = 10000;
+            CalibrationFunction f(this, instruments);
 
-            // Least square optimizer
-            NonLinearLeastSquare lsqnonlin(accuracy,maxiter);
+            method->endCriteria().setPositiveOptimization();
+            OptimizationProblem prob(f, *constraint_, *method);
+            prob.minimize();
 
-            // Define the least square problem
-            CalibrationProblem problem(this, instruments);
+            Array result(prob.minimumValue());
+            setParams(result);
 
-            // Set initial values
-            lsqnonlin.setInitialValue(Array(params_.size(), 0.1));
-
-            // perform fitting
-            Array solution = lsqnonlin.perform(problem);
-
-            setParams(solution);
-
-            std::cout << "Model calibrated to the following values:" << std::endl;
+            std::cout << "Cost function value: " << f.value(result) << std::endl;
+            std::cout << "Model calibrated to these parameters:" << std::endl;
             for (Size i=0; i<params_.size(); i++)
-                std::cout << i << "    " << solution[i]*100.0 << "%" << std::endl;
+                std::cout << i << "   " << params_[i]*100.0 << "%" << std::endl;
         }
 
     }

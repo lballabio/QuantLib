@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -40,16 +38,14 @@ namespace QuantLib {
 
             virtual double alpha(Time t) const;
 
-            virtual bool hasDiscountBondFormula() { return true; }
-            virtual double discountBond(Time T, Time s, Rate r);
+            virtual bool hasDiscountBondFormula() const { return true; }
+            virtual double discountBond(Time T, Time s, Rate r) const;
 
-            virtual bool hasDiscountBondOptionFormula() { return true; }
+            virtual bool hasDiscountBondOptionFormula() const { return true; }
             virtual double discountBondOption(Option::Type type,
                                               double strike,
                                               Time maturity,
-                                              Time bondMaturity);
-
-            virtual std::string name() { return "Hull & White"; }
+                                              Time bondMaturity) const;
 
           private:
             inline double B(Time t) const {
@@ -62,8 +58,8 @@ namespace QuantLib {
             class Process;
             friend class Process;
 
-            const double& a_;
-            const double& sigma_;
+            double& a_;
+            double& sigma_;
         };
 
     }

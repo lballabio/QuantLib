@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -43,6 +41,7 @@ namespace QuantLib {
                 SwaptionHelper(
                     const Period& maturity,
                     const Period& tenor,
+                    const RelinkableHandle<MarketElement>& volatility,
                     const Handle<Indexes::Xibor>& index,
                     const RelinkableHandle<TermStructure>& termStructure);
 

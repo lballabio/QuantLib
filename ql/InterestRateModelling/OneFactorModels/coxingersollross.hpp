@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -15,17 +13,17 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file coxingersollrossplus.hpp
-    \brief CIR++ model
+/*! \file coxingersollross.hpp
+    \brief Cox-Ingersoll-Ross model
 
     \fullpath
-    ql/InterestRateModelling/OneFactorModels/%coxingersollrossplus.hpp
+    ql/InterestRateModelling/OneFactorModels/%coxingersollross.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_one_factor_models_cox_ingersoll_ross_plus_h
-#define quantlib_one_factor_models_cox_ingersoll_ross_plus_h
+#ifndef quantlib_one_factor_models_cox_ingersoll_ross_h
+#define quantlib_one_factor_models_cox_ingersoll_ross_h
 
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 
@@ -33,19 +31,23 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class CoxIngersollRossPlus : public OneFactorModel {
+        class CoxIngersollRoss : public OneFactorModel {
           public:
-            CoxIngersollRossPlus(
+            CoxIngersollRoss(
                 const RelinkableHandle<TermStructure>& termStructure);
-            virtual ~CoxIngersollRossPlus() {}
+            virtual ~CoxIngersollRoss() {}
 
             virtual double phi(Time t) const;
 
-            virtual bool hasDiscountBondFormula() { return true; }
-            virtual double discountBond(Time T, Time s, Rate r);
-
-            virtual std::string name() { return "CIR++"; }
-
+            virtual bool hasDiscountBondFormula() const { return true; }
+            virtual double discountBond(Time T, Time s, Rate r) const;
+/*
+            virtual bool hasDiscountBondOptionFormula() const { return true; }
+            virtual double discountBondOption(Option::Type type, 
+                                              double strike,
+                                              Time T, 
+                                              Time s) const;
+*/
           private:
             double A(Time t, Time T) const;
             double B(Time t, Time T) const;
@@ -54,9 +56,12 @@ namespace QuantLib {
             class Process;
             friend class Process;
 
-            const double& k_;
-            const double& theta_;
-            const double& sigma_;
+            double& k_;
+            double& theta_;
+            double& sigma_;
+            double x0_;
+
+            class OwnConstraint;
         };
 
     }

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -25,16 +23,15 @@
 // $Id$
 
 #include "ql/InterestRateModelling/timefunction.hpp"
-#include "ql/InterestRateModelling/grid.hpp"
-#include "ql/FiniteDifferences/boundarycondition.hpp"
+/*#include "ql/FiniteDifferences/boundarycondition.hpp"
 #include "ql/FiniteDifferences/expliciteuler.hpp"
 #include "ql/FiniteDifferences/onefactoroperator.hpp"
 #include "ql/Solvers1D/brent.hpp"
-
+*/
 namespace QuantLib {
 
     namespace InterestRateModelling {
-
+/*
         using namespace FiniteDifferences;
 
         typedef FiniteDifferenceModel<ExplicitEuler<TridiagonalOperator> >
@@ -118,7 +115,7 @@ namespace QuantLib {
             }
 
         }
-
+*/
     }
 
 }

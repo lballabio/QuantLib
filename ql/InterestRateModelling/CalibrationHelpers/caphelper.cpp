@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -25,6 +23,7 @@
 // $Id$
 
 #include "ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp"
+#include "ql/CashFlows/cashflowvectors.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/Math/normaldistribution.hpp"
 #include "ql/Pricers/analyticalcapfloor.hpp"
@@ -42,16 +41,20 @@ namespace QuantLib {
         namespace CalibrationHelpers {
 
             using CashFlows::FloatingRateCoupon;
+            using CashFlows::FixedRateCouponVector;
+            using CashFlows::FloatingRateCouponVector;
             using Instruments::VanillaCap;
             using Instruments::CapFloorParameters;
             using Instruments::SimpleSwap;
+            using Instruments::Swap;
             using Pricers::CapFloorPricingEngine;
 
             CapHelper::CapHelper(
                 const Period& tenor,
+                const RelinkableHandle<MarketElement>& volatility,
                 const Handle<Indexes::Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure)
-            : termStructure_(termStructure) {
+            : CalibrationHelper(volatility), termStructure_(termStructure) {
 
                 Period indexTenor = index->tenor();
                 int frequency;
@@ -62,47 +65,42 @@ namespace QuantLib {
                 else
                     throw Error("index tenor not valid!");
                 Rate fixedRate = 0.04;//dummy value
-                SimpleSwap swap(
-                  false,
-                  termStructure->settlementDate(),
-                  tenor.length(),
-                  tenor.units(),
-                  index->calendar(),
-                  index->rollingConvention(),
-                  std::vector<double>(1, 1.0),
-                  frequency,
-                  std::vector<double>(1, fixedRate),
-                  false,
-                  index->dayCounter(),
-                  frequency,
-                  index,
-                  0,//FIXME
-                  std::vector<double>(1, 0.0),
-                  termStructure);
+                Date startDate = termStructure->settlementDate().
+                    plus(indexTenor.length(), indexTenor.units());
+                Date maturity = termStructure->settlementDate().
+                    plus(tenor.length(), tenor.units());
+
+                std::vector<Handle<CashFlow> > fixedLeg, floatingLeg;
+                std::vector<double> nominals(1,1.0);
+
+                floatingLeg = FloatingRateCouponVector(
+                    nominals, startDate, maturity, frequency,
+                    index->calendar(), index->rollingConvention(), 
+                    termStructure, index, 0, std::vector<double>(1, 0.0));
+                fixedLeg = FixedRateCouponVector(
+                    nominals, std::vector<Rate>(1, fixedRate), 
+                    startDate, maturity, frequency, 
+                    index->calendar(), index->rollingConvention(),
+                    false, index->dayCounter(), index->dayCounter());
+
+                SimpleSwap swap(false, fixedLeg, floatingLeg, termStructure);
                 Rate fairFixedRate = fixedRate - swap.NPV()/swap.fixedLegBPS();
-                swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                  false,
-                  termStructure->settlementDate(),
-                  tenor.length(),
-                  tenor.units(),
-                  index->calendar(),
-                  index->rollingConvention(),
-                  std::vector<double>(1, 1.0),
-                  frequency,
-                  std::vector<double>(1, fairFixedRate),
-                  false,
-                  index->dayCounter(),
-                  frequency,
-                  index,
-                  0,//FIXME
-                  std::vector<double>(1, 0.0),
-                  termStructure));
+                fixedLeg = FixedRateCouponVector(
+                    nominals, std::vector<Rate>(1, fairFixedRate), 
+                    startDate, maturity, frequency, 
+                    index->calendar(), index->rollingConvention(),
+                    false, index->dayCounter(), index->dayCounter());
+
+                swap_ = Handle<SimpleSwap>(new 
+                    SimpleSwap(false, fixedLeg, floatingLeg, termStructure));
                 engine_ = Handle<CapFloorPricingEngine>(
-                    new Pricers::TreeCapFloor(100));
+                    new Pricers::TreeCapFloor(10));
                 cap_ = Handle<VanillaCap>(
-                    new VanillaCap( *swap_, std::vector<Rate>(1, fairFixedRate),
+                    new VanillaCap( swap_, std::vector<Rate>(1, fairFixedRate),
                     termStructure, engine_));
                 cap_->setPricingEngine(engine_);
+
+                marketValue_ = blackPrice(volatility_->value());
             }
 
             double CapHelper::modelValue(const Handle<Model>& model) {
@@ -111,7 +109,7 @@ namespace QuantLib {
                         new Pricers::AnalyticalCapFloor());
                 else
                     engine_ = Handle<CapFloorPricingEngine>(
-                        new Pricers::TreeCapFloor(100));
+                        new Pricers::TreeCapFloor(10));
                 engine_->setModel(model);
                 cap_->setPricingEngine(engine_);
                 cap_->recalculate();
@@ -135,17 +133,17 @@ namespace QuantLib {
                     Time end = params->endTimes[i];
                     double tenor = end - start;
                     double p = termStructure_->discount(start);
-                    double forward =
-                        QL_LOG(p/termStructure_->discount(end))/tenor;
+                    double q = termStructure_->discount(end);
+                    double forward = QL_LOG(p/q)/tenor;
                     double capletValue;
                     if (start > QL_EPSILON) {
-                        double d1 = (QL_LOG(forward/exerciseRate)+
-                            0.5*sigma*sigma*start)/(sigma*QL_SQRT(start));
-                        double d2 = d1 - sigma*QL_SQRT(start);
-                        capletValue = p*tenor*
+                        double v = sigma*QL_SQRT(start);
+                        double d1 = QL_LOG(forward/exerciseRate)/v+ 0.5*v;
+                        double d2 = d1 - v;
+                        capletValue = q*tenor*
                             (forward*f(d1) - exerciseRate*f(d2));
                     } else {
-                        capletValue = p*tenor*
+                        capletValue = q*tenor*
                             QL_MAX(forward - exerciseRate, 0.0);
                     }
                     value += capletValue;

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -34,6 +32,7 @@ namespace QuantLib {
         using Lattices::Node;
         using Lattices::TimeGrid;
         using Lattices::Tree;
+        using Lattices::TrinomialTree;
 
         //Short-rate diffusion process
         class BlackKarasinski::Process : public ShortRateProcess {
@@ -112,6 +111,7 @@ namespace QuantLib {
 
                 alpha->reset();
 
+                alpha_.resize(nTimeSteps);
                 double lastValue = 0.0;
                 for (i=0; i<nTimeSteps; i++) {
                     double discountBond = termStructure->discount(t(i+1));
@@ -126,6 +126,7 @@ namespace QuantLib {
                     s1d.setMaxEvaluations(1000);
                     lastValue = s1d.solve(finder, 1e-6, lastValue, -10.0, 1.0);
                     alpha->set(t(i), lastValue);
+                    alpha_[i] = lastValue;
 
                     std::vector<int> k(0);
 
@@ -146,14 +147,18 @@ namespace QuantLib {
                         node(i,j).setProbability(pUp, 2);
                         node(i,j).setProbability(pMid, 1);
                         node(i,j).setProbability(pDown, 0);
-
-                        double discount =
-                            QL_EXP(-QL_EXP(lastValue+j*dx(i))*dt(i));
-                        node(i,j).setDiscount(discount);
                     }
                     addLevel(k);
+                    computeStatePrices(i+1);
                 }
             }
+
+            virtual DiscountFactor discount(Size i, int j) const {
+                return QL_EXP(-QL_EXP(alpha_[i]+j*dx(i))*dt(i));
+            }
+
+          private:
+            std::vector<double> alpha_;
         };
 
 
@@ -161,11 +166,9 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& termStructure)
         : OneFactorModel(2, termStructure), alpha_(new TimeFunction()),
           a_(params_[0]), sigma_(params_[1]) {
-
+            a_ = 0.0771118;
+            sigma_ = 0.2286;
             process_ = Handle<ShortRateProcess>(new Process(this));
-
-            constraint_ = Handle<Constraint>(new Constraint(2));
-            constraint_->setLowerBound(1, 0.000001);
         }
 
         Handle<Tree> BlackKarasinski::tree(

@@ -33,16 +33,21 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class CalibrationHelper {
+        class CalibrationHelper 
+        : public Patterns::Observer, public Patterns::Observable {
 
           public:
+            CalibrationHelper(const RelinkableHandle<MarketElement>& volatility)
+            : volatility_(volatility) {
+                volatility_.registerObserver(this);
+            }
+            virtual ~CalibrationHelper() {
+                volatility_.unregisterObserver(this);
+            }
+            void update() { notifyObservers(); }
+
             double marketValue() { return marketValue_; }
             virtual double modelValue(const Handle<Model>& model) = 0;
-
-            void setVolatility(double volatility) {
-                volatility_ = volatility;
-                marketValue_ = blackPrice(volatility);
-            }
 
             double impliedVolatility(double targetValue,
                                      double accuracy,
@@ -52,11 +57,12 @@ namespace QuantLib {
 
             virtual double blackPrice(double volatility) const = 0;
 
+          protected:
+            double marketValue_;
+            RelinkableHandle<MarketElement> volatility_;
+
           private:
             class ImpliedVolatilityHelper;
-
-            double volatility_;
-            double marketValue_;
         };
 
     }

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -28,9 +26,9 @@
 #define quantlib_interest_rate_modelling_model_h
 
 #include <ql/array.hpp>
-#include <ql/minimizer.hpp>
 #include <ql/option.hpp>
 #include <ql/termstructure.hpp>
+#include <ql/Optimization/optimizer.hpp>
 
 namespace QuantLib {
 
@@ -47,43 +45,61 @@ namespace QuantLib {
             : params_(nParams), termStructure_(termStructure) {}
             virtual ~Model() {}
 
-            virtual bool hasDiscountBondFormula() {
-                return false;
-            }
-            virtual bool hasDiscountBondOptionFormula() {
-                return false;
-            }
-            virtual double discountBondOption(Option::Type type,
-                                              double strike,
-                                              Time maturity,
-                                              Time bondMaturity) {
-                return Null<double>();
-            }
+            virtual bool hasDiscountBondFormula() const { return false; }
+            virtual double discountBond(
+                Time now, 
+                Time maturity, 
+                Rate r) const { return Null<double>(); }
+
+            virtual bool hasDiscountBondOptionFormula() const { return false; }
+            virtual double discountBondOption(
+                Option::Type type,
+                double strike,
+                Time maturity,
+                Time bondMaturity) const { return Null<double>(); }
 
             void calibrate(
-                const Handle<Minimizer>& minimizer,
-                std::vector<Handle<CalibrationHelper> >& instruments);
+                const std::vector<Handle<CalibrationHelper> >& instruments,
+                const Handle<Optimization::OptimizationMethod>& method);
 
             const RelinkableHandle<TermStructure>& termStructure() const {
                 return termStructure_;
             }
-
             Type type() { return type_; }
 
             const Array& params() { return params_; }
-            void setParams(const Array& params) { params_ = params; }
-
-            virtual std::string name() = 0;
+            void setParams(const Array& params) {
+                QL_REQUIRE(params.size() == params_.size(),
+                    "incorrect parameter vector size");
+                params_ = params; 
+            }
 
           protected:
-            Handle<Constraint> constraint_;
+            Handle<Optimization::Constraint> constraint_;
             Array params_;
 
           private:
-            class CalibrationProblem;
-            friend class CalibrationProblem;
+            class CalibrationFunction;
+            friend class CalibrationFunction;
             const RelinkableHandle<TermStructure>& termStructure_;
             Type type_;
+        };
+
+        class ModelTermStructure : public DiscountStructure {
+          public:
+            ModelTermStructure(const Model& model, Time t0, Rate r0) 
+            : model_(model), t0_(t0), r0_(r0) {
+                QL_REQUIRE(model_.hasDiscountBondFormula(),
+                    "No discount bond formula for this model");
+            }
+
+            virtual DiscountFactor discountImpl(Time t, bool extrapolate) {
+                return model_.discountBond(t0_, t0_+t, r0_);
+            }
+          private:
+            const Model& model_;
+            Time t0_;
+            Rate r0_;
         };
 
     }

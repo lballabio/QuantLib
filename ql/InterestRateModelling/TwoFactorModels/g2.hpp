@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -44,8 +42,6 @@ namespace QuantLib {
                                               Time maturity,
                                               Time bondMaturity);
 
-            virtual std::string name() { return "G2++"; }
-
           private:
             inline double sigmaP(Time t, Time s) const {
                 double temp = 1.0 - QL_EXP(-(a_+b_)*t);
@@ -60,11 +56,13 @@ namespace QuantLib {
                 return QL_SQRT(value);
             }
 
-            const double& a_;
-            const double& sigma_;
-            const double& b_;
-            const double& eta_;
-            const double& rho_;
+            double& a_;
+            double& sigma_;
+            double& b_;
+            double& eta_;
+            double& rho_;
+
+            class OwnConstraint;
         };
 
     }

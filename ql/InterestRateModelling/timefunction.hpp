@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -24,8 +22,8 @@
 
 // $Id$
 
-#ifndef quantlib_time_function_h
-#define quantlib_time_function_h
+#ifndef quantlib_interest_rate_modelling_time_function_h
+#define quantlib_interest_rate_modelling_time_function_h
 
 #include <ql/qldefines.hpp>
 #include <ql/Math/cubicspline.hpp>
@@ -69,8 +67,8 @@ namespace QuantLib {
                 }
                 return (*interpolation_)(t);
             }
-            void fitToTermStructure(const OneFactorModel& model,
-                                    Size timeSteps);
+/*          void fitToTermStructure(const OneFactorModel& model,
+                                    Size timeSteps);*/
           private:
             class FitFunction;
 

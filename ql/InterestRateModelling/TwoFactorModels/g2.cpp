@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -31,15 +29,37 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
+        using Optimization::Constraint;
+        class G2::OwnConstraint : public Constraint {
+            virtual bool test(const Array& params) const {
+                if (params[1]<=0.0)
+                    return false;
+                if (params[3]<=0.0)
+                    return false;
+                if (QL_FABS(params[4])>1.0)
+                    return false;
+                return true;
+            }
+            virtual void correct(Array& params) const {
+                params[1] = QL_MAX(params[1], 0.0000001);
+                params[3] = QL_MAX(params[3], 0.0000001);
+                if (params[4] > 1.0)
+                    params[4] = 1.0;
+                if (params[4] < -1.0)
+                    params[4] = -1.0;
+            }
+        };
+
         G2::G2(const RelinkableHandle<TermStructure>& termStructure)
         : TwoFactorModel(5, termStructure),
           a_(params_[0]), sigma_(params_[1]), b_(params_[2]), eta_(params_[3]),
           rho_(params_[4]) {
-            constraint_ = Handle<Constraint>(new Constraint(5));
-            constraint_->setLowerBound(1, 0.000001);
-            constraint_->setLowerBound(3, 0.000001);
-            constraint_->setLowerBound(4, -1.0);
-            constraint_->setUpperBound(4, 1.0);
+            a_ = 0.543009105;
+            sigma_ = 0.005837408;
+            b_ = 0.075716774;
+            eta_ = 0.011657837;
+            rho_ = -0.991401219;
+            constraint_ = Handle<Constraint>(new OwnConstraint());
         }
 
         double G2::discountBondOption(Option::Type type,

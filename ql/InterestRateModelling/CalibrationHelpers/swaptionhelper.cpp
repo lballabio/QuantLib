@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -49,9 +47,10 @@ namespace QuantLib {
             SwaptionHelper::SwaptionHelper(
                 const Period& maturity,
                 const Period& tenor,
+                const RelinkableHandle<MarketElement>& volatility,
                 const Handle<Indexes::Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure)
-            : termStructure_(termStructure) {
+            : CalibrationHelper(volatility), termStructure_(termStructure) {
 
                 Period indexTenor = index->tenor();
                 int frequency;
@@ -106,19 +105,21 @@ namespace QuantLib {
                     TreeSwaption(50));
 
                 swaption_ = Handle<Swaption>(new
-                    Swaption(*swap_, EuropeanExercise(startDate), termStructure,
+                    Swaption(swap_, EuropeanExercise(startDate), termStructure,
                              engine_));
                 swaption_->setPricingEngine(engine_);
+
+                marketValue_ = blackPrice(volatility_->value());
             }
 
             double SwaptionHelper::modelValue(const Handle<Model>& model) {
-/*                if (model->hasDiscountBondFormula() &&
+                if (model->hasDiscountBondFormula() &&
                     model->hasDiscountBondOptionFormula())
                     engine_ = Handle<SwaptionPricingEngine>(new
                         JamshidianSwaption());
-                else*/
-                engine_ = Handle<SwaptionPricingEngine>(new
-                    TreeSwaption(50));
+                else
+                    engine_ = Handle<SwaptionPricingEngine>(new
+                        TreeSwaption(10));
                 engine_->setModel(model);
                 swaption_->setPricingEngine(engine_);
                 swaption_->recalculate();
@@ -141,10 +142,9 @@ namespace QuantLib {
                 double value;
                 if (start>0.0) {
                     Math::CumulativeNormalDistribution f;
-                    double d1 = QL_LOG(swapRate/exerciseRate_)/
-                        (sigma*QL_SQRT(start))
-                        + 0.5*sigma*QL_SQRT(start);
-                    double d2 = d1 - sigma*QL_SQRT(start);
+                    double v = sigma*QL_SQRT(start);
+                    double d1 = QL_LOG(swapRate/exerciseRate_)/v + 0.5*v;
+                    double d2 = d1 - v;
                     value = p*(swapRate*f(d1) - exerciseRate_*f(d2));
                 } else {
                     value = p*QL_MAX(swapRate - exerciseRate_, 0.0);

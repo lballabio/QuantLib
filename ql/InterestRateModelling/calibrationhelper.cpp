@@ -53,7 +53,7 @@ namespace QuantLib {
             ImpliedVolatilityHelper f(*this,targetValue);
             Solvers1D::Brent solver;
             solver.setMaxEvaluations(maxEvaluations);
-            return solver.solve(f,accuracy,volatility_,minVol,maxVol);
+            return solver.solve(f,accuracy,volatility_->value(),minVol,maxVol);
         }
 
     }

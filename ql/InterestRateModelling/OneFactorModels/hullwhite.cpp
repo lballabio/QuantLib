@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -56,9 +54,9 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& termStructure)
         : OneFactorModel(2, termStructure), a_(params_[0]),
           sigma_(params_[1]) {
+            a_ = 0.0154;
+            sigma_ = 0.0073;
             process_ = Handle<ShortRateProcess>(new Process(this));
-            constraint_ = Handle<Constraint>(new Constraint(2));
-            constraint_->setLowerBound(1, 0.000001);
         }
 
         double HullWhite::alpha(Time t) const {
@@ -77,12 +75,12 @@ namespace QuantLib {
             return value;
         }
 
-        double HullWhite::discountBond(Time T, Time s, Rate r) {
+        double HullWhite::discountBond(Time T, Time s, Rate r) const {
             return QL_EXP(lnA(T,s) - B(s-T)*r);
         }
 
         double HullWhite::discountBondOption(Option::Type type,
-            double strike, Time maturity, Time bondMaturity) {
+            double strike, Time maturity, Time bondMaturity) const {
 
             double discountT = termStructure()->discount(maturity);
             double discountS = termStructure()->discount(bondMaturity);
@@ -95,11 +93,10 @@ namespace QuantLib {
                 }
             }
 
-            double sigmaP = sigma_*B(bondMaturity - maturity)
+            double v = sigma_*B(bondMaturity - maturity)
                 *QL_SQRT(0.5*B(2.0*maturity));
-            double d1 = QL_LOG(discountS/(strike*discountT))/sigmaP +
-                sigmaP/2.0;
-            double d2 = d1 - sigmaP;
+            double d1 = QL_LOG(discountS/(strike*discountT))/v + 0.5*v;
+            double d2 = d1 - v;
             double sFactor;
             double tFactor;
             Math::CumulativeNormalDistribution f;
