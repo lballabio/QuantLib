@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2003 Neil Firth
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -45,67 +46,60 @@ namespace QuantLib {
         QL_REQUIRE(n>0,
                    "DigitalPathPricer: the path cannot be empty");
 
-        double asset_price = underlying_;
-        double new_asset_price;
+        double log_asset_price = QL_LOG(underlying_);
         double x, y;
         double vol;
         TimeGrid timeGrid = path.timeGrid();
         Time dt;
-        double log_drift, log_random;
         Array u = sequenceGen_.nextSequence().value;
+        double log_strike = QL_LOG(payoff_->strike());
 
         switch (payoff_->optionType()) {
           case Option::Call:
-            for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
-                new_asset_price = 
-                    asset_price * QL_EXP(log_drift+log_random);
-                // terminal or initial vol?                        
-                vol = diffProcess_->diffusion(timeGrid[i],asset_price);
+            for (i=0; i<n; i++) {
+                x = path.drift()[i] + path.diffusion()[i];
+                // terminal or initial vol?
+                // initial (timeGrid[i+1]) for the time being
+                vol = diffProcess_->diffusion(timeGrid[i+1],QL_EXP(log_asset_price));
+                // vol = diffProcess_->diffusion(timeGrid[i+2],QL_EXP(log_asset_price+x));
                 dt = timeGrid.dt(i);
-
-                x = QL_LOG (new_asset_price / asset_price);
-                y = 0.5*(x + QL_SQRT (x*x-2*vol*vol*dt*QL_LOG((1-u[i]))));
-                y = asset_price * QL_EXP (y);
+                y = log_asset_price + 0.5*(x + QL_SQRT (x*x-2*vol*vol*dt*QL_LOG((1-u[i]))));
                 // cross the strike
-                if (y >= payoff_->strike()) {
+                if (y >= log_strike) {
                     if (exercise_->payoffAtExpiry()) {
                         return payoff_->cashPayoff() * 
                             riskFreeTS_->discount(path.timeGrid().back());
-
                     } else {
+                        // the discount should be calculated at the exercise time
+                        // between path.timeGrid()[i+1] and path.timeGrid()[i+2]
                         return payoff_->cashPayoff() * 
-                            riskFreeTS_->discount(path.timeGrid()[i]);
+                            riskFreeTS_->discount(path.timeGrid()[i+1]);
                     }
                 }
-                asset_price = new_asset_price;
+                log_asset_price += x;
             }
             break;
           case Option::Put:
             for (i = 0; i < n; i++) {
-                log_drift = path.drift()[i];
-                log_random = path.diffusion()[i];
-                new_asset_price = 
-                    asset_price * QL_EXP(log_drift+log_random);
+                x = path.drift()[i]+path.diffusion()[i];
                 // terminal or initial vol?                        
-                vol = diffProcess_->diffusion(timeGrid[i],asset_price);
+                // initial (timeGrid[i+1]) for the time being
+                vol = diffProcess_->diffusion(timeGrid[i+1],QL_EXP(log_asset_price));
+                // vol = diffProcess_->diffusion(timeGrid[i+2],QL_EXP(log_asset_price+x));
                 dt = timeGrid.dt(i);
-
-                x = QL_LOG (new_asset_price / asset_price);
-                y = 0.5*(x - QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG(u[i])));
-                y = asset_price * QL_EXP (y);
-                if (y <= payoff_->strike()) {
+                y = log_asset_price + 0.5*(x - QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG(u[i])));
+                if (y <= log_strike) {
                     if (exercise_->payoffAtExpiry()) {
                         return payoff_->cashPayoff() * 
                             riskFreeTS_->discount(path.timeGrid().back());
-
                     } else {
-                        return payoff_->cashPayoff() 
-                            * riskFreeTS_->discount(path.timeGrid()[i]);
+                        // the discount should be calculated at the exercise time
+                        // between path.timeGrid()[i+1] and path.timeGrid()[i+2]
+                        return payoff_->cashPayoff() *
+                            riskFreeTS_->discount(path.timeGrid()[i+1]);
                     }
                 }
-                asset_price = new_asset_price;
+                log_asset_price += x;
             }
             break;
           default:
