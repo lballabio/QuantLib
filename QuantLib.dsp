@@ -51,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:".\lib\Win32\VisualStudio\QuantLib.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_6.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
+# ADD LIB32 /nologo /out:"lib\QuantLib-vc6-mt-sgd-0_3_6.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -107,7 +107,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:".\lib\Win32\VisualStudio\QuantLib.lib"
-# ADD LIB32 /nologo /out:".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
+# ADD LIB32 /nologo /out:".\lib\QuantLib-vc6-mt-0_3_6.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
@@ -135,7 +135,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
-# ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib"
+# ADD LIB32 /nologo /out:"lib\QuantLib-vc6-mt-gd-0_3_6.lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Make build directory
