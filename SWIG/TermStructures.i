@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.23  2001/05/14 17:09:47  lballabio
+    Went for simplicity and removed Observer-Observable relationships from Instrument
+
     Revision 1.22  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -55,9 +58,6 @@ typedef Handle<TermStructure> TermStructureHandle;
 
 // replicate the TermStructure interface
 %addmethods TermStructureHandle {
-	TermStructureHandle clone() {
-		return (*self)->clone();
-	}
 	CurrencyHandle currency() {
 		return (*self)->currency();
 	}

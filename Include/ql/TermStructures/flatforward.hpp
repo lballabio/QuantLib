@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/14 17:09:47  lballabio
+    Went for simplicity and removed Observer-Observable relationships from Instrument
+
     Revision 1.1  2001/04/09 14:07:00  nando
     all the *.hpp moved below the Include/ql level
 
@@ -81,8 +84,6 @@ namespace QuantLib {
                         const Handle<DayCounter>& dayCounter,
                         const Date& today,
                         Rate forward);
-            // clone
-            Handle<TermStructure> clone() const;
             // inspectors
             Handle<Currency> currency() const;
             Handle<DayCounter> dayCounter() const;
@@ -113,13 +114,6 @@ namespace QuantLib {
                                         Rate forward)
         : currency_(currency), dayCounter_(dayCounter), today_(today),
           forward_(forward) {}
-
-        inline Handle<TermStructure> FlatForward::clone() const {
-            return Handle<TermStructure>(new FlatForward(currency_,
-                                                         dayCounter_,
-                                                         today_,
-                                                         forward_));
-        }
 
         inline Handle<Currency> FlatForward::currency() const {
             return currency_;

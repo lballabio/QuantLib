@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/14 17:09:47  lballabio
+    Went for simplicity and removed Observer-Observable relationships from Instrument
+
     Revision 1.1  2001/04/09 14:03:54  nando
     all the *.hpp moved below the Include/ql level
 
@@ -61,11 +64,9 @@ namespace QuantLib {
         Instrument(const std::string& isinCode = "",
             const std::string& description = "")
         : theISINCode(isinCode), theDescription(description),
-          termStructureHasChanged(true), swaptionVolHasChanged(true),
-          forwardVolHasChanged(true), isCalculating(false),
           theSettlementDate(Date()), theNPV(0.0),
           expired(false) {}
-        virtual ~Instrument();
+        virtual ~Instrument() {}
         //! \name Modifiers
         //@{
         //! sets the price for instruments which allow to do so.
@@ -110,18 +111,13 @@ namespace QuantLib {
             declared as mutable.
         */
         //@{
-        /*! This method returns <tt>true</tt> if all needed (re)calculations
-            were performed after a term structure or a volatility surface was
-            set or changed. It should not be redefined in derived classes.
-        */
-        bool isUpToDate() const;
-        /*! This method performs all needed (re)calculations by calling
+        /*! This method performs all needed calculations by calling
             <b>performTermStructureCalculations</b>,
             <b>performSwaptionVolCalculations</b>,
             <b>performForwardVolCalculations</b>, and
-            <b>performFinalCalculations</b> if a term structure or a volatility
-            surface was set or changed. It should not be redefined in derived
-            classes.
+            <b>performFinalCalculations</b> in turn while checking that the 
+            needed structures are not null. 
+            It should not be redefined in derived classes.
         */
         void calculate() const;
         /*! This method must implement any calculations which must be (re)done
@@ -139,13 +135,6 @@ namespace QuantLib {
             is supplied with a null body.
         */
         virtual void performForwardVolCalculations() const {}
-        /*! This method must return <tt>true</tt> if any calculations are needed
-            besides the ones implemented in
-            <b>performTermStructureCalculations</b>,
-            <b>performSwaptionVolCalculations</b>, and
-            <b>performForwardVolCalculations</b>.
-        */
-        virtual bool needsFinalCalculations() const;
         /*! This method must implement any calculations which are needed besides
             the ones implemented in <b>performTermStructureCalculations</b>,
             <b>performSwaptionVolCalculations</b>, and
@@ -177,50 +166,6 @@ namespace QuantLib {
         Handle<TermStructure> theTermStructure;
         Handle<SwaptionVolatilitySurface> theSwaptionVol;
         Handle<ForwardVolatilitySurface> theForwardVol;
-        // temporaries
-        mutable bool termStructureHasChanged, swaptionVolHasChanged,
-            forwardVolHasChanged, isCalculating;
-        // observers
-        // term structure
-        class TermStructureObserver;
-        friend class TermStructureObserver;
-        class TermStructureObserver : public Patterns::Observer {
-          public:
-            TermStructureObserver(Instrument* i = 0) : theInstrument(i) {}
-            void update() { theInstrument->termStructureHasChanged = true; }
-          private:
-            Instrument* theInstrument;
-        };
-        TermStructureObserver theTermStructureObserver;
-        void registerToTermStructure();
-        void unregisterFromTermStructure();
-        // swaption vol
-        class SwaptionVolObserver;
-        friend class SwaptionVolObserver;
-        class SwaptionVolObserver : public Patterns::Observer {
-          public:
-            SwaptionVolObserver(Instrument* i = 0) : theInstrument(i) {}
-            void update() { theInstrument->swaptionVolHasChanged = true; }
-          private:
-            Instrument* theInstrument;
-        };
-        SwaptionVolObserver theSwaptionVolObserver;
-        void registerToSwaptionVol();
-        void unregisterFromSwaptionVol();
-        // forward vol
-        class ForwardVolObserver;
-        friend class ForwardVolObserver;
-        class ForwardVolObserver : public Patterns::Observer {
-          public:
-            ForwardVolObserver(Instrument* i = 0) : theInstrument(i) {}
-            void update() { theInstrument->forwardVolHasChanged = true; }
-          private:
-            Instrument* theInstrument;
-        };
-        ForwardVolObserver theForwardVolObserver;
-        void registerToForwardVol();
-        void unregisterFromForwardVol();
-
     };
 
     bool operator==(const Handle<Instrument>&, const Handle<Instrument>&);
@@ -247,7 +192,6 @@ namespace QuantLib {
         bool useSwaptionVolatility() const { return false; }
         bool useForwardVolatility() const { return false; }
       private:
-        bool needsFinalCalculations() const { return true; }
         /* this method will throw an exception if not set, thus acting as a
            check
         */
@@ -272,75 +216,26 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Instrument::~Instrument() {
-        unregisterFromTermStructure();
-    }
-
     inline void Instrument::setTermStructure(
       const Handle<TermStructure>& termStructure) {
         if (useTermStructure()) {
-            unregisterFromTermStructure();
             theTermStructure = termStructure;
-            registerToTermStructure();
             theSettlementDate = termStructure->settlementDate();
-            termStructureHasChanged = true;
         }
-    }
-
-    inline void Instrument::registerToTermStructure() {
-        if (!theTermStructure.isNull()) {
-            theTermStructureObserver = TermStructureObserver(this);
-            theTermStructure->registerObserver(&theTermStructureObserver);
-        }
-    }
-
-    inline void Instrument::unregisterFromTermStructure() {
-        if (!theTermStructure.isNull())
-            theTermStructure->unregisterObserver(&theTermStructureObserver);
     }
 
     inline void Instrument::setSwaptionVolatility(
       const Handle<SwaptionVolatilitySurface>& vol) {
         if (useSwaptionVolatility()) {
-            unregisterFromSwaptionVol();
             theSwaptionVol = vol;
-            registerToSwaptionVol();
-            swaptionVolHasChanged = true;
         }
-    }
-
-    inline void Instrument::registerToSwaptionVol() {
-        if (!theSwaptionVol.isNull()) {
-            theSwaptionVolObserver = SwaptionVolObserver(this);
-            theSwaptionVol->registerObserver(&theSwaptionVolObserver);
-        }
-    }
-
-    inline void Instrument::unregisterFromSwaptionVol() {
-        if (!theSwaptionVol.isNull())
-            theSwaptionVol->unregisterObserver(&theSwaptionVolObserver);
     }
 
     inline void Instrument::setForwardVolatility(
       const Handle<ForwardVolatilitySurface>& vol) {
         if (useForwardVolatility()) {
-            unregisterFromForwardVol();
             theForwardVol = vol;
-            registerToForwardVol();
-            forwardVolHasChanged = true;
         }
-    }
-
-    inline void Instrument::registerToForwardVol() {
-        if (!theForwardVol.isNull()) {
-            theForwardVolObserver = ForwardVolObserver(this);
-            theForwardVol->registerObserver(&theForwardVolObserver);
-        }
-    }
-
-    inline void Instrument::unregisterFromForwardVol() {
-        if (!theForwardVol.isNull())
-            theForwardVol->unregisterObserver(&theForwardVolObserver);
     }
 
     inline std::string Instrument::isinCode() const {
@@ -379,45 +274,23 @@ namespace QuantLib {
         return theForwardVol;
     }
 
-    inline bool Instrument::needsFinalCalculations() const {
-        return (termStructureHasChanged || swaptionVolHasChanged ||
-            forwardVolHasChanged);
-    }
-
-    inline bool Instrument::isUpToDate() const {
-        return isCalculating ||
-           ((!useTermStructure()      || !termStructureHasChanged) &&
-            (!useSwaptionVolatility() || !swaptionVolHasChanged)   &&
-            (!useForwardVolatility()  || !forwardVolHasChanged)    &&
-            !needsFinalCalculations());
-    }
-
     inline void Instrument::calculate() const {
-        try {
-            isCalculating = true;
-            if (useTermStructure() && termStructureHasChanged) {
-                QL_REQUIRE(!theTermStructure.isNull(),
-                    "term structure not set");
-                performTermStructureCalculations();
-            }
-            if (useSwaptionVolatility() && swaptionVolHasChanged) {
-                QL_REQUIRE(!theSwaptionVol.isNull(),
-                    "swaption volatility surface not set");
-                performSwaptionVolCalculations();
-            }
-            if (useForwardVolatility() && forwardVolHasChanged) {
-                QL_REQUIRE(!theForwardVol.isNull(),
-                    "forward volatility surface not set");
-                performForwardVolCalculations();
-            }
-            if (needsFinalCalculations())
-                performFinalCalculations();
-            termStructureHasChanged = swaptionVolHasChanged =
-                forwardVolHasChanged = isCalculating = false;
-        } catch (...) {
-            isCalculating = false;
-            throw;
+        if (useTermStructure()) {
+            QL_REQUIRE(!theTermStructure.isNull(),
+                "term structure not set");
+            performTermStructureCalculations();
         }
+        if (useSwaptionVolatility()) {
+            QL_REQUIRE(!theSwaptionVol.isNull(),
+                "swaption volatility surface not set");
+            performSwaptionVolCalculations();
+        }
+        if (useForwardVolatility()) {
+            QL_REQUIRE(!theForwardVol.isNull(),
+                "forward volatility surface not set");
+            performForwardVolCalculations();
+        }
+        performFinalCalculations();
     }
 
     // comparisons

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/14 17:09:47  lballabio
+    Went for simplicity and removed Observer-Observable relationships from Instrument
+
     Revision 1.2  2001/05/03 10:25:31  lballabio
     Fixed today and settlement in implied term structure
 
@@ -54,7 +57,6 @@
 #include "ql/discountfactor.hpp"
 #include "ql/currency.hpp"
 #include "ql/handle.hpp"
-#include "ql/Patterns/observable.hpp"
 #include <vector>
 
 namespace QuantLib {
@@ -63,11 +65,9 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         rate structures which will be derived from this one.
     */
-    class TermStructure : public Patterns::Observable {
+    class TermStructure {
       public:
         virtual ~TermStructure() {}
-        //! returns a copy of this structure with no observers registered
-        virtual Handle<TermStructure> clone() const = 0;
         //! \name Rates
         //@{
         //! zero yield rate for a given date
@@ -171,7 +171,6 @@ namespace QuantLib {
       public:
         ImpliedTermStructure(const Handle<TermStructure>&,
             const Date& evaluationDate);
-        Handle<TermStructure> clone() const;
         Handle<Currency> currency() const;
         Date todaysDate() const;
         Date settlementDate() const;
@@ -179,14 +178,7 @@ namespace QuantLib {
         Date maxDate() const;
         Date minDate() const;
         //! returns the discount factor as seen from the evaluation date
-        DiscountFactor discount(const Date&,
-                                bool extrapolate = false) const;
-        //! registers with the original structure as well
-        void registerObserver(Patterns::Observer*);
-        //! unregisters with the original structure as well
-        void unregisterObserver(Patterns::Observer*);
-        //! unregisters with the original structure as well
-        void unregisterAll();
+        DiscountFactor discount(const Date&, bool extrapolate = false) const;
       private:
         Handle<TermStructure> originalCurve_;
         Date evaluationDate_;
@@ -200,7 +192,6 @@ namespace QuantLib {
     class SpreadedTermStructure : public ZeroYieldStructure {
       public:
         SpreadedTermStructure(const Handle<TermStructure>&, Spread spread);
-        Handle<TermStructure> clone() const;
         Handle<Currency> currency() const;
         Date todaysDate() const;
         Date settlementDate() const;
@@ -209,12 +200,6 @@ namespace QuantLib {
         Date minDate() const;
         //! returns the spreaded zero yield rate
         Rate zeroYield(const Date&, bool extrapolate = false) const;
-        //! registers with the original structure as well
-        void registerObserver(Patterns::Observer*);
-        //! unregisters with the original structure as well
-        void unregisterObserver(Patterns::Observer*);
-        //! unregisters with the original structure as well
-        void unregisterAll();
       private:
         Handle<TermStructure> originalCurve_;
         Spread spread_;
@@ -361,29 +346,6 @@ namespace QuantLib {
             originalCurve_->discount(evaluationSettlement_, false);
     }
 
-    inline Handle<TermStructure> ImpliedTermStructure::clone() const {
-        return Handle<TermStructure>(new ImpliedTermStructure(
-            originalCurve_->clone(),evaluationDate_));
-    }
-
-    inline void ImpliedTermStructure::registerObserver(Patterns::Observer* o) {
-        TermStructure::registerObserver(o);
-        originalCurve_->registerObserver(o);
-    }
-
-    inline void ImpliedTermStructure::unregisterObserver(
-      Patterns::Observer* o) {
-        TermStructure::unregisterObserver(o);
-        originalCurve_->unregisterObserver(o);
-    }
-
-    inline void ImpliedTermStructure::unregisterAll() {
-        for (std::set<Patterns::Observer*>::iterator i = observers().begin();
-          i!=observers().end(); ++i)
-            originalCurve_->unregisterObserver(*i);
-        TermStructure::unregisterAll();
-    }
-
 
     // spreaded curve
 
@@ -420,29 +382,7 @@ namespace QuantLib {
         return originalCurve_->zeroYield(d, extrapolate)+spread_;
     }
 
-    inline Handle<TermStructure> SpreadedTermStructure::clone() const {
-        return Handle<TermStructure>(new SpreadedTermStructure(
-            originalCurve_->clone(),spread_));
-    }
-
-    inline void SpreadedTermStructure::registerObserver(Patterns::Observer* o) {
-        TermStructure::registerObserver(o);
-        originalCurve_->registerObserver(o);
-    }
-
-    inline void SpreadedTermStructure::unregisterObserver(
-      Patterns::Observer* o) {
-        TermStructure::unregisterObserver(o);
-        originalCurve_->unregisterObserver(o);
-    }
-
-    inline void SpreadedTermStructure::unregisterAll() {
-        for (std::set<Patterns::Observer*>::iterator i = observers().begin();
-          i!=observers().end(); ++i)
-            originalCurve_->unregisterObserver(*i);
-        TermStructure::unregisterAll();
-    }
-
 }
+
 
 #endif

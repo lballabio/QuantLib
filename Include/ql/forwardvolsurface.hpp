@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/14 17:09:47  lballabio
+    Went for simplicity and removed Observer-Observable relationships from Instrument
+
     Revision 1.1  2001/04/09 14:03:54  nando
     all the *.hpp moved below the Include/ql level
 
@@ -46,7 +49,6 @@
 #include "ql/rate.hpp"
 #include "ql/spread.hpp"
 #include "ql/handle.hpp"
-#include "ql/Patterns/observable.hpp"
 #include "ql/spread.hpp"
 
 namespace QuantLib {
@@ -58,11 +60,9 @@ namespace QuantLib {
         \todo A way should be implemented of constructing a
         ForwardVolatilitySurface from a generic term volatility structure.
     */
-    class ForwardVolatilitySurface : public Patterns::Observable {
+    class ForwardVolatilitySurface {
       public:
         virtual ~ForwardVolatilitySurface() {}
-        //! returns a copy of this surface with no observers registered
-        virtual Handle<ForwardVolatilitySurface> clone() const = 0;
         //! returns the volatility for a given date and strike
         virtual Rate vol(const Date& d, Rate strike) const = 0;
     };
@@ -70,7 +70,6 @@ namespace QuantLib {
     //! Forward volatility curve (not smiled)
     class ForwardVolatilityCurve : public ForwardVolatilitySurface {
       public:
-        virtual Handle<ForwardVolatilitySurface> clone() const = 0;
         //! implementation of the ForwardVolatilitySurface interface.
         /*! This method calls vol(date) to return the volatility for a given
             date regardless of strike
@@ -87,7 +86,6 @@ namespace QuantLib {
     class ConstantForwardVolatilitySurface : public ForwardVolatilitySurface {
       public:
         ConstantForwardVolatilitySurface(Rate volatility);
-        Handle<ForwardVolatilitySurface> clone() const;
         //! returns the given volatility regardless of date and strike
         Rate vol(const Date& d, Rate strike) const;
       private:
@@ -102,15 +100,8 @@ namespace QuantLib {
       public:
         SpreadedForwardVolatilitySurface(
             const Handle<ForwardVolatilitySurface>&, Spread spread);
-        Handle<ForwardVolatilitySurface> clone() const;
         //! returns the volatility of the original surface plus the given spread
         Rate vol(const Date& d, Rate strike) const;
-        //! registers with the original surface as well
-        void registerObserver(Patterns::Observer*);
-        //! unregisters with the original surface as well
-        void unregisterObserver(Patterns::Observer*);
-        //! unregisters with the original surface as well
-        void unregisterAll();
       private:
         Handle<ForwardVolatilitySurface> theOriginalCurve;
         Spread theSpread;
@@ -131,12 +122,6 @@ namespace QuantLib {
         Rate volatility)
     : volatility_(volatility) {}
 
-    inline Handle<ForwardVolatilitySurface>
-    ConstantForwardVolatilitySurface::clone() const {
-        return Handle<ForwardVolatilitySurface>(
-            new ConstantForwardVolatilitySurface(volatility_));
-    }
-
     inline Rate ConstantForwardVolatilitySurface::vol(const Date& d,
         Rate strike) const {
         return volatility_;
@@ -148,35 +133,9 @@ namespace QuantLib {
         const Handle<ForwardVolatilitySurface>& h, Spread spread)
     : theOriginalCurve(h), theSpread(spread) {}
 
-    inline Handle<ForwardVolatilitySurface>
-    SpreadedForwardVolatilitySurface::clone() const {
-        return Handle<ForwardVolatilitySurface>(
-            new SpreadedForwardVolatilitySurface(
-                theOriginalCurve->clone(),theSpread));
-    }
-
     inline Rate SpreadedForwardVolatilitySurface::vol(const Date& d,
         Rate strike) const {
         return theOriginalCurve->vol(d,strike)+theSpread;
-    }
-
-    inline void SpreadedForwardVolatilitySurface::registerObserver(
-        Patterns::Observer* o) {
-        ForwardVolatilitySurface::registerObserver(o);
-        theOriginalCurve->registerObserver(o);
-    }
-
-    inline void SpreadedForwardVolatilitySurface::unregisterObserver(
-        Patterns::Observer* o) {
-        ForwardVolatilitySurface::unregisterObserver(o);
-        theOriginalCurve->unregisterObserver(o);
-    }
-
-    inline void SpreadedForwardVolatilitySurface::unregisterAll() {
-        for (std::set<Patterns::Observer*>::iterator i = observers().begin();
-            i!=observers().end(); ++i)
-                theOriginalCurve->unregisterObserver(*i);
-        ForwardVolatilitySurface::unregisterAll();
     }
 
 }
