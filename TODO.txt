@@ -1,0 +1,15 @@
+borland compiler build tree indipendent from source tree
+gnu compiler (make) build tree indipendent from source tree
+reduce compiler warnings as much as possible
+check compile success/failure on cygwin
+check compile success/failure on (SourceForge compile farm)
+check compile success/failure on other platforms/compilers
+QuantLib dynamic Win32 library (QuantLib.dll)
+write examples of QuantLib use
+develop C++ unit test suite (similar to the QuantLib-Python test suite)
+clean up accuracy definition in solver1D (x or f(x) accuracy ?)
+implement currency as per OMG definition
+implement round as per OMG enumeration/definition
+automated changelog update for each cvs commit
+improve documentation (using DoxyGen comments)
+undersatnd why updateproject.sh does not work under cygwin

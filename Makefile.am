@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.32  2001/07/18 17:30:55  nando
+# to do list
+#
 # Revision 1.31  2001/06/25 11:22:11  enri
 # dist target fixed
 #
@@ -32,6 +35,7 @@ EXTRA_DIST=Authors.txt \
 	Readme.txt \
 	README-win.txt \
 	README-mac.txt \
+	TODO.txt \
 	updateproject.sh
 
 dist-hook:
