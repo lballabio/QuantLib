@@ -19,11 +19,10 @@
     \brief piecewise flat forward term structure
 */
 
-#ifndef quantlib_piecewise_flat_forward_curve_h
-#define quantlib_piecewise_flat_forward_curve_h
+#ifndef quantlib_piecewise_flat_forward_curve_hpp
+#define quantlib_piecewise_flat_forward_curve_hpp
 
 #include <ql/TermStructures/ratehelpers.hpp>
-#include <ql/solver1d.hpp>
 
 namespace QuantLib {
 
@@ -85,26 +84,9 @@ namespace QuantLib {
         Rate forwardImpl(Time) const;
 	    Rate compoundForwardImpl(Time t, int compFreq) const;
       private:
-        // inner classes
-        // objective function for solver
+        // helper class for bootstrapping
         class FFObjFunction;
         friend class FFObjFunction;
-        class FFObjFunction {
-          public:
-            FFObjFunction(const PiecewiseFlatForward*,
-                          const boost::shared_ptr<RateHelper>&, Size segment);
-            double operator()(double discountGuess) const;
-          private:
-            const PiecewiseFlatForward* curve_;
-            boost::shared_ptr<RateHelper> rateHelper_;
-            Size segment_;
-        };
-        // instrument sorter
-        class RateHelperSorter {
-          public:
-            bool operator()(const boost::shared_ptr<RateHelper>&,
-                            const boost::shared_ptr<RateHelper>&) const;
-        };
         // methods
         Size referenceNode(Time t) const;
         void performCalculations() const;

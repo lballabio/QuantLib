@@ -20,6 +20,30 @@
 
 namespace QuantLib {
 
+    namespace {
+
+        class RateHelperSorter {
+          public:
+            bool operator()(const boost::shared_ptr<RateHelper>& h1,
+                            const boost::shared_ptr<RateHelper>& h2) const {
+                return (h1->maturity() < h2->maturity());
+            }
+        };
+
+    }
+
+    // objective function for solver
+    class PiecewiseFlatForward::FFObjFunction {
+      public:
+        FFObjFunction(const PiecewiseFlatForward*,
+                      const boost::shared_ptr<RateHelper>&, Size segment);
+        double operator()(double discountGuess) const;
+      private:
+        const PiecewiseFlatForward* curve_;
+        boost::shared_ptr<RateHelper> rateHelper_;
+        Size segment_;
+    };
+
     PiecewiseFlatForward::PiecewiseFlatForward(
                const Date& todaysDate,
                const Date& referenceDate,
@@ -211,12 +235,6 @@ namespace QuantLib {
                 curve_->forwards_[1];
         }
         return rateHelper_->quoteError();
-    }
-
-    bool PiecewiseFlatForward::RateHelperSorter::operator()(
-                              const boost::shared_ptr<RateHelper>& h1, 
-                              const boost::shared_ptr<RateHelper>& h2) const {
-        return (h1->maturity() < h2->maturity());
     }
 
 }
