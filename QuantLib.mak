@@ -717,10 +717,10 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
-OUTDIR=.\QuantLib___Win32_OnTheEdgeRelease0
-INTDIR=.\QuantLib___Win32_OnTheEdgeRelease0
+OUTDIR=.\OnTheEdgeRelease
+INTDIR=.\OnTheEdgeRelease
 # Begin Custom Macros
-OutDir=.\QuantLib___Win32_OnTheEdgeRelease0
+OutDir=.\OnTheEdgeRelease
 # End Custom Macros
 
 ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
@@ -1059,10 +1059,10 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
 
-OUTDIR=.\QuantLib___Win32_OnTheEdgeDebug0
-INTDIR=.\QuantLib___Win32_OnTheEdgeDebug0
+OUTDIR=.\OnTheEdgeDebug
+INTDIR=.\OnTheEdgeDebug
 # Begin Custom Macros
-OutDir=.\QuantLib___Win32_OnTheEdgeDebug0
+OutDir=.\OnTheEdgeDebug
 # End Custom Macros
 
 ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
