@@ -33,7 +33,7 @@ namespace QuantLib {
 
     namespace Math {
 
-        //! bilinear interpolation between discrete points
+        //! bicubic spline interpolation between discrete points
         template <class RandomAccessIteratorX, 
                   class RandomAccessIteratorY,
                   class MatricialData>
