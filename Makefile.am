@@ -7,22 +7,21 @@ SUBDIRS=ql Docs Examples
 CFLAGS=-Wall
 
 EXTRA_DIST = \
-    Authors.txt \
-    ChangeLog.txt \
+	Authors.txt \
+	ChangeLog.txt \
 	Contributors.txt \
 	History.txt \
 	INSTALL.txt \
 	LICENSE.TXT \
-	makefile.mak \
 	News.txt \
-	QuantLib.dep \
 	QuantLib.dsp \
 	QuantLib.dsw \
 	QuantLib.mak \
 	QuantLib.nsi \
 	Readme.txt \
 	TODO.txt \
-        bootstrap
+	bootstrap \
+	makefile.mak
 
 dist-hook:
 	mkdir $(distdir)/lib

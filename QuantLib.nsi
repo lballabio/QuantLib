@@ -149,7 +149,6 @@ SectionIn 1
   File "README.txt"
   File ChangeLog.txt
   File makefile.mak
-  File QuantLib.dep
   File QuantLib.dsp
   File QuantLib.dsw
   File QuantLib.mak
@@ -219,14 +218,12 @@ SectionIn 1 2
 
     SetOutPath $INSTDIR\Examples\DiscreteHedging
     File /r "Examples\DiscreteHedging\*.cpp"
-    File /r "Examples\DiscreteHedging\*.dep"
     File /r "Examples\DiscreteHedging\*.dsp"
     File /r "Examples\DiscreteHedging\*.txt"
     File /r "Examples\DiscreteHedging\*.mak"
 
     SetOutPath $INSTDIR\Examples\Parities
     File /r "Examples\Parities\*.cpp"
-    File /r "Examples\Parities\*.dep"
     File /r "Examples\Parities\*.dsp"
     File /r "Examples\Parities\*.txt"
     File /r "Examples\Parities\*.mak"
