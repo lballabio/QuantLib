@@ -23,6 +23,7 @@
 #define quantlib_continous_geometric_average_price_option_h
 
 #include <ql/Pricers/europeanoption.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
 
@@ -33,7 +34,7 @@ namespace QuantLib {
 
         \todo add Average Strike version and make it backward starting
     */
-    class ContinuousGeometricAPO : public EuropeanOption    {
+    class ContinuousGeometricAPO {
       public:
         ContinuousGeometricAPO(Option::Type type,
                                double underlying,
@@ -42,9 +43,19 @@ namespace QuantLib {
                                Rate riskFreeRate,
                                Time residualTime,
                                double volatility);
-        double vega() const;
-        double rho() const;
-        boost::shared_ptr<SingleAssetOption> clone() const;
+        double value() const { return value_; }
+        double delta() const { return delta_; }
+        double gamma() const { return gamma_; }
+        double theta() const { return theta_; }
+        double vega() const { return vega_; }
+        double rho() const { return rho_; }
+        double dividendRho() const { return dividendRho_; }
+      private:
+        double value_;
+        double delta_, gamma_;
+        double theta_;
+        double vega_;
+        double rho_, dividendRho_;
     };
 
 
@@ -53,25 +64,28 @@ namespace QuantLib {
     inline ContinuousGeometricAPO::ContinuousGeometricAPO(
                           Option::Type type, double underlying, double strike,
                           Spread dividendYield, Rate riskFreeRate, 
-                          Time residualTime, double volatility)
-    : EuropeanOption(type, underlying, strike,
-                     (riskFreeRate + dividendYield + 
-                      volatility*volatility/6.0)/2.0,
-                     riskFreeRate, residualTime, volatility/QL_SQRT(3.0)) {}
+                          Time residualTime, double volatility) {
 
-    inline double ContinuousGeometricAPO::rho() const{
-        return EuropeanOption::rho()/2.0;
-    }
+        double r = riskFreeRate;
+        double q = (riskFreeRate + dividendYield + 
+                    volatility*volatility/6.0)/2.0;
+        double sigma = volatility/QL_SQRT(3.0);
 
-    inline double ContinuousGeometricAPO::vega() const{
-        return EuropeanOption::vega()/QL_SQRT(3.0)
-            -EuropeanOption::rho()*volatility_*volatility_/4;
-    }
+        double discount = QL_EXP(-r*residualTime);
+        double qDiscount = QL_EXP(-q*residualTime);
+        double forward = underlying*qDiscount/discount;
+        double variance = sigma*sigma*residualTime;
+        Handle<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type,strike));
+        BlackFormula black(forward, discount, variance, payoff);
 
-    inline boost::shared_ptr<SingleAssetOption> 
-    ContinuousGeometricAPO::clone() const {
-        return boost::shared_ptr<SingleAssetOption>(
-                                           new ContinuousGeometricAPO(*this));
+        value_ = black.value();
+        delta_ = black.delta(underlying);
+        gamma_ = black.gamma(underlying);
+        theta_ = black.theta(underlying, residualTime);
+        vega_ = black.vega(residualTime)/QL_SQRT(3.0) - 
+                black.rho(residualTime)*sigma*sigma/4.0;
+        rho_ = black.rho(residualTime)/2.0;
+        dividendRho_ = black.dividendRho(residualTime);
     }
 
 }
