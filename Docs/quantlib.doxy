@@ -2,6 +2,9 @@
 #
 # $Source$
 # $Log$
+# Revision 1.5  2001/04/10 14:51:51  lballabio
+# Added Microsoft Help format to Doxygen output
+#
 # Revision 1.4  2001/04/10 14:35:44  lballabio
 # Fixed include paths
 #
@@ -99,7 +102,7 @@ HTML_HEADER            =
 HTML_FOOTER            = footer.html
 HTML_STYLESHEET        =
 HTML_ALIGN_MEMBERS     = YES
-GENERATE_HTMLHELP      = NO
+GENERATE_HTMLHELP      = YES
 GENERATE_CHI           = NO
 BINARY_TOC             = NO
 TOC_EXPAND             = NO

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.5  2001/04/10 14:51:51  lballabio
+    Added Microsoft Help format to Doxygen output
+
     Revision 1.4  2001/04/06 18:46:19  nando
     changed Authors, Contributors, Licence and copyright header
 
@@ -48,7 +51,7 @@
 
     // or the minimum, this time the STL way:
 
-    double lessthan(const History::Entry& i, const History::Entry& j) {
+    bool lessthan(const History::Entry& i, const History::Entry& j) {
         return i.value() < j.value();
     }
 
