@@ -28,6 +28,7 @@ class LDSTest : public CppUnit::TestFixture {
   public:
     void testPolynomialsModuloTwo();
     void testSobol();
+    void testHalton();
     static CppUnit::Test* suite();
 };
 

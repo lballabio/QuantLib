@@ -264,8 +264,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
 	-@erase "$(INTDIR)\primenumbers.sbr"
-	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
-	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
+	-@erase "$(INTDIR)\primitivepolynomials.obj"
+	-@erase "$(INTDIR)\primitivepolynomials.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -514,7 +514,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
+	"$(INTDIR)\primitivepolynomials.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -677,7 +677,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
+	"$(INTDIR)\primitivepolynomials.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -918,8 +918,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
 	-@erase "$(INTDIR)\primenumbers.sbr"
-	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
-	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
+	-@erase "$(INTDIR)\primitivepolynomials.obj"
+	-@erase "$(INTDIR)\primitivepolynomials.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -1169,7 +1169,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
+	"$(INTDIR)\primitivepolynomials.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1332,7 +1332,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
+	"$(INTDIR)\primitivepolynomials.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1573,8 +1573,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
 	-@erase "$(INTDIR)\primenumbers.sbr"
-	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
-	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
+	-@erase "$(INTDIR)\primitivepolynomials.obj"
+	-@erase "$(INTDIR)\primitivepolynomials.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -1823,7 +1823,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
+	"$(INTDIR)\primitivepolynomials.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1986,7 +1986,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
+	"$(INTDIR)\primitivepolynomials.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2227,8 +2227,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
 	-@erase "$(INTDIR)\primenumbers.sbr"
-	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
-	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
+	-@erase "$(INTDIR)\primitivepolynomials.obj"
+	-@erase "$(INTDIR)\primitivepolynomials.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -2478,7 +2478,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
+	"$(INTDIR)\primitivepolynomials.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2641,7 +2641,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
+	"$(INTDIR)\primitivepolynomials.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3387,9 +3387,9 @@ SOURCE=.\ql\RandomNumbers\mt19937uniformrng.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\RandomNumbers\PrimitivePolynomialsModuloTwoUpToDegree27.c
+SOURCE=.\ql\RandomNumbers\primitivepolynomials.c
 
-"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\primitivepolynomials.obj"	"$(INTDIR)\primitivepolynomials.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

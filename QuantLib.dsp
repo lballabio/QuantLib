@@ -1423,11 +1423,11 @@ SOURCE=.\ql\RandomNumbers\mt19937uniformrng.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\PrimitivePolynomialsModuloTwoUpToDegree27.c
+SOURCE=.\ql\RandomNumbers\primitivepolynomials.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\PrimitivePolynomialsModuloTwoUpToDegree27.h
+SOURCE=.\ql\RandomNumbers\primitivepolynomials.h
 # End Source File
 # Begin Source File
 

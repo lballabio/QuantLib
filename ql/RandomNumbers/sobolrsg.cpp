@@ -248,9 +248,9 @@ namespace QuantLib {
             // increment the counter (and avoid the zero-th draw)
             sequenceCounter_++;
             // did we overflow?
-            QL_REQUIRE(sequenceCounter_ != 0,
-                       "SobolRsg::nextSequence() : "
-                       "period exceeded");
+//            QL_REQUIRE(sequenceCounter_ != 0,
+//                       "SobolRsg::nextSequence() : "
+//                       "period exceeded");
 
             // instead of using the counter n as new unique generating integer
             // for the n-th draw use the Gray code G(n) as proposed
