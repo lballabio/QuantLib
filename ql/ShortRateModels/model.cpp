@@ -25,11 +25,13 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
+        using namespace Optimization;
+
         Model::Model(Size nArguments) 
         : arguments_(nArguments),
           constraint_(new PrivateConstraint(arguments_)) {}
 
-        class Model::CalibrationFunction : public Optimization::CostFunction {
+        class Model::CalibrationFunction : public CostFunction {
           public:
             CalibrationFunction( 
               Model* model,
@@ -56,13 +58,20 @@ namespace QuantLib {
 
         void Model::calibrate(
             const std::vector<Handle<CalibrationHelper> >& instruments,
-            Optimization::Method& method) {
+            Method& method, 
+            const Constraint& additionalConstraint) {
+
+            Constraint c;
+            if (additionalConstraint.isNull())
+                c = *constraint_;
+            else
+                c = CompositeConstraint(*constraint_,additionalConstraint);
 
             CalibrationFunction f(this, instruments);
 
             method.setInitialValue(params());
             method.endCriteria().setPositiveOptimization();
-            Optimization::Problem prob(f, *constraint_, method);
+            Problem prob(f, c, method);
             prob.minimize();
 
             Array result(prob.minimumValue());

@@ -82,9 +82,14 @@ namespace QuantLib {
                 const TimeGrid& grid) const = 0;
 
             //! Calibrate to a set of market instruments (caps/swaptions)
+            /*! An additional constraint can be passed which must be 
+                satisfied in addition to the constraints of the model.
+            */
             void calibrate(
                 const std::vector<Handle<CalibrationHelper> >& instruments,
-                Optimization::Method& method);
+                Optimization::Method& method,
+                const Optimization::Constraint& constraint = 
+                                                 Optimization::Constraint());
 
             const Handle<Optimization::Constraint>& constraint() const;
 
