@@ -31,11 +31,11 @@ examples::
 
 # Check
 check::
-    cd BermudanSwaption
+    cd EuropeanOption
+    $(MAKE) check
+    cd ..\BermudanSwaption
     $(MAKE) check
     cd ..\DiscreteHedging
-    $(MAKE) check
-    cd ..\EuropeanOption
     $(MAKE) check
     cd ..\Swap
     $(MAKE) check

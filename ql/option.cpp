@@ -31,8 +31,8 @@ namespace QuantLib {
     Option::Option(const Handle<PricingEngine>& engine,
         const std::string& isinCode, const std::string& description)
     : Instrument(isinCode, description), engine_(engine) {
-        QL_REQUIRE(!engine_.isNull(), 
-                   "Option::Option : null pricing engine not allowed");
+//        QL_REQUIRE(!engine_.isNull(), 
+//                   "Option::Option : null pricing engine not allowed");
     }
 
     Option::~Option() {}

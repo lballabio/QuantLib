@@ -53,15 +53,6 @@ namespace QuantLib {
         //! Black volatility for an option of fixed strike K and maturity time
         virtual double blackVol(Time maturity, double strike, bool extrapolate = false) const = 0;
         //@}
-
-        //! \name Local volatility of the underlying stochastic process
-        //@{
-        //! Local volatility at a given time for an option of fixed strike K
-        virtual double localVol(const Date& evaluationDate, double strike, bool extrapolate = false) const = 0;
-        //! Black volatility for an option of fixed strike K and maturity time
-        virtual double localVol(Time evaluationTime, double strike, bool extrapolate = false) const = 0;
-        //@}
-
         //! \name Dates
         //@{
         //! returns the reference date for which t=0

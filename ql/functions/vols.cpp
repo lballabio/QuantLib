@@ -38,7 +38,7 @@ namespace QuantLib {
     namespace Functions {
 
 		double blackVol(const Date& refDate,
-                        const std::vector<double>& dates,
+                        const std::vector<Date>& dates,
                         const std::vector<double>& strikes,
                         const QuantLib::Math::Matrix& blackVolSurface,
                         const DayCounter& dc,

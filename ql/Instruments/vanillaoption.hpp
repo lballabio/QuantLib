@@ -46,7 +46,7 @@ namespace QuantLib {
                         const RelinkableHandle<TermStructure>& riskFreeRate,
                         const Date& exerciseDate,
                         const RelinkableHandle<MarketElement>& volatility,
-                        const Handle<PricingEngines::VanillaEngine>& engine,
+                        const Handle<PricingEngine>& engine,
                         const std::string& isinCode = "",
                         const std::string& description = "");
             //! \name greeks

@@ -64,21 +64,24 @@ namespace QuantLib {
         double QuantoVanillaOption::qvega() const {
             calculate();
             QL_REQUIRE(qvega_ != Null<double>(),
-                       "vega calculation failed");
+               "QuantoVanillaOption::qvega() : "
+               "exchange rate vega calculation failed");
             return qvega_;
         }
 
         double QuantoVanillaOption::qrho() const {
             calculate();
             QL_REQUIRE(qrho_ != Null<double>(),
-                       "quanto rho calculation failed");
+               "QuantoVanillaOption::qrho() : "
+               "foreign interest rate rho calculation failed");
             return qrho_;
         }
 
         double QuantoVanillaOption::qlambda() const {
             calculate();
             QL_REQUIRE(qlambda_ != Null<double>(),
-                       "quanto correlation sensitivity calculation failed");
+               "QuantoVanillaOption::qlambda() : "
+               "quanto correlation sensitivity calculation failed");
             return qlambda_;
         }
 
@@ -89,7 +92,8 @@ namespace QuantLib {
                 <QuantoOptionParameters<VanillaOptionParameters>*>(
                     engine_->parameters());
             QL_REQUIRE(parameters != 0,
-                       "pricing engine does not supply needed parameters");
+               "QuantoVanillaOption::setupEngine() : "
+               "pricing engine does not supply needed parameters");
 
             if (foreignRiskFreeRate_.isNull())
                 parameters->foreignRiskFreeRate = 0.0;
@@ -98,11 +102,13 @@ namespace QuantLib {
                 foreignRiskFreeRate_->zeroYield(exerciseDate_);
 
             QL_REQUIRE(!exchangeRateVolatility_.isNull(),
+                "QuantoVanillaOption::setupEngine() : "
                 "null exchange rate volatility given");
             parameters->exchangeRateVolatility =
                 exchangeRateVolatility_->value();
 
             QL_REQUIRE(!correlation_.isNull(),
+                "QuantoVanillaOption::setupEngine() : "
                 "null correlation given");
             parameters->correlation =
                 correlation_->value();
@@ -123,7 +129,8 @@ namespace QuantLib {
                     dynamic_cast<const VanillaOptionResults*>(
                         engine_->results());
                 QL_ENSURE(vanillaResults != 0,
-                          "no vanilla results returned from pricing engine");
+                    "QuantoVanillaOption::performCalculations() : "
+                    "no vanilla results returned from pricing engine");
                 delta_       = vanillaResults->delta;
                 gamma_       = vanillaResults->gamma;
                 theta_       = vanillaResults->theta;
@@ -137,14 +144,16 @@ namespace QuantLib {
                     <const QuantoOptionResults<VanillaOptionResults>*>(
                         engine_->results());
                 QL_ENSURE(quantoResults != 0,
-                          "no quanto results returned from pricing engine");
+                    "QuantoVanillaOption::performCalculations() : "
+                    "no quanto results returned from pricing engine");
                 qrho_        = quantoResults->qrho;
                 qvega_       = quantoResults->qvega;
                 qlambda_     = quantoResults->qlambda;
 
             }
             QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
-                      "null value returned from option pricer");
+                "QuantoVanillaOption::performCalculations() : "
+                "null value returned from option pricer");
         }
 
     }

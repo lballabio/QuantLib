@@ -67,7 +67,9 @@ namespace QuantLib {
                 NID1  = 2.0*f.derivative(D1);
                 break;
               default:
-                throw IllegalArgumentError("invalid option type");
+                throw IllegalArgumentError(
+                    "EuropeanAnalyticalEngine::calculate() : "
+                    "invalid option type");
             }
 
             results_.value =
