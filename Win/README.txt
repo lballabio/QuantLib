@@ -24,7 +24,7 @@ As Borland user you can use make directive to produce documentation.
 
 Visual C++ 6.0 projects files are supplied.
 
-QuantLib.dsp is the project included in the workspace QuantLi.dsw.
+QuantLib.dsp is the project included in the workspace QuantLib.dsw.
 Unfortunately the compiled LIB do not work corectly due to, probably, a bug in the compiler.
 In particular, broken object code is generated for the BSMAmericanPricer class.
 Please let us know whether it works on your configuration, or if you 
