@@ -32,6 +32,7 @@
 #define QL_COS    cos
 #define QL_POW    pow
 #define QL_MODF   modf
+#define QL_FLOOR  floor
 
 #define HAVE_LIMITS
 

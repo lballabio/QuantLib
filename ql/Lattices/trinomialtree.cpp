@@ -24,8 +24,6 @@
 
 #include "ql/Lattices/trinomialtree.hpp"
 
-#include <cmath>
-
 namespace QuantLib {
 
     namespace Lattices {

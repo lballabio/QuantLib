@@ -32,6 +32,7 @@
 #define QL_COS    std::cos
 #define QL_POW    std::pow
 #define QL_MODF   std::modf
+#define QL_FLOOR  std::floor
 
 #define HAVE_LIMITS
 
