@@ -205,7 +205,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -219,6 +219,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\actualactualeuro.sbr" \
+	"$(INTDIR)\actualactualhistorical.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\thirty360italian.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -284,9 +286,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\actualactualhistorical.sbr" \
-	"$(INTDIR)\actualactualeuro.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -306,6 +306,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\actualactualeuro.obj" \
+	"$(INTDIR)\actualactualhistorical.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\thirty360italian.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -371,9 +373,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\actualactualhistorical.obj" \
-	"$(INTDIR)\actualactualeuro.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -556,7 +556,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -570,6 +570,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\actualactualeuro.sbr" \
+	"$(INTDIR)\actualactualhistorical.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\thirty360italian.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -635,9 +637,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\actualactualhistorical.sbr" \
-	"$(INTDIR)\actualactualeuro.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -657,6 +657,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\actualactualeuro.obj" \
+	"$(INTDIR)\actualactualhistorical.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\thirty360italian.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -722,9 +724,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\actualactualhistorical.obj" \
-	"$(INTDIR)\actualactualeuro.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -906,7 +906,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -920,6 +920,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\actualactualeuro.sbr" \
+	"$(INTDIR)\actualactualhistorical.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\thirty360italian.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -985,9 +987,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\actualactualhistorical.sbr" \
-	"$(INTDIR)\actualactualeuro.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1007,6 +1007,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\actualactualeuro.obj" \
+	"$(INTDIR)\actualactualhistorical.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\thirty360italian.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -1072,9 +1074,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\actualactualhistorical.obj" \
-	"$(INTDIR)\actualactualeuro.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1257,7 +1257,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1271,6 +1271,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\actualactualeuro.sbr" \
+	"$(INTDIR)\actualactualhistorical.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\thirty360italian.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -1336,9 +1338,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\actualactualhistorical.sbr" \
-	"$(INTDIR)\actualactualeuro.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1358,6 +1358,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\actualactualeuro.obj" \
+	"$(INTDIR)\actualactualhistorical.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\thirty360italian.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -1423,9 +1425,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\actualactualhistorical.obj" \
-	"$(INTDIR)\actualactualeuro.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<

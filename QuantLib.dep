@@ -129,6 +129,30 @@
 	".\Include\ql\types.hpp"\
 	
 
+.\Sources\DayCounters\actualactualeuro.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\DayCounters\actualactualeuro.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\DayCounters\actualactualhistorical.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\DayCounters\actualactualhistorical.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
 .\Sources\DayCounters\thirty360.cpp : \
 	".\Include\ql\config.msvc.hpp"\
 	".\Include\ql\date.hpp"\
