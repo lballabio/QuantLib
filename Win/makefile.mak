@@ -45,8 +45,8 @@ DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj \
 MATH_OBJS        = $(OUTPUT_DIR)\matrix.obj      \
                    $(OUTPUT_DIR)\symmetricschurdecomposition.obj    \
                    $(OUTPUT_DIR)\multivariateaccumulator.obj\
-                   $(OUTPUT_DIR)\normaldistribution.obj \                   
-                   $(OUTPUT_DIR)\statistics.obj 
+                   $(OUTPUT_DIR)\normaldistribution.obj \
+                   $(OUTPUT_DIR)\statistics.obj
 
 MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
                    $(OUTPUT_DIR)\averageasianpathpricer.obj \
@@ -104,7 +104,8 @@ MAKEINDEX = makeindex
 DVIPS     = dvips
 
 # Options
-CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) -w-8026 -w-8027 -w-8012 \
+CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) \
+    -w-8026 -w-8027 -w-8012 \
     -I$(INCLUDE_DIR) \
     -I$(INCLUDE_DIR)\Calendars \
     -I$(INCLUDE_DIR)\Currencies \
@@ -171,7 +172,7 @@ $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
     echo Compiling wrappers...
     $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT \
     $(PYTHON_DIR)\quantlib_wrap.cpp
-    
+
 $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\QuantLib.i \
     $(SWIG_DIR)\BoundaryConditions.i \
