@@ -20,6 +20,9 @@ Drezner, Z (1994) Computation of the Trivariate Normal Integral, Mathematics of 
 
 Genz, A. (1992) `Numerical Computation of the Multivariate Normal Probabilities', J. Comput. Graph. Stat. 1, pp. 141-150.
 
+Edgeworth expansion
+http://www.wilmott.com/messageview.cfm?catid=8&threadid=608&FTVAR_MSGDBTABLE=
+
 investigate quanto-forward bug
 add tests for quanto and forward (Haug cases)
 
