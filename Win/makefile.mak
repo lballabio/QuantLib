@@ -73,6 +73,7 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
                    $(OUTPUT_DIR)\dividendeuropeanoption.obj \
                    $(OUTPUT_DIR)\everestoption.obj \
+                   $(OUTPUT_DIR)\finitedifferenceeuropean.obj\
                    $(OUTPUT_DIR)\himalaya.obj \
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
                    $(OUTPUT_DIR)\plainbasketoption.obj \
@@ -319,6 +320,8 @@ $(OUTPUT_DIR)\dividendeuropeanoption.obj: \
                 $(SOURCES_DIR)\Pricers\dividendeuropeanoption.cpp
 $(OUTPUT_DIR)\everestoption.obj: \
                 $(SOURCES_DIR)\Pricers\everestoption.cpp
+$(OUTPUT_DIR)\finitedifferenceeuropean.obj: \
+                $(SOURCES_DIR)\Pricers\finitedifferenceeuropean.cpp
 $(OUTPUT_DIR)\himalaya.obj: \
                 $(SOURCES_DIR)\Pricers\himalaya.cpp
 $(OUTPUT_DIR)\mceuropeanpricer.obj: \
@@ -410,6 +413,7 @@ test::
     python everest_option.py -b
     python european_option.py -b
     python european_with_dividends.py -b
+    python finite_difference_european.py -b
     python himalaya_option.py -b
     python implied_volatility.py -b
     python montecarlo_pricers.py -b

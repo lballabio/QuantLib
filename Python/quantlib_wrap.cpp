@@ -527,29 +527,30 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[37] 
 #define  SWIGTYPE_p_NormalDistribution swig_types[38] 
 #define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[39] 
-#define  SWIGTYPE_p_Himalaya swig_types[40] 
-#define  SWIGTYPE_p_RiskStatistics swig_types[41] 
-#define  SWIGTYPE_p_Statistics swig_types[42] 
-#define  SWIGTYPE_p_NewtonSafe swig_types[43] 
-#define  SWIGTYPE_p_VarTool swig_types[44] 
-#define  SWIGTYPE_p_History swig_types[45] 
-#define  SWIGTYPE_p_Solver1D swig_types[46] 
-#define  SWIGTYPE_p_Array swig_types[47] 
-#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[48] 
-#define  SWIGTYPE_p_Ridder swig_types[49] 
-#define  SWIGTYPE_p_DepositRate swig_types[50] 
-#define  SWIGTYPE_p_MatrixRow swig_types[51] 
-#define  SWIGTYPE_p_ObjectiveFunction swig_types[52] 
-#define  SWIGTYPE_p_McEuropeanPricer swig_types[53] 
-#define  SWIGTYPE_p_CalendarHandle swig_types[54] 
-#define  SWIGTYPE_p_DayCounterHandle swig_types[55] 
-#define  SWIGTYPE_p_InstrumentHandle swig_types[56] 
-#define  SWIGTYPE_p_InterpolationHandle swig_types[57] 
-#define  SWIGTYPE_p_FalsePosition swig_types[58] 
-#define  SWIGTYPE_p_AverageStrikeAsian swig_types[59] 
-#define  SWIGTYPE_p_AveragePriceAsian swig_types[60] 
-#define  SWIGTYPE_p_IntVector swig_types[61] 
-static swig_type_info *swig_types[63];
+#define  SWIGTYPE_p_FiniteDifferenceEuropean swig_types[40] 
+#define  SWIGTYPE_p_Himalaya swig_types[41] 
+#define  SWIGTYPE_p_RiskStatistics swig_types[42] 
+#define  SWIGTYPE_p_Statistics swig_types[43] 
+#define  SWIGTYPE_p_NewtonSafe swig_types[44] 
+#define  SWIGTYPE_p_VarTool swig_types[45] 
+#define  SWIGTYPE_p_History swig_types[46] 
+#define  SWIGTYPE_p_Solver1D swig_types[47] 
+#define  SWIGTYPE_p_Array swig_types[48] 
+#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[49] 
+#define  SWIGTYPE_p_Ridder swig_types[50] 
+#define  SWIGTYPE_p_DepositRate swig_types[51] 
+#define  SWIGTYPE_p_MatrixRow swig_types[52] 
+#define  SWIGTYPE_p_ObjectiveFunction swig_types[53] 
+#define  SWIGTYPE_p_McEuropeanPricer swig_types[54] 
+#define  SWIGTYPE_p_CalendarHandle swig_types[55] 
+#define  SWIGTYPE_p_DayCounterHandle swig_types[56] 
+#define  SWIGTYPE_p_InstrumentHandle swig_types[57] 
+#define  SWIGTYPE_p_InterpolationHandle swig_types[58] 
+#define  SWIGTYPE_p_FalsePosition swig_types[59] 
+#define  SWIGTYPE_p_AverageStrikeAsian swig_types[60] 
+#define  SWIGTYPE_p_AveragePriceAsian swig_types[61] 
+#define  SWIGTYPE_p_IntVector swig_types[62] 
+static swig_type_info *swig_types[64];
 
 /* -------- TYPES TABLE (END) -------- */
 
@@ -941,6 +942,7 @@ using QuantLib::StringFormatter;
 /* #include "binaryoption.h" */
 
 using QuantLib::Pricers::BSMEuropeanOption;
+using QuantLib::Pricers::FiniteDifferenceEuropean;
 using QuantLib::Pricers::AmericanOption;
 using QuantLib::Pricers::ShoutOption;
 using QuantLib::Pricers::DividendAmericanOption;
@@ -14566,74 +14568,6 @@ static PyObject *_wrap_delete_BSMEuropeanOption(PyObject *self, PyObject *args, 
 }
 
 
-static PyObject *_wrap_BSMEuropeanOption_setVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    BSMEuropeanOption *arg0 ;
-    double arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","newVolatility", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:BSMEuropeanOption_setVolatility",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
-    {
-        try {
-            arg0->setVolatility(arg1);
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-static PyObject *_wrap_BSMEuropeanOption_setRiskFreeRate(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    BSMEuropeanOption *arg0 ;
-    Rate arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","newRate", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:BSMEuropeanOption_setRiskFreeRate",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BSMEuropeanOption,1)) == -1) return NULL;
-    {
-        try {
-            arg0->setRiskFreeRate(arg1);
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
 static PyObject *_wrap_BSMEuropeanOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     BSMEuropeanOption *arg0 ;
@@ -14868,6 +14802,334 @@ static PyObject *_wrap_BSMEuropeanOption_impliedVolatility(PyObject *self, PyObj
 }
 
 
+static PyObject *_wrap_new_FiniteDifferenceEuropean(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    OptionType *arg0 ;
+    double arg1 ;
+    double arg2 ;
+    Rate arg3 ;
+    Rate arg4 ;
+    Time arg5 ;
+    double arg6 ;
+    int arg7 = 200 ;
+    int arg8 = 800 ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","timeSteps","gridPoints", NULL 
+    };
+    FiniteDifferenceEuropean *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Odddddd|ii:new_FiniteDifferenceEuropean",kwnames,&obj0,&arg1,&arg2,&arg3,&arg4,&arg5,&arg6,&arg7,&arg8)) return NULL;
+    {
+        if (PyString_Check(obj0)) {
+            arg0 = new OptionType;
+            std::string s(PyString_AsString(obj0));
+            s = StringFormatter::toLowercase(s);
+            if (s == "call")				*(arg0) = Option::Call;
+            else if (s == "put")			*(arg0) = Option::Put;
+            else if (s == "straddle")		*(arg0) = Option::Straddle;
+            else {
+                PyErr_SetString(PyExc_TypeError,"unknown option type");
+                delete arg0;
+                return NULL;
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not an option type");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (FiniteDifferenceEuropean *)new FiniteDifferenceEuropean(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_FiniteDifferenceEuropean);
+    {
+        delete arg0;
+    }
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_FiniteDifferenceEuropean(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    FiniteDifferenceEuropean *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_FiniteDifferenceEuropean",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_FiniteDifferenceEuropean,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_FiniteDifferenceEuropean_value(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    FiniteDifferenceEuropean *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:FiniteDifferenceEuropean_value",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_FiniteDifferenceEuropean,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->value();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_FiniteDifferenceEuropean_delta(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    FiniteDifferenceEuropean *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:FiniteDifferenceEuropean_delta",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_FiniteDifferenceEuropean,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->delta();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_FiniteDifferenceEuropean_gamma(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    FiniteDifferenceEuropean *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:FiniteDifferenceEuropean_gamma",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_FiniteDifferenceEuropean,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->gamma();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_FiniteDifferenceEuropean_theta(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    FiniteDifferenceEuropean *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:FiniteDifferenceEuropean_theta",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_FiniteDifferenceEuropean,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->theta();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_FiniteDifferenceEuropean_vega(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    FiniteDifferenceEuropean *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:FiniteDifferenceEuropean_vega",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_FiniteDifferenceEuropean,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->vega();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_FiniteDifferenceEuropean_rho(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    FiniteDifferenceEuropean *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:FiniteDifferenceEuropean_rho",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_FiniteDifferenceEuropean,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->rho();
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_FiniteDifferenceEuropean_impliedVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    FiniteDifferenceEuropean *arg0 ;
+    double arg1 ;
+    double arg2 = 1e-4 ;
+    int arg3 = 100 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","targetValue","accuracy","maxEvaluations", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od|di:FiniteDifferenceEuropean_impliedVolatility",kwnames,&argo0,&arg1,&arg2,&arg3)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_FiniteDifferenceEuropean,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
 static PyObject *_wrap_new_BinaryOption(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     OptionType *arg0 ;
@@ -14941,74 +15203,6 @@ static PyObject *_wrap_delete_BinaryOption(PyObject *self, PyObject *args, PyObj
     {
         try {
             delete arg0;
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-static PyObject *_wrap_BinaryOption_setVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    BinaryOption *arg0 ;
-    double arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","newVolatility", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:BinaryOption_setVolatility",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BinaryOption,1)) == -1) return NULL;
-    {
-        try {
-            arg0->setVolatility(arg1);
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-static PyObject *_wrap_BinaryOption_setRiskFreeRate(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    BinaryOption *arg0 ;
-    Rate arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","newRate", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:BinaryOption_setRiskFreeRate",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BinaryOption,1)) == -1) return NULL;
-    {
-        try {
-            arg0->setRiskFreeRate(arg1);
             
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
@@ -15357,74 +15551,6 @@ static PyObject *_wrap_delete_AmericanOption(PyObject *self, PyObject *args, PyO
 }
 
 
-static PyObject *_wrap_AmericanOption_setVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    AmericanOption *arg0 ;
-    double arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","newVolatility", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:AmericanOption_setVolatility",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_AmericanOption,1)) == -1) return NULL;
-    {
-        try {
-            arg0->setVolatility(arg1);
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-static PyObject *_wrap_AmericanOption_setRiskFreeRate(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    AmericanOption *arg0 ;
-    Rate arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","newRate", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:AmericanOption_setRiskFreeRate",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_AmericanOption,1)) == -1) return NULL;
-    {
-        try {
-            arg0->setRiskFreeRate(arg1);
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
 static PyObject *_wrap_AmericanOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     AmericanOption *arg0 ;
@@ -15733,74 +15859,6 @@ static PyObject *_wrap_delete_ShoutOption(PyObject *self, PyObject *args, PyObje
     {
         try {
             delete arg0;
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-static PyObject *_wrap_ShoutOption_setVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ShoutOption *arg0 ;
-    double arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","newVolatility", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:ShoutOption_setVolatility",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ShoutOption,1)) == -1) return NULL;
-    {
-        try {
-            arg0->setVolatility(arg1);
-            
-        }catch (IndexError& e) {
-            PyErr_SetString(PyExc_IndexError,e.what());
-            return NULL;
-        }catch (Error& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-static PyObject *_wrap_ShoutOption_setRiskFreeRate(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ShoutOption *arg0 ;
-    Rate arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","newRate", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:ShoutOption_setRiskFreeRate",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ShoutOption,1)) == -1) return NULL;
-    {
-        try {
-            arg0->setRiskFreeRate(arg1);
             
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
@@ -20101,8 +20159,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "delete_DPlusDMinus", (PyCFunction) _wrap_delete_DPlusDMinus, METH_VARARGS | METH_KEYWORDS },
 	 { "new_BSMEuropeanOption", (PyCFunction) _wrap_new_BSMEuropeanOption, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_BSMEuropeanOption", (PyCFunction) _wrap_delete_BSMEuropeanOption, METH_VARARGS | METH_KEYWORDS },
-	 { "BSMEuropeanOption_setVolatility", (PyCFunction) _wrap_BSMEuropeanOption_setVolatility, METH_VARARGS | METH_KEYWORDS },
-	 { "BSMEuropeanOption_setRiskFreeRate", (PyCFunction) _wrap_BSMEuropeanOption_setRiskFreeRate, METH_VARARGS | METH_KEYWORDS },
 	 { "BSMEuropeanOption_value", (PyCFunction) _wrap_BSMEuropeanOption_value, METH_VARARGS | METH_KEYWORDS },
 	 { "BSMEuropeanOption_delta", (PyCFunction) _wrap_BSMEuropeanOption_delta, METH_VARARGS | METH_KEYWORDS },
 	 { "BSMEuropeanOption_gamma", (PyCFunction) _wrap_BSMEuropeanOption_gamma, METH_VARARGS | METH_KEYWORDS },
@@ -20110,10 +20166,17 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "BSMEuropeanOption_vega", (PyCFunction) _wrap_BSMEuropeanOption_vega, METH_VARARGS | METH_KEYWORDS },
 	 { "BSMEuropeanOption_rho", (PyCFunction) _wrap_BSMEuropeanOption_rho, METH_VARARGS | METH_KEYWORDS },
 	 { "BSMEuropeanOption_impliedVolatility", (PyCFunction) _wrap_BSMEuropeanOption_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
+	 { "new_FiniteDifferenceEuropean", (PyCFunction) _wrap_new_FiniteDifferenceEuropean, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_FiniteDifferenceEuropean", (PyCFunction) _wrap_delete_FiniteDifferenceEuropean, METH_VARARGS | METH_KEYWORDS },
+	 { "FiniteDifferenceEuropean_value", (PyCFunction) _wrap_FiniteDifferenceEuropean_value, METH_VARARGS | METH_KEYWORDS },
+	 { "FiniteDifferenceEuropean_delta", (PyCFunction) _wrap_FiniteDifferenceEuropean_delta, METH_VARARGS | METH_KEYWORDS },
+	 { "FiniteDifferenceEuropean_gamma", (PyCFunction) _wrap_FiniteDifferenceEuropean_gamma, METH_VARARGS | METH_KEYWORDS },
+	 { "FiniteDifferenceEuropean_theta", (PyCFunction) _wrap_FiniteDifferenceEuropean_theta, METH_VARARGS | METH_KEYWORDS },
+	 { "FiniteDifferenceEuropean_vega", (PyCFunction) _wrap_FiniteDifferenceEuropean_vega, METH_VARARGS | METH_KEYWORDS },
+	 { "FiniteDifferenceEuropean_rho", (PyCFunction) _wrap_FiniteDifferenceEuropean_rho, METH_VARARGS | METH_KEYWORDS },
+	 { "FiniteDifferenceEuropean_impliedVolatility", (PyCFunction) _wrap_FiniteDifferenceEuropean_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
 	 { "new_BinaryOption", (PyCFunction) _wrap_new_BinaryOption, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_BinaryOption", (PyCFunction) _wrap_delete_BinaryOption, METH_VARARGS | METH_KEYWORDS },
-	 { "BinaryOption_setVolatility", (PyCFunction) _wrap_BinaryOption_setVolatility, METH_VARARGS | METH_KEYWORDS },
-	 { "BinaryOption_setRiskFreeRate", (PyCFunction) _wrap_BinaryOption_setRiskFreeRate, METH_VARARGS | METH_KEYWORDS },
 	 { "BinaryOption_value", (PyCFunction) _wrap_BinaryOption_value, METH_VARARGS | METH_KEYWORDS },
 	 { "BinaryOption_delta", (PyCFunction) _wrap_BinaryOption_delta, METH_VARARGS | METH_KEYWORDS },
 	 { "BinaryOption_gamma", (PyCFunction) _wrap_BinaryOption_gamma, METH_VARARGS | METH_KEYWORDS },
@@ -20123,8 +20186,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "BinaryOption_impliedVolatility", (PyCFunction) _wrap_BinaryOption_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
 	 { "new_AmericanOption", (PyCFunction) _wrap_new_AmericanOption, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_AmericanOption", (PyCFunction) _wrap_delete_AmericanOption, METH_VARARGS | METH_KEYWORDS },
-	 { "AmericanOption_setVolatility", (PyCFunction) _wrap_AmericanOption_setVolatility, METH_VARARGS | METH_KEYWORDS },
-	 { "AmericanOption_setRiskFreeRate", (PyCFunction) _wrap_AmericanOption_setRiskFreeRate, METH_VARARGS | METH_KEYWORDS },
 	 { "AmericanOption_value", (PyCFunction) _wrap_AmericanOption_value, METH_VARARGS | METH_KEYWORDS },
 	 { "AmericanOption_delta", (PyCFunction) _wrap_AmericanOption_delta, METH_VARARGS | METH_KEYWORDS },
 	 { "AmericanOption_gamma", (PyCFunction) _wrap_AmericanOption_gamma, METH_VARARGS | METH_KEYWORDS },
@@ -20134,8 +20195,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "AmericanOption_impliedVolatility", (PyCFunction) _wrap_AmericanOption_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
 	 { "new_ShoutOption", (PyCFunction) _wrap_new_ShoutOption, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_ShoutOption", (PyCFunction) _wrap_delete_ShoutOption, METH_VARARGS | METH_KEYWORDS },
-	 { "ShoutOption_setVolatility", (PyCFunction) _wrap_ShoutOption_setVolatility, METH_VARARGS | METH_KEYWORDS },
-	 { "ShoutOption_setRiskFreeRate", (PyCFunction) _wrap_ShoutOption_setRiskFreeRate, METH_VARARGS | METH_KEYWORDS },
 	 { "ShoutOption_value", (PyCFunction) _wrap_ShoutOption_value, METH_VARARGS | METH_KEYWORDS },
 	 { "ShoutOption_delta", (PyCFunction) _wrap_ShoutOption_delta, METH_VARARGS | METH_KEYWORDS },
 	 { "ShoutOption_gamma", (PyCFunction) _wrap_ShoutOption_gamma, METH_VARARGS | METH_KEYWORDS },
@@ -20323,6 +20382,7 @@ static swig_type_info _swigt__p_MultivariateAccumulator[] = {{"_p_MultivariateAc
 static swig_type_info _swigt__p_InvCumulativeNormalDistribution[] = {{"_p_InvCumulativeNormalDistribution", 0, "InvCumulativeNormalDistribution *"},{"_p_InvCumulativeNormalDistribution"},{0}};
 static swig_type_info _swigt__p_NormalDistribution[] = {{"_p_NormalDistribution", 0, "NormalDistribution *"},{"_p_NormalDistribution"},{0}};
 static swig_type_info _swigt__p_CumulativeNormalDistribution[] = {{"_p_CumulativeNormalDistribution", 0, "CumulativeNormalDistribution *"},{"_p_CumulativeNormalDistribution"},{0}};
+static swig_type_info _swigt__p_FiniteDifferenceEuropean[] = {{"_p_FiniteDifferenceEuropean", 0, "FiniteDifferenceEuropean *"},{"_p_FiniteDifferenceEuropean"},{0}};
 static swig_type_info _swigt__p_Himalaya[] = {{"_p_Himalaya", 0, "Himalaya *"},{"_p_Himalaya"},{0}};
 static swig_type_info _swigt__p_RiskStatistics[] = {{"_p_RiskStatistics", 0, "RiskStatistics *"},{"_p_RiskStatistics"},{0}};
 static swig_type_info _swigt__p_Statistics[] = {{"_p_Statistics", 0, "Statistics *"},{"_p_Statistics"},{0}};
@@ -20387,6 +20447,7 @@ _swigt__p_MultivariateAccumulator,
 _swigt__p_InvCumulativeNormalDistribution, 
 _swigt__p_NormalDistribution, 
 _swigt__p_CumulativeNormalDistribution, 
+_swigt__p_FiniteDifferenceEuropean, 
 _swigt__p_Himalaya, 
 _swigt__p_RiskStatistics, 
 _swigt__p_Statistics, 

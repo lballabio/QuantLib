@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.26  2001/03/07 17:18:29  marmar
+    Example of european option using finite differences
+
     Revision 1.25  2001/03/06 16:59:52  marmar
     First, simplified version, of everest option
 
@@ -213,6 +216,7 @@
 #include "dividendeuropeanoption.h"
 #include "dividendamericanoption.h"
 #include "everestoption.h"
+#include "finitedifferenceeuropean.h"
 #include "geometricasianoption.h"
 #include "himalaya.h"
 #include "mceuropeanpricer.h"

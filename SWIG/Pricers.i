@@ -48,6 +48,7 @@
 
 %{
 using QuantLib::Pricers::BSMEuropeanOption;
+using QuantLib::Pricers::FiniteDifferenceEuropean;
 using QuantLib::Pricers::AmericanOption;
 using QuantLib::Pricers::ShoutOption;
 using QuantLib::Pricers::DividendAmericanOption;
@@ -61,8 +62,22 @@ class BSMEuropeanOption {
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
 	  double volatility);
 	~BSMEuropeanOption();
-	void setVolatility(double newVolatility) ;
-	void setRiskFreeRate(Rate newRate) ;
+	double value() const;
+	double delta() const;
+	double gamma() const;
+	double theta() const;
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4, 
+	  int maxEvaluations = 100) const ;
+};
+
+class FiniteDifferenceEuropean {
+  public:
+	FiniteDifferenceEuropean(OptionType type, double underlying, double strike, 
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+	  double volatility, int timeSteps = 200, int gridPoints = 800);
+	~FiniteDifferenceEuropean();
 	double value() const;
 	double delta() const;
 	double gamma() const;
@@ -79,8 +94,6 @@ class BinaryOption {
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
 	  double volatility, double cashPayoff = 1);
 	~BinaryOption();
-	void setVolatility(double newVolatility) ;
-	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
 	double delta() const;
 	double gamma() const;
@@ -97,8 +110,6 @@ class AmericanOption {
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, int timeSteps = 100, int gridPoints = 100);
     ~AmericanOption();
-	void setVolatility(double newVolatility) ;
-	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
 	double delta() const;
 	double gamma() const;
@@ -114,8 +125,6 @@ class ShoutOption {
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, int timeSteps = 100, int gridPoints = 100);
     ~ShoutOption();
-	void setVolatility(double newVolatility) ;
-	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
 	double delta() const;
 	double gamma() const;

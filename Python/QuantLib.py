@@ -1048,8 +1048,6 @@ class BSMEuropeanOptionPtr(BSMEuropeanOption):
         self.__class__ = BSMEuropeanOption
 
 
-BSMEuropeanOption.setVolatility = new.instancemethod(QuantLibc.BSMEuropeanOption_setVolatility, None, BSMEuropeanOption)
-BSMEuropeanOption.setRiskFreeRate = new.instancemethod(QuantLibc.BSMEuropeanOption_setRiskFreeRate, None, BSMEuropeanOption)
 BSMEuropeanOption.value = new.instancemethod(QuantLibc.BSMEuropeanOption_value, None, BSMEuropeanOption)
 BSMEuropeanOption.delta = new.instancemethod(QuantLibc.BSMEuropeanOption_delta, None, BSMEuropeanOption)
 BSMEuropeanOption.gamma = new.instancemethod(QuantLibc.BSMEuropeanOption_gamma, None, BSMEuropeanOption)
@@ -1057,6 +1055,31 @@ BSMEuropeanOption.theta = new.instancemethod(QuantLibc.BSMEuropeanOption_theta, 
 BSMEuropeanOption.vega = new.instancemethod(QuantLibc.BSMEuropeanOption_vega, None, BSMEuropeanOption)
 BSMEuropeanOption.rho = new.instancemethod(QuantLibc.BSMEuropeanOption_rho, None, BSMEuropeanOption)
 BSMEuropeanOption.impliedVolatility = new.instancemethod(QuantLibc.BSMEuropeanOption_impliedVolatility, None, BSMEuropeanOption)
+
+class FiniteDifferenceEuropean:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_FiniteDifferenceEuropean,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_FiniteDifferenceEuropean(self)
+    def __repr__(self):
+        return "<C FiniteDifferenceEuropean instance at %s>" % (self.this,)
+class FiniteDifferenceEuropeanPtr(FiniteDifferenceEuropean):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = FiniteDifferenceEuropean
+
+
+FiniteDifferenceEuropean.value = new.instancemethod(QuantLibc.FiniteDifferenceEuropean_value, None, FiniteDifferenceEuropean)
+FiniteDifferenceEuropean.delta = new.instancemethod(QuantLibc.FiniteDifferenceEuropean_delta, None, FiniteDifferenceEuropean)
+FiniteDifferenceEuropean.gamma = new.instancemethod(QuantLibc.FiniteDifferenceEuropean_gamma, None, FiniteDifferenceEuropean)
+FiniteDifferenceEuropean.theta = new.instancemethod(QuantLibc.FiniteDifferenceEuropean_theta, None, FiniteDifferenceEuropean)
+FiniteDifferenceEuropean.vega = new.instancemethod(QuantLibc.FiniteDifferenceEuropean_vega, None, FiniteDifferenceEuropean)
+FiniteDifferenceEuropean.rho = new.instancemethod(QuantLibc.FiniteDifferenceEuropean_rho, None, FiniteDifferenceEuropean)
+FiniteDifferenceEuropean.impliedVolatility = new.instancemethod(QuantLibc.FiniteDifferenceEuropean_impliedVolatility, None, FiniteDifferenceEuropean)
 
 class BinaryOption:
     def __init__(self,*args,**kwargs):
@@ -1075,8 +1098,6 @@ class BinaryOptionPtr(BinaryOption):
         self.__class__ = BinaryOption
 
 
-BinaryOption.setVolatility = new.instancemethod(QuantLibc.BinaryOption_setVolatility, None, BinaryOption)
-BinaryOption.setRiskFreeRate = new.instancemethod(QuantLibc.BinaryOption_setRiskFreeRate, None, BinaryOption)
 BinaryOption.value = new.instancemethod(QuantLibc.BinaryOption_value, None, BinaryOption)
 BinaryOption.delta = new.instancemethod(QuantLibc.BinaryOption_delta, None, BinaryOption)
 BinaryOption.gamma = new.instancemethod(QuantLibc.BinaryOption_gamma, None, BinaryOption)
@@ -1102,8 +1123,6 @@ class AmericanOptionPtr(AmericanOption):
         self.__class__ = AmericanOption
 
 
-AmericanOption.setVolatility = new.instancemethod(QuantLibc.AmericanOption_setVolatility, None, AmericanOption)
-AmericanOption.setRiskFreeRate = new.instancemethod(QuantLibc.AmericanOption_setRiskFreeRate, None, AmericanOption)
 AmericanOption.value = new.instancemethod(QuantLibc.AmericanOption_value, None, AmericanOption)
 AmericanOption.delta = new.instancemethod(QuantLibc.AmericanOption_delta, None, AmericanOption)
 AmericanOption.gamma = new.instancemethod(QuantLibc.AmericanOption_gamma, None, AmericanOption)
@@ -1129,8 +1148,6 @@ class ShoutOptionPtr(ShoutOption):
         self.__class__ = ShoutOption
 
 
-ShoutOption.setVolatility = new.instancemethod(QuantLibc.ShoutOption_setVolatility, None, ShoutOption)
-ShoutOption.setRiskFreeRate = new.instancemethod(QuantLibc.ShoutOption_setRiskFreeRate, None, ShoutOption)
 ShoutOption.value = new.instancemethod(QuantLibc.ShoutOption_value, None, ShoutOption)
 ShoutOption.delta = new.instancemethod(QuantLibc.ShoutOption_delta, None, ShoutOption)
 ShoutOption.gamma = new.instancemethod(QuantLibc.ShoutOption_gamma, None, ShoutOption)
