@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/07/13 15:25:13  marmar
+// MonteCarlo interface changed
+//
 // Revision 1.12  2001/06/22 13:19:21  nando
 // 80 colums limit enforced
 //
@@ -92,8 +95,9 @@ namespace QuantLib {
                     controlVariateSpPricer, controlVariatePrice));
 
             //! Initialize the one-dimensional Monte Carlo
-            montecarloPricer_ = OneFactorMonteCarloOption(pathGenerator,
-                                     controlVariatedPricer);
+            montecarloPricer_ = OneFactorMonteCarloOption(
+                pathGenerator, controlVariatedPricer,
+                Math::Statistics());
         }
 
     }

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/07/13 15:25:13  marmar
+// MonteCarlo interface changed
+//
 // Revision 1.13  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -66,8 +69,9 @@ namespace QuantLib {
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime)));
 
             //! Initialize the one-factor Monte Carlo
-            montecarloPricer_ = OneFactorMonteCarloOption(pathGenerator,
-                                                     euroPathPricer);
+            montecarloPricer_ = OneFactorMonteCarloOption(
+                pathGenerator, euroPathPricer,
+                Math::Statistics());
         }
 
     }

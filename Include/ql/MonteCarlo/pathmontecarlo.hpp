@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/13 15:25:13  marmar
+// MonteCarlo interface changed
+//
 // Revision 1.8  2001/07/13 14:29:08  sigmud
 // removed a few gcc compile warnings
 //
@@ -84,7 +87,9 @@ namespace QuantLib {
         class PathMonteCarlo {
           public:
             PathMonteCarlo() : isInitialized_(false) {}
-            PathMonteCarlo(Handle<PG> pathGenerator, Handle<PP> pathPricer);
+            PathMonteCarlo(Handle<PG> pathGenerator, 
+                           Handle<PP> pathPricer,
+                           S sampleAccumulator);
             S sampleAccumulator(long samples = 0) const;
           private:
             S sampleAccumulator_;
@@ -97,8 +102,9 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         inline PathMonteCarlo<S, PG, PP>::PathMonteCarlo(
                 Handle<PG> pathGenerator,
-                Handle<PP> pathPricer) :
-                sampleAccumulator_(),
+                Handle<PP> pathPricer,
+                S sampleAccumulator) :
+                sampleAccumulator_(sampleAccumulator),
                 optionSample_(pathGenerator, pathPricer),
                 monteCarlo_(sampleAccumulator_, optionSample_),
                 isInitialized_(true){}

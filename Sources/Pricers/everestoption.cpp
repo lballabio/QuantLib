@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/13 15:25:13  marmar
+// MonteCarlo interface changed
+//
 // Revision 1.9  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -79,7 +82,8 @@ namespace QuantLib {
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = MultiFactorMonteCarloOption(
-                                        pathGenerator, pathPricer);
+                                        pathGenerator, pathPricer,
+                                        Math::Statistics());
         }
 
     }

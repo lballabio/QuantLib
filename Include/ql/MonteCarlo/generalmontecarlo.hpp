@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/13 15:25:13  marmar
+// MonteCarlo interface changed
+//
 // Revision 1.9  2001/07/13 14:29:08  sigmud
 // removed a few gcc compile warnings
 //
@@ -106,8 +109,8 @@ namespace QuantLib {
         class GeneralMonteCarlo {
           public:
             GeneralMonteCarlo() : isInitialized_(false) {}
-            GeneralMonteCarlo(SA &statisticAccumulator,
-                              SG &sampleGenerator);
+            GeneralMonteCarlo(const SA &statisticAccumulator,
+                              const SG &sampleGenerator);
             SA sampleAccumulator(long iterations = 0) const;
           private:
             mutable SA sampleAccumulator_;
@@ -117,7 +120,8 @@ namespace QuantLib {
 
         template<class SA, class SG>
         inline GeneralMonteCarlo<SA, SG>::GeneralMonteCarlo(
-                SA &sampleAccumulator, SG &sampleGenerator):
+                const SA &sampleAccumulator, 
+                const SG &sampleGenerator):
                 sampleAccumulator_(sampleAccumulator),
                 sampleGenerator_(sampleGenerator),
                 isInitialized_(true){}

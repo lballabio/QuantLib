@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/07/13 15:25:13  marmar
+// MonteCarlo interface changed
+//
 // Revision 1.11  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -83,8 +86,9 @@ namespace QuantLib {
                     controlVariateSpPricer, controlVariatePrice));
 
             //! Initialize the one-dimensional Monte Carlo
-            montecarloPricer_ = OneFactorMonteCarloOption(pathGenerator,
-                                     controlVariatedPricer);
+            montecarloPricer_ = OneFactorMonteCarloOption(
+                pathGenerator, controlVariatedPricer,
+                Math::Statistics());
         }
 
     }
