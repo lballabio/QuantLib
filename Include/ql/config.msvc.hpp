@@ -5,16 +5,14 @@
 #pragma warning(disable: 4786)  // identifier truncated in debug info
 #pragma warning(disable: 4190)  // C-linkage of SWIG wrappers
 
-#ifdef MS_WIN32
 /* So nobody using MSVC needs to specify the .lib in their Makefile any
    more (other compilers will still need to do so)
    For Python extensions that's taken care of by the Distutils,
    so it's not a problem. */
-    #ifdef _DEBUG
+#ifdef QL_DEBUG
     #pragma comment(lib,"QuantLib_d.lib")
-    #else
+#else
     #pragma comment(lib,"QuantLib.lib")
-    #endif
 #endif
 
 #define REQUIRES_DUMMY_RETURN
