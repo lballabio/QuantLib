@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Andre Louw
+ Copyright (C) 2003 Decillion Pty(Ltd)
  Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
