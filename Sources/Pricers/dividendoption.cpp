@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.11  2001/04/26 16:05:42  marmar
+    underlying_ not mutable anymore, setGridLimits accepts the value for center
+
     Revision 1.10  2001/04/23 14:23:18  marmar
     Tricky bug fixed: american condition was applied to control price as well
 
@@ -121,7 +124,10 @@ namespace QuantLib {
 
         void DividendOption::executeIntermediateStep(int step) const{
             Array oldGrid = grid_ + dividends_[step];
-            underlying_ += dividends_[step];
+            
+            double center = underlying_;
+            for (int k = step; k < dividends_.size(); k++)
+                center += dividends_[k];
             /*
             Here something wierd happens: if residualTime_ is updated,
             >>> residualTime_ = dates_[step];            
@@ -131,7 +137,7 @@ namespace QuantLib {
             Is it because of the special choices made in setGridLimits(),
             i.e. beacuse of the variable "prefactor" introduced?
             */
-            setGridLimits();
+            setGridLimits(center);
             initializeGrid();    
             initializeInitialCondition();
             // This operation was faster than the obvious:

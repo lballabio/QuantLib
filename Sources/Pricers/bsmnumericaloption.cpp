@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.40  2001/04/26 16:05:42  marmar
+    underlying_ not mutable anymore, setGridLimits accepts the value for center
+
     Revision 1.39  2001/04/23 14:20:34  marmar
     Cosmetic changes
 
@@ -163,26 +166,26 @@ namespace QuantLib {
             return theta_;
         }
 
-        void BSMNumericalOption::setGridLimits() const {
+        void BSMNumericalOption::setGridLimits(double center) const {
             // correction for small volatilities
             double volSqrtTime = volatility_*QL_SQRT(residualTime_);
             // the prefactor fine tunes performance at small volatilities
             double prefactor = 1.0 + 0.02/volSqrtTime;
             double minMaxFactor = QL_EXP(4.0 * prefactor * volSqrtTime);
 
-            sMin_ = underlying_/minMaxFactor;  // underlying grid min value
-            sMax_ = underlying_*minMaxFactor;  // underlying grid max value
+            sMin_ = center/minMaxFactor;  // underlying grid min value
+            sMax_ = center*minMaxFactor;  // underlying grid max value
             // insure strike is included in the grid
             double safetyZoneFactor = 1.1;
             if(sMin_ > strike_/safetyZoneFactor){
                 sMin_ = strike_/safetyZoneFactor;
                 // enforce central placement of the underlying
-                sMax_ = underlying_/(sMin_/underlying_);
+                sMax_ = center/(sMin_/center);
             }
             if(sMax_ < strike_*safetyZoneFactor){
                 sMax_ = strike_*safetyZoneFactor;
                 // enforce central placement of the underlying
-                sMin_ = underlying_/(sMax_/underlying_);
+                sMin_ = center/(sMax_/center);
             }
         }
 

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.14  2001/04/26 16:05:42  marmar
+    underlying_ not mutable anymore, setGridLimits accepts the value for center
+
     Revision 1.13  2001/04/23 14:21:16  marmar
     Cosmetic changes
 
@@ -150,7 +153,7 @@ namespace QuantLib {
 
             Time beginDate, endDate;
             initializeControlVariate();
-            setGridLimits();
+            setGridLimits(underlying_);
             initializeGrid();
             initializeInitialCondition();
             initializeOperator();

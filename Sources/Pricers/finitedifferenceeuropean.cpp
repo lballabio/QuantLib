@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.9  2001/04/26 16:05:42  marmar
+    underlying_ not mutable anymore, setGridLimits accepts the value for center
+
     Revision 1.8  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -86,7 +89,7 @@ namespace QuantLib {
 
 
         void FiniteDifferenceEuropean::calculate() const {
-            setGridLimits();
+            setGridLimits(underlying_);
             initializeGrid();
             initializeInitialCondition();
             initializeOperator();
