@@ -27,17 +27,11 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.10  2001/01/04 20:09:31  nando
+	few changes: enumerations, tab/spaces, more checks, python test, bug fixed
+
 	Revision 1.9  2000/12/27 17:18:35  lballabio
 	Changes for compiling under Linux and Alpha Linux
-
-	Revision 1.8  2000/12/20 17:00:59  enri
-	modified to use new macros
-	
-	Revision 1.7  2000/12/20 15:29:47  lballabio
-	Using new defines for helping Linux port
-	
-	Revision 1.6  2000/12/14 12:32:31  lballabio
-	Added CVS tags in Doxygen file documentation blocks
 	
 */
 
@@ -89,7 +83,7 @@ namespace QuantLib {
 	}
 
 	std::string DateFormatter::toString(const Date& d, bool shortFormat) {
-		static const std::string monthName[] = {
+        static const std::string monthName[] = {
 			"January", "February", "March", "April", "May", "June",
 			"July", "August", "September", "October", "November", "December" };
 		std::string output;
@@ -99,7 +93,7 @@ namespace QuantLib {
 			output += (dd < 10 ? "/0" : "/") + IntegerFormatter::toString(dd);
 			output += "/" + IntegerFormatter::toString(yyyy);
 		} else {
-			output = monthName[mm] + " ";
+			output = monthName[mm-1] + " ";
 			output += IntegerFormatter::toString(dd);
 			switch (dd) {
 			  case 1:

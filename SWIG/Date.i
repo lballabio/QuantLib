@@ -173,7 +173,7 @@ using QuantLib::December;
 	} else if (PyInt_Check($source)) {
 		int i = int(PyInt_AsLong($source));
 		if (i>=1 && i<=12)
-			$target = new Month(Month(i-1));
+			$target = new Month(Month(i));
 		else {
 			PyErr_SetString(PyExc_TypeError,"not a month");
 			return NULL;
@@ -271,9 +271,9 @@ class Date {
 	Date(Day d, Month m, Year y);
 	~Date();
 	// access functions
-	Weekday dayOfWeek() const;
+	Weekday weekday() const;
 	Day dayOfMonth() const;
-	Day dayOfYear() const;		// zero-based
+	Day dayOfYear() const;		// one-based
 	Month month() const;
 	Year year() const;
 	int serialNumber() const;
@@ -293,6 +293,12 @@ class Date {
 #if defined(SWIGPYTHON)
 
 %addmethods Date {
+	int monthNumber() {
+		return int(self->month());
+	}
+	int weekdayNumber() {
+		return int(self->weekday());
+	}
 	Date __add__(int days) {
 		return self->plusDays(days);
 	}

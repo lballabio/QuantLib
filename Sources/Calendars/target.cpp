@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.10  2001/01/04 20:09:31  nando
+	few changes: enumerations, tab/spaces, more checks, python test, bug fixed
+
 	Revision 1.9  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "target.h"
@@ -39,7 +42,7 @@ namespace QuantLib {
 	namespace Calendars {
 	
 		bool TARGET::isBusinessDay(const Date& date) const {
-			Weekday w = date.dayOfWeek();
+			Weekday w = date.weekday();
 			Day d = date.dayOfMonth(), dd = date.dayOfYear();
 			Month m = date.month();
 			Year y = date.year();

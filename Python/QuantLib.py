@@ -44,12 +44,14 @@ class DatePtr(Date):
         self.__class__ = Date
 
 
-Date.dayOfWeek = new.instancemethod(QuantLibc.Date_dayOfWeek, None, Date)
+Date.weekday = new.instancemethod(QuantLibc.Date_weekday, None, Date)
 Date.dayOfMonth = new.instancemethod(QuantLibc.Date_dayOfMonth, None, Date)
 Date.dayOfYear = new.instancemethod(QuantLibc.Date_dayOfYear, None, Date)
 Date.month = new.instancemethod(QuantLibc.Date_month, None, Date)
 Date.year = new.instancemethod(QuantLibc.Date_year, None, Date)
 Date.serialNumber = new.instancemethod(QuantLibc.Date_serialNumber, None, Date)
+Date.monthNumber = new.instancemethod(QuantLibc.Date_monthNumber, None, Date)
+Date.weekdayNumber = new.instancemethod(QuantLibc.Date_weekdayNumber, None, Date)
 Date.__cmp__ = new.instancemethod(QuantLibc.Date___cmp__, None, Date)
 Date.__str__ = new.instancemethod(QuantLibc.Date___str__, None, Date)
 Date.__repr__ = new.instancemethod(QuantLibc.Date___repr__, None, Date)
