@@ -3,18 +3,15 @@
 Borland projects
 fix build dir under cygwin
 config.h is installed?
-rename HedgingError
-rename updateproject.sh to bootstrap
 make bootstrap work under cygwin
+make Parities to work
 
-compile with gcc 3.0.1
-
-chck installer html documentation
+chck installed html documentation
 add examples to documentation
 cash flow stream for IRR, duration
 documentation of path (where it is? continously compounded)
 MonteCarloModel refactoring
-*** check compile success/failure on (SourceForge compile farm)
+check compile success/failure on (SourceForge compile farm)
 
 
 DISTRIBUTING
