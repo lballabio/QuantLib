@@ -45,6 +45,11 @@ docs-html:
     $(MAKE) html
     cd ..
 
+docs-html-online:
+    cd Docs
+    $(MAKE) html-online
+    cd ..
+
 docs-pdf:
     cd Docs
     $(MAKE) pdf

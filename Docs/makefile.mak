@@ -14,7 +14,6 @@ DVIPS     = dvips
 
 # Options
 TEX_OPTS = --quiet --pool-size=1000000
-GENERATE_MAN = NO
 
 # Primary target:
 # all docs
@@ -28,8 +27,20 @@ all:: tex-files
     cd ..
 
 # HTML documentation only
-html: 
+html: html-offline
+
+html-offline::
     $(DOXYGEN) quantlib.doxy
+    copy images\*.jpg html
+    copy images\*.png html
+    copy images\*.pdf latex
+    copy images\*.eps latex
+
+html-online::
+    $(SED) -e "s/quantlibfooter.html/quantlibfooteronline.html/" \
+           quantlib.doxy > quantlib.doxy.temp
+    $(DOXYGEN) quantlib.doxy.temp
+    del /Q quantlib.doxy.temp
     copy images\*.jpg html
     copy images\*.png html
     copy images\*.pdf latex
