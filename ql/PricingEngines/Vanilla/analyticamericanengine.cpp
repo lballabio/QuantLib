@@ -22,6 +22,7 @@
 
 #include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 #include <ql/PricingEngines/americanpayoffathit.hpp>
+#include <ql/PricingEngines/americanpayoffatexpiry.hpp>
 
 namespace QuantLib {
 
@@ -38,9 +39,6 @@ namespace QuantLib {
         #else
         Handle<AmericanExercise> ex = arguments_.exercise;
         #endif
-        QL_REQUIRE(!ex->payoffAtExpiry(),
-                   "AnalyticAmericanEngine::calculate() : "
-                   "payoff at expiry not handled yet");
 
         QL_REQUIRE(ex->dates()[0]<=
             arguments_.blackScholesProcess->volTS->referenceDate(),
@@ -65,16 +63,24 @@ namespace QuantLib {
         Rate riskFreeDiscount = arguments_.blackScholesProcess->riskFreeTS->discount(
             ex->lastDate());
 
-        AmericanPayoffAtHit pricer(spot, riskFreeDiscount, dividendDiscount, variance, payoff);
+        if(ex->payoffAtExpiry()) {
+            AmericanPayoffAtExpiry pricer(spot, riskFreeDiscount,
+                dividendDiscount, variance, payoff);
 
-        results_.value = pricer.value();
-        results_.delta = pricer.delta();
-        results_.gamma = pricer.gamma();
+            results_.value = pricer.value();
+        } else {
+            AmericanPayoffAtHit pricer(spot, riskFreeDiscount,
+                dividendDiscount, variance, payoff);
 
-        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
-        results_.rho = pricer.rho(t);
+            results_.value = pricer.value();
+            results_.delta = pricer.delta();
+            results_.gamma = pricer.gamma();
+
+            Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
+                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+                arguments_.exercise->lastDate());
+            results_.rho = pricer.rho(t);
+        }
 
     }
 
