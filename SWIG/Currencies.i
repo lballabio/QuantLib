@@ -129,7 +129,8 @@ CurrencyHandle NewSEK()		{ return CurrencyHandle(new SEK); }
 typedef std::vector<Handle<Currency> > CurrencyHandleVector;
 %}
 
-%typemap(python,in) CurrencyHandleVector, const CurrencyHandleVector & {
+%typemap(python,in) CurrencyHandleVector, CurrencyHandleVector *, 
+  const CurrencyHandleVector & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new std::vector<CurrencyHandle>(size);
@@ -167,7 +168,8 @@ typedef std::vector<Handle<Currency> > CurrencyHandleVector;
 	}
 };
 
-%typemap(python,freearg) CurrencyHandleVector, const CurrencyHandleVector & {
+%typemap(python,freearg) CurrencyHandleVector, CurrencyHandleVector *, 
+  const CurrencyHandleVector & {
 	delete $source;
 };
 

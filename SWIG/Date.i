@@ -326,7 +326,7 @@ class Date {
 typedef std::vector<Date> DateVector;
 %}
 
-%typemap(python,in) DateVector, const DateVector & {
+%typemap(python,in) DateVector, DateVector *, const DateVector & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new std::vector<Date>(size);
@@ -363,7 +363,7 @@ typedef std::vector<Date> DateVector;
 	}
 };
 
-%typemap(python,freearg) DateVector, const DateVector & {
+%typemap(python,freearg) DateVector, DateVector *, const DateVector & {
 	delete $source;
 };
 

@@ -167,7 +167,7 @@ class Deposit {
 typedef std::vector<Deposit> DepositList;
 %}
 
-%typemap(python,in) DepositList, const DepositList & {
+%typemap(python,in) DepositList, DepositList *, const DepositList & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new std::vector<Deposit>(size);
@@ -204,7 +204,7 @@ typedef std::vector<Deposit> DepositList;
 	}
 };
 
-%typemap(python,freearg) DepositList, const DepositList & {
+%typemap(python,freearg) DepositList, DepositList *, const DepositList & {
 	delete $source;
 };
 

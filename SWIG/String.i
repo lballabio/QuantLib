@@ -70,7 +70,7 @@
 	typedef std::vector<std::string> StringVector;
 %}
 
-%typemap(python,in) StringVector, const StringVector & {
+%typemap(python,in) StringVector, StringVector *, const StringVector & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new std::vector<std::string>(size);
@@ -105,7 +105,7 @@
 	}
 };
 
-%typemap(python,freearg) StringVector, const StringVector & {
+%typemap(python,freearg) StringVector, StringVector *, const StringVector & {
 	delete $source;
 };
 
