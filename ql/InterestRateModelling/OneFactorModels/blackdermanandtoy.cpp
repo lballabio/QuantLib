@@ -200,7 +200,7 @@ namespace QuantLib {
                 u_[i] = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
                 unsigned int index = 0;
                 for (int j=-int(i); j<=int(i); j+=2) {
-                    discountFactors_[i][index] = 1.0/(1.0 + u_[i]*i
+                    discountFactors_[i][index] = 1.0/(1.0 + u_[i]*
                       QL_EXP(sigma_*j*QL_SQRT(dt_))*dt_);
                     index++;
                 }
