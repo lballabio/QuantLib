@@ -10,14 +10,14 @@
 # Directories
 INCLUDE_DIR    = ..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
-SRCDIR         = "."
-OBJDIR         = "..\..\build\Borland"
+#SRCDIR         = "."
+#OBJDIR         = "..\..\build\Borland"
 
 # Object files
 OBJS = \
-    $(OBJDIR)\daycounters.obj$(_D) \
-    $(OBJDIR)\mathf.obj$(_D) \
-    $(OBJDIR)\vols.obj$(_D)
+    daycounters.obj$(_D) \
+    mathf.obj$(_D) \
+    vols.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
@@ -28,9 +28,7 @@ TLIB      = tlib
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
     -I$(INCLUDE_DIR) \
-    -I$(BCC_INCLUDE) \
-    -n$(OBJDIR) \
-    -n$(OBJDIR)
+    -I$(BCC_INCLUDE)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -45,24 +43,24 @@ TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
+.cpp.obj:
     $(CC) $(CC_OPTS) $<
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
+.cpp.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-$(OBJDIR)\functions$(_D).lib:: $(OBJDIR) $(OBJS)
-    if exist $(OBJDIR)\functions$(_D).lib     del $(OBJDIR)\functions$(_D).lib
-    $(TLIB) $(TLIB_OPTS) $(OBJDIR)\functions$(_D).lib /a $(OBJS)
+functions$(_D).lib:: $(OBJS)
+    if exist functions$(_D).lib     del functions$(_D).lib
+    $(TLIB) $(TLIB_OPTS) functions$(_D).lib /a $(OBJS)
 
-#create build dir
-$(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR))
+
+
+
 
 # Clean up
 clean::
-    if exist $(OBJDIR)\*.obj         del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.obj$(_D)    del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.lib         del /q $(OBJDIR)\*.lib
+    if exist *.obj         del /q *.obj
+    if exist *.obj$(_D)    del /q *.obj
+    if exist *.lib         del /q *.lib
 

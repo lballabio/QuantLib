@@ -10,16 +10,16 @@
 # Directories
 INCLUDE_DIR    = ..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
-SRCDIR         = "."
-OBJDIR         = "..\..\build\Borland"
+#SRCDIR         = "."
+#OBJDIR         = "..\..\build\Borland"
 
 # Object files
 OBJS = \
-    $(OBJDIR)\bsmoperator.obj$(_D) \
-    $(OBJDIR)\boundarycondition.obj$(_D) \
-    $(OBJDIR)\onefactoroperator.obj$(_D) \
-    $(OBJDIR)\tridiagonaloperator.obj$(_D) \
-    $(OBJDIR)\valueatcenter.obj$(_D)
+    bsmoperator.obj$(_D) \
+    boundarycondition.obj$(_D) \
+    onefactoroperator.obj$(_D) \
+    tridiagonaloperator.obj$(_D) \
+    valueatcenter.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
@@ -30,8 +30,7 @@ TLIB      = tlib
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
     -I$(INCLUDE_DIR) \
-    -I$(BCC_INCLUDE) \
-    -n$(OBJDIR)
+    -I$(BCC_INCLUDE)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -46,23 +45,23 @@ TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
+.cpp.obj:
     $(CC) $(CC_OPTS) $<
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
+.cpp.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-$(OBJDIR)\FiniteDifferences$(_D).lib:: $(OBJDIR) $(OBJS)
-    if exist $(OBJDIR)\FiniteDifferences$(_D).lib     del $(OBJDIR)\FiniteDifferences$(_D).lib
-    $(TLIB) $(TLIB_OPTS) $(OBJDIR)\FiniteDifferences$(_D).lib /a $(OBJS)
+FiniteDifferences$(_D).lib:: $(OBJS)
+    if exist FiniteDifferences$(_D).lib     del FiniteDifferences$(_D).lib
+    $(TLIB) $(TLIB_OPTS) FiniteDifferences$(_D).lib /a $(OBJS)
 
-#create build dir
-$(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR))
+
+
+
 
 # Clean up
 clean::
-    if exist $(OBJDIR)\*.obj         del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.obj$(_D)    del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.lib         del /q $(OBJDIR)\*.lib
+    if exist *.obj         del /q *.obj
+    if exist *.obj$(_D)    del /q *.obj
+    if exist *.lib         del /q *.lib

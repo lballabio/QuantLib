@@ -23,8 +23,7 @@ OBJDIR           = ".\build\Borland"
 # Options
 CC_OPTS = -vi- -w-8057 \
     -I$(QL_INCLUDE_DIR) \
-    -I$(BCC_INCLUDE) \
-    -n$(OBJDIR)
+    -I$(BCC_INCLUDE)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -34,17 +33,17 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 # Primary target:
-EuropeanOption$(_D).exe: $(OBJDIR) EuropeanOption.cpp
+EuropeanOption$(_D).exe: EuropeanOption.cpp
     bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) \
-    -o"$(OBJDIR)\EuropeanOption$(_D).obj" -eEuropeanOption$(_D).exe \
+    -o"EuropeanOption$(_D).obj" -eEuropeanOption$(_D).exe \
     EuropeanOption.cpp QuantLib$(_D).lib
 
-#create build dir
-$(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR))
+
+
+
 
 # Clean up
 clean::
-    if exist $(OBJDIR)\*.obj   del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.tds   del /q $(OBJDIR)\*.tds
-    if exist $(OBJDIR)\*.exe   del /q $(OBJDIR)\*.exe
+    if exist *.obj   del /q *.obj
+    if exist *.tds   del /q *.tds
+    if exist *.exe   del /q *.exe

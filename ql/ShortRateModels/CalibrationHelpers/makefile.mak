@@ -9,15 +9,15 @@
 
 # Directories
 INCLUDE_DIR    = ..\..\..
-SRCDIR         = "."
+#SRCDIR         = "."
 OBJDIR         = "..\..\..\build\Borland"
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-    $(OBJDIR)\caphelper.obj$(_D) \
-    $(OBJDIR)\swaptionhelper.obj$(_D)
+    caphelper.obj$(_D) \
+    swaptionhelper.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
@@ -27,8 +27,7 @@ TLIB      = tlib
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
     -I$(INCLUDE_DIR) \
-    -I$(BCC_INCLUDE) \
-    -n$(OBJDIR)
+    -I$(BCC_INCLUDE)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -43,23 +42,23 @@ TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
+.cpp.obj:
     $(CC) $(CC_OPTS) $<
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
+.cpp.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-$(OBJDIR)\CalibrationHelpers$(_D).lib:: $(OBJDIR) $(OBJS)
-    if exist $(OBJDIR)\CalibrationHelpers$(_D).lib     del $(OBJDIR)\CalibrationHelpers$(_D).lib
-    $(TLIB) $(TLIB_OPTS) $(OBJDIR)\CalibrationHelpers$(_D).lib /a $(OBJS)
+CalibrationHelpers$(_D).lib:: $(OBJS)
+    if exist CalibrationHelpers$(_D).lib     del CalibrationHelpers$(_D).lib
+    $(TLIB) $(TLIB_OPTS) CalibrationHelpers$(_D).lib /a $(OBJS)
 
-#create build dir
-$(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR))
+
+
+
 
 # Clean up
 clean::
-    if exist $(OBJDIR)\*.obj         del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.obj$(_D)    del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.lib         del /q $(OBJDIR)\*.lib
+    if exist *.obj         del /q *.obj
+    if exist *.obj$(_D)    del /q *.obj
+    if exist *.lib         del /q *.lib

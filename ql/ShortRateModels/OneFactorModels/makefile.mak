@@ -9,18 +9,18 @@
 
 # Directories
 INCLUDE_DIR    = ..\..\..
-SRCDIR         = "."
+#SRCDIR         = "."
 OBJDIR         = "..\..\..\build\Borland"
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-    $(OBJDIR)\blackkarasinski.obj$(_D) \
-    $(OBJDIR)\coxingersollross.obj$(_D) \
-    $(OBJDIR)\extendedcoxingersollross.obj$(_D) \
-    $(OBJDIR)\hullwhite.obj$(_D) \
-    $(OBJDIR)\vasicek.obj$(_D)
+    blackkarasinski.obj$(_D) \
+    coxingersollross.obj$(_D) \
+    extendedcoxingersollross.obj$(_D) \
+    hullwhite.obj$(_D) \
+    vasicek.obj$(_D)
 
 
 # Tools to be used
@@ -31,8 +31,7 @@ TLIB      = tlib
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
     -I$(INCLUDE_DIR) \
-    -I$(BCC_INCLUDE) \
-    -n$(OBJDIR)
+    -I$(BCC_INCLUDE)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -47,23 +46,23 @@ TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
+.cpp.obj:
     $(CC) $(CC_OPTS) $<
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
+.cpp.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-$(OBJDIR)\OneFactorModels$(_D).lib:: $(OBJDIR) $(OBJS)
-    if exist $(OBJDIR)\OneFactorModels$(_D).lib     del $(OBJDIR)\OneFactorModels$(_D).lib
-    $(TLIB) $(TLIB_OPTS) $(OBJDIR)\OneFactorModels$(_D).lib /a $(OBJS)
+OneFactorModels$(_D).lib:: $(OBJS)
+    if exist OneFactorModels$(_D).lib     del OneFactorModels$(_D).lib
+    $(TLIB) $(TLIB_OPTS) OneFactorModels$(_D).lib /a $(OBJS)
 
-#create build dir
-$(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR))
+
+
+
 
 # Clean up
 clean::
-    if exist $(OBJDIR)\*.obj         del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.obj$(_D)    del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.lib         del /q $(OBJDIR)\*.lib
+    if exist *.obj         del /q *.obj
+    if exist *.obj$(_D)    del /q *.obj
+    if exist *.lib         del /q *.lib

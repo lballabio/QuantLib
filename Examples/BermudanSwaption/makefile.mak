@@ -22,8 +22,7 @@ OBJDIR              = ".\build\Borland"
 # Options
 CC_OPTS = -vi- -w-8057 \
     -I$(QL_INCLUDE_DIR) \
-    -I$(BCC_INCLUDE) \
-    -n$(OBJDIR)
+    -I$(BCC_INCLUDE)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -33,15 +32,15 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 # Primary target:
-BermudanSwaption$(_D).exe: $(OBJDIR) BermudanSwaption.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -o"$(OBJDIR)\BermudanSwaption$(_D).obj" -eBermudanSwaption$(_D).exe BermudanSwaption.cpp QuantLib$(_D).lib
+BermudanSwaption$(_D).exe: BermudanSwaption.cpp
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -o"BermudanSwaption$(_D).obj" -eBermudanSwaption$(_D).exe BermudanSwaption.cpp QuantLib$(_D).lib
 
-#create build dir
-$(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR))
+
+
+
 
 # Clean up
 clean::
-    if exist $(OBJDIR)\*.obj   del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.tds   del /q $(OBJDIR)\*.tds
-    if exist $(OBJDIR)\*.exe   del /q $(OBJDIR)\*.exe
+    if exist *.obj   del /q *.obj
+    if exist *.tds   del /q *.tds
+    if exist *.exe   del /q *.exe

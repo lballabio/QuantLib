@@ -9,17 +9,17 @@
 
 # Directories
 INCLUDE_DIR    = ..\..
-SRCDIR         = "."
-OBJDIR         = "..\..\build\Borland"
+#SRCDIR         = "."
+#OBJDIR         = "..\..\build\Borland"
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-    $(OBJDIR)\calibrationhelper.obj$(_D) \
-    $(OBJDIR)\model.obj$(_D) \
-    $(OBJDIR)\onefactormodel.obj$(_D) \
-    $(OBJDIR)\twofactormodel.obj$(_D)
+    calibrationhelper.obj$(_D) \
+    model.obj$(_D) \
+    onefactormodel.obj$(_D) \
+    twofactormodel.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
@@ -29,8 +29,7 @@ TLIB      = tlib
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
     -I$(INCLUDE_DIR) \
-    -I$(BCC_INCLUDE) \
-    -n$(OBJDIR)
+    -I$(BCC_INCLUDE)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -45,23 +44,23 @@ TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
+.cpp.obj:
     $(CC) $(CC_OPTS) $<
-{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
+.cpp.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-$(OBJDIR)\ShortRateModels$(_D).lib:: $(OBJDIR) $(OBJS)
-    if exist $(OBJDIR)\ShortRateModels$(_D).lib     del $(OBJDIR)\ShortRateModels$(_D).lib
-    $(TLIB) $(TLIB_OPTS) $(OBJDIR)\ShortRateModels$(_D).lib /a $(OBJS)
+ShortRateModels$(_D).lib:: $(OBJS)
+    if exist ShortRateModels$(_D).lib     del ShortRateModels$(_D).lib
+    $(TLIB) $(TLIB_OPTS) ShortRateModels$(_D).lib /a $(OBJS)
 
-#create build dir
-$(OBJDIR):
-        @if not exist $(OBJDIR) (md $(OBJDIR))
+
+
+
 
 # Clean up
 clean::
-    if exist $(OBJDIR)\*.obj         del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.obj$(_D)    del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.lib         del /q $(OBJDIR)\*.lib
+    if exist *.obj         del /q *.obj
+    if exist *.obj$(_D)    del /q *.obj
+    if exist *.lib         del /q *.lib
