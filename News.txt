@@ -16,10 +16,12 @@ Changes since Release 0.2.1:
     - BSMNumericalOption became BsmFdOption
 
     YIELD TERM STRUCTURE AND FIXED INCOME
-    - added single factor interest rate model (Ho-Lee, Hull-White,
-      Black-Derman-Toy, Black-Karasinski)
-    - added two factor interest rate models framework
-    - Bermudan swaption finite difference pricer
+    - added single factor short-rate models (Hull-White, Black-Karasinski,
+      Cox-Ingersoll-Ross)
+    - added two factor short-rate models framework
+    - cap/floor and  swaption tree pricer
+    - cap/floor analytical pricer
+    - vanilla swaption Jamshidian pricer
     - cap/floor and swaption calibration helpers
     - discount factor accuracy in the yield curve bootstrapping is an input
     - yield curves can be spreaded in term of zeros
@@ -28,7 +30,7 @@ Changes since Release 0.2.1:
     - Added dates() and times() to PiecewiseFlatForward
 
     OPTIMIZATION FRAMEWORK
-    - added conjugate gradient
+    - added conjugate gradient, simplex
 
     PATTERNS
     - implemented QuEP 8 and 10
