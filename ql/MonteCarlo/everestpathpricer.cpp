@@ -47,7 +47,7 @@ namespace QuantLib {
         }
 
         double EverestPathPricer::operator()(const MultiPath & path) const {
-            int numAssets = path.rows();
+            int numAssets = path.assetNumber();
             QL_REQUIRE(isInitialized_,
                 "EverestPathPricer: pricer not initialized");
 

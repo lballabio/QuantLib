@@ -44,7 +44,7 @@ namespace QuantLib {
         class Path {
           public:
             Path(unsigned int size);
-            Path(const Array& drift, const Array& randomComponent);
+            Path(const Array& drift, const Array& diffusion);
             //! \name inspectors
             //@{
             double operator[](int i) const;
@@ -54,27 +54,27 @@ namespace QuantLib {
             //@{
             const Array& drift() const;
             Array& drift();
-            const Array& randomComponent() const;
-            Array& randomComponent();
+            const Array& diffusion() const;
+            Array& diffusion();
             //@}
           private:
             Array drift_;
-            Array randomComponent_;
+            Array diffusion_;
         };
 
         // inline definitions
 
         inline Path::Path(unsigned int size)
-        : drift_(size), randomComponent_(size) {}
+        : drift_(size), diffusion_(size) {}
         
-        inline Path::Path(const Array& drift, const Array& randomComponent)
-        : drift_(drift), randomComponent_(randomComponent) {
-            QL_REQUIRE(drift_.size() == randomComponent_.size(),
-                "Path: drift and random components have different size");
+        inline Path::Path(const Array& drift, const Array& diffusion)
+        : drift_(drift), diffusion_(diffusion) {
+            QL_REQUIRE(drift_.size() == diffusion_.size(),
+                "Path: drift and diffusion have different size");
         }
 
         inline double Path::operator[](int i) const { 
-            return drift_[i] + randomComponent_[i]; 
+            return drift_[i] + diffusion_[i]; 
         }
         
         inline unsigned int Path::size() const {
@@ -89,12 +89,12 @@ namespace QuantLib {
             return drift_; 
         }
 
-        inline const Array& Path::randomComponent() const {
-            return randomComponent_; 
+        inline const Array& Path::diffusion() const {
+            return diffusion_; 
         }
         
-        inline Array& Path::randomComponent() {
-            return randomComponent_; 
+        inline Array& Path::diffusion() {
+            return diffusion_; 
         }
         
     }

@@ -47,7 +47,7 @@ namespace QuantLib {
         }
 
         double PagodaPathPricer::operator()(const MultiPath & path) const {
-            unsigned int numAssets = path.rows(), numSteps = path.columns();
+            unsigned int numAssets = path.assetNumber(), numSteps = path.pathSize();
             QL_REQUIRE(isInitialized_,
                 "PagodaPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,

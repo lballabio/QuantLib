@@ -71,30 +71,25 @@ namespace QuantLib {
         private:
             int timeDimension_;
             std::vector<Time> timeDelays_;
-                int numAssets_;
+            int numAssets_;
             mutable double weight_;
             Array average_;
             RAG rndArray_;
         };
 
         template <class RAG>
-        inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            int timeDimension,
-            const Math::Matrix &covariance,
-            const Array &average,
-            long seed):
-            timeDimension_(timeDimension),
-            timeDelays_(timeDimension, 1.0),
-            numAssets_(covariance.rows()),
-            average_(covariance.rows(),0.0),
-            rndArray_(0.0, covariance, seed){
+        inline MultiPathGenerator<RAG >::MultiPathGenerator(int timeDimension,
+            const Math::Matrix &covariance, const Array &average, long seed)
+        : timeDimension_(timeDimension), timeDelays_(timeDimension, 1.0),
+        numAssets_(covariance.rows()), average_(covariance.rows(),0.0),
+        rndArray_(0.0, covariance, seed) {
 
             QL_REQUIRE(timeDimension_ > 0,
                 "Time dimension("+
                 DoubleFormatter::toString(timeDimension_)+
                 ") too small");
 
-            if(average.size() != 0){
+            if(average.size() != 0) {
                 QL_REQUIRE(average.size() == average_.size(),
                            "MultiPathGenerator covariance and average "
                            "do not have the same size");
@@ -105,15 +100,11 @@ namespace QuantLib {
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            const std::vector<Time> &dates,
-            const Math::Matrix &covariance,
-            const Array &average,
-            long seed):
-            timeDimension_(dates.size()),
-            timeDelays_(dates.size()),
-            numAssets_(covariance.rows()),
-            average_(covariance.rows(), 0.0),
-            rndArray_(0.0, covariance, seed){
+            const std::vector<Time> &dates, const Math::Matrix &covariance,
+            const Array &average, long seed)
+        : timeDimension_(dates.size()), timeDelays_(dates.size()),
+          numAssets_(covariance.rows()), average_(covariance.rows(), 0.0),
+          rndArray_(0.0, covariance, seed) {
 
             if(average.size() != 0){
                 QL_REQUIRE(average.size() == average_.size(),
@@ -148,19 +139,28 @@ namespace QuantLib {
         }
 
         template <class RAG>
-        inline MultiPath MultiPathGenerator<RAG >::next() const{
+        inline MultiPath MultiPathGenerator<RAG >::next() const {
 
             QL_REQUIRE(numAssets_ > 0,
                 "MultiPathGenerator: object declared but not initialized");
             MultiPath multiPath(numAssets_, timeDimension_);
-            Array nextArray(numAssets_);
+//            Array nextArray(numAssets_);
+            Array drift(numAssets_);
+            Array diffusion(numAssets_);
             weight_ = 1.0;
             for(int i = 0; i < timeDimension_; i++){
+/*
                 nextArray = average_ * timeDelays_[i]
                             + rndArray_.next()* QL_SQRT(timeDelays_[i]);
                 weight_ *= rndArray_.weight();
-                std::copy(nextArray.begin(), nextArray.end(),
-                          multiPath.column_begin(i));
+*/
+                drift = average_ * timeDelays_[i];
+                diffusion = rndArray_.next()* QL_SQRT(timeDelays_[i]);
+                weight_ *= rndArray_.weight();
+                for (unsigned int j=0; j<numAssets_; j++) {
+                    multiPath[j].drift()[i] = drift[j];
+                    multiPath[j].diffusion()[i] = diffusion[j];
+                }
             }
             return multiPath;
         }

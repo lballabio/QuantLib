@@ -33,7 +33,8 @@
 #ifndef quantlib_montecarlo_multi_path_h
 #define quantlib_montecarlo_multi_path_h
 
-#include "ql/Math/matrix.hpp"
+#include "ql/MonteCarlo/path.hpp"
+#include <vector>
 
 namespace QuantLib {
 
@@ -52,8 +53,39 @@ namespace QuantLib {
         at discretized time \f$ t_i \f$. The first index refers to the
         underlying, the second to the time position MultiPath[j,i]
         */
-        typedef QuantLib::Math::Matrix MultiPath;
+//        typedef QuantLib::Math::Matrix MultiPath;
 
+        //! single random walk
+        class MultiPath {
+          public:
+            MultiPath(unsigned int nAsset,
+                      unsigned int pathSize);
+            MultiPath(const std::vector<Path>& multiPath);
+            //! \name inspectors
+            //@{
+            const Path& operator[](int j) const {return multiPath_[j]; }
+            Path& operator[](int j) {return multiPath_[j]; }
+            unsigned int assetNumber() const {return multiPath_.size(); }
+            unsigned int pathSize() const {return multiPath_[0].size(); }
+            //@}
+          private:
+            std::vector<Path> multiPath_;
+        };
+
+        // inline definitions
+
+        inline MultiPath::MultiPath(unsigned int nAsset, unsigned int pathSize)
+            : multiPath_(nAsset,Path(pathSize)) {
+            QL_REQUIRE(nAsset > 0,
+                "MultiPath: number of asset must be > zero");
+            QL_REQUIRE(pathSize > 0,
+                "MultiPath: pathSize must be > zero");
+        }
+
+        inline MultiPath::MultiPath(const std::vector<Path>& multiPath)
+            : multiPath_(multiPath) {}
+
+    
     }
 
 }

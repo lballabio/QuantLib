@@ -59,7 +59,7 @@ namespace QuantLib {
             double log_drift = 0.0, log_random = 0.0;
             for (unsigned int i = 0; i < n; i++) {
                 log_drift += path.drift()[i];
-                log_random += path.randomComponent()[i];
+                log_random += path.diffusion()[i];
             }
 
             if (antitheticVariance_)

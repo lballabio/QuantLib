@@ -107,7 +107,7 @@ namespace QuantLib {
 
         template <class RNG>
         inline Path PathGenerator<RNG>::next() const {
-            next_.randomComponent() = generator_->next();
+            next_.diffusion() = generator_->next();
             // always call weight() _after_ next()
             weight_ = generator_->weight();
             return next_;

@@ -591,6 +591,10 @@ SOURCE=.\ql\MonteCarlo\mcpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\mctypedefs.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\montecarlomodel.hpp
 # End Source File
 # Begin Source File
@@ -628,6 +632,10 @@ SOURCE=.\ql\MonteCarlo\pagodapathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\path.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\pathgenerator.hpp
 # End Source File
 # Begin Source File
 

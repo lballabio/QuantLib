@@ -59,7 +59,7 @@ namespace QuantLib {
             double averagePrice1 = 0.0;
             int i;
             for (i=0; i<n; i++) {
-                price1 *= QL_EXP(path.drift()[i]+path.randomComponent()[i]);
+                price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
                 averagePrice1 += price1;
             }
             averagePrice1 = averagePrice1/n;
@@ -69,7 +69,7 @@ namespace QuantLib {
                 double averagePrice2 = 0.0;
 
                 for (i=0; i<n; i++) {
-                    price2 *= QL_EXP(path.drift()[i]-path.randomComponent()[i]);
+                    price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
                     averagePrice2 += price2;
                 }
                 averagePrice2 = averagePrice2/n;

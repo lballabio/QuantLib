@@ -57,13 +57,13 @@ namespace QuantLib {
             int i;
             double growth1 = 0.0;
             for (i=0; i<n; i++)
-                growth1 += (n-i)*(path.drift()[i]+path.randomComponent()[i]);
+                growth1 += (n-i)*(path.drift()[i]+path.diffusion()[i]);
             double average1 = underlying_*QL_EXP(growth1/n);
 
             if (antitheticVariance_) {
                 double growth2 = 0.0;
                 for (i=0; i<n; i++)
-                    growth2 += (n-i)*(path.drift()[i]-path.randomComponent()[i]);
+                    growth2 += (n-i)*(path.drift()[i]-path.diffusion()[i]);
                 double average2 = underlying_*QL_EXP(growth2/n);
                 return discount_/2.0*(ExercisePayoff(type_, average1, strike_)
                     +ExercisePayoff(type_, average2, strike_));

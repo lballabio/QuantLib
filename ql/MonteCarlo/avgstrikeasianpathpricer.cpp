@@ -57,7 +57,7 @@ namespace QuantLib {
             double averageStrike1 = 0.0;
             int i;
             for (i=0; i<n; i++) {
-                price1 *= QL_EXP(path.drift()[i]+path.randomComponent()[i]);
+                price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
                 averageStrike1 += price1;
             }
             averageStrike1 = averageStrike1/n;
@@ -67,7 +67,7 @@ namespace QuantLib {
                 double averageStrike2 = 0.0;
 
                 for (i=0; i<n; i++) {
-                    price2 *= QL_EXP(path.drift()[i]-path.randomComponent()[i]);
+                    price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
                     averageStrike2 += price2;
                 }
                 averageStrike2 = averageStrike2/n;
