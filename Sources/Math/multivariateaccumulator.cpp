@@ -26,6 +26,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/26 11:09:28  marmar
+    Now the covariance() method is consistent with the variance()
+    method of the class Statistics
+
     Revision 1.3  2001/01/25 11:57:33  lballabio
     Included outer product and sqrt into matrix.h
 
@@ -87,12 +91,13 @@ namespace QuantLib {
             "Stat::variance() : sample number <=1, unsufficient");
         
           double inv = 1/sampleWeight_;
-          return inv*(quadraticSum_ - inv*outerProduct(sum_,sum_) );
+          return (sampleNumber_/(sampleNumber_-1.0))*
+                inv*(quadraticSum_ - inv*outerProduct(sum_,sum_) );
         }
 
         std::vector<double> MultivariateAccumulator::meanVector() const {
           
-            Array ma(meanArray());
+            Array ma(mean());
             std::vector<double> mv(ma.size());            
             std::copy(ma.begin(), ma.end(), mv.begin());            
             return mv;

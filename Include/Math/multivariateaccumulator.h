@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/01/26 11:08:55  marmar
+    Now the covariance() method is consistent with the variance()
+    method of the class Statistics
+
     Revision 1.4  2001/01/25 15:11:53  lballabio
     Added helper functions to make iterators
 
@@ -73,7 +77,7 @@ namespace QuantLib {
             //! number of samples collected
             double samples() const;
             //! returns the mean as an Array
-            Array meanArray() const;
+            Array mean() const;
             //! returns the mean as a std::vector<double>
             std::vector<double> meanVector() const;            
             //! returns the covariance Matrix            
@@ -113,7 +117,7 @@ namespace QuantLib {
           return sampleNumber_;
         }
                 
-        inline Array MultivariateAccumulator::meanArray() const {
+        inline Array MultivariateAccumulator::mean() const {
           QL_REQUIRE(sampleWeight_ > 0.0, 
                 "Stat::mean() : sampleWeight_=0, unsufficient");
           return sum_/sampleWeight_;
