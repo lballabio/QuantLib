@@ -21,7 +21,7 @@
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
-#include <ql/Daycounters/actual360.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 #include <map>
@@ -96,7 +96,7 @@ CppUnit::Test* AsianOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Asian option tests");
     tests->addTest(new CppUnit::TestCaller<AsianOptionTest>
-                   ("Testing Discrete Averaging Geometric Asian options",
+                   ("Testing discrete-averaging geometric Asian options",
                     &AsianOptionTest::testGeometricDiscreteAverage));
     return tests;
 }
