@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/03/07 17:32:42  nando
+    more complete error message
+
     Revision 1.7  2001/01/18 14:36:30  nando
     80 columns enforced
     private members with trailing underscore
@@ -135,7 +138,11 @@ namespace QuantLib {
         inline Rate FlatForward::zeroYield(const Date& d,
                                            bool extrapolate) const {
             QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
-                "date outside curve definition");
+                "FlatForward::zeroYield : "
+                "date " + DateFormatter::toString(d) +
+                " outside curve definition [" +
+                DateFormatter::toString(minDate()) + "-" +
+                DateFormatter::toString(maxDate()) + "]");
             return forward_;
         }
 
@@ -144,7 +151,11 @@ namespace QuantLib {
         inline DiscountFactor FlatForward::discount(const Date& d,
                                                     bool extrapolate) const {
             QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
-                "date outside curve definition");
+                "FlatForward::discount : "
+                "date " + DateFormatter::toString(d) +
+                " outside curve definition [" +
+                DateFormatter::toString(minDate()) + "-" +
+                DateFormatter::toString(maxDate()) + "]");
             double t = dayCounter_->yearFraction(settlementDate(),d);
             return DiscountFactor(QL_EXP(-forward_*t));
         }
@@ -154,7 +165,11 @@ namespace QuantLib {
         inline Rate FlatForward::forward(const Date& d,
                                          bool extrapolate) const {
             QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
-                "date outside curve definition");
+                "FlatForward::forward : "
+                "date " + DateFormatter::toString(d) +
+                " outside curve definition [" +
+                DateFormatter::toString(minDate()) + "-" +
+                DateFormatter::toString(maxDate()) + "]");
             return forward_;
         }
 

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/03/07 17:32:53  nando
+    more complete error message
+
     Revision 1.12  2001/02/09 19:16:46  lballabio
     removed QL_PTR_CONST macro
 
@@ -183,7 +186,11 @@ namespace QuantLib {
     : serialNumber_(serialNumber) {
         #ifdef QL_DEBUG
             QL_REQUIRE(*this >= minDate() && *this <= maxDate(),
-                        "Date outside allowed range");
+                "Date::Date : " +
+                "date " + IntegerFormatter::toString(serialNumber) +
+                "outside curve definition [" +
+                DateFormatter::toString(minDate()) + "-" +
+                DateFormatter::toString(maxDate()) + "]");
         #endif
     }
 
