@@ -57,10 +57,10 @@ namespace QuantLib {
         //@}
         //! \name inspectors
         //@{
-        Rate rate() { return r_; }
-        DayCounter dayCounter() { return dc_; }
-        Compounding compounding() { return comp_; }
-        Frequency frequency() {
+        Rate rate() const { return r_; }
+        DayCounter dayCounter() const { return dc_; }
+        Compounding compounding() const { return comp_; }
+        Frequency frequency() const {
             return freqMakesSense_ ? Frequency(Integer(freq_)) : NoFrequency;
         }
         //@}
