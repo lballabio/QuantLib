@@ -40,7 +40,7 @@ quantlib_wrap.cpp:  $(SWIG_INCLUDEDIR)/QuantLib.i \
 	$(SWIG_INCLUDEDIR)/History.i \
 	$(SWIG_INCLUDEDIR)/Distributions.i \
 	$(SWIG_INCLUDEDIR)/MontecarloPricers.i
-	$(SWIG) -python -c++ -shadow -I$(SWIG_INCLUDEDIR) -o quantlib_wrap.cpp $(SWIG_INCLUDEDIR)/QuantLib.i
+	$(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_INCLUDEDIR) -o quantlib_wrap.cpp $(SWIG_INCLUDEDIR)/QuantLib.i
 #endif
 
 python: quantlib_wrap.cpp
