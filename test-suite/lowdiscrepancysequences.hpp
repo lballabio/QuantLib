@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,11 +38,19 @@
           checking their discrepancy against known good values.
 */
 
+/*! \class QuantLib::FaureRsg <ql/RandomNumbers/faurersg.hpp>
+
+    \test a) the correctness of the returned values is tested by
+          reproducing known good values.
+
+*/
+
 class LowDiscrepancyTest {
   public:
     static void testPolynomialsModuloTwo();
     static void testSobol();
     static void testHalton();
+    static void testFaure();
     static void testMersenneTwisterDiscrepancy();
     static void testPlainHaltonDiscrepancy();
     static void testRandomStartHaltonDiscrepancy();
@@ -50,6 +58,7 @@ class LowDiscrepancyTest {
     static void testRandomStartRandomShiftHaltonDiscrepancy();
     static void testJackelSobolDiscrepancy();
     static void testUnitSobolDiscrepancy();
+
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -7645,6 +7645,12 @@
 				RelativePath="ql\RandomNumbers\centrallimitgaussianrng.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\RandomNumbers\faurersg.cpp">
+			</File>
+			<File
+				RelativePath=".\ql\RandomNumbers\faurersg.hpp">
+			</File>
+			<File
 				RelativePath="ql\RandomNumbers\haltonrsg.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">

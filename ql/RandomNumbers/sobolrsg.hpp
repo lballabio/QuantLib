@@ -62,9 +62,7 @@ namespace QuantLib {
                  unsigned long seed = 0,
                  bool unitInitialization = false);
         const sample_type& nextSequence() const;
-        const sample_type& lastSequence() const {
-            return sequence_;
-        }
+        const sample_type& lastSequence() const { return sequence_; }
         Size dimension() const { return dimensionality_; }
       private:
         static const int bits_;
@@ -78,6 +76,5 @@ namespace QuantLib {
     };
 
 }
-
 
 #endif

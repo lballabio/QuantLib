@@ -23,6 +23,7 @@ INCLUDE_DIR      = ..\..
 
 # Object files
 OBJS = \
+    "faurersg.obj$(_mt)$(_D)" \
     "haltonrsg.obj$(_mt)$(_D)" \
     "knuthuniformrng.obj$(_mt)$(_D)" \
     "lecuyeruniformrng.obj$(_mt)$(_D)" \

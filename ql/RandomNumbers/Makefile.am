@@ -7,6 +7,7 @@ include_HEADERS = \
 	core.hpp \
 	boxmullergaussianrng.hpp \
 	centrallimitgaussianrng.hpp \
+	faurersg.hpp \
 	haltonrsg.hpp \
 	inversecumgaussianrng.hpp \
 	inversecumgaussianrsg.hpp \
@@ -21,6 +22,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libRandomNumbers_la_SOURCES = \
+    faurersg.cpp \
     haltonrsg.cpp \
 	knuthuniformrng.cpp \
 	lecuyeruniformrng.cpp \

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,13 +16,14 @@
 */
 
 #include "lowdiscrepancysequences.hpp"
-#include <ql/RandomNumbers/mt19937uniformrng.hpp>
-#include <ql/RandomNumbers/sobolrsg.hpp>
-#include <ql/RandomNumbers/haltonrsg.hpp>
-#include <ql/RandomNumbers/randomsequencegenerator.hpp>
-#include <ql/RandomNumbers/primitivepolynomials.h>
-#include <ql/Math/sequencestatistics.hpp>
 #include <ql/Math/discrepancystatistics.hpp>
+#include <ql/Math/sequencestatistics.hpp>
+#include <ql/RandomNumbers/faurersg.hpp>
+#include <ql/RandomNumbers/haltonrsg.hpp>
+#include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <ql/RandomNumbers/primitivepolynomials.h>
+#include <ql/RandomNumbers/randomsequencegenerator.hpp>
+#include <ql/RandomNumbers/sobolrsg.hpp>
 
 // #define PRINT_ONLY
 #ifdef PRINT_ONLY
@@ -37,7 +38,7 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
     BOOST_MESSAGE("Testing " + IntegerFormatter::toString(PPMT_MAX_DIM) +
                   " primitive polynomials modulo two...");
 
-    static const Size jj[] = {
+    const Size jj[] = {
                  1,       1,       2,       2,       6,       6,      18,
                 16,      48,      60,     176,     144,     630,     756,
               1800,    2048,    7710,    7776,   27594,   24000,   84672,
@@ -137,7 +138,7 @@ void LowDiscrepancyTest::testSobol() {
     rsg = SobolRsg(dimensionality);
     points = Size(QL_POW(2.0, 5))-1; // five cycles
     for (i=0; i<points; i++) {
-        point = rsg .nextSequence().value;
+        point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
             BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
                        " draw (" +
@@ -151,6 +152,142 @@ void LowDiscrepancyTest::testSobol() {
     }
 }
 
+void LowDiscrepancyTest::testFaure() {
+
+    BOOST_MESSAGE("Testing Faure sequences...");
+
+    Array point;
+    // testing "high" dimensionality
+    Size dimensionality = PPMT_MAX_DIM;
+    FaureRsg rsg(dimensionality);
+    Size points = 100, i;
+    for (i=0; i<points; i++) {
+        point = rsg.nextSequence().value;
+        if (point.size()!=dimensionality) {
+            BOOST_FAIL("Faure sequence generator returns "
+                       " a sequence of wrong dimensionality: " +
+                       SizeFormatter::toString(point.size())
+                       + " instead of  " +
+                       SizeFormatter::toString(dimensionality));
+        }
+    }
+
+    // 1-dimension Faure (van der Corput sequence base 2)
+    const Real vanderCorputSequenceModuloTwo[] = {
+        // first cycle (zero excluded)
+        0.50000,
+        // second cycle
+        0.75000, 0.25000,
+        // third cycle
+        0.37500, 0.87500, 0.62500, 0.12500,
+        // fourth cycle
+        0.18750, 0.68750, 0.93750, 0.43750, 0.31250, 0.81250, 0.56250, 0.06250,
+        // fifth cycle
+        0.09375, 0.59375, 0.84375, 0.34375, 0.46875, 0.96875, 0.71875, 0.21875,
+        0.15625, 0.65625, 0.90625, 0.40625, 0.28125, 0.78125, 0.53125, 0.03125
+    };
+    dimensionality = 1;
+    rsg = FaureRsg(dimensionality);
+    points = Size(QL_POW(2.0, 5))-1; // five cycles
+    for (i=0; i<points; i++) {
+        point = rsg.nextSequence().value;
+        if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
+            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
+                       " draw, dimension 1 (" +
+                       DecimalFormatter::toString(point[0]) +
+                       ") in 3-D Faure sequence should have been " +
+                       DecimalFormatter::toString(vanderCorputSequenceModuloTwo[i]));
+        }
+    }
+
+
+
+    // 2-dimension Faure (shuffled van der Corput sequence base 2)
+    const Real FaureDimensionTwoOfTwo[] = {
+        // first cycle (zero excluded)
+        0.50000,
+        // second cycle
+        0.25000, 0.75000,
+        // third cycle
+        0.37500, 0.87500, 0.12500, 0.62500,
+        // fourth cycle
+        0.31250, 0.81250, 0.06250, 0.56250, 0.18750, 0.68750, 0.43750, 0.93750,
+        // fifth cycle
+        0.46875, 0.96875, 0.21875, 0.71875, 0.09375, 0.59375, 0.34375, 0.84375,
+        0.15625, 0.65625, 0.40625, 0.90625, 0.28125, 0.78125, 0.03125, 0.53125
+    };
+    dimensionality = 2;
+    rsg = FaureRsg(dimensionality);
+    points = Size(QL_POW(2.0, 5))-1; // five cycles
+    for (i=0; i<points; i++) {
+        point = rsg.nextSequence().value;
+        //std::cout << i+1 << ", " << ArrayFormatter::toString(point)
+        //          << std::endl;
+        if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
+            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
+                       " draw, dimension 1 (" +
+                       DecimalFormatter::toString(point[0]) +
+                       ") in 3-D Faure sequence should have been " +
+                       DecimalFormatter::toString(vanderCorputSequenceModuloTwo[i]));
+        }
+        if (point[1]!=FaureDimensionTwoOfTwo[i]) {
+            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
+                       " draw, dimension 2 (" +
+                       DecimalFormatter::toString(point[1]) +
+                       ") in 3-D Faure sequence should have been " +
+                       DecimalFormatter::toString(FaureDimensionTwoOfTwo[i]));
+        }
+    }
+
+    // 3-dimension Faure (shuffled van der Corput sequence base 3)
+    // see Glassermann...
+    const Real FaureDimensionOneOfThree[] = {
+        // first cycle (zero excluded)
+        1.0/3,  2.0/3,
+        // second cycle
+        7.0/9,  1.0/9,  4.0/9,  5.0/9,  8.0/9,  2.0/9
+    };
+    const Real FaureDimensionTwoOfThree[] = {
+        // first cycle (zero excluded)
+        1.0/3,  2.0/3,
+        // second cycle
+        1.0/9,  4.0/9,  7.0/9,  2.0/9,  5.0/9,  8.0/9
+    };
+    const Real FaureDimensionThreeOfThree[] = {
+        // first cycle (zero excluded)
+        1.0/3,  2.0/3,
+        // second cycle
+        4.0/9,  7.0/9,  1.0/9,  8.0/9,  2.0/9,  5.0/9
+    };
+
+    dimensionality = 3;
+    rsg = FaureRsg(dimensionality);
+    points = Size(QL_POW(3.0, 2))-1; // three cycles
+    for (i=0; i<points; i++) {
+        point = rsg.nextSequence().value;
+        if (point[0]!=FaureDimensionOneOfThree[i]) {
+            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
+                       " draw, dimension 1 (" +
+                       DecimalFormatter::toString(point[0]) +
+                       ") in 3-D Faure sequence should have been " +
+                       DecimalFormatter::toString(FaureDimensionOneOfThree[i]));
+        }
+        if (point[1]!=FaureDimensionTwoOfThree[i]) {
+            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
+                       " draw, dimension 2 (" +
+                       DecimalFormatter::toString(point[1]) +
+                       ") in 3-D Faure sequence should have been " +
+                       DecimalFormatter::toString(FaureDimensionTwoOfThree[i]));
+        }
+        if (point[2]!=FaureDimensionThreeOfThree[i]) {
+            BOOST_FAIL(SizeFormatter::toOrdinal(i+1) +
+                       " draw, dimension 3 (" +
+                       DecimalFormatter::toString(point[2]) +
+                       ") in 3-D Faure sequence should have been " +
+                       DecimalFormatter::toString(FaureDimensionThreeOfThree[i]));
+        }
+    }
+}
 
 void LowDiscrepancyTest::testHalton() {
 
@@ -204,7 +341,7 @@ void LowDiscrepancyTest::testHalton() {
         }
     }
 
-    static const Real vanderCorputSequenceModuloThree[] = {
+    const Real vanderCorputSequenceModuloThree[] = {
         // first cycle (zero excluded)
         1.0/3,  2.0/3,
         // second cycle
@@ -219,7 +356,7 @@ void LowDiscrepancyTest::testHalton() {
     rsg = HaltonRsg(dimensionality, 0, false, false);
     points = Size(QL_POW(3.0, 3))-1;  // three cycles of the higher dimension
     for (i=0; i<points; i++) {
-        point = rsg .nextSequence().value;
+        point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
             BOOST_FAIL("First component of " +
                        SizeFormatter::toOrdinal(i+1) +
@@ -547,7 +684,7 @@ namespace {
             Size j, k=0, jMin=10;
             stat.reset();
             #ifdef PRINT_ONLY
-            outStream << "static const Real dim" << dim
+            outStream << "const Real dim" << dim
                       << arrayName << "[] = {" ;
             #endif
             for (j=jMin; j<jMin+sampleLoops; j++) {
@@ -705,8 +842,12 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
 
 test_suite* LowDiscrepancyTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testMersenneTwisterDiscrepancy));
+
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testFaure));
+
     suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testHalton));
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testPlainHaltonDiscrepancy));
@@ -716,10 +857,13 @@ test_suite* LowDiscrepancyTest::suite() {
            &LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy));
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy));
+
     suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testPolynomialsModuloTwo));
+
     suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testSobol));
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testJackelSobolDiscrepancy));
     suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testUnitSobolDiscrepancy));
+
     return suite;
 }
