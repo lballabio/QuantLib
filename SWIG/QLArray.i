@@ -47,8 +47,6 @@ typedef QuantLib::Math::LexicographicalView<Array::iterator>
     ArrayLexicographicalView;
 typedef QuantLib::Math::LexicographicalView<Array::iterator>::y_iterator 
 	ArrayLexicographicalViewColumn;
-using QuantLib::Null;
-using QuantLib::IsNull;
 %}
 
 // array as python shadow class
@@ -130,8 +128,6 @@ class Array {
 }; 
 
 
-// typemaps
-
 %typemap(python,in) Array (Array temp), Array * (Array temp), 
   const Array & (Array temp), Array & (Array temp) {
     Array* v;
@@ -149,7 +145,7 @@ class Array {
                 (*$target)[i] = double(PyInt_AsLong(o));
             } else {
                 PyErr_SetString(PyExc_TypeError,
-                    "sequence must contain doubles");
+                    "doubles expected");
                 return NULL;
             }
         }
@@ -157,7 +153,7 @@ class Array {
       (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
         $target = v;
     } else {
-        PyErr_SetString(PyExc_TypeError,"not a sequence");
+        PyErr_SetString(PyExc_TypeError,"Array expected");
         return NULL;
     }
 };
