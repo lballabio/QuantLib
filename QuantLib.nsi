@@ -43,8 +43,6 @@ SectionIn 1 2
     File "News.txt"
     File "QuantLib.dsw"
     File "QuantLib.sln"
-    File "Examples.dsw"
-    File "Examples.sln"
 
     File "*.txt"
     File "*.TXT"
@@ -75,8 +73,8 @@ SectionIn 1 2
     File /r "Examples\*.dsp"
     File /r "Examples\*.txt"
     File /r "Examples\*.mak"
-    File /r "Examples\*.dsw"
-    File /r "Examples\*.sln"
+    File /r "Examples\Examples.dsw"
+    File /r "Examples\Examples.sln"
     File /r "Examples\*.vcproj"
 
     SetOutPath $INSTDIR\Docs
@@ -88,7 +86,6 @@ SectionIn 1 2
     File /r "Docs\*.docs"
     File /r "Docs\*.doxy"
     File /r "Docs\*.html"
-    File /r "Docs\*.in"
     File /r "Docs\*.jpg"
     File /r "Docs\*.mak"
     File /r "Docs\*.png"
