@@ -36,7 +36,6 @@ include_HEADERS = \
 	dataformatters.hpp \
 	date.hpp \
 	daycounter.hpp \
-	depositrate.hpp \
 	errors.hpp \
 	expressiontemplates.hpp \
 	forwardvolsurface.hpp \

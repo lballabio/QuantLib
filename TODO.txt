@@ -37,7 +37,6 @@ LIBRARY
     handle library versioning to allow multiple installed versions
     rename all files/dirs to lowercase no spaces (except INSTALL, TODO?)
     histogram class
-    remove deprecated classes
 
 DOCUMENTATION ***
     enforce fulpath&classesinclude DoxyGen requirements

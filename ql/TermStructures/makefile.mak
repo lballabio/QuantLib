@@ -16,8 +16,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = piecewiseconstantforwards.obj$(_D) \
-       piecewiseflatforward.obj$(_D) \
+OBJS = piecewiseflatforward.obj$(_D) \
        ratehelpers.obj$(_D)
 
 # Tools to be used

@@ -1,7 +1,7 @@
 
 /*! \defgroup deprecated Deprecated classes
 
-    The use of the above classes is deprecated since they will be
-    removed in future releases.
+    The use of classes and functions in the above list is deprecated.
+    They will be removed in future releases.
 */
 

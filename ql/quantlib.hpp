@@ -36,7 +36,6 @@
 #include "ql/dataformatters.hpp"
 #include "ql/date.hpp"
 #include "ql/daycounter.hpp"
-#include "ql/depositrate.hpp"
 #include "ql/errors.hpp"
 #include "ql/expressiontemplates.hpp"
 #include "ql/forwardvolsurface.hpp"
@@ -182,7 +181,6 @@
 #include "ql/Solvers1D/secant.hpp"
 
 #include "ql/TermStructures/flatforward.hpp"
-#include "ql/TermStructures/piecewiseconstantforwards.hpp"
 #include "ql/TermStructures/piecewiseflatforward.hpp"
 #include "ql/TermStructures/ratehelpers.hpp"
 
