@@ -80,13 +80,11 @@
     #pragma comment(lib,"QuantLib.lib")
 #endif
 
-#ifndef _MT
-    #ifndef _DLL
-        #ifdef _DEBUG
-            #error Set 'C/C++ | Code Generation | Debug Multithreaded DLL'
-        #else
-            #error Set 'C/C++ | Code Generation | Multithreaded DLL'
-        #endif
+#if !defined (_MT) || !defined(_DLL)
+    #ifdef _DEBUG
+        #error Set 'Debug Multithreaded DLL' under C/C++ | Code Generation
+    #else
+        #error Set 'Multithreaded DLL' under C/C++ | Code Generation
     #endif
 #endif
 

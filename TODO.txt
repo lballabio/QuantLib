@@ -1,5 +1,18 @@
 
 solve copyright issues for external packages (COOOL, GAlib, etc.)
+Gnumeric
+ISDA/FpML
+Bloomberg
+BankOf
+ItalianBanks
+Waters
+DerivativesStrategies
+GARP
+PRMIA
+
+chech disable warning 4786 better
+understand difference between multi-threaded and multi-threaded dll
+&& (_MSC_VER >= 1200)
 
 DISTRIBUTING
     RPM package

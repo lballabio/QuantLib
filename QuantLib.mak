@@ -269,6 +269,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -360,8 +361,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\shortfloatingcoupon.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -381,6 +381,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -472,8 +473,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\shortfloatingcoupon.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -720,6 +720,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -811,8 +812,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\shortfloatingcoupon.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -832,6 +832,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -923,8 +924,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\shortfloatingcoupon.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1170,6 +1170,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -1261,8 +1262,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\shortfloatingcoupon.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1282,6 +1282,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -1373,8 +1374,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\shortfloatingcoupon.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1621,6 +1621,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
+	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -1712,8 +1713,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\shortfloatingcoupon.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1733,6 +1733,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
+	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -1824,8 +1825,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\shortfloatingcoupon.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
