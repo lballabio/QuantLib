@@ -23,25 +23,37 @@
 
 namespace QuantLib {
 
-    Date Calendar::roll(const Date& d , RollingConvention c) const {
+    Date Calendar::roll(const Date& d ,
+			RollingConvention c,
+			const Date& origin) const {
         QL_REQUIRE(d!=Date(), "Calendar::roll : null date");
         Date d1 = d;
-        if (c == Following || c == ModifiedFollowing) {
+        if (c == Following || c == ModifiedFollowing ||
+	    c == MonthEndReference) {
             while (isHoliday(d1))
                 d1++;
-            if (c == ModifiedFollowing && d1.month() != d.month()) {
-                return roll(d,Preceding);
-            }
+            if (c == ModifiedFollowing || c == MonthEndReference) {
+	       if (d1.month() != d.month()) {
+		  return roll(d,Preceding);
+	       }
+	       if (c == MonthEndReference && origin != Date()) {
+		  if (isLastBusinessDayOfMonth(origin) &&
+		      !isLastBusinessDayOfMonth(d1)) {
+		     d1 = Date(d1.lastDayOfMonth(),d1.month(),d1.year());
+		     return roll(d1,Preceding);
+		  }
+	       }
+	    }
         } else if (c == Preceding || c == ModifiedPreceding) {
-            while (isHoliday(d1))
-                d1--;
-            if (c == ModifiedPreceding && d1.month() != d.month()) {
-                return roll(d,Following);
-            }
+	    while (isHoliday(d1))
+	       d1--;
+	    if (c == ModifiedPreceding && d1.month() != d.month()) {
+	       return roll(d,Following);
+	    }
         } else {
-            throw Error("Unknown rolling convention");
+	    throw Error("Unknown rolling convention");
         }
-        return d1;
+	return d1;
     }
 
     Date Calendar::advance(const Date& d, int n, TimeUnit unit,
@@ -69,7 +81,7 @@ namespace QuantLib {
             return d1;
         } else {
             Date d1 = d.plus(n,unit);
-            return roll(d1,c);
+            return roll(d1,c,d);
         }
         QL_DUMMY_RETURN(Date());
     }

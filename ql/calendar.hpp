@@ -46,10 +46,14 @@ namespace QuantLib {
                                  first business day after the holiday. */
         Following,          /*!< Choose the first business day after
                                  the given holiday. */
-        ModifiedFollowing   /*!< Choose the first business day after
+        ModifiedFollowing,  /*!< Choose the first business day after
                                  the given holiday unless it belongs to a
                                  different month, in which case choose the
                                  first business day before the holiday. */
+        MonthEndReference   /*!< Choose the first business day after
+                                 the given holiday, if the original date falls
+				 on last business day of month result reverts
+				 to first business day before month-end */
     };
 
     //! abstract base class for calendar implementations
@@ -82,6 +86,10 @@ namespace QuantLib {
             given market.
         */
         bool isBusinessDay(const Date& d) const;
+        /*! Returns <tt>true</tt> iff the date is last business day for the
+            month in given market.
+        */
+        bool isLastBusinessDayOfMonth(const Date& d) const;
         /*! Returns <tt>true</tt> iff the date is a holiday for the given
             market.
         */
@@ -90,7 +98,8 @@ namespace QuantLib {
             the given date and convention.
         */
         Date roll(const Date&,
-                  RollingConvention convention = Following) const;
+                  RollingConvention convention = Following,
+		  const Date& origin = Date()) const;
         /*! Advances the given date of the given number of business days and
             returns the result.
             \note The input date is not modified.
@@ -142,6 +151,11 @@ namespace QuantLib {
 
     inline bool Calendar::isBusinessDay(const Date& d) const {
         return impl_->isBusinessDay(d);
+    }
+
+    inline bool Calendar::isLastBusinessDayOfMonth(const Date& d) const {
+       return (roll(Date(d.lastDayOfMonth(),d.month(),d.year()),
+		    Preceding) == d);
     }
 
     inline bool Calendar::isHoliday(const Date& d) const {
