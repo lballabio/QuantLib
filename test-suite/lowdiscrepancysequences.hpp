@@ -47,6 +47,8 @@
 
 class LowDiscrepancyTest {
   public:
+    static void testSeedGenerator();
+
     static void testPolynomialsModuloTwo();
 
     static void testSobol();

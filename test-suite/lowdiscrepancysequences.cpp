@@ -21,6 +21,7 @@
 #include <ql/RandomNumbers/faurersg.hpp>
 #include <ql/RandomNumbers/haltonrsg.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <ql/RandomNumbers/seedgenerator.hpp>
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/randomizedlds.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
@@ -33,6 +34,11 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+void LowDiscrepancyTest::testSeedGenerator() {
+    BOOST_MESSAGE("Testing random seed generator...");
+    long temp = SeedGenerator::get();
+}
 
 void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
@@ -74,7 +80,6 @@ void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
     BOOST_MESSAGE("Testing Randomized low discrepancy sequences up to "
                   "dimension " + IntegerFormatter::toString(PPMT_MAX_DIM) +
                   "...");
-
 
     RamdomizedLDS<SobolRsg, RandomSequenceGenerator<MersenneTwisterUniformRng> > rldsg(PPMT_MAX_DIM);
     rldsg.nextSequence();
@@ -946,6 +951,9 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
 
 test_suite* LowDiscrepancyTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testSeedGenerator));
 
     suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testPolynomialsModuloTwo));
 
