@@ -24,6 +24,7 @@
 
 #include "ql/ShortRateModels/calibrationhelper.hpp"
 #include "ql/Instruments/capfloor.hpp"
+#include "ql/Indexes/xibor.hpp"
 
 namespace QuantLib {
 
