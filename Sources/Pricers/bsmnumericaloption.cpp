@@ -37,7 +37,8 @@ namespace QuantLib {
 		BSMNumericalOption::BSMNumericalOption(BSMOption::Type type, double underlying, double strike, 
 		  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility, int gridPoints)
 		: BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility), 
-		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false),theGrid(theGridPoints){
+		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false),theGrid(theGridPoints),
+		  theInitialPrices(theGridPoints){
 			hasBeenCalculated = false;
 		}
 		
@@ -105,30 +106,29 @@ namespace QuantLib {
 			}
 		}
 
-		void BSMNumericalOption::initializeGrid(double min, double max) const {			
-			theGridLogSpacing = (QL_LOG(max)-QL_LOG(min))/(theGridPoints-1);
+		void BSMNumericalOption::initializeGrid() const {			
+			theGridLogSpacing = (QL_LOG(sMax)-QL_LOG(sMin))/(theGridPoints-1);
 			double edx = QL_EXP(theGridLogSpacing);
-			theGrid[0] = min;
+			theGrid[0] = sMin;
 			int j;
 			for (j=1; j<theGridPoints; j++)
 				theGrid[j] = theGrid[j-1]*edx;
 		}
 		
 		void BSMNumericalOption::initializeInitialCondition() const {
-			thePrices = Array(theGridPoints);
 			int j;
 			switch (theType) {
 			  case Call:
 				for(j=0; j<theGridPoints; j++)
-					thePrices[j] = QL_MAX(theGrid[j]-theStrike,0.0);
+					theInitialPrices[j] = QL_MAX(theGrid[j]-theStrike,0.0);
 				break;
 			  case Put:
 				for(j=0; j<theGridPoints; j++)
-					thePrices[j] = QL_MAX(theStrike-theGrid[j],0.0);
+					theInitialPrices[j] = QL_MAX(theStrike-theGrid[j],0.0);
 				break;
 			  case Straddle:
 				for(j=0; j<theGridPoints; j++)
-					thePrices[j] = QL_FABS(theStrike-theGrid[j]);
+					theInitialPrices[j] = QL_FABS(theStrike-theGrid[j]);
 				break;
 			  default:
 				throw IllegalArgumentError("BSMEuropeanOption: invalid option type");  
@@ -137,8 +137,8 @@ namespace QuantLib {
 		
 		void BSMNumericalOption::initializeOperator() const {
 			theOperator = BSMOperator(theGridPoints, theGridLogSpacing, theRiskFreeRate, theUnderlyingGrowthRate, theVolatility);
-			theOperator.setLowerBC(BoundaryCondition(BoundaryCondition::Neumann,thePrices[1]-thePrices[0]));
-			theOperator.setHigherBC(BoundaryCondition(BoundaryCondition::Neumann,thePrices[theGridPoints-1]-thePrices[theGridPoints-2]));
+			theOperator.setLowerBC(BoundaryCondition(BoundaryCondition::Neumann,theInitialPrices[1]-theInitialPrices[0]));
+			theOperator.setHigherBC(BoundaryCondition(BoundaryCondition::Neumann,theInitialPrices[theGridPoints-1]-theInitialPrices[theGridPoints-2]));
 		}
 		
 		// Useful functions

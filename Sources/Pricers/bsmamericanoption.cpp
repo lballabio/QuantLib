@@ -36,7 +36,7 @@ namespace QuantLib {
 		double BSMAmericanOption::value() const {
 			if (!hasBeenCalculated) {
 				setGridLimits();
-				initializeGrid(sMin,sMax);
+				initializeGrid();
 				initializeInitialCondition();
 				initializeOperator();
 				// model used for calculation
@@ -51,7 +51,7 @@ namespace QuantLib {
 				double analyticEuroGamma = analyticEuro.gamma();
 				double analyticEuroTheta = analyticEuro.theta();
 				// 2) calculate value and greeks of the European option numerically
-				Array theEuroPrices = thePrices;
+				Array theEuroPrices = theInitialPrices;
 				// rollback until dt
 				model.rollback(theEuroPrices,theResidualTime,dt,theTimeSteps-1);
 				double numericEuroValuePlus = valueAtCenter(theEuroPrices);
@@ -65,7 +65,8 @@ namespace QuantLib {
 				double numericEuroValueMinus = valueAtCenter(theEuroPrices);
 				double numericEuroTheta = (numericEuroValuePlus-numericEuroValueMinus)/(2.0*dt);
 				// 3) calculate the greeks of the American option numerically on the same grid
-				Handle<StepCondition<Array> > americanCondition(new BSMAmericanCondition(thePrices));
+				Array thePrices = theInitialPrices;
+				Handle<StepCondition<Array> > americanCondition(new BSMAmericanCondition(theInitialPrices));
 				// rollback until dt
 				model.rollback(thePrices,theResidualTime,dt,theTimeSteps-1,americanCondition);
 				double numericAmericanValuePlus = valueAtCenter(thePrices);

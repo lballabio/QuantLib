@@ -51,7 +51,7 @@ namespace QuantLib {
 			double firstDerivativeAtCenter(const Array& a, const Array& g) const;
 			double secondDerivativeAtCenter(const Array& a, const Array& g) const;
 			void setGridLimits() const;
-			void initializeGrid(double smin, double smax) const;
+			void initializeGrid() const;
 			void initializeInitialCondition() const;
 			void initializeOperator() const;
 			// input data
@@ -63,7 +63,7 @@ namespace QuantLib {
 		
 			mutable Array theGrid;
 			mutable FiniteDifferences::BSMOperator theOperator;
-			mutable Array thePrices;
+			mutable Array theInitialPrices;
 			// temporaries
 			mutable double sMin, sMax;
 		  private:
