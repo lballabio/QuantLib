@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/03/21 09:56:47  marmar
+    virtual method added
+
     Revision 1.1  2001/03/20 15:13:09  marmar
     MultiPeriodOption is a generalization of DividendAmericanOption
 
@@ -65,9 +68,9 @@ namespace QuantLib {
                                                             stepCondition_;
             mutable Handle<FiniteDifferences::StandardFiniteDifferenceModel> 
                                                             model_;
-            virtual void executeIntermediateStep(int step) const = 0;
-            virtual void initializeStepCondition() const;
             virtual void initializeModel() const;
+            virtual void initializeStepCondition() const;
+            virtual void executeIntermediateStep(int step) const = 0;
         };
 
     }

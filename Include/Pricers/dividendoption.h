@@ -26,6 +26,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/03/21 09:56:47  marmar
+    virtual method added
+
     Revision 1.1  2001/03/20 15:15:55  marmar
     DividendOption and DividendShoutOption are examples of
      MultiPeriodOption's
@@ -51,10 +54,6 @@ namespace QuantLib {
                 const std::vector<double>& dividends = std::vector<double>(), 
                 const std::vector<Time>& exdivdates = std::vector<Time>(), 
                 int timeSteps = 100, int gridPoints = 100);
-
-            Handle<BSMOption> clone() const { 
-                return Handle<BSMOption>(new DividendOption(*this));
-            }
             private:
             std::vector<double> dividends_;
             
