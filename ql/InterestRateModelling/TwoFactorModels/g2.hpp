@@ -31,16 +31,15 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class G2 : public TwoFactorModel {
+        class G2 : public TwoFactorModel, public AffineModel {
           public:
             G2(const RelinkableHandle<TermStructure>& termStructure);
             virtual ~G2() {}
 
-            virtual bool hasDiscountBondOptionFormula() const { return true; }
-            virtual double discountBondOption(Option::Type type,
-                                              double strike,
-                                              Time maturity,
-                                              Time bondMaturity) const;
+            double discountBondOption(Option::Type type,
+                                      double strike,
+                                      Time maturity,
+                                      Time bondMaturity) const;
           protected:
             virtual void generateParameters() {
                 phi_ = G2FittingParameter(termStructure(), 

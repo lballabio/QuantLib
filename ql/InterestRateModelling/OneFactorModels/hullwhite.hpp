@@ -31,9 +31,8 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        //! General single-factor Hull-White model class.
-        /*! This class implements the general single-factor Hull-White model
-            defined by 
+        //! Extended Vasicek model class.
+        /*! This class implements the extended Vasicek model defined by 
             \f[ 
                 dr_t = (\theta(t) - \alpha(t)r_t)dt + \sigma(t)dW_t.
             \f]
@@ -43,9 +42,9 @@ namespace QuantLib {
                 dx_t = - \alpha(t)r_tdt + \sigma(t)dW_t 
             \f]
         */
-        class GeneralHullWhite : public OneFactorModel {
+        class ExtendedVasicek : public OneFactorModel {
           public:
-            GeneralHullWhite(
+            ExtendedVasicek(
                 const Parameter& a,
                 const Parameter& sigma,
                 const RelinkableHandle<TermStructure>& termStructure) 
@@ -54,7 +53,7 @@ namespace QuantLib {
                 a_ = a;
                 sigma_ = sigma;
             }
-            virtual ~GeneralHullWhite() {}
+            virtual ~ExtendedVasicek() {}
 
             virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const {
                 return Handle<Lattices::Tree>(
@@ -114,11 +113,11 @@ namespace QuantLib {
             \f]
         */
 
-        class HullWhite : public GeneralHullWhite {
+        class HullWhite : public ExtendedVasicek, public OneFactorAffineModel {
           public:
             HullWhite(const RelinkableHandle<TermStructure>& termStructure)
-            : GeneralHullWhite(ConstantParameter(0.1), ConstantParameter(0.1), 
-                               termStructure) {
+            : ExtendedVasicek(ConstantParameter(0.1), ConstantParameter(0.1), 
+                              termStructure) {
                 generateParameters();
             }
             virtual ~HullWhite() {}
@@ -128,14 +127,11 @@ namespace QuantLib {
                     new OwnTrinomialTree(process(), grid));
             }
 
-            virtual bool hasDiscountBondFormula() const { return true; }
-            virtual double discountBond(Time T, Time s, Rate r) const;
-
-            virtual bool hasDiscountBondOptionFormula() const { return true; }
-            virtual double discountBondOption(Option::Type type,
-                                              double strike,
-                                              Time maturity,
-                                              Time bondMaturity) const;
+            double discountBond(Time T, Time s, Rate r) const;
+            double discountBondOption(Option::Type type,
+                                      double strike,
+                                      Time maturity,
+                                      Time bondMaturity) const;
 
           protected:
             virtual void generateParameters() {

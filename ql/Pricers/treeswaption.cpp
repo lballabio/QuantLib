@@ -52,11 +52,8 @@ namespace QuantLib {
                 times.sort();
                 times.unique();
 
-                Handle<OneFactorModel> model(model_);
-                QL_REQUIRE(!model.isNull(), "Only 1-d trees are supported");
-
                 TimeGrid timeGrid(times, timeSteps_);
-                tree = model->tree(timeGrid);
+                tree = model_->tree(timeGrid);
             } else {
                 tree = tree_;
             }

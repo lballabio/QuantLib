@@ -32,9 +32,6 @@ namespace QuantLib {
             QL_REQUIRE(!model_.isNull(), 
                        "AnalyticalCapFloor: cannot price without model!");
 
-            QL_REQUIRE(model_->hasDiscountBondOptionFormula(),
-                "AnalyticalCapFloor: No analytical formula for discount bond options");
-
             Option::Type optionType;
             switch (parameters_.type) {
               case Instruments::VanillaCapFloor::Cap:

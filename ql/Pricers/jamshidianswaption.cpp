@@ -35,7 +35,7 @@ namespace QuantLib {
         class JamshidianSwaption::rStarFinder : public ObjectiveFunction {
           public:
             rStarFinder(const SwaptionParameters &params,
-                        const Handle<OneFactorModel>& model,
+                        const Handle<OneFactorAffineModel>& model,
                         const std::vector<double>& amounts)
             : strike_(params.nominals[0]), maturity_(params.exerciseTimes[0]),
               times_(params.fixedPayTimes), amounts_(amounts), model_(model) {
@@ -56,7 +56,7 @@ namespace QuantLib {
             Time maturity_;
             const std::vector<Time>& times_;
             const std::vector<double>& amounts_;
-            const Handle<OneFactorModel>& model_;
+            const Handle<OneFactorAffineModel>& model_;
         };
 
         void JamshidianSwaption::calculate() const {
@@ -67,37 +67,26 @@ namespace QuantLib {
             QL_REQUIRE(maturity==parameters_.floatingResetTimes[0],
                 "Maturity must be equal to first reset date");
 
-            Handle<OneFactorModel> model(model_);
-            QL_REQUIRE(!model.isNull(), 
-                "Jamshidian decomposition is only valid for one-factor models");
-
-
-            Rate r0 = model_->termStructure()->forward(0.0);
-
-            QL_REQUIRE(model->hasDiscountBondFormula(),
-                "No analytical formula for discount bonds");
-            QL_REQUIRE(model->hasDiscountBondOptionFormula(),
-                "No analytical formula for discount bond options");
 
             std::vector<double> amounts(parameters_.fixedCoupons);
             amounts.back() += parameters_.nominals[0];
 
-            rStarFinder finder(parameters_, model, amounts);
+            rStarFinder finder(parameters_, model_, amounts);
             Solvers1D::Brent s1d = Solvers1D::Brent();
             double minStrike = -10.0;
             double maxStrike = 10.0;
             s1d.setMaxEvaluations(10000);
             s1d.setLowBound(minStrike);
             s1d.setHiBound(maxStrike);
-            double rStar = s1d.solve(finder, 1e-8, r0, minStrike, maxStrike);
+            double rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
             Option::Type type = parameters_.payFixed?Option::Put:Option::Call;
             Size size = parameters_.fixedCoupons.size();
             double value = 0.0;
             for (Size i=0; i<size; i++) {
-                double strike = model->discountBond(maturity,
+                double strike = model_->discountBond(maturity,
                     parameters_.fixedPayTimes[i], rStar);
-                double dboValue = model->discountBondOption(
+                double dboValue = model_->discountBondOption(
                     type, strike, maturity, parameters_.fixedPayTimes[i]);
                 value += amounts[i]*dboValue;
             }

@@ -25,6 +25,7 @@
 #ifndef quantlib_instruments_capfloor_h
 #define quantlib_instruments_capfloor_h
 
+#include "ql/dataformatters.hpp"
 #include <ql/instrument.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
@@ -102,6 +103,18 @@ namespace QuantLib {
             std::vector<Time> endTimes;
             std::vector<Rate> exerciseRates;
             std::vector<double> nominals;
+            void validate() const {
+                QL_REQUIRE(
+                    endTimes.size() == startTimes.size(),
+                    "Invalid pricing parameters: size of startTimes(" +
+                    IntegerFormatter::toString(startTimes.size()) +
+                    ") different from that of endTimes(" +
+                    IntegerFormatter::toString(endTimes.size()) +
+                    ")");
+                QL_REQUIRE(exerciseRates.size()==startTimes.size(),
+                    "Invalid pricing parameters");
+            }
+
         };
 
         //! %results from cap/floor calculation
@@ -164,18 +177,36 @@ namespace QuantLib {
         /*! Derived engines only need to implement the <tt>calculate()</tt>
             method
         */
-        class CapFloorPricingEngine : public OptionPricingEngine {
+        template<class ModelType>
+        class CapFloorPricingEngine : public OptionPricingEngine,
+                                      public Patterns::Observer,
+                                      public Patterns::Observable {
           public:
-            Arguments* parameters();
-            void validateParameters() const;
-            const Results* results() const;
-            void setModel(const Handle<InterestRateModelling::Model>& model) {
+            CapFloorPricingEngine() {}
+            CapFloorPricingEngine(const Handle<ModelType>& model) 
+            : model_(model) {
+                registerWith(model_);
+            }
+            ~CapFloorPricingEngine() {
+                unregisterWith(model_);
+            }
+            Arguments* parameters() { return &parameters_; }
+            const Results* results() const { return &results_; }
+            void validateParameters() const { parameters_.validate(); }
+
+            void setModel(const Handle<ModelType>& model) {
+                unregisterWith(model_);
                 model_ = model;
+                QL_REQUIRE(!model_.isNull(), "Not an adequate model!");
+                registerWith(model_);
+            }
+            void update() {
+                notifyObservers();
             }
           protected:
             Instruments::CapFloorParameters parameters_;
             mutable Instruments::CapFloorResults results_;
-            Handle<InterestRateModelling::Model> model_;
+            Handle<ModelType> model_;
         };
 
     }

@@ -94,10 +94,9 @@ namespace QuantLib {
             double value =  C(t,s)*QL_EXP(-B(s-t)*r);
             return value;
         }
-/*
-        double CoxIngersollRoss::discountBondOption(
+        double ExtendedCoxIngersollRoss::discountBondOption(
             Option::Type type, double strike, Time t, Time s) const {
-
+/*
             double discountT = termStructure()->discount(t);
             double discountS = termStructure()->discount(s);
             if (t < QL_EPSILON) {
@@ -135,8 +134,9 @@ namespace QuantLib {
                 return call;
             else
                 return call - discountS + strike*discountT;
-        }
 */
+            return 0.0;
+        }
 
     }
 

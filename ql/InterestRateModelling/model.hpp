@@ -39,31 +39,27 @@ namespace QuantLib {
         class CalibrationSet;
 
         //! Abstract short-rate model class
-        class Model {
+        class Model : public Patterns::Observer, 
+                      public Patterns::Observable {
           public:
             Model(Size nParameters, 
                   const RelinkableHandle<TermStructure>& termStructure)
-            : parameters_(nParameters), termStructure_(termStructure) {}
+            : parameters_(nParameters), termStructure_(termStructure) {
+                registerWith(termStructure_);
+            }
 
             virtual ~Model() {}
 
-            virtual bool hasDiscountBondFormula() const { return false; }
-            virtual double discountBond(
-                Time now, 
-                Time maturity, 
-                Rate r) const { return Null<double>(); }
-
-            virtual bool hasDiscountBondOptionFormula() const { return false; }
-            virtual double discountBondOption(
-                Option::Type type,
-                double strike,
-                Time maturity,
-                Time bondMaturity) const { return Null<double>(); }
+            void update() { 
+                generateParameters();
+                notifyObservers(); 
+            }
 
             void calibrate(
                 CalibrationSet& instruments,
                 const Handle<Optimization::OptimizationMethod>& method);
 
+            //! Returns the present term structure implied by the model
             const RelinkableHandle<TermStructure>& termStructure() const {
                 return termStructure_;
             }
@@ -98,7 +94,7 @@ namespace QuantLib {
                     }
                 }
                 QL_REQUIRE(p==params.end(),"Parameter array too big!");
-                generateParameters();
+                update();
             }
 
             class CalibrationFunction;
@@ -106,22 +102,13 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& termStructure_;
         };
 
-        //! Term structure implied by a model
-        class ModelTermStructure : public DiscountStructure {
+        class AffineModel {
           public:
-            ModelTermStructure(const Model* model, Time t0, Rate r0) 
-            : model_(model), t0_(t0), r0_(r0) {
-                QL_REQUIRE(model_->hasDiscountBondFormula(),
-                    "No discount bond formula for this model");
-            }
-
-            virtual DiscountFactor discountImpl(Time t, bool extrapolate) {
-                return model_->discountBond(t0_, t0_+t, r0_);
-            }
-          private:
-            const Model* model_;
-            Time t0_;
-            Rate r0_;
+            virtual double discountBondOption(
+                Option::Type type,
+                double strike,
+                Time maturity,
+                Time bondMaturity) const = 0;
         };
 
     }

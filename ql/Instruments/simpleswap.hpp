@@ -85,9 +85,6 @@ namespace QuantLib {
             CashFlows::FloatingRateCouponVector floatingLeg_;
         };
 
-
-        // inline definitions
-
         inline double SimpleSwap::fixedLegBPS() const {
             return (payFixedRate_ ? firstLegBPS() : secondLegBPS());
         }
@@ -96,6 +93,48 @@ namespace QuantLib {
             return (payFixedRate_ ? secondLegBPS() : firstLegBPS());
         }
 
+        class VanillaSwap : public SimpleSwap {
+          public:
+            VanillaSwap(
+                bool payFixedRate,
+                // dates
+                const Date& startDate, int n, TimeUnit units,
+                const Calendar& calendar,
+                RollingConvention rollingConvention,
+                double nominal,
+                // fixed leg
+                int fixedFrequency,
+                Rate couponRate,
+                bool fixedIsAdjusted,
+                const DayCounter& fixedDayCount,
+                // floating leg
+                int floatingFrequency,
+                const Handle<Indexes::Xibor>& index,
+                int indexFixingDays,
+                const std::vector<Spread>& spreads,
+                // hook to term structure
+                const RelinkableHandle<TermStructure>& termStructure,
+                // description
+                const std::string& isinCode = "",
+                const std::string& description = "")
+            : SimpleSwap(payFixedRate, startDate, n, units, calendar,
+                         rollingConvention, std::vector<double>(1, nominal), 
+                         fixedFrequency, std::vector<Rate>(1, couponRate),
+                         fixedIsAdjusted, fixedDayCount, floatingFrequency,
+                         index, indexFixingDays, spreads, termStructure, 
+                         isinCode, description),
+              fixedRate_(couponRate), nominal_(nominal) {}
+
+            Rate fixedRate() const { return fixedRate_; }
+            Rate fairRate() const {
+                return fixedRate_ - NPV()/fixedLegBPS();
+            }
+            double nominal() const { return nominal_; }
+
+          private:
+            Rate fixedRate_;
+            double nominal_;
+        };
     }
 
 }

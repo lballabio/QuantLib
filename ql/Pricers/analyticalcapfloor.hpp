@@ -32,11 +32,14 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Analytical pricer for cap/floor
-        class AnalyticalCapFloor : public CapFloorPricingEngine {
+        class AnalyticalCapFloor 
+        : public CapFloorPricingEngine<InterestRateModelling::AffineModel> {
           public:
-            AnalyticalCapFloor() {}
+            AnalyticalCapFloor(
+                const Handle<InterestRateModelling::AffineModel>& model) 
+            : CapFloorPricingEngine<InterestRateModelling::AffineModel>(model) 
+            {}
             void calculate() const;
-
         };
 
     }

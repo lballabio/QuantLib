@@ -82,6 +82,29 @@ namespace QuantLib {
             class StandardConstraint;
         };
 
+        class OneFactorAffineModel : public AffineModel {
+          public:
+            virtual double discountBond(
+                Time now,
+                Time maturity,
+                Rate rate) const = 0;
+        };
+
+        //! Term structure implied by a model
+        class ModelTermStructure : public DiscountStructure {
+          public:
+            ModelTermStructure(
+                const OneFactorAffineModel* model, Time t0, Rate r0) 
+            : model_(model), t0_(t0), r0_(r0) {}
+
+            virtual DiscountFactor discountImpl(Time t, bool extrapolate) {
+                return model_->discountBond(t0_, t0_+t, r0_);
+            }
+          private:
+            const OneFactorAffineModel* model_;
+            Time t0_;
+            Rate r0_;
+        };
     }
 
 }

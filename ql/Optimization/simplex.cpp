@@ -20,6 +20,11 @@
     ql/Optimization/%simplex.cpp
 */
 
+/* The implementation of the algorithm was highly inspired by
+ * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
+ * Chapter 10
+ */
+
 #include "ql/Optimization/simplex.hpp"
 
 namespace QuantLib {

@@ -56,6 +56,15 @@ namespace QuantLib {
 
             const FixedRateCouponVector& fixedLeg = swap_->fixedLeg();
             parameters->payFixed = swap_->payFixedRate();
+
+            Handle<VanillaSwap> vanilla(swap_);
+            if (!vanilla.isNull()) {
+                parameters->isVanilla = true;
+                parameters->fixedRate = vanilla->fixedRate();
+                parameters->fairRate = vanilla->fairRate();
+            } else {
+                parameters->isVanilla = false;
+            }
             parameters->fixedPayTimes.clear();
             parameters->fixedCoupons.clear();
             for (i=0; i<fixedLeg.size(); i++) {
@@ -124,23 +133,4 @@ namespace QuantLib {
     
     }
 
-    namespace Pricers {
-
-        Arguments* SwaptionPricingEngine::parameters() {
-            return &parameters_;
-        }
-
-        void SwaptionPricingEngine::validateParameters() const {
-            QL_REQUIRE(
-                parameters_.fixedPayTimes.size() ==
-                parameters_.fixedCoupons.size(), "Invalid pricing parameters");
-        }
-
-        const Results* SwaptionPricingEngine::results() const {
-            return &results_;
-        }
-
-    }
-
 }
-

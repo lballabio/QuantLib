@@ -49,11 +49,6 @@ namespace QuantLib {
 
                 virtual void addTimes(std::list<Time>& times) const;
 
-                virtual void setAnalyticalPricingEngine();
-                virtual void setNumericalPricingEngine(
-                    const Handle<Lattices::Tree>& tree);
-                virtual void setNumericalPricingEngine(Size timeSteps);
-
                 virtual void setModel(const Handle<Model>& model);
                 virtual double modelValue();
 
@@ -64,7 +59,6 @@ namespace QuantLib {
                 RelinkableHandle<TermStructure> termStructure_;
                 Handle<Instruments::SimpleSwap> swap_;
                 Handle<Instruments::Swaption> swaption_;
-                Handle<Pricers::SwaptionPricingEngine> engine_;
             };
         }
     }

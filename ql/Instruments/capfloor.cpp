@@ -23,7 +23,6 @@
 // $Id$
 
 #include "ql/Instruments/capfloor.hpp"
-#include "ql/dataformatters.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
 
 namespace QuantLib {
@@ -85,31 +84,6 @@ namespace QuantLib {
                       "null value returned from cap/floor pricer");
         }
     
-    }
-
-    namespace Pricers {
-
-        Arguments* CapFloorPricingEngine::parameters() {
-            return &parameters_;
-        }
-
-        void CapFloorPricingEngine::validateParameters() const {
-            QL_REQUIRE(
-                parameters_.endTimes.size() == parameters_.startTimes.size(),
-                "Invalid pricing parameters: size of startTimes(" +
-                IntegerFormatter::toString(parameters_.startTimes.size()) +
-                ") different from that of endTimes(" +
-                IntegerFormatter::toString(parameters_.endTimes.size()) +
-                ")");
-            QL_REQUIRE(
-                parameters_.exerciseRates.size()==parameters_.startTimes.size(),
-                "Invalid pricing parameters");
-        }
-
-        const Results* CapFloorPricingEngine::results() const {
-            return &results_;
-        }
-
     }
 
 }

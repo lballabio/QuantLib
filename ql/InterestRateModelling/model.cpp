@@ -49,7 +49,6 @@ namespace QuantLib {
             virtual double value(
                 const Array& params) {
                 model_->setParams(params);
-                instruments_.update(model_);
                 std::cout << "parameters set to " << params << std::endl;
 
                 double value = 0.0;

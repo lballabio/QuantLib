@@ -39,7 +39,6 @@ namespace QuantLib {
 
             if (tree_.isNull()) {
                 QL_REQUIRE(!model_.isNull(), "Cannot price without model!");
-                Handle<OneFactorModel> model(model_);
 
                 std::list<Time> times(0);
                 Size nPeriods = parameters_.startTimes.size();
@@ -52,7 +51,7 @@ namespace QuantLib {
                 times.unique();
 
                 TimeGrid timeGrid(times, timeSteps_);
-                tree = model->tree(timeGrid);
+                tree = model_->tree(timeGrid);
             } else {
                 tree = tree_;
             }

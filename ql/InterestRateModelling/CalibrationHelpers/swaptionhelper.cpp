@@ -23,12 +23,8 @@
 // $Id$
 
 #include "ql/CashFlows/floatingratecoupon.hpp"
-#include "ql/Math/normaldistribution.hpp"
 #include "ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp"
-#include "ql/Pricers/jamshidianswaption.hpp"
-#include "ql/Pricers/treeswaption.hpp"
-
-#include <iostream>
+#include "ql/Pricers/blackswaption.hpp"
 
 namespace QuantLib {
 
@@ -39,10 +35,6 @@ namespace QuantLib {
             using Instruments::SimpleSwap;
             using Instruments::Swaption;
             using Instruments::SwaptionParameters;
-
-            using Pricers::SwaptionPricingEngine;
-            using Pricers::JamshidianSwaption;
-            using Pricers::TreeSwaption;
 
             SwaptionHelper::SwaptionHelper(
                 const Period& maturity,
@@ -103,15 +95,11 @@ namespace QuantLib {
                   std::vector<double>(1, 0.0),
                   termStructure));
                 exerciseRate_ = fairFixedRate;
-
-                engine_ = Handle<SwaptionPricingEngine>(new
-                    TreeSwaption());
-
+                engine_  = Handle<OptionPricingEngine>( 
+                    new Pricers::BlackSwaption(blackModel_));
                 swaption_ = Handle<Swaption>(new
                     Swaption(swap_, EuropeanExercise(startDate), termStructure,
                              engine_));
-                swaption_->setPricingEngine(engine_);
-
                 marketValue_ = blackPrice(volatility_->value());
             }
 
@@ -129,24 +117,9 @@ namespace QuantLib {
                     times.push_back(params->floatingPayTimes[i]);
             }
 
-            void SwaptionHelper::setAnalyticalPricingEngine() {
-                engine_ =  Handle<SwaptionPricingEngine>(
-                    new Pricers::JamshidianSwaption());
-            }
-
-            void SwaptionHelper::setNumericalPricingEngine(
-                const Handle<Lattices::Tree>& tree) {
-                engine_ = Handle<SwaptionPricingEngine>(
-                    new Pricers::TreeSwaption(tree));
-            }
-
-            void SwaptionHelper::setNumericalPricingEngine(Size timeSteps) {
-                engine_ = Handle<SwaptionPricingEngine>(
-                    new Pricers::TreeSwaption(timeSteps));
-            }
-
             void SwaptionHelper::setModel(const Handle<Model>& model) {
-                engine_->setModel(model);
+                Handle<Pricers::SwaptionPricingEngine<Model> > engine(engine_);
+                engine->setModel(model);
             }
 
             double SwaptionHelper::modelValue() {
@@ -155,30 +128,14 @@ namespace QuantLib {
             }
 
             double SwaptionHelper::blackPrice(double sigma) const {
-                //FIXME: not completed, to check
-                SwaptionParameters* params = dynamic_cast<SwaptionParameters*>(
-                    engine_->parameters());
-                QL_REQUIRE(params!=0, "These are not swaption parameters");
-                const std::vector<Time>& times = params->fixedPayTimes;
-                double p = 0.0;
-                for (Size i=0; i<times.size(); i++) {
-                    p += termStructure_->discount(times[i]);
-                }
-                double swapRate =
-                    exerciseRate_ - swap_->NPV()/swap_->fixedLegBPS();
-                Time start = params->floatingResetTimes[0];
-                double value;
-                if (start>0.0) {
-                    Math::CumulativeNormalDistribution f;
-                    double v = sigma*QL_SQRT(start);
-                    double d1 = QL_LOG(swapRate/exerciseRate_)/v + 0.5*v;
-                    double d2 = d1 - v;
-                    value = p*(swapRate*f(d1) - exerciseRate_*f(d2));
-                } else {
-                    value = p*QL_MAX(swapRate - exerciseRate_, 0.0);
-                }
+                Handle<OptionPricingEngine> black(
+                    new Pricers::BlackSwaption(blackModel_));
+                swaption_->setPricingEngine(black);
+                double value = swaption_->NPV();
+                swaption_->setPricingEngine(engine_);
                 return value;
             }
+
         }
     }
 }

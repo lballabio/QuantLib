@@ -26,7 +26,8 @@
 #define quantlib_interest_rate_modelling_calibration_helper_h
 
 #include <ql/grid.hpp>
-#include <ql/InterestRateModelling/onefactormodel.hpp>
+#include <ql/InterestRateModelling/blackmodel.hpp>
+#include <ql/InterestRateModelling/model.hpp>
 #include <ql/Lattices/tree.hpp>
 
 #include <list>
@@ -40,7 +41,7 @@ namespace QuantLib {
           public:
             CalibrationHelper(
                 const RelinkableHandle<MarketElement>& volatility)
-            : volatility_(volatility) {
+            : volatility_(volatility), blackModel_(volatility_) {
                 registerWith(volatility_);
             }
             void update() { 
@@ -72,9 +73,15 @@ namespace QuantLib {
 
             virtual double blackPrice(double volatility) const = 0;
 
+            void setPricingEngine(const Handle<OptionPricingEngine>& engine) {
+                engine_ = engine;
+            }
+
           protected:
             double marketValue_;
             RelinkableHandle<MarketElement> volatility_;
+            Handle<BlackModel> blackModel_;
+            Handle<OptionPricingEngine> engine_;
 
           private:
             class ImpliedVolatilityHelper;
@@ -82,43 +89,12 @@ namespace QuantLib {
 
         class CalibrationSet : public std::vector<Handle<CalibrationHelper> > {
           public:
-            enum Type {Analytical, Numerical, Simultaneous};
 
-            void setAnalyticalCalibration() {
-                type_ = Analytical;
-                for (const_iterator it = begin(); it != end(); it++)
-                    (*it)->setAnalyticalPricingEngine();
+            void setPricingEngine(const Handle<OptionPricingEngine>& engine) {
+                for (Size i=0; i<size(); i++)
+                    (*this)[i]->setPricingEngine(engine);
             }
 
-            void setNumericalCalibration(Size timeSteps) {
-                type_ = Numerical;
-                for (const_iterator it = begin(); it != end(); it++)
-                    (*it)->setNumericalPricingEngine(timeSteps);
-            }
-
-            void setSimultaneousCalibration(Size timeSteps) {
-                type_ = Simultaneous;
-                std::list<Time> times;
-                for (const_iterator it = begin(); it != end(); it++) {
-                    (*it)->addTimes(times);
-                }
-                times.sort();
-                times.unique();
-                timeGrid_ = TimeGrid(times, timeSteps);
-            }
-
-            void update(const Handle<Model>& model) {
-                if (type_ == Simultaneous) {
-                    Handle<Lattices::Tree> tree = 
-                        Handle<OneFactorModel>(model)->tree(timeGrid_);
-                    for (const_iterator it = begin(); it != end(); it++)
-                        (*it)->setNumericalPricingEngine(tree);
-                }
-            }
-
-          private:
-           TimeGrid timeGrid_;
-           Type type_;
         };
 
     }

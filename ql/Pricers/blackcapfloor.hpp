@@ -13,40 +13,36 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file jamshidianswaption.hpp
-    \brief Swaption pricer using Jamshidian's decomposition
+/*! \file blackcapfloor.hpp
+    \brief CapFloor calculated using the Black formula
 
     \fullpath
-    ql/Pricers/%jamshidianswaption.hpp
+    ql/Pricers/%blackcapfloor.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_jamshidian_swaption_h
-#define quantlib_pricers_jamshidian_swaption_h
+#ifndef quantlib_pricers_black_capfloor_h
+#define quantlib_pricers_black_capfloor_h
 
-#include "ql/Instruments/swaption.hpp"
-#include "ql/InterestRateModelling/onefactormodel.hpp"
+#include <ql/Instruments/capfloor.hpp>
+#include <ql/InterestRateModelling/blackmodel.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! Jamshidian swaption pricer
-        class JamshidianSwaption : public 
-            SwaptionPricingEngine<InterestRateModelling::OneFactorAffineModel> {
+        //! CapFloor priced by the Black formula
+        class BlackCapFloor : public
+            CapFloorPricingEngine<InterestRateModelling::BlackModel> {
           public:
-            JamshidianSwaption(
-                const Handle<InterestRateModelling::OneFactorAffineModel>& modl)
-            : SwaptionPricingEngine<InterestRateModelling::OneFactorAffineModel>
-                (modl) {} 
+            BlackCapFloor(const Handle<InterestRateModelling::BlackModel>& mod)
+            : CapFloorPricingEngine<InterestRateModelling::BlackModel>(mod) {}
             void calculate() const;
-          private:
-            class rStarFinder;
-            friend class rStarFinder;
         };
 
     }
+
 }
 
 #endif

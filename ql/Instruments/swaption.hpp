@@ -59,6 +59,9 @@ namespace QuantLib {
         class SwaptionParameters : public virtual Arguments {
           public:
             SwaptionParameters() : payFixed(false),
+                                   isVanilla(false),
+                                   fairRate(0.0),
+                                   fixedRate(0.0),
                                    fixedPayTimes(0),
                                    fixedCoupons(0),
                                    floatingResetTimes(0),
@@ -67,6 +70,9 @@ namespace QuantLib {
                                    exerciseType(Exercise::Type(-1)),
                                    exerciseTimes(0) {}
             bool payFixed;
+            bool isVanilla;
+            Rate fairRate;
+            Rate fixedRate;
             std::vector<Time> fixedPayTimes;
             std::vector<double> fixedCoupons;
             std::vector<Time> floatingResetTimes;
@@ -74,6 +80,10 @@ namespace QuantLib {
             std::vector<double> nominals;
             Exercise::Type exerciseType;
             std::vector<Time> exerciseTimes;
+            void validate() const {
+                QL_REQUIRE(fixedPayTimes.size() == fixedCoupons.size(), 
+                           "Invalid pricing parameters");
+            }
         };
 
         //! %results from swaption calculation
@@ -194,18 +204,36 @@ namespace QuantLib {
         /*! Derived engines only need to implement the <tt>calculate()</tt>
             method
         */
-        class SwaptionPricingEngine : public OptionPricingEngine {
+        template<class ModelType>
+        class SwaptionPricingEngine : public OptionPricingEngine,
+                                      public Patterns::Observer,
+                                      public Patterns::Observable {
           public:
-            Arguments* parameters();
-            void validateParameters() const;
-            const Results* results() const;
-            void setModel(const Handle<InterestRateModelling::Model>& model) {
+            SwaptionPricingEngine() {}
+            SwaptionPricingEngine(const Handle<ModelType>& model) 
+            : model_(model) {
+                registerWith(model_);
+            }
+            ~SwaptionPricingEngine() {
+                unregisterWith(model_);
+            }
+            Arguments* parameters() { return &parameters_; }
+            const Results* results() const { return &results_; }
+            void validateParameters() const { parameters_.validate(); }
+
+            void setModel(const Handle<ModelType>& model) {
+                unregisterWith(model_);
                 model_ = model;
+                QL_REQUIRE(!model_.isNull(), "Not an adequate model!");
+                registerWith(model_);
+            }
+            void update() {
+                notifyObservers();
             }
           protected:
             Instruments::SwaptionParameters parameters_;
             mutable Instruments::SwaptionResults results_;
-            Handle<InterestRateModelling::Model> model_;
+            Handle<ModelType> model_;
         };
 
     }

@@ -8,6 +8,8 @@ include_HEADERS = \
     analyticalcapfloor.hpp \
     barrieroption.hpp \
     binaryoption.hpp \
+    blackcapfloor.hpp \
+    blackswaption.hpp \
     cliquetoption.hpp \
     continuousgeometricapo.hpp \
     discretegeometricapo.hpp \
@@ -44,6 +46,8 @@ EXTRA_DIST=makefile.mak
 libPricers_la_SOURCES = \
     analyticalcapfloor.cpp \
     barrieroption.cpp \
+    blackcapfloor.cpp \
+    blackswaption.cpp \
     fdbermudanoption.cpp \
     binaryoption.cpp \
     cliquetoption.cpp \

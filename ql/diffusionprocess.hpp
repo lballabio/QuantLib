@@ -45,9 +45,11 @@ namespace QuantLib {
 
         virtual double drift(Time t, double x) const = 0;
         virtual double diffusion(Time t, double x) const = 0;
+        //! Euler approximation of the expectation
         virtual double expectation(Time t0, double x0, Time dt) const {
             return x0 + drift(t0, x0)*dt;
         }
+        //! Euler approximation of the variance
         virtual double variance(Time t0, double x0, Time dt) const {
             double sigma = diffusion(t0, x0);
             return sigma*sigma*dt;

@@ -115,22 +115,20 @@ namespace QuantLib {
 
         };
 
-        class ExtendedCoxIngersollRoss : public GeneralCoxIngersollRoss {
+        class ExtendedCoxIngersollRoss 
+        : public GeneralCoxIngersollRoss, public OneFactorAffineModel {
           public:
             ExtendedCoxIngersollRoss(
                 const RelinkableHandle<TermStructure>& termStructure);
 
             virtual ~ExtendedCoxIngersollRoss() {}
 
-            virtual bool hasDiscountBondFormula() const { return true; }
-            virtual double discountBond(Time T, Time s, Rate r) const;
-/*
-            virtual bool hasDiscountBondOptionFormula() const { return true; }
-            virtual double discountBondOption(Option::Type type, 
-                                              double strike,
-                                              Time T, 
-                                              Time s) const;
-*/
+            double discountBond(Time T, Time s, Rate r) const;
+            double discountBondOption(Option::Type type,
+                                      double strike,
+                                      Time maturity,
+                                      Time bondMaturity) const;
+
             virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const {
                 return Handle<Lattices::Tree>(
                     new OwnTrinomialTree(process(), grid, true));

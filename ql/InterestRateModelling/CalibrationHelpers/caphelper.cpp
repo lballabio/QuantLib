@@ -26,10 +26,7 @@
 #include "ql/CashFlows/cashflowvectors.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/Instruments/swap.hpp"
-#include "ql/Math/normaldistribution.hpp"
-#include "ql/Pricers/analyticalcapfloor.hpp"
-#include "ql/Pricers/treecapfloor.hpp"
-#include "ql/Solvers1D/brent.hpp"
+#include "ql/Pricers/blackcapfloor.hpp"
 
 namespace QuantLib {
 
@@ -43,13 +40,6 @@ namespace QuantLib {
             using Instruments::VanillaCap;
             using Instruments::CapFloorParameters;
             using Instruments::Swap;
-            using Pricers::CapFloorPricingEngine;
-
-            class NullEngine : public CapFloorPricingEngine {
-              public:
-                NullEngine() {}
-                void calculate() const {}
-            };
 
             CapHelper::CapHelper(
                 const Period& length,
@@ -90,12 +80,11 @@ namespace QuantLib {
                     new Swap(floatingLeg, fixedLeg, termStructure));
                 Rate fairRate = fixedRate - 
                     swap->NPV()/swap->secondLegBPS();
-
-                engine_ = Handle<CapFloorPricingEngine>(new NullEngine());
+                engine_  = Handle<OptionPricingEngine>( 
+                    new Pricers::BlackCapFloor(blackModel_));
                 cap_ = Handle<VanillaCap>(
                     new VanillaCap(floatingLeg, std::vector<Rate>(1, fairRate), 
                                    termStructure, engine_));
-                cap_->setPricingEngine(engine_);
                 marketValue_ = blackPrice(volatility_->value());
             }
 
@@ -109,24 +98,9 @@ namespace QuantLib {
                 }
             }
 
-            void CapHelper::setAnalyticalPricingEngine() {
-                engine_ =  Handle<CapFloorPricingEngine>(
-                    new Pricers::AnalyticalCapFloor());
-            }
-
-            void CapHelper::setNumericalPricingEngine(
-                const Handle<Lattices::Tree>& tree) {
-                engine_ = Handle<CapFloorPricingEngine>(
-                    new Pricers::TreeCapFloor(tree));
-            }
-
-            void CapHelper::setNumericalPricingEngine(Size timeSteps) {
-                engine_ = Handle<CapFloorPricingEngine>(
-                    new Pricers::TreeCapFloor(timeSteps));
-            }
-
             void CapHelper::setModel(const Handle<Model>& model) {
-                engine_->setModel(model);
+                Handle<Pricers::CapFloorPricingEngine<Model> > engine(engine_);
+                engine->setModel(model);
             }
 
             double CapHelper::modelValue() {
@@ -135,37 +109,11 @@ namespace QuantLib {
             }
 
             double CapHelper::blackPrice(double sigma) const {
-                Math::CumulativeNormalDistribution f;
-                double value = 0.0;
-
-                CapFloorParameters* params =
-                    dynamic_cast<CapFloorParameters*>(engine_->parameters());
-                for (Size i=0; i<params->startTimes.size(); i++) {
-                    Rate exerciseRate;
-                    if (i<params->exerciseRates.size())
-                        exerciseRate = params->exerciseRates[i];
-                    else
-                        exerciseRate = params->exerciseRates.back();
-
-                    Time start = params->startTimes[i];
-                    Time end = params->endTimes[i];
-                    double tenor = end - start;
-                    double p = termStructure_->discount(start);
-                    double q = termStructure_->discount(end);
-                    double forward = QL_LOG(p/q)/tenor;
-                    double capletValue;
-                    if (start > QL_EPSILON) {
-                        double v = sigma*QL_SQRT(start);
-                        double d1 = QL_LOG(forward/exerciseRate)/v+ 0.5*v;
-                        double d2 = d1 - v;
-                        capletValue = q*tenor*
-                            (forward*f(d1) - exerciseRate*f(d2));
-                    } else {
-                        capletValue = q*tenor*
-                            QL_MAX(forward - exerciseRate, 0.0);
-                    }
-                    value += capletValue;
-                }
+                Handle<OptionPricingEngine> black(
+                    new Pricers::BlackCapFloor(blackModel_));
+                cap_->setPricingEngine(black);
+                double value = cap_->NPV();
+                cap_->setPricingEngine(engine_);
                 return value;
             }
         }

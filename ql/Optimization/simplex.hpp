@@ -39,6 +39,9 @@ namespace QuantLib {
         //! Multi-dimensionnal Simplex class
         class Simplex : public OptimizationMethod {
           public:
+            /*! Constructor taking as input \f$ \lambda \f$ as the
+                characteristic length and tol as the precision
+            */
             Simplex(double lambda, double tol) 
             : OptimizationMethod(), lambda_(lambda), tol_(tol) {}
             virtual ~Simplex() {}
@@ -46,7 +49,6 @@ namespace QuantLib {
             double extrapolate(OptimizationProblem& P, Size iHighest, 
                                double factor);
 
-            //! minimize the optimization problem P
             virtual void minimize(OptimizationProblem& P);
           private:
             double lambda_;

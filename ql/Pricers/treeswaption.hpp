@@ -26,6 +26,7 @@
 #define quantlib_pricers_tree_swaption_h
 
 #include <ql/Instruments/swaption.hpp>
+#include <ql/InterestRateModelling/onefactormodel.hpp>
 #include <ql/Lattices/tree.hpp>
 
 namespace QuantLib {
@@ -33,11 +34,15 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Swaption priced in a tree
-        class TreeSwaption : public SwaptionPricingEngine {
+        class TreeSwaption : public
+            SwaptionPricingEngine<InterestRateModelling::OneFactorModel> {
           public:
-            TreeSwaption() {}
+            TreeSwaption(
+                const Handle<InterestRateModelling::OneFactorModel>& model,
+                Size timeSteps) 
+            : SwaptionPricingEngine<InterestRateModelling::OneFactorModel>
+                (model), timeSteps_(timeSteps) {} 
 
-            TreeSwaption(Size timeSteps) : timeSteps_(timeSteps) {}
             TreeSwaption(const Handle<Lattices::Tree>& tree) 
             : tree_(tree), timeSteps_(0) {}
 

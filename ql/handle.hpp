@@ -136,6 +136,7 @@ namespace QuantLib {
         template <class U>
         Handle& operator=(const Handle<U>& from) {
             HandleCopier::copy(from,*this);
+            return *this;
         }
         Handle& operator=(const Handle& from);
         //@}
