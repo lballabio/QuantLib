@@ -131,7 +131,12 @@ namespace QuantLib {
                 wpt = blackTS_->blackVariance(t+dt, strike, extrapolate);
                 QL_REQUIRE(wpt>=w,
                     "LocalVolSurface::localVolImpl : "
-                    "decreasing variance");
+                    "decreasing variance at strike "
+                    + DoubleFormatter::toString(strike) +
+                    " between time "
+                    + DoubleFormatter::toString(t) +
+                    " and time "
+                    + DoubleFormatter::toString(t+dt));
                 dwdt = (wpt-w)/dt;
             } else {
                 dt = QL_MIN(0.0001, t/2.0);
@@ -139,10 +144,20 @@ namespace QuantLib {
                 wmt = blackTS_->blackVariance(t-dt, strike, extrapolate);
                 QL_REQUIRE(wpt>=w,
                     "LocalVolSurface::localVolImpl : "
-                    "decreasing variance");
+                    "decreasing variance at strike "
+                    + DoubleFormatter::toString(strike) +
+                    " between time "
+                    + DoubleFormatter::toString(t) +
+                    " and time "
+                    + DoubleFormatter::toString(t+dt));
                 QL_REQUIRE(w>=wmt,
                     "LocalVolSurface::localVolImpl : "
-                    "decreasing variance");
+                    "decreasing variance at strike "
+                    + DoubleFormatter::toString(strike) +
+                    " between time "
+                    + DoubleFormatter::toString(t-dt) +
+                    " and time "
+                    + DoubleFormatter::toString(t));
                 dwdt = (wpt-wmt)/(2.0*dt);
             }
 
@@ -156,8 +171,11 @@ namespace QuantLib {
                 double result = dwdt / den;
                 QL_REQUIRE(result>=0.0,
                     "LocalVolSurface::localVolImpl : "
-                    "negative vol^2, "
-                    "the black vol surface is not smooth enough");
+                    "negative local vol^2 at strike "
+                    + DoubleFormatter::toString(strike) +
+                    " and time "
+                    + DoubleFormatter::toString(t) +
+                    "; the black vol surface is not smooth enough");
                 return QL_SQRT(result);
     //            return QL_SQRT(dwdt / (1.0 - y/w*dwdy +
     //                0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy + 0.5*d2wdy2));
