@@ -41,6 +41,7 @@ PYTHON_BCC_LIB	= bccpython.lib
 # Tools to be used
 CC			= bcc32
 LINK		= ilink32
+TLIB		= tlib
 COFF2OMF	= coff2omf
 SWIG		= swig1.3a5
 DOXYGEN		= doxygen
@@ -77,6 +78,13 @@ CC_OPTS = $(CC_BASE_OPTS)
 !endif
 
 LINK_OPTS	= -q -x -L$(BCC_LIBS)
+!ifdef DEBUG
+LINK_OPTS	= $(LINK_OPTS) -v
+!endif
+
+!ifdef DEBUG
+TLIB_OPTS	= /P64
+!endif
 
 # Generic rules
 .cpp.obj:
@@ -122,7 +130,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i $(SWIG_DIR)\Date.i $(SW
 # QuantLib library
 $(OUTPUT_DIR)\QuantLib.lib:: Core Calendars DayCounters FiniteDifferences Math Pricers Solvers1D TermStructures
 	if exist $(OUTPUT_DIR)\QuantLib.lib del $(OUTPUT_DIR)\QuantLib.lib
-	tlib $(OUTPUT_DIR)\QuantLib.lib /a $(QUANTLIB_OBJS)
+	$(TLIB) $(TLIB_OPTS) $(OUTPUT_DIR)\QuantLib.lib /a $(QUANTLIB_OBJS)
 
 # Core
 Core: $(OUTPUT_DIR) $(CORE_OBJS)
