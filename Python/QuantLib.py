@@ -1253,6 +1253,9 @@ class VarTool:
         self.this = apply(QuantLibc.new_VarTool,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_VarTool(self)
     def __repr__(self):
         return "<C VarTool instance at %s>" % (self.this,)
 class VarToolPtr(VarTool):

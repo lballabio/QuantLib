@@ -12828,23 +12828,20 @@ static PyObject *_wrap_Himalaya_errorEstimate(PyObject *self, PyObject *args, Py
 static PyObject *_wrap_new_EverestOption(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     Array *arg0 ;
-    Array *arg1 ;
-    Matrix *arg2 ;
-    Rate arg3 ;
-    Time arg4 ;
-    long arg5 ;
-    long arg6 = 0 ;
+    Matrix *arg1 ;
+    Rate arg2 ;
+    Time arg3 ;
+    long arg4 ;
+    long arg5 = 0 ;
     Array temp ;
     PyObject * obj0  = 0 ;
-    Array temp0 ;
-    PyObject * obj1  = 0 ;
-    PyObject * argo2 =0 ;
+    PyObject * argo1 =0 ;
     char *kwnames[] = {
-        "underlying","dividendYield","covariance","riskFreeRate","residualTime","samples","seed", NULL 
+        "dividendYield","covariance","riskFreeRate","residualTime","samples","seed", NULL 
     };
     EverestOption *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOddl|l:new_EverestOption",kwnames,&obj0,&obj1,&argo2,&arg3,&arg4,&arg5,&arg6)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOddl|l:new_EverestOption",kwnames,&obj0,&argo1,&arg2,&arg3,&arg4,&arg5)) return NULL;
     {
         Array* v;
         if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
@@ -12873,38 +12870,10 @@ static PyObject *_wrap_new_EverestOption(PyObject *self, PyObject *args, PyObjec
             return NULL;
         }
     }
-    {
-        Array* v;
-        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
-            int size = (PyTuple_Check(obj1) ? 
-            PyTuple_Size(obj1) :
-            PyList_Size(obj1));
-            temp0 = Array(size);
-            arg1 = &temp0;
-            for (int i=0; i<size; i++) {
-                PyObject* o = PySequence_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else {
-                    PyErr_SetString(PyExc_TypeError,
-                    "doubles expected");
-                    return NULL;
-                }
-            }
-        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
-        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
-            arg1 = v;
-        }else {
-            PyErr_SetString(PyExc_TypeError,"Array expected");
-            return NULL;
-        }
-    }
-    if ((SWIG_ConvertPtr(argo2,(void **) &arg2,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
+    if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
     {
         try {
-            result = (EverestOption *)new EverestOption((Array const &)*arg0,(Array const &)*arg1,(Matrix const &)*arg2,arg3,arg4,arg5,arg6);
+            result = (EverestOption *)new EverestOption((Array const &)*arg0,(Matrix const &)*arg1,arg2,arg3,arg4,arg5);
             
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
@@ -17309,6 +17278,39 @@ static PyObject *_wrap_new_VarTool(PyObject *self, PyObject *args, PyObject *kwa
 }
 
 
+static PyObject *_wrap_delete_VarTool(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    VarTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_VarTool",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_VarTool,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
 static PyObject *_wrap_VarTool_valueAtRisk(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     VarTool *arg0 ;
@@ -20171,6 +20173,7 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "GaussianRandomGenerator_next", (PyCFunction) _wrap_GaussianRandomGenerator_next, METH_VARARGS | METH_KEYWORDS },
 	 { "GaussianRandomGenerator_weight", (PyCFunction) _wrap_GaussianRandomGenerator_weight, METH_VARARGS | METH_KEYWORDS },
 	 { "new_VarTool", (PyCFunction) _wrap_new_VarTool, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_VarTool", (PyCFunction) _wrap_delete_VarTool, METH_VARARGS | METH_KEYWORDS },
 	 { "VarTool_valueAtRisk", (PyCFunction) _wrap_VarTool_valueAtRisk, METH_VARARGS | METH_KEYWORDS },
 	 { "VarTool_shortfall", (PyCFunction) _wrap_VarTool_shortfall, METH_VARARGS | METH_KEYWORDS },
 	 { "VarTool_averageShortfall", (PyCFunction) _wrap_VarTool_averageShortfall, METH_VARARGS | METH_KEYWORDS },
