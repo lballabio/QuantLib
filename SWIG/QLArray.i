@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.12  2001/04/24 10:57:19  lballabio
+    Removed leak in xyzVector and Array typemaps
+
     Revision 1.11  2001/04/11 11:06:16  lballabio
     Rubified Array
 
@@ -172,11 +175,14 @@ class Array {
             PyObject* o = PySequence_GetItem($source,i);
             if (PyFloat_Check(o)) {
                 (*$target)[i] = PyFloat_AsDouble(o);
+                Py_DECREF(o);
             } else if (PyInt_Check(o)) {
                 (*$target)[i] = double(PyInt_AsLong(o));
+                Py_DECREF(o);
             } else {
                 PyErr_SetString(PyExc_TypeError,
                     "doubles expected");
+                Py_DECREF(o);
                 return NULL;
             }
         }

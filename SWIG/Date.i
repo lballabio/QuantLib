@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.32  2001/04/24 10:57:19  lballabio
+    Removed leak in xyzVector and Array typemaps
+
     Revision 1.31  2001/04/23 12:29:29  lballabio
     Fixed linking in setup.py (and some tweakings in SWIG interfaces)
 
@@ -623,11 +626,14 @@ class DateVector {
             PyObject* o = PySequence_GetItem($source,i);
             if (o == Py_None) {
                 (*$target)[i] = Null<Date>();
+                Py_DECREF(o);
             } else if ((SWIG_ConvertPtr(o,(void **) &x,
               (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
                 (*$target)[i] = *x;
+                Py_DECREF(o);
             } else {
                 PyErr_SetString(PyExc_TypeError,"Dates expected");
+                Py_DECREF(o);
                 return NULL;
             }
         }

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.27  2001/04/24 10:57:19  lballabio
+    Removed leak in xyzVector and Array typemaps
+
     Revision 1.26  2001/04/11 11:06:16  lballabio
     Rubified Array
 
@@ -177,10 +180,13 @@ class IntVector {
             PyObject* o = PySequence_GetItem($source,i);
             if (o == Py_None) {
                 (*$target)[i] = Null<int>();
+                Py_DECREF(o);
             } else if (PyInt_Check(o)) {
                 (*$target)[i] = int(PyInt_AsLong(o));
+                Py_DECREF(o);
             } else {
                 PyErr_SetString(PyExc_TypeError,"ints expected");
+                Py_DECREF(o);
                 return NULL;
             }
         }
@@ -319,12 +325,16 @@ class DoubleVector {
             PyObject* o = PySequence_GetItem($source,i);
             if (o == Py_None) {
                 (*$target)[i] = Null<double>();
+                Py_DECREF(o);
             } else if (PyFloat_Check(o)) {
                 (*$target)[i] = PyFloat_AsDouble(o);
+                Py_DECREF(o);
             } else if (PyInt_Check(o)) {
                 (*$target)[i] = double(PyInt_AsLong(o));
+                Py_DECREF(o);
             } else {
                 PyErr_SetString(PyExc_TypeError,"doubles expected");
+                Py_DECREF(o);
                 return NULL;
             }
         }
