@@ -44,7 +44,7 @@ namespace {
 namespace QuantLib {
 
     TimeGrid::TimeGrid(const std::list<Time>& times, Size steps)
-    : std::vector<Time>(0) {
+    : std::vector<Time>(0), mandatoryTimeIndex_(1, 0) {
         Time last = times.back();
         Time dtMax;
         // The resulting timegrid have points at times listed in the input
@@ -64,6 +64,7 @@ namespace QuantLib {
         Time periodBegin = 0.0;
         std::list<Time>::const_iterator t;
         for (t = times.begin(); t != times.end(); t++) {
+            mandatoryTimeIndex_.push_back(size());
             Time periodEnd = *t;
             if (periodBegin >= periodEnd) // Should we use a QL_REQUIRE?
                 continue;
@@ -73,6 +74,7 @@ namespace QuantLib {
                 push_back(periodBegin + n*dt);
             periodBegin = periodEnd;
         }
+        mandatoryTimeIndex_.push_back(size());
         push_back(periodBegin); // Note periodBegin = periodEnd
     }
 
@@ -86,21 +88,21 @@ namespace QuantLib {
                     break;
             }
             if (i == 0) {
-                throw Error("Using inadequate tree: all nodes "
+                throw Error("Using inadequate TimeGrid: all nodes "
                             "are later than the required time t = "
                             + DoubleFormatter::toString(t,12) +
                             " (earliest node is t1 = "
                             + DoubleFormatter::toString((*this)[0],12) +
                             ")");
             } else if (i == size()) {
-                throw Error("Using inadequate tree: all nodes "
+                throw Error("Using inadequate TimeGrid: all nodes "
                             "are earlier than the required time t = "
                             + DoubleFormatter::toString(t,12) +
                             " (latest node is t1 = "
                             + DoubleFormatter::toString((*this)[size()-1],12) +
                             ")");
             } else {
-                throw Error("Using inadequate tree: the nodes closest "
+                throw Error("Using inadequate TimeGrid: the nodes closest "
                             "to the required time t = "
                             + DoubleFormatter::toString(t,12) +
                             " are t1 = " 

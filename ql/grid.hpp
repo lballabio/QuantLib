@@ -52,6 +52,8 @@ namespace QuantLib {
         Size findIndex(Time t) const;
 
         Time dt(Size i) const;
+      private:
+          std::vector<Size> mandatoryTimeIndex_;
     };
 
     //Inline definitions
@@ -65,6 +67,9 @@ namespace QuantLib {
         Time dt = end/steps;
         for (Size i=0; i<=steps; i++)
             push_back(dt*i);
+        mandatoryTimeIndex_ = std::vector<Size>(2);
+        mandatoryTimeIndex_[0] = 0;
+        mandatoryTimeIndex_[1] = steps+1;
     }
 
     inline Time TimeGrid::dt(Size i) const {
