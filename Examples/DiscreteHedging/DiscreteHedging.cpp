@@ -142,7 +142,7 @@ int main(int, char* [])
     try {
         QL_IO_INIT
 
-        Time maturity = 1./12.;   // 1 month
+        Time maturity = 1.0/12.0;   // 1 month
         Real strike = 100;
         Real underlying = 100;
         Volatility volatility = 0.20; // 20%
