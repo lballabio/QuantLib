@@ -103,11 +103,11 @@ namespace QuantLib {
             case the traditional Box-Muller approach and its variants
             would not preserve the sequence's low-discrepancy.
         */
-        class InvCumulativeNormalDistribution2
+        class InvCumulativeNormalDistribution
         : public std::unary_function<double,double> {
           public:
-            InvCumulativeNormalDistribution2(double average = 0.0,
-                                             double sigma   = 1.0);
+            InvCumulativeNormalDistribution(double average = 0.0,
+                                            double sigma   = 1.0);
             // function
             double operator()(double x) const;
           private:
@@ -142,11 +142,11 @@ namespace QuantLib {
             It might be Hill and Davis (1973), or Odeh and Evans (1974), or
 		    Beasley and Springer (1977)
         */
-        class InvCumulativeNormalDistribution
+        class InvCumulativeNormalDistribution2
         : public std::unary_function<double,double> {
           public:
-            InvCumulativeNormalDistribution(double average = 0.0,
-                                            double sigma   = 1.0);
+            InvCumulativeNormalDistribution2(double average = 0.0,
+                                             double sigma   = 1.0);
             // function
             double operator()(double x) const;
           private:
