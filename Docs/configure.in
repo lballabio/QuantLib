@@ -22,7 +22,9 @@ AM_CONDITIONAL(PDFLATEX_FOUND, test x$PDFLATEX != xnotfound)
 AC_PATH_PROG(DVIPS, dvips, notfound)
 AM_CONDITIONAL(DVIPS_FOUND, test x$DVIPS != xnotfound)
 
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile \
+          pages/Makefile)
+
 echo "----------------------------------------------------------------"
 echo "You can now type one of the following commands:"
 echo ""

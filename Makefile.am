@@ -45,7 +45,6 @@ dist-hook:
 	cp $(srcdir)/Docs/*.mak $(distdir)/Docs
 	cp $(srcdir)/Docs/*.tex $(distdir)/Docs
 	cp $(srcdir)/Docs/*.css $(distdir)/Docs
-	cp $(srcdir)/Docs/*.docs $(distdir)/Docs
 	cp $(srcdir)/Docs/*.doxy $(distdir)/Docs
 	cp $(srcdir)/Docs/*.html $(distdir)/Docs
 	cp $(srcdir)/Docs/bootstrap $(distdir)/Docs
@@ -59,4 +58,6 @@ dist-hook:
 	cp $(srcdir)/Docs/images/QL-largish.eps $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.pdf $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/sfnetlogo.png $(distdir)/Docs/images/
+	mkdir $(distdir)/Docs/pages
+	cp $(srcdir)/Docs/pages/*.docs $(distdir)/Docs/pages/
 

@@ -1,8 +1,8 @@
 
-/*! \page coreclasses The core classes
+/*! \page coreclasses Core classes
     Documentation for this part of the library is in progress.
 
-    The root namespace %QuantLib contains what can be
+    The root namespace QuantLib contains what can be
     considered the QuantLib foundation, i.e., the core
     of abstract classes upon which the rest of the library is built.
 
@@ -23,21 +23,7 @@
     Spread, or DiscountFactor. All these types act
     as, and indeed are, doubles.</li>
 
-    <li>The concrete class Date implements the concept of date.
-    Its functionalities include:
-
-    <ul>
-    <li>providing basic information such as weekday, day of the month,
-    day of the year, month, and year;</li>
-
-    <li>comparing two dates to determine whether they are equal, or
-    which one is the earlier or later, or the difference between them
-    expressed in days;</li>
-
-    <li>incrementing or decrementing a date of a given number of days,
-    or of a period expressed in weeks, months, or years.</li>
-    </ul>
-    </li>
+    <li>The concrete class Date (see \ref datetime).
 
     <li>The abstract classes <tt>ForwardVolatilitySurface</tt>
     and <tt>SwaptionVolatilitySurface</tt> provide the common interface

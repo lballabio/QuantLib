@@ -1,0 +1,9 @@
+
+/*! \page randomnumbers Random number and low discrepancy sequence generators
+    Documentation for this part of the library is in progress.
+
+    Concrete implementation of random number and low discrepancy
+    sequence generators. They share the same namespace.
+
+*/
+

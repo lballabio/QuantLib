@@ -1,5 +1,5 @@
 
-/*! \page instruments The Instrument classes
+/*! \page instruments Instrument classes
     Documentation for this part of the library is in progress.
 
     The abstract class Instrument provides the common

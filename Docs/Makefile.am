@@ -1,43 +1,18 @@
 
 # $Id$
 
+SUBDIRS = pages
+
 EXTRA_DIST = \
-             authors.docs \
-             calendars.docs \
-             cashflows.docs \
-             coreclasses.docs \
-             currencies.docs \
-             daycounters.docs \
-             examples.docs \
-             findiff.docs \
-             groups.docs \
-             history.docs \
-             index.docs \
-             indexes.docs \
-             install.docs \
-             instruments.docs \
-             license.docs \
              makefile.mak \
-             math.docs \
-             mcarlo.docs \
-             overview.docs \
-             patterns.docs \
-             platforms.docs \
-             pricers.docs \
              quantlib.css \
              quantlib.doxy \
              quantlibfooter.html \
              quantlibfooteronline.html \
              quantlibheader.html \
              quantlibheader.tex \
-             randomnumbers.docs \
-             README.txt \
-             resources.docs \
-             solvers1d.docs \
-             termstructures.docs \
-             usage.docs \
-             utilities.docs \
-             where.docs
+             userman.tex \
+             README.txt
 
 docs-all: docs-pdf docs-ps
 docs-html: docs-html-offline
@@ -71,64 +46,63 @@ docs-clean:
 	rm -Rf latex
 
 tex-files: docs-html
+	cp userman.tex latex/userman.tex
 	mv latex/refman.tex oldrefman.tex
 	$(SED) -e "/Page Index/d" \
 	       -e "/input{pages}/d" \
 	       -e "/Page Documentation/d" \
-	       -e "76,$$ s/input{index}/ /" \
-	       -e "76,$$ s/include{index}/ /" \
-	       -e "76,$$ s/input{overview}/ /" \
-	       -e "76,$$ s/include{overview}/ /" \
-	       -e "76,$$ s/input{where}/ /" \
-	       -e "76,$$ s/include{where}/ /" \
-	       -e "76,$$ s/input{install}/ /" \
-	       -e "76,$$ s/include{install}/ /" \
-	       -e "76,$$ s/input{usage}/ /" \
-	       -e "76,$$ s/include{usage}/ /" \
-	       -e "76,$$ s/input{platforms}/ /" \
-	       -e "76,$$ s/include{platforms}/ /" \
-	       -e "76,$$ s/input{history}/ /" \
-	       -e "76,$$ s/include{history}/ /" \
-	       -e "76,$$ s/input{todo}/ /" \
-	       -e "76,$$ s/include{todo}/ /" \
-	       -e "76,$$ s/input{resources}/ /" \
-	       -e "76,$$ s/include{resources}/ /" \
-	       -e "76,$$ s/input{group}/ /" \
-	       -e "76,$$ s/include{group}/ /" \
-	       -e "76,$$ s/input{license}/ /" \
-	       -e "76,$$ s/include{license}/ /" \
-	       -e "76,$$ s/input{coreclasses}/ /" \
-	       -e "76,$$ s/include{coreclasses}/ /" \
-	       -e "76,$$ s/input{calendars}/ /" \
-	       -e "76,$$ s/include{calendars}/ /" \
-	       -e "76,$$ s/input{cashflows}/ /" \
-	       -e "76,$$ s/include{cashflows}/ /" \
-	       -e "76,$$ s/input{currencies}/ /" \
-	       -e "76,$$ s/include{currencies}/ /" \
-	       -e "76,$$ s/input{daycounters}/ /" \
-	       -e "76,$$ s/include{daycounters}/ /" \
-	       -e "76,$$ s/input{findiff}/ /" \
-	       -e "76,$$ s/include{findiff}/ /" \
-	       -e "76,$$ s/input{indexes}/ /" \
-	       -e "76,$$ s/include{indexes}/ /" \
-	       -e "76,$$ s/input{instruments}/ /" \
-	       -e "76,$$ s/include{instruments}/ /" \
-	       -e "76,$$ s/input{math}/ /" \
-	       -e "76,$$ s/include{math}/ /" \
-	       -e "76,$$ s/input{mcarlo}/ /" \
-	       -e "76,$$ s/include{mcarlo}/ /" \
-	       -e "76,$$ s/input{patterns}/ /" \
-	       -e "76,$$ s/include{patterns}/ /" \
-	       -e "76,$$ s/input{pricers}/ /" \
-	       -e "76,$$ s/include{pricers}/ /" \
-	       -e "76,$$ s/input{randomnumbers}/ /" \
-	       -e "76,$$ s/include{randomnumbers}/ /" \
-	       -e "76,$$ s/input{solvers1d}/ /" \
-	       -e "76,$$ s/include{solvers1d}/ /" \
-	       -e "76,$$ s/input{termstructures}/ /" \
-	       -e "76,$$ s/include{termstructures}/ /" \
-	       -e "76,$$ s/input{utilities}/ /" \
-	       -e "76,$$ s/include{utilities}/ /" \
+	       -e "s/input{index}/ /" \
+	       -e "s/include{index}/ /" \
+	       -e "s/input{overview}/ /" \
+	       -e "s/include{overview}/ /" \
+	       -e "s/input{where}/ /" \
+	       -e "s/include{where}/ /" \
+	       -e "s/input{install}/ /" \
+	       -e "s/include{install}/ /" \
+	       -e "s/input{usage}/ /" \
+	       -e "s/include{usage}/ /" \
+	       -e "s/input{platforms}/ /" \
+	       -e "s/include{platforms}/ /" \
+	       -e "s/input{history}/ /" \
+	       -e "s/include{history}/ /" \
+	       -e "s/input{todo}/ /" \
+	       -e "s/include{todo}/ /" \
+	       -e "s/input{resources}/ /" \
+	       -e "s/include{resources}/ /" \
+	       -e "s/input{group}/ /" \
+	       -e "s/include{group}/ /" \
+	       -e "s/input{license}/ /" \
+	       -e "s/include{license}/ /" \
+	       -e "s/input{coreclasses}/ /" \
+	       -e "s/include{coreclasses}/ /" \
+	       -e "s/input{cashflows}/ /" \
+	       -e "s/include{cashflows}/ /" \
+	       -e "s/input{currencies}/ /" \
+	       -e "s/include{currencies}/ /" \
+	       -e "s/input{datetime}/ /" \
+	       -e "s/include{datetime}/ /" \
+	       -e "s/input{findiff}/ /" \
+	       -e "s/include{findiff}/ /" \
+	       -e "s/input{indexes}/ /" \
+	       -e "s/include{indexes}/ /" \
+	       -e "s/input{instruments}/ /" \
+	       -e "s/include{instruments}/ /" \
+	       -e "s/input{math}/ /" \
+	       -e "s/include{math}/ /" \
+	       -e "s/input{mcarlo}/ /" \
+	       -e "s/include{mcarlo}/ /" \
+	       -e "s/input{patterns}/ /" \
+	       -e "s/include{patterns}/ /" \
+	       -e "s/input{pricers}/ /" \
+	       -e "s/include{pricers}/ /" \
+	       -e "s/input{randomnumbers}/ /" \
+	       -e "s/include{randomnumbers}/ /" \
+	       -e "s/input{solvers1d}/ /" \
+	       -e "s/include{solvers1d}/ /" \
+	       -e "s/input{termstructures}/ /" \
+	       -e "s/include{termstructures}/ /" \
+	       -e "s/input{utilities}/ /" \
+	       -e "s/include{utilities}/ /" \
 	       -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
 	       oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex

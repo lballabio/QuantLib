@@ -53,6 +53,7 @@ WARN_LOGFILE           = docswarnings.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = . \
+                         ./pages \
                          ../ql
 FILE_PATTERNS          = *.docs \
                          *.hpp \

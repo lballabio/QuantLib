@@ -1,22 +1,20 @@
 
-/*! \page solvers1d The 1-dimensional Solver classes
+/*! \page solvers1d One-dimensional solvers
     Documentation for this part of the library is in progress.
 
     The abstract class QuantLib::Solver1D provides the interface to a
     1-dimensional solver which can find the zeroes of a given function.
 
-    A number of such solvers is contained in the Solvers1D
-    namespace. Namely:
+    A number of such solvers is contained in the QuantLib::Solvers1D
+    namespace, namely,
 
-    <ul>
-    <li>Bisection</li>
-    <li>Brent</li>
-    <li>FalsePosition</li>
-    <li>Newton (%Newton algorithm without braketing)</li>
-    <li>NewtonSafe (%Newton algorithm with braketing)</li>
-    <li>Ridder</li>
-    <li>Secant</li>
-    </ul>
+    - Bisection
+    - Brent
+    - FalsePosition
+    - Newton (%Newton algorithm without braketing)
+    - NewtonSafe (%Newton algorithm with braketing)
+    - Ridder
+    - Secant
 
     The implementation of the algorithms was inspired by
     "Numerical Recipes in C", 2nd edition,
