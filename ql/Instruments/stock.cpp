@@ -25,7 +25,7 @@ namespace QuantLib {
     }
 
     void Stock::performCalculations() const {
-        QL_REQUIRE(!quote_.isNull(), "null quote set");
+        QL_REQUIRE(!quote_.empty(), "null quote set");
         NPV_ = quote_->value();
     }
 

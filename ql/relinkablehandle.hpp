@@ -19,8 +19,8 @@
     \brief Globally accessible relinkable pointer
 */
 
-#ifndef quantlib_relinkable_handle_h
-#define quantlib_relinkable_handle_h
+#ifndef quantlib_relinkable_handle_hpp
+#define quantlib_relinkable_handle_hpp
 
 #include <ql/Patterns/observable.hpp>
 
@@ -31,30 +31,37 @@ namespace QuantLib {
     template <class Type>
     class Link : public Observable, public Observer {
       public:
-        /*! \warning see the documentation of the <tt>linkTo</tt> method
-                for issues relatives to <tt>registerAsObserver</tt>.
+        /*! \warning see the documentation of the linkTo() method for
+                     issues relatives to <tt>registerAsObserver</tt>.
         */
         explicit Link(const boost::shared_ptr<Type>& h =
                                                boost::shared_ptr<Type>(),
                       bool registerAsObserver = true);
-        /*! \warning <i><b>registerAsObserver</b></i> is left as a backdoor
-                in case the programmer cannot guarantee that the object
-                pointed to will remain alive for the whole lifetime of the
-                handle---namely, it should be set to <tt>false</tt> when the
-                passed handle was created with <tt>owns = false</tt> (the
-                latter should only happen in a controlled environment, so
-                that the programmer is aware of it). Failure to do so can
-                very likely result in a program crash.
-                If the programmer does want the relinkable handle to register
-                as observer of such a handle, it is his responsibility to
-                ensure that the relinkable handle gets destroyed before the
-                pointed object does.
+        /*! \warning <tt>registerAsObserver</tt> is left as a backdoor
+                     in case the programmer cannot guarantee that the
+                     object pointed to will remain alive for the whole
+                     lifetime of the handle---namely, it should be set
+                     to <tt>false</tt> when the passed shared pointer
+                     was created with <tt>owns = false</tt> (the
+                     latter should only happen in a controlled
+                     environment, so that the programmer is aware of
+                     it). Failure to do so can very likely result in a
+                     program crash.  If the programmer does want the
+                     handle to register as observer of such a shared
+                     pointer, it is his responsibility to ensure that
+                     the handle gets destroyed before the pointed
+                     object does.
         */
         void linkTo(const boost::shared_ptr<Type>&,
                     bool registerAsObserver = true);
-        //! Checks if the contained handle points to anything
+        //! Checks if the contained shared pointer points to anything
+        bool empty() const { return !h_; }
+        #ifndef QL_DISABLE_DEPRECATED
+        //! Checks if the contained shared pointer points to anything
+        /*! \deprecated use empty() instead */
         bool isNull() const { return !h_; }
-        //! Returns the contained handle
+        #endif
+        //! Returns the contained shared pointer
         const boost::shared_ptr<Type>& currentLink() const { return h_; }
         //! Observer interface
         void update() { notifyObservers(); }
@@ -68,27 +75,33 @@ namespace QuantLib {
     /*! An instance of this class can be relinked to another shared
         pointer: such change will be propagated to all the copies of
         the instance.
+
         \pre Class "Type" must inherit from Observable
     */
     template <class Type>
     class Handle : public boost::shared_ptr<Link<Type> > {
       public:
-        /*! \warning see the documentation of <tt>Link</tt> for issues
-                     relatives to <tt>registerAsObserver</tt>.
+        /*! \warning see the documentation of the Link class for
+                     issues relatives to <tt>registerAsObserver</tt>.
         */
         explicit Handle(const boost::shared_ptr<Type>& h =
                                                     boost::shared_ptr<Type>(),
                         bool registerAsObserver = true);
-        /*! \warning see the documentation of <tt>Link</tt> for issues
-                     relatives to <tt>registerAsObserver</tt>.
+        /*! \warning see the documentation of the Link class for
+                     issues relatives to <tt>registerAsObserver</tt>.
         */
         void linkTo(const boost::shared_ptr<Type>&,
                     bool registerAsObserver = true);
         //! dereferencing
         const boost::shared_ptr<Type>& currentLink() const;
         const boost::shared_ptr<Type>& operator->() const;
-        //! Checks if the contained handle points to anything
+        //! Checks if the contained shared pointer points to anything
+        bool empty() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        //! Checks if the contained shared pointer points to anything
+        /*! \deprecated use empty() instead */
         bool isNull() const;
+        #endif
     };
 
     #ifndef QL_DISABLE_DEPRECATED
@@ -149,9 +162,16 @@ namespace QuantLib {
     }
 
     template <class Type>
+    inline bool Handle<Type>::empty() const {
+        return (**this).empty();
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    template <class Type>
     inline bool Handle<Type>::isNull() const {
         return (**this).isNull();
     }
+    #endif
 
 }
 

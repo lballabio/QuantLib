@@ -23,7 +23,7 @@ namespace QuantLib {
     Swap::Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
                const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
                const Handle<TermStructure>& termStructure)
-    : firstLeg_(firstLeg), secondLeg_(secondLeg), 
+    : firstLeg_(firstLeg), secondLeg_(secondLeg),
       termStructure_(termStructure) {
         registerWith(termStructure_);
         std::vector<boost::shared_ptr<CashFlow> >::iterator i;
@@ -52,8 +52,7 @@ namespace QuantLib {
     }
 
     void Swap::performCalculations() const {
-        QL_REQUIRE(!termStructure_.isNull(),
-                   "null term structure set");
+        QL_REQUIRE(!termStructure_.empty(), "no term structure set");
         Date settlement = termStructure_->referenceDate();
         NPV_ = 0.0;
         Real firstLegNPV_ = 0.0;
@@ -94,13 +93,13 @@ namespace QuantLib {
         Date d = Date::maxDate();
         Size i;
         for (i=0; i<firstLeg_.size(); i++) {
-            boost::shared_ptr<Coupon> c = 
+            boost::shared_ptr<Coupon> c =
                 boost::dynamic_pointer_cast<Coupon>(firstLeg_[i]);
             if (c)
                 d = QL_MIN(d, c->accrualStartDate());
         }
         for (i=0; i<secondLeg_.size(); i++) {
-            boost::shared_ptr<Coupon> c = 
+            boost::shared_ptr<Coupon> c =
                 boost::dynamic_pointer_cast<Coupon>(secondLeg_[i]);
             if (c)
                 d = QL_MIN(d, c->accrualStartDate());

@@ -57,7 +57,7 @@ namespace QuantLib {
     }
 
     Rate Xibor::fixing(const Date& fixingDate) const {
-        QL_REQUIRE(!termStructure_.isNull(), "no term structure set");
+        QL_REQUIRE(!termStructure_.empty(), "no term structure set");
         Date today = termStructure_->todaysDate();
         if (fixingDate < today) {
             // must have been fixed

@@ -42,7 +42,7 @@ namespace QuantLib {
     class QuantoOptionResults : public ResultsType {
       public:
         QuantoOptionResults() { reset() ;}
-        void reset() { 
+        void reset() {
             ResultsType::reset();
             qvega = qrho = qlambda = Null<Real>();
         }
@@ -73,7 +73,7 @@ namespace QuantLib {
         */
         ArgumentsType* underlyingArgs() const { return originalArguments_; }
       protected:
-        boost::shared_ptr<GenericEngine<ArgumentsType, 
+        boost::shared_ptr<GenericEngine<ArgumentsType,
                                         ResultsType> > originalEngine_;
         ArgumentsType* originalArguments_;
         const ResultsType* originalResults_;
@@ -85,9 +85,9 @@ namespace QuantLib {
     template<class ArgumentsType>
     void QuantoOptionArguments<ArgumentsType>::validate() const {
         ArgumentsType::validate();
-        QL_REQUIRE(!foreignRiskFreeTS.isNull(),
+        QL_REQUIRE(!foreignRiskFreeTS.empty(),
                    "null foreign risk free term structure");
-        QL_REQUIRE(!exchRateVolTS.isNull(),
+        QL_REQUIRE(!exchRateVolTS.empty(),
                    "null exchange rate vol term structure");
         QL_REQUIRE(correlation != Null<Real>(),
                    "null correlation given");
@@ -138,9 +138,9 @@ namespace QuantLib {
                     strike, arguments_.exchRateVolTS, exchangeRateATMlevel,
                     arguments_.correlation)));
         Handle<BlackVolTermStructure> blackVol(process->blackVolatility());
-        originalArguments_->blackScholesProcess = 
+        originalArguments_->blackScholesProcess =
             boost::shared_ptr<BlackScholesProcess>(
-                             new BlackScholesProcess(spot, dividendYield, 
+                             new BlackScholesProcess(spot, dividendYield,
                                                      riskFreeRate, blackVol));
 
         originalArguments_->exercise = arguments_.exercise;

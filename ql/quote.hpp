@@ -125,8 +125,7 @@ namespace QuantLib {
 
     template <class UnaryFunction>
     inline Real DerivedQuote<UnaryFunction>::value() const {
-        QL_REQUIRE(!element_.isNull(),
-                   "null market element set");
+        QL_REQUIRE(!element_.empty(), "null market element set");
         return f_(element_->value());
     }
 
@@ -150,7 +149,7 @@ namespace QuantLib {
 
     template <class BinaryFunction>
     inline Real CompositeQuote<BinaryFunction>::value() const {
-        QL_REQUIRE(!element1_.isNull() && !element2_.isNull(),
+        QL_REQUIRE(!element1_.empty() && !element2_.empty(),
                    "null quote set");
         return f_(element1_->value(),element2_->value());
     }
