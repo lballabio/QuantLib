@@ -65,12 +65,12 @@ namespace QuantLib {
 
             Handle<GaussianMultiPathGenerator> pathGenerator(
                 new GaussianMultiPathGenerator(mu, covariance,
-                std::vector<Time>(1, residualTime), seed));
+                std::vector<Time>(1, residualTime), antitheticVariance,
+                seed));
 
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(new BasketPathPricer(
-                underlying, QL_EXP(-riskFreeRate*residualTime),
-                antitheticVariance));
+                underlying, QL_EXP(-riskFreeRate*residualTime)));
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(

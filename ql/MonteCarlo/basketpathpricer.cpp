@@ -40,9 +40,8 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         BasketPathPricer::BasketPathPricer(const Array &underlying,
-            double discount, bool antitheticVariance)
-        : underlying_(underlying), discount_(discount),
-          antitheticVariance_(antitheticVariance) {
+            double discount)
+        : underlying_(underlying), discount_(discount) {
             QL_REQUIRE(discount_ > 0.0,
                 "BasketPathPricer: discount must be positive");
             isInitialized_ = true;
@@ -65,13 +64,8 @@ namespace QuantLib {
                     log_drift += multiPath[j].drift()[i];
                     log_diffusion += multiPath[j].diffusion()[i];
                 }
-                if (antitheticVariance_) {
-                    maxPrice = QL_MAX(maxPrice,
-                        (0.5*underlying_[j]*(QL_EXP(log_drift+log_diffusion)+
-                        QL_EXP(log_drift-log_diffusion))));
-                } else
-                    maxPrice = QL_MAX(maxPrice,
-                        underlying_[j]*QL_EXP(log_drift+log_diffusion));
+                maxPrice = QL_MAX(maxPrice,
+                    underlying_[j]*QL_EXP(log_drift+log_diffusion));
             }
             return discount_*maxPrice;
         }

@@ -49,13 +49,11 @@ namespace QuantLib {
           public:
 //            BasketPathPricer() {}
             BasketPathPricer(const Array& underlying,
-                             double discount,
-                             bool antitheticVariance);
+                             double discount);
             double operator()(const MultiPath& multiPath) const;
           protected:
             Array underlying_;
             double discount_;
-            bool antitheticVariance_;
         };
 
     }

@@ -42,6 +42,17 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! generic %path pricer for single asset
+        /*! Concrete SingleAssetPathPricers can implement
+            antithetic variance control technique
+            since for a single factor the antithetic path
+            can be deduced from the original path.
+            This does not apply to MultiPath.
+
+            Concrete SingleAssetPathPricers that will not
+            implement antithetic variance control technique
+            should throw an exception 
+            if <tt>antitheticVariance==true</tt>.
+        */
         class SingleAssetPathPricer : public PathPricer {
           public:
             SingleAssetPathPricer(Option::Type type,

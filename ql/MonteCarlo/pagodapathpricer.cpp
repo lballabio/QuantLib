@@ -41,9 +41,8 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         PagodaPathPricer::PagodaPathPricer(const Array &underlying,
-            double roof, double discount, bool antithetic)
-        : underlying_(underlying), roof_(roof), discount_(discount),
-          antithetic_(antithetic) {
+            double roof, double discount)
+        : underlying_(underlying), roof_(roof), discount_(discount) {
             isInitialized_ = true;
         }
 
@@ -59,16 +58,8 @@ namespace QuantLib {
             double averageGain = 0.0;
             for(unsigned int i = 0; i < numSteps; i++)
                 for(unsigned int j = 0; j < numAssets; j++) {
-                    if (antithetic_) {
-                        averageGain += underlying_[j] * 0.5 *
-                            (QL_EXP(multiPath[j].drift()[i]+
-                                multiPath[j].diffusion()[i])+
-                             QL_EXP(multiPath[j].drift()[i]-
-                                multiPath[j].diffusion()[i]))
-                                                             -underlying_[j];
-                    } else
-                        averageGain += underlying_[j] * (QL_EXP(multiPath[j].drift()[i]+
-                                        multiPath[j].diffusion()[i])-1.0);
+                    averageGain += underlying_[j] * (QL_EXP(multiPath[j].drift()[i]+
+                                    multiPath[j].diffusion()[i])-1.0);
 
                 }
 

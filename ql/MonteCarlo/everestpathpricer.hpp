@@ -49,12 +49,10 @@ namespace QuantLib {
         class EverestPathPricer : public MultiPathPricer {
           public:
 //            EverestPathPricer() {}
-            EverestPathPricer(double discount,
-                              bool antitheticVariance);
+            EverestPathPricer(double discount);
             double operator()(const MultiPath& multiPath) const;
           protected:
             double discount_;
-            bool antitheticVariance_;
         };
 
     }

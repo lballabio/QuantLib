@@ -68,6 +68,7 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         class MonteCarloModel {
           public:
+//            MonteCarloModel();
             MonteCarloModel(const Handle<PG>& pathGenerator,
                             const Handle<PP>& pathPricer,
                             const S& sampleAccumulator);

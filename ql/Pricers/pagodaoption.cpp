@@ -50,7 +50,7 @@ namespace QuantLib {
             const Math::Matrix& covariance,
             Rate riskFreeRate,
             const std::vector<Time>& times,
-            long samples, bool antithetic, long seed)
+            long samples, bool antitheticVariance, long seed)
         : MultiFactorPricer(samples, seed){
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "PagodaOption: covariance matrix not square");
@@ -75,14 +75,14 @@ namespace QuantLib {
                 new GaussianMultiPathGenerator(mu,
                                                covariance,
                                                times,
+                                               antitheticVariance,
                                                seed));
             double residualTime = times[times.size()-1];
 
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(
                 new PagodaPathPricer(portfolio, roof,
-                        fraction * QL_EXP(-riskFreeRate*residualTime),
-                        antithetic));
+                        fraction * QL_EXP(-riskFreeRate*residualTime)));
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(

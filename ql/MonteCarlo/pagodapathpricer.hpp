@@ -46,13 +46,11 @@ namespace QuantLib {
             PagodaPathPricer() {}
             PagodaPathPricer(const Array &underlying,
                              double roof,
-                             double discount,
-                             bool antithetic);
+                             double discount);
             double operator()(const MultiPath &path) const;
           protected:
             Array underlying_;
             double roof_, discount_;
-            bool antithetic_;
         };
 
     }

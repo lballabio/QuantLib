@@ -78,7 +78,7 @@ namespace QuantLib {
             next_.drift() = Array(steps, drift*length/steps);
             generator_ = Handle<RandomArrayGenerator<RNG> >(
                 new RandomArrayGenerator<RNG>(
-                    0.0, Array(steps, variance*length/steps), seed));
+                    0.0, Array(steps, variance*length/steps), false, seed));
         }
 
         template <class RNG>

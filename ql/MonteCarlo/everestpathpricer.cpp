@@ -39,9 +39,8 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        EverestPathPricer::EverestPathPricer(double discount,
-            bool antitheticVariance)
-        : discount_(discount), antitheticVariance_(antitheticVariance) {
+        EverestPathPricer::EverestPathPricer(double discount)
+        : discount_(discount) {
             QL_REQUIRE(discount_ > 0.0,
                 "EverestPathPricer: discount must be positive");
             isInitialized_ = true;
@@ -62,12 +61,7 @@ namespace QuantLib {
                     log_drift += multiPath[j].drift()[i];
                     log_diffusion += multiPath[j].diffusion()[i];
                 }
-                if (antitheticVariance_) {
-                    minPrice = QL_MIN(minPrice,
-                        (0.5*(QL_EXP(log_drift+log_diffusion)+
-                        QL_EXP(log_drift-log_diffusion))));
-                } else
-                    minPrice = QL_MIN(minPrice, QL_EXP(log_drift+log_diffusion));
+                minPrice = QL_MIN(minPrice, QL_EXP(log_drift+log_diffusion));
             }
 
             return discount_ * minPrice;

@@ -39,9 +39,8 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         HimalayaPathPricer::HimalayaPathPricer(const Array &underlying,
-            double strike, double discount, bool antitheticVariance)
-        : underlying_(underlying), strike_(strike), discount_(discount),
-          antitheticVariance_(antitheticVariance) {
+            double strike, double discount)
+        : underlying_(underlying), strike_(strike), discount_(discount) {
             QL_REQUIRE(discount_ > 0.0,
                 "SinglePathEuropeanPricer: discount must be positive");
             isInitialized_ = true;
@@ -70,15 +69,8 @@ namespace QuantLib {
                 removeAsset=0;
                 for(unsigned int j = 0; j < numAssets; j++) {
                     if(remainingAssets[j]) {
-                        if (antitheticVariance_)
-                            prices[j] *= 0.5*
-                                (QL_EXP(multiPath[j].drift()[i]+
-                                        multiPath[j].diffusion()[i])+
-                                 QL_EXP(multiPath[j].drift()[i]-
-                                        multiPath[j].diffusion()[i]));
-                        else
-                            prices[j] *= QL_EXP(multiPath[j].drift()[i]+
-                                multiPath[j].diffusion()[i]);
+                        prices[j] *= QL_EXP(multiPath[j].drift()[i]+
+                            multiPath[j].diffusion()[i]);
                         if(prices[j] >= bestPrice) {
                             bestPrice = prices[j];
                             removeAsset = j;

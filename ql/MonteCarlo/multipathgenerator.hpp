@@ -48,7 +48,10 @@ namespace QuantLib {
             \code
             RAG{
                 RAG();
-                RAG(Array &average, Matrix &covariance, long seed);
+                RAG(Array &average,
+                    Matrix &covariance,
+                    bool antithetic,
+                    long seed);
                 Array next();
                 double weight();
             };
@@ -62,10 +65,12 @@ namespace QuantLib {
                                const Math::Matrix& covariance,
                                unsigned int timeSteps,
                                Time lenght,
+                               bool antithetic,
                                long seed);
             MultiPathGenerator(const Array& drifts,
                                const Math::Matrix& covariance,
                                const std::vector<Time>& times,
+                               bool antithetic,
                                long seed=0);
             MultiPath next() const;
             double weight() const {return weight_;}
@@ -74,7 +79,7 @@ namespace QuantLib {
             unsigned int timeSteps_;
             std::vector<Time> timeDelays_;
             unsigned int numAssets_;
-            RAG rndArray_;
+            RAG rndArrayGen_;
             mutable double weight_;
         };
 
@@ -84,10 +89,12 @@ namespace QuantLib {
             const Math::Matrix& covariance,
             unsigned int timeSteps,
             Time lenght,
+            bool antithetic,
             long seed)
         : drifts_(covariance.rows(),0.0), timeSteps_(timeSteps),
           timeDelays_(timeSteps, lenght/timeSteps),
-          numAssets_(covariance.rows()), rndArray_(0.0, covariance, seed) {
+          numAssets_(covariance.rows()),
+          rndArrayGen_(0.0, covariance, antithetic, seed) {
 
             QL_REQUIRE(timeSteps_ > 0, "Time steps(" +
                 IntegerFormatter::toString(timeSteps_) + ") too small");
@@ -104,10 +111,10 @@ namespace QuantLib {
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
             const Array& drifts, const Math::Matrix& covariance,
-            const std::vector<Time>& times, long seed)
+            const std::vector<Time>& times, bool antithetic, long seed)
         : drifts_(covariance.rows(), 0.0), timeSteps_(times.size()),
           timeDelays_(times.size()), numAssets_(covariance.rows()), 
-          rndArray_(0.0, covariance, seed) {
+          rndArrayGen_(0.0, covariance, antithetic, seed) {
 
             QL_REQUIRE(timeSteps_ > 0, "Time steps(" +
                 IntegerFormatter::toString(timeSteps_) + ") too small");
@@ -146,8 +153,8 @@ namespace QuantLib {
             Array randomExtraction(numAssets_);
             weight_ = 1.0;
             for (unsigned int i = 0; i < timeSteps_; i++) {
-                randomExtraction = rndArray_.next();
-                weight_ *= rndArray_.weight();
+                randomExtraction = rndArrayGen_.next();
+                weight_ *= rndArrayGen_.weight();
                 for (unsigned int j=0; j<numAssets_; j++) {
                     multiPath[j].drift()[i] = drifts_[j] * timeDelays_[i];
                     multiPath[j].diffusion()[i] = randomExtraction[j] * QL_SQRT(timeDelays_[i]);
