@@ -50,7 +50,7 @@ namespace QuantLib {
                 double d = 1.0/b;
                 double h = d;
                 for (Size n=1; n<=100; n++) {
-                    double an = -n*(n-a_);
+                    double an = -1.0*n*(n-a_);
                     b += 2.0;
                     d = an*d + b;
                     if (QL_FABS(d) < QL_EPSILON) d = QL_EPSILON;

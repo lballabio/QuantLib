@@ -34,6 +34,7 @@ OBJS = \
        fdeuropean.obj$(_D) \
        fdmultiperiodoption.obj$(_D) \
        fdstepconditionoption.obj$(_D) \
+       jamshidianswaption.obj$(_D) \
        mcbasket.obj$(_D) \
        mcdiscretearithmeticapo.obj$(_D) \
        mcdiscretearithmeticaso.obj$(_D) \

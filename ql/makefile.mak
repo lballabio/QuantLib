@@ -2,7 +2,7 @@
 # $Id$
 
 .autodepend
-#.silent
+.silent
 
 # Debug version
 !ifdef DEBUG
@@ -40,6 +40,7 @@ PRICER_LIB       = Pricers\Pricers$(_D).lib
 RNG_LIB          = RandomNumbers\RandomNumbers$(_D).lib
 SOLVER1D_LIB     = Solvers1D\Solvers1D$(_D).lib
 TERMSTRUCT_LIB   = TermStructures\TermStructures$(_D).lib
+TWOFACTOR_LIB    = ShortRateModels\TwoFactorModels\TwoFactorModels$(_D).lib
 
 QUANTLIB_OBJS    = \
                    $(CALENDAR_LIB) \
@@ -60,7 +61,8 @@ QUANTLIB_OBJS    = \
                    $(PRICER_LIB) \
                    $(RNG_LIB) \
                    $(SOLVER1D_LIB) \
-                   $(TERMSTRUCT_LIB)
+                   $(TERMSTRUCT_LIB) \
+                   $(TWOFACTOR_LIB)
 
 # Tools to be used
 CC        = bcc32

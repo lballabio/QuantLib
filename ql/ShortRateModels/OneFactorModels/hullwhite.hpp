@@ -67,6 +67,8 @@ namespace QuantLib {
             void generateParameters();
 
             double A(Time t, Time T) const;
+            // remove the warning
+            double A(Time t) const { return Vasicek::A(t); } 
             double B(Time t) const;
 
           private:

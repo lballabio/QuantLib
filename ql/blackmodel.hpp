@@ -39,7 +39,7 @@ namespace QuantLib {
         BlackModel(const RelinkableHandle<MarketElement>& volatility,
                    const RelinkableHandle<TermStructure>& termStructure);
 
-        void update() {}
+        void update() { notifyObservers(); }
 
         //Returns the Black volatility
         double volatility() const;

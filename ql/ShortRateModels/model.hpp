@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file model.hpp
     \brief Abstract interest rate model class
 
@@ -117,7 +119,8 @@ namespace QuantLib {
                 const std::vector<Parameter>& parameters_;
             };
             PrivateConstraint(const std::vector<Parameter>& parameters)
-            : Optimization::Constraint(Handle<ConstraintImpl>(new Implementation(parameters)))
+            : Optimization::Constraint(Handle<ConstraintImpl>(
+                new Implementation(parameters)))
             {}
         };
 

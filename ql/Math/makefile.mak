@@ -15,7 +15,9 @@ INCLUDE_DIR    = ..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
-OBJS = matrix.obj$(_D) \
+OBJS = chisquaredistribution.obj$(_D) \
+       gammadistribution.obj$(_D) \
+       matrix.obj$(_D) \
        multivariateaccumulator.obj$(_D) \
        normaldistribution.obj$(_D) \
        segmentintegral.obj$(_D) \
