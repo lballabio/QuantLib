@@ -31,6 +31,7 @@
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <ql/RandomNumbers/primitivepolynomials.h>
+#include <ql/RandomNumbers/randomizedlds.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 

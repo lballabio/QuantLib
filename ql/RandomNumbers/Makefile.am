@@ -15,6 +15,7 @@ include_HEADERS = \
 	lecuyeruniformrng.hpp \
 	mt19937uniformrng.hpp \
 	primitivepolynomials.h \
+	randomizedlds.hpp \
 	randomsequencegenerator.hpp \
 	rngtraits.hpp \
 	seedgenerator.hpp \
