@@ -129,7 +129,7 @@ namespace QuantLib {
           private:
             class FittingParameter : public TermStructureFittingParameter {
               public:
-                class CIRImpl : public ParameterImpl {
+                  class CIRImpl : public Parameter::ParameterImpl {
                   public:
                     CIRImpl(
                         const RelinkableHandle<TermStructure>& termStructure,

@@ -113,7 +113,7 @@ namespace QuantLib {
           private:
             class HWFittingParameter : public TermStructureFittingParameter {
               public:
-                class HullWhiteImpl : public ParameterImpl {
+                class HullWhiteImpl : public Parameter::ParameterImpl {
                   public:
                     HullWhiteImpl(
                         const RelinkableHandle<TermStructure>& termStructure,
