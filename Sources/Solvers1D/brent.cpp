@@ -33,7 +33,7 @@ namespace QuantLib {
 	
 		#define SIGN(a,b) ((b) >= 0.0 ? QL_FABS(a) : -QL_FABS(a))
 		
-		double Brent::_solve(const Function& f, double xAccuracy) const {
+		double Brent::_solve(const ObjectiveFunction& f, double xAccuracy) const {
 		 	double d,e,min1,min2;
 			double froot,p,q,r,s,xAcc1,xMid;
 		
@@ -54,7 +54,7 @@ namespace QuantLib {
 					froot=fxMax;
 					fxMax=fxMin;
 				}
-				xAcc1=2.0*DBL_EPSILON*QL_FABS(root)+0.5*xAccuracy; // Convergence check.
+				xAcc1=2.0*std::numeric_limits<double>::epsilon()*QL_FABS(root)+0.5*xAccuracy; // Convergence check.
 				xMid=(xMax-root)/2.0;
 				if (QL_FABS(xMid) <= xAcc1 || froot == 0.0)		return root;
 				if (QL_FABS(e) >= xAcc1 && QL_FABS(fxMin) > QL_FABS(froot)) {

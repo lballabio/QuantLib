@@ -36,7 +36,7 @@ namespace QuantLib {
 		  public:
 			NewtonSafe() {}
 		  private:
-			double _solve(const Function& f, double xAccuracy) const;
+			double _solve(const ObjectiveFunction& f, double xAccuracy) const;
 		};
 	
 	}

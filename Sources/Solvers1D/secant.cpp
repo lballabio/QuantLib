@@ -31,7 +31,7 @@ namespace QuantLib {
 
 	namespace Solvers1D {
 	
-		double Secant::_solve(const Function& f, double xAccuracy) const {
+		double Secant::_solve(const ObjectiveFunction& f, double xAccuracy) const {
 			double fl,froot,dx,xl;
 		
 			if (QL_FABS(fxMin) < QL_FABS(fxMax)) { // Pick the bound with the smaller function value as the most recent guess.

@@ -34,7 +34,7 @@ namespace QuantLib {
 	
 		#define SIGN(a,b) ((b) >= 0.0 ? QL_FABS(a) : -QL_FABS(a))
 		
-		double Ridder::_solve(const Function& f, double xAcc) const {
+		double Ridder::_solve(const ObjectiveFunction& f, double xAcc) const {
 			double fxMid, froot, s, xMid, nextRoot;
 		
 			// test on black scholes implied vol show that Ridder solver

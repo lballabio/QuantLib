@@ -325,21 +325,21 @@ BSMAmericanOption.vega = new.instancemethod(QuantLibc.BSMAmericanOption_vega, No
 BSMAmericanOption.rho = new.instancemethod(QuantLibc.BSMAmericanOption_rho, None, BSMAmericanOption)
 BSMAmericanOption.impliedVolatility = new.instancemethod(QuantLibc.BSMAmericanOption_impliedVolatility, None, BSMAmericanOption)
 
-class Function:
+class ObjectiveFunction:
     def __init__(self,this):
         self.this = this
 
     def __repr__(self):
-        return "<C Function instance at %s>" % (self.this,)
-class FunctionPtr(Function):
+        return "<C ObjectiveFunction instance at %s>" % (self.this,)
+class ObjectiveFunctionPtr(ObjectiveFunction):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = Function
+        self.__class__ = ObjectiveFunction
 
 
-Function.value = new.instancemethod(QuantLibc.Function_value, None, Function)
-Function.derivative = new.instancemethod(QuantLibc.Function_derivative, None, Function)
+ObjectiveFunction.value = new.instancemethod(QuantLibc.ObjectiveFunction_value, None, ObjectiveFunction)
+ObjectiveFunction.derivative = new.instancemethod(QuantLibc.ObjectiveFunction_derivative, None, ObjectiveFunction)
 
 class Solver1D:
     def __init__(self,this):

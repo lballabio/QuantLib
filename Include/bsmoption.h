@@ -73,7 +73,7 @@ namespace QuantLib {
 		  private:
 			class BSMFunction;
 			friend class BSMFunction;
-			class BSMFunction : public Function {
+			class BSMFunction : public ObjectiveFunction {
 			  public:
 				BSMFunction(const Handle<BSMOption>& tempBSM, double price) {
 					bsm = tempBSM;

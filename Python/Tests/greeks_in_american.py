@@ -28,8 +28,8 @@ import copy
 import math
 
 pricer = BSMAmericanOption
-nstp = 100
-ngrd = 100
+nstp = 400
+ngrd = nstp+1
 
 def relErr(x1, x2, reference):
     if reference != 0.0:
@@ -70,7 +70,7 @@ for typ in ['Call','Put','Straddle']:
             for vol in rangeVol:
               #Check Greeks
               dS = under/10000.0
-              dT = resTime/10000.0
+              dT = resTime/(100.0*nstp)
               dVol = vol/10000.0
               dR = Rrate/10000.0
               option = pricer(typ,under,strike,Qrate,Rrate,resTime,vol,nstp,ngrd) 
@@ -88,6 +88,7 @@ for typ in ['Call','Put','Straddle']:
                 deltaNum = (optionPs.value()-optionMs.value())/(2*dS)
                 gammaNum = (optionPs.delta()-optionMs.delta())/(2*dS)
                 thetaNum =-(optionPt.value()-optionMt.value())/(2*dT)
+                #thetaNum =-(optionPt.value()-option.value())/dT
                 rhoNum   = (optionPr.value()-optionMr.value())/(2*dR)
                 vegaNum  = (optionPv.value()-optionMv.value())/(2*dVol)
 		            
@@ -123,8 +124,9 @@ print
 print "Final maximum global error on numerical derivatives = %g" % max(maxNumDerErrorList)
 print 
 if total_number_of_error > 1:
-        print "Test not passed, total noumber of failures:",total_number_of_error
+        print "Test not passed, total number of failures:",total_number_of_error
 else:
         print "Test passed!!"
 
+print 'Press return to end the test'
 raw_input()

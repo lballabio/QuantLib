@@ -31,7 +31,7 @@ namespace QuantLib {
 
 	namespace Solvers1D {
 	
-		double NewtonSafe::_solve(const Function& f, double xAccuracy) const {
+		double NewtonSafe::_solve(const ObjectiveFunction& f, double xAccuracy) const {
 		
 			double froot, dfroot, dx, dxold;
 			double xh, xl;

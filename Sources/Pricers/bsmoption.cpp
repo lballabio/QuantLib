@@ -60,7 +60,7 @@ namespace QuantLib {
 			// solver
 			Solvers1D::Brent s1d = Solvers1D::Brent();
 			s1d.setMaxEvaluations(maxEvaluations);
-			s1d.setLowBound(DBL_EPSILON);
+			s1d.setLowBound(std::numeric_limits<double>::epsilon());
 		
 			return s1d.solve(bsmf, accuracy, theVolatility, 0.05);
 		}

@@ -31,7 +31,7 @@ namespace QuantLib {
 
 	namespace Solvers1D {
 	
-		double Bisection::_solve(const Function& f, double xAccuracy) const {
+		double Bisection::_solve(const ObjectiveFunction& f, double xAccuracy) const {
 			double dx,xMid,fMid;
 		
 			if (fxMin < 0.0) { // Orient the search so that f>0

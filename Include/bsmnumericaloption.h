@@ -50,9 +50,10 @@ namespace QuantLib {
 			double valueAtCenter(const Array& a) const;
 			double firstDerivativeAtCenter(const Array& a, const Array& g) const;
 			double secondDerivativeAtCenter(const Array& a, const Array& g) const;
-			void initializeGrid(double smin, double smax);
-			void initializeInitialCondition();
-			void initializeOperator();
+			void setGridLimits() const;
+			void initializeGrid(double smin, double smax) const;
+			void initializeInitialCondition() const;
+			void initializeOperator() const;
 			// input data
 			int theGridPoints;
 			// results
@@ -60,15 +61,14 @@ namespace QuantLib {
 			mutable double theDelta, theGamma, theTheta;
 			mutable double  theRho, theVega;
 		
-			Array theGrid;
-			Operators::BSMOperator theOperator;
+			mutable Array theGrid;
+			mutable Operators::BSMOperator theOperator;
 			mutable Array thePrices;
-		  private:
-			// methods
-			void setGridLimits();
 			// temporaries
-			double sMin, sMax;
-			double theGridLogSpacing;
+			mutable double sMin, sMax;
+		  private:
+			// temporaries
+			mutable double theGridLogSpacing;
 			static double dVolMultiplier, dRMultiplier; 
 		};
 

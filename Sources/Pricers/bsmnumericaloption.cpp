@@ -38,11 +38,6 @@ namespace QuantLib {
 		  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility, int gridPoints)
 		: BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility), 
 		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false),theGrid(theGridPoints){
-			// common setup
-			setGridLimits();
-			initializeGrid(sMin,sMax);
-			initializeInitialCondition();
-			initializeOperator();
 			hasBeenCalculated = false;
 		}
 		
@@ -92,7 +87,7 @@ namespace QuantLib {
 			return theRho;
 		}
 		
-		void BSMNumericalOption::setGridLimits() {
+		void BSMNumericalOption::setGridLimits() const {
 			double prefactor = 1.0+0.05/theVolatility;		// correction for small volatilities
 			double minMaxFactor = QL_EXP(4.0*prefactor*theVolatility*QL_SQRT(theResidualTime));
 		
@@ -110,7 +105,7 @@ namespace QuantLib {
 			}
 		}
 
-		void BSMNumericalOption::initializeGrid(double min, double max) {			
+		void BSMNumericalOption::initializeGrid(double min, double max) const {			
 			theGridLogSpacing = (QL_LOG(max)-QL_LOG(min))/(theGridPoints-1);
 			double edx = QL_EXP(theGridLogSpacing);
 			theGrid[0] = min;
@@ -119,7 +114,7 @@ namespace QuantLib {
 				theGrid[j] = theGrid[j-1]*edx;
 		}
 		
-		void BSMNumericalOption::initializeInitialCondition() {
+		void BSMNumericalOption::initializeInitialCondition() const {
 			thePrices = Array(theGridPoints);
 			int j;
 			switch (theType) {
@@ -140,7 +135,7 @@ namespace QuantLib {
 			}
 		}
 		
-		void BSMNumericalOption::initializeOperator() {
+		void BSMNumericalOption::initializeOperator() const {
 			theOperator = BSMOperator(theGridPoints, theGridLogSpacing, theRiskFreeRate, theUnderlyingGrowthRate, theVolatility);
 			theOperator.setLowerBC(BoundaryCondition(BoundaryCondition::Neumann,thePrices[1]-thePrices[0]));
 			theOperator.setHigherBC(BoundaryCondition(BoundaryCondition::Neumann,thePrices[theGridPoints-1]-thePrices[theGridPoints-2]));

@@ -29,10 +29,6 @@
 	non-standard behaviors and implementations).
 */
 
-/*! \defgroup foundation The QuantLib Foundation
-	The core of abstract classes upon which the rest of the library is built.
-*/
-
 /*! \namespace QuantLib
 	\brief a.k.a. the QuantLib Foundation
 	

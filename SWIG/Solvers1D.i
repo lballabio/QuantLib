@@ -47,10 +47,10 @@
 // Function to find root of
 
 %{
-using QuantLib::Function;
+using QuantLib::ObjectiveFunction;
 %}
 
-class Function {
+class ObjectiveFunction {
   public:
 	virtual double value(double x) const = 0;
 	virtual double derivative(double x) const;
@@ -67,9 +67,9 @@ class Function {
 using QuantLib::Ensure;
 
 // its C++ container
-class PyFunction : public Function {
+class PyObjectiveFunction : public ObjectiveFunction {
   public:
-	PyFunction(PyObject *pyFunction) : thePyFunction(pyFunction) {}
+	PyObjectiveFunction(PyObject *pyFunction) : thePyFunction(pyFunction) {}
 	double value(double x) const {
 		PyObject* pyResult = PyObject_CallMethod(thePyFunction,"value","d",x);
 		Ensure(pyResult != NULL, "failed to call value() on Python object");
@@ -98,19 +98,19 @@ using QuantLib::Solver1D;
 
 class Solver1D {
   public:
-	virtual double solve(const Function& f, double xAccuracy, double guess, double step) const;
-	%name(bracketedSolve) virtual double solve(const Function& f, double xAccuracy, double guess, double xMin, double xMax) const;
+	virtual double solve(const ObjectiveFunction& f, double xAccuracy, double guess, double step) const;
+	%name(bracketedSolve) virtual double solve(const ObjectiveFunction& f, double xAccuracy, double guess, double xMin, double xMax) const;
 	void setMaxEvaluations(int evaluations);
 };
 
 #if defined(SWIGPYTHON)
 %addmethods Solver1D {
 	double pySolve(PyObject *pyFunction, double xAccuracy, double guess, double step) {
-		PyFunction f(pyFunction);
+		PyObjectiveFunction f(pyFunction);
 		return self->solve(f, xAccuracy, guess, step);
 	}
 	double pyBracketedSolve(PyObject *pyFunction, double xAccuracy, double guess, double xMin, double xMax) {
-		PyFunction f(pyFunction);
+		PyObjectiveFunction f(pyFunction);
 		return self->solve(f, xAccuracy, guess, xMin, xMax);
 	}
 }

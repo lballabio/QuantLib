@@ -157,4 +157,5 @@ if total_number_of_error > 1:
 else:
         print "Test passed!!"
 
+print 'Press return to end the test'
 raw_input()

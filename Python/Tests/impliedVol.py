@@ -91,3 +91,6 @@ for typ in typRange:
                     print ' that is', bsm3Value - bsmValue, 'above target value'
                     raise RuntimeError, "out of tolerance"
 print 'time elapsed', time.time() - startTime
+
+print 'Press return to end the test'
+raw_input()

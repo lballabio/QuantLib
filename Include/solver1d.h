@@ -30,28 +30,28 @@
 #include "dataformatters.h"
 #include <cmath>
 #include <limits>
-#include <iostream>
 
 namespace QuantLib {
 
 	#define MAX_FUNCTION_EVALUATIONS 100
 	
-	class Function {
+	class ObjectiveFunction {
 	  public:
-		virtual ~Function() {}
+		virtual ~ObjectiveFunction() {}
 		virtual double value(double x) const = 0;
 		virtual double derivative(double x) const { return Null<double>(); }
 	};
-	
+
 	class Solver1D {
 	  public:
 		// constructor
-		Solver1D() { maxEvaluations = MAX_FUNCTION_EVALUATIONS; lowBoundEnforced = false; hiBoundEnforced = false; }
+		Solver1D()
+		: maxEvaluations(MAX_FUNCTION_EVALUATIONS), lowBoundEnforced(false), hiBoundEnforced(false) {}
 		// destructor
 		virtual ~Solver1D() {}
 		// methods
-		virtual double solve(const Function& f, double xAccuracy, double guess, double step) const;
-		virtual double solve(const Function& f, double xAccuracy, double guess, double xMin, double xMax) const;
+		virtual double solve(const ObjectiveFunction& f, double xAccuracy, double guess, double step) const;
+		virtual double solve(const ObjectiveFunction& f, double xAccuracy, double guess, double xMin, double xMax) const;
 		void setMaxEvaluations(int evaluations);
 		void setLowBound(double lowBound) {theLowBound = lowBound; lowBoundEnforced = true; }
 		void setHiBound(double hiBound) {theHiBound = hiBound;  hiBoundEnforced = true; }
@@ -60,7 +60,7 @@ namespace QuantLib {
 		//  a) a valid bracket [xMin, xMax];
 		//  b) function already evaluated at xMin, xMax (fxMin, fxMax);
 		//  c) variable root initialized;
-		virtual double _solve(const Function& f, double xAccuracy) const = 0;
+		virtual double _solve(const ObjectiveFunction& f, double xAccuracy) const = 0;
 		double enforceBounds(double x) const;
 		int maxEvaluations;
 		mutable int evaluationNumber;

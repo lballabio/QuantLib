@@ -27,7 +27,7 @@ namespace QuantLib {
 
 	const double growthFactor = 1.6;
 	
-	double Solver1D::solve(const Function& f, double xAccuracy, double guess, double step) const {
+	double Solver1D::solve(const ObjectiveFunction& f, double xAccuracy, double guess, double step) const {
 	
 	  int flipflop = -1;
 	
@@ -54,7 +54,7 @@ namespace QuantLib {
 		    if (fxMin == 0.0)    return xMin;
 		    if (fxMax == 0.0)    return xMax;
 		    root = (xMax+xMin)/2.0;
-	  	  return _solve(f, QL_MAX(QL_FABS(xAccuracy), DBL_EPSILON));
+			return _solve(f, QL_MAX(QL_FABS(xAccuracy), std::numeric_limits<double>::epsilon()));
 		  }
 		  if (QL_FABS(fxMin) < QL_FABS(fxMax)) {
 		    xMin = enforceBounds(xMin+growthFactor*(xMin-xMax));
@@ -82,11 +82,10 @@ namespace QuantLib {
 	}
 	
 	
-	double Solver1D::solve(const Function& f, double xAccuracy, double guess, double xMin_, double xMax_) const {
+	double Solver1D::solve(const ObjectiveFunction& f, double xAccuracy, double guess, double xMin_, double xMax_) const {
 	
 	  xMin = xMin_;
 	  xMax = xMax_;
-	  // better safe than sorry
 	  Require(xMin < xMax, "invalid range: xMin (" + DoubleFormatter::toString(xMin)
 	  	+ ") >= xMax (" + DoubleFormatter::toString(xMax) + ")");
 	
@@ -112,7 +111,7 @@ namespace QuantLib {
 		  ") > xMax (" + DoubleFormatter::toString(xMax) + ")");
 	  root = guess;
 	
-	  return _solve(f, QL_MAX(QL_FABS(xAccuracy), DBL_EPSILON));
+	  return _solve(f, QL_MAX(QL_FABS(xAccuracy), std::numeric_limits<double>::epsilon()));
 	}
 
 }

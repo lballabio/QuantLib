@@ -32,7 +32,7 @@ namespace QuantLib {
 
 	namespace Solvers1D {
 	
-		double Newton::_solve(const Function& f, double xAccuracy) const {
+		double Newton::_solve(const ObjectiveFunction& f, double xAccuracy) const {
 			double froot, dfroot, dx;
 		
 			froot = f.value(root);

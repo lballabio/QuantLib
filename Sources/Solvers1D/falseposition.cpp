@@ -31,7 +31,7 @@ namespace QuantLib {
 
 	namespace Solvers1D {
 	
-		double FalsePosition::_solve(const Function& f, double xAccuracy) const {
+		double FalsePosition::_solve(const ObjectiveFunction& f, double xAccuracy) const {
 		
 		  double fl,fh,xl,xh,dx,del,froot;
 		
