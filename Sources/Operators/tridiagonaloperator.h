@@ -183,7 +183,7 @@ inline TridiagonalOperator operator-(const TridiagonalOperator& D, const QL_ADD_
 
 inline TridiagonalOperator operator-(const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >& I, const TridiagonalOperator& D) {
 	Array<double> temp(D.size(),1.0);
-	TridiagonalOperator result(D.belowDiagonal,temp-D.diagonal,D.aboveDiagonal);
+	TridiagonalOperator result(-D.belowDiagonal,temp-D.diagonal,-D.aboveDiagonal);
 	result.setLowerBC(D.theLowerBC);
 	result.setHigherBC(D.theHigherBC);
 	return result;
