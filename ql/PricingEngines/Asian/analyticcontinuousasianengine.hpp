@@ -26,9 +26,9 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for European continuous geometric average Asian option
+    //! Pricing engine for European continuous geometric average price Asian
     /*! This class implements a continuous geometric average price
-        asian option with european exercise.  The formula is from
+        Asian option with European exercise.  The formula is from
         "Option Pricing Formulas", E. G. Haug (1997) pag 96-97.
 
         \ingroup asianengines
