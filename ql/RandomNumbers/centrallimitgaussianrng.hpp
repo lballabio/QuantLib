@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -37,35 +37,42 @@ namespace QuantLib {
         /*! It uses the well-known fact that the sum of 12 uniform deviate
             in (-.5,.5) is approximately a Gaussian deviate with average 0
             and standard deviation 1.
-            The uniform deviate is supplied by U.
+            The uniform deviate is supplied by RNG.
 
-            Class U must implement the following interface:
+            Class RNG must implement the following interface:
             \code
-                U::U(long seed);
-                U::sample_type U::next() const;
+                RNG::sample_type RNG::next() const;
             \endcode
         */
-        template <class U>
+        template <class RNG>
         class CLGaussianRng {
           public:
             typedef MonteCarlo::Sample<double> sample_type;
-            explicit CLGaussianRng(long seed=0);
+            explicit CLGaussianRng(const RNG& uniformGenerator);
+            /*! \deprecated initialize with a random number
+                            generator instead.
+            */
+            explicit CLGaussianRng(long seed = 0);
             //! returns next sample from the Gaussian distribution
             sample_type next() const;
           private:
-            U basicGenerator_;
+            RNG uniformGenerator_;
         };
 
-        template <class U>
-        CLGaussianRng<U>::CLGaussianRng(long seed)
-        : basicGenerator_(seed) {}
+        template <class RNG>
+        CLGaussianRng<RNG>::CLGaussianRng(const RNG& uniformGenerator)
+        : uniformGenerator_(uniformGenerator) {}
 
-        template <class U>
-        inline typename CLGaussianRng<U>::sample_type 
-        CLGaussianRng<U>::next() const {
+        template <class RNG>
+        CLGaussianRng<RNG>::CLGaussianRng(long seed)
+        : uniformGenerator_(seed) {}
+
+        template <class RNG>
+        inline typename CLGaussianRng<RNG>::sample_type
+        CLGaussianRng<RNG>::next() const {
             double gaussPoint = -6.0, gaussWeight = 1.0;
             for(int i=1;i<=12;i++){
-                typename U::sample_type sample = basicGenerator_.next();
+                typename RNG::sample_type sample = uniformGenerator_.next();
                 gaussPoint  += sample.value;
                 gaussWeight *= sample.weight;
             }

@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -36,43 +36,53 @@ namespace QuantLib {
         //! Gaussian random number generator
         /*! It uses the well-known Box-Muller transformation to return a
             normal distributed Gaussian deviate with average 0.0 and standard
-            deviation of 1.0, from a uniform deviate in (0,1) supplied by U.
+            deviation of 1.0, from a uniform deviate in (0,1) supplied by RNG.
 
-            Class U must implement the following interface:
+            Class RNG must implement the following interface:
             \code
-                U::U(long seed);
-                U::sample_type U::next() const;
+                RNG::sample_type RNG::next() const;
             \endcode
         */
-        template <class U>
+        template <class RNG>
         class BoxMullerGaussianRng {
           public:
             typedef MonteCarlo::Sample<double> sample_type;
-            explicit BoxMullerGaussianRng(long seed=0);
+            explicit BoxMullerGaussianRng(const RNG& uniformGenerator);
+            /*! \deprecated initialize with a random number
+                            generator instead.
+            */
+            explicit BoxMullerGaussianRng(long seed = 0);
             //! returns next sample from the Gaussian distribution
             sample_type next() const;
           private:
-            U basicGenerator_;
+            RNG uniformGenerator_;
             mutable bool returnFirst_;
             mutable double firstValue_,secondValue_;
             mutable double firstWeight_,secondWeight_;
             mutable double weight_;
         };
 
-        template <class U>
-        BoxMullerGaussianRng<U>::BoxMullerGaussianRng(long seed):
-            basicGenerator_(seed), returnFirst_(true), weight_(0.0){}
+        template <class RNG>
+        BoxMullerGaussianRng<RNG>::BoxMullerGaussianRng(
+            const RNG& uniformGenerator)
+        : uniformGenerator_(uniformGenerator), returnFirst_(true),
+          weight_(0.0) {}
 
-        template <class U>
-        inline typename BoxMullerGaussianRng<U>::sample_type
-        BoxMullerGaussianRng<U>::next() const {
+        template <class RNG>
+        BoxMullerGaussianRng<RNG>::BoxMullerGaussianRng(long seed)
+        : uniformGenerator_(seed), returnFirst_(true),
+          weight_(0.0) {}
+
+        template <class RNG>
+        inline typename BoxMullerGaussianRng<RNG>::sample_type
+        BoxMullerGaussianRng<RNG>::next() const {
             if(returnFirst_) {
                 double x1,x2,r,ratio;
                 do {
-                    typename U::sample_type s1 = basicGenerator_.next();
+                    typename RNG::sample_type s1 = uniformGenerator_.next();
                     x1 = s1.value*2.0-1.0;
                     firstWeight_ = s1.weight;
-                    typename U::sample_type s2 = basicGenerator_.next();
+                    typename RNG::sample_type s2 = uniformGenerator_.next();
                     x2 = s2.value*2.0-1.0;
                     secondWeight_ = s2.weight;
                     r = x1*x1+x2*x2;
