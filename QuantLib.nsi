@@ -237,6 +237,12 @@ SectionIn 1 2
     File /r "Examples\Parities\*.txt"
     File /r "Examples\Parities\*.mak"
 
+    SetOutPath $INSTDIR\Examples\Swap
+    File /r "Examples\Swap\*.cpp"
+    File /r "Examples\Swap\*.dsp"
+    File /r "Examples\Swap\*.txt"
+    File /r "Examples\Swap\*.mak"
+
     IfFileExists $SMPROGRAMS\QuantLib 0 NoSourceShortCuts
         CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
                        "$INSTDIR\Examples\Examples.dsw"
