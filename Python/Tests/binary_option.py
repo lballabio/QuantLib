@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.4  2001/03/05 11:41:32  lballabio
+    Cosmetic change
+
     Revision 1.3  2001/03/02 10:19:50  marmar
     One failure is enough to halt the test
 
@@ -241,7 +244,7 @@ class BinaryOptionTest(TestUnit):
 
 
 if __name__ == '__main__':
-    BinaryOptionTest().test('Binary option pricer')
+    BinaryOptionTest().test('binary option pricer')
 
 
 
