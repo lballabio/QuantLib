@@ -18,6 +18,7 @@
 #include "asianoptions.hpp"
 #include "utilities.hpp"
 #include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/asianoption.hpp>
 #include <ql/Instruments/europeanoption.hpp>
@@ -295,7 +296,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
 
-    DayCounter dc = SimpleDayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -321,16 +322,14 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     Size futureFixings = 10;
     Option::Type type = Option::Call;
     Real strike = 100.0;
-    Date exerciseDate = today.plusYears(1);
-
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
 
+    Date exerciseDate = today.plusDays(360);
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
 
     std::vector<Date> fixingDates(futureFixings);
-    Time t = dc.yearFraction(today, exerciseDate);
-    Integer dt = Integer(t*360/futureFixings+0.5);
+    Integer dt = Integer(360/futureFixings+0.5);
     fixingDates[0]=today.plusDays(dt);
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j]=fixingDates[j-1].plusDays(dt);
@@ -341,11 +340,8 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
                                         exercise, engine);
 
     Real calculated = option.NPV();
-    Real expected = 5.2865;
-    // even with SimpleDayCounter, the year fractions can vary. This 
-    // forces us to use a larger tolerance. An option with 12 fixings 
-    // instead of 10 would have been free of this effect...
-    Real tolerance = 1.5e-2;
+    Real expected = 5.3426;
+    Real tolerance = 1.0e-4;
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningProduct, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
