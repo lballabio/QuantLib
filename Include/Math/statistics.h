@@ -110,8 +110,8 @@ namespace QuantLib {
 		  Require(weight>=0.0, "Statistics::add : negative weight not allowed");
 		  theSampleNumber += 1;
 		  theSampleWeight += weight;
-		  double token, temp;
-		  token= temp = weight*value;
+		  double token = value;
+		  double temp = weight*value;		  
 		  theSum += temp;
 		  temp *= token;
 		  theQuadraticSum += temp;
