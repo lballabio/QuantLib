@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,50 +19,47 @@
     \brief linear interpolation between discrete points
 */
 
-#ifndef quantlib_linear_interpolation_h
-#define quantlib_linear_interpolation_h
+#ifndef quantlib_linear_interpolation_hpp
+#define quantlib_linear_interpolation_hpp
 
 #include <ql/Math/interpolation.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
     //! linear interpolation between discrete points
-    template <class RandomAccessIterator1, class RandomAccessIterator2>
-    class LinearInterpolation
-    : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {
-      public:
-        /*  these typedefs are repeated because Borland C++ won't inherit
-            them from Interpolation - they shouldn't hurt, though.
-        */
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
-                                                                argument_type;
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
-                                                                  result_type;
-        LinearInterpolation(const RandomAccessIterator1& xBegin,
-                            const RandomAccessIterator1& xEnd,
-                            const RandomAccessIterator2& yBegin)
-        : Interpolation<RandomAccessIterator1,
-                        RandomAccessIterator2>(xBegin,xEnd,yBegin) {}
-        result_type operator()(const argument_type& x,
-                               bool allowExtrapolation = false) const {
-            locate(x);
-            if (isOutOfRange_) {
-                QL_REQUIRE(allowExtrapolation,
-                    "LinearInterpolation::operator() : "
-                    "\ninterpolation range is ["
-                    + DoubleFormatter::toString(xBegin_[0]) +
-                    ", "
-                    + DoubleFormatter::toString(xBegin_[n_-1]) +
-                    "]: extrapolation at "
-                    + DoubleFormatter::toString(x) +
-                    " not allowed");
+    class LinearInterpolation : public Interpolation {
+      protected:
+        //! linear interpolation implementation
+        template <class I1, class I2>
+        class Impl : public Interpolation::templateImpl<I1,I2> {
+          public:
+            Impl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
+            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin) {}
+            double value(double x) const {
+                Size i = locate(x);
+                I2 j = yBegin_+i;
+                return yBegin_[i] + (x-xBegin_[i])*(yBegin_[i+1]-yBegin_[i])/
+                                                   (xBegin_[i+1]-xBegin_[i]);
             }
-            RandomAccessIterator2 j = yBegin_+(position_-xBegin_);
-            return *j + (x-*position_)*double(*(j+1)-*j)/
-                double(*(position_+1)-*position_);
+            double primitive(double) const {
+                QL_FAIL("LinearInterpolation::primitive(): "
+                        "not implemented");
+            }
+            double derivative(double) const {
+                QL_FAIL("LinearInterpolation::derivative(): "
+                        "not implemented");
+            }
+            double secondDerivative(double) const {
+                QL_FAIL("LinearInterpolation::secondDerivative(): "
+                        "not implemented");
+            }
+        };
+      public:
+        template <class I1, class I2>
+        LinearInterpolation(const I1& xBegin, const I1& xEnd, 
+                            const I2& yBegin) {
+            impl_ = Handle<Interpolation::Impl>(
+                  new LinearInterpolation::Impl<I1,I2>(xBegin, xEnd, yBegin));
         }
     };
 

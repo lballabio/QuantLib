@@ -52,7 +52,7 @@ namespace QuantLib {
                 Time t = dayCounter_.yearFraction(referenceDate_,tmpDate);
                 times.insert(times.begin() + i, t);
                 discounts.insert(discounts.begin() + i,
-                                 (*interpolation_)(t,true));
+                                 interpolation_(t,true));
                 i++;
                 tmpDate = calendar_.advance(referenceDate_,
                                             ++ci, Months, roll_);
@@ -64,9 +64,8 @@ namespace QuantLib {
         times_ = times;
         discounts_ = discounts;
 
-        interpolation_ = Handle<DfInterpolation>(
-                             new DfInterpolation(times_.begin(), times_.end(),
-                                                 discounts_.begin()));
+        interpolation_ = LogLinearInterpolation(times_.begin(), times_.end(),
+                                                discounts_.begin());
     }
 
     Handle<TermStructure> 

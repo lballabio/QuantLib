@@ -48,9 +48,8 @@ namespace QuantLib {
                                                  dates_[i]);
         }
 
-        interpolation_ = Handle<YieldInterpolation>(
-                          new YieldInterpolation(times_.begin(), times_.end(),
-                                                 yields_.begin()));
+        interpolation_ = LinearInterpolation(times_.begin(), times_.end(),
+                                             yields_.begin());
     }
 
     Rate ZeroCurve::zeroYieldImpl(Time t, bool extrapolate) const {
@@ -58,7 +57,7 @@ namespace QuantLib {
                    "ZeroCurve::zeroYieldImpl "
                    "negative time (" + DoubleFormatter::toString(t) +
                    ") not allowed");
-        return (*interpolation_)(t, extrapolate);
+        return interpolation_(t, extrapolate);
     }
 
 }

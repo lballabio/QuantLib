@@ -79,7 +79,7 @@ namespace QuantLib {
                    ") not allowed");
 
         if (t<=times_.back())
-            return (*varianceCurve_)(t, extrapolate);
+            return varianceCurve_(t, extrapolate);
         // for later times extrapolate with flat vol
         else { // t>times_.back() || extrapolate
             QL_REQUIRE(extrapolate,
@@ -88,7 +88,7 @@ namespace QuantLib {
                        ") greater than max time (" +
                        DoubleFormatter::toString(times_.back()) +
                        ")");
-            return (*varianceCurve_)(times_.back(), extrapolate)*
+            return varianceCurve_(times_.back(), extrapolate)*
                 t/times_.back();
         }
     }

@@ -53,10 +53,7 @@ namespace QuantLib {
                                bool allowExtrapolation = false) const;
       private:
         Size rows_;
-        std::vector<CubicSplineInterpolation<
-                            RandomAccessIteratorX,
-                            typename MatricialData::const_row_iterator> >
-                                                                     splines_;
+        std::vector<Interpolation> splines_;
     };
 
 
@@ -70,13 +67,8 @@ namespace QuantLib {
       rows_(data_.rows()) {
         typedef typename M::const_row_iterator row_iterator;
         for (Size i = 0; i< rows_; i++)
-            splines_.push_back(CubicSplineInterpolation<I1, row_iterator>(
-           xBegin, xEnd, data_.row_begin(i),
-           // something better needed here
-           CubicSplineInterpolation<I1, row_iterator>::BoundaryCondition::SecondDerivative, 0.0,
-           // something better needed here
-           CubicSplineInterpolation<I1, row_iterator>::BoundaryCondition::SecondDerivative, 0.0, 
-           false));
+            splines_.push_back(NaturalCubicSpline(
+                                           xBegin, xEnd, data_.row_begin(i)));
     }
 
     template <class I1, class I2, class M>
@@ -92,14 +84,7 @@ namespace QuantLib {
             newColumn[i]=splines_[i](x, allowExtrapolation);
         }
 
-        CubicSplineInterpolation<I2,std::vector<result_type>::const_iterator>
-            columnSpline(yBegin_, yEnd_, newColumn.begin(),
-            // something better needed here
-            CubicSplineInterpolation<I2,std::vector<result_type>::const_iterator>::BoundaryCondition::SecondDerivative, 0.0,
-            // something better needed here
-            CubicSplineInterpolation<I2,std::vector<result_type>::const_iterator>::BoundaryCondition::SecondDerivative, 0.0, 
-            false);
-
+        NaturalCubicSpline columnSpline(yBegin_, yEnd_, newColumn.begin());
         return columnSpline(y, allowExtrapolation);
     }
 

@@ -53,10 +53,7 @@ namespace QuantLib {
         std::vector<Rate> yields_;
         DayCounter dayCounter_;
         std::vector<Time> times_;
-        typedef LinearInterpolation<
-            std::vector<Time>::const_iterator,
-            std::vector<Rate>::const_iterator> YieldInterpolation;
-        Handle<YieldInterpolation> interpolation_;
+        Interpolation interpolation_;
     };
 
     // inline definitions

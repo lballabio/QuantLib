@@ -52,11 +52,10 @@ namespace QuantLib {
         Size i,ci;
 
         times_.resize(dates_.size());
-        for(i = 0; i < dates_.size(); i++)
+        for (i = 0; i < dates_.size(); i++)
             times_[i] = dayCounter_.yearFraction(referenceDate_,dates_[i]);
-        fwdinterp_ = Handle<FwdInterpolation>(
-                            new FwdInterpolation(times_.begin(), times_.end(),
-                                                 forwards_.begin()));
+        fwdinterp_ = LinearInterpolation(times_.begin(), times_.end(),
+                                         forwards_.begin());
 	 
         std::vector<Date> dates = dates_;
         std::vector<Time> times = times_;
@@ -71,7 +70,7 @@ namespace QuantLib {
                 Time t = dayCounter_.yearFraction(referenceDate_,tmpDate);
                 times.insert(times.begin() + i, t);
                 forwards.insert(forwards.begin() + i,
-                                (*fwdinterp_)(t,true));
+                                fwdinterp_(t,true));
                 i++;
                 tmpDate = calendar_.advance(referenceDate_,
                                             ++ci, Months, roll_);
@@ -89,9 +88,8 @@ namespace QuantLib {
             forwards_.insert(forwards_.begin(), forwards_[0]);
         }
 	 
-        fwdinterp_ = Handle<FwdInterpolation>(
-                            new FwdInterpolation(times_.begin(), times_.end(),
-                                                 forwards_.begin()));
+        fwdinterp_ = LinearInterpolation(times_.begin(), times_.end(),
+                                         forwards_.begin());
     }
 
     Handle<TermStructure> CompoundForward::bootstrap() const {
@@ -191,7 +189,7 @@ namespace QuantLib {
             if (t == times_[n]) {
                 return forwards_[n];
             } else {
-                return (*fwdinterp_) (t,extrapolate);
+                return fwdinterp_(t,extrapolate);
             }
         }
         QL_DUMMY_RETURN(Rate());

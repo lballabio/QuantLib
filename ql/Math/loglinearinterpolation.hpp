@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,59 +20,60 @@
     \brief log-linear interpolation between discrete points
 */
 
-#ifndef quantlib_loglinear_interpolation_h
-#define quantlib_loglinear_interpolation_h
+#ifndef quantlib_loglinear_interpolation_hpp
+#define quantlib_loglinear_interpolation_hpp
 
-#include <ql/handle.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     //! log linear interpolation between discrete points
-    template <class RandomAccessIterator1, class RandomAccessIterator2>
-    class LogLinearInterpolation
-    : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {
-      public:
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
-                                                                argument_type;
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
-                                                                  result_type;
-      private:
-        typedef LinearInterpolation<
-            RandomAccessIterator1,
-            typename std::vector<result_type>::const_iterator>
-                                                          inner_interpolation;
-      public:
-        LogLinearInterpolation(const RandomAccessIterator1& xBegin,
-                               const RandomAccessIterator1& xEnd,
-                               const RandomAccessIterator2& yBegin)
-        : Interpolation<RandomAccessIterator1,
-                        RandomAccessIterator2>(xBegin, xEnd, yBegin),
-          logY_(xEnd-xBegin) {
-            for (int i=0; i<xEnd-xBegin; i++) {
-                QL_REQUIRE(*(yBegin+i)>0.0,
-                           "LogLinearInterpolation::LogLinearInterpolation : "
-                           "negative values not allowed");
-                logY_[i]=QL_LOG(*(yBegin+i));
+    class LogLinearInterpolation : public Interpolation {
+      protected:
+        //! linear interpolation implementation
+        template <class I1, class I2>
+        class Impl : public Interpolation::templateImpl<I1,I2> {
+          public:
+            Impl(const I1& xBegin, const I1& xEnd, const I2& yBegin)
+            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
+              logY_(xEnd-xBegin) {
+                for (Size i=0; i<logY_.size(); i++) {
+                    QL_REQUIRE(yBegin[i]>0.0,
+                               "LogLinearInterpolation : "
+                               "negative values not allowed");
+                    logY_[i]=QL_LOG(yBegin[i]);
+                }
+                linearInterpolation_ = LinearInterpolation(xBegin, xEnd, 
+                                                           logY_.begin());
             }
-            linearInterpolation_ = Handle<inner_interpolation>(
-                        new inner_interpolation(xBegin, xEnd, logY_.begin()));
+            double value(double x) const {
+                return QL_EXP(linearInterpolation_(x,true));
+            }
+            double primitive(double) const {
+                QL_FAIL("LogLinearInterpolation::primitive(): "
+                        "not implemented");
+            }
+            double derivative(double) const {
+                QL_FAIL("LogLinearInterpolation::derivative(): "
+                        "not implemented");
+            }
+            double secondDerivative(double) const {
+                QL_FAIL("LogLinearInterpolation::secondDerivative(): "
+                        "not implemented");
+            }
+          private:
+            std::vector<double> logY_;
+            Interpolation linearInterpolation_;
+        };
+      public:
+        template <class I1, class I2>
+        LogLinearInterpolation(const I1& xBegin, const I1& xEnd,
+                               const I2& yBegin) {
+            impl_ = Handle<Interpolation::Impl>(
+                  new LogLinearInterpolation::Impl<I1,I2>(xBegin, xEnd,
+                                                          yBegin));
         }
-        result_type operator()(const argument_type& x,
-                               bool allowExtrapolation = false) const {
-            result_type logResult = 
-                (*linearInterpolation_)(x,allowExtrapolation);
-            return QL_EXP(logResult);
-        }
-      private:
-        std::vector<result_type> logY_;
-        Handle<LinearInterpolation<
-                   RandomAccessIterator1,
-                   typename std::vector<result_type>::const_iterator> >
-        linearInterpolation_;
     };
 
 }

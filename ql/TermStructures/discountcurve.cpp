@@ -58,9 +58,8 @@ namespace QuantLib {
             times_[i] = 
                 dayCounter_.yearFraction(referenceDate_, dates_[i]);
         }
-        interpolation_ = Handle<DfInterpolation>(
-                             new DfInterpolation(times_.begin(), times_.end(),
-                                                 discounts_.begin()));
+        interpolation_ = LogLinearInterpolation(times_.begin(), times_.end(),
+                                                discounts_.begin());
     }
 
     DiscountFactor DiscountCurve::discountImpl(Time t, 
@@ -76,7 +75,7 @@ namespace QuantLib {
             if (t == times_[n]) {
                 return discounts_[n];
             } else {
-                return (*interpolation_) (t, extrapolate);
+                return interpolation_(t, extrapolate);
             }
         }
         QL_DUMMY_RETURN(DiscountFactor());

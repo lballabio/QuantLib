@@ -33,13 +33,9 @@ namespace QuantLib {
                        double x,
                        int interpolationType,
                        bool allowExtrapolation,
-                       CubicSplineInterpolation<std::vector<double>::const_iterator,
-                                                std::vector<double>::const_iterator>::BoundaryCondition
-                                                               leftCondition,
+                       CubicSpline::BoundaryCondition leftCondition,
                        double leftConditionValue,
-                       CubicSplineInterpolation<std::vector<double>::const_iterator,
-                                                std::vector<double>::const_iterator>::BoundaryCondition
-                                                              rightCondition,
+                       CubicSpline::BoundaryCondition rightCondition,
                        double rightConditionValue,
                        bool monotonicityConstraint,
                        int derivativeOrder);

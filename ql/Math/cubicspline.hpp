@@ -21,317 +21,289 @@
     \brief cubic spline interpolation between discrete points
 */
 
-#ifndef quantlib_cubic_spline_h
-#define quantlib_cubic_spline_h
+#ifndef quantlib_cubic_spline_hpp
+#define quantlib_cubic_spline_hpp
 
 #include <ql/Math/interpolation.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/null.hpp>
-#include <ql/dataformatters.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     //! cubic spline interpolation between discrete points
-    template <class RandomAccessIterator1, class RandomAccessIterator2>
-    class CubicSplineInterpolation
-        : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {
+    class CubicSpline : public Interpolation {
       public:
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
-                                                                argument_type;
-        typedef
-            typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
-                                                                  result_type;
-        enum BoundaryCondition { Not_a_knot,       //! Make second(-last) point an inactive knot
-                                 FirstDerivative,  //! Match endslope given value
-                                 SecondDerivative, //! Match end second derivative given value
-                                 Periodic,         //! Match first and second derivatives at left end with those at right end
-                                 Lagrange          //! Match endslope to the slope of the cubic that matches the first four data at the respective end
+        enum BoundaryCondition { 
+            //! Make second(-last) point an inactive knot
+            NotAKnot,
+            //! Match value of end-slope
+            FirstDerivative,
+            //! Match value of second derivative at end
+            SecondDerivative,
+            //! Match first and second derivative at either end
+            Periodic,
+            /*! Match end-slope to the slope of the cubic that matches 
+                the first four data at the respective end
+            */
+            Lagrange
         };
-        CubicSplineInterpolation(const RandomAccessIterator1& xBegin,
-                                 const RandomAccessIterator1& xEnd,
-                                 const RandomAccessIterator2& yBegin,
-                                 BoundaryCondition leftCondition,
-                                 result_type leftConditionValue,
-                                 BoundaryCondition rightCondition,
-                                 result_type rightConditionValue,
-                                 bool monotonicityConstraint);
-        result_type operator()(const argument_type& x,
-                               bool allowExtrapolation = false) const;
-        result_type primitive(const argument_type& x,
-                              bool allowExtrapolation = false) const;
-        result_type derivative(const argument_type& x,
-                               bool allowExtrapolation = false) const;
-        result_type secondDerivative(const argument_type& x,
-                                     bool allowExtrapolation = false) const;
-        const std::vector<result_type>& aCoefficients() const { return a_; };
-        const std::vector<result_type>& bCoefficients() const { return b_; };
-        const std::vector<result_type>& cCoefficients() const { return c_; };
-      private:
-        // P[i](x) = y[i] +
-        //           a[i]*(x-x[i]) +
-        //           b[i]*(x-x[i])^2 +
-        //           c[i]*(x-x[i])^3
-        std::vector<result_type> primitiveConst_, a_, b_, c_;
-        bool monotonicityCorrectionApplied_;
-    };
+      protected:
+        //! cubic spline implementation
+        template <class I1, class I2>
+        class Impl : public Interpolation::templateImpl<I1,I2> {
+          public:
+            Impl(const I1& xBegin, const I1& xEnd, const I2& yBegin,
+                 CubicSpline::BoundaryCondition leftCondition,
+                 double leftConditionValue,
+                 CubicSpline::BoundaryCondition rightCondition,
+                 double rightConditionValue,
+                 bool monotonicityConstraint)
+            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin), 
+              n_(xEnd-xBegin), primitiveConst_(n_-1),
+              a_(n_-1), b_(n_-1), c_(n_-1),
+              monotone_(false) {
 
+                TridiagonalOperator L(n_);
+                Array tmp(n_);
+                std::vector<double> dx(n_-1), S(n_-1);
 
-    // template definitions
+                Size i=0;
+                dx[i]= xBegin_[i+1] - xBegin_[i];
+                S[i] =(yBegin_[i+1] - yBegin_[i])/dx[i];
+                for (i=1; i<n_-1; i++) {
+                    dx[i]= xBegin_[i+1] - xBegin_[i];
+                    S[i] =(yBegin_[i+1] - yBegin_[i])/dx[i];
 
-    template <class I1, class I2>
-    CubicSplineInterpolation<I1,I2>::CubicSplineInterpolation(
-        const I1& xBegin, const I1& xEnd, const I2& yBegin,
-        BoundaryCondition  leftCondition, result_type  leftConditionValue,
-        BoundaryCondition rightCondition, result_type rightConditionValue,
-        bool monotonicityConstraint)
-    : Interpolation<I1,I2>(xBegin,xEnd,yBegin), primitiveConst_(xEnd-xBegin-1),
-      a_(xEnd-xBegin-1), b_(xEnd-xBegin-1), c_(xEnd-xBegin-1),
-      monotonicityCorrectionApplied_(false) {
+                    L.setMidRow(i, dx[i], 2.0*(dx[i]+dx[i-1]), dx[i-1]);
+                    tmp[i] = 3.0*(dx[i]*S[i-1] + dx[i-1]*S[i]);
+                }
 
-        TridiagonalOperator L(n_);
-        Array tmp(n_);
-        std::vector<double> dx(n_-1), S(n_-1);
+                /**** BOUNDARY CONDITIONS ****/
 
-        Size i=0;
-        dx[i]= xBegin_[i+1] - xBegin_[i];
-        S[i] =(yBegin_[i+1] - yBegin_[i])/dx[i];
-        for (i=1; i<n_-1; i++) {
-            dx[i]= xBegin_[i+1] - xBegin_[i];
-            S[i] =(yBegin_[i+1] - yBegin_[i])/dx[i];
+                // left condition
+                switch (leftCondition) {
+                  case NotAKnot:
+                    // ignoring end condition value
+                    L.setFirstRow(dx[1]*(dx[1]+dx[0]), 
+                                  (dx[0]+dx[1])*(dx[0]+dx[1]));
+                    tmp[0] = S[0]*dx[1]*(2.0*dx[1]+3.0*dx[0]) + 
+                             S[1]*dx[0]*dx[0];
+                    break;
+                  case FirstDerivative:
+                    L.setFirstRow(1.0, 0.0);
+                    tmp[0] = leftConditionValue;
+                    break;
+                  case SecondDerivative:
+                    L.setFirstRow(2.0, 1.0);
+                    tmp[0] = 3.0*S[0] - leftConditionValue*dx[0]/2.0;
+                    break;
+                  case Periodic:
+                  case Lagrange:
+                    // ignoring end condition value
+                    QL_FAIL("CubicSpline : "
+                            "this end condition is not implemented yet");
+                  default:
+                    QL_FAIL("CubicSpline : "
+                            "unknown end condition");
+                }
 
-            L.setMidRow(i, dx[i], 2.0*(dx[i]+dx[i-1]), dx[i-1]);
-            tmp[i] = 3.0*(dx[i]*S[i-1] + dx[i-1]*S[i]);
-        }
+                // right condition
+                switch (rightCondition) {
+                  case NotAKnot:
+                    // ignoring end condition value
+                    L.setLastRow(-(dx[n_-2]+dx[n_-3])*(dx[n_-2]+dx[n_-3]),
+                                 -dx[n_-3]*(dx[n_-3]+dx[n_-2]));
+                    tmp[n_-1] = -S[n_-3]*dx[n_-2]*dx[n_-2] -
+                                 S[n_-2]*dx[n_-3]*(3.0*dx[n_-2]+2.0*dx[n_-3]);
+                    break;
+                  case FirstDerivative:
+                    L.setLastRow(0.0, 1.0);
+                    tmp[n_-1] = rightConditionValue;
+                    break;
+                  case SecondDerivative:
+                    L.setLastRow(1.0, 2.0);
+                    tmp[n_-1] = 3.0*S[n_-2] - rightConditionValue*dx[n_-2]/2.0;
+                    break;
+                  case Periodic:
+                  case Lagrange:
+                    // ignoring end condition value
+                    QL_FAIL("CubicSpline : "
+                            "this end condition is not implemented yet");
+                  default:
+                    QL_FAIL("CubicSpline : "
+                            "unknown end condition");
+                }
 
-        /**** BOUNDARY CONDITIONS ****/
+                // solve the system
+                tmp = L.solveFor(tmp);
 
-        // left condition
-        switch (leftCondition) {
-          case Not_a_knot:
-            // ignoring end condition value
-            L.setFirstRow(dx[1]*(dx[1]+dx[0]), (dx[0]+dx[1])*(dx[0]+dx[1]));
-            tmp[0] = S[0]*dx[1]*(2.0*dx[1]+3.0*dx[0]) + S[1]*dx[0]*dx[0];
-            break;
-          case FirstDerivative:
-            L.setFirstRow(1.0, 0.0);
-            tmp[0] = leftConditionValue;
-            break;
-          case SecondDerivative:
-            L.setFirstRow(2.0, 1.0);
-            tmp[0] = 3.0*S[0] - leftConditionValue*dx[0]/2.0;
-            break;
-          case Periodic:
-          case Lagrange:
-            // ignoring end condition value
-            QL_FAIL("CubicSplineInterpolation::CubicSplineInterpolation : "
-                "this end condition is not implemented yet");
-          default:
-            QL_FAIL("CubicSplineInterpolation::CubicSplineInterpolation : "
-                "unknown end condition");
-        }
-
-        // right condition
-        switch (rightCondition) {
-          case Not_a_knot:
-            // ignoring end condition value
-            L.setLastRow(-(dx[n_-2]+dx[n_-3])*(dx[n_-2]+dx[n_-3]),
-                         -dx[n_-3]*(dx[n_-3]+dx[n_-2]));
-            tmp[n_-1] = -S[n_-3]*dx[n_-2]*dx[n_-2] -
-                S[n_-2]*dx[n_-3]*(3.0*dx[n_-2]+2.0*dx[n_-3]);
-            break;
-          case FirstDerivative:
-            L.setLastRow(0.0, 1.0);
-            tmp[n_-1] = rightConditionValue;
-            break;
-          case SecondDerivative:
-            L.setLastRow(1.0, 2.0);
-            tmp[n_-1] = 3.0*S[n_-2] - rightConditionValue*dx[n_-2]/2.0;
-            break;
-          case Periodic:
-          case Lagrange:
-            // ignoring end condition value
-            QL_FAIL("CubicSplineInterpolation::CubicSplineInterpolation : "
-                "this end condition is not implemented yet");
-          default:
-            QL_FAIL("CubicSplineInterpolation::CubicSplineInterpolation : "
-                "unknown end condition");
-        }
-
-
-        // solve the system
-        tmp = L.solveFor(tmp);
-
-        if (monotonicityConstraint) {
-            double constraint, correction;
-            for (i=0; i<n_; i++) {
-                if (i==0) {
-                    // locally monotone constrain
-                    constraint = 3.0 * S[0];
-                    if (constraint>=0.0) {
-                        correction = QL_MIN(QL_MAX(0.0, tmp[i]), constraint);
-                        if (correction!=tmp[i]) {
-                            tmp[i] = correction;
-                            monotonicityCorrectionApplied_ = true;
-                        }
-                    } else {
-                        correction = QL_MAX(QL_MIN(0.0, tmp[i]), constraint);
-                        if (correction!=tmp[i]) {
-                            tmp[i] = correction;
-                            monotonicityCorrectionApplied_ = true;
-                        }
-                    }
-                } else if (i==n_-1) {
-                    // locally monotone constrain
-                    constraint = 3.0 * S[n_-2];
-                    if (constraint>=0.0) {
-                        correction = QL_MIN(QL_MAX(0.0, tmp[i]), constraint);
-                        if (correction!=tmp[i]) {
-                            tmp[i] = correction;
-                            monotonicityCorrectionApplied_ = true;
-                        }
-                    } else {
-                        correction = QL_MAX(QL_MIN(0.0, tmp[i]), constraint);
-                        if (correction!=tmp[i]) {
-                            tmp[i] = correction;
-                            monotonicityCorrectionApplied_ = true;
-                        }
-                    }
-                } else {
-                    // locally non-monotone (generalized) constrain
-                    constraint = 3.0 * QL_MIN(QL_FABS(S[i-1]),
-                                              QL_FABS(S[i]));
-                    if (tmp[i]>=0.0) {
-                        correction = QL_MIN(QL_MAX(0.0, tmp[i]), constraint);
-                        if (correction!=tmp[i]) {
-                            tmp[i] = correction;
-                            monotonicityCorrectionApplied_ = true;
-                        }
-                    } else {
-                        correction = QL_MAX(QL_MIN(0.0, tmp[i]),-constraint);
-                        if (correction!=tmp[i]) {
-                            tmp[i] = correction;
-                            monotonicityCorrectionApplied_ = true;
+                if (monotonicityConstraint) {
+                    double constraint, correction;
+                    for (i=0; i<n_; i++) {
+                        if (i==0) {
+                            // locally monotone constrain
+                            constraint = 3.0 * S[0];
+                            if (constraint>=0.0) {
+                                correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
+                                                    constraint);
+                                if (correction!=tmp[i]) {
+                                    tmp[i] = correction;
+                                    monotone_ = true;
+                                }
+                            } else {
+                                correction = QL_MAX(QL_MIN(0.0, tmp[i]), 
+                                                    constraint);
+                                if (correction!=tmp[i]) {
+                                    tmp[i] = correction;
+                                    monotone_ = true;
+                                }
+                            }
+                        } else if (i==n_-1) {
+                            // locally monotone constrain
+                            constraint = 3.0 * S[n_-2];
+                            if (constraint>=0.0) {
+                                correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
+                                                    constraint);
+                                if (correction!=tmp[i]) {
+                                    tmp[i] = correction;
+                                    monotone_ = true;
+                                }
+                            } else {
+                                correction = QL_MAX(QL_MIN(0.0, tmp[i]), 
+                                                    constraint);
+                                if (correction!=tmp[i]) {
+                                    tmp[i] = correction;
+                                    monotone_ = true;
+                                }
+                            }
+                        } else {
+                            // locally non-monotone (generalized) constrain
+                            constraint = 3.0 * QL_MIN(QL_FABS(S[i-1]),
+                                                      QL_FABS(S[i]));
+                            if (tmp[i]>=0.0) {
+                                correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
+                                                    constraint);
+                                if (correction!=tmp[i]) {
+                                    tmp[i] = correction;
+                                    monotone_ = true;
+                                }
+                            } else {
+                                correction = QL_MAX(QL_MIN(0.0, tmp[i]),
+                                                    -constraint);
+                                if (correction!=tmp[i]) {
+                                    tmp[i] = correction;
+                                    monotone_ = true;
+                                }
+                            }
                         }
                     }
                 }
 
+                for (i=0; i<n_-1; i++) {
+                    a_[i] = tmp[i];
+                    b_[i] = (3.0*S[i] - tmp[i+1] - 2.0*tmp[i])/dx[i];
+                    c_[i] = (tmp[i+1] + tmp[i] - 2.0*S[i])/(dx[i]*dx[i]);
+                }
+
+                primitiveConst_[0] = 0.0;
+                for (i=1; i<n_-1; i++) {
+                    primitiveConst_[i] = primitiveConst_[i-1]
+                        + dx[i-1] * 
+                        (yBegin_[i-1] + dx[i-1] *
+                         (a_[i-1]/2.0 + dx[i-1] *
+                          (b_[i-1]/3.0 + dx[i-1] * c_[i-1]/4.0)));
+                }
             }
+            double value(double x) const {
+                Size j = locate(x);
+                double dx = x-xBegin_[j];
+                return yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
+            }
+            double primitive(double x) const {
+                Size j = locate(x);
+                double dx = x-xBegin_[j];
+                return primitiveConst_[j] + dx*(yBegin_[j] + dx*(a_[j]/2.0 
+                                          + dx*(b_[j]/3.0 + dx*c_[j]/4.0)));
+            }
+            double derivative(double x) const {
+                Size j = locate(x);
+                double dx = x-xBegin_[j];
+                return a_[j] + (2.0*b_[j] + 3.0*c_[j]*dx)*dx;
+            }
+            double secondDerivative(double x) const {
+                Size j = locate(x);
+                double dx = x-xBegin_[j];
+                return 2.0*b_[j] + 6.0*c_[j]*dx;
+            }
+          private:
+            // P[i](x) = y[i] +
+            //           a[i]*(x-x[i]) +
+            //           b[i]*(x-x[i])^2 +
+            //           c[i]*(x-x[i])^3
+            Size n_;
+            std::vector<double> primitiveConst_, a_, b_, c_;
+            bool monotone_;
+        };
+      public:
+        template <class I1, class I2>
+        CubicSpline(const I1& xBegin, const I1& xEnd, const I2& yBegin,
+                    CubicSpline::BoundaryCondition leftCondition,
+                    double leftConditionValue,
+                    CubicSpline::BoundaryCondition rightCondition,
+                    double rightConditionValue,
+                    bool monotonicityConstraint) {
+            impl_ = Handle<Interpolation::Impl>(
+                        new CubicSpline::Impl<I1,I2>(
+                                          xBegin, xEnd, yBegin,
+                                          leftCondition, leftConditionValue,
+                                          rightCondition, rightConditionValue,
+                                          monotonicityConstraint));
         }
+    };
 
-        for (i=0; i<n_-1; i++) {
-            a_[i] = tmp[i];
-            b_[i] = (3.0*S[i] - tmp[i+1] - 2.0*tmp[i])/dx[i];
-            c_[i] = (tmp[i+1] + tmp[i] - 2.0*S[i])/(dx[i]*dx[i]);
-        }
 
-        primitiveConst_[0] = 0.0;
-        for (i=1; i<n_-1; i++) {
-            primitiveConst_[i] = primitiveConst_[i-1]
-                              + dx[i-1] *(yBegin_[i-1]
-                              + dx[i-1] *(a_[i-1]/2.0
-                              + dx[i-1] *(b_[i-1]/3.0
-                              + dx[i-1] * c_[i-1]/4.0)));
-        }
-    }
+    // convenience classes
 
-    template <class I1, class I2>
-    typename CubicSplineInterpolation<I1,I2>::result_type
-    CubicSplineInterpolation<I1,I2>::operator()(
-             const typename CubicSplineInterpolation<I1,I2>::argument_type& x,
-             bool allowExtrapolation) const {
+    //! cubic spline with monotonicity constraint
+    class MonotonicCubicSpline : public CubicSpline {
+      public:
+        template <class I1, class I2>
+        MonotonicCubicSpline(const I1& xBegin, const I1& xEnd, 
+                             const I2& yBegin,
+                             CubicSpline::BoundaryCondition leftCondition,
+                             double leftConditionValue,
+                             CubicSpline::BoundaryCondition rightCondition,
+                             double rightConditionValue)
+        : CubicSpline(xBegin,xEnd,yBegin,
+                      leftCondition,leftConditionValue,
+                      rightCondition,rightConditionValue,
+                      true) {}
+    };
 
-        locate(x);
-        if (isOutOfRange_) {
-            QL_REQUIRE(allowExtrapolation,
-                       "CubicSplineInterpolation::operator() : "
-                       "\ninterpolation range is ["
-                       + DoubleFormatter::toString(xBegin_[0]) +
-                       ", "
-                       + DoubleFormatter::toString(xBegin_[n_-1]) +
-                       "]: extrapolation at "
-                       + DoubleFormatter::toString(x) +
-                       " not allowed");
-        }
+    //! cubic spline with null second derivative at end points
+    class NaturalCubicSpline : public CubicSpline {
+      public:
+        template <class I1, class I2>
+        NaturalCubicSpline(const I1& xBegin, const I1& xEnd, 
+                           const I2& yBegin)
+        : CubicSpline(xBegin,xEnd,yBegin,
+                      SecondDerivative, 0.0,
+                      SecondDerivative, 0.0,
+                      false) {}
+    };
 
-        Size j = position_-xBegin_;
-        argument_type dx = x-xBegin_[j];
-        return yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
-    }
-
-    template <class I1, class I2>
-    typename CubicSplineInterpolation<I1,I2>::result_type
-    CubicSplineInterpolation<I1,I2>::primitive(
-             const typename CubicSplineInterpolation<I1,I2>::argument_type& x,
-             bool allowExtrapolation) const {
-
-        locate(x);
-        if (isOutOfRange_) {
-            QL_REQUIRE(allowExtrapolation,
-                       "CubicSplineInterpolation::primitive : "
-                       "\ninterpolation range is ["
-                       + DoubleFormatter::toString(xBegin_[0]) +
-                       ", "
-                       + DoubleFormatter::toString(xBegin_[n_-1]) +
-                       "]: extrapolation at "
-                       + DoubleFormatter::toString(x) +
-                       " not allowed");
-        }
-
-        Size j = position_-xBegin_;
-        argument_type dx = x-xBegin_[j];
-        return primitiveConst_[j] + dx*(yBegin_[j] + dx*(a_[j]/2.0 
-                                  + dx*(b_[j]/3.0 + dx*c_[j]/4.0)));
-    }
-
-    template <class I1, class I2>
-    typename CubicSplineInterpolation<I1,I2>::result_type
-    CubicSplineInterpolation<I1,I2>::derivative(
-             const typename CubicSplineInterpolation<I1,I2>::argument_type& x,
-             bool allowExtrapolation) const {
-
-        locate(x);
-        if (isOutOfRange_) {
-            QL_REQUIRE(allowExtrapolation,
-                       "CubicSplineInterpolation::derivative() : "
-                       "\ninterpolation range is ["
-                       + DoubleFormatter::toString(xBegin_[0]) +
-                       ", "
-                       + DoubleFormatter::toString(xBegin_[n_-1]) +
-                       "]: extrapolation at "
-                       + DoubleFormatter::toString(x) +
-                       " not allowed");
-        }
-
-        Size j = position_-xBegin_;
-        argument_type dx = x-xBegin_[j];
-        return a_[j] + (2.0*b_[j] + 3.0*c_[j]*dx)*dx;
-    }
-
-    template <class I1, class I2>
-    typename CubicSplineInterpolation<I1,I2>::result_type
-    CubicSplineInterpolation<I1,I2>::secondDerivative(
-             const typename CubicSplineInterpolation<I1,I2>::argument_type& x,
-             bool allowExtrapolation) const {
-
-        locate(x);
-        if (isOutOfRange_) {
-            QL_REQUIRE(allowExtrapolation,
-                       "CubicSplineInterpolation::secondDerivative() : "
-                       "\ninterpolation range is ["
-                       + DoubleFormatter::toString(xBegin_[0]) +
-                       ", "
-                       + DoubleFormatter::toString(xBegin_[n_-1]) +
-                       "]: extrapolation at "
-                       + DoubleFormatter::toString(x) +
-                       " not allowed");
-        }
-
-        Size j = position_-xBegin_;
-        argument_type dx = x-xBegin_[j];
-        return 2.0*b_[j] + 6.0*c_[j]*dx;
-    }
+    //! natural cubic spline with monotonicity constraint
+    class NaturalMonotonicCubicSpline : public CubicSpline {
+      public:
+        template <class I1, class I2>
+        NaturalMonotonicCubicSpline(const I1& xBegin, const I1& xEnd, 
+                                    const I2& yBegin)
+        : CubicSpline(xBegin,xEnd,yBegin,
+                      SecondDerivative, 0.0,
+                      SecondDerivative, 0.0,
+                      true) {}
+    };
 
 }
 
