@@ -115,6 +115,7 @@ CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) -w-8026 -w-8027 -w-8012 \
     -I$(INCLUDE_DIR)\Pricers \
     -I$(INCLUDE_DIR)\Solvers1D \
     -I$(INCLUDE_DIR)\TermStructures \
+    -I$(INCLUDE_DIR)\Utilities \
     -I$(PYTHON_INCLUDE) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
