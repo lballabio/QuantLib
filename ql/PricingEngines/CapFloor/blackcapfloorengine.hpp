@@ -46,12 +46,10 @@ namespace QuantLib {
                            Rate strike, Volatility vol) const;
     };
 
-    /*
     #if !defined(QL_DISABLE_DEPRECATED)
     //! \deprecated renamed to BlackCapFloorEngine
     typedef BlackCapFloorEngine BlackCapFloor;
     #endif
-    */
 
 }
 

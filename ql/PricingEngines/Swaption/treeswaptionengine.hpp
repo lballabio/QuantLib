@@ -40,6 +40,11 @@ namespace QuantLib {
         void calculate() const;
     };
 
+    #if !defined(QL_DISABLE_DEPRECATED)
+    //! \deprecated renamed to TreeSwaptionEngine
+    typedef TreeSwaptionEngine TreeSwaption;
+    #endif
+
 }
 
 

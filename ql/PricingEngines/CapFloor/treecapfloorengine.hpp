@@ -40,12 +40,10 @@ namespace QuantLib {
         void calculate() const;
     };
 
-    /*
     #if !defined(QL_DISABLE_DEPRECATED)
     //! \deprecated renamed to TreeCapFloorEngine
     typedef TreeCapFloorEngine TreeCapFloor;
     #endif
-    */
 
 }
 
