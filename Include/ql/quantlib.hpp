@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/04/24 08:48:37  lballabio
+    *** empty log message ***
+
     Revision 1.2  2001/04/12 14:32:13  marmar
     QL, QLMTH, and such converted into official namespace nicknames
 
@@ -220,26 +223,7 @@
 #include "ql/Utilities/processingiterator.hpp"
 #include "ql/Utilities/steppingiterator.hpp"
 
-
-
-/*** shortcuts for the full namespaces
-     - just to get us up and running quickly ***/
-/*
-#define QL    QuantLib::
-#define QLCAL QuantLib::Calendars::
-#define QLCUR QuantLib::Currencies::
-#define QLDCO QuantLib::DayCounters::
-#define QLINS QuantLib::Instruments::
-#define QLFDM QuantLib::FiniteDifferences::
-#define QLMTH QuantLib::Math::
-#define QLMNT QuantLib::MonteCarlo::
-#define QLPAT QuantLib::Patterns::
-#define QLPRC QuantLib::Pricers::
-#define QLS1D QuantLib::Solvers1D::
-#define QLTST QuantLib::TermStructures::
-#define QLUTL QuantLib::Utilities::
-/*/
-
+/*** shortcuts for the full namespaces ***/
 namespace QL    = QuantLib;
 namespace QLCAL = QuantLib::Calendars;
 namespace QLCUR = QuantLib::Currencies;
