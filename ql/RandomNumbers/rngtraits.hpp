@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 Walter Penschke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,8 +20,8 @@
     \brief random-number generation policies
 */
 
-#ifndef quantlib_rng_traits_h
-#define quantlib_rng_traits_h
+#ifndef quantlib_rng_traits_hpp
+#define quantlib_rng_traits_hpp
 
 #include <ql/MonteCarlo/pathgenerator.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
@@ -29,6 +30,7 @@
 #include <ql/RandomNumbers/sobolrsg.hpp>
 #include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
 #include <ql/Math/normaldistribution.hpp>
+#include <ql/Math/poissondistribution.hpp>
 
 namespace QuantLib {
 
@@ -47,13 +49,31 @@ namespace QuantLib {
         static rsg_type make_sequence_generator(Size dimension,
                                                 BigNatural seed) {
             ursg_type g(dimension, seed);
-            return rsg_type(g);
+            return (icInstance ? rsg_type(g, *icInstance) : rsg_type(g));
         }
+        // data
+        static boost::shared_ptr<IC> icInstance;
     };
 
-    // default choice
+    // static member initialization
+    template<class URNG, class IC>
+    boost::shared_ptr<IC> GenericPseudoRandom<URNG, IC>::icInstance;
+
+
+    //! default traits for pseudo-random number generation
+    /*! \test a sequence generator is generated and tested by comparing
+              samples against known good values.
+    */
     typedef GenericPseudoRandom<MersenneTwisterUniformRng,
                                 InverseCumulativeNormal> PseudoRandom;
+
+    //! traits for Poisson-distributed pseudo-random number generation
+    /*! \test sequence generators are generated and tested by comparing
+              samples against known good values.
+    */
+    typedef GenericPseudoRandom<MersenneTwisterUniformRng,
+                                InverseCumulativePoisson> PoissonPseudoRandom;
+
 
     template <class URSG>
     struct GenericLowDiscrepancy {
@@ -71,7 +91,7 @@ namespace QuantLib {
         }
     };
 
-    // default choice
+    //! default traits for low-discrepancy sequence generation
     typedef GenericLowDiscrepancy<SobolRsg> LowDiscrepancy;
 
 }

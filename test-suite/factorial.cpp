@@ -18,7 +18,7 @@
 #include "factorial.hpp"
 #include <ql/Math/factorial.hpp>
 #include <ql/Math/gammadistribution.hpp>
-#include <ql/Math/poissondistribution.hpp>
+#include <ql/basicdataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -96,141 +96,10 @@ void FactorialTest::testGammaFunction() {
 }
 
 
-
-
-void FactorialTest::testPoissonDistribution() {
-
-    BOOST_MESSAGE("Testing Poisson distribution...");
-
-    Real mean = 0.0;
-    BigNatural i = 0;
-    PoissonDistribution pdf(mean);
-    Real calculated = pdf(i);
-    Real expected = 1.0;
-    Real error = QL_FABS(calculated-expected);
-    if (error>1.0e-16)
-        BOOST_FAIL("Poisson pdf("
-                   + DecimalFormatter::toString(mean) + ")("
-                   + IntegerFormatter::toString(i) + ")\n"
-                   "    calculated: "
-                   + DecimalFormatter::toString(calculated,16) + "\n"
-                   "    expected:   "
-                   + DecimalFormatter::toString(expected,16)+
-                   "    error:   "
-                   + DecimalFormatter::toExponential(error));
-
-    CumulativePoissonDistribution cdf(mean);
-    Real cumCalculated = cdf(i);
-    Real cumExpected = 1.0;
-    if (cumCalculated!=cumExpected)
-        BOOST_FAIL("Poisson cdf("
-                   + DecimalFormatter::toString(mean) + ")("
-                   + IntegerFormatter::toString(i) + ")\n"
-                   "    calculated: "
-                   + DecimalFormatter::toString(cumCalculated,16) + "\n"
-                   "    expected:   "
-                   + DecimalFormatter::toString(cumExpected,16)+
-                   "    error:   "
-                   + DecimalFormatter::toExponential(error));
-
-    for (i=1; i<25; i++) {
-        calculated = pdf(i);
-        expected = 0.0;
-        if (calculated!=expected)
-            BOOST_FAIL("Poisson pdf("
-                       + DecimalFormatter::toString(mean) + ")("
-                       + IntegerFormatter::toString(i) + ")\n"
-                       "    calculated: "
-                       + DecimalFormatter::toString(calculated,16) + "\n"
-                       "    expected:   "
-                       + DecimalFormatter::toString(expected,16)+
-                       "    error:   "
-                       + DecimalFormatter::toExponential(error));
-        cumCalculated = cdf(i);
-        cumExpected = 1.0;
-        if (cumCalculated!=cumExpected)
-            BOOST_FAIL("Poisson cdf("
-                       + DecimalFormatter::toString(mean) + ")("
-                       + IntegerFormatter::toString(i) + ")\n"
-                       "    calculated: "
-                       + DecimalFormatter::toString(cumCalculated,16) + "\n"
-                       "    expected:   "
-                       + DecimalFormatter::toString(cumExpected,16)+
-                       "    error:   "
-                       + DecimalFormatter::toExponential(error));
-    }
-
-
-    for (mean=0.5; mean<=10; mean+=0.5) {
-        i = 0;
-        pdf = PoissonDistribution(mean);
-        calculated = pdf(i);
-        Real logHelper = -mean;
-        expected = QL_EXP(logHelper);
-        error = QL_FABS(calculated-expected);
-        if (error>1e-16)
-            BOOST_FAIL("Poisson pdf("
-                       + DecimalFormatter::toString(mean) + ")("
-                       + IntegerFormatter::toString(i) + ")\n"
-                       "    calculated: "
-                       + DecimalFormatter::toString(calculated,16) + "\n"
-                       "    expected:   "
-                       + DecimalFormatter::toString(expected,16)+
-                       "    error:   "
-                       + DecimalFormatter::toExponential(error));
-
-        cdf = CumulativePoissonDistribution(mean);
-        cumCalculated = cdf(i);
-        cumExpected = expected;
-        error = QL_FABS(cumCalculated-cumExpected);
-        if (error>1.0e-13)
-            BOOST_FAIL("Poisson cdf("
-                       + DecimalFormatter::toString(mean) + ")("
-                       + IntegerFormatter::toString(i) + ")\n"
-                       "    calculated: "
-                       + DecimalFormatter::toString(cumCalculated,16) + "\n"
-                       "    expected:   "
-                       + DecimalFormatter::toString(cumExpected,16)+
-                       "    error:   "
-                       + DecimalFormatter::toExponential(error));
-        for (BigNatural i=1; i<25; i++) {
-            calculated = pdf(i);
-            logHelper = logHelper+QL_LOG(mean)-QL_LOG(Real(i));
-            expected = QL_EXP(logHelper);
-            error = QL_FABS(calculated-expected);
-            if (error>1.0e-13)
-                BOOST_FAIL("Poisson pdf("
-                           + DecimalFormatter::toString(mean) + ")("
-                           + IntegerFormatter::toString(i) + ")\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,16) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected,16)+
-                           "    error:   "
-                           + DecimalFormatter::toExponential(error));
-            cumCalculated = cdf(i);
-            cumExpected += expected;
-            error = QL_FABS(cumCalculated-cumExpected);
-            if (error>1.0e-12)
-                BOOST_FAIL("Poisson cdf("
-                           + DecimalFormatter::toString(mean) + ")("
-                           + IntegerFormatter::toString(i) + ")\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(cumCalculated,16)+"\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(cumExpected,16)+
-                           "    error:   "
-                           + DecimalFormatter::toExponential(error));
-        }
-    }
-}
-
-
 test_suite* FactorialTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Factorial tests");
     suite->add(BOOST_TEST_CASE(&FactorialTest::testFactorial));
     suite->add(BOOST_TEST_CASE(&FactorialTest::testGammaFunction));
-    suite->add(BOOST_TEST_CASE(&FactorialTest::testPoissonDistribution));
     return suite;
 }
 

@@ -33,6 +33,7 @@ QL_TESTS = \
 	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \
 	riskstats.hpp riskstats.cpp \
+	rngtraits.hpp rngtraits.cpp \
 	rounding.hpp rounding.cpp \
 	solvers.hpp solvers.cpp \
 	stats.hpp stats.cpp \

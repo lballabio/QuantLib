@@ -20,6 +20,8 @@
 #include "utilities.hpp"
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/bivariatenormaldistribution.hpp>
+#include <ql/Math/poissondistribution.hpp>
+#include <ql/Math/comparison.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -195,10 +197,136 @@ void DistributionTest::testBivariate() {
 }
 
 
+void DistributionTest::testPoisson() {
+
+    BOOST_MESSAGE("Testing Poisson distribution...");
+
+    for (Real mean=0.0; mean<=10.0; mean+=0.5) {
+        BigNatural i = 0;
+        PoissonDistribution pdf(mean);
+        Real calculated = pdf(i);
+        Real logHelper = -mean;
+        Real expected = QL_EXP(logHelper);
+        Real error = QL_FABS(calculated-expected);
+        if (error > 1.0e-16)
+            BOOST_FAIL("Poisson pdf("
+                       + DecimalFormatter::toString(mean) + ")("
+                       + IntegerFormatter::toString(i) + ")\n"
+                       "    calculated: "
+                       + DecimalFormatter::toString(calculated,16) + "\n"
+                       "    expected:   "
+                       + DecimalFormatter::toString(expected,16)+
+                       "    error:   "
+                       + DecimalFormatter::toExponential(error));
+
+        for (BigNatural i=1; i<25; i++) {
+            calculated = pdf(i);
+            if (mean == 0.0) {
+                expected = 0.0;
+            } else {
+                logHelper = logHelper+QL_LOG(mean)-QL_LOG(Real(i));
+                expected = QL_EXP(logHelper);
+            }
+            error = QL_FABS(calculated-expected);
+            if (error>1.0e-13)
+                BOOST_FAIL("Poisson pdf("
+                           + DecimalFormatter::toString(mean) + ")("
+                           + IntegerFormatter::toString(i) + ")\n"
+                           "    calculated: "
+                           + DecimalFormatter::toString(calculated,13) + "\n"
+                           "    expected:   "
+                           + DecimalFormatter::toString(expected,13)+
+                           "    error:   "
+                           + DecimalFormatter::toExponential(error));
+        }
+    }
+}
+
+void DistributionTest::testCumulativePoisson() {
+
+    BOOST_MESSAGE("Testing cumulative Poisson distribution...");
+
+    for (Real mean=0.0; mean<=10.0; mean+=0.5) {
+        BigNatural i = 0;
+        CumulativePoissonDistribution cdf(mean);
+        Real cumCalculated = cdf(i);
+        Real logHelper = -mean;
+        Real cumExpected = QL_EXP(logHelper);
+        Real error = QL_FABS(cumCalculated-cumExpected);
+        if (error>1.0e-13)
+            BOOST_FAIL("Poisson cdf("
+                       + DecimalFormatter::toString(mean) + ")("
+                       + IntegerFormatter::toString(i) + ")\n"
+                       "    calculated: "
+                       + DecimalFormatter::toString(cumCalculated,13) + "\n"
+                       "    expected:   "
+                       + DecimalFormatter::toString(cumExpected,13)+
+                       "    error:   "
+                       + DecimalFormatter::toExponential(error));
+        for (BigNatural i=1; i<25; i++) {
+            cumCalculated = cdf(i);
+            if (mean == 0.0) {
+                cumExpected = 1.0;
+            } else {
+                logHelper = logHelper+QL_LOG(mean)-QL_LOG(Real(i));
+                cumExpected += QL_EXP(logHelper);
+            }
+            error = QL_FABS(cumCalculated-cumExpected);
+            if (error>1.0e-12)
+                BOOST_FAIL("Poisson cdf("
+                           + DecimalFormatter::toString(mean) + ")("
+                           + IntegerFormatter::toString(i) + ")\n"
+                           "    calculated: "
+                           + DecimalFormatter::toString(cumCalculated,12)+"\n"
+                           "    expected:   "
+                           + DecimalFormatter::toString(cumExpected,12)+
+                           "    error:   "
+                           + DecimalFormatter::toExponential(error));
+        }
+    }
+}
+
+void DistributionTest::testInverseCumulativePoisson() {
+
+    BOOST_MESSAGE("Testing inverse cumulative Poisson distribution...");
+
+    InverseCumulativePoisson icp(1.0);
+
+    Real data[] = { 0.2,
+                    0.5,
+                    0.9,
+                    0.98,
+                    0.99,
+                    0.999,
+                    0.9999,
+                    0.99995,
+                    0.99999,
+                    0.999999,
+                    0.9999999,
+                    0.99999999
+    };
+
+    for (Size i=0; i<LENGTH(data); i++) {
+        if (!close(icp(data[i]), i)) {
+            BOOST_FAIL("failed to reproduce known value for x = "
+                       + DecimalFormatter::toString(data[i],8) + "\n"
+                       "    calculated: "
+                       + DecimalFormatter::toString(icp(data[i]),2) + "\n"
+                       "    expected:   "
+                       + DecimalFormatter::toString(Real(i),1));
+        }
+    }
+}
+
+
 test_suite* DistributionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
     suite->add(BOOST_TEST_CASE(&DistributionTest::testNormal));
     suite->add(BOOST_TEST_CASE(&DistributionTest::testBivariate));
+    suite->add(BOOST_TEST_CASE(&DistributionTest::testPoisson));
+    suite->add(BOOST_TEST_CASE(&DistributionTest::testCumulativePoisson));
+    suite->add(
+            BOOST_TEST_CASE(&DistributionTest::testInverseCumulativePoisson));
     return suite;
 }
 

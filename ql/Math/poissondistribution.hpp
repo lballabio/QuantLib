@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2004 Walter Penschke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -46,24 +47,39 @@ namespace QuantLib {
 
 
     //! Cumulative Poisson distribution function
-    /*! Given x it provides an approximation to the
-        integral of the Poisson distribution:
-        formula here ...
+    /*! This function provides an approximation of the
+        integral of the Poisson distribution.
 
         For this implementation see
         "Numerical Recipes in C", 2nd edition,
         Press, Teukolsky, Vetterling, Flannery, chapter 6
+
+        \test the correctness of the returned value is tested by
+              checking it against known good results.
     */
     class CumulativePoissonDistribution
-    : public std::unary_function<Real,Real> {
+        : public std::unary_function<Real,Real> {
       public:
         CumulativePoissonDistribution(Real mu) : mu_(mu) {}
-        // function
         Real operator()(BigNatural k) const {
             return 1.0 - incompleteGammaFunction(k+1, mu_);
         }
       private:
         Real mu_;
+    };
+
+
+    //! Inverse cumulative Poisson distribution function
+    /*! \test the correctness of the returned value is tested by
+              checking it against known good results.
+    */
+    class InverseCumulativePoisson : public std::unary_function<Real,Real> {
+      public:
+        InverseCumulativePoisson(Real lambda = 1.0);
+        Real operator()(Real x) const;
+      private:
+        Real lambda_;
+        Real calcSummand(BigNatural index) const;
     };
 
 
@@ -87,6 +103,35 @@ namespace QuantLib {
         }
         Real logFactorial = Factorial::ln(k);
         return QL_EXP(k*QL_LOG(mu_) - logFactorial - mu_);
+    }
+
+
+    inline InverseCumulativePoisson::InverseCumulativePoisson(Real lambda)
+    : lambda_(lambda) {
+        QL_REQUIRE(lambda_ > 0.0, "lambda must be positive");
+    }
+
+    inline Real InverseCumulativePoisson::operator()(Real x) const {
+        QL_REQUIRE(x >= 0.0 && x <= 1.0,
+                   "Inverse cumulative Poisson distribution is "
+                   "only defined on the interval [0,1]");
+
+        if (x == 1.0)
+            return QL_MAX_REAL;
+
+        Real sum = 0.0;
+        BigNatural index = 0;
+        while (x > sum) {
+            sum += calcSummand(index);
+            index++;
+        }
+
+        return Real(index-1);
+    }
+
+    inline Real InverseCumulativePoisson::calcSummand(BigNatural index) const {
+        return QL_EXP(-lambda_) * QL_POW(lambda_, Integer(index)) /
+            Factorial::get(index);
     }
 
 }

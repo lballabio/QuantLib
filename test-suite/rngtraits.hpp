@@ -1,7 +1,7 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004 Walter Penschke
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,21 +16,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_test_distributions_hpp
-#define quantlib_test_distributions_hpp
+#ifndef quantlib_test_rng_traits_hpp
+#define quantlib_test_rng_traits_hpp
 
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
    comment block of the corresponding class */
 
-class DistributionTest {
+class RngTraitsTest {
   public:
-    static void testNormal();
-    static void testBivariate();
-    static void testPoisson();
-    static void testCumulativePoisson();
-    static void testInverseCumulativePoisson();
+    static void testGaussian();
+    static void testDefaultPoisson();
+    static void testCustomPoisson();
     static boost::unit_test_framework::test_suite* suite();
 };
 

@@ -27,7 +27,6 @@ class FactorialTest {
   public:
     static void testFactorial();
     static void testGammaFunction();
-    static void testPoissonDistribution();
     static boost::unit_test_framework::test_suite* suite();
 };
 

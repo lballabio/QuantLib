@@ -56,16 +56,16 @@ namespace QuantLib {
       public:
         typedef Sample<Array> sample_type;
         explicit ICGaussianRsg(const USG& uniformSequenceGenerator);
+        ICGaussianRsg(const USG& uniformSequenceGenerator,
+                      const I& inverseCumulative);
         //! returns next sample from the Gaussian distribution
         const sample_type& nextSequence() const;
-        const sample_type& lastSequence() const {
-            return x;
-        }
-        Size dimension() const {return dimension_;}
+        const sample_type& lastSequence() const { return x_; }
+        Size dimension() const { return dimension_; }
       private:
         USG uniformSequenceGenerator_;
         Size dimension_;
-        mutable sample_type x;
+        mutable sample_type x_;
         I ICND_;
     };
 
@@ -73,18 +73,26 @@ namespace QuantLib {
     ICGaussianRsg<USG, I>::ICGaussianRsg(const USG& uniformSequenceGenerator)
     : uniformSequenceGenerator_(uniformSequenceGenerator),
       dimension_(uniformSequenceGenerator_.dimension()),
-      x(Array(dimension_), 1.0) {}
+      x_(Array(dimension_), 1.0) {}
+
+    template <class USG, class I>
+    ICGaussianRsg<USG, I>::ICGaussianRsg(const USG& uniformSequenceGenerator,
+                                         const I& inverseCumulative) :
+        uniformSequenceGenerator_(uniformSequenceGenerator),
+        dimension_(uniformSequenceGenerator_.dimension()),
+        x_(Array(dimension_), 1.0),
+        ICND_(inverseCumulative) {}
 
     template <class USG, class I>
     inline const typename ICGaussianRsg<USG, I>::sample_type&
     ICGaussianRsg<USG, I>::nextSequence() const {
         typename USG::sample_type sample =
             uniformSequenceGenerator_.nextSequence();
-        x.weight = sample.weight;
+        x_.weight = sample.weight;
         for (Size i = 0; i < dimension_; i++) {
-            x.value[i] = ICND_(sample.value[i]);
+            x_.value[i] = ICND_(sample.value[i]);
         }
-        return x;
+        return x_;
     }
 
 }
