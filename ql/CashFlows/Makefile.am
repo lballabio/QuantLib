@@ -15,13 +15,16 @@ include_HEADERS = \
         shortfloatingcoupon.hpp \
         shortindexedcoupon.hpp \
         simplecashflow.hpp \
+        timebasket.hpp \
         upfrontindexedcoupon.hpp
 
 EXTRA_DIST=makefile.mak
 
 libCashFlows_la_SOURCES = \
+    basispointsensitivity.cpp \
     cashflowvectors.cpp \
     parcoupon.cpp \
-    shortfloatingcoupon.cpp
+    shortfloatingcoupon.cpp \
+    timebasket.cpp
 
 noinst_LTLIBRARIES = libCashFlows.la

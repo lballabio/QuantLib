@@ -13,9 +13,11 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
+    basispointsensitivity.obj$(_D) \
     cashflowvectors.obj$(_D) \
     parcoupon.obj$(_D) \
-    shortfloatingcoupon.obj$(_D)
+    shortfloatingcoupon.obj$(_D) \
+    timebasket.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
