@@ -12,7 +12,6 @@ include_HEADERS = \
     forwardengines.hpp \
     latticeshortratemodelengine.hpp \
     mcengine.hpp \
-    mceuropeanengine.hpp \
     quantoengines.hpp \
     vanillaengines.hpp
 
