@@ -34,28 +34,17 @@ namespace QuantLib {
 			// the following checks may be improved
 		 	switch (theType) {
 			  case Call:
-				QuantLib::Require(targetValue>theUnderlying-theStrike,
-				  "BSMOption::impliedVol : call option targetValue (" + DoubleFormatter::toString(targetValue) +
-				  ") < intrinsic value (" + DoubleFormatter::toString(theUnderlying-theStrike) + ") not allowed");
 				QuantLib::Require(targetValue <= theUnderlying, 
 				  "BSMOption::impliedVol : call option targetValue (" + DoubleFormatter::toString(targetValue) +
 				  ") > underlying value (" + DoubleFormatter::toString(theUnderlying) + ") not allowed");
 				break;
 			  case Put:
-				QuantLib::Require(targetValue>theStrike-theUnderlying,
-				  "BSMOption::impliedVol : put option targetValue (" + DoubleFormatter::toString(targetValue) +
-				  ") < intrinsic value (" + DoubleFormatter::toString(theStrike-theUnderlying) + ") not allowed");
 				QuantLib::Require(targetValue <= theStrike, 
 				  "BSMOption::impliedVol : put option targetValue (" + DoubleFormatter::toString(targetValue) +
 				  ") > strike value (" + DoubleFormatter::toString(theStrike) + ") not allowed");
 				break;
 			  case Straddle:
 				// to be verified
-				QuantLib::Require(targetValue>QL_MAX(theStrike-theUnderlying,0.0)+QL_MAX(theUnderlying-theStrike,0.0),
-				  "BSMOption::impliedVol : put option targetValue (" + DoubleFormatter::toString(targetValue) +
-				  ") < intrinsic value (" +
-				  DoubleFormatter::toString(QL_MAX(theStrike-theUnderlying,0.0)+QL_MAX(theUnderlying-theStrike,0.0)) +
-				  ") not allowed");
 				QuantLib::Require(targetValue < theUnderlying+theStrike,
 				  "BSMOption::impliedFlatVol : straddle option targetValue (" + DoubleFormatter::toString(targetValue) +
 				  ") >= (underlying+strike) value (" + DoubleFormatter::toString(theUnderlying+theStrike) + ") not allowed");
