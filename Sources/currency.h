@@ -28,8 +28,10 @@ namespace QuantLib {
 	
 	// comparison based on name
 	
-	bool operator==(const Handle<Currency>&, const Handle<Currency>&);
-	bool operator!=(const Handle<Currency>&, const Handle<Currency>&);
+	QL_DECLARE_TEMPLATE_SPECIALIZATION(
+	bool operator==(const Handle<Currency>&, const Handle<Currency>&))
+	QL_DECLARE_TEMPLATE_SPECIALIZATION(
+	bool operator!=(const Handle<Currency>&, const Handle<Currency>&))
 	
 	
 	// inline definitions
@@ -38,10 +40,12 @@ namespace QuantLib {
 		return settlementCalendar()->advance(d,settlementDays());
 	}
 	
+	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator==(const Handle<Currency>& c1, const Handle<Currency>& c2) {
 		return (c1->name() == c2->name());
 	}
 	
+	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator!=(const Handle<Currency>& c1, const Handle<Currency>& c2) {
 		return (c1->name() != c2->name());
 	}

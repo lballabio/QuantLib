@@ -33,8 +33,10 @@ namespace QuantLib {
 	
 	// comparison based on name
 	
-	bool operator==(const Handle<Calendar>&, const Handle<Calendar>&);
-	bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&);
+	QL_DECLARE_TEMPLATE_SPECIALIZATION(
+	bool operator==(const Handle<Calendar>&, const Handle<Calendar>&))
+	QL_DECLARE_TEMPLATE_SPECIALIZATION(
+	bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&))
 	
 	// null calendar (no holidays, not even saturdays and sundays)
 	
@@ -51,10 +53,12 @@ namespace QuantLib {
 	
 	// inline definitions
 	
+	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator==(const Handle<Calendar>& h1, const Handle<Calendar>& h2) {
 		return (h1->name() == h2->name());
 	}
 	
+	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator!=(const Handle<Calendar>& h1, const Handle<Calendar>& h2) {
 		return (h1->name() != h2->name());
 	}

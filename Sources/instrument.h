@@ -104,8 +104,10 @@ namespace QuantLib {
 	
 	// comparisons based on ISIN code
 	
-	bool operator==(const Handle<Instrument>&, const Handle<Instrument>&);
-	bool operator!=(const Handle<Instrument>&, const Handle<Instrument>&);
+	QL_DECLARE_TEMPLATE_SPECIALIZATION(
+	bool operator==(const Handle<Instrument>&, const Handle<Instrument>&))
+	QL_DECLARE_TEMPLATE_SPECIALIZATION(
+	bool operator!=(const Handle<Instrument>&, const Handle<Instrument>&))
 	
 	
 	// derived classes
@@ -249,10 +251,12 @@ namespace QuantLib {
 	
 	// comparisons 
 	
+	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator==(const Handle<Instrument>& i, const Handle<Instrument>& j) {
 		return (i->isinCode() == j->isinCode());
 	}
 	
+	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator!=(const Handle<Instrument>& i, const Handle<Instrument>& j) {
 		return (i->isinCode() != j->isinCode());
 	}

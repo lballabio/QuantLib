@@ -24,16 +24,20 @@ namespace QuantLib {
 	
 	// comparison based on name
 	
-	bool operator==(const Handle<DayCounter>&, const Handle<DayCounter>&);
-	bool operator!=(const Handle<DayCounter>&, const Handle<DayCounter>&);
+	QL_DECLARE_TEMPLATE_SPECIALIZATION(
+	bool operator==(const Handle<DayCounter>&, const Handle<DayCounter>&))
+	QL_DECLARE_TEMPLATE_SPECIALIZATION(
+	bool operator!=(const Handle<DayCounter>&, const Handle<DayCounter>&))
 	
 	
 	// inline definitions
-	
+
+	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator==(const Handle<DayCounter>& h1, const Handle<DayCounter>& h2) {
 		return (h1->name() == h2->name());
 	}
 	
+	QL_TEMPLATE_SPECIALIZATION
 	inline bool operator!=(const Handle<DayCounter>& h1, const Handle<DayCounter>& h2) {
 		return (h1->name() != h2->name());
 	}
