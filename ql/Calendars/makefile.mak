@@ -18,6 +18,7 @@ OBJS = budapest.obj$(_D) \
        frankfurt.obj$(_D) \
        helsinki.obj$(_D) \
        johannesburg.obj$(_D) \
+       jointcalendar.obj$(_D) \
        london.obj$(_D) \
        milan.obj$(_D) \
        newyork.obj$(_D) \
