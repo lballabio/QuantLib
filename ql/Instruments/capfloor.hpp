@@ -24,7 +24,8 @@
 
 #include <ql/numericalmethod.hpp>
 #include <ql/instrument.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/cashflow.hpp>
+#include <ql/termstructure.hpp>
 
 namespace QuantLib {
 
@@ -37,12 +38,11 @@ namespace QuantLib {
             class arguments;
             class results;
             CapFloor(Type type,
-                            const std::vector<Handle<CashFlow> >& floatingLeg,
-                            const std::vector<Rate>& capRates,
-                            const std::vector<Rate>& floorRates,
-                            const RelinkableHandle<TermStructure>& 
-                                termStructure,
-                            const Handle<PricingEngine>& engine);
+                     const std::vector<Handle<CashFlow> >& floatingLeg,
+                     const std::vector<Rate>& capRates,
+                     const std::vector<Rate>& floorRates,
+                     const RelinkableHandle<TermStructure>& termStructure,
+                     const Handle<PricingEngine>& engine);
             //! \name Instrument interface
             //@{
             bool isExpired() const;
@@ -61,12 +61,32 @@ namespace QuantLib {
             }
             //@}
             void setupArguments(Arguments*) const;
+            //! implied term volatility
+            double impliedVolatility(double price,
+                                     double accuracy = 1.0e-4,
+                                     Size maxEvaluations = 100,
+                                     double minVol = 1.0e-4,
+                                     double maxVol = 4.0) const;
           private:
             Type type_;
             std::vector<Handle<CashFlow> > floatingLeg_;
             std::vector<Rate> capRates_;
             std::vector<Rate> floorRates_;
             RelinkableHandle<TermStructure> termStructure_;
+            // helper class for implied volatility calculation
+            class ImpliedVolHelper {
+              public:
+                ImpliedVolHelper(const CapFloor&,
+                                 const RelinkableHandle<TermStructure>&,
+                                 double targetValue);
+                double operator()(double x) const;
+              private:
+                Handle<PricingEngine> engine_;
+                RelinkableHandle<TermStructure> termStructure_;
+                double targetValue_;
+                Handle<SimpleMarketElement> vol_;
+                const Value* results_;
+            };
         };
 
         //! Concrete cap class

@@ -19,14 +19,17 @@
     \brief European cap and floor class
 */
 
-#include "ql/Instruments/capfloor.hpp"
-#include "ql/CashFlows/floatingratecoupon.hpp"
+#include <ql/Instruments/capfloor.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/Pricers/blackcapfloor.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
         using CashFlows::FloatingRateCoupon;
+        using Pricers::BlackCapFloor;
 
         CapFloor::CapFloor(
                 CapFloor::Type type,
@@ -144,6 +147,47 @@ namespace QuantLib {
                        IntegerFormatter::toString(nominals.size()) +
                        ")");
         }
+
+        double CapFloor::impliedVolatility(double targetValue,
+                                           double accuracy, 
+                                           Size maxEvaluations,
+                                           double minVol, 
+                                           double maxVol) const {
+            calculate();
+            QL_REQUIRE(!isExpired(),
+                       "CapFloor::impliedVolatility : instrument expired");
+
+            double guess = 0.10;   // no way we can get a more accurate one
+
+            ImpliedVolHelper f(*this,termStructure_,targetValue);
+            Solvers1D::Brent solver;
+            solver.setMaxEvaluations(maxEvaluations);
+            return solver.solve(f, accuracy, guess, minVol, maxVol);
+        }
+
+
+        CapFloor::ImpliedVolHelper::ImpliedVolHelper(
+            const CapFloor& cap, 
+            const RelinkableHandle<TermStructure>& termStructure,
+            double targetValue)
+        : termStructure_(termStructure), targetValue_(targetValue) {
+
+            vol_ = Handle<SimpleMarketElement>(new SimpleMarketElement(0.0));
+            RelinkableHandle<MarketElement> h(vol_);
+            Handle<BlackModel> model(new BlackModel(h,termStructure_));
+            engine_ = Handle<PricingEngine>(new BlackCapFloor(model));
+
+            cap.setupArguments(engine_->arguments());
+
+            results_ = dynamic_cast<const Value*>(engine_->results());
+        }
+
+        double CapFloor::ImpliedVolHelper::operator()(double x) const {
+            vol_->setValue(x);
+            engine_->calculate();
+            return results_->value-targetValue_;
+        }
+
 
     }
 
