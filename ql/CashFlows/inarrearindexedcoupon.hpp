@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,7 +27,7 @@
 
 #include <ql/CashFlows/indexedcoupon.hpp>
 
- 
+
 namespace QuantLib {
 
     namespace CashFlows {
@@ -47,10 +47,9 @@ namespace QuantLib {
                 Spread spread = 0.0,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date())
-			 : IndexedCoupon(nominal,paymentDate,index,startDate,endDate,fixingDays,spread,refPeriodStart,refPeriodEnd)
-			{}
-            
-			Date fixingDate() const; 
+			 : IndexedCoupon(nominal, paymentDate, index, startDate, endDate,
+			   fixingDays, spread, refPeriodStart, refPeriodEnd) {}
+			Date fixingDate() const;
         };
 
 

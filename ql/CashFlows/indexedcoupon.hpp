@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -9,7 +9,7 @@
  terms of the QuantLib license.  You should have received a copy of the
  license along with this program; if not, please email ferdinando@ametrano.net
  The license is also available online at http://quantlib.org/html/license.html
- 
+
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
@@ -38,17 +38,17 @@ namespace QuantLib {
             should be already rolled to a business day.
         */
         class IndexedCoupon : public FloatingRateCoupon,
-                                   public Patterns::Observer {
+                              public Patterns::Observer {
           public:
             IndexedCoupon(double nominal,
-                const Date& paymentDate,
-                const Handle<Indexes::Xibor>& index,
-                const Date& startDate, const Date& endDate,
-                int fixingDays,
-                Spread spread = 0.0,
-                const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date());
-			virtual ~IndexedCoupon() {}
+                          const Date& paymentDate,
+                          const Handle<Indexes::Xibor>& index,
+                          const Date& startDate, const Date& endDate,
+                          int fixingDays,
+                          Spread spread = 0.0,
+                          const Date& refPeriodStart = Date(),
+                          const Date& refPeriodEnd = Date());
+  			virtual ~IndexedCoupon() {}
             //! \name CashFlow interface
             //@{
             double amount() const;
@@ -89,14 +89,14 @@ namespace QuantLib {
           const Date& startDate, const Date& endDate,
           int fixingDays, Spread spread,
           const Date& refPeriodStart, const Date& refPeriodEnd)
-        : FloatingRateCoupon(nominal, paymentDate, startDate, endDate, 
+        : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,
 							 fixingDays, spread, refPeriodStart, refPeriodEnd),
           index_(index) {
             registerWith(index_);
         }
 
 
-        inline const Handle<Indexes::Xibor>& 
+        inline const Handle<Indexes::Xibor>&
         IndexedCoupon::index() const {
             return index_;
         }
@@ -118,7 +118,7 @@ namespace QuantLib {
         }
 
         inline void IndexedCoupon::accept(Patterns::Visitor& v) {
-            IndexedCoupon::Visitor* v1 = 
+            IndexedCoupon::Visitor* v1 =
                 dynamic_cast<IndexedCoupon::Visitor*>(&v);
             if (v1 != 0)
                 v1->visit(*this);

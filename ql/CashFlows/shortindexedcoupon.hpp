@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,7 +30,7 @@ namespace QuantLib {
 
     namespace CashFlows {
 
-        //! short indexed coupon 
+        //! short indexed coupon
         /*! \warning This class does not perform any date adjustment,
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
@@ -39,16 +39,17 @@ namespace QuantLib {
         class Short : public IndexedCouponType {
           public:
             Short(double nominal,
-                const Date& paymentDate,
-                const Handle<Indexes::Xibor>& index,
-                const Date& startDate, const Date& endDate,
-                int fixingDays,
-                Spread spread = 0.0,
-                const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date())
-			: IndexedCouponType(nominal,paymentDate,index,startDate,endDate,fixingDays,
-                             spread,refPeriodStart,refPeriodEnd) {
-				Handle<TermStructure> termStructure = IndexedCouponType::index()->termStructure();
+                 const Date& paymentDate,
+                 const Handle<Indexes::Xibor>& index,
+                 const Date& startDate, const Date& endDate,
+                 int fixingDays,
+                 Spread spread = 0.0,
+                 const Date& refPeriodStart = Date(),
+                 const Date& refPeriodEnd = Date())
+ 			: IndexedCouponType(nominal, paymentDate, index, startDate,
+ 			  endDate, fixingDays, spread, refPeriodStart, refPeriodEnd) {
+				Handle<TermStructure> termStructure =
+				    IndexedCouponType::index()->termStructure();
 				QL_REQUIRE(!termStructure.isNull(),
                        "null term structure set to Short coupon");
 				Date today = termStructure->todaysDate();
@@ -57,9 +58,11 @@ namespace QuantLib {
 						   // must have been fixed
 						   // but we have no way to interpolate the fixing yet
 						   "short/long index coupons not supported yet"
-						   " (start = " + DateFormatter::toString(accrualStartDate_) +
-						   ", end = " + DateFormatter::toString(accrualEndDate_) + ")");
-			} 
+						   " (start = " +
+						   DateFormatter::toString(accrualStartDate_) +
+						   ", end = " +
+						   DateFormatter::toString(accrualEndDate_) + ")");
+			}
         };
 
     }

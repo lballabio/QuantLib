@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2003 Nicolas Di Césaré
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,7 +41,7 @@ namespace QuantLib {
             RollingConvention rollingConvention,
             const Handle<Indexes::Xibor>& index,
             int fixingDays,
-            const std::vector<Spread>& spreads, 
+            const std::vector<Spread>& spreads,
             const Date& stubDate = Date())
 		{
 			QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
@@ -59,18 +59,17 @@ namespace QuantLib {
                 spread = 0.0;
             double nominal = nominals[0];
             if (scheduler.isRegular(1)) {
-                leg.push_back(Handle<CashFlow>(
-                    new IndexedCouponType(nominal, paymentDate, index, start, end, 
+                leg.push_back(Handle<CashFlow>(new
+                    IndexedCouponType(nominal, paymentDate, index, start, end,
                                          fixingDays, spread, start, end)));
             } else {
                 Date reference = end.plusMonths(-12/frequency);
                 reference =
                     calendar.roll(reference,rollingConvention);
 				typedef Short<IndexedCouponType> ShortIndexedCouponType;
-                leg.push_back(Handle<CashFlow>(
-                    new ShortIndexedCouponType(nominal, paymentDate, index, start, end, 
-                                               fixingDays, spread, 
-                                               reference, end)));
+                leg.push_back(Handle<CashFlow>(new
+                    ShortIndexedCouponType(nominal, paymentDate, index, start,
+                        end, fixingDays, spread, reference, end)));
             }
             // regular periods
             for (Size i=2; i<scheduler.size()-1; i++) {
@@ -86,8 +85,8 @@ namespace QuantLib {
                     nominal = nominals[i-1];
                 else
                     nominal = nominals.back();
-                leg.push_back(Handle<CashFlow>(
-                    new IndexedCouponType(nominal, paymentDate, index, start, end, 
+                leg.push_back(Handle<CashFlow>(new
+                    IndexedCouponType(nominal, paymentDate, index, start, end,
                                            fixingDays, spread, start, end)));
             }
             if (scheduler.size() > 2) {
@@ -106,19 +105,17 @@ namespace QuantLib {
                 else
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
-                    leg.push_back(Handle<CashFlow>(
-                        new IndexedCouponType(nominal, paymentDate, index, start, end, 
-                                            fixingDays, spread, 
-                                            start, end)));
+                    leg.push_back(Handle<CashFlow>(new
+                        IndexedCouponType(nominal, paymentDate, index, start,
+                                        end, fixingDays, spread, start, end)));
                 } else {
                     Date reference = start.plusMonths(12/frequency);
                     reference =
                         calendar.roll(reference,rollingConvention);
 					typedef Short<IndexedCouponType> ShortIndexedCouponType;
-                    leg.push_back(Handle<CashFlow>(
-                        new ShortIndexedCouponType(nominal, paymentDate, index, start, end, 
-                                                    fixingDays, spread, 
-                                                    start, reference)));
+                    leg.push_back(Handle<CashFlow>(new
+                        ShortIndexedCouponType(nominal, paymentDate, index,
+                          start, end, fixingDays, spread, start, reference)));
                 }
             }
             return leg;
