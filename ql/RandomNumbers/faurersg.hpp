@@ -24,9 +24,9 @@
 #ifndef quantlib_faure_ld_rsg_h
 #define quantlib_faure_ld_rsg_h
 
-#include <vector>
 #include <ql/Math/matrix.hpp>
 #include <ql/MonteCarlo/sample.hpp>
+#include <vector>
 
 
 namespace QuantLib {
