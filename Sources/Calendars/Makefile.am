@@ -1,7 +1,14 @@
 INCLUDES = -I$(top_srcdir)/Include \
 	-I$(top_srcdir)/Include/Calendars
 
-libCalendars_la_SOURCES = milan.cpp newyork.cpp frankfurt.cpp target.cpp \
-	zurich.cpp london.cpp westerncalendar.cpp
+libCalendars_la_SOURCES = frankfurt.cpp \
+                          helsinki.cpp \
+                          london.cpp \
+                          milan.cpp \
+                          newyork.cpp \
+                          target.cpp \
+                          wellington.cpp \
+	                      westerncalendar.cpp \
+	                      zurich.cpp
 
 noinst_LTLIBRARIES = libCalendars.la

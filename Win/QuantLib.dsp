@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm- /GR /GX /ZI /Od /I "..\Include" /I "..\Include\Calendars" /I "..\Include\Currencies" /I "..\Include\DayCounters" /I "..\Include\FiniteDifferences" /I "..\Include\Instruments" /I "..\Include\Math" /I "..\Include\MonteCarlo" /I "..\Include\Patterns" /I "..\Include\Pricers" /I "..\Include\Solvers1D" /I "..\Include\TermStructures" /I "..\Include\Utilities" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\Include" /I "..\Include\Calendars" /I "..\Include\Currencies" /I "..\Include\DayCounters" /I "..\Include\FiniteDifferences" /I "..\Include\Instruments" /I "..\Include\Math" /I "..\Include\MonteCarlo" /I "..\Include\Patterns" /I "..\Include\Pricers" /I "..\Include\Solvers1D" /I "..\Include\TermStructures" /I "..\Include\Utilities" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -90,6 +90,14 @@ SOURCE=..\Sources\Calendars\frankfurt.cpp
 # Begin Source File
 
 SOURCE=..\Include\Calendars\frankfurt.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Calendars\helsinki.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Calendars\helsinki.h
 # End Source File
 # Begin Source File
 
@@ -122,6 +130,14 @@ SOURCE=..\Sources\Calendars\target.cpp
 # Begin Source File
 
 SOURCE=..\Include\Calendars\target.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Calendars\wellington.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Calendars\wellington.h
 # End Source File
 # Begin Source File
 
