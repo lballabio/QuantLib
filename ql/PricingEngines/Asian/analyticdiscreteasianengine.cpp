@@ -29,6 +29,11 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
+        QL_REQUIRE(arguments_.runningProduct>0.0,
+                   "positive running product required: "
+                   + DecimalFormatter::toString(arguments_.runningProduct) +
+                   " not allowed");
+
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
