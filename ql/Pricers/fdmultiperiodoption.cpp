@@ -103,8 +103,8 @@ namespace QuantLib {
             initializeOperator();
             initializeModel();
             initializeStepCondition();
-            prices_ = initialPrices_;
-            controlPrices_ = initialPrices_;
+            prices_ = intrinsicValues_;
+            controlPrices_ = intrinsicValues_;
 
             if(lastDateIsResTime_)
                 executeIntermediateStep(dateNumber_ - 1);
@@ -173,7 +173,7 @@ namespace QuantLib {
 
         void FdMultiPeriodOption::initializeStepCondition() const{
             stepCondition_ = Handle<StandardStepCondition> (
-                new FiniteDifferences::AmericanCondition(initialPrices_));
+                new FiniteDifferences::AmericanCondition(intrinsicValues_));
         }
 
         using FiniteDifferences::StandardFiniteDifferenceModel;
