@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.8  2001/05/21 13:12:44  nando
+# upgraded to NSIS 1.41
+#
 # Revision 1.7  2001/05/11 07:29:56  nando
 # added CVS tag.
 # Swig files are back (for a while)
@@ -46,6 +49,8 @@ SetOutPath  $INSTDIR\Include\ql\DayCounters
 File /r "Include\ql\DayCounters\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\FiniteDifferences
 File /r "Include\ql\FiniteDifferences\*.hpp"
+SetOutPath  $INSTDIR\Include\ql\Indexes
+File /r "Include\ql\Indexes\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Instruments
 File /r "Include\ql\Instruments\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Math
@@ -62,20 +67,22 @@ SetOutPath  $INSTDIR\Include\ql\TermStructures
 File /r "Include\ql\TermStructures\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Utilities
 File /r "Include\ql\Utilities\*.hpp"
-
-Section "SWIG wrapper files"
-SetOutPath $INSTDIR\Swig
-File /r "Swig\*.i"
+WriteRegStr HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir" "$INSTDIR"
+WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" "DisplayName" "QuantLib (remove only)"
+WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" "UninstallString" '"QuantLibUninstall.exe"'
+SectionEnd
 
 Section "Documentation"
 SetOutPath $INSTDIR\Docs\html
 File "Docs\html\*.*"
 SetOutPath $INSTDIR\Docs\pdf
 File "Docs\latex\refma*.pdf"
+SectionEnd
 
 Section "Start Menu Shortcuts"
 CreateDirectory "$SMPROGRAMS\QuantLib"
 CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" "$INSTDIR\QuantLibUninstall.exe" "" "$INSTDIR\QuantLibUninstall.exe" 0
+SectionEnd
 
 Section "Uninstall"
 DeleteRegKey HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
@@ -86,7 +93,4 @@ RMDir /r $INSTDIR\Docs
 RMDir /r $INSTDIR\Include
 RMDir /r $INSTDIR\lib
 RMDir /r "$INSTDIR"
-
-WriteRegStr HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir" "$INSTDIR"
-WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" "DisplayName" "QuantLib (remove only)"
-WriteRegStr HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" "UninstallString" '"QuantLibUninstall.exe"'
+SectionEnd
