@@ -32,6 +32,9 @@ namespace QuantLib {
         "Option Pricing Formulas", E. G. Haug (1997) pag 96-97.
 
         \ingroup asianengines
+
+        \todo handle seasoned options
+
     */
     class AnalyticContinuousGeometricAveragePriceAsianEngine 
         : public ContinuousAveragingAsianOption::engine {
