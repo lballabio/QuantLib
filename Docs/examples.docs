@@ -9,6 +9,6 @@
 */
 
 /*! \example swapvaluation.cpp
-    This example shows how to set up a term structure and price a simple
-    swap.
+    This is an example of using the %QuantLib Term Structure for pricing
+    a simple swap.
 */
