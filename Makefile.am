@@ -4,7 +4,7 @@
 
 AUTOMAKE_OPTIONS=foreign
 
-SUBDIRS=Sources Include Docs SWIG Ruby Examples
+SUBDIRS=Sources Include Docs SWIG Examples
 
 EXTRA_DIST=Authors.txt \
 	Contributors.txt \
@@ -31,28 +31,6 @@ dist-hook:
 	cp -p $(srcdir)/lib/README.txt $(distdir)/lib/README.txt
 	cp -p $(srcdir)/lib/Win32/Borland/README.txt $(distdir)/lib/Win32/Borland/README.txt
 	cp -p $(srcdir)/lib/Win32/VisualStudio/README.txt $(distdir)/lib/Win32/VisualStudio/README.txt
-
-
-if RUBY_FOUND
-if SWIG_FOUND
-ruby:
-	$(MAKE) -C Ruby ruby
-else
-ruby:
-	echo You need to install swig in order to generate wrappers
-endif
-ruby-install:
-	$(MAKE) -C Ruby ruby-install
-ruby-test:
-	$(MAKE) -C Ruby/Tests ruby-test
-else
-ruby:
-	echo You need to install ruby in order to build this module
-ruby-install:
-	echo You need to install ruby in order to install this module
-ruby-test:
-	echo You need to install ruby in order to test this module
-endif
 
 
 if DOXYGEN_FOUND

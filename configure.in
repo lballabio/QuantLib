@@ -140,8 +140,6 @@ AC_OUTPUT(Makefile \
     Sources/Pricers/Makefile \
     Sources/Solvers1D/Makefile \
     Sources/TermStructures/Makefile \
-    Ruby/Makefile \
-    Ruby/Tests/Makefile \
     SWIG/Makefile \
     Docs/Makefile \
     Examples/Makefile)
