@@ -87,13 +87,11 @@ namespace QuantLib {
         class DepositRateHelper : public RateHelper {
           public:
             DepositRateHelper(const RelinkableHandle<MarketElement>& rate,
-                              int settlementDays,
                               int n, TimeUnit units,
                               const Calendar& calendar,
                               RollingConvention convention,
                               const DayCounter& dayCounter);
             DepositRateHelper(double rate,
-                              int settlementDays,
                               int n, TimeUnit units,
                               const Calendar& calendar,
                               RollingConvention convention,
@@ -103,7 +101,6 @@ namespace QuantLib {
             void setTermStructure(TermStructure*);
             Date maturity() const;
           private:
-            int settlementDays_;
             int n_;
             TimeUnit units_;
             Calendar calendar_;
@@ -123,13 +120,11 @@ namespace QuantLib {
         class FraRateHelper : public RateHelper {
           public:
             FraRateHelper(const RelinkableHandle<MarketElement>& rate,
-                          int settlementDays,
                           int monthsToStart, int monthsToEnd,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
             FraRateHelper(double rate,
-                          int settlementDays,
                           int monthsToStart, int monthsToEnd,
                           const Calendar& calendar,
                           RollingConvention convention,
@@ -139,7 +134,6 @@ namespace QuantLib {
             void setTermStructure(TermStructure*);
             Date maturity() const;
           private:
-            int settlementDays_;
             int monthsToStart_, monthsToEnd_;
             TimeUnit units_;
             Calendar calendar_;
@@ -158,14 +152,12 @@ namespace QuantLib {
           public:
             FuturesRateHelper(const RelinkableHandle<MarketElement>& price,
                               const Date& ImmDate,
-                              int settlementDays,
                               int nMonths,
                               const Calendar& calendar,
                               RollingConvention convention,
                               const DayCounter& dayCounter);
             FuturesRateHelper(double price,
                               const Date& ImmDate,
-                              int settlementDays,
                               int nMonths,
                               const Calendar& calendar,
                               RollingConvention convention,
@@ -175,7 +167,6 @@ namespace QuantLib {
             Date maturity() const;
           private:
             Date ImmDate_;
-            int settlementDays_;
             int nMonths_;
             Calendar calendar_;
             RollingConvention convention_;
@@ -192,7 +183,6 @@ namespace QuantLib {
         class SwapRateHelper : public RateHelper {
           public:
             SwapRateHelper(const RelinkableHandle<MarketElement>& rate,
-                           int settlementDays,
                            int lengthInYears,
                            const Calendar& calendar,
                            RollingConvention convention,
@@ -203,7 +193,6 @@ namespace QuantLib {
                            // floating leg
                            int floatingFrequency);
             SwapRateHelper(const RelinkableHandle<MarketElement>& rate,
-                           int settlementDays,
                            int numberOfUnits, TimeUnit units,
                            const Calendar& calendar,
                            RollingConvention convention,
@@ -214,7 +203,6 @@ namespace QuantLib {
                            // floating leg
                            int floatingFrequency);
             SwapRateHelper(double rate,
-                           int settlementDays,
                            int lengthInYears,
                            const Calendar& calendar,
                            RollingConvention convention,
@@ -225,7 +213,6 @@ namespace QuantLib {
                            // floating leg
                            int floatingFrequency);
             SwapRateHelper(double rate,
-                           int settlementDays,
                            int numberOfUnits, TimeUnit units,
                            const Calendar& calendar,
                            RollingConvention convention,
@@ -241,9 +228,8 @@ namespace QuantLib {
             Date maturity() const;
             void setTermStructure(TermStructure*);
           protected:  
-            int settlementDays_;
-	   int numberOfUnits_;
-	   TimeUnit units_;
+    	    int numberOfUnits_;
+	        TimeUnit units_;
             Calendar calendar_;
             RollingConvention convention_;
             int fixedFrequency_, floatingFrequency_;

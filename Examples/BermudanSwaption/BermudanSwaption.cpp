@@ -86,11 +86,11 @@ void calibrateModel(const Handle<Model>& model,
 int main(int argc, char* argv[])
 {
     try {
-        Date todaysDate(15, February, 2002);
+//        Date todaysDate(15, February, 2002);
         Calendar calendar = Calendars::TARGET();
-        int settlementDays = 2;
-        Date settlementDate = calendar.advance(todaysDate, 
-                                               settlementDays, Days);
+//        Date settlementDate = calendar.advance(todaysDate, 
+//                                               settlementDays, Days);
+        Date settlementDate(19, February, 2002);
 
         //Instruments used to bootstrap the yield curve:
         std::vector<Handle<RateHelper> > instruments;
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
             Handle<MarketElement> depositRate(
                 new SimpleMarketElement(weekRates[i]*0.01));
             Handle<RateHelper> depositHelper(new DepositRateHelper(
-                depositRate, settlementDays, i+1, Weeks, calendar,
+                depositRate, i+1, Weeks, calendar,
                 ModifiedFollowing, depositDayCounter));
             instruments.push_back(depositHelper);
         }
@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
             Handle<MarketElement> depositRate(
                 new SimpleMarketElement(depositRates[i]*0.01));
             Handle<RateHelper> depositHelper(new DepositRateHelper(
-                depositRate, settlementDays, i+1, Months, calendar,
+                depositRate, i+1, Months, calendar,
                 ModifiedFollowing, depositDayCounter));
             instruments.push_back(depositHelper);
         }
@@ -137,9 +137,9 @@ int main(int argc, char* argv[])
             Handle<MarketElement> swapRate(
                 new SimpleMarketElement(swapRates[i]*0.01));
             Handle<RateHelper> swapHelper(new SwapRateHelper(
-                RelinkableHandle<MarketElement>(swapRate), settlementDays,
+                RelinkableHandle<MarketElement>(swapRate),
                 swapYears[i], Years, calendar, ModifiedFollowing,
-		swFixedLegFrequency,
+                swFixedLegFrequency,
                 swFixedLegIsAdjusted, swFixedLegDayCounter,
                 swFloatingLegFrequency));
             instruments.push_back(swapHelper);
