@@ -15,8 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_bonds_hpp
-#define quantlib_bonds_hpp
+#ifndef quantlib_test_bonds_hpp
+#define quantlib_test_bonds_hpp
 
 #include <boost/test/unit_test.hpp>
 
