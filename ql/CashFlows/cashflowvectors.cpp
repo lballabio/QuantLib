@@ -29,34 +29,13 @@ namespace QuantLib {
 
     namespace CashFlows {
 
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-          const std::vector<double>& nominals,
-          const std::vector<Rate>& couponRates,
-          const Date& startDate, const Date& endDate,
-          int frequency, const Calendar& calendar,
-          RollingConvention rollingConvention, bool isAdjusted,
-          const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
-          const Date& stubDate) {
-            QL_REQUIRE(couponRates.size() != 0, 
-                       "FixedRateCouponVector: "
-                       "unspecified coupon rates (size=0)");
-            QL_REQUIRE(nominals.size() != 0, 
-                       "FixedRateCouponVector: "
-                       "unspecified nominals (size=0)");
+        std::vector<Handle<CashFlow> > 
+        FixedRateCouponVector(const Schedule& schedule,
+                              const std::vector<double>& nominals,
+                              const std::vector<Rate>& couponRates,
+                              const DayCounter& dayCount, 
+                              const DayCounter& firstPeriodDayCount) {
 
-            Scheduler sched = MakeScheduler(calendar,startDate,endDate,
-                                            frequency,rollingConvention,
-                                            isAdjusted).withStubDate(stubDate);
-            return FixedRateCouponVector(nominals,couponRates,
-                                         dayCount,firstPeriodDayCount,
-                                         sched);
-        }
-
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-          const std::vector<double>& nominals,
-          const std::vector<Rate>& couponRates,
-          const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
-          const Scheduler& scheduler) {
             QL_REQUIRE(couponRates.size() != 0, 
                        "FixedRateCouponVector: "
                        "unspecified coupon rates (size=0)");
@@ -65,36 +44,39 @@ namespace QuantLib {
                        "unspecified nominals (size=0)");
 
             std::vector<Handle<CashFlow> > leg;
-            Calendar calendar = scheduler.calendar();
+            Calendar calendar = schedule.calendar();
             RollingConvention rollingConvention =
-                scheduler.rollingConvention();
-            bool isAdjusted = scheduler.isAdjusted();
-            int frequency = scheduler.frequency();
+                schedule.rollingConvention();
+            bool isAdjusted = schedule.isAdjusted();
         
             // first period might be short or long
-            Date start = scheduler.date(0), end = scheduler.date(1);
+            Date start = schedule.date(0), end = schedule.date(1);
             Date paymentDate = calendar.roll(end,rollingConvention);
             Rate rate = couponRates[0];
             double nominal = nominals[0];
-            if (scheduler.isRegular(1)) {
-                QL_REQUIRE(dayCount == firstPeriodDayCount,
-                    "regular first coupon "
-                    "does not allow a first period day count");
+            if (schedule.isRegular(1)) {
+                QL_REQUIRE(firstPeriodDayCount.isNull() ||
+                           firstPeriodDayCount == dayCount,
+                           "regular first coupon "
+                           "does not allow a first-period day count");
                 leg.push_back(Handle<CashFlow>(
                     new FixedRateCoupon(nominal, paymentDate, rate, dayCount,
                                         start, end, start, end)));
             } else {
-                Date reference = end.plusMonths(-12/frequency);
+                Date reference = end.plusMonths(-12/schedule.frequency());
                 if (isAdjusted)
                     reference = calendar.roll(reference,rollingConvention);
+                DayCounter dc = firstPeriodDayCount.isNull() ?
+                                dayCount :
+                                firstPeriodDayCount;
                 leg.push_back(Handle<CashFlow>(
                     new FixedRateCoupon(nominal, paymentDate, rate, 
-                                        firstPeriodDayCount, start, end, 
+                                        dc, start, end, 
                                         reference, end)));
             }
             // regular periods
-            for (Size i=2; i<scheduler.size()-1; i++) {
-                start = end; end = scheduler.date(i);
+            for (Size i=2; i<schedule.size()-1; i++) {
+                start = end; end = schedule.date(i);
                 paymentDate = calendar.roll(end,rollingConvention);
                 if ((i-1) < couponRates.size())
                     rate = couponRates[i-1];
@@ -108,10 +90,10 @@ namespace QuantLib {
                     new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
                                         start, end, start, end)));
             }
-            if (scheduler.size() > 2) {
+            if (schedule.size() > 2) {
                 // last period might be short or long
-                Size N = scheduler.size();
-                start = end; end = scheduler.date(N-1);
+                Size N = schedule.size();
+                start = end; end = schedule.date(N-1);
                 paymentDate = calendar.roll(end,rollingConvention);
                 if ((N-2) < couponRates.size())
                     rate = couponRates[N-2];
@@ -121,13 +103,14 @@ namespace QuantLib {
                     nominal = nominals[N-2];
                 else
                     nominal = nominals.back();
-                if (scheduler.isRegular(N-1)) {
+                if (schedule.isRegular(N-1)) {
                     leg.push_back(Handle<CashFlow>(
                         new FixedRateCoupon(nominal, paymentDate, 
                                             rate, dayCount, 
                                             start, end, start, end)));
                 } else {
-                    Date reference = start.plusMonths(12/frequency);
+                    Date reference = 
+                        start.plusMonths(12/schedule.frequency());
                     if (isAdjusted)
                         reference = calendar.roll(reference,rollingConvention);
                     leg.push_back(Handle<CashFlow>(
@@ -142,36 +125,45 @@ namespace QuantLib {
         std::vector<Handle<CashFlow> > FixedRateCouponVector(
           const std::vector<double>& nominals,
           const std::vector<Rate>& couponRates,
+          const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
+          const Schedule& schedule) {
+
+            return FixedRateCouponVector(schedule,nominals,couponRates,
+                                         dayCount, firstPeriodDayCount);
+        }
+
+        std::vector<Handle<CashFlow> > FixedRateCouponVector(
+          const std::vector<double>& nominals,
+          const std::vector<Rate>& couponRates,
+          const Date& startDate, const Date& endDate,
+          int frequency, const Calendar& calendar,
+          RollingConvention rollingConvention, bool isAdjusted,
+          const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
+          const Date& stubDate) {
+
+            Schedule schedule(calendar,startDate,endDate,
+                              frequency,rollingConvention,
+                              isAdjusted,stubDate);
+            return FixedRateCouponVector(schedule,nominals,couponRates,
+                                         dayCount,firstPeriodDayCount);
+        }
+
+        std::vector<Handle<CashFlow> > FixedRateCouponVector(
+          const std::vector<double>& nominals,
+          const std::vector<Rate>& couponRates,
           const std::vector<Date>& dates,
           const Calendar& calendar,
           RollingConvention roll,
           const DayCounter& dayCounter) {
-            QL_REQUIRE(couponRates.size() != 0, "unspecified coupon rates");
-            QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
             QL_REQUIRE(dates.size() > 1, "unspecified dates");
 
-            std::vector<Handle<CashFlow> > leg;
-            Date start, end, paymentDate;
-            Rate rate;
-            double nominal;
-            for (Size i=0; i<dates.size()-1; i++) {
-                start = dates[i];
-                end = dates[i+1];
-                paymentDate = calendar.roll(end,roll);
-                if (i < couponRates.size())
-                    rate = couponRates[i];
-                else
-                    rate = couponRates.back();
-                if (i < nominals.size())
-                    nominal = nominals[i];
-                else
-                    nominal = nominals.back();
-                leg.push_back(Handle<CashFlow>(
-                    new FixedRateCoupon(nominal, paymentDate, rate,
-                                        dayCounter, start, end, start, end)));
-            }
-            return leg;
+            Schedule schedule(dates,calendar,roll,true);
+            return FixedRateCouponVector(schedule,nominals,
+                                         couponRates,dayCounter);
         }
+
+
+
 
         std::vector<Handle<CashFlow> > FloatingRateCouponVector(
           const std::vector<double>& nominals,
@@ -184,30 +176,29 @@ namespace QuantLib {
             QL_REQUIRE(nominals.size() != 0, 
                        "FloatingRateCouponVector: unspecified nominals");
 
-            Scheduler sched = MakeScheduler(calendar,startDate,endDate,
-                                            frequency,rollingConvention,
-                                            true).withStubDate(stubDate);
+            Schedule schedule(calendar,startDate,endDate,
+                              frequency,rollingConvention,
+                              true,stubDate);
             return FloatingRateCouponVector(nominals,index,
                                             fixingDays,spreads,
-                                            sched);
+                                            schedule);
         }
 
         std::vector<Handle<CashFlow> > FloatingRateCouponVector(
           const std::vector<double>& nominals,
           const Handle<Xibor>& index, int fixingDays,
           const std::vector<Spread>& spreads,
-          const Scheduler& scheduler) {
+          const Schedule& schedule) {
             QL_REQUIRE(nominals.size() != 0, 
                        "FloatingRateCouponVector: unspecified nominals");
 
             std::vector<Handle<CashFlow> > leg;
-            Calendar calendar = scheduler.calendar();
+            Calendar calendar = schedule.calendar();
             RollingConvention rollingConvention =
-                scheduler.rollingConvention();
-            int frequency = scheduler.frequency();
+                schedule.rollingConvention();
 
             // first period might be short or long
-            Date start = scheduler.date(0), end = scheduler.date(1);
+            Date start = schedule.date(0), end = schedule.date(1);
             Date paymentDate = calendar.roll(end,rollingConvention);
             Spread spread;
             if (spreads.size() > 0)
@@ -215,12 +206,12 @@ namespace QuantLib {
             else
                 spread = 0.0;
             double nominal = nominals[0];
-            if (scheduler.isRegular(1)) {
+            if (schedule.isRegular(1)) {
                 leg.push_back(Handle<CashFlow>(
                     new ParCoupon(nominal, paymentDate, index, start, end, 
                                   fixingDays, spread, start, end)));
             } else {
-                Date reference = end.plusMonths(-12/frequency);
+                Date reference = end.plusMonths(-12/schedule.frequency());
                 reference =
                     calendar.roll(reference,rollingConvention);
                 leg.push_back(Handle<CashFlow>(
@@ -230,8 +221,8 @@ namespace QuantLib {
                                                 reference, end)));
             }
             // regular periods
-            for (Size i=2; i<scheduler.size()-1; i++) {
-                start = end; end = scheduler.date(i);
+            for (Size i=2; i<schedule.size()-1; i++) {
+                start = end; end = schedule.date(i);
                 paymentDate = calendar.roll(end,rollingConvention);
                 if ((i-1) < spreads.size())
                     spread = spreads[i-1];
@@ -247,10 +238,10 @@ namespace QuantLib {
                     new ParCoupon(nominal, paymentDate, index, start, end, 
                                   fixingDays, spread, start, end)));
             }
-            if (scheduler.size() > 2) {
+            if (schedule.size() > 2) {
                 // last period might be short or long
-                Size N = scheduler.size();
-                start = end; end = scheduler.date(N-1);
+                Size N = schedule.size();
+                start = end; end = schedule.date(N-1);
                 paymentDate = calendar.roll(end,rollingConvention);
                 if ((N-2) < spreads.size())
                     spread = spreads[N-2];
@@ -262,12 +253,13 @@ namespace QuantLib {
                     nominal = nominals[N-2];
                 else
                     nominal = nominals.back();
-                if (scheduler.isRegular(N-1)) {
+                if (schedule.isRegular(N-1)) {
                     leg.push_back(Handle<CashFlow>(
                         new ParCoupon(nominal, paymentDate, index, start, end, 
                                       fixingDays, spread, start, end)));
                 } else {
-                    Date reference = start.plusMonths(12/frequency);
+                    Date reference = 
+                        start.plusMonths(12/schedule.frequency());
                     reference =
                         calendar.roll(reference,rollingConvention);
                     leg.push_back(Handle<CashFlow>(
