@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -55,8 +56,7 @@ namespace QuantLib {
             return x0_*QL_EXP(i*mu_*dt_ + j*sigma_*QL_SQRT(dt_));
         }
 
-        double JarrowRudd::probability(
-            Size i, Size index, Size branch) const {
+        double JarrowRudd::probability(Size, Size, Size) const {
             return 0.5;
         }
 
@@ -71,7 +71,7 @@ namespace QuantLib {
             return x0_*QL_EXP(j*sigma_*QL_SQRT(dt_));
         }
 
-        double CoxRossRubinstein::probability(Size i, Size index, Size branch) const {
+        double CoxRossRubinstein::probability(Size, Size, Size branch) const {
             if (branch == 1)
                 return 0.5 + 0.5*(mu_/sigma_)*QL_SQRT(dt_);
             else
