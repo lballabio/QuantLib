@@ -28,6 +28,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/20 08:27:31  marmar
+// Disabled quite-silly warning
+//
 // Revision 1.13  2001/08/09 09:16:43  marmar
 // Better version of Integral method
 //
@@ -37,6 +40,11 @@
 // Revision 1.11  2001/08/08 16:02:33  nando
 // refactoring .... not finished yet
 //
+
+// disable useless warning
+// 'identifier' : decorated name length exceeded,
+//                name was truncated in debug info
+#pragma warning(disable: 4786)
 
 #include "stdlib.h"
 #include <iostream>

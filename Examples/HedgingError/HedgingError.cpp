@@ -53,6 +53,11 @@
 
 // $Id$
 
+// disable useless warning
+// 'identifier' : decorated name length exceeded,
+//                name was truncated in debug info
+#pragma warning(disable: 4786)
+
 #include "stdlib.h"
 #include <iostream>
 #include "ql\quantlib.hpp"
