@@ -80,6 +80,10 @@ LINK_OPTS    = $(LINK_OPTS) -v
 !endif
 
 
+# Generic rules
+.cpp.obj:
+    rem never mind
+
 # Primary target:
 # Python module
 Python: $(QUANTLIB_DLL)
