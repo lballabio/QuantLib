@@ -22,17 +22,15 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*
+/*! \file actual365.hpp
+    \brief act/365 day counter
+
     $Id$
     $Source$
     $Log$
-    Revision 1.2  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
+    Revision 1.3  2001/04/09 11:28:17  nando
+    updated copyright notice header and improved CVS tags
 
-*/
-
-/*! \file actual365.hpp
-    \brief act/365 day counter
 */
 
 #ifndef quantlib_actual365_day_counter_h

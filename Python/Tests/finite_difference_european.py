@@ -22,8 +22,12 @@
 """
 
 """
+    $Id$
     $Source$
     $Log$
+    Revision 1.5  2001/04/09 11:28:17  nando
+    updated copyright notice header and improved CVS tags
+
     Revision 1.4  2001/04/06 18:46:21  nando
     changed Authors, Contributors, Licence and copyright header
 

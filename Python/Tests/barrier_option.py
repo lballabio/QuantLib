@@ -22,22 +22,11 @@
 """
 
 """
+    $Id$
     $Source$
     $Log$
-    Revision 1.3  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.2  2001/04/04 11:08:11  lballabio
-    Python tests implemented on top of PyUnit
-
-    Revision 1.1  2001/02/22 14:43:36  lballabio
-    Renamed test script to follow a single naming scheme
-
-    Revision 1.2  2001/02/22 14:27:26  lballabio
-    Implemented new test framework
-
-    Revision 1.1  2001/02/20 11:13:41  marmar
-    BarrierOption implements the analytical barrier option
+    Revision 1.4  2001/04/09 11:28:17  nando
+    updated copyright notice header and improved CVS tags
 
 """
 

@@ -22,34 +22,11 @@
 """
 
 """
+    $Id$
     $Source$
     $Log$
-    Revision 1.10  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.9  2001/04/04 11:08:11  lballabio
-    Python tests implemented on top of PyUnit
-
-    Revision 1.8  2001/03/02 15:44:03  lballabio
-    Cosmetic change
-
-    Revision 1.7  2001/03/02 14:37:03  marmar
-    Shout option included in tests
-
-    Revision 1.6  2001/03/02 10:19:50  marmar
-    One failure is enough to halt the test
-
-    Revision 1.5  2001/03/02 09:02:48  marmar
-    AmericanOption replaced BSMAmericanOption
-
-    Revision 1.4  2001/02/22 14:27:26  lballabio
-    Implemented new test framework
-
-    Revision 1.3  2001/01/08 16:19:29  nando
-    more homogeneous format
-
-    Revision 1.2  2001/01/08 15:33:23  nando
-    improved
+    Revision 1.11  2001/04/09 11:28:17  nando
+    updated copyright notice header and improved CVS tags
 
 """
 

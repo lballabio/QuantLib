@@ -22,18 +22,20 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*
+/*! \file array.hpp
+    \brief 1-D array used in linear algebra.
+
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/04/09 11:28:16  nando
+    updated copyright notice header and improved CVS tags
+
     Revision 1.2  2001/04/06 18:46:19  nando
     changed Authors, Contributors, Licence and copyright header
 
 */
 
-/*! \file array.hpp
-    \brief 1-D array used in linear algebra.
-*/
 
 #ifndef quantlib_array_h
 #define quantlib_array_h

@@ -21,6 +21,15 @@
  available at http://quantlib.sourceforge.net/Authors.txt
 """
 
+"""
+    $Id$
+    $Source$
+    $Log$
+    Revision 1.3  2001/04/09 11:28:17  nando
+    updated copyright notice header and improved CVS tags
+
+"""
+
 import sys
 import unittest
 from american_option import AmericanOptionTest
