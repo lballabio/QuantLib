@@ -246,10 +246,12 @@ int main(int argc, char* argv[])
                                          strikes, vols)));
 
 
+        Handle<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(type, strike));
+
         VanillaOption option(
-            type,
+            payoff,
             underlyingH,
-            strike,
             flatDividendTS,
             flatTermStructure,
             exercise,
@@ -490,9 +492,8 @@ int main(int argc, char* argv[])
 
         double correlation = 0.0;
         QuantoVanillaOption quantoOption(
-            type,
+            payoff,
             underlyingH,
-            strike,
             flatDividendTS,
             flatTermStructure,
             exercise,
@@ -551,7 +552,7 @@ int main(int argc, char* argv[])
                                             VanillaOption::results>(baseEngine));
 
         ForwardVanillaOption forwardOption(
-            type,
+            payoff,
             underlyingH,
             flatDividendTS,
             flatTermStructure,
@@ -639,9 +640,8 @@ int main(int argc, char* argv[])
                                 ForwardVanillaOption::results>(forwardEngine));
 
         QuantoForwardVanillaOption quantoForwardOption(
-            type,
+            payoff,
             underlyingH,
-            strike,
             flatDividendTS,
             flatTermStructure,
             exercise,

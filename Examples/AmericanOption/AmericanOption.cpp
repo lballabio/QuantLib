@@ -1,6 +1,6 @@
 
 /*!
- 2003 Neil Firth 
+ Copyright (C) 2003 Neil Firth 
  Adapted from EuropeanOption.cpp
 
  This file is part of QuantLib, a free-software/open-source library
@@ -118,11 +118,13 @@ int main(int argc, char* argv[])
             Handle<BlackVolTermStructure>(
                 new BlackVarianceSurface(settlementDate, dates, strikes, vols)));
 
+        Handle<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(type, strike));
+
         // European option
         VanillaOption euroOption(
-            type,
+            payoff,
             underlyingH,
-            strike,
             flatDividendTS,
             flatTermStructure,
             exercise,
@@ -143,9 +145,8 @@ int main(int argc, char* argv[])
 
         // American option
         VanillaOption option(
-            type,
+            payoff,
             underlyingH,
-            strike,
             flatDividendTS,
             flatTermStructure,
             amExercise,

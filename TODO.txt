@@ -1,9 +1,37 @@
+add _controlfp(_EM_INEXACT, _MCW_EM ) ;
+http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
+
+poisson process
+http://www.wilmott.com/messageview.cfm?catid=8&threadid=11653
+see also Wilmott
+
+american option exercise from to!!
+binomial and BET
+spline and monotone convex spline
+
+variable theta methods
+multi time-level methods
+
+Alan Genz
+
+cumulative normal
+http://www.wilmott.com/messageview.cfm?catid=4&threadid=11661
+
+upgrade to doxygen
+upgrade to cppunit
+upgrate to NSIS
+
+upgrade to libXLL
+
+brownian bridge
+
 add stochastic process
 set stochastic process to pricing engines
 factor out common code of Instruments
 do not pass pricing engine to the Instrument constructors
 add BET
 add CDS
+
 
 do not distribute html docs with the Win32 installer (chm is already included)
 support doc generation from Win32 distribution
