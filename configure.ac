@@ -233,7 +233,6 @@ AC_CONFIG_FILES([
     man/Makefile 
     lib/Makefile 
     lib/Win32/Makefile 
-    lib/Win32/Borland/Makefile 
     lib/Win32/VisualStudio/Makefile 
     Docs/Makefile 
     Docs/pages/Makefile 

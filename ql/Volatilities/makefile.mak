@@ -13,8 +13,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
-    blackvariancecurve.obj$(_D)
-    blackvariancesurface.obj$(_D)
+    blackvariancecurve.obj$(_D) \
+    blackvariancesurface.obj$(_D) \
     localvolsurface.obj$(_D)
 
 # Tools to be used

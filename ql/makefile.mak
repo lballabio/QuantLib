@@ -106,11 +106,15 @@ TLIB_OPTS    = /P1024
 
 # Primary target:
 # QuantLib library
-$(OUTPUT_DIR)\QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
+$(OUTPUT_DIR)\QuantLib$(_D).lib:: $(OUTPUT_DIR) $(CORE_OBJS) SubLibraries
     if exist $(OUTPUT_DIR)\QuantLib$(_D).lib del $(OUTPUT_DIR)\QuantLib$(_D).lib
     $(TLIB) $(TLIB_OPTS) $(OUTPUT_DIR)\QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
 
-
+$(OUTPUT_DIR):
+    if not exist ..\lib md ..\lib
+    if not exist ..\lib\Win32 md ..\lib\Win32
+    if not exist ..\lib\Win32\Borland md ..\lib\Win32\Borland
+    
 SubLibraries:
     cd Calendars
     $(MAKE)
