@@ -27,7 +27,10 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! American option
+    /*! \deprecated use VanillaOption with FDAmericanEngine instead */
     class FdAmericanOption : public FdStepConditionOption {
       public:
         // constructor
@@ -65,6 +68,8 @@ namespace QuantLib {
         stepCondition_ = boost::shared_ptr<StandardStepCondition>(
                                      new AmericanCondition(intrinsicValues_));
     }
+
+    #endif
 
 }
 

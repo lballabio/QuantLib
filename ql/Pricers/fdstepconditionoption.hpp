@@ -27,6 +27,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! %option executing additional code at each time step
     class FdStepConditionOption : public FdBsmOption {
       protected:
@@ -45,6 +47,8 @@ namespace QuantLib {
         mutable boost::shared_ptr<StandardStepCondition > stepCondition_;
         Size timeSteps_;
     };
+
+    #endif
 
 }
 

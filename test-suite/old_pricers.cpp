@@ -174,6 +174,8 @@ namespace {
 
 void OldPricerTest::testFdAmericanPricers() {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     BOOST_MESSAGE(
               "Testing old-style finite-difference American-type pricers...");
 
@@ -215,6 +217,8 @@ void OldPricerTest::testFdAmericanPricers() {
         }
       }
     }
+
+    #endif
 }
 
 void OldPricerTest::testFdAmericanDividendPricers() {

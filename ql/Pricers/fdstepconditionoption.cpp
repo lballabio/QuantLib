@@ -21,6 +21,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     FdStepConditionOption::FdStepConditionOption(
                          Option::Type type, Real underlying, Real strike,
                          Spread dividendYield, Rate riskFreeRate,
@@ -79,5 +81,7 @@ namespace QuantLib {
 
         hasBeenCalculated_ = true;
     }
+
+    #endif
 
 }

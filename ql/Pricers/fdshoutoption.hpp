@@ -27,6 +27,9 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
+    /*! \deprecated use VanillaOption with FDShoutEngine instead */
     class FdShoutOption : public FdStepConditionOption {
       public:
         // constructor
@@ -60,6 +63,8 @@ namespace QuantLib {
                           new ShoutCondition(intrinsicValues_, residualTime_,
                                              riskFreeRate_));
     }
+
+    #endif
 
 }
 
