@@ -127,12 +127,10 @@ AC_OUTPUT(Makefile \
     ql/CashFlows/Makefile \
     ql/DayCounters/Makefile \
     ql/FiniteDifferences/Makefile \
-    ql/GeneticAlgorithms/Makefile \
     ql/Indexes/Makefile \
     ql/Instruments/Makefile \
     ql/Math/Makefile \
     ql/Minimizers/Makefile \
-    ql/OneFactorModels/Makefile \
     ql/MonteCarlo/Makefile \
     ql/Patterns/Makefile \
     ql/Pricers/Makefile \
@@ -141,10 +139,8 @@ AC_OUTPUT(Makefile \
     ql/TermStructures/Makefile \
     ql/Utilities/Makefile \
     Examples/Makefile \
-    Examples/Caroe/Makefile \
     Examples/DiscreteHedging/Makefile \
     Examples/EuropeanOption/Makefile \
-    Examples/OptimizerTest/Makefile \
     Examples/Swap/Makefile \
     quantlib-config \
     )
