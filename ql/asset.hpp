@@ -29,9 +29,6 @@
 
 namespace QuantLib {
   
-    namespace FiniteDifferences {
-        class FiniteDifferenceModel;
-    }
     namespace Lattices {
         class Tree;
     }
@@ -44,7 +41,6 @@ namespace QuantLib {
 
       protected:
         friend class Lattices::Tree;
-        friend class FiniteDifferences::FiniteDifferenceModel;
 
         virtual void reset(Size size) = 0;
         void setTime(Time t) { time_ = t; }

@@ -92,6 +92,7 @@ namespace QuantLib {
             const TimeGrid& timeGrid)
         : TrinomialTree(process, timeGrid), process_(process) {
 
+            theta->reset();
             for (Size i=0; i<(timeGrid.size() - 1); i++) {
                 double discountBond = theta->termStructure()->discount(t(i+1));
                 std::vector<double> statePrices(0);
