@@ -69,8 +69,9 @@ namespace QuantLib {
 		#endif
 	}
 	
-	Date::Date(Day d, Month m, Year y)
-	: theSerialNumber(yearOffset[y-1900]+(isLeap(y) ? monthLeapOffset[m] : monthOffset[m])+d-1) {
+	Date::Date(Day d, Month m, Year y) {
+		Require(y >= 1900 && y <= 2100, "Date outside allowed range");
+		theSerialNumber = yearOffset[y-1900]+(isLeap(y) ? monthLeapOffset[m] : monthOffset[m])+d-1;
 		#ifdef QL_DEBUG
 			Require(*this >= minDate() && *this <= maxDate(), "Date outside allowed range");
 		#endif
