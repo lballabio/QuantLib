@@ -23,7 +23,7 @@
 
 class BasketOptionTest : public CppUnit::TestFixture {
   public:    
-    void testValues();   
+    void testEuroTwoValues();   
     void testBarraquandThreeValues();   
     void testTavellaValues();
     void testOneDAmericanValues();
