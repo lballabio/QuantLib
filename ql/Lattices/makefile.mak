@@ -16,7 +16,8 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-       tree.obj$(_D)
+       tree.obj$(_D) \
+       trinomialtree.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
