@@ -352,19 +352,6 @@
 #endif
 
 
-/*! \def QL_EXPRESSION_TEMPLATES_WORK
-    Expression templates techniques (see T. L. Veldhuizen, <i>Expression
-    templates</i>, C++ Report, 7(5):26-31, June 1995, available at
-    http://extreme.indiana.edu/~tveldhui/papers) are sometimes too advanced for
-    the template implementation of current compilers.
-*/
-#if defined(HAVE_EXPRESSION_TEMPLATES)
-    #define QL_EXPRESSION_TEMPLATES_WORK    1
-#else
-    // Play it safe
-    #define QL_EXPRESSION_TEMPLATES_WORK    0
-#endif
-
 /*! \def QL_TEMPLATE_METAPROGRAMMING_WORKS
     Template metaprogramming techniques (see T. L. Veldhuizen, <i>Using C++
     Template Metaprograms</i>, C++ Report, Vol 7 No. 4, May 1995, available at

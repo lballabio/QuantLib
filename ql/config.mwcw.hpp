@@ -88,7 +88,6 @@
 #define QL_MIN       std::min
 #define QL_MAX       std::max
 
-#define HAVE_EXPRESSION_TEMPLATES
 #define HAVE_TEMPLATE_METAPROGRAMMING
 
 #define QL_ITERATOR         std::iterator

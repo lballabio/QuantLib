@@ -55,7 +55,7 @@ namespace QuantLib {
                 "wrong size for upper diagonal vector");
         }
 
-        Array TridiagonalOperator::applyTo(const Array& v) const {
+        Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
             QL_REQUIRE(v.size()==size(),
                 "TridiagonalOperator::applyTo: vector of the wrong size (" +
                 IntegerFormatter::toString(v.size()) + "instead of " +
@@ -73,7 +73,8 @@ namespace QuantLib {
             return result;
         }
 
-        Array TridiagonalOperator::solveFor(const Array& rhs) const {
+        Disposable<Array> 
+        TridiagonalOperator::solveFor(const Array& rhs) const {
             QL_REQUIRE(rhs.size()==size(),
                 "TridiagonalOperator::solveFor: rhs has the wrong size");
 
@@ -101,7 +102,8 @@ namespace QuantLib {
 
 
 
-        Array TridiagonalOperator::SOR(const Array& rhs, double tol) const {
+        Disposable<Array> 
+        TridiagonalOperator::SOR(const Array& rhs, double tol) const {
             QL_REQUIRE(rhs.size()==size(),
                 "TridiagonalOperator::solveFor: rhs has the wrong size");
 

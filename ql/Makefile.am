@@ -47,9 +47,9 @@ include_HEADERS = \
 	date.hpp \
 	daycounter.hpp \
 	diffusionprocess.hpp \
+	disposable.hpp \
 	errors.hpp \
 	exercise.hpp \
-	expressiontemplates.hpp \
 	grid.hpp \
 	handle.hpp \
 	history.hpp \

@@ -54,7 +54,7 @@ namespace QuantLib {
             //! sum of data weights
             double weightSum() const;
             //! returns the mean as an Array
-            Array mean() const;
+            Disposable<Array> mean() const;
             //! returns the mean as a std::vector<double>
             std::vector<double> meanVector() const;
             //! returns the covariance Matrix
@@ -108,7 +108,7 @@ namespace QuantLib {
             return sampleWeight_;
         }
 
-        inline Array MultivariateAccumulator::mean() const {
+        inline Disposable<Array> MultivariateAccumulator::mean() const {
             QL_REQUIRE(sampleWeight_ > 0.0,
                 "Stat::mean() : sampleWeight_=0, unsufficient");
             return sum_/sampleWeight_;

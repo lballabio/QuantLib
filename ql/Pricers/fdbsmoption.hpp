@@ -45,7 +45,7 @@ namespace QuantLib {
             double value() const;
             double delta() const;
             double gamma() const;
-            Array getGrid() const{return grid_;}
+            const Array& getGrid() const{ return grid_; }
 
           protected:
             // methods

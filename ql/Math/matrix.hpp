@@ -115,7 +115,7 @@ namespace QuantLib {
             //@{
             const_row_iterator operator[](Size) const;
             row_iterator operator[](Size);
-            Array diagonal(void) const;
+            Disposable<Array> diagonal(void) const;
             //@}
 
             //! \name Inspectors
@@ -149,9 +149,9 @@ namespace QuantLib {
         // vectorial products
 
         /*! \relates Matrix */
-        Array operator*(const Array&, const Matrix&);
+        Disposable<Array> operator*(const Array&, const Matrix&);
         /*! \relates Matrix */
-        Array operator*(const Matrix&, const Array&);
+        Disposable<Array> operator*(const Matrix&, const Array&);
         /*! \relates Matrix */
         Matrix operator*(const Matrix&, const Matrix&);
 
@@ -405,7 +405,7 @@ namespace QuantLib {
             return row_begin(i);
         }
 
-        inline Array Matrix::diagonal(void) const{
+        inline Disposable<Array> Matrix::diagonal(void) const{
             Size arraySize = QL_MIN(rows(),columns());
             Array tmp(arraySize);
             for(Size i = 0; i < arraySize; i++)
@@ -466,7 +466,7 @@ namespace QuantLib {
             return temp;
         }
 
-        inline Array operator*(const Array& v, const Matrix& m) {
+        inline Disposable<Array> operator*(const Array& v, const Matrix& m) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(v.size() == m.rows(),
                     "vectors and matrices with different sizes "
@@ -479,7 +479,7 @@ namespace QuantLib {
             return result;
         }
 
-        inline Array operator*(const Matrix& m, const Array& v) {
+        inline Disposable<Array> operator*(const Matrix& m, const Array& v) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(v.size() == m.columns(),
                     "vectors and matrices with different sizes "

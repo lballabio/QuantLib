@@ -43,7 +43,7 @@ namespace QuantLib {
                        double volatility,
                        Size timeSteps = 200,
                        Size gridPoints = 800);
-                   Array getPrices() const;
+            const Array& getPrices() const;
             Handle<SingleAssetOption> clone() const{
                 return Handle<SingleAssetOption>(
                     new FdEuropean(*this));
@@ -57,7 +57,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Array  FdEuropean::getPrices() const{
+        inline const Array& FdEuropean::getPrices() const{
             value();
             return euroPrices_;
         }

@@ -36,9 +36,9 @@
 #include <ql/date.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/diffusionprocess.hpp>
+#include <ql/disposable.hpp>
 #include <ql/errors.hpp>
 #include <ql/exercise.hpp>
-#include <ql/expressiontemplates.hpp>
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/history.hpp>
