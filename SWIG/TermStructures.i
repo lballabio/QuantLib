@@ -148,35 +148,35 @@ TermStructureHandle NewFlatForward(CurrencyHandle currency,
 
 %{
 using QuantLib::TermStructures::PiecewiseConstantForwards;
-using QuantLib::Deposit;
+using QuantLib::DepositRate;
 %}
 
 // deposit
 
-class Deposit {
+class DepositRate {
   public:
-	Deposit(Date maturity, Rate rate, DayCounterHandle dayCounter);
-	~Deposit();
+	DepositRate(Date maturity, Rate rate, DayCounterHandle dayCounter);
+	~DepositRate();
 	Date maturity() const;
 	Rate rate() const;
 	DayCounterHandle dayCounter();
 };
 
-// typemap Python list of deposits to std::vector<Deposit>
+// typemap Python list of deposits to std::vector<DepositRate>
 
 %{
-typedef std::vector<Deposit> DepositList;
+typedef std::vector<DepositRate> DepositList;
 %}
 
 %typemap(python,in) DepositList, DepositList *, const DepositList & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
-		$target = new std::vector<Deposit>(size);
+		$target = new std::vector<DepositRate>(size);
 		for (int i=0; i<size; i++) {
-			Deposit* d;
+			DepositRate* d;
 			PyObject* o = PyTuple_GetItem($source,i);
 			if ((SWIG_ConvertPtr(o,(void **) &d,
-			  (swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
+			  (swig_type_info *)SWIG_TypeQuery("DepositRate *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
 				PyErr_SetString(PyExc_TypeError,"tuple must contain deposits");
@@ -186,12 +186,12 @@ typedef std::vector<Deposit> DepositList;
 		}
 	} else if (PyList_Check($source)) {
 		int size = PyList_Size($source);
-		$target = new std::vector<Deposit>(size);
+		$target = new std::vector<DepositRate>(size);
 		for (int i=0; i<size; i++) {
-			Deposit* d;
+			DepositRate* d;
 			PyObject* o = PyList_GetItem($source,i);
 			if ((SWIG_ConvertPtr(o,(void **) &d,
-			  (swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
+			  (swig_type_info *)SWIG_TypeQuery("DepositRate *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
 				PyErr_SetString(PyExc_TypeError,"list must contain deposits");
