@@ -16,9 +16,77 @@
 */
 
 #include <ql/currency.hpp>
+#include <ql/Currencies/africa.hpp>
+#include <ql/Currencies/america.hpp>
+#include <ql/Currencies/asia.hpp>
+#include <ql/Currencies/europe.hpp>
+#include <ql/Currencies/oceania.hpp>
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+    Currency make_currency(CurrencyTag c) {
+        switch (c) {
+          case EUR: return EURCurrency();
+          case GBP: return GBPCurrency();
+          case USD: return USDCurrency();
+          case DEM: return DEMCurrency();
+          case ITL: return ITLCurrency();
+          case CHF: return CHFCurrency();
+          case AUD: return AUDCurrency();
+          case CAD: return CADCurrency();
+          case DKK: return DKKCurrency();
+          case JPY: return JPYCurrency();
+          case SEK: return SEKCurrency();
+          case CZK: return CZKCurrency();
+          case EEK: return EEKCurrency();
+          case ISK: return ISKCurrency();
+          case NOK: return NOKCurrency();
+          case SKK: return SKKCurrency();
+          case HKD: return HKDCurrency();
+          case NZD: return NZDCurrency();
+          case SGD: return SGDCurrency();
+          case GRD: return GRDCurrency();
+          case HUF: return HUFCurrency();
+          case LVL: return LVLCurrency();
+          case ROL: return ROLCurrency();
+          case BGL: return BGLCurrency();
+          case CYP: return CYPCurrency();
+          case LTL: return LTLCurrency();
+          case MTL: return MTLCurrency();
+          case TRL: return TRLCurrency();
+          case ZAR: return ZARCurrency();
+          case SIT: return SITCurrency();
+          case KRW: return KRWCurrency();
+          case ARS: return ARSCurrency();
+          case ATS: return ATSCurrency();
+          case BDT: return BDTCurrency();
+          case BEF: return BEFCurrency();
+          case BRL: return BRLCurrency();
+          case BYB: return BYRCurrency();
+          case CLP: return CLPCurrency();
+          case CNY: return CNYCurrency();
+          case COP: return COPCurrency();
+          case ILS: return ILSCurrency();
+          case INR: return INRCurrency();
+          case IQD: return IQDCurrency();
+          case IRR: return IRRCurrency();
+          case KWD: return KWDCurrency();
+          case MXP: return MXNCurrency();
+          case NPR: return NPRCurrency();
+          case PKR: return PKRCurrency();
+          case PLN: return PLNCurrency();
+          case SAR: return SARCurrency();
+          case THB: return THBCurrency();
+          case TTD: return TTDCurrency();
+          case TWD: return TWDCurrency();
+          case VEB: return VEBCurrency();
+          default:  QL_FAIL("unknown currency tag");
+        }
+    }
+    #endif
+
+    #ifndef QL_DISABLE_DEPRECATED
     std::string CurrencyFormatter::toString(CurrencyTag c) {
         switch (c) {
           case EUR: return "EUR";
@@ -78,12 +146,13 @@ namespace QuantLib {
           default:  return "unknown";
         }
     }
+    #endif
 
     std::string CurrencyFormatter::toString(const Currency& c) {
         if (c.isValid())
-            return "null currency";
-        else
             return c.code() + " currency (" + c.name() + ")";
+        else
+            return "null currency";
     }
 
 }

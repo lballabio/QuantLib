@@ -30,7 +30,7 @@
 
 namespace QuantLib {
 
-    //! Currency specification
+    //! %Currency specification
     class Currency {
       public:
         //! default constructor
@@ -39,57 +39,56 @@ namespace QuantLib {
             and must be reassigned to a valid currency before being
             used.
         */
-        Currency() {}
+        Currency();
         //! \name Inspectors
         //@{
         //! currency name, e.g, "U.S. Dollar"
-        const std::string& name() const { return name_; }
+        const std::string& name() const;
         //! ISO 4217 three-letter code, e.g, "USD"
-        const std::string& code() const { return code_; }
+        const std::string& code() const;
         //! ISO 4217 numeric code, e.g, "840"
-        Integer numericCode() const { return numeric_; }
+        Integer numericCode() const;
         //! symbol, e.g, "$"
-        const std::string& symbol() const { return symbol_; }
+        const std::string& symbol() const;
         //! fraction symbol, e.g, "¢"
-        const std::string& fractionSymbol() const { return fractionSymbol_; }
+        const std::string& fractionSymbol() const;
         //! number of fractionary parts in a unit, e.g, 100
-        Integer fractionsPerUnit() const { return fractionsPerUnit_; }
+        Integer fractionsPerUnit() const;
         //! rounding convention
-        const Rounding& rounding() const { return rounding_; }
+        const Rounding& rounding() const;
         //@}
         //! \name other info
         //@{
         //! is this a usable instance?
-        bool isValid() const { return !name_.empty(); }
+        bool isValid() const;
         //! currency used for triangulated exchange when required
-        const Currency& triangulationCurrency() const {
-            return *triangulated_;
-        }
+        const Currency& triangulationCurrency() const;
         //@}
       protected:
-        Currency(const std::string& name,
-                 const std::string& code,
-                 Integer numericCode,
-                 const std::string& symbol,
-                 const std::string& fractionSymbol,
-                 Integer fractionsPerUnit,
-                 const Rounding& rounding,
-                 const Currency& triangulationCurrency = Currency())
-	    : name_(name), code_(code), numeric_(numericCode),
-	      symbol_(symbol), fractionsPerUnit_(fractionsPerUnit),
-          rounding_(rounding) {
-            QL_REQUIRE(!name.empty(), "no currency name given");
-            triangulated_ = boost::shared_ptr<Currency>(
-                                         new Currency(triangulationCurrency));
-        }
-	    std::string name_, code_;
-        Integer numeric_;
-        std::string symbol_, fractionSymbol_;
-        Integer fractionsPerUnit_;
-	    Rounding rounding_;
-        boost::shared_ptr<Currency> triangulated_;
+        struct Data;
+        boost::shared_ptr<Data> data_;
     };
 
+    struct Currency::Data {
+        std::string name, code;
+        Integer numeric;
+        std::string symbol, fractionSymbol;
+        Integer fractionsPerUnit;
+        Rounding rounding;
+        Currency triangulated;
+
+        Data(const std::string& name,
+             const std::string& code,
+             Integer numericCode,
+             const std::string& symbol,
+             const std::string& fractionSymbol,
+             Integer fractionsPerUnit,
+             const Rounding& rounding,
+             const Currency& triangulationCurrency = Currency())
+        : name(name), code(code), numeric(numericCode),
+          symbol(symbol), fractionsPerUnit(fractionsPerUnit),
+          rounding(rounding), triangulated(triangulationCurrency) {}
+    };
 
     /*! \brief comparison based on name
         \relates Currency
@@ -102,8 +101,11 @@ namespace QuantLib {
     bool operator!=(const Currency&, const Currency&);
 
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! Tags for known currencies
-    /*! \ingroup currencies */
+    /*! \deprecated use Currency instead
+        \ingroup currencies
+    */
     enum CurrencyTag {
         ARS,    //!< Argentinian Peso
         ATS,    //!< Austrian Schillings
@@ -161,16 +163,62 @@ namespace QuantLib {
         ZAR     //!< South African Rand
     };
 
+    //! Converts currency tags to Currency instances
+    /*! \deprecated to be used while migrating away from CurrencyTag.
+                    Use Currency directly.
+    */
+    Currency make_currency(CurrencyTag);
+    #endif
 
     //! format currencies for output
     class CurrencyFormatter {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
         static std::string toString(CurrencyTag c);
+        #endif
         static std::string toString(const Currency& c);
     };
 
 
     // inline definitions
+
+    inline Currency::Currency() {}
+
+    inline const std::string& Currency::name() const {
+        return data_->name;
+    }
+
+    inline const std::string& Currency::code() const {
+        return data_->code;
+    }
+
+    inline Integer Currency::numericCode() const {
+        return data_->numeric;
+    }
+
+    inline const std::string& Currency::symbol() const {
+        return data_->symbol;
+    }
+
+    inline const std::string& Currency::fractionSymbol() const {
+        return data_->fractionSymbol;
+    }
+
+    inline Integer Currency::fractionsPerUnit() const {
+        return data_->fractionsPerUnit;
+    }
+
+    inline const Rounding& Currency::rounding() const {
+        return data_->rounding;
+    }
+
+    inline bool Currency::isValid() const {
+        return data_;
+    }
+
+    inline const Currency& Currency::triangulationCurrency() const {
+        return data_->triangulated;
+    }
 
     inline bool operator==(const Currency& c1, const Currency& c2) {
         return c1.name() == c2.name();

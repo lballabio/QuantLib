@@ -37,16 +37,14 @@ namespace QuantLib {
     */
     class BGLCurrency : public Currency {
       public:
-        BGLCurrency()
-        : Currency("Bulgarian lev",
-                   "BGL",
-                   100,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        BGLCurrency() {
+            static boost::shared_ptr<Data> bglData(
+                                         new Data("Bulgarian lev", "BGL", 100,
+                                                  "", "", 100,
+                                                  Rounding(),
+                                                  Currency()));
+            data_ = bglData;
+        }
     };
 
     //! Belarussian ruble
@@ -57,16 +55,14 @@ namespace QuantLib {
     */
     class BYRCurrency : public Currency {
       public:
-        BYRCurrency()
-        : Currency("Belarussian ruble",
-                   "BYR",
-                   974,
-                   "BR",
-                   "",
-                   1,
-                   Rounding(),
-                   Currency())
-        {}
+        BYRCurrency() {
+            static boost::shared_ptr<Data> byrData(
+                                     new Data("Belarussian ruble", "BYR", 974,
+                                              "BR", "", 1,
+                                              Rounding(),
+                                              Currency()));
+            data_ = byrData;
+        }
     };
 
     //! Swiss franc
@@ -77,16 +73,14 @@ namespace QuantLib {
     */
     class CHFCurrency : public Currency {
       public:
-        CHFCurrency()
-        : Currency("Swiss franc",
-                   "CHF",
-                   756,
-                   "SwF",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        CHFCurrency() {
+            static boost::shared_ptr<Data> chfData(
+                                           new Data("Swiss franc", "CHF", 756,
+                                                    "SwF", "", 100,
+                                                    Rounding(),
+                                                    Currency()));
+            data_ = chfData;
+        }
     };
 
     //! Cyprus pound
@@ -97,16 +91,14 @@ namespace QuantLib {
     */
     class CYPCurrency : public Currency {
       public:
-        CYPCurrency()
-        : Currency("Cyprus pound",
-                   "CYP",
-                   196,
-                   "\xA3" "C",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        CYPCurrency() {
+            static boost::shared_ptr<Data> cypData(
+                                          new Data("Cyprus pound", "CYP", 196,
+                                                   "\xA3" "C", "", 100,
+                                                   Rounding(),
+                                                   Currency()));
+            data_ = cypData;
+        }
     };
 
     //! Czech koruna
@@ -117,16 +109,14 @@ namespace QuantLib {
     */
     class CZKCurrency : public Currency {
       public:
-        CZKCurrency()
-        : Currency("Czech koruna",
-                   "CZK",
-                   203,
-                   "Kc",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        CZKCurrency() {
+            static boost::shared_ptr<Data> czkData(
+                                          new Data("Czech koruna", "CZK", 203,
+                                                   "Kc", "", 100,
+                                                   Rounding(),
+                                                   Currency()));
+            data_ = czkData;
+        }
     };
 
     //! Danish krone
@@ -137,16 +127,14 @@ namespace QuantLib {
     */
     class DKKCurrency : public Currency {
       public:
-        DKKCurrency()
-        : Currency("Danish krone",
-                   "DKK",
-                   208,
-                   "Dkr",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        DKKCurrency() {
+            static boost::shared_ptr<Data> dkkData(
+                                          new Data("Danish krone", "DKK", 208,
+                                                   "Dkr", "", 100,
+                                                   Rounding(),
+                                                   Currency()));
+            data_ = dkkData;
+        }
     };
 
     //! Estonian kroon
@@ -157,16 +145,14 @@ namespace QuantLib {
     */
     class EEKCurrency : public Currency {
       public:
-        EEKCurrency()
-        : Currency("Estonian kroon",
-                   "EEK",
-                   233,
-                   "KR",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        EEKCurrency() {
+            static boost::shared_ptr<Data> eekData(
+                                        new Data("Estonian kroon", "EEK", 233,
+                                                 "KR", "", 100,
+                                                 Rounding(),
+                                                 Currency()));
+            data_ = eekData;
+        }
     };
 
     //! European Euro
@@ -177,16 +163,14 @@ namespace QuantLib {
     */
     class EURCurrency : public Currency {
       public:
-        EURCurrency()
-        : Currency("European Euro",
-                   "EUR",
-                   978,
-                   "",
-                   "",
-                   100,
-                   ClosestRounding(2),
-                   Currency())
-        {}
+        EURCurrency() {
+            static boost::shared_ptr<Data> eurData(
+                                         new Data("European Euro", "EUR", 978,
+                                                  "", "", 100,
+                                                  ClosestRounding(2),
+                                                  Currency()));
+            data_ = eurData;
+        }
     };
 
     //! British pound sterling
@@ -197,16 +181,14 @@ namespace QuantLib {
     */
     class GBPCurrency : public Currency {
       public:
-        GBPCurrency()
-        : Currency("British pound sterling",
-                   "GBP",
-                   826,
-                   "\xA3",
-                   "p",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        GBPCurrency() {
+            static boost::shared_ptr<Data> gbpData(
+                                new Data("British pound sterling", "GBP", 826,
+                                         "\xA3", "p", 100,
+                                         Rounding(),
+                                         Currency()));
+            data_ = gbpData;
+        }
     };
 
     //! Hungarian forint
@@ -217,16 +199,14 @@ namespace QuantLib {
     */
     class HUFCurrency : public Currency {
       public:
-        HUFCurrency()
-        : Currency("Hungarian forint",
-                   "HUF",
-                   348,
-                   "Ft",
-                   "",
-                   1,
-                   Rounding(),
-                   Currency())
-        {}
+        HUFCurrency() {
+            static boost::shared_ptr<Data> hufData(
+                                      new Data("Hungarian forint", "HUF", 348,
+                                               "Ft", "", 1,
+                                               Rounding(),
+                                               Currency()));
+            data_ = hufData;
+        }
     };
 
     //! Iceland krona
@@ -237,16 +217,14 @@ namespace QuantLib {
     */
     class ISKCurrency : public Currency {
       public:
-        ISKCurrency()
-        : Currency("Iceland krona",
-                   "ISK",
-                   352,
-                   "IKr",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        ISKCurrency() {
+            static boost::shared_ptr<Data> iskData(
+                                         new Data("Iceland krona", "ISK", 352,
+                                                  "IKr", "", 100,
+                                                  Rounding(),
+                                                  Currency()));
+            data_ = iskData;
+        }
     };
 
     //! Lithuanian litas
@@ -257,16 +235,14 @@ namespace QuantLib {
     */
     class LTLCurrency : public Currency {
       public:
-        LTLCurrency()
-        : Currency("Lithuanian litas",
-                   "LTL",
-                   440,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        LTLCurrency() {
+            static boost::shared_ptr<Data> ltlData(
+                                      new Data("Lithuanian litas", "LTL", 440,
+                                               "", "", 100,
+                                               Rounding(),
+                                               Currency()));
+            data_ = ltlData;
+        }
     };
 
     //! Latvian lat
@@ -277,16 +253,14 @@ namespace QuantLib {
     */
     class LVLCurrency : public Currency {
       public:
-        LVLCurrency()
-        : Currency("Latvian lat",
-                   "LVL",
-                   428,
-                   "Ls",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        LVLCurrency() {
+            static boost::shared_ptr<Data> lvlData(
+                                           new Data("Latvian lat", "LVL", 428,
+                                                    "Ls", "", 100,
+                                                    Rounding(),
+                                                    Currency()));
+            data_ = lvlData;
+        }
     };
 
     //! Maltese lira
@@ -297,16 +271,14 @@ namespace QuantLib {
     */
     class MTLCurrency : public Currency {
       public:
-        MTLCurrency()
-        : Currency("Maltese lira",
-                   "MTL",
-                   470,
-                   "Lm",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        MTLCurrency() {
+            static boost::shared_ptr<Data> mtlData(
+                                          new Data("Maltese lira", "MTL", 470,
+                                                   "Lm", "", 100,
+                                                   Rounding(),
+                                                   Currency()));
+            data_ = mtlData;
+        }
     };
 
     //! Norwegian krone
@@ -317,16 +289,14 @@ namespace QuantLib {
     */
     class NOKCurrency : public Currency {
       public:
-        NOKCurrency()
-        : Currency("Norwegian krone",
-                   "NOK",
-                   578,
-                   "NKr",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        NOKCurrency() {
+            static boost::shared_ptr<Data> nokData(
+                                       new Data("Norwegian krone", "NOK", 578,
+                                                "NKr", "", 100,
+                                                Rounding(),
+                                                Currency()));
+            data_ = nokData;
+        }
     };
 
     //! Polish zloty
@@ -337,16 +307,14 @@ namespace QuantLib {
     */
     class PLNCurrency : public Currency {
       public:
-        PLNCurrency()
-        : Currency("Polish zloty",
-                   "PLN",
-                   985,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        PLNCurrency() {
+            static boost::shared_ptr<Data> plnData(
+                                          new Data("Polish zloty", "PLN", 985,
+                                                   "", "", 100,
+                                                   Rounding(),
+                                                   Currency()));
+            data_ = plnData;
+        }
     };
 
     //! Romanian leu
@@ -357,16 +325,14 @@ namespace QuantLib {
     */
     class ROLCurrency : public Currency {
       public:
-        ROLCurrency()
-        : Currency("Romanian leu",
-                   "ROL",
-                   642,
-                   "L",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        ROLCurrency() {
+            static boost::shared_ptr<Data> rolData(
+                                          new Data("Romanian leu", "ROL", 642,
+                                                   "L", "", 100,
+                                                   Rounding(),
+                                                   Currency()));
+            data_ = rolData;
+        }
     };
 
     //! Swedish krona
@@ -377,16 +343,14 @@ namespace QuantLib {
     */
     class SEKCurrency : public Currency {
       public:
-        SEKCurrency()
-        : Currency("Swedish krona",
-                   "SEK",
-                   752,
-                   "kr",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        SEKCurrency() {
+            static boost::shared_ptr<Data> sekData(
+                                         new Data("Swedish krona", "SEK", 752,
+                                                  "kr", "", 100,
+                                                  Rounding(),
+                                                  Currency()));
+            data_ = sekData;
+        }
     };
 
     //! Slovenian tolar
@@ -397,16 +361,14 @@ namespace QuantLib {
     */
     class SITCurrency : public Currency {
       public:
-        SITCurrency()
-        : Currency("Slovenian tolar",
-                   "SIT",
-                   705,
-                   "SlT",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        SITCurrency() {
+            static boost::shared_ptr<Data> sitData(
+                                       new Data("Slovenian tolar", "SIT", 705,
+                                                "SlT", "", 100,
+                                                Rounding(),
+                                                Currency()));
+            data_ = sitData;
+        }
     };
 
     //! Slovak koruna
@@ -417,16 +379,14 @@ namespace QuantLib {
     */
     class SKKCurrency : public Currency {
       public:
-        SKKCurrency()
-        : Currency("Slovak koruna",
-                   "SKK",
-                   703,
-                   "Sk",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        SKKCurrency() {
+            static boost::shared_ptr<Data> skkData(
+                                         new Data("Slovak koruna", "SKK", 703,
+                                                  "Sk", "", 100,
+                                                  Rounding(),
+                                                  Currency()));
+            data_ = skkData;
+        }
     };
 
     //! Turkish lira
@@ -437,16 +397,14 @@ namespace QuantLib {
     */
     class TRLCurrency : public Currency {
       public:
-        TRLCurrency()
-        : Currency("Turkish lira",
-                   "TRL",
-                   792,
-                   "TL",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        TRLCurrency() {
+            static boost::shared_ptr<Data> trlData(
+                                          new Data("Turkish lira", "TRL", 792,
+                                                   "TL", "", 100,
+                                                   Rounding(),
+                                                   Currency()));
+            data_ = trlData;
+        }
     };
 
 
@@ -460,16 +418,14 @@ namespace QuantLib {
     */
     class ATSCurrency : public Currency {
       public:
-        ATSCurrency()
-        : Currency("Austrian shilling",
-                   "ATS",
-                   40,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        ATSCurrency() {
+            static boost::shared_ptr<Data> atsData(
+                                      new Data("Austrian shilling", "ATS", 40,
+                                               "", "", 100,
+                                               Rounding(),
+                                               EURCurrency()));
+            data_ = atsData;
+        }
     };
 
     //! Belgian franc
@@ -480,16 +436,14 @@ namespace QuantLib {
     */
     class BEFCurrency : public Currency {
       public:
-        BEFCurrency()
-        : Currency("Belgian franc",
-                   "BEF",
-                   56,
-                   "",
-                   "",
-                   1,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        BEFCurrency() {
+            static boost::shared_ptr<Data> befData(
+                                          new Data("Belgian franc", "BEF", 56,
+                                                   "", "", 1,
+                                                   Rounding(),
+                                                   EURCurrency()));
+            data_ = befData;
+        }
     };
 
     //! Deutsche mark
@@ -500,16 +454,14 @@ namespace QuantLib {
     */
     class DEMCurrency : public Currency {
       public:
-        DEMCurrency()
-        : Currency("Deutsche mark",
-                   "DEM",
-                   276,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        DEMCurrency() {
+            static boost::shared_ptr<Data> demData(
+                                         new Data("Deutsche mark", "DEM", 276,
+                                                  "", "", 100,
+                                                  Rounding(),
+                                                  EURCurrency()));
+            data_ = demData;
+        }
     };
 
     //! Spanish peseta
@@ -520,16 +472,14 @@ namespace QuantLib {
     */
     class ESPCurrency : public Currency {
       public:
-        ESPCurrency()
-        : Currency("Spanish peseta",
-                   "ESP",
-                   724,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        ESPCurrency() {
+            static boost::shared_ptr<Data> espData(
+                                        new Data("Spanish peseta", "ESP", 724,
+                                                 "", "", 100,
+                                                 Rounding(),
+                                                 EURCurrency()));
+            data_ = espData;
+        }
     };
 
     //! Finnish markka
@@ -540,16 +490,14 @@ namespace QuantLib {
     */
     class FIMCurrency : public Currency {
       public:
-        FIMCurrency()
-        : Currency("Finnish markka",
-                   "FIM",
-                   246,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        FIMCurrency() {
+            static boost::shared_ptr<Data> fimData(
+                                        new Data("Finnish markka", "FIM", 246,
+                                                 "", "", 100,
+                                                 Rounding(),
+                                                 EURCurrency()));
+            data_ = fimData;
+        }
     };
 
     //! French franc
@@ -560,16 +508,14 @@ namespace QuantLib {
     */
     class FRFCurrency : public Currency {
       public:
-        FRFCurrency()
-        : Currency("French franc",
-                   "FRF",
-                   250,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        FRFCurrency() {
+            static boost::shared_ptr<Data> frfData(
+                                          new Data("French franc", "FRF", 250,
+                                                   "", "", 100,
+                                                   Rounding(),
+                                                   EURCurrency()));
+            data_ = frfData;
+        }
     };
 
     //! Greek drachma
@@ -580,16 +526,14 @@ namespace QuantLib {
     */
     class GRDCurrency : public Currency {
       public:
-        GRDCurrency()
-        : Currency("Greek drachma",
-                   "GRD",
-                   300,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        GRDCurrency() {
+            static boost::shared_ptr<Data> grdData(
+                                         new Data("Greek drachma", "GRD", 300,
+                                                  "", "", 100,
+                                                  Rounding(),
+                                                  EURCurrency()));
+            data_ = grdData;
+        }
     };
 
     //! Irish punt
@@ -600,16 +544,14 @@ namespace QuantLib {
     */
     class IEPCurrency : public Currency {
       public:
-        IEPCurrency()
-        : Currency("Irish punt",
-                   "IEP",
-                   372,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        IEPCurrency() {
+            static boost::shared_ptr<Data> iepData(
+                                            new Data("Irish punt", "IEP", 372,
+                                                     "", "", 100,
+                                                     Rounding(),
+                                                     EURCurrency()));
+            data_ = iepData;
+        }
     };
 
     //! Italian lira
@@ -620,16 +562,14 @@ namespace QuantLib {
     */
     class ITLCurrency : public Currency {
       public:
-        ITLCurrency()
-        : Currency("Italian lira",
-                   "ITL",
-                   380,
-                   "L",
-                   "",
-                   1,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        ITLCurrency() {
+            static boost::shared_ptr<Data> itlData(
+                                          new Data("Italian lira", "ITL", 380,
+                                                   "L", "", 1,
+                                                   Rounding(),
+                                                   EURCurrency()));
+            data_ = itlData;
+        }
     };
 
     //! Luxembourg franc
@@ -640,16 +580,14 @@ namespace QuantLib {
     */
     class LUFCurrency : public Currency {
       public:
-        LUFCurrency()
-        : Currency("Luxembourg franc",
-                   "LUF",
-                   442,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        LUFCurrency() {
+            static boost::shared_ptr<Data> lufData(
+                                      new Data("Luxembourg franc", "LUF", 442,
+                                               "", "", 100,
+                                               Rounding(),
+                                               EURCurrency()));
+            data_ = lufData;
+        }
     };
 
     //! Dutch guilder
@@ -660,16 +598,14 @@ namespace QuantLib {
     */
     class NLGCurrency : public Currency {
       public:
-        NLGCurrency()
-        : Currency("Dutch guilder",
-                   "NLG",
-                   528,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        NLGCurrency() {
+            static boost::shared_ptr<Data> nlgData(
+                                         new Data("Dutch guilder", "NLG", 528,
+                                                  "", "", 100,
+                                                  Rounding(),
+                                                  EURCurrency()));
+            data_ = nlgData;
+        }
     };
 
     //! Portuguese escudo
@@ -680,16 +616,14 @@ namespace QuantLib {
     */
     class PTECurrency : public Currency {
       public:
-        PTECurrency()
-        : Currency("Portuguese escudo",
-                   "PTE",
-                   620,
-                   "",
-                   "",
-                   100,
-                   Rounding(),
-                   EURCurrency())
-        {}
+        PTECurrency() {
+            static boost::shared_ptr<Data> pteData(
+                                     new Data("Portuguese escudo", "PTE", 620,
+                                              "", "", 100,
+                                              Rounding(),
+                                              EURCurrency()));
+            data_ = pteData;
+        }
     };
 
 }

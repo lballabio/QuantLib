@@ -37,16 +37,14 @@ namespace QuantLib {
     */
     class ZARCurrency : public Currency {
       public:
-        ZARCurrency()
-        : Currency("South-African rand",
-                   "ZAR",
-                   710,
-                   "R",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        ZARCurrency() {
+            static boost::shared_ptr<Data> zarData(
+                                    new Data("South-African rand", "ZAR", 710,
+                                             "R", "", 100,
+                                             Rounding(),
+                                             Currency()));
+            data_ = zarData;
+        }
     };
 
 }

@@ -37,16 +37,14 @@ namespace QuantLib {
     */
     class AUDCurrency : public Currency {
       public:
-        AUDCurrency()
-        : Currency("Australian dollar",
-                   "AUD",
-                   36,
-                   "A$",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        AUDCurrency() {
+            static boost::shared_ptr<Data> audData(
+                                      new Data("Australian dollar", "AUD", 36,
+                                               "A$", "", 100,
+                                               Rounding(),
+                                               Currency()));
+            data_ = audData;
+        }
     };
 
     //! New Zealand dollar
@@ -57,16 +55,14 @@ namespace QuantLib {
     */
     class NZDCurrency : public Currency {
       public:
-        NZDCurrency()
-        : Currency("New Zealand dollar",
-                   "NZD",
-                   554,
-                   "NZ$",
-                   "",
-                   100,
-                   Rounding(),
-                   Currency())
-        {}
+        NZDCurrency() {
+            static boost::shared_ptr<Data> nzdData(
+                                    new Data("New Zealand dollar", "NZD", 554,
+                                             "NZ$", "", 100,
+                                             Rounding(),
+                                             Currency()));
+            data_ = nzdData;
+        }
     };
 
 }
