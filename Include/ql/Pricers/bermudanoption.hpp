@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/06/05 12:45:27  nando
 // R019-branch-merge4 merged into trunk
 //
@@ -43,6 +46,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        //! Bermudan option
         class BermudanOption : public MultiPeriodOption {
           public:
             // constructor
@@ -61,5 +65,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -42,17 +45,17 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    //! base class for single-path pricers
-    /*! PathPricer is the base class for an hierarchy of single-path pricers.
-        Given a path the value of an option is returned on that path.
-    */
-
+        //! base class for single-path pricers
+        /*! PathPricer is the base class for an hierarchy of single-path 
+            pricers.
+            Given a path the value of an option is returned on that path.
+        */
         class PathPricer {
-        public:
+          public:
             PathPricer() : isInitialized_(false) {}
             virtual ~PathPricer() {}
             virtual double value(const Path &path) const=0;
-        protected:
+          protected:
             bool isInitialized_;
         };
 

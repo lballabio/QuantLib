@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/28 12:52:58  lballabio
 // Simplified Instrument interface
 //
@@ -46,6 +49,7 @@ namespace QuantLib {
 
     namespace Instruments {
 
+        //! Simple stock class
         class Stock : public Instrument {
           public:
             Stock(double price, const std::string& isinCode, 

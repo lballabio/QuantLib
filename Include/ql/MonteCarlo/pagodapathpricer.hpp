@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -48,9 +51,10 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+        //! Path pricer for pagoda options
         class PagodaPathPricer : public MultiPathPricer {
           public:
-            PagodaPathPricer():MultiPathPricer(){}
+            PagodaPathPricer() {}
             PagodaPathPricer(const Array &underlying, double roof,
                              double discount);
             double value(const MultiPath &path) const;

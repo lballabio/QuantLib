@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.6  2001/06/22 16:38:15  lballabio
+//  Improved documentation
+//
 //  Revision 1.5  2001/06/19 10:25:18  lballabio
 //  Disabled short/long floating coupons
 //
@@ -63,7 +66,8 @@ namespace QuantLib {
     namespace CashFlows {
 
         //! helper class building a sequence of fixed rate coupons
-        class FixedRateCouponVector : public std::vector<Handle<CashFlow> > {
+        class FixedRateCouponVector 
+        : public std::vector<Handle<CashFlow> > {
           public:
             FixedRateCouponVector(
                 const std::vector<double>& nominals, 

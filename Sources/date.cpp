@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.22  2001/06/22 16:38:16  lballabio
+// Improved documentation
+//
 // Revision 1.21  2001/05/24 15:40:09  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -173,7 +176,8 @@ namespace QuantLib {
     Date::Date(int serialNumber)
     : serialNumber_(serialNumber) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(serialNumber >= minimumSerialNumber && serialNumber <= maximumSerialNumber,
+            QL_REQUIRE(serialNumber >= minimumSerialNumber && 
+                       serialNumber <= maximumSerialNumber,
                 "Date " + IntegerFormatter::toString(serialNumber) +
                 "outside allowed range [" +
                 DateFormatter::toString(minDate()) + "-" +

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -46,6 +49,7 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
+
         /*! Combines the correlation matrix and the vector of volatilities
             to return the covariance matrix.
             Note that only the symmetric part of the correlation matrix is
@@ -53,10 +57,11 @@ namespace QuantLib {
             correlation matrix equals one.
         */
         Math::Matrix getCovariance(const Array &volatilities,
-                                   const Math::Matrix &correlations);
+            const Math::Matrix &correlations);
 
     }
 
 }
+
 
 #endif

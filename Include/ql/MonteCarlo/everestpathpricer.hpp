@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -45,23 +48,23 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-    /*! EverestPathPricer evaluates the european-type everest option
-        on a multi-path.
-        The payoff of an everest option is simply given by the
-        final-price initial-price ratio of the worst performer
-    */
 
+        //! path pricer for European-type Everest option
+        /*! The payoff of an everest option is simply given by the
+            final-price initial-price ratio of the worst performer.
+        */
         class EverestPathPricer : public MultiPathPricer {
-        public:
+          public:
             EverestPathPricer():MultiPathPricer(){}
             EverestPathPricer(double discount);
             double value(const MultiPath &path) const;
-        protected:
+          protected:
             double discount_;
         };
 
     }
 
 }
+
 
 #endif

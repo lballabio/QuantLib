@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,17 +47,17 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-    /*! \typedef MultiFactorMonteCarloOption
-    This typedef builds a class that contains the basic features
-    of a Monte Carlo pricer based on a multi-factor model.
-    See the corresponding classes for more documentation.
-    */
+        
+        /*! \typedef MultiFactorMonteCarloOption
+            This typedef builds a class that contains the basic features
+            of a Monte Carlo pricer based on a multi-factor model.
+        */
         typedef PathMonteCarlo<Math::Statistics,
                     StandardMultiPathGenerator, MultiPathPricer>
                                         MultiFactorMonteCarloOption;
-
     }
 
 }
+
 
 #endif

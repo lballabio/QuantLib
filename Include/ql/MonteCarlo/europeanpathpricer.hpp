@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -42,12 +45,11 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-        /*! EuropeanPathPricer evaluates the european-option value on a
-            single-path.
-            The public method computePlainVanilla can also be used
+
+        //! path pricer for European options
+        /*! The public method computePlainVanilla can also be used
             in other path pricer that do similar calculations.
         */
-
         class EuropeanPathPricer : public PathPricer {
           public:
             EuropeanPathPricer():PathPricer(){}

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -46,14 +49,15 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    /*! \typedef UniformRandomGenerator
-        The following is the default choice for the uniform random number
-        generator. See the corresponding class for documentation.
-    */
+        /*! \typedef UniformRandomGenerator
+            The following is the default choice for the uniform random number
+            generator. See the corresponding class for documentation.
+        */
         typedef LecuyerRandomGenerator UniformRandomGenerator;
 
     }
 
 }
+
 
 #endif

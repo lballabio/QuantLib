@@ -22,13 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file randomarraygenerator.hpp
-    \brief A random array generator
+    \brief Generates random arrays from a random number generator
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -46,15 +49,13 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    /*!
-    RandomArrayGenerator<RP> is a template class which returns a random array
-    from a random number generator class RP.
-    */
+        //! Generates random arrays from a random number generator
         template <class RP>
         class RandomArrayGenerator {
-        public:
-        // typedef Array SampleType;
-        // this typedef would make RandomArrayGenerator into a sample generator
+          public:
+            // typedef Array SampleType;
+            // this typedef would make RandomArrayGenerator into a sample 
+            // generator
             RandomArrayGenerator();
             RandomArrayGenerator(int dimension, double average = 0.0,
                           double stddev = 1.0, long seed=0);
@@ -63,7 +64,7 @@ namespace QuantLib {
                          const Math::Matrix &covariance, long seed=0);
             Array next() const;
             double weight() const{return weight_;}
-        private:
+          private:
             int size_;
             RP rndPoint_;
             mutable double weight_;

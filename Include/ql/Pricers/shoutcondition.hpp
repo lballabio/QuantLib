@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,14 +46,16 @@
 #include "ql/FiniteDifferences/standardstepcondition.hpp"
 
 namespace QuantLib {
+
     namespace Pricers {
-        class ShoutCondition :
-            public FiniteDifferences::StandardStepCondition {
-        public:
+
+        class ShoutCondition 
+        : public FiniteDifferences::StandardStepCondition {
+          public:
             ShoutCondition(const Array& initialPrices, Time resTime,
                            Rate rate);
             void applyTo(Array& a, Time t) const;
-        private:
+          private:
             Rate rate_;
             Time resTime_;
             Array initialPrices_;
@@ -62,9 +67,13 @@ namespace QuantLib {
 
         inline void ShoutCondition::applyTo(Array& a, Time t) const {
             for (int i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) * initialPrices_[i] );
+                a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) * 
+                                           initialPrices_[i] );
         }
+
     }
+
 }
+
 
 #endif

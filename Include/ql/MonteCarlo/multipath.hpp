@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -46,8 +49,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         /*!
-        \brief MultiPath implements multiple paths evolving at the same time
         \typedef MultiPath
+        \brief MultiPath implements multiple paths evolving at the same time
+
         MultiPath contains the list of variations for each asset,
         \f[
             \log \frac{Y^j_{i+1}}{Y^j_i} \mathrm{for} i = 0, \ldots, n-1
@@ -58,8 +62,10 @@ namespace QuantLib {
         underlying, the second to the time position MultiPath[j,i]
         */
         typedef QuantLib::Math::Matrix MultiPath;
+
     }
 
 }
+
 
 #endif

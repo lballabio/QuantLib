@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -45,6 +48,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+        //! generic %MonteCarlo model
         /*! Given a sample-accumulator class SA and a sample-generator SG class,
             a GeneralMonteCarlo<SA, SG>  class is constructed. This class
             can be used to sample over the generator and store the results in 

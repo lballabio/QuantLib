@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.18  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.17  2001/06/18 08:05:59  lballabio
 // Reworked indexes and floating rate coupon
 //
@@ -37,24 +40,12 @@
 // Revision 1.15  2001/06/12 15:05:33  lballabio
 // Renamed Libor to GBPLibor and LiborManager to XiborManager
 //
-// Revision 1.14  2001/05/31 13:17:36  lballabio
-// Added SimpleSwap
-//
-// Revision 1.13  2001/05/31 08:56:40  lballabio
-// Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
-//
-// Revision 1.12  2001/05/28 14:54:25  lballabio
-// Deposit rates are always adjusted
-//
-// Revision 1.11  2001/05/28 13:09:55  nando
-// R019-branch-merge3 merged into trunk
-//
-// Revision 1.10  2001/05/24 15:38:07  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_h
 #define quantlib_h
+
+// include this first for additional safety
+#include "ql/qldefines.hpp"
 
 #include "ql/array.hpp"
 #include "ql/calendar.hpp"
@@ -73,7 +64,6 @@
 #include "ql/instrument.hpp"
 #include "ql/null.hpp"
 #include "ql/options.hpp"
-#include "ql/qldefines.hpp"
 #include "ql/qlerrors.hpp"
 #include "ql/rate.hpp"
 #include "ql/relinkablehandle.hpp"
@@ -243,5 +233,17 @@ namespace QLPRC = QuantLib::Pricers;
 namespace QLS1D = QuantLib::Solvers1D;
 namespace QLTST = QuantLib::TermStructures;
 namespace QLUTL = QuantLib::Utilities;
+
+
+/*** library to be linked***/
+
+#if defined(_MSC_VER)
+    #ifdef QL_DEBUG
+        #pragma comment(lib,"QuantLib_d.lib")
+    #else
+        #pragma comment(lib,"QuantLib.lib")
+    #endif
+#endif
+
 
 #endif

@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.4  2001/06/22 16:38:15  lballabio
+    Improved documentation
+
     Revision 1.3  2001/06/21 11:34:23  lballabio
     Ensured that floating rate coupon index stays alive
 
@@ -56,7 +59,7 @@ namespace QuantLib {
         /*! \warning This class does not perform any date adjustment, 
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
-	*/
+	    */
         class FloatingRateCoupon : public CashFlow {
           public:
             FloatingRateCoupon(double nominal,  

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,13 +46,14 @@
 namespace QuantLib {
 
     namespace Pricers {
-        /*!
-            The analytical calculation for the barrier options
-            are taken from "Option pricing formulas",
-            E.G. Haug, McGraw-Hill, page 69 and following.
+
+        //! Barrier option
+        /*! The analytical calculation are taken from 
+            "Option pricing formulas", E.G. Haug, McGraw-Hill, 
+            p.69 and following.
         */
         class BarrierOption : public BSMOption {
-        public:
+          public:
             // constructor
             enum BarrierType { DownIn, UpIn, DownOut, UpOut };
             BarrierOption(BarrierType barrType, Type type, double underlying,
@@ -64,10 +68,10 @@ namespace QuantLib {
             Handle<BSMOption> clone() const {
                 return Handle<BSMOption>(new BarrierOption(*this));
             }
-        protected:
+          protected:
             void calculate() const;
             mutable double greeksCalculated_, delta_, gamma_, theta_;
-        private:
+          private:
             BarrierType barrType_;
             double barrier_, rebate_;
             mutable double sigmaSqrtT_, mu_, muSigma_;
@@ -83,8 +87,9 @@ namespace QuantLib {
         };
 
 
-        inline double BarrierOption::A(double eta, double phi) const{
-
+        // inline definitions
+        
+        inline double BarrierOption::A(double eta, double phi) const {
             double x1 = QL_LOG(underlying_/strike_)/sigmaSqrtT_ + muSigma_;
             double N1 = f_(phi*x1);
             double N2 = f_(phi*(x1-sigmaSqrtT_));
@@ -92,8 +97,7 @@ namespace QuantLib {
                         - strike_ * riskFreeDiscount_ * N2);
         }
 
-        inline double BarrierOption::B(double eta, double phi) const{
-
+        inline double BarrierOption::B(double eta, double phi) const {
             double x2 = QL_LOG(underlying_/barrier_)/sigmaSqrtT_ + muSigma_;
             double N1 = f_(phi*x2);
             double N2 = f_(phi*(x2-sigmaSqrtT_));
@@ -101,8 +105,7 @@ namespace QuantLib {
                       - strike_ * riskFreeDiscount_ * N2);
         }
 
-        inline double BarrierOption::C(double eta, double phi) const{
-
+        inline double BarrierOption::C(double eta, double phi) const {
             double HS = barrier_/underlying_;
             double powHS0 = QL_POW(HS, 2 * mu_);
             double powHS1 = powHS0 * HS * HS;
@@ -113,8 +116,7 @@ namespace QuantLib {
                           - strike_ * riskFreeDiscount_ * powHS0 * N2);
         }
 
-        inline double BarrierOption::D(double eta, double phi) const{
-
+        inline double BarrierOption::D(double eta, double phi) const {
             double HS = barrier_/underlying_;
             double powHS0 = QL_POW(HS, 2 * mu_);
             double powHS1 = powHS0 * HS * HS;
@@ -125,22 +127,21 @@ namespace QuantLib {
                           - strike_ * riskFreeDiscount_ * powHS0 * N2);
         }
 
-        inline double BarrierOption::E(double eta, double phi) const{
-
-            if(rebate_ > 0){
+        inline double BarrierOption::E(double eta, double phi) const {
+            if (rebate_ > 0) {
                 double powHS0 = QL_POW(barrier_/underlying_, 2 * mu_);
                 double x2 = QL_LOG(underlying_/barrier_)/sigmaSqrtT_ + muSigma_;
                 double y2 = QL_LOG(barrier_/underlying_)/sigmaSqrtT_ + muSigma_;
                 double N1 = f_(eta*(x2 - sigmaSqrtT_));
                 double N2 = f_(eta*(y2 - sigmaSqrtT_));
                 return rebate_ * riskFreeDiscount_ * (N1 - powHS0 * N2);
-            }else
+            } else {
                 return 0.0;
+            }
         }
 
-        inline double BarrierOption::F(double eta, double phi) const{
-
-            if(rebate_ > 0){
+        inline double BarrierOption::F(double eta, double phi) const {
+            if (rebate_ > 0) {
                 double lambda = QL_SQRT(mu_*mu_ + 2.0*riskFreeRate_/
                                             (volatility_ * volatility_));
                 double HS = barrier_/underlying_;
@@ -153,12 +154,14 @@ namespace QuantLib {
                 double N1 = f_(eta * z);
                 double N2 = f_(eta * (z - 2.0 * lambda * sigmaSqrtT_));
                 return rebate_ * (powHSplus * N1 + powHSminus * N2);
-            }else
+            } else {
                 return 0.0;
+            }
         }
 
     }
 
 }
+
 
 #endif

@@ -23,13 +23,16 @@
 */
 
 /*! \file cranknicolson.hpp
-    \brief Crank-Nicolson scheme for time evolution
+    \brief Crank-Nicolson scheme for finite difference methods
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/06/18 10:20:25  nando
 // 80 colums enforced
 //
@@ -48,20 +51,16 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        // WARNING: the differential operator D must be linear for
-        // this evolver to work!
-
-        /*  Operators must be derived from either TimeConstantOperator or
-            TimeDependentOperator.
+        //! Crank-Nicolson scheme for finite difference methods
+        /*! Differential operators must be derived from either 
+            TimeConstantOperator or TimeDependentOperator.
             They must also implement at least the following interface:
 
-            // copy constructor/assignment
-            // if no particular care is required, these two can be
-            // omitted. They will be provided by the compiler.
+            \code
+            // copy constructor/assignment (might be provided by the compiler)
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
-            // modifiers
             void setTime(Time t);  // those derived from TimeConstantOperator
                                    // might skip this if the compiler allows it.
 
@@ -72,8 +71,11 @@ namespace QuantLib {
             // operator algebra
             Operator operator*(double,const Operator&);
             Operator operator+(const Identity<arrayType>&,const Operator&);
+            \endcode
+            
+            \warning The differential operator must be linear for
+            this evolver to work.
         */
-
         template <class Operator>
         class CrankNicolson {
             friend class FiniteDifferenceModel<CrankNicolson<Operator> >;

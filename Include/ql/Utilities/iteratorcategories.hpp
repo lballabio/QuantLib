@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/22 16:38:16  lballabio
+// Improved documentation
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,8 +46,9 @@ namespace QuantLib {
 
     namespace Utilities {
 
+        //! most generic of two given iterator categories
         /*! Specializations of this struct define a typedef iterator_category
-            which corresponds to the more generic of the two input categories,
+            which corresponds to the most generic of the two input categories,
             e.g., lowest_category_iterator<std::random_access_iterator_tag,
             std::forward_iterator_tag>::iterator_category corresponds to
             std::forward_iterator_tag.

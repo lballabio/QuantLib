@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,15 +46,18 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        class AmericanCondition :
-            public FiniteDifferences::StandardStepCondition {
-        public:
+        class AmericanCondition 
+        : public FiniteDifferences::StandardStepCondition {
+          public:
             AmericanCondition(const Array& initialPrices);
             void applyTo(Array& a, Time t) const;
-        private:
+          private:
             Array initialPrices_;
         };
 
+
+        // inline definitions
+        
         inline AmericanCondition::AmericanCondition(
             const Array& initialPrices)
             : initialPrices_(initialPrices) {}
@@ -60,7 +66,10 @@ namespace QuantLib {
             for (int i = 0; i < a.size(); i++)
                 a[i] = QL_MAX(a[i], initialPrices_[i]);
         }
+
     }
+
 }
+
 
 #endif

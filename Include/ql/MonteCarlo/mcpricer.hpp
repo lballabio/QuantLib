@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -41,8 +44,9 @@
 namespace QuantLib {
 
     namespace Pricers {
+
         //! Base class for one-factor Monte Carlo pricers
-        /*! McPricer is the base class for the Monte Carlo pricers depending
+        /*! Base class for the Monte Carlo pricers depending
             from one factor.
             Eventually it might be linked to the general tree of pricers,
             in order to have available tools like impliedVolaitlity.
@@ -52,21 +56,23 @@ namespace QuantLib {
             a one-factor Monte Carlo Pricer.
             See McEuropeanPricer as an example
         */
-
         class McPricer {
-        public:
+          public:
             McPricer() : isInitialized_(false){}
             McPricer(long samples, long seed=0);
             ~McPricer(){}
             virtual double value() const;
             virtual double errorEstimate() const;
-        protected:
+          protected:
             bool isInitialized_;
             long seed_;
             mutable long samples_;
             mutable MonteCarlo::OneFactorMonteCarloOption montecarloPricer_;
         };
 
+
+        // inline definitions
+        
         inline McPricer::McPricer(long samples, long seed):
                     samples_(samples), seed_(seed), isInitialized_(true){}
 

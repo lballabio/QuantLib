@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:16  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,6 +46,7 @@ namespace QuantLib {
 
     namespace Solvers1D {
 
+        //! %secant 1-D solver
         class Secant : public Solver1D {
           private:
             double solve_(const ObjectiveFunction& f, double xAccuracy) const;

@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -44,6 +47,7 @@
 namespace QuantLib {
 
     namespace Pricers {
+
         //! Roofed asian option.
         /*! Given a certain portfolio of assets at the end of the period
             it is returned the minimum of a given roof and a certain fraction 
@@ -51,7 +55,7 @@ namespace QuantLib {
             If the performance of the portfolio is below then the payoff 
             is null.
         */
-        class PagodaOption: public MultiFactorPricer {
+        class PagodaOption : public MultiFactorPricer {
           public:
             PagodaOption(const Array &portfolio,
                          double fraction,
@@ -68,5 +72,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

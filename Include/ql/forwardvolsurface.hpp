@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -74,7 +77,8 @@ namespace QuantLib {
     };
 
     //! Constant forward volatility surface
-    class ConstantForwardVolatilitySurface : public ForwardVolatilitySurface {
+    class ConstantForwardVolatilitySurface 
+    : public ForwardVolatilitySurface {
       public:
         ConstantForwardVolatilitySurface(Rate volatility);
         //! returns the given volatility regardless of date and strike
@@ -87,7 +91,8 @@ namespace QuantLib {
     /*! This surface will remain linked to the original surface, i.e., any
         changes in the latter will be reflected in this surface as well.
     */
-    class SpreadedForwardVolatilitySurface : public ForwardVolatilitySurface {
+    class SpreadedForwardVolatilitySurface 
+    : public ForwardVolatilitySurface {
       public:
         SpreadedForwardVolatilitySurface(
             const Handle<ForwardVolatilitySurface>&, Spread spread);

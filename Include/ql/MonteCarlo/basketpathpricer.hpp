@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,18 +47,17 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-        /*! BasketPathPricer evaluates the european-type basket option
-            on a multi-path.
-            The value of the option at expriration is given by the value
-            of the underlying which has best performed
-        */
 
+        //! multipath pricer for european-type basket option
+        /*! The value of the option at expiration is given by the value
+            of the underlying which has best performed.
+        */
         class BasketPathPricer : public MultiPathPricer {
-        public:
+          public:
             BasketPathPricer():MultiPathPricer(){}
             BasketPathPricer(const Array &underlying, double discount);
             double value(const MultiPath &path) const;
-        protected:
+          protected:
             double discount_;
             Array underlying_;
         };
@@ -63,5 +65,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

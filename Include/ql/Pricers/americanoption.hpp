@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,8 +47,9 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        //! American option
         class AmericanOption : public StepConditionOption {
-        public:
+          public:
             // constructor
             AmericanOption(Type type, double underlying, double strike,
                            Rate dividendYield, Rate riskFreeRate,
@@ -59,6 +63,9 @@ namespace QuantLib {
             }
         };
 
+
+        // inline definitions
+        
         inline AmericanOption::AmericanOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility, int timeSteps,
@@ -71,8 +78,11 @@ namespace QuantLib {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
                 new AmericanCondition(initialPrices_));
         }
+
     }
+
 }
+
 
 #endif
 

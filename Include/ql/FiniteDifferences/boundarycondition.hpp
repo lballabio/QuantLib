@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,12 +47,12 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        /* WARNING: for Neumann conditions. the value passed must not be the
-           value of the derivative. Instead, it must be comprehensive of the
-           grid step between the first two points--i.e., it must be the
-           difference between f[0] and f[1].
+        //! Boundary condition for finite difference problems
+        /*! \warning For Neumann conditions. the value passed must not be the
+            value of the derivative. Instead, it must be comprehensive of the
+            grid step between the first two points--i.e., it must be the
+            difference between f[0] and f[1].
         */
-
         class BoundaryCondition {
           public:
             // enumeration

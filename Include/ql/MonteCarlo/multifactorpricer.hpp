@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -41,6 +44,7 @@
 namespace QuantLib {
 
     namespace Pricers {
+
         //! Base class for multi-factor Monte Carlo pricers
         /*! MultiFactorPricer is the base class for the Monte Carlo pricers
             depending from more than one factor. Eventually it might be linked
@@ -51,21 +55,22 @@ namespace QuantLib {
             a multi-factor Monte Carlo Pricer.
             See PlainBasketOption for an example
         */
-
         class MultiFactorPricer {
-        public:
+          public:
             MultiFactorPricer() : isInitialized_(false){}
             MultiFactorPricer(long samples, long seed=0);
             ~MultiFactorPricer(){}
             virtual double value() const;
             virtual double errorEstimate() const;
-        protected:
+          protected:
             bool isInitialized_;
             long seed_;
             mutable long samples_;
             mutable MonteCarlo::MultiFactorMonteCarloOption montecarloPricer_;
         };
 
+        // inline definitions
+        
         inline MultiFactorPricer::MultiFactorPricer(long samples, long seed):
                     samples_(samples), seed_(seed), isInitialized_(true){}
 

@@ -31,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -46,9 +49,11 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        /*  Evolvers do not need to inherit from any base class.
+        //! Generic finite difference model
+        /*! Evolvers do not need to inherit from any base class.
             However, they must implement the following interface:
 
+            \code
             class Evolver {
               public:
                 typedef ... arrayType;
@@ -59,9 +64,8 @@ namespace QuantLib {
                 void step(arrayType& a, Time t) const;
                 void setStep(Time dt);
             };
-
+            \endcode
         */
-
         template<class Evolver>
         class FiniteDifferenceModel {
           public:

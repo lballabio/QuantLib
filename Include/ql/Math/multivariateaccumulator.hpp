@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/28 13:09:55  nando
 // R019-branch-merge3 merged into trunk
 //
@@ -46,14 +49,13 @@ namespace QuantLib {
 
     namespace Math {
 
-    //! A sample accumulator for multivariate analysis
-    /*! MultivariateAccumulator can accumulate vector-type samples and
-        return the average vector, both in Array form and std::vector<double>
-        form, and the covariance matrix
-    */
-
+        //! A sample accumulator for multivariate analysis
+        /*! MultivariateAccumulator can accumulate vector-type samples and
+            return the average vector, both in Array form and 
+            std::vector<double> form, and the covariance matrix
+        */
         class MultivariateAccumulator {
-        public:
+          public:
             MultivariateAccumulator();
             MultivariateAccumulator(int size);
             //! \name Inspectors

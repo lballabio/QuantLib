@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.7  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -47,9 +50,11 @@
 #include "ql/FiniteDifferences/standardstepcondition.hpp"
 
 namespace QuantLib {
+
     namespace Pricers {
+
         class StepConditionOption : public BSMNumericalOption {
-        protected:
+          protected:
             // constructor
             StepConditionOption(Type type, double underlying, double strike,
                                 Rate dividendYield, Rate riskFreeRate,
@@ -61,7 +66,10 @@ namespace QuantLib {
                                                             stepCondition_;
             int timeSteps_;
         };
+
     }
+
 }
+
 
 #endif

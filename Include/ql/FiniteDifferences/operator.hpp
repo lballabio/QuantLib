@@ -31,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,11 +47,13 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
+        //! Time-independent operator
         class TimeConstantOperator {
           public:
             enum { isTimeDependent = 0 };
         };
 
+        //! Time-dependent operator
         class TimeDependentOperator {
           public:
             enum { isTimeDependent = 1 };

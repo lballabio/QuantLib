@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -40,21 +43,21 @@
 #include <vector>
 #include "ql/Pricers/bsmeuropeanoption.hpp"
 
-namespace QuantLib
-{
-    namespace Pricers
-    {
-     /*!
-     A cliquet option, also known as Ratchet option, is a series
-     of forward-starting options where the strike for the next
-     exercize date is set to the spot price at the beginning of each period.
-     In the particular case in which only two dates are given the price
-     of the option is the same as that of a forward-starting option
-     starting at the first date and expiring at the second date.
-     */
-        class CliquetOption: public BSMOption
-        {
-        public:
+namespace QuantLib {
+    
+    namespace Pricers {
+
+        //! cliquet (Ratchet) option        
+        /*! A cliquet option, also known as Ratchet option, is a series
+            of forward-starting options where the strike for the next
+            exercize date is set to the spot price at the beginning of each 
+            period.
+            In the particular case in which only two dates are given the price
+            of the option is the same as that of a forward-starting option
+            starting at the first date and expiring at the second date.
+        */
+        class CliquetOption : public BSMOption {
+          public:
             CliquetOption(Type type,
                           double underlying,
                           Rate dividendYield,
@@ -68,12 +71,14 @@ namespace QuantLib
             double vega() const;
             double rho() const;
             Handle<BSMOption> clone() const;
-        private:
+          private:
             int numPeriods_;
             std::vector<Handle<BSMEuropeanOption> > optionlet_;
             std::vector<double> weight_;
         };
+
     }
+
 }
 
 

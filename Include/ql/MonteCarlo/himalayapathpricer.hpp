@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -46,23 +49,23 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-    /*! HimalayaPathPricer evaluates the european-type himalaya option
-        on a multi-path.
-        The payoff of an himalaya option is computed in the following way:
-            Given a basket of N assets, and N time periods, at end of
+
+        /*! HimalayaPathPricer evaluates the european-type himalaya option
+            on a multi-path.
+            The payoff of an himalaya option is computed in the following way:
+            given a basket of N assets, and N time periods, at end of
             each period the option who performed the best is added to the
             average and then discarded from the basket. At the end of the
             N periods the option pays the max between the strike and the
             average of the best performers.
-    */
-
+        */
         class HimalayaPathPricer : public MultiPathPricer {
-        public:
+          public:
             HimalayaPathPricer():MultiPathPricer(){}
             HimalayaPathPricer(const Array &underlying,
                 double strike, double discount);
             double value(const MultiPath &path) const;
-        protected:
+          protected:
             double discount_;
             Array underlying_;
             double strike_;

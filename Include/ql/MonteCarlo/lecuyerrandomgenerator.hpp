@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -45,12 +48,12 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+        //! Uniform random number generator
         /*! Random number generator of L'Ecuyer with added Bays-Durham shuffle.
             For more details see Section 7.1 of Numerical Recipes in C, 2nd
             Edition, Cambridge University Press (available at
             http://www.nr.com/)
         */
-
         class LecuyerRandomGenerator {
           public:
             /*! if the given seed is 0, a random seed will be chosen
@@ -65,7 +68,10 @@ namespace QuantLib {
             mutable long temp1, temp2;
             mutable long y;
             mutable std::vector<long> buffer;
-            static const long m1, a1, q1, r1;
+            static const long m1;
+            static const long a1;
+            static const long q1;
+            static const long r1;
             static const long m2;
             static const long a2;
             static const long q2;

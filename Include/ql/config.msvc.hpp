@@ -4,6 +4,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.8  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
 //
@@ -20,15 +23,6 @@
 
 #pragma warning(disable: 4786)  // identifier truncated in debug info
 #pragma warning(disable: 4190)  // C-linkage of SWIG wrappers
-
-/* So nobody using MSVC needs to specify the .lib in their Makefile any
-   more (other compilers will still need to do so)
-*/
-#ifdef QL_DEBUG
-    #pragma comment(lib,"QuantLib_d.lib")
-#else
-    #pragma comment(lib,"QuantLib.lib")
-#endif
 
 #define REQUIRES_DUMMY_RETURN
 

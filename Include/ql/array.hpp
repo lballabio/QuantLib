@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/06/15 13:52:06  lballabio
 // Reworked indexes
 //
@@ -201,8 +204,8 @@ namespace QuantLib {
     // unary operators
 
     #if QL_EXPRESSION_TEMPLATES_WORK
-        // unary plus
 
+        // unary plus
         /*! \relates Array */
         VectorialExpression<
         UnaryVectorialExpression<Array::const_iterator,Plus> >

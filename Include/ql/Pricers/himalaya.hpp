@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -54,7 +57,7 @@ namespace QuantLib {
             N periods the option pays the max between the strike and the
             average of the best performers.
         */
-        class Himalaya: public MultiFactorPricer {
+        class Himalaya : public MultiFactorPricer {
         public:
             Himalaya(const Array &underlying,
                 const Array &dividendYield,
@@ -67,5 +70,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

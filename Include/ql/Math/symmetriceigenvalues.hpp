@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -46,11 +49,20 @@ namespace QuantLib {
 
     namespace Math {
 
-        inline Array SymmetricEigenvalues(Matrix &s){
+        // Eigenvalues of a symmetric matrix
+        Array SymmetricEigenvalues(Matrix &s);
+        
+        // Eigenvectors of a symmetric matrix
+        Matrix SymmetricEigenvectors(Matrix &s);
+        
+
+        // inline definitions
+        
+        inline Array SymmetricEigenvalues(Matrix &s) {
             return SymmetricSchurDecomposition(s).eigenvalues();
         }
 
-        inline Matrix SymmetricEigenvectors(Matrix &s){
+        inline Matrix SymmetricEigenvectors(Matrix &s) {
             return SymmetricSchurDecomposition(s).eigenvectors();
         }
 

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.8  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -49,6 +52,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        //! Black-Scholes-Merton option
         class BSMOption : public Option {
           public:
             BSMOption(Type type, double underlying, double strike,
@@ -84,7 +88,8 @@ namespace QuantLib {
             mutable double value_;
             mutable double  rho_, vega_;
             mutable bool rhoComputed_, vegaComputed_;
-            const static double dVolMultiplier_, dRMultiplier_;
+            const static double dVolMultiplier_;
+            const static double dRMultiplier_;
           private:
             class BSMFunction;
             friend class BSMFunction;

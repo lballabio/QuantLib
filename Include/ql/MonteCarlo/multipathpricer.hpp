@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -42,18 +45,16 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    //! Base class for multi-path pricers
-    /*! MultiPathPricer is the base class for an hierarchy of multi-path
-        pricers. Given a multi-path the value of an option is returned on
-        that path.
-    */
-
+        //! Base class for multi-path pricers
+        /*! Given a multi-path the value of an option is returned on
+            that path.
+        */
         class MultiPathPricer {
-        public:
+          public:
             MultiPathPricer() : isInitialized_(false) {}
             virtual ~MultiPathPricer() {}
-            virtual double value(const MultiPath &multiPath) const=0;
-        protected:
+            virtual double value(const MultiPath &multiPath) const = 0;
+          protected:
             bool isInitialized_;
         };
 

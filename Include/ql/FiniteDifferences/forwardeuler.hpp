@@ -23,13 +23,16 @@
 */
 
 /*! \file forwardeuler.hpp
-    \brief forward Euler scheme for time evolution
+    \brief forward Euler scheme for finite difference methods
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -45,19 +48,23 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        /*    Operators must be derived from either TimeConstantOperator or TimeDependentOperator.
+        //! Forward Euler scheme for finite difference methods
+        /*! Differential operators must be derived from either 
+            TimeConstantOperator or TimeDependentOperator.
             They must also implement at least the following interface:
 
-            // copy constructor                        // if no particular care is required, this one can be
-            Operator(const Operator&);                // omitted. It will be provided by the compiler.
+            \code
+            // copy constructor (might be provided by the compiler)
+            Operator(const Operator&);
 
             // modifiers
-            void setTime(Time t);                    // only if derived from TimeDependentOperator.
+            void setTime(Time t);  // those derived from TimeConstantOperator
+                                   // might skip this if the compiler allows it.
 
             // operator interface
             arrayType applyTo(const arrayType&);
+            \endcode
         */
-
         template <class Operator>
         class ForwardEuler {
             friend class FiniteDifferenceModel<ForwardEuler<Operator> >;
@@ -75,23 +82,30 @@ namespace QuantLib {
             Operator D, explicitPart;
             Time dt;
             #if QL_TEMPLATE_METAPROGRAMMING_WORKS
-                // a bit of template metaprogramming to relax interface constraints on time-constant operators
-                // see T. L. Veldhuizen, "Using C++ Template Metaprograms", C++ Report, Vol 7 No. 4, May 1995
+                // a bit of template metaprogramming to relax interface 
+                // constraints on time-constant operators.
+                // see T. L. Veldhuizen, "Using C++ Template Metaprograms", 
+                // C++ Report, Vol 7 No. 4, May 1995
                 // http://extreme.indiana.edu/~tveldhui/papers/
                 template <int constant>
                 class ForwardEulerTimeSetter {};
-                // the following specialization will be instantiated if Operator is derived from TimeConstantOperator
+                // the following specialization will be instantiated if 
+                // Operator is derived from TimeConstantOperator
                 template<>
                 class ForwardEulerTimeSetter<0> {
                   public:
-                    static inline void setTime(Operator& D, Operator& explicitPart, Time t, Time dt) {}
+                    static inline void setTime(Operator& D, 
+                        Operator& explicitPart, Time t, Time dt) {}
                 };
-                // the following specialization will be instantiated if Operator is derived from TimeDependentOperator:
-                // only in this case Operator will be required to implement void setTime(Time t)
+                // the following specialization will be instantiated if 
+                // Operator is derived from TimeDependentOperator:
+                // only in this case Operator will be required to implement 
+                // void setTime(Time t)
                 template<>
                 class ForwardEulerTimeSetter<1> {
                   public:
-                    static inline void setTime(Operator& D, Operator& explicitPart, Time t, Time dt) {
+                    static inline void setTime(Operator& D, 
+                      Operator& explicitPart, Time t, Time dt) {
                         D.setTime(t);
                         explicitPart = Identity<arrayType>()-dt*D;
                     }
@@ -104,7 +118,8 @@ namespace QuantLib {
         template<class Operator>
         inline void ForwardEuler<Operator>::step(arrayType& a, Time t) const {
             #if QL_TEMPLATE_METAPROGRAMMING_WORKS
-                ForwardEulerTimeSetter<Operator::isTimeDependent>::setTime(D,explicitPart,t,dt);
+                ForwardEulerTimeSetter<Operator::isTimeDependent>::setTime(
+                    D,explicitPart,t,dt);
             #else
                 if (Operator::isTimeDependent) {
                     D.setTime(t);

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/06/21 14:30:43  lballabio
 // Observability is back
 //
@@ -55,19 +58,19 @@ namespace QuantLib {
             Observable interface
         */
 
-        //! Object that gets notified when a given Observable changes
+        //! Object that gets notified when a given observable changes
         class Observer {
           public:
             virtual ~Observer() {}
             /*! This method must be implemented in derived classes. An 
-                instance of Observer does not call this method directly: 
+                instance of %Observer does not call this method directly: 
                 instead, it will be called by the observables the instance 
                 registered with when they need to notify any changes.
             */
             virtual void update() = 0;
         };
 
-        //! Object that notifies its changes to a set of Observables
+        //! Object that notifies its changes to a set of observables
         class Observable {
           public:
             virtual ~Observable() {}

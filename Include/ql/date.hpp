@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/06/15 13:52:06  lballabio
 // Reworked indexes
 //
@@ -48,6 +51,7 @@ namespace QuantLib {
     //! Continuous quantity with 1-year units
     typedef double Time;
 
+    //! Day number
     typedef int Day;
 
     /*! Day's serial number MOD 7;
@@ -61,6 +65,7 @@ namespace QuantLib {
                    Friday    = 6,
                    Saturday  = 7};
 
+    //! Month names
     enum Month { January   = 1,
                  February  = 2,
                  March     = 3,
@@ -74,6 +79,7 @@ namespace QuantLib {
                  November  = 11,
                  December  = 12 };
 
+    //! Year number
     typedef int Year;
 
     //! Units used to describe time periods
@@ -83,12 +89,15 @@ namespace QuantLib {
                     Years  = 3 };
 
     //! Time period described by a number of a given time unit
-    class Period : private std::pair<int,TimeUnit> {
+    class Period {
       public:
         Period(int n, TimeUnit units)
-        : std::pair<int,TimeUnit>(n,units) {}
-        int length() const { return first; }
-        TimeUnit units() const { return second; }
+        : length_(n), units_(units) {}
+        int length() const { return length_; }
+        TimeUnit units() const { return units_; }
+      private:
+        int length_;
+        TimeUnit units_;
     };
 
 
@@ -159,8 +168,10 @@ namespace QuantLib {
         //@}
       private:
         int serialNumber_;
-        static const int minimumSerialNumber, maximumSerialNumber;
-        static const Date MinimumDate, MaximumDate;
+        static const int minimumSerialNumber;
+        static const int maximumSerialNumber;
+        static const Date MinimumDate;
+        static const Date MaximumDate;
         static const Day  monthOffsetStorage[];
         static const Day  monthLeapOffsetStorage[];
         static const Day  monthLengthStorage[];

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,7 +47,8 @@ namespace QuantLib {
 
     namespace Math {
 
-        class NormalDistribution : public std::unary_function<double,double> {
+        class NormalDistribution 
+        : public std::unary_function<double,double> {
           public:
             NormalDistribution(double average = 0.0, double sigma = 1.0);
             // function
@@ -58,8 +62,8 @@ namespace QuantLib {
         typedef NormalDistribution GaussianDistribution;
 
 
-        class CumulativeNormalDistribution :
-          public std::unary_function<double,double> {
+        class CumulativeNormalDistribution 
+        : public std::unary_function<double,double> {
           public:
             CumulativeNormalDistribution(double average = 0.0,
                                          double sigma   = 1.0);
@@ -68,13 +72,19 @@ namespace QuantLib {
             double derivative(double x) const;
           private:
             double average_, sigma_;
-            static const double a1_, a2_, a3_, a4_, a5_, gamma_, precision_;
+            static const double a1_;
+            static const double a2_;
+            static const double a3_;
+            static const double a4_;
+            static const double a5_;
+            static const double gamma_;
+            static const double precision_;
             NormalDistribution gaussian_;
         };
 
 
-        class InvCumulativeNormalDistribution :
-          public std::unary_function<double,double> {
+        class InvCumulativeNormalDistribution 
+        : public std::unary_function<double,double> {
           public:
             InvCumulativeNormalDistribution(double average = 0.0,
                                                 double sigma   = 1.0);
@@ -82,7 +92,12 @@ namespace QuantLib {
             double operator()(double x) const;
           private:
             double average_, sigma_;
-            static const double p0_, p1_, p2_, q1_, q2_, q3_;
+            static const double p0_;
+            static const double p1_;
+            static const double p2_;
+            static const double q1_;
+            static const double q2_;
+            static const double q3_;
         };
 
 

@@ -23,38 +23,19 @@
 */
 
 /*! \file riskmeasures.hpp
-    $Source$
-    $Log$
-    Revision 1.8  2001/06/12 13:43:04  lballabio
-    Today's date is back into term structures
-    Instruments are now constructed with settlement days instead of settlement date
+    \brief Risk functions
 
-    Revision 1.7  2001/06/11 16:45:39  aleppo
-    Changed name Front to Side
-
-    Revision 1.6  2001/06/11 16:42:49  aleppo
-    Changed name Front to Side
-
-    Revision 1.5  2001/06/11 16:40:24  aleppo
-    Changed name Front to SIde
-
-    Revision 1.4  2001/06/11 16:00:23  nando
-    potentialUpSide is now potentialUpside.
-    Few typos fixed
-
-    Revision 1.3  2001/06/11 13:51:34  aleppo
-    Potential  Up Side added
-
-    Revision 1.2  2001/05/28 13:09:55  nando
-    R019-branch-merge3 merged into trunk
-
-    Revision 1.1.2.2  2001/05/28 12:57:08  nando
-    VarTool renamed RiskMeasures
-
+    $Id$
 */
 
-#ifndef quantlib_riskmeasures_h
-#define quantlib_riskmeasures_h
+//  $Source$
+//  $Log$
+//  Revision 1.9  2001/06/22 16:38:15  lballabio
+//  Improved documentation
+//
+
+#ifndef quantlib_risk_measures_h
+#define quantlib_risk_measures_h
 
 #include "ql/qldefines.hpp"
 #include "ql/null.hpp"
@@ -69,6 +50,7 @@ namespace QuantLib {
 
     namespace Math {
 
+        //! Interface for risk functions
         class RiskMeasures {
           public:
             RiskMeasures() {}

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -113,7 +116,8 @@ namespace QuantLib {
     */
     class OutOfMemoryError : public Error {
       public:
-        explicit OutOfMemoryError(const std::string& whatClass = "unknown class")
+        explicit OutOfMemoryError(
+            const std::string& whatClass = "unknown class")
         : Error(whatClass+": out of memory") {}
     };
 

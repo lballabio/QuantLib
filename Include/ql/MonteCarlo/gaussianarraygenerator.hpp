@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -47,15 +50,15 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    /*! \typedef GaussianArrayGenerator
-        Default choice for the gaussian random array generator.
-        See the corresponding classes for more documentation.
-    */
+        /*! \typedef GaussianArrayGenerator
+            Default choice for the gaussian random array generator.
+        */
         typedef RandomArrayGenerator<GaussianRandomGenerator>
                                             GaussianArrayGenerator;
 
     }
 
 }
+
 
 #endif

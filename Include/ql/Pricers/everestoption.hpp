@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -50,8 +53,8 @@ namespace QuantLib {
         /*! The payoff of an Everest option is simply given by the
             final price / initial price ratio of the worst performer
         */
-        class EverestOption: public MultiFactorPricer {
-        public:
+        class EverestOption : public MultiFactorPricer {
+          public:
             EverestOption(const Array &dividendYield,
                 const Math::Matrix &covariance,
                 Rate riskFreeRate, Time residualTime,
@@ -61,5 +64,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

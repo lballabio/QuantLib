@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -57,10 +60,11 @@ namespace QuantLib {
     };
 
     //! Swaption volatility surface with an added spread
-    /*! This surface will remain linked to the original surface, i.e., any changes
-        in the latter will be reflected in this surface as well.
+    /*! This surface will remain linked to the original surface, i.e., 
+        any changes in the latter will be reflected in this surface as well.
     */
-    class SpreadedSwaptionVolatilitySurface : public SwaptionVolatilitySurface {
+    class SpreadedSwaptionVolatilitySurface 
+    : public SwaptionVolatilitySurface {
       public:
         SpreadedSwaptionVolatilitySurface(
             const Handle<SwaptionVolatilitySurface>&, Spread spread);

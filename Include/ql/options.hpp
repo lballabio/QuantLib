@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.3  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -42,7 +45,8 @@
 namespace QuantLib {
 
     //! base option class
-    /*! This class has the only purpose of encapsulating the option type enumeration.
+    /*! This class has the only purpose of encapsulating the option type 
+        enumeration.
     */
     class Option {
       public:

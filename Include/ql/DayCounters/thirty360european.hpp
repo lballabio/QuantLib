@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.4  2001/06/15 13:52:07  lballabio
 // Reworked indexes
 //
@@ -46,6 +49,7 @@ namespace QuantLib {
 
     namespace DayCounters {
 
+        //! 30/360 European day counter
         class Thirty360European : public DayCounter {
           public:
             std::string name() const { return std::string("30/360eu"); }

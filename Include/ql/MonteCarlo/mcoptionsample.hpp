@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -41,40 +44,44 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-    /*!
-    Given a path generator class PG, together with an instance "samplePath",
-    and a path pricer PP, again with an instance "pathpricer", a sample
-    generator OptionSample<PG, PP> returns, at each next(), a value for the
-    option price.
 
-    Minimal interfaces for PG and PP:
-
-    class PG{
-        PATH_TYPE next() const;
-        double weight() const;
-    };
-
-    class PP{
-            // The value() method will eventually evolve into
-            // PP::ValueType value() const;
-        double value(PATH_TYPE &) const;
-    };
-    */
-
+        //! Option value sampler
+        /*! Given a path generator class PG, together with an instance 
+            "samplePath", and a path pricer PP, again with an instance 
+            "pathpricer", a sample generator OptionSample<PG, PP> returns, 
+            at each next(), a value for the option price.
+    
+            Minimal interfaces for PG and PP:
+    
+            \code
+            class PG{
+                PATH_TYPE next() const;
+                double weight() const;
+            };
+        
+            class PP{
+                    // The value() method will eventually evolve into
+                    // PP::ValueType value() const;
+                double value(PATH_TYPE &) const;
+            };
+            \endcode
+        */
         template<class PG, class PP>
         class OptionSample {
-        public:
+          public:
             OptionSample(){}
             OptionSample(Handle<PG> samplePath, Handle<PP> pathPricer);
             double next() const; // this will eventually evolve into
                                  // PP::ValueType next() const;
             double weight() const;
-        private:
+          private:
             mutable double weight_;
             mutable Handle<PG> samplePath_;
             Handle<PP> pathPricer_;
         };
 
+        // inline definitions
+        
         template<class PG, class PP>
         inline OptionSample<PG, PP>::OptionSample(Handle<PG> samplePath,
                Handle<PP> pathPricer): samplePath_(samplePath),

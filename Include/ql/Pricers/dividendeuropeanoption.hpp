@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -45,8 +48,9 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        //! European option with dividends
         class DividendEuropeanOption : public BSMEuropeanOption    {
-        public:
+          public:
             DividendEuropeanOption(Type type, double underlying, double strike,
                 Rate dividendYield, Rate riskFreeRate, Time residualTime,
                 double volatility, const std::vector<double>& dividends,
@@ -54,14 +58,16 @@ namespace QuantLib {
             double theta() const;
             double rho() const;
             Handle<BSMOption> clone() const;
-
-            private:
-              std::vector<double> dividends_;
-              std::vector<Time> exDivDates_;
-              double riskless(Rate r, std::vector<double> divs,
-                              std::vector<Time> divDates) const;
+          private:
+            std::vector<double> dividends_;
+            std::vector<Time> exDivDates_;
+            double riskless(Rate r, std::vector<double> divs,
+                            std::vector<Time> divDates) const;
         };
 
+
+        // inline definitions
+        
         inline double DividendEuropeanOption::riskless(Rate r,
             std::vector<double> divs, std::vector<Time> divDates) const{
 
@@ -74,5 +80,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

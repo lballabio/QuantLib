@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.6  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,23 +47,26 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-    /*! MultiPathGenerator<RAG> is a class that returns a random multi path.
-        RAG is a sample generator which returns an array, must have the
-        minimal interface,
-        RAG{
-            RAG();
-            RAG(Array &average, Matrix &covariance, long seed);
-            Array next();
-            double weight();
-        };
 
-    */
-
+        //! Generates a multipath from a random number generator
+        /*! MultiPathGenerator<RAG> is a class that returns a random multi path.
+            RAG is a sample generator which returns an array, must have the
+            minimal interface,
+            \code
+            RAG{
+                RAG();
+                RAG(Array &average, Matrix &covariance, long seed);
+                Array next();
+                double weight();
+            };
+            \endcode
+        */
         template <class RAG>
         class MultiPathGenerator {
-        public:
-        // typedef MultiPath SampleType;
-        // this typedef would make MultiPathGenerator into a sample generator
+          public:
+            // typedef MultiPath SampleType;
+            // this typedef would make MultiPathGenerator into a sample 
+            // generator
             MultiPathGenerator();
             MultiPathGenerator(int timeDimension,
                                const Math::Matrix &covariance,

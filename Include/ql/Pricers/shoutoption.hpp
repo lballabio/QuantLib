@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/22 16:38:15  lballabio
+// Improved documentation
+//
 // Revision 1.5  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -48,7 +51,7 @@ namespace QuantLib {
     namespace Pricers {
 
         class ShoutOption : public StepConditionOption {
-        public:
+          public:
             // constructor
             ShoutOption(Type type, double underlying, double strike,
                            Rate dividendYield, Rate riskFreeRate,
@@ -62,6 +65,9 @@ namespace QuantLib {
             }
         };
 
+
+        // inline definitions
+        
         inline ShoutOption::ShoutOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility, int timeSteps,
