@@ -46,6 +46,7 @@ class EuropeanOptionTest : public CppUnit::TestFixture {
     QL::Handle<QL::BlackVolTermStructure> makeFlatVolatility(
         const QL::Handle<QL::MarketElement>& volatility);
     std::string typeToString(QL::Option::Type);
+    std::string engineTypeToString(EngineType);
 };
 
 

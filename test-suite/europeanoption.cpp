@@ -75,6 +75,8 @@ Handle<Instrument> EuropeanOptionTest::makeEuropeanOption(
             new BinomialVanillaEngine(
                 BinomialVanillaEngine::Trigeorgis, 800));
         break;
+      default:
+        throw Error("Unknown engine type");
     }
     
     return Handle<Instrument>(
@@ -120,6 +122,24 @@ std::string EuropeanOptionTest::typeToString(Option::Type type) {
         return "straddle";
       default:
         throw Error("unknown option type");
+    }
+}
+
+std::string EuropeanOptionTest::engineTypeToString(
+        EuropeanOptionTest::EngineType type) {
+    switch (type) {
+      case Analytic:
+        return "analytic";
+      case JR:
+        return "Jarrow-Rudd";
+      case CRR:
+        return "Cox-Ross-Rubinstein";
+      case EQP:
+        return "EQP";
+      case Trigeorgis:
+        return "Trigeorgis";
+      default:
+        throw Error("unknown engine type");
     }
 }
 
@@ -400,7 +420,9 @@ void EuropeanOptionTest::testBinomialEngines() {
     Rate qRates[] = { 0.00, 0.05 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     double vols[] = { 0.11, 0.50, 1.20 };
-    
+
+    EngineType engines[] = { JR, CRR, EQP, Trigeorgis };
+
     Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
     Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
     Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
@@ -415,23 +437,19 @@ void EuropeanOptionTest::testBinomialEngines() {
     for (int i=0; i<LENGTH(types); i++) {
       for (int j=0; j<LENGTH(strikes); j++) {
         for (int k=0; k<LENGTH(lengths); k++) {
-          // option to check
           Date exDate = calendar.advance(today,lengths[k],Years);
-          Handle<VanillaOption> option1 =
+          // reference option
+          Handle<VanillaOption> refOption =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve);
-          Handle<VanillaOption> option2 =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volCurve,JR);
-          Handle<VanillaOption> option3 =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volCurve,CRR);
-          Handle<VanillaOption> option4 =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volCurve,EQP);
-          Handle<VanillaOption> option5 =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volCurve,Trigeorgis);
+          // options to check
+          std::map<EngineType,Handle<VanillaOption> > options;
+          for (int ii=0; ii<LENGTH(engines); ii++) {
+              options[engines[ii]] =
+                  makeEuropeanOption(types[i],underlying,strikes[j],
+                                     divCurve,rfCurve,exDate,volCurve,
+                                     engines[ii]);
+          }
           
           for (int l=0; l<LENGTH(underlyings); l++) {
             for (int m=0; m<LENGTH(qRates); m++) {
@@ -446,96 +464,31 @@ void EuropeanOptionTest::testBinomialEngines() {
                   rRate->setValue(r);
                   volatility->setValue(v);
                   
-                  double value     = option1->NPV(),
-                         value_jr  = option2->NPV(),
-                         value_crr = option3->NPV(),
-                         value_eqp = option4->NPV(),
-                         value_tri = option5->NPV();
-
-                  if (relativeError(value,value_jr,u) > tolerance) {
-                      CPPUNIT_FAIL(
-                          typeToString(types[i]) + " option :\n"
-                          "    underlying value: "
-                          + DoubleFormatter::toString(u) + "\n"
-                          "    strike:           "
-                          + DoubleFormatter::toString(strikes[j]) +"\n"
-                          "    dividend yield:   "
-                          + DoubleFormatter::toString(q) + "\n"
-                          "    risk-free rate:   "
-                          + DoubleFormatter::toString(r) + "\n"
-                          "    maturity:         "
-                          + DateFormatter::toString(exDate) + "\n"
-                          "    volatility:       "
-                          + DoubleFormatter::toString(v) + "\n\n"
-                          "    analytic value: " 
-                          + DoubleFormatter::toString(value) + "\n"
-                          "    binomial (JR):  " 
-                          + DoubleFormatter::toString(value_jr));
+                  double refValue = refOption->NPV();
+                  for (int ii=0; ii<LENGTH(engines); ii++) {
+                      double value = options[engines[ii]]->NPV();
+                      if (relativeError(value,refValue,u) > tolerance) {
+                          CPPUNIT_FAIL(
+                              typeToString(types[i]) + " option :\n"
+                              "    underlying value: "
+                              + DoubleFormatter::toString(u) + "\n"
+                              "    strike:           "
+                              + DoubleFormatter::toString(strikes[j]) +"\n"
+                              "    dividend yield:   "
+                              + DoubleFormatter::toString(q) + "\n"
+                              "    risk-free rate:   "
+                              + DoubleFormatter::toString(r) + "\n"
+                              "    maturity:         "
+                              + DateFormatter::toString(exDate) + "\n"
+                              "    volatility:       "
+                              + DoubleFormatter::toString(v) + "\n\n"
+                              "    analytic value: " 
+                              + DoubleFormatter::toString(refValue) + "\n"
+                              "    binomial ("
+                              + engineTypeToString(engines[ii]) + "):  " 
+                              + DoubleFormatter::toString(value));
+                      }
                   }
-
-                  if (relativeError(value,value_crr,u) > tolerance) {
-                      CPPUNIT_FAIL(
-                          typeToString(types[i]) + " option :\n"
-                          "    underlying value: "
-                          + DoubleFormatter::toString(u) + "\n"
-                          "    strike:           "
-                          + DoubleFormatter::toString(strikes[j]) +"\n"
-                          "    dividend yield:   "
-                          + DoubleFormatter::toString(q) + "\n"
-                          "    risk-free rate:   "
-                          + DoubleFormatter::toString(r) + "\n"
-                          "    maturity:         "
-                          + DateFormatter::toString(exDate) + "\n"
-                          "    volatility:       "
-                          + DoubleFormatter::toString(v) + "\n\n"
-                          "    analytic value: " 
-                          + DoubleFormatter::toString(value) + "\n"
-                          "    binomial (CRR): " 
-                          + DoubleFormatter::toString(value_crr));
-                  }
-
-                  if (relativeError(value,value_eqp,u) > tolerance) {
-                      CPPUNIT_FAIL(
-                          typeToString(types[i]) + " option :\n"
-                          "    underlying value: "
-                          + DoubleFormatter::toString(u) + "\n"
-                          "    strike:           "
-                          + DoubleFormatter::toString(strikes[j]) +"\n"
-                          "    dividend yield:   "
-                          + DoubleFormatter::toString(q) + "\n"
-                          "    risk-free rate:   "
-                          + DoubleFormatter::toString(r) + "\n"
-                          "    maturity:         "
-                          + DateFormatter::toString(exDate) + "\n"
-                          "    volatility:       "
-                          + DoubleFormatter::toString(v) + "\n\n"
-                          "    analytic value: " 
-                          + DoubleFormatter::toString(value) + "\n"
-                          "    binomial (EQP): " 
-                          + DoubleFormatter::toString(value_eqp));
-                  }
-
-                  if (relativeError(value,value_tri,u) > tolerance) {
-                      CPPUNIT_FAIL(
-                          typeToString(types[i]) + " option :\n"
-                          "    underlying value: "
-                          + DoubleFormatter::toString(u) + "\n"
-                          "    strike:           "
-                          + DoubleFormatter::toString(strikes[j]) +"\n"
-                          "    dividend yield:   "
-                          + DoubleFormatter::toString(q) + "\n"
-                          "    risk-free rate:   "
-                          + DoubleFormatter::toString(r) + "\n"
-                          "    maturity:         "
-                          + DateFormatter::toString(exDate) + "\n"
-                          "    volatility:       "
-                          + DoubleFormatter::toString(v) + "\n\n"
-                          "    analytic value: " 
-                          + DoubleFormatter::toString(value) + "\n"
-                          "    binomial (Trigeorgis): " 
-                          + DoubleFormatter::toString(value_tri));
-                  }
-
                 }
               }
             }
@@ -544,6 +497,7 @@ void EuropeanOptionTest::testBinomialEngines() {
       }
     }
 }
+
 
 CppUnit::Test* EuropeanOptionTest::suite() {
     CppUnit::TestSuite* tests = 
