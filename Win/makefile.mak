@@ -27,6 +27,7 @@ WIN_OBJS		= c0d32.obj
 
 # Libraries
 WIN_LIBS 		= import32.lib cw32mt.lib
+PYTHON_LIB		= $(PYTHON_LIBS)\python15.lib
 PYTHON_BCC_LIB	= bccpython.lib
 
 # Tools to be used
@@ -64,7 +65,7 @@ $(OUTPUT_DIR):
 
 # Python lib in OMF format
 $(PYTHON_BCC_LIB):
-	@$(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
+	@$(COFF2OMF) -q $(PYTHON_LIB) $(PYTHON_BCC_LIB)
 
 # Wrapper functions
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
