@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file plainoption.hpp
-    \brief Plain (no dividends, no barriers) option on a single asset
+    \brief Plain (no discrete dividends, no barriers) option on a single asset
 
     \fullpath
     ql/Instruments/%plainoption.hpp
@@ -37,7 +37,7 @@ namespace QuantLib {
 
     class PlainOptionParameters;
 
-        //! Plain (no dividends, no barriers) option on a single asset
+        //! Plain (no discrete dividends, no barriers) option on a single asset
         class PlainOption : public Option {
           public:
             PlainOption(Option::Type type,
