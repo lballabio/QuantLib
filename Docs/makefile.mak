@@ -67,39 +67,40 @@ ps:: tex-files
 
 # Correct LaTeX files to get the right layout
 tex-files:: html
+    copy userman.tex latex
     cd latex
     ren refman.tex oldrefman.tex
     $(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
-           -e "64,$s/input{index}/ /" \
-           -e "64,$s/include{index}/ /" \
-           -e "64,$s/input{overview}/ /" \
-           -e "64,$s/include{overview}/ /" \
-           -e "64,$s/input{where}/ /" \
-           -e "64,$s/include{where}/ /" \
-           -e "64,$s/input{install}/ /" \
-           -e "64,$s/include{install}/ /" \
-           -e "64,$s/input{usage}/ /" \
-           -e "64,$s/include{usage}/ /" \
-           -e "64,$s/input{platforms}/ /" \
-           -e "64,$s/include{platforms}/ /" \
-           -e "64,$s/input{history}/ /" \
-           -e "64,$s/include{history}/ /" \
-           -e "64,$s/input{todo}/ /" \
-           -e "64,$s/include{todo}/ /" \
-           -e "64,$s/input{resources}/ /" \
-           -e "64,$s/include{resources}/ /" \
-           -e "64,$s/input{group}/ /" \
-           -e "64,$s/include{group}/ /" \
-           -e "64,$s/input{license}/ /" \
-           -e "64,$s/include{license}/ /" \
-           -e "64,$s/input{coreclasses}/ /" \
-           -e "64,$s/include{coreclasses}/ /" \
-           -e "64,$s/input{findiff}/ /" \
-           -e "64,$s/include{findiff}/ /" \
-           -e "64,$s/input{mcarlo}/ /" \
-           -e "64,$s/include{mcarlo}/ /" \
+           -e "s/input{index}/ /" \
+           -e "s/include{index}/ /" \
+           -e "s/input{overview}/ /" \
+           -e "s/include{overview}/ /" \
+           -e "s/input{where}/ /" \
+           -e "s/include{where}/ /" \
+           -e "s/input{install}/ /" \
+           -e "s/include{install}/ /" \
+           -e "s/input{usage}/ /" \
+           -e "s/include{usage}/ /" \
+           -e "s/input{platforms}/ /" \
+           -e "s/include{platforms}/ /" \
+           -e "s/input{history}/ /" \
+           -e "s/include{history}/ /" \
+           -e "s/input{todo}/ /" \
+           -e "s/include{todo}/ /" \
+           -e "s/input{resources}/ /" \
+           -e "s/include{resources}/ /" \
+           -e "s/input{group}/ /" \
+           -e "s/include{group}/ /" \
+           -e "s/input{license}/ /" \
+           -e "s/include{license}/ /" \
+           -e "s/input{coreclasses}/ /" \
+           -e "s/include{coreclasses}/ /" \
+           -e "s/input{findiff}/ /" \
+           -e "s/include{findiff}/ /" \
+           -e "s/input{mcarlo}/ /" \
+           -e "s/include{mcarlo}/ /" \
            -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
            oldrefman.tex > refman.tex
     del oldrefman.tex

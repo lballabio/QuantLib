@@ -22,11 +22,11 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file forwardeuler.hpp
-    \brief forward Euler scheme for finite difference methods
+/*! \file expliciteuler.hpp
+    \brief explicit Euler scheme for finite difference methods
 
     \fullpath
-    ql/FiniteDifferences/%forwardeuler.hpp
+    ql/FiniteDifferences/%expliciteuler.hpp
 */
 
 // $Id$

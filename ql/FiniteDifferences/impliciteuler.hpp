@@ -22,11 +22,11 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file backwardeuler.hpp
-    \brief backward Euler scheme for finite difference methods
+/*! \file impliciteuler.hpp
+    \brief implicit Euler scheme for finite difference methods
 
     \fullpath
-    ql/FiniteDifferences/%backwardeuler.hpp
+    ql/FiniteDifferences/%impliciteuler.hpp
 */
 
 // $Id$
