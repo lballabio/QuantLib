@@ -129,11 +129,11 @@ fi
 
 AC_ARG_ENABLE([error-lines],
               AC_HELP_STRING([--enable-error-lines],
-                             [If enabled, file and line information is
-                              added to the error messages thrown by the
-                              library.]),
+                             [If enabled (the default), file and line 
+                              information is added to the error messages 
+                              thrown by the library.]),
               [ql_error_lines=$enableval],
-              [ql_error_lines=no])
+              [ql_error_lines=yes])
 if test "$ql_error_lines" = "yes" ; then
    AC_DEFINE([QL_ERROR_LINES],[1],
              [Define this if error messages should include file and line

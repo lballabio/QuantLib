@@ -28,7 +28,7 @@
 ****************************************************************/
 
 /* Define this if error messages should include file and line information. */
-// #define QL_ERROR_LINES 1
+#define QL_ERROR_LINES 1
 
 /* Define this if negative yield rates should be allowed. This might not be
    safe. */
