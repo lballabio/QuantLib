@@ -125,12 +125,17 @@ namespace QuantLib {
     }
 
     Rate ExtendedDiscountCurve::compoundForwardImpl(Time t,
-                                                    Integer compounding)
-                                                                      const {
-        if (compounding == 0)
-            return DiscountCurve::compoundForwardImpl(t, compounding);
-        return forwardCurve(compounding)->forwardRate(t, t,
-            SimpleThenCompounded, Frequency(compounding), true);
+                                                    Integer f) const {
+        if (f == 0) {
+            Rate zy = zeroYieldImpl(t);
+            if (f == 0)
+                return zy;
+            if (t <= 1.0/f)
+                return (QL_EXP(zy*t)-1.0)/t;
+            return (QL_EXP(zy*(1.0/f))-1.0)*f;
+        }
+        return forwardCurve(f)->forwardRate(t, t,
+            SimpleThenCompounded, Frequency(f), true);
     }
 
     boost::shared_ptr<YieldTermStructure>
