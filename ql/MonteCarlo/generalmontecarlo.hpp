@@ -22,24 +22,13 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file generalmontecarlo.hpp
-
-    \fullpath
-    Include/ql/MonteCarlo/%generalmontecarlo.hpp
     \brief Generic model for Monte Carlo simulations
 
+    \fullpath
+    ql/MonteCarlo/%generalmontecarlo.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.19  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.18  2001/08/22 15:28:20  nando
-// added AntitheticPathGenerator
-//
 
 #ifndef quantlib_general_montecarlo_h
 #define quantlib_general_montecarlo_h
@@ -49,29 +38,12 @@
 namespace QuantLib {
 
     //! Monte Carlo framework
-    /*! \htmlonly
-        <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr><td width="50%">&nbsp</td>
-        <td>Anyone attempting to generate random numbers by 
-        deterministic means is, of course, living in a state of sin.</td></tr>
-        <tr><td width="50%">&nbsp</td>
-        <td align="right">John von Neumann</td></tr>
-        </table>
-        \endhtmlonly
-        
-        \latexonly
-        \begin{quotation}
-            \small Anyone attempting to generate random numbers by 
-            deterministic means is, of course, living in a state of sin. 
-            \hfill --- John Von Neumann
-        \end{quotation}
-        \endlatexonly
-        
-        This namespace contains basic building blocks for the construction 
+    /*! This namespace contains basic building blocks for the construction 
         of MonteCarlo models, namely,
         
         - a generic model, GeneralMonteCarlo,
-        - a number of uniform and Gaussian random number and array generators,
+        - a number of uniform and Gaussian random number and array 
+          generators,
         - a Path class which represents a random path,
         
         as well as more specialized classes.
@@ -79,11 +51,11 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! generic %MonteCarlo model
-        /*! Given a sample-accumulator class SA and a sample-generator SG class,
-            a GeneralMonteCarlo<SA, SG>  class is constructed. This class
-            can be used to sample over the generator and store the results in 
-            the accumulator. The accumulator itself can be returned upon 
-            request.
+        /*! Given a sample-accumulator class SA and a sample-generator SG 
+            class, a GeneralMonteCarlo<SA, SG>  class is constructed. This 
+            class can be used to sample over the generator and store the 
+            results in the accumulator. The accumulator itself can be 
+            returned upon request.
     
             The minimal interfaces that SA and SG should implements are
     

@@ -1,0 +1,168 @@
+
+/*! \page findiff The finite differences framework
+    This framework (corresponding to the FiniteDifferences namespace) 
+    contains basic building blocks for the modeling of a generic differential 
+    equation
+    \f[
+        \frac{\partial f}{\partial t} = Lf 
+    \f]
+    where \f$ L \f$ is a differential operator in ``space'', i.e., one which 
+    does not contain partial derivatives in \f$ t \f$ but can otherwise 
+    contain any derivative in any other variable of the problem. 
+
+    Writing the equation in the above form allows us to implement 
+    separately the discretization of the differential operator \f$ L \f$ 
+    and the time scheme used for the evolution of the solution. The 
+    FiniteDifferenceModel class acts as a glue for such two steps---which are 
+    outlined in the following subsections---and provides the interface of the 
+    resulting finite difference model for the end user.
+
+    \subsection operators Differential operators
+    The discretization of the differential operator \f$ L \f$ depends on the 
+    discretization chosen for the solution \f$ f \f$ of the given equation. 
+    
+    Such choice is obvious in the 1-D case where the domain 
+    \f$ [a,b] \f$ of the equation is discretized as a series of points 
+    \f$ x_i, i=0 \dots N-1 \f$ (note that the index is 0-based) where 
+    \f$ x_i = a + hi \f$ and \f$ h = (b-a)/(N-1) \f$. In turn, the solution
+    \f$ f \f$ of the equation is discretized as an array 
+    \f$ u_i, i=0 \dots N-1 \f$ whose elements are defined as
+    \f$ u_i = f(x_i) \f$.
+    The discretization of the differential operator follows by substituting 
+    the derivatives with the corresponding incremental ratios defined in 
+    terms of the \f$ f_i \f$. A number of basic operators are defined in the 
+    framework which can be composed to form more complex operators, namely:
+    
+    the identity operator \f$ I \f$ is implemented in class Identity;
+
+    the first derivative \f$ \partial/\partial x \f$ is discretized as the 
+    operator \f$ D_+ \f$, defined as
+    \f[ D_{+} u_{i} = \frac{u_{i+1}-u_{i}}{h} \f] 
+    and implemented in class DPlus; the operator \f$ D_- \f$, defined as
+    \f[ D_{-} u_{i} = \frac{u_{i}-u_{i-1}}{h} \f] 
+    and implemented in class DMinus; and the operator \f$ D_0 \f$, defined as
+    \f[ D_{0} u_{i} = \frac{u_{i+1}-u_{i-1}}{2h} \f] 
+    and implemented in class DZero.
+    The discretization error of the above operators is \f$ O(h) \f$ for
+    \f$ D_+ \f$ and \f$ D_- \f$ and \f$ O(h^2) \f$ for \f$ D_+D_- \f$;
+    
+    the second derivative \f$ \partial^2/\partial x^2 \f$ is 
+    discretized as the operator \f$ D_+D_- \f$, defined as
+    \f[ D_{+}D_{-} u_{i} = \frac{u_{i+1}-2u_{i}+u_{i-1}}{h^2} \f] 
+    and implemented in class DPlusDMinus. Its discretization error is
+    \f$ O(h^2) \f$.
+
+    A programmer can also implement its own operator.
+    However, in order to fit into this framework it will have to implement 
+    a required interface depending on the chosen evolver (see below).
+    
+    On the other hand, there is no obvious choice in the 2-D case. 
+    While it is immediate to discretize the domain into a series of points 
+    \f$ (x_i,y_j) \f$ and the solution into a matrix 
+    \f$ f_{ij} = f(x_i,y_j) \f$, there is a number of ways into which 
+    the \f$ f_{ij} \f$ can be arranged into an array---each of them 
+    determining a different discretization of the differential operators.
+    One of such ways was implemented in the LexicographicalView class, 
+    while others will be implemented in the future. No 2-D operator is 
+    currently implemented apart from the identity operator.
+    
+    \subsection evolvers Time schemes
+    Once the differential operator \f$ L \f$ has been discretized, a number 
+    of choices are available for discretizing the time derivative at the 
+    left-hand side of the equation.
+    
+    In this framework, such choice is encapsulated in so-called evolvers 
+    which, given \f$ L \f$ and the solution \f$ u^{(k)} \f$ at time 
+    \f$ t_k \f$, yield the solution \f$ u^{(k+1)} \f$ at the next time step.
+    
+    A number of evolvers are currently provided in the library which 
+    implement well-known schemes, namely,
+    
+    the forward Euler scheme in which the equation is discretized as
+    \f[ \frac{u^{(k)}-u^{(k-1)}}{\Delta t} = Lu^{(k)} \f]
+    hence
+    \f[ u^{(k-1)} = \left( I - \Delta t L \right) u^{(k)} \f]
+    from which \f$ u^{(k-1)} \f$ can be obtained directly;
+    
+    the backward Euler scheme in which the equation is discretized as
+    \f[ \frac{u^{(k)}-u^{(k-1)}}{\Delta t} = Lu^{(k-1)} \f]
+    hence
+    \f[ \left( I + \Delta t L \right) u^{(k-1)} = u^{(k)} \f]
+    from which \f$ u^{(k-1)} \f$ can be obtained by solving a linear system;
+
+    the Crank-Nicolson scheme in which the equation is discretized as
+    \f[ \frac{u^{(k)}-u^{(k-1)}}{\Delta t} = 
+        L \frac{u^{(k)}+u^{(k-1)}}{2} \f]
+    hence
+    \f[ \left( I + \frac{\Delta t}{2} L \right) u^{(k-1)} = 
+        \left( I - \frac{\Delta t}{2} L \right) u^{(k)} \f]
+    from which \f$ u^{(k-1)} \f$ can be obtained by solving a linear system.
+    
+    Each of the above evolvers forces a set of interface requirements upon 
+    the differential operator which are detailed in the documentation of the 
+    corresponding class, namely, ForwardEuler, BackwardEuler, and 
+    CrankNicolson, respectively.
+    
+    A programmer could implement its own evolver, which does not need to 
+    inherit from any base class.
+    
+    However, it must implement the following interface:
+
+    \code
+    class Evolver {
+      public:
+        typedef ... arrayType;
+        typedef ... operatorType;
+        // constructors
+        Evolver(const operatorType& D);
+        // member functions
+        void step(arrayType& a, Time t) const;
+        void setStep(Time dt);
+    };
+    \endcode
+    
+    Finally, it must be noted that the pricing of e.g. an option requires 
+    the finite difference model to solve the corresponding equation 
+    <i>backwards</i> in time. Therefore, given a discretization \f$ u \f$ 
+    of the solution at a given time \f$ t \f$, the call
+    \code
+    evolver.step(u,t)
+    \endcode
+    must calculate the discrete solution at the <i>previous</i> time, 
+    \f$ t-dt \f$.
+
+    \subsection An example of finite difference model
+    A skeletal implementation of a finite difference model for the 
+    Black-Scholes equation can be found at this
+    \link custom_operator.cpp
+    example page
+    \endlink
+    .
+    
+*/
+
+/*! \example custom_operator.cpp
+    The operator \f$ L_{BS} \f$ for the Black-Scholes equation in the 
+    form 
+    \f[ \frac{\partial f}{\partial t} = Lf \f]
+    is
+    \f[ L_{BS} = - \frac{\sigma^2}{2} \frac{\partial^2}{\partial x^2}
+                 - \nu \frac{\partial}{\partial x}
+                 + r I. \f]
+    
+    Using the basic operators provided in the library, \f$ L_{BS} \f$ 
+    can be built as
+    \f[ L_{BS} = - \frac{\sigma^2}{2} D_{+}D_{-}
+                 - \nu D_{0} + r I \f].
+    
+    A finite difference model for the solution of the above equation can now 
+    be constructed by passing the above operator to an instance of 
+    FiniteDifferenceModel using a given evolver, as can be seen in the 
+    example code.
+    
+    For sake of clarity, a number of details were omitted here such as 
+    calculating the initial condition for the solution and imposing suitable 
+    boundary conditions. They can be found in finitedifferenceeuropean.hpp 
+    and finitedifferenceeuropean.cpp which contain a full implementation of 
+    the model below.
+*/

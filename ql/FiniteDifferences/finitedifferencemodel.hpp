@@ -33,6 +33,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/04 15:15:28  lballabio
+// Finite difference docs updated
+//
 // Revision 1.1  2001/09/03 14:00:08  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -74,90 +77,11 @@
 namespace QuantLib {
 
     //! Finite difference framework
-    /*! This namespace contains basic building blocks for the construction 
-        of finite difference models, namely,
-        
-        - a generic model, FiniteDifferenceModel,
-        - basic differential operators such as \f$D_+\f$ (DPlus), 
-          \f$D_-\f$ (DMinus), \f$D_0\f$ (DZero), and \f$D_+D_-\f$
-          (DPlusDMinus),
-        - time schemes such as ForwardEuler, BackwardEuler, and 
-          CrankNicolson,
-        
-        as well as more specialized classes.
-    */
+    /*! See sect. \ref findiff */
     namespace FiniteDifferences {
 
         //! Generic finite difference model
-        /*! This class models with a finite difference method the 
-            differential equation
-            \f[ 
-                \frac{\partial f}{\partial t} = Lf 
-            \f]
-            where \f$L\f$ is a differential operator in ``space'', i.e., one 
-            which does not contain partial derivatives in \f$t\f$ but can 
-            otherwise contain any derivative in any other variable of the 
-            problem. 
-            
-            \par 
-            A differential operator must be discretized in order to be used 
-            in a finite difference model. Basic operators such as \f$D_+\f$
-            (DZero) or \f$D_+D_-\f$ (DPlusDMinus) are provided in the 
-            library which can be composed to form a discretization of a given 
-            operator. 
-
-            <b>Example: </b>
-            \link custom_operator.cpp
-            Black-Scholes operator
-            \endlink
-            
-            \par
-            The required interface of the operator depends upon the 
-            evolver chosen for the model.
-
-            \par
-            While the passed operator encapsulates the spatial discretization 
-            of the problem, evolvers encapsulate the discretization of the 
-            time derivative. The library provides a few of them which 
-            implement well known schemes, namely, 
-            \link ForwardEuler 
-            forward Euler
-            \endlink,
-            \link BackwardEuler
-            backward Euler
-            \endlink,
-            and 
-            \link CrankNicolson
-            Crank-Nicolson
-            \endlink
-            schemes.
-            
-            A programmer could implement its own evolver, which does not 
-            need to inherit from any base class.
-            
-            However, it must implement the following interface:
-
-            \code
-            class Evolver {
-              public:
-                typedef ... arrayType;
-                typedef ... operatorType;
-                // constructors
-                Evolver(const operatorType& D);
-                // member functions
-                void step(arrayType& a, Time t) const;
-                void setStep(Time dt);
-            };
-            \endcode
-            
-            Finally, it must be noted that the pricing of e.g. an option 
-            requires the finite difference model to solve the corresponding 
-            equation <i>backwards</i> in time. Therefore, given a 
-            discretization \f$f_i\f$ of \f$f(t)\f$, 
-            \texttt{evolver.step(\f$f_i\f$,\f$t\f$)} must calculate the 
-            discretization of the function at the <i>previous</i> time,
-            \f$f(t-dt)\f$.
-        */
+        /*! See sect. \ref findiff */
         template<class Evolver>
         class FiniteDifferenceModel {
           public:
@@ -172,34 +96,13 @@ namespace QuantLib {
                 \warning being this a rollback, <tt>from</tt> must be a later 
                 time than <tt>to</tt>.
             */
-            void rollback(arrayType& a, Time from, Time to, unsigned int steps,
+            void rollback(arrayType& a, Time from, Time to, 
+              unsigned int steps, 
               Handle<StepCondition<arrayType> > condition =
                 Handle<StepCondition<arrayType> >());
           private:
             Evolver evolver;
         };
-
-        /*! \example custom_operator.cpp
-            The operator \f$L_{BS}\f$ for the Black-Scholes equation in the 
-            form 
-            \f[ 
-                \frac{\partial f}{\partial t} = Lf 
-            \f]
-            is
-            \f[ 
-                L_{BS} = - \frac{\sigma^2}{2} \frac{\partial^2}{\partial x^2}
-                         - \nu \frac{\partial}{\partial x}
-                         + r I.
-            \f]
-            
-            Using the basic operators provided in the library, \f$L_{BS}\f$ 
-            can be built as
-            \f[
-                L_{BS} = - \frac{\sigma^2}{2} D_{+}D_{-}
-                         - \nu D_{0} + r I
-            \f]
-            as shown in the example code.
-        */
 
         // template definitions
         template<class Evolver>

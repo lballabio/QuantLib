@@ -23,10 +23,10 @@
 */
 
 /*! \file backwardeuler.hpp
+    \brief backward Euler scheme for finite difference methods
 
     \fullpath
-    Include/ql/FiniteDifferences/%backwardeuler.hpp
-    \brief backward Euler scheme for finite differemce methods
+    ql/FiniteDifferences/%backwardeuler.hpp
 */
 
 // $Id$
@@ -43,35 +43,22 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         //! Backward Euler scheme for finite difference methods
-        /*! This class implements the implicit backward Euler scheme for the
-            discretization in time of the differential equation
-            \f[
-                \frac{\partial f}{\partial t} = Lf.
-            \f]
-            In this scheme, the above equation is discretized as
-            \f[
-                \frac{f^{(k)}-f^{(k-1)}}{\Delta t} = Lf^{(k-1)}
-            \f]
-            hence
-            \f[
-                \left( I + \Delta t L \right) f^{(k-1)} = f^{(k)}
-            \f]
-            from which \f$f^{(k-1)}\f$ can be obtained.
-
-            \par
-            In this implementation, the operator \f$L\f$ must be derived
+        /*! See sect. \ref findiff for details on the method.
+            
+            In this implementation, the passed operator must be derived 
             from either TimeConstantOperator or TimeDependentOperator.
             Also, it must implement at least the following interface:
 
             \code
+            typedef ... arrayType;
+            
             // copy constructor/assignment
             // (these will be provided by the compiler if none is defined)
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
             // modifiers
-            void setTime(Time t);  // those derived from TimeConstantOperator
-                                   // might skip this if the compiler allows it.
+            void setTime(Time t);
 
             // operator interface
             arrayType solveFor(const arrayType&);
@@ -90,60 +77,23 @@ namespace QuantLib {
             typedef Operator operatorType;
             // constructors
             BackwardEuler(const operatorType& L) : L(L), dt(0.0) {}
-            void step(arrayType& a, Time t) const;
+            void step(arrayType& a, Time t);
             void setStep(Time dt) {
                 this->dt = dt;
                 implicitPart = Identity<arrayType>()+dt*L;
             }
             operatorType L, implicitPart;
             Time dt;
-            #if QL_TEMPLATE_METAPROGRAMMING_WORKS
-                // a bit of template metaprogramming to relax interface
-                // constraints on time-constant operators
-                // see T. L. Veldhuizen, "Using C++ Template Metaprograms",
-                // C++ Report, Vol 7 No. 4, May 1995
-                // http://extreme.indiana.edu/~tveldhui/papers/
-                template <int constant>
-                class BackwardEulerTimeSetter {};
-                // the following specialization will be instantiated if
-                // Operator is derived from TimeConstantOperator
-                template<>
-                class BackwardEulerTimeSetter<0> {
-                  public:
-                    static inline void setTime(Operator& L,
-                    Operator& implicitPart, Time t, Time dt) {}
-                };
-                // the following specialization will be instantiated if
-                // Operator is derived from TimeDependentOperator:
-                // only in this case Operator will be required to
-                // implement void setTime(Time t)
-                template<>
-                class BackwardEulerTimeSetter<1> {
-                    typedef typename OperatorTraits<Operator>::arrayType
-                        arrayType;
-                  public:
-                    static inline void setTime(Operator& L,
-                      Operator& implicitPart, Time t, Time dt) {
-                        L.setTime(t);
-                        implicitPart = Identity<arrayType>()+dt*L;
-                    }
-                };
-            #endif
         };
 
         // inline definitions
 
         template <class Operator>
-        inline void BackwardEuler<Operator>::step(arrayType& a, Time t) const {
-            #if QL_TEMPLATE_METAPROGRAMMING_WORKS
-                BackwardEulerTimeSetter<Operator::isTimeDependent>::setTime(
-                    L,implicitPart,t,dt);
-            #else
-                if (Operator::isTimeDependent) {
-                    L.setTime(t);
-                    implicitPart = Identity<arrayType>()+dt*L;
-                }
-            #endif
+        inline void BackwardEuler<Operator>::step(arrayType& a, Time t) {
+            if (Operator::isTimeDependent) {
+                L.setTime(t);
+                implicitPart = Identity<arrayType>()+dt*L;
+            }
             a = implicitPart.solveFor(a);
         }
 

@@ -23,24 +23,13 @@
 */
 
 /*! \file cranknicolson.hpp
-
-    \fullpath
-    Include/ql/FiniteDifferences/%cranknicolson.hpp
     \brief Crank-Nicolson scheme for finite difference methods
 
+    \fullpath
+    ql/FiniteDifferences/%cranknicolson.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:00:08  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.12  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.11  2001/08/28 17:23:30  nando
-// unsigned int instead of int
-//
 
 #ifndef quantlib_crank_nicolson_h
 #define quantlib_crank_nicolson_h
@@ -54,36 +43,21 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         //! Crank-Nicolson scheme for finite difference methods
-        /*! This class implements the implicit Crank-Nicolson scheme for 
-            the discretization in time of the differential equation
-            \f[ 
-                \frac{\partial f}{\partial t} = Lf.
-            \f]
-            In this scheme, the above equation is discretized as
-            \f[ 
-                \frac{f^{(k)}-f^{(k-1)}}{\Delta t} = 
-                L\frac{f^{(k)}+f^{(k-1)}}{2}
-            \f]
-            hence
-            \f[
-                \left( I + \frac{\Delta t}{2} L \right) f^{(k-1)} = 
-                \left( I - \frac{\Delta t}{2} L \right) f^{(k)}
-            \f]
-            from which \f$f^{(k-1)}\f$ can be obtained.
+        /*! See sect. \ref findiff for details on the method.
             
-            \par
-            In this implementation, the operator \f$L\f$ must be derived 
+            In this implementation, the passed operator must be derived 
             from either TimeConstantOperator or TimeDependentOperator.
             Also, it must implement at least the following interface:
 
             \code
+            typedef ... arrayType;
+            
             // copy constructor/assignment
             // (these will be provided by the compiler if none is defined)
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
-            void setTime(Time t);  // those derived from TimeConstantOperator
-                                   // might skip this if the compiler allows it.
+            void setTime(Time t);
 
             // operator interface
             arrayType applyTo(const arrayType&);
@@ -114,61 +88,17 @@ namespace QuantLib {
             }
             operatorType D, explicitPart, implicitPart;
             Time dt;
-            #if QL_TEMPLATE_METAPROGRAMMING_WORKS
-                // a bit of template metaprogramming to relax interface
-                // constraints on time-constant operators
-                // see T. L. Veldhuizen, "Using C++ Template Metaprograms",
-                // C++ Report, Vol 7 No. 4, May 1995
-                // http://extreme.indiana.edu/~tveldhui/papers/
-                template <int constant>
-                class CrankNicolsonTimeSetter {};
-                // the following specialization will be instantiated if
-                // Operator is derived from TimeConstantOperator
-                template<>
-                class CrankNicolsonTimeSetter<0> {
-                  public:
-                    static inline void setTime(Operator& D,
-                                               Operator& explicitPart,
-                                               Operator& implicitPart,
-                                               Time      t,
-                                               Time      dt) {}
-                };
-                // the following specialization will be instantiated if Operator
-                // is derived from TimeDependentOperator:
-                // only in this case Operator will be required
-                // to implement void setTime(Time t)
-                template<>
-                class CrankNicolsonTimeSetter<1> {
-                    typedef typename OperatorTraits<Operator>::arrayType
-                        arrayType;
-                  public:
-                    static inline void setTime(Operator& D,
-                                               Operator& explicitPart,
-                                               Operator& implicitPart,
-                                               Time      t,
-                                               Time      dt) {
-                        D.setTime(t);
-                        explicitPart = Identity<arrayType>()-(dt/2)*D;
-                        implicitPart = Identity<arrayType>()+(dt/2)*D;
-                    }
-                };
-            #endif
         };
 
         // inline definitions
 
         template <class Operator>
         inline void CrankNicolson<Operator>::step(arrayType& a, Time t) {
-            #if QL_TEMPLATE_METAPROGRAMMING_WORKS
-                CrankNicolsonTimeSetter<Operator::isTimeDependent>::setTime(D,
-                    explicitPart, implicitPart, t, dt);
-            #else
-                if (Operator::isTimeDependent) {
-                    D.setTime(t);
-                    explicitPart = Identity<arrayType>()-(dt/2)*D;
-                    implicitPart = Identity<arrayType>()+(dt/2)*D;
-                }
-            #endif
+            if (Operator::isTimeDependent) {
+                D.setTime(t);
+                explicitPart = Identity<arrayType>()-(dt/2)*D;
+                implicitPart = Identity<arrayType>()+(dt/2)*D;
+            }
             a = implicitPart.solveFor(explicitPart.applyTo(a));
         }
 

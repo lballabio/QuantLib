@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.22  2001/09/04 15:15:28  lballabio
+# Finite difference docs updated
+#
 # Revision 1.21  2001/09/03 13:32:43  lballabio
 # *** empty log message ***
 #
@@ -51,13 +54,16 @@ tex-files: docs-html
 	$(SED) -e "/Page Index/d" \
 	       -e "/input{pages}/d" \
 	       -e "/Page Documentation/d" \
-	       -e "50,$s/input{index}//" \
-	       -e "50,$s/include{install}//" \
-	       -e "50,$s/include{license}//" \
-	       -e "50,$s/include{platforms}//" \
-	       -e "50,$s/include{usage}//" \
-	       -e "50,$s/include{where}//" \
-	       -e "50,$s/include{todo}//" \
+	       -e "54,$s/input{index}//" \
+	       -e "54,$s/include{install}//" \
+	       -e "54,$s/include{license}//" \
+	       -e "54,$s/include{platforms}//" \
+	       -e "54,$s/include{usage}//" \
+	       -e "54,$s/include{where}//" \
+	       -e "54,$s/include{todo}//" \
+	       -e "54,$s/include{core}//" \
+	       -e "54,$s/include{findiff}//" \
+	       -e "54,$s/include{mcarlo}//" \
 	       oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex
 

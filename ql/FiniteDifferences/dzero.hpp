@@ -23,39 +23,13 @@
 */
 
 /*! \file dzero.hpp
-
-    \fullpath
-    Include/ql/FiniteDifferences/%dzero.hpp
     \brief \f$ D_{0} \f$ matricial representation
 
+    \fullpath
+    ql/FiniteDifferences/%dzero.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:00:08  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.9  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.8  2001/08/28 13:37:35  nando
-// unsigned int instead of int
-//
-// Revision 1.7  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.6  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.5  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.4  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.3  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef QUANTLIB_D_ZERO_H
 #define QUANTLIB_D_ZERO_H
@@ -69,8 +43,8 @@ namespace QuantLib {
         //! \f$ D_{0} \f$ matricial representation
         /*! The differential operator \f$ D_{0} \f$ discretizes the
             first derivative with the second-order formula
-            \f[ \frac{\partial u_{i}}{\partial x} =
-                \frac{u_{i+1}-u_{i-1}}{2h} \equiv D_{0} u_{i}
+            \f[ \frac{\partial u_{i}}{\partial x} \approx
+                \frac{u_{i+1}-u_{i-1}}{2h} = D_{0} u_{i}
             \f]
         */
         class DZero : public TridiagonalOperator {
