@@ -10,37 +10,48 @@ COMPILING
 LIBRARY
     *****
     check FRA mXn definition
-    implement swap discountGuess()
+    check fraction in McPagoda
+
     asian continuous and/or discrete
     check geometric continuous and/or discrete
     example of european Martingale control variate
-    next&weight in a std::pair
-    check fraction in McPagoda
-    Payoff class from EuropeanOption into QuantLib
-        redesign payoff class for integral (Green) option pricing, step
-        condition, etc
 
-    Currency as class with methods returning related info
+    next&weight in a std::pair
+
     Nicolas spline contribution
-    Maxim integral
     update sflogo for offline documentation
     ******
 
+
+    Maxim integral
+
+    QuEP:
+        Currency as class with methods returning related info
+        implement currency as per OMG definition
+
     document namespaces on Sad-branch
+
     introduce compoundpathpricer
     GaussianPathGenerator, etc: allow for more general random walks
 
-    Douglas Scheme
-    Richardson extrapolation
+    QuEP:
+        Douglas Scheme
+        Richardson extrapolation
+
     what about barrier or FD with dividends ???
     revisite model/slice interface
+
+    QuEP:
+        Payoff class from EuropeanOption into QuantLib
+        redesign payoff class for integral (Green) option pricing, step
+        condition, strategy, etc.
+
 
     add futures convexity adjustment
     cash flow stream for IRR, duration
     QuantLib dynamic Win32 library (QuantLib.dll)
     develop C++ unit test suite based on boost
     clean up accuracy definition in solver1D (x or f(x) accuracy ?)
-    implement currency as per OMG definition
     implement round as per OMG enumeration/definition
     add one-touch option (american binary)
     implement dividendRho for dividendOption
@@ -55,5 +66,6 @@ DOCUMENTATION ***
     add MS-Windows Help and TeX DVI format.
     complete MC documentation
     ******
+    use tidy (if available) on the HTML documentation
     enforce fulpath&classesinclude DoxyGen requirements
     add/update FAQ material in QuantLib-site TOD.txt
