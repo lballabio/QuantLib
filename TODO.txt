@@ -1,5 +1,6 @@
 
 
+check McPricer.value(tolerance) in European pricer
 solve copyright issues (COOOL, GAlib, etc.)
 separate SF projects for QuantLib-Python, etc.
 

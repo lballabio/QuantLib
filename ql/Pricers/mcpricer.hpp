@@ -59,9 +59,11 @@ namespace QuantLib {
             double value(double tolerance,
                          size_t maxSample = QL_MAX_INT) const;
             //! simulate a fixed number of samples
-            double value(size_t samples) const;
+            double valueWithSamples(size_t samples) const;
             //! error Estimated of the samples simulated so far
             double errorEstimate() const;
+            //! access to the sample accumulator for more statistics
+            const S& sampleAccumulator(void) const;
           protected:
             McPricer() {}
             mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
@@ -99,7 +101,6 @@ namespace QuantLib {
                 nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
                 QL_REQUIRE(nextBatch>0,
                     "max number of samples exceeded");
-                std::cout << nextBatch << std::endl;
 
                 sampleNumber += nextBatch;
                 mcModel_->addSamples(nextBatch);
@@ -113,17 +114,26 @@ namespace QuantLib {
 
 
         template<class S, class PG, class PP>
-        inline double McPricer<S, PG, PP>::value(size_t samples) const {
+        inline double McPricer<S, PG, PP>::valueWithSamples(size_t samples)
+            const {
 
             QL_REQUIRE(samples>=minSample_,
-                "number of requested samples lower than minSample_");
+                "number of requested samples ("
+                + IntegerFormatter::toString(samples) +
+                ") lower than minSample_ ("
+                + IntegerFormatter::toString(minSample_) +
+                ")");
 
             size_t sampleNumber =
                 mcModel_->sampleAccumulator().samples();
 
             QL_REQUIRE(samples>=sampleNumber,
-                "number of already simulated samples greater than"
-                "requested samples");
+                "number of already simulated samples ("
+                + IntegerFormatter::toString(sampleNumber) +
+                ") greater than"
+                "requested samples ("
+                + IntegerFormatter::toString(samples) +
+                ")");
 
             mcModel_->addSamples(samples-sampleNumber);
 
@@ -136,7 +146,6 @@ namespace QuantLib {
 
             size_t sampleNumber =
                 mcModel_->sampleAccumulator().samples();
-            std::cout << sampleNumber << std::endl;
 
             QL_REQUIRE(sampleNumber>=minSample_,
                 "number of simulated samples lower than minSample_");
@@ -144,6 +153,11 @@ namespace QuantLib {
             return mcModel_->sampleAccumulator().errorEstimate();
         }
 
+        template<class S, class PG, class PP>
+        inline const S& McPricer<S, PG, PP>::sampleAccumulator() const {
+
+            return mcModel_->sampleAccumulator();
+        }
     }
 }
 

@@ -169,11 +169,11 @@ int main(int argc, char* argv[])
 
         // fifth method: Monte Carlo (crude)
         method ="MC (crude)";
-        double nSamples = 200;
         bool antitheticVariance = false;
         McEuropean mcEur(Option::Call, underlying, strike, dividendYield,
             riskFreeRate, maturity, volatility, antitheticVariance);
-        value = mcEur.value(nSamples);
+        // let's require a tolerance of 0.002%
+        value = mcEur.value(0.002);
         estimatedError = mcEur.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -186,10 +186,12 @@ int main(int argc, char* argv[])
 
         // sixth method: Monte Carlo with antithetic variance reduction
         method ="MC (antithetic)";
+        // let's use the same number of samples as in the crude Monte Carlo
+        size_t nSamples = mcEur.sampleAccumulator().samples();
         antitheticVariance = true;
         McEuropean mcEur2(Option::Call, underlying, strike, dividendYield,
             riskFreeRate, maturity, volatility, antitheticVariance);
-        value = mcEur2.value(nSamples);
+        value = mcEur2.valueWithSamples(nSamples);
         estimatedError = mcEur2.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -199,7 +201,6 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
-
 
 
         return 0;
