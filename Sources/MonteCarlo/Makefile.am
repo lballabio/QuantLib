@@ -4,13 +4,14 @@ INCLUDES = -I$(top_srcdir)/Include/ \
 	-I$(top_srcdir)/Include/Utilities
 
 libMonteCarlo_la_SOURCES = \
-    avgstrikeasianpathpricer.cpp \
-    avgpriceasianpathpricer.cpp \
-    basketpathpricer.cpp    \
+	avgstrikeasianpathpricer.cpp \
+	avgpriceasianpathpricer.cpp \
+	basketpathpricer.cpp    \
 	controlvariatedpathpricer.cpp \
 	everestpathpricer.cpp \
 	europeanpathpricer.cpp \
 	geometricasianpathpricer.cpp \
+	getcovariance.cpp \
 	himalayapathpricer.cpp \
 	lecuyerrandomgenerator.cpp
 
