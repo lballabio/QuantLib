@@ -80,7 +80,7 @@ namespace QuantLib {
                             const DayCounter& dayCounter);
 
         // inspectors
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
         // observer interface
         void update();
@@ -97,10 +97,6 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
         boost::shared_ptr<OptimizationMethod> method_;
     };
-
-    inline DayCounter AffineTermStructure::dayCounter() const {
-        return dayCounter_;
-    }
 
     inline Date AffineTermStructure::maxDate() const {
         return Date::maxDate();

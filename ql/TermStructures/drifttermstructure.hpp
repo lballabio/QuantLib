@@ -42,7 +42,7 @@ namespace QuantLib {
                            const Handle<BlackVolTermStructure>& blackVolTS);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return riskFreeTS_->dayCounter(); }
         Calendar calendar() const;
         #ifndef QL_DISABLE_DEPRECATED
         const Date& todaysDate() const;
@@ -77,10 +77,6 @@ namespace QuantLib {
         maxDate_ = QL_MIN(dividendTS_->maxDate(),
                           riskFreeTS_->maxDate());
         maxDate_ = QL_MIN(maxDate_, blackVolTS_->maxDate());
-    }
-
-    inline DayCounter DriftTermStructure::dayCounter() const {
-        return riskFreeTS_->dayCounter();
     }
 
     inline Calendar DriftTermStructure::calendar() const {

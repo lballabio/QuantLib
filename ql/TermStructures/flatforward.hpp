@@ -61,7 +61,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter);
 
         // inspectors
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
       protected:
         Rate zeroYieldImpl(Time) const;
@@ -125,10 +125,6 @@ namespace QuantLib {
                                     const DayCounter& dayCounter)
     : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
-    }
-
-    inline DayCounter FlatForward::dayCounter() const {
-        return dayCounter_;
     }
 
     inline Date FlatForward::maxDate() const {

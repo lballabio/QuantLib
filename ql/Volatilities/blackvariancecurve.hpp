@@ -51,7 +51,7 @@ namespace QuantLib {
                            const DayCounter& dayCounter = Actual365Fixed());
         //! \name BlackVolTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -86,10 +86,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline DayCounter BlackVarianceCurve::dayCounter() const {
-        return dayCounter_;
-    }
 
     inline Date BlackVarianceCurve::maxDate() const {
         return maxDate_;

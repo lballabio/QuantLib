@@ -93,7 +93,7 @@ namespace QuantLib {
         //@}
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         const std::vector<Date>& dates() const;
         Date maxDate() const;
         const std::vector<Time>& times() const;
@@ -131,10 +131,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    inline DayCounter PiecewiseFlatForward::dayCounter() const {
-        return dayCounter_;
-    }
 
     inline const std::vector<Date>& PiecewiseFlatForward::dates() const {
         calculate();

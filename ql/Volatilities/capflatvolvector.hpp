@@ -61,7 +61,7 @@ namespace QuantLib {
                             const std::vector<Volatility>& volatilities,
                             const DayCounter& dayCounter = Thirty360());
         // inspectors
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         // observability
         void update();
       private:
@@ -133,10 +133,6 @@ namespace QuantLib {
         volatilities_[0] = vols[0];
         std::copy(vols.begin(),vols.end(),volatilities_.begin()+1);
         interpolate();
-    }
-
-    inline DayCounter CapVolatilityVector::dayCounter() const {
-        return dayCounter_;
     }
 
     inline void CapVolatilityVector::update() {

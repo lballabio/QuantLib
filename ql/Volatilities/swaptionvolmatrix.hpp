@@ -48,7 +48,7 @@ namespace QuantLib {
                                  const Matrix& volatilities,
                                  const DayCounter& dayCounter = Thirty360());
         // inspectors
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         const std::vector<Date>& exerciseDates() const;
         const std::vector<Period>& lengths() const;
       private:
@@ -95,10 +95,6 @@ namespace QuantLib {
                                        timeLengths_.begin(),
                                        timeLengths_.end(),
                                        volatilities_);
-    }
-
-    inline DayCounter SwaptionVolatilityMatrix::dayCounter() const {
-        return dayCounter_;
     }
 
     inline const std::vector<Date>&

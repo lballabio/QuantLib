@@ -81,7 +81,7 @@ namespace QuantLib {
         Calendar calendar() const;
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         boost::shared_ptr<YieldTermStructure> termStructure() const;
         //@}
       private:
@@ -125,10 +125,6 @@ namespace QuantLib {
 
     inline BusinessDayConvention Xibor::businessDayConvention() const {
         return convention_;
-    }
-
-    inline DayCounter Xibor::dayCounter() const {
-        return dayCounter_;
     }
 
     inline boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const {

@@ -49,7 +49,7 @@ namespace QuantLib {
                          const DayCounter& dayCounter = Actual365Fixed());
         //! \name BlackVolTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -103,10 +103,6 @@ namespace QuantLib {
     : BlackVolatilityTermStructure(settlementDays,calendar),
       volatility_(volatility), dayCounter_(dayCounter) {
         registerWith(volatility_);
-    }
-
-    inline DayCounter BlackConstantVol::dayCounter() const {
-        return dayCounter_;
     }
 
     inline Date BlackConstantVol::maxDate() const {

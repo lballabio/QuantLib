@@ -57,9 +57,7 @@ namespace QuantLib {
                              const DayCounter& dayCounter = Actual365Fixed());
         //! \name BlackVolTermStructure interface
         //@{
-        DayCounter dayCounter() const {
-            return dayCounter_;
-        }
+        DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const {
             return maxDate_;
         }

@@ -44,7 +44,7 @@ namespace QuantLib {
                               const Date& referenceDate);
         //! \name BlackVolTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return originalTS_->dayCounter(); }
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -67,10 +67,6 @@ namespace QuantLib {
                               const Date& referenceDate)
     : BlackVarianceTermStructure(referenceDate), originalTS_(originalTS) {
         registerWith(originalTS_);
-    }
-
-    inline DayCounter ImpliedVolTermStructure::dayCounter() const {
-        return originalTS_->dayCounter();
     }
 
     inline Date ImpliedVolTermStructure::maxDate() const {

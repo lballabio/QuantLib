@@ -44,7 +44,7 @@ namespace QuantLib {
                   const std::vector<Rate>& yields,
                   const DayCounter& dayCounter = Actual365Fixed());
         // inspectors
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         Calendar calendar() const;
         const std::vector<Date>& dates() const;
         Date maxDate() const;
@@ -61,10 +61,6 @@ namespace QuantLib {
     };
 
     // inline definitions
-
-    inline DayCounter ZeroCurve::dayCounter() const {
-        return dayCounter_;
-    }
 
     inline Calendar ZeroCurve::calendar() const {
         return Calendar();

@@ -46,7 +46,7 @@ namespace QuantLib {
         //! \name Coupon interface
         //@{
         Rate rate() const;
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         Real accruedAmount(const Date&) const;
         //@}
         //! \name Visitability
@@ -67,10 +67,6 @@ namespace QuantLib {
 
     inline Rate FixedRateCoupon::rate() const {
         return rate_;
-    }
-
-    inline DayCounter FixedRateCoupon::dayCounter() const {
-        return dayCounter_;
     }
 
     inline Real FixedRateCoupon::accruedAmount(const Date& d) const {

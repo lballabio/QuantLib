@@ -52,7 +52,7 @@ namespace QuantLib {
         //@}
         //! \name Coupon interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         //@}
         //! \name FloatingRateCoupon interface
         //@{
@@ -119,10 +119,6 @@ namespace QuantLib {
         return index_->fixing(fixingDate()) + spread();
     }
     #endif
-
-    inline DayCounter IndexedCoupon::dayCounter() const {
-        return dayCounter_;
-    }
 
     inline Real IndexedCoupon::amount() const {
         return rate() * accrualPeriod() * nominal();

@@ -45,7 +45,7 @@ namespace QuantLib {
                                      const Handle<Quote>& spread);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return originalCurve_->dayCounter(); }
         Calendar calendar() const;
         #ifndef QL_DISABLE_DEPRECATED
         const Date& todaysDate() const;
@@ -73,10 +73,6 @@ namespace QuantLib {
     : originalCurve_(h), spread_(spread) {
         registerWith(originalCurve_);
         registerWith(spread_);
-    }
-
-    inline DayCounter ForwardSpreadedTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
     }
 
     inline Calendar ForwardSpreadedTermStructure::calendar() const {

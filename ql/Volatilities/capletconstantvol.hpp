@@ -44,7 +44,7 @@ namespace QuantLib {
                                  const DayCounter& dayCounter = Actual365Fixed());
         //! \name BaseTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return dayCounter_; }
         //@}
       protected:
         //! \name CapletVolatilityStructure interface
@@ -98,10 +98,6 @@ namespace QuantLib {
     : CapletVolatilityStructure(settlementDays,calendar),
       volatility_(volatility), dayCounter_(dayCounter) {
         registerWith(volatility_);
-    }
-
-    inline DayCounter CapletConstantVolatility::dayCounter() const {
-        return dayCounter_;
     }
 
     inline Volatility CapletConstantVolatility::volatilityImpl(

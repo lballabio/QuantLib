@@ -55,7 +55,7 @@ namespace QuantLib {
                              const Date& referenceDate);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const { return originalCurve_->dayCounter(); }
         Calendar calendar() const;
         Date maxDate() const;
         //@}
@@ -85,10 +85,6 @@ namespace QuantLib {
                                           const Date& referenceDate)
     : DiscountStructure(referenceDate), originalCurve_(h) {
         registerWith(originalCurve_);
-    }
-
-    inline DayCounter ImpliedTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
     }
 
     inline Calendar ImpliedTermStructure::calendar() const {

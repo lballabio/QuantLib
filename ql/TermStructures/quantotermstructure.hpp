@@ -50,7 +50,9 @@ namespace QuantLib {
                        Real underlyingExchRateCorrelation);
         //! \name YieldTermStructure interface
         //@{
-        DayCounter dayCounter() const;
+        DayCounter dayCounter() const {
+            return underlyingDividendTS_->dayCounter();
+        }
         Calendar calendar() const;
         #ifndef QL_DISABLE_DEPRECATED
         const Date& todaysDate() const;
@@ -101,10 +103,6 @@ namespace QuantLib {
         maxDate_ = QL_MIN(maxDate_, underlyingBlackVolTS_->maxDate());
         maxDate_ = QL_MIN(maxDate_, exchRateBlackVolTS_->maxDate());
 
-    }
-
-    inline DayCounter QuantoTermStructure::dayCounter() const {
-        return underlyingDividendTS_->dayCounter();
     }
 
     inline Calendar QuantoTermStructure::calendar() const {
