@@ -11,6 +11,7 @@ libPricers_la_SOURCES = \
     averagestrikeasian.cpp \
     barrieroption.cpp \
     binaryoption.cpp    \
+    bermudanoption.cpp \
     bsmeuropeanoption.cpp \
     bsmnumericaloption.cpp \
     bsmoption.cpp \

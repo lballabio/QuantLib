@@ -5,6 +5,7 @@ include_HEADERS = americancondition.h \
     americanoption.h \
     barrieroption.h \
     binaryoption.h \
+    bermudanoption.h \
     bsmeuropeanoption.h \
     bsmnumericaloption.h \
     bsmoption.h \
