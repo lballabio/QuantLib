@@ -18,29 +18,7 @@
 #ifndef quantlib_config_msvc_h
 #define quantlib_config_msvc_h
 
-/*************************************************************
-   User configuration section:
-   modify the following definitions to suit your preferences.
- *************************************************************/
-
-/* Define this if the Boost library is available. */
-// #define HAVE_BOOST 1
-
-/* Define this if error messages should include file and line information. */
-// #define QL_ERROR_LINES 1
-
-/* Define this if negative yield rates should be allowed. This might not be
-   safe. */
-// #define QL_NEGATIVE_RATES 1
-
-/* Define this if extra safety checks should be performed. This can degrade
-   performance. */
-// #define QL_EXTRA_SAFETY_CHECKS 1
-
-/* Define this if payments occurring today should enter the NPV of an
-   instrument. */
-// #define QL_TODAYS_PAYMENTS 1
-
+#include <ql/userconfig.hpp>
 
 /*******************************************
    System configuration section:

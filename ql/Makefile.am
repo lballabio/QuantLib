@@ -29,7 +29,8 @@ EXTRA_DIST= \
 	config.bcc.hpp \
 	config.msvc.hpp \
 	config.mwcw.hpp \
-	makefile.mak
+	makefile.mak \
+	userconfig.hpp
 
 include_HEADERS = \
 	argsandresults.hpp \
