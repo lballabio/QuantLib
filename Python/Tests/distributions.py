@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.6  2001/03/05 17:18:21  lballabio
+    Using math.pi
+
     Revision 1.5  2001/02/22 14:27:26  lballabio
     Implemented new test framework
 
@@ -43,17 +46,17 @@
 
 from QuantLib import *
 from TestUnit import TestUnit
-from math import exp, sqrt
+from math import exp, sqrt, pi
 
 
 # define a Gaussian
 def gaussian(x, average, sigma):
-    normFact = sigma * sqrt( 2 * 3.14159265358979323846 )
+    normFact = sigma * sqrt( 2 * pi )
     dx = x-average
     return exp( -dx*dx/(2.0*sigma*sigma) ) / normFact
 
 def gaussianDerivative(x, average, sigma):
-    normFact = sigma * sigma * sigma * sqrt( 2 * 3.14159265358979323846 )
+    normFact = sigma * sigma * sigma * sqrt( 2 * pi )
     dx = x-average
     return - dx * exp( -dx*dx/(2.0*sigma*sigma) ) / normFact
 
@@ -108,7 +111,7 @@ class DistributionTest(TestUnit):
           % e
         )
         if e > 1e-16:
-            raise "Tolerance exceeded"
+            raise Exception, "tolerance exceeded"
         
         #check invCum(cum) = Identity
         e = norm(map(lambda x,y:x-y,xTemp,x),h)
@@ -117,7 +120,7 @@ class DistributionTest(TestUnit):
           % e
         )
         if e > 1e-3:
-            raise "Tolerance exceeded"
+            raise Exception, "tolerance exceeded"
         
         #check cum.derivative=normal
         e = norm(map(lambda x,y:x-y,y2Temp,y),h)
@@ -126,7 +129,7 @@ class DistributionTest(TestUnit):
           % e
         )
         if e > 1e-16:
-            raise "Tolerance exceeded"
+            raise Exception, "tolerance exceeded"
         
         #check normal.derivative=gaussianDerivative
         e = norm(map(lambda x,y:x-y,ydTemp,yd),h)
@@ -135,7 +138,7 @@ class DistributionTest(TestUnit):
           % e
         )
         if e > 1e-16:
-            raise "Tolerance exceeded"
+            raise Exception, "tolerance exceeded"
         
         # ... and now let's toy with finite difference
         # define the first derivative operators
@@ -152,7 +155,7 @@ class DistributionTest(TestUnit):
           % e
         )
         if e > 1e-6:
-            raise "Tolerance exceeded"
+            raise Exception, "tolerance exceeded"
         
         # check finite difference second order derivative operator = 
         # normal.derivative
@@ -162,7 +165,7 @@ class DistributionTest(TestUnit):
           % e
         )
         if e > 1e-4:
-            raise "Tolerance exceeded"
+            raise Exception, "tolerance exceeded"
 
 
 if __name__ == '__main__':
