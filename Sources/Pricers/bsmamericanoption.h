@@ -22,15 +22,15 @@ QL_BEGIN_NAMESPACE(Pricers)
 class BSMAmericanOption : public BSMNumericalOption {
   public:
 	// constructor
-	BSMAmericanOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
+	BSMAmericanOption(Type type, double underlying, double strike, Yield underlyingGrowthRate, 
 	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
 	: BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
 	  gridPoints), theTimeSteps(timeSteps) {}
 	// accessors
 	double value() const;
-	int  theTimeSteps;
+  private:
+	int theTimeSteps;
 };
-
 
 QL_END_NAMESPACE(Pricers)
 

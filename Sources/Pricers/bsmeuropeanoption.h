@@ -9,23 +9,20 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #define BSM_european_option_pricer_h
 
 #include "qldefines.h"
-#include "bsmnumericaloption.h"
+#include "bsmoption.h"
 
 QL_BEGIN_NAMESPACE(QuantLib)
 
 QL_BEGIN_NAMESPACE(Pricers)
 
-class BSMEuropeanOption : public BSMNumericalOption {
+class BSMEuropeanOption : public BSMOption {
   public:
 	// constructor
-	BSMEuropeanOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
-	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
-	: BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
-	  gridPoints), theTimeSteps(timeSteps)  {}
+	BSMEuropeanOption(Type type, double underlying, double strike, Yield underlyingGrowthRate, 
+	  Yield riskFreeRate, Time residualTime, double volatility)
+	  : BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility) {}
 	// accessors
 	double value() const;
-  private:
-	int  theTimeSteps;
 };
 
 

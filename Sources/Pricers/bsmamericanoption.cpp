@@ -6,6 +6,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 */
 
 #include "bsmamericanoption.h"
+#include "bsmeuropeanoption.h"
 #include "finitedifferencemodel.h"
 #include "cranknicolson.h"
 
@@ -21,15 +22,21 @@ QL_USING(Operators,TridiagonalOperator)
 double BSMAmericanOption::value() const {
 	if (!hasBeenCalculated) {
 		FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> > model(theOperator);
-		// uncomment for control-variate variance reduction:
-		// Array theEuroPrices = thePrices;
+		// Control-variate variance reduction:
+		// 1) calculate the value of the European option numerically
+		Array theEuroPrices = thePrices;
+		model.rollback(theEuroPrices,theResidualTime,0.0,theTimeSteps);
+		double numericEuropean = valueAtCenter(theEuroPrices);
+		// 2) calculate the value of the European option analytically
+		double analyticEuropean = BSMEuropeanOption(theType,theUnderlying,theStrike,theUnderlyingGrowthRate, 
+		  theRiskFreeRate,theResidualTime,theVolatility).value();
+		// 3) calculate the value of the American option numerically on the same grid
 		model.rollback(thePrices,theResidualTime,0.0,theTimeSteps,
-		  Handle<StepCondition<Array> >(new BMSAmericanCondition(thePrices)));
-		// uncomment for variance reduction:
-		// model.rollback(theEuroPrices,theResidualTime,0.0,theTimeSteps);
-		theValue = valueAtCenter(thePrices);
-		// uncomment and substitute to the above for variance reduction:
-		// theValue = valueAtCenter(thePrices)-valueAtCenter(theEuroPrices)+analyticEuropeanValue;
+		  Handle<StepCondition<Array> >(new BSMAmericanCondition(thePrices)));
+		double numericAmerican = valueAtCenter(thePrices);
+		// 4) combine the results
+		theValue = numericAmerican-numericEuropean+analyticEuropean;
+		hasBeenCalculated = true;
 	}
 	return theValue;
 }

@@ -15,16 +15,15 @@ QL_BEGIN_NAMESPACE(Pricers)
 QL_USING(PDE,BoundaryCondition)
 QL_USING(Operators,BSMOperator)
 
-BSMNumericalOption::BSMNumericalOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
-  Yield riskFreeRate, Time residualTime, double volatility, int gridPoints)
-: theType(type), theUnderlying(underlying), theStrike(strike), theUnderlyingGrowthRate(underlyingGrowthRate), 
-  theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), theVolatility(volatility), 
+BSMNumericalOption::BSMNumericalOption(BSMOption::Type type, double underlying, double strike, 
+  Yield underlyingGrowthRate, Yield riskFreeRate, Time residualTime, double volatility, int gridPoints)
+: BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility), 
   theGridPoints(gridPoints) {
-  	// common setup
-  	setGridLimits();
-  	initializeGrid();
-  	initializeInitialCondition();
-  	initializeOperator();
+	// common setup
+	setGridLimits();
+	initializeGrid();
+	initializeInitialCondition();
+	initializeOperator();
 	hasBeenCalculated = false;
 }
 
@@ -60,15 +59,15 @@ void BSMNumericalOption::initializeInitialCondition() {
 	thePrices = Array(theGridPoints);
 	int j;
 	switch (theType) {
-	  case Option::Call:
+	  case Call:
 		for(j=0; j<theGridPoints; j++)
 			thePrices[j] = QL_MAX(theGrid[j]-theStrike,0.0);
 		break;
-	  case Option::Put:
+	  case Put:
 		for(j=0; j<theGridPoints; j++)
 			thePrices[j] = QL_MAX(theStrike-theGrid[j],0.0);
 		break;
-	  case Option::Straddle:
+	  case Straddle:
 		for(j=0; j<theGridPoints; j++)
 			thePrices[j] = QL_FABS(theStrike-theGrid[j]);
 		break;
