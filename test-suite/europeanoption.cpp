@@ -923,6 +923,15 @@ void EuropeanOptionTest::testImpliedVolContainment() {
                    DoubleFormatter::toString(refValue,8) + "\n"
                    "current value:  " +
                    DoubleFormatter::toString(option2->NPV(),8)); 
+
+    vol->setValue(0.30);
+
+    if (!f.isUp())
+        BOOST_FAIL("volatility change not notified");
+
+    if (QL_FABS(option2->NPV() - refValue) <= 1.0e-8)
+        BOOST_FAIL("volatility change did not cause the value to change"); 
+
 }
 
 
