@@ -63,7 +63,7 @@ int main() {
     runner.addTest(new DistributionTest);
     runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(InstrumentTest::suite());
-    runner.addTest(new IntegralTest);
+    runner.addTest(IntegralTest::suite());
     runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
     runner.addTest(new MatricesTest());

@@ -19,11 +19,16 @@
 #define quantlib_test_integrals_hpp
 
 #include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
 
-class IntegralTest : public CppUnit::TestCase {
+class IntegralTest : public CppUnit::TestFixture {
   public:
-    IntegralTest() : CppUnit::TestCase("Testing numerical integration") {}
-    void runTest();
+    void testSegment();
+    void testTrapezoid();
+    void testMidPointTrapezoid();
+    void testSimpson();
+    void testKronrod();
+    static CppUnit::Test* suite();
 };
 
 

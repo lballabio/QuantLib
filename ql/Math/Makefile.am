@@ -29,10 +29,12 @@ include_HEADERS = \
 	riskstatistics.hpp \
 	segmentintegral.hpp \
 	sequencestatistics.hpp \
+	simpsonintegral.hpp \
 	statistics.hpp \
 	symmetriceigenvalues.hpp \
 	symmetricschurdecomposition.hpp \
-	svd.hpp
+	svd.hpp \
+	trapezoidintegral.hpp
 
 EXTRA_DIST=makefile.mak
 
