@@ -21,49 +21,15 @@
  * available at http://quantlib.org/group.html
 */
 
-/*
-    $Id$
+/* \file Parities.cpp
+   \brief Example on pricing european option with different methods.
+
 */
 
-// $Source$
+// $Id$
 // $Log$
-// Revision 1.10  2001/08/08 12:07:12  marmar
-// Modifications after changes in Monte Carlo interface
-//
-// Revision 1.9  2001/08/07 17:33:03  nando
-// 1) StandardPathGenerator now is GaussianPathGenerator;
-// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
-// 3) PathMonteCarlo now is MonteCarloModel;
-// 4) added ICGaussian, a Gaussian distribution that use
-//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
-//    distribution extractions into gaussian distribution extractions;
-// 5) added a few trailing underscore to private members
-// 6) style enforced here and there ....
-//
-// Revision 1.8  2001/08/07 11:25:52  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.6  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.5  2001/07/16 22:24:51  dzuki
-// Minor style fixes
-//
-// Revision 1.4  2001/07/16 21:57:11  dzuki
-// Added option surplus integral test
-//
-// Revision 1.3  2001/07/16 16:12:02  nando
-// style and typo fixed
-//
-// Revision 1.2  2001/07/15 08:34:53  nando
-// feedback to Maxim's example
-//
-// Revision 1.1  2001/07/15 00:12:55  dzuki
-// Added "Parities" example
+// Revision 1.11  2001/08/08 16:02:33  nando
+// refactoring .... not finished yet
 //
 
 #include "stdlib.h"
@@ -73,171 +39,220 @@
 
 using namespace std;
 
-using namespace QuantLib;
-using namespace QuantLib::Pricers;
-using namespace QuantLib::MonteCarlo;
+// Rate and Time are just double, but having their own types allows for
+// a stonger check at compile time
+using QuantLib::Rate;
+using QuantLib::Time;
+
+// Option is a helper class that holds the enumeration {Call, Put, Straddle}
+using QuantLib::Option;
+
+// Handle is the QuantLib way to have reference-counted objects
+using QuantLib::Handle;
+
+// class for statistical analysis
+using QuantLib::Math::Statistics;
+
+// single Path of a random variable
+// It contains the list of variations
+using QuantLib::MonteCarlo::Path;
+
+// the pricer computes final portfolio's value for each random variable path
+using QuantLib::MonteCarlo::PathPricer;
+
+// the path generator
+using QuantLib::MonteCarlo::GaussianPathGenerator;
+
+// the Montecarlo pricing model for option on a single asset
+using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
+
+using QuantLib::MonteCarlo::EuropeanPathPricer;
+using QuantLib::Pricers::EuropeanOption;
+using QuantLib::Pricers::FiniteDifferenceEuropean;
+
+// to format the output of doubles
+using QuantLib::DoubleFormatter;
 
 
-class TestMethodsAndParity
+// ????
+// I need to understand the following
+// ????
+double optionSurplusIntegral(Time maturity_,
+        	                 double strike_,
+	                         double s0_,
+	                         double sigma_,
+	                         Rate r_)
 {
-public:
-	TestMethodsAndParity(Time maturity,
-	                     double strike,
-	                     double s0,
-	                     double sigma,
-	                     Rate r)
-	{
-		maturity_ = maturity;
-		strike_ = strike;
-		s0_ = s0;
-		sigma_ = sigma;
-		r_ = r;
-		standardValue_ = europeanCallFormula();
+	const int NY = 500;
+	const double y0 = QL_LOG(s0_/2000);
+	const double y1 = QL_LOG(s0_*40);
+	const double dy = (y1-y0)/(NY-1);
+
+	int i = 0;
+	double sum = 0.0;
+
+	double discount = QL_EXP(-r_*maturity_);
+	for(double y = y0; y <= y1; y += dy, ++i) {
+		double s0 = QL_EXP(y);
+		double ds = (EuropeanOption(Option::Call, s0, strike_, 0.0,
+									r_, maturity_, sigma_).value()
+				 - QL_MAX(s0 - discount*strike_,0.0)
+			   )*dy;
+		sum += ds;
 	}
-
-	void doTest()
-	{
-		cout<<"Computes European call option value\n\n";
-		cout<<"Time to maturity = "<<maturity_<<"\t Underlying price = "<<s0_
-			<<"\t Strike = "<< strike_<<"\nRisk-free interest rate = "<< r_
-			<<"\t Volatility = "<<sigma_;
-		cout<<"\n";
-
-		printResult("Using call-put parity", europeanPutFormula() +
-		    s0_ - strike_*QL_EXP(- r_*maturity_));
-		printResult("Monte-Carlo method", europeanCallMC());
-		printResult("FiniteDifference method", europeanCallFD());
-
-		testOptionSurplusIntegral();
-	}
-
-	void printResult(string method,  double v)
-	{
-		double err = QL_FABS(standardValue_ - v);
-		cout<<"\n"<< method <<"\n";
-		cout<<" Value = "<< v << "\tError = "<< err;
-		cout<<" \tRelative error:";
-		if( QL_FABS(standardValue_) > 1e-16 )
-			cout<<err/standardValue_;
-		else
-			cout<<" not computed";
-		cout<<"\n";
-	}
-
-protected:
-	double europeanCallFormula()
-	{
-		//  EuropeanOption(Type type, double underlying, double strike,
-        //                Rate dividendYield, Rate riskFreeRate,
-        //                Time residualTime, double volatility)
-
-		return EuropeanOption(Option::Call, s0_, strike_, 0.0,
-			r_, maturity_, sigma_).value();
-	}
-
-	double europeanPutFormula()
-	{
-		return EuropeanOption(Option::Put, s0_, strike_, 0.0,
-			r_, maturity_, sigma_).value();
-	}
-
-    // MonteCarlo
-	double europeanCallMC(int nTimeSteps = 100, int nSamples = 100000)
-	{
-		double tau = maturity_ / nTimeSteps;
-		double sigma = sigma_* sqrt(tau);
-		double mean = r_ * tau - 0.5*sigma*sigma;
-		Math::Statistics samples;
-
-		OneFactorMonteCarloOption mc(
-					Handle<GaussianPathGenerator>(
-					    new GaussianPathGenerator(nTimeSteps,
-					                              mean,
-					                              sigma*sigma)),
-					Handle<PathPricer>(new EuropeanPathPricer(
-						Option::Type::Call,
-						s0_, strike_, exp(-r_*maturity_))),
-					samples
-					);
-        mc.addSamples(nSamples);
-        return mc.sampleAccumulator().mean();
+    return sum;
+}
 
 
-	}
 
-    double europeanCallFD(int gridPoints = 100)  // Finite differences
-	{
-		return FiniteDifferenceEuropean(Option::Call, s0_, strike_, 0.0,
-			r_, maturity_, sigma_, 100).value();
-	}
+int main(int argc, char* argv[])
+{
 
-	//  Option calculus analogy to energy conservation in heat diffusion equation
+    // our option
+    double underlying = 100;
+    double strike = 100;      // at the money
+    Rate dividendYield = 0.0; // no dividends
+    Rate riskFreeRate = 0.05; // 5%
+    Time maturity = 1.0;      // 1 year
+    double volatility = 0.20; // 20%
+    cout << "Time to maturity = "        << maturity     << endl;
+    cout << "Underlying price = "        << underlying   << endl;
+	cout << "Strike = "                  << strike       << endl;
+    cout << "Risk-free interest rate = " << riskFreeRate << endl;
+	cout << "Volatility = "              << volatility   << endl;
+    cout << endl;
+
+    // write column headings
+    cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
+        "\tRel. Discr." << endl;
+
+
+    
+    // first method: Black Scholes analytic solution    
+    string method ="Black Scholes";
+    double value = EuropeanOption(Option::Call, underlying, strike,
+        dividendYield, riskFreeRate, maturity, volatility).value();
+    double estimatedError = 0.0;
+    double discrepancy = 0.0;
+    double relativeDiscrepancy = 0.0;
+    cout << method << "\t" 
+         << DoubleFormatter::toString(value, 4) << "\t"
+         << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
+         << DoubleFormatter::toString(discrepancy, 6) << "\t"
+         << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+
+
+    // store the Black Scholes value as the correct one    
+    double rightValue = value;
+
+
+
+
+
+    // second method: Call-Put parity    
+    method ="Call-Put parity";
+    value = EuropeanOption(Option::Put, underlying, strike,
+        dividendYield, riskFreeRate, maturity, volatility).value()
+        + underlying - strike*QL_EXP(- riskFreeRate*maturity);
+    estimatedError = 0.0;
+    discrepancy = value-rightValue;
+    relativeDiscrepancy = discrepancy/rightValue;
+    cout << method << "\t" 
+         << DoubleFormatter::toString(value, 4) << "\t"
+         << "N/A\t\t"
+         << discrepancy << "\t"
+         << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+
+
+
+
+
+    // third method: Finite Differences    
+    method ="Finite Diff.";
+    int grid = 100;
+    value = FiniteDifferenceEuropean(Option::Call, underlying, strike,
+        dividendYield, riskFreeRate, maturity, volatility, grid).value();
+    estimatedError = 0.0;
+    discrepancy = value-rightValue;
+    relativeDiscrepancy = discrepancy/rightValue;
+    cout << method << "\t" 
+         << DoubleFormatter::toString(value, 4) << "\t"
+         << "N/A\t\t"
+         << DoubleFormatter::toString(discrepancy, 6) << "\t"
+         << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+
+
+
+
+
+    // third method: MonteCarlo  
+    method ="MonteCarlo";
+    // for plain vanilla european option the number of steps is not significant
+    // let's go for the fastest way: just one step
+    int nTimeSteps = 1;
+    int nSamples = 100000;
+	double tau = maturity/nTimeSteps;
+	double sigma = volatility* sqrt(tau);
+	double mean = riskFreeRate * tau - 0.5*sigma*sigma;
+	Statistics samples;
+    Handle<GaussianPathGenerator> myPathGenerator(
+        new GaussianPathGenerator(nTimeSteps, mean, sigma*sigma));
+    // The European path pricer
+    Handle<PathPricer> myEuropeanPathPricer =
+        Handle<PathPricer>(new EuropeanPathPricer(Option::Type::Call,
+        underlying, strike, exp(-riskFreeRate*maturity)));
+    // The OneFactorMontecarloModel generates paths using myPathGenerator
+    // each path is priced using myPathPricer
+    // prices will be accumulated into samples
+	OneFactorMonteCarloOption mc(myPathGenerator, myEuropeanPathPricer,
+		samples);
+    // the model simulates nSamples paths
+    mc.addSamples(nSamples);
+    // the sampleAccumulator method of OneFactorMonteCarloOption
+    // gives access to all the methods of statisticAccumulator
+    value = mc.sampleAccumulator().mean();
+    estimatedError = mc.sampleAccumulator().errorEstimate();
+    discrepancy = value-rightValue;
+    relativeDiscrepancy = discrepancy/rightValue;
+    cout << method << "\t" 
+         << DoubleFormatter::toString(value, 4) << "\t"
+         << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
+         << DoubleFormatter::toString(discrepancy, 6) << "\t"
+         << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+
+
+
+
+    // ????
+    // I need to understand the following
+    // ????
     //
-    //  Function computes   
-    //          Integral[ OptionValue[Log[underlyingPrice]] - 
+    //  Option calculus analogy to energy conservation in heat diffusion
+	//  equation
+    //  Function computes
+    //          Integral[ OptionValue[Log[underlyingPrice]] -
     //                  - Max[underlyingPrice - Exp[- r*T] * strike, 0],
     //                  d(Log[underlyingPrice]), - inf, +inf]
     //
     //  should be equal for Eropean Call to
     //      1/2*sigma^2*T*Exp[-r*T]*strike
     //
+    double theory = 1./2. * volatility*volatility * strike *
+                    maturity * QL_EXP(- riskFreeRate*maturity);
 
-    double optionSurplusIntegral(double t)
-	{
-		const int NY = 500;
-		const double y0 = QL_LOG(s0_/2000);
-		const double y1 = QL_LOG(s0_*40);
-		const double dy = (y1-y0)/(NY-1);
-
-		int i = 0;
-		double sum = 0.0;
-       
-		double discount = QL_EXP(-r_*t);
-		for(double y = y0; y <= y1; y += dy, ++i) {
-			double s0 = QL_EXP(y);
-			double ds = (EuropeanOption(Option::Call, s0, strike_, 0.0,
-										r_, t, sigma_).value()
-					 - QL_MAX(s0 - discount*strike_,0.0)
-				   )*dy;
-			sum += ds;
-		}
-        return sum;
-	}
-    
-    void testOptionSurplusIntegral()
-    {
-        double theory = 1./2. * sigma_*sigma_ * strike_ * 
-                        maturity_ * QL_EXP(- r_*maturity_);
-
-        double integral = optionSurplusIntegral(maturity_);
-        cout<<"\nOption surplus integral: \n";
-        cout<<"Integral value: "<<integral<<"\t Theoretical value: "<<theory;
-        double err = QL_FABS(integral - theory);
-        cout<<"\t Error: "<<err;
-        cout<<"\t Relative error: ";
-        if(QL_FABS(theory)>1e-16) 
-            cout<<err/theory;
-        else
-            cout<<"not computed";
-        cout<<"\n";
-    }
-private:
-	double standardValue_;
-
-	double	s0_;
-	double	strike_;
-	Time	maturity_;
-	double	sigma_;
-	Rate	r_;
-};
+    double integral = optionSurplusIntegral(maturity, strike, underlying,
+        volatility, riskFreeRate);
+    cout<<"\nOption surplus integral: \n";
+    cout<<"Integral value: "<<integral<<"\t Theoretical value: "<<theory;
+    double err = QL_FABS(integral - theory);
+    cout<<"\t Error: "<<err;
+    cout<<"\t Relative error: ";
+    if(QL_FABS(theory)>1e-16)
+        cout<<err/theory;
+    else
+        cout<<"not computed";
+    cout<<"\n";
 
 
-
-int main(int argc, char* argv[])
-{
-	// 1-year at the money call, volatility 20%, risk-free rate 5%
-	// underlying price 100.0, strike price 100.0
-	TestMethodsAndParity test(1., 100., 100., 0.2, 0.05);
-	test.doTest();
 	return 0;
 }
