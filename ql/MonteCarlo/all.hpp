@@ -23,6 +23,6 @@
 
 #include <ql/MonteCarlo/brownianbridge.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
-#include <ql/MonteCarlo/mctraits.hpp>
+
 
 #endif
