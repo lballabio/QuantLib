@@ -22,143 +22,258 @@
 */
 
 /*! \file HedgingError.cpp
-    \brief Example about using Montecarlo Path Pricer
+    \brief Example about using QuantLib Montecarlo Tools
 
-    \fullpath Examples/HedgingError/HedgingError.cpp
+    This example computes profit and loss of a discrete interval hedging
+    strategy and compares with the results of Derman & Kamal's (Goldman Sachs
+    Equity Derivatives Research) Research Note: "When You Cannot Hedge
+    Continuously: The Corrections to Black-Scholes"
+    (http://www.gs.com/qs/doc/when_you_cannot_hedge.pdf)
+
+    Suppose an option hedger sells an European option and receives the
+    Black-Scholes value as the options premium. Then he follows a Black-Scholes
+    hedging strategy, rehedging at discrete, evenly spaced time intervals as the
+    underlying stock changes. At expiration, the hedger delivers the option
+    payoff to the option holder, and unwinds the hedge. We are interested in
+    understanding the final profit or loss of this strategy.
+
+    If the hedger had followed the exact Black-Scholes replication strategy,
+    rehedging continuously as the underlying stock evolved towards its final
+    value at expiration, then, no matter what path the stock took, the final P&L
+    would be exactly zero. When the replication strategy deviates from the exact
+    Black-Scholes method, the final P&L may deviate from zero. This deviation is
+    called the replication error.
+
+    When the hedger rebalances at discrete rather than continuous intervals, the
+    hedge is imperfect and the replication is inexact. Sometimes this
+    imperfection favors the P&L, sometimes it penalizes it. The more often
+    hedging occurs, the smaller the replication error.
+
+    We examine the range of possibilities, computing the P&L distribution.
+
+    \fullpath Examples/HedgingError/%HedgingError.cpp
 */
 
+// $Id$
 // $Log$
-// Revision 1.9  2001/08/07 11:25:52  sigmud
-// copyright header maintenance
+// Revision 1.10  2001/08/07 12:03:29  nando
+// added comments, restructured
 //
-// Revision 1.8  2001/08/06 16:49:17  nando
-// 1) BSMFunction now is VolatilityFunction
-// 2) Introduced ExercisePayoff (to be reworked later)
-//
-// Revision 1.7  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.6  2001/07/27 17:28:31  nando
-// minor changes
-//
-// Revision 1.5  2001/07/27 16:47:25  nando
-// updated in order to compile with the new GeneralMontecarlo interface.
-//
-// Added comments, renamed variables, removed tabs (4 spaces),
-// style enforced.
-//
-// still to do:
-// 1) add hedgingerror.hpp
-// 2) avoid using namespace QuantLib in favour of
-//     using QuantLib::Rate
 
 #include "stdlib.h"
 #include <iostream>
-
 #include "ql\quantlib.hpp"
 
+
+// introducing the players ....
+
+// Rate and Time are just double, but having their own types allows for
+// a stonger check at compile time
 using QuantLib::Rate;
 using QuantLib::Time;
+
+// Option is a helper class that holds the enumeration {Call, Put, Straddle}
 using QuantLib::Option;
+
+// Handle is the QuantLib way to have reference counted objects
 using QuantLib::Handle;
+
+// helper function for option payoff: MAX((stike-underlying),0), etc.
 using QuantLib::Pricers::ExercisePayoff;
+
+// the classic Black Scholes analytic solution for European Option
 using QuantLib::Pricers::EuropeanOption;
+
+// class for statistical analysis
 using QuantLib::Math::Statistics;
+
+// single Path of a random variable
+// It contains the list of continuously-compounded variations
 using QuantLib::MonteCarlo::Path;
+
+// the pricer computes final portfolio's value for each random variable path
 using QuantLib::MonteCarlo::PathPricer;
+
+// the path generator
 using QuantLib::MonteCarlo::StandardPathGenerator;
+
+// the Montecarlo pricing model for option on a single asset
 using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
 
 
-class HedgeErrorPathPricer : public PathPricer
+/* The ReplicationError class carries out Monte Carlo simulations to evaluate
+   the outcome (the replication error) of the discrete hedging strategy over
+   different, randomly generated scenarios of future stock price evolution.
+*/
+class ReplicationError
 {
-  public:
-    HedgeErrorPathPricer():PathPricer(){}
-    HedgeErrorPathPricer(Option::Type type,
-                         double underlying,
-                         double strike,
-                         Rate r,
-                         Time maturity,
-                         double sigma);
-    double value(const Path &path) const;
-  protected:
+public:
+    ReplicationError(Option::Type type,
+                     Time maturity,
+                     double strike,
+                     double s0,
+                     double sigma,
+                     Rate r)
+    : type_(type), maturity_(maturity), strike_(strike), s0_(s0), sigma_(sigma),
+      r_(r) {
+
+        // value of the option
+        EuropeanOption option = EuropeanOption(type_, s0_, strike_, 0.0, r_,
+            maturity_, sigma_);
+        std::cout << "Option value: " << option.value() << std::endl;
+
+        // store option's vega, since Derman and Kamal's formula needs it
+        vega_ = option.vega();
+    }
+
+    // the actual replication error computation
+    void compute(int nTimeSteps, int nSamples);
+private:
     Option::Type type_;
-    Rate r_;
-    double underlying_, strike_, sigma_;
+    double s0_, strike_;
     Time maturity_;
+    double sigma_;
+    Rate r_;
+    double vega_;
 };
 
-HedgeErrorPathPricer::HedgeErrorPathPricer(Option::Type type,
-                                           double underlying,
-                                           double strike,
-                                           double r,
-                                           Time maturity,
-                                           double sigma)
-: type_(type),underlying_(underlying), strike_(strike), r_(r),
-  maturity_(maturity), sigma_(sigma)
+// The key for the MonteCarlo simulation is to have a PathPricer that
+// implements a value(const Path &path) method.
+// This method prices the portfolio for each Path of the random variable
+class ReplicationPathPricer : public PathPricer
 {
-    QL_REQUIRE(strike_ > 0.0,
-        "HedgeErrorPathPricer: strike must be positive");
-    QL_REQUIRE(underlying_ > 0.0,
-        "HedgeErrorPathPricer: underlying must be positive");
-    QL_REQUIRE(r_ >= 0.0, "HedgeErrorPathPricer: risk free rate (r) must"
-        " be positive or zero");
-    QL_REQUIRE(maturity_ > 0.0,
-        "HedgeErrorPathPricer: maturity must be positive");
-    QL_REQUIRE(sigma_ >= 0.0, "HedgeErrorPathPricer: volatility (sigma)"
-        " must be positive or zero");
+  public:
+    // default constructor
+    ReplicationPathPricer():PathPricer() {}
+    // real constructor
+    ReplicationPathPricer(Option::Type type,
+                          double underlying,
+                          double strike,
+                          Rate r,
+                          Time maturity,
+                          double sigma)
+    : type_(type),underlying_(underlying), strike_(strike), r_(r),
+      maturity_(maturity), sigma_(sigma) {
+        QL_REQUIRE(strike_ > 0.0,
+            "ReplicationPathPricer: strike must be positive");
+        QL_REQUIRE(underlying_ > 0.0,
+            "ReplicationPathPricer: underlying must be positive");
+        QL_REQUIRE(r_ >= 0.0, "ReplicationPathPricer: risk free rate (r) must"
+            " be positive or zero");
+        QL_REQUIRE(maturity_ > 0.0,
+            "ReplicationPathPricer: maturity must be positive");
+        QL_REQUIRE(sigma_ >= 0.0, "ReplicationPathPricer: volatility (sigma)"
+            " must be positive or zero");
 
-    isInitialized_ = true;
+        isInitialized_ = true;
+    }
+    // The value() method encapsulates the pricing code
+    double value(const Path &path) const;
+
+  private:
+    Option::Type type_;
+    double underlying_, strike_;
+    Rate r_;
+    Time maturity_;
+    double sigma_;
+};
+
+
+
+
+
+
+
+
+// Compute Replication Error as in the Derman and Kamal's research note
+int main(int argc, char* argv[])
+{
+    Time maturity = 1./12.;   // 1 month
+    double strike = 100;
+    double underlying = 100;
+    double volatility = 0.20; // 20%
+    Rate riskFreeRate = 0.05; // 5%
+    ReplicationError rp(Option::Type::Call, maturity, strike, underlying,
+        volatility, riskFreeRate);
+
+    int scenarios = 50000;
+    int hedgesNum;
+
+    hedgesNum = 21;
+    rp.compute(hedgesNum, scenarios);
+
+    hedgesNum = 84;
+    rp.compute(hedgesNum, scenarios);
+
+    return 0;
 }
 
-double HedgeErrorPathPricer::value(const Path & path) const
+
+/* The actual computation of the Profit&Loss for each single path.
+
+   In each scenario N rehedging trades spaced evenly in time over
+   the life of the option are carried out, using the Black-Scholes hedge ratio.
+*/
+double ReplicationPathPricer::value(const Path & path) const
 {
     QL_REQUIRE(isInitialized_,
-        "HedgeErrorPathPricer: pricer not initialized");
+        "ReplicationPathPricer: pricer not initialized");
 
+    // perche' n e' controllato qui e non in timeSteps ???
+    // un path non potrebbe controllare a costruttore di essere non nullo ?
     int n = path.size();
     QL_REQUIRE(n>0,
-        "HedgeErrorPathPricer: the path cannot be empty");
+        "ReplicationPathPricer: the path cannot be empty");
+
+    // For simplicity, we assume the stock pays no dividends.
+    double stockDividendYield = 0.0;
 
     // discrete hedging interval
-    double dt = maturity_/n;
+    Time dt = maturity_/n;
 
-    // initialize stock value at the start of the path
-    double stockLogGrowth = 0.0;
+    // let's start
+    Time t = 0;
+
+    // stock value at t=0
     double stock = underlying_;
+    double stockLogGrowth = 0.0;
 
+    // money account at t=0
+    double money_account = 0.0;
 
     /************************/
     /*** the initial deal ***/
     /************************/
-    // option value at the start of the path
-    EuropeanOption option = EuropeanOption(type_, stock, strike_, 0.0, r_,
-        maturity_, sigma_);
+    // option at t=0
+    EuropeanOption option = EuropeanOption(type_, stock, strike_,
+        stockDividendYield, r_, maturity_, sigma_);
     // sell the option, cash in its premium
-    double money_account = option.value();
+    money_account += option.value();
     // compute delta
     double delta = option.delta();
-    // delta-hedge the option
+    // delta-hedge the option buying stock
     double stockAmount = delta;
     money_account -= stockAmount*stock;
-
-
 
     /**********************************/
     /*** hedging during option life ***/
     /**********************************/
     for(int step = 0; step < n-1; step++){
+
+        // time flows
+        t += dt;
+
         // accruing on the money account
         money_account *= QL_EXP( r_*dt );
 
         // stock growth
+        // path contains the list of continuously-compounded variations
         stockLogGrowth += path[step];
         stock = underlying_*QL_EXP(stockLogGrowth);
 
         // recalculate option value
         EuropeanOption option = EuropeanOption(type_, stock, strike_,
-            0.0, r_, maturity_ - dt*(step+1), sigma_);
+            stockDividendYield, r_, maturity_-t, sigma_);
 
         // recalculate delta
         delta = option.delta();
@@ -167,8 +282,6 @@ double HedgeErrorPathPricer::value(const Path & path) const
         money_account -= (delta - stockAmount)*stock;
         stockAmount = delta;
     }
-
-
 
     /*************************/
     /*** option expiration ***/
@@ -179,115 +292,75 @@ double HedgeErrorPathPricer::value(const Path & path) const
     stockLogGrowth += path[n-1];
     stock = underlying_*QL_EXP(stockLogGrowth);
 
-    /*** final Profit&Loss valuation ***/
+    // the hedger delivers the option payoff to the option holder
     double optionPayoff = ExercisePayoff(type_, stock, strike_);
-    double profitLoss = stockAmount*stock + money_account - optionPayoff;
+    money_account -= optionPayoff;
 
-    return profitLoss;
+    // and unwinds the hedge selling his stock position
+    money_account += stockAmount*stock;
+
+    // final Profit&Loss
+    return money_account;
 }
 
-class ComputeHedgingError
+
+// The computation over nSamples paths of the P&L distribution
+void ReplicationError::compute(int nTimeSteps, int nSamples)
 {
-public:
-    ComputeHedgingError(Option::Type type,
-                        Time maturity,
-                        double strike,
-                        double s0,
-                        double sigma,
-                        Rate r)
-    {
-        type_ = type;
-        maturity_ = maturity;
-        strike_ = strike;
-        s0_ = s0;
-        sigma_ = sigma;
-        r_ = r;
+    QL_REQUIRE(nTimeSteps>0,
+        "ReplicationError::compute : the number of steps must be > 0");
 
-        EuropeanOption option = EuropeanOption(type_, s0_,
-            strike_, 0.0, r_, maturity_, sigma_);
+    // hedging interval
+    double tau = maturity_ / nTimeSteps;
 
-        std::cout << "\n" << "Option value:\t " << option.value() << "\n";
+    /* Black-Scholes framework: the underlying stock price evolves lognormally
+       with a fixed known volatility sigma that stays constant throughout time.
+    */
+    // stock variance
+    double sigma = sigma_* sqrt(tau);
+    // stock growth
+    // r_ is used for semplicity, it can be whatever value
+    double mean = r_ * tau - 0.5*sigma*sigma;
 
-        vega_ = option.vega();
-    }
+    // Black Scholes equation rules the path generator:
+    // at each step the log of the stock
+    // will have mean drift and sigma^2 variance
+    Handle<StandardPathGenerator> myPathGenerator(
+        new StandardPathGenerator(nTimeSteps, mean, sigma*sigma));
 
-    void doTest(int nTimeSteps, int nSamples)
-    {
-        // hedging interval
-        double tau = maturity_ / nTimeSteps;
+    // The replication strategy's Profit&Loss is computed for each path of the
+    // stock. The path pricer knows how to price a path using its value() method
+    Handle<PathPricer> myPathPricer =
+        Handle<PathPricer>(new ReplicationPathPricer(type_, s0_, strike_, r_,
+        maturity_, sigma_));
 
-        // Black Scholes assumption rules the path generator
-        double sigma = sigma_* sqrt(tau);
-        double mean = r_ * tau - 0.5*sigma*sigma;
-        Handle<StandardPathGenerator> myPathGenerator(
-            new StandardPathGenerator(nTimeSteps, mean, sigma*sigma));
+    // a statistic accumulator for the path-dependant Profit&Loss values
+    Statistics statisticAccumulator;
 
-        // the path pricer knows how to price a path
-        Handle<PathPricer> myPathPricer =
-            Handle<PathPricer>(new HedgeErrorPathPricer(type_,
-            s0_, strike_, r_, maturity_, sigma_));
+    // The OneFactorMontecarloModel generates paths using myPathGenerator
+    // each path is priced using myPathPricer
+    // prices will be accumulated into statisticAccumulator
+    OneFactorMonteCarloOption myMontecarloSimulation(myPathGenerator,
+        myPathPricer, statisticAccumulator);
 
-        // a statistic accumulator to accumulate path values
-        Statistics statisticAccumulator;
+    // the model simulates nSamples paths
+    myMontecarloSimulation.addSamples(nSamples);
 
-        // use one factor Montecarlo model
-        OneFactorMonteCarloOption myMontecarloSimulation(myPathGenerator,
-            myPathPricer, statisticAccumulator);
+    // the model returns the Profit&Loss distribution
+    // perche' dare un Statistics a costruttore e farsene restituire
+    // poi un'altro ???
+    Statistics PLDistribution = myMontecarloSimulation.sampleAccumulator();
 
-        // simulate nSamples paths
-        myMontecarloSimulation.addSamples(nSamples);
+    std::cout << std::endl << "hedging " << nTimeSteps << " times - "
+        << nSamples << " samples Montecarlo simulation" << std::endl;
 
-        // get back the value distribution
-        Statistics ProfitLossDistribution =
-            myMontecarloSimulation.sampleAccumulator();
+    std::cout << "P&L mean         : " << PLDistribution.mean() << std::endl;
+    std::cout << "P&L standard dev.: " << PLDistribution.standardDeviation();
+    // Derman and Kamal's formula
+    double theoretical_sd = QL_SQRT(3.1415926535/4/nTimeSteps)*vega_*sigma_;
+    std::cout << "  Derman & Kamal's: " << theoretical_sd << std::endl;
 
-        std::cout << "\n";
-        std::cout << "Montecarlo simulation: " << nSamples
-            << " samples" << "\n";
-        std::cout << "Hedging " << nTimeSteps << " times" << "\n";
-        std::cout << "Mean Profit&Loss: \t" << ProfitLossDistribution.mean()
-            << "\n";
-        std::cout << "Profit&Loss standard deviation (Montecarlo) :\t"
-             << ProfitLossDistribution.standardDeviation() << "\n";
-        double theoretical_error_sd =
-                QL_SQRT(3.1415926535/4/nTimeSteps)*vega_*sigma_;
-
-        std::cout << "Profit&Loss StDev (Derman & Kamal's formula):\t"
-                << theoretical_error_sd << "\n";
-
-        std::cout << "Profit&Loss skewness           (Montecarlo) :\t"
-            << ProfitLossDistribution.skewness() << "\n";
-        std::cout << "Profit&Loss excess kurtosis    (Montecarlo) :\t"
-             << ProfitLossDistribution.kurtosis() << "\n";
-
-    }
-
-private:
-    Option::Type type_;
-    double s0_;
-    double strike_;
-    Time maturity_;
-    double sigma_;
-    Rate r_;
-    double vega_;
-};
-
-int main(int argc, char* argv[])
-{
-    // 1-month call, volatility 20%, risk-free rate 5%
-    // strike price 100.0, underlying price 100.0
-    Time maturity = 1./12.;
-    double strike = 100;
-    double underlying = 100;
-    double volatility = 0.20;
-    Rate riskFreeRate = 0.05;
-    ComputeHedgingError test(Option::Type::Call, maturity, strike, underlying,
-        volatility, riskFreeRate);
-
-    test.doTest( 1, 50000);
-    test.doTest( 4, 50000);
-    test.doTest(21, 50000);
-    test.doTest(84, 50000);
-
-    return 0;
+    // P&L distribution higher moments ... we could even compute Value-at-Risk!
+    std::cout << "P&L skewness     : " << PLDistribution.skewness()<< std::endl;
+    std::cout << "P&L exc. kurtosis: " << PLDistribution.kurtosis()<< std::endl;
 }

@@ -1,7 +1,6 @@
-Computes profit and loss of discontinuous hedging.
 
-Prints hedging error ("profit and loss") and standart deviation of error.
+This is an example about using QuantLib Montecarlo Tools.
 
-Compares with Derman & Kamal's (Goldman Sachs Equity Derivatives Research, 
-http://www.gs.com/qs/) approximating formula for standart deviation of 
-hedging error ("profit and loss").
+It computes profit and loss of a discrete interval hedging strategy and compares with the results of Derman & Kamal's (Goldman Sachs Equity Derivatives Research)
+Research Note: "When You Cannot Hedge Continuously: The Corrections to
+Black-Scholes" (http://www.gs.com/qs/doc/when_you_cannot_hedge.pdf)
