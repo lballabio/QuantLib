@@ -5,9 +5,9 @@ dnl This is QuantLib's configure.in
 dnl Process this file with autoconf to produce a configure script.
 dnl
 
-AC_INIT(Include/ql/qldefines.hpp)
+AC_INIT(ql/qldefines.hpp)
 
-AM_CONFIG_HEADER(Include/ql/config.hpp)
+AM_CONFIG_HEADER(ql/config.hpp)
 AM_INIT_AUTOMAKE(QuantLib, 0.2)
 
 dnl Check for programs
@@ -67,7 +67,7 @@ using namespace std;
   AC_ERROR(C++ compilers string support does not work)
 ])
 AC_MSG_RESULT([$ql_string_ok])
-INCLUDES="-I`pwd`/Include"
+INCLUDES="-I`pwd`"
 AC_SUBST(INCLUDES)
 AC_CHECK_HEADERS(math.h cmath ctype.h cctype ctime time.h)
 AC_CHECK_HEADERS(limits climits limits.h float.h)
@@ -118,36 +118,35 @@ QL_CHECK_TEMPLATE_CLASS([iterator_traits],[int*],[iterator],[])
 
 
 AC_OUTPUT(Makefile \
-    Include/Makefile \
-    Include/ql/Makefile \
-    Include/ql/Calendars/Makefile \
-    Include/ql/CashFlows/Makefile \
-    Include/ql/DayCounters/Makefile \
-    Include/ql/FiniteDifferences/Makefile \
-    Include/ql/Indexes/Makefile \
-    Include/ql/Instruments/Makefile \
-    Include/ql/Math/Makefile \
-    Include/ql/MonteCarlo/Makefile \
-    Include/ql/Patterns/Makefile \
-    Include/ql/Pricers/Makefile \
-    Include/ql/Solvers1D/Makefile \
-    Include/ql/TermStructures/Makefile \
-    Include/ql/Utilities/Makefile \
-    Sources/Makefile \
-    Sources/Calendars/Makefile \
-    Sources/CashFlows/Makefile \
-    Sources/DayCounters/Makefile \
-    Sources/FiniteDifferences/Makefile \
-    Sources/Indexes/Makefile \
-    Sources/Instruments/Makefile \
-    Sources/Math/Makefile \
-    Sources/MonteCarlo/Makefile \
-    Sources/Pricers/Makefile \
-    Sources/Solvers1D/Makefile \
-    Sources/TermStructures/Makefile \
+    ql/Makefile \
+    ql/Makefile \
+    ql/Calendars/Makefile \
+    ql/CashFlows/Makefile \
+    ql/DayCounters/Makefile \
+    ql/FiniteDifferences/Makefile \
+    ql/Indexes/Makefile \
+    ql/Instruments/Makefile \
+    ql/Math/Makefile \
+    ql/MonteCarlo/Makefile \
+    ql/Patterns/Makefile \
+    ql/Pricers/Makefile \
+    ql/Solvers1D/Makefile \
+    ql/TermStructures/Makefile \
+    ql/Utilities/Makefile \
+    ql/Calendars/Makefile \
+    ql/CashFlows/Makefile \
+    ql/DayCounters/Makefile \
+    ql/FiniteDifferences/Makefile \
+    ql/Indexes/Makefile \
+    ql/Instruments/Makefile \
+    ql/Math/Makefile \
+    ql/MonteCarlo/Makefile \
+    ql/Pricers/Makefile \
+    ql/Solvers1D/Makefile \
+    ql/TermStructures/Makefile \
     Docs/Makefile \
     Examples/Makefile \
     Examples/Parities/Makefile \
-    Examples/HedgingError/Makefile \
+    Examples/DiscreteHedging/Makefile \
     )
 

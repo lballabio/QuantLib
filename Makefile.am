@@ -3,7 +3,7 @@
 
 #AUTOMAKE_OPTIONS=foreign dist-bzip2
 AUTOMAKE_OPTIONS=foreign
-SUBDIRS=Sources Include Docs Examples
+SUBDIRS=ql Docs Examples
 CFLAGS=-Wall
 
 EXTRA_DIST = \
