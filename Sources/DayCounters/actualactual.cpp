@@ -30,6 +30,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.30  2001/08/30 13:27:23  nando
+// daycounters works with Python test suite
+// step 2: no reference dates were they are not needed
+//
 // Revision 1.29  2001/08/30 12:32:24  nando
 // daycounters works with Python test suite
 // step 1
@@ -39,7 +43,6 @@
 //
 
 #include "ql/DayCounters/actualactual.hpp"
-#include "ql/DayCounters/thirty360european.hpp"
 
 namespace QuantLib {
 

@@ -29,10 +29,6 @@
 */
 
 // $Id$
-// $Log$
-// Revision 1.11  2001/08/29 15:18:04  nando
-// _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
-//
 
 #ifndef quantlib_actualactual_day_counter_h
 #define quantlib_actualactual_day_counter_h
