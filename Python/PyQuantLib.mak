@@ -54,7 +54,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\PyQuantLib.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=QuantLib.lib python20.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\QuantLibc.pdb" /machine:I386 /out:".\QuantLibc.dll" /implib:"$(OUTDIR)\QuantLibc.lib" /export:initQuantLibc 
+LINK32_FLAGS="$(QL_DIR)\lib\Win32\VisualStudio\QuantLib.lib" python20.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\QuantLibc.pdb" /machine:I386 /out:".\QuantLibc.dll" /implib:"$(OUTDIR)\QuantLibc.lib" /export:initQuantLibc 
 LINK32_OBJS= \
 	"$(INTDIR)\quantlib_wrap.obj"
 
@@ -91,7 +91,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\PyQuantLib.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=QuantLib_d.lib python20_d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\QuantLibc_d.pdb" /debug /machine:I386 /out:".\QuantLibc_d.dll" /implib:"$(OUTDIR)\QuantLibc_d.lib" /export:initQuantLibc 
+LINK32_FLAGS="$(QL_DIR)\lib\Win32\VisualStudio\QuantLib_d.lib" python20_d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"$(OUTDIR)\QuantLibc_d.pdb" /debug /machine:I386 /out:".\QuantLibc_d.dll" /implib:"$(OUTDIR)\QuantLibc_d.lib" /export:initQuantLibc 
 LINK32_OBJS= \
 	"$(INTDIR)\quantlib_wrap.obj"
 
