@@ -34,20 +34,22 @@ namespace QuantLib {
     class G2SwaptionEngine : public GenericModelEngine<G2, Swaption::arguments,
                                                            Swaption::results> {
       public:
-		// range is the number of standard deviations to use in the
-		// exponential term of the integral for the european swaption.
-		// intervals is the number of intervals to use in the integration.
+        // range is the number of standard deviations to use in the
+        // exponential term of the integral for the european swaption.
+        // intervals is the number of intervals to use in the integration.
         G2SwaptionEngine(const  boost::shared_ptr<G2>& mod,
                          Real range,
                          Size intervals)
         : GenericModelEngine<G2, Swaption::arguments, Swaption::results>(mod),
           range_(range), intervals_(intervals) {}
-        void calculate() const;
-
-	  private:
-		Real range_;
-		Size intervals_;
+        void calculate() const {
+            results_.value =  model_->swaption(arguments_, range_, intervals_);
+        }
+      private:
+        Real range_;
+        Size intervals_;
     };
 }
+
 
 #endif

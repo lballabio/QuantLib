@@ -14,7 +14,6 @@ EXTRA_DIST=makefile.mak
 
 libSwaptionEngines_la_SOURCES = \
     blackswaptionengine.cpp \
-    g2swaptionengine.cpp \
     jamshidianswaptionengine.cpp \
     discretizedswaption.cpp \
     treeswaptionengine.cpp
