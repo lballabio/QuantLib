@@ -125,5 +125,50 @@ CurrencyHandle NewSEK()		{ return CurrencyHandle(new SEK); }
 %name(JPY)	CurrencyHandle NewJPY();
 %name(SEK)	CurrencyHandle NewSEK();
 
+// typemap Python list of currency handles to std::vector<Handle<Currency> >
+
+%{
+typedef std::vector<Handle<Currency> > CurrencyHandleVector;
+%}
+
+%typemap(python,in) CurrencyHandleVector, CurrencyHandleVector *, const CurrencyHandleVector & {
+	if (PyTuple_Check($source)) {
+		int size = PyTuple_Size($source);
+		$target = new std::vector<CurrencyHandle>(size);
+		for (int i=0; i<size; i++) {
+			CurrencyHandle* d;
+			PyObject* o = PyTuple_GetItem($source,i);
+			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
+				(*$target)[i] = *d;
+			} else {
+				PyErr_SetString(PyExc_TypeError,"tuple must contain currencies");
+				delete $target;
+				return NULL;
+			}
+		}
+	} else if (PyList_Check($source)) {
+		int size = PyList_Size($source);
+		$target = new std::vector<CurrencyHandle>(size);
+		for (int i=0; i<size; i++) {
+			CurrencyHandle* d;
+			PyObject* o = PyList_GetItem($source,i);
+			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
+				(*$target)[i] = *d;
+			} else {
+				PyErr_SetString(PyExc_TypeError,"list must contain currencies");
+				delete $target;
+				return NULL;
+			}
+		}
+	} else {
+		PyErr_SetString(PyExc_TypeError,"not a sequence");
+		return NULL;
+	}
+};
+
+%typemap(python,freearg) CurrencyHandleVector, CurrencyHandleVector *, const CurrencyHandleVector & {
+	delete $source;
+};
+
 
 #endif
