@@ -35,6 +35,7 @@ namespace QuantLib {
         \ingroup datetime
     */
     enum BusinessDayConvention {
+        None,               /*!< Not adjusted. */
         Preceding,          /*!< Choose the first business day before
                                  the given holiday. */
         ModifiedPreceding,  /*!< Choose the first business day before

@@ -85,6 +85,10 @@ namespace QuantLib {
                           BusinessDayConvention c,
                           const Date& origin) const {
         QL_REQUIRE(d!=Date(), "null date");
+
+        if (c == None)
+            return d;
+
         Date d1 = d;
         if (c == Following || c == ModifiedFollowing ||
             c == MonthEndReference) {
