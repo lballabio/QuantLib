@@ -32,6 +32,8 @@ namespace {
             return file.substr(n+1);
     }
 
+    #if defined(_MSC_VER) || defined(__BORLANDC__)
+    // allow Visual Studio integration
     std::string format(const std::string& file, long line,
                        const std::string& function,
                        const std::string& message) {
@@ -44,6 +46,21 @@ namespace {
         msg << message;
         return msg.str();
     }
+    #else
+    // use gcc format (e.g. for integration with Emacs)
+    std::string format(const std::string& file, long line,
+                       const std::string& function,
+                       const std::string& message) {
+        std::ostringstream msg;
+        #if QL_ERROR_LINES
+        msg << "\n" << file << ":" << line << ": ";
+        #endif
+        if (function != "(unknown)")
+            msg << "In function `" << function << "': \n";
+        msg << message;
+        return msg.str();
+    }
+    #endif
 
 }
 
