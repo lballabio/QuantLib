@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/05/28 12:52:58  lballabio
+// Simplified Instrument interface
+//
 // Revision 1.6  2001/05/24 17:50:23  nando
 // no message
 //
@@ -50,7 +53,8 @@ namespace QuantLib {
     //! Reference-counted pointer
     /*! This class acts as a proxy to a pointer contained in it. Such pointer is
         owned by the handle, i.e., the handle will be responsible for its
-        deletion, unless explicitly stated by the programmer.
+        deletion.
+        
         A count of the references to the contained pointer is incremented every
         time a handle is copied, and decremented every time a handle is deleted
         or goes out of scope. This mechanism ensures on one hand, that the
@@ -75,16 +79,6 @@ namespace QuantLib {
         \code
         Handle<SomeObj> h1(new SomeObj);    // this is as safe as can be.
         \endcode
-
-        \warning When the programmer keeps the ownership of the pointer, as
-        explicitly declared in
-        \code
-        SomeObj so;
-        Handle<SomeObj> h(&so,false);
-        \endcode
-        it is responsibility of the programmer to make sure that the object
-        remain in scope as long as there are handles pointing to it. Also, the
-        programmer must explicitly delete the object if required.
     */
     template <class Type>
     class Handle {
@@ -93,22 +87,14 @@ namespace QuantLib {
         //@{
         //! Default constructor returning a null handle.
         Handle()
-        : ptr_(0), n_(new int(1)), owns_(true) {}
+        : ptr_(0), n_(new int(1)) {}
         //! Constructor taking a pointer.
-        /*! If <b>owns</b> is set to <tt>true</tt> (the default), the handle
-            will be responsible for the deletion of the pointer. If it is set to
-            <tt>false</tt>, the programmer must make sure that the pointed
-            object remains in scope for the lifetime of the handle and its
-            copies. Destruction of the object is also responsibility of the
-            programmer.
+        /*! The handle will be responsible for its deletion.
         */
-        explicit Handle(Type* ptr, bool owns=true)
-        : ptr_(ptr), n_(new int(1)), owns_(owns) {}
-        //! Copy from a handle to a different but compatible type
-        template <class Type2> explicit Handle(const Handle<Type2>& from)
-        : ptr_(0), n_(new int(1)) { HandleCopier().copy(*this,from); }
+        explicit Handle(Type* ptr)
+        : ptr_(ptr), n_(new int(1)) {}
         Handle(const Handle& from)
-        : ptr_(from.ptr_), n_(from.n_), owns_(from.owns_) { (*n_)++; }
+        : ptr_(from.ptr_), n_(from.n_) { (*n_)++; }
         ~Handle();
         Handle& operator=(const Handle& from);
         //@}
@@ -119,7 +105,15 @@ namespace QuantLib {
         Type* operator->() const;
         //@}
 
-        // \name Inspectors
+        //! \name Casting
+        //@{
+        template <class Type2>
+        Handle<Type2> downcast() const {
+            return HandleConverter().cast<Type2>(*this);
+        }
+        //@}
+        
+        //! \name Inspectors
         //@{
         //! Checks if the contained pointer is actually allocated
         bool isNull() const;
@@ -128,26 +122,23 @@ namespace QuantLib {
       private:
         Type* ptr_;
         int* n_;
-        bool owns_;
         // used to convert handles to different but compatible types
-        class HandleCopier;
-        friend class HandleCopier;
-        class HandleCopier {
+        class HandleConverter;
+        friend class HandleConverter;
+        class HandleConverter {
           public:
-            HandleCopier() {}
-            template <class Type1, class Type2> void copy(Handle<Type1>& to,
-              Handle<Type2> from) const {
-                if (to.ptr_ != from.ptr_) {
-                    if (--(*(to.n_)) == 0) {
-                        if (to.ptr_ != 0 && to.owns_)
-                            delete to.ptr_;
-                        delete to.n_;
-                    }
-                    to.ptr_  = from.ptr_;
+            template <class ToType, class FromType> 
+            Handle<ToType> cast(Handle<FromType> from) const {
+                Handle<ToType> to;
+                delete to.n_;
+                to.ptr_ = dynamic_cast<ToType*>(from.ptr_);
+                if (to.ptr_ == 0) {
+                    to.prt_ = new int(1);
+                } else {
                     to.n_    = from.n_;
-                    to.owns_ = from.owns_;
                     (*(to.n_))++;
                 }
+                return to;
             }
         };
     };
@@ -158,7 +149,7 @@ namespace QuantLib {
     template <class Type>
     inline Handle<Type>::~Handle() {
         if (--(*n_) == 0) {
-            if (ptr_ != 0 && owns_)
+            if (ptr_ != 0)
                 delete ptr_;
             delete n_;
         }
@@ -168,13 +159,12 @@ namespace QuantLib {
     inline Handle<Type>& Handle<Type>::operator=(const Handle& from) {
         if (ptr_ != from.ptr_) {
             if (--(*n_) == 0) {
-                if (ptr_ != 0 && owns_)
+                if (ptr_ != 0)
                     delete ptr_;
                 delete n_;
             }
             ptr_  = from.ptr_;
             n_    = from.n_;
-            owns_ = from.owns_;
             (*n_)++;
         }
         return *this;

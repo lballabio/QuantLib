@@ -30,17 +30,18 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/28 12:52:58  lballabio
+// Simplified Instrument interface
+//
 // Revision 1.4  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
-#ifndef quantlib_financial_instrument_h
-#define quantlib_financial_instrument_h
+#ifndef quantlib_instrument_h
+#define quantlib_instrument_h
 
-#include "ql/termstructure.hpp"
-#include "ql/swaptionvolsurface.hpp"
-#include "ql/forwardvolsurface.hpp"
-#include "ql/null.hpp"
+#include "ql/qldefines.hpp"
+#include <string>
 
 namespace QuantLib {
 
@@ -55,46 +56,17 @@ namespace QuantLib {
       public:
         Instrument(const std::string& isinCode = "",
             const std::string& description = "")
-        : theISINCode(isinCode), theDescription(description),
-          theSettlementDate(Date()), theNPV(0.0),
-          expired(false) {}
+        : isinCode_(isinCode), description_(description),
+          NPV_(0.0), isExpired_(false) {}
         virtual ~Instrument() {}
-        //! \name Modifiers
-        //@{
-        //! sets the price for instruments which allow to do so.
-        virtual void setPrice(double price) = 0;
-        //! sets the term structure to be used for pricing.
-        virtual void setTermStructure(const Handle<TermStructure>&);
-        //! sets the swaption volatility surface to be used for pricing.
-        virtual void setSwaptionVolatility(
-            const Handle<SwaptionVolatilitySurface>&);
-        //! sets the forward volatility surface to be used for pricing.
-        virtual void setForwardVolatility(
-            const Handle<ForwardVolatilitySurface>&);
-        //@}
-
         //! \name Inspectors
         //@{
         //! returns the ISIN code of the instrument.
         std::string isinCode() const;
         //! returns a brief textual description of the instrument.
         std::string description() const;
-        //! checks whether a term structure is needed for pricing.
-        virtual bool useTermStructure() const = 0;
-        //! returns the term structure used for pricing.
-        Handle<TermStructure> termStructure() const;
-        //! checks whether a swaption volatility surface is needed for pricing.
-        virtual bool useSwaptionVolatility() const = 0;
-        //! returns the swaption volatility surface used for pricing.
-        Handle<SwaptionVolatilitySurface> swaptionVolatility() const;
-        //! checks whether a forward volatility surface is needed for pricing.
-        virtual bool useForwardVolatility() const = 0;
-        //! returns the forward volatility surface used for pricing.
-        Handle<ForwardVolatilitySurface> forwardVolatility() const;
         //! returns the net present value of the instrument.
         double NPV() const;
-        //! returns the price of the instrument.
-        virtual double price() const = 0;
         //@}
       protected:
         /*! \name Calculations
@@ -104,201 +76,52 @@ namespace QuantLib {
         */
         //@{
         /*! This method performs all needed calculations by calling
-            <b>performTermStructureCalculations</b>,
-            <b>performSwaptionVolCalculations</b>,
-            <b>performForwardVolCalculations</b>, and
-            <b>performFinalCalculations</b> in turn while checking that the
-            needed structures are not null.
-            It should not be redefined in derived classes.
+            the <b>performCalculations</b> method.
+            \note The current implementation of this method does nothing more 
+            than calling <b>performCalculations</b> and might seem unnecessary. 
+            However, it will eventually contain control code to check whether 
+            the previous results are still valid, or a recalculation is needed.
+            \warning This method should <b>not</b> be redefined in derived 
+            classes.
         */
         void calculate() const;
         /*! This method must implement any calculations which must be (re)done
-            in case the term structure is set or changes. A default is supplied
-            with a null body.
+            in order to calculate the NPV of the instrument.
         */
-        virtual void performTermStructureCalculations() const {}
-        /*! This method must implement any calculations which must be (re)done
-            in case the swaption volatility surface is set or changes. A default
-            is supplied with a null body.
-        */
-        virtual void performSwaptionVolCalculations() const {}
-        /*! This method must implement any calculations which must be (re)done
-            in case the forward volatility surface is set or changes. A default
-            is supplied with a null body.
-        */
-        virtual void performForwardVolCalculations() const {}
-        /*! This method must implement any calculations which are needed besides
-            the ones implemented in <b>performTermStructureCalculations</b>,
-            <b>performSwaptionVolCalculations</b>, and
-            <b>performForwardVolCalculations</b>.
-            A default is supplied with a null body.
-        */
-        virtual void performFinalCalculations() const {}
+        virtual void performCalculations() const = 0;
         //@}
 
-        //! \name Results
+        /*! \name Results
+            The value of these attributes must be set in the body of the
+            <b>performCalculations</b> method.
+        */
         //@{
-        /*! The value of this attribute must be set by the instrument
-            constructor.
-        */
-        Date theSettlementDate;
-        /*! The value of this attribute must be set by either of the
-            <b>performXxxCalculations</b> methods.
-        */
-        mutable double theNPV;
-        /*! The value of this attribute must be set to <tt>true</tt> by either
-            of the <b>performXxxCalculations</b> methods if the instrument is
-            expired.
-        */
-        mutable bool expired;
+        mutable double NPV_;
+        mutable bool isExpired_;
         //@}
       private:
-        // data members
-        std::string theISINCode, theDescription;
-        Handle<TermStructure> theTermStructure;
-        Handle<SwaptionVolatilitySurface> theSwaptionVol;
-        Handle<ForwardVolatilitySurface> theForwardVol;
+        std::string isinCode_, description_;
     };
-
-    bool operator==(const Handle<Instrument>&, const Handle<Instrument>&);
-    bool operator!=(const Handle<Instrument>&, const Handle<Instrument>&);
-
-    // derived classes
-
-    //! Priced instrument class
-    /*! It implements the Instrument interface for instruments
-        whose prices are available on the market.
-    */
-    class PricedInstrument : public Instrument {
-      public:
-        PricedInstrument(const std::string& isinCode = "",
-            const std::string& description = "")
-        : Instrument(isinCode,description), priceIsSet(false) {}
-        void setPrice(double price) { thePrice = price; priceIsSet = true; }
-        /*! \pre The price must have been set with <B><I>setPrice()</B></I> */
-        double price() const {
-            QL_REQUIRE(priceIsSet, "price not set");
-            return thePrice;
-        }
-        bool useTermStructure() const { return false; }
-        bool useSwaptionVolatility() const { return false; }
-        bool useForwardVolatility() const { return false; }
-      private:
-        /* this method will throw an exception if not set, thus acting as a
-           check
-        */
-        void performFinalCalculations() const { theNPV = price(); }
-        bool priceIsSet;
-        double thePrice;
-    };
-
-    //! Over-the-counter instrument class
-    /*! It inhibits the <b>setPrice</b> method and redirects the <b>price</b>
-        method to <b>NPV</b> for over-the-counter instruments.
-    */
-    class OTCInstrument : public Instrument { // over the counter
-      public:
-        OTCInstrument(const std::string& isinCode = "",
-            const std::string& description = "")
-        : Instrument(isinCode,description) {}
-        void setPrice(double price) { throw Error("Cannot set price"); }
-        double price() const { return NPV(); }
-    };
-
 
     // inline definitions
 
-    inline void Instrument::setTermStructure(
-      const Handle<TermStructure>& termStructure) {
-        if (useTermStructure()) {
-            theTermStructure = termStructure;
-            theSettlementDate = termStructure->settlementDate();
-        }
-    }
-
-    inline void Instrument::setSwaptionVolatility(
-      const Handle<SwaptionVolatilitySurface>& vol) {
-        if (useSwaptionVolatility()) {
-            theSwaptionVol = vol;
-        }
-    }
-
-    inline void Instrument::setForwardVolatility(
-      const Handle<ForwardVolatilitySurface>& vol) {
-        if (useForwardVolatility()) {
-            theForwardVol = vol;
-        }
-    }
-
     inline std::string Instrument::isinCode() const {
-        return theISINCode;
+        return isinCode_;
     }
 
     inline std::string Instrument::description() const {
-        return theDescription;
+        return description_;
     }
 
     inline double Instrument::NPV() const {
         calculate();
-        return (expired ? 0.0 : theNPV);
-    }
-
-    /*! \pre The term structure must have been set */
-    inline Handle<TermStructure> Instrument::termStructure() const {
-        QL_REQUIRE(!theTermStructure.isNull(),
-            "term structure not set");
-        return theTermStructure;
-    }
-
-    /*! \pre The swaption volatility surface must have been set */
-    inline Handle<SwaptionVolatilitySurface> Instrument::swaptionVolatility()
-    const {
-        QL_REQUIRE(!theSwaptionVol.isNull(),
-            "swaption volatility surface not set");
-        return theSwaptionVol;
-    }
-
-    /*! \pre The forward volatility surface must have been set */
-    inline Handle<ForwardVolatilitySurface> Instrument::forwardVolatility()
-    const {
-        QL_REQUIRE(!theForwardVol.isNull(),
-            "forward volatility surface not set");
-        return theForwardVol;
+        return (isExpired_ ? 0.0 : NPV_);
     }
 
     inline void Instrument::calculate() const {
-        if (useTermStructure()) {
-            QL_REQUIRE(!theTermStructure.isNull(),
-                "term structure not set");
-            performTermStructureCalculations();
-        }
-        if (useSwaptionVolatility()) {
-            QL_REQUIRE(!theSwaptionVol.isNull(),
-                "swaption volatility surface not set");
-            performSwaptionVolCalculations();
-        }
-        if (useForwardVolatility()) {
-            QL_REQUIRE(!theForwardVol.isNull(),
-                "forward volatility surface not set");
-            performForwardVolCalculations();
-        }
-        performFinalCalculations();
-    }
-
-    // comparisons
-
-    /*! \relates Instrument
-        \brief returns <tt>true</tt> iff two instruments have the same ISIN code
-    */
-    inline bool operator==(const Handle<Instrument>& i,
-        const Handle<Instrument>& j) {
-            return (i->isinCode() == j->isinCode());
-    }
-
-    /*! \relates Instrument */
-    inline bool operator!=(const Handle<Instrument>& i,
-        const Handle<Instrument>& j) {
-            return (i->isinCode() != j->isinCode());
+        // eventually we will check whether previous calculations 
+        // are still valid
+        performCalculations();
     }
 
 }

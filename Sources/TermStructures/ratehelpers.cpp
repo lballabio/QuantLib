@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/05/28 12:52:58  lballabio
+// Simplified Instrument interface
+//
 // Revision 1.6  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -64,14 +67,16 @@ namespace QuantLib {
 
         double DepositRateHelper::rateError() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
-            Rate impliedRate = (1.0/termStructure_->discount(maturity_)-1.0) /
-                yearFraction_;
+            Rate impliedRate = (termStructure_->discount(settlement_) / 
+                                termStructure_->discount(maturity_)-1.0) /
+                               yearFraction_;
             return rate_-impliedRate;
         }
 
         double DepositRateHelper::discountGuess() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
-            return 1.0/(1.0+rate_*yearFraction_);
+            return termStructure_->discount(settlement_) / 
+                   (1.0+rate_*yearFraction_);
         }
 
         Date DepositRateHelper::maturity() const {

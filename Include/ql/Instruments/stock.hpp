@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/28 12:52:58  lballabio
+// Simplified Instrument interface
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,21 +46,17 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        class Stock : public PricedInstrument {
+        class Stock : public Instrument {
           public:
-            Stock() {}
-            Stock(const std::string& isinCode, const std::string& description)
-            : PricedInstrument(isinCode,description) {}
-            // modifiers
-            void setPrice(double price) { PricedInstrument::setPrice(price); theNPV = price; }
-            // inspectors
-            bool useTermStructure() const { return false; }
-            bool useSwaptionVolatility() const { return false; }
-            bool useForwardVolatility() const { return false; }
-          private:
-            // methods
-            bool needsFinalCalculations() const { return true; }
-            void performFinalCalculations() const { price(); } // just check that it works
+            Stock(double price, const std::string& isinCode, 
+                const std::string& description)
+            : Instrument(isinCode,description) { 
+                NPV_ = price;
+                isExpired_ = false;
+            }
+          protected:
+            // NPV already set during construction
+            void performCalculations() const {}
         };
 
     }
