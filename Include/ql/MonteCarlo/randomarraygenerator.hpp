@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/04 12:00:37  uid40428
+// Array of random numbers built with an array of dates
+//
 // Revision 1.7  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -57,15 +60,26 @@ namespace QuantLib {
             // this typedef would make RandomArrayGenerator into a sample 
             // generator
             RandomArrayGenerator();
-            RandomArrayGenerator(int dimension, double average = 0.0,
-                          double stddev = 1.0, long seed=0);
-            RandomArrayGenerator(const Math::Matrix &covariance, long seed=0);
+            
+            RandomArrayGenerator(int dimension, 
+                                 double average = 0.0,
+                                 double stddev = 1.0, 
+                                 long seed=0);
+            RandomArrayGenerator( const std::vector<Time> & dates, 
+                                  double average = 0.0, 
+                                  double stddev = 1.0, 
+                                  long seed=0);              
+            RandomArrayGenerator(const Math::Matrix &covariance, 
+                                 long seed=0);
             RandomArrayGenerator(const Array &average,
-                         const Math::Matrix &covariance, long seed=0);
+                                 const Math::Matrix &covariance, 
+                                 long seed=0);
             Array next() const;
             double weight() const{return weight_;}
+            int size() const{return size_;}
           private:
             int size_;
+            std::vector<Time> timeDelays_;
             RP rndPoint_;
             mutable double weight_;
             double average_, sqrtVariance_;
@@ -80,13 +94,49 @@ namespace QuantLib {
         template <class RP>
         inline RandomArrayGenerator<RP >::RandomArrayGenerator(int dimension,
                 double average, double variance, long seed):
-                size_(dimension), average_(average), rndPoint_(seed),
+                size_(dimension),
+                timeDelays_(dimension, 1.0),
+                average_(average), rndPoint_(seed),
                 averageArray_(0),sqrtCovariance_(0,0){
             QL_REQUIRE(variance >= 0,
                     "RandomArrayGenerator: variance is negative!");
             sqrtVariance_ = QL_SQRT(variance);
         }
 
+        template <class RP>
+        inline RandomArrayGenerator<RP>::RandomArrayGenerator( 
+                const std::vector<Time> & dates,
+                double average, double variance, long seed):
+                size_(dates.size()),
+                timeDelays_(dates.size()),
+                average_(average), rndPoint_(seed),
+                averageArray_(0),sqrtCovariance_(0,0){
+
+            QL_REQUIRE(size_ > 0,
+                "The number of Dates ("+
+                IntegerFormatter::toString(size_)+
+                ") is too small");
+
+            QL_REQUIRE(dates[0] >= 0,
+                 "MultiPathGenerator: first date(" +
+                 DoubleFormatter::toString(dates[0])+
+                 ") must be positive");
+            timeDelays_[0] = dates[0];
+
+            if(size_ > 1){
+                for(int i = 1; i < size_; i++){
+                    QL_REQUIRE(dates[i] >= dates[i-1],
+                        "MultiPathGenerator: date(" +
+                        IntegerFormatter::toString(i-1)+")="+
+                        DoubleFormatter::toString(dates[i-1])+
+                        " is later than date("+
+                        IntegerFormatter::toString(i)+")="+
+                        DoubleFormatter::toString(dates[i]));
+                    timeDelays_[i] = dates[i] - dates[i-1];
+                }
+            }
+        }
+                
         template <class RP>
         inline RandomArrayGenerator<RP >::RandomArrayGenerator(
             const Math::Matrix &covariance, long seed):
@@ -139,15 +189,23 @@ namespace QuantLib {
             Array nextArray(size_);
 
             weight_ = 1.0;
-            for(int j = 0; j < size_; j++){
-                nextArray[j] = rndPoint_.next();
-                weight_ *= rndPoint_.weight();
-            }
 
-            if(averageArray_.size() == 0)
-                nextArray = average_ + sqrtVariance_ * nextArray;
-            else
+            if(averageArray_.size() == 0){
+                for(int j = 0; j < size_; j++){
+                    nextArray[j] = average_ * timeDelays_[j]
+                                + rndPoint_.next() * sqrtVariance_ *     
+                                                     QL_SQRT(timeDelays_[j]);
+                    weight_ *= rndPoint_.weight();
+                }
+            }
+            else{
+                for(int j = 0; j < size_; j++){
+                    nextArray[j] = rndPoint_.next();
+                    weight_ *= rndPoint_.weight();
+                }    
                 nextArray = averageArray_ + sqrtCovariance_ * nextArray;
+
+            }
 
             return nextArray;
         }

@@ -30,11 +30,14 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/04 12:00:37  uid40428
+// Array of random numbers built with an array of dates
+//
 // Revision 1.8  2001/07/02 12:36:17  sigmud
 // pruned redundant header inclusions
 //
 // Revision 1.7  2001/06/11 16:00:23  nando
-// potentialUpFront is now potentialUpside.
+// potentialUpFront is now potentialUpSide.
 // Few typos fixed
 //
 // Revision 1.6  2001/06/11 13:51:16  aleppo
