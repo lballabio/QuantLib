@@ -32,6 +32,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/11 13:22:38  sadrejeb
+// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
+// changed styleguide of typenames in pathpricer.
+//
 // Revision 1.1  2001/09/03 14:04:01  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -98,7 +102,7 @@ namespace QuantLib {
                 int timeSteps);
             // Protected attributes
             std::vector<Time> dates_;
-	    unsigned int dateNumber_;
+            unsigned int dateNumber_;
             int timeStepPerPeriod_;
             bool lastDateIsResTime_;
             int lastIndex_;

@@ -32,6 +32,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/11 13:22:38  sadrejeb
+// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
+// changed styleguide of typenames in pathpricer.
+//
 // Revision 1.1  2001/09/03 14:04:01  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -104,7 +108,7 @@ namespace QuantLib {
         SingleAssetOption::SingleAssetOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility)
-	    : type_(type), underlying_(underlying),
+            : type_(type), underlying_(underlying),
             strike_(strike), dividendYield_(dividendYield),
             residualTime_(residualTime), hasBeenCalculated_(false),
             rhoComputed_(false), dividendRhoComputed_(false),

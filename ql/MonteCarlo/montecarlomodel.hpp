@@ -60,8 +60,8 @@ namespace QuantLib {
                 double weight() const;
             };
 
-            class PP{
-                VALUE_TYPE value(PATH_TYPE &) const;
+            class PP :: unary_function<PATH_TYPE, VALUE_TYPE> {
+                VALUE_TYPE operator()(PATH_TYPE &) const;
             };
             \endcode
         */
@@ -70,13 +70,13 @@ namespace QuantLib {
           public:
             MonteCarloModel(const Handle<PG>& pathGenerator,
                             const Handle<PP>& pathPricer,
-			    const S& sampleAccumulator);
+                            const S& sampleAccumulator);
             void addSamples(long samples);
             const S& sampleAccumulator(void) const;
           private:
-	    Handle<PG> pathGenerator_;
+            Handle<PG> pathGenerator_;
             Handle<PP> pathPricer_;
-	    S sampleAccumulator_;
+            S sampleAccumulator_;
         };
 
         // inline definitions
@@ -84,22 +84,18 @@ namespace QuantLib {
         inline MonteCarloModel<S, PG, PP>::MonteCarloModel(
                 const Handle<PG>& pathGenerator,
                 const Handle<PP>& pathPricer,
-		const S& sampleAccumulator) :
-	        pathGenerator_(pathGenerator),
-		pathPricer_(pathPricer),
-		sampleAccumulator_(sampleAccumulator)
-	        {}
+                const S& sampleAccumulator) :
+                pathGenerator_(pathGenerator),
+                pathPricer_(pathPricer),
+                sampleAccumulator_(sampleAccumulator)
+                {}
 
         template<class S, class PG, class PP>
         inline void MonteCarloModel<S, PG, PP>::
                     addSamples(long samples){
             for(long j = 1; j <= samples; j++) {
-                // .next() updates weight_, so it has to be called before
-                // otherways you're not guaranteed that next() will be called
-                // before weight() and you could add a new value with the weight
-                // of the previous value
-                typename PG::SampleType a = pathGenerator_->next();
-                double price = pathPricer_->value(a);
+                typename PG::sample_type a = pathGenerator_->next();
+                typename PP::result_type price = (*pathPricer_)(a);
                 double weight = pathGenerator_->weight();
                 sampleAccumulator_.add(price, weight);
             }

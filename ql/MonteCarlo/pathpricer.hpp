@@ -34,6 +34,7 @@
 #ifndef quantlib_montecarlo_path_pricer_h
 #define quantlib_montecarlo_path_pricer_h
 
+#include <functional>
 #include "ql/MonteCarlo/path.hpp"
 
 namespace QuantLib {
@@ -43,12 +44,10 @@ namespace QuantLib {
         //! base class for single-path pricers
         /*! Given a path the value of an option is returned on that path.
         */
-        class PathPricer {
+        class PathPricer : unary_function<Path, double> {
           public:
-            typedef double ValueType;
-            typedef Path PathType;
             virtual ~PathPricer() {}
-            virtual double value(const Path &path) const=0;
+            virtual double operator()(const Path &path) const=0;
         };
 
     }

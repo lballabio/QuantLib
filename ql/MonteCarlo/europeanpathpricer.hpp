@@ -47,7 +47,7 @@ namespace QuantLib {
             EuropeanPathPricer(Option::Type type, double underlying,
                 double strike, double discount,
                 bool antitheticVariance = false);
-            double value(const Path &path) const;
+            double operator()(const Path &path) const;
           protected:
             mutable Option::Type type_;
             mutable double underlying_, strike_, discount_;

@@ -45,7 +45,7 @@ namespace QuantLib {
         template <class RNG>
         class PathGenerator {
           public:
-            typedef Path SampleType;
+            typedef Path sample_type;
             // constructors
             PathGenerator(double drift, double variance,
                           Time length, unsigned int steps,

@@ -31,6 +31,10 @@
 */
 // $Id$
 // $Log$
+// Revision 1.3  2001/09/11 13:22:38  sadrejeb
+// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
+// changed styleguide of typenames in pathpricer.
+//
 // Revision 1.2  2001/09/03 16:34:03  sadrejeb
 // gcc-3.0.1 fix (Array::iterator --> std-vector::iterator)
 //
@@ -155,8 +159,8 @@ namespace QuantLib {
 
             int j, gridSize = oldGrid.size();
 
-	    std::vector<double> logOldGrid(0);
-	    std::vector<double> tmpPrices(0);
+            std::vector<double> logOldGrid(0);
+            std::vector<double> tmpPrices(0);
 
             for(j = 0; j<gridSize; j++){
                 double p = prices[j];

@@ -32,6 +32,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.3  2001/09/11 13:22:38  sadrejeb
+// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
+// changed styleguide of typenames in pathpricer.
+//
 // Revision 1.2  2001/09/10 10:24:27  lballabio
 // Path revamped
 //
@@ -99,7 +103,7 @@ namespace QuantLib {
                 "SinglePathEuropeanPricer: discount must be positive");
         }
 
-        double EuropeanPathPricer::value(const Path & path) const {
+        double EuropeanPathPricer::operator()(const Path & path) const {
             int n = path.size();
             QL_REQUIRE(n>0,
                 "SinglePathEuropeanPricer: the path cannot be empty");

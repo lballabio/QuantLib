@@ -32,6 +32,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/11 13:22:38  sadrejeb
+// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
+// changed styleguide of typenames in pathpricer.
+//
 // Revision 1.1  2001/09/03 13:56:11  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -80,7 +84,7 @@ namespace QuantLib {
           public:
             AveragePriceAsianPathPricer(Option::Type type,
                 double underlying, double strike, double discount);
-            virtual double value(const Path &path) const;
+            virtual double operator()(const Path &path) const;
         };
 
     }

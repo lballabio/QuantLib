@@ -32,6 +32,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/11 13:22:38  sadrejeb
+// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
+// changed styleguide of typenames in pathpricer.
+//
 // Revision 1.1  2001/09/03 14:04:01  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -92,7 +96,7 @@ namespace QuantLib {
                                      double volatility,
                                      unsigned int timeSteps = 200,
                                      unsigned int gridPoints = 800);
-           	Array getPrices() const;
+                   Array getPrices() const;
             Handle<SingleAssetOption> clone() const{
                 return Handle<SingleAssetOption>(new FiniteDifferenceEuropean(*this));
             }

@@ -32,6 +32,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/11 13:22:38  sadrejeb
+// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
+// changed styleguide of typenames in pathpricer.
+//
 // Revision 1.1  2001/09/03 13:56:11  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -84,7 +88,7 @@ namespace QuantLib {
             PagodaPathPricer() {}
             PagodaPathPricer(const Array &underlying, double roof,
                              double discount);
-            double value(const MultiPath &path) const;
+            double operator()(const MultiPath &path) const;
           protected:
             Array underlying_;
             double roof_, discount_;

@@ -63,7 +63,7 @@ namespace QuantLib {
 
             //! Initialize the one-factor Monte Carlo
             montecarloPricer_ = Handle<OneFactorMonteCarloOption>(
-		new OneFactorMonteCarloOption(
+                new OneFactorMonteCarloOption(
                     pathGenerator, euroPathPricer,
                     Math::Statistics()));
         }

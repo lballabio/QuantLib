@@ -87,7 +87,7 @@ namespace QuantLib {
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(
-		                        new MultiFactorMonteCarloOption(
+                                        new MultiFactorMonteCarloOption(
                                         pathGenerator, pathPricer,
                                         Math::Statistics()));
         }

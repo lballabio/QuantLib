@@ -81,7 +81,7 @@ namespace QuantLib {
 
             //! Initialize the one-dimensional Monte Carlo
             montecarloPricer_ = Handle<OneFactorMonteCarloOption>(
-		new OneFactorMonteCarloOption(
+                new OneFactorMonteCarloOption(
                 pathGenerator, controlVariatedPricer,
                 Math::Statistics()));
         }

@@ -16,14 +16,12 @@ include_HEADERS = \
 	gaussianmultipathgenerator.hpp \
 	gaussianpathgenerator.hpp \
 	gaussianrandomgenerator.hpp \
-	generalmontecarlo.hpp \
 	geometricasianpathpricer.hpp \
 	getcovariance.hpp \
 	himalayapathpricer.hpp \
 	inversecumulativegaussian.hpp \
 	knuthrandomgenerator.hpp \
 	lecuyerrandomgenerator.hpp \
-	mcoptionsample.hpp \
 	mcpricer.hpp \
 	montecarlomodel.hpp \
 	multifactormontecarlooption.hpp \
