@@ -458,6 +458,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroptionpricer.sbr" \
+	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -535,8 +536,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -628,6 +628,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroptionpricer.obj" \
+	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -705,8 +706,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1141,6 +1141,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroptionpricer.sbr" \
+	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -1218,8 +1219,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1311,6 +1311,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroptionpricer.obj" \
+	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -1388,8 +1389,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1823,6 +1823,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroptionpricer.sbr" \
+	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -1900,8 +1901,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1993,6 +1993,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroptionpricer.obj" \
+	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -2070,8 +2071,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2506,6 +2506,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroptionpricer.sbr" \
+	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -2583,8 +2584,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2676,6 +2676,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroptionpricer.obj" \
+	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -2753,8 +2754,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3188,6 +3188,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroptionpricer.sbr" \
+	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -3265,8 +3266,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3358,6 +3358,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroptionpricer.obj" \
+	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -3435,8 +3436,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<

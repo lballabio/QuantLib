@@ -804,6 +804,10 @@ SOURCE=.\ql\Math\interpolation2D.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\interpolationtraits.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\kronrodintegral.hpp
 # End Source File
 # Begin Source File
