@@ -18,7 +18,7 @@ INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
 !if "$(PYTHON_HOME)" == ""
-!message Please set the PYTHON_HOME environment variable to the absolute path of your Python installation.
+!message Please set the PYTHON_HOME environment variable to the absolute path of your Python installation (or any string if you don't plan to use Python).
 !error terminated
 !endif
 PYTHON_INCLUDE	= "$(PYTHON_HOME)"\include
