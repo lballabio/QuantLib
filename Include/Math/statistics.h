@@ -60,6 +60,9 @@ namespace QuantLib {
 		    double variance() const;
 		    /*! returns the standard deviation \f$ \sigma \f$, defined as the square root of the variance. */
 		    double standardDeviation() const;
+		    /*! returns the error estimate \f$ \epsilon \f$, defined as the square root
+            of the ratio of the variance to the number of samples. */
+		    double errorEstimate() const;
 		    /*! returns the skewness, defined as
 		    \f[ \frac{N^2}{(N-1)(N-2)}
 		    \frac{\left\langle \left( x-\langle x \rangle \right)^3 \right\rangle}{\sigma^3}. \f]
@@ -148,6 +151,11 @@ namespace QuantLib {
 		
 		inline double Statistics::standardDeviation() const {
 		  return QL_SQRT(variance());
+		}
+		
+
+		inline double Statistics::errorEstimate() const {
+		  return QL_SQRT(variance()/samples());
 		}
 		
 		inline double Statistics::skewness() const {

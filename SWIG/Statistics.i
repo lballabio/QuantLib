@@ -54,6 +54,7 @@ class Statistics {
     double mean() const;
     double variance() const;
     double standardDeviation() const;
+    double errorEstimate() const;
     double skewness() const;
     double kurtosis() const;
     double min() const;
