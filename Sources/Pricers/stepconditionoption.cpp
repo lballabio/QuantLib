@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.7  2001/04/05 13:06:55  marmar
+    Code simplified
+
     Revision 1.6  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -93,66 +96,60 @@ namespace QuantLib {
             initializeInitialCondition();                
             initializeOperator();
             initializeStepCondition();
-            /* model used for calculation: it could have been
-               BackwardEuler or ForwardEuler instead of CrankNicolson */
+            /* StandardFiniteDifferenceModel is Crank-Nicolson.
+               Alternatively, BackwardEuler or ForwardEuler 
+               could have been used instead*/
             StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
-            double dt = residualTime_/timeSteps_;
+
             // Control-variate variance reduction:
             // 1) calculate value/greeks of the European option analytically
             BSMEuropeanOption analyticEuro(type_, underlying_,
                                            strike_, dividendYield_,
                                            riskFreeRate_, residualTime_,
                                            volatility_);
-            double analyticEuroValue = analyticEuro.value();
-            double analyticEuroDelta = analyticEuro.delta();
-            double analyticEuroGamma = analyticEuro.gamma();
-            double analyticEuroTheta = analyticEuro.theta();
-
-            // 2) calculate value/greeks of the European option numerically
-            Array theEuroPrices = initialPrices_;
-            // rollback until dt
-            model.rollback(theEuroPrices,residualTime_,dt,timeSteps_-1);
-            double numericEuroValuePlus = valueAtCenter(theEuroPrices);
-            // complete rollback
-            model.rollback(theEuroPrices,dt,0.0,1);
-            double numericEuroValue = valueAtCenter(theEuroPrices);
-            double numericEuroDelta = 
-                firstDerivativeAtCenter(theEuroPrices, grid_);
-            double numericEuroGamma =
-                secondDerivativeAtCenter(theEuroPrices, grid_);
-            // rollback another step
-            model.rollback(theEuroPrices,0.0,-dt,1);
-            double numericEuroValueMinus = valueAtCenter(theEuroPrices);
-            double numericEuroTheta =
-                  (numericEuroValuePlus - numericEuroValueMinus) / (2.0*dt);
-            // 3) greeks of the American option numerically on the same grid
-            Array thePrices = initialPrices_;
-            // rollback until dt
-            model.rollback(thePrices, residualTime_, dt, timeSteps_ -1,
+            
+            // 2) Initialize prices on the grid
+            Array europeanPrices = initialPrices_;
+            Array americanPrices = initialPrices_;
+            
+            // 3) Rollback until dt
+            double dt = residualTime_/timeSteps_;
+            model.rollback(europeanPrices,residualTime_,dt,timeSteps_-1);
+            model.rollback(americanPrices, residualTime_, dt, timeSteps_ -1,
                            stepCondition_);
-            double numericAmericanValuePlus = valueAtCenter(thePrices);
-            // complete rollback
-            model.rollback(thePrices, dt, 0.0, 1,stepCondition_);
-            double numericAmericanValue = valueAtCenter(thePrices);
-            double numericAmericanDelta = 
-                firstDerivativeAtCenter(thePrices, grid_);
-            double numericAmericanGamma =
-                secondDerivativeAtCenter(thePrices, grid_);
-            // rollback another step
-            model.rollback(thePrices,0.0,-dt,1,stepCondition_);
-            double numericAmericanValueMinus = valueAtCenter(thePrices);
-            double numericAmericanTheta =
-                (numericAmericanValuePlus -numericAmericanValueMinus) /
-                (2.0*dt);
-            // 4) combine the results
-            value_ = numericAmericanValue - numericEuroValue +
-                analyticEuroValue;
-            delta_ = numericAmericanDelta - numericEuroDelta +
-                analyticEuroDelta;
-            gamma_ = numericAmericanGamma - numericEuroGamma +
-                analyticEuroGamma;
-            theta_ = numericAmericanTheta - numericEuroTheta +
-                analyticEuroTheta;
+            
+            // 4) Store option value at time = dt for theta computation
+            double europeanPlusDt = valueAtCenter(europeanPrices);
+            double americanPlusDt = valueAtCenter(americanPrices);
+
+            // 5) Complete rollback
+            model.rollback(europeanPrices, dt, 0.0, 1);
+            model.rollback(americanPrices, dt, 0.0, 1, stepCondition_);
+
+            /* 6) Numerically calculate option value and greeks using
+                  the european option as control variate                */
+
+            value_ =  valueAtCenter(americanPrices) 
+                    - valueAtCenter(europeanPrices) 
+                    + analyticEuro.value();
+                    
+            delta_ =   firstDerivativeAtCenter(americanPrices, grid_) 
+                     - firstDerivativeAtCenter(europeanPrices, grid_) 
+                     + analyticEuro.delta();
+                     
+            gamma_ =   secondDerivativeAtCenter(americanPrices, grid_) 
+                     - secondDerivativeAtCenter(europeanPrices, grid_) 
+                     + analyticEuro.gamma();
+
+            // 7) Rollback another step to time = -dt for theta computation
+            model.rollback(europeanPrices, 0.0, -dt, 1);
+            model.rollback(americanPrices, 0.0, -dt, 1, stepCondition_);
+
+            // 8) combine the results for theta
+            theta_=(americanPlusDt - valueAtCenter(americanPrices))/(2.0*dt)
+                  -(europeanPlusDt - valueAtCenter(europeanPrices))/(2.0*dt)
+                  + analyticEuro.theta();
+
             hasBeenCalculated_ = true;
         }
             
