@@ -5,8 +5,8 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
-#ifndef shaft_instruments_i
-#define shaft_instruments_i
+#ifndef quantlib_instruments_i
+#define quantlib_instruments_i
 
 %module Instruments
 
