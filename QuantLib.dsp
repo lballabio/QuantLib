@@ -299,6 +299,18 @@ SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\inarrearindexedcoupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\indexcashflowvectors.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\indexedcoupon.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\parcoupon.cpp
 # End Source File
 # Begin Source File
@@ -315,7 +327,15 @@ SOURCE=.\ql\CashFlows\shortfloatingcoupon.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\shortindexedcoupon.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\simplecashflow.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\upfrontindexedcoupon.hpp
 # End Source File
 # End Group
 # Begin Group "Day Counters"

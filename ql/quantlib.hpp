@@ -38,6 +38,9 @@
 #include <ql/errors.hpp>
 #include <ql/exercise.hpp>
 #include <ql/expressiontemplates.hpp>
+#include <ql/functions/daycounters.hpp>
+#include <ql/functions/mathf.hpp>
+#include <ql/functions/vols.hpp>
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/history.hpp>
@@ -66,11 +69,11 @@
 #include <ql/Calendars/milan.hpp>
 #include <ql/Calendars/newyork.hpp>
 #include <ql/Calendars/oslo.hpp>
+#include <ql/Calendars/stockholm.hpp>
+#include <ql/Calendars/sydney.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/toronto.hpp>
-#include <ql/Calendars/stockholm.hpp>
-#include <ql/Calendars/sydney.hpp>
 #include <ql/Calendars/warsaw.hpp>
 #include <ql/Calendars/wellington.hpp>
 #include <ql/Calendars/zurich.hpp>
@@ -80,9 +83,14 @@
 #include <ql/CashFlows/coupon.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/inarrearindexedcoupon.hpp>
+#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/CashFlows/indexedcoupon.hpp>
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
+#include <ql/CashFlows/shortindexedcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
+#include <ql/CashFlows/upfrontindexedcoupon.hpp>
 
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/actual365.hpp>
@@ -107,25 +115,21 @@
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
-#include <ql/functions/daycounters.hpp>
-#include <ql/functions/mathf.hpp>
-#include <ql/functions/vols.hpp>
-
-#include <ql/Indexes/euribor.hpp>
 #include <ql/Indexes/audlibor.hpp>
-#include <ql/Indexes/gbplibor.hpp>
-#include <ql/Indexes/usdlibor.hpp>
-#include <ql/Indexes/jpylibor.hpp>
 #include <ql/Indexes/cadlibor.hpp>
 #include <ql/Indexes/chflibor.hpp>
-#include <ql/Indexes/zarlibor.hpp>
+#include <ql/Indexes/euribor.hpp>
+#include <ql/Indexes/gbplibor.hpp>
+#include <ql/Indexes/jpylibor.hpp>
+#include <ql/Indexes/usdlibor.hpp>
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Indexes/xibormanager.hpp>
+#include <ql/Indexes/zarlibor.hpp>
 
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
-#include <ql/Instruments/quantovanillaoption.hpp>
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
+#include <ql/Instruments/quantovanillaoption.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Instruments/stock.hpp>
 #include <ql/Instruments/swap.hpp>
@@ -249,11 +253,6 @@
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 
-#include <ql/ShortRateModels/calibrationhelper.hpp>
-#include <ql/ShortRateModels/model.hpp>
-#include <ql/ShortRateModels/onefactormodel.hpp>
-#include <ql/ShortRateModels/parameter.hpp>
-#include <ql/ShortRateModels/twofactormodel.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
 #include <ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp>
@@ -262,6 +261,11 @@
 #include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
 #include <ql/ShortRateModels/OneFactorModels/vasicek.hpp>
 #include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
+#include <ql/ShortRateModels/calibrationhelper.hpp>
+#include <ql/ShortRateModels/model.hpp>
+#include <ql/ShortRateModels/onefactormodel.hpp>
+#include <ql/ShortRateModels/parameter.hpp>
+#include <ql/ShortRateModels/twofactormodel.hpp>
 
 #include <ql/Solvers1D/bisection.hpp>
 #include <ql/Solvers1D/brent.hpp>
@@ -280,8 +284,8 @@
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/TermStructures/quantotermstructure.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
-#include <ql/TermStructures/zerospreadedtermstructure.hpp>
 #include <ql/TermStructures/zerocurve.hpp>
+#include <ql/TermStructures/zerospreadedtermstructure.hpp>
 
 #include <ql/Utilities/combiningiterator.hpp>
 #include <ql/Utilities/couplingiterator.hpp>
