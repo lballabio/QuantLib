@@ -33,29 +33,18 @@ namespace QuantLib {
 
     namespace Lattices {
 
+        #if defined(QL_PATCH_MICROSOFT_BUGS)
+        class TimeGrid : public std::vector<Time> {
+          public:
+        #else
         class TimeGrid : private std::vector<Time> {
           public:
-            #if defined(QL_PATCH_MICROSOFT_BUGS)
-                Time operator[](Size i) const { 
-                    return std::vector<Time>::operator[](i); 
-                }
-                Size size() const {
-                    return std::vector<Time>::size();
-                }
-                typedef std::vector<Time>::const_iterator const_iterator;
-                const_iterator begin() const {
-                    return std::vector<Time>::begin();
-                }
-                const_iterator end() const {
-                    return std::vector<Time>::end();
-                }
-            #else
-                using std::vector<Time>::operator[];
-                using std::vector<Time>::size;
-                using std::vector<Time>::begin;
-                using std::vector<Time>::end;
-                using std::vector<Time>::const_iterator;
-            #endif
+            using std::vector<Time>::operator[];
+            using std::vector<Time>::size;
+            using std::vector<Time>::begin;
+            using std::vector<Time>::end;
+            using std::vector<Time>::const_iterator;
+        #endif
             TimeGrid() {}
             TimeGrid(const std::list<Time>& times, Size steps)
             : std::vector<Time>(0) {
