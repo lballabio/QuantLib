@@ -17,6 +17,7 @@
 
 #include "cliquetoption.hpp"
 #include "utilities.hpp"
+#include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/cliquetoption.hpp>
 #include <ql/PricingEngines/Cliquet/analyticcliquetengine.hpp>
 #include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
