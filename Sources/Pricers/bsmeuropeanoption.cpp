@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.22  2001/02/20 11:14:19  marmar
+    "growth" replaced with dividend
+
     Revision 1.21  2001/02/19 12:19:29  marmar
     Added trailing _ to protected and private members
 
@@ -51,38 +54,38 @@ namespace QuantLib {
 
         double BSMEuropeanOption::value() const {
           if(!hasBeenCalculated_) {
-            growthDiscount = (QL_EXP(-dividendYield_*residualTime_));
-            riskFreeDiscount = (QL_EXP(-riskFreeRate_*residualTime_));
-              standardDeviation = volatility_*QL_SQRT(residualTime_);
+            dividendDiscount_ = (QL_EXP(-dividendYield_*residualTime_));
+            riskFreeDiscount_ = (QL_EXP(-riskFreeRate_*residualTime_));
+              standardDeviation_ = volatility_*QL_SQRT(residualTime_);
               Math::CumulativeNormalDistribution f;
-              double D1 = QL_LOG(underlying_/strike_)/standardDeviation + 
-                    standardDeviation/2.0 + (riskFreeRate_ - dividendYield_)* 
-                                            residualTime_/standardDeviation;
-              double D2 = D1 - standardDeviation;
+              double D1 = QL_LOG(underlying_/strike_)/standardDeviation_ + 
+                    standardDeviation_/2.0 + (riskFreeRate_ - dividendYield_)* 
+                                            residualTime_/standardDeviation_;
+              double D2 = D1 - standardDeviation_;
               double fD1 = f(D1), fD2 = f(D2);
               switch (type_) {
                   case Call:
-                  alpha = fD1;
-                  beta = fD2;
-                  NID1 = f.derivative(D1);
+                  alpha_ = fD1;
+                  beta_ = fD2;
+                  NID1_ = f.derivative(D1);
                   break;
                   case Put:
-                  alpha = fD1-1.0;
-                  beta = fD2-1.0;
-                  NID1 = f.derivative(D1);
+                  alpha_ = fD1-1.0;
+                  beta_ = fD2-1.0;
+                  NID1_ = f.derivative(D1);
                   break;
                   case Straddle:
-                  alpha = 2.0*fD1-1.0;
-                  beta = 2.0*fD2-1.0;
-                  NID1 = 2.0*f.derivative(D1);
+                  alpha_ = 2.0*fD1-1.0;
+                  beta_ = 2.0*fD2-1.0;
+                  NID1_ = 2.0*f.derivative(D1);
                   break;
                   default:
                   throw IllegalArgumentError(
                     "BSMEuropeanOption: invalid option type");
             }
             hasBeenCalculated_ = true;
-            value_ = underlying_ * growthDiscount * alpha - 
-                                    strike_ * riskFreeDiscount * beta;
+            value_ = underlying_ * dividendDiscount_ * alpha_ - 
+                                    strike_ * riskFreeDiscount_ * beta_;
           }
             return value_;
         }
@@ -91,38 +94,38 @@ namespace QuantLib {
           if(!hasBeenCalculated_)
             value();
 
-            return growthDiscount*alpha;
+            return dividendDiscount_*alpha_;
         }
 
         double BSMEuropeanOption::gamma() const {
           if(!hasBeenCalculated_)
             value();
 
-            return NID1*growthDiscount/(underlying_*standardDeviation);
+            return NID1_*dividendDiscount_/(underlying_*standardDeviation_);
         }
 
         double BSMEuropeanOption::theta() const {
           if(!hasBeenCalculated_)
             value();
 
-            return -underlying_ * NID1 * volatility_ * 
-                growthDiscount/(2.0*QL_SQRT(residualTime_)) +
-                  dividendYield_*underlying_*alpha*growthDiscount - 
-                        riskFreeRate_*strike_*riskFreeDiscount*beta;
+            return -underlying_ * NID1_ * volatility_ * 
+                dividendDiscount_/(2.0*QL_SQRT(residualTime_)) +
+                  dividendYield_*underlying_*alpha_*dividendDiscount_ - 
+                        riskFreeRate_*strike_*riskFreeDiscount_*beta_;
         }
 
         double BSMEuropeanOption::rho() const {
           if(!hasBeenCalculated_)
             value();
 
-            return residualTime_*riskFreeDiscount*strike_*beta;
+            return residualTime_*riskFreeDiscount_*strike_*beta_;
         }
 
         double BSMEuropeanOption::vega() const {
           if(!hasBeenCalculated_)
             value();
 
-            return underlying_*NID1*growthDiscount*QL_SQRT(residualTime_);
+            return underlying_*NID1_*dividendDiscount_*QL_SQRT(residualTime_);
         }
 
     }

@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file bsmeuropeanoption.h
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/02/20 11:14:37  marmar
+    "growth" replaced with dividend
+
     Revision 1.6  2001/02/13 10:02:17  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -70,9 +74,9 @@ namespace QuantLib {
           private:
             // declared as mutable to preserve
             // the logical constness (does this word exist?) of value()
-            mutable DiscountFactor growthDiscount, riskFreeDiscount;
-            mutable double standardDeviation;
-            mutable double alpha, beta, NID1;
+            mutable DiscountFactor dividendDiscount_, riskFreeDiscount_;
+            mutable double standardDeviation_;
+            mutable double alpha_, beta_, NID1_;
         };
 
     }
