@@ -37,7 +37,8 @@ include_HEADERS = \
     shoutcondition.hpp \
     shoutoption.hpp \
     singleassetoption.hpp \
-    stepconditionoption.hpp
+    stepconditionoption.hpp \
+    swaptioncondition.hpp
 
 EXTRA_DIST=makefile.mak
 
