@@ -53,8 +53,16 @@ class Date:
         val = apply(QuantLibc.Date___add__,args, kwargs)
         if val: val = DatePtr(val) ; val.thisown = 1
         return val
+    def __iadd__(*args, **kwargs):
+        val = apply(QuantLibc.Date___iadd__,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
     def __sub__(*args, **kwargs):
         val = apply(QuantLibc.Date___sub__,args, kwargs)
+        if val: val = DatePtr(val) ; val.thisown = 1
+        return val
+    def __isub__(*args, **kwargs):
+        val = apply(QuantLibc.Date___isub__,args, kwargs)
         if val: val = DatePtr(val) ; val.thisown = 1
         return val
     def __repr__(self):
@@ -686,16 +694,36 @@ class Matrix:
         val = apply(QuantLibc.Matrix___add__,args, kwargs)
         if val: val = MatrixPtr(val) ; val.thisown = 1
         return val
+    def __iadd__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___iadd__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
     def __sub__(*args, **kwargs):
         val = apply(QuantLibc.Matrix___sub__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __isub__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___isub__,args, kwargs)
         if val: val = MatrixPtr(val) ; val.thisown = 1
         return val
     def __mul__(*args, **kwargs):
         val = apply(QuantLibc.Matrix___mul__,args, kwargs)
         if val: val = MatrixPtr(val) ; val.thisown = 1
         return val
+    def __imul__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___imul__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __rmul__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___rmul__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
     def __div__(*args, **kwargs):
         val = apply(QuantLibc.Matrix___div__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __idiv__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___idiv__,args, kwargs)
         if val: val = MatrixPtr(val) ; val.thisown = 1
         return val
     def __repr__(self):
@@ -958,12 +986,24 @@ class TridiagonalOperator:
         val = apply(QuantLibc.TridiagonalOperator___add__,args, kwargs)
         if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
         return val
+    def __iadd__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___iadd__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
     def __sub__(*args, **kwargs):
         val = apply(QuantLibc.TridiagonalOperator___sub__,args, kwargs)
         if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
         return val
+    def __isub__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___isub__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
     def __mul__(*args, **kwargs):
         val = apply(QuantLibc.TridiagonalOperator___mul__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
+    def __imul__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___imul__,args, kwargs)
         if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
         return val
     def __rmul__(*args, **kwargs):
@@ -972,6 +1012,10 @@ class TridiagonalOperator:
         return val
     def __div__(*args, **kwargs):
         val = apply(QuantLibc.TridiagonalOperator___div__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
+    def __idiv__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___idiv__,args, kwargs)
         if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
         return val
     def __repr__(self):

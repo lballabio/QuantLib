@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.21  2001/03/15 10:30:48  lballabio
+   Added dummy returns to avoid warnings
+
    Revision 1.20  2001/03/12 12:59:01  marmar
    __str__ now represents the object while __repr__ is unchanged
 
@@ -72,6 +75,7 @@ class IntVector {
         } else {
             throw IndexError("IntVector index out of range");
         }
+        QL_DUMMY_RETURN(0)
     }
     void __setitem__(int i, int x) {
         if (i>=0 && i<self->size()) {
@@ -180,6 +184,7 @@ class DoubleVector {
         } else {
             throw IndexError("DoubleVector index out of range");
         }
+        QL_DUMMY_RETURN(0.0)
     }
     void __setitem__(int i, double x) {
         if (i>=0 && i<self->size()) {

@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.24  2001/03/15 10:30:48  lballabio
+   Added dummy returns to avoid warnings
+
    Revision 1.23  2001/03/14 16:20:49  lballabio
    Added augmented assignment operators for Python 2.0
 
@@ -374,6 +377,7 @@ class DateVector {
         } else {
             throw IndexError("DateVector index out of range");
         }
+        QL_DUMMY_RETURN(Date())
     }
 
     void __setitem__(int i, const Date& x) {
