@@ -1,3 +1,136 @@
+2002-01-15 16:33  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/makefile.mak (1.9): Borland C++: page size up to 512 in DEBUG
+	mode
+
+2002-01-15 14:14  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/version_number.txt (1.14): updated
+
+2002-01-15 14:09  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/version_number.txt (1.13): updated
+
+2002-01-15 12:49  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.dsp (1.72), QuantLib.mak (1.61): changed MS VC++ PDB
+	settings
+
+2002-01-15 12:17  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.dsp (1.71), QuantLib.mak (1.60), makefile.mak (1.28),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.13),
+	Examples/EuropeanOption/EuropeanOption.mak (1.8),
+	Examples/Swap/Swap.mak (1.9): changed MS VC++ PDB settings
+
+2002-01-15 11:27  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* ql/: calendar.hpp (1.12), daycounter.hpp (1.11), quantlib.hpp
+	(1.38), Calendars/frankfurt.hpp (1.8), Calendars/helsinki.hpp
+	(1.8), Calendars/london.hpp (1.8), Calendars/milan.hpp (1.8),
+	Calendars/newyork.hpp (1.9), Calendars/target.hpp (1.8),
+	Calendars/wellington.hpp (1.8), Calendars/zurich.hpp (1.8),
+	DayCounters/actual360.hpp (1.8), DayCounters/actual365.hpp (1.8),
+	DayCounters/actualactual.hpp (1.11), DayCounters/thirty360.hpp
+	(1.10), Patterns/Makefile.am (1.6), Patterns/factory.hpp (1.5):
+	Removed Factory - too clumsy for the little or no use we had
+
+2002-01-15 11:22  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* LICENSE.TXT (1.11), Docs/pages/index.docs (1.4),
+	Docs/pages/license.docs (1.10): new license and copyright notice
+
+2002-01-15 10:41  'Marco Marchioro <marco.marchioro@riskmap.net>'
+
+	* QuantLib.dsp (1.70), QuantLib.mak (1.59),
+	Examples/DiscreteHedging/DiscreteHedging.dsp (1.4),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.12),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.2),
+	Examples/EuropeanOption/EuropeanOption.mak (1.7),
+	Examples/Swap/Swap.dsp (1.2), Examples/Swap/Swap.mak (1.8),
+	ql/config.msvc.hpp (1.8): Everything requires NOMINMAX macro
+
+2002-01-15 09:04  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/makefile.mak (1.26): workaround for dot bug
+
+2002-01-14 14:47  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/README.txt (1.15): typo fixed
+
+2002-01-14 11:51  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.nsi (1.59): updated to NSIS 1.93
+
+2002-01-13 13:21  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Examples/Swap/swapvaluation.cpp (1.18): QL_FABS() used instead of
+	abs()
+
+2002-01-11 16:01  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Examples/: makefile.mak (1.8), DiscreteHedging/makefile.mak
+	(1.4), EuropeanOption/makefile.mak (1.4), Swap/makefile.mak (1.4):
+	fixed Borland compilation
+
+2002-01-11 15:42  'Matteo Gallivanoni <matteo.gallivanoni@riskmap.net>'
+
+	* ql/: asset.hpp (1.5), termstructure.hpp (1.17),
+	Instruments/capfloor.cpp (1.12), Instruments/capfloor.hpp (1.12),
+	Instruments/plainoption.hpp (1.8), Instruments/simpleswap.cpp
+	(1.12), Instruments/swaption.hpp (1.5),
+	InterestRateModelling/model.cpp (1.12),
+	InterestRateModelling/model.hpp (1.14),
+	InterestRateModelling/onefactormodel.hpp (1.8),
+	InterestRateModelling/shortrateprocess.hpp (1.4),
+	InterestRateModelling/trinomialtree.hpp (1.6),
+	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.4),
+	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.14),
+	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.10),
+	InterestRateModelling/OneFactorModels/coxingersollrossplus.cpp
+	(1.3), Lattices/node.hpp (1.6), Lattices/tree.hpp (1.5),
+	MonteCarlo/basketpathpricer.cpp (1.15),
+	Pricers/mcdiscretearithmeticaso.hpp (1.5), Pricers/mceuropean.hpp
+	(1.7), Pricers/mcpagoda.cpp (1.7), TermStructures/ratehelpers.hpp
+	(1.17): pruned redundant header inclusions (again)
+
+2002-01-11 14:50  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/: history.docs (1.5), install.docs (1.5): cleaning up
+	documentation
+
+2002-01-11 14:41  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Docs/pages/license.docs (1.9): wrong links removed
+
+2002-01-11 14:25  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/version_number.txt (1.12): version number up to 0.3.0a4
+
+2002-01-11 12:21  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.nsi (1.58), configure.in (1.65), Docs/quantlib.doxy
+	(1.43), dev_tools/version_number.txt (1.11), ql/qldefines.hpp
+	(1.28): version number up to 0.3.0a4
+
+2002-01-11 10:39  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* LICENSE.TXT (1.10), Readme.txt (1.16), Docs/pages/license.docs
+	(1.8): new copyright and license agreement
+
+2002-01-11 10:26  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Readme.txt (1.15): new copyright and license agreement
+
+2002-01-11 09:27  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* LICENSE.TXT (1.9), Docs/pages/license.docs (1.7): new copyright
+	and license agreement
+
+2002-01-10 16:22  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ChangeLog.txt (1.12): updated
+
 2002-01-10 16:21  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
 	* News.txt (1.19): [no log message]
