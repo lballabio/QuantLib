@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -27,7 +26,7 @@
 #ifndef quantlib_risk_statistics_h
 #define quantlib_risk_statistics_h
 
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/statistic.hpp>
 #include <ql/Math/riskmeasures.hpp>
 
 namespace QuantLib {
@@ -37,50 +36,53 @@ namespace QuantLib {
         as Value-At-Risk, Expected Shortfall,
         Shortfall, Average Shortfall, plus statistic
         quantitities as mean, variance, std. deviation, skewness, kurtosis.
+
+        \deprecated use Statistic instead (or even take a look at
+                    HStatistics)
     */
     class RiskStatistics {
       public:
         //! \name Inspectors
         //@{
-        // Statistics proxy methods
-        Size samples() const {return statistics_.samples(); }
-        double weightSum() const {return statistics_.weightSum(); }
-        double mean() const {return statistics_.mean(); }
-        double variance() const {return statistics_.variance(); }
+        // Statistic proxy methods
+        Size samples() const {return statistic_.samples(); }
+        double weightSum() const {return statistic_.weightSum(); }
+        double mean() const {return statistic_.mean(); }
+        double variance() const {return statistic_.variance(); }
         double standardDeviation() const {
-            return statistics_.standardDeviation(); }
+            return statistic_.standardDeviation(); }
         double errorEstimate() const {
-            return statistics_.errorEstimate(); }
-        double skewness() const {return statistics_.skewness(); }
-        double kurtosis() const {return statistics_.kurtosis(); }
-        double min() const {return statistics_.min(); }
-        double max() const {return statistics_.max(); }
+            return statistic_.errorEstimate(); }
+        double skewness() const {return statistic_.skewness(); }
+        double kurtosis() const {return statistic_.kurtosis(); }
+        double min() const {return statistic_.min(); }
+        double max() const {return statistic_.max(); }
 
         // RiskMeasures proxy methods
         //! returns the Potential-Upside at a given percentile
         double potentialUpside(double percentile) const {
             return riskMeasures_.potentialUpside(percentile,
-                statistics_.mean(), statistics_.standardDeviation());
+                statistic_.mean(), statistic_.standardDeviation());
         }
         //! returns the Value-At-Risk at a given percentile
         double valueAtRisk(double percentile) const {
             return riskMeasures_.valueAtRisk(percentile,
-                statistics_.mean(), statistics_.standardDeviation());
+                statistic_.mean(), statistic_.standardDeviation());
         }
         //! returns the Expected Shortfall at a given percentile
         double expectedShortfall(double percentile) const {
             return riskMeasures_.expectedShortfall(percentile,
-                statistics_.mean(), statistics_.standardDeviation());
+                statistic_.mean(), statistic_.standardDeviation());
         }
         //! returns the Shortfall (observations below target)
         double shortfall(double target) const {
             return riskMeasures_.shortfall(target,
-                statistics_.mean(), statistics_.standardDeviation());
+                statistic_.mean(), statistic_.standardDeviation());
         }
         //! returns the Average Shortfall (averaged shortfallness)
         double averageShortfall(double target) const  {
             return riskMeasures_.averageShortfall(target,
-                statistics_.mean(), statistics_.standardDeviation());
+                statistic_.mean(), statistic_.standardDeviation());
         }
         //@}
         //! \name Modifiers
@@ -102,7 +104,7 @@ namespace QuantLib {
 
         //@}
       private:
-        Math::Statistics statistics_;
+        Math::Statistic statistic_;
         Math::RiskMeasures riskMeasures_;
     };
 
@@ -110,11 +112,11 @@ namespace QuantLib {
 
     /*! \pre weights must be positive or null */
     inline void RiskStatistics::add(double value, double weight) {
-        statistics_.add( value , weight );
+        statistic_.add( value , weight );
     }
 
     inline void RiskStatistics::reset() {
-        statistics_.reset();
+        statistic_.reset();
     }
 
 }
