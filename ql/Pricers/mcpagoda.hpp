@@ -23,7 +23,7 @@
 #define quantlib_pagoda_pricer_h
 
 #include <ql/Pricers/mcpricer.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/MonteCarlo/montecarlomodel.hpp>
 
 namespace QuantLib {
 

@@ -18,7 +18,7 @@
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/grid.hpp>
 #include <ql/Math/svd.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <ql/Math/statistics.hpp>
 #include <functional>
 
