@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.17  2001/08/23 10:16:36  nando
+# Examples have been added to Win32 binary installer
+#
 # Revision 1.16  2001/07/11 09:44:57  nando
 # install executable sets environment variable QL_DIR
 #
@@ -86,6 +89,23 @@ WriteRegStr HKEY_CURRENT_USER \
             "QL_DIR" "$INSTDIR"
 SectionEnd
 
+Section "Examples"
+SetOutPath $INSTDIR\Examples
+File /r "Examples\*.txt"
+File /r "Examples\*.mak"
+File /r "Examples\*.am"
+SetOutPath $INSTDIR\Examples\HedgingError
+File /r "Examples\HedgingError\*.cpp"
+File /r "Examples\HedgingError\*.dsp"
+File /r "Examples\HedgingError\*.txt"
+File /r "Examples\HedgingError\*.mak"
+SetOutPath $INSTDIR\Examples\Parities
+File /r "Examples\Parities\*.cpp"
+File /r "Examples\Parities\*.dsp"
+File /r "Examples\Parities\*.txt"
+File /r "Examples\Parities\*.mak"
+SectionEnd
+
 Section "Start Menu Shortcuts"
 CreateDirectory "$SMPROGRAMS\QuantLib"
 CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" \
@@ -99,7 +119,8 @@ DeleteRegKey   HKEY_LOCAL_MACHINE SOFTWARE\QuantLib
 DeleteRegValue HKEY_CURRENT_USER  "Environment" "QL_DIR"
 Delete "$SMPROGRAMS\QuantLib\*.*"
 RMDir "$SMPROGRAMS\QuantLib"
-RMDir /r $INSTDIR\Include
-RMDir /r $INSTDIR\lib
+RMDir /r "$INSTDIR\Examples"
+RMDir /r "$INSTDIR\Include"
+RMDir /r "$INSTDIR\lib"
 RMDir /r "$INSTDIR"
 SectionEnd
