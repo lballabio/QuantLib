@@ -57,6 +57,8 @@ namespace QuantLib {
                        double mean = 0.0,
                        double standard_dev = 1.0);
 
+        Size primeNumbers(Size absoluteIndex);
+
     }
 
 }

@@ -29,20 +29,10 @@
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/riskmeasures.hpp>
+#include <ql/Math/primenumbers.hpp>
 
-using QuantLib::Array;
-using QuantLib::Math::Matrix;
-using QuantLib::Math::Interpolation;
-using QuantLib::Math::LinearInterpolation;
-using QuantLib::Math::LogLinearInterpolation;
-using QuantLib::Math::CubicSpline;
-using QuantLib::Math::Interpolation2D;
-using QuantLib::Math::BilinearInterpolation;
-using QuantLib::Math::BicubicSplineInterpolation;
-using QuantLib::Math::NormalDistribution;
-using QuantLib::Math::CumulativeNormalDistribution;
-using QuantLib::Math::InverseCumulativeNormal;
-using QuantLib::Math::RiskMeasures;
+using namespace QuantLib;
+using namespace QuantLib::Math;
 
 namespace QuantLib {
 
@@ -136,6 +126,10 @@ namespace QuantLib {
 
             return InverseCumulativeNormal(mean, standard_dev)
                 (probability);
+        }
+
+        Size primeNumbers(Size absoluteIndex) {
+            return PrimeNumbers()[absoluteIndex];
         }
 
     }
