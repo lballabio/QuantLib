@@ -38,7 +38,7 @@ namespace QuantLib {
     class ExchangeRateManager : public Singleton<ExchangeRateManager> {
         friend class Singleton<ExchangeRateManager>;
       private:
-        ExchangeRateManager() {}
+        ExchangeRateManager();
       public:
         //! Add an exchange rate.
         /*! The given rate is valid between the given dates.
@@ -80,7 +80,7 @@ namespace QuantLib {
         mutable std::map<Key, std::list<Entry> > data_;
         Key hash(const Currency&, const Currency&) const;
         bool hashes(Key, const Currency&) const;
-        void initialize();
+        void addEuroRates();
         ExchangeRate directLookup(const Currency& source,
                                   const Currency& target,
                                   const Date& date) const;

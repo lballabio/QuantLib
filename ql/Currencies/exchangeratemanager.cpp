@@ -35,6 +35,10 @@ namespace QuantLib {
 
     }
 
+    ExchangeRateManager::ExchangeRateManager() {
+        addEuroRates();
+    }
+
     void ExchangeRateManager::add(const ExchangeRate& rate,
                                   const Date& startDate,
                                   const Date& endDate) {
@@ -72,7 +76,7 @@ namespace QuantLib {
 
     void ExchangeRateManager::clear() {
         data_.clear();
-        initialize();
+        addEuroRates();
     }
 
     ExchangeRateManager::Key ExchangeRateManager::hash(
@@ -86,7 +90,7 @@ namespace QuantLib {
         return c.numericCode() == k % 1000 || c.numericCode() == k/1000;
     }
 
-    void ExchangeRateManager::initialize() {
+    void ExchangeRateManager::addEuroRates() {
         add(ExchangeRate(EURCurrency(), ATSCurrency(), 13.7603),
             Date(1,January,1999), Date::maxDate());
         add(ExchangeRate(EURCurrency(), BEFCurrency(), 40.3399),

@@ -20,7 +20,9 @@
 namespace QuantLib {
 
     // we need to prevent rng from being default-initialized
-    SeedGenerator::SeedGenerator() : rng_(42UL) {}
+    SeedGenerator::SeedGenerator() : rng_(42UL) {
+        initialize();
+    }
 
     void SeedGenerator::initialize() {
 

@@ -43,9 +43,6 @@ namespace QuantLib {
         as a single implemementation point should synchronization
         features be added.
 
-        If the derived class provides an initialize() method, it will
-        be called after creation of the unique instance.
-
         \ingroup patterns
     */
     template <class T>
@@ -55,7 +52,6 @@ namespace QuantLib {
         static T& instance();
       protected:
         Singleton() {}
-        void initialize() {}
       private:
         #ifdef QL_PATCH_MSVC6
         static boost::shared_ptr<T> instance_;
@@ -75,12 +71,11 @@ namespace QuantLib {
     template <class T>
     T& Singleton<T>::instance() {
         #ifndef QL_PATCH_MSVC6
-        static boost::shared_ptr<T> instance_;
-        #endif
-        if (!instance_) {
+        static boost::shared_ptr<T> instance_(new T);
+        #else
+        if (!instance_)
             instance_ = boost::shared_ptr<T>(new T);
-            instance_->initialize();
-        }
+        #endif
         return *instance_;
     }
 
