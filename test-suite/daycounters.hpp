@@ -20,6 +20,18 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::ActualActual <ql/DayCounters/actualactual.hpp>
+
+    \test the correctness of the results is checked against known good
+          values.
+*/
+
+/*! \class QuantLib::SimpleDayCounter <ql/DayCounters/simpledaycounter.hpp>
+
+    \test the correctness of the results is checked against known good
+          values.
+*/
+
 class DayCounterTest {
    public:
     static void testActualActual();

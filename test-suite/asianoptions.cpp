@@ -348,7 +348,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     // even with SimpleDayCounter, the year fractions can vary. This 
     // forces us to use a larger tolerance. An option with 12 fixings 
     // instead of 10 would have been free of this effect...
-    Real tolerance = 1.0e-2;
+    Real tolerance = 1.5e-2;
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningProduct, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),

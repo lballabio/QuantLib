@@ -20,6 +20,33 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::ImpliedTermStructure \
+    <ql/TermStructures/impliedtermstructure.hpp>
+
+    \test a) the correctness of the returned values is tested by
+          checking them against numerical calculations.
+
+    \test b) observability of the term structure is checked.
+*/
+
+/*! \class QuantLib::ForwardSpreadedTermStructure \
+    <ql/TermStructures/forwardspreadedtermstructure.hpp>
+
+    \test a) the correctness of the returned values is tested by
+          checking them against numerical calculations.
+
+    \test b) observability of the term structure is checked.
+*/
+
+/*! \class QuantLib::ZeroSpreadedTermStructure \
+    <ql/TermStructures/zerospreadedtermstructure.hpp>
+
+    \test a) the correctness of the returned values is tested by
+          checking them against numerical calculations.
+
+    \test b) observability of the term structure is checked.
+*/
+
 class TermStructureTest {
   public:
     static void testImplied();

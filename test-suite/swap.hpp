@@ -20,6 +20,28 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::SimpleSwap <ql/Instruments/simpleswap.hpp>
+
+    \test a) the correctness of the returned value is tested by
+          checking that the price of a swap paying the fair fixed rate
+          is null.
+
+    \test b) the correctness of the returned value is tested by
+          checking that the price of a swap receiving the fair
+          floating-rate spread is null.
+
+    \test c) the correctness of the returned value is tested by
+          checking that the price of a swap decreases with the
+          paid fixed rate.
+
+    \test d) the correctness of the returned value is tested by
+          checking that the price of a swap increases with the
+          received floating-rate spread.
+
+    \test e) the correctness of the returned value is tested by checking
+          it against a known good value.
+*/
+
 class SwapTest {
   public:
     static void testFairRate();

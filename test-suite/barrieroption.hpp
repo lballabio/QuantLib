@@ -20,6 +20,20 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::AnalyticBarrierEngine \
+    <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
+
+    \test the correctness of the returned value is tested by
+          reproducing results available in literature.
+*/
+
+/*! \class QuantLib::MCBarrierEngine \
+    <ql/PricingEngines/Barrier/mcbarrierengine.hpp>
+
+    \test the correctness of the returned value is tested by
+          reproducing results available in literature.
+*/
+
 class BarrierOptionTest {
   public:
     static void testHaugValues();

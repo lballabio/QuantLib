@@ -20,6 +20,11 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::Instrument <ql/instrument.hpp>
+
+    \test observability of class instances is checked.
+*/
+
 class InstrumentTest {
   public:
     static void testObservable();

@@ -20,6 +20,12 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::CubicSpline <ql/Math/cubicspline.hpp>
+
+    \test the correctness of the returned values is tested by
+          reproducing results available in literature.
+*/
+
 class InterpolationTest {
   public:
     static void testSplineOnGenericValues();

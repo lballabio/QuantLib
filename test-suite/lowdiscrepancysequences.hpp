@@ -20,12 +20,29 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::SobolRsg <ql/RandomNumbers/sobolrsg.hpp>
+
+    \test a) the correctness of the returned values is tested by
+          reproducing known good values.
+
+    \test b) the correctness of the returned values is tested by
+          checking their discrepancy against known good values.
+*/
+
+/*! \class QuantLib::HaltonRsg <ql/RandomNumbers/haltonrsg.hpp>
+
+    \test a) the correctness of the returned values is tested by
+          reproducing known good values.
+
+    \test b) the correctness of the returned values is tested by
+          checking their discrepancy against known good values.
+*/
+
 class LowDiscrepancyTest {
   public:
     static void testPolynomialsModuloTwo();
     static void testSobol();
     static void testHalton();
-    static void testTrueRandomNumberDiscrepancy();
     static void testMersenneTwisterDiscrepancy();
     static void testPlainHaltonDiscrepancy();
     static void testRandomStartHaltonDiscrepancy();

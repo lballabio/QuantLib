@@ -20,6 +20,12 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::RiskStatistics <ql/Math/riskstatistics.hpp>
+
+    \test the correctness of the returned values is tested by
+          checking them against numerical calculations.
+*/
+
 class RiskStatisticsTest {
   public:
     static void testResults();

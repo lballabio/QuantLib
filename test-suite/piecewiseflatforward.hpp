@@ -20,6 +20,15 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::PiecewiseFlatForward \
+    <ql/TermStructures/piecewiseflatforward.hpp>
+
+    \test a) the correctness of the returned values is tested by
+          checking them against the original inputs.
+
+    \test b) the observability of the term structure is tested.
+*/
+
 class PiecewiseFlatForwardTest {
   public:
     static void testConsistency();

@@ -21,6 +21,58 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::AnalyticEuropeanEngine \
+    <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
+
+    \test a) the correctness of the returned value in case of
+          cash-or-nothing digital payoff is tested by reproducing
+          results available in literature.
+
+    \test b) the correctness of the returned value in case of
+          asset-or-nothing digital payoff is tested by reproducing
+          results available in literature.
+
+    \test c) the correctness of the returned value in case of gap
+          digital payoff is tested by reproducing results available in
+          literature.
+
+    \test d) the correctness of the returned greeks in case of
+          cash-or-nothing digital payoff is tested by reproducing
+          numerical derivatives.
+*/
+
+/*! \class QuantLib::AnalyticDigitalAmericanEngine \
+    <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
+
+    \test a) the correctness of the returned value in case of
+          cash-or-nothing at-hit digital payoff is tested by
+          reproducing results available in literature.
+
+    \test b) the correctness of the returned value in case of
+          asset-or-nothing at-hit digital payoff is tested by
+          reproducing results available in literature.
+
+    \test c) the correctness of the returned value in case of
+          cash-or-nothing at-expiry digital payoff is tested by
+          reproducing results available in literature.
+
+    \test d) the correctness of the returned value in case of
+          asset-or-nothing at-expiry digital payoff is tested by
+          reproducing results available in literature.
+
+    \test e) the correctness of the returned greeks in case of
+          cash-or-nothing at-hit digital payoff is tested by
+          reproducing numerical derivatives.
+*/
+
+/*! \class QuantLib::MCDigitalEngine \
+    <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
+
+    \test the correctness of the returned value in case of
+          cash-or-nothing at-hit digital payoff is tested by
+          reproducing known good results.
+*/
+
 class DigitalOptionTest {
   public:
     static void testCashOrNothingEuropeanValues();

@@ -20,6 +20,20 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::BaroneAdesiWhaleyApproximationEngine \
+    <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
+
+    \test the correctness of the returned value is tested by
+          reproducing results available in literature.
+*/
+
+/*! \class QuantLib::BjerksundStenslandApproximationEngine \
+    <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
+
+    \test the correctness of the returned value is tested by
+          reproducing results available in literature.
+*/
+
 class AmericanOptionTest {
   public:
     static void testBaroneAdesiWhaleyValues();

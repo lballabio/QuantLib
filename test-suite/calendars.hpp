@@ -20,6 +20,18 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::Calendar <ql/calendar.hpp>
+
+    \test the methods for adding and removing holidays are tested by
+          inspecting the calendar before and after their invocation.
+*/
+
+/*! \class QuantLib::JointCalendar <ql/Calendars/jointcalendar.hpp>
+
+    \test the correctness of the returned results is tested by
+          reproducing the calculations.
+*/
+
 class CalendarTest {
   public:
     static void testModifiedCalendars();

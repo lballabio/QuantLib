@@ -20,6 +20,18 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::Statistics <ql/Math/statistics.hpp>
+
+    \test the correctness of the returned values is tested by
+          checking them against numerical calculations.
+*/
+
+/*! \class QuantLib::SequenceStatistics <ql/Math/sequencestatistics.hpp>
+
+    \test the correctness of the returned values is tested by
+          checking them against numerical calculations.
+*/
+
 class StatisticsTest {
   public:
     static void testStatistics();

@@ -20,6 +20,23 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::AnalyticCliquetEngine \
+    <ql/PricingEngines/Cliquet/analyticcliquetengine.hpp>
+
+    \test a) the correctness of the returned value is tested by
+          reproducing results available in literature.
+
+    \test b) the correctness of the returned greeks is tested by
+          reproducing numerical derivatives.
+*/
+
+/*! \class QuantLib::AnalyticPerformanceEngine \
+    <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
+
+    \test the correctness of the returned greeks is tested by
+          reproducing numerical derivatives.
+*/
+
 class CliquetOptionTest {
   public:
     static void testValues();

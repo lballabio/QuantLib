@@ -20,6 +20,12 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::Date <ql/date.hpp>
+
+    \test self-consistency of dates, serial numbers, days of month,
+          months, and weekdays is checked over the whole date range.
+*/
+
 class DateTest {
   public:
     static void testConsistency();

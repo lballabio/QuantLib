@@ -20,6 +20,13 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::MersenneTwisterUniformRng \
+    <ql/RandomNumbers/mt19937uniformrng.hpp>
+
+    \test the correctness of the returned values is tested by
+          checking them against known good results.
+*/
+
 class MersenneTwisterTest {
   public:
     static void testValues();

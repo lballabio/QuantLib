@@ -20,6 +20,20 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::StulzEngine \
+    <ql/PricingEngines/Basket/stulzengine.hpp>
+
+    \test the correctness of the returned value is tested by
+          reproducing results available in literature.
+*/
+
+/*! \class QuantLib::MCBasketEngine \
+    <ql/PricingEngines/Basket/mcbasketengine.hpp>
+
+    \test the correctness of the returned value is tested by
+          reproducing results available in literature.
+*/
+
 class BasketOptionTest {
   public:
     static void testEuroTwoValues();

@@ -73,6 +73,9 @@ tex-files: docs-html
 	mv latex/bug.tex .bug.tex
 	$(SED) -e "s/section/chapter/" .bug.tex > latex/bug.tex
 	rm -f .bug.tex
+	mv latex/test.tex .test.tex
+	$(SED) -e "s/section/chapter/" .test.tex > latex/test.tex
+	rm -f .test.tex
 	mv latex/todo.tex .todo.tex
 	$(SED) -e "s/section/chapter/" .todo.tex > latex/todo.tex
 	rm -f .todo.tex

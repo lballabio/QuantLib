@@ -20,6 +20,39 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::AnalyticEuropeanEngine \
+    <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
+
+    \test a) the correctness of the returned value is tested by
+          reproducing results available in literature.
+
+    \test b) the correctness of the returned greeks is tested by
+          reproducing results available in literature.
+
+    \test c) the correctness of the returned greeks is tested by
+          reproducing numerical derivatives.
+
+    \test d) the correctness of the returned implied volatility is tested
+          by using it for reproducing the target value.
+
+    \test e) the implied-volatility calculation is tested
+          by checking that it does not modify the option.
+*/
+
+/*! \class QuantLib::BinomialVanillaEngine \
+    <ql/PricingEngines/Vanilla/binomialengine.hpp>
+
+    \test the correctness of the returned value is tested by checking
+          it against analytic results.
+*/
+
+/*! \class QuantLib::MCEuropeanEngine \
+    <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
+
+    \test the correctness of the returned value is tested by checking
+          it against analytic results.
+*/
+
 class EuropeanOptionTest {
   public:
     static void testValues();

@@ -21,6 +21,15 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \fn QuantLib::pseudoSqrt <ql/Math/pseudosqrt.hpp>
+
+    \test a) the correctness of the results is tested by reproducing
+          known good data.
+
+    \test b) the correctness of the results is tested by checking
+          returned values against numerical calculations.
+*/
+
 class CovarianceTest {
   public:
     static void testCovariance();

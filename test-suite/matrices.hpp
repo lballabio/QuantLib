@@ -21,6 +21,19 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::SymmetricSchurDecomposition \
+    <ql/Math/symmetricschurdecomposition.hpp>
+
+    \test the correctness of the returned values is tested by
+          checking their properties.
+*/
+
+/*! \class QuantLib::SVD <ql/Math/svd.hpp>
+
+    \test the correctness of the returned values is tested by
+          checking their properties.
+*/
+
 class MatricesTest {
   public:
     static void testEigenvectors();

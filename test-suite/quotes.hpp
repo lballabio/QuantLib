@@ -20,6 +20,23 @@
 
 #include <boost/test/unit_test.hpp>
 
+/*! \class QuantLib::Quote <ql/marketelement.hpp>
+
+    \test the observability of class instances is tested.
+*/
+
+/*! \class QuantLib::DerivedQuote <ql/marketelement.hpp>
+
+    \test the correctness of the returned values is tested by
+          checking them against numerical calculations.
+*/
+
+/*! \class QuantLib::CompositeQuote <ql/marketelement.hpp>
+
+    \test the correctness of the returned values is tested by
+          checking them against numerical calculations.
+*/
+
 class QuoteTest {
   public:
     static void testObservable();

@@ -49,7 +49,7 @@ SORT_MEMBER_DOCS       = NO
 SORT_BRIEF_DOCS        = NO
 SORT_BY_SCOPE_NAME     = NO
 GENERATE_TODOLIST      = YES
-GENERATE_TESTLIST      = NO
+GENERATE_TESTLIST      = YES
 GENERATE_BUGLIST       = YES
 GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       = 
@@ -68,7 +68,8 @@ WARN_LOGFILE           = docswarnings.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ./pages \
-                         ../ql
+                         ../ql \
+                         ../test-suite
 FILE_PATTERNS          = *.docs \
                          *.hpp \
                          *.h
