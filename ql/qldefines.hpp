@@ -140,13 +140,12 @@
 */
 #if defined HAVE_LIMITS
     #include <limits>
-    #define QL_MIN_INT      (int)(std::numeric_limits<int>::min)()
-    #define QL_MAX_INT      (int)(std::numeric_limits<int>::max)()
-    #define QL_MIN_DOUBLE  -(double)(std::numeric_limits<double>::max)()
-    #define QL_MAX_DOUBLE   (double)(std::numeric_limits<double>::max)()
-    #define QL_EPSILON      (double)(std::numeric_limits<double>::epsilon)()
-    #define QL_MIN_POSITIVE_DOUBLE \
-        (double)(std::numeric_limits<double>::min)()
+    #define QL_MIN_INT      ((std::numeric_limits<int>::min)())
+    #define QL_MAX_INT      ((std::numeric_limits<int>::max)())
+    #define QL_MIN_DOUBLE  -((std::numeric_limits<double>::max)())
+    #define QL_MAX_DOUBLE   ((std::numeric_limits<double>::max)())
+    #define QL_EPSILON      ((std::numeric_limits<double>::epsilon)())
+    #define QL_MIN_POSITIVE_DOUBLE ((std::numeric_limits<double>::min)())
 #elif defined HAVE_FLOAT_H
     #include <float.h>
     #if defined HAVE_CLIMITS
