@@ -41,7 +41,7 @@ namespace QuantLib {
         Exercise() {type_ = Type(-1); }
         bool isNull() const {return type_==Type(-1); }
         Type type() const;
-        Date date(Size index = 0) const;
+        Date date(Size index) const;
         const std::vector<Date>& dates() const;
         Date lastDate() const {return dates_[dates_.size()-1];};
 

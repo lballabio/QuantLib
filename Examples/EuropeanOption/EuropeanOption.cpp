@@ -71,9 +71,9 @@ int main(int argc, char* argv[])
 
         // our option
         double underlying = 102;
-        double strike = 100;      // at the money
-        Spread dividendYield = 0.01; // 1%
-        Rate riskFreeRate = 0.05; // 5%
+        double strike = 100;
+        Spread dividendYield = 0.0;
+        Rate riskFreeRate = 0.05;
 
         Date todaysDate(15, May, 1998);
         Date settlementDate(17, May, 1998);
@@ -229,6 +229,7 @@ int main(int argc, char* argv[])
         std::cout << "\nNew Pricing engine framework" << std::endl;
 
         EuropeanExercise exercise(exerciseDate);
+        AmericanExercise amExercise(settlementDate, exerciseDate);
 
 
         RelinkableHandle<MarketElement> underlyingH(

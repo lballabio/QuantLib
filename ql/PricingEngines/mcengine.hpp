@@ -187,7 +187,7 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         inline Handle<PG> MCVanillaEngine<S, PG, PP>::pathGenerator() const {
             Date referenceDate = arguments_.riskFreeTS->referenceDate();
-            Date exerciseDate = arguments_.exercise.date();
+            Date exerciseDate = arguments_.exercise.lastDate();
             Time residualTime = arguments_.riskFreeTS->dayCounter().yearFraction(
                 referenceDate, exerciseDate);
 
@@ -198,7 +198,7 @@ namespace QuantLib {
                                                    arguments_.volTS));
             double mu = drift->zeroYield(exerciseDate);
             double volatility = arguments_.volTS->blackVol(
-                arguments_.exercise.date(), arguments_.underlying);
+                arguments_.exercise.lastDate(), arguments_.underlying);
 
             return Handle<MonteCarlo::GaussianPathGenerator>(
                 new MonteCarlo::GaussianPathGenerator(mu,
@@ -289,7 +289,7 @@ namespace QuantLib {
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
                 new MonteCarlo::EuropeanPathPricer(arguments_.type,
                 arguments_.underlying, arguments_.strike,
-                arguments_.riskFreeTS->discount(arguments_.exercise.date()),
+                arguments_.riskFreeTS->discount(arguments_.exercise.lastDate()),
                 antitheticVariance_));
         }
 

@@ -58,7 +58,7 @@ namespace QuantLib {
             QL_REQUIRE(resetDate != Null<Date>(),
                        "ForwardOptionArguments::validate() : "
                        "null reset date given");
-            QL_REQUIRE(exercise.date() >= resetDate,
+            QL_REQUIRE(exercise.lastDate() >= resetDate,
                        "ForwardOptionArguments::validate() : "
                        "reset date greater than exercise time");
         }
@@ -129,7 +129,7 @@ namespace QuantLib {
                             arguments_.resetDate,
                             arguments_.volTS->blackForwardVol(
                                 arguments_.resetDate,
-                                arguments_.exercise.date(),
+                                arguments_.exercise.lastDate(),
                                 arguments_.moneyness*arguments_.underlying),
                             arguments_.volTS->dayCounter())));
 

@@ -49,7 +49,7 @@ namespace QuantLib {
                 // which daycounter should be used here?
                 Time residualTime = 
                     arguments_.riskFreeTS->dayCounter().yearFraction(
-                        referenceDate, arguments_.exercise.date());
+                        referenceDate, arguments_.exercise.lastDate());
                 // shouldn't we add all exercise dates here?
                 times.push_back(residualTime);
             }

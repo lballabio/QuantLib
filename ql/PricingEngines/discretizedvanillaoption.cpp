@@ -25,6 +25,7 @@
 // $Id$
 
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -36,13 +37,37 @@ namespace QuantLib {
         }
 
         void DiscretizedVanillaOption::adjustValues() {
-            Date referenceDate = arguments_.riskFreeTS->referenceDate();
-            double residualTime = 
-                arguments_.riskFreeTS->dayCounter().yearFraction(
-                    referenceDate, arguments_.exercise.date());
-            if (isOnTime(residualTime)) {
-                applySpecificCondition();
+
+            Date refDate = arguments_.riskFreeTS->referenceDate();
+            Size exerciseNumber = arguments_.exercise.dates().size();
+            std::vector<Time> t(exerciseNumber);
+            Size i;
+            for (i = 0; i<exerciseNumber; i++) {
+                t[i] = arguments_.riskFreeTS->dayCounter().yearFraction(
+                    refDate, arguments_.exercise.date(i));
             }
+            Time now = time();
+            switch(arguments_.exercise.type()) {
+                case Exercise::American:
+                    if ((now<=t[1]) & (now>=t[0]))
+                        applySpecificCondition();
+                    break;
+                case Exercise::European:
+                    if (isOnTime(t[0]))
+                        applySpecificCondition();
+                    break;
+                case Exercise::Bermudan:
+                    for (i = 0; i<exerciseNumber; i++) {
+                        if (isOnTime(t[i]))
+                            applySpecificCondition();
+                    }
+                    break;
+                default:
+                    throw IllegalArgumentError(
+                        "DiscretizedVanillaOption::adjustValues() : "
+                        "invalid option type");
+            }
+
         }
 
         void DiscretizedVanillaOption::applySpecificCondition() {

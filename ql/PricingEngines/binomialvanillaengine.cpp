@@ -36,7 +36,7 @@ namespace QuantLib {
 
         void BinomialVanillaEngine::calculate() const {
             double s0 = arguments_.underlying;
-            Date exerciseDate = arguments_.exercise.date();
+            Date exerciseDate = arguments_.exercise.lastDate();
             double v = arguments_.volTS->blackVol(exerciseDate, s0);
             Rate r = arguments_.riskFreeTS->zeroYield(exerciseDate);
             Rate q = arguments_.dividendTS->zeroYield(exerciseDate);

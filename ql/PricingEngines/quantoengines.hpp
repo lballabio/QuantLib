@@ -131,16 +131,16 @@ namespace QuantLib {
             results_.dividendRho = originalResults_->dividendRho;
             // exchangeRate level needed here!!!!!
             double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
-                arguments_.exercise.date(), arguments_.underlying);
+                arguments_.exercise.lastDate(), arguments_.underlying);
             results_.vega = originalResults_->vega +
                 arguments_.correlation * exchangeRateFlatVol *
                 originalResults_->dividendRho;
 
 
             double volatility = arguments_.volTS->blackVol(
-                arguments_.exercise.date(), arguments_.underlying);
+                arguments_.exercise.lastDate(), arguments_.underlying);
             results_.qvega = + arguments_.correlation
-                * arguments_.volTS->blackVol(arguments_.exercise.date(),
+                * arguments_.volTS->blackVol(arguments_.exercise.lastDate(),
                 arguments_.underlying) *
                 originalResults_->dividendRho;
             results_.qrho = - originalResults_->dividendRho;

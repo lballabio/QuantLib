@@ -36,7 +36,7 @@ namespace QuantLib {
                 "AnalyticalVanillaEngine::calculate() : "
                 "not an European Option");
 
-            Date exerciseDate = arguments_.exercise.date();
+            Date exerciseDate = arguments_.exercise.lastDate();
 
             double variance = arguments_.volTS->blackVariance(
                 exerciseDate,arguments_.strike);

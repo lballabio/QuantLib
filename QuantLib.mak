@@ -703,12 +703,12 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ELSE 
 
-ALL : "QuantLibXLL - Win32 Debug" ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibXLL - Win32 DebugCLEAN" 
+CLEAN :
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -1345,8 +1345,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"..\QuantLibXLL\Debug\QuantLibXLL.lib"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3510,16 +3509,6 @@ SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
-
-"QuantLibXLL - Win32 Debug" : 
-   cd "\Projects\QuantLibXLL"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibXLL.mak CFG="QuantLibXLL - Win32 Debug" 
-   cd "..\QuantLib"
-
-"QuantLibXLL - Win32 DebugCLEAN" : 
-   cd "\Projects\QuantLibXLL"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibXLL.mak CFG="QuantLibXLL - Win32 Debug" RECURSE=1 CLEAN 
-   cd "..\QuantLib"
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
