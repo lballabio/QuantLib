@@ -35,7 +35,7 @@ namespace QuantLib {
                 const Period& maturity,
                 const Period& length,
                 const RelinkableHandle<MarketElement>& volatility,
-                const Handle<Indexes::Xibor>& index,
+                const Handle<Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure)
             : CalibrationHelper(volatility,termStructure) {
 

@@ -24,7 +24,6 @@
 namespace QuantLib {
 
     using Instruments::SimpleSwap;
-    using Indexes::Xibor;
 
     namespace TermStructures {
 

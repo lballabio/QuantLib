@@ -28,19 +28,15 @@
 
 namespace QuantLib {
 
-    namespace Indexes {
-
-        //! %AUD %Libor index (Also known as SIBOR, check settlement days)
-        class AUDLibor : public Xibor {
-          public:
-            AUDLibor(int n, TimeUnit units,
-                     const RelinkableHandle<TermStructure>& h,
-                     const DayCounter& dc = Actual365())
-            : Xibor("AUDLibor", n, units, 2, AUD,
-                    Sydney(), true, ModifiedFollowing, dc, h) {}
-        };
-
-    }
+    //! %AUD %Libor index (Also known as SIBOR, check settlement days)
+    class AUDLibor : public Xibor {
+      public:
+        AUDLibor(int n, TimeUnit units,
+                 const RelinkableHandle<TermStructure>& h,
+                 const DayCounter& dc = Actual365())
+        : Xibor("AUDLibor", n, units, 2, AUD,
+                Sydney(), true, ModifiedFollowing, dc, h) {}
+    };
 
 }
 

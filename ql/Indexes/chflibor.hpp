@@ -28,20 +28,16 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    namespace Indexes {
-
-        //! %CHF %Libor index (Also known as ZIBOR)
-        /*! \todo check settlement days and day-count */
-        class CHFLibor : public Xibor {
-          public:
-            CHFLibor(int n, TimeUnit units,
-                     const RelinkableHandle<TermStructure>& h,
-                     const DayCounter& dc = Actual360())
-            : Xibor("CHFLibor", n, units, 2, CHF,
-                    Zurich(), true, ModifiedFollowing, dc, h) {}
-        };
-
-    }
+    //! %CHF %Libor index (Also known as ZIBOR)
+    /*! \todo check settlement days and day-count */
+    class CHFLibor : public Xibor {
+      public:
+        CHFLibor(int n, TimeUnit units,
+                 const RelinkableHandle<TermStructure>& h,
+                 const DayCounter& dc = Actual360())
+        : Xibor("CHFLibor", n, units, 2, CHF,
+                Zurich(), true, ModifiedFollowing, dc, h) {}
+    };
 
 }
 

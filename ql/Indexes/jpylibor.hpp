@@ -28,19 +28,15 @@
 
 namespace QuantLib {
 
-    namespace Indexes {
-
-        //! %JPY %Libor index (Also known as TIBOR, check settlement days)
-        class JPYLibor : public Xibor {
-          public:
-            JPYLibor(int n, TimeUnit units,
-                     const RelinkableHandle<TermStructure>& h,
-                     const DayCounter& dc = Actual360())
-            : Xibor("JPYLibor", n, units, 2, JPY,
-                    Tokyo(), true, ModifiedFollowing, dc, h) {}
-        };
-
-    }
+    //! %JPY %Libor index (Also known as TIBOR, check settlement days)
+    class JPYLibor : public Xibor {
+      public:
+        JPYLibor(int n, TimeUnit units,
+                 const RelinkableHandle<TermStructure>& h,
+                 const DayCounter& dc = Actual360())
+        : Xibor("JPYLibor", n, units, 2, JPY,
+                Tokyo(), true, ModifiedFollowing, dc, h) {}
+    };
 
 }
 

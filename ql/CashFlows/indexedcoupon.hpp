@@ -37,7 +37,7 @@ namespace QuantLib {
       public:
         IndexedCoupon(double nominal,
                       const Date& paymentDate,
-                      const Handle<Indexes::Xibor>& index,
+                      const Handle<Xibor>& index,
                       const Date& startDate, const Date& endDate,
                       int fixingDays,
                       Spread spread = 0.0,
@@ -59,7 +59,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        const Handle<Indexes::Xibor>& index() const;
+        const Handle<Xibor>& index() const;
         //@}
         //! \name Observer interface
         //@{
@@ -70,7 +70,7 @@ namespace QuantLib {
         virtual void accept(Patterns::AcyclicVisitor&);
         //@}
       private:
-        Handle<Indexes::Xibor> index_;
+        Handle<Xibor> index_;
         DayCounter dayCounter_;
     };
 
@@ -78,7 +78,7 @@ namespace QuantLib {
     // inline definitions
     inline IndexedCoupon::IndexedCoupon(double nominal,
                                         const Date& paymentDate,
-                                        const Handle<Indexes::Xibor>& index,
+                                        const Handle<Xibor>& index,
                                         const Date& startDate, 
                                         const Date& endDate,
                                         int fixingDays, Spread spread,
@@ -94,7 +94,7 @@ namespace QuantLib {
     }
 
 
-    inline const Handle<Indexes::Xibor>&
+    inline const Handle<Xibor>&
     IndexedCoupon::index() const {
         return index_;
     }

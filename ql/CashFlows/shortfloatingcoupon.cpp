@@ -24,8 +24,6 @@
 
 namespace QuantLib {
 
-    using Indexes::Xibor;
-
     ShortFloatingRateCoupon::ShortFloatingRateCoupon(
         double nominal, const Date& paymentDate,
         const Handle<Xibor>& index, const Date& startDate, 

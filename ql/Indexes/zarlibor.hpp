@@ -28,20 +28,16 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 namespace QuantLib {
 
-    namespace Indexes {
-
-        //! %ZAR %Libor index (also known as JIBAR)
-        /*! \todo check settlement days */
-        class ZARLibor : public Xibor {
-          public:
-            ZARLibor(int n, TimeUnit units,
-                     const RelinkableHandle<TermStructure>& h,
-                     const DayCounter& dc = Actual365())
-            : Xibor("ZARLibor", n, units, 0, ZAR,
-                    Johannesburg(), true, ModifiedFollowing, dc, h) {}
-        };
-
-    }
+    //! %ZAR %Libor index (also known as JIBAR)
+    /*! \todo check settlement days */
+    class ZARLibor : public Xibor {
+      public:
+        ZARLibor(int n, TimeUnit units,
+                 const RelinkableHandle<TermStructure>& h,
+                 const DayCounter& dc = Actual365())
+        : Xibor("ZARLibor", n, units, 0, ZAR,
+                Johannesburg(), true, ModifiedFollowing, dc, h) {}
+    };
 
 }
 

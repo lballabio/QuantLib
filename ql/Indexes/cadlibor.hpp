@@ -28,20 +28,16 @@
 
 namespace QuantLib {
 
-    namespace Indexes {
-
-        //! %CAD %Libor index (Also known as CDOR)
-        /*! \todo check settlement days */
-        class CADLibor : public Xibor {
-          public:
-            CADLibor(int n, TimeUnit units,
-                     const RelinkableHandle<TermStructure>& h,
-                     const DayCounter& dc = Actual365())
-            : Xibor("CADLibor", n, units, 2, CAD,
-                    Toronto(), true, ModifiedFollowing, dc, h) {}
-        };
-
-    }
+    //! %CAD %Libor index (Also known as CDOR)
+    /*! \todo check settlement days */
+    class CADLibor : public Xibor {
+      public:
+        CADLibor(int n, TimeUnit units,
+                 const RelinkableHandle<TermStructure>& h,
+                 const DayCounter& dc = Actual365())
+        : Xibor("CADLibor", n, units, 2, CAD,
+                Toronto(), true, ModifiedFollowing, dc, h) {}
+    };
 
 }
 

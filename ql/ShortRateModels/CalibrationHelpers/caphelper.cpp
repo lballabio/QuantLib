@@ -31,7 +31,6 @@ namespace QuantLib {
         namespace CalibrationHelpers {
 
             using namespace Instruments;
-            using Indexes::Xibor;
 
             CapHelper::CapHelper(
                 const Period& length,

@@ -22,9 +22,9 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helpers_cap_h
 #define quantlib_interest_rate_modelling_calibration_helpers_cap_h
 
-#include "ql/ShortRateModels/calibrationhelper.hpp"
-#include "ql/Instruments/capfloor.hpp"
-#include "ql/Indexes/xibor.hpp"
+#include <ql/ShortRateModels/calibrationhelper.hpp>
+#include <ql/Instruments/capfloor.hpp>
+#include <ql/Indexes/xibor.hpp>
 
 namespace QuantLib {
 
@@ -38,7 +38,7 @@ namespace QuantLib {
                 CapHelper(
                     const Period& length,
                     const RelinkableHandle<MarketElement>& volatility,
-                    const Handle<Indexes::Xibor>& index,
+                    const Handle<Xibor>& index,
                     const RelinkableHandle<TermStructure>& termStructure);
 
                 virtual void addTimesTo(std::list<Time>& times) const;

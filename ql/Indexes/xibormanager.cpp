@@ -23,69 +23,65 @@
 
 namespace QuantLib {
 
-    namespace Indexes {
+    #if defined(QL_PATCH_SOLARIS)
+    bool XiborManager::initialized_ = false;
+    XiborManager::HistoryMap* XiborManager::historyMap_ = 0;
+    void XiborManager::checkHistoryMap() {
+        if (!initialized_) {
+            historyMap_ = new HistoryMap;
+            initialized_ = true;
+        }
+    }
+    #else
+    XiborManager::HistoryMap XiborManager::historyMap_;
+    #endif
 
+    void XiborManager::setHistory(const std::string& name,
+                                  const History& history) {
         #if defined(QL_PATCH_SOLARIS)
-        bool XiborManager::initialized_ = false;
-        XiborManager::HistoryMap* XiborManager::historyMap_ = 0;
-        void XiborManager::checkHistoryMap() {
-            if (!initialized_) {
-                historyMap_ = new HistoryMap;
-                initialized_ = true;
-            }
-        }
+        checkHistoryMap();
+        (*historyMap_)[name] = history;
         #else
-        XiborManager::HistoryMap XiborManager::historyMap_;
+        historyMap_[name] = history;
         #endif
+    }
 
-        void XiborManager::setHistory(const std::string& name,
-            const History& history) {
-                #if defined(QL_PATCH_SOLARIS)
-                checkHistoryMap();
-                (*historyMap_)[name] = history;
-                #else
-                historyMap_[name] = history;
-                #endif
-        }
+    #if defined(QL_PATCH_SOLARIS)
+    History XiborManager::getHistory(const std::string& name) {
+        checkHistoryMap();
+        return (*historyMap_)[name];
+    }
+    #else
+    const History& XiborManager::getHistory(const std::string& name) {
+        XiborManager::HistoryMap::const_iterator i =
+            historyMap_.find(name);
+        QL_REQUIRE(i != historyMap_.end(),
+                   name + " history not loaded");
+        return i->second;
+    }
+    #endif
 
+    bool XiborManager::hasHistory(const std::string& name) {
         #if defined(QL_PATCH_SOLARIS)
-        History XiborManager::getHistory(const std::string& name) {
-            checkHistoryMap();
-            return (*historyMap_)[name];
-        }
+        checkHistoryMap();
+        return (historyMap_->find(name) != historyMap_->end());
         #else
-        const History& XiborManager::getHistory(const std::string& name) {
-            XiborManager::HistoryMap::const_iterator i =
-                historyMap_.find(name);
-            QL_REQUIRE(i != historyMap_.end(),
-                name + " history not loaded");
-            return i->second;
-        }
+        return (historyMap_.find(name) != historyMap_.end());
         #endif
+    }
 
-        bool XiborManager::hasHistory(const std::string& name) {
-            #if defined(QL_PATCH_SOLARIS)
-            checkHistoryMap();
-            return (historyMap_->find(name) != historyMap_->end());
-            #else
-            return (historyMap_.find(name) != historyMap_.end());
-            #endif
-        }
-
-        std::vector<std::string> XiborManager::histories() {
-            std::vector<std::string> temp;
-            XiborManager::HistoryMap::const_iterator i;
-            #if defined(QL_PATCH_SOLARIS)
-            checkHistoryMap();
-            for (i = historyMap_->begin(); i != historyMap_->end(); i++)
-                  temp.push_back(i->first);
-            #else
-            for (i = historyMap_.begin(); i != historyMap_.end(); i++)
-                temp.push_back(i->first);
-            #endif
-            return temp;
-        }
-
+    std::vector<std::string> XiborManager::histories() {
+        std::vector<std::string> temp;
+        XiborManager::HistoryMap::const_iterator i;
+        #if defined(QL_PATCH_SOLARIS)
+        checkHistoryMap();
+        for (i = historyMap_->begin(); i != historyMap_->end(); i++)
+            temp.push_back(i->first);
+        #else
+        for (i = historyMap_.begin(); i != historyMap_.end(); i++)
+            temp.push_back(i->first);
+        #endif
+        return temp;
     }
 
 }

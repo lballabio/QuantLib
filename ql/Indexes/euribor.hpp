@@ -28,19 +28,15 @@
 
 namespace QuantLib {
 
-    namespace Indexes {
-
-        //! %Euribor index
-        class Euribor : public Xibor {
-          public:
-            Euribor(int n, TimeUnit units,
-                    const RelinkableHandle<TermStructure>& h,
-                    const DayCounter& dc = Actual360())
-            : Xibor("Euribor", n, units, 2, EUR,
-                    TARGET(), true, ModifiedFollowing, dc, h) {}
-        };
-
-    }
+    //! %Euribor index
+    class Euribor : public Xibor {
+      public:
+        Euribor(int n, TimeUnit units,
+                const RelinkableHandle<TermStructure>& h,
+                const DayCounter& dc = Actual360())
+        : Xibor("Euribor", n, units, 2, EUR,
+                TARGET(), true, ModifiedFollowing, dc, h) {}
+    };
 
 }
 

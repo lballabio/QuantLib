@@ -31,8 +31,7 @@ namespace QuantLib {
     std::vector<Handle<CashFlow> > 
     IndexedCouponVector(const Schedule& schedule, 
                         const std::vector<double>& nominals,
-                        const Handle<Indexes::Xibor>& index,
-                        int fixingDays,
+                        const Handle<Xibor>& index, int fixingDays,
                         const std::vector<Spread>& spreads,
                         const DayCounter& dayCounter = DayCounter()) {
 

@@ -36,7 +36,7 @@ namespace QuantLib {
                       public Patterns::Observer {
       public:
         ParCoupon(double nominal, const Date& paymentDate,
-                  const Handle<Indexes::Xibor>& index,
+                  const Handle<Xibor>& index,
                   const Date& startDate, const Date& endDate,
                   int fixingDays, Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
@@ -56,7 +56,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        const Handle<Indexes::Xibor>& index() const;
+        const Handle<Xibor>& index() const;
         //@}
         //! \name Observer interface
         //@{
@@ -67,7 +67,7 @@ namespace QuantLib {
         virtual void accept(Patterns::AcyclicVisitor&);
         //@}
       private:
-        Handle<Indexes::Xibor> index_;
+        Handle<Xibor> index_;
     };
 
 
@@ -87,7 +87,7 @@ namespace QuantLib {
                                           Preceding);
     }
 
-    inline const Handle<Indexes::Xibor>& ParCoupon::index() const {
+    inline const Handle<Xibor>& ParCoupon::index() const {
         return index_;
     }
 

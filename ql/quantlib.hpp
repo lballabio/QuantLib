@@ -347,6 +347,7 @@ namespace QLCFL = QuantLib::CashFlows;
 namespace QLDCO = QuantLib::DayCounters;
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLFDM = QuantLib::FiniteDifferences;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLIDX = QuantLib::Indexes;
 namespace QLINS = QuantLib::Instruments;
 namespace QLMTH = QuantLib::Math;

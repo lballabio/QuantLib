@@ -27,13 +27,10 @@
 #include <ql/daycounter.hpp>
 #include <ql/Patterns/observable.hpp>
 
-/*! \namespace QuantLib::Indexes
-    \brief Concrete implementations of the Index interface
-
-    See sect. \ref indexes
-*/
-
 namespace QuantLib {
+
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace Indexes = ::QuantLib;
 
     //! purely virtual base class for indexes
     class Index : public Patterns::Observable {

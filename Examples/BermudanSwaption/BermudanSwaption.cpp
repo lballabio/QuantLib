@@ -18,7 +18,6 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Indexes;
 using namespace QuantLib::Instruments;
 using namespace QuantLib::Pricers;
 using namespace QuantLib::ShortRateModels;

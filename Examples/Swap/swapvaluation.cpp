@@ -24,8 +24,6 @@
 
 
 using namespace QuantLib;
-using Indexes::Xibor;
-using Indexes::Euribor;
 using Instruments::SimpleSwap;
 using TermStructures::PiecewiseFlatForward;
 using TermStructures::FlatForward;

@@ -48,7 +48,7 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        int floatingFrequency,
-                       const Handle<Indexes::Xibor>& index,
+                       const Handle<Xibor>& index,
                        int indexFixingDays,
                        Spread spread,
                        // hook to term structure
@@ -62,7 +62,7 @@ namespace QuantLib {
                        Rate fixedRate,
                        const DayCounter& fixedDayCount,
                        const Schedule& floatSchedule,
-                       const Handle<Indexes::Xibor>& index,
+                       const Handle<Xibor>& index,
                        int indexFixingDays,
                        Spread spread,
                        const RelinkableHandle<TermStructure>& termStructure,

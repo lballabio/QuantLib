@@ -25,8 +25,6 @@
 
 namespace QuantLib {
 
-    using Indexes::Xibor;
-
     std::vector<Handle<CashFlow> > 
     FixedRateCouponVector(const Schedule& schedule,
                           const std::vector<double>& nominals,
@@ -123,7 +121,7 @@ namespace QuantLib {
     std::vector<Handle<CashFlow> > 
     FloatingRateCouponVector(const Schedule& schedule,
                              const std::vector<double>& nominals,
-                             const Handle<Indexes::Xibor>& index, 
+                             const Handle<Xibor>& index, 
                              int fixingDays,
                              const std::vector<Spread>& spreads) {
 
