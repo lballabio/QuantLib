@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/08 17:21:11  lballabio
+    changed comment
+
     Revision 1.2  2001/05/03 15:35:53  lballabio
     Fixed line wrappings
 
@@ -51,8 +54,7 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        // WARNING: this probably contains bugs. Use at your own risk.
-
+        //! Actual/actual day count according to ISMA
         class ActualActual : public DayCounter {
           public:
             std::string name() const { return std::string("act/act"); }
