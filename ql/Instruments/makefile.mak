@@ -27,7 +27,7 @@ CC        = bcc32
 TLIB      = tlib
 
 # Options
-CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) \
+CC_OPTS        = -vi- -q -c -tWM -n$(OUTPUT_DIR) \
                  -w-8026 -w-8027 -w-8012 \
                  -I$(INCLUDE_DIR) \
                  -I$(BCC_INCLUDE)

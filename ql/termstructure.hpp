@@ -55,35 +55,22 @@ namespace QuantLib {
         virtual ~TermStructure() {}
         //! \name Rates
         //@{
-        //! zero yield rate for a given date
-        virtual Rate zeroYield(const Date&,
-            bool extrapolate = false) const = 0;
-        //! zero yield rate for a given set of dates
-        std::vector<Rate> zeroYield(const std::vector<Date>&,
+        //! zero yield rate at a given date
+        Rate zeroYield(const Date&,
             bool extrapolate = false) const;
-        //! discount factor for a given date
-        virtual DiscountFactor discount(const Date&,
-            bool extrapolate = false) const = 0;
-        //! discount factor for a given set of dates
-        std::vector<DiscountFactor> discount(const std::vector<Date>&,
-            bool extrapolate = false) const;
-        //! instantaneous forward rate for a given date
-        virtual Rate forward(const Date&,
-            bool extrapolate = false) const = 0;
-        //! instantaneous forward rate for a given set of dates
-        std::vector<Rate> forward(const std::vector<Date>&,
-            bool extrapolate = false) const;
-        //@}
-
-        //! \name Rates (using Time interface)
-        //@{
-        //! zero yield rate for a given time
+        //! zero yield rate at a given time from settlement
         virtual Rate zeroYield(Time,
             bool extrapolate = false) const = 0;
-        //! discount factor for a given time
+        //! discount factor at a given date
+        DiscountFactor discount(const Date&,
+            bool extrapolate = false) const;
+        //! discount factor at a given time from settlement
         virtual DiscountFactor discount(Time,
             bool extrapolate = false) const = 0;
-        //! instantaneous forward rate for a given time
+        //! instantaneous forward rate at a given date
+        Rate forward(const Date&,
+            bool extrapolate = false) const;
+        //! instantaneous forward rate at a given time from settlement
         virtual Rate forward(Time,
             bool extrapolate = false) const = 0;
         //@}
@@ -105,6 +92,10 @@ namespace QuantLib {
         virtual Date minDate() const = 0;
         //! returns the latest date for which the curve can return rates
         virtual Date maxDate() const = 0;
+        //! returns the earliest time for which the curve can return rates
+        virtual Time minTime() const = 0;
+        //! returns the latest date for which the curve can return rates
+        virtual Time maxTime() const = 0;
         //@}
 
         //! \name Other inspectors
@@ -116,44 +107,44 @@ namespace QuantLib {
 
     //! Zero yield term structure
     /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the <tt>zeroYield(const Date&)</tt> method
-        in derived classes.
+        programmer to implement only the <tt>zeroYield(Time)</tt> method in 
+        derived classes.
     */
     class ZeroYieldStructure : public TermStructure {
       public:
         virtual ~ZeroYieldStructure() {}
-        /*! returns the discount factor for the given date calculating it from
-            the zero yield.
+        // unhide non-virtual methods in base class
+        using TermStructure::discount;
+        using TermStructure::forward;
+        /*! Returns the discount factor for the given date calculating it 
+            from the zero yield.
         */
-        DiscountFactor discount(const Date&, bool extrapolate = false) const;
-        /*! returns the instantaneous forward rate for the given date
+        DiscountFactor discount(Time, bool extrapolate = false) const;
+        /*! Returns the instantaneous forward rate for the given date
             calculating it from the zero yield.
         */
-        Rate forward(const Date&, bool extrapolate = false) const;
-        DiscountFactor discount(Time, bool extrapolate = false) const;
         Rate forward(Time, bool extrapolate = false) const;
-
     };
 
     //! Discount factor term structure
     /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the <tt>discount(const Date&)</tt> method
-        in derived classes.
+        programmer to implement only the <tt>discount(const Date&)</tt> 
+        method in derived classes.
     */
     class DiscountStructure : public TermStructure {
       public:
         virtual ~DiscountStructure() {}
-        /*! returns the zero yield rate for the given date calculating it from
-            the discount.
+        // unhide non-virtual methods in base class
+        using TermStructure::zeroYield;
+        using TermStructure::forward;
+        /*! Returns the zero yield rate for the given date calculating it 
+            from the discount.
         */
-        Rate zeroYield(const Date&, bool extrapolate = false) const;
-        /*! returns the instantaneous forward rate for the given date
+        Rate zeroYield(Time, bool extrapolate = false) const;
+        /*! Returns the instantaneous forward rate for the given date
             calculating it from the discount.
         */
-        Rate forward(const Date&, bool extrapolate = false) const;
-        Rate zeroYield(Time, bool extrapolate = false) const;
         Rate forward(Time, bool extrapolate = false) const;
-
     };
 
     //! Forward rate term structure
@@ -164,23 +155,27 @@ namespace QuantLib {
     class ForwardRateStructure : public TermStructure {
       public:
         virtual ~ForwardRateStructure() {}
-        /*! returns the zero yield rate for the given date calculating it from
-            the instantaneous forward rate.
+        // unhide non-virtual methods in base class
+        using TermStructure::zeroYield;
+        using TermStructure::discount;
+        /*! Returns the zero yield rate for the given date calculating it 
+            from the instantaneous forward rate.
+            \warning This is just a default, highly inefficient 
+                implementation. Derived classes should implement their own 
+                zeroYield method.
         */
-        Rate zeroYield(const Date&, bool extrapolate = false) const;
-        /*! returns the discount factor for the given date calculating it from
-            the instantaneous forward rate.
-        */
-        DiscountFactor discount(const Date&, bool extrapolate = false) const;
         Rate zeroYield(Time, bool extrapolate = false) const;
+        /*! Returns the discount factor for the given date calculating it 
+            from the instantaneous forward rate.
+        */
         DiscountFactor discount(Time, bool extrapolate = false) const;
     };
 
     //! Implied term structure at a given date in the future
     /*! The given date will be the implied today's date.
-        \note This term structure will remain linked to the original structure,
-        i.e., any changes in the latter will be reflected in this structure as
-        well.
+        \note This term structure will remain linked to the original 
+            structure, i.e., any changes in the latter will be reflected in 
+            this structure as well.
     */
     class ImpliedTermStructure : public DiscountStructure,
                                  public Patterns::Observer {
@@ -188,7 +183,6 @@ namespace QuantLib {
         ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
             const Date& todaysDate);
         ~ImpliedTermStructure();
-
         //! \name TermStructure interface
         //@{
         Currency currency() const;
@@ -199,8 +193,12 @@ namespace QuantLib {
         Date settlementDate() const;
         Date maxDate() const;
         Date minDate() const;
+        Time maxTime() const;
+        Time minTime() const;
+
+        // unhide non-virtual methods in base class
+        using DiscountStructure::discount;
         //! returns the discount factor as seen from the evaluation date
-        DiscountFactor discount(const Date&, bool extrapolate = false) const;
         DiscountFactor discount(Time, bool extrapolate = false) const;
         //@}
 
@@ -214,8 +212,9 @@ namespace QuantLib {
     };
 
     //! Term structure with an added spread on the zero yield rate
-    /*! This term structure will remain linked to the original structure, i.e.,
-        any changes in the latter will be reflected in this structure as well.
+    /*! \note This term structure will remain linked to the original 
+            structure, i.e., any changes in the latter will be reflected in 
+            this structure as well.
     */
     class SpreadedTermStructure : public ZeroYieldStructure,
                                   public Patterns::Observer {
@@ -223,7 +222,6 @@ namespace QuantLib {
         SpreadedTermStructure(const RelinkableHandle<TermStructure>&, 
             Spread spread);
         ~SpreadedTermStructure();
-
         //! \name TermStructure interface
         //@{
         Currency currency() const;
@@ -234,8 +232,11 @@ namespace QuantLib {
         Date settlementDate() const;
         Date maxDate() const;
         Date minDate() const;
+        Time maxTime() const;
+        Time minTime() const;
+        // unhide non-virtual methods in base class
+        using ZeroYieldStructure::discount;
         //! returns the spreaded zero yield rate
-        Rate zeroYield(const Date&, bool extrapolate = false) const;
         Rate zeroYield(Time, bool extrapolate = false) const;
         //@}
 
@@ -251,50 +252,26 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline std::vector<Rate> TermStructure::zeroYield(
-        const std::vector<Date>& x, bool extrapolate) const {
-            std::vector<Rate> y(x.size());
-            std::vector<Date>::const_iterator j=x.begin();
-            for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
-                *i = zeroYield(*j, extrapolate);
-            return y;
+    inline Rate TermStructure::zeroYield(const Date& d,
+        bool extrapolate) const {
+            Time t = dayCounter()->yearFraction(settlementDate(),d);
+            return zeroYield(t,extrapolate);
+    }
+        
+    inline DiscountFactor TermStructure::discount(const Date& d,
+        bool extrapolate) const {
+            Time t = dayCounter()->yearFraction(settlementDate(),d);
+            return discount(t,extrapolate);
     }
 
-    inline std::vector<DiscountFactor> TermStructure::discount(
-        const std::vector<Date>& x, bool extrapolate) const {
-            std::vector<DiscountFactor> y(x.size());
-            std::vector<Date>::const_iterator j=x.begin();
-            for (std::vector<DiscountFactor>::iterator i=y.begin(); i!=y.end();
-                                                                        ++i,++j)
-                *i = discount(*j, extrapolate);
-            return y;
-    }
-
-    inline std::vector<Rate> TermStructure::forward(
-        const std::vector<Date>& x, bool extrapolate) const {
-            std::vector<Rate> y(x.size());
-            std::vector<Date>::const_iterator j=x.begin();
-            for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
-                *i = forward(*j, extrapolate);
-            return y;
+    inline Rate TermStructure::forward(const Date& d,
+        bool extrapolate) const {
+            Time t = dayCounter()->yearFraction(settlementDate(),d);
+            return forward(t,extrapolate);
     }
 
 
     // curve deriving discount and forward from zero yield
-
-    inline DiscountFactor ZeroYieldStructure::discount(const Date& d,
-        bool extrapolate) const {
-            Rate r = zeroYield(d, extrapolate);
-            double t = double(d-settlementDate())/365;
-            return DiscountFactor(QL_EXP(-r*t));
-    }
-
-    inline Rate ZeroYieldStructure::forward(const Date& d,
-        bool extrapolate) const {
-            Rate r1 = zeroYield(d, extrapolate), r2 = zeroYield(d+1, true);
-            // r1+t*(r2-r1)/dt = r1+(days/365)*(r2-r1)/(1 day/365)
-            return r1+(d-settlementDate())*double(r2-r1);
-    }
 
     inline DiscountFactor ZeroYieldStructure::discount(Time t,
         bool extrapolate) const {
@@ -304,27 +281,14 @@ namespace QuantLib {
 
     inline Rate ZeroYieldStructure::forward(Time t,
         bool extrapolate) const {
-            Rate r1 = zeroYield(t, extrapolate), r2 = zeroYield(t + 0.001, true);
-            return r1+t*double(r2-r1);
+            Time dt = 0.001;
+            Rate r1 = zeroYield(t, extrapolate), 
+                 r2 = zeroYield(t+dt, true);
+            return r1+t*(r2-r1)/dt;
     }
 
 
     // curve deriving zero yield and forward from discount
-
-    inline Rate DiscountStructure::zeroYield(const Date& d,
-        bool extrapolate) const {
-            DiscountFactor f = discount(d, extrapolate);
-            double t = double(d-settlementDate())/365;
-            return Rate(-QL_LOG(f)/t);
-    }
-
-    inline Rate DiscountStructure::forward(const Date& d,
-        bool extrapolate) const {
-            DiscountFactor f1 = discount(d, extrapolate),
-                           f2 = discount(d+1, true);
-            // log(f1/f2)/dt = log(f1/f2)/(1/365)
-            return Rate(QL_LOG(f1/f2)*365);
-    }
 
     inline Rate DiscountStructure::zeroYield(Time t,
         bool extrapolate) const {
@@ -334,47 +298,26 @@ namespace QuantLib {
 
     inline Rate DiscountStructure::forward(Time t,
         bool extrapolate) const {
+            Time dt = 0.001;
             DiscountFactor f1 = discount(t, extrapolate),
-                           f2 = discount(t + 0.001, true);
-            // log(f1/f2)/dt = log(f1/f2)/(1/365)
-            return Rate(QL_LOG(f1/f2)/0.001);
+                           f2 = discount(t+dt, true);
+            return Rate(QL_LOG(f1/f2)/dt);
     }
 
 
     // curve deriving zero yield and discount from forward
 
-    inline Rate ForwardRateStructure::zeroYield(const Date& d,
-        bool extrapolate) const {
-            // This is just a default, highly inefficient implementation.
-            // Derived classes should implement their own zeroYield method.
-            if (d == settlementDate())
-                return forward(settlementDate());
-            double sum = 0.5*forward(settlementDate());
-            for (Date i=settlementDate()+1; i<d; i++)
-                sum += forward(i, extrapolate);
-            sum += 0.5*forward(d, extrapolate);
-            return Rate(sum/(d-settlementDate()));
-    }
-
-    inline DiscountFactor ForwardRateStructure::discount(const Date& d,
-        bool extrapolate) const {
-            Rate r = zeroYield(d, extrapolate);
-            double t = double(d-settlementDate())/365;
-            return DiscountFactor(QL_EXP(-r*t));
-    }
-
     inline Rate ForwardRateStructure::zeroYield(Time t,
         bool extrapolate) const {
-            // This is just a default, highly inefficient implementation.
-            // Derived classes should implement their own zeroYield method.
             if (t == 0.0)
                 return forward(0.0);
             double sum = 0.5*forward(0.0);
-            double dt = t/1000.0;
+            unsigned int N = 1000;
+            double dt = t/N;
             for (Time i=t+dt; i<t; i+=dt)
                 sum += forward(i, extrapolate);
             sum += 0.5*forward(t, extrapolate);
-            return Rate(sum/1000.0);
+            return Rate(sum*dt/t);
     }
 
     inline DiscountFactor ForwardRateStructure::discount(Time t,
@@ -432,23 +375,28 @@ namespace QuantLib {
         return settlementDate();
     }
 
-    inline DiscountFactor ImpliedTermStructure::discount(const Date& d,
-        bool extrapolate) const {
-            // evaluationDate cannot be an extrapolation
-            /* discount at evaluation date cannot be cached
-               since the original curve could change between
-               invocations of this method */
-            return originalCurve_->discount(d, extrapolate) /
-                originalCurve_->discount(settlementDate());
+    inline Time ImpliedTermStructure::maxTime() const {
+        return dayCounter()->yearFraction(
+            settlementDate(),originalCurve_->maxDate());
+    }
+
+    inline Time ImpliedTermStructure::minTime() const {
+        return 0.0;
     }
 
     inline DiscountFactor ImpliedTermStructure::discount(Time t,
         bool extrapolate) const {
+            /* t is relative to the current settlement date
+               and needs to be converted to the time relative
+               to the settlement date of the original curve */
+            Time originalTime = t + dayCounter()->yearFraction(
+                originalCurve_->settlementDate(),settlementDate());
             // evaluationDate cannot be an extrapolation
             /* discount at evaluation date cannot be cached
                since the original curve could change between
                invocations of this method */
-            return originalCurve_->discount(t, extrapolate) / originalCurve_->discount(settlementDate());
+            return originalCurve_->discount(originalTime, extrapolate) / 
+                   originalCurve_->discount(settlementDate(),false);
     }
 
     inline void ImpliedTermStructure::update() {
@@ -502,16 +450,18 @@ namespace QuantLib {
         return originalCurve_->minDate();
     }
 
-    inline Rate SpreadedTermStructure::zeroYield(const Date& d,
-        bool extrapolate) const {
-            return originalCurve_->zeroYield(d, extrapolate)+spread_;
+    inline Time SpreadedTermStructure::maxTime() const {
+        return originalCurve_->maxTime();
+    }
+
+    inline Time SpreadedTermStructure::minTime() const {
+        return originalCurve_->minTime();
     }
 
     inline Rate SpreadedTermStructure::zeroYield(Time t,
         bool extrapolate) const {
-            return originalCurve_->zeroYield(t, extrapolate)+spread_;
+            return originalCurve_->zeroYield(t, extrapolate) + spread_;
     }
-
 
     inline void SpreadedTermStructure::update() {
         notifyObservers();

@@ -79,21 +79,15 @@ namespace QuantLib {
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
-            // zero yield
-            Rate zeroYield(const Date&, bool extrapolate = false) const;
-            // discount
-            DiscountFactor discount(const Date&,
-                bool extrapolate = false) const;
-            // forward (instantaneous)
-            Rate forward(const Date&, bool extrapolate = false) const;
-            // zero yield
+            Time maxTime() const;
+            Time minTime() const;
+            // unhide non-virtual methods in base class
+            using TermStructure::zeroYield;
+            using TermStructure::discount;
+            using TermStructure::forward;
             Rate zeroYield(Time, bool extrapolate = false) const;
-            // discount
-            DiscountFactor discount(Time,
-                bool extrapolate = false) const;
-            // forward (instantaneous)
+            DiscountFactor discount(Time, bool extrapolate = false) const;
             Rate forward(Time, bool extrapolate = false) const;
-
           private:
             // inner classes
             // objective function for solver
@@ -116,7 +110,6 @@ namespace QuantLib {
                                 const Handle<RateHelper>&) const;
             };
             // methods
-            int referenceNode(const Date& d, bool extrapolate) const;
             int referenceNode(Time t, bool extrapolate) const;
             // data members
             Currency currency_;
@@ -125,7 +118,7 @@ namespace QuantLib {
             Handle<Calendar> calendar_;
             int settlementDays_;
             Date settlementDate_;
-            std::vector<Date> nodes_;
+            Date maxDate_;
             std::vector<Time> times_;
             std::vector<DiscountFactor> discounts_;
             std::vector<Rate> forwards_, zeroYields_;
@@ -159,11 +152,19 @@ namespace QuantLib {
         }
 
         inline Date PiecewiseFlatForward::maxDate() const {
-            return nodes_.back();
+            return maxDate_;
         }
 
         inline Date PiecewiseFlatForward::minDate() const {
             return settlementDate_;
+        }
+
+        inline Time PiecewiseFlatForward::maxTime() const {
+            return times_.back();
+        }
+
+        inline Time PiecewiseFlatForward::minTime() const {
+            return 0.0;
         }
 
     }

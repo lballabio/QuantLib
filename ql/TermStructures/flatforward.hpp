@@ -57,22 +57,15 @@ namespace QuantLib {
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
-            // zero yield
-            Rate zeroYield(const Date&, bool extrapolate = false) const;
-            // discount
-            DiscountFactor discount(const Date&,
-                                    bool extrapolate = false) const;
-            // forward (instantaneous)
-            Rate forward(const Date&, bool extrapolate = false) const;
-
-            // zero yield
+            Time maxTime() const;
+            Time minTime() const;
+            // unhide non-virtual methods in base class
+            using TermStructure::zeroYield;
+            using TermStructure::discount;
+            using TermStructure::forward;
             Rate zeroYield(Time, bool extrapolate = false) const;
-            // discount
-            DiscountFactor discount(Time,
-                                    bool extrapolate = false) const;
-            // forward (instantaneous)
+            DiscountFactor discount(Time, bool extrapolate = false) const;
             Rate forward(Time, bool extrapolate = false) const;
-
           private:
             Currency currency_;
             Handle<DayCounter> dayCounter_;
@@ -128,58 +121,36 @@ namespace QuantLib {
             return settlementDate_;
         }
 
-        /*! \pre the given date must be in the range of definition
-        of the term structure */
-        inline Rate FlatForward::zeroYield(const Date& d,
-                                           bool extrapolate) const {
-            QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
-                "FlatForward::zeroYield : "
-                "date " + DateFormatter::toString(d) +
-                " outside curve definition [" +
-                DateFormatter::toString(minDate()) + "-" +
-                DateFormatter::toString(maxDate()) + "]");
-            return forward_;
+        inline Time FlatForward::maxTime() const {
+            return dayCounter()->yearFraction(
+                settlementDate(), Date::maxDate());
         }
 
-        /*! \pre the given date must be in the range of definition
-        of the term structure */
-        inline DiscountFactor FlatForward::discount(const Date& d,
-                                                    bool extrapolate) const {
-            QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
-                "FlatForward::discount : "
-                "date " + DateFormatter::toString(d) +
-                " outside curve definition [" +
-                DateFormatter::toString(minDate()) + "-" +
-                DateFormatter::toString(maxDate()) + "]");
-            double t = dayCounter_->yearFraction(settlementDate_,d);
-            return DiscountFactor(QL_EXP(-forward_*t));
+        inline Time FlatForward::minTime() const {
+            return 0.0;
         }
 
-        /*! \pre the given date must be in the range of definition
-        of the term structure */
-        inline Rate FlatForward::forward(const Date& d,
-                                         bool extrapolate) const {
-            QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
-                "FlatForward::forward : "
-                "date " + DateFormatter::toString(d) +
-                " outside curve definition [" +
-                DateFormatter::toString(minDate()) + "-" +
-                DateFormatter::toString(maxDate()) + "]");
-            return forward_;
-        }
-
-        inline Rate FlatForward::zeroYield(Time t,
-                                           bool extrapolate) const {
+        inline Rate FlatForward::zeroYield(Time t, bool) const {
+            // no forward limit on time
+            QL_REQUIRE(t >= 0.0,
+                "FlatForward: zero yield requested for negative time (" + 
+                DoubleFormatter::toString(t) + ")");
             return forward_;
         }
         
-        inline DiscountFactor FlatForward::discount(Time t,
-                                                    bool extrapolate) const {
+        inline DiscountFactor FlatForward::discount(Time t, bool) const {
+            // no forward limit on time
+            QL_REQUIRE(t >= 0.0,
+                "FlatForward: discount requested for negative time (" + 
+                DoubleFormatter::toString(t) + ")");
             return DiscountFactor(QL_EXP(-forward_*t));
         }
 
-        inline Rate FlatForward::forward(Time t,
-                                         bool extrapolate) const {
+        inline Rate FlatForward::forward(Time t, bool) const {
+            // no forward limit on time
+            QL_REQUIRE(t >= 0.0,
+                "FlatForward: forward requested for negative time (" + 
+                DoubleFormatter::toString(t) + ")");
             return forward_;
         }
 

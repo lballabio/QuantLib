@@ -56,7 +56,7 @@ TLIB      = tlib
 !endif
 
 # Options
-CC_OPTS        = -q -c -tWM \
+CC_OPTS        = -vi- -q -c -tWM \
     -w-8026 -w-8027 -w-8012 \
     -I$(INCLUDE_DIR) \
     -I$(BCC_INCLUDE)

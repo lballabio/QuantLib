@@ -60,6 +60,8 @@ namespace QuantLib {
 
         Time ActualActual::yearFraction(const Date& d1, const Date& d2,
           const Date& refPeriodStart, const Date& refPeriodEnd) const {
+            if (d1 == d2)
+                return 0.0;
             switch (convention_) {
               case ISMA:
               case Bond:

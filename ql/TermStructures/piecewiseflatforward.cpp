@@ -54,7 +54,7 @@ namespace QuantLib {
                 todaysDate_,settlementDays_,Days);
             // values at settlement date
             discounts_.push_back(1.0);
-            nodes_.push_back(settlementDate_);
+            maxDate_ = settlementDate_;
             times_.push_back(0.0);
 
             // the choice of the solver determines whether the accuracy is on 
@@ -75,15 +75,18 @@ namespace QuantLib {
                     "Two instruments have the same maturity (" +
                     DateFormatter::toString(m1) + ")");
             }
+
             // bootstrapping loop
             for (i=1; i<sortedInstruments.size()+1; i++) {
                 Handle<RateHelper> instrument = sortedInstruments[i-1];
                 double guess = instrument->discountGuess();
                 if (guess == Null<double>()) {
-                    if (i > 1)  // we can extrapolate
-                        guess = this->discount(instrument->maturity(),true);
-                    else        // any guess will do
+                    if (i > 1) {    // we can extrapolate 
+                        guess = this->discount(
+                            instrument->maturity(),true);
+                    } else {        // any guess will do
                         guess = 0.9;
+                    }
                 }
                 // bracket
                 double min = accuracy_, max = discounts_[i-1];
@@ -92,16 +95,15 @@ namespace QuantLib {
             }
         }
 
-        Rate PiecewiseFlatForward::zeroYield(
-            const Date& d, bool extrapolate) const {
-                if (d == settlementDate_) {
+        Rate PiecewiseFlatForward::zeroYield(Time t, 
+            bool extrapolate) const {
+                if (t == 0.0) {
                     return zeroYields_[0];
                 } else {
-                    int n = referenceNode(d, extrapolate);
-                    if (d == nodes_[n]) {
+                    int n = referenceNode(t, extrapolate);
+                    if (t == times_[n]) {
                         return zeroYields_[n];
                     } else {
-                        Time t = dayCounter_->yearFraction(settlementDate_,d);
                         Time tn = times_[n-1];
                         return (zeroYields_[n-1]*tn+forwards_[n]*(t-tn))/t;
                     }
@@ -110,15 +112,14 @@ namespace QuantLib {
         }
 
         DiscountFactor PiecewiseFlatForward::discount(
-            const Date& d, bool extrapolate) const {
-                if (d == settlementDate_) {
+            Time t, bool extrapolate) const {
+                if (t == 0.0) {
                     return discounts_[0];
                 } else {
-                    int n = referenceNode(d, extrapolate);
-                    if (d == nodes_[n]) {
+                    int n = referenceNode(t, extrapolate);
+                    if (t == times_[n]) {
                         return discounts_[n];
                     } else {
-                        Time t = dayCounter_->yearFraction(settlementDate_,d);
                         return discounts_[n-1] *
                             QL_EXP(-forwards_[n] * (t-times_[n-1]));
                     }
@@ -126,83 +127,24 @@ namespace QuantLib {
                 QL_DUMMY_RETURN(DiscountFactor());
         }
 
-        Rate PiecewiseFlatForward::forward(
-            const Date& d, bool extrapolate) const {
-                if (d == settlementDate_) {
-                    return forwards_[0];
-                } else {
-                    return forwards_[referenceNode(d, extrapolate)];
-                }
-                QL_DUMMY_RETURN(Rate());
+        Rate PiecewiseFlatForward::forward(Time t, bool extrapolate) const {
+            if (t == 0.0) {
+                return forwards_[0];
+            } else {
+                return forwards_[referenceNode(t, extrapolate)];
+            }
+            QL_DUMMY_RETURN(Rate());
         }
 
         int PiecewiseFlatForward::referenceNode(
-            const Date& d, bool extrapolate) const {
-                QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
-                    "date (" +
-					DateFormatter::toString(d) +
+            Time t, bool extrapolate) const {
+                QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
+                    "PiecewiseFlatForward: time (" +
+					DoubleFormatter::toString(t) +
 					") outside curve definition [" +
-					DateFormatter::toString(minDate()) + ", " +					
-					DateFormatter::toString(maxDate()) + "]");
-                if (d>=maxDate())
-                    return nodes_.size()-1;
-                std::vector<Date>::const_iterator i=nodes_.begin(),
-                    j=nodes_.end(), k;
-                while (j-i > 1) {
-                    k = i+(j-i)/2;
-                    if (d <= *k)
-                        j = k;
-                    else
-                        i = k;
-                }
-                return (j-nodes_.begin());
-        }
-
-        Rate PiecewiseFlatForward::zeroYield(
-            Time t, bool extrapolate) const {
-                if (t == 0.0) {
-                    return zeroYields_[0];
-                } else {
-                    int n = referenceNode(t, extrapolate);
-                    if (t == times_[n]) {
-                        return zeroYields_[n];
-                    } else {
-                        Time tn = times_[n-1];
-                        return (zeroYields_[n-1]*tn+forwards_[n]*(t-tn))/t;
-                    }
-                }
-                QL_DUMMY_RETURN(Rate());
-        }
-
-        DiscountFactor PiecewiseFlatForward::discount(
-            Time t, bool extrapolate) const {
-                if (t == 0.0) {
-                    return discounts_[0];
-                } else {
-                    int n = referenceNode(t, extrapolate);
-                    if (t == times_[n]) {
-                        return discounts_[n];
-                    } else {
-                        return discounts_[n-1] *
-                            QL_EXP(-forwards_[n] * (t-times_[n-1]));
-                    }
-                }
-                QL_DUMMY_RETURN(DiscountFactor());
-        }
-
-        Rate PiecewiseFlatForward::forward(
-            Time t, bool extrapolate) const {
-                if (t == 0.0) {
-                    return forwards_[0];
-                } else {
-                    return forwards_[referenceNode(t, extrapolate)];
-                }
-                QL_DUMMY_RETURN(Rate());
-        }
-
-        int PiecewiseFlatForward::referenceNode(
-            Time t, bool extrapolate) const {
-                if (t>=times_[times_.size() - 1])
+					DoubleFormatter::toString(0.0) + ", " +					
+					DoubleFormatter::toString(times_.back()) + "]");
+                if (t>=times_.back())
                     return times_.size()-1;
                 std::vector<Time>::const_iterator i=times_.begin(),
                     j=times_.end(), k;
@@ -217,13 +159,14 @@ namespace QuantLib {
         }
 
         PiecewiseFlatForward::FFObjFunction::FFObjFunction(
-            PiecewiseFlatForward* curve, const Handle<RateHelper>& rateHelper,
+            PiecewiseFlatForward* curve, 
+            const Handle<RateHelper>& rateHelper,
             int segment)
         : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
             // extend curve to next point
-            curve_->nodes_.push_back(rateHelper_->maturity());
+            curve_->maxDate_ = rateHelper_->maturity();
             curve_->times_.push_back(curve_->dayCounter()->yearFraction(
-                curve_->settlementDate(),curve_->nodes_[segment_]));
+                curve_->settlementDate(),curve_->maxDate_));
             if (segment_ == 1) {
                 // add dummy values at settlement
                 curve_->forwards_.push_back(0.0);
