@@ -303,26 +303,6 @@ SOURCE=.\ql\FiniteDifferences\forwardeuler.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\FiniteDifferences\identity.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\FiniteDifferences\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\FiniteDifferences\makefile.mak
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\FiniteDifferences\operator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\FiniteDifferences\operatortraits.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\FiniteDifferences\standardfdmodel.hpp
 # End Source File
 # Begin Source File
