@@ -363,6 +363,7 @@ test::
     python mcpricers.py
     python RiskStatistics.py
     python statistics_test.py
+    python TermStructure.py
     python testRNGs.py
     cd ..\..\Win
 
