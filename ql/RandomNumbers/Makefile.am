@@ -2,7 +2,7 @@
 # $Id$
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/RNG
+includedir = $(prefix)/include/ql/RandomNumbers
 
 include_HEADERS = \
 	boxmullergaussianrng.hpp \
