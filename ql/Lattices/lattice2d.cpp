@@ -55,7 +55,7 @@ namespace QuantLib {
                              const Handle<TrinomialTree>& tree2,
                              double correlation)
         : Lattices::Lattice(tree1->timeGrid(), 9),
-          tree1_(tree1), tree2_(tree2), rho_(QL_FABS(correlation)),m_(3,3) {
+          tree1_(tree1), tree2_(tree2), rho_(QL_FABS(correlation)), m_(3,3) {
 
             if (correlation < 0.0) {
                 m_[0][0] = -1.0;
