@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/20 11:52:30  lballabio
+// Some observability is back
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -49,22 +52,40 @@ namespace QuantLib {
             Observable interface
         */
 
+        //! Object that gets notified when a given Observable changes
         class Observer {
           public:
             virtual ~Observer() {}
+            /*! This method must be implemented in derived classes. An 
+                instance of Observer does not call this method directly: 
+                instead, it will be called by the observables the instance 
+                registered with when they need to notify any changes.
+            */
             virtual void update() = 0;
         };
 
+        //! Object that notifies its changes to a set of Observables
         class Observable {
           public:
             virtual ~Observable() {}
+            /*! \name Observer management
+                \warning It is responsibility of the programmer to make sure 
+                that the registered observers stay alive for the whole time 
+                of their registration with an observable.
+            */
+            //@{
             virtual void registerObserver(Observer*);
             void registerObservers(std::set<Observer*>&);
             virtual void unregisterObserver(Observer*);
             void unregisterObservers(std::set<Observer*>&);
             virtual void unregisterAll();
-            virtual void notifyObservers();
             std::set<Observer*> observers() const;
+            /*! In derived classes, this method should be called at the end 
+                of non-const methods or when the programmer desires to notify
+                any changes.
+            */
+            virtual void notifyObservers();
+            //@}
           private:
             std::set<Observer*> theObservers;
         };
@@ -94,14 +115,14 @@ namespace QuantLib {
             theObservers.clear();
         }
 
+        inline std::set<Observer*> Observable::observers() const {
+            return theObservers;
+        }
+
         inline void Observable::notifyObservers() {
             for (std::set<Observer*>::iterator i = theObservers.begin();
                 i != theObservers.end(); ++i)
                     (*i)->update();
-        }
-
-        inline std::set<Observer*> Observable::observers() const {
-            return theObservers;
         }
 
     }

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.3  2001/06/20 11:52:29  lballabio
+// Some observability is back
+//
 // Revision 1.2  2001/05/29 09:24:06  lballabio
 // Using relinkable handle to term structure
 //
@@ -43,6 +46,7 @@
 
 #include "ql/qlerrors.hpp"
 #include "ql/handle.hpp"
+#include "ql/Patterns/observable.hpp"
 
 namespace QuantLib {
 
@@ -51,20 +55,33 @@ namespace QuantLib {
         pointer to Handle . An instance can be relinked to another 
         Handle: such change will be propagated to all the copies of the 
         instance.
+        \pre Class "Type" must inherit from Observable
     */
     template <class Type>
     class RelinkableHandle {
       public:
         //! Constructor returning an unlinked handle.
-        RelinkableHandle()
-        : ptr_(new Handle<Type>*(new Handle<Type>)), n_(new int(1)) {}
-        RelinkableHandle(const RelinkableHandle& from)
-        : ptr_(from.ptr_), n_(from.n_) { (*n_)++; }
+        RelinkableHandle();
+        //! Copy constructor
+        RelinkableHandle(const RelinkableHandle& from);
         ~RelinkableHandle();
 
         //! \name Linking
         //@{
-        void linkTo(const Handle<Type>& h);
+        /*! \warning <i><b>registerAsObserver</b></i> is left as a backdoor
+            in case the programmer cannot guarantee that the object pointed 
+            to will remain alive for the whole lifetime of the handle - 
+            namely, it should be set to <tt>false</tt> when the passed handle 
+            was created with <tt>owns = false</tt> (the programmer should 
+            know if that happened). Failure to do so can very likely result 
+            in a program crash. 
+            
+            If the programmer does want the relinkable handle to register as 
+            observer of such a handle, it is his responsibility to ensure 
+            that the relinkable handle gets destroyed before the pointed 
+            object does.
+        */
+        void linkTo(const Handle<Type>& h, bool registerAsObserver = true);
         //@}
         
         //! \name Dereferencing
@@ -73,7 +90,7 @@ namespace QuantLib {
         Type* operator->() const;
         //@}
 
-        // \name Inspectors
+        //! \name Inspectors
         //@{
         //! Checks if the contained handle points to anything
         bool isNull() const;
@@ -81,6 +98,15 @@ namespace QuantLib {
         Handle<Type> linkedHandle() const;
         //@}
 
+        /*! \name Observable interface
+            Although this class does not directly inherit from Observable,
+            it contains an inner class which does. This methods act as proxies
+            for the corresponding methods of the data member.
+        */
+        //@{
+        void registerObserver(Patterns::Observer*);
+        void unregisterObserver(Patterns::Observer*);
+        //@}
       private:
         Handle<Type>** ptr_;
         int* n_;
@@ -89,35 +115,66 @@ namespace QuantLib {
         // It doesn't seem a good idea right now.
         RelinkableHandle& operator=(const RelinkableHandle& from) { 
             return *this; }
+        class InnerObserver : public Patterns::Observable,
+                              public Patterns::Observer {
+          public:
+            // Observer interface
+            void update() { notifyObservers(); }
+        };
+        InnerObserver* observer_;
+        bool *registeredAsObserver_;
     };
 
 
     // inline definitions
 
     template <class Type>
+    inline RelinkableHandle<Type>::RelinkableHandle()
+    : ptr_(new Handle<Type>*(new Handle<Type>)), n_(new int(1)),
+      observer_(new InnerObserver), registeredAsObserver_(new bool(false)) {}
+
+    template <class Type>
+    inline RelinkableHandle<Type>::RelinkableHandle(
+        const RelinkableHandle<Type>& from)
+    : ptr_(from.ptr_), n_(from.n_), observer_(from.observer_),
+      registeredAsObserver_(from.registeredAsObserver_) {
+        (*n_)++;
+    }
+
+    template <class Type>
     inline RelinkableHandle<Type>::~RelinkableHandle() {
         if (--(*n_) == 0) {
+            if (!isNull() && *registeredAsObserver_)
+                (**ptr_)->unregisterObserver(observer_);
             delete *ptr_;
             delete ptr_;
             delete n_;
+            delete observer_;
         }
     }
 
     template <class Type>
-    inline void RelinkableHandle<Type>::linkTo(const Handle<Type>& h) {
+    inline void RelinkableHandle<Type>::linkTo(const Handle<Type>& h,
+                                               bool registerAsObserver) {
+        if (!isNull() && *registeredAsObserver_)
+            (**ptr_)->unregisterObserver(observer_);
         delete *ptr_;
         *ptr_  = new Handle<Type>(h);
+        *registeredAsObserver_ = registerAsObserver;
+        if (!isNull() && registerAsObserver)
+            (**ptr_)->registerObserver(observer_);
+        observer_->notifyObservers();
     }
 
     template <class Type>
     inline Type& RelinkableHandle<Type>::operator*() const {
-        QL_REQUIRE(!(*ptr_)->isNull(), "tried to dereference null handle");
+        QL_REQUIRE(!isNull(), "tried to dereference null handle");
         return (*ptr_)->operator*();
     }
 
     template <class Type>
     inline Type* RelinkableHandle<Type>::operator->() const {
-        QL_REQUIRE(!(*ptr_)->isNull(), "tried to dereference null handle");
+        QL_REQUIRE(!isNull(), "tried to dereference null handle");
         return (*ptr_)->operator->();
     }
 
@@ -129,6 +186,18 @@ namespace QuantLib {
     template <class Type>
     inline Handle<Type> RelinkableHandle<Type>::linkedHandle() const {
         return **ptr_;
+    }
+
+    template <class Type>
+    inline void 
+    RelinkableHandle<Type>::registerObserver(Patterns::Observer* o) {
+        observer_->registerObserver(o);
+    }
+
+    template <class Type>
+    inline void 
+    RelinkableHandle<Type>::unregisterObserver(Patterns::Observer* o) {
+        observer_->unregisterObserver(o);
     }
 
 }

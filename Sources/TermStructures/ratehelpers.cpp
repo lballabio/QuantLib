@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.16  2001/06/20 11:52:30  lballabio
+// Some observability is back
+//
 // Revision 1.15  2001/06/18 08:05:59  lballabio
 // Reworked indexes and floating rate coupon
 //
@@ -165,7 +168,9 @@ namespace QuantLib {
           fixedDayCount_(fixedDayCount) {}
         
         void SwapRateHelper::setTermStructure(TermStructure* t) {
-            termStructureHandle_.linkTo(Handle<TermStructure>(t,false));
+            // do not set the relinkable handle as an observer - 
+            // force recalculation when needed
+            termStructureHandle_.linkTo(Handle<TermStructure>(t,false),false);
             RateHelper::setTermStructure(t);
             QL_REQUIRE(termStructure_ != 0, "null term structure set");
             settlement_ = calendar_->advance(

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/06/20 11:52:29  lballabio
+// Some observability is back
+//
 // Revision 1.9  2001/06/12 13:43:04  lballabio
 // Today's date is back into term structures
 // Instruments are now constructed with settlement days instead of settlement date
@@ -62,7 +65,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         rate structures which will be derived from this one.
     */
-    class TermStructure {
+    class TermStructure : public Patterns::Observable {
       public:
         virtual ~TermStructure() {}
         //! \name Rates
@@ -170,10 +173,15 @@ namespace QuantLib {
         i.e., any changes in the latter will be reflected in this structure as
         well.
     */
-    class ImpliedTermStructure : public DiscountStructure {
+    class ImpliedTermStructure : public DiscountStructure,
+                                 public Patterns::Observer {
       public:
         ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
             const Date& todaysDate);
+        ~ImpliedTermStructure();
+
+        //! \name TermStructure interface
+        //@{
         Currency currency() const;
         Date todaysDate() const;
         int settlementDays() const;
@@ -183,6 +191,12 @@ namespace QuantLib {
         Date minDate() const;
         //! returns the discount factor as seen from the evaluation date
         DiscountFactor discount(const Date&, bool extrapolate = false) const;
+        //@}
+
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
       private:
         RelinkableHandle<TermStructure> originalCurve_;
         Date todaysDate_;
@@ -192,10 +206,15 @@ namespace QuantLib {
     /*! This term structure will remain linked to the original structure, i.e.,
         any changes in the latter will be reflected in this structure as well.
     */
-    class SpreadedTermStructure : public ZeroYieldStructure {
+    class SpreadedTermStructure : public ZeroYieldStructure,
+                                  public Patterns::Observer {
       public:
         SpreadedTermStructure(const RelinkableHandle<TermStructure>&, 
             Spread spread);
+        ~SpreadedTermStructure();
+
+        //! \name TermStructure interface
+        //@{
         Currency currency() const;
         Date todaysDate() const;
         int settlementDays() const;
@@ -205,6 +224,12 @@ namespace QuantLib {
         Date minDate() const;
         //! returns the spreaded zero yield rate
         Rate zeroYield(const Date&, bool extrapolate = false) const;
+        //@}
+
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
       private:
         RelinkableHandle<TermStructure> originalCurve_;
         Spread spread_;
@@ -304,7 +329,15 @@ namespace QuantLib {
 
     inline ImpliedTermStructure::ImpliedTermStructure(
         const RelinkableHandle<TermStructure>& h, const Date& todaysDate)
-    : originalCurve_(h), todaysDate_(todaysDate) {}
+    : originalCurve_(h), todaysDate_(todaysDate) {
+        if (!originalCurve_.isNull())
+            originalCurve_.registerObserver(this);
+    }
+
+    inline ImpliedTermStructure::~ImpliedTermStructure() {
+        if (!originalCurve_.isNull())
+            originalCurve_.unregisterObserver(this);
+    }
 
     inline Currency ImpliedTermStructure::currency() const {
         return originalCurve_->currency();
@@ -345,12 +378,24 @@ namespace QuantLib {
                 originalCurve_->discount(settlementDate());
     }
 
+    inline void ImpliedTermStructure::update() {
+        notifyObservers();
+    }
+
 
     // spreaded curve
 
     inline SpreadedTermStructure::SpreadedTermStructure(
         const RelinkableHandle<TermStructure>& h, Spread spread)
-    : originalCurve_(h), spread_(spread) {}
+    : originalCurve_(h), spread_(spread) {
+        if (!originalCurve_.isNull())
+            originalCurve_.registerObserver(this);
+    }
+
+    inline SpreadedTermStructure::~SpreadedTermStructure() {
+        if (!originalCurve_.isNull())
+            originalCurve_.unregisterObserver(this);
+    }
 
     inline Currency SpreadedTermStructure::currency() const {
         return originalCurve_->currency();
@@ -383,6 +428,10 @@ namespace QuantLib {
     inline Rate SpreadedTermStructure::zeroYield(const Date& d,
         bool extrapolate) const {
             return originalCurve_->zeroYield(d, extrapolate)+spread_;
+    }
+
+    inline void SpreadedTermStructure::update() {
+        notifyObservers();
     }
 
 }
