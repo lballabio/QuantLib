@@ -219,6 +219,7 @@ AC_CONFIG_FILES([
     Docs/Examples/Makefile 
     Docs/images/Makefile 
     Examples/Makefile 
+    Examples/AmericanOption/Makefile 
     Examples/BermudanSwaption/Makefile 
     Examples/DiscreteHedging/Makefile 
     Examples/EuropeanOption/Makefile 
