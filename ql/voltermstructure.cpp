@@ -115,7 +115,7 @@ namespace QuantLib {
  
 	double BlackVolTermStructure::timeDerivative(Time maturity,
                         double strike,
-                        bool extrapolate = false) const {
+                        bool extrapolate) const {
 		return (blackVol(maturity+dT, strike, extrapolate) -
 			blackVol(maturity, strike, extrapolate))/dT	;
 	}
@@ -123,7 +123,7 @@ namespace QuantLib {
 
      double BlackVolTermStructure::strikeDerivative(Time maturity,
                         double strike,
-                        bool extrapolate = false) const {
+                        bool extrapolate) const {
 		 double dK = 1.0e-3*strike;
 		 return (blackVol(maturity, strike+dK, extrapolate) -
 			blackVol(maturity, strike-dK, extrapolate))/(2*dK);
@@ -132,7 +132,7 @@ namespace QuantLib {
 
      double BlackVolTermStructure::strikeSecondDerivative(Time maturity,
                         double strike,
-                        bool extrapolate = false) const {
+                        bool extrapolate) const {
 		 double dK = 1.0e-3*strike;
 		 return (blackVol(maturity, strike+dK, extrapolate) +
 			blackVol(maturity, strike-dK, extrapolate) -
