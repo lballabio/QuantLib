@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.24  2001/08/29 09:15:13  nando
+# added dep files to avoid annoying warning
+#
 # Revision 1.23  2001/08/27 13:16:57  nando
 # typos fixed
 #
@@ -132,6 +135,7 @@ SectionIn 2
   SetOutPath $INSTDIR
   File ChangeLog.txt
   File makefile.mak
+  File QuantLib.dep
   File QuantLib.dsp
   File QuantLib.dsw
   File QuantLib.mak

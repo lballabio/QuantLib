@@ -1,0 +1,1458 @@
+# Microsoft Developer Studio Generated Dependency File, included by QuantLib.mak
+
+.\Sources\Calendars\frankfurt.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\frankfurt.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Calendars\helsinki.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\helsinki.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Calendars\london.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\london.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Calendars\milan.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\milan.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Calendars\newyork.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\newyork.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Calendars\target.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\target.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Calendars\wellington.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\wellington.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Calendars\westerncalendar.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Calendars\zurich.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\Calendars\westerncalendar.hpp"\
+	".\Include\ql\Calendars\zurich.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\DayCounters\actualactual.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\DayCounters\actualactual.hpp"\
+	".\Include\ql\DayCounters\thirty360european.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\DayCounters\thirty360.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\DayCounters\thirty360.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\DayCounters\thirty360italian.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\DayCounters\thirty360italian.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\FiniteDifferences\bsmoperator.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\FiniteDifferences\tridiagonaloperator.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\FiniteDifferences\valueatcenter.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Instruments\simpleswap.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\cashflow.hpp"\
+	".\Include\ql\CashFlows\accruingcoupon.hpp"\
+	".\Include\ql\CashFlows\cashflowvectors.hpp"\
+	".\Include\ql\CashFlows\fixedratecoupon.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\index.hpp"\
+	".\Include\ql\instrument.hpp"\
+	".\Include\ql\Instruments\simpleswap.hpp"\
+	".\Include\ql\Instruments\swap.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Instruments\stock.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\instrument.hpp"\
+	".\Include\ql\Instruments\stock.hpp"\
+	".\include\ql\marketelement.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	
+
+.\Sources\Instruments\swap.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\cashflow.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\instrument.hpp"\
+	".\Include\ql\Instruments\swap.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Math\matrix.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\symmetricschurdecomposition.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Math\multivariateaccumulator.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\multivariateaccumulator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Math\normaldistribution.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Math\segmentintegral.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\Math\segmentintegral.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Math\statistics.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\Math\statistics.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Math\symmetricschurdecomposition.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\symmetricschurdecomposition.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\MonteCarlo\avgpriceasianpathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\MonteCarlo\avgpriceasianpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\path.hpp"\
+	".\Include\ql\MonteCarlo\pathpricer.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\MonteCarlo\avgstrikeasianpathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\MonteCarlo\avgstrikeasianpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\path.hpp"\
+	".\Include\ql\MonteCarlo\pathpricer.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\MonteCarlo\basketpathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\MonteCarlo\basketpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\multipath.hpp"\
+	".\Include\ql\MonteCarlo\multipathpricer.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\MonteCarlo\controlvariatedpathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\MonteCarlo\controlvariatedpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\path.hpp"\
+	".\Include\ql\MonteCarlo\pathpricer.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\MonteCarlo\europeanpathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\path.hpp"\
+	".\Include\ql\MonteCarlo\pathpricer.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\MonteCarlo\everestpathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\MonteCarlo\everestpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\multipath.hpp"\
+	".\Include\ql\MonteCarlo\multipathpricer.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\MonteCarlo\geometricasianpathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\geometricasianpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\path.hpp"\
+	".\Include\ql\MonteCarlo\pathpricer.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\MonteCarlo\getcovariance.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\MonteCarlo\getcovariance.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\MonteCarlo\himalayapathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\MonteCarlo\himalayapathpricer.hpp"\
+	".\Include\ql\MonteCarlo\multipath.hpp"\
+	".\Include\ql\MonteCarlo\multipathpricer.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\MonteCarlo\knuthrandomgenerator.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	
+
+.\Sources\MonteCarlo\lecuyerrandomgenerator.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	
+
+.\Sources\MonteCarlo\pagodapathpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\MonteCarlo\multipath.hpp"\
+	".\Include\ql\MonteCarlo\multipathpricer.hpp"\
+	".\Include\ql\MonteCarlo\pagodapathpricer.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Pricers\averagepriceasian.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\Math\statistics.hpp"\
+	".\Include\ql\MonteCarlo\avgpriceasianpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\boxmuller.hpp"\
+	".\Include\ql\MonteCarlo\centrallimitgaussian.hpp"\
+	".\Include\ql\MonteCarlo\controlvariatedpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\gaussianpathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\generalmontecarlo.hpp"\
+	".\Include\ql\MonteCarlo\geometricasianpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\inversecumulativegaussian.hpp"\
+	".\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\mcoptionsample.hpp"\
+	".\Include\ql\MonteCarlo\mcpricer.hpp"\
+	".\include\ql\montecarlo\montecarlomodel.hpp"\
+	".\Include\ql\MonteCarlo\onefactormontecarlooption.hpp"\
+	".\Include\ql\MonteCarlo\path.hpp"\
+	".\Include\ql\MonteCarlo\pathpricer.hpp"\
+	".\Include\ql\MonteCarlo\randomarraygenerator.hpp"\
+	".\Include\ql\MonteCarlo\uniformrandomgenerator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\averagepriceasian.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\geometricasianoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Pricers\averagestrikeasian.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\Math\statistics.hpp"\
+	".\Include\ql\MonteCarlo\avgstrikeasianpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\boxmuller.hpp"\
+	".\Include\ql\MonteCarlo\centrallimitgaussian.hpp"\
+	".\Include\ql\MonteCarlo\controlvariatedpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\gaussianpathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\generalmontecarlo.hpp"\
+	".\Include\ql\MonteCarlo\geometricasianpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\inversecumulativegaussian.hpp"\
+	".\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\mcoptionsample.hpp"\
+	".\Include\ql\MonteCarlo\mcpricer.hpp"\
+	".\include\ql\montecarlo\montecarlomodel.hpp"\
+	".\Include\ql\MonteCarlo\onefactormontecarlooption.hpp"\
+	".\Include\ql\MonteCarlo\path.hpp"\
+	".\Include\ql\MonteCarlo\pathpricer.hpp"\
+	".\Include\ql\MonteCarlo\randomarraygenerator.hpp"\
+	".\Include\ql\MonteCarlo\uniformrandomgenerator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\averagestrikeasian.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\geometricasianoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Pricers\barrieroption.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\barrieroption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\bermudanoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\Include\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\operatortraits.hpp"\
+	".\Include\ql\FiniteDifferences\standardfdmodel.hpp"\
+	".\Include\ql\FiniteDifferences\standardstepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\stepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\bermudanoption.hpp"\
+	".\Include\ql\Pricers\bsmnumericaloption.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\multiperiodoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\binaryoption.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\binaryoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\bsmnumericaloption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\bsmnumericaloption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\cliquetoption.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\cliquetoption.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\dividendamericanoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\Include\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\operatortraits.hpp"\
+	".\Include\ql\FiniteDifferences\standardfdmodel.hpp"\
+	".\Include\ql\FiniteDifferences\standardstepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\stepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\bsmnumericaloption.hpp"\
+	".\Include\ql\Pricers\dividendamericanoption.hpp"\
+	".\Include\ql\Pricers\dividendoption.hpp"\
+	".\Include\ql\Pricers\multiperiodoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\dividendeuropeanoption.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\dividendeuropeanoption.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\dividendoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\Include\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\operatortraits.hpp"\
+	".\Include\ql\FiniteDifferences\standardfdmodel.hpp"\
+	".\Include\ql\FiniteDifferences\standardstepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\stepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\cubicspline.hpp"\
+	".\Include\ql\Math\interpolation.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\bsmnumericaloption.hpp"\
+	".\Include\ql\Pricers\dividendeuropeanoption.hpp"\
+	".\Include\ql\Pricers\dividendoption.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\multiperiodoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\dividendshoutoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\Include\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\operatortraits.hpp"\
+	".\Include\ql\FiniteDifferences\standardfdmodel.hpp"\
+	".\Include\ql\FiniteDifferences\standardstepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\stepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\bsmnumericaloption.hpp"\
+	".\Include\ql\Pricers\dividendoption.hpp"\
+	".\Include\ql\Pricers\dividendshoutoption.hpp"\
+	".\Include\ql\Pricers\multiperiodoption.hpp"\
+	".\Include\ql\Pricers\shoutcondition.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\europeanoption.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\everestoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\Math\statistics.hpp"\
+	".\Include\ql\MonteCarlo\boxmuller.hpp"\
+	".\Include\ql\MonteCarlo\centrallimitgaussian.hpp"\
+	".\Include\ql\MonteCarlo\everestpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\gaussianmultipathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianpathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\generalmontecarlo.hpp"\
+	".\Include\ql\MonteCarlo\inversecumulativegaussian.hpp"\
+	".\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\mcoptionsample.hpp"\
+	".\include\ql\montecarlo\montecarlomodel.hpp"\
+	".\Include\ql\MonteCarlo\multifactormontecarlooption.hpp"\
+	".\Include\ql\MonteCarlo\multifactorpricer.hpp"\
+	".\Include\ql\MonteCarlo\multipath.hpp"\
+	".\Include\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\multipathpricer.hpp"\
+	".\Include\ql\MonteCarlo\randomarraygenerator.hpp"\
+	".\Include\ql\MonteCarlo\uniformrandomgenerator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Pricers\everestoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Pricers\finitedifferenceeuropean.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\Include\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\operatortraits.hpp"\
+	".\Include\ql\FiniteDifferences\standardfdmodel.hpp"\
+	".\Include\ql\FiniteDifferences\stepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\bsmnumericaloption.hpp"\
+	".\Include\ql\Pricers\finitedifferenceeuropean.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\himalaya.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\Math\statistics.hpp"\
+	".\Include\ql\MonteCarlo\boxmuller.hpp"\
+	".\Include\ql\MonteCarlo\centrallimitgaussian.hpp"\
+	".\Include\ql\MonteCarlo\gaussianmultipathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianpathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\generalmontecarlo.hpp"\
+	".\Include\ql\MonteCarlo\himalayapathpricer.hpp"\
+	".\Include\ql\MonteCarlo\inversecumulativegaussian.hpp"\
+	".\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\mcoptionsample.hpp"\
+	".\include\ql\montecarlo\montecarlomodel.hpp"\
+	".\Include\ql\MonteCarlo\multifactormontecarlooption.hpp"\
+	".\Include\ql\MonteCarlo\multifactorpricer.hpp"\
+	".\Include\ql\MonteCarlo\multipath.hpp"\
+	".\Include\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\multipathpricer.hpp"\
+	".\Include\ql\MonteCarlo\randomarraygenerator.hpp"\
+	".\Include\ql\MonteCarlo\uniformrandomgenerator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Pricers\himalaya.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Pricers\mceuropeanpricer.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\Math\statistics.hpp"\
+	".\Include\ql\MonteCarlo\boxmuller.hpp"\
+	".\Include\ql\MonteCarlo\centrallimitgaussian.hpp"\
+	".\Include\ql\MonteCarlo\europeanpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\gaussianpathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\generalmontecarlo.hpp"\
+	".\Include\ql\MonteCarlo\inversecumulativegaussian.hpp"\
+	".\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\mcoptionsample.hpp"\
+	".\Include\ql\MonteCarlo\mcpricer.hpp"\
+	".\include\ql\montecarlo\montecarlomodel.hpp"\
+	".\Include\ql\MonteCarlo\onefactormontecarlooption.hpp"\
+	".\Include\ql\MonteCarlo\path.hpp"\
+	".\Include\ql\MonteCarlo\pathpricer.hpp"\
+	".\Include\ql\MonteCarlo\randomarraygenerator.hpp"\
+	".\Include\ql\MonteCarlo\uniformrandomgenerator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\mceuropeanpricer.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Pricers\multiperiodoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\Include\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\operatortraits.hpp"\
+	".\Include\ql\FiniteDifferences\standardfdmodel.hpp"\
+	".\Include\ql\FiniteDifferences\standardstepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\stepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\americancondition.hpp"\
+	".\Include\ql\Pricers\bsmnumericaloption.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\multiperiodoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\pagodaoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\Math\statistics.hpp"\
+	".\Include\ql\MonteCarlo\boxmuller.hpp"\
+	".\Include\ql\MonteCarlo\centrallimitgaussian.hpp"\
+	".\Include\ql\MonteCarlo\gaussianmultipathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianpathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\generalmontecarlo.hpp"\
+	".\Include\ql\MonteCarlo\inversecumulativegaussian.hpp"\
+	".\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\mcoptionsample.hpp"\
+	".\include\ql\montecarlo\montecarlomodel.hpp"\
+	".\Include\ql\MonteCarlo\multifactormontecarlooption.hpp"\
+	".\Include\ql\MonteCarlo\multifactorpricer.hpp"\
+	".\Include\ql\MonteCarlo\multipath.hpp"\
+	".\Include\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\multipathpricer.hpp"\
+	".\Include\ql\MonteCarlo\pagodapathpricer.hpp"\
+	".\Include\ql\MonteCarlo\randomarraygenerator.hpp"\
+	".\Include\ql\MonteCarlo\uniformrandomgenerator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Pricers\pagodaoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Pricers\plainbasketoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\matrix.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\Math\statistics.hpp"\
+	".\Include\ql\MonteCarlo\basketpathpricer.hpp"\
+	".\Include\ql\MonteCarlo\boxmuller.hpp"\
+	".\Include\ql\MonteCarlo\centrallimitgaussian.hpp"\
+	".\Include\ql\MonteCarlo\gaussianmultipathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianpathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\generalmontecarlo.hpp"\
+	".\Include\ql\MonteCarlo\inversecumulativegaussian.hpp"\
+	".\Include\ql\MonteCarlo\knuthrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp"\
+	".\Include\ql\MonteCarlo\mcoptionsample.hpp"\
+	".\include\ql\montecarlo\montecarlomodel.hpp"\
+	".\Include\ql\MonteCarlo\multifactormontecarlooption.hpp"\
+	".\Include\ql\MonteCarlo\multifactorpricer.hpp"\
+	".\Include\ql\MonteCarlo\multipath.hpp"\
+	".\Include\ql\MonteCarlo\multipathgenerator.hpp"\
+	".\Include\ql\MonteCarlo\multipathpricer.hpp"\
+	".\Include\ql\MonteCarlo\randomarraygenerator.hpp"\
+	".\Include\ql\MonteCarlo\uniformrandomgenerator.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Pricers\plainbasketoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\steppingiterator.hpp"\
+	
+
+.\Sources\Pricers\singleassetoption.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\brent.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Pricers\stepconditionoption.cpp : \
+	".\Include\ql\array.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\expressiontemplates.hpp"\
+	".\Include\ql\FiniteDifferences\boundarycondition.hpp"\
+	".\Include\ql\FiniteDifferences\bsmoperator.hpp"\
+	".\Include\ql\FiniteDifferences\cranknicolson.hpp"\
+	".\Include\ql\FiniteDifferences\finitedifferencemodel.hpp"\
+	".\Include\ql\FiniteDifferences\identity.hpp"\
+	".\Include\ql\FiniteDifferences\operator.hpp"\
+	".\Include\ql\FiniteDifferences\operatortraits.hpp"\
+	".\Include\ql\FiniteDifferences\standardfdmodel.hpp"\
+	".\Include\ql\FiniteDifferences\standardstepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\stepcondition.hpp"\
+	".\Include\ql\FiniteDifferences\tridiagonaloperator.hpp"\
+	".\Include\ql\FiniteDifferences\valueatcenter.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\Math\normaldistribution.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\options.hpp"\
+	".\Include\ql\Pricers\bsmnumericaloption.hpp"\
+	".\Include\ql\Pricers\europeanoption.hpp"\
+	".\Include\ql\Pricers\singleassetoption.hpp"\
+	".\Include\ql\Pricers\stepconditionoption.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Solvers1D\bisection.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\bisection.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Solvers1D\brent.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\brent.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Solvers1D\falseposition.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\falseposition.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Solvers1D\newton.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\newton.hpp"\
+	".\Include\ql\Solvers1D\newtonsafe.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Solvers1D\newtonsafe.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\newtonsafe.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Solvers1D\ridder.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\ridder.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Solvers1D\secant.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\secant.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\TermStructures\piecewiseconstantforwards.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\depositrate.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\TermStructures\piecewiseconstantforwards.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\TermStructures\piecewiseflatforward.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\cashflow.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\index.hpp"\
+	".\Include\ql\instrument.hpp"\
+	".\Include\ql\Instruments\simpleswap.hpp"\
+	".\Include\ql\Instruments\swap.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\Solvers1D\brent.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\TermStructures\piecewiseflatforward.hpp"\
+	".\Include\ql\TermStructures\ratehelpers.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\TermStructures\ratehelpers.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\cashflow.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\index.hpp"\
+	".\Include\ql\instrument.hpp"\
+	".\Include\ql\Instruments\simpleswap.hpp"\
+	".\Include\ql\Instruments\swap.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\TermStructures\ratehelpers.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\Indexes\xibor.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\history.hpp"\
+	".\Include\ql\index.hpp"\
+	".\Include\ql\Indexes\xibor.hpp"\
+	".\Include\ql\Indexes\xibormanager.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\filteringiterator.hpp"\
+	
+
+.\Sources\Indexes\xibormanager.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\history.hpp"\
+	".\Include\ql\Indexes\xibormanager.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\filteringiterator.hpp"\
+	
+
+.\Sources\CashFlows\cashflowvectors.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\cashflow.hpp"\
+	".\Include\ql\CashFlows\accruingcoupon.hpp"\
+	".\Include\ql\CashFlows\cashflowvectors.hpp"\
+	".\Include\ql\CashFlows\fixedratecoupon.hpp"\
+	".\Include\ql\CashFlows\floatingratecoupon.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\index.hpp"\
+	".\Include\ql\Indexes\xibor.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\scheduler.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\CashFlows\floatingratecoupon.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\cashflow.hpp"\
+	".\Include\ql\CashFlows\floatingratecoupon.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\daycounter.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\history.hpp"\
+	".\Include\ql\index.hpp"\
+	".\Include\ql\Indexes\xibor.hpp"\
+	".\Include\ql\Indexes\xibormanager.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\Patterns\observable.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\include\ql\relinkablehandle.hpp"\
+	".\Include\ql\termstructure.hpp"\
+	".\Include\ql\types.hpp"\
+	".\Include\ql\Utilities\filteringiterator.hpp"\
+	
+
+.\Sources\calendar.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\dataformatters.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\date.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\scheduler.cpp : \
+	".\Include\ql\calendar.hpp"\
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\handle.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\scheduler.hpp"\
+	".\Include\ql\types.hpp"\
+	
+
+.\Sources\solver1d.cpp : \
+	".\Include\ql\config.msvc.hpp"\
+	".\Include\ql\currency.hpp"\
+	".\Include\ql\dataformatters.hpp"\
+	".\Include\ql\date.hpp"\
+	".\Include\ql\errors.hpp"\
+	".\Include\ql\null.hpp"\
+	".\Include\ql\qldefines.hpp"\
+	".\Include\ql\solver1d.hpp"\
+	".\Include\ql\types.hpp"\
+	
