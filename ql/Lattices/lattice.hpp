@@ -49,13 +49,13 @@ namespace QuantLib {
                         Time t) const;
 
         /*! Roll back a DiscretizedAsset object until a certain time,
-          performing any needed adjustment 
+            performing any needed adjustment
         */
         void rollback(const boost::shared_ptr<DiscretizedAsset>& asset,
                       Time to) const;
 
         /*! Roll-back a DiscretizedAsset object until a certain time,
-          but do not perform the final adjustment.
+            but do not perform the final adjustment.
         */
         void rollAlmostBack(const boost::shared_ptr<DiscretizedAsset>& asset,
                             Time to) const;
@@ -79,8 +79,8 @@ namespace QuantLib {
       protected:
         void computeStatePrices(Size until);
 
-        virtual void stepback(Size i, 
-                              const Array& values, 
+        virtual void stepback(Size i,
+                              const Array& values,
                               Array& newValues) const;
 
         // Arrow-Debrew state prices

@@ -16,7 +16,7 @@
 */
 
 /*! \file lattice2d.hpp
-    \brief Two-dimensional tree class
+    \brief Two-dimensional lattice class
 */
 
 #ifndef quantlib_lattices_lattice2d_h
@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! Two-dimensional lattice.
     /*! This lattice is based on two trinomial trees and primarly used
-      for the G2 short-rate model.
+        for the G2 short-rate model.
     */
     class Lattice2D : public Lattice {
       public:
