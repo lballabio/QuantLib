@@ -170,8 +170,16 @@ namespace QuantLib {
             QL_REQUIRE(sampleNumber_>1,
                        "Stat::variance() : sample number <=1, unsufficient");
 
-            return (sampleNumber_/(sampleNumber_-1.0))*
-                (quadraticSum_ - sum_*sum_/sampleWeight_)/sampleWeight_;
+            double v = (sampleNumber_/(sampleNumber_-1.0)) *
+                       (quadraticSum_ - sum_*sum_/sampleWeight_)/sampleWeight_;
+            if (QL_FABS(v) <= 1.0e-6) 
+                v = 0.0;
+
+            QL_ENSURE(v >= 0.0,
+                      "Statistics: negative variance (" +
+                      DoubleFormatter::toString(v,20) + ")");
+                      
+            return v;
         }
 
         inline double Statistics::standardDeviation() const {
@@ -196,11 +204,6 @@ namespace QuantLib {
             double var = variance();
             QL_REQUIRE(samples() > 0,
                        "Statistics: zero samples are not sufficient");
-            if(QL_FABS(var) < 1e-12) var =0.0;
-            QL_REQUIRE(var >= 0.0,
-                       "Statistics: variance, " +
-                       DoubleFormatter::toString(var,20)
-                       +" is NEGATIVE");
             return QL_SQRT(var/samples());
         }
 
