@@ -62,6 +62,7 @@ namespace QuantLib {
     */
     
     class CeilingTruncation : public Rounding {
+    public:
 	CeilingTruncation(const long precision, const int digit = 5)
 	: Rounding(precision,ROUND_CEILING,digit) {}
     };
@@ -72,6 +73,7 @@ namespace QuantLib {
     */
     
     class FloorTruncation : public Rounding {
+    public:
 	FloorTruncation(const long precision, const int digit = 5)
 	: Rounding(precision,ROUND_FLOOR,digit) {}
     };
