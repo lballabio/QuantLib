@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.20  2001/08/27 11:56:25  nando
+# improved installer
+#
 # Revision 1.19  2001/08/23 11:22:17  nando
 # Win32 documentation installer
 #
@@ -22,7 +25,6 @@ EXTRA_DIST = makefile.mak \
              quantlibheader.html \
              quantlibfooter.html \
              quantlibheader.tex \
-             QuantLib-docs.nsi \
              README.txt
 
 docs-all: docs-pdf
