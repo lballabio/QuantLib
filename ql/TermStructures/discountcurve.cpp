@@ -51,9 +51,9 @@ namespace QuantLib {
             times_[0]=0.0;
             for(Size i = 1; i < dates_.size(); i++) {
                 QL_REQUIRE(dates_[i]>dates_[i-1],
-                   "DiscountCurveDiscountCurve : invalid date");
+                   "DiscountCurve::DiscountCurve : invalid date");
                 QL_REQUIRE(discounts_[i]<=discounts_[i-1],
-                   "DiscountCurveDiscountCurve : invalid discount");
+                   "DiscountCurve::DiscountCurve : invalid discount");
                 times_[i] = dayCounter_.yearFraction(dates_[0],
                    dates_[i]);
              }
