@@ -40,21 +40,10 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release" ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 ReleaseCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -149,6 +138,8 @@ CLEAN :
 	-@erase "$(INTDIR)\copenhagen.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
 	-@erase "$(INTDIR)\coxingersollross.sbr"
+	-@erase "$(INTDIR)\currency.obj"
+	-@erase "$(INTDIR)\currency.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
@@ -179,6 +170,10 @@ CLEAN :
 	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
+	-@erase "$(INTDIR)\exchangeratemanager.obj"
+	-@erase "$(INTDIR)\exchangeratemanager.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -227,6 +222,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
+	-@erase "$(INTDIR)\indexmanager.obj"
+	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\italy.obj"
@@ -277,6 +274,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
@@ -581,7 +580,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
+	"$(INTDIR)\currency.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -763,7 +767,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib"
+	"$(INTDIR)\indexmanager.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
+	"$(INTDIR)\currency.obj" \
+	"$(INTDIR)\exchangeratemanager.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -781,21 +789,10 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug" ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 DebugCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -890,6 +887,8 @@ CLEAN :
 	-@erase "$(INTDIR)\copenhagen.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
 	-@erase "$(INTDIR)\coxingersollross.sbr"
+	-@erase "$(INTDIR)\currency.obj"
+	-@erase "$(INTDIR)\currency.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
@@ -920,6 +919,10 @@ CLEAN :
 	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
+	-@erase "$(INTDIR)\exchangeratemanager.obj"
+	-@erase "$(INTDIR)\exchangeratemanager.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -968,6 +971,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
+	-@erase "$(INTDIR)\indexmanager.obj"
+	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\italy.obj"
@@ -1018,6 +1023,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
@@ -1323,7 +1330,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
+	"$(INTDIR)\currency.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1505,7 +1517,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
+	"$(INTDIR)\indexmanager.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
+	"$(INTDIR)\currency.obj" \
+	"$(INTDIR)\exchangeratemanager.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1523,21 +1539,10 @@ INTDIR=.\build\ReleaseMTDLL
 OutDir=.\build\ReleaseMTDLL
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-mt-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release MTDLL" ".\lib\QuantLib-vc6-mt-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 Release MTDLLCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -1632,6 +1637,8 @@ CLEAN :
 	-@erase "$(INTDIR)\copenhagen.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
 	-@erase "$(INTDIR)\coxingersollross.sbr"
+	-@erase "$(INTDIR)\currency.obj"
+	-@erase "$(INTDIR)\currency.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
@@ -1662,6 +1669,10 @@ CLEAN :
 	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
+	-@erase "$(INTDIR)\exchangeratemanager.obj"
+	-@erase "$(INTDIR)\exchangeratemanager.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -1710,6 +1721,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
+	-@erase "$(INTDIR)\indexmanager.obj"
+	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\italy.obj"
@@ -1760,6 +1773,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
@@ -2064,7 +2079,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
+	"$(INTDIR)\currency.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2246,7 +2266,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
+	"$(INTDIR)\indexmanager.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
+	"$(INTDIR)\currency.obj" \
+	"$(INTDIR)\exchangeratemanager.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2264,21 +2288,10 @@ INTDIR=.\build\DebugMTDLL
 OutDir=.\build\DebugMTDLL
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug MTDLL" ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 Debug MTDLLCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -2373,6 +2386,8 @@ CLEAN :
 	-@erase "$(INTDIR)\copenhagen.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
 	-@erase "$(INTDIR)\coxingersollross.sbr"
+	-@erase "$(INTDIR)\currency.obj"
+	-@erase "$(INTDIR)\currency.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
@@ -2403,6 +2418,10 @@ CLEAN :
 	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
+	-@erase "$(INTDIR)\exchangeratemanager.obj"
+	-@erase "$(INTDIR)\exchangeratemanager.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -2451,6 +2470,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
+	-@erase "$(INTDIR)\indexmanager.obj"
+	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\italy.obj"
@@ -2501,6 +2522,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
@@ -2806,7 +2829,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
+	"$(INTDIR)\currency.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2988,7 +3016,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
+	"$(INTDIR)\indexmanager.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
+	"$(INTDIR)\currency.obj" \
+	"$(INTDIR)\exchangeratemanager.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3006,21 +3038,10 @@ INTDIR=.\build\ReleaseST
 OutDir=.\build\ReleaseST
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release SingleThread" ".\lib\QuantLib-vc6-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 Release SingleThreadCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -3115,6 +3136,8 @@ CLEAN :
 	-@erase "$(INTDIR)\copenhagen.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
 	-@erase "$(INTDIR)\coxingersollross.sbr"
+	-@erase "$(INTDIR)\currency.obj"
+	-@erase "$(INTDIR)\currency.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
@@ -3145,6 +3168,10 @@ CLEAN :
 	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
+	-@erase "$(INTDIR)\exchangeratemanager.obj"
+	-@erase "$(INTDIR)\exchangeratemanager.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -3193,6 +3220,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
+	-@erase "$(INTDIR)\indexmanager.obj"
+	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\italy.obj"
@@ -3243,6 +3272,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
@@ -3547,7 +3578,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
+	"$(INTDIR)\currency.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3729,7 +3765,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
+	"$(INTDIR)\indexmanager.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
+	"$(INTDIR)\currency.obj" \
+	"$(INTDIR)\exchangeratemanager.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3747,21 +3787,10 @@ INTDIR=.\build\DebugST
 OutDir=.\build\DebugST
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug SingleThread" ".\lib\QuantLib-vc6-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 Debug SingleThreadCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -3856,6 +3885,8 @@ CLEAN :
 	-@erase "$(INTDIR)\copenhagen.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
 	-@erase "$(INTDIR)\coxingersollross.sbr"
+	-@erase "$(INTDIR)\currency.obj"
+	-@erase "$(INTDIR)\currency.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\dataparsers.obj"
@@ -3886,6 +3917,10 @@ CLEAN :
 	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
+	-@erase "$(INTDIR)\exchangeratemanager.obj"
+	-@erase "$(INTDIR)\exchangeratemanager.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -3934,6 +3969,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
+	-@erase "$(INTDIR)\indexmanager.obj"
+	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\italy.obj"
@@ -3984,6 +4021,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multiassetoption.obj"
@@ -4289,7 +4328,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
+	"$(INTDIR)\currency.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4471,7 +4515,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
+	"$(INTDIR)\indexmanager.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
+	"$(INTDIR)\currency.obj" \
+	"$(INTDIR)\exchangeratemanager.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4743,6 +4791,12 @@ SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
 SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 
 "$(INTDIR)\valueatcenter.obj"	"$(INTDIR)\valueatcenter.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Indexes\indexmanager.cpp
+
+"$(INTDIR)\indexmanager.obj"	"$(INTDIR)\indexmanager.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -5484,79 +5538,11 @@ SOURCE=.\ql\Volatilities\localvolsurface.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!IF  "$(CFG)" == "QuantLib - Win32 Release"
+SOURCE=.\ql\Currencies\exchangeratemanager.cpp
 
-"QuantLibFunctions - Win32 Release" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release" 
-   cd "..\..\.."
+"$(INTDIR)\exchangeratemanager.obj"	"$(INTDIR)\exchangeratemanager.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
 
-"QuantLibFunctions - Win32 ReleaseCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
-
-"QuantLibFunctions - Win32 Debug" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 DebugCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release MTDLL"
-
-"QuantLibFunctions - Win32 Release MTDLL" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release MTDLL" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 Release MTDLLCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release MTDLL" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
-
-"QuantLibFunctions - Win32 Debug MTDLL" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug MTDLL" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 Debug MTDLLCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug MTDLL" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release SingleThread"
-
-"QuantLibFunctions - Win32 Release SingleThread" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release SingleThread" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 Release SingleThreadCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release SingleThread" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
-
-"QuantLibFunctions - Win32 Debug SingleThread" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug SingleThread" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 Debug SingleThreadCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug SingleThread" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ENDIF 
 
 SOURCE=.\ql\basicdataformatters.cpp
 
@@ -5567,6 +5553,12 @@ SOURCE=.\ql\basicdataformatters.cpp
 SOURCE=.\ql\calendar.cpp
 
 "$(INTDIR)\calendar.obj"	"$(INTDIR)\calendar.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\currency.cpp
+
+"$(INTDIR)\currency.obj"	"$(INTDIR)\currency.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -5600,6 +5592,12 @@ SOURCE=.\ql\errors.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\exchangerate.cpp
+
+"$(INTDIR)\exchangerate.obj"	"$(INTDIR)\exchangerate.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\exercise.cpp
 
 "$(INTDIR)\exercise.obj"	"$(INTDIR)\exercise.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5609,6 +5607,12 @@ SOURCE=.\ql\exercise.cpp
 SOURCE=.\ql\grid.cpp
 
 "$(INTDIR)\grid.obj"	"$(INTDIR)\grid.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\money.cpp
+
+"$(INTDIR)\money.obj"	"$(INTDIR)\money.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

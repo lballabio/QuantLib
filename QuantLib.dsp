@@ -651,6 +651,14 @@ SOURCE=.\ql\Indexes\gbplibor.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Indexes\indexmanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\indexmanager.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\jpylibor.hpp
 # End Source File
 # Begin Source File
@@ -1268,6 +1276,10 @@ SOURCE=.\ql\Patterns\lazyobject.hpp
 # Begin Source File
 
 SOURCE=.\ql\Patterns\observable.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Patterns\singleton.hpp
 # End Source File
 # Begin Source File
 
@@ -2182,6 +2194,42 @@ SOURCE=.\ql\Volatilities\localvolsurface.hpp
 SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
 # End Source File
 # End Group
+# Begin Group "Currencies"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Currencies\africa.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Currencies\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Currencies\america.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Currencies\asia.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Currencies\europe.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Currencies\exchangeratemanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Currencies\exchangeratemanager.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Currencies\oceania.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp
@@ -2229,6 +2277,10 @@ SOURCE=.\ql\config.mwcw.hpp
 # Begin Source File
 
 SOURCE=.\ql\core.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\currency.cpp
 # End Source File
 # Begin Source File
 
@@ -2284,6 +2336,14 @@ SOURCE=.\ql\errors.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\exchangerate.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\exchangerate.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\exercise.cpp
 # End Source File
 # Begin Source File
@@ -2309,6 +2369,14 @@ SOURCE=.\ql\index.hpp
 # Begin Source File
 
 SOURCE=.\ql\instrument.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\money.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\money.hpp
 # End Source File
 # Begin Source File
 

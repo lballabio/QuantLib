@@ -297,6 +297,10 @@ SOURCE=.\europeanoption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\exchangerate.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\factorial.cpp
 # End Source File
 # Begin Source File
@@ -330,6 +334,10 @@ SOURCE=.\matrices.cpp
 # Begin Source File
 
 SOURCE=.\mersennetwister.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\money.cpp
 # End Source File
 # Begin Source File
 
@@ -453,6 +461,10 @@ SOURCE=.\europeanoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\exchangerate.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\factorial.hpp
 # End Source File
 # Begin Source File
@@ -486,6 +498,10 @@ SOURCE=.\matrices.hpp
 # Begin Source File
 
 SOURCE=.\mersennetwister.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\money.hpp
 # End Source File
 # Begin Source File
 

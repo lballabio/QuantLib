@@ -85,6 +85,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\forwardoption.obj"
@@ -103,6 +105,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrices.sbr"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\mersennetwister.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\old_pricers.sbr"
 	-@erase "$(INTDIR)\operators.obj"
@@ -179,7 +183,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -227,6 +233,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-mt-s-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib"
 
@@ -304,6 +312,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\forwardoption.obj"
@@ -322,6 +332,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrices.sbr"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\mersennetwister.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\old_pricers.sbr"
 	-@erase "$(INTDIR)\operators.obj"
@@ -401,7 +413,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -449,6 +463,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
 
@@ -526,6 +542,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\forwardoption.obj"
@@ -544,6 +562,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrices.sbr"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\mersennetwister.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\old_pricers.sbr"
 	-@erase "$(INTDIR)\operators.obj"
@@ -622,7 +642,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -670,6 +692,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-mt-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
 
@@ -747,6 +771,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\forwardoption.obj"
@@ -765,6 +791,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrices.sbr"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\mersennetwister.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\old_pricers.sbr"
 	-@erase "$(INTDIR)\operators.obj"
@@ -844,7 +872,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -892,6 +922,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-mt-gd-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
 
@@ -969,6 +1001,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\forwardoption.obj"
@@ -987,6 +1021,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrices.sbr"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\mersennetwister.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\old_pricers.sbr"
 	-@erase "$(INTDIR)\operators.obj"
@@ -1063,7 +1099,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1111,6 +1149,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-s-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
 
@@ -1188,6 +1228,8 @@ CLEAN :
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\exchangerate.obj"
+	-@erase "$(INTDIR)\exchangerate.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\forwardoption.obj"
@@ -1206,6 +1248,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrices.sbr"
 	-@erase "$(INTDIR)\mersennetwister.obj"
 	-@erase "$(INTDIR)\mersennetwister.sbr"
+	-@erase "$(INTDIR)\money.obj"
+	-@erase "$(INTDIR)\money.sbr"
 	-@erase "$(INTDIR)\old_pricers.obj"
 	-@erase "$(INTDIR)\old_pricers.sbr"
 	-@erase "$(INTDIR)\operators.obj"
@@ -1285,7 +1329,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\money.sbr" \
+	"$(INTDIR)\exchangerate.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1333,6 +1379,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\money.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"..\lib\QuantLib-vc6-sgd-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
 
@@ -1475,6 +1523,11 @@ SOURCE=.\europeanoption.cpp
 "$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=.\exchangerate.cpp
+
+"$(INTDIR)\exchangerate.obj"	"$(INTDIR)\exchangerate.sbr" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=.\factorial.cpp
 
 "$(INTDIR)\factorial.obj"	"$(INTDIR)\factorial.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1518,6 +1571,11 @@ SOURCE=.\matrices.cpp
 SOURCE=.\mersennetwister.cpp
 
 "$(INTDIR)\mersennetwister.obj"	"$(INTDIR)\mersennetwister.sbr" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\money.cpp
+
+"$(INTDIR)\money.obj"	"$(INTDIR)\money.sbr" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\old_pricers.cpp
