@@ -132,7 +132,7 @@ namespace QuantLib {
         */
         virtual void addTimesTo(std::list<Time>& l) const {
             std::vector<Time> times = mandatoryTimes();
-            std::copy(times.begin(), times.back(), std::back_inserter(l));
+            std::copy(times.begin(), times.end(), std::back_inserter(l));
         }
         #endif
         //@}
