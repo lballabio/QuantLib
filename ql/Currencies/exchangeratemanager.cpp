@@ -46,7 +46,7 @@ namespace QuantLib {
                                              const Currency& target,
                                              Date date,
                                              ExchangeRate::Type type) const {
-        if (date.null())
+        if (date == Date())
             date = Settings::instance().evaluationDate();
 
         if (type == ExchangeRate::Direct) {
