@@ -94,17 +94,9 @@ libQuantLib_la_LIBADD = \
     Math/libMath.la \
     Optimization/libOptimization.la \
     Pricers/libPricers.la \
-    PricingEngines/Asian/libAsianEngines.la \
-    PricingEngines/Barrier/libBarrierEngines.la \
-    PricingEngines/Basket/libBasketEngines.la \
-    PricingEngines/CapFloor/libCapFloorEngines.la \
-    PricingEngines/Swaption/libSwaptionEngines.la \
-    PricingEngines/Vanilla/libVanillaEngines.la \
+    PricingEngines/libPricingEngines.la \
     RandomNumbers/libRandomNumbers.la \
     ShortRateModels/libShortRateModels.la \
-    ShortRateModels/CalibrationHelpers/libCalibrationHelpers.la \
-    ShortRateModels/OneFactorModels/libOneFactorModels.la \
-    ShortRateModels/TwoFactorModels/libTwoFactorModels.la \
     TermStructures/libTermStructures.la \
     Volatilities/libVolatilities.la
 

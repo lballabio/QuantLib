@@ -17,6 +17,7 @@
 
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +44,7 @@ namespace QuantLib {
 
             double bT = QL_LOG(dD/rfD);
             double rT = QL_LOG(1.0/rfD);
-    
+
             double Beta = (0.5 - bT/variance) +
                 QL_SQRT(QL_POW((bT/variance - 0.5), 2.0) + 2.0 * rT/variance);
             double BInfinity = Beta / (Beta - 1.0) * X;
@@ -154,8 +155,6 @@ namespace QuantLib {
                             "unknown option type");
             }
         } // end of "early exercise can be optimal"
-
-
     }
 
 }

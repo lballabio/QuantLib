@@ -17,6 +17,7 @@
 
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -37,13 +38,16 @@ namespace QuantLib {
               case Option::Call:
                 qu = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
                 Su = payoff->strike() / (1.0 - 1.0/qu);
-                h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() / (Su - payoff->strike());
-                Si = payoff->strike() + (Su - payoff->strike()) * (1.0 - QL_EXP(h));
+                h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() / 
+                    (Su - payoff->strike());
+                Si = payoff->strike() + (Su - payoff->strike()) * 
+                    (1.0 - QL_EXP(h));
                 break;
               case Option::Put:
                 qu = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
                 Su = payoff->strike() / (1.0 - 1.0/qu);
-                h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() / (payoff->strike() - Su);
+                h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() / 
+                    (payoff->strike() - Su);
                 Si = Su + (payoff->strike() - Su) * QL_EXP(h);
                 break;
               default:
@@ -56,7 +60,8 @@ namespace QuantLib {
             // Newton Raphson algorithm for finding critical price Si
             double Q, LHS, RHS, bi;
             double forwardSi = Si * dividendDiscount / riskFreeDiscount;
-            double d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance)/QL_SQRT(variance);
+            double d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance) /
+                QL_SQRT(variance);
             CumulativeNormalDistribution cumNormalDist;
             double K = -2.0*QL_LOG(riskFreeDiscount)/
                 (variance*(1.0-riskFreeDiscount));
@@ -103,7 +108,8 @@ namespace QuantLib {
                         RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
                             payoff).value() - (1 - dividendDiscount *
                             cumNormalDist(-d1)) * Si / Q;
-                        bi = -dividendDiscount * cumNormalDist(-d1) * (1 - 1 / Q)
+                        bi = -dividendDiscount * cumNormalDist(-d1) * 
+                            (1 - 1 / Q)
                             - (1 + dividendDiscount * cumNormalDist(-d1) 
                             / QL_SQRT(variance)) / Q;
                     }
@@ -187,7 +193,7 @@ namespace QuantLib {
             double forwardSk = Sk * dividendDiscount / riskFreeDiscount;
             double d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)
                 /QL_SQRT(variance);
-            double n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
+            double n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/variance;
             double K = -2.0*QL_LOG(riskFreeDiscount)/
                 (variance*(1.0-riskFreeDiscount));
             double Q, a;
@@ -196,16 +202,19 @@ namespace QuantLib {
                     Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;
                     a =  (Sk/Q) * (1.0 - dividendDiscount * cumNormalDist(d1));
                     if (spot<Sk) {
-                        results_.value = black.value() + a * QL_POW((spot/Sk), Q);
+                        results_.value = black.value() + 
+                            a * QL_POW((spot/Sk), Q);
                     } else {
                         results_.value = spot - payoff->strike();
                     }
                     break;
                 case Option::Put:
                     Q = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;
-                    a = -(Sk/Q) * (1.0 - dividendDiscount * cumNormalDist(-d1));
+                    a = -(Sk/Q) *
+                        (1.0 - dividendDiscount * cumNormalDist(-d1));
                     if (spot>Sk) {
-                        results_.value = black.value() + a * QL_POW((spot/Sk), Q);
+                        results_.value = black.value() +
+                            a * QL_POW((spot/Sk), Q);
                     } else {
                         results_.value = payoff->strike() - spot;
                     }
@@ -216,8 +225,6 @@ namespace QuantLib {
                           "unknown option type");
             }
         } // end of "early exercise can be optimal"
-
-
     }
 
 }

@@ -16,3 +16,16 @@ include_HEADERS = \
     mcsimulation.hpp
 
 EXTRA_DIST=makefile.mak
+
+libPricingEngines_la_SOURCES = \
+	blackformula.cpp
+
+noinst_LTLIBRARIES = libPricingEngines.la
+
+libPricingEngines_la_LIBADD = \
+    Asian/libAsianEngines.la \
+    Barrier/libBarrierEngines.la \
+    Basket/libBasketEngines.la \
+    CapFloor/libCapFloorEngines.la \
+    Swaption/libSwaptionEngines.la \
+    Vanilla/libVanillaEngines.la

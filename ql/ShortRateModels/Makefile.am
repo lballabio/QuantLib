@@ -22,3 +22,9 @@ libShortRateModels_la_SOURCES = \
     twofactormodel.cpp
 
 noinst_LTLIBRARIES = libShortRateModels.la
+
+libShortRateModels_la_LIBADD = \
+    CalibrationHelpers/libCalibrationHelpers.la \
+    OneFactorModels/libOneFactorModels.la \
+    TwoFactorModels/libTwoFactorModels.la
+
