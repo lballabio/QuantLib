@@ -42,6 +42,8 @@ namespace QuantLib {
             // Freedom Day, April 27th (possibly moved to Monday)
             || ((d == 27 || (d == 28 && w == Monday)) 
                 && m == April)
+            // Election Day, April 14th 2004
+            || ((d == 14 && m == April && y == 2004)
             // Workers Day, May 1st (possibly moved to Monday)
             || ((d == 1 || (d == 2 && w == Monday)) 
                 && m == May)
