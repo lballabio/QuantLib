@@ -51,7 +51,7 @@ namespace QuantLib {
             double f2 = 0.5*df_;
             double f_x_2n = df_ - x;
 
-            double t;
+            double t = 0.0;
             if (f2*QL_EPSILON > 0.125 &&
                 QL_FABS(x2-f2) < QL_SQRT(QL_EPSILON)*f2) {
                 t = QL_EXP((1 - t)*(2 - t/(f2+1)))/QL_SQRT(2.0*pi_*(f2 + 1.0));
