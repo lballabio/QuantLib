@@ -26,131 +26,130 @@
 #include <ql/PricingEngines/Vanilla/americanmcengines.hpp>
 
 
-namespace {
+namespace QuantLib {
 
-    using QuantLib::Size;
+    namespace {
 
-    //! Basis function
-    class BasisFunction : std::unary_function<std::vector<double>, double > {
-      public:
-        virtual ~BasisFunction() {}
-        virtual double calculate(const std::vector<double>& x) const = 0;
-    };
+        //! Basis function
+        class BasisFunction : std::unary_function<std::vector<double>, double > {
+          public:
+            virtual ~BasisFunction() {}
+            virtual double calculate(const std::vector<double>& x) const = 0;
+        };
 
-    class Constant : public BasisFunction {
-      private:
-        double constant_;
-      public:
-        Constant(double constant) : constant_(constant) {}
-        double calculate(const std::vector<double>& x) const {
-            return constant_;
-        }
-    };
-
-    class Linear : public BasisFunction {
-      private:
-        Size index_;
-        double coeff_;
-      public:
-        Linear(Size index) : index_(index), coeff_(1.0) {}
-        Linear(Size index, double coeff) : index_(index), coeff_(coeff) {} 
-        double calculate(const std::vector<double>& x) const {
-            return coeff_*x[index_];
-        }
-    };
-
-    class Square : public BasisFunction {
-      private:
-        Size index_;
-        double coeff_;
-      public:
-        Square(Size index) : index_(index), coeff_(1.0) {} 
-        Square(Size index, double coeff) : index_(index), coeff_(coeff) {} 
-        double calculate(const std::vector<double>& x) const {
-            return coeff_*x[index_]*x[index_];
-        }
-    };
-
-    class Cube : public BasisFunction {
-      private:
-        Size index_;
-        double coeff_;
-      public:
-        Cube(Size index) : index_(index), coeff_(1.0) {}
-        Cube(Size index, double coeff) : index_(index), coeff_(coeff) {}
-        double calculate(const std::vector<double>& x) const {
-            return coeff_*x[index_]*x[index_]*x[index_];
-        }
-    };
-
-    class LinearCombination : public BasisFunction {
-      private:
-        Size index1_, index2_;
-      public:
-        LinearCombination(Size index1, Size index2) 
-        : index1_(index1), index2_(index2) {}
-        double calculate(const std::vector<double>& x) const {
-            return x[index1_]*x[index2_];
-        }
-    };
-
-    class LinearCombo : public BasisFunction {
-      private:
-        Handle<BasisFunction> bf1_, bf2_;
-      public:
-        LinearCombo(const Handle<BasisFunction>& bf1, 
-                    const Handle<BasisFunction>& bf2) 
-        : bf1_(bf1), bf2_(bf2) {}
-        double calculate(const std::vector<double>& x) const {
-            return bf1_->calculate(x)*bf2_->calculate(x);
-        }
-    };
-
-    class Polynomial : public BasisFunction {
-      private:
-        double factor_;
-        Handle<BasisFunction> bf1_, bf2_;
-      public:
-        Polynomial(double factor, 
-                   const Handle<BasisFunction>& bf1, 
-                   const Handle<BasisFunction>& bf2) 
-        : factor_(factor), bf1_(bf1), bf2_(bf2) {}
-        double calculate(const std::vector<double>& x) const {
-            return factor_*(bf1_->calculate(x) + bf2_->calculate(x));
-        }
-    };
-
-
-    double basketPayoff (QuantLib::BasketOption::BasketType basketType, 
-                         const std::vector<double>& assetPrices) {
-
-        double basketPrice = assetPrices[0];
-        QuantLib::Size numAssets = assetPrices.size();
-        QuantLib::Size j = 0;
-
-        switch (basketType) {
-          case QuantLib::BasketOption::Max:
-            for (j = 1; j < numAssets; j++) {
-                if (assetPrices[j] > basketPrice) {
-                    basketPrice = assetPrices[j];
-                }
+        class Constant : public BasisFunction {
+          private:
+            double constant_;
+          public:
+            Constant(double constant) : constant_(constant) {}
+            double calculate(const std::vector<double>& x) const {
+                return constant_;
             }
-            break;
-          case QuantLib::BasketOption::Min:
-            for (j = 1; j < numAssets; j++) {
-                if (assetPrices[j] < basketPrice) {
-                    basketPrice = assetPrices[j];
-                }
+        };
+
+        class Linear : public BasisFunction {
+          private:
+            Size index_;
+            double coeff_;
+          public:
+            Linear(Size index) : index_(index), coeff_(1.0) {}
+            Linear(Size index, double coeff) : index_(index), coeff_(coeff) {} 
+            double calculate(const std::vector<double>& x) const {
+                return coeff_*x[index_];
             }
-            break;
+        };
+
+        class Square : public BasisFunction {
+          private:
+            Size index_;
+            double coeff_;
+          public:
+            Square(Size index) : index_(index), coeff_(1.0) {} 
+            Square(Size index, double coeff) : index_(index), coeff_(coeff) {} 
+            double calculate(const std::vector<double>& x) const {
+                return coeff_*x[index_]*x[index_];
+            }
+        };
+
+        class Cube : public BasisFunction {
+          private:
+            Size index_;
+            double coeff_;
+          public:
+            Cube(Size index) : index_(index), coeff_(1.0) {}
+            Cube(Size index, double coeff) : index_(index), coeff_(coeff) {}
+            double calculate(const std::vector<double>& x) const {
+                return coeff_*x[index_]*x[index_]*x[index_];
+            }
+        };
+
+        class LinearCombination : public BasisFunction {
+          private:
+            Size index1_, index2_;
+          public:
+            LinearCombination(Size index1, Size index2) 
+            : index1_(index1), index2_(index2) {}
+            double calculate(const std::vector<double>& x) const {
+                return x[index1_]*x[index2_];
+            }
+        };
+
+        class LinearCombo : public BasisFunction {
+          private:
+            Handle<BasisFunction> bf1_, bf2_;
+          public:
+            LinearCombo(const Handle<BasisFunction>& bf1, 
+                        const Handle<BasisFunction>& bf2) 
+            : bf1_(bf1), bf2_(bf2) {}
+            double calculate(const std::vector<double>& x) const {
+                return bf1_->calculate(x)*bf2_->calculate(x);
+            }
+        };
+
+        class Polynomial : public BasisFunction {
+          private:
+            double factor_;
+            Handle<BasisFunction> bf1_, bf2_;
+          public:
+            Polynomial(double factor, 
+                       const Handle<BasisFunction>& bf1, 
+                       const Handle<BasisFunction>& bf2) 
+            : factor_(factor), bf1_(bf1), bf2_(bf2) {}
+            double calculate(const std::vector<double>& x) const {
+                return factor_*(bf1_->calculate(x) + bf2_->calculate(x));
+            }
+        };
+
+
+        double basketPayoff (QuantLib::BasketOption::BasketType basketType, 
+                             const std::vector<double>& assetPrices) {
+
+            double basketPrice = assetPrices[0];
+            QuantLib::Size numAssets = assetPrices.size();
+            QuantLib::Size j = 0;
+
+            switch (basketType) {
+              case QuantLib::BasketOption::Max:
+                for (j = 1; j < numAssets; j++) {
+                    if (assetPrices[j] > basketPrice) {
+                        basketPrice = assetPrices[j];
+                    }
+                }
+                break;
+              case QuantLib::BasketOption::Min:
+                for (j = 1; j < numAssets; j++) {
+                    if (assetPrices[j] < basketPrice) {
+                        basketPrice = assetPrices[j];
+                    }
+                }
+                break;
+            }
+
+            return basketPrice;
         }
 
-        return basketPrice;
     }
 
-}
-
-namespace QuantLib {
 
     // calculate
     void MCAmericanBasketEngine::calculate() const {

@@ -1714,6 +1714,14 @@ SOURCE=.\ql\PricingEngines\Basket\all.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Basket\mcamericanbasketengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Basket\mcamericanbasketengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Basket\mcbasketengine.hpp
 # End Source File
 # Begin Source File

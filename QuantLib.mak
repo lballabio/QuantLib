@@ -250,6 +250,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
+	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -571,7 +573,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -753,7 +756,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -983,6 +987,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
+	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -1305,7 +1311,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1487,7 +1494,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1717,6 +1725,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
+	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -2038,7 +2048,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2220,7 +2231,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2450,6 +2462,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
+	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -2772,7 +2786,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mcamericanbasketengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2954,7 +2969,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mcamericanbasketengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -3840,6 +3856,12 @@ SOURCE=.\ql\PricingEngines\Vanilla\integralengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp
 
 "$(INTDIR)\jumpdiffusionengine.obj"	"$(INTDIR)\jumpdiffusionengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Basket\mcamericanbasketengine.cpp
+
+"$(INTDIR)\mcamericanbasketengine.obj"	"$(INTDIR)\mcamericanbasketengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
