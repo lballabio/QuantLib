@@ -5,6 +5,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.13  2001/05/16 08:35:45  nando
+# reverted "make python" to old style, not ready for distutils with borland compiler
+#
 # Revision 1.12  2001/05/15 16:10:01  nando
 # updated all PyWrap depencencies to PyQuantLibWrap
 #
@@ -44,8 +47,8 @@ install::
 # Python module
 python::
     cd Python
-#    $(MAKE) Python
-    python setup.py build --compiler
+    $(MAKE) Python
+#    python setup.py build --compiler
     cd ..
 
 # Install Python module
