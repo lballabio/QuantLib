@@ -25,14 +25,17 @@ using namespace QuantLib::RandomNumbers;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
+typedef GaussianStatistics<IncrementalStatistics> 
+    IncrementalGaussianStatistics;
+
 void RiskStatisticsTest::runTest() {
 
     IncrementalGaussianStatistics   igs;
-    Statistics s;
+    RiskStatistics s;
 
     unsigned long dimension = 5;
     SequenceStatistics<IncrementalGaussianStatistics> igss(dimension);
-    SequenceStatistics<Statistics> ss(dimension);
+    SequenceStatistics<RiskStatistics> ss(dimension);
             
     double averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };
     double sigmas[] = { 0.1, 1.0, 100.0 };
@@ -44,7 +47,6 @@ void RiskStatisticsTest::runTest() {
     for (i=0; i<LENGTH(averages); i++) {
         for (j=0; j<LENGTH(sigmas); j++) {
 
-            
             NormalDistribution               normal(averages[i],sigmas[j]);
             CumulativeNormalDistribution cumulative(averages[i],sigmas[j]);
 
@@ -69,7 +71,6 @@ void RiskStatisticsTest::runTest() {
                 weights[k]=1.0;
 //                weights[k]=normal(data[k]);
             }
-
 
             igs.addSequence(data.begin(),data.end(),weights.begin());
             s.addSequence(data.begin(),data.end(),weights.begin());
@@ -351,7 +352,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
-                    "wrong gaussian percentile"
+                    "wrong Gaussian percentile"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -365,7 +366,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian percentile"
+                    "wrong Gaussian percentile"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -398,13 +399,14 @@ void RiskStatisticsTest::runTest() {
             double upper_tail = averages[i]+2.0*sigmas[j],
                    lower_tail = averages[i]-2.0*sigmas[j];
             double twoSigma = cumulative(upper_tail);
+
             expected = QL_MAX(upper_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 : QL_FABS(expected*1.0e-3));
             calculated = igs.gaussianPotentialUpside(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
-                    "wrong gaussian potential upside"
+                    "wrong Gaussian potential upside"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -418,7 +420,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian potential upside"
+                    "wrong Gaussian potential upside"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -432,7 +434,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian potential upside"
+                    "wrong potential upside"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -451,7 +453,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
-                    "wrong gaussian value-at-risk"
+                    "wrong Gaussian value-at-risk"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -465,7 +467,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian value-at-risk"
+                    "wrong Gaussian value-at-risk"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")"
@@ -482,7 +484,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian value-at-risk"
+                    "wrong value-at-risk"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")"
@@ -496,8 +498,15 @@ void RiskStatisticsTest::runTest() {
                     "    tolerance:   "
                     + DoubleFormatter::toString(tolerance,16));
 
-            
-            
+            if (averages[i] > 0.0 && sigmas[j] < averages[i]) {
+                // no data will miss the targets:
+                // skip the rest of this iteration
+                igs.reset();
+                s.reset();
+                continue;
+            }
+
+
             // expected shortfall
             expected = -QL_MIN(averages[i]
                                - sigmas[j]*sigmas[j]
@@ -509,7 +518,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
-                    "wrong gaussian expected shortfall"
+                    "wrong Gaussian expected shortfall"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -523,7 +532,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian expected shortfall"
+                    "wrong Gaussian expected shortfall"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -549,8 +558,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(tolerance,16));
 
 
-
-
             // shortfall
             double target = averages[i];
             expected = 0.5;
@@ -559,7 +566,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
-                    "wrong gaussian shortfall"
+                    "wrong Gaussian shortfall"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -573,7 +580,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian shortfall"
+                    "wrong Gaussian shortfall"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -599,8 +606,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(tolerance,16));
 
 
-
-
             // average shortfall
             expected = sigmas[j]/QL_SQRT(2.0*M_PI);
             tolerance = expected*1.0e-3;
@@ -608,7 +613,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
-                    "wrong gaussian average shortfall"
+                    "wrong Gaussian average shortfall"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -622,7 +627,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian average shortfall"
+                    "wrong Gaussian average shortfall"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -655,7 +660,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
-                    "wrong gaussian regret("
+                    "wrong Gaussian regret("
                     + DoubleFormatter::toString(target,2) +
                     ") for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
@@ -670,7 +675,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "Statistics: "
-                    "wrong gaussian regret("
+                    "wrong Gaussian regret("
                     + DoubleFormatter::toString(target,2) +
                     ") for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
@@ -719,7 +724,7 @@ void RiskStatisticsTest::runTest() {
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
-                    "wrong gaussian downside variance"
+                    "wrong Gaussian downside variance"
                     " for N("
                     + DoubleFormatter::toString(averages[i],2) + ", "
                     + DoubleFormatter::toString(sigmas[j],2) + ")\n"
@@ -752,7 +757,7 @@ void RiskStatisticsTest::runTest() {
                 if (QL_FABS(calculated-expected) > tolerance)
                     CPPUNIT_FAIL(
                         "IncrementalGaussianStatistics: "
-                        "wrong gaussian downside variance"
+                        "wrong Gaussian downside variance"
                         " for N("
                         + DoubleFormatter::toString(averages[i],2) + ", "
                         + DoubleFormatter::toString(sigmas[j],2) + ")\n"

@@ -24,6 +24,9 @@ using namespace QuantLib::Math;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
+typedef GaussianStatistics<IncrementalStatistics>
+    IncrementalGaussianStatistics;
+
 void StatisticsTest::runTest() {
 
     double data[] = { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };

@@ -52,6 +52,13 @@ namespace QuantLib {
         }
         \endcode
                  which would likely render the passed object unusable.
+                 The correct way to obtain the desired behavior would be:
+        \code
+        Disposable<Foo> bar(Foo& f) {
+            Foo temp = f;
+            return temp;
+        }
+        \endcode
     */
     template <class T>
     class Disposable : public T {

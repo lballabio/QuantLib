@@ -21,8 +21,8 @@
 
 // $Id$
 
-#ifndef quantlib_risk_statisticss_h
-#define quantlib_risk_statisticss_h
+#ifndef quantlib_risk_statistics_old_h
+#define quantlib_risk_statistics_old_h
 
 #include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/riskmeasures.hpp>
@@ -37,7 +37,7 @@ namespace QuantLib {
 
         \deprecated use IncrementalGaussianStatistics or Statistics instead
     */
-    class RiskStatistics {
+    class RiskStatistics_old {
       public:
         //! \name Inspectors
         //@{
@@ -108,11 +108,11 @@ namespace QuantLib {
     // inline definitions
 
     /*! \pre weights must be positive or null */
-    inline void RiskStatistics::add(double value, double weight) {
+    inline void RiskStatistics_old::add(double value, double weight) {
         statistics_.add( value , weight );
     }
 
-    inline void RiskStatistics::reset() {
+    inline void RiskStatistics_old::reset() {
         statistics_.reset();
     }
 

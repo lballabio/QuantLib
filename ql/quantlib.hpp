@@ -152,6 +152,7 @@
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/discrepancystatistics.hpp>
 #include <ql/Math/errorfunction.hpp>
+#include <ql/Math/functional.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/generalstatistics.hpp>
@@ -167,6 +168,7 @@
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/primenumbers.hpp>
 #include <ql/Math/riskmeasures.hpp>
+#include <ql/Math/riskstatistics.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 #include <ql/Math/statistics.hpp>

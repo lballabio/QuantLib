@@ -24,18 +24,17 @@
 #ifndef quantlib_statistics_h
 #define quantlib_statistics_h
 
-#include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/generalstatistics.hpp>
 #include <ql/Math/incrementalstatistics.hpp>
+#include <ql/Math/gaussianstatistics.hpp>
+#include <ql/Math/riskstatistics.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
-        typedef GaussianStatistics<GeneralStatistics> Statistics; // default
-
-        typedef GaussianStatistics<IncrementalStatistics>
-            IncrementalGaussianStatistics; // alternative
+        //! default statistics tool
+        typedef GeneralStatistics Statistics;
 
     }
 
