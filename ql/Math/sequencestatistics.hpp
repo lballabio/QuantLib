@@ -85,6 +85,7 @@ namespace QuantLib {
                 const;
             std::vector<double> gaussianShortfall(double target) const;
             std::vector<double> gaussianAverageShortfall(double target) const;
+
             std::vector<double> percentile(double y) const;
             std::vector<double> potentialUpside(double percentile) const;
             std::vector<double> valueAtRisk(double percentile) const;
@@ -177,6 +178,7 @@ namespace QuantLib {
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(gaussianValueAtRisk)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(gaussianExpectedShortfall)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(gaussianShortfall)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(gaussianAverageShortfall)
 
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(percentile)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(potentialUpside)
