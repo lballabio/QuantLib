@@ -52,16 +52,20 @@ namespace QuantLib {
                         int interpolation2DType,
                         bool allowExtrapolation) {
 
+            typedef BlackVarianceSurface<
+                        BilinearInterpolation<
+                        std::vector<double>::const_iterator,
+			            std::vector<double>::const_iterator,
+                        Matrix> > surface_t;
+                        
             double result = 0.0;
 
             switch (interpolation2DType) {
                 case 1:
-                    result = BlackVarianceSurface<
-                        BilinearInterpolation<
-                        std::vector<double>::const_iterator,
-			            std::vector<double>::const_iterator,
-                        Matrix> >(refDate, dates, strikes,
-                        blackVolSurface, dc).blackForwardVol(date1, date2,
+                    result = surface_t(refDate, dates, strikes,
+                        blackVolSurface, surface_t::DefaultExtrapolation,
+                        surface_t::DefaultExtrapolation, 
+                        dc).blackForwardVol(date1, date2,
                         strike, allowExtrapolation);
                     break;
                 default:
