@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.3  2001/08/23 13:04:08  nando
+# added link to index.html
+#
 # Revision 1.2  2001/08/23 12:59:45  nando
 # makedist now distributes examples
 #
@@ -37,6 +40,6 @@ File "latex\*refman.pdf"
 File "latex\*refman.ps"
 SetOutPath "$INSTDIR\Docs\html"
 File "html\*.*"
-CreateShortCut "$INSTDIR\Docs\refman.lnk" "$INSTDIR\Docs\html\index.html"
+CreateShortCut "$INSTDIR\Docs\refman.html.lnk" "$INSTDIR\Docs\html\index.html"
 SectionEnd
 
