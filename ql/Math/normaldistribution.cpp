@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
@@ -16,6 +15,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file normaldistribution.cpp
     \brief normal, cumulative and inverse cumulative distributions
 
@@ -31,7 +31,6 @@ namespace QuantLib {
 
     namespace Math {
 
-
         double CumulativeNormalDistribution::operator()(double z) const {
              /// ???
              QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
@@ -43,7 +42,8 @@ namespace QuantLib {
              // Asymptotic expansion for very negative z following (26.2.12)
              // on page 408 in M. Abramowitz and A. Stegun,
              // Pocketbook of Mathematical Functions, ISBN 3-87144818-4.
-                 double sum=1, zsqr=z*z, i=1, g=1, x, y, a=QL_MAX_DOUBLE, lasta;
+                 double sum=1, zsqr=z*z, i=1, g=1, x, y, 
+                        a=QL_MAX_DOUBLE, lasta;
                  do {
                    lasta=a;
                    x = (4*i-3)/zsqr;
@@ -53,7 +53,7 @@ namespace QuantLib {
                    g *= y;
                    ++i;
                    a = fabs(a);
-                 } while (lasta>a && a>=fabs(sum*DBL_EPSILON));
+                 } while (lasta>a && a>=fabs(sum*QL_EPSILON));
                  result = -gaussian_(z)/z*sum;
              }
              return result;
@@ -134,13 +134,6 @@ namespace QuantLib {
         }
 
         
-        
-        
-        
-        
-        
-        
-        
         const double MoroInverseCumulativeNormal::a0_ =  2.50662823884;
         const double MoroInverseCumulativeNormal::a1_ =-18.61500062529;
         const double MoroInverseCumulativeNormal::a2_ = 41.39119773534;
@@ -191,7 +184,6 @@ namespace QuantLib {
             return average_ + result*sigma_;
         }
 
-
-}
+    }
 
 }

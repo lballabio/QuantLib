@@ -146,7 +146,7 @@ namespace QuantLib {
 
         template<class ArgumentsType, class ResultsType>
         void ForwardEngine<ArgumentsType, ResultsType>::calculate() const {
-
+            originalEngine_->reset();
             setOriginalArguments();
             originalEngine_->calculate();
             getOriginalResults();

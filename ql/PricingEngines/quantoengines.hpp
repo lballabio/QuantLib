@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file quantoengines.hpp
     \brief Quanto option engines
 
@@ -62,9 +63,11 @@ namespace QuantLib {
         template<class ResultsType>
         class QuantoOptionResults : public ResultsType {
           public:
-            QuantoOptionResults() : qvega(Null<double>()),
-                                    qrho(Null<double>()),
-                                    qlambda(Null<double>()) {}
+            QuantoOptionResults() { reset() ;}
+            void reset() { 
+                ResultsType::reset();
+                qvega = qrho = qlambda = Null<double>();
+            }
             double qvega;
             double qrho;
             double qlambda;
@@ -104,6 +107,8 @@ namespace QuantLib {
 
             // ATM exchangeRate level needed here
             double exchangeRateATMlevel = 1.0;
+
+            originalEngine_->reset();
 
             originalArguments_->type          = arguments_.type;
             originalArguments_->underlying    = arguments_.underlying;

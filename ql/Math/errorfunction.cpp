@@ -207,6 +207,8 @@ namespace QuantLib {
 
           double R,S,P,Q,s,y,z,r, ax;
 
+          /* not portable!
+
           // The finite() function returns a non-zero value if value is
           // neither infinite nor a "not-a-number" (NaN) value,
           // and 0 otherwise.
@@ -218,6 +220,8 @@ namespace QuantLib {
             else
               return   ( x > 0 ? 1 : -1);
           }
+
+          */
 
           ax = QL_FABS(x);
 
@@ -261,5 +265,7 @@ namespace QuantLib {
           if(x>=0) return one-r/ax; else return  r/ax-one;
 
         }
+
     }
+
 }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file argsandresults.hpp
     \brief Base classes for generic arguments and results
 
@@ -42,8 +42,8 @@ namespace QuantLib {
     class Results {
       public:
         virtual ~Results() {}
+        virtual void reset() = 0;
     };
-
 
 
     //! %option pricing results
@@ -53,24 +53,28 @@ namespace QuantLib {
     */
     class OptionValue : public virtual Results {
       public:
-        OptionValue() : value(Null<double>()) {}
+        OptionValue() { reset(); }
+        void reset() {
+            value = errorEstimate = Null<double>();
+        }
         double value;
+        double errorEstimate;
     };
 
     //! %option pricing results
     class OptionGreeks : public virtual Results {
       public:
-        OptionGreeks() : delta(Null<double>()), gamma(Null<double>()),
-                         theta(Null<double>()), vega(Null<double>()),
-                         rho(Null<double>()), dividendRho(Null<double>()) {}
+        OptionGreeks() { reset(); }
+        void reset() {
+            delta =  gamma = theta = vega =
+                rho = dividendRho = strikeSensitivity = Null<double>();
+        }
         double delta, gamma;
         double theta;
         double vega;
         double rho, dividendRho;
         double strikeSensitivity;
     };
-
-
 
 }
 

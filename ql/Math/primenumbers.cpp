@@ -21,7 +21,7 @@ namespace QuantLib {
                 do {
                     i = 0;
                     ++m;
-                    n = static_cast<Size>(QL_SQRT(m));
+                    n = static_cast<Size>(QL_SQRT(double(m)));
                     do {
                         p = primeNumbers_[i];
                         ++i;

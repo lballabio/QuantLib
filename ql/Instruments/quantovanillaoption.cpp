@@ -113,6 +113,7 @@ namespace QuantLib {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
                     vega_ = rho_ = dividendRho_ =
+                    strikeSensitivity_ =
                     qvega_ = qrho_ = qlambda_ = 0.0;
             } else {
                 isExpired_ = false;

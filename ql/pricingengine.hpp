@@ -15,6 +15,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file pricingengine.hpp
     \brief Base class for pricing engines
 
@@ -37,6 +38,7 @@ namespace QuantLib {
         virtual ~PricingEngine() {}
         virtual Arguments* arguments() = 0;
         virtual const Results* results() const = 0;
+        virtual void reset() const = 0;
         virtual void calculate() const = 0;
     };
 

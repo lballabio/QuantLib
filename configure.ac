@@ -54,6 +54,15 @@ QL_CHECK_FUNC([pow],[1.0,2],[$ql_math])
 QL_CHECK_FUNC([modf],[1.0,&x],[$ql_math])
 QL_CHECK_FUNC([floor],[1.0],[$ql_math])
 
+QL_CHECK_CONSTANT([M_PI],[double],[$ql_math],
+                  [3.141592653589793238462643383280],[pi])
+QL_CHECK_CONSTANT([M_SQRT_2],[double],[$ql_math],
+                  [0.7071067811865475244008443621048],[1/sqrt(2)])
+QL_CHECK_CONSTANT([M_SQRTPI],[double],[$ql_math],
+                  [1.77245385090551602792981],[sqrt(pi)])
+QL_CHECK_CONSTANT([M_1_SQRTPI],[double],[$ql_math],
+                  [0.564189583547756286948],[1/sqrt(pi)])
+
 QL_CHECK_HEADER([string])
 QL_CHECK_FUNC([strlen],["foo"],[$ql_string])
 

@@ -30,16 +30,22 @@ namespace QuantLib {
 
     Option::Option(const Handle<PricingEngine>& engine,
         const std::string& isinCode, const std::string& description)
-    : Instrument(isinCode, description), engine_(engine) {
-//        QL_REQUIRE(!engine_.isNull(), 
-//                   "Option::Option : null pricing engine not allowed");
-    }
+    : Instrument(isinCode, description), errorEstimate_(Null<double>()),
+      engine_(engine) {}
 
     Option::~Option() {}
 
+    double Option::errorEstimate() const {
+        calculate();
+        QL_REQUIRE(errorEstimate_ != Null<double>(),
+                   "error estimate not provided");
+        return errorEstimate_;
+    }
+
     void Option::setPricingEngine(const Handle<PricingEngine>& engine) {
         QL_REQUIRE(!engine.isNull(), 
-                   "Option::setPricingEngine : null pricing engine not allowed");
+                   "Option::setPricingEngine : "
+                   "null pricing engine not allowed");
         engine_ = engine;
         // this will trigger recalculation and notify observers
         update();
@@ -47,6 +53,7 @@ namespace QuantLib {
     }
 
     void Option::performCalculations() const {
+        engine_->reset();
         setupEngine();
         engine_->arguments()->validate();
         engine_->calculate();
@@ -56,6 +63,7 @@ namespace QuantLib {
             "Option::performCalculations : "
             "no results returned from option pricer");
         NPV_ = results->value;
+        errorEstimate_ = results->errorEstimate;
     }
 
 }

@@ -58,6 +58,7 @@ namespace QuantLib {
             double vega() const;
             double rho() const;
             double dividendRho() const;
+            double strikeSensitivity() const;
             //@}
             /*! \warning Options with a gamma that changes sign have values
                 that are <b>not</b> monotonic in the volatility, e.g binary
@@ -76,7 +77,8 @@ namespace QuantLib {
             void setupEngine() const;
             void performCalculations() const;
             // results
-            mutable double delta_, gamma_, theta_, vega_, rho_, dividendRho_;
+            mutable double delta_, gamma_, theta_, 
+                           vega_, rho_, dividendRho_, strikeSensitivity_;
             // arguments
             Option::Type type_;
             RelinkableHandle<MarketElement> underlying_;

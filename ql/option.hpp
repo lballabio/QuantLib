@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file option.hpp
     \brief Base option class
 
@@ -40,8 +40,10 @@ namespace QuantLib {
                const std::string& isinCode = "",
                const std::string& description = "");
         virtual ~Option();
+        double errorEstimate() const;
         void setPricingEngine(const Handle<PricingEngine>&);
       protected:
+        mutable double errorEstimate_;
         virtual void setupEngine() const = 0;
         /*! \warning this method simply launches the engine and copies the 
                 returned value into NPV_. It does <b>not</b> set isExpired_. 
@@ -52,7 +54,6 @@ namespace QuantLib {
         virtual void performCalculations() const;
         Handle<PricingEngine> engine_;
     };
-
 
 }
 

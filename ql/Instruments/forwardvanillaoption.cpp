@@ -67,8 +67,8 @@ namespace QuantLib {
             // when == it should provide an answer
             if (exercise_.lastDate() < riskFreeTS_->referenceDate()) {
                 isExpired_ = true;
-                NPV_ = delta_ = gamma_ =       theta_ =
-                        vega_ =   rho_ = dividendRho_ = 0.0;
+                NPV_ = delta_ = gamma_ = theta_ =
+                    vega_ =   rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
             } else {
                 isExpired_ = false;
                 Option::performCalculations();

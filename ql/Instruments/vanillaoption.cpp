@@ -61,49 +61,50 @@ namespace QuantLib {
         double VanillaOption::delta() const {
             calculate();
             QL_REQUIRE(delta_ != Null<double>(),
-                       "VanillaOption::delta() : "
-                       "delta calculation failed");
+                       "VanillaOption: delta not provided");
             return delta_;
         }
 
         double VanillaOption::gamma() const {
             calculate();
             QL_REQUIRE(gamma_ != Null<double>(),
-                       "VanillaOption::gamma() : "
-                       "gamma calculation failed");
+                       "VanillaOption: gamma not provided");
             return gamma_;
         }
 
         double VanillaOption::theta() const {
             calculate();
             QL_REQUIRE(theta_ != Null<double>(),
-                       "VanillaOption::theta() : "
-                       "theta calculation failed");
+                       "VanillaOption: theta not provided");
             return theta_;
         }
 
         double VanillaOption::vega() const {
             calculate();
             QL_REQUIRE(vega_ != Null<double>(),
-                       "VanillaOption::vega() : "
-                       "vega calculation failed");
+                       "VanillaOption: vega not provided");
             return vega_;
         }
 
         double VanillaOption::rho() const {
             calculate();
             QL_REQUIRE(rho_ != Null<double>(),
-                       "VanillaOption::rho() : "
-                       "rho calculation failed");
+                       "VanillaOption: rho not provided");
             return rho_;
         }
 
         double VanillaOption::dividendRho() const {
             calculate();
             QL_REQUIRE(dividendRho_ != Null<double>(),
-                       "VanillaOption::dividendRho() : "
-                       "dividend rho calculation failed");
+                       "VanillaOption: dividend rho not provided");
             return dividendRho_;
+        }
+
+        double VanillaOption::strikeSensitivity() const {
+            calculate();
+            QL_REQUIRE(strikeSensitivity_ != Null<double>(),
+                       "VanillaOption: strike sensitivity not provided");
+            return strikeSensitivity_;
         }
 
         double VanillaOption::impliedVolatility(double targetValue,
@@ -146,12 +147,13 @@ namespace QuantLib {
             arguments->maturity = riskFreeTS_->dayCounter().yearFraction(
                 riskFreeTS_->referenceDate(), exercise_.lastDate());
             arguments->exerciseType = exercise_.type();
-            arguments->stoppingTimes = std::vector<Time>(exercise_.dates().size());
+            arguments->stoppingTimes = 
+                std::vector<Time>(exercise_.dates().size());
             for (Size i=0; i<exercise_.dates().size(); i++) {
-                arguments->stoppingTimes[i] = riskFreeTS_->dayCounter().yearFraction(
-                riskFreeTS_->referenceDate(), exercise_.date(i));
+                arguments->stoppingTimes[i] = 
+                    riskFreeTS_->dayCounter().yearFraction(
+                        riskFreeTS_->referenceDate(), exercise_.date(i));
             }
-
 
             arguments->volTS = volTS_;
         }
@@ -161,7 +163,7 @@ namespace QuantLib {
             if (exercise_.lastDate() < riskFreeTS_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
-                    vega_ = rho_ = dividendRho_ = 0.0;
+                    vega_ = rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
             } else {
                 isExpired_ = false;
                 Option::performCalculations();
@@ -184,6 +186,7 @@ namespace QuantLib {
                 vega_        = results->vega;
                 rho_         = results->rho;
                 dividendRho_ = results->dividendRho;
+                strikeSensitivity_ = results->strikeSensitivity;
             }
             QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
                 "VanillaOption::performCalculations : "
