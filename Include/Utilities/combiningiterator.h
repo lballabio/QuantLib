@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/03/09 10:06:16  aleppo
+    Typo fixed
+
     Revision 1.10  2001/02/16 15:33:03  lballabio
     Used QL_ITERATOR_TRAITS macro
 
@@ -175,7 +178,7 @@ namespace QuantLib {
         combining_iterator<Iterator,Function>::operator--(int) {
             combining_iterator<Iterator,Function> temp = *this;
             --*this;
-            return tmp;
+            return temp;
         }
 
         template <class Iterator, class Function>
