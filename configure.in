@@ -130,7 +130,6 @@ AC_OUTPUT(Makefile \
     ql/Indexes/Makefile \
     ql/Instruments/Makefile \
     ql/Math/Makefile \
-    ql/Minimizers/Makefile \
     ql/MonteCarlo/Makefile \
     ql/Patterns/Makefile \
     ql/Pricers/Makefile \
