@@ -21,9 +21,11 @@ class BSMEuropeanOption : public BSMNumericalOption {
 	BSMEuropeanOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
 	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
 	: BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
-	  timeSteps,gridPoints) {}
+	  gridPoints), theTimeSteps(timeSteps)  {}
 	// accessors
 	double value() const;
+  private:
+	int  theTimeSteps;
 };
 
 

@@ -16,9 +16,9 @@ QL_USING(PDE,BoundaryCondition)
 QL_USING(Operators,BSMOperator)
 
 BSMNumericalOption::BSMNumericalOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
-  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
+  Yield riskFreeRate, Time residualTime, double volatility, int gridPoints)
 : theType(type), theUnderlying(underlying), theStrike(strike), theUnderlyingGrowthRate(underlyingGrowthRate), 
-  theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), theVolatility(volatility), theTimeSteps(timeSteps), 
+  theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), theVolatility(volatility), 
   theGridPoints(gridPoints) {
   	// common setup
   	setGridLimits();

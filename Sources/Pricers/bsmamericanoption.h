@@ -24,9 +24,10 @@ class BSMAmericanOption : public BSMNumericalOption {
 	BSMAmericanOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
 	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
 	: BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
-	  timeSteps,gridPoints) {}
+	  gridPoints), theTimeSteps(timeSteps) {}
 	// accessors
 	double value() const;
+	int  theTimeSteps;
 };
 
 class BMSAmericanCondition : public QL_ADD_NAMESPACE(PDE,StepCondition)<Array> {

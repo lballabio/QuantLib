@@ -22,7 +22,7 @@ QL_BEGIN_NAMESPACE(Pricers)
 class BSMNumericalOption {
   public:
 	BSMNumericalOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
-	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints);
+	  Yield riskFreeRate, Time residualTime, double volatility, int gridPoints);
 	// accessors
 	virtual double value() const = 0;
   protected:
@@ -34,7 +34,7 @@ class BSMNumericalOption {
 	Yield theUnderlyingGrowthRate, theRiskFreeRate;
 	Time theResidualTime;
 	double theVolatility;
-	int theTimeSteps, theGridPoints;
+	int theGridPoints;
 	// results
 	Array theGrid;
 	QL_ADD_NAMESPACE(Operators,BSMOperator) theOperator;
