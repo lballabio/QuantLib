@@ -86,7 +86,7 @@ LINK_OPTS    = $(LINK_OPTS) -v
 
 # Primary target:
 # Python module
-Python: $(QUANTLIB_DLL)
+python: $(QUANTLIB_DLL)
 
 $(QUANTLIB_DLL):: $(WRAPPER_OBJ) $(QUANTLIB_LIB) $(PYTHON_BCC_LIB)
     echo Linking Python module...
