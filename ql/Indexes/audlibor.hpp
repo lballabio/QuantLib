@@ -25,7 +25,6 @@
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/sydney.hpp>
 #include <ql/DayCounters/actual365.hpp>
-#include <ql/Currencies/audcurrency.hpp>
 
 namespace QuantLib {
 
@@ -36,7 +35,7 @@ namespace QuantLib {
         AUDLibor(Integer n, TimeUnit units,
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
-	    : Xibor("AUDLibor", n, units, 2, AUDCurrency(),
+        : Xibor("AUDLibor", n, units, 2, AUD,
                 Sydney(), true, ModifiedFollowing, dc, h) {}
     };
 

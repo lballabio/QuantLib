@@ -16,7 +16,6 @@
 */
 
 #include <ql/TermStructures/ratehelpers.hpp>
-#include <ql/Currencies/eurcurrency.hpp>
 
 namespace QuantLib {
 
@@ -258,7 +257,7 @@ namespace QuantLib {
                                      new Xibor("dummy",
                                                12/floatingFrequency_, Months, 
                                                fixingDays,
-                                               EURCurrency(), // any would do
+                                               EUR, // any would do
                                                calendar_,true,convention_,
                                                t->dayCounter(),
                                                termStructureHandle_));
