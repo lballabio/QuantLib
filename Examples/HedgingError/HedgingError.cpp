@@ -22,7 +22,7 @@
 */
 
 /*! \file HedgingError.cpp
-    \brief Example about using QuantLib Montecarlo Tools
+    \brief Example on using QuantLib Montecarlo framework.
 
     This example computes profit and loss of a discrete interval hedging
     strategy and compares with the results of Derman & Kamal's (Goldman Sachs
@@ -38,27 +38,20 @@
     understanding the final profit or loss of this strategy.
 
     If the hedger had followed the exact Black-Scholes replication strategy,
-    rehedging continuously as the underlying stock evolved towards its final
+    re-hedging continuously as the underlying stock evolved towards its final
     value at expiration, then, no matter what path the stock took, the final P&L
     would be exactly zero. When the replication strategy deviates from the exact
     Black-Scholes method, the final P&L may deviate from zero. This deviation is
-    called the replication error.
+    called the replication error. When the hedger rebalances at discrete rather
+    than continuous intervals, the hedge is imperfect and the replication is
+    inexact. The more often hedging occurs, the smaller the replication error.
 
-    When the hedger rebalances at discrete rather than continuous intervals, the
-    hedge is imperfect and the replication is inexact. Sometimes this
-    imperfection favors the P&L, sometimes it penalizes it. The more often
-    hedging occurs, the smaller the replication error.
-
-    We examine the range of possibilities, computing the P&L distribution.
+    We examine the range of possibilities, computing the replication error.
 
     \fullpath Examples/HedgingError/%HedgingError.cpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.10  2001/08/07 12:03:29  nando
-// added comments, restructured
-//
 
 #include "stdlib.h"
 #include <iostream>
@@ -75,7 +68,7 @@ using QuantLib::Time;
 // Option is a helper class that holds the enumeration {Call, Put, Straddle}
 using QuantLib::Option;
 
-// Handle is the QuantLib way to have reference counted objects
+// Handle is the QuantLib way to have reference-counted objects
 using QuantLib::Handle;
 
 // helper function for option payoff: MAX((stike-underlying),0), etc.
@@ -88,18 +81,20 @@ using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Math::Statistics;
 
 // single Path of a random variable
-// It contains the list of continuously-compounded variations
+// It contains the list of variations
 using QuantLib::MonteCarlo::Path;
 
 // the pricer computes final portfolio's value for each random variable path
 using QuantLib::MonteCarlo::PathPricer;
 
 // the path generator
-using QuantLib::MonteCarlo::StandardPathGenerator;
+using QuantLib::MonteCarlo::GaussianPathGenerator;
 
 // the Montecarlo pricing model for option on a single asset
 using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
 
+// to format the output of doubles
+using QuantLib::DoubleFormatter;
 
 /* The ReplicationError class carries out Monte Carlo simulations to evaluate
    the outcome (the replication error) of the discrete hedging strategy over
@@ -124,6 +119,16 @@ public:
 
         // store option's vega, since Derman and Kamal's formula needs it
         vega_ = option.vega();
+
+        std::cout << std::endl;
+        std::cout << "        |        | P&L  \t|  P&L    | Derman&Kamal | P&L"
+            "      \t| P&L" << std::endl;
+
+        std::cout << "samples | trades | Mean \t| Std Dev | Std Dev      |"
+            " skewness \t| kurt." << std::endl;
+
+        std::cout << "---------------------------------"
+            "----------------------------------------------" << std::endl;
     }
 
     // the actual replication error computation
@@ -179,12 +184,6 @@ class ReplicationPathPricer : public PathPricer
 };
 
 
-
-
-
-
-
-
 // Compute Replication Error as in the Derman and Kamal's research note
 int main(int argc, char* argv[])
 {
@@ -219,17 +218,18 @@ double ReplicationPathPricer::value(const Path & path) const
     QL_REQUIRE(isInitialized_,
         "ReplicationPathPricer: pricer not initialized");
 
-    // perche' n e' controllato qui e non in timeSteps ???
-    // un path non potrebbe controllare a costruttore di essere non nullo ?
+    // path is an instance of QuantLib::MonteCarlo::Path
+    // It contains the list of variations.
+    // It can be used as an array: it has a size() method
     int n = path.size();
     QL_REQUIRE(n>0,
         "ReplicationPathPricer: the path cannot be empty");
 
-    // For simplicity, we assume the stock pays no dividends.
-    double stockDividendYield = 0.0;
-
     // discrete hedging interval
     Time dt = maturity_/n;
+
+    // For simplicity, we assume the stock pays no dividends.
+    double stockDividendYield = 0.0;
 
     // let's start
     Time t = 0;
@@ -266,8 +266,9 @@ double ReplicationPathPricer::value(const Path & path) const
         // accruing on the money account
         money_account *= QL_EXP( r_*dt );
 
-        // stock growth
-        // path contains the list of continuously-compounded variations
+        // stock growth:
+        // path contains the list of variations
+        // and path[n] is the n-th variation
         stockLogGrowth += path[step];
         stock = underlying_*QL_EXP(stockLogGrowth);
 
@@ -320,13 +321,15 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     double sigma = sigma_* sqrt(tau);
     // stock growth
     // r_ is used for semplicity, it can be whatever value
-    double mean = r_ * tau - 0.5*sigma*sigma;
+    double drift = r_ * tau - 0.5*sigma*sigma;
+    // std::cout << drift << std::endl;
+    // drift = 0.1 * tau - 0.5*sigma*sigma;
 
     // Black Scholes equation rules the path generator:
     // at each step the log of the stock
-    // will have mean drift and sigma^2 variance
-    Handle<StandardPathGenerator> myPathGenerator(
-        new StandardPathGenerator(nTimeSteps, mean, sigma*sigma));
+    // will have drift and sigma^2 variance
+    Handle<GaussianPathGenerator> myPathGenerator(
+        new GaussianPathGenerator(nTimeSteps, drift, sigma*sigma));
 
     // The replication strategy's Profit&Loss is computed for each path of the
     // stock. The path pricer knows how to price a path using its value() method
@@ -340,27 +343,27 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // The OneFactorMontecarloModel generates paths using myPathGenerator
     // each path is priced using myPathPricer
     // prices will be accumulated into statisticAccumulator
-    OneFactorMonteCarloOption myMontecarloSimulation(myPathGenerator,
+    OneFactorMonteCarloOption MCSimulation(myPathGenerator,
         myPathPricer, statisticAccumulator);
 
     // the model simulates nSamples paths
-    myMontecarloSimulation.addSamples(nSamples);
+    MCSimulation.addSamples(nSamples);
 
-    // the model returns the Profit&Loss distribution
-    // perche' dare un Statistics a costruttore e farsene restituire
-    // poi un'altro ???
-    Statistics PLDistribution = myMontecarloSimulation.sampleAccumulator();
+    // the sampleAccumulator method of OneFactorMonteCarloOption
+    // gives access to all the methods of statisticAccumulator
+    double PLMean  = MCSimulation.sampleAccumulator().mean();
+    double PLStDev = MCSimulation.sampleAccumulator().standardDeviation();
+    double PLSkew  = MCSimulation.sampleAccumulator().skewness();
+    double PLKurt  = MCSimulation.sampleAccumulator().kurtosis();
 
-    std::cout << std::endl << "hedging " << nTimeSteps << " times - "
-        << nSamples << " samples Montecarlo simulation" << std::endl;
-
-    std::cout << "P&L mean         : " << PLDistribution.mean() << std::endl;
-    std::cout << "P&L standard dev.: " << PLDistribution.standardDeviation();
     // Derman and Kamal's formula
-    double theoretical_sd = QL_SQRT(3.1415926535/4/nTimeSteps)*vega_*sigma_;
-    std::cout << "  Derman & Kamal's: " << theoretical_sd << std::endl;
+    double theorStD = QL_SQRT(3.1415926535/4/nTimeSteps)*vega_*sigma_;
 
-    // P&L distribution higher moments ... we could even compute Value-at-Risk!
-    std::cout << "P&L skewness     : " << PLDistribution.skewness()<< std::endl;
-    std::cout << "P&L exc. kurtosis: " << PLDistribution.kurtosis()<< std::endl;
+    std::cout << nSamples << "\t| "
+        << nTimeSteps << "\t | "
+        << DoubleFormatter::toString(PLMean,   3) << " \t| "
+        << DoubleFormatter::toString(PLStDev,  2) << " \t  | "
+        << DoubleFormatter::toString(theorStD, 2) << " \t | "
+        << DoubleFormatter::toString(PLSkew,   2) << " \t| "
+        << DoubleFormatter::toString(PLKurt,   2) << std::endl;
 }
