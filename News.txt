@@ -25,7 +25,6 @@ Changes since Release 0.2.1:
     - Handle is now castable to an Handle of a compatible type
     - better spline interpolation algorithm
     - kustosis() and skewness() now handles the case of stddev == 0 and/or variance == 0
-    - richer QL_VERSION variable
     - enforced MS VC compilation settings
 
 

@@ -51,9 +51,9 @@
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.3.0a3 - debug"
+    #define QL_VERSION "0.3.0a3-cvs-debug"
 #else
-    #define QL_VERSION "0.3.0a3"
+    #define QL_VERSION "0.3.0a3-cvs"
 #endif
 
 //! global trace level (may be superseded locally by a greater value)
