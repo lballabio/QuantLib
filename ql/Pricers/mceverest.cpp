@@ -81,10 +81,11 @@ namespace QuantLib {
         PseudoRandom::rsg_type rsg =
             PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
+        bool brownianBridge = false;
+
         typedef MultiAsset<PseudoRandom>::path_generator_type generator;
-        boost::shared_ptr<generator> pathGenerator(
-                                  new generator(processes, correlation, grid,
-                                                rsg, false));
+        boost::shared_ptr<generator> pathGenerator(new
+            generator(processes, correlation, grid, rsg, brownianBridge));
 
         // initialize the path pricer
         DiscountFactor discount = riskFreeRate->discount(residualTime);
