@@ -226,6 +226,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
+	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
@@ -279,8 +280,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\segmentintegral.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -311,6 +311,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
+	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\avgpriceasianpathpricer.obj" \
@@ -364,8 +365,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\segmentintegral.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -569,6 +569,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
+	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
@@ -622,8 +623,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\segmentintegral.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -654,6 +654,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
+	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\avgpriceasianpathpricer.obj" \
@@ -707,8 +708,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\segmentintegral.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -912,6 +912,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
+	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
@@ -965,8 +966,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\segmentintegral.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -997,6 +997,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
+	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\avgpriceasianpathpricer.obj" \
@@ -1050,8 +1051,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\segmentintegral.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1254,6 +1254,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
+	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
@@ -1307,8 +1308,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\segmentintegral.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1339,6 +1339,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
+	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\avgpriceasianpathpricer.obj" \
@@ -1392,8 +1393,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\segmentintegral.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<

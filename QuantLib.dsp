@@ -447,6 +447,10 @@ SOURCE=.\Include\ql\Math\symmetricschurdecomposition.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\Include\ql\MonteCarlo\antitheticpathgenerator.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\MonteCarlo\avgpriceasianpathpricer.cpp
 # End Source File
 # Begin Source File
@@ -500,10 +504,6 @@ SOURCE=.\Sources\MonteCarlo\everestpathpricer.cpp
 # Begin Source File
 
 SOURCE=.\Include\ql\MonteCarlo\everestpathpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\MonteCarlo\gaussianarraygenerator.hpp
 # End Source File
 # Begin Source File
 

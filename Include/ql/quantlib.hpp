@@ -27,6 +27,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.32  2001/08/22 15:28:20  nando
+// added AntitheticPathGenerator
+//
 // Revision 1.31  2001/08/22 11:00:06  nando
 // removed useless gaussianarraygenerator.hpp
 // It was a clone of gaussianpathgenerator.hpp
@@ -149,7 +152,7 @@
 #include "ql/Math/symmetriceigenvalues.hpp"
 #include "ql/Math/symmetricschurdecomposition.hpp"
 
-//#include "ql/MonteCarlo/antitheticgaussianpathgenerator.hpp"
+#include "ql/MonteCarlo/antitheticpathgenerator.hpp"
 #include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
 #include "ql/MonteCarlo/avgstrikeasianpathpricer.hpp"
 #include "ql/MonteCarlo/basketpathpricer.hpp"

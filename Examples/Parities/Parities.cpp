@@ -28,6 +28,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/22 15:28:19  nando
+// added AntitheticPathGenerator
+//
 // Revision 1.14  2001/08/20 08:27:31  marmar
 // Disabled quite-silly warning
 //
@@ -75,18 +78,26 @@ using QuantLib::MonteCarlo::Path;
 // the pricer computes final portfolio's value for each random variable path
 using QuantLib::MonteCarlo::PathPricer;
 
-// the path generator
+// the path generators
 using QuantLib::MonteCarlo::GaussianPathGenerator;
+using QuantLib::MonteCarlo::AntitheticPathGenerator;
 
-// the Montecarlo pricing model for option on a single asset
+// the pricing model for option on a single asset
 using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
 
+// the more general model for option on a single asset
+using QuantLib::MonteCarlo::MonteCarloModel;
+
 using QuantLib::MonteCarlo::EuropeanPathPricer;
+using QuantLib::MonteCarlo::UniformRandomGenerator;
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::FiniteDifferenceEuropean;
 
 // to format the output of doubles
 using QuantLib::DoubleFormatter;
+
+// helper function for option payoff: MAX((stike-underlying),0), etc.
+using QuantLib::Pricers::ExercisePayoff;
 
 
 double optionSurplusIntegral(Time maturity_,
@@ -114,9 +125,6 @@ double optionSurplusIntegral(Time maturity_,
 	}
     return sum;
 }
-
-// helper function for option payoff: MAX((stike-underlying),0), etc.
-using QuantLib::Pricers::ExercisePayoff;
 
 
 
@@ -247,24 +255,26 @@ int main(int argc, char* argv[])
 
 
 
-
-    // fifth method:  MonteCarlo  
-    method ="MonteCarlo";
+    // Monte Carlo methods
     // for plain vanilla european option the number of steps is not significant
     // let's go for the fastest way: just one step
-
     int nTimeSteps = 1;
-    int nSamples = 400000;
+    int nSamples = 900000;
+    long seed = long(1.0/UniformRandomGenerator().next());
 	double tau = maturity/nTimeSteps;
 	double sigma = volatility* sqrt(tau);
-	double mean = riskFreeRate * tau - 0.5*sigma*sigma;
-	Statistics samples;
-    Handle<GaussianPathGenerator> myPathGenerator(
-        new GaussianPathGenerator(nTimeSteps, mean, sigma*sigma));
+	double drift = riskFreeRate * tau - 0.5*sigma*sigma;
     // The European path pricer
     Handle<PathPricer> myEuropeanPathPricer =
         Handle<PathPricer>(new EuropeanPathPricer(Option::Type::Call,
         underlying, strike, exp(-riskFreeRate*maturity)));
+    Statistics samples;
+
+    
+    // fifth method:  MonteCarlo
+    method ="Monte Carlo";
+    Handle<GaussianPathGenerator> myPathGenerator(
+        new GaussianPathGenerator(nTimeSteps, drift, sigma*sigma, seed));
     // The OneFactorMontecarloModel generates paths using myPathGenerator
     // each path is priced using myPathPricer
     // prices will be accumulated into samples
@@ -285,6 +295,35 @@ int main(int argc, char* argv[])
          << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
 
 
+    // sixth method:  MonteCarlo with antithetic variance reduction
+    method ="MC antithetic";
+    // reset the statistic object
+	samples.reset();
+    typedef AntitheticPathGenerator<GaussianPathGenerator>
+        ImprovedPathGenerator;
+    Handle<ImprovedPathGenerator> myImprovedPathGenerator(
+        new ImprovedPathGenerator(drift, 
+            GaussianPathGenerator(nTimeSteps, 0.0, sigma*sigma, seed)));
+    // This time MontecarloModel generates paths using
+    // myImprovedPathGenerator.
+	MonteCarloModel<Statistics, ImprovedPathGenerator, PathPricer> 
+        improvedMC(myImprovedPathGenerator, myEuropeanPathPricer, samples);
+    // the model simulates nSamples paths
+    improvedMC.addSamples(nSamples);
+    // the sampleAccumulator method of MonteCarloModel
+    // gives access to all the methods of statisticAccumulator
+    value = improvedMC.sampleAccumulator().mean();
+    estimatedError = improvedMC.sampleAccumulator().errorEstimate();
+    discrepancy = QL_FABS(value-rightValue);
+    relativeDiscrepancy = discrepancy/rightValue;
+    cout << method << "\t" 
+         << DoubleFormatter::toString(value, 4) << "\t"
+         << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
+         << DoubleFormatter::toString(discrepancy, 6) << "\t"
+         << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+
+
+
 
 
 
@@ -296,10 +335,10 @@ int main(int argc, char* argv[])
     //                  - Max[underlyingPrice - Exp[- r*T] * strike, 0],
     //                  d(Log[underlyingPrice]), - inf, +inf]
     //
-    //  should be equal for Eropean Call to
+    //  should be equal for European Call to
     //      1/2*sigma^2*T*Exp[-r*T]*strike
     //
-    double theory = 1./2. * volatility*volatility * strike *
+    double theory = 1.0/2.0 * volatility*volatility * strike *
                     maturity * QL_EXP(- riskFreeRate*maturity);
 
     double integral = optionSurplusIntegral(maturity, strike, underlying,

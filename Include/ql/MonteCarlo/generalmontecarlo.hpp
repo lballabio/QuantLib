@@ -29,44 +29,8 @@
 
 // $Id$
 // $Log$
-// Revision 1.17  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.16  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.15  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.14  2001/07/27 14:45:23  marmar
-// Method  void ddSamples(long n) added to GeneralMonteCarlo
-//
-// Revision 1.13  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.12  2001/07/20 13:06:57  marmar
-// Monte Carlo interfaces imporved
-//
-// Revision 1.11  2001/07/19 16:40:10  lballabio
-// Improved docs a bit
-//
-// Revision 1.10  2001/07/13 15:25:13  marmar
-// MonteCarlo interface changed
-//
-// Revision 1.9  2001/07/13 14:29:08  sigmud
-// removed a few gcc compile warnings
-//
-// Revision 1.8  2001/07/09 16:29:27  lballabio
-// Some documentation and market element
-//
-// Revision 1.7  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.6  2001/06/05 09:35:13  lballabio
-// Updated docs to use Doxygen 1.2.8
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.18  2001/08/22 15:28:20  nando
+// added AntitheticPathGenerator
 //
 
 #ifndef quantlib_general_montecarlo_h
@@ -156,9 +120,13 @@ namespace QuantLib {
         void GeneralMonteCarlo<SA, SG>::addSamples(long iterations) {
             QL_REQUIRE(isInitialized_ == true,
                        "GeneralMonteCarlo must be initialized");
-            for(long j = 1; j <= iterations; j++){
-                sampleAccumulator_.add(sampleGenerator_.next(),
-                                       sampleGenerator_.weight());
+            for(long j = 1; j <= iterations; j++) {
+                // .next() updates weight_, so it has to be called before
+                // otherways you're not guaranteed that next() will be called
+                // before weight() and you could add a new value with the weight
+                // of the previous value
+                double value = sampleGenerator_.next();
+                sampleAccumulator_.add(value, sampleGenerator_.weight());
             }
         }
 
