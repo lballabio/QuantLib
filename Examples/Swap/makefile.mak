@@ -35,10 +35,6 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 SwapValuation$(_D).exe: swapvaluation.cpp
     bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -oSwapValuation$(_D).obj -eSwapValuation$(_D).exe swapvaluation.cpp QuantLib$(_D).lib
 
-# Check
-check:: SwapValuation$(_D).exe
-    SwapValuation$(_D).exe
-
 # Clean up
 clean::
     if exist *.obj   del /q *.obj

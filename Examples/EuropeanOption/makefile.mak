@@ -35,10 +35,6 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 EuropeanOption$(_D).exe: EuropeanOption.cpp
     bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -oEuropeanOption$(_D).obj -eEuropeanOption$(_D).exe EuropeanOption.cpp QuantLib$(_D).lib
 
-# Check
-check:: EuropeanOption$(_D).exe
-    EuropeanOption$(_D).exe
-
 # Clean up
 clean::
     if exist *.obj   del /q *.obj

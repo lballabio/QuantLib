@@ -35,10 +35,6 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 BermudanSwaption$(_D).exe: BermudanSwaption.cpp
     bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -oBermudanSwaption$(_D).obj -eBermudanSwaption$(_D).exe BermudanSwaption.cpp QuantLib$(_D).lib
 
-# Check
-check:: BermudanSwaption$(_D).exe
-    BermudanSwaption$(_D).exe
-
 # Clean up
 clean::
     if exist *.obj   del /q *.obj

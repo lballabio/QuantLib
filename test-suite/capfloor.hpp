@@ -1,0 +1,55 @@
+
+/*
+ Copyright (C) 2003 RiskMap srl
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it under the
+ terms of the QuantLib license.  You should have received a copy of the
+ license along with this program; if not, please email ferdinando@ametrano.net
+ The license is also available online at http://quantlib.org/html/license.html
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+// $Id$
+
+#ifndef quantlib_test_cap_floor_hpp
+#define quantlib_test_cap_floor_hpp
+
+#include <ql/quantlib.hpp>
+#include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
+
+class CapFloorTest : public CppUnit::TestFixture {
+  public:
+    CapFloorTest();
+    void setUp();
+    void testStrikeDependency();
+    void testConsistency();
+    void testParity();
+    void testCachedValue();
+    static CppUnit::Test* suite();
+  private:
+    QL::Date today_, settlement_;
+    std::vector<double> nominals_;
+    QL::RollingConvention rollingConvention_;
+    int frequency_;
+    QL::Handle<QLIDX::Xibor> index_;
+    QL::Calendar calendar_;
+    int settlementDays_, fixingDays_;
+    QL::RelinkableHandle<QL::TermStructure> termStructure_;
+    std::vector<QL::Handle<QL::CashFlow> > makeLeg(const QL::Date& startDate,
+                                                   int lengthInYears);
+    QL::Handle<QL::Instrument> makeCapFloor(
+            QLINS::VanillaCapFloor::Type type,
+            const std::vector<QL::Handle<QL::CashFlow> >& leg,
+            QL::Rate strike, 
+            double volatility);
+    QL::Handle<QL::PricingEngine> makeEngine(double volatility);
+};
+
+
+#endif

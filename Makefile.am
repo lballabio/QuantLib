@@ -1,7 +1,7 @@
 
 # $Id$
 
-SUBDIRS=config ql man lib Docs Examples
+SUBDIRS=config ql man lib Docs Examples test-suite
 
 bin_SCRIPTS = quantlib-config
 

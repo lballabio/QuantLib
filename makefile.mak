@@ -21,12 +21,6 @@ quantlib::
     $(MAKE) -DQL_DIR="..\.."
     cd ..
 
-# Check
-check:: quantlib
-    cd Examples
-    $(MAKE) -DQL_DIR="..\.." check
-    cd ..
-
 # the installation directive requires the QL_DIR environment variable to
 # point to the installed version of QuantLib
 install : inst

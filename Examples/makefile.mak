@@ -29,18 +29,6 @@ examples::
     $(MAKE)
     cd ..
 
-# Check
-check::
-    cd EuropeanOption
-    $(MAKE) check
-    cd ..\BermudanSwaption
-    $(MAKE) check
-    cd ..\DiscreteHedging
-    $(MAKE) check
-    cd ..\Swap
-    $(MAKE) check
-    cd ..
-
 # Clean up
 clean::
     cd BermudanSwaption

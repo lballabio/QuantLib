@@ -85,6 +85,9 @@ QL_CHECK_TEMPLATE_TYPE([iterator_traits],[double*],
 QL_CHECK_NAMESPACES
 QL_CHECK_STRING
 
+AM_PATH_CPPUNIT(1.8.0)
+AM_CONDITIONAL(CPPUNIT_FOUND, test "x${CPPUNIT_LIBS}" != "x")
+
 AC_C_CONST
 AC_C_INLINE
 
@@ -181,6 +184,7 @@ AC_CONFIG_FILES([
     Examples/BermudanSwaption/Makefile 
     Examples/DiscreteHedging/Makefile 
     Examples/EuropeanOption/Makefile 
-    Examples/Swap/Makefile])
+    Examples/Swap/Makefile
+    test-suite/Makefile])
 AC_CONFIG_FILES([quantlib-config],[chmod +x quantlib-config])
 AC_OUTPUT

@@ -1,11 +1,9 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
-bin_PROGRAMS = DiscreteHedging
+noinst_PROGRAMS = DiscreteHedging
 DiscreteHedging_SOURCES = DiscreteHedging.cpp
 DiscreteHedging_LDADD = ../../ql/libQuantLib.la
-
-TESTS = DiscreteHedging
 
 EXTRA_DIST = \
     DiscreteHedging.dsp \
