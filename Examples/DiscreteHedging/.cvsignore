@@ -9,6 +9,4 @@ bin
 .libs
 *.plg
 *.dep
-*.tds
 *.obj
-*.exe

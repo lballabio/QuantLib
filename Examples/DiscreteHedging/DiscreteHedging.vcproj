@@ -50,7 +50,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\ReleaseST/DiscreteHedging.exe"
+				OutputFile=".\bin/DiscreteHedging-vc71-s-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -121,7 +121,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\Release/DiscreteHedging.exe"
+				OutputFile=".\bin/DiscreteHedging-vc71-mt-s-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -189,7 +189,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\DebugST/DiscreteHedging.exe"
+				OutputFile=".\bin/DiscreteHedging-vc71-sgd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -260,7 +260,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\ReleaseMTDLL/DiscreteHedging.exe"
+				OutputFile=".\bin/DiscreteHedging-vc71-mt-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -328,7 +328,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\Debug/DiscreteHedging.exe"
+				OutputFile=".\bin/DiscreteHedging-vc71-mt-sgd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -397,7 +397,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\DebugMTDLL/DiscreteHedging.exe"
+				OutputFile=".\bin/DiscreteHedging-vc71-mt-gd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"

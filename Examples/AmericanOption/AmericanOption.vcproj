@@ -50,7 +50,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\ReleaseMTDLL/AmericanOption.exe"
+				OutputFile=".\bin/AmericanOption-vc71-mt-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -118,7 +118,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\DebugST/AmericanOption.exe"
+				OutputFile=".\bin/AmericanOption-vc71-sgd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -190,7 +190,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\Release/AmericanOption.exe"
+				OutputFile=".\bin/AmericanOption-vc71-mt-s-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -258,7 +258,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\Debug/AmericanOption.exe"
+				OutputFile=".\bin/AmericanOption-vc71-mt-sgd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -330,7 +330,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\ReleaseST/AmericanOption.exe"
+				OutputFile=".\bin/AmericanOption-vc71-s-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -398,7 +398,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\build\DebugMTDLL/AmericanOption.exe"
+				OutputFile=".\bin/AmericanOption-vc71-mt-gd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"

@@ -46,7 +46,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="build\Debug/SwapValuation.exe"
+				OutputFile="bin/SwapValuation-vc71-mt-sgd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -117,7 +117,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="build\ReleaseST/SwapValuation.exe"
+				OutputFile="bin/SwapValuation-vc71-s-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -184,7 +184,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="build\DebugMTDLL/SwapValuation.exe"
+				OutputFile="bin/SwapValuation-vc71-mt-gd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -255,7 +255,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="build\ReleaseMTDLL/SwapValuation.exe"
+				OutputFile="bin/SwapValuation-vc71-mt-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -322,7 +322,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="build\DebugST/SwapValuation.exe"
+				OutputFile="bin/SwapValuation-vc71-sgd-0_3_9.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
@@ -393,7 +393,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="build\Release/SwapValuation.exe"
+				OutputFile="bin/SwapValuation-vc71-mt-s-0_3_9.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"

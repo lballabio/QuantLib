@@ -23,6 +23,7 @@
 # Directories
 QL_INCLUDE_DIR      = "$(QL_DIR)"
 QL_LIB_DIR          = "$(QL_DIR)\lib"
+EXE_DIR            = .\bin
 
 # Options
 CC_OPTS = -vi- -I$(QL_INCLUDE_DIR)
@@ -46,11 +47,17 @@ CC_OPTS = -vi- -I$(QL_INCLUDE_DIR)
 !endif
 
 # Primary target:
-AmericanOption$(_mt)$(_D).exe: AmericanOption.cpp
+$(EXE_DIR)\AmericanOption-bcb$(_mt)$(_D)-$(VERSION_STRING).exe: $(EXE_DIR) \
+                                                          AmericanOption.cpp
+    if exist $(EXE_DIR)\AmericanOption-bcb$(_mt)$(_D)-$(VERSION_STRING).exe \
+         del $(EXE_DIR)\AmericanOption-bcb$(_mt)$(_D)-$(VERSION_STRING).exe
     bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) \
     -o"AmericanOption$(_mt)$(_D).obj" \
-    -e"AmericanOption$(_mt)$(_D).exe" AmericanOption.cpp
+    -e"$(EXE_DIR)\AmericanOption-bcb$(_mt)$(_D)-$(VERSION_STRING).exe" \
+    AmericanOption.cpp
 
+$(EXE_DIR):
+    if not exist .\bin md .\bin
 
 # Clean up
 clean::
