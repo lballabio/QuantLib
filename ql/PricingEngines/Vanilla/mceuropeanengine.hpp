@@ -105,18 +105,7 @@ namespace QuantLib {
                              requiredSamples,
                              requiredTolerance,
                              maxSamples,
-                             seed) {
-        // Luigi: how should I check this??
-        /*
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-            "not an European Option");
-
-        boost::shared_ptr<EuropeanExercise> exercise =
-            boost::dynamic_pointer_cast<EuropeanExercise>(
-                this->arguments_.exercise);
-        QL_REQUIRE(exercise, "wrong exercise given");
-        */
-}
+                             seed) {}
 
 
     template <class RNG, class S>
