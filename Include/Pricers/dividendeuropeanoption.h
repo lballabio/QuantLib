@@ -26,6 +26,7 @@
 
 #include "qldefines.h"
 #include "bsmeuropeanoption.h"
+#include "dataformatters.h"
 #include <vector>
 
 namespace QuantLib {
@@ -33,38 +34,41 @@ namespace QuantLib {
 	namespace Pricers {
 	
 		class DividendEuropeanOption : public BSMEuropeanOption {
-		  public:
-				DividendEuropeanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
-				  Rate riskFreeRate, Time residualTime, double volatility, const std::vector<double>& dividends, 
-				  const std::vector<Time>& exdivdates):
-					BSMEuropeanOption(type, underlying - riskless(riskFreeRate,residualTime,dividends,exdivdates), strike, underlyingGrowthRate, riskFreeRate, residualTime, volatility){} 
-				Handle<BSMOption> clone() const{ 
-						return Handle<BSMOption>(new DividendEuropeanOption(*this)); 
-				}
+            public:
+            DividendEuropeanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
+                Rate riskFreeRate, Time residualTime, double volatility, const std::vector<double>& dividends, 
+                const std::vector<Time>& exdivdates)
+                : BSMEuropeanOption(type, underlying - riskless(riskFreeRate,
+                residualTime,dividends,exdivdates),strike, underlyingGrowthRate,
+                riskFreeRate, residualTime, volatility) {}
+            Handle<BSMOption> clone() const{
+                return Handle<BSMOption>(new DividendEuropeanOption(*this));
+            }
 		  	double rho() const{
-		  			Require(1==0,"method rho() not defined for DividendEuropeanOption"); 
-		  			return 1234567890.0;
+		  		Require(1==0,"method rho() not yet defined for DividendEuropeanOption"); 
+		  		return 1234567890.0;
 		  	}
-		  private:
-				double riskless(Rate r, Time t, std::vector<double> divs,std::vector<Time> divDates){
-						Require(divs.size()==divDates.size(),"the number of dividends is diffrent from	that of	dates");
-						Require(divs.size()>=1,"the	number of dividends must be at least one");
-						Require(divDates[0]>0,"The	ex dividend dates must be positive");
-						Require(divDates[divDates.size()-1]<t,"The	x dividend dates must be within the residual time");
-						Require(divs[0]>=0,"Dividends cannot be	negative");
-						unsigned int	j;
-						for(j=1; j<divs.size();j++){
-							Require(double(divDates[j-1])<double(divDates[j]),"Dividend dates must be in increasing order");
-							Require(divs[j]>=0,"DividendEuropeanOption: Dividends cannot be negative");
-						}
-						double z = 0.0;
-						for(j=0;j<divs.size();j++)
-							z += divs[j]*QL_EXP(-r*divDates[j]);
-						return z;
-				}
-		};
+            private:
+            double riskless(Rate r, Time t, std::vector<double> divs,std::vector<Time> divDates){
+                QuantLib::Require(divs.size()==divDates.size(),"the number of dividends is different from	that of	dates");
+				unsigned int j;
+				double z = 0.0;
+				for(j=0; j<divs.size();j++){
+                    QuantLib::Require(divDates[j]>0, "The " + IntegerFormatter::toString(j) + "-th" +
+                        "dividend date is not positive" + "(" + DoubleFormatter::toString(divDates[j]) + ")");
+                    QuantLib::Require(divDates[j]<t,"The " + IntegerFormatter::toString(j) + "-th" +
+                        "dividend date is greater than residual time" + "(" +
+                        DoubleFormatter::toString(divDates[j]) +
+                        ">" + DoubleFormatter::toString(t) + ")");
+					QuantLib::Require(divs[j]>=0,"The " + IntegerFormatter::toString(j) + "-th" +
+                        "dividend is negative" + "(" + DoubleFormatter::toString(divs[j]) + ")");
+                    z += divs[j]*QL_EXP(-r*divDates[j]);
+                }
+                return z;
+            }
+        };
 
-	}
+    }
 
 }
 

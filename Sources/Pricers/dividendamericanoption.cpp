@@ -48,8 +48,8 @@ namespace QuantLib {
 				Require(theExDivDates[theExDivDates.size()-1]<residualTime,"The	ex dividend dates must be within the residual time");
 				Require(theDividends[0]>=0,"Dividends cannot be	negative");
 				for(unsigned int j=1; j<theNumberOfDivs;j++){
-					Require(theExDivDates[j-1]<theExDivDates[j],"Dividend dates must be in increasing order");
-					Require(theDividends[j]>=0,"DividendAmericanOption: Dividends cannot be	negative");
+                    QuantLib::Require(theExDivDates[j-1]<theExDivDates[j],"Dividend dates must be in increasing order");
+					QuantLib::Require(theDividends[j]>=0,"DividendAmericanOption: Dividends cannot be	negative");
 				}
 		}
 

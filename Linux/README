@@ -1,1 +1,3 @@
-
+Almost everything is to be done, as we have limited experience with Linux and g++.
+The Linux g++ port is especially important, any contribute is welcome.
+At least we plan to try the port as soon as GCC 3.0 is released.
