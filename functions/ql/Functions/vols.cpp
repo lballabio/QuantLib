@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functions/vols.hpp>
+#include <ql/Functions/vols.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>
 #include <ql/Volatilities/localvolcurve.hpp>

@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functions/mathf.hpp>
+#include <ql/Functions/mathf.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/bicubicsplineinterpolation.hpp>

@@ -42,6 +42,6 @@
 #include <ql/TermStructures/all.hpp>
 #include <ql/Utilities/all.hpp>
 #include <ql/Volatilities/all.hpp>
-#include <ql/functions/all.hpp>
+
 
 #endif

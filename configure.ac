@@ -188,7 +188,6 @@ AC_CONFIG_FILES([
     ql/CashFlows/Makefile
     ql/DayCounters/Makefile
     ql/FiniteDifferences/Makefile
-    ql/functions/Makefile
     ql/Indexes/Makefile
     ql/Instruments/Makefile
     ql/Lattices/Makefile
@@ -215,6 +214,9 @@ AC_CONFIG_FILES([
     ql/TermStructures/Makefile
     ql/Utilities/Makefile
     ql/Volatilities/Makefile
+    functions/Makefile
+    functions/ql/Makefile
+    functions/ql/Functions/Makefile
     man/Makefile
     Docs/Makefile
     Docs/pages/Makefile

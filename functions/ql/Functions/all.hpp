@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,17 +15,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/functions/daycounters.hpp>
+#ifndef quantlib_functions_all_hpp
+#define quantlib_functions_all_hpp
 
-namespace QuantLib {
+#include <ql/qldefines.hpp>
 
-    int accrualDays(DayCounter dc, Date d1, Date d2) {
-        return dc.dayCount(d1, d2);
-    }
+#include <ql/Functions/daycounters.hpp>
+#include <ql/Functions/mathf.hpp>
+#include <ql/Functions/vols.hpp>
 
 
-    double accrualFactor(DayCounter dc, Date d1, Date d2, Date d3, Date d4) {
-        return dc.yearFraction(d1, d2, d3, d4);
-    }
-
-}
+#endif
