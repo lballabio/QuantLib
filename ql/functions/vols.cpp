@@ -24,7 +24,7 @@
 
 #include <ql/functions/vols.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
-//#include <ql/Volatilities/constantvol.hpp>
+#include <ql/Volatilities/constantvol.hpp>
 #include <ql/Volatilities/blackvariancesurface.hpp>
 
 using QuantLib::Date;

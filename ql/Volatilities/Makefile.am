@@ -7,6 +7,6 @@ includedir = $(prefix)/include/ql/Volatilities
 include_HEADERS = \
     blackvariancecurve.hpp \
     blackvariancesurface.hpp \
-    constantblackvol.hpp \
     capflatvolvector.hpp \
+    constantvol.hpp \
     swaptionvolmatrix.hpp

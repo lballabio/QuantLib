@@ -1580,6 +1580,10 @@ SOURCE=.\ql\blackmodel.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\bsformula.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\calendar.cpp
 # End Source File
 # Begin Source File
