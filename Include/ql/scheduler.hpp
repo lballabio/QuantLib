@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.6  2001/07/13 14:39:52  nando
+//  warning pruning action ....
+//
 //  Revision 1.5  2001/07/13 14:29:07  sigmud
 //  removed a few gcc compile warnings
 //
@@ -61,7 +64,7 @@ namespace QuantLib {
         // inspectors
         unsigned int size() const { return dates_.size(); }
         const Date& date(int i) const;
-        bool isRegular(int i) const;
+        bool isRegular(unsigned int i) const;
         // iterators
         typedef std::vector<Date>::const_iterator const_iterator;
         const_iterator begin() const { return dates_.begin(); }

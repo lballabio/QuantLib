@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.2  2001/07/13 14:39:52  nando
+//  warning pruning action ....
+//
 //  Revision 1.1  2001/05/31 08:56:40  lballabio
 //  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -39,52 +42,52 @@
 
 namespace QuantLib {
 
-    Scheduler::Scheduler(const Handle<Calendar>& calendar, 
-      const Date& startDate, const Date& endDate, int frequency, 
-      RollingConvention rollingConvention, bool isAdjusted, 
+    Scheduler::Scheduler(const Handle<Calendar>& calendar,
+      const Date& startDate, const Date& endDate, int frequency,
+      RollingConvention rollingConvention, bool isAdjusted,
       const Date& stubDate)
     : calendar_(calendar), startDate_(startDate), endDate_(endDate),
-      frequency_(frequency), rollingConvention_(rollingConvention), 
+      frequency_(frequency), rollingConvention_(rollingConvention),
       isAdjusted_(isAdjusted), stubDate_(stubDate), lastIsRegular_(true) {
         // sanity checks
         QL_REQUIRE(!calendar_.isNull(), "null calendar");
         QL_REQUIRE(startDate_ != Date(), "null start date");
         QL_REQUIRE(endDate_ != Date(),   "null end date");
         QL_REQUIRE(startDate_ < endDate_,
-            "start date (" + 
+            "start date (" +
                 DateFormatter::toString(startDate_) +
-                ") later than end date (" + 
-                DateFormatter::toString(endDate_) + 
+                ") later than end date (" +
+                DateFormatter::toString(endDate_) +
                 ")");
         if (stubDate_ != Date()) {
             QL_REQUIRE(stubDate_ > startDate_,
-                "stub date (" + 
+                "stub date (" +
                     DateFormatter::toString(stubDate_) +
-                    ") later than start date (" + 
+                    ") later than start date (" +
                     DateFormatter::toString(startDate_) + ")");
-            QL_REQUIRE(!calendar_->isHoliday(stubDate_) || 
+            QL_REQUIRE(!calendar_->isHoliday(stubDate_) ||
                        !isEndOfMonth(stubDate_),
-                "stub date (" + 
+                "stub date (" +
                     DateFormatter::toString(stubDate_) +
-                    ") is holiday and end of month for " + 
+                    ") is holiday and end of month for " +
                     calendar->name() + " calendar");
         } else {
-            QL_REQUIRE(!calendar_->isHoliday(startDate_) || 
+            QL_REQUIRE(!calendar_->isHoliday(startDate_) ||
                        !isEndOfMonth(startDate_),
-                "start date (" + 
+                "start date (" +
                     DateFormatter::toString(startDate_) +
-                    ") is holiday and end of month for " + 
+                    ") is holiday and end of month for " +
                     calendar->name() + " calendar");
         }
         QL_REQUIRE(12%frequency_ == 0,
             "frequency (" +
-            IntegerFormatter::toString(frequency_) + 
+            IntegerFormatter::toString(frequency_) +
             " per year) does not correspond to a whole number of months");
-        
+
         // calculations
         Date seed = startDate_;
-        Date last = (isAdjusted_ ? 
-                     calendar_->roll(endDate_,rollingConvention_) : 
+        Date last = (isAdjusted_ ?
+                     calendar_->roll(endDate_,rollingConvention_) :
                      endDate_);
         // add start date
         dates_.push_back(startDate_);
@@ -92,8 +95,8 @@ namespace QuantLib {
         // add stub date if given
         if (stubDate_ != Date()) {
             seed = stubDate_;
-            dates_.push_back(isAdjusted_ ? 
-                             calendar_->roll(stubDate_) : 
+            dates_.push_back(isAdjusted_ ?
+                             calendar_->roll(stubDate_) :
                              stubDate_);
         }
 
@@ -110,7 +113,7 @@ namespace QuantLib {
             else
                 periods++;
         }
-        
+
         // possibly correct last inserted date
         if (dates_.back() > last) {
             dates_.back() = last;
@@ -125,11 +128,11 @@ namespace QuantLib {
                 dates_.pop_back();
                 lastIsRegular_ = true;
         }
-        
+
         // done
     }
 
-    bool Scheduler::isRegular(int i) const {
+    bool Scheduler::isRegular(unsigned int i) const {
         if (i == 1)
             return (stubDate_ == Date());
         else if (i == size()-1)
@@ -141,5 +144,5 @@ namespace QuantLib {
     bool Scheduler::isEndOfMonth(const Date& d) const {
         return (d.month() != calendar_->roll(d+1).month());
     }
-    
+
 }
