@@ -289,6 +289,19 @@
     #define QL_ALLOW_TEMPLATE_METHOD_CALLS   0
 #endif
 
+/*! \def QL_TYPENAME
+    \brief Blame Microsoft for this one...
+
+    They decided that typename can only be used in template declarations
+    and not in template definitions.
+*/
+#if defined(CHOKES_ON_TYPENAME)
+    #define QL_TYPENAME
+#else
+    #define QL_TYPENAME typename
+#endif
+
+
 /*! \def QL_EXPRESSION_TEMPLATES_WORK
     Expression templates techniques (see T. L. Veldhuizen, <i>Expression
     templates</i>, C++ Report, 7(5):26-31, June 1995, available at
