@@ -1,0 +1,4 @@
+#!/bin/sh
+patch -p1 < patches/solaris.xibormanager
+patch -p1 < patches/solaris.europeanoption
+

@@ -31,7 +31,8 @@ EXTRA_DIST = \
 	bootstrap \
 	darwin.setup \
 	makefile.mak \
-	quantlib.m4
+	quantlib.m4 \
+	solaris.setup
 
 
 tags:
