@@ -1,6 +1,6 @@
 
+# $Id$
 # $Source$
-
 #
 # makefile for QuantLib pricer library under Borland C++
 #

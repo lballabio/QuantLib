@@ -1,16 +1,16 @@
 """
 /*
  * Copyright (C) 2001 QuantLib Group
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -49,7 +49,7 @@ class test(Command):
         # these are decided only after 'build_base' has its final value
         # (unless overridden by the user or client)
         self.test_dir = 'Tests'
-        self.test_prefix = ''
+        self.test_prefix = 'QuantLibSuite'
         self.test_suffixes = None
 
     # initialize_options()

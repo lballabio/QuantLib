@@ -27,6 +27,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.6  2001/04/20 10:52:37  nando
+    smoothing the autobuild process
+
     Revision 1.5  2001/04/18 09:03:22  nando
     added/removed final
     raw_input('press any key to continue')
@@ -41,68 +44,75 @@
 
 import sys
 import unittest
-suite = unittest.TestSuite()
 
-from american_option import AmericanOptionTest
-suite.addTest(AmericanOptionTest())
+def test():
+    suite = unittest.TestSuite()
 
-from barrier_option import BarrierOptionTest
-suite.addTest(BarrierOptionTest())
+    from american_option import AmericanOptionTest
+    suite.addTest(AmericanOptionTest())
 
-from binary_option import BinaryOptionTest
-suite.addTest(BinaryOptionTest())
+    from barrier_option import BarrierOptionTest
+    suite.addTest(BarrierOptionTest())
 
-from cliquet_option import CliquetOptionTest
-suite.addTest(CliquetOptionTest())
+    from binary_option import BinaryOptionTest
+    suite.addTest(BinaryOptionTest())
 
-from date import DateTest
-suite.addTest(DateTest())
+    from cliquet_option import CliquetOptionTest
+    suite.addTest(CliquetOptionTest())
 
-from distributions import DistributionTest
-suite.addTest(DistributionTest())
+    from date import DateTest
+    suite.addTest(DateTest())
 
-from european_option import EuropeanOptionTest
-suite.addTest(EuropeanOptionTest())
+    from distributions import DistributionTest
+    suite.addTest(DistributionTest())
 
-from european_with_dividends import DividendEuropeanOptionTest
-suite.addTest(DividendEuropeanOptionTest())
+    from european_option import EuropeanOptionTest
+    suite.addTest(EuropeanOptionTest())
 
-from everest_option import EverestOptionTest
-suite.addTest(EverestOptionTest())
+    from european_with_dividends import DividendEuropeanOptionTest
+    suite.addTest(DividendEuropeanOptionTest())
 
-from finite_difference_european import FDEuropeanOptionTest
-suite.addTest(FDEuropeanOptionTest())
+    from everest_option import EverestOptionTest
+    suite.addTest(EverestOptionTest())
 
-from get_covariance import CovarianceTest
-suite.addTest(CovarianceTest())
+    from finite_difference_european import FDEuropeanOptionTest
+    suite.addTest(FDEuropeanOptionTest())
 
-from himalaya_option import HimalayaOptionTest
-suite.addTest(HimalayaOptionTest())
+    from get_covariance import CovarianceTest
+    suite.addTest(CovarianceTest())
 
-from implied_volatility import ImpliedVolatilityTest
-suite.addTest(ImpliedVolatilityTest())
+    from himalaya_option import HimalayaOptionTest
+    suite.addTest(HimalayaOptionTest())
 
-from montecarlo_pricers import MonteCarloPricerTest
-suite.addTest(MonteCarloPricerTest())
+    from implied_volatility import ImpliedVolatilityTest
+    suite.addTest(ImpliedVolatilityTest())
 
-from pagoda_option import PagodaOptionTest
-suite.addTest(PagodaOptionTest())
+    from montecarlo_pricers import MonteCarloPricerTest
+    suite.addTest(MonteCarloPricerTest())
 
-from plain_basket_option import PlainBasketOptionTest
-suite.addTest(PlainBasketOptionTest())
+    from pagoda_option import PagodaOptionTest
+    suite.addTest(PagodaOptionTest())
 
-from random_generators import RNGTest
-suite.addTest(RNGTest())
+    from plain_basket_option import PlainBasketOptionTest
+    suite.addTest(PlainBasketOptionTest())
 
-from risk_statistics import RiskStatisticsTest
-suite.addTest(RiskStatisticsTest())
+    from random_generators import RNGTest
+    suite.addTest(RNGTest())
 
-from statistics import StatisticsTest
-suite.addTest(StatisticsTest())
+    from risk_statistics import RiskStatisticsTest
+    suite.addTest(RiskStatisticsTest())
 
-from term_structures import TermStructureTest
-suite.addTest(TermStructureTest())
+    from statistics import StatisticsTest
+    suite.addTest(StatisticsTest())
 
-result = unittest.TextTestRunner().run(suite)
-if not result.wasSuccessful:
-    sys.exit(1)
+    from term_structures import TermStructureTest
+    suite.addTest(TermStructureTest())
+
+    result = unittest.TextTestRunner().run(suite)
+
+    if not result.wasSuccessful:
+        sys.exit(1)
+
+if __name__ == '__main__':
+    test()
+    raw_input('press any key to continue')

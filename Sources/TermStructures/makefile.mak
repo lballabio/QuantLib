@@ -1,6 +1,6 @@
 
+# $Id$
 # $Source$
-
 #
 # makefile for QuantLib term structure library under Borland C++
 #

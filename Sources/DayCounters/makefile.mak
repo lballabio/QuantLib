@@ -1,6 +1,7 @@
 
-# $Source$
 
+# $Id$
+# $Source$
 #
 # makefile for QuantLib day counter library under Borland C++
 #

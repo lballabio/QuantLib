@@ -1,6 +1,6 @@
 
+# $Id$
 # $Source$
-
 #
 # makefile for QuantLib math library under Borland C++
 #

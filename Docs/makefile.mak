@@ -1,6 +1,6 @@
 
+# $Id$
 # $Source$
-
 #
 # makefile for QuantLib documentation under Borland C++
 #
@@ -16,7 +16,7 @@ MAKEINDEX = makeindex
 DVIPS     = dvips
 
 # Options
-TEX_OPTS     = --quiet --pool-size=1000000 
+TEX_OPTS     = --quiet --pool-size=1000000
 
 
 # Primary target:
