@@ -452,9 +452,8 @@ int main(int argc, char* argv[])
         Handle<PricingEngine> mcengine1(
             #if defined(QL_PATCH_MICROSOFT)
             /* the #else branch used to work--now Visual C++ needs this. 
-               Strangely enough, this is not needed below when we instantiate
-               the Sobol engine. Finally, we cannot go and see what's wrong 
-               because the other branch does work in debug mode...
+               We cannot go and see what's wrong because the other branch 
+               does work in debug mode...
             */
             new MCEuropeanEngine<PseudoRandom>(timeSteps, false, false, 
                                                Null<int>(), 0.02, 
@@ -481,8 +480,16 @@ int main(int argc, char* argv[])
         method = "MC (Sobol)";
 
         Handle<PricingEngine> mcengine2(
+            #if defined(QL_PATCH_MICROSOFT)
+            /* See above. */
+            new MCEuropeanEngine<LowDiscrepancy>(timeSteps, false, false, 
+                                                 nSamples, Null<double>(),
+                                                 Null<int>())
+            #else
             MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
-                                                  .withSamples(nSamples));
+                                                  .withSamples(nSamples)
+            #endif
+        );
         option.setPricingEngine(mcengine2);
         
         value = option.NPV();

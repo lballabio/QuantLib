@@ -99,8 +99,8 @@ namespace QuantLib {
                                              double strike,
                                              bool extrapolate = false) const;
           private:
-            typedef Math::Interpolation2D<std::vector<Time>::const_iterator,
-                                          std::vector<double>::const_iterator,
+            typedef Math::Interpolation2D<std::vector<Time>::iterator,
+                                          std::vector<double>::iterator,
                                           Math::Matrix> Interpolation;
             Date referenceDate_;
             DayCounter dayCounter_;

@@ -268,6 +268,7 @@
 #include <ql/PricingEngines/genericengine.hpp>
 #include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 #include <ql/PricingEngines/mcengine.hpp>
+#include <ql/PricingEngines/mceuropeanengine.hpp>
 #include <ql/PricingEngines/quantoengines.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 

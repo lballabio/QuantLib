@@ -22,9 +22,12 @@
 
 #include <ql/diffusionprocess.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
+#include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>
 
 namespace QuantLib {
+
+    using namespace VolTermStructures;
 
     BlackScholesProcess::BlackScholesProcess(
         const RelinkableHandle<TermStructure>& riskFreeTS,
@@ -33,22 +36,41 @@ namespace QuantLib {
         double s0)
     : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
+
+        // constant Black vol?
+        Handle<BlackConstantVol> constVol;
         try {
-            Handle<VolTermStructures::BlackConstantVol> constVolTS = 
-                (*blackVolTS).currentLink();
-            localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-                Handle<LocalVolTermStructure>(new
-                    VolTermStructures::LocalConstantVol(
-                        constVolTS->referenceDate(),
-                        constVolTS->blackVol(0.0, s0),
-                        constVolTS->dayCounter())));
+            constVol = (*blackVolTS).currentLink();
         } catch (...) {}
-        if (localVolTS_.isNull()) {
+        if (!constVol.isNull()) {
+            // ok, the local vol is constant too.
             localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-                Handle<LocalVolTermStructure>(new
-                    VolTermStructures::LocalVolSurface(blackVolTS, riskFreeTS,
-                                                       dividendTS, s0)));
+                Handle<LocalVolTermStructure>(
+                    new LocalConstantVol(constVol->referenceDate(),
+                                         constVol->blackVol(0.0, s0),
+                                         constVol->dayCounter())));
+            return;
         }
+
+        // ok, so it's not constant. Maybe it's strike-independent?
+        Handle<BlackVarianceCurve> volCurve;
+        try {
+            volCurve = (*blackVolTS).currentLink();
+        } catch (...) {}
+        if (!volCurve.isNull()) {
+            // ok, we can use the optimized algorithm
+            localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
+                Handle<LocalVolTermStructure>(
+                    new LocalVolCurve(
+                        RelinkableHandle<BlackVarianceCurve>(volCurve))));
+            return;
+        }
+
+        // ok, so it's strike-dependent. Never mind.
+        localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
+            Handle<LocalVolTermStructure>(
+                new LocalVolSurface(blackVolTS, riskFreeTS,
+                                    dividendTS, s0)));
     }
 
     double BlackScholesProcess::drift(Time t, double x) const {
