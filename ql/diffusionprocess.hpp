@@ -1,4 +1,5 @@
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -26,6 +27,8 @@
 #define quantlib_diffusion_process_h
 
 #include <ql/types.hpp>
+#include <ql/termstructure.hpp>
+#include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +40,8 @@ namespace QuantLib {
     */
     class DiffusionProcess {
       public:
-        DiffusionProcess(double x0) : x0_(x0) {}
+        DiffusionProcess(double x0)
+        : x0_(x0) {}
         virtual ~DiffusionProcess() {}
 
         double x0() const { return x0_; }
@@ -45,7 +49,7 @@ namespace QuantLib {
         //! returns the drift part of the equation, i.e. \f$ \mu(t, x_t) \f$
         virtual double drift(Time t, double x) const = 0;
 
-        //! returns the diffusion part of the equation, i.e. \f$\sigma(t,x_t)\f$
+        //! returns the diffusion part of the equation, i.e. \f$\sigma(t, x_t)\f$
         virtual double diffusion(Time t, double x) const = 0;
 
         //! returns the expectation of the process after a time interval
@@ -73,25 +77,40 @@ namespace QuantLib {
     //! Black-Scholes diffusion process class
     /*! This class describes the stochastic process governed by 
         \f[
-            dS = (r - q - \frac{\sigma^2}{2}) dt + \sigma dW_t.
+            dS(t, S) = (r(t) - q(t) - \frac{\sigma(t, S)^2}{2}) dt + \sigma dW_t.
         \f]
     */
     class BlackScholesProcess : public DiffusionProcess {
       public:
-        BlackScholesProcess(Rate rate,
-                            Rate q,
-                            double volatility,
-                            double s0 = 0.0)
-        : DiffusionProcess(s0), r_(rate), q_(q), sigma_(volatility)  {}
+        BlackScholesProcess(
+            const RelinkableHandle<TermStructure>& riskFreeTS,
+            const RelinkableHandle<TermStructure>& dividendTS,
+            const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
+            double s0 = 0.0)
+        : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
+          dividendTS_(dividendTS), blackVolTS_(blackVolTS)  {}
 
         double drift(Time t, double x) const {
-            return r_ - q_ -0.5*sigma_*sigma_;
+            // we could be more anticipatory if we know the right dt
+            // for which the drift will be used
+            double t1 = t + 0.0001;
+
+            // this is wrong if the vol is really asset dependant
+            // we'll switch to local volatility here as soon as possible
+            double sigma = blackVolTS_->blackForwardVol(t, t1, x);
+            return riskFreeTS_->forward(t, t1)
+                - dividendTS_->forward(t, t1)
+                - 0.5 * sigma * sigma;
         }
         double diffusion(Time t, double x) const {
-            return sigma_;
+            double t1 = t + 0.0001;
+            // this is wrong if the vol is really asset dependant
+            // we'll switch to local volatility here as soon as possible
+            return blackVolTS_->blackForwardVol(t, t1, x);
         }
       private:
-        double r_, q_, sigma_;
+        RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
+        RelinkableHandle<BlackVolTermStructure> blackVolTS_;
     };
 
     //! Ornstein-Uhlenbeck process class
@@ -102,7 +121,9 @@ namespace QuantLib {
     */
     class OrnsteinUhlenbeckProcess : public DiffusionProcess {
       public:
-        OrnsteinUhlenbeckProcess(double speed, double vol, double x0 = 0.0)
+        OrnsteinUhlenbeckProcess(double speed,
+                                 double vol,
+                                 double x0 = 0.0)
         : DiffusionProcess(x0), speed_(speed), volatility_(vol)  {}
 
         double drift(Time t, double x) const {
@@ -130,7 +151,10 @@ namespace QuantLib {
     */
     class SquareRootProcess : public DiffusionProcess {
       public:
-        SquareRootProcess(double b, double a, double sigma, double x0 = 0)
+        SquareRootProcess(double b,
+                          double a,
+                          double sigma,
+                          double x0 = 0)
         : DiffusionProcess(x0), mean_(b), speed_(a), volatility_(sigma)  {}
 
         double drift(Time t, double x) const {

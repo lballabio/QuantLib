@@ -27,8 +27,12 @@
 
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/Lattices/binomialtree.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
 
 using namespace QuantLib::Lattices;
+using namespace QuantLib::TermStructures;
+using namespace QuantLib::VolTermStructures;
 
 namespace QuantLib {
 
@@ -41,12 +45,29 @@ namespace QuantLib {
             Rate r = arguments_.riskFreeTS->zeroYield(exerciseDate);
             Rate q = arguments_.dividendTS->zeroYield(exerciseDate);
             Date referenceDate = arguments_.riskFreeTS->referenceDate();
+            Date todaysDate    = arguments_.riskFreeTS->todaysDate();
+            DayCounter dc      = arguments_.riskFreeTS->dayCounter();
+
+            // binomial trees with constant coefficient
+            RelinkableHandle<TermStructure> flatRiskFree(
+                Handle<TermStructure>(new
+                FlatForward(todaysDate, referenceDate, r, dc)));
+            RelinkableHandle<TermStructure> flatDividends(
+                Handle<TermStructure>(new
+                FlatForward(todaysDate, referenceDate, q, dc)));
+            RelinkableHandle<BlackVolTermStructure> flatVol(
+                Handle<BlackVolTermStructure>(new
+                BlackConstantVol(referenceDate, v, dc)));
+
+
+            
+            
             Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
                 referenceDate, exerciseDate);
 
             Handle<Lattices::Tree> tree;
             Handle<DiffusionProcess> bs(new
-                BlackScholesProcess(r, q, v, s0));
+                BlackScholesProcess(flatRiskFree, flatDividends, flatVol,s0));
             switch(type_) {
                 case CoxRossRubinstein:
                     tree = Handle<Tree>(new
