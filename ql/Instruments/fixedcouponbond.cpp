@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,7 +68,7 @@ namespace QuantLib {
                              BusinessDayConvention convention,
                              Real redemption,
                              const Handle<YieldTermStructure>& discountCurve,
-                             const Date& stub)
+                             const Date& stub, bool fromEnd)
     : Bond(dayCounter, calendar, convention, settlementDays, discountCurve) {
 
         issueDate_ = issueDate;
@@ -80,7 +81,7 @@ namespace QuantLib {
 
         Schedule schedule(calendar, datedDate, maturityDate,
                           couponFrequency, convention,
-                          stub, true);
+                          stub, fromEnd);
 
         cashFlows_ = FixedRateCouponVector(schedule, convention,
                                            std::vector<Real>(1, 100.0),

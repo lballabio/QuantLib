@@ -14,6 +14,7 @@ include_HEADERS = \
     dividendvanillaoption.hpp \
     europeanoption.hpp \
     fixedcouponbond.hpp \
+    floatingratebond.hpp \
     forwardvanillaoption.hpp \
     multiassetoption.hpp \
     oneassetoption.hpp \
@@ -25,7 +26,8 @@ include_HEADERS = \
     stock.hpp \
     swap.hpp \
     swaption.hpp \
-    vanillaoption.hpp
+    vanillaoption.hpp \
+    zerocouponbond.hpp
 
 EXTRA_DIST=makefile.mak
 
@@ -39,6 +41,7 @@ libInstruments_la_SOURCES = \
     dividendvanillaoption.cpp \
     europeanoption.cpp \
     fixedcouponbond.cpp \
+    floatingratebond.cpp \
     forwardvanillaoption.cpp \
     multiassetoption.cpp \
     oneassetoption.cpp \
@@ -49,6 +52,7 @@ libInstruments_la_SOURCES = \
     stock.cpp \
     swap.cpp \
     swaption.cpp \
-    vanillaoption.cpp
+    vanillaoption.cpp \
+    zerocouponbond.cpp
 
 noinst_LTLIBRARIES = libInstruments.la

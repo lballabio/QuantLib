@@ -29,6 +29,7 @@
 #include <ql/Instruments/dividendvanillaoption.hpp>
 #include <ql/Instruments/europeanoption.hpp>
 #include <ql/Instruments/fixedcouponbond.hpp>
+#include <ql/Instruments/floatingratebond.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Instruments/multiassetoption.hpp>
 #include <ql/Instruments/oneassetoption.hpp>
@@ -40,6 +41,7 @@
 #include <ql/Instruments/swap.hpp>
 #include <ql/Instruments/swaption.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/zerocouponbond.hpp>
 
 
 #endif

@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,12 +24,15 @@
 #define quantlib_fixed_coupon_bond_hpp
 
 #include <ql/Instruments/bond.hpp>
-#include <ql/schedule.hpp>
 
 namespace QuantLib {
 
     //! fixed-coupon bond
-    /*! \ingroup instruments */
+    /*! \ingroup instruments
+
+        \test calculations are tested by checking results against
+              cached values.
+    */
     class FixedCouponBond : public Bond {
       public:
         #ifndef QL_DISABLE_DEPRECATED
@@ -58,7 +62,8 @@ namespace QuantLib {
                         Real redemption = 100.0,
                         const Handle<YieldTermStructure>& discountCurve
                                               = Handle<YieldTermStructure>(),
-                        const Date& stub = Date());
+                        const Date& stub = Date(),
+                        bool fromEnd = true);
     };
 
 }

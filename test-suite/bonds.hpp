@@ -28,6 +28,9 @@ class BondTest {
     static void testYield();
     static void testTheoretical();
     static void testCached();
+    static void testCachedZero();
+    static void testCachedFixed();
+    static void testCachedFloating();
     static boost::unit_test_framework::test_suite* suite();
 };
 

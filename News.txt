@@ -16,4 +16,11 @@ Changes since release 0.3.8:
   messages, as in:
   QL_FAIL("forward at date " << d << " is " << io::rate(f));
 
+- Improved Bond class
+  - yield-related calculation can be performed with either compounded or
+    continuous compounding
+  - added theoretical price based on discount curve
+  - fixed-rate coupon bonds can define different rates for each coupon
+  - added zero-coupon and floating-rate bonds
+
 
