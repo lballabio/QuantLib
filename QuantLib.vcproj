@@ -9584,6 +9584,9 @@
 			RelativePath="ql\argsandresults.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\basetermstructure.hpp">
+		</File>
+		<File
 			RelativePath="ql\basicdataformatters.cpp">
 			<FileConfiguration
 				Name="Debug MTDLL|Win32">
