@@ -24,6 +24,9 @@
 #define quantlib_bilinear_interpolation_hpp
 
 #include <ql/Math/interpolation2D.hpp>
+#ifdef QL_PATCH_MSVC6
+#include <ql/Math/matrix.hpp>
+#endif
 
 namespace QuantLib {
 
@@ -58,6 +61,7 @@ namespace QuantLib {
         };
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
+        #ifndef QL_PATCH_MSVC6
         template <class I1, class I2, class M>
         BilinearInterpolation(const I1& xBegin, const I1& xEnd,
                               const I2& yBegin, const I2& yEnd,
@@ -67,6 +71,17 @@ namespace QuantLib {
                                                            yBegin, yEnd,
                                                            zData));
         }
+        #else
+        template <class I1, class I2>
+        BilinearInterpolation(const I1& xBegin, const I1& xEnd,
+                              const I2& yBegin, const I2& yEnd,
+                              const Matrix& zData) {
+            impl_ = boost::shared_ptr<Interpolation2D::Impl>(
+                  new BilinearInterpolation::Impl<I1,I2,Matrix>(xBegin, xEnd,
+                                                                yBegin, yEnd,
+                                                                zData));
+        }
+        #endif
     };
 
 }
