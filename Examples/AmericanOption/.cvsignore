@@ -1,7 +1,10 @@
-AmericanOption
+*.layout
+*_private.*
 Makefile.in
 Makefile
+Makefile.win
 build
+bin
 .deps
 .libs
 *.plg
