@@ -1,8 +1,4 @@
 
-asian continous and/or discrete
-geometric continous and/or discrete
-MonteCarloModel refactoring (remove old classes)
-
 DISTRIBUTING
     RPM package
 
@@ -12,29 +8,35 @@ COMPILING
     Borland projects
 
 LIBRARY
-    move mcpricer under the pricers folder
+    *****
+    asian continuous and/or discrete
+    check geometric continuous and/or discrete
+    introduce compoundpathpricer
+    example of european Martingale control variate
     next&weight in a std::pair
-    Monte Carlo:
-        remove fraction from PagodaOptionPricer
+    check fraction in McPagoda
+    Payoff class from EuropeanOption into QuantLib
+    Douglas Scheme
+    Richardson extrapolation
+    FuturesRateHelpers as FRA
+    allow for negative dividendYield (that is cost of carry)
+    Currency as class with methods returning related info
+        redesign payoff class for integral (Green) option pricing, step
+            condition, etc
     Nicolas spline contribution
     Maxim integral
     introduce size_t where appropriate
-    Payoff class from EuropeanOption into QuantLib
+    ******
     add futures (and convexity adjustment) to the bootstrapping method
-    allow for negative dividendYield (that is cost of carry)
     cash flow stream for IRR, duration
-    Currency as class with methods returning related info
     QuantLib dynamic Win32 library (QuantLib.dll)
-    develop C++ unit test suite based on
-        http://sourceforge.net/projects/cppunit
+    develop C++ unit test suite based on boost
     clean up accuracy definition in solver1D (x or f(x) accuracy ?)
     implement currency as per OMG definition
     implement round as per OMG enumeration/definition
     add one-touch option (american binary)
     GaussianPathGenerator, etc: allow for more general random walks
     implement dividendRho for dividendOption
-    redesign payoff class for integral (Green) option pricing, step
-        condition, etc
     redesign segment integral
     what about barrier or FD with dividends ???
     revisite model/slice interface
@@ -43,7 +45,10 @@ LIBRARY
     histogram class
 
 DOCUMENTATION ***
+    ******
     add MS-Windows Help and TeX DVI format.
+    insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
+    complete MC documentation
+    ******
     enforce fulpath&classesinclude DoxyGen requirements
     add/update DoxyGen TODO with CVS TODO.txt file
-    insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation

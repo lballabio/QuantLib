@@ -23,7 +23,7 @@
 */
 
 /*! \file mceverest.hpp
-    \brief Everest-type option pricer
+    \brief %Everest-type option pricer
 
     \fullpath
     ql/Pricers/%mceverest.hpp
