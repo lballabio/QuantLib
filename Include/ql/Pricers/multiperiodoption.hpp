@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/07/13 14:48:13  nando
+// warning pruning action ....
+//
 // Revision 1.11  2001/07/13 14:29:08  sigmud
 // removed a few gcc compile warnings
 //
@@ -70,11 +73,11 @@ namespace QuantLib {
             std::vector<Time> dates_;
 	    unsigned int dateNumber_;
             int timeStepPerPeriod_;
-	    bool lastDateIsResTime_;
-            unsigned int lastIndex_;
+            bool lastDateIsResTime_;
+            int lastIndex_;
             bool firstDateIsZero_;
             double firstNonZeroDate_;
-	    unsigned int firstIndex_;
+            int firstIndex_;
             mutable Handle<BSMOption> analytic_;
             mutable Array prices_, controlPrices_;
             mutable Handle<FiniteDifferences::StandardStepCondition>

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.19  2001/07/13 14:48:13  nando
+// warning pruning action ....
+//
 // Revision 1.18  2001/07/13 14:23:11  sigmud
 // removed a few gcc compile warnings
 //
@@ -128,7 +131,7 @@ namespace QuantLib {
             if (firstNonZeroDate_ <= dt)
                 dt = firstNonZeroDate_/2.0;
 
-            unsigned int j = lastIndex_;
+            int j = lastIndex_;
             do{
                 if (j == dateNumber_ - 1)
                     beginDate = residualTime_;
@@ -153,7 +156,7 @@ namespace QuantLib {
 
             double pricePlus = + valueAtCenter(prices_)
                                - valueAtCenter(controlPrices_)
-                               + analytic_ -> theta() * dt; // + analytic_ -> value()
+                               + analytic_ -> theta() * dt;
 
             model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
             model_ -> rollback(controlPrices_, dt, 0, 1);
