@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.30  2001/03/21 09:58:26  marmar
+    BermudanOption file added
+
     Revision 1.29  2001/03/20 15:14:33  marmar
     MultiPeriodOption is a generalization of DividendAmericanOption
 
@@ -226,6 +229,7 @@
 #include "binaryoption.h"
 #include "barrieroption.h"
 #include "bsmoption.h"
+#include "bermudanoption.h"
 #include "bsmeuropeanoption.h"
 #include "bsmnumericaloption.h"
 #include "dividendoption.h"
