@@ -73,11 +73,13 @@ namespace QuantLib {
         typedef Operator operatorType;
         typedef BoundaryCondition<Operator> bcType;
         // constructors
-        MixedScheme(const Operator& L, double theta,
+        MixedScheme(const Operator& L,
+                    double theta,
                     const std::vector<Handle<bcType> >& bcs)
         : L_(L), I_(Operator::identity(L.size())), 
           dt_(0.0), theta_(theta) , bcs_(bcs) {}
-        void step(arrayType& a, Time t);
+        void step(arrayType& a,
+                  Time t);
         void setStep(Time dt) {
             dt_ = dt;
             if (theta_!=1.0) // there is an explicit part
@@ -85,9 +87,7 @@ namespace QuantLib {
             if (theta_!=0.0) // there is an implicit part
                 implicitPart_ = I_+(theta_ * dt_)*L_;
         }
-        Operator L_;
-        Operator I_;
-        Operator explicitPart_, implicitPart_;
+        Operator L_, I_, explicitPart_, implicitPart_;
         Time dt_;
         double theta_;
         std::vector<Handle<bcType> > bcs_;

@@ -93,18 +93,21 @@ namespace QuantLib {
         */
         Date roll(const Date&,
                   RollingConvention convention = Following,
-		  const Date& origin = Date()) const;
+		          const Date& origin = Date()) const;
         /*! Advances the given date of the given number of business days and
             returns the result.
             \note The input date is not modified.
         */
-        Date advance(const Date&, int n, TimeUnit unit,
+        Date advance(const Date&,
+                     int n,
+                     TimeUnit unit,
                      RollingConvention convention = Following) const;
         /*! Advances the given date as specified by the given period and
             returns the result.
             \note The input date is not modified.
         */
-        Date advance(const Date& date, const Period& period, 
+        Date advance(const Date& date,
+                     const Period& period, 
                      RollingConvention convention) const;
         //@}
 
