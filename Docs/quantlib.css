@@ -27,6 +27,9 @@ td.navbar {
   font-family: verdana, arial, sans-serif;
   color: #000;
   background-color: #fea;
+  background-color: aqua;
+  background-color: fuchsia;
+  background-color: lime;
   border-width: 1px;
   border-color: #000;
   vertical-align: top;
