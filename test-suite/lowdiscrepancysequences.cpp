@@ -404,7 +404,7 @@ void LDSTest::testDiscrepancy() {
         if (printOnly)
             outStream << "const double discrRandDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
-            Size points = Size(QL_POW(2.0, j))-1;
+            Size points = Size(QL_POW(2.0, int(j)))-1;
 
             discr = QL_SQRT(trueRandomFactor/points);
 
@@ -435,7 +435,7 @@ void LDSTest::testDiscrepancy() {
         if (printOnly)
             outStream << "const double discrMersDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
-            Size points = Size(QL_POW(2.0, j))-1;
+            Size points = Size(QL_POW(2.0, int(j)))-1;
             for (; k<points; k++) {
                 point = mer.nextSequence().value;
                 stat.add(point);
@@ -470,7 +470,7 @@ void LDSTest::testDiscrepancy() {
         if (printOnly)
             outStream << "const double discrHaltDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
-            Size points = Size(QL_POW(2.0, j))-1;
+            Size points = Size(QL_POW(2.0, int(j)))-1;
             for (; k<points; k++) {
                 point = hal.nextSequence().value;
                 stat.add(point);
@@ -505,7 +505,7 @@ void LDSTest::testDiscrepancy() {
         if (printOnly)
             outStream << "const double discrSoboDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
-            Size points = Size(QL_POW(2.0, j))-1;
+            Size points = Size(QL_POW(2.0, int(j)))-1;
             for (; k<points; k++) {
                 point = sob.nextSequence().value;
                 stat.add(point);
@@ -540,7 +540,7 @@ void LDSTest::testDiscrepancy() {
         if (printOnly)
             outStream << "const double discrUnSoDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
-            Size points = Size(QL_POW(2.0, j))-1;
+            Size points = Size(QL_POW(2.0, int(j)))-1;
             for (; k<points; k++) {
                 point = unS.nextSequence().value;
                 stat.add(point);
