@@ -53,10 +53,23 @@ endif
 
 
 if DOXYGEN_FOUND
-docs:
-	$(MAKE) -C Docs docs
+docs-html:
+	$(MAKE) -C Docs docs-html
+docs-ps:
+	$(MAKE) -C Docs docs-ps
+docs-pdf:
+	$(MAKE) -C Docs docs-pdf
+docs-man:
+	$(MAKE) -C Docs docs-man
 else
-docs:
-	echo You need to install doxygen to generate documentation.
+docs-html:
+	echo You need to install doxygen in order to generate documentation.
+docs-ps:
+	echo You need to install doxygen in order to generate documentation.
+docs-pdf:
+	echo You need to install doxygen in order to generate documentation.
+docs-man:
+	echo You need to install doxygen in order to generate documentation.
 endif
+
 

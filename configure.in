@@ -26,6 +26,12 @@ AC_PATH_PROG(RUBY, ruby, notfound)
 AM_CONDITIONAL(RUBY_FOUND, test x$RUBY != xnotfound)
 AC_PATH_PROG(DOXYGEN, doxygen, notfound)
 AM_CONDITIONAL(DOXYGEN_FOUND, test x$DOXYGEN != xnotfound)
+AC_PATH_PROG(LATEX, latex, notfound)
+AM_CONDITIONAL(LATEX_FOUND, test x$LATEX != xnotfound)
+AC_PATH_PROG(PDFLATEX, pdflatex, notfound)
+AM_CONDITIONAL(PDFLATEX_FOUND, test x$PDFLATEX != xnotfound)
+AC_PATH_PROG(DVIPS, dvips, notfound)
+AM_CONDITIONAL(DVIPS_FOUND, test x$DVIPS != xnotfound)
 
 dnl Check for Libraries
 dnl Testing for Python 1.5

@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/06 16:19:12  lballabio
+    Fixed Doxygen-related stuff
+
     Revision 1.1  2001/04/04 11:07:21  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -254,7 +257,9 @@
     the actual functions.
     @{
 */
-/*! \def QL_CLOCK \brief clock value */
+/*! \def QL_CLOCK 
+    \brief clock value 
+*/
 #if defined HAVE_CTIME
     #include <ctime>
 #elif defined HAVE_TIME_H

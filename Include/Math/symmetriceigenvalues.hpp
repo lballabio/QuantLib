@@ -21,11 +21,14 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file eigenvalues.hpp
+/*! \file symmetriceigenvalues.hpp
     \brief Gives the eigenvalues and eigenvectors of a real symmetric matrix
 
     $Source$
     $Log$
+    Revision 1.2  2001/04/06 16:19:12  lballabio
+    Fixed Doxygen-related stuff
+
     Revision 1.1  2001/04/04 11:07:22  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension

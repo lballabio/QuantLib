@@ -22,19 +22,21 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*!  \file cliquetoption.h
-   \brief Textbook example of european-style multi-period option.
+/*! \file cliquetoption.hpp
+    \brief Textbook example of european-style multi-period option.
   
-  $Source$
+    $Source$
+    $Log$
+    Revision 1.2  2001/04/06 16:19:12  lballabio
+    Fixed Doxygen-related stuff
 
-  $Log$
-  Revision 1.1  2001/04/04 11:07:23  nando
-  Headers policy part 1:
-  Headers should have a .hpp (lowercase) filename extension
-  All *.h renamed to *.hpp
+    Revision 1.1  2001/04/04 11:07:23  nando
+    Headers policy part 1:
+    Headers should have a .hpp (lowercase) filename extension
+    All *.h renamed to *.hpp
 
-  Revision 1.1  2001/04/04 09:48:45  marmar
-  introducing cliquet option
+    Revision 1.1  2001/04/04 09:48:45  marmar
+    introducing cliquet option
 
 */
 
