@@ -67,23 +67,28 @@ namespace QuantLib {
             switch(type_) {
                 case CoxRossRubinstein:
                     tree = Handle<Tree>(new
-                        Lattices::CoxRossRubinstein(bs, arguments_.maturity, steps_));
+                        Lattices::CoxRossRubinstein(bs, arguments_.maturity,
+                        timeSteps_));
                     break;
                 case JarrowRudd:
                     tree = Handle<Tree>(new
-                        Lattices::JarrowRudd(bs, arguments_.maturity, steps_));
+                        Lattices::JarrowRudd(bs, arguments_.maturity,
+                        timeSteps_));
                     break;
                 case EQP:
                     tree = Handle<Tree>(new
-                        Lattices::AdditiveEQPBinomialTree(bs, arguments_.maturity, steps_));
+                        Lattices::AdditiveEQPBinomialTree(bs, arguments_.maturity,
+                        timeSteps_));
                     break;
                 case Trigeorgis:
                     tree = Handle<Tree>(new
-                        Lattices::Trigeorgis(bs, arguments_.maturity, steps_));
+                        Lattices::Trigeorgis(bs, arguments_.maturity,
+                        timeSteps_));
                     break;
                 case Tian:
                     tree = Handle<Tree>(new
-                        Lattices::Tian(bs, arguments_.maturity, steps_));
+                        Lattices::Tian(bs, arguments_.maturity,
+                        timeSteps_));
                     break;
                 default:
                     throw IllegalArgumentError(
@@ -92,7 +97,7 @@ namespace QuantLib {
             }
 
             Handle<Lattice> lattice(new
-                BlackScholesLattice(tree, r, arguments_.maturity, steps_));
+                BlackScholesLattice(tree, r, arguments_.maturity, timeSteps_));
 
             Handle<DiscretizedAsset> option(
                 new DiscretizedVanillaOption(lattice,arguments_));

@@ -118,12 +118,12 @@ namespace QuantLib {
           public:
             enum Type {CoxRossRubinstein, JarrowRudd, EQP, Trigeorgis, Tian};
 
-            BinomialVanillaEngine(Type type, Size steps)
-            : type_(type), steps_(steps) {}
+            BinomialVanillaEngine(Type type, Size timeSteps)
+            : type_(type), timeSteps_(timeSteps) {}
             void calculate() const;
           private:
             Type type_;
-            Size steps_;
+            Size timeSteps_;
         };
 
     }

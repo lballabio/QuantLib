@@ -173,12 +173,15 @@ namespace QuantLib {
           protected:
             MCVanillaEngine(bool antitheticVariance,
                             bool controlVariate,
+                            Size timeSteps,
                             const Handle<RandomNumbers::GaussianRandomGenerator>& rng) 
             : antitheticVariance_(antitheticVariance),
-              controlVariate_(controlVariate), rng_(rng) {}
+              controlVariate_(controlVariate), timeSteps_(timeSteps),
+              rng_(rng) {}
             Handle<PG> pathGenerator() const;
             bool antitheticVariance_, controlVariate_;
           private:
+            Size timeSteps_;
             Handle<RandomNumbers::GaussianRandomGenerator> rng_;
         };
 
@@ -198,7 +201,7 @@ namespace QuantLib {
 
             return Handle<MonteCarlo::PathGenerator2<RandomNumbers::GaussianRandomGenerator> >(
                 new MonteCarlo::PathGenerator2<RandomNumbers::GaussianRandomGenerator>(bs,
-                    arguments_.maturity, 1, rng_));
+                    arguments_.maturity, timeSteps_, rng_));
 
         }
 
@@ -272,9 +275,10 @@ namespace QuantLib {
           public:
             MCEuropeanVanillaEngine(bool antitheticVariance,
                                     bool controlVariate,
+                                    Size timeSteps,
                                     const Handle<RandomNumbers::GaussianRandomGenerator>& rng) 
             : MCVanillaEngine<S, PG, PP>(antitheticVariance, controlVariate,
-              rng) {}
+              timeSteps, rng) {}
           protected:
             Handle<PP> pathPricer() const;
         };
