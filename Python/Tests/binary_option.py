@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/03/02 08:27:25  lballabio
+    Fixed initial message
+
     Revision 1.1  2001/03/01 12:57:39  enri
     class BinaryOption added, test it with binary_option.py
 
@@ -235,7 +238,7 @@ class BinaryOptionTest(TestUnit):
 
 
 if __name__ == '__main__':
-    BinaryOptionTest().test('European option pricer')
+    BinaryOptionTest().test('Binary option pricer')
 
 
 
