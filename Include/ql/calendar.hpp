@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/05/29 15:12:47  lballabio
+// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
+//
 // Revision 1.3  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -47,13 +50,32 @@
 
 namespace QuantLib {
 
+    //! Rolling conventions
+    /*! These conventions specify the algorithm used to find the business day 
+        which is "closest" to a given holiday.
+    */
+    enum RollingConvention {
+        Preceding,          /*!< Choose the first business day before 
+                                 the given holiday. */
+        ModifiedPreceding,  /*!< Choose the first business day before
+                                 the given holiday unless it belongs to a 
+                                 different month, in which case choose the 
+                                 first business day after the holiday. */
+        Following,          /*!< Choose the first business day after 
+                                 the given holiday. */
+        ModifiedFollowing   /*!< Choose the first business day after
+                                 the given holiday unless it belongs to a 
+                                 different month, in which case choose the 
+                                 first business day before the holiday. */
+    };
+
     //! Abstract calendar class
     /*! This class is purely abstract and defines the interface of concrete
         calendar classes which will be derived from this one.
 
-        It provides methods for determining whether a date is a business day
+        It implements methods for determining whether a date is a business day
         or a holiday for a given market, and for incrementing/decrementing a
-        date of a given number of business days.
+        date of a given number of business days. 
     */
     class Calendar {
       public:
@@ -74,13 +96,13 @@ namespace QuantLib {
         /*! Returns the next business day on the given market with respect to
             the given date and convention.
         */
-        Date roll(const Date&, bool modified = false) const;
+        Date roll(const Date&, RollingConvention convention = Following) const;
         /*! Advances the given date of the given number of business days and
             returns the result.
             \note The input date is not modified.
         */
         Date advance(const Date&, int n, TimeUnit unit,
-            bool modified = false) const;
+            RollingConvention convention = Following) const;
     };
 
     bool operator==(const Handle<Calendar>&, const Handle<Calendar>&);

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/05/29 15:12:48  lballabio
+// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
+//
 // Revision 1.7  2001/05/28 14:54:25  lballabio
 // Deposit rates are always adjusted
 //
@@ -76,7 +79,8 @@ namespace QuantLib {
           public:
             DepositRateHelper(Rate rate, const Date& settlement,
                 int n, TimeUnit units, const Handle<Calendar>& calendar,
-                bool isModifiedFollowing, const Handle<DayCounter>& dayCounter);
+                RollingConvention convention, 
+                const Handle<DayCounter>& dayCounter);
             double rateError() const;
             double discountGuess() const;
             Date maturity() const;
@@ -86,7 +90,7 @@ namespace QuantLib {
             int n_;
             TimeUnit units_;
             Handle<Calendar> calendar_;
-            bool isModified_;
+            RollingConvention convention_;
             Handle<DayCounter> dayCounter_;
             Date maturity_;
             double yearFraction_;

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/05/29 15:12:48  lballabio
+// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
+//
 // Revision 1.7  2001/05/29 12:04:16  lballabio
 // Temporarily forced extrapolation
 //
@@ -133,7 +136,7 @@ namespace QuantLib {
 
         int PiecewiseFlatForward::referenceNode(
             const Date& d, bool extrapolate) const {
-                QL_REQUIRE(d>=minDate(), // && (d<=maxDate() || extrapolate),
+                QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
                     "date (" +
 					DateFormatter::toString(d) +
 					") outside curve definition [" +

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/29 15:12:48  lballabio
+// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
+//
 // Revision 1.4  2001/05/29 09:24:06  lballabio
 // Using relinkable handle to term structure
 //
@@ -74,7 +77,7 @@ namespace QuantLib {
             }
             Date endDate = fixingDate.plus(n,unit);
             if (isAdjusted())
-                endDate = calendar()->roll(endDate,isModifiedFollowing());
+                endDate = calendar()->roll(endDate,rollingConvention());
             DiscountFactor fixingDiscount =
                 termStructure_->discount(fixingDate);
             DiscountFactor endDiscount =

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/29 15:12:47  lballabio
+// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
+//
 // Revision 1.4  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -52,7 +55,7 @@ namespace QuantLib {
         virtual Currency currency() const = 0;
         virtual Handle<Calendar> calendar() const = 0;
         virtual bool isAdjusted() const = 0;
-        virtual bool isModifiedFollowing() const = 0;
+        virtual RollingConvention rollingConvention() const = 0;
         virtual Handle<DayCounter> dayCounter() const = 0;
         virtual std::string name() const = 0;
         //@}

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.22  2001/05/29 15:12:48  lballabio
+// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
+//
 // Revision 1.21  2001/05/24 15:40:09  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -38,22 +41,30 @@
 
 namespace QuantLib {
 
-    Date Calendar::roll(const Date& d , bool modified) const {
+    Date Calendar::roll(const Date& d , RollingConvention c) const {
         Date d1 = d;
-        while (isHoliday(d1))
-            d1++;
-        if (modified && d1.month() != d.month()) {
-            d1 = d;
+        if (c == Following || c == ModifiedFollowing) {
+            while (isHoliday(d1))
+                d1++;
+            if (c == ModifiedFollowing && d1.month() != d.month()) {
+                return roll(d,Preceding);
+            }
+        } else if (c == Preceding || c == ModifiedPreceding) {
             while (isHoliday(d1))
                 d1--;
+            if (c == ModifiedPreceding && d1.month() != d.month()) {
+                return roll(d,Following);
+            }
+        } else {
+            throw Error("Unknown rolling convention");
         }
         return d1;
     }
 
     Date Calendar::advance(const Date& d, int n, TimeUnit unit,
-      bool modified) const {
+      RollingConvention c) const {
         if (n == 0) {
-            return roll(d,modified);
+            return roll(d,c);
         } else if (unit == Days) {
             Date d1 = d;
             if (n > 0) {
@@ -74,7 +85,7 @@ namespace QuantLib {
             return d1;
         } else {
             Date d1 = d.plus(n,unit);
-            return roll(d1,modified);
+            return roll(d1,c);
         }
         QL_DUMMY_RETURN(Date());
     }
