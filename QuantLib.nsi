@@ -2,21 +2,16 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.13  2001/05/30 14:50:09  nando
+# debug libraries removed from installer
+#
 # Revision 1.12  2001/05/28 19:25:56  nando
 # removed docs from binary installer
-#
-# Revision 1.11  2001/05/24 11:15:57  lballabio
-# Stripped conventions from Currencies
-#
-# Revision 1.10  2001/05/22 14:43:19  nando
-# comment added
-#
-# Revision 1.9  2001/05/22 13:43:23  nando
-# 80 columns enforced
-#
-# Revision 1.8  2001/05/21 13:12:44  nando
-# upgraded to NSIS 1.41
-#
+
+
+#############################
+# to be used with NSIS 1.41 #
+#############################
 
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"
@@ -45,9 +40,9 @@ File "README.txt"
 File "LICENSE.txt"
 File "News.txt"
 SetOutPath $INSTDIR\lib\Win32\VisualStudio
-File "lib\Win32\VisualStudio\*.lib"
+File "lib\Win32\VisualStudio\QuantLib.lib"
 SetOutPath $INSTDIR\lib\Win32\Borland
-File "lib\Win32\Borland\*.lib"
+File "lib\Win32\Borland\QuantLib.lib"
 SetOutPath  $INSTDIR\Include\ql
 File /r "Include\ql\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Calendars
