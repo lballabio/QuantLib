@@ -2,22 +2,6 @@
 # main makefile for QuantLib under Borland C++
 #
 # $Id$
-# $Source$
-# $Log$
-# Revision 1.22  2001/08/23 09:41:13  nando
-# improved Borland examples makefiles
-#
-# Revision 1.21  2001/08/22 17:57:40  nando
-# Examples compiles under borland
-# added borland makefile
-#
-# Revision 1.20  2001/05/28 13:17:21  nando
-# I'm confused, but it seems like we don't need to mkdir
-#
-# Revision 1.19  2001/05/28 13:09:55  nando
-# R019-branch-merge3 merged into trunk
-#
-#
 
 
 .autodepend
@@ -31,7 +15,7 @@
 # Primary target:
 # QuantLib library
 quantlib::
-    cd Sources
+    cd ql
     $(MAKE)
     cd ..\Examples
     $(MAKE) -DQL_DIR="..\.."
@@ -40,8 +24,8 @@ quantlib::
 # the installation directive requires the QL_DIR environment variable to point
 # to the installed version of QuantLib
 install::
-    if exist "$(QL_DIR)\Include\ql" rmdir /S /Q "$(QL_DIR)\Include\ql"
-    xcopy Include\ql\*.hpp "$(QL_DIR)\Include\ql" /S /I
+    if exist "$(QL_DIR)\ql" rmdir /S /Q "$(QL_DIR)\ql"
+    xcopy ql\*.hpp "$(QL_DIR)\ql" /S /I
 
     if exist "$(QL_DIR)\lib\Win32\VisualStudio" rmdir /S /Q "$(QL_DIR)\lib\Win32\VisualStudio"
     xcopy lib\Win32\VisualStudio\*.lib "$(QL_DIR)\lib\Win32\VisualStudio" /S /I
@@ -74,7 +58,7 @@ docs-ps:
 
 # Clean up
 clean::
-    cd Sources
+    cd ql
     $(MAKE) clean
     cd ..\Examples
     $(MAKE) clean

@@ -54,18 +54,17 @@ WARN_LOGFILE           = docswarnings.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = . \
-                         ../Include/ql \
-                         ../Sources
+                         ../ql
 FILE_PATTERNS          = *.docs \
                          *.hpp \
                          *.cpp
 RECURSIVE              = YES
-EXCLUDE                = ../Include/ql/config.hpp \
-                         ../Include/ql/config.bcc.hpp \
-                         ../Include/ql/config.decc.hpp \
-                         ../Include/ql/config.msvc.hpp \
-                         ../Include/ql/config.mwcw.hpp \
-                         ../Include/ql/quantlib.hpp
+EXCLUDE                = ../ql/config.hpp \
+                         ../ql/config.bcc.hpp \
+                         ../ql/config.decc.hpp \
+                         ../ql/config.msvc.hpp \
+                         ../ql/config.mwcw.hpp \
+                         ../ql/quantlib.hpp
 EXCLUDE_PATTERNS       =
 EXAMPLE_PATH           = Examples
 EXAMPLE_PATTERNS       = *.cpp

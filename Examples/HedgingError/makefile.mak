@@ -3,20 +3,6 @@
 # makefile for HedgingError.cpp under Borland C++
 #
 # $Id$
-# $Log$
-# Revision 1.4  2001/08/29 13:08:33  nando
-# little tweaks to avoid gcc warnings
-#
-# Revision 1.3  2001/08/23 11:24:37  nando
-# try/catch in examples
-#
-# Revision 1.2  2001/08/23 09:41:13  nando
-# improved Borland examples makefiles
-#
-# Revision 1.1  2001/08/22 17:57:54  nando
-# Examples compiles under borland
-# added borland makefile
-#
 
 .autodepend
 #.silent
@@ -27,7 +13,7 @@
 !endif
 
 # Directories
-QL_INCLUDE_DIR = "$(QL_DIR)\Include"
+QL_INCLUDE_DIR = "$(QL_DIR)"
 QL_LIB_DIR     = "$(QL_DIR)\lib\Win32\Borland"
 
 #Warning W8026 :

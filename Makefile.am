@@ -1,22 +1,5 @@
 
 # $Id$
-# $Source$
-# $Log$
-# Revision 1.46  2001/09/03 10:50:23  enri
-# bootstrap script name changed from updateproject.sh to bootstrap
-#
-# Revision 1.45  2001/08/29 09:17:42  nando
-# updated EXTRA_DIST files
-#
-# Revision 1.44  2001/08/28 15:22:27  enri
-# *** empty log message ***
-#
-# Revision 1.43  2001/08/28 14:46:01  enri
-# .am files for examples added, minor changes to permit compilation on unixes
-#
-# Revision 1.42  2001/08/27 15:27:29  nando
-# typo fixed
-#
 
 #AUTOMAKE_OPTIONS=foreign dist-bzip2
 AUTOMAKE_OPTIONS=foreign

@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -66,7 +66,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -89,7 +89,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "OnTheEdgeRelease"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /c
-# ADD CPP /nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -112,7 +112,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "OnTheEdgeDebug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -135,75 +135,83 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\frankfurt.cpp
+SOURCE=.\ql\Calendars\frankfurt.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\frankfurt.hpp
+SOURCE=.\ql\Calendars\frankfurt.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\helsinki.cpp
+SOURCE=.\ql\Calendars\helsinki.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\helsinki.hpp
+SOURCE=.\ql\Calendars\helsinki.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\london.cpp
+SOURCE=.\ql\Calendars\london.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\london.hpp
+SOURCE=.\ql\Calendars\london.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\milan.cpp
+SOURCE=.\ql\Calendars\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\milan.hpp
+SOURCE=.\ql\Calendars\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\newyork.cpp
+SOURCE=.\ql\Calendars\milan.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\newyork.hpp
+SOURCE=.\ql\Calendars\milan.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\target.cpp
+SOURCE=.\ql\Calendars\newyork.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\target.hpp
+SOURCE=.\ql\Calendars\newyork.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\wellington.cpp
+SOURCE=.\ql\Calendars\target.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\wellington.hpp
+SOURCE=.\ql\Calendars\target.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\westerncalendar.cpp
+SOURCE=.\ql\Calendars\wellington.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\westerncalendar.hpp
+SOURCE=.\ql\Calendars\wellington.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Calendars\zurich.cpp
+SOURCE=.\ql\Calendars\westerncalendar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Calendars\zurich.hpp
+SOURCE=.\ql\Calendars\westerncalendar.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\zurich.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\zurich.hpp
 # End Source File
 # End Group
 # Begin Group "Day Counters"
@@ -211,55 +219,63 @@ SOURCE=.\Include\ql\Calendars\zurich.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\DayCounters\actual360.hpp
+SOURCE=.\ql\DayCounters\actual360.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\DayCounters\actual365.hpp
+SOURCE=.\ql\DayCounters\actual365.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\DayCounters\actualactual.cpp
+SOURCE=.\ql\DayCounters\actualactual.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\DayCounters\actualactual.hpp
+SOURCE=.\ql\DayCounters\actualactual.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\DayCounters\actualactualeuro.cpp
+SOURCE=.\ql\DayCounters\actualactualeuro.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\DayCounters\actualactualeuro.hpp
+SOURCE=.\ql\DayCounters\actualactualeuro.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\DayCounters\actualactualhistorical.cpp
+SOURCE=.\ql\DayCounters\actualactualhistorical.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\DayCounters\actualactualhistorical.hpp
+SOURCE=.\ql\DayCounters\actualactualhistorical.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\DayCounters\thirty360.cpp
+SOURCE=.\ql\DayCounters\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\DayCounters\thirty360.hpp
+SOURCE=.\ql\DayCounters\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\DayCounters\thirty360european.hpp
+SOURCE=.\ql\DayCounters\thirty360.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\DayCounters\thirty360italian.cpp
+SOURCE=.\ql\DayCounters\thirty360.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\DayCounters\thirty360italian.hpp
+SOURCE=.\ql\DayCounters\thirty360european.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\DayCounters\thirty360italian.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\DayCounters\thirty360italian.hpp
 # End Source File
 # End Group
 # Begin Group "Finite Differences"
@@ -267,87 +283,95 @@ SOURCE=.\Include\ql\DayCounters\thirty360italian.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\backwardeuler.hpp
+SOURCE=.\ql\FiniteDifferences\backwardeuler.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\boundarycondition.hpp
+SOURCE=.\ql\FiniteDifferences\boundarycondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\FiniteDifferences\bsmoperator.cpp
+SOURCE=.\ql\FiniteDifferences\bsmoperator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\bsmoperator.hpp
+SOURCE=.\ql\FiniteDifferences\bsmoperator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\cranknicolson.hpp
+SOURCE=.\ql\FiniteDifferences\cranknicolson.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\dminus.hpp
+SOURCE=.\ql\FiniteDifferences\dminus.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\dplus.hpp
+SOURCE=.\ql\FiniteDifferences\dplus.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\dplusdminus.hpp
+SOURCE=.\ql\FiniteDifferences\dplusdminus.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\dzero.hpp
+SOURCE=.\ql\FiniteDifferences\dzero.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\finitedifferencemodel.hpp
+SOURCE=.\ql\FiniteDifferences\finitedifferencemodel.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\forwardeuler.hpp
+SOURCE=.\ql\FiniteDifferences\forwardeuler.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\identity.hpp
+SOURCE=.\ql\FiniteDifferences\identity.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\operator.hpp
+SOURCE=.\ql\FiniteDifferences\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\operatortraits.hpp
+SOURCE=.\ql\FiniteDifferences\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\standardfdmodel.hpp
+SOURCE=.\ql\FiniteDifferences\operator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\standardstepcondition.hpp
+SOURCE=.\ql\FiniteDifferences\operatortraits.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\stepcondition.hpp
+SOURCE=.\ql\FiniteDifferences\standardfdmodel.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\FiniteDifferences\tridiagonaloperator.cpp
+SOURCE=.\ql\FiniteDifferences\standardstepcondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\tridiagonaloperator.hpp
+SOURCE=.\ql\FiniteDifferences\stepcondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\FiniteDifferences\valueatcenter.cpp
+SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\FiniteDifferences\valueatcenter.hpp
+SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
 # End Source File
 # End Group
 # Begin Group "Instruments"
@@ -355,27 +379,27 @@ SOURCE=.\Include\ql\FiniteDifferences\valueatcenter.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Sources\Instruments\simpleswap.cpp
+SOURCE=.\ql\Instruments\simpleswap.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Instruments\simpleswap.hpp
+SOURCE=.\ql\Instruments\simpleswap.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Instruments\stock.cpp
+SOURCE=.\ql\Instruments\stock.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Instruments\stock.hpp
+SOURCE=.\ql\Instruments\stock.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Instruments\swap.cpp
+SOURCE=.\ql\Instruments\swap.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Instruments\swap.hpp
+SOURCE=.\ql\Instruments\swap.hpp
 # End Source File
 # End Group
 # Begin Group "Math"
@@ -383,79 +407,83 @@ SOURCE=.\Include\ql\Instruments\swap.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\cubicspline.hpp
+SOURCE=.\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\interpolation.hpp
+SOURCE=.\ql\Math\interpolation.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\lexicographicalview.hpp
+SOURCE=.\ql\Math\lexicographicalview.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\linearinterpolation.hpp
+SOURCE=.\ql\Math\linearinterpolation.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Math\matrix.cpp
+SOURCE=.\ql\Math\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\matrix.hpp
+SOURCE=.\ql\Math\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Math\multivariateaccumulator.cpp
+SOURCE=.\ql\Math\matrix.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\multivariateaccumulator.hpp
+SOURCE=.\ql\Math\matrix.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Math\normaldistribution.cpp
+SOURCE=.\ql\Math\multivariateaccumulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\normaldistribution.hpp
+SOURCE=.\ql\Math\multivariateaccumulator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\riskmeasure.hpp
+SOURCE=.\ql\Math\normaldistribution.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\riskmeasures.hpp
+SOURCE=.\ql\Math\normaldistribution.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Math\segmentintegral.cpp
+SOURCE=.\ql\Math\riskmeasures.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\segmentintegral.hpp
+SOURCE=.\ql\Math\segmentintegral.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Math\statistics.cpp
+SOURCE=.\ql\Math\segmentintegral.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\statistics.hpp
+SOURCE=.\ql\Math\statistics.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\symmetriceigenvalues.hpp
+SOURCE=.\ql\Math\statistics.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Math\symmetricschurdecomposition.cpp
+SOURCE=.\ql\Math\symmetriceigenvalues.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Math\symmetricschurdecomposition.hpp
+SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\symmetricschurdecomposition.hpp
 # End Source File
 # End Group
 # Begin Group "MonteCarlo"
@@ -463,183 +491,191 @@ SOURCE=.\Include\ql\Math\symmetricschurdecomposition.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\antitheticpathgenerator.hpp
+SOURCE=.\ql\MonteCarlo\antitheticpathgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\avgpriceasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\avgpriceasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\avgpriceasianpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\avgpriceasianpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\avgstrikeasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\avgstrikeasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\avgstrikeasianpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\avgstrikeasianpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\basketpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\basketpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\basketpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\boxmuller.hpp
+SOURCE=.\ql\MonteCarlo\boxmuller.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\centrallimitgaussian.hpp
+SOURCE=.\ql\MonteCarlo\centrallimitgaussian.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\controlvariatedpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\controlvariatedpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\controlvariatedpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\controlvariatedpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\europeanpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\europeanpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\europeanpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\everestpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\everestpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\everestpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\everestpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\gaussianmultipathgenerator.hpp
+SOURCE=.\ql\MonteCarlo\gaussianmultipathgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\gaussianpathgenerator.hpp
+SOURCE=.\ql\MonteCarlo\gaussianpathgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp
+SOURCE=.\ql\MonteCarlo\gaussianrandomgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\generalmontecarlo.hpp
+SOURCE=.\ql\MonteCarlo\generalmontecarlo.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\geometricasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\geometricasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\geometricasianpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\geometricasianpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\getcovariance.cpp
+SOURCE=.\ql\MonteCarlo\getcovariance.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\getcovariance.hpp
+SOURCE=.\ql\MonteCarlo\getcovariance.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\himalayapathpricer.cpp
+SOURCE=.\ql\MonteCarlo\himalayapathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\himalayapathpricer.hpp
+SOURCE=.\ql\MonteCarlo\himalayapathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\inversecumulativegaussian.hpp
+SOURCE=.\ql\MonteCarlo\inversecumulativegaussian.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\knuthrandomgenerator.cpp
+SOURCE=.\ql\MonteCarlo\knuthrandomgenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\knuthrandomgenerator.hpp
+SOURCE=.\ql\MonteCarlo\knuthrandomgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\lecuyerrandomgenerator.cpp
+SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp
+SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\mcoptionsample.hpp
+SOURCE=.\ql\MonteCarlo\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\mcpricer.hpp
+SOURCE=.\ql\MonteCarlo\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\multifactormontecarlooption.hpp
+SOURCE=.\ql\MonteCarlo\mcoptionsample.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\multifactorpricer.hpp
+SOURCE=.\ql\MonteCarlo\mcpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\multipath.hpp
+SOURCE=.\ql\MonteCarlo\montecarlomodel.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\multipathgenerator.hpp
+SOURCE=.\ql\MonteCarlo\multifactormontecarlooption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\multipathpricer.hpp
+SOURCE=.\ql\MonteCarlo\multifactorpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\onefactormontecarlooption.hpp
+SOURCE=.\ql\MonteCarlo\multipath.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\MonteCarlo\pagodapathpricer.cpp
+SOURCE=.\ql\MonteCarlo\multipathgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\pagodapathpricer.hpp
+SOURCE=.\ql\MonteCarlo\multipathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\path.hpp
+SOURCE=.\ql\MonteCarlo\onefactormontecarlooption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\pathmontecarlo.hpp
+SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\pathpricer.hpp
+SOURCE=.\ql\MonteCarlo\pagodapathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\randomarraygenerator.hpp
+SOURCE=.\ql\MonteCarlo\path.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\MonteCarlo\uniformrandomgenerator.hpp
+SOURCE=.\ql\MonteCarlo\pathpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\randomarraygenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\uniformrandomgenerator.hpp
 # End Source File
 # End Group
 # Begin Group "Patterns"
@@ -647,7 +683,7 @@ SOURCE=.\Include\ql\MonteCarlo\uniformrandomgenerator.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\Patterns\observable.hpp
+SOURCE=.\ql\Patterns\observable.hpp
 # End Source File
 # End Group
 # Begin Group "Pricers"
@@ -655,191 +691,199 @@ SOURCE=.\Include\ql\Patterns\observable.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\americancondition.hpp
+SOURCE=.\ql\Pricers\americancondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\americanoption.hpp
+SOURCE=.\ql\Pricers\americanoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\averagepriceasian.cpp
+SOURCE=.\ql\Pricers\averagepriceasian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\averagepriceasian.hpp
+SOURCE=.\ql\Pricers\averagepriceasian.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\averagestrikeasian.cpp
+SOURCE=.\ql\Pricers\averagestrikeasian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\averagestrikeasian.hpp
+SOURCE=.\ql\Pricers\averagestrikeasian.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\barrieroption.cpp
+SOURCE=.\ql\Pricers\barrieroption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\barrieroption.hpp
+SOURCE=.\ql\Pricers\barrieroption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\bermudanoption.cpp
+SOURCE=.\ql\Pricers\bermudanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\bermudanoption.hpp
+SOURCE=.\ql\Pricers\bermudanoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\binaryoption.cpp
+SOURCE=.\ql\Pricers\binaryoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\binaryoption.hpp
+SOURCE=.\ql\Pricers\binaryoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\bsmnumericaloption.cpp
+SOURCE=.\ql\Pricers\bsmnumericaloption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\bsmnumericaloption.hpp
+SOURCE=.\ql\Pricers\bsmnumericaloption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\cliquetoption.cpp
+SOURCE=.\ql\Pricers\cliquetoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\cliquetoption.hpp
+SOURCE=.\ql\Pricers\cliquetoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\dividendamericanoption.cpp
+SOURCE=.\ql\Pricers\dividendamericanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\dividendamericanoption.hpp
+SOURCE=.\ql\Pricers\dividendamericanoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\dividendeuropeanoption.cpp
+SOURCE=.\ql\Pricers\dividendeuropeanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\dividendeuropeanoption.hpp
+SOURCE=.\ql\Pricers\dividendeuropeanoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\dividendoption.cpp
+SOURCE=.\ql\Pricers\dividendoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\dividendoption.hpp
+SOURCE=.\ql\Pricers\dividendoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\dividendshoutoption.cpp
+SOURCE=.\ql\Pricers\dividendshoutoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\dividendshoutoption.hpp
+SOURCE=.\ql\Pricers\dividendshoutoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\europeanoption.cpp
+SOURCE=.\ql\Pricers\europeanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\europeanoption.hpp
+SOURCE=.\ql\Pricers\europeanoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\everestoption.cpp
+SOURCE=.\ql\Pricers\everestoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\everestoption.hpp
+SOURCE=.\ql\Pricers\everestoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\finitedifferenceeuropean.cpp
+SOURCE=.\ql\Pricers\finitedifferenceeuropean.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\finitedifferenceeuropean.hpp
+SOURCE=.\ql\Pricers\finitedifferenceeuropean.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\geometricasianoption.hpp
+SOURCE=.\ql\Pricers\geometricasianoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\himalaya.cpp
+SOURCE=.\ql\Pricers\himalaya.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\himalaya.hpp
+SOURCE=.\ql\Pricers\himalaya.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\mceuropeanpricer.cpp
+SOURCE=.\ql\Pricers\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\mceuropeanpricer.hpp
+SOURCE=.\ql\Pricers\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\multiperiodoption.cpp
+SOURCE=.\ql\Pricers\mceuropeanpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\multiperiodoption.hpp
+SOURCE=.\ql\Pricers\mceuropeanpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\pagodaoption.cpp
+SOURCE=.\ql\Pricers\multiperiodoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\pagodaoption.hpp
+SOURCE=.\ql\Pricers\multiperiodoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\plainbasketoption.cpp
+SOURCE=.\ql\Pricers\pagodaoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\plainbasketoption.hpp
+SOURCE=.\ql\Pricers\pagodaoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\shoutcondition.hpp
+SOURCE=.\ql\Pricers\plainbasketoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\shoutoption.hpp
+SOURCE=.\ql\Pricers\plainbasketoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\singleassetoption.cpp
+SOURCE=.\ql\Pricers\shoutcondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\singleassetoption.hpp
+SOURCE=.\ql\Pricers\shoutoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Pricers\stepconditionoption.cpp
+SOURCE=.\ql\Pricers\singleassetoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Pricers\stepconditionoption.hpp
+SOURCE=.\ql\Pricers\singleassetoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\stepconditionoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\stepconditionoption.hpp
 # End Source File
 # End Group
 # Begin Group "Solvers 1D"
@@ -847,59 +891,59 @@ SOURCE=.\Include\ql\Pricers\stepconditionoption.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Sources\Solvers1D\bisection.cpp
+SOURCE=.\ql\Solvers1D\bisection.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Solvers1D\bisection.hpp
+SOURCE=.\ql\Solvers1D\bisection.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Solvers1D\brent.cpp
+SOURCE=.\ql\Solvers1D\brent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Solvers1D\brent.hpp
+SOURCE=.\ql\Solvers1D\brent.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Solvers1D\falseposition.cpp
+SOURCE=.\ql\Solvers1D\falseposition.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Solvers1D\falseposition.hpp
+SOURCE=.\ql\Solvers1D\falseposition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Solvers1D\newton.cpp
+SOURCE=.\ql\Solvers1D\newton.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Solvers1D\newton.hpp
+SOURCE=.\ql\Solvers1D\newton.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Solvers1D\newtonsafe.cpp
+SOURCE=.\ql\Solvers1D\newtonsafe.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Solvers1D\newtonsafe.hpp
+SOURCE=.\ql\Solvers1D\newtonsafe.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Solvers1D\ridder.cpp
+SOURCE=.\ql\Solvers1D\ridder.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Solvers1D\ridder.hpp
+SOURCE=.\ql\Solvers1D\ridder.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Solvers1D\secant.cpp
+SOURCE=.\ql\Solvers1D\secant.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Solvers1D\secant.hpp
+SOURCE=.\ql\Solvers1D\secant.hpp
 # End Source File
 # End Group
 # Begin Group "Term Structures"
@@ -907,31 +951,39 @@ SOURCE=.\Include\ql\Solvers1D\secant.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\TermStructures\flatforward.hpp
+SOURCE=.\ql\TermStructures\flatforward.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\TermStructures\piecewiseconstantforwards.cpp
+SOURCE=.\ql\TermStructures\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\TermStructures\piecewiseconstantforwards.hpp
+SOURCE=.\ql\TermStructures\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\TermStructures\piecewiseflatforward.cpp
+SOURCE=.\ql\TermStructures\piecewiseconstantforwards.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\TermStructures\piecewiseflatforward.hpp
+SOURCE=.\ql\TermStructures\piecewiseconstantforwards.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\TermStructures\ratehelpers.cpp
+SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\TermStructures\ratehelpers.hpp
+SOURCE=.\ql\TermStructures\piecewiseflatforward.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\ratehelpers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\ratehelpers.hpp
 # End Source File
 # End Group
 # Begin Group "Utilities"
@@ -939,27 +991,31 @@ SOURCE=.\Include\ql\TermStructures\ratehelpers.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\Utilities\combiningiterator.hpp
+SOURCE=.\ql\Utilities\combiningiterator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Utilities\couplingiterator.hpp
+SOURCE=.\ql\Utilities\couplingiterator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Utilities\filteringiterator.hpp
+SOURCE=.\ql\Utilities\filteringiterator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Utilities\iteratorcategories.hpp
+SOURCE=.\ql\Utilities\iteratorcategories.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Utilities\processingiterator.hpp
+SOURCE=.\ql\Utilities\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Utilities\steppingiterator.hpp
+SOURCE=.\ql\Utilities\processingiterator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\steppingiterator.hpp
 # End Source File
 # End Group
 # Begin Group "Indexes"
@@ -967,31 +1023,39 @@ SOURCE=.\Include\ql\Utilities\steppingiterator.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\Indexes\euribor.hpp
+SOURCE=.\ql\Indexes\euribor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Indexes\libor.hpp
+SOURCE=.\ql\Indexes\gbplibor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Indexes\usdlibor.hpp
+SOURCE=.\ql\Indexes\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Indexes\xibor.cpp
+SOURCE=.\ql\Indexes\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Indexes\xibor.hpp
+SOURCE=.\ql\Indexes\usdlibor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Indexes\xibormanager.cpp
+SOURCE=.\ql\Indexes\xibor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\Indexes\xibormanager.hpp
+SOURCE=.\ql\Indexes\xibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\xibormanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\xibormanager.hpp
 # End Source File
 # End Group
 # Begin Group "CashFlows"
@@ -999,180 +1063,196 @@ SOURCE=.\Include\ql\Indexes\xibormanager.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\CashFlows\accruingcoupon.hpp
+SOURCE=.\ql\CashFlows\accruingcoupon.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\CashFlows\cashflowvectors.cpp
+SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\CashFlows\cashflowvectors.hpp
+SOURCE=.\ql\CashFlows\cashflowvectors.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\CashFlows\fixedratecoupon.hpp
+SOURCE=.\ql\CashFlows\fixedratecoupon.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\CashFlows\floatingratecoupon.cpp
+SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\CashFlows\floatingratecoupon.hpp
+SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\CashFlows\indexlinkedcoupon.hpp
+SOURCE=.\ql\CashFlows\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\CashFlows\Makefile.am
+SOURCE=.\ql\CashFlows\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\CashFlows\simplecashflow.hpp
+SOURCE=.\ql\CashFlows\simplecashflow.hpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=.\Include\ql\array.hpp
+SOURCE=.\ql\array.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\calendar.cpp
+SOURCE=.\ql\calendar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\calendar.hpp
+SOURCE=.\ql\calendar.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\cashflow.hpp
+SOURCE=.\ql\cashflow.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\config.ansi.hpp
+SOURCE=.\ql\config.ansi.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\config.bcc.hpp
+SOURCE=.\ql\config.bcc.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\config.decc.hpp
+SOURCE=.\ql\config.decc.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\config.msvc.hpp
+SOURCE=.\ql\config.msvc.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\config.mwcw.hpp
+SOURCE=.\ql\config.mwcw.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\currency.hpp
+SOURCE=.\ql\currency.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\dataformatters.cpp
+SOURCE=.\ql\dataformatters.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\dataformatters.hpp
+SOURCE=.\ql\dataformatters.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\date.cpp
+SOURCE=.\ql\date.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\date.hpp
+SOURCE=.\ql\date.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\daycounter.hpp
+SOURCE=.\ql\daycounter.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\depositrate.hpp
+SOURCE=.\ql\depositrate.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\errors.hpp
+SOURCE=.\ql\errors.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\expressiontemplates.hpp
+SOURCE=.\ql\expressiontemplates.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\forwardvolsurface.hpp
+SOURCE=.\ql\forwardvolsurface.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\handle.hpp
+SOURCE=.\ql\handle.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\history.hpp
+SOURCE=.\ql\history.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\index.hpp
+SOURCE=.\ql\index.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\instrument.hpp
+SOURCE=.\ql\instrument.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\null.hpp
+SOURCE=.\ql\Makefile.am
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\options.hpp
+SOURCE=.\ql\makefile.mak
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\qldefines.hpp
+SOURCE=.\ql\marketelement.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\quantlib.hpp
+SOURCE=.\ql\null.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\riskstatistics.hpp
+SOURCE=.\ql\options.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\scheduler.cpp
+SOURCE=.\ql\qldefines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\scheduler.hpp
+SOURCE=.\ql\quantlib.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\solver1d.cpp
+SOURCE=.\ql\relinkablehandle.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\solver1d.hpp
+SOURCE=.\ql\riskstatistics.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\swaptionvolsurface.hpp
+SOURCE=.\ql\scheduler.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\termstructure.hpp
+SOURCE=.\ql\scheduler.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ql\types.hpp
+SOURCE=.\ql\solver1d.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\solver1d.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\swaptionvolsurface.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\termstructure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\types.hpp
 # End Source File
 # End Target
 # End Project

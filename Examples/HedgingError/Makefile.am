@@ -1,5 +1,5 @@
 CXXFLAGS = -g -O2 -Wall
-INCLUDES = -I../../Include
+INCLUDES = -I../../ql
 
 bin_PROGRAMS = HedgingError
 HedgingError_SOURCES = HedgingError.cpp

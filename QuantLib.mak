@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\Release
@@ -202,44 +205,15 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
-	"$(INTDIR)\frankfurt.sbr" \
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
@@ -248,6 +222,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\actualactualeuro.sbr" \
 	"$(INTDIR)\actualactualhistorical.sbr" \
@@ -256,27 +231,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -312,11 +275,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\calendar.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
-	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
+	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
+	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\controlvariatedpathpricer.sbr" \
+	"$(INTDIR)\europeanpathpricer.sbr" \
+	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricasianpathpricer.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr" \
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\pagodapathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -326,7 +296,11 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib.lib" 
 LIB32_OBJS= \
-	"$(INTDIR)\frankfurt.obj" \
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
@@ -335,6 +309,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\actualactualeuro.obj" \
 	"$(INTDIR)\actualactualhistorical.obj" \
@@ -343,27 +318,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
-	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -399,11 +362,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\calendar.obj" \
-	"$(INTDIR)\dataformatters.obj" \
-	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\avgpriceasianpathpricer.obj" \
+	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
+	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\controlvariatedpathpricer.obj" \
+	"$(INTDIR)\europeanpathpricer.obj" \
+	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricasianpathpricer.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\pagodapathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -586,44 +556,15 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
-	"$(INTDIR)\frankfurt.sbr" \
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
@@ -632,6 +573,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\actualactualeuro.sbr" \
 	"$(INTDIR)\actualactualhistorical.sbr" \
@@ -640,27 +582,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -696,11 +626,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\calendar.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
-	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
+	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
+	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\controlvariatedpathpricer.sbr" \
+	"$(INTDIR)\europeanpathpricer.sbr" \
+	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricasianpathpricer.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr" \
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\pagodapathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -710,7 +647,11 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib" 
 LIB32_OBJS= \
-	"$(INTDIR)\frankfurt.obj" \
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
@@ -719,6 +660,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\actualactualeuro.obj" \
 	"$(INTDIR)\actualactualhistorical.obj" \
@@ -727,27 +669,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
-	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -783,11 +713,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\calendar.obj" \
-	"$(INTDIR)\dataformatters.obj" \
-	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\avgpriceasianpathpricer.obj" \
+	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
+	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\controlvariatedpathpricer.obj" \
+	"$(INTDIR)\europeanpathpricer.obj" \
+	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricasianpathpricer.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\pagodapathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -969,44 +906,15 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
-	"$(INTDIR)\frankfurt.sbr" \
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
@@ -1015,6 +923,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\actualactualeuro.sbr" \
 	"$(INTDIR)\actualactualhistorical.sbr" \
@@ -1023,27 +932,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -1079,11 +976,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\calendar.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
-	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
+	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
+	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\controlvariatedpathpricer.sbr" \
+	"$(INTDIR)\europeanpathpricer.sbr" \
+	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricasianpathpricer.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr" \
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\pagodapathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1093,7 +997,11 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib.lib" 
 LIB32_OBJS= \
-	"$(INTDIR)\frankfurt.obj" \
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
@@ -1102,6 +1010,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\actualactualeuro.obj" \
 	"$(INTDIR)\actualactualhistorical.obj" \
@@ -1110,27 +1019,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
-	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -1166,11 +1063,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\calendar.obj" \
-	"$(INTDIR)\dataformatters.obj" \
-	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\avgpriceasianpathpricer.obj" \
+	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
+	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\controlvariatedpathpricer.obj" \
+	"$(INTDIR)\europeanpathpricer.obj" \
+	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricasianpathpricer.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\pagodapathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1353,44 +1257,15 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
-	"$(INTDIR)\frankfurt.sbr" \
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
@@ -1399,6 +1274,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\actualactualeuro.sbr" \
 	"$(INTDIR)\actualactualhistorical.sbr" \
@@ -1407,27 +1283,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -1463,11 +1327,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\calendar.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
-	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
+	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
+	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\controlvariatedpathpricer.sbr" \
+	"$(INTDIR)\europeanpathpricer.sbr" \
+	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricasianpathpricer.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr" \
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\pagodapathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1477,7 +1348,11 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib" 
 LIB32_OBJS= \
-	"$(INTDIR)\frankfurt.obj" \
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
@@ -1486,6 +1361,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
+	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\actualactualeuro.obj" \
 	"$(INTDIR)\actualactualhistorical.obj" \
@@ -1494,27 +1370,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
-	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -1550,11 +1414,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\calendar.obj" \
-	"$(INTDIR)\dataformatters.obj" \
-	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\avgpriceasianpathpricer.obj" \
+	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
+	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\controlvariatedpathpricer.obj" \
+	"$(INTDIR)\europeanpathpricer.obj" \
+	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricasianpathpricer.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\pagodapathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1562,6 +1433,36 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1574,469 +1475,469 @@ LIB32_OBJS= \
 
 
 !IF "$(CFG)" == "QuantLib - Win32 Release" || "$(CFG)" == "QuantLib - Win32 Debug" || "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease" || "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
-SOURCE=.\Sources\Calendars\frankfurt.cpp
+SOURCE=.\ql\Calendars\frankfurt.cpp
 
 "$(INTDIR)\frankfurt.obj"	"$(INTDIR)\frankfurt.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Calendars\helsinki.cpp
+SOURCE=.\ql\Calendars\helsinki.cpp
 
 "$(INTDIR)\helsinki.obj"	"$(INTDIR)\helsinki.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Calendars\london.cpp
+SOURCE=.\ql\Calendars\london.cpp
 
 "$(INTDIR)\london.obj"	"$(INTDIR)\london.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Calendars\milan.cpp
+SOURCE=.\ql\Calendars\milan.cpp
 
 "$(INTDIR)\milan.obj"	"$(INTDIR)\milan.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Calendars\newyork.cpp
+SOURCE=.\ql\Calendars\newyork.cpp
 
 "$(INTDIR)\newyork.obj"	"$(INTDIR)\newyork.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Calendars\target.cpp
+SOURCE=.\ql\Calendars\target.cpp
 
 "$(INTDIR)\target.obj"	"$(INTDIR)\target.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Calendars\wellington.cpp
+SOURCE=.\ql\Calendars\wellington.cpp
 
 "$(INTDIR)\wellington.obj"	"$(INTDIR)\wellington.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Calendars\westerncalendar.cpp
+SOURCE=.\ql\Calendars\westerncalendar.cpp
 
 "$(INTDIR)\westerncalendar.obj"	"$(INTDIR)\westerncalendar.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Calendars\zurich.cpp
+SOURCE=.\ql\Calendars\zurich.cpp
 
 "$(INTDIR)\zurich.obj"	"$(INTDIR)\zurich.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\DayCounters\actualactual.cpp
+SOURCE=.\ql\DayCounters\actualactual.cpp
 
 "$(INTDIR)\actualactual.obj"	"$(INTDIR)\actualactual.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\DayCounters\actualactualeuro.cpp
+SOURCE=.\ql\DayCounters\actualactualeuro.cpp
 
 "$(INTDIR)\actualactualeuro.obj"	"$(INTDIR)\actualactualeuro.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\DayCounters\actualactualhistorical.cpp
+SOURCE=.\ql\DayCounters\actualactualhistorical.cpp
 
 "$(INTDIR)\actualactualhistorical.obj"	"$(INTDIR)\actualactualhistorical.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\DayCounters\thirty360.cpp
+SOURCE=.\ql\DayCounters\thirty360.cpp
 
 "$(INTDIR)\thirty360.obj"	"$(INTDIR)\thirty360.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\DayCounters\thirty360italian.cpp
+SOURCE=.\ql\DayCounters\thirty360italian.cpp
 
 "$(INTDIR)\thirty360italian.obj"	"$(INTDIR)\thirty360italian.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\FiniteDifferences\bsmoperator.cpp
+SOURCE=.\ql\FiniteDifferences\bsmoperator.cpp
 
 "$(INTDIR)\bsmoperator.obj"	"$(INTDIR)\bsmoperator.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\FiniteDifferences\tridiagonaloperator.cpp
+SOURCE=.\ql\FiniteDifferences\tridiagonaloperator.cpp
 
 "$(INTDIR)\tridiagonaloperator.obj"	"$(INTDIR)\tridiagonaloperator.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\FiniteDifferences\valueatcenter.cpp
+SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 
 "$(INTDIR)\valueatcenter.obj"	"$(INTDIR)\valueatcenter.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Instruments\simpleswap.cpp
+SOURCE=.\ql\Instruments\simpleswap.cpp
 
 "$(INTDIR)\simpleswap.obj"	"$(INTDIR)\simpleswap.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Instruments\stock.cpp
+SOURCE=.\ql\Instruments\stock.cpp
 
 "$(INTDIR)\stock.obj"	"$(INTDIR)\stock.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Instruments\swap.cpp
+SOURCE=.\ql\Instruments\swap.cpp
 
 "$(INTDIR)\swap.obj"	"$(INTDIR)\swap.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Math\matrix.cpp
+SOURCE=.\ql\Math\matrix.cpp
 
 "$(INTDIR)\matrix.obj"	"$(INTDIR)\matrix.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Math\multivariateaccumulator.cpp
+SOURCE=.\ql\Math\multivariateaccumulator.cpp
 
 "$(INTDIR)\multivariateaccumulator.obj"	"$(INTDIR)\multivariateaccumulator.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Math\normaldistribution.cpp
+SOURCE=.\ql\Math\normaldistribution.cpp
 
 "$(INTDIR)\normaldistribution.obj"	"$(INTDIR)\normaldistribution.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Math\segmentintegral.cpp
+SOURCE=.\ql\Math\segmentintegral.cpp
 
 "$(INTDIR)\segmentintegral.obj"	"$(INTDIR)\segmentintegral.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Math\statistics.cpp
+SOURCE=.\ql\Math\statistics.cpp
 
 "$(INTDIR)\statistics.obj"	"$(INTDIR)\statistics.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Math\symmetricschurdecomposition.cpp
+SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
 
 "$(INTDIR)\symmetricschurdecomposition.obj"	"$(INTDIR)\symmetricschurdecomposition.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\avgpriceasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\avgpriceasianpathpricer.cpp
 
 "$(INTDIR)\avgpriceasianpathpricer.obj"	"$(INTDIR)\avgpriceasianpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\avgstrikeasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\avgstrikeasianpathpricer.cpp
 
 "$(INTDIR)\avgstrikeasianpathpricer.obj"	"$(INTDIR)\avgstrikeasianpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\basketpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
 
 "$(INTDIR)\basketpathpricer.obj"	"$(INTDIR)\basketpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\controlvariatedpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\controlvariatedpathpricer.cpp
 
 "$(INTDIR)\controlvariatedpathpricer.obj"	"$(INTDIR)\controlvariatedpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\europeanpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
 
 "$(INTDIR)\europeanpathpricer.obj"	"$(INTDIR)\europeanpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\everestpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\everestpathpricer.cpp
 
 "$(INTDIR)\everestpathpricer.obj"	"$(INTDIR)\everestpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\geometricasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\geometricasianpathpricer.cpp
 
 "$(INTDIR)\geometricasianpathpricer.obj"	"$(INTDIR)\geometricasianpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\getcovariance.cpp
+SOURCE=.\ql\MonteCarlo\getcovariance.cpp
 
 "$(INTDIR)\getcovariance.obj"	"$(INTDIR)\getcovariance.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\himalayapathpricer.cpp
+SOURCE=.\ql\MonteCarlo\himalayapathpricer.cpp
 
 "$(INTDIR)\himalayapathpricer.obj"	"$(INTDIR)\himalayapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\knuthrandomgenerator.cpp
+SOURCE=.\ql\MonteCarlo\knuthrandomgenerator.cpp
 
 "$(INTDIR)\knuthrandomgenerator.obj"	"$(INTDIR)\knuthrandomgenerator.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\lecuyerrandomgenerator.cpp
+SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.cpp
 
 "$(INTDIR)\lecuyerrandomgenerator.obj"	"$(INTDIR)\lecuyerrandomgenerator.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\MonteCarlo\pagodapathpricer.cpp
+SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
 
 "$(INTDIR)\pagodapathpricer.obj"	"$(INTDIR)\pagodapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\averagepriceasian.cpp
+SOURCE=.\ql\Pricers\averagepriceasian.cpp
 
 "$(INTDIR)\averagepriceasian.obj"	"$(INTDIR)\averagepriceasian.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\averagestrikeasian.cpp
+SOURCE=.\ql\Pricers\averagestrikeasian.cpp
 
 "$(INTDIR)\averagestrikeasian.obj"	"$(INTDIR)\averagestrikeasian.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\barrieroption.cpp
+SOURCE=.\ql\Pricers\barrieroption.cpp
 
 "$(INTDIR)\barrieroption.obj"	"$(INTDIR)\barrieroption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\bermudanoption.cpp
+SOURCE=.\ql\Pricers\bermudanoption.cpp
 
 "$(INTDIR)\bermudanoption.obj"	"$(INTDIR)\bermudanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\binaryoption.cpp
+SOURCE=.\ql\Pricers\binaryoption.cpp
 
 "$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\bsmnumericaloption.cpp
+SOURCE=.\ql\Pricers\bsmnumericaloption.cpp
 
 "$(INTDIR)\bsmnumericaloption.obj"	"$(INTDIR)\bsmnumericaloption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\cliquetoption.cpp
+SOURCE=.\ql\Pricers\cliquetoption.cpp
 
 "$(INTDIR)\cliquetoption.obj"	"$(INTDIR)\cliquetoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\dividendamericanoption.cpp
+SOURCE=.\ql\Pricers\dividendamericanoption.cpp
 
 "$(INTDIR)\dividendamericanoption.obj"	"$(INTDIR)\dividendamericanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\dividendeuropeanoption.cpp
+SOURCE=.\ql\Pricers\dividendeuropeanoption.cpp
 
 "$(INTDIR)\dividendeuropeanoption.obj"	"$(INTDIR)\dividendeuropeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\dividendoption.cpp
+SOURCE=.\ql\Pricers\dividendoption.cpp
 
 "$(INTDIR)\dividendoption.obj"	"$(INTDIR)\dividendoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\dividendshoutoption.cpp
+SOURCE=.\ql\Pricers\dividendshoutoption.cpp
 
 "$(INTDIR)\dividendshoutoption.obj"	"$(INTDIR)\dividendshoutoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\europeanoption.cpp
+SOURCE=.\ql\Pricers\europeanoption.cpp
 
 "$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\everestoption.cpp
+SOURCE=.\ql\Pricers\everestoption.cpp
 
 "$(INTDIR)\everestoption.obj"	"$(INTDIR)\everestoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\finitedifferenceeuropean.cpp
+SOURCE=.\ql\Pricers\finitedifferenceeuropean.cpp
 
 "$(INTDIR)\finitedifferenceeuropean.obj"	"$(INTDIR)\finitedifferenceeuropean.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\himalaya.cpp
+SOURCE=.\ql\Pricers\himalaya.cpp
 
 "$(INTDIR)\himalaya.obj"	"$(INTDIR)\himalaya.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\mceuropeanpricer.cpp
+SOURCE=.\ql\Pricers\mceuropeanpricer.cpp
 
 "$(INTDIR)\mceuropeanpricer.obj"	"$(INTDIR)\mceuropeanpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\multiperiodoption.cpp
+SOURCE=.\ql\Pricers\multiperiodoption.cpp
 
 "$(INTDIR)\multiperiodoption.obj"	"$(INTDIR)\multiperiodoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\pagodaoption.cpp
+SOURCE=.\ql\Pricers\pagodaoption.cpp
 
 "$(INTDIR)\pagodaoption.obj"	"$(INTDIR)\pagodaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\plainbasketoption.cpp
+SOURCE=.\ql\Pricers\plainbasketoption.cpp
 
 "$(INTDIR)\plainbasketoption.obj"	"$(INTDIR)\plainbasketoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\singleassetoption.cpp
+SOURCE=.\ql\Pricers\singleassetoption.cpp
 
 "$(INTDIR)\singleassetoption.obj"	"$(INTDIR)\singleassetoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Pricers\stepconditionoption.cpp
+SOURCE=.\ql\Pricers\stepconditionoption.cpp
 
 "$(INTDIR)\stepconditionoption.obj"	"$(INTDIR)\stepconditionoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Solvers1D\bisection.cpp
+SOURCE=.\ql\Solvers1D\bisection.cpp
 
 "$(INTDIR)\bisection.obj"	"$(INTDIR)\bisection.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Solvers1D\brent.cpp
+SOURCE=.\ql\Solvers1D\brent.cpp
 
 "$(INTDIR)\brent.obj"	"$(INTDIR)\brent.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Solvers1D\falseposition.cpp
+SOURCE=.\ql\Solvers1D\falseposition.cpp
 
 "$(INTDIR)\falseposition.obj"	"$(INTDIR)\falseposition.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Solvers1D\newton.cpp
+SOURCE=.\ql\Solvers1D\newton.cpp
 
 "$(INTDIR)\newton.obj"	"$(INTDIR)\newton.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Solvers1D\newtonsafe.cpp
+SOURCE=.\ql\Solvers1D\newtonsafe.cpp
 
 "$(INTDIR)\newtonsafe.obj"	"$(INTDIR)\newtonsafe.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Solvers1D\ridder.cpp
+SOURCE=.\ql\Solvers1D\ridder.cpp
 
 "$(INTDIR)\ridder.obj"	"$(INTDIR)\ridder.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Solvers1D\secant.cpp
+SOURCE=.\ql\Solvers1D\secant.cpp
 
 "$(INTDIR)\secant.obj"	"$(INTDIR)\secant.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\TermStructures\piecewiseconstantforwards.cpp
+SOURCE=.\ql\TermStructures\piecewiseconstantforwards.cpp
 
 "$(INTDIR)\piecewiseconstantforwards.obj"	"$(INTDIR)\piecewiseconstantforwards.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\TermStructures\piecewiseflatforward.cpp
+SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
 
 "$(INTDIR)\piecewiseflatforward.obj"	"$(INTDIR)\piecewiseflatforward.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\TermStructures\ratehelpers.cpp
+SOURCE=.\ql\TermStructures\ratehelpers.cpp
 
 "$(INTDIR)\ratehelpers.obj"	"$(INTDIR)\ratehelpers.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Indexes\xibor.cpp
+SOURCE=.\ql\Indexes\xibor.cpp
 
 "$(INTDIR)\xibor.obj"	"$(INTDIR)\xibor.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Indexes\xibormanager.cpp
+SOURCE=.\ql\Indexes\xibormanager.cpp
 
 "$(INTDIR)\xibormanager.obj"	"$(INTDIR)\xibormanager.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\CashFlows\cashflowvectors.cpp
+SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 
 "$(INTDIR)\cashflowvectors.obj"	"$(INTDIR)\cashflowvectors.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\CashFlows\floatingratecoupon.cpp
+SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
 
 "$(INTDIR)\floatingratecoupon.obj"	"$(INTDIR)\floatingratecoupon.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\calendar.cpp
+SOURCE=.\ql\calendar.cpp
 
 "$(INTDIR)\calendar.obj"	"$(INTDIR)\calendar.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\dataformatters.cpp
+SOURCE=.\ql\dataformatters.cpp
 
 "$(INTDIR)\dataformatters.obj"	"$(INTDIR)\dataformatters.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\date.cpp
+SOURCE=.\ql\date.cpp
 
 "$(INTDIR)\date.obj"	"$(INTDIR)\date.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\scheduler.cpp
+SOURCE=.\ql\scheduler.cpp
 
 "$(INTDIR)\scheduler.obj"	"$(INTDIR)\scheduler.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\solver1d.cpp
+SOURCE=.\ql\solver1d.cpp
 
 "$(INTDIR)\solver1d.obj"	"$(INTDIR)\solver1d.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
