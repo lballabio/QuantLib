@@ -71,7 +71,7 @@ namespace QuantLib {
         static boost::shared_ptr<DayCounter::Impl> implementation(
                                                                 Convention c);
       public:
-        ActualActual(Convention c = ActualActual::ISMA)
+        ActualActual(Convention c = ActualActual::ISDA)
         : DayCounter(implementation(c)) {}
     };
 
