@@ -30,6 +30,10 @@ using namespace QuantLib;
 using QuantLib::Pricers::BarrierOption;
 using QuantLib::Pricers::BinaryOption;
 using QuantLib::Pricers::CliquetOption;
+using QuantLib::Pricers::FdDividendEuropeanOption;
+using QuantLib::Pricers::EuropeanOption;
+using QuantLib::Pricers::FdEuropean;
+using QuantLib::RandomNumbers::UniformRandomGenerator;
 
 namespace {
 
@@ -67,13 +71,13 @@ CppUnit::Test* OldPricerTest::suite() {
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style cliquet option pricer",
                     &OldPricerTest::testCliquetPricer));
-    /*
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style European option pricer with dividends",
                     &OldPricerTest::testDividendEuropeanPricer));
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style finite-difference European pricer",
                     &OldPricerTest::testFdEuropeanPricer));
+    /*
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style American-type pricers",
                     &OldPricerTest::testAmericanPricers));
@@ -296,9 +300,10 @@ void OldPricerTest::testBinaryPricer() {
                               DoubleFormatter::toString(T) + "\n"
                               "    volatility:     " +
                               RateFormatter::toString(v) + "\n\n"
-                              "    calculated value: " +
+                              "    calculated " + greek + ": " +
                               DoubleFormatter::toString(calcl) + "\n"
-                              "    expected:         " +
+                              "    expected:    " + 
+                              std::string(greek.size(),' ') +
                               DoubleFormatter::toString(expct));
                     }
                   }
@@ -334,4 +339,179 @@ void OldPricerTest::testCliquetPricer() {
             DoubleFormatter::toString(expected));
 }
 
+void OldPricerTest::testDividendEuropeanPricer() {
 
+    Size nstp = 150;
+    Size ngrd = nstp+1;
+    std::vector<double> div(2);
+    div[0] = 3.92; div[1] = 4.21;
+    std::vector<Time> dates(2);
+    dates[0] = 0.333; dates[1] = 0.667;
+
+    std::map<std::string,double> calculated, expected, tolerance;
+    tolerance["delta"]  = 1.0e-4;
+    tolerance["gamma"]  = 1.0e-4;
+    tolerance["theta"]  = 1.0e-4;
+    tolerance["rho"]    = 1.0e-4;
+    tolerance["vega"]   = 1.0e-4;
+    
+    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+    double underlyings[] = { 100 };
+    Rate rRates[] = { 0.01, 0.10, 0.30 };
+    Rate qRates[] = { 0.00, 0.05, 0.15 };
+    Time residualTimes[] = { 1.0, 2.0 };
+    double strikes[] = { 50, 99.5, 100, 100.5, 150 };
+    double volatilities[] = { 0.04, 0.2, 0.7 };
+
+    for (int i1=0; i1<LENGTH(types); i1++) {
+      for (int i2=0; i2<LENGTH(underlyings); i2++) {
+        for (int i3=0; i3<LENGTH(rRates); i3++) {
+          for (int i4=0; i4<LENGTH(qRates); i4++) {
+            for (int i5=0; i5<LENGTH(residualTimes); i5++) {
+              for (int i6=0; i6<LENGTH(strikes); i6++) {
+                for (int i7=0; i7<LENGTH(volatilities); i7++) {
+                  // test data
+                  Option::Type type = types[i1];
+                  double u = underlyings[i2];
+                  Rate r = rRates[i3];
+                  Rate q = qRates[i4];
+                  Time T = residualTimes[i5];
+                  double k = strikes[i6];
+                  double v = volatilities[i7];
+                  // increments
+                  double du = u*1.0e-4;
+                  Time dT = T/nstp;
+                  double dv = v*1.0e-4;
+                  Spread dr = r*1.0e-4;
+
+                  // reference option
+                  FdDividendEuropeanOption opt(type,u,k,q,r,T,v,div,dates);
+                  if (opt.value() > u*1.0e-5) {
+                    // greeks
+                    calculated["delta"]  = opt.delta();
+                    calculated["gamma"]  = opt.gamma();
+                    calculated["theta"]  = opt.theta();
+                    calculated["rho"]    = opt.rho();
+                    calculated["vega"]   = opt.vega();
+
+                    // recalculate greeks numerically
+                    std::vector<Time> datesP(2), datesM(2);
+                    std::transform(dates.begin(),dates.end(),datesP.begin(),
+                                   std::bind2nd(std::plus<Time>(),dT));
+                    std::transform(dates.begin(),dates.end(),datesM.begin(),
+                                   std::bind2nd(std::minus<Time>(),dT));
+                    FdDividendEuropeanOption 
+                        optPs(type, u+du, k, q, r,    T ,   v   , div, dates),
+                        optMs(type, u-du, k, q, r,    T ,   v   , div, dates),
+                        optPt(type, u   , k, q, r,    T+dT, v   , div, datesP),
+                        optMt(type, u   , k, q, r,    T-dT, v   , div, datesM),
+                        optPr(type, u   , k, q, r+dr, T   , v   , div, dates),
+                        optMr(type, u   , k, q, r-dr, T   , v   , div, dates),
+                        optPv(type, u   , k, q, r   , T   , v+dv, div, dates),
+                        optMv(type, u   , k, q, r   , T   , v-dv, div, dates);
+
+                    expected["delta"]  =  (optPs.value()-optMs.value())/(2*du);
+                    expected["gamma"]  =  (optPs.delta()-optMs.delta())/(2*du);
+                    expected["theta"]  = -(optPt.value()-optMt.value())/(2*dT);
+                    expected["rho"]    =  (optPr.value()-optMr.value())/(2*dr);
+                    expected["vega"]   =  (optPv.value()-optMv.value())/(2*dv);
+                    
+                    // check
+                    std::map<std::string,double>::iterator it;
+                    for (it = expected.begin(); it != expected.end(); ++it) {
+                      std::string greek = it->first;
+                      double expct = expected[greek];
+                      double calcl = calculated[greek];
+                      double tol = tolerance[greek];
+                      if (relError(expct,calcl,u) > tol)
+                          CPPUNIT_FAIL(
+                              "Option details: \n"
+                              "    type:           " +
+                              typeToString(type) + "\n"
+                              "    underlying:     " +
+                              DoubleFormatter::toString(u) + "\n"
+                              "    strike:         " +
+                              DoubleFormatter::toString(k) + "\n"
+                              "    dividend yield: " +
+                              RateFormatter::toString(q) + "\n"
+                              "    risk-free rate: " +
+                              RateFormatter::toString(r) + "\n"
+                              "    residual time:  " +
+                              DoubleFormatter::toString(T) + "\n"
+                              "    volatility:     " +
+                              RateFormatter::toString(v) + "\n\n"
+                              "    calculated " + greek + ": " +
+                              DoubleFormatter::toString(calcl) + "\n"
+                              "    expected:    " + 
+                              std::string(greek.size(),' ') +
+                              DoubleFormatter::toString(expct));
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+}
+
+void OldPricerTest::testFdEuropeanPricer() {
+
+    double under = 100.0;
+    double strikeMin = 60.0, strikeRange = 100.0;
+    Rate rRateMin = 0.0,  rRateRange = 0.18;
+    Rate qRateMin = 0.0,  qRateRange = 0.02;
+    double volMin = 0.0, volRange = 1.2;
+    Time timeMin = 0.5, timeRange = 2.0;
+
+    double tolerance = 1.0e-2;
+    Size totCases = 200;
+
+    UniformRandomGenerator rng(56789012);
+
+    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+
+    for (int i=0; i<totCases; i++) {
+
+        double strike = strikeMin + strikeRange * rng.next().value;
+        Rate qRate = qRateMin + qRateRange * rng.next().value;
+        Rate rRate = rRateMin + rRateRange * rng.next().value;
+        double vol = volMin + volRange * rng.next().value;
+        Time resTime = timeMin + timeRange * rng.next().value;
+
+        for (int j=0; j<LENGTH(types); j++) {
+
+            double anValue = EuropeanOption(types[j], under, strike, 
+                                            qRate, rRate, resTime, 
+                                            vol).value();
+            double numValue = FdEuropean(types[j], under, strike, 
+                                         qRate, rRate, resTime, 
+                                         vol, 100, 400).value();
+            if (QL_FABS(anValue-numValue) > tolerance)
+                CPPUNIT_FAIL(
+                    "Option details: \n"
+                    "    type:           " +
+                    typeToString(types[j]) + "\n"
+                    "    underlying:     " +
+                    DoubleFormatter::toString(under) + "\n"
+                    "    strike:         " +
+                    DoubleFormatter::toString(strike) + "\n"
+                    "    dividend yield: " +
+                    RateFormatter::toString(qRate) + "\n"
+                    "    risk-free rate: " +
+                    RateFormatter::toString(rRate) + "\n"
+                    "    residual time:  " +
+                    DoubleFormatter::toString(resTime) + "\n"
+                    "    volatility:     " +
+                    RateFormatter::toString(vol) + "\n\n"
+                    "    calculated value: " +
+                    DoubleFormatter::toString(numValue) + "\n"
+                    "    expected:         " + 
+                    DoubleFormatter::toString(anValue));
+        }
+    }
+}
+
+
+                
