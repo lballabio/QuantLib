@@ -8,9 +8,9 @@ l  can be a,b,f for alpha, beta, final respectively
 n  is an ordinal number
 
 e.g. R000300a2 stands for Release 0.3.1a2
-e.g. R000300f0 stands for Release 0.3.1f0
+e.g. R000301a0 stands for Release 0.3.1f0
 
-The current version number is 0.3.0c0 - 000300c0
+The current version number is 0.3.1a0 - 000301a0
 This version number is in:
     QuantLib/dev_tools/version_number.txt,
     QuantLib/QuantLib.nsi,
@@ -39,3 +39,5 @@ A few RiskMap automatic building scripts have the previous release number
     release-job.sh
     release-job.bat
     release-job2.bat
+
+interested extensions: *.cpp;*.hpp;*.h;*.inl;*.txt;*.nsi;*.in;*.doxy;*.py;*.i;*.rb;*.bat;*.sh;*.TXT;*.scm
