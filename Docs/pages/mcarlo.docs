@@ -98,11 +98,11 @@
 
     Therefore, the paths to be generated for a Monte Carlo model of the
     Black-Scholes equation will be vectors of successive variations of
-    the logarithm of the underlying price over \f$ N \f$ consecutive time
-    intervals \f$ \Delta t_i, i = 0 \dots N-1 \f$.
+    the logarithm of the underlying price over \f$ M \f$ consecutive time
+    intervals \f$ \Delta t_i, i = 0 \dots M-1 \f$.
     Each such variation will be drawn from a Gaussian distribution with
     average \f$ \nu \Delta T_i \f$ and standard deviation
-    \f$ \sigma \sqrt{\Delta T_i} \f$---or possibly \f$ \nu_i \Delta T_i \f$
+    \f$ \sigma \sqrt{\Delta T_i} \f$ --- or possibly \f$ \nu_i \Delta T_i \f$
     and \f$ \sigma_i \sqrt{\Delta T_i} \f$ should \f$ \nu \f$ and
     \f$ \sigma \f$ vary in time.
 
@@ -126,7 +126,7 @@
     which encapsulates the relations between the diffusion components of
     the single paths.
 
-    The time discretization of the (multi)paths can be specifies either as
+    The time discretization of the (multi)paths can be specified either as
     a given number of equal time steps over a given time span, or as a
     vector of explicitly specified times at which the path will be sampled.
 
@@ -199,7 +199,7 @@
     \code
     given pathGenerator, pathPricer, accumulator;
     for i in number of samples {
-        path,weight  = pathGenerator.next();
+        path,weight = pathGenerator.next();
         price = pathPricer(path);
         accumulator.add(price,weight);
     }

@@ -35,7 +35,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! %path pricer for geometric average price option
+        //! %path pricer for geometric average strike option
         class GeometricASOPathPricer : public PathPricer<Path> {
           public:
             GeometricASOPathPricer(Option::Type type,

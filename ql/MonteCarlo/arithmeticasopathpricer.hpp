@@ -34,7 +34,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! %path pricer for average strike Asian options
+        //! %path pricer for arithmetic average strike Asian options
         class ArithmeticASOPathPricer : public PathPricer<Path> {
           public:
             ArithmeticASOPathPricer(Option::Type type,

@@ -93,7 +93,8 @@ namespace QuantLib {
             this class provides the value y such that
             formula here ...
 
-            For this implementation see Boris Moro,
+            It uses Beasly and Springer approximation, with an improved
+            approximation for the tails. See Boris Moro,
             "The Full Monte", 1995, Risk Magazine.
 
             This class can also be used to generate a gaussian normal
@@ -139,8 +140,7 @@ namespace QuantLib {
             formula here ...
 
             Anyone able to identify the algorithm used in this implementation?
-            It might be Hill and Davis (1973), or Odeh and Evans (1974), or
-		    Beasley and Springer (1977)
+            It might be Hill and Davis (1973), or Odeh and Evans (1974)
         */
         class InvCumulativeNormalDistribution2
         : public std::unary_function<double,double> {

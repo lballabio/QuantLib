@@ -62,8 +62,7 @@ namespace QuantLib {
 
         // Anyone able to identify the following algorithm?
         // It might be Hill and Davis (1973), or
-	    // Odeh and Evans (1974), or
-	    // Beasley and Springer (1977)
+	    // Odeh and Evans (1974)
 
         const double InvCumulativeNormalDistribution2::p0_ = 2.515517;
         const double InvCumulativeNormalDistribution2::p1_ = 0.802853;
@@ -117,11 +116,13 @@ namespace QuantLib {
             double temp=x-0.5;
 
             if (QL_FABS(temp) < 0.42) {
+                // Beasley and Springer, 1977
                 result=temp*temp;
                 result=temp*
                     (((a3_*result+a2_)*result+a1_)*result+a0_) /
                     ((((b3_*result+b2_)*result+b1_)*result+b0_)*result+1.0);
             } else {
+                // improved approximation for the tail (Moro 1995)
                 if (x<0.5)
                     result = x;
                 else
