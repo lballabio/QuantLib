@@ -204,12 +204,12 @@ clean::
 # Documentation
 HTML::
 	cd ..\Docs
-	$(DOXYGEN) doxygen.cfg
+	$(DOXYGEN) offline.doxy
 	cd ..\Win
 
 PDF::
 	cd ..\Docs
-	$(DOXYGEN) doxygen.cfg
+	$(DOXYGEN) offline.doxy
 	cd latex
 	$(PDFLATEX) refman
 	$(MAKEINDEX) refman.idx
@@ -218,7 +218,7 @@ PDF::
 
 PS::
 	cd ..\Docs
-	$(DOXYGEN) doxygen.cfg
+	$(DOXYGEN) offline.doxy
 	cd latex
 	$(LATEX) refman
 	$(MAKEINDEX) refman.idx
@@ -228,7 +228,7 @@ PS::
 
 alldocs::
 	cd ..\Docs
-	$(DOXYGEN) doxygen.cfg
+	$(DOXYGEN) offline.doxy
 	cd latex
 	$(PDFLATEX) refman
 	$(MAKEINDEX) refman.idx
