@@ -75,7 +75,7 @@ FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
-ALPHABETICAL_INDEX     = YES
+ALPHABETICAL_INDEX     = NO
 COLS_IN_ALPHA_INDEX    = 3
 IGNORE_PREFIX          =
 #---------------------------------------------------------------------------
@@ -83,7 +83,7 @@ IGNORE_PREFIX          =
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
-HTML_HEADER            =
+HTML_HEADER            = quantlibheader.html
 HTML_FOOTER            = quantlibfooter.html
 HTML_STYLESHEET        =
 HTML_ALIGN_MEMBERS     = YES
@@ -91,7 +91,7 @@ GENERATE_HTMLHELP      = YES
 GENERATE_CHI           = NO
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
-DISABLE_INDEX          = NO
+DISABLE_INDEX          = YES
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = NO
 TREEVIEW_WIDTH         = 250
@@ -103,7 +103,7 @@ LATEX_OUTPUT           = latex
 COMPACT_LATEX          = NO
 PAPER_TYPE             = a4wide
 EXTRA_PACKAGES         =
-LATEX_HEADER           =
+LATEX_HEADER           = quantlibheader.tex
 PDF_HYPERLINKS         = YES
 USE_PDFLATEX           = YES
 LATEX_BATCHMODE        = NO

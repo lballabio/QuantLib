@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.12  2001/08/22 17:54:35  lballabio
+# Documentation revamped
+#
 # Revision 1.11  2001/07/24 16:59:33  nando
 # documentation revised
 #
@@ -22,6 +25,7 @@
 .silent
 
 # Tools to be used
+SED       = sed
 DOXYGEN   = doxygen
 LATEX     = latex
 PDFLATEX  = pdflatex
@@ -29,18 +33,36 @@ MAKEINDEX = makeindex
 DVIPS     = dvips
 
 # Options
-TEX_OPTS     = --quiet --pool-size=1000000
+SED_CMDS = -e "/Page Index/d" \
+           -e "/input{pages}/d" \
+           -e "/Page Documentation/d" \
+           -e "/input{index}/d" \
+           -e "/include{install}/d" \
+           -e "/include{license}/d" \
+           -e "/include{platforms}/d" \
+           -e "/include{usage}/d" \
+           -e "/include{where}/d" \
+           -e "/include{todo}/d" \
+           -e "s/i_ndex/index/" \
+           -e "s/w_here/where/" \
+           -e "s/i_nstall/install/" \
+           -e "s/u_sage/usage/" \
+           -e "s/p_latforms/platforms/" \
+           -e "s/t_odo/todo/" \
+           -e "s/l_icense/license/"
+TEX_OPTS = --quiet --pool-size=1000000
 
 
 # Primary target:
 # all docs
 all:: html
     cd latex
+    ren refman.tex oldrefman.tex
+    $(SED) $(SED_CMDS) oldrefman.tex > refman.tex
+    del oldrefman.tex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
     $(PDFLATEX) $(TEX_OPTS) refman
-    $(LATEX) $(TEX_OPTS) refman
-    $(MAKEINDEX) refman.idx
     $(LATEX) $(TEX_OPTS) refman
     $(DVIPS) refman
     cd ..
@@ -55,6 +77,9 @@ html::
 # PDF documentation
 pdf:: html
     cd latex
+    ren refman.tex oldrefman.tex
+    $(SED) $(SED_CMDS) oldrefman.tex > refman.tex
+    del oldrefman.tex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
     $(PDFLATEX) $(TEX_OPTS) refman
@@ -63,6 +88,9 @@ pdf:: html
 # PostScript documentation
 ps:: html
     cd latex
+    ren refman.tex oldrefman.tex
+    $(SED) $(SED_CMDS) oldrefman.tex > refman.tex
+    del oldrefman.tex
     $(LATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
     $(LATEX) $(TEX_OPTS) refman

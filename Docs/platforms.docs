@@ -1,0 +1,45 @@
+
+/*! \page platforms Supported platforms
+
+    The following is a list of configurations and compilers supported by
+    %QuantLib. All configuration names may have up to four parts:
+    cpu-manufacturer-kernel-operating_system.
+
+    There are 3 officially supported configuration/compiler couples:
+
+    <table>
+    <tr>
+    <td>CONFIGURATION</td><td>COMPILER</td><td>MAINTAINER</td>
+    </tr><tr>
+    <td>i686-pc-debian2.2</td><td>gcc 2.9.2.95</td><td>Enrico Sirola</td>
+    </tr><tr>
+    <td>i686-pc-WinNT4</td><td>MS Visual C++ 6</td><td>Ferdinando Ametrano</td>
+    </tr><tr>
+    <td>i686-pc-WinNT4</td><td>Borland free compiler</td><td>Luigi Ballabio</td>
+    </tr>
+    </table>
+
+    %QuantLib was reported to compile also under:
+
+    <table>
+    <tr><td>CONFIGURATION</td>        <td>COMPILER</td></tr>
+    <tr><td>i686-pc-cygwin</td>       <td>gcc 2.95.</td></tr>
+    <tr><td>alpha-Redhat6.2</td>      <td>Compaq 6.3.9.3</td></tr>
+    <tr><td>FreeBSD</td>              <td>gcc 2.9.2.95</td></tr>
+    <tr><td>sparc-sun-solaris</td>    <td>gcc 2.9.2</td></tr>
+    <tr><td>sparc-sun-debian</td>     <td>gcc 2.9.2.95</td></tr>
+    <tr><td>arm</td><td></td></tr>
+    <tr><td>ia64</td><td></td></tr>
+    <tr><td>m68k</td><td></td></tr>
+    <tr><td>mips</td><td></td></tr>
+    <tr><td>mipsel</td><td></td></tr>
+    <tr><td>powerpc</td><td></td></tr>
+    <tr><td>s390</td><td></td></tr>
+    </table>
+
+    If you compiled (or failed to compile) %QuantLib on different configurations
+    and/or compilers please report your feedback to:
+    quantlib-users@lists.sourceforge.net
+
+*/
+

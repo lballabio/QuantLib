@@ -12,14 +12,14 @@ COMPILING
     borland compiler build tree indipendent from source tree
     gnu compiler (make) build tree indipendent from source tree
     understand why updateproject.sh does not work under cygwin
-    check compile success/failure on cygwin
-    check compile success/failure on (SourceForge compile farm)
-    check compile success/failure on other platforms/compilers
+    *** check compile success/failure on cygwin
+    *** check compile success/failure on (SourceForge compile farm)
+    *** check compile success/failure on other platforms/compilers
 
 LIBRARY
     QuantLib dynamic Win32 library (QuantLib.dll)
     write examples of QuantLib use
-    Examples: port to Linux and Borland, make a separate CVS module ?
+    *** Examples: port to Linux and Borland, make a separate CVS module ?
     develop C++ unit test suite based on ttp://sourceforge.net/projects/cppunit
     clean up accuracy definition in solver1D (x or f(x) accuracy ?)
     implement currency as per OMG definition
@@ -36,8 +36,8 @@ LIBRARY
     handle library versioning to allow multiple installed versions
     rename all files/dirs to lowercase no spaces (except INSTALL, TODO?)
 
-DOCUMENTATION
-    enforce file&classes DoxyGen requirements
+DOCUMENTATION ***
+    enforce fulpath&classesinclude DoxyGen requirements
     automated changelog update for each cvs commit
     add ChangeLog or History to DoxyGen
     add QuantLib Team and contributors to DoxyGen

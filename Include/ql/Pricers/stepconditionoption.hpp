@@ -25,11 +25,13 @@
 /*! \file stepconditionoption.hpp
     \fullpath Include/ql/Pricers/%stepconditionoption.hpp
     \brief Option requiring additional code to be executed at each time step
-
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/22 17:54:35  lballabio
+// Documentation revamped
+//
 // Revision 1.12  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -65,6 +67,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        //! Option requiring additional code to be executed at each time step
         class StepConditionOption : public BSMNumericalOption {
           protected:
             // constructor

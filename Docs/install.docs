@@ -1,0 +1,44 @@
+
+/*! \page install Installation
+
+    \subsection linux Linux/Unix
+    The simplest way to compile and install %QuantLib is:
+
+    -# `cd' to the %QuantLib directory and type `./configure' to configure the
+       package for your system.  If you're using `csh' on an old version of
+       System V, you might need to type `sh ./configure' instead to prevent
+       `csh' from trying to execute `configure' itself.
+       Running `configure' takes awhile.  While running, it prints some
+       messages telling which features it is checking for.
+    -# Type `make' to compile the package.
+    -# Type `make install' to install the programs and any data files and
+       documentation.
+    -# You can remove the program binaries and object files from the
+       source code directory by typing `make clean'.  To also remove the
+       files that `configure' created (so you can compile the package for
+       a different kind of computer), type `make distclean'.  There is
+       also a `make maintainer-clean' target, but that is intended mainly
+       for the package's developers.  If you use it, you may have to get
+       all sorts of other programs in order to regenerate files that came
+       with the distribution.
+
+    The file INSTALL.txt in the %QuantLib source distribution
+    contains more detailed instructions.
+
+    \subsection win32 Win32
+    A binary installer is available at <br>
+    http://sourceforge.net/project/showfiles.php?group_id=12740
+
+    Visual C++ 6.0 projects files and Borland C++ makefiles are supplied in case
+    one wants to rebuild the library.
+
+    The free Borland C++ compiler is available at <br>
+    http://www.borland.com/bcppbuilder/freecompiler/
+
+    \subsection mac Macintosh
+    Codewarrior support is currently broken.
+    %QuantLib should compile under Mac OS X as outlined under \ref linux.
+
+
+*/
+
