@@ -1631,14 +1631,6 @@ SOURCE=.\ql\PricingEngines\forwardengines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\forwardperformancevanillaanalyticengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\forwardvanillaanalyticengine.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\genericengine.hpp
 # End Source File
 # Begin Source File
@@ -1648,10 +1640,6 @@ SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\quantoengines.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\quantovanillaanalyticengine.cpp
 # End Source File
 # Begin Source File
 

@@ -195,15 +195,7 @@ namespace QuantLib {
         ForwardPerformanceEngine<ArgumentsType, ResultsType>::ForwardPerformanceEngine(
             const Handle<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
-        : originalEngine_(originalEngine) {
-            QL_REQUIRE(!originalEngine_.isNull(),
-                "ForwardPerformanceEngine::ForwardPerformanceEngine : "
-                "null engine or wrong engine type");
-            originalResults_ = dynamic_cast<const ResultsType*>(
-                originalEngine_->results());
-            originalArguments_ = dynamic_cast<ArgumentsType*>(
-                originalEngine_->arguments());
-        }
+        : ForwardEngine<ArgumentsType, ResultsType>(originalEngine) {}
 
         template<class ArgumentsType, class ResultsType>
         void ForwardPerformanceEngine<ArgumentsType, ResultsType>::getOriginalResults() const {

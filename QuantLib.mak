@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -92,8 +95,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
-	-@erase "$(INTDIR)\forwardperformancevanillaanalyticengine.obj"
-	-@erase "$(INTDIR)\forwardvanillaanalyticengine.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\g2.obj"
@@ -142,7 +143,6 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
-	-@erase "$(INTDIR)\quantovanillaanalyticengine.obj"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -189,40 +189,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -365,9 +332,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\forwardperformancevanillaanalyticengine.obj" \
-	"$(INTDIR)\forwardvanillaanalyticengine.obj" \
-	"$(INTDIR)\quantovanillaanalyticengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -448,8 +412,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
-	-@erase "$(INTDIR)\forwardperformancevanillaanalyticengine.obj"
-	-@erase "$(INTDIR)\forwardvanillaanalyticengine.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\g2.obj"
@@ -498,7 +460,6 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
-	-@erase "$(INTDIR)\quantovanillaanalyticengine.obj"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -546,40 +507,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -722,9 +650,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\forwardperformancevanillaanalyticengine.obj" \
-	"$(INTDIR)\forwardvanillaanalyticengine.obj" \
-	"$(INTDIR)\quantovanillaanalyticengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -805,8 +730,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
-	-@erase "$(INTDIR)\forwardperformancevanillaanalyticengine.obj"
-	-@erase "$(INTDIR)\forwardvanillaanalyticengine.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\g2.obj"
@@ -855,7 +778,6 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
-	-@erase "$(INTDIR)\quantovanillaanalyticengine.obj"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -902,40 +824,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1078,9 +967,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\forwardperformancevanillaanalyticengine.obj" \
-	"$(INTDIR)\forwardvanillaanalyticengine.obj" \
-	"$(INTDIR)\quantovanillaanalyticengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1161,8 +1047,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
-	-@erase "$(INTDIR)\forwardperformancevanillaanalyticengine.obj"
-	-@erase "$(INTDIR)\forwardvanillaanalyticengine.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\g2.obj"
@@ -1211,7 +1095,6 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
-	-@erase "$(INTDIR)\quantovanillaanalyticengine.obj"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -1259,40 +1142,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1435,9 +1285,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\forwardperformancevanillaanalyticengine.obj" \
-	"$(INTDIR)\forwardvanillaanalyticengine.obj" \
-	"$(INTDIR)\quantovanillaanalyticengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1454,6 +1301,36 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -2273,24 +2150,6 @@ SOURCE=.\ql\PricingEngines\europeananalyticalengine.cpp
 SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
 
 "$(INTDIR)\europeanbinomialengine.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\forwardperformancevanillaanalyticengine.cpp
-
-"$(INTDIR)\forwardperformancevanillaanalyticengine.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\forwardvanillaanalyticengine.cpp
-
-"$(INTDIR)\forwardvanillaanalyticengine.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\quantovanillaanalyticengine.cpp
-
-"$(INTDIR)\quantovanillaanalyticengine.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

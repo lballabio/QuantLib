@@ -17,9 +17,6 @@ EXTRA_DIST=makefile.mak
 libPricingEngines_la_SOURCES = \
     discretizedvanillaoption.cpp \
     europeanbinomialengine.cpp \
-    europeananalyticalengine.cpp \
-    forwardvanillaanalyticengine.cpp \
-    forwardperformancevanillaanalyticengine.cpp \
-    quantovanillaanalyticengine.cpp
+    europeananalyticalengine.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la
