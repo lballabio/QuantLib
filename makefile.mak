@@ -35,25 +35,25 @@ check: tests
 test: tests
 
 # tests
-tests:: quantlib
+tests:: functions quantlib
     cd test-suite
     $(MAKE) -DQL_DIR=".."
     cd ..
 
 # functions
-functions::
+functions:: quantlib
     cd functions\ql\Functions
     $(MAKE) -DQL_DIR="..\..\.."
     cd ..\..\..
 
 #all
-all:: examples functions tests
+all:: examples tests
     cd test-suite
     $(MAKE) -DQL_DIR=".." check
     cd ..
 
 # Examples
-examples:: quantlib
+examples:: quantlib functions
     cd Examples
     $(MAKE) -DQL_DIR="..\.."
     cd ..

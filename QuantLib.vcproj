@@ -495,9 +495,6 @@
 				RelativePath="ql\Calendars\copenhagen.hpp">
 			</File>
 			<File
-				RelativePath="ql\Calendars\frankfurt.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\Calendars\germany.cpp">
 			</File>
 			<File
@@ -703,15 +700,6 @@
 			</File>
 			<File
 				RelativePath="ql\Calendars\jointcalendar.hpp">
-			</File>
-			<File
-				RelativePath="ql\Calendars\london.hpp">
-			</File>
-			<File
-				RelativePath=".\ql\Calendars\milan.hpp">
-			</File>
-			<File
-				RelativePath="ql\Calendars\newyork.hpp">
 			</File>
 			<File
 				RelativePath="ql\Calendars\nullcalendar.hpp">
@@ -5267,15 +5255,6 @@
 				RelativePath=".\ql\Pricers\all.hpp">
 			</File>
 			<File
-				RelativePath=".\ql\Pricers\cliquetoptionpricer.cpp">
-			</File>
-			<File
-				RelativePath=".\ql\Pricers\cliquetoptionpricer.hpp">
-			</File>
-			<File
-				RelativePath="ql\Pricers\continuousgeometricapo.hpp">
-			</File>
-			<File
 				RelativePath=".\ql\Pricers\core.hpp">
 			</File>
 			<File
@@ -5403,69 +5382,6 @@
 			</File>
 			<File
 				RelativePath="ql\Pricers\discretegeometricaso.hpp">
-			</File>
-			<File
-				RelativePath="ql\Pricers\dividendeuropeanoption.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\dividendeuropeanoption.hpp">
 			</File>
 			<File
 				RelativePath="ql\Pricers\fdamericanoption.hpp">
@@ -5978,69 +5894,6 @@
 				RelativePath="ql\Pricers\fdstepconditionoption.hpp">
 			</File>
 			<File
-				RelativePath="ql\Pricers\mcbasket.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\mcbasket.hpp">
-			</File>
-			<File
 				RelativePath="ql\Pricers\mccliquetoption.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">
@@ -6546,69 +6399,6 @@
 			</File>
 			<File
 				RelativePath="ql\Pricers\mcpricer.hpp">
-			</File>
-			<File
-				RelativePath="ql\Pricers\performanceoption.cpp">
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug SingleThread|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ql\Pricers\performanceoption.hpp">
 			</File>
 			<File
 				RelativePath="ql\Pricers\singleassetoption.cpp">
@@ -7646,6 +7436,12 @@
 					RelativePath="ql\PricingEngines\Vanilla\jumpdiffusionengine.hpp">
 				</File>
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\juquadraticengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\juquadraticengine.hpp">
+				</File>
+				<File
 					RelativePath="ql\PricingEngines\Vanilla\mcdigitalengine.cpp">
 					<FileConfiguration
 						Name="Debug MTDLL|Win32">
@@ -8135,9 +7931,6 @@
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\rngtraits.hpp">
-			</File>
-			<File
-				RelativePath="ql\RandomNumbers\rngtypedefs.hpp">
 			</File>
 			<File
 				RelativePath="ql\RandomNumbers\sobolrsg.cpp">
@@ -10045,9 +9838,6 @@
 			RelativePath="ql\daycounter.hpp">
 		</File>
 		<File
-			RelativePath="ql\diffusionprocess.hpp">
-		</File>
-		<File
 			RelativePath="ql\discretizedasset.cpp">
 			<FileConfiguration
 				Name="Debug MTDLL|Win32">
@@ -10301,9 +10091,6 @@
 		</File>
 		<File
 			RelativePath="ql\grid.hpp">
-		</File>
-		<File
-			RelativePath="ql\handle.hpp">
 		</File>
 		<File
 			RelativePath="ql\history.hpp">

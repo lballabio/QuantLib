@@ -24,10 +24,8 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "cliquetoptionpricer.obj$(_mt)$(_D)" \
     "discretegeometricapo.obj$(_mt)$(_D)" \
     "discretegeometricaso.obj$(_mt)$(_D)" \
-    "dividendeuropeanoption.obj$(_mt)$(_D)" \
     "fdbermudanoption.obj$(_mt)$(_D)" \
     "fdbsmoption.obj$(_mt)$(_D)" \
     "fddividendamericanoption.obj$(_mt)$(_D)" \
@@ -36,7 +34,6 @@ OBJS = \
     "fdeuropean.obj$(_mt)$(_D)" \
     "fdmultiperiodoption.obj$(_mt)$(_D)" \
     "fdstepconditionoption.obj$(_mt)$(_D)" \
-    "mcbasket.obj$(_mt)$(_D)" \
     "mccliquetoption.obj$(_mt)$(_D)" \
     "mcdiscretearithmeticapo.obj$(_mt)$(_D)" \
     "mcdiscretearithmeticaso.obj$(_mt)$(_D)" \
@@ -45,7 +42,6 @@ OBJS = \
     "mcmaxbasket.obj$(_mt)$(_D)" \
     "mcpagoda.obj$(_mt)$(_D)" \
     "mcperformanceoption.obj$(_mt)$(_D)" \
-    "performanceoption.obj$(_mt)$(_D)" \
     "singleassetoption.obj$(_mt)$(_D)"
 
 # Tools to be used

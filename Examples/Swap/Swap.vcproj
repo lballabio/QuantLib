@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="Swap"
+	ProjectGUID="{4EAC6A0E-20F2-4B5A-8250-7E930CCE3AD0}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>

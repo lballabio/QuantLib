@@ -201,11 +201,16 @@ namespace QuantLib {
                 variance, tolerance);
 
             Real forwardSk = Sk * dividendDiscount / riskFreeDiscount;
+            // the following 3 assignements are not used - Nando
+            // ???????????????????????????
+            /*
             Real d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)
                 /QL_SQRT(variance);
             Real n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/variance;
             Real K = -2.0*QL_LOG(riskFreeDiscount)/
                 (variance*(1.0-riskFreeDiscount));            
+
+            */
 
             Real alpha = -2.0*QL_LOG(riskFreeDiscount)/(variance);
             Real beta = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/

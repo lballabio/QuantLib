@@ -149,11 +149,11 @@ TLIB_OPTS    = /P1024
 
 # Primary target:
 # QuantLib library
-$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_7.lib:: $(OUTPUT_DIR) $(CORE_OBJS) \
+$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_8.lib:: $(OUTPUT_DIR) $(CORE_OBJS) \
                                                                 SubLibraries
-    if exist $(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_7.lib \
-        del $(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_7.lib
-    $(TLIB) $(TLIB_OPTS) "$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_7.lib" \
+    if exist $(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_8.lib \
+        del $(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_8.lib
+    $(TLIB) $(TLIB_OPTS) "$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_8.lib" \
         /a $(QUANTLIB_OBJS)
 
 $(OUTPUT_DIR):
