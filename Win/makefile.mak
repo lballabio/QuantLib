@@ -7,6 +7,7 @@ OUTPUT_DIR		= .\Release
 PYTHON_DIR		= ..\Python
 SWIG_DIR		= ..\Swig
 SOURCES_DIR		= ..\Sources
+INCLUDE_DIR = ..\Include
 PYTHON_INCLUDE	= "C:\Program Files\Python\include"
 PYTHON_LIBS		= "C:\Program Files\Python\libs"
 BCC_INCLUDE		= "D:\Program Files\Borland\Bcc55\include"
@@ -35,7 +36,7 @@ COFF2OMF	= coff2omf
 SWIG		= swig1.3a5
 
 # Options
-CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -I"..\Sources" -I"..\Sources\Calendars" -I"..\Sources\Currencies" -I"..\Sources\DayCounters" -I"..\Sources\Instruments" -I"..\Sources\Math" -I"..\Sources\Operators" -I"..\Sources\Patterns" -I"..\Sources\PDE" -I"..\Sources\Pricers" -I"..\Sources\Solvers1D" -I"..\Sources\TermStructures" -I$(PYTHON_INCLUDE) -I$(BCC_INCLUDE) -w-8027
+CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -I"..\Sources" -I"..\Include" -I"..\Sources\Calendars" -I"..\Sources\Currencies" -I"..\Sources\DayCounters" -I"..\Sources\Instruments" -I"..\Sources\Math" -I"..\Sources\Operators" -I"..\Sources\Patterns" -I"..\Sources\PDE" -I"..\Sources\Pricers" -I"..\Sources\Solvers1D" -I"..\Sources\TermStructures" -I$(PYTHON_INCLUDE) -I$(BCC_INCLUDE) -w-8027
 LINK_OPTS	= -q -x -L$(BCC_LIBS)
 
 # Generic rules
@@ -71,35 +72,35 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i
 	@$(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
 	@copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
 	@del .\QuantLib.py
-$(SWIG_DIR)\QuantLib.i: $(SOURCES_DIR)\qldefines.h $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Currencies.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Options.i $(SWIG_DIR)\Instruments.i $(SWIG_DIR)\Operators.i $(SWIG_DIR)\Pricers.i $(SWIG_DIR)\Solvers1D.i $(SWIG_DIR)\TermStructures.i $(SWIG_DIR)\Statistics.i
+$(SWIG_DIR)\QuantLib.i: $(INCLUDE_DIR)\qldefines.h $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Currencies.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Options.i $(SWIG_DIR)\Instruments.i $(SWIG_DIR)\Operators.i $(SWIG_DIR)\Pricers.i $(SWIG_DIR)\Solvers1D.i $(SWIG_DIR)\TermStructures.i $(SWIG_DIR)\Statistics.i
 	@touch $<
-$(SWIG_DIR)\Date.i: $(SOURCES_DIR)\date.h $(SOURCES_DIR)\dataformatters.h
+$(SWIG_DIR)\Date.i: $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\dataformatters.h
 	@touch $<
-$(SWIG_DIR)\Calendars.i: $(SWIG_DIR)\Date.i $(SOURCES_DIR)\calendar.h $(SOURCES_DIR)\Calendars\target.h $(SOURCES_DIR)\Calendars\newyork.h $(SOURCES_DIR)\Calendars\london.h $(SOURCES_DIR)\Calendars\frankfurt.h $(SOURCES_DIR)\Calendars\milan.h 
+$(SWIG_DIR)\Calendars.i: $(SWIG_DIR)\Date.i $(INCLUDE_DIR)\calendar.h $(INCLUDE_DIR)\target.h $(INCLUDE_DIR)\newyork.h $(INCLUDE_DIR)\london.h $(INCLUDE_DIR)\frankfurt.h $(INCLUDE_DIR)\milan.h 
 	@touch $<
-$(SWIG_DIR)\DayCounters.i: $(SWIG_DIR)\Date.i $(SOURCES_DIR)\daycounter.h $(SOURCES_DIR)\DayCounters\actual360.h $(SOURCES_DIR)\DayCounters\actual365.h $(SOURCES_DIR)\DayCounters\actualactual.h $(SOURCES_DIR)\DayCounters\thirty360.h $(SOURCES_DIR)\DayCounters\thirty360european.h $(SOURCES_DIR)\DayCounters\thirty360italian.h
+$(SWIG_DIR)\DayCounters.i: $(SWIG_DIR)\Date.i $(INCLUDE_DIR)\daycounter.h $(INCLUDE_DIR)\actual360.h $(INCLUDE_DIR)\actual365.h $(INCLUDE_DIR)\actualactual.h $(INCLUDE_DIR)\thirty360.h $(INCLUDE_DIR)\thirty360european.h $(INCLUDE_DIR)\thirty360italian.h
 	@touch $<
-$(SWIG_DIR)\Currencies.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i $(SOURCES_DIR)\currency.h $(SOURCES_DIR)\Currencies\eur.h $(SOURCES_DIR)\Currencies\usd.h $(SOURCES_DIR)\Currencies\gbp.h $(SOURCES_DIR)\Currencies\dem.h $(SOURCES_DIR)\Currencies\itl.h
+$(SWIG_DIR)\Currencies.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\eur.h $(INCLUDE_DIR)\usd.h $(INCLUDE_DIR)\gbp.h $(INCLUDE_DIR)\dem.h $(INCLUDE_DIR)\itl.h
 	@touch $<
-$(SWIG_DIR)\Financial.i: $(SOURCES_DIR)\rate.h $(SOURCES_DIR)\spread.h $(SOURCES_DIR)\discountfactor.h
+$(SWIG_DIR)\Financial.i: $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\spread.h $(INCLUDE_DIR)\discountfactor.h
 	@touch $<
-$(SWIG_DIR)\Options.i: $(SOURCES_DIR)\options.h $(SOURCES_DIR)\dataformatters.h
+$(SWIG_DIR)\Options.i: $(INCLUDE_DIR)\options.h $(INCLUDE_DIR)\dataformatters.h
 	@touch $<
-$(SWIG_DIR)\Instruments.i: $(SWIG_DIR)\Financial.i $(SWIG_DIR)\TermStructures.i $(SOURCES_DIR)\instrument.h $(SOURCES_DIR)\Instruments\stock.h
+$(SWIG_DIR)\Instruments.i: $(SWIG_DIR)\Financial.i $(SWIG_DIR)\TermStructures.i $(INCLUDE_DIR)\instrument.h $(INCLUDE_DIR)\stock.h
 	@touch $<
-$(SWIG_DIR)\Operators.i: $(SWIG_DIR)\Vectors.i $(SWIG_DIR)\BoundaryConditions.i $(SOURCES_DIR)\Operators\tridiagonaloperator.h
+$(SWIG_DIR)\Operators.i: $(SWIG_DIR)\Vectors.i $(SWIG_DIR)\BoundaryConditions.i $(INCLUDE_DIR)\tridiagonaloperator.h
 	@touch $<
-$(SWIG_DIR)\Pricers.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Options.i $(SWIG_DIR)\Financial.i $(SOURCES_DIR)\Pricers\bsmeuropeanoption.h $(SOURCES_DIR)\Pricers\bsmamericanoption.h
+$(SWIG_DIR)\Pricers.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Options.i $(SWIG_DIR)\Financial.i $(INCLUDE_DIR)\bsmeuropeanoption.h $(INCLUDE_DIR)\bsmamericanoption.h
 	@touch $<
-$(SWIG_DIR)\Solvers1D.i: $(SOURCES_DIR)\solver1d.h $(SOURCES_DIR)\Solvers1D\bisection.h $(SOURCES_DIR)\Solvers1D\brent.h $(SOURCES_DIR)\Solvers1D\falseposition.h $(SOURCES_DIR)\Solvers1D\newton.h $(SOURCES_DIR)\Solvers1D\newtonsafe.h $(SOURCES_DIR)\Solvers1D\ridder.h $(SOURCES_DIR)\Solvers1D\secant.h 
+$(SWIG_DIR)\Solvers1D.i: $(INCLUDE_DIR)\solver1d.h $(INCLUDE_DIR)\bisection.h $(INCLUDE_DIR)\brent.h $(INCLUDE_DIR)\falseposition.h $(INCLUDE_DIR)\newton.h $(INCLUDE_DIR)\newtonsafe.h $(INCLUDE_DIR)\ridder.h $(INCLUDE_DIR)\secant.h 
 	@touch $<
-$(SWIG_DIR)\TermStructures.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Currencies.i $(SOURCES_DIR)\termstructure.h $(SOURCES_DIR)\handle.h $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.h 
+$(SWIG_DIR)\TermStructures.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Currencies.i $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\piecewiseconstantforwards.h 
 	@touch $<
-$(SWIG_DIR)\Vectors.i: $(SOURCES_DIR)\array.h
+$(SWIG_DIR)\Vectors.i: $(INCLUDE_DIR)\array.h
 	@touch $<
-$(SWIG_DIR)\BoundaryConditions.i: $(SOURCES_DIR)\PDE\boundarycondition.h $(SOURCES_DIR)\dataformatters.h
+$(SWIG_DIR)\BoundaryConditions.i: $(INCLUDE_DIR)\boundarycondition.h $(INCLUDE_DIR)\dataformatters.h
 	@touch $<
-$(SWIG_DIR)\Statistics.i: $(SWIG_DIR)\Vectors.i $(SOURCES_DIR)\statistics.h
+$(SWIG_DIR)\Statistics.i: $(SWIG_DIR)\Vectors.i $(INCLUDE_DIR)\statistics.h
 	@touch $<
 
 # QuantLib files
@@ -113,56 +114,56 @@ $(OUTPUT_DIR)\date.obj: $(SOURCES_DIR)\date.cpp
 $(OUTPUT_DIR)\solver1d.obj: $(SOURCES_DIR)\solver1d.cpp
 $(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\statistics.cpp
 
-$(SOURCES_DIR)\calendar.cpp: $(SOURCES_DIR)\calendar.h
+$(SOURCES_DIR)\calendar.cpp: $(INCLUDE_DIR)\calendar.h
 	@touch $<
-$(SOURCES_DIR)\dataformatters.cpp: $(SOURCES_DIR)\dataformatters.h
+$(SOURCES_DIR)\dataformatters.cpp: $(INCLUDE_DIR)\dataformatters.h
 	@touch $<
-$(SOURCES_DIR)\date.cpp: $(SOURCES_DIR)\date.h
+$(SOURCES_DIR)\date.cpp: $(INCLUDE_DIR)\date.h
 	@touch $<
-$(SOURCES_DIR)\solver1d.cpp: $(SOURCES_DIR)\solver1d.h
+$(SOURCES_DIR)\solver1d.cpp: $(INCLUDE_DIR)\solver1d.h
 	@touch $<
-$(SOURCES_DIR)\statistics.cpp: $(SOURCES_DIR)\statistics.h
+$(SOURCES_DIR)\statistics.cpp: $(INCLUDE_DIR)\statistics.h
 	@touch $<
 
-$(SOURCES_DIR)\array.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\expressiontemplates.h
+$(INCLUDE_DIR)\array.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\expressiontemplates.h
 	@touch $<
-$(SOURCES_DIR)\calendar.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\qlerrors.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\handle.h 
+$(INCLUDE_DIR)\calendar.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\handle.h 
 	@touch $<
-$(SOURCES_DIR)\currency.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\calendar.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\handle.h 
+$(INCLUDE_DIR)\currency.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\calendar.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\handle.h 
 	@touch $<
-$(SOURCES_DIR)\dataformatters.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\null.h
+$(INCLUDE_DIR)\dataformatters.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\null.h
 	@touch $<
-$(SOURCES_DIR)\date.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\qlerrors.h
+$(INCLUDE_DIR)\date.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerrors.h
 	@touch $<
-$(SOURCES_DIR)\daycounter.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\handle.h 
+$(INCLUDE_DIR)\daycounter.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\handle.h 
 	@touch $<
-$(SOURCES_DIR)\discountfactor.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\qlerrors.h $(SOURCES_DIR)\dataformatters.h 
+$(INCLUDE_DIR)\discountfactor.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\dataformatters.h 
 	@touch $<
-$(SOURCES_DIR)\expressiontemplates.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\expressiontemplates.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
-$(SOURCES_DIR)\forwardvolsurface.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\rate.h $(SOURCES_DIR)\handle.h $(SOURCES_DIR)\Patterns\observable.h
+$(INCLUDE_DIR)\forwardvolsurface.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\observable.h
 	@touch $<
-$(SOURCES_DIR)\handle.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\handle.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
-$(SOURCES_DIR)\instrument.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\termstructure.h $(SOURCES_DIR)\swaptionvolsurface.h $(SOURCES_DIR)\forwardvolsurface.h
+$(INCLUDE_DIR)\instrument.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\swaptionvolsurface.h $(INCLUDE_DIR)\forwardvolsurface.h
 	@touch $<
-$(SOURCES_DIR)\null.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\null.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
-$(SOURCES_DIR)\options.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\options.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
-$(SOURCES_DIR)\qlerrors.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\qlerrors.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
-$(SOURCES_DIR)\solver1d.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\null.h $(SOURCES_DIR)\qlerrors.h $(SOURCES_DIR)\dataformatters.h 
+$(INCLUDE_DIR)\solver1d.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\null.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\dataformatters.h 
 	@touch $<
-$(SOURCES_DIR)\spread.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\qlerrors.h $(SOURCES_DIR)\dataformatters.h 
+$(INCLUDE_DIR)\spread.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\dataformatters.h 
 	@touch $<
-$(SOURCES_DIR)\statistics.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\null.h $(SOURCES_DIR)\qlerrors.h
+$(INCLUDE_DIR)\statistics.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\null.h $(INCLUDE_DIR)\qlerrors.h
 	@touch $<
-$(SOURCES_DIR)\swaptionvolsurface.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\rate.h $(SOURCES_DIR)\handle.h $(SOURCES_DIR)\Patterns\observable.h
+$(INCLUDE_DIR)\swaptionvolsurface.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\observable.h
 	@touch $<
-$(SOURCES_DIR)\termstructure.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\calendar.h $(SOURCES_DIR)\rate.h $(SOURCES_DIR)\spread.h $(SOURCES_DIR)\discountfactor.h  $(SOURCES_DIR)\currency.h $(SOURCES_DIR)\handle.h $(SOURCES_DIR)\Patterns\observable.h
+$(INCLUDE_DIR)\termstructure.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\calendar.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\spread.h $(INCLUDE_DIR)\discountfactor.h  $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\observable.h
 	@touch $<
-$(SOURCES_DIR)\rate.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\qlerrors.h $(SOURCES_DIR)\spread.h $(SOURCES_DIR)\dataformatters.h 
+$(INCLUDE_DIR)\rate.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\spread.h $(INCLUDE_DIR)\dataformatters.h 
 	@touch $<
 
 
@@ -175,43 +176,43 @@ $(OUTPUT_DIR)\milan.obj: $(SOURCES_DIR)\Calendars\milan.cpp
 $(OUTPUT_DIR)\newyork.obj: $(SOURCES_DIR)\Calendars\newyork.cpp
 $(OUTPUT_DIR)\target.obj: $(SOURCES_DIR)\Calendars\target.cpp
 
-$(SOURCES_DIR)\Calendars\westerncalendar.cpp: $(SOURCES_DIR)\Calendars\westerncalendar.h
+$(SOURCES_DIR)\Calendars\westerncalendar.cpp: $(INCLUDE_DIR)\westerncalendar.h
 	@touch $<
-$(SOURCES_DIR)\Calendars\frankfurt.cpp: $(SOURCES_DIR)\Calendars\frankfurt.h
+$(SOURCES_DIR)\Calendars\frankfurt.cpp: $(INCLUDE_DIR)\frankfurt.h
 	@touch $<
-$(SOURCES_DIR)\Calendars\london.cpp: $(SOURCES_DIR)\Calendars\london.h
+$(SOURCES_DIR)\Calendars\london.cpp: $(INCLUDE_DIR)\london.h
 	@touch $<
-$(SOURCES_DIR)\Calendars\milan.cpp: $(SOURCES_DIR)\Calendars\milan.h
+$(SOURCES_DIR)\Calendars\milan.cpp: $(INCLUDE_DIR)\milan.h
 	@touch $<
-$(SOURCES_DIR)\Calendars\newyork.cpp: $(SOURCES_DIR)\Calendars\newyork.h
+$(SOURCES_DIR)\Calendars\newyork.cpp: $(INCLUDE_DIR)\newyork.h
 	@touch $<
-$(SOURCES_DIR)\Calendars\target.cpp: $(SOURCES_DIR)\Calendars\target.h
+$(SOURCES_DIR)\Calendars\target.cpp: $(INCLUDE_DIR)\target.h
 	@touch $<
 
-$(SOURCES_DIR)\Calendars\westerncalendar.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\calendar.h 
+$(INCLUDE_DIR)\westerncalendar.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\calendar.h 
 	@touch $<
-$(SOURCES_DIR)\Calendars\frankfurt.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Calendars\westerncalendar.h 
+$(INCLUDE_DIR)\frankfurt.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\westerncalendar.h 
 	@touch $<
-$(SOURCES_DIR)\Calendars\london.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Calendars\westerncalendar.h 
+$(INCLUDE_DIR)\london.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\westerncalendar.h 
 	@touch $<
-$(SOURCES_DIR)\Calendars\milan.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Calendars\westerncalendar.h 
+$(INCLUDE_DIR)\milan.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\westerncalendar.h 
 	@touch $<
-$(SOURCES_DIR)\Calendars\newyork.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Calendars\westerncalendar.h 
+$(INCLUDE_DIR)\newyork.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\westerncalendar.h 
 	@touch $<
-$(SOURCES_DIR)\Calendars\target.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Calendars\westerncalendar.h 
+$(INCLUDE_DIR)\target.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\westerncalendar.h 
 	@touch $<
 
 
 # Currencies
-$(SOURCES_DIR)\Currencies\dem.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\currency.h $(SOURCES_DIR)\Calendars\target.h
+$(INCLUDE_DIR)\dem.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\target.h
 	@touch $<
-$(SOURCES_DIR)\Currencies\eur.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\currency.h $(SOURCES_DIR)\Calendars\target.h
+$(INCLUDE_DIR)\eur.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\target.h
 	@touch $<
-$(SOURCES_DIR)\Currencies\gbp.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\currency.h $(SOURCES_DIR)\Calendars\london.h
+$(INCLUDE_DIR)\gbp.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\london.h
 	@touch $<
-$(SOURCES_DIR)\Currencies\itl.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\currency.h $(SOURCES_DIR)\Calendars\target.h
+$(INCLUDE_DIR)\itl.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\target.h
 	@touch $<
-$(SOURCES_DIR)\Currencies\usd.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\currency.h $(SOURCES_DIR)\Calendars\newyork.h
+$(INCLUDE_DIR)\usd.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\newyork.h
 	@touch $<
 
 
@@ -221,29 +222,29 @@ $(OUTPUT_DIR)\actualactual.obj: $(SOURCES_DIR)\DayCounters\actualactual.cpp
 $(OUTPUT_DIR)\thirty360.obj: $(SOURCES_DIR)\DayCounters\thirty360.cpp
 $(OUTPUT_DIR)\thirty360italian.obj: $(SOURCES_DIR)\DayCounters\thirty360italian.cpp
 
-$(SOURCES_DIR)\DayCounters\actualactual.cpp: $(SOURCES_DIR)\DayCounters\actualactual.h $(SOURCES_DIR)\DayCounters\thirty360european.h $(SOURCES_DIR)\null.h
+$(SOURCES_DIR)\DayCounters\actualactual.cpp: $(INCLUDE_DIR)\actualactual.h $(INCLUDE_DIR)\thirty360european.h $(INCLUDE_DIR)\null.h
 	@touch $<
-$(SOURCES_DIR)\DayCounters\thirty360.cpp: $(SOURCES_DIR)\DayCounters\thirty360.h
+$(SOURCES_DIR)\DayCounters\thirty360.cpp: $(INCLUDE_DIR)\thirty360.h
 	@touch $<
-$(SOURCES_DIR)\DayCounters\thirty360italian.cpp: $(SOURCES_DIR)\DayCounters\thirty360italian.h
+$(SOURCES_DIR)\DayCounters\thirty360italian.cpp: $(INCLUDE_DIR)\thirty360italian.h
 	@touch $<
 
-$(SOURCES_DIR)\DayCounters\actual360.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\daycounter.h
+$(INCLUDE_DIR)\actual360.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\daycounter.h
 	@touch $<
-$(SOURCES_DIR)\DayCounters\actual365.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\daycounter.h
+$(INCLUDE_DIR)\actual365.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\daycounter.h
 	@touch $<
-$(SOURCES_DIR)\DayCounters\actualactual.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\daycounter.h
+$(INCLUDE_DIR)\actualactual.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\daycounter.h
 	@touch $<
-$(SOURCES_DIR)\DayCounters\thirty360.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\daycounter.h
+$(INCLUDE_DIR)\thirty360.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\daycounter.h
 	@touch $<
-$(SOURCES_DIR)\DayCounters\thirty360european.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\daycounter.h
+$(INCLUDE_DIR)\thirty360european.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\daycounter.h
 	@touch $<
-$(SOURCES_DIR)\DayCounters\thirty360italian.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\daycounter.h
+$(INCLUDE_DIR)\thirty360italian.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\daycounter.h
 	@touch $<
 
 
 # Instruments
-$(SOURCES_DIR)\Instruments\stock.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\instrument.h
+$(INCLUDE_DIR)\stock.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\instrument.h
 	@touch $<
 
 
@@ -251,10 +252,10 @@ $(SOURCES_DIR)\Instruments\stock.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\in
 Math: $(MATH_OBJS)
 $(OUTPUT_DIR)\normaldistribution.obj: $(SOURCES_DIR)\Math\normaldistribution.cpp
 
-$(SOURCES_DIR)\Math\normaldistribution.cpp: $(SOURCES_DIR)\Math\normaldistribution.h
+$(SOURCES_DIR)\Math\normaldistribution.cpp: $(INCLUDE_DIR)\normaldistribution.h
 	@touch $<
 
-$(SOURCES_DIR)\Math\normaldistribution.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\normaldistribution.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
 
 
@@ -263,39 +264,39 @@ Operators: $(OPERATOR_OBJS)
 $(OUTPUT_DIR)\tridiagonaloperator.obj: $(SOURCES_DIR)\Operators\tridiagonaloperator.cpp
 $(OUTPUT_DIR)\blackscholesmerton.obj: $(SOURCES_DIR)\Operators\blackscholesmerton.cpp
 
-$(SOURCES_DIR)\Operators\tridiagonaloperator.cpp: $(SOURCES_DIR)\Operators\tridiagonaloperator.h
+$(SOURCES_DIR)\Operators\tridiagonaloperator.cpp: $(INCLUDE_DIR)\tridiagonaloperator.h
 	@touch $<
-$(SOURCES_DIR)\Operators\blackscholesmerton.cpp: $(SOURCES_DIR)\Operators\blackscholesmerton.h
+$(SOURCES_DIR)\Operators\blackscholesmerton.cpp: $(INCLUDE_DIR)\blackscholesmerton.h
 	@touch $<
 
-$(SOURCES_DIR)\Operators\tridiagonaloperator.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\array.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\PDE\operator.h $(SOURCES_DIR)\PDE\identity.h $(SOURCES_DIR)\PDE\boundarycondition.h
+$(INCLUDE_DIR)\tridiagonaloperator.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\array.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\operator.h $(INCLUDE_DIR)\identity.h $(INCLUDE_DIR)\boundarycondition.h
 	@touch $<
-$(SOURCES_DIR)\Operators\blackscholesmerton.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Operators\tridiagonaloperator.h
+$(INCLUDE_DIR)\blackscholesmerton.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\tridiagonaloperator.h
 	@touch $<
 
 
 # Patterns
-$(SOURCES_DIR)\Patterns\observable.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\observable.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
 
 # PDE
-$(SOURCES_DIR)\PDE\backwardeuler.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\PDE\identity.h $(SOURCES_DIR)\PDE\operatortraits.h 
+$(INCLUDE_DIR)\backwardeuler.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\identity.h $(INCLUDE_DIR)\operatortraits.h 
 	@touch $<
-$(SOURCES_DIR)\PDE\boundarycondition.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\null.h $(SOURCES_DIR)\qlerrors.h
+$(INCLUDE_DIR)\boundarycondition.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\null.h $(INCLUDE_DIR)\qlerrors.h
 	@touch $<
-$(SOURCES_DIR)\PDE\cranknicolson.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\PDE\identity.h $(SOURCES_DIR)\PDE\operatortraits.h 
+$(INCLUDE_DIR)\cranknicolson.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\identity.h $(INCLUDE_DIR)\operatortraits.h 
 	@touch $<
-$(SOURCES_DIR)\PDE\finitedifferencemodel.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\handle.h $(SOURCES_DIR)\null.h  $(SOURCES_DIR)\PDE\stepcondition.h
+$(INCLUDE_DIR)\finitedifferencemodel.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\null.h  $(INCLUDE_DIR)\stepcondition.h
 	@touch $<
-$(SOURCES_DIR)\PDE\forwardeuler.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\PDE\identity.h $(SOURCES_DIR)\PDE\operatortraits.h 
+$(INCLUDE_DIR)\forwardeuler.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\identity.h $(INCLUDE_DIR)\operatortraits.h 
 	@touch $<
-$(SOURCES_DIR)\PDE\identity.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\identity.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
-$(SOURCES_DIR)\PDE\operator.h: $(SOURCES_DIR)\qldefines.h
+$(INCLUDE_DIR)\operator.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
-$(SOURCES_DIR)\PDE\operatortraits.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\array.h
+$(INCLUDE_DIR)\operatortraits.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\array.h
 	@touch $<
-$(SOURCES_DIR)\PDE\stepcondition.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h
+$(INCLUDE_DIR)\stepcondition.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h
 	@touch $<
 
 
@@ -306,22 +307,22 @@ $(OUTPUT_DIR)\bsmnumericaloption.obj: $(SOURCES_DIR)\Pricers\bsmnumericaloption.
 $(OUTPUT_DIR)\bsmeuropeanoption.obj: $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp
 $(OUTPUT_DIR)\bsmamericanoption.obj: $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
 
-$(SOURCES_DIR)\Pricers\bsmoption.cpp: $(SOURCES_DIR)\Pricers\bsmoption.h $(SOURCES_DIR)\qlerrors.h $(SOURCES_DIR)\Solvers1D\brent.h 
+$(SOURCES_DIR)\Pricers\bsmoption.cpp: $(INCLUDE_DIR)\bsmoption.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\brent.h 
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp: $(SOURCES_DIR)\Pricers\bsmnumericaloption.h $(SOURCES_DIR)\qlerrors.h
+$(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp: $(INCLUDE_DIR)\bsmnumericaloption.h $(INCLUDE_DIR)\qlerrors.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp: $(SOURCES_DIR)\discountfactor.h $(SOURCES_DIR)\Math\normaldistribution.h $(SOURCES_DIR)\Pricers\bsmeuropeanoption.h
+$(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp: $(INCLUDE_DIR)\discountfactor.h $(INCLUDE_DIR)\normaldistribution.h $(INCLUDE_DIR)\bsmeuropeanoption.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmamericanoption.cpp: $(SOURCES_DIR)\PDE\cranknicolson.h $(SOURCES_DIR)\PDE\finitedifferencemodel.h $(SOURCES_DIR)\Pricers\americancondition.h $(SOURCES_DIR)\Pricers\bsmamericanoption.h $(SOURCES_DIR)\Pricers\bsmeuropeanoption.h 
+$(SOURCES_DIR)\Pricers\bsmamericanoption.cpp: $(INCLUDE_DIR)\cranknicolson.h $(INCLUDE_DIR)\finitedifferencemodel.h $(INCLUDE_DIR)\americancondition.h $(INCLUDE_DIR)\bsmamericanoption.h $(INCLUDE_DIR)\bsmeuropeanoption.h 
 	@touch $<
 
-$(SOURCES_DIR)\Pricers\bsmoption.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\options.h $(SOURCES_DIR)\rate.h
+$(SOURCES_DIR)\bsmoption.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\options.h $(INCLUDE_DIR)\rate.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmnumericaloption.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Pricers\bsmoption.h $(SOURCES_DIR)\array.h $(SOURCES_DIR)\Operators\blackscholesmerton.h
+$(SOURCES_DIR)\bsmnumericaloption.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\bsmoption.h $(INCLUDE_DIR)\array.h $(INCLUDE_DIR)\blackscholesmerton.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmeuropeanoption.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Pricers\bsmoption.h
+$(INCLUDE_DIR)\bsmeuropeanoption.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\bsmoption.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmamericanoption.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\Pricers\bsmnumericaloption.h $(SOURCES_DIR)\PDE\stepcondition.h $(SOURCES_DIR)\Pricers\americancondition.h
+$(INCLUDE_DIR)\bsmamericanoption.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\bsmnumericaloption.h $(INCLUDE_DIR)\stepcondition.h $(INCLUDE_DIR)\americancondition.h
 	@touch $<
 
 # 1D solvers
@@ -334,45 +335,45 @@ $(OUTPUT_DIR)\newtonsafe.obj: $(SOURCES_DIR)\Solvers1D\newtonsafe.cpp
 $(OUTPUT_DIR)\ridder.obj: $(SOURCES_DIR)\Solvers1D\ridder.cpp
 $(OUTPUT_DIR)\secant.obj: $(SOURCES_DIR)\Solvers1D\secant.cpp
 
-$(SOURCES_DIR)\Solvers1D\bisection.cpp: $(SOURCES_DIR)\Solvers1D\bisection.h
+$(SOURCES_DIR)\Solvers1D\bisection.cpp: $(INCLUDE_DIR)\bisection.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\brent.cpp: $(SOURCES_DIR)\Solvers1D\brent.h
+$(SOURCES_DIR)\Solvers1D\brent.cpp: $(INCLUDE_DIR)\brent.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\falseposition.cpp: $(SOURCES_DIR)\Solvers1D\falseposition.h
+$(SOURCES_DIR)\Solvers1D\falseposition.cpp: $(INCLUDE_DIR)\falseposition.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\newton.cpp: $(SOURCES_DIR)\Solvers1D\newton.h $(SOURCES_DIR)\Solvers1D\newtonsafe.h
+$(SOURCES_DIR)\Solvers1D\newton.cpp: $(INCLUDE_DIR)\newton.h $(INCLUDE_DIR)\newtonsafe.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\newtonsafe.cpp: $(SOURCES_DIR)\Solvers1D\newtonsafe.h
+$(SOURCES_DIR)\Solvers1D\newtonsafe.cpp: $(INCLUDE_DIR)\newtonsafe.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\ridder.cpp: $(SOURCES_DIR)\Solvers1D\ridder.h
+$(SOURCES_DIR)\Solvers1D\ridder.cpp: $(INCLUDE_DIR)\ridder.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\secant.cpp: $(SOURCES_DIR)\Solvers1D\secant.h
+$(SOURCES_DIR)\Solvers1D\secant.cpp: $(INCLUDE_DIR)\secant.h
 	@touch $<
 
-$(SOURCES_DIR)\Solvers1D\bisection.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\solver1d.h
+$(INCLUDE_DIR)\bisection.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\solver1d.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\brent.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\solver1d.h
+$(INCLUDE_DIR)\brent.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\solver1d.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\falseposition.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\solver1d.h
+$(INCLUDE_DIR)\falseposition.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\solver1d.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\newton.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\solver1d.h
+$(INCLUDE_DIR)\newton.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\solver1d.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\newtonsafe.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\solver1d.h
+$(INCLUDE_DIR)\newtonsafe.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\solver1d.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\ridder.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\solver1d.h
+$(INCLUDE_DIR)\ridder.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\solver1d.h
 	@touch $<
-$(SOURCES_DIR)\Solvers1D\secant.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\solver1d.h
+$(INCLUDE_DIR)\secant.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\solver1d.h
 	@touch $<
 
 
 # Term structures
 TermStructures: $(TERMSTRUC_OBJS)
-$(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp
+$(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\piecewiseconstantforwards.cpp
 
-$(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp: $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.h
+$(SOURCES_DIR)\piecewiseconstantforwards.cpp: $(INCLUDE_DIR)\piecewiseconstantforwards.h
 	@touch $<
 
-$(SOURCES_DIR)\deposit.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\calendar.h $(SOURCES_DIR)\date.h $(SOURCES_DIR)\daycounter.h $(SOURCES_DIR)\rate.h
+$(INCLUDE_DIR)\deposit.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\calendar.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\daycounter.h $(INCLUDE_DIR)\rate.h
 	@touch $<
-$(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.h: $(SOURCES_DIR)\qldefines.h $(SOURCES_DIR)\termstructure.h $(SOURCES_DIR)\deposit.h
+$(INCLUDE_DIR)\piecewiseconstantforwards.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\deposit.h
 	@touch $<
