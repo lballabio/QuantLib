@@ -190,7 +190,7 @@ namespace {
           + DoubleFormatter::toString(calculated) + "\n"
           "    error:            "
           + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
-          + (tolerance==Null<double>() ? "" :
+          + (tolerance==Null<double>() ? std::string("") :
           "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
 
