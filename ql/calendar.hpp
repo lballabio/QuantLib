@@ -35,7 +35,7 @@ namespace QuantLib {
         \ingroup datetime
     */
     enum BusinessDayConvention {
-        None,               /*!< Not adjusted. */
+        Unadjusted,         /*!< Do not adjust. */
         Preceding,          /*!< Choose the first business day before
                                  the given holiday. */
         ModifiedPreceding,  /*!< Choose the first business day before
@@ -55,7 +55,7 @@ namespace QuantLib {
     };
 
 #ifndef QL_DISABLE_DEPRECATED
-    //! \deprecated use BusinessDayConvention instead
+    //! \deprecated renamed to BusinessDayConvention
     typedef BusinessDayConvention RollingConvention;
 #endif
 
@@ -138,7 +138,7 @@ namespace QuantLib {
         /*! Returns the next business day on the given market with respect to
             the given date and convention.
     
-            \deprecated use the adjust method instead
+            \deprecated renamed to Calendar::roll()
         */
         Date roll(const Date& d,
                   BusinessDayConvention convention = Following,

@@ -81,12 +81,12 @@ namespace QuantLib {
 
     #endif
 
-    Date Calendar::adjust(const Date& d ,
+    Date Calendar::adjust(const Date& d,
                           BusinessDayConvention c,
                           const Date& origin) const {
-        QL_REQUIRE(d!=Date(), "null date");
+        QL_REQUIRE(d != Date(), "null date");
 
-        if (c == None)
+        if (c == Unadjusted)
             return d;
 
         Date d1 = d;

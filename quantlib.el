@@ -45,7 +45,8 @@
                 "Time" "Rate" "Spread" "DiscountFactor" "Size" "Volatility"
                 "Date" "Day" "Month" "Year" "Weekday"
                 "TimeUnit" "Frequency" "Period" 
-                "DayCounter" "Calendar" "RollingConvention"
+                "DayCounter" 
+                "Calendar" "BusinessDayConvention" "RollingConvention"
                 "RelinkableHandle")))
 ; from Boost:
 (setq c++-font-lock-extra-types
