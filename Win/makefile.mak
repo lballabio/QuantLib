@@ -53,7 +53,7 @@ MAKEINDEX	= makeindex
 DVIPS		= dvips
 
 # Options
-CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
+CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 -w-8012 \
 	-I$(INCLUDE_DIR) \
 	-I$(INCLUDE_DIR)\Calendars \
 	-I$(INCLUDE_DIR)\Currencies \
@@ -116,7 +116,8 @@ $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
 $(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i \
   $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Currencies.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Options.i \
   $(SWIG_DIR)\Instruments.i $(SWIG_DIR)\Operators.i $(SWIG_DIR)\Pricers.i $(SWIG_DIR)\Solvers1D.i \
-  $(SWIG_DIR)\TermStructures.i $(SWIG_DIR)\Vectors.i $(SWIG_DIR)\BoundaryConditions.i $(SWIG_DIR)\Statistics.i
+  $(SWIG_DIR)\TermStructures.i $(SWIG_DIR)\Vectors.i $(SWIG_DIR)\BoundaryConditions.i $(SWIG_DIR)\Statistics.i \
+  $(SWIG_DIR)\History.i
 	echo Generating wrappers...
 	$(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
 	copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
