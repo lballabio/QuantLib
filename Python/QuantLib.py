@@ -1034,32 +1034,59 @@ BinaryOption.vega = new.instancemethod(QuantLibc.BinaryOption_vega, None, Binary
 BinaryOption.rho = new.instancemethod(QuantLibc.BinaryOption_rho, None, BinaryOption)
 BinaryOption.impliedVolatility = new.instancemethod(QuantLibc.BinaryOption_impliedVolatility, None, BinaryOption)
 
-class BSMAmericanOption:
+class AmericanOption:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_BSMAmericanOption,args,kwargs)
+        self.this = apply(QuantLibc.new_AmericanOption,args,kwargs)
         self.thisown = 1
 
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
-            QuantLibc.delete_BSMAmericanOption(self)
+            QuantLibc.delete_AmericanOption(self)
     def __repr__(self):
-        return "<C BSMAmericanOption instance at %s>" % (self.this,)
-class BSMAmericanOptionPtr(BSMAmericanOption):
+        return "<C AmericanOption instance at %s>" % (self.this,)
+class AmericanOptionPtr(AmericanOption):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = BSMAmericanOption
+        self.__class__ = AmericanOption
 
 
-BSMAmericanOption.setVolatility = new.instancemethod(QuantLibc.BSMAmericanOption_setVolatility, None, BSMAmericanOption)
-BSMAmericanOption.setRiskFreeRate = new.instancemethod(QuantLibc.BSMAmericanOption_setRiskFreeRate, None, BSMAmericanOption)
-BSMAmericanOption.value = new.instancemethod(QuantLibc.BSMAmericanOption_value, None, BSMAmericanOption)
-BSMAmericanOption.delta = new.instancemethod(QuantLibc.BSMAmericanOption_delta, None, BSMAmericanOption)
-BSMAmericanOption.gamma = new.instancemethod(QuantLibc.BSMAmericanOption_gamma, None, BSMAmericanOption)
-BSMAmericanOption.theta = new.instancemethod(QuantLibc.BSMAmericanOption_theta, None, BSMAmericanOption)
-BSMAmericanOption.vega = new.instancemethod(QuantLibc.BSMAmericanOption_vega, None, BSMAmericanOption)
-BSMAmericanOption.rho = new.instancemethod(QuantLibc.BSMAmericanOption_rho, None, BSMAmericanOption)
-BSMAmericanOption.impliedVolatility = new.instancemethod(QuantLibc.BSMAmericanOption_impliedVolatility, None, BSMAmericanOption)
+AmericanOption.setVolatility = new.instancemethod(QuantLibc.AmericanOption_setVolatility, None, AmericanOption)
+AmericanOption.setRiskFreeRate = new.instancemethod(QuantLibc.AmericanOption_setRiskFreeRate, None, AmericanOption)
+AmericanOption.value = new.instancemethod(QuantLibc.AmericanOption_value, None, AmericanOption)
+AmericanOption.delta = new.instancemethod(QuantLibc.AmericanOption_delta, None, AmericanOption)
+AmericanOption.gamma = new.instancemethod(QuantLibc.AmericanOption_gamma, None, AmericanOption)
+AmericanOption.theta = new.instancemethod(QuantLibc.AmericanOption_theta, None, AmericanOption)
+AmericanOption.vega = new.instancemethod(QuantLibc.AmericanOption_vega, None, AmericanOption)
+AmericanOption.rho = new.instancemethod(QuantLibc.AmericanOption_rho, None, AmericanOption)
+AmericanOption.impliedVolatility = new.instancemethod(QuantLibc.AmericanOption_impliedVolatility, None, AmericanOption)
+
+class ShoutOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_ShoutOption,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_ShoutOption(self)
+    def __repr__(self):
+        return "<C ShoutOption instance at %s>" % (self.this,)
+class ShoutOptionPtr(ShoutOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = ShoutOption
+
+
+ShoutOption.setVolatility = new.instancemethod(QuantLibc.ShoutOption_setVolatility, None, ShoutOption)
+ShoutOption.setRiskFreeRate = new.instancemethod(QuantLibc.ShoutOption_setRiskFreeRate, None, ShoutOption)
+ShoutOption.value = new.instancemethod(QuantLibc.ShoutOption_value, None, ShoutOption)
+ShoutOption.delta = new.instancemethod(QuantLibc.ShoutOption_delta, None, ShoutOption)
+ShoutOption.gamma = new.instancemethod(QuantLibc.ShoutOption_gamma, None, ShoutOption)
+ShoutOption.theta = new.instancemethod(QuantLibc.ShoutOption_theta, None, ShoutOption)
+ShoutOption.vega = new.instancemethod(QuantLibc.ShoutOption_vega, None, ShoutOption)
+ShoutOption.rho = new.instancemethod(QuantLibc.ShoutOption_rho, None, ShoutOption)
+ShoutOption.impliedVolatility = new.instancemethod(QuantLibc.ShoutOption_impliedVolatility, None, ShoutOption)
 
 class DividendAmericanOption:
     def __init__(self,*args,**kwargs):

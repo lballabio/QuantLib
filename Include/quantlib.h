@@ -26,6 +26,14 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.24  2001/03/02 08:36:44  enri
+    Shout options added:
+    	* BSMAmericanOption is now AmericanOption, same interface
+    	* ShoutOption added
+    	* both ShoutOption and AmericanOption inherit from
+    	  StepConditionOption
+    offline.doxy.linux added.
+
     Revision 1.23  2001/03/01 12:57:37  enri
     class BinaryOption added, test it with binary_option.py
 
@@ -193,7 +201,10 @@
 #include "bsmeuropeanoption.h"
 #include "bsmnumericaloption.h"
 #include "americancondition.h"
-#include "bsmamericanoption.h"
+#include "shoutcondition.h"
+#include "stepconditionoption.h"
+#include "shoutoption.h"
+#include "americanoption.h"
 #include "dividendeuropeanoption.h"
 #include "dividendamericanoption.h"
 #include "binaryoption.h"

@@ -10,7 +10,7 @@ libPricers_la_SOURCES = \
     averagepriceasian.cpp \
     averagestrikeasian.cpp \
     barrieroption.cpp \
-    bsmamericanoption.cpp \
+    stepconditionoption.cpp \
     bsmeuropeanoption.cpp \
     bsmnumericaloption.cpp \
     bsmoption.cpp \

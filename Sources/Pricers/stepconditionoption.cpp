@@ -21,68 +21,54 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file bsmamericanoption.cpp
-    \brief american option
+/*! \file stepconditionoption.cpp
+    \brief Base class for options requiring additional code to be executed at each timestep
 
     $Source$
-    $Name$
     $Log$
-    Revision 1.23  2001/03/01 14:20:36  marmar
-    Private-member syntax changed
+    Revision 1.1  2001/03/02 08:36:45  enri
+    Shout options added:
+    	* BSMAmericanOption is now AmericanOption, same interface
+    	* ShoutOption added
+    	* both ShoutOption and AmericanOption inherit from
+    	  StepConditionOption
+    offline.doxy.linux added.
 
-    Revision 1.22  2001/03/01 13:53:40  marmar
-    Standard step condition and finite-difference model introduced
-
-    Revision 1.21  2001/02/19 12:19:29  marmar
-    Added trailing _ to protected and private members
-
-    Revision 1.20  2001/02/13 10:02:57  marmar
-    Ambiguous variable name underlyingGrowthRate changed in
-    unambiguos dividendYield
-
-    Revision 1.19  2001/01/17 13:56:30  nando
-    80 columns enforced
-    tabs removed
-
-    Revision 1.18  2001/01/08 11:44:18  lballabio
-    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
-
-    Revision 1.17  2001/01/08 10:28:17  lballabio
-    Moved Array to Math namespace
-
-    Revision 1.16  2000/12/14 12:32:31  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 
-#include "bsmamericanoption.h"
+#include "stepconditionoption.h"
 #include "bsmeuropeanoption.h"
 #include "standardfdmodel.h"
 #include "standardstepcondition.h"
 
 namespace QuantLib {
-
     namespace Pricers {
-
         using FiniteDifferences::StandardStepCondition;
         using FiniteDifferences::StandardFiniteDifferenceModel;
-
-        double BSMAmericanOption::value() const {
+        StepConditionOption::StepConditionOption(Type type, double underlying, double strike, 
+                                                 Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+                                                 double volatility, int timeSteps, int gridPoints)
+            : BSMNumericalOption(type, underlying, strike, dividendYield, 
+                                 riskFreeRate, residualTime, volatility, gridPoints), 
+            timeSteps_(timeSteps) 
+        {
+            setGridLimits();
+            initializeGrid();
+            initializeInitialCondition();
+            initializeOperator();
+        }
+        double StepConditionOption::value() const {
             if (!hasBeenCalculated_) {
-                setGridLimits();
-                initializeGrid();
-                initializeInitialCondition();
-                initializeOperator();
                 /* model used for calculation: it could have been
                    BackwardEuler or ForwardEuler instead of CrankNicolson */
                 StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
                 double dt = residualTime_/timeSteps_;
                 // Control-variate variance reduction:
-
                 // 1) calculate value/greeks of the European option analytically
                 BSMEuropeanOption analyticEuro(type_, underlying_,
-                            strike_, dividendYield_,
-                            riskFreeRate_, residualTime_, volatility_);
+                                               strike_, dividendYield_,
+                                               riskFreeRate_, residualTime_, volatility_);
                 double analyticEuroValue = analyticEuro.value();
                 double analyticEuroDelta = analyticEuro.delta();
                 double analyticEuroGamma = analyticEuro.gamma();
@@ -96,52 +82,46 @@ namespace QuantLib {
                 // complete rollback
                 model.rollback(theEuroPrices,dt,0.0,1);
                 double numericEuroValue = valueAtCenter(theEuroPrices);
-                double numericEuroDelta = firstDerivativeAtCenter(theEuroPrices,
-                                                                grid_);
+                double numericEuroDelta = 
+                    firstDerivativeAtCenter(theEuroPrices, grid_);
                 double numericEuroGamma =
-                            secondDerivativeAtCenter(theEuroPrices, grid_);
+                    secondDerivativeAtCenter(theEuroPrices, grid_);
                 // rollback another step
                 model.rollback(theEuroPrices,0.0,-dt,1);
                 double numericEuroValueMinus = valueAtCenter(theEuroPrices);
                 double numericEuroTheta =
                       (numericEuroValuePlus - numericEuroValueMinus) / (2.0*dt);
-
                 // 3) greeks of the American option numerically on the same grid
                 Array thePrices = initialPrices_;
-                Handle<StandardStepCondition >
-                  americanCondition(new BSMAmericanCondition(initialPrices_));
                 // rollback until dt
                 model.rollback(thePrices, residualTime_, dt, timeSteps_ -1,
-                                                            americanCondition);
+                               stepCondition_);
                 double numericAmericanValuePlus = valueAtCenter(thePrices);
                 // complete rollback
-                model.rollback(thePrices, dt, 0.0, 1,americanCondition);
+                model.rollback(thePrices, dt, 0.0, 1,stepCondition_);
                 double numericAmericanValue = valueAtCenter(thePrices);
-                double numericAmericanDelta = firstDerivativeAtCenter(thePrices,
-                                                                       grid_);
+                double numericAmericanDelta = 
+                    firstDerivativeAtCenter(thePrices, grid_);
                 double numericAmericanGamma =
-                                secondDerivativeAtCenter(thePrices, grid_);
+                    secondDerivativeAtCenter(thePrices, grid_);
                 // rollback another step
-                model.rollback(thePrices,0.0,-dt,1,americanCondition);
+                model.rollback(thePrices,0.0,-dt,1,stepCondition_);
                 double numericAmericanValueMinus = valueAtCenter(thePrices);
                 double numericAmericanTheta =
                     (numericAmericanValuePlus -numericAmericanValueMinus) /
-                                                                    (2.0*dt);
-
+                    (2.0*dt);
                 // 4) combine the results
                 value_ = numericAmericanValue - numericEuroValue +
-                                                        analyticEuroValue;
+                    analyticEuroValue;
                 delta_ = numericAmericanDelta - numericEuroDelta +
-                                                        analyticEuroDelta;
+                    analyticEuroDelta;
                 gamma_ = numericAmericanGamma - numericEuroGamma +
-                                                        analyticEuroGamma;
+                    analyticEuroGamma;
                 theta_ = numericAmericanTheta - numericEuroTheta +
-                                                        analyticEuroTheta;
+                    analyticEuroTheta;
                 hasBeenCalculated_ = true;
             }
             return value_;
         }
-
     }
-
 }

@@ -4,7 +4,9 @@ include_HEADERS = americancondition.h \
     averagestrikeasian.h \
     barrieroption.h \
     bsmeuropeanoption.h \
-    bsmamericanoption.h \
+    americanoption.h \
+	stepconditionoption.h \
+	shoutoption.h \
     bsmnumericaloption.h \
     bsmoption.h \
     dividendamericanoption.h \
@@ -13,4 +15,5 @@ include_HEADERS = americancondition.h \
     himalaya.h  \
     mceuropeanpricer.h  \
     plainbasketoption.h \
-    binaryoption.h
+    binaryoption.h \
+    shoutcondition.h

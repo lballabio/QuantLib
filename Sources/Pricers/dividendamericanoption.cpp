@@ -28,6 +28,14 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.20  2001/03/02 08:36:45  enri
+    Shout options added:
+    	* BSMAmericanOption is now AmericanOption, same interface
+    	* ShoutOption added
+    	* both ShoutOption and AmericanOption inherit from
+    	  StepConditionOption
+    offline.doxy.linux added.
+
     Revision 1.19  2001/03/01 14:20:36  marmar
     Private-member syntax changed
 
@@ -131,7 +139,7 @@ namespace QuantLib {
                 int j=theNumberOfDivs-1;
                 do {
                     Handle<StandardStepCondition> americanCondition(
-                        new BSMAmericanCondition(initialPrices_));
+                        new AmericanCondition(initialPrices_));
                     StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
                     Time endDate;
                     if (j >= 0)

@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000, 2001
+ * Copyright (C) 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -22,13 +22,12 @@
  *   http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file americancondition.h
-    \brief american option exercise condition
+/*! \file shoutcondition.h
+    \brief shout option exercise condition
 
     $Source$
-    $Name$
     $Log$
-    Revision 1.9  2001/03/02 08:36:44  enri
+    Revision 1.1  2001/03/02 08:36:44  enri
     Shout options added:
     	* BSMAmericanOption is now AmericanOption, same interface
     	* ShoutOption added
@@ -36,25 +35,11 @@
     	  StepConditionOption
     offline.doxy.linux added.
 
-    Revision 1.8  2001/03/01 13:56:44  marmar
-    Methods are now inlined explicitly
-
-    Revision 1.7  2001/01/17 14:37:56  nando
-    tabs removed
-
-    Revision 1.6  2001/01/08 11:44:17  lballabio
-    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
-
-    Revision 1.5  2001/01/08 10:28:16  lballabio
-    Moved Array to Math namespace
-
-    Revision 1.4  2000/12/14 12:32:30  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 
-#ifndef BSM_american_condition_h
-#define BSM_american_condition_h
+#ifndef quantlib_pricers_shout_condition_h
+#define quantlib_pricers_shout_condition_h
 
 #include "qldefines.h"
 #include "standardstepcondition.h"
@@ -62,25 +47,26 @@
 #include <functional>
 
 namespace QuantLib {
-
     namespace Pricers {
-
-        class AmericanCondition : 
+        class ShoutCondition : 
             public FiniteDifferences::StandardStepCondition {
         public:
-            AmericanCondition(const Array& initialPrices);
+            ShoutCondition(const Array& initialPrices, Time resTime,
+                           Rate rate);
             void applyTo(Array& a, Time t) const;
         private:
+            Rate rate_;
+            Time resTime_;
             Array initialPrices_;
         };
 
-        inline AmericanCondition::AmericanCondition(
-            const Array& initialPrices) 
-            : initialPrices_(initialPrices) {}
+        inline ShoutCondition::ShoutCondition(
+            const Array& initialPrices, Time resTime, Rate rate) 
+            : initialPrices_(initialPrices), resTime_(resTime), rate_(rate) {}
             
-        inline void AmericanCondition::applyTo(Array& a, Time t) const {
+        inline void ShoutCondition::applyTo(Array& a, Time t) const {
             for (int i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i], initialPrices_[i]);
+                a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) * initialPrices_[i] );
         }
     }
 }

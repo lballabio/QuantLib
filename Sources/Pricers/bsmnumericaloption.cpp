@@ -28,6 +28,14 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.29  2001/03/02 08:36:45  enri
+    Shout options added:
+    	* BSMAmericanOption is now AmericanOption, same interface
+    	* ShoutOption added
+    	* both ShoutOption and AmericanOption inherit from
+    	  StepConditionOption
+    offline.doxy.linux added.
+
     Revision 1.28  2001/03/01 14:20:36  marmar
     Private-member syntax changed
 
@@ -249,7 +257,7 @@ namespace QuantLib {
                 return (deltaPlus-deltaMinus)/(g[jmid]-g[jmid-1]);    
             }
         }
-
     }
-
 }
+
+

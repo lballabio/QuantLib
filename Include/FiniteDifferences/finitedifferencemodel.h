@@ -27,6 +27,14 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/03/02 08:36:44  enri
+    Shout options added:
+    	* BSMAmericanOption is now AmericanOption, same interface
+    	* ShoutOption added
+    	* both ShoutOption and AmericanOption inherit from
+    	  StepConditionOption
+    offline.doxy.linux added.
+
     Revision 1.4  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -79,10 +87,11 @@ namespace QuantLib {
         };
 
         // template definitions
-
         template<class Evolver>
-        void FiniteDifferenceModel<Evolver>::rollback(FiniteDifferenceModel::arrayType& a, Time from, Time to, int steps,
-          Handle<StepCondition<arrayType> > condition) {
+        void FiniteDifferenceModel<Evolver>::rollback(
+            FiniteDifferenceModel::arrayType& a, Time from, Time to, int steps,
+            Handle<StepCondition<arrayType> > condition) 
+        {
             // WARNING: it is a rollback: 'from' must be a later time than 'to'!
             Time dt = (from-to)/steps, t = from;
             evolver.setStep(dt);
@@ -92,10 +101,7 @@ namespace QuantLib {
                     condition->applyTo(a,t);
             }
         }
-
     }
-
 }
-
 
 #endif

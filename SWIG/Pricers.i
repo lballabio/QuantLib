@@ -48,7 +48,8 @@
 
 %{
 using QuantLib::Pricers::BSMEuropeanOption;
-using QuantLib::Pricers::BSMAmericanOption;
+using QuantLib::Pricers::AmericanOption;
+using QuantLib::Pricers::ShoutOption;
 using QuantLib::Pricers::DividendAmericanOption;
 using QuantLib::Pricers::DividendEuropeanOption;
 using QuantLib::Pricers::BinaryOption;
@@ -90,12 +91,12 @@ class BinaryOption {
 	  int maxEvaluations = 100) const ;
 };
 
-class BSMAmericanOption {
+class AmericanOption {
   public:
-	BSMAmericanOption(OptionType type, double underlying, double strike, 
+	AmericanOption(OptionType type, double underlying, double strike, 
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, int timeSteps = 100, int gridPoints = 100);
-    ~BSMAmericanOption();
+    ~AmericanOption();
 	void setVolatility(double newVolatility) ;
 	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
@@ -105,7 +106,24 @@ class BSMAmericanOption {
 	double vega() const;
 	double rho() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4,
-	  int maxEvaluations = 100) const ;
+                             int maxEvaluations = 100) const ;
+};
+class ShoutOption {
+  public:
+	ShoutOption(OptionType type, double underlying, double strike, 
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
+	  double volatility, int timeSteps = 100, int gridPoints = 100);
+    ~ShoutOption();
+	void setVolatility(double newVolatility) ;
+	void setRiskFreeRate(Rate newRate) ;
+	double value() const;
+	double delta() const;
+	double gamma() const;
+	double theta() const;
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
+                             int maxEvaluations = 100) const ;
 };
 
 class DividendAmericanOption{
