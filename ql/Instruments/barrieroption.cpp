@@ -30,7 +30,8 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        BarrierOption::BarrierOption(BarrierType barrierType,
+        BarrierOption::BarrierOption(
+            Barrier::Type barrierType,
             double barrier,
             double rebate,
             Option::Type type,
@@ -102,7 +103,16 @@ namespace QuantLib {
                        "BarrierOption: strike sensitivity not provided");
             return strikeSensitivity_;
         }
-        
+
+        bool BarrierOption::isExpired() const {
+            return exercise_.lastDate() < riskFreeTS_->referenceDate();
+        }
+
+        void BarrierOption::setupExpired() const {
+            NPV_ = delta_ = gamma_ = theta_ =
+                   vega_ = rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
+        }
+
         void BarrierOption::setupEngine() const {
             BarrierOptionArguments* arguments =
                 dynamic_cast<BarrierOptionArguments*>(
@@ -142,38 +152,31 @@ namespace QuantLib {
         }
 
         void BarrierOption::performCalculations() const {
-            // when == it should provide an answer
-            if (exercise_.lastDate() < riskFreeTS_->referenceDate()) {
-                isExpired_ = true;
-                NPV_ = delta_ = gamma_ = theta_ =
-                    vega_ = rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
-            } else {
-                isExpired_ = false;
-                Option::performCalculations();
-                const OptionGreeks* results =
-                    dynamic_cast<const OptionGreeks*>(engine_->results());
-                QL_ENSURE(results != 0,
-                          "BarrierOption::performCalculations : "
-                          "no greeks returned from pricing engine");
-                /* no check on null values - just copy.
-                   this allows:
-                   a) to decide in derived options what to do when null 
-                      results are returned (throw? numerical calculation?)
-                   b) to implement slim engines which only calculate the
-                      value---of course care must be taken not to call
-                      the greeks methods when using these.
-                */
-                delta_       = results->delta;
-                gamma_       = results->gamma;
-                theta_       = results->theta;
-                vega_        = results->vega;
-                rho_         = results->rho;
-                dividendRho_ = results->dividendRho;
-                strikeSensitivity_ = results->strikeSensitivity;
-            }
-            QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
-                "BarrierOption::performCalculations : "
-                "null value returned from option pricer");
+            Option::performCalculations();
+            const OptionGreeks* results =
+                dynamic_cast<const OptionGreeks*>(engine_->results());
+            QL_ENSURE(results != 0,
+                      "BarrierOption::performCalculations : "
+                      "no greeks returned from pricing engine");
+            /* no check on null values - just copy.
+               this allows:
+               a) to decide in derived options what to do when null 
+                  results are returned (throw? numerical calculation?)
+               b) to implement slim engines which only calculate the
+                  value---of course care must be taken not to call
+                  the greeks methods when using these.
+            */
+            delta_       = results->delta;
+            gamma_       = results->gamma;
+            theta_       = results->theta;
+            vega_        = results->vega;
+            rho_         = results->rho;
+            dividendRho_ = results->dividendRho;
+            strikeSensitivity_ = results->strikeSensitivity;
+
+            QL_ENSURE(NPV_ != Null<double>(),
+                      "BarrierOption::performCalculations : "
+                      "null value returned from option pricer");
         }
         
     }

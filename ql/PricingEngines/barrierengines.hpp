@@ -40,17 +40,14 @@
 #include <ql/PricingEngines/genericengine.hpp>
 #include <ql/PricingEngines/mcengine.hpp>
 
-using QuantLib::Instruments::BarrierOption::BarrierType;
-using QuantLib::Instruments::BarrierOptionArguments;
-using QuantLib::Instruments::BarrierOptionResults;
-
 namespace QuantLib {
 
     namespace PricingEngines {
 
         //! Barrier engine base class
-        class BarrierEngine : public GenericEngine<BarrierOptionArguments,
-                                                   BarrierOptionResults> {};
+        class BarrierEngine 
+        : public GenericEngine<Instruments::BarrierOptionArguments,
+                               Instruments::BarrierOptionResults> {};
         
         //! Pricing engine for Barrier options using analytical formulae
         class AnalyticBarrierEngine : public BarrierEngine {
@@ -68,7 +65,7 @@ namespace QuantLib {
 
             Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
 
-            BarrierType barrierType = arguments_.barrierType;
+            Barrier::Type barrierType = arguments_.barrierType;
             double barrier = arguments_.barrier;
             double rebate = arguments_.rebate;
 

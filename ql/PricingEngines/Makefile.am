@@ -4,6 +4,7 @@ includedir = $(prefix)/include/ql/PricingEngines
 
 include_HEADERS = \
     americanmcengines.hpp \
+    barrierengines.hpp \
     cliquetengines.hpp \
     discretizedvanillaoption.hpp \
     genericengine.hpp \
@@ -20,6 +21,7 @@ libPricingEngines_la_SOURCES = \
     analyticeuropeanengine.cpp \
     binomialvanillaengine.cpp \
     discretizedvanillaoption.cpp \
-    integralengines.cpp
+    integralengines.cpp \
+    mcbarrierengine.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la

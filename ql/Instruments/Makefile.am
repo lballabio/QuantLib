@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Instruments
 
 include_HEADERS = \
+    barrieroption.hpp \
     capfloor.hpp \
     forwardvanillaoption.hpp \
     quantoforwardvanillaoption.hpp \
@@ -16,6 +17,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libInstruments_la_SOURCES = \
+    barrieroption.cpp \
     capfloor.cpp \
     forwardvanillaoption.cpp \
     quantoforwardvanillaoption.cpp \

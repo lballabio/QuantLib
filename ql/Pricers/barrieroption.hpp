@@ -26,8 +26,6 @@
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
-using QuantLib::Instruments::BarrierOption::BarrierType;
-
 namespace QuantLib {
 
     namespace Pricers {
@@ -43,7 +41,7 @@ namespace QuantLib {
           public:
             // constructor
             //enum BarrierType { DownIn, UpIn, DownOut, UpOut };
-              BarrierOption(BarrierType barrType,
+            BarrierOption(Barrier::Type barrType,
                           Option::Type type,
                           double underlying,
                           double strike,
@@ -66,7 +64,7 @@ namespace QuantLib {
             mutable double greeksCalculated_, delta_, gamma_, theta_;
           private:
             void initialize_() const;
-            BarrierType barrType_;
+            Barrier::Type barrType_;
             double barrier_, rebate_;
             mutable double value_, sigmaSqrtT_, mu_, muSigma_;
             mutable double dividendDiscount_, riskFreeDiscount_;

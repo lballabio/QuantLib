@@ -27,19 +27,19 @@
 #include <ql/option.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 
-using QuantLib::PricingEngines::VanillaOptionArguments;
-using QuantLib::PricingEngines::VanillaOptionResults;
-
 namespace QuantLib {
+
+    //! placeholder for enumerated barrier types
+    struct Barrier {
+        enum Type { DownIn, UpIn, DownOut, UpOut };
+    };
 
     namespace Instruments {
 
         //! Barrier option on a single asset
-
         class BarrierOption : public Option {
           public:
-            enum BarrierType { DownIn, UpIn, DownOut, UpOut };
-            BarrierOption(BarrierType barrierType,
+            BarrierOption(Barrier::Type barrierType,
                           double barrier,
                           double rebate,
                           Option::Type type,
@@ -63,15 +63,16 @@ namespace QuantLib {
             double dividendRho() const;
             double strikeSensitivity() const;
             //@}
-            
+            bool isExpired() const;
           protected:
+            void setupExpired() const;
             void setupEngine() const;
             void performCalculations() const;
             // results
             mutable double delta_, gamma_, theta_, 
                            vega_, rho_, dividendRho_, strikeSensitivity_;
             // arguments
-            BarrierType barrierType_;
+            Barrier::Type barrierType_;
             double barrier_;
             double rebate_;
             Option::Type type_;
@@ -85,43 +86,40 @@ namespace QuantLib {
         };
 
         //! arguments for barrier option calculation
-        class BarrierOptionArguments : public VanillaOptionArguments {
+        class BarrierOptionArguments 
+                        : public PricingEngines::VanillaOptionArguments {
           public:
-              BarrierOption::BarrierType barrierType;
-              double barrier;
-              double rebate;
-              void validate() const;
+            Barrier::Type barrierType;
+            double barrier;
+            double rebate;
+            void validate() const;
         };
 
         inline void BarrierOptionArguments::validate() const {
             VanillaOptionArguments::validate();
-            // when should enums be checked?
-            //QL_REQUIRE(barrierType != -1,
-            //           "BarrierOptionArguments::validate() : "
-            //           "null barrierType given");            
         
             switch (barrierType) {
-                case BarrierOption::BarrierType::DownIn:
+                case Barrier::DownIn:
                     QL_REQUIRE(underlying >= barrier, "underlying (" +
                         DoubleFormatter::toString(underlying) +
                         ")< barrier(" +
                         DoubleFormatter::toString(barrier) +
                         "): down-and-in barrier undefined");
                     break;
-                case BarrierOption::BarrierType::UpIn:
+                case Barrier::UpIn:
                     QL_REQUIRE(underlying <= barrier, "underlying ("+
                         DoubleFormatter::toString(underlying) +
                         ")> barrier("+
                         DoubleFormatter::toString(barrier) +
                         "): up-and-in barrier undefined");
                     break;
-                case BarrierOption::BarrierType::DownOut:
+                case Barrier::DownOut:
                     QL_REQUIRE(underlying >= barrier, "underlying ("+
                         DoubleFormatter::toString(underlying) +
                         ")< barrier("+
                         "): down-and-out barrier undefined");
                     break;
-                case BarrierOption::BarrierType::UpOut:
+                case Barrier::UpOut:
                     QL_REQUIRE(underlying <= barrier, "underlying ("+
                         DoubleFormatter::toString(underlying) +
                         ")> barrier("+
@@ -134,9 +132,8 @@ namespace QuantLib {
         }
 
         //! %results from barrier option calculation
-        class BarrierOptionResults : public virtual VanillaOptionResults {       
-        };
-
+        class BarrierOptionResults 
+                : public virtual PricingEngines::VanillaOptionResults {};
 
     }
 

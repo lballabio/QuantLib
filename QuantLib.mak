@@ -61,8 +61,12 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrierpathpricer.obj"
+	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -211,6 +215,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -243,6 +249,7 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\old\vc60.idb"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -345,6 +352,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\build\Release\old\barrieroption.obj"
+	-@erase ".\build\Release\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)" :
@@ -489,6 +498,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
+	"$(INTDIR)\extendeddiscountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
@@ -503,7 +513,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\extendeddiscountcurve.sbr"
+	".\build\Release\old\barrieroption.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -648,6 +661,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
+	"$(INTDIR)\extendeddiscountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
@@ -662,7 +676,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\extendeddiscountcurve.obj"
+	".\build\Release\old\barrieroption.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
+	"$(INTDIR)\mcbarrierengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -699,8 +716,12 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrierpathpricer.obj"
+	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -849,6 +870,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -982,6 +1005,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\build\Debug\old\barrieroption.obj"
+	-@erase ".\build\Debug\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib_d.lib"
@@ -1128,6 +1153,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
+	"$(INTDIR)\extendeddiscountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
@@ -1142,7 +1168,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\extendeddiscountcurve.sbr"
+	".\build\Debug\old\barrieroption.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1287,6 +1316,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
+	"$(INTDIR)\extendeddiscountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
@@ -1301,7 +1331,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\extendeddiscountcurve.obj"
+	".\build\Debug\old\barrieroption.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
+	"$(INTDIR)\mcbarrierengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1338,8 +1371,12 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrierpathpricer.obj"
+	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -1488,6 +1525,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -1520,6 +1559,7 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\old\vc60.idb"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -1622,6 +1662,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\build\OnTheEdgeRelease\old\barrieroption.obj"
+	-@erase ".\build\OnTheEdgeRelease\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)" :
@@ -1766,6 +1808,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
+	"$(INTDIR)\extendeddiscountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
@@ -1780,7 +1823,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\extendeddiscountcurve.sbr"
+	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1925,6 +1971,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
+	"$(INTDIR)\extendeddiscountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
@@ -1939,7 +1986,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\extendeddiscountcurve.obj"
+	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
+	"$(INTDIR)\mcbarrierengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1976,8 +2026,12 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrierpathpricer.obj"
+	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -2126,6 +2180,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -2259,6 +2315,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\build\OnTheEdgeDebug\old\barrieroption.obj"
+	-@erase ".\build\OnTheEdgeDebug\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib_d.lib"
@@ -2405,6 +2463,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
+	"$(INTDIR)\extendeddiscountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
@@ -2419,7 +2478,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\extendeddiscountcurve.sbr"
+	".\build\OnTheEdgeDebug\old\barrieroption.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2564,6 +2626,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
+	"$(INTDIR)\extendeddiscountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
@@ -2578,7 +2641,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\extendeddiscountcurve.obj"
+	".\build\OnTheEdgeDebug\old\barrieroption.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
+	"$(INTDIR)\mcbarrierengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2615,8 +2681,12 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\barrierpathpricer.obj"
+	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
+	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -2765,6 +2835,8 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
+	-@erase "$(INTDIR)\mcbarrierengine.obj"
+	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -2797,6 +2869,7 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\old\vc60.idb"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -2899,6 +2972,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\build\OnTheEdgeRelease\old\barrieroption.obj"
+	-@erase ".\build\OnTheEdgeRelease\old\barrieroption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)" :
@@ -3043,6 +3118,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\discountcurve.sbr" \
+	"$(INTDIR)\extendeddiscountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\zerocurve.sbr" \
@@ -3057,7 +3133,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\extendeddiscountcurve.sbr"
+	".\build\OnTheEdgeRelease\old\barrieroption.sbr" \
+	"$(INTDIR)\biasedbarrierpathpricer.sbr" \
+	"$(INTDIR)\barrierpathpricer.sbr" \
+	"$(INTDIR)\mcbarrierengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3202,6 +3281,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\discountcurve.obj" \
+	"$(INTDIR)\extendeddiscountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\zerocurve.obj" \
@@ -3216,7 +3296,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\extendeddiscountcurve.obj"
+	".\build\OnTheEdgeRelease\old\barrieroption.obj" \
+	"$(INTDIR)\biasedbarrierpathpricer.obj" \
+	"$(INTDIR)\barrierpathpricer.obj" \
+	"$(INTDIR)\mcbarrierengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3458,6 +3541,12 @@ SOURCE=.\ql\Indexes\xibormanager.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Instruments\barrieroption.cpp
+
+"$(INTDIR)\barrieroption.obj"	"$(INTDIR)\barrieroption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Instruments\capfloor.cpp
 
 "$(INTDIR)\capfloor.obj"	"$(INTDIR)\capfloor.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3626,9 +3715,21 @@ SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\MonteCarlo\barrierpathpricer.cpp
+
+"$(INTDIR)\barrierpathpricer.obj"	"$(INTDIR)\barrierpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
 
 "$(INTDIR)\basketpathpricer.obj"	"$(INTDIR)\basketpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.cpp
+
+"$(INTDIR)\biasedbarrierpathpricer.obj"	"$(INTDIR)\biasedbarrierpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3718,9 +3819,57 @@ SOURCE=.\ql\Pricers\analyticalcapfloor.cpp
 
 SOURCE=.\ql\Pricers\barrieroption.cpp
 
-"$(INTDIR)\barrieroption.obj"	"$(INTDIR)\barrieroption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
 
+CPP_SWITCHES=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\Release\old/" /Fp"build\Release/QuantLib.pch" /YX /Fo"build\Release\old/" /Fd"build\Release\old/" /FD /Oi- /c 
+
+".\build\Release\old\barrieroption.obj"	".\build\Release\old\barrieroption.sbr" : $(SOURCE)
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+CPP_SWITCHES=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\Debug\old/" /Fp"build\Debug/QuantLib.pch" /YX /Fo"build\Debug\old/" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+".\build\Debug\old\barrieroption.obj"	".\build\Debug\old\barrieroption.sbr" : $(SOURCE)
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+CPP_SWITCHES=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\OnTheEdgeRelease\old/" /Fp"build\OnTheEdgeRelease/QuantLib.pch" /YX /Fo"build\OnTheEdgeRelease\old/" /Fd"build\OnTheEdgeRelease\old/" /FD /c 
+
+".\build\OnTheEdgeRelease\old\barrieroption.obj"	".\build\OnTheEdgeRelease\old\barrieroption.sbr" : $(SOURCE)
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+CPP_SWITCHES=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\OnTheEdgeDebug\old/" /Fp"build\OnTheEdgeDebug/QuantLib.pch" /YX /Fo"build\OnTheEdgeDebug\old/" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+".\build\OnTheEdgeDebug\old\barrieroption.obj"	".\build\OnTheEdgeDebug\old\barrieroption.sbr" : $(SOURCE)
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
+
+CPP_SWITCHES=/nologo /G6 /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\OnTheEdgeRelease\old/" /Fp"build\OnTheEdgeRelease/QuantLib.pch" /YX /Fo"build\OnTheEdgeRelease\old/" /Fd"build\OnTheEdgeRelease\old/" /FD /c 
+
+".\build\OnTheEdgeRelease\old\barrieroption.obj"	".\build\OnTheEdgeRelease\old\barrieroption.sbr" : $(SOURCE)
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ENDIF 
 
 SOURCE=.\ql\Pricers\binaryoption.cpp
 
@@ -3995,6 +4144,12 @@ SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
 SOURCE=.\ql\PricingEngines\integralengines.cpp
 
 "$(INTDIR)\integralengines.obj"	"$(INTDIR)\integralengines.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\mcbarrierengine.cpp
+
+"$(INTDIR)\mcbarrierengine.obj"	"$(INTDIR)\mcbarrierengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

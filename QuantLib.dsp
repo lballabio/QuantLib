@@ -572,6 +572,14 @@ SOURCE=.\ql\Indexes\zarlibor.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Instruments\barrieroption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\barrieroption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\capfloor.cpp
 # End Source File
 # Begin Source File
@@ -872,11 +880,27 @@ SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\barrierpathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\barrierpathpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\basketpathpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -1097,6 +1121,29 @@ SOURCE=.\ql\Pricers\analyticalcapfloor.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\barrieroption.cpp
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+# PROP Intermediate_Dir "build\Release\old"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+# PROP Intermediate_Dir "build\Debug\old"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+# PROP Intermediate_Dir "build\OnTheEdgeRelease\old"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+# PROP Intermediate_Dir "build\OnTheEdgeDebug\old"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
+
+# PROP Intermediate_Dir "build\OnTheEdgeRelease\old"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1415,6 +1462,10 @@ SOURCE=.\ql\PricingEngines\analyticeuropeanengine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\barrierengines.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
 # End Source File
 # Begin Source File
@@ -1444,6 +1495,10 @@ SOURCE=.\ql\PricingEngines\integralengines.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\mcbarrierengine.cpp
 # End Source File
 # Begin Source File
 

@@ -25,11 +25,13 @@
 
 namespace QuantLib {
 
+    using namespace RandomNumbers;
+
     namespace MonteCarlo {
 
         // constructor
         BarrierPathPricer::BarrierPathPricer(
-            BarrierType barrierType, 
+            Barrier::Type barrierType, 
             double barrier, 
             double rebate, 
             Option::Type type,
@@ -71,11 +73,12 @@ namespace QuantLib {
             Time dt = 0.0;
             double log_drift = 0.0, log_random = 0.0;            
             Array u = sequenceGen_.nextSequence().value;
+            Size i;
 
             switch (barrierType_) {
-              case BarrierType::DownIn:
+              case Barrier::DownIn:
                 isOptionActive = false;
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     new_asset_price = asset_price * QL_EXP(log_drift+log_random);
@@ -92,9 +95,9 @@ namespace QuantLib {
                     asset_price = new_asset_price;
                 }   
                 break;
-              case BarrierType::UpIn:
+              case Barrier::UpIn:
                 isOptionActive = false;
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     new_asset_price = asset_price * QL_EXP(log_drift+log_random);
@@ -111,9 +114,9 @@ namespace QuantLib {
                     asset_price = new_asset_price;
                 }                   
                 break;
-              case BarrierType::DownOut:
+              case Barrier::DownOut:
                 isOptionActive = true;
-                for (Size i = 0; i < n; i++) {                    
+                for (i = 0; i < n; i++) {                    
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     new_asset_price = asset_price * QL_EXP(log_drift+log_random);
@@ -130,9 +133,9 @@ namespace QuantLib {
                     asset_price = new_asset_price;
                 }   
                 break;
-              case BarrierType::UpOut:
+              case Barrier::UpOut:
                 isOptionActive = true;                
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     new_asset_price = asset_price * QL_EXP(log_drift+log_random);

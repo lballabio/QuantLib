@@ -34,14 +34,12 @@
 //#include <ql/PricingEngines/vanillaengines.hpp>
 #include <ql/PricingEngines/barrierengines.hpp>
 
-using QuantLib::Instruments::BarrierOption::BarrierType;
-using QuantLib::Instruments::BarrierOptionArguments;
-using QuantLib::Instruments::BarrierOptionResults;
-
 namespace QuantLib {
 
     namespace PricingEngines {
         
 
+
     }
+
 }

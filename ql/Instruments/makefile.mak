@@ -15,6 +15,7 @@ OBJDIR         = "..\..\build\Borland"
 
 # Object files
 OBJS = \
+    $(OBJDIR)\barrieroption.obj$(_D) \
     $(OBJDIR)\capfloor.obj$(_D) \
     $(OBJDIR)\forwardvanillaoption.obj$(_D) \
     $(OBJDIR)\quantoforwardvanillaoption.obj$(_D) \

@@ -15,7 +15,7 @@ OBJDIR         = "..\..\build\Borland"
 
 # Object files
 OBJS = \
-    $(OBJDIR)\barrieroption.obj$(_D) \
+    $(OBJDIR)\old\barrieroption.obj$(_D) \
     $(OBJDIR)\blackcapfloor.obj$(_D) \
     $(OBJDIR)\blackswaption.obj$(_D) \
     $(OBJDIR)\fdbermudanoption.obj$(_D) \
@@ -78,6 +78,10 @@ TLIB_OPTS    = /P256
 {$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
     $(CC) $(CC_OPTS) $<
 {$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
+    $(CC) $(CC_OPTS) -o$@ $<
+{$(SRCDIR)}.cpp{$(OBJDIR)\old}.obj:
+    $(CC) $(CC_OPTS) $<
+{$(SRCDIR)}.cpp{$(OBJDIR)\old}.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:

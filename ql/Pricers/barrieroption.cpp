@@ -25,7 +25,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        BarrierOption::BarrierOption(BarrierType barrType,
+        BarrierOption::BarrierOption(Barrier::Type barrType,
                                      Option::Type type,
                                      double underlying,
                                      double strike,
@@ -36,7 +36,8 @@ namespace QuantLib {
                                      double barrier,
                                      double rebate)
         : SingleAssetOption(type, underlying, strike, dividendYield,
-            riskFreeRate, residualTime, volatility), barrType_(barrType),
+                            riskFreeRate, residualTime, volatility), 
+            barrType_(barrType),
             barrier_(barrier), rebate_(rebate), f_() {
 
             QL_REQUIRE(barrier_ > 0,
@@ -45,27 +46,27 @@ namespace QuantLib {
                 "BarrierOption: rebate cannot be neagative");
 
             switch (barrType_) {
-              case BarrierType::DownIn:
+              case Barrier::DownIn:
                 QL_REQUIRE(underlying_ >= barrier_, "underlying (" +
                     DoubleFormatter::toString(underlying_) +
                     ")< barrier(" +
                     DoubleFormatter::toString(barrier_) +
                     "): down-and-in barrier undefined");
                 break;
-              case BarrierType::UpIn:
+              case Barrier::UpIn:
                 QL_REQUIRE(underlying_ <= barrier_, "underlying ("+
                     DoubleFormatter::toString(underlying_) +
                     ")> barrier("+
                     DoubleFormatter::toString(barrier_) +
                     "): up-and-in barrier undefined");
                 break;
-              case BarrierType::DownOut:
+              case Barrier::DownOut:
                 QL_REQUIRE(underlying_ >= barrier_, "underlying ("+
                     DoubleFormatter::toString(underlying_) +
                     ")< barrier("+
                     "): down-and-out barrier undefined");
                 break;
-              case BarrierType::UpOut:
+              case Barrier::UpOut:
                 QL_REQUIRE(underlying_ <= barrier_, "underlying ("+
                     DoubleFormatter::toString(underlying_) +
                     ")> barrier("+
@@ -95,25 +96,25 @@ namespace QuantLib {
             switch (payoff_.optionType()) {
               case Option::Call:
                 switch (barrType_) {
-                  case BarrierType::DownIn:
+                  case Barrier::DownIn:
                     if(payoff_.strike() >= barrier_)
                         value_ = C_(1,1) + E_(1,1);
                     else
                         value_ = A_(1,1) - B_(1,1) + D_(1,1) + E_(1,1);
                     break;
-                  case BarrierType::UpIn:
+                  case Barrier::UpIn:
                     if(payoff_.strike() >= barrier_)
                         value_ = A_(-1,1) + E_(-1,1);
                     else
                         value_ = B_(-1,1) - C_(-1,1) + D_(-1,1) + E_(-1,1);
                     break;
-                  case BarrierType::DownOut:
+                  case Barrier::DownOut:
                     if(payoff_.strike() >= barrier_)
                         value_ = A_(1,1) - C_(1,1) + F_(1,1);
                     else
                         value_ = B_(1,1) - D_(1,1) + F_(1,1);
                     break;
-                  case BarrierType::UpOut:
+                  case Barrier::UpOut:
                     if(payoff_.strike() >= barrier_)
                         value_ = F_(-1,1);
                     else
@@ -123,25 +124,25 @@ namespace QuantLib {
                 break;
               case Option::Put:
                 switch (barrType_) {
-                  case BarrierType::DownIn:
+                  case Barrier::DownIn:
                     if(payoff_.strike() >= barrier_)
                         value_ = B_(1,-1) - C_(1,-1) + D_(1,-1) + E_(1,-1);
                     else
                         value_ = A_(1,-1) + E_(1,-1);
                     break;
-                  case BarrierType::UpIn:
+                  case Barrier::UpIn:
                     if(payoff_.strike() >= barrier_)
                         value_ = A_(-1,-1) - B_(-1,-1) + D_(-1,-1) + E_(-1,-1);
                     else
                         value_ = C_(-1,-1) + E_(-1,-1);
                     break;
-                  case BarrierType::DownOut:
+                  case Barrier::DownOut:
                     if(payoff_.strike() >= barrier_)
                         value_ = A_(1,-1) - B_(1,-1)+C_(1,-1)-D_(1,-1)+F_(1,-1);
                     else
                         value_ = F_(1,-1);
                     break;
-                  case BarrierType::UpOut:
+                  case Barrier::UpOut:
                     if(payoff_.strike() >= barrier_)
                         value_ = B_(-1,-1) - D_(-1,-1) + F_(-1,-1);
                     else
@@ -151,7 +152,7 @@ namespace QuantLib {
                 break;
               case Option::Straddle:
                 switch (barrType_) {
-                  case BarrierType::DownIn:
+                  case Barrier::DownIn:
                     if(payoff_.strike() >= barrier_)
                         value_ = C_(1,1) + E_(1,1) +
                             B_(1,-1) - C_(1,-1) + D_(1,-1) + E_(1,-1);
@@ -159,7 +160,7 @@ namespace QuantLib {
                         value_ = A_(1,1) - B_(1,1) + D_(1,1) + E_(1,1) +
                             A_(1,-1) + E_(1,-1);
                     break;
-                  case BarrierType::UpIn:
+                  case Barrier::UpIn:
                     if(payoff_.strike() >= barrier_)
                         value_ = A_(-1,1) + E_(-1,1) +
                             A_(-1,-1) - B_(-1,-1) + D_(-1,-1) + E_(-1,-1);
@@ -167,7 +168,7 @@ namespace QuantLib {
                         value_ = B_(-1,1) - C_(-1,1) + D_(-1,1) + E_(-1,1) +
                             C_(-1,-1) + E_(-1,-1);
                     break;
-                  case BarrierType::DownOut:
+                  case Barrier::DownOut:
                     if(payoff_.strike() >= barrier_)
                         value_ = A_(1,1) - C_(1,1) + F_(1,1) +
                             A_(1,-1) - B_(1,-1)+C_(1,-1)-D_(1,-1)+F_(1,-1);
@@ -175,7 +176,7 @@ namespace QuantLib {
                         value_ = B_(1,1) - D_(1,1) + F_(1,1) +
                             F_(1,-1);
                     break;
-                  case BarrierType::UpOut:
+                  case Barrier::UpOut:
                     if(payoff_.strike() >= barrier_)
                         value_ = F_(-1,1) +
                             B_(-1,-1) - D_(-1,-1) + F_(-1,-1);

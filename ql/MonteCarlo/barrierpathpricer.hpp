@@ -31,9 +31,6 @@
 #include <ql/diffusionprocess.hpp>
 #include <ql/payoff.hpp>
 
-using QuantLib::Instruments::BarrierOption::BarrierType;
-using QuantLib::RandomNumbers::UniformRandomSequenceGenerator;
-
 namespace QuantLib {
 
     namespace MonteCarlo {
@@ -57,7 +54,7 @@ namespace QuantLib {
         class BarrierPathPricer : public PathPricer<Path> {
           public:
             BarrierPathPricer(
-                BarrierType barrierType, 
+                Barrier::Type barrierType, 
                 double barrier, 
                 double rebate, 
                 Option::Type type,
@@ -65,15 +62,15 @@ namespace QuantLib {
                 double strike,
                 const RelinkableHandle<TermStructure>& riskFreeTS,
                 const Handle<DiffusionProcess>& diffProcess,
-                UniformRandomSequenceGenerator sequenceGen);
+                RandomNumbers::UniformRandomSequenceGenerator sequenceGen);
             double operator()(const Path& path) const;
           private:
             double underlying_;
-            BarrierType barrierType_;
+            Barrier::Type barrierType_;
             double barrier_;
             double rebate_;           
             Handle<DiffusionProcess> diffProcess_;
-            UniformRandomSequenceGenerator sequenceGen_;
+            RandomNumbers::UniformRandomSequenceGenerator sequenceGen_;
 
             // it would be easy to generalize to more exotic payoffs
             PlainVanillaPayoff payoff_;

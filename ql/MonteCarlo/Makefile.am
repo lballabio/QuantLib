@@ -5,7 +5,9 @@ includedir = $(prefix)/include/ql/MonteCarlo
 include_HEADERS = \
     arithmeticapopathpricer.hpp \
     arithmeticasopathpricer.hpp \
+	barrierpathpricer.hpp \
 	basketpathpricer.hpp \
+	biasedbarrierpathpricer.hpp \
 	brownianbridge.hpp \
     cliquetoptionpathpricer.hpp \
 	europeanpathpricer.hpp \
@@ -33,7 +35,9 @@ EXTRA_DIST=makefile.mak
 libMonteCarlo_la_SOURCES = \
     arithmeticapopathpricer.cpp \
     arithmeticasopathpricer.cpp \
-	basketpathpricer.cpp    \
+	barrierpathpricer.cpp \
+	basketpathpricer.cpp \
+	biasedbarrierpathpricer.cpp \
     cliquetoptionpathpricer.cpp \
 	europeanpathpricer.cpp \
 	everestpathpricer.cpp \

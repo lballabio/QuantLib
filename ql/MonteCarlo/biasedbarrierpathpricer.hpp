@@ -31,21 +31,15 @@
 #include <ql/diffusionprocess.hpp>
 #include <ql/payoff.hpp>
 
-using QuantLib::Instruments::BarrierOption::BarrierType;
-using QuantLib::RandomNumbers::UniformRandomGenerator;
-
 namespace QuantLib {
 
     namespace MonteCarlo {
 
         //! %Biased, but simple, path pricer for Barrier options
-        /* %Biased, but simple, path pricer for Barrier options
-            
-        */
         class BiasedBarrierPathPricer : public PathPricer<Path> {
           public:
             BiasedBarrierPathPricer(
-                BarrierType barrierType, 
+                Barrier::Type barrierType, 
                 double barrier, 
                 double rebate, 
                 Option::Type type,
@@ -55,7 +49,7 @@ namespace QuantLib {
             double operator()(const Path& path) const;
           private:
             double underlying_;
-            BarrierType barrierType_;
+            Barrier::Type barrierType_;
             double barrier_;
             double rebate_;           
             // it would be easy to generalize to more exotic payoffs

@@ -17,7 +17,9 @@ OBJDIR         = "..\..\build\Borland"
 OBJS = \
     $(OBJDIR)\arithmeticapopathpricer.obj$(_D) \
     $(OBJDIR)\arithmeticasopathpricer.obj$(_D) \
+    $(OBJDIR)\barrierpathpricer.obj$(_D) \
     $(OBJDIR)\basketpathpricer.obj$(_D) \
+    $(OBJDIR)\biasedbarrierpathpricer.obj$(_D) \
     $(OBJDIR)\cliquetoptionpathpricer.obj$(_D) \
     $(OBJDIR)\europeanpathpricer.obj$(_D) \
     $(OBJDIR)\everestpathpricer.obj$(_D) \

@@ -19,7 +19,8 @@ OBJS = \
     $(OBJDIR)\analyticeuropeanengine.obj$(_D) \
     $(OBJDIR)\binomialvanillaengine.obj$(_D) \
     $(OBJDIR)\discretizedvanillaoption.obj$(_D) \
-    $(OBJDIR)\integralengines.obj$(_D)
+    $(OBJDIR)\integralengines.obj$(_D) \
+    $(OBJDIR)\mcbarrierengine.obj$(_D)
 
 
 # Tools to be used

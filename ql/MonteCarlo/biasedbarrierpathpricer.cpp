@@ -30,7 +30,7 @@ namespace QuantLib {
         
         // constructor
         BiasedBarrierPathPricer::BiasedBarrierPathPricer(
-            BarrierType barrierType, 
+            Barrier::Type barrierType, 
             double barrier, 
             double rebate, 
             Option::Type type,
@@ -61,11 +61,12 @@ namespace QuantLib {
             bool isOptionActive = false;
             double asset_price = underlying_;
             double log_drift = 0.0, log_random = 0.0;
+            Size i;
 
             switch (barrierType_) {
-              case BarrierType::DownIn:
+              case Barrier::DownIn:
                 isOptionActive = false;
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     asset_price = asset_price * QL_EXP(log_drift+log_random);
@@ -74,9 +75,9 @@ namespace QuantLib {
                     }   
                 }   
                 break;
-              case BarrierType::UpIn:
+              case Barrier::UpIn:
                 isOptionActive = false;
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     asset_price = asset_price * QL_EXP(log_drift+log_random);
@@ -85,9 +86,9 @@ namespace QuantLib {
                     }   
                 }                   
                 break;
-              case BarrierType::DownOut:
+              case Barrier::DownOut:
                 isOptionActive = true;
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     asset_price = asset_price * QL_EXP(log_drift+log_random);
@@ -96,9 +97,9 @@ namespace QuantLib {
                     }   
                 }   
                 break;
-              case BarrierType::UpOut:
+              case Barrier::UpOut:
                 isOptionActive = true;
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     asset_price = asset_price * QL_EXP(log_drift+log_random);

@@ -107,7 +107,7 @@ CppUnit::Test* OldPricerTest::suite() {
 namespace {
 
     struct BarrierOptionData {
-        BarrierOption::BarrierType type;
+        Barrier::Type type;
         double volatility;
         double strike;
         double barrier;
@@ -130,45 +130,45 @@ void OldPricerTest::testBarrierPricer() {
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
        pag. 72 */
     BarrierOptionData values[] = {
-        { BarrierOption::DownOut, 0.25,    90,      95,  9.0246,  2.2798 },
-        { BarrierOption::DownOut, 0.25,   100,      95,  6.7924,  2.2947 },
-        { BarrierOption::DownOut, 0.25,   110,      95,  4.8759,  2.6252 },
-        { BarrierOption::DownOut, 0.25,    90,     100,  3.0000,  3.0000 },
-        { BarrierOption::DownOut, 0.25,   100,     100,  3.0000,  3.0000 },
-        { BarrierOption::DownOut, 0.25,   110,     100,  3.0000,  3.0000 },
-        { BarrierOption::UpOut,   0.25,    90,     105,  2.6789,  3.7760 },
-        { BarrierOption::UpOut,   0.25,   100,     105,  2.3580,  5.4932 },
-        { BarrierOption::UpOut,   0.25,   110,     105,  2.3453,  7.5187 },
+        { Barrier::DownOut, 0.25,    90,      95,  9.0246,  2.2798 },
+        { Barrier::DownOut, 0.25,   100,      95,  6.7924,  2.2947 },
+        { Barrier::DownOut, 0.25,   110,      95,  4.8759,  2.6252 },
+        { Barrier::DownOut, 0.25,    90,     100,  3.0000,  3.0000 },
+        { Barrier::DownOut, 0.25,   100,     100,  3.0000,  3.0000 },
+        { Barrier::DownOut, 0.25,   110,     100,  3.0000,  3.0000 },
+        { Barrier::UpOut,   0.25,    90,     105,  2.6789,  3.7760 },
+        { Barrier::UpOut,   0.25,   100,     105,  2.3580,  5.4932 },
+        { Barrier::UpOut,   0.25,   110,     105,  2.3453,  7.5187 },
 
-        { BarrierOption::DownIn,  0.25,    90,      95,  7.7627,  2.9586 },
-        { BarrierOption::DownIn,  0.25,   100,      95,  4.0109,  6.5677 },
-        { BarrierOption::DownIn,  0.25,   110,      95,  2.0576, 11.9752 },
-        { BarrierOption::DownIn,  0.25,    90,     100, 13.8333,  2.2845 },
-        { BarrierOption::DownIn,  0.25,   100,     100,  7.8494,  5.9085 },
-        { BarrierOption::DownIn,  0.25,   110,     100,  3.9795, 11.6465 },
-        { BarrierOption::UpIn,    0.25,    90,     105, 14.1112,  1.4653 },
-        { BarrierOption::UpIn,    0.25,   100,     105,  8.4482,  3.3721 },
-        { BarrierOption::UpIn,    0.25,   110,     105,  4.5910,  7.0846 },
+        { Barrier::DownIn,  0.25,    90,      95,  7.7627,  2.9586 },
+        { Barrier::DownIn,  0.25,   100,      95,  4.0109,  6.5677 },
+        { Barrier::DownIn,  0.25,   110,      95,  2.0576, 11.9752 },
+        { Barrier::DownIn,  0.25,    90,     100, 13.8333,  2.2845 },
+        { Barrier::DownIn,  0.25,   100,     100,  7.8494,  5.9085 },
+        { Barrier::DownIn,  0.25,   110,     100,  3.9795, 11.6465 },
+        { Barrier::UpIn,    0.25,    90,     105, 14.1112,  1.4653 },
+        { Barrier::UpIn,    0.25,   100,     105,  8.4482,  3.3721 },
+        { Barrier::UpIn,    0.25,   110,     105,  4.5910,  7.0846 },
 
-        { BarrierOption::DownOut, 0.30,    90,      95,  8.8334,  2.4170 },
-        { BarrierOption::DownOut, 0.30,   100,      95,  7.0285,  2.4258 },
-        { BarrierOption::DownOut, 0.30,   110,      95,  5.4137,  2.6246 },
-        { BarrierOption::DownOut, 0.30,    90,     100,  3.0000,  3.0000 },
-        { BarrierOption::DownOut, 0.30,   100,     100,  3.0000,  3.0000 },
-        { BarrierOption::DownOut, 0.30,   110,     100,  3.0000,  3.0000 },
-        { BarrierOption::UpOut,   0.30,    90,     105,  2.6341,  4.2293 },
-        { BarrierOption::UpOut,   0.30,   100,     105,  2.4389,  5.8032 },
-        { BarrierOption::UpOut,   0.30,   110,     105,  2.4315,  7.5649 },
+        { Barrier::DownOut, 0.30,    90,      95,  8.8334,  2.4170 },
+        { Barrier::DownOut, 0.30,   100,      95,  7.0285,  2.4258 },
+        { Barrier::DownOut, 0.30,   110,      95,  5.4137,  2.6246 },
+        { Barrier::DownOut, 0.30,    90,     100,  3.0000,  3.0000 },
+        { Barrier::DownOut, 0.30,   100,     100,  3.0000,  3.0000 },
+        { Barrier::DownOut, 0.30,   110,     100,  3.0000,  3.0000 },
+        { Barrier::UpOut,   0.30,    90,     105,  2.6341,  4.2293 },
+        { Barrier::UpOut,   0.30,   100,     105,  2.4389,  5.8032 },
+        { Barrier::UpOut,   0.30,   110,     105,  2.4315,  7.5649 },
 
-        { BarrierOption::DownIn,  0.30,    90,      95,  9.0093,  3.8769 },
-        { BarrierOption::DownIn,  0.30,   100,      95,  5.1370,  7.7989 },
-        { BarrierOption::DownIn,  0.30,   110,      95,  2.8517, 13.3078 },
-        { BarrierOption::DownIn,  0.30,    90,     100, 14.8816,  3.3328 },
-        { BarrierOption::DownIn,  0.30,   100,     100,  9.2045,  7.2636 },
-        { BarrierOption::DownIn,  0.30,   110,     100,  5.3043, 12.9713 },
-        { BarrierOption::UpIn,    0.30,    90,     105, 15.2098,  2.0658 },
-        { BarrierOption::UpIn,    0.30,   100,     105,  9.7278,  4.4226 },
-        { BarrierOption::UpIn,    0.30,   110,     105,  5.8350,  8.3686 }
+        { Barrier::DownIn,  0.30,    90,      95,  9.0093,  3.8769 },
+        { Barrier::DownIn,  0.30,   100,      95,  5.1370,  7.7989 },
+        { Barrier::DownIn,  0.30,   110,      95,  2.8517, 13.3078 },
+        { Barrier::DownIn,  0.30,    90,     100, 14.8816,  3.3328 },
+        { Barrier::DownIn,  0.30,   100,     100,  9.2045,  7.2636 },
+        { Barrier::DownIn,  0.30,   110,     100,  5.3043, 12.9713 },
+        { Barrier::UpIn,    0.30,    90,     105, 15.2098,  2.0658 },
+        { Barrier::UpIn,    0.30,   100,     105,  9.7278,  4.4226 },
+        { Barrier::UpIn,    0.30,   110,     105,  5.8350,  8.3686 }
     };
 
     for (Size i=0; i<LENGTH(values); i++) {
