@@ -64,3 +64,8 @@ Changes since release 0.3.7:
   CapFlatVolatilityStructure, CapletForwardVolatilityStructure, and
   SwaptionVolatilityStructure are now derived from BaseTermStructure
   so that they inherit its functionality.
+
+- PathGenerator now works correctly with processes describing S
+  instead of log S. Geometric Brownian process added (thanks to Walter
+  Penschke.)
+

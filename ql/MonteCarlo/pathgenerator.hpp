@@ -145,7 +145,7 @@ namespace QuantLib {
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = sequence_.value[i] *
                     QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ *= QL_EXP(next_.value[i]);
+                asset_ = diffProcess_->evolve(next_.value[i], asset_);
             }
 
             return next_;
@@ -192,7 +192,7 @@ namespace QuantLib {
                     diffProcess_->drift(t, asset_);
                 next_.value.diffusion()[i] = - sequence_.value[i] *
                     QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ *= QL_EXP(next_.value[i]);
+                asset_ = diffProcess_->evolve(next_.value[i], asset_);
             }
 
             return next_;

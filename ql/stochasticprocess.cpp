@@ -40,6 +40,10 @@ namespace QuantLib {
         return discretization_->variance(*this, t0, x0, dt);
     }
 
+    Real StochasticProcess::evolve(Real change, Real currentValue) const {
+        return currentValue + change;
+    }
+
     void StochasticProcess::update() {
         notifyObservers();
     }
@@ -56,6 +60,29 @@ namespace QuantLib {
                                        Time t0, Real x0, Time dt) const {
         Real sigma = process.diffusion(t0, x0);
         return sigma*sigma*dt;
+    }
+
+
+    // Geometric Brownian motion
+
+    GeometricBrownianMotionProcess::GeometricBrownianMotionProcess(
+                                                          double initialValue,
+                                                          double mue,
+                                                          double sigma)
+    : StochasticProcess(boost::shared_ptr<StochasticProcess::discretization>(
+                                                    new EulerDiscretization)),
+      initialValue_(initialValue), mue_(mue), sigma_(sigma) {}
+
+    Real GeometricBrownianMotionProcess::x0() const {
+        return initialValue_;
+    }
+
+    Real GeometricBrownianMotionProcess::drift(Time t, Real x) const {
+        return mue_ * x;
+    }
+
+    Real GeometricBrownianMotionProcess::diffusion(Time t, Real x) const {
+        return sigma_ * x;
     }
 
 
@@ -92,6 +119,10 @@ namespace QuantLib {
 
     Real BlackScholesProcess::diffusion(Time t, Real x) const {
         return localVolatility()->localVol(t, x, true);
+    }
+
+    Real BlackScholesProcess::evolve(Real change, Real currentValue) const {
+        return currentValue * QL_EXP(change);
     }
 
     void BlackScholesProcess::update() {

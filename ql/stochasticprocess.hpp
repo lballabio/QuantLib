@@ -66,11 +66,16 @@ namespace QuantLib {
         /*! returns the variance
             \f$ V(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
             of the process after a time interval \f$ \Delta t \f$
-            according to the given discretization.This method can be
+            according to the given discretization. This method can be
             overridden in derived classes which want to hard-code a
             particular discretization.
         */
         virtual Real variance(Time t0, Real x0, Time dt) const;
+        /*! applies a change to the asset value. By default; it
+            returns \f$ x + \Delta x \f$.
+        */
+        virtual Real evolve(Real change, Real currentValue) const;
+
         //! \name Observer interface
         //@{
         void update();
@@ -97,6 +102,26 @@ namespace QuantLib {
                       Time t0, Real x0, Time dt) const;
     };
 
+    //! Geometric brownian motion process
+    /*! This class describes the stochastic process governed by
+        \f[
+            dS(t, S)= \mu S dt + \sigma S dW_t.
+        \f]
+    */
+    class GeometricBrownianMotionProcess : public StochasticProcess {
+      public:
+        GeometricBrownianMotionProcess(double initialValue,
+                                       double mue,
+                                       double sigma);
+        Real x0() const;
+        Real drift(Time t, Real x) const;
+        Real diffusion(Time t, Real x) const;
+      protected:
+        double initialValue_;
+        double mue_;
+        double sigma_;
+    };
+
     //! Black-Scholes stochastic process
     /*! This class describes the stochastic process governed by
         \f[
@@ -120,6 +145,7 @@ namespace QuantLib {
         Real drift(Time t, Real x) const ;
         /*! \todo revise extrapolation */
         Real diffusion(Time t, Real x) const;
+        Real evolve(Real change, Real currentValue) const;
         //@}
         //! \name Observer interface
         //@{
@@ -162,6 +188,9 @@ namespace QuantLib {
         //@{
         Real drift(Time, Real) const { QL_FAIL("not implemented"); }
         Real diffusion(Time, Real) const { QL_FAIL("not implemented"); }
+        Real evolve(Real change, Real currentValue) const {
+            QL_FAIL("not implemented");
+        }
         //@}
         //! \name Inspectors
         //@{
