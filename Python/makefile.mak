@@ -134,7 +134,8 @@ quantlib_wrap.cpp:: \
 
 # Clean up
 clean::
-    if exist $(PYTHON_BCC_LIB)      del $(PYTHON_BCC_LIB)
+    if exist bccpython_d.lib        del bccpython_d.lib
+    if exist bccpython.lib          del bccpython.lib
     if exist quantlib_wrap.cpp      del quantlib_wrap.cpp
     if exist QuantLib.py            del QuantLib.py
     if exist QuantLib.pyc           del QuantLib.pyc
@@ -142,6 +143,10 @@ clean::
     if exist quantlib_wrap_d.obj    del quantlib_wrap_d.obj
     if exist QuantLibc.dll          del QuantLibc.dll
     if exist QuantLibc_d.dll        del QuantLibc_d.dll
+    if exist QuantLibc_d.ilc        del QuantLibc_d.ilc
+    if exist QuantLibc_d.ild        del QuantLibc_d.ild
+    if exist QuantLibc_d.ilf        del QuantLibc_d.ilf
+    if exist QuantLibc_d.ils        del QuantLibc_d.ils
     if exist QuantLibc.tds          del QuantLibc.tds
     if exist QuantLibc_d.tds        del QuantLibc_d.tds
     cd Tests
