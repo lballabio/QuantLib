@@ -33,10 +33,19 @@ namespace QuantLib {
 
     //! Known currencies
     enum Currency {
+        ARS,    //!< Argentinian Peso
+        ATS,    //!< Austrian Schillings
         AUD,    //!< Australian Dollar
+        BDT,    //!< Bangladesh Taka
+        BEF,    //!< Belgian Franc
         BGL,    //!< Bulgarian Lev
+        BRL,    //!< Brazilian Real
+        BYB,    //!< Belarusian Ruble
         CAD,    //!< Canadian Dollar
         CHF,    //!< Swiss Franc
+        CLP,    //!< Chilean Peso
+        CNY,    //!< Chinese Yuan
+        COP,    //!< Colombian Peso
         CYP,    //!< Cyprus Pound
         CZK,    //!< Czech Koruna
         DEM,    //!< German Mark
@@ -47,23 +56,36 @@ namespace QuantLib {
         GRD,    //!< Greek Drachma
         HKD,    //!< Hong Kong Dollar
         HUF,    //!< Hungarian Forint
+        ILS,    //!< Israeli Shekel
+        INR,    //!< Indian Rupee
+        IQD,    //!< Iraqi Dinar
+        IRR,    //!< Iranian Rial
         ISK,    //!< Iceland Krona
         ITL,    //!< Italian Lira
         JPY,    //!< Japanese Yen
         KRW,    //!< South-Korean Won
+        KWD,    //!< Kuwaiti dinar
         LTL,    //!< Lithuanian Litas
         LVL,    //!< Latvian Lats
         MTL,    //!< Maltese Lira
+        MXP,    //!< Mexican Peso
         NOK,    //!< Norwegian Kroner
+        NPR,    //!< Nepal Rupee
         NZD,    //!< New Zealand Dollar
-        PLZ,    //!< Polish Zloty
+        PKR,    //!< Pakistani Rupee
+        PLN,    //!< New Polish Zloty
         ROL,    //!< Romanian Leu
+        SAR,    //!< Saudi Riyal
         SEK,    //!< Swedish Krona
         SGD,    //!< Singapore Dollar
         SIT,    //!< Slovenian Tolar
         SKK,    //!< Slovak Koruna
+        THB,    //!< Thai Baht
         TRL,    //!< Turkish Lira
+        TTD,    //!< Trinidad & Tobago dollar
+        TWD,    //!< Taiwan Dollar
         USD,    //!< US Dollar
+        VEB,    //!< Venezuelan Bolivar
         ZAR     //!< South African Rand
     };
 

@@ -168,7 +168,6 @@ namespace QuantLib {
           case CAD: return "CAD";
           case DKK: return "DKK";
           case JPY: return "JPY";
-          case PLZ: return "PLZ";
           case SEK: return "SEK";
           case CZK: return "CZK";
           case EEK: return "EEK";
@@ -190,6 +189,29 @@ namespace QuantLib {
           case ZAR: return "ZAR";
           case SIT: return "SIT";
           case KRW: return "KRW";
+          case ARS: return "ARS";
+          case ATS: return "ATS";
+          case BDT: return "BDT";
+          case BEF: return "BEF";
+          case BRL: return "BRL";
+          case BYB: return "BYB";
+          case CLP: return "CLP";
+          case CNY: return "CNY";
+          case COP: return "COP";
+          case ILS: return "ILS";
+          case INR: return "INR";
+          case IQD: return "IQD";
+          case IRR: return "IRR";
+          case KWD: return "KWD";
+          case MXP: return "MXP";
+          case NPR: return "NPR";
+          case PKR: return "PKR";
+          case PLN: return "PLN";
+          case SAR: return "SAR";
+          case THB: return "THB";
+          case TTD: return "TTD";
+          case TWD: return "TWD";
+          case VEB: return "VEB";
           default:  return "unknown";
         }
     }
