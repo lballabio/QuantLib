@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/21 11:31:04  lballabio
+    Removed redundant theSize data member
+
     Revision 1.8  2001/01/08 11:44:18  lballabio
     Array back into QuantLib namespace - Math namespace broke expression templates, go figure
 
@@ -84,19 +87,19 @@ namespace QuantLib {
         
         Array 
         TridiagonalOperatorCommon::applyTo(const Array& v) const {
-            QL_REQUIRE(v.size()==theSize,
+            QL_REQUIRE(v.size()==size(),
                 "TridiagonalOperator::applyTo: vector of the wrong size (" +
                 IntegerFormatter::toString(v.size()) + "instead of " + 
-                IntegerFormatter::toString(theSize) + ")"  );
-            Array result(theSize);
+                IntegerFormatter::toString(size()) + ")"  );
+            Array result(size());
         
             // matricial product
             result[0] = diagonal[0]*v[0] + aboveDiagonal[0]*v[1];
-            for (int j=1;j<=theSize-2;j++)
+            for (int j=1;j<=size()-2;j++)
                 result[j] = belowDiagonal[j-1]*v[j-1]+ diagonal[j]*v[j] +
                     aboveDiagonal[j]*v[j+1];
-            result[theSize-1] = belowDiagonal[theSize-2]*v[theSize-2] +
-                diagonal[theSize-1]*v[theSize-1]; 
+            result[size()-1] = belowDiagonal[size()-2]*v[size()-2] +
+                diagonal[size()-1]*v[size()-1]; 
         
             // apply lower boundary condition
             switch (theLowerBC.type()) {
@@ -117,10 +120,10 @@ namespace QuantLib {
                 // does nothing
                 break;
               case BoundaryCondition::Neumann:
-                result[theSize-1] = result[theSize-2] + theHigherBC.value();
+                result[size()-1] = result[size()-2] + theHigherBC.value();
                 break;
               case BoundaryCondition::Dirichlet:
-                result[theSize-1] = theHigherBC.value();
+                result[size()-1] = theHigherBC.value();
                 break;
             }
         
@@ -129,7 +132,7 @@ namespace QuantLib {
         
         Array 
         TridiagonalOperatorCommon::solveFor(const Array& rhs) const {
-            QL_REQUIRE(rhs.size()==theSize,
+            QL_REQUIRE(rhs.size()==size(),
                 "TridiagonalOperator::solveFor: rhs vector has the wrong size");
             Array bcRhs = rhs;
         
@@ -151,26 +154,26 @@ namespace QuantLib {
                 break;
               case BoundaryCondition::Neumann:
               case BoundaryCondition::Dirichlet:
-                bcRhs[theSize-1] = theHigherBC.value();
+                bcRhs[size()-1] = theHigherBC.value();
                 break;
             }
         
             // solve tridiagonal system
-            Array result(theSize), tmp(theSize);
+            Array result(size()), tmp(size());
         
             double bet=diagonal[0];
             QL_REQUIRE(bet != 0.0, 
                 "TridiagonalOperator::solveFor: division by zero"); 
             result[0] = bcRhs[0]/bet;
             int j;
-            for (j=1;j<=theSize-1;j++){
+            for (j=1;j<=size()-1;j++){
                 tmp[j]=aboveDiagonal[j-1]/bet;
                 bet=diagonal[j]-belowDiagonal[j-1]*tmp[j];
                 QL_ENSURE(bet != 0.0, 
                     "TridiagonalOperator::solveFor: division by zero"); 
                 result[j] = (bcRhs[j]-belowDiagonal[j-1]*result[j-1])/bet;
             }
-            for (j=theSize-2;j>=0;j--) 
+            for (j=size()-2;j>=0;j--) 
                 result[j] -= tmp[j+1]*result[j+1];
         
             return result;

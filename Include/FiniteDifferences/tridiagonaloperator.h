@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/02/21 11:30:46  lballabio
+    Removed redundant theSize data member
+
     Revision 1.11  2001/02/21 09:47:20  lballabio
     Worked around bug in Visual C++
 
@@ -62,15 +65,14 @@ namespace QuantLib {
         class TridiagonalOperatorCommon {
           public:
             // constructors
-            TridiagonalOperatorCommon() : theSize(0) {}
-            TridiagonalOperatorCommon(int size);
+            TridiagonalOperatorCommon(int size = 0);
             TridiagonalOperatorCommon(const Array& low, const Array& mid, 
                 const Array& high);
             // operator interface
             Array solveFor(const Array& rhs) const;
             Array applyTo(const Array& v) const;
             // inspectors
-            int size() const { return theSize; }
+            int size() const { return diagonal.size(); }
             // modifiers
             void setLowerBC(const BoundaryCondition& bc);
             void setHigherBC(const BoundaryCondition& bc);
@@ -84,8 +86,6 @@ namespace QuantLib {
           protected:
             Array diagonal, belowDiagonal, aboveDiagonal;
             BoundaryCondition theLowerBC, theHigherBC;
-          private:
-            int theSize;
         };
 
         // derived classes
@@ -138,7 +138,6 @@ namespace QuantLib {
                     aboveDiagonal = op.aboveDiagonal;
                     theLowerBC = op.theLowerBC;
                     theHigherBC = op.theHigherBC;
-                    theSize = op.theSize;
                     return *this;
                 }
             #endif
@@ -150,8 +149,7 @@ namespace QuantLib {
           public TridiagonalOperatorCommon, public TimeDependentOperator {
           public:
             // constructors
-            TimeDependentTridiagonalOperator() : TridiagonalOperatorCommon() {}
-            TimeDependentTridiagonalOperator(int size) 
+            TimeDependentTridiagonalOperator(int size = 0) 
             : TridiagonalOperatorCommon(size) {}
             TimeDependentTridiagonalOperator(const Array& low, const Array& mid, 
                 const Array& high)
@@ -162,21 +160,17 @@ namespace QuantLib {
         // inline definitions
 
         inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(int size)
-        : theSize(size) {
-            QL_REQUIRE(theSize >= 3, 
+        : diagonal(size), belowDiagonal(size-1), aboveDiagonal(size-1) {
+            QL_ENSURE(diagonal.size() >= 3 || diagonal.size() == 0, 
                 "invalid size for tridiagonal operator (must be >= 3)");
-            belowDiagonal = Array(theSize-1);
-            diagonal = Array(theSize);
-            aboveDiagonal = Array(theSize-1);
         }
 
         inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(
             const Array& low, const Array& mid, const Array& high)
-        : diagonal(mid), belowDiagonal(low), aboveDiagonal(high), 
-          theSize(mid.size()) {
-            QL_REQUIRE(belowDiagonal.size() == theSize-1, 
+        : diagonal(mid), belowDiagonal(low), aboveDiagonal(high) {
+            QL_ENSURE(belowDiagonal.size() == diagonal.size()-1, 
                 "wrong size for lower diagonal vector");
-            QL_REQUIRE(aboveDiagonal.size() == theSize-1, 
+            QL_ENSURE(aboveDiagonal.size() == diagonal.size()-1, 
                 "wrong size for upper diagonal vector");
         }
 
@@ -188,7 +182,7 @@ namespace QuantLib {
 
         inline void TridiagonalOperatorCommon::setMidRow(int i, double valA, 
           double valB, double valC) {
-            QL_REQUIRE(i>=1 && i<=theSize-2, 
+            QL_REQUIRE(i>=1 && i<=size()-2, 
                 "out of range in TridiagonalSystem::setMidRow");
             belowDiagonal[i-1] = valA;
             diagonal[i]        = valB;
@@ -197,7 +191,7 @@ namespace QuantLib {
 
         inline void TridiagonalOperatorCommon::setMidRows(double valA, 
           double valB, double valC){
-            for (int i=1; i<=theSize-2; i++) {
+            for (int i=1; i<=size()-2; i++) {
                 belowDiagonal[i-1] = valA;
                 diagonal[i]        = valB;
                 aboveDiagonal[i]   = valC;
@@ -206,8 +200,8 @@ namespace QuantLib {
 
         inline void TridiagonalOperatorCommon::setLastRow(double valA, 
           double valB) {
-            belowDiagonal[theSize-2] = valA;
-            diagonal[theSize-1]      = valB;
+            belowDiagonal[size()-2] = valA;
+            diagonal[size()-1]      = valB;
         }
 
         // time-constant algebra
