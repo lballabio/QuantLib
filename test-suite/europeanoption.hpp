@@ -30,7 +30,7 @@ class EuropeanOptionTest : public CppUnit::TestFixture {
     void testBinomialEngines();
     static CppUnit::Test* suite();
   private:
-    enum EngineType { Analytic, JR, CRR, EQP, Trigeorgis };
+    enum EngineType { Analytic, JR, CRR, EQP, Trigeorgis, Tian};
     double relativeError(double x1, double x2, double reference);
     QL::Handle<QL::Instrument> makeEuropeanOption(
         QL::Option::Type type,

@@ -34,7 +34,7 @@ using QuantLib::VolTermStructures::BlackConstantVol;
 using QuantLib::DayCounters::Actual365;
 using QuantLib::Calendars::TARGET;
 
-double EuropeanOptionTest::relativeError(double x1, double x2, 
+double EuropeanOptionTest::relativeError(double x1, double x2,
                                          double reference) {
     if (reference != 0.0)
         return QL_FABS(x1-x2)/reference;
@@ -75,15 +75,20 @@ Handle<Instrument> EuropeanOptionTest::makeEuropeanOption(
             new BinomialVanillaEngine(
                 BinomialVanillaEngine::Trigeorgis, 800));
         break;
+      case Tian:
+        engine = Handle<PricingEngine>(
+            new BinomialVanillaEngine(
+                BinomialVanillaEngine::Tian, 800));
+        break;
       default:
         throw Error("Unknown engine type");
     }
-    
+
     return Handle<Instrument>(
         new VanillaOption(type,
                           RelinkableHandle<MarketElement>(underlying),
                           strike,
-                          RelinkableHandle<TermStructure>(divCurve), 
+                          RelinkableHandle<TermStructure>(divCurve),
                           RelinkableHandle<TermStructure>(rfCurve),
                           EuropeanExercise(exDate),
                           RelinkableHandle<BlackVolTermStructure>(volatility),
@@ -138,6 +143,8 @@ std::string EuropeanOptionTest::engineTypeToString(
         return "EQP";
       case Trigeorgis:
         return "Trigeorgis";
+      case Tian:
+        return "Tian";
       default:
         throw Error("unknown engine type");
     }
@@ -158,7 +165,7 @@ void EuropeanOptionTest::testGreeks() {
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     int lengths[] = { 2 };
-    
+
     // test data
     double underlyings[] = { 100.0 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };
@@ -207,7 +214,7 @@ void EuropeanOptionTest::testGreeks() {
                   qRate->setValue(q);
                   rRate->setValue(r);
                   volatility->setValue(v);
-                  
+
                   double value = option->NPV();
                   calculated["delta"]  = option->delta();
                   calculated["gamma"]  = option->gamma();
@@ -215,7 +222,7 @@ void EuropeanOptionTest::testGreeks() {
                   calculated["rho"]    = option->rho();
                   calculated["divRho"] = option->dividendRho();
                   calculated["vega"]   = option->vega();
-                  
+
                   if (value > underlying->value()*1.0e-5) {
                       // perturb underlying and get delta and gamma
                       double du = u*1.0e-4;
@@ -228,7 +235,7 @@ void EuropeanOptionTest::testGreeks() {
                       underlying->setValue(u);
                       expected["delta"] = (value_p - value_m)/(2*du);
                       expected["gamma"] = (delta_p - delta_m)/(2*du);
-                      
+
                       // perturb rates and get rho and dividend rho
                       double dr = r*1.0e-4;
                       rRate->setValue(r+dr);
@@ -260,7 +267,7 @@ void EuropeanOptionTest::testGreeks() {
 
                       // compare
                       std::map<std::string,double>::iterator it;
-                      for (it = calculated.begin(); 
+                      for (it = calculated.begin();
                            it != calculated.end(); ++it) {
                           std::string greek = it->first;
                           double calcl = calculated[greek],
@@ -305,13 +312,13 @@ void EuropeanOptionTest::testImpliedVol() {
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     int lengths[] = { 36, 180, 360, 1080 };
-    
+
     // test data
     double underlyings[] = { 80.0, 95.0, 99.9, 100.0, 100.1, 105.0, 120.0 };
     Rate qRates[] = { 0.01, 0.05, 0.10 };
     Rate rRates[] = { 0.01, 0.05, 0.10 };
     double vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
-    
+
     Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
     Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
     Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
@@ -330,7 +337,7 @@ void EuropeanOptionTest::testImpliedVol() {
           Handle<VanillaOption> option =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve);
-          
+
           for (int l=0; l<LENGTH(underlyings); l++) {
             for (int m=0; m<LENGTH(qRates); m++) {
               for (int n=0; n<LENGTH(rRates); n++) {
@@ -343,7 +350,7 @@ void EuropeanOptionTest::testImpliedVol() {
                   qRate->setValue(q);
                   rRate->setValue(r);
                   volatility->setValue(v);
-                  
+
                   double value = option->NPV();
                   double implVol;
                   if (value != 0.0) {
@@ -414,14 +421,14 @@ void EuropeanOptionTest::testBinomialEngines() {
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double strikes[] = { 50.0, 100.0, 150.0 };
     int lengths[] = { 1 };
-    
+
     // test data
     double underlyings[] = { 100.0 };
     Rate qRates[] = { 0.00, 0.05 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     double vols[] = { 0.11, 0.50, 1.20 };
 
-    EngineType engines[] = { JR, CRR, EQP, Trigeorgis };
+    EngineType engines[] = { JR, CRR, EQP, Trigeorgis, Tian };
 
     Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
     Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
@@ -450,7 +457,7 @@ void EuropeanOptionTest::testBinomialEngines() {
                                      divCurve,rfCurve,exDate,volCurve,
                                      engines[ii]);
           }
-          
+
           for (int l=0; l<LENGTH(underlyings); l++) {
             for (int m=0; m<LENGTH(qRates); m++) {
               for (int n=0; n<LENGTH(rRates); n++) {
@@ -463,7 +470,7 @@ void EuropeanOptionTest::testBinomialEngines() {
                   qRate->setValue(q);
                   rRate->setValue(r);
                   volatility->setValue(v);
-                  
+
                   double refValue = refOption->NPV();
                   for (int ii=0; ii<LENGTH(engines); ii++) {
                       double value = options[engines[ii]]->NPV();
@@ -482,10 +489,10 @@ void EuropeanOptionTest::testBinomialEngines() {
                               + DateFormatter::toString(exDate) + "\n"
                               "    volatility:       "
                               + DoubleFormatter::toString(v) + "\n\n"
-                              "    analytic value: " 
+                              "    analytic value: "
                               + DoubleFormatter::toString(refValue) + "\n"
                               "    binomial ("
-                              + engineTypeToString(engines[ii]) + "):  " 
+                              + engineTypeToString(engines[ii]) + "):  "
                               + DoubleFormatter::toString(value));
                       }
                   }
@@ -500,7 +507,7 @@ void EuropeanOptionTest::testBinomialEngines() {
 
 
 CppUnit::Test* EuropeanOptionTest::suite() {
-    CppUnit::TestSuite* tests = 
+    CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("European option tests");
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing European option greeks",
