@@ -30,7 +30,7 @@ namespace QuantLib {
     class LineSearch {
       public:
         //! Default constructor
-        LineSearch(double eps = 1e-8)
+        LineSearch(Real eps = 1e-8)
         : qt_(0.0), qpt_(0.0), succeed_(true) {}
         //! Destructor
         virtual ~LineSearch() {}
@@ -38,42 +38,42 @@ namespace QuantLib {
         //! return last x value
         const Array& lastX() { return xtd_; }
         //! return last cost function value
-        double lastFunctionValue() { return qt_; }
+        Real lastFunctionValue() { return qt_; }
         //! return last gradient
         const Array& lastGradient() { return gradient_; }
         //! return square norm of last gradient
-        double lastGradientNorm2() { return qpt_;}
+        Real lastGradientNorm2() { return qpt_;}
 
         bool succeed() { return succeed_; }
 
         //! Perform line search
-        virtual double operator()(const Problem& P, double t_ini) = 0;
+        virtual Real operator()(const Problem& P, Real t_ini) = 0;
 
-        double update(Array& params, 
-                      const Array& direction,
-                      double beta,
-                      const Constraint& constraint);
+        Real update(Array& params, 
+                    const Array& direction,
+                    Real beta,
+                    const Constraint& constraint);
 
       protected:
         //! new x and its gradient
         Array xtd_, gradient_;
         //! cost function value and gradient norm corresponding to xtd_
-        double qt_, qpt_;
+        Real qt_, qpt_;
         //! flag to know if linesearch succeed
         bool succeed_;
 
     };
 
 
-    inline double LineSearch::update(Array& params, const Array& direction, 
-                                     double beta,
-                                     const Constraint& constraint) {
+    inline Real LineSearch::update(Array& params, const Array& direction, 
+                                   Real beta,
+                                   const Constraint& constraint) {
 
-        double diff=beta;
+        Real diff=beta;
 
         Array newParams = params + diff*direction;
         bool valid = constraint.test(newParams);
-        int icount = 0;
+        Integer icount = 0;
         while (!valid) {
             if (icount > 200)
                 QL_FAIL("can't update linesearch");

@@ -45,22 +45,22 @@ namespace QuantLib {
         void setEndCriteria(const EndCriteria& endCriteria);
 
         //! current iteration number
-        int& iterationNumber() const { return iterationNumber_; }
+        Integer& iterationNumber() const { return iterationNumber_; }
 
         //! optimization end criteria
         EndCriteria& endCriteria() const { return endCriteria_; }
 
         //! number of evaluation of cost function
-        int& functionEvaluation() const { return functionEvaluation_; }
+        Integer& functionEvaluation() const { return functionEvaluation_; }
 
         //! number of evaluation of cost function gradient
-        int& gradientEvaluation() const { return gradientEvaluation_; }
+        Integer& gradientEvaluation() const { return gradientEvaluation_; }
 
         //! value of cost function
-        double& functionValue() const { return functionValue_; }
+        Real& functionValue() const { return functionValue_; }
 
         //! value of cost function gradient norm
-        double& gradientNormValue() const { return squaredNorm_; }
+        Real& gradientNormValue() const { return squaredNorm_; }
 
         //! current value of the local minimum
         Array& x() const { return x_; }
@@ -74,13 +74,13 @@ namespace QuantLib {
         //! initial value of unknowns
         Array initialValue_;
         //! current iteration step in the Optimization process
-        mutable int iterationNumber_;
+        mutable Integer iterationNumber_;
         //! optimization end criteria
         mutable EndCriteria endCriteria_;
         //! number of evaluation of cost function and its gradient
-        mutable int functionEvaluation_, gradientEvaluation_;
+        mutable Integer functionEvaluation_, gradientEvaluation_;
         //! function and gradient norm values of the last step
-        mutable double functionValue_, squaredNorm_;
+        mutable Real functionValue_, squaredNorm_;
         //! current values of the local minimum and the search direction
         mutable Array x_, searchDirection_;
     };

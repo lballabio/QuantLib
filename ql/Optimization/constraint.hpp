@@ -39,7 +39,7 @@ namespace QuantLib {
     class Constraint : public Bridge<Constraint,ConstraintImpl> {
       public:
         bool test(const Array& p) const { return impl_->test(p); }
-        double update(Array& p, const Array& direction, double beta);
+        Real update(Array& p, const Array& direction, Real beta);
         Constraint(const boost::shared_ptr<ConstraintImpl>& impl = 
                                       boost::shared_ptr<ConstraintImpl>());
     };
@@ -83,7 +83,7 @@ namespace QuantLib {
       private:
         class Impl : public Constraint::Impl {
           public:
-            Impl(double low, double high) 
+            Impl(Real low, Real high) 
             : low_(low), high_(high) {}
             bool test(const Array& params) const {
                 for (Size i=0; i<params.size(); i++) {
@@ -93,10 +93,10 @@ namespace QuantLib {
                 return true; 
             }
           private:
-            double low_, high_;
+            Real low_, high_;
         };
       public:
-        BoundaryConstraint(double low, double high) 
+        BoundaryConstraint(Real low, Real high) 
         : Constraint(boost::shared_ptr<Constraint::Impl>(
                                   new BoundaryConstraint::Impl(low, high))) {}
     };
@@ -127,13 +127,13 @@ namespace QuantLib {
                               const boost::shared_ptr<Constraint::Impl>& impl)
     : Bridge<Constraint,ConstraintImpl>(impl) {}
 
-    inline double Constraint::update(Array& params, const Array& direction, 
-                                     double beta) {
+    inline Real Constraint::update(Array& params, const Array& direction, 
+                                   Real beta) {
 
-        double diff=beta;
+        Real diff=beta;
         Array newParams = params + diff*direction;
         bool valid = test(newParams);
-        int icount = 0;
+        Integer icount = 0;
         while (!valid) {
             if (icount > 200)
                 QL_FAIL("can't update parameter vector");

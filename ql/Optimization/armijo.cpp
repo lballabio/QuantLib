@@ -19,20 +19,20 @@
 
 namespace QuantLib {
 
-    double ArmijoLineSearch::operator()(
+    Real ArmijoLineSearch::operator()(
             const Problem& P,       // Optimization problem
-            double t_ini)           // initial value of line-search step
+            Real t_ini)             // initial value of line-search step
     {
         OptimizationMethod& method = P.method();
         Constraint& constraint = P.constraint();
 
         bool maxIter = false;
-        double q0 = method.functionValue();
-        double qp0 = method.gradientNormValue();
+        Real q0 = method.functionValue();
+        Real qp0 = method.gradientNormValue();
         qt_ = q0;
         qpt_ = qp0;
-        double qtold, t = t_ini;
-        int loopNumber = 0;
+        Real qtold, t = t_ini;
+        Size loopNumber = 0;
 
         Array& x = method.x();
         Array& d = method.searchDirection();

@@ -36,14 +36,14 @@ namespace QuantLib {
         : costFunction_(f), constraint_(c), method_(meth) {}
 
         //! call cost function computation and increment evaluation counter
-        double value(const Array& x) const;
+        Real value(const Array& x) const;
 
         //! call cost function gradient computation and increment
         //  evaluation counter
         void gradient(Array& grad_f, const Array& x) const;
 
         //! call cost function computation and it gradient
-        double valueAndGradient(Array& grad_f, const Array& x) const;
+        Real valueAndGradient(Array& grad_f, const Array& x) const;
 
         //! Constrained optimization method
         OptimizationMethod& method() const { return method_; }
@@ -71,7 +71,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline double Problem::value(const Array& x) const {
+    inline Real Problem::value(const Array& x) const {
         method_.functionEvaluation()++;
         return costFunction_.value(x);
     }
@@ -81,8 +81,8 @@ namespace QuantLib {
         costFunction_.gradient(grad_f, x);
     }
 
-    inline double Problem::valueAndGradient(Array& grad_f, 
-                                            const Array& x) const {
+    inline Real Problem::valueAndGradient(Array& grad_f, 
+                                          const Array& x) const {
         method_.functionEvaluation()++;
         method_.gradientEvaluation()++;
         return costFunction_.valueAndGradient(grad_f, x);

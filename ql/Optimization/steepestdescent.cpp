@@ -23,9 +23,9 @@ namespace QuantLib {
         bool end;
 
         // function and squared norm of gradient values;
-        double normdiff;
+        Real normdiff;
         // classical initial value for line-search step
-        double t = 1.0;
+        Real t = 1.0;
 
         // reference X as the optimization problem variable
         Array& X = x();

@@ -41,20 +41,20 @@ namespace QuantLib {
     class ArmijoLineSearch : public LineSearch {
       public:
         //! Default constructor
-        ArmijoLineSearch(double eps = 1e-8,
-                         double alpha = 0.5,
-                         double beta = 0.65)
+        ArmijoLineSearch(Real eps = 1e-8,
+                         Real alpha = 0.5,
+                         Real beta = 0.65)
         : LineSearch(eps), alpha_(alpha), beta_(beta) {}
         //! Destructor
         virtual ~ArmijoLineSearch () {}
 
         //! Perform line search
-        virtual double operator() (
+        virtual Real operator() (
                        const Problem& P,  // Optimization problem
-                       double t_ini);     // initial value of line-search step
+                       Real t_ini);     // initial value of line-search step
       private:
         //! Armijo paramters
-        double alpha_, beta_;
+        Real alpha_, beta_;
     };
 
 }

@@ -38,16 +38,16 @@ namespace QuantLib {
         /*! Constructor taking as input the characteristic length and
             tolerance
         */
-        Simplex(double lambda, double tol) 
+        Simplex(Real lambda, Real tol) 
         : lambda_(lambda), tol_(tol) {}
         virtual ~Simplex() {}
 
         virtual void minimize(const Problem& P) const;
       private:
-        double extrapolate(const Problem& P, Size iHighest, 
-                           double& factor) const;
-        double lambda_;
-        double tol_;
+        Real extrapolate(const Problem& P, Size iHighest, 
+                         Real& factor) const;
+        Real lambda_;
+        Real tol_;
         mutable std::vector<Array> vertices_;
         mutable Array values_, sum_;
     };

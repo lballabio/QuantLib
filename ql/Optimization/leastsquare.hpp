@@ -31,7 +31,7 @@ namespace QuantLib {
     class LeastSquareProblem {
       public:
         //! size of the problem ie size of target vector
-        virtual int size () = 0;
+        virtual Size size () = 0;
         //! compute the target vector and the values of the fonction to fit
         virtual void targetAndValue(const Array& x, Array& target,
                                     Array& fct2fit) = 0;
@@ -55,12 +55,12 @@ namespace QuantLib {
         virtual ~LeastSquareFunction () {}
 
         //! compute value of the least square function
-        virtual double value (const Array& x) const;
+        virtual Real value (const Array& x) const;
         //! compute vector of derivatives of the least square function
         virtual void gradient (Array& grad_f, const Array& x) const;
         //! compute value and gradient of the least square function
-        virtual double valueAndGradient (Array& grad_f,
-                                         const Array& x) const;
+        virtual Real valueAndGradient (Array& grad_f,
+                                       const Array& x) const;
       protected:
         //! least square problem
         LeastSquareProblem &lsp_;
@@ -87,12 +87,12 @@ namespace QuantLib {
       public:
         //! Default constructor
         inline NonLinearLeastSquare(Constraint& c,
-                                    double accuracy = 1e-4,
-                                    int maxiter = 100);
+                                    Real accuracy = 1e-4,
+                                    Size maxiter = 100);
         //! Default constructor
         inline NonLinearLeastSquare(Constraint& c,
-                                    double accuracy,
-                                    int maxiter,
+                                    Real accuracy,
+                                    Size maxiter,
                                     boost::shared_ptr<OptimizationMethod> om);
         //! Destructor
         inline ~NonLinearLeastSquare () {}
@@ -108,25 +108,25 @@ namespace QuantLib {
         inline Array& results () { return results_; }
 
         //! return the least square residual norm
-        inline double residualNorm() { return resnorm_; }
+        inline Real residualNorm() { return resnorm_; }
 
         //! return last function value
-        inline double lastValue() { return bestAccuracy_; }
+        inline Real lastValue() { return bestAccuracy_; }
 
         //! return exit flag
-        inline int exitFlag() { return exitFlag_; }
+        inline Integer exitFlag() { return exitFlag_; }
 
         //! return the performed number of iterations
-        inline int iterationsNumber() { return nbIterations_; }
+        inline Integer iterationsNumber() { return nbIterations_; }
       private:
         //! solution vector
         Array results_, initialValue_;
         //! least square residual norm
-        double resnorm_;
+        Real resnorm_;
         //! Exit flag of the optimization process
-        int exitFlag_;
+        Integer exitFlag_;
         //! required accuracy of the solver
-        double accuracy_, bestAccuracy_;
+        Real accuracy_, bestAccuracy_;
         //! maximum and real number of iterations
         Size maxIterations_, nbIterations_;
         //! Optimization method
@@ -138,7 +138,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline double LeastSquareFunction::value (const Array & x) const {
+    inline Real LeastSquareFunction::value (const Array & x) const {
         // size of target and function to fit vectors
         Array target(lsp_.size()), fct2fit(lsp_.size());
         // compute its values
@@ -163,8 +163,8 @@ namespace QuantLib {
         grad_f = -2.0*(transpose(grad_fct2fit)*diff);
     }
 
-    inline double LeastSquareFunction::valueAndGradient(Array& grad_f, 
-                                                        const Array& x) const {
+    inline Real LeastSquareFunction::valueAndGradient(Array& grad_f, 
+                                                      const Array& x) const {
         // size of target and function to fit vectors
         Array target(lsp_.size()), fct2fit(lsp_.size());
         // size of gradient matrix
@@ -180,8 +180,8 @@ namespace QuantLib {
     }
 
     inline NonLinearLeastSquare::NonLinearLeastSquare(Constraint& c, 
-                                                      double accuracy, 
-                                                      int maxiter)
+                                                      Real accuracy, 
+                                                      Size maxiter)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
       om_ (boost::shared_ptr<OptimizationMethod>(new ConjugateGradient())), 
       c_(c)
@@ -189,15 +189,15 @@ namespace QuantLib {
 
     inline NonLinearLeastSquare::NonLinearLeastSquare(
                                      Constraint& c, 
-                                     double accuracy, 
-                                     int maxiter, 
+                                     Real accuracy, 
+                                     Size maxiter, 
                                      boost::shared_ptr<OptimizationMethod> om)
     : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
       om_ (om), c_(c) {}
 
     inline 
     Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {
-        double eps = accuracy_;
+        Real eps = accuracy_;
 
         // set initial value of the optimization method
         om_->setInitialValue (initialValue_);

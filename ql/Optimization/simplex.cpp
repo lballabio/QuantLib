@@ -24,20 +24,20 @@
 
 namespace QuantLib {
 
-    double Simplex::extrapolate(const Problem& P,
-                                Size iHighest,
-                                double &factor) const {
+    Real Simplex::extrapolate(const Problem& P,
+                              Size iHighest,
+                              Real &factor) const {
 
         Array pTry;
         do {
             Size dimensions = values_.size() - 1;
-            double factor1 = (1.0 - factor)/dimensions;
-            double factor2 = factor1 - factor;
+            Real factor1 = (1.0 - factor)/dimensions;
+            Real factor2 = factor1 - factor;
             pTry = sum_*factor1 - vertices_[iHighest]*factor2;
             factor *= 0.5;
         } while (!P.constraint().test(pTry));
         factor *= 2.0;
-        double vTry = P.value(pTry);
+        Real vTry = P.value(pTry);
         if (vTry < values_[iHighest]) {
             values_[iHighest] = vTry;
             sum_ += pTry - vertices_[iHighest];
@@ -91,23 +91,23 @@ namespace QuantLib {
                 if (values_[i]<values_[iLowest])
                     iLowest = i;
             }
-            double low = values_[iLowest], high = values_[iHighest];
+            Real low = values_[iLowest], high = values_[iHighest];
 
-            double rtol = 2.0*QL_FABS(high - low)/
+            Real rtol = 2.0*QL_FABS(high - low)/
                 (QL_FABS(high) + QL_FABS(low) + QL_EPSILON);
             if (rtol < tol_) {
                 X = vertices_[iLowest];
                 return;
             }
 
-            double factor = -1.0;
-            double vTry = extrapolate(P, iHighest, factor);
+            Real factor = -1.0;
+            Real vTry = extrapolate(P, iHighest, factor);
             if ((vTry <= values_[iLowest]) && (factor == -1.0)) {
                 factor = 2.0;
                 extrapolate(P, iHighest, factor);
             } else {
                 if (vTry >= values_[iNextHighest]) {
-                    double vSave = values_[iHighest];
+                    Real vSave = values_[iHighest];
                     factor = 0.5;
                     vTry = extrapolate(P, iHighest, factor);
                     if (vTry >= vSave) {
