@@ -36,6 +36,21 @@ namespace QuantLib {
         //! 30/360 day count convention
         /*! The day count can be calculated according to US, European, or
             Italian conventions.
+
+			US (NASD) convention: if the starting date is the 31st of a
+			month, it becomes equal to the 30th of the same month.
+			If the ending date is the 31st of a month and the starting
+			date is earlier than the 30th of a month, the ending date
+			becomes equal to the 1st of the next month, otherwise the
+			ending date becomes equal to the 30th of the same month.
+
+			European convention: starting dates or ending dates that
+			occur on the 31st of a month become equal to the 30th of the
+			same month.
+
+			Italian convention: starting dates or ending dates that
+			occur on February and are grater than 27 become equal to 30
+			for computational sake.
         */
         class Thirty360 : public DayCounter {
           public:
