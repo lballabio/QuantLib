@@ -30,6 +30,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.8  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //
@@ -56,7 +66,8 @@ namespace QuantLib {
         class NormalDistribution 
         : public std::unary_function<double,double> {
           public:
-            NormalDistribution(double average = 0.0, double sigma = 1.0);
+            NormalDistribution(double average = 0.0,
+                               double sigma = 1.0);
             // function
             double operator()(double x) const;
             double derivative(double x) const;
@@ -93,7 +104,7 @@ namespace QuantLib {
         : public std::unary_function<double,double> {
           public:
             InvCumulativeNormalDistribution(double average = 0.0,
-                                                double sigma   = 1.0);
+                                            double sigma   = 1.0);
             // function
             double operator()(double x) const;
           private:

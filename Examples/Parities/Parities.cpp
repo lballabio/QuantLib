@@ -27,6 +27,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.8  2001/08/07 11:25:52  sigmud
 // copyright header maintenance
 //
@@ -137,8 +147,8 @@ protected:
 		Math::Statistics samples;
 
 		return OneFactorMonteCarloOption(
-					Handle<StandardPathGenerator>(
-					    new StandardPathGenerator(nTimeSteps,
+					Handle<GaussianPathGenerator>(
+					    new GaussianPathGenerator(nTimeSteps,
 					                              mean,
 					                              sigma*sigma)),
 					Handle<PathPricer>(new EuropeanPathPricer(

@@ -30,23 +30,18 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.9  2001/08/07 13:54:16  marmar
 // Remarks by Nando
-//
-// Revision 1.8  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.6  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.5  2001/06/05 09:35:13  lballabio
-// Updated docs to use Doxygen 1.2.8
-//
-// Revision 1.4  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
 //
 
 #ifndef ql_gaussian_random_generator_h
@@ -54,6 +49,9 @@
 
 #include "ql/MonteCarlo/uniformrandomgenerator.hpp"
 #include "ql/MonteCarlo/boxmuller.hpp"
+#include "ql/MonteCarlo/boxmuller.hpp"
+#include "ql/MonteCarlo/centrallimitgaussian.hpp"
+#include "ql/MonteCarlo/inversecumulativegaussian.hpp"
 
 namespace QuantLib {
 
@@ -68,7 +66,10 @@ namespace QuantLib {
                 typedef ICGaussian<UniformRandomGenerator> GaussianRandomGenerator;
             that is, respectively, central-limit or inverse-cumulative algorithms.
         */
+
         typedef BoxMuller<UniformRandomGenerator> GaussianRandomGenerator;
+//        typedef CLGaussian<UniformRandomGenerator> GaussianRandomGenerator;
+//        typedef ICGaussian<UniformRandomGenerator> GaussianRandomGenerator;
 
     }
 

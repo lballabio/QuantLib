@@ -30,6 +30,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.8  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //
@@ -74,39 +84,39 @@ namespace QuantLib {
             //! returns the weight of the last extracted sample
             double weight() const;
           private:
-            U basicGenerator;
-            mutable bool returnFirst;
-            mutable double firstValue,secondValue;
-            mutable double firstWeight,secondWeight;
+            U basicGenerator_;
+            mutable bool returnFirst_;
+            mutable double firstValue_,secondValue_;
+            mutable double firstWeight_,secondWeight_;
             mutable double weight_;
         };
 
         template <class U>
         BoxMuller<U>::BoxMuller(long seed):
-            basicGenerator(seed), returnFirst(true), weight_(0.0){}
+            basicGenerator_(seed), returnFirst_(true), weight_(0.0){}
 
         template <class U>
         inline double BoxMuller<U>::next() const {
-            if(returnFirst) {
+            if(returnFirst_) {
                 double x1,x2,r,ratio;
                 do {
-                    x1 = basicGenerator.next()*2-1;
-                    firstWeight = basicGenerator.weight();
-                    x2 = basicGenerator.next()*2-1;
-                    secondWeight = basicGenerator.weight();
+                    x1 = basicGenerator_.next()*2-1;
+                    firstWeight_ = basicGenerator_.weight();
+                    x2 = basicGenerator_.next()*2-1;
+                    secondWeight_ = basicGenerator_.weight();
                     r = x1*x1+x2*x2;
                 } while(r>=1 || r==0);
 
                 ratio = QL_SQRT(-2.0*QL_LOG(r)/r);
-                firstValue = x1*ratio;
-                secondValue = x2*ratio;
-                weight_ = firstWeight*secondWeight;
+                firstValue_ = x1*ratio;
+                secondValue_ = x2*ratio;
+                weight_ = firstWeight_*secondWeight_;
 
-                returnFirst = false;
-                return firstValue;
+                returnFirst_ = false;
+                return firstValue_;
             } else {
-                returnFirst = true;
-                return secondValue;
+                returnFirst_ = true;
+                return secondValue_;
             }
         }
 

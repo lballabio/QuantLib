@@ -2,6 +2,16 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.5  2001/08/07 17:33:03  nando
+# 1) StandardPathGenerator now is GaussianPathGenerator;
+# 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+# 3) PathMonteCarlo now is MonteCarloModel;
+# 4) added ICGaussian, a Gaussian distribution that use
+#    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+#    distribution extractions into gaussian distribution extractions;
+# 5) added a few trailing underscore to private members
+# 6) style enforced here and there ....
+#
 # Revision 1.4  2001/07/03 13:19:38  lballabio
 # Added Knuth random generator after doubts were casted on the NR one
 #
@@ -25,6 +35,7 @@ include_HEADERS = \
 	geometricasianpathpricer.hpp \
 	getcovariance.hpp \
 	himalayapathpricer.hpp \
+	inversecumulativegaussian.hpp \
 	knuthrandomgenerator.hpp \
 	lecuyerrandomgenerator.hpp \
 	mcoptionsample.hpp \
@@ -37,10 +48,10 @@ include_HEADERS = \
 	pagodapathpricer.hpp \
 	onefactormontecarlooption.hpp \
 	path.hpp \
-	pathmontecarlo.hpp \
+	montecarlomodel.hpp \
 	pathpricer.hpp \
 	randomarraygenerator.hpp \
-	standardmultipathgenerator.hpp \
-	standardpathgenerator.hpp \
+	gaussianmultipathgenerator.hpp \
+	gaussianpathgenerator.hpp \
 	uniformrandomgenerator.hpp
 

@@ -30,6 +30,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.13  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //
@@ -58,7 +68,7 @@ namespace QuantLib {
     namespace Pricers {
 
         using MonteCarlo::MultiPathPricer;
-        using MonteCarlo::StandardMultiPathGenerator;
+        using MonteCarlo::GaussianMultiPathGenerator;
         using MonteCarlo::PagodaPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
 
@@ -91,8 +101,8 @@ namespace QuantLib {
             Array mu(deltaT * (riskFreeRate - dividendYield
                                     - 0.5 * covariance.diagonal()));
 
-            Handle<StandardMultiPathGenerator> pathGenerator(
-                new StandardMultiPathGenerator(timesteps,
+            Handle<GaussianMultiPathGenerator> pathGenerator(
+                new GaussianMultiPathGenerator(timesteps,
                                                covariance*deltaT,
                                                mu,
                                                seed));

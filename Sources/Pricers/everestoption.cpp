@@ -30,6 +30,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.13  2001/08/07 11:25:55  sigmud
 // copyright header maintenance
 //
@@ -55,7 +65,7 @@ namespace QuantLib {
     namespace Pricers {
 
         using MonteCarlo::MultiPathPricer;
-        using MonteCarlo::StandardMultiPathGenerator;
+        using MonteCarlo::GaussianMultiPathGenerator;
         using MonteCarlo::EverestPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
 
@@ -80,8 +90,8 @@ namespace QuantLib {
 
             std::vector<Time> timeDisp(1);
             timeDisp[0] = residualTime;
-            Handle<StandardMultiPathGenerator> pathGenerator(
-                    new StandardMultiPathGenerator(timeDisp,
+            Handle<GaussianMultiPathGenerator> pathGenerator(
+                    new GaussianMultiPathGenerator(timeDisp,
                                                    covariance,
                                                    mu,
                                                    seed));

@@ -28,6 +28,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.27  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.26  2001/08/07 11:25:53  sigmud
 // copyright header maintenance
 //
@@ -163,6 +173,7 @@
 #include "ql/MonteCarlo/geometricasianpathpricer.hpp"
 #include "ql/MonteCarlo/getcovariance.hpp"
 #include "ql/MonteCarlo/himalayapathpricer.hpp"
+#include "ql/MonteCarlo/inversecumulativegaussian.hpp"
 #include "ql/MonteCarlo/knuthrandomgenerator.hpp"
 #include "ql/MonteCarlo/lecuyerrandomgenerator.hpp"
 #include "ql/MonteCarlo/mcoptionsample.hpp"
@@ -175,11 +186,11 @@
 #include "ql/MonteCarlo/onefactormontecarlooption.hpp"
 #include "ql/MonteCarlo/pagodapathpricer.hpp"
 #include "ql/MonteCarlo/path.hpp"
-#include "ql/MonteCarlo/pathmontecarlo.hpp"
+#include "ql/MonteCarlo/montecarlomodel.hpp"
 #include "ql/MonteCarlo/pathpricer.hpp"
 #include "ql/MonteCarlo/randomarraygenerator.hpp"
-#include "ql/MonteCarlo/standardmultipathgenerator.hpp"
-#include "ql/MonteCarlo/standardpathgenerator.hpp"
+#include "ql/MonteCarlo/gaussianmultipathgenerator.hpp"
+#include "ql/MonteCarlo/gaussianpathgenerator.hpp"
 #include "ql/MonteCarlo/uniformrandomgenerator.hpp"
 
 #include "ql/Patterns/observable.hpp"

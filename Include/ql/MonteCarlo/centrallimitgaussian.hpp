@@ -30,6 +30,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.7  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //
@@ -75,13 +85,13 @@ namespace QuantLib {
             //! returns the weight of the last extracted sample
             double weight() const;
           private:
-            U basicGenerator;
+            U basicGenerator_;
             mutable double gaussWeight_;
         };
 
         template <class U>
         CLGaussian<U>::CLGaussian(long seed):
-            basicGenerator(seed), gaussWeight_(0.0) {}
+            basicGenerator_(seed), gaussWeight_(0.0) {}
 
         template <class U>
         inline double CLGaussian<U>::next() const {
@@ -89,8 +99,8 @@ namespace QuantLib {
             double gaussPoint = -6.0;
             gaussWeight_ = 1.0;
             for(int i=1;i<=12;i++){
-                gaussPoint += basicGenerator.next();
-                gaussWeight_ *= basicGenerator.weight();
+                gaussPoint += basicGenerator_.next();
+                gaussWeight_ *= basicGenerator_.weight();
             }
             return gaussPoint;
         }

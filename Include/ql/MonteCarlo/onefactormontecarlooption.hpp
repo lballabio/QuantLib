@@ -30,6 +30,16 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.9  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //
@@ -51,8 +61,8 @@
 
 #include "ql/Math/statistics.hpp"
 #include "ql/MonteCarlo/pathpricer.hpp"
-#include "ql/MonteCarlo/standardpathgenerator.hpp"
-#include "ql/MonteCarlo/pathmontecarlo.hpp"
+#include "ql/MonteCarlo/gaussianpathgenerator.hpp"
+#include "ql/MonteCarlo/montecarlomodel.hpp"
 
 namespace QuantLib {
 
@@ -63,8 +73,8 @@ namespace QuantLib {
             of a Monte Carlo pricer based on a single-factor model.
             See the corresponding classes for more documentation.
         */
-        typedef PathMonteCarlo<Math::Statistics,
-                StandardPathGenerator, PathPricer> OneFactorMonteCarloOption;
+        typedef MonteCarloModel<Math::Statistics,
+                GaussianPathGenerator, PathPricer> OneFactorMonteCarloOption;
 
     }
 

@@ -21,14 +21,24 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-/*! \file standardpathgenerator.hpp
-    \brief Generates path from random points
+/*! \file gaussianmultipathgenerator.hpp
+    \brief Generates multi paths from random points
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.1  2001/08/07 17:33:03  nando
+// 1) StandardPathGenerator now is GaussianPathGenerator;
+// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
+// 3) PathMonteCarlo now is MonteCarloModel;
+// 4) added ICGaussian, a Gaussian distribution that use
+//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
+//    distribution extractions into gaussian distribution extractions;
+// 5) added a few trailing underscore to private members
+// 6) style enforced here and there ....
+//
 // Revision 1.7  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //
@@ -42,22 +52,23 @@
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
-#ifndef quantlib_montecarlo_standard_path_generator_h
-#define quantlib_montecarlo_standard_path_generator_h
+#ifndef quantlib_montecarlo_gaussian_multi_path_generator_h
+#define quantlib_montecarlo_gaussian_multi_path_generator_h
 
-#include "ql/MonteCarlo/gaussianrandomgenerator.hpp"
-#include "ql/MonteCarlo/randomarraygenerator.hpp"
+#include "ql/MonteCarlo/gaussianarraygenerator.hpp"
+#include "ql/MonteCarlo/multipathgenerator.hpp"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        /*! \typedef StandardPathGenerator
-            The following is the default choice for the standard path generator
-            See the corresponding class for documentation.
+        /*! \typedef GaussianMultiPathGenerator
+            The following is the default choice for the gaussian multi-path
+            generator. See the corresponding class for documentation.
         */
-        typedef RandomArrayGenerator<GaussianRandomGenerator>
-                                               StandardPathGenerator;
+
+        typedef MultiPathGenerator<GaussianArrayGenerator>
+                                              GaussianMultiPathGenerator;
     }
 }
 

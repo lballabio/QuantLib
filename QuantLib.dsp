@@ -499,6 +499,14 @@ SOURCE=.\Include\ql\MonteCarlo\gaussianarraygenerator.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\ql\MonteCarlo\gaussianmultipathgenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\MonteCarlo\gaussianpathgenerator.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp
 # End Source File
 # Begin Source File
@@ -528,6 +536,10 @@ SOURCE=.\Sources\MonteCarlo\himalayapathpricer.cpp
 # Begin Source File
 
 SOURCE=.\Include\ql\MonteCarlo\himalayapathpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\MonteCarlo\inversecumulativegaussian.hpp
 # End Source File
 # Begin Source File
 
@@ -600,14 +612,6 @@ SOURCE=.\Include\ql\MonteCarlo\pathpricer.hpp
 # Begin Source File
 
 SOURCE=.\Include\ql\MonteCarlo\randomarraygenerator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\MonteCarlo\standardmultipathgenerator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\MonteCarlo\standardpathgenerator.hpp
 # End Source File
 # Begin Source File
 

@@ -1,4 +1,9 @@
 
+cash flow stream for IRR, duration
+documentation of path (where it is? continously compounded)
+refactoring di MonteCarloModel refactoring
+
+
 DISTRIBUTING
     QuantLib-docs Win32 NSIS installer
     RPM package
