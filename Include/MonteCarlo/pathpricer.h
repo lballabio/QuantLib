@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/01/24 13:14:25  marmar
+    Removed typedef
+
     Revision 1.4  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -58,12 +61,11 @@ namespace QuantLib {
     */
 
         class PathPricer {
-          public:
-            typedef double SampleType;
+        public:
             PathPricer() : isInitialized_(false) {}
             virtual ~PathPricer() {}
             virtual double value(const Path &path) const=0;
-          protected:
+        protected:
             bool isInitialized_;
         };
 

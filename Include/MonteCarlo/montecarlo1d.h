@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/01/24 13:14:25  marmar
+    Removed typedef
+
     Revision 1.4  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -66,14 +69,14 @@ namespace QuantLib {
         */
 
         class MonteCarlo1D {
-          public:
+        public:
             MonteCarlo1D(){}
             MonteCarlo1D(Handle<PathPricer> pathPricer,
               Rate underlyingGrowthRate, Rate riskFreeRate, double residualTime,
               double volatility, int timesteps, long seed=0);
             double value(long samples) const;
             double errorEstimate() const;
-          private:
+        private:
             mutable OptionSample<StandardPathGenerator,PathPricer>
                 optionSample_;
             mutable Statistics sampleAccumulator_;
