@@ -38,7 +38,11 @@ namespace QuantLib {
                             const Handle<Indexes::Xibor>& index,
                             int fixingDays,
                             const std::vector<Spread>& spreads,
+                            #if defined(QL_PATCH_MICROSOFT_BUGS)
+                            const Date& stubDate,
+                            #else
                             const Date& stubDate = Date(),
+                            #endif
                             const DayCounter& dayCounter = DayCounter())
 		{
 			QL_REQUIRE(nominals.size() != 0, "unspecified nominals");

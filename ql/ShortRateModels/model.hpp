@@ -25,6 +25,7 @@
 #include <ql/option.hpp>
 #include <ql/Lattices/lattice.hpp>
 #include <ql/ShortRateModels/parameter.hpp>
+#include <ql/ShortRateModels/calibrationhelper.hpp>
 #include <ql/Optimization/problem.hpp>
 
 namespace QuantLib {
@@ -84,7 +85,7 @@ namespace QuantLib {
 
             //! Calibrate to a set of market instruments (caps/swaptions)
             void calibrate(
-                CalibrationSet& instruments,
+                const std::vector<Handle<CalibrationHelper> >& instruments,
                 const Handle<Optimization::Method>& method);
 
             const Handle<Optimization::Constraint>& constraint() const;

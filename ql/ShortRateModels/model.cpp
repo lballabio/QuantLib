@@ -19,7 +19,7 @@
     \brief Abstract interest rate model class
 */
 
-#include "ql/ShortRateModels/calibrationhelper.hpp"
+#include "ql/ShortRateModels/model.hpp"
 
 namespace QuantLib {
 
@@ -33,7 +33,7 @@ namespace QuantLib {
           public:
             CalibrationFunction( 
               Model* model,
-              CalibrationSet& instruments) 
+              const std::vector<Handle<CalibrationHelper> >& instruments) 
             : model_(model, false), instruments_(instruments) {}
             virtual ~CalibrationFunction() {}
             
@@ -51,11 +51,11 @@ namespace QuantLib {
             virtual double finiteDifferenceEpsilon() const { return 1e-6; }
           private:
             Handle<Model> model_;
-            CalibrationSet& instruments_;
+            const std::vector<Handle<CalibrationHelper> >& instruments_;
         };
 
         void Model::calibrate(
-            CalibrationSet& instruments,
+            const std::vector<Handle<CalibrationHelper> >& instruments,
             const Handle<Optimization::Method>& method) {
 
             CalibrationFunction f(this, instruments);

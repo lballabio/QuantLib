@@ -24,7 +24,7 @@
 
 #include <ql/grid.hpp>
 #include <ql/blackmodel.hpp>
-#include <ql/ShortRateModels/model.hpp>
+#include <ql/pricingengine.hpp>
 
 namespace QuantLib {
 
