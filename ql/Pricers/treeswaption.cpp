@@ -91,7 +91,7 @@ namespace QuantLib {
                 values_ = newValues_;
             }
           private:
-            const Instruments::SwaptionParameters& parameters_;
+            Instruments::SwaptionParameters parameters_;
             Handle<DiscountBondAsset> bond_;
         };
 
@@ -127,7 +127,7 @@ namespace QuantLib {
             }
 
           private:
-            const Instruments::SwaptionParameters& parameters_;
+            Instruments::SwaptionParameters parameters_;
             Handle<SwapAsset> swap_;
         };
 
