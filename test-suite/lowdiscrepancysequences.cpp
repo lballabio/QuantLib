@@ -242,7 +242,7 @@ void LowDiscrepancyTest::testFaure() {
 
     // 3-dimension Faure sequence (shuffled van der Corput sequence base 3)
     // see "Monte Carlo Methods in Financial Engineering,"
-    // by Paul Glasserman, 2004 Springer Verlag, pag. ??
+    // by Paul Glasserman, 2004 Springer Verlag, pag. 299
     const Real FaureDimensionOneOfThree[] = {
         // first cycle (zero excluded)
         1.0/3,  2.0/3,
