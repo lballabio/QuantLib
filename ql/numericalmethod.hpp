@@ -37,11 +37,14 @@ namespace QuantLib {
 
         const TimeGrid& timeGrid() const { return t_; }
 
-        virtual void initialize(const Handle<DiscretizedAsset>& derivative,
+        virtual void initialize(const Handle<DiscretizedAsset>&,
                                 Time time) const = 0;
 
-        virtual void rollback(const Handle<DiscretizedAsset>& derivative,
+        virtual void rollback(const Handle<DiscretizedAsset>&,
                               Time to) const = 0;
+
+        virtual void rollAlmostBack(const Handle<DiscretizedAsset>&,
+                                    Time to) const = 0;
       protected:
         TimeGrid t_;
     };

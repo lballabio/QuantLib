@@ -24,7 +24,12 @@
 namespace QuantLib {
 
     void DiscretizedOption::adjustValues() {
-        method()->rollback(underlying_, time());
+        /* In the real world, with time flowing forward, first
+           any payment is settled and only after options can be
+           exercised. Here, with time flowing backward, options
+           must be exercised before performing the adjustment.
+        */
+        method()->rollAlmostBack(underlying_, time());
         switch (exerciseType_) {
           case Exercise::American:
             if (time_ >= exerciseTimes_[0] && time_ <= exerciseTimes_[1])
@@ -37,6 +42,7 @@ namespace QuantLib {
                     applyExerciseCondition();
             }
         }
+        underlying_->adjustValues();
     }
 
 }

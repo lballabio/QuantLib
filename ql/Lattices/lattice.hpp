@@ -49,9 +49,17 @@ namespace QuantLib {
             void initialize(const Handle<DiscretizedAsset>& asset,
                             Time t) const;
 
-            //! Roll-back a DiscretizedAsset object until a certain time.
+            /*! Roll back a DiscretizedAsset object until a certain time,
+                performing any needed adjustment 
+            */
             void rollback(const Handle<DiscretizedAsset>& asset,
                           Time to) const;
+
+            /*! Roll-back a DiscretizedAsset object until a certain time,
+                but do not perform the final adjustment.
+            */
+            void rollAlmostBack(const Handle<DiscretizedAsset>& asset,
+                                Time to) const;
 
             virtual Size size(Size i) const = 0;
 

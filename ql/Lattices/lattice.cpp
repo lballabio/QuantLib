@@ -65,6 +65,12 @@ namespace QuantLib {
 
         void Lattice::rollback(const Handle<DiscretizedAsset>& asset, 
                                Time to) const {
+            rollAlmostBack(asset,to);
+            asset->adjustValues();
+        }
+
+        void Lattice::rollAlmostBack(const Handle<DiscretizedAsset>& asset, 
+                                     Time to) const {
 
             Time from = asset->time();
 
@@ -78,7 +84,8 @@ namespace QuantLib {
                 stepback(i, asset->values(), newValues);
                 asset->time() = t_[i];
                 asset->values() = newValues;
-                asset->adjustValues();
+                if (i != iTo) // skip the very last adjustment
+                    asset->adjustValues();
             }
         }
 
