@@ -449,14 +449,16 @@ namespace QuantLib {
     /*! \test interpolated values are checked against the original
               function.
 
-        \todo - fix it for Borland compilation
-              - allow extrapolation as for the other interpolations
-              - investigate if and how to implement Hyman filters and
-                different boundary conditions
+        \todo
+        - fix it for Borland compilation
+        - allow extrapolation as for the other interpolations
+        - investigate if and how to implement Hyman filters and
+          different boundary conditions
 
-        \bug a) cannot interpolate at the grid points on the boundary surface
-                of the N-dimensional region
-             b) it does not compile under Borland
+        \bug
+        - cannot interpolate at the grid points on the boundary surface
+          of the N-dimensional region
+        - it does not compile under Borland
 
     */
     template <Size i> class MultiCubicSpline {
