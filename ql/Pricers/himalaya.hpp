@@ -33,7 +33,9 @@
 #ifndef quantlib_himalaya_h
 #define quantlib_himalaya_h
 
-#include "ql/Pricers/mcmultifactorpricer.hpp"
+#include "ql/Pricers/mcpricer.hpp"
+#include "ql/Math/matrix.hpp"
+#include <vector>
 
 namespace QuantLib {
 
@@ -47,7 +49,7 @@ namespace QuantLib {
             N periods the option pays the max between the strike and the
             average of the best performers.
         */
-        class Himalaya : public McMultiFactorPricer {
+        class Himalaya : public McPricer<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
         public:
             Himalaya(const Array& underlying,
                      const Array& dividendYield,

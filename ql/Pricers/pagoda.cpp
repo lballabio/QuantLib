@@ -22,18 +22,19 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file pagodaoption.cpp
+/*! \file pagoda.cpp
     \brief roofed Asian option
 
     \fullpath
-    ql/Pricers/%pagodaoption.cpp
+    ql/Pricers/%pagoda.cpp
 */
 
 // $Id$
 
 #include "ql/handle.hpp"
-#include "ql/Pricers/pagodaoption.hpp"
+#include "ql/Pricers/pagoda.hpp"
 #include "ql/MonteCarlo/pagodapathpricer.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
 
 namespace QuantLib {
 
@@ -43,29 +44,29 @@ namespace QuantLib {
         using MonteCarlo::GaussianMultiPathGenerator;
         using MonteCarlo::PagodaPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
+        using Math::Matrix;
 
-        PagodaOption::PagodaOption(const Array& portfolio,
-            double fraction, double roof,
-            const Array& dividendYield,
-            const Math::Matrix& covariance,
-            Rate riskFreeRate,
-            const std::vector<Time>& times,
-            unsigned int samples, bool antitheticVariance, long seed)
-        : McMultiFactorPricer(samples, seed){
+        Pagoda::Pagoda(const Array& portfolio, double fraction, double roof,
+                       const Array& dividendYield, const Matrix& covariance,
+                       Rate riskFreeRate, const std::vector<Time>& times,
+                       unsigned int samples, bool antitheticVariance,
+                       long seed) {
+            QL_REQUIRE(samples >= 30,
+                "Pagoda: less than 30 samples. Are you joking?");
             QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "PagodaOption: covariance matrix not square");
+                "Pagoda: covariance matrix not square");
             QL_REQUIRE(covariance.rows() == portfolio.size(),
-                "PagodaOption: underlying size does not match that of"
+                "Pagoda: underlying size does not match that of"
                 " covariance matrix");
             QL_REQUIRE(covariance.rows() == dividendYield.size(),
-                "PagodaOption: dividendYield size does not match"
+                "Pagoda: dividendYield size does not match"
                 " that of covariance matrix");
             QL_REQUIRE(fraction > 0,
-                "PagodaOption: option fraction must be positive");
+                "Pagoda: option fraction must be positive");
             QL_REQUIRE(roof > 0,
-                "PagodaOption: roof must be positive");
+                "Pagoda: roof must be positive");
             QL_REQUIRE(times.size() >= 1,
-                "PagodaOption: you must have at least one time-step");
+                "Pagoda: you must have at least one time-step");
 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
@@ -85,10 +86,12 @@ namespace QuantLib {
                         antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(
-                                        new MultiFactorMonteCarloOption(
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> (
                                         pathGenerator, pathPricer,
                                         Math::Statistics()));
+
+            mcModel_->addSamples(samples);
         }
 
     }

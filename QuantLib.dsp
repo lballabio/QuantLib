@@ -731,10 +731,6 @@ SOURCE=.\ql\Pricers\mceuropeanpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\mcmultifactorpricer.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\mcpricer.hpp
 # End Source File
 # Begin Source File

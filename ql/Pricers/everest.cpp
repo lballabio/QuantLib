@@ -22,18 +22,20 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file everestoption.cpp
+/*! \file everest.cpp
     \brief Everest-type option pricer
 
     \fullpath
-    ql/Pricers/%everestoption.cpp
+    ql/Pricers/%everest.cpp
 */
 
 // $Id$
 
 #include "ql/handle.hpp"
 #include "ql/MonteCarlo/everestpathpricer.hpp"
-#include "ql/Pricers/everestoption.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
+#include "ql/Pricers/everest.hpp"
+
 
 namespace QuantLib {
 
@@ -42,21 +44,24 @@ namespace QuantLib {
         using MonteCarlo::MultiPathPricer;
         using MonteCarlo::GaussianMultiPathGenerator;
         using MonteCarlo::EverestPathPricer;
-        using MonteCarlo::MultiFactorMonteCarloOption;
+        using Math::Matrix;
 
-        EverestOption::EverestOption(const Array &dividendYield,
-            const Math::Matrix &covariance, Rate riskFreeRate,
-            Time residualTime, unsigned int samples, bool antitheticVariance,
-            long seed)
-        : McMultiFactorPricer(samples, seed) {
+        Everest::Everest(const Array &dividendYield, const Matrix& covariance,
+            Rate riskFreeRate, Time residualTime, unsigned int samples,
+            bool antitheticVariance, long seed) {
+
+            QL_REQUIRE(samples >= 30,
+                "Everest: less than 30 samples. Are you joking?");
+
+
             unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
-                "EverestOption: covariance matrix not square");
+                "Everest: covariance matrix not square");
             QL_REQUIRE(dividendYield.size() == n,
-                "EverestOption: dividendYield size does not match"
+                "Everest: dividendYield size does not match"
                 " that of covariance matrix");
             QL_REQUIRE(residualTime > 0,
-                "EverestOption: residualTime must be positive");
+                "Everest: residualTime must be positive");
 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
@@ -72,10 +77,12 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(
-                                new MultiFactorMonteCarloOption(
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> (
                                     pathGenerator, pathPricer,
                                     Math::Statistics()));
+
+            mcModel_->addSamples(samples);
         }
 
     }

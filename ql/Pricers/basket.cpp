@@ -21,18 +21,19 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file plainbasketoption.cpp
+/*! \file basket.cpp
     \brief simple example of multi-factor Monte Carlo pricer
 
     \fullpath
-    ql/Pricers/%plainbasketoption.cpp
+    ql/Pricers/%basket.cpp
 */
 
 // $Id$
 
 #include "ql/handle.hpp"
 #include "ql/MonteCarlo/basketpathpricer.hpp"
-#include "ql/Pricers/plainbasketoption.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
+#include "ql/Pricers/basket.hpp"
 
 namespace QuantLib {
 
@@ -43,21 +44,22 @@ namespace QuantLib {
         using MonteCarlo::BasketPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
 
-        PlainBasketOption::PlainBasketOption(const Array &underlying,
+        Basket::Basket(const Array &underlying,
             const Array &dividendYield, const Math::Matrix &covariance,
             Rate riskFreeRate,  double residualTime,
-            unsigned int samples, bool antitheticVariance, long seed)
-        : McMultiFactorPricer(samples, seed){
+            unsigned int samples, bool antitheticVariance, long seed) {
+            QL_REQUIRE(samples >= 30,
+                "Basket: less than 30 samples. Are you joking?");
             QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "PlainBasketOption: covariance matrix not square");
+                "Basket: covariance matrix not square");
             QL_REQUIRE(covariance.rows() == underlying.size(),
-                "PlainBasketOption: underlying size does not match that of"
+                "Basket: underlying size does not match that of"
                 " covariance matrix");
             QL_REQUIRE(covariance.rows() == dividendYield.size(),
-                "PlainBasketOption: dividendYield size does not match"
+                "Basket: dividendYield size does not match"
                 " that of covariance matrix");
             QL_REQUIRE(residualTime > 0,
-                "PlainBasketOption: residual time must be positive");
+                "Basket: residual time must be positive");
 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
@@ -73,10 +75,12 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(
-                                        new MultiFactorMonteCarloOption(
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> (
                                         pathGenerator, pathPricer,
                                         Math::Statistics()));
+
+            mcModel_->addSamples(samples);
         }
 
     }

@@ -22,39 +22,38 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file mceuropeanpricer.hpp
-    \brief simple example of Monte Carlo pricer
+/*! \file everest.hpp
+    \brief Everest-type option pricer
 
     \fullpath
-    ql/Pricers/%mceuropeanpricer.hpp
+    ql/Pricers/%everest.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_montecarlo_european_pricer_h
-#define quantlib_montecarlo_european_pricer_h
+#ifndef quantlib_pricers_everest_pricer_h
+#define quantlib_pricers_everest_pricer_h
 
-#include "ql/option.hpp"
-#include "ql/types.hpp"
 #include "ql/Pricers/mcpricer.hpp"
+#include "ql/Math/matrix.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! simple example of Monte Carlo pricer
-        class McEuropeanPricer : public McPricer {
+        //! Everest-type option pricer
+        /*! The payoff of an Everest option is simply given by the
+            final price / initial price ratio of the worst performer
+        */
+        class Everest : public McPricer<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
           public:
-            McEuropeanPricer(Option::Type type,
-                             double underlying,
-                             double strike,
-                             Rate dividendYield,
-                             Rate riskFreeRate,
-                             double residualTime,
-                             double volatility,
-                             unsigned int samples,
-                             bool antitheticVariance,
-                             long seed=0);
+            Everest(const Array& dividendYield,
+                    const Math::Matrix& covariance,
+                    Rate riskFreeRate,
+                    Time residualTime,
+                    unsigned int samples,
+                    bool antitheticVariance,
+                    long seed = 0);
         };
 
     }

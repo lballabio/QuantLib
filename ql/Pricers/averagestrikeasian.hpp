@@ -35,14 +35,17 @@
 #define quantlib_pricers_average_strike_asian_pricer_h
 
 #include "ql/option.hpp"
+#include "ql/types.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
 #include "ql/Pricers/mcpricer.hpp"
+#include <vector>
 
 namespace QuantLib {
 
     namespace Pricers {
 
         //! example of Monte Carlo pricer using a control variate.
-        class AverageStrikeAsian : public McPricer {
+        class AverageStrikeAsian : public McPricer<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
           public:
             AverageStrikeAsian(Option::Type type,
                                double underlying,

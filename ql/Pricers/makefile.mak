@@ -19,6 +19,7 @@ OBJS = \
        averagepriceasian.obj$(_D) \
        averagestrikeasian.obj$(_D) \
        barrieroption.obj$(_D) \
+       basket.obj$(_D) \
        bermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
        bsmnumericaloption.obj$(_D) \
@@ -29,13 +30,12 @@ OBJS = \
        dividendshoutoption.obj$(_D) \
        europeanengine.obj$(_D) \
        europeanoption.obj$(_D) \
-       everestoption.obj$(_D) \
+       everest.obj$(_D) \
        finitedifferenceeuropean.obj$(_D) \
        himalaya.obj$(_D) \
-       mceuropeanpricer.obj$(_D) \
+       mceuropean.obj$(_D) \
        multiperiodoption.obj$(_D) \
-       pagodaoption.obj$(_D) \
-       plainbasketoption.obj$(_D) \
+       pagoda.obj$(_D) \
        singleassetoption.obj$(_D) \
        stepconditionoption.obj$(_D)
 

@@ -21,38 +21,37 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-
-/*! \file everestoption.hpp
-    \brief Everest-type option pricer
+/*! \file basket.hpp
+    \brief simple example of multi-factor Monte Carlo pricer
 
     \fullpath
-    ql/Pricers/%everestoption.hpp
+    ql/Pricers/%basket.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_everest_option_h
-#define quantlib_pricers_everest_option_h
+#ifndef quantlib_basket_pricer_h
+#define quantlib_basket_pricer_h
 
-#include "ql/Pricers/mcmultifactorpricer.hpp"
+#include "ql/types.hpp"
+#include "ql/Pricers/mcpricer.hpp"
+#include "ql/Math/matrix.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! Everest-type option pricer
-        /*! The payoff of an Everest option is simply given by the
-            final price / initial price ratio of the worst performer
-        */
-        class EverestOption : public McMultiFactorPricer {
+        //! simple example of multi-factor Monte Carlo pricer
+        class Basket : public McPricer<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
           public:
-            EverestOption(const Array& dividendYield,
-                          const Math::Matrix& covariance,
-                          Rate riskFreeRate,
-                          Time residualTime,
-                          unsigned int samples,
-                          bool antitheticVariance,
-                          long seed = 0);
+            Basket(const Array& underlying,
+                   const Array& dividendYield,
+                   const Math::Matrix &covariance,
+                   Rate riskFreeRate,
+                   double residualTime,
+                   unsigned int samples,
+                   bool antitheticVariance,
+                   long seed=0);
         };
 
     }

@@ -33,6 +33,7 @@
 
 #include "ql/handle.hpp"
 #include "ql/MonteCarlo/himalayapathpricer.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
 #include "ql/Pricers/himalaya.hpp"
 
 namespace QuantLib {
@@ -48,8 +49,11 @@ namespace QuantLib {
             const Array& dividendYield, const Math::Matrix &covariance,
             Rate riskFreeRate, double strike,
             const std::vector<Time>& times,
-            unsigned int samples, bool antitheticVariance, long seed)
-        : McMultiFactorPricer(samples, seed){
+            unsigned int samples, bool antitheticVariance, long seed) {
+
+            QL_REQUIRE(samples >= 30,
+                "Himalaya: less than 30 samples. Are you joking?");
+
             unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
                 "Himalaya: covariance matrix not square");
@@ -79,10 +83,12 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(
-                                        new MultiFactorMonteCarloOption(
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> (
                                         pathGenerator, pathPricer,
                                         Math::Statistics()));
+
+            mcModel_->addSamples(samples);
         }
 
     }

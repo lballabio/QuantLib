@@ -10,6 +10,7 @@ include_HEADERS = \
     averagepriceasian.hpp \
     averagestrikeasian.hpp \
     barrieroption.hpp \
+    basket.hpp \
     bermudanoption.hpp \
     binaryoption.hpp \
     bsmnumericaloption.hpp \
@@ -20,16 +21,14 @@ include_HEADERS = \
     dividendshoutoption.hpp \
     europeanengine.hpp \
     europeanoption.hpp \
-    everestoption.hpp \
+    everest.hpp \
     finitedifferenceeuropean.hpp \
     geometricasianoption.hpp \
     himalaya.hpp \
-    mceuropeanpricer.hpp \
-    mcmultifactorpricer.hpp \
+    mceuropean.hpp \
     mcpricer.hpp \
     multiperiodoption.hpp \
-    pagodaoption.hpp \
-    plainbasketoption.hpp \
+    pagoda.hpp \
     shoutcondition.hpp \
     shoutoption.hpp \
     singleassetoption.hpp \
@@ -41,23 +40,23 @@ libPricers_la_SOURCES = \
     averagepriceasian.cpp \
     averagestrikeasian.cpp \
     barrieroption.cpp \
-    binaryoption.cpp \
+    basket.cpp \
     bermudanoption.cpp \
+    binaryoption.cpp \
     bsmnumericaloption.cpp \
     cliquetoption.cpp \
-    dividendoption.cpp \
-    dividendshoutoption.cpp \
     dividendamericanoption.cpp \
     dividendeuropeanoption.cpp \
+    dividendoption.cpp \
+    dividendshoutoption.cpp \
     europeanengine.cpp \
     europeanoption.cpp \
-    everestoption.cpp \
+    everest.cpp \
     finitedifferenceeuropean.cpp \
     himalaya.cpp \
-    mceuropeanpricer.cpp \
+    mceuropean.cpp \
     multiperiodoption.cpp \
-    plainbasketoption.cpp \
-    pagodaoption.cpp \
+    pagoda.cpp \
     singleassetoption.cpp \
     stepconditionoption.cpp
 

@@ -21,19 +21,22 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-/*! \file pagodaoption.hpp
+/*! \file pagoda.hpp
     \brief roofed Asian option
 
     \fullpath
-    ql/Pricers/%pagodaoption.hpp
+    ql/Pricers/%pagoda.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pagoda_option_pricer_h
-#define quantlib_pagoda_option_pricer_h
+#ifndef quantlib_pagoda_pricer_h
+#define quantlib_pagoda_pricer_h
 
-#include "ql/Pricers/mcmultifactorpricer.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
+#include "ql/Pricers/mcpricer.hpp"
+#include "ql/Math/matrix.hpp"
+#include <vector>
 
 namespace QuantLib {
 
@@ -46,18 +49,18 @@ namespace QuantLib {
             If the performance of the portfolio is below then the payoff
             is null.
         */
-        class PagodaOption : public McMultiFactorPricer {
+        class Pagoda : public McPricer<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
           public:
-            PagodaOption(const Array& portfolio,
-                         double fraction,
-                         double roof,
-                         const Array& dividendYield,
-                         const Math::Matrix& covariance,
-                         Rate riskFreeRate,
-                         const std::vector<Time>& times,
-                         unsigned int samples,
-                         bool antithetic,
-                         long seed = 0);
+            Pagoda(const Array& portfolio,
+                   double fraction,
+                   double roof,
+                   const Array& dividendYield,
+                   const Math::Matrix& covariance,
+                   Rate riskFreeRate,
+                   const std::vector<Time>& times,
+                   unsigned int samples,
+                   bool antithetic,
+                   long seed = 0);
         };
 
     }

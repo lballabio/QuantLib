@@ -23,7 +23,7 @@
 */
 
 /*! \file mcpricer.hpp
-    \brief base class for one-factor Monte Carlo pricers
+    \brief base class for Monte Carlo pricers
      
     \fullpath
     ql/Pricers/%mcpricer.hpp
@@ -34,46 +34,47 @@
 #ifndef quantlib_montecarlo_pricer_h
 #define quantlib_montecarlo_pricer_h
 
-#include "ql/MonteCarlo/mctypedefs.hpp"
+#include "ql/MonteCarlo/montecarlomodel.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! base class for one-factor Monte Carlo pricers
+        //! base class for Monte Carlo pricers
         /*! Eventually this class might be linked to the general tree of 
             pricers, in order to have tools like impliedVolatility available.
-            Also, it will, eventually, implement the calculation of greeks
-            in Monte Carlo methods.
+            Also, it will, eventually, offer greeks methods.
             Deriving a class from McPricer gives an easy way to write
-            a one-factor Monte Carlo Pricer.
-            See McEuropeanPricer as an example.
+            a Monte Carlo Pricer.
+            See McEuropeanPricer as an example of one factor pricer,
+            EverestOption as an example of multi factor pricer.
         */
+        template<class S, class PG, class PP>
         class McPricer {
           public:
             virtual ~McPricer() {}
             virtual double value() const;
             virtual double errorEstimate() const;
           protected:
-            McPricer(long samples, long seed=0);
-            mutable long samples_;
-            long seed_;
-            mutable Handle<MonteCarlo::OneFactorMonteCarloOption> montecarloPricer_;
+            McPricer() {};
+            mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
         };
 
 
         // inline definitions
         
-        inline McPricer::McPricer(long samples, long seed):
-                    samples_(samples), seed_(seed) {}
-
-        inline double McPricer::value() const{
-            montecarloPricer_->addSamples(samples_);
-            return montecarloPricer_->sampleAccumulator().mean();
+        template<class S, class PG, class PP>
+        inline double McPricer<S, PG, PP>::value() const {
+            QL_REQUIRE(mcModel_->sampleAccumulator().samples()>0, 
+                "No simulated samples yet");
+            return mcModel_->sampleAccumulator().mean();
         }
 
-        inline double McPricer::errorEstimate() const {
-            return montecarloPricer_->sampleAccumulator().errorEstimate();
+        template<class S, class PG, class PP>
+        inline double McPricer<S, PG, PP>::errorEstimate() const {
+            QL_REQUIRE(mcModel_->sampleAccumulator().samples()>0, 
+                "No simulated samples yet");
+            return mcModel_->sampleAccumulator().errorEstimate();
         }
 
     }

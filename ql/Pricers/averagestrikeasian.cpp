@@ -50,8 +50,10 @@ namespace QuantLib {
         AverageStrikeAsian::AverageStrikeAsian(Option::Type type,
           double underlying, Rate dividendYield, Rate riskFreeRate,
           const std::vector<Time>& times, double volatility,
-          unsigned int samples, bool antitheticVariance, long seed)
-        : McPricer(samples, seed) {
+          unsigned int samples, bool antitheticVariance, long seed) {
+            QL_REQUIRE(samples >= 30,
+                "AverageStrikeAsian: less than 30 samples. Are you joking?");
+
             QL_REQUIRE(times.size() >= 1,
                 "AverageStrikeAsian: you must have at least one time-step");
             //! Initialize the path generator
@@ -78,10 +80,13 @@ namespace QuantLib {
                 residualTime, volatility).value();
 
             //! Initialize the one-dimensional Monte Carlo
-            montecarloPricer_ = Handle<OneFactorMonteCarloOption>(
-                new OneFactorMonteCarloOption(
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> (
                 pathGenerator, spPricer, Math::Statistics(),
                 controlVariateSpPricer, controlVariatePrice));
+
+            mcModel_->addSamples(samples);
+
         }
 
     }

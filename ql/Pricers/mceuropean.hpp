@@ -21,36 +21,41 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-/*! \file plainbasketoption.hpp
-    \brief simple example of multi-factor Monte Carlo pricer
+
+/*! \file mceuropean.hpp
+    \brief simple example of Monte Carlo pricer
 
     \fullpath
-    ql/Pricers/%plainbasketoption.hpp
+    ql/Pricers/%mceuropean.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_plain_basket_pricer_h
-#define quantlib_plain_basket_pricer_h
+#ifndef quantlib_montecarlo_european_pricer_h
+#define quantlib_montecarlo_european_pricer_h
 
+#include "ql/option.hpp"
 #include "ql/types.hpp"
-#include "ql/Pricers/mcmultifactorpricer.hpp"
+#include "ql/MonteCarlo/mctypedefs.hpp"
+#include "ql/Pricers/mcpricer.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! simple example of multi-factor Monte Carlo pricer
-        class PlainBasketOption : public McMultiFactorPricer {
+        //! simple example of Monte Carlo pricer
+        class McEuropean : public McPricer<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
           public:
-            PlainBasketOption(const Array& underlying,
-                              const Array& dividendYield,
-                              const Math::Matrix &covariance,
-                              Rate riskFreeRate,
-                              double residualTime,
-                              unsigned int samples,
-                              bool antitheticVariance,
-                              long seed=0);
+            McEuropean(Option::Type type,
+                             double underlying,
+                             double strike,
+                             Rate dividendYield,
+                             Rate riskFreeRate,
+                             double residualTime,
+                             double volatility,
+                             unsigned int samples,
+                             bool antitheticVariance,
+                             long seed=0);
         };
 
     }

@@ -22,16 +22,16 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file mceuropeanpricer.cpp
+/*! \file mceuropean.cpp
     \brief simple example of Monte Carlo pricer
 
     \fullpath
-    ql/Pricers/%mceuropeanpricer.cpp
+    ql/Pricers/%mceuropean.cpp
 */
 
 // $Id$
 
-#include "ql/Pricers/mceuropeanpricer.hpp"
+#include "ql/Pricers/mceuropean.hpp"
 #include "ql/MonteCarlo/europeanpathpricer.hpp"
 
 namespace QuantLib {
@@ -43,11 +43,15 @@ namespace QuantLib {
         using MonteCarlo::GaussianPathGenerator;
         using MonteCarlo::EuropeanPathPricer;
 
-        McEuropeanPricer::McEuropeanPricer(Option::Type type, 
+        McEuropean::McEuropean(Option::Type type, 
           double underlying, double strike, Rate dividendYield, 
           Rate riskFreeRate, double residualTime, double volatility,
-          unsigned int samples, bool antitheticVariance, long seed)
-        : McPricer(samples, seed) {
+          unsigned int samples, bool antitheticVariance, long seed) {
+
+           QL_REQUIRE(samples >= 30,
+                "McEuropean: less than 30 samples. Are you joking?");
+
+
             //! Initialize the path generator
             double mu = riskFreeRate - dividendYield
                                      - 0.5 * volatility * volatility;
@@ -62,10 +66,12 @@ namespace QuantLib {
                 antitheticVariance));
 
             //! Initialize the one-factor Monte Carlo
-            montecarloPricer_ = Handle<OneFactorMonteCarloOption>(
-                new OneFactorMonteCarloOption(
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> (
                     pathGenerator, euroPathPricer,
                     Math::Statistics()));
+
+            mcModel_->addSamples(samples);
         }
 
     }
