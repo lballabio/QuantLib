@@ -36,11 +36,11 @@ namespace QuantLib {
             G2(const RelinkableHandle<TermStructure>& termStructure);
             virtual ~G2() {}
 
-            virtual bool hasDiscountBondOptionFormula() { return true; }
+            virtual bool hasDiscountBondOptionFormula() const { return true; }
             virtual double discountBondOption(Option::Type type,
                                               double strike,
                                               Time maturity,
-                                              Time bondMaturity);
+                                              Time bondMaturity) const;
 
           private:
             inline double sigmaP(Time t, Time s) const {

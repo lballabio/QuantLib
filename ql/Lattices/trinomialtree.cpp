@@ -77,7 +77,9 @@ namespace QuantLib {
 
         void TrinomialTree::addLevel(const std::vector<int>& k) {
 
-            QL_REQUIRE(is_sorted(k.begin(), k.end()), "Link vector unsorted!");
+            QL_REQUIRE(std::adjacent_find(k.begin(),k.end(),
+                           std::greater_equal<int>()) == k.end(),
+                       "Link vector unsorted!");
             Size i = nodes_.size();
             nodes_.push_back(std::vector<Handle<Node> >());
 

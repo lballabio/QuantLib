@@ -63,7 +63,7 @@ namespace QuantLib {
         }
 
         double G2::discountBondOption(Option::Type type,
-            double strike, Time maturity, Time bondMaturity) {
+            double strike, Time maturity, Time bondMaturity) const {
 
             double discountT = termStructure()->discount(maturity);
             double discountS = termStructure()->discount(bondMaturity);

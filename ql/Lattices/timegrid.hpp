@@ -62,8 +62,8 @@ namespace QuantLib {
             }
 
             Size findIndex(Time t) const {
-                const_iterator result = find(begin(), end(), t);
-                QL_REQUIRE(result==end(), "Using inadequate tree");
+                const_iterator result = std::find(begin(), end(), t);
+                QL_REQUIRE(result!=end(), "Using inadequate tree");
                 return result - begin();
             }
 

@@ -42,7 +42,7 @@ namespace QuantLib {
             virtual double discountBondOption(Option::Type type,
                                               double strike,
                                               Time maturity,
-                                              Time bondMaturity) = 0;
+                                              Time bondMaturity) const = 0;
 
         };
 
