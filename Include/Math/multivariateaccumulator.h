@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/24 14:56:47  aleppo
+    Added iterator combining-iterator
+
     Revision 1.1  2001/01/24 10:50:50  marmar
     Sample accumulator for multivariate analisys
 
@@ -73,9 +76,9 @@ namespace QuantLib {
             //! \name Modifiers
             //@{
             //! adds an Array to the collection, possibly with a weight
-            void add(Array arr, double weight = 1.0);
+            void add(const Array &arr, double weight = 1.0);
             //! adds a vector<double> to the collection, possibly with a weight
-            void add(std::vector<double> vec, double weight = 1.0);
+            void add(const std::vector<double> &vec, double weight = 1.0);
             //! adds a sequence of data to the collection
             template <class DataIterator>
             void addSequence(DataIterator begin, DataIterator end);

@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/24 14:56:48  aleppo
+    Added iterator combining-iterator
+
     Revision 1.1  2001/01/24 10:51:16  marmar
     Sample accumulator for multivariate analisys
 
@@ -59,7 +62,7 @@ namespace QuantLib {
         }
         
 
-        void MultivariateAccumulator::add(Array value, double weight) {
+        void MultivariateAccumulator::add(const Array &value, double weight) {
         /*! \pre weights must be positive or null */
             QL_REQUIRE(weight >= 0.0,
                 "MultivariateAccumulator::add : negative weight (" +
@@ -93,11 +96,13 @@ namespace QuantLib {
             return mv;
         }
         
-        void MultivariateAccumulator::add(std::vector<double> vec, double wei){
-                  
-            Array arr(vec.size());
-            std::copy(vec.begin(), vec.end(), arr.begin());
-            add(arr,wei);
+        void MultivariateAccumulator::add(const std::vector<double> &vec, 
+                                                                double wei){                  
+          Array arr(vec.size());
+//          std::copy(vec.begin(), vec.end(), arr.begin());
+            for(int i=0; i<vec.size(); i++)
+                arr[i] = vec[i] ;    
+            add(arr, wei);
         }
 
         template <class DataIterator>
