@@ -534,6 +534,10 @@ SOURCE=..\Include\handle.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\history.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\instrument.h
 # End Source File
 # Begin Source File

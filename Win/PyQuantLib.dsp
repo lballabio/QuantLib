@@ -124,6 +124,10 @@ SOURCE=..\SWIG\Financial.i
 # End Source File
 # Begin Source File
 
+SOURCE=..\SWIG\History.i
+# End Source File
+# Begin Source File
+
 SOURCE=..\SWIG\Instruments.i
 # End Source File
 # Begin Source File
@@ -144,11 +148,23 @@ SOURCE=..\SWIG\QuantLib.i
 # End Source File
 # Begin Source File
 
+SOURCE=..\SWIG\RandomGenerators.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\README.txt
+# End Source File
+# Begin Source File
+
 SOURCE=..\SWIG\Solvers1D.i
 # End Source File
 # Begin Source File
 
 SOURCE=..\SWIG\Statistics.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\String.i
 # End Source File
 # Begin Source File
 
