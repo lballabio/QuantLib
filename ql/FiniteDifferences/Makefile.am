@@ -2,7 +2,7 @@
 # $Id$
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
-
+includedir = $(prefix)/include/ql/FiniteDifferences
 include_HEADERS = \
 	backwardeuler.hpp \
 	boundarycondition.hpp \
