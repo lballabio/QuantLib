@@ -1,0 +1,18 @@
+require 'mkmf'
+$CFLAGS   += ' -DHAVE_CONFIG_H'
+$CPPFLAGS += ' -I../Include'
+$CPPFLAGS += ' -I../Include/Calendars'
+$CPPFLAGS += ' -I../Include/Currencies'
+$CPPFLAGS += ' -I../Include/DayCounters'
+$CPPFLAGS += ' -I../Include/FiniteDifferences'
+$CPPFLAGS += ' -I../Include/Instruments'
+$CPPFLAGS += ' -I../Include/Math'
+$CPPFLAGS += ' -I../Include/MonteCarlo'
+$CPPFLAGS += ' -I../Include/Patterns'
+$CPPFLAGS += ' -I../Include/Pricers'
+$CPPFLAGS += ' -I../Include/Solvers1D'
+$CPPFLAGS += ' -I../Include/TermStructures'
+$CPPFLAGS += ' -I../Include/Utilities'
+$libs     += ' -lQuantLib'
+create_makefile("QuantLibc")
+
