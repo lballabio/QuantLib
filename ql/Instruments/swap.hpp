@@ -50,6 +50,9 @@ namespace QuantLib {
         Date maturity() const;
         double firstLegBPS() const;
         double secondLegBPS() const;
+        /*! \bug This method must still be checked. It is not guaranteed
+                 to yield the right results.
+        */
         TimeBasket sensitivity(int basis = 2) const;
         //@}
       protected:

@@ -32,8 +32,8 @@ namespace QuantLib {
             dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
         \f]
 
-        \unstable This class was not tested enough to guarantee
-                  its functionality.
+        \bug This class was not tested enough to guarantee
+             its functionality.
     */
     class CoxIngersollRoss : public OneFactorAffineModel {
       public:

@@ -104,9 +104,9 @@ tex-files:: html
 	ren deprecated.tex olddeprecated.tex
 	$(SED) -e "s/section/chapter/" olddeprecated.tex > deprecated.tex
 	del olddeprecated.tex
-	ren unstable.tex oldunstable.tex
-	$(SED) -e "s/section/chapter/" oldunstable.tex > unstable.tex
-	rm -f oldunstable.tex
+	ren bug.tex oldbug.tex
+	$(SED) -e "s/section/chapter/" oldbug.tex > bug.tex
+	rm -f oldbug.tex
     cd ..
 
 # Clean up

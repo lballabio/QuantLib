@@ -42,8 +42,8 @@ namespace QuantLib {
         \f]
         and \f$ dW^1_t dW^2_t = \rho dt \f$.
 
-        \unstable This class was not tested enough to guarantee
-                  its functionality.
+        \bug This class was not tested enough to guarantee
+             its functionality.
     */
     class G2 : public TwoFactorModel, public AffineModel,
                public TermStructureConsistentModel {

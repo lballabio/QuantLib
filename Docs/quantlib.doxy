@@ -22,7 +22,7 @@ DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
 DISTRIBUTE_GROUP_DOC   = NO
 TAB_SIZE               = 4
-ALIASES                = "unstable=\xrefitem unstable \"Unstable\" \"Unstable features\""
+ALIASES                = 
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 SUBGROUPING            = YES
@@ -45,7 +45,7 @@ INLINE_INFO            = NO
 SORT_MEMBER_DOCS       = NO
 GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = NO
-GENERATE_BUGLIST       = NO
+GENERATE_BUGLIST       = YES
 GENERATE_DEPRECATEDLIST= YES
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30

@@ -56,6 +56,9 @@ namespace QuantLib {
                                  const RelinkableHandle<TermStructure>&);
 
 
+    /*! \bug This class must still be checked. It is not guaranteed
+             to yield the right results.
+    */
     class BPSBasketCalculator : public AcyclicVisitor,
                                 public Visitor<CashFlow>,
                                 public Visitor<Coupon>,
@@ -78,6 +81,9 @@ namespace QuantLib {
         TimeBasket result_;
     };
 
+    /*! \bug This function must still be checked. It is not guaranteed
+             to yield the right results.
+    */
     TimeBasket BasisPointSensitivityBasket(
                                      const std::vector<Handle<CashFlow> >&,
                                      const RelinkableHandle<TermStructure>&,
