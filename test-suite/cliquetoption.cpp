@@ -23,6 +23,7 @@
 #include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <map>
 
 using namespace QuantLib;
