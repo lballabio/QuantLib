@@ -79,3 +79,13 @@ Changes since release 0.3.7:
 - Added hooks for convexity adjustment in floating-rate coupons;
   implemented adjustment for InArrearIndexedCoupon.
 
+- Added nextDayOfWeekAfterDate() and nthDayOfWeekForMonthAndYear() static
+  methods to the class Date. Added nextIMM() for the calculation of the next IMM
+  date.
+
+- Added WeekdayFormatter
+
+- Added "1/1" day counter. The Actual365 is deprecated: as per ISDA
+  documentation "Actual/365" is the same as "Actual/Actual". Use the
+  ActualActual class instead, or the Actual365Fixed class.
+  
