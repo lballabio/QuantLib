@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/02/02 10:40:56  marmar
+    Remark updated
+
     Revision 1.6  2001/01/30 15:56:06  marmar
     Now using OneFactorMonteCarloOption
 
@@ -69,7 +72,7 @@ namespace QuantLib {
             in montecarlo methods.
             Deriving a class from McPricer gives an easy way to write
             a one-factor Monte Carlo Pricer.
-            See EuropeanPathPricer as an example
+            See McEuropeanPricer as an example
         */
 
         class McPricer {
