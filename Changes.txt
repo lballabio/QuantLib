@@ -5,3 +5,4 @@ Changes since latest release:
 - Reworked the DiscretizedAsset interface
 - Added current coupon to discretized swap and cap/floor
 - Renamed RelinkableHandle to Handle
+- Added currency classes
