@@ -32,7 +32,7 @@ namespace QuantLib {
             // on page 408 in M. Abramowitz and A. Stegun,
             // Pocketbook of Mathematical Functions, ISBN 3-87144818-4.
             Real sum=1, zsqr=z*z, i=1, g=1, x, y, 
-                a=QL_MAX_DOUBLE, lasta;
+                 a=QL_MAX_REAL, lasta;
             do {
                 lasta=a;
                 x = (4*i-3)/zsqr;

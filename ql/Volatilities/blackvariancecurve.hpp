@@ -107,11 +107,11 @@ namespace QuantLib {
     }
 
     inline Real BlackVarianceCurve::minStrike() const {
-        return QL_MIN_DOUBLE;
+        return QL_MIN_REAL;
     }
 
     inline Real BlackVarianceCurve::maxStrike() const {
-        return QL_MAX_DOUBLE;
+        return QL_MAX_REAL;
     }
 
     inline void BlackVarianceCurve::update() {

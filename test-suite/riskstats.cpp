@@ -51,8 +51,8 @@ void RiskStatisticsTest::testResults() {
             InverseCumulativeNormal inverseCum(averages[i],sigmas[j]);
 
             SobolRsg rng(1);
-            dataMin = QL_MAX_DOUBLE;
-            dataMax = QL_MIN_DOUBLE;
+            dataMin = QL_MAX_REAL;
+            dataMax = QL_MIN_REAL;
             for (k=0; k<N; k++) {
                 data[k] = inverseCum(rng.nextSequence().value[0]);
                 dataMin = QL_MIN(dataMin, data[k]);

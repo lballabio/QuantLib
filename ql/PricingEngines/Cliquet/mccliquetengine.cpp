@@ -44,7 +44,7 @@ namespace QuantLib {
             accruedCoupon_ = 0.0;
 
         if (localCap == Null<Real>())
-            localCap_ = QL_MAX_DOUBLE;
+            localCap_ = QL_MAX_REAL;
 
         if (localFloor == Null<Real>())
             localFloor_ = 0.0;
@@ -53,7 +53,7 @@ namespace QuantLib {
                    "localCap cannot be less then localFloor");
 
         if (globalCap == Null<Real>())
-            globalCap_ = QL_MAX_DOUBLE;
+            globalCap_ = QL_MAX_REAL;
 
         if (globalFloor == Null<Real>())
             globalFloor_ = 0.0;

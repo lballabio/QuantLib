@@ -37,7 +37,7 @@ namespace QuantLib {
             }
         } else {
             Real b = x + 1.0 - a_;
-            Real c = QL_MAX_DOUBLE;
+            Real c = QL_MAX_REAL;
             Real d = 1.0/b;
             Real h = d;
             for (Size n=1; n<=100; n++) {

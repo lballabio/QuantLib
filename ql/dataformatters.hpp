@@ -36,7 +36,7 @@ namespace QuantLib {
                                     DataIterator end,
                                     Integer precision = 6,
                                     Integer digits = 0,
-                                    Size elementsPerRow = QL_MAX_INT) {
+                                    Size elementsPerRow = QL_MAX_INTEGER) {
             std::string s = "[ ";
             DataIterator i;
             Size n;

@@ -102,6 +102,50 @@ QL_CHECK_BOOST
 AM_CONDITIONAL(EMACS_FOUND, test "${EMACS}" != "no")
 
 # site configuration
+
+AC_ARG_WITH([real],
+            AC_HELP_STRING([--with-real=type],
+                           [The given type will be used for floating-point
+                            calculations. 
+                            In case this option is not invoked, double
+                            will be used.]),
+            [AC_DEFINE_UNQUOTED([QL_REAL],[$withval],
+                                [Define this as the type to be used for 
+                                 floating-point calculations.])],
+            [AC_DEFINE_UNQUOTED([QL_REAL],[double],
+                                [Define this as the type to be used for
+                                 floating-point calculations.])])
+
+AC_ARG_WITH([integer],
+            AC_HELP_STRING([--with-integer=type],
+                           [The given type will be used for integer
+                            calculations. At least an int is required.
+                            In case this option is not invoked, int
+                            will be used.]),
+            [AC_DEFINE_UNQUOTED([QL_INTEGER],[$withval],
+                                [Define this as the type to be used for 
+                                 integer calculations. At least an int 
+                                 is required.])],
+            [AC_DEFINE_UNQUOTED([QL_INTEGER],[int],
+                                [Define this as the type to be used for
+                                 integer calculations. At least an int 
+                                 is required.])])
+
+AC_ARG_WITH([big-integer],
+            AC_HELP_STRING([--with-big-integer=type],
+                           [The given type will be used for large integer
+                            calculations. At least 4 bytes are required.
+                            In case this option is not invoked, long
+                            will be used.]),
+            [AC_DEFINE_UNQUOTED([QL_BIG_INTEGER],[$withval],
+                                [Define this as the type to be used for 
+                                 large integer calculations. At least
+                                 4 bytes are required.])],
+            [AC_DEFINE_UNQUOTED([QL_BIG_INTEGER],[long],
+                                [Define this as the type to be used for
+                                 large integer calculations. At least
+                                 4 bytes are required.])])
+
 AC_ARG_ENABLE([error-lines],
               AC_HELP_STRING([--enable-error-lines],
                              [If enabled (the default), file and line

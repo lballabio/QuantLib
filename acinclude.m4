@@ -147,7 +147,7 @@ AC_DEFUN([QL_CHECK_LONG_LONG],
     [AC_MSG_RESULT([yes])
      AC_DEFINE([HAVE_LONG_LONG],[],
                [Define this if your compiler supports the long long type.])
-    ]
+    ],
     [AC_MSG_RESULT([no])
     ])
 ])

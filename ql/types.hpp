@@ -28,22 +28,22 @@ namespace QuantLib {
 
     //! integer number
     /*! \ingroup types */
-    typedef int Integer;
+    typedef QL_INTEGER Integer;
 
     //! large integer number
     /*! \ingroup types */
-    typedef long BigInteger;
+    typedef QL_BIG_INTEGER BigInteger;
 
     //! positive integer
     /*! \ingroup types */
-    typedef unsigned int Natural;
+    typedef unsigned QL_INTEGER Natural;
 
     //! large positive integer
-    typedef unsigned long BigNatural;
+    typedef unsigned QL_BIG_INTEGER BigNatural;
 
     //! real number
     /*! \ingroup types */
-    typedef double Real;
+    typedef QL_REAL Real;
 
     //! decimal number
     /*! \ingroup types */

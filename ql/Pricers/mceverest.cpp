@@ -33,7 +33,7 @@ namespace QuantLib {
 
                 Real log_variation;
                 Size i,j;
-                Real minPrice = QL_MAX_DOUBLE;
+                Real minPrice = QL_MAX_REAL;
                 for( j = 0; j < numAssets; j++) {
                     log_variation = 0.0;
                     for( i = 0; i < numSteps; i++)

@@ -47,8 +47,8 @@ namespace QuantLib {
         Date referenceDate() const { return referenceDate_; }
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const { return Date::maxDate(); }
-        Real minStrike() const { return QL_MIN_DOUBLE; }
-        Real maxStrike() const { return QL_MAX_DOUBLE; }
+        Real minStrike() const { return QL_MIN_REAL; }
+        Real maxStrike() const { return QL_MAX_REAL; }
         //@}
         //! \name Observer interface
         //@{

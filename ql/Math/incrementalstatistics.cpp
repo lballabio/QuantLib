@@ -25,8 +25,8 @@ namespace QuantLib {
     }
 
     void IncrementalStatistics::reset() {
-        min_ = QL_MAX_DOUBLE;
-        max_ = QL_MIN_DOUBLE;
+        min_ = QL_MAX_REAL;
+        max_ = QL_MIN_REAL;
         sampleNumber_ = 0;
         downsideSampleNumber_ = 0;
         sampleWeight_ = 0.0;

@@ -101,11 +101,11 @@ namespace QuantLib {
     }
 
     inline Real BlackConstantVol::minStrike() const {
-        return QL_MIN_DOUBLE;
+        return QL_MIN_REAL;
     }
 
     inline Real BlackConstantVol::maxStrike() const {
-        return QL_MAX_DOUBLE;
+        return QL_MAX_REAL;
     }
 
     inline void BlackConstantVol::update() {

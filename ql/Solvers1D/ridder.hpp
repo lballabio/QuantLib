@@ -46,7 +46,7 @@ namespace QuantLib {
             Real xAccuracy = xAcc/100.0;
 
             // Any highly unlikely value, to simplify logic below
-            root_=QL_MIN_DOUBLE;
+            root_ = QL_MIN_REAL;
 
             while (evaluationNumber_<=maxEvaluations_) {
                 xMid=0.5*(xMin_+xMax_);

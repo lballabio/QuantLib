@@ -49,7 +49,7 @@ namespace QuantLib {
         virtual ~McSimulation() {}
         //! add samples until the required tolerance is reached
         Real value(Real tolerance,
-                   Size maxSample = QL_MAX_INT) const;
+                   Size maxSample = QL_MAX_INTEGER) const;
         //! simulate a fixed number of samples
         Real valueWithSamples(Size samples) const;
         //! error estimated using the samples simulated so far

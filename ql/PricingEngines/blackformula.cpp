@@ -233,9 +233,9 @@ namespace QuantLib {
         else if (QL_FABS(del)<QL_EPSILON)
             return 0.0;
         else if (del>0.0)
-            return QL_MAX_DOUBLE;
+            return QL_MAX_REAL;
         else
-            return QL_MIN_DOUBLE;
+            return QL_MIN_REAL;
     }
 
     Real BlackFormula::elasticityForward() const {
@@ -246,9 +246,9 @@ namespace QuantLib {
         else if (QL_FABS(del)<QL_EPSILON)
             return 0.0;
         else if (del>0.0)
-            return QL_MAX_DOUBLE;
+            return QL_MAX_REAL;
         else
-            return QL_MIN_DOUBLE;
+            return QL_MIN_REAL;
     }
 
     Real BlackFormula::gamma(Real spot) const {

@@ -156,32 +156,37 @@
     defined in <limits.h>.
     @{
 */
-/*! \def QL_MIN_INT
+/*! \def QL_MIN_INTEGER
     Defines the value of the largest representable negative integer value
 */
-/*! \def QL_MAX_INT
+/*! \def QL_MAX_INTEGER
     Defines the value of the largest representable integer value
 */
-/*! \def QL_MIN_DOUBLE
-    Defines the value of the largest representable negative double value
+/*! \def QL_MIN_REAL
+    Defines the value of the largest representable negative 
+    floating-point value
 */
-/*! \def QL_MIN_POSITIVE_DOUBLE
+/*! \def QL_MIN_POSITIVE_REAL
     Defines the value of the smallest representable positive double value
 */
-/*! \def QL_MAX_DOUBLE
-    Defines the value of the largest representable double value
+/*! \def QL_MAX_REAL
+    Defines the value of the largest representable floating-point value
 */
 /*! \def QL_EPSILON
     Defines the machine precision for operations over doubles
 */
 #if defined HAVE_LIMITS
     #include <limits>
-    #define QL_MIN_INT      ((std::numeric_limits<int>::min)())
-    #define QL_MAX_INT      ((std::numeric_limits<int>::max)())
-    #define QL_MIN_DOUBLE  -((std::numeric_limits<double>::max)())
-    #define QL_MAX_DOUBLE   ((std::numeric_limits<double>::max)())
-    #define QL_EPSILON      ((std::numeric_limits<double>::epsilon)())
-    #define QL_MIN_POSITIVE_DOUBLE ((std::numeric_limits<double>::min)())
+    // limits used as such
+    #define QL_MIN_INTEGER         ((std::numeric_limits<QL_INTEGER>::min)())
+    #define QL_MAX_INTEGER         ((std::numeric_limits<QL_INTEGER>::max)())
+    #define QL_MIN_REAL           -((std::numeric_limits<QL_REAL>::max)())
+    #define QL_MAX_REAL            ((std::numeric_limits<QL_REAL>::max)())
+    #define QL_MIN_POSITIVE_REAL   ((std::numeric_limits<QL_REAL>::min)())
+    #define QL_EPSILON             ((std::numeric_limits<QL_REAL>::epsilon)())
+    // specific values---these should fit into any Integer or Real
+    #define QL_NULL_INTEGER        ((std::numeric_limits<int>::max)())
+    #define QL_NULL_REAL           ((std::numeric_limits<float>::max)())
 #elif defined HAVE_FLOAT_H
     #include <float.h>
     #if defined HAVE_CLIMITS
@@ -191,12 +196,58 @@
     #else
         #error Neither <limits>, <climits> nor <limits.h> found
     #endif
-    #define QL_MIN_INT              INT_MIN
-    #define QL_MAX_INT              INT_MAX
-    #define QL_MIN_DOUBLE          -DBL_MAX
-    #define QL_MAX_DOUBLE           DBL_MAX
-    #define QL_EPSILON              DBL_EPSILON
-    #define QL_MIN_POSITIVE_DOUBLE  DBL_EPSILON
+    template <class T> struct quantlib_limits__ {};
+    template <> struct quantlib_limits__<int> {
+        static int min() { return INT_MIN; }
+        static int max() { return INT_MAX; }
+    };
+    template <> struct quantlib_limits__<long> {
+        static long min() { return LONG_MIN; }
+        static long max() { return LONG_MAX; }
+    };
+    #if defined(HAVE_LONG_LONG)
+    template <> struct quantlib_limits__<long long> {
+        static long long min() {
+            #if defined(LLONG_MIN)
+                return LLONG_MIN;
+            #else
+                return LONG_LONG_MIN;
+            #endif
+        }
+        static long long max() {
+            #if defined(LLONG_MAX)
+                return LLONG_MAX;
+            #else
+                return LONG_LONG_MAX;
+            #endif
+        }
+    };
+    #endif
+    template <> struct quantlib_limits__<float> {
+        static float min() { return FLT_MIN; }
+        static float max() { return FLT_MAX; }
+        static float epsilon() { return FLT_EPSILON; }
+    };
+    template <> struct quantlib_limits__<double> {
+        static double min() { return DBL_MIN; }
+        static double max() { return DBL_MAX; }
+        static double epsilon() { return DBL_EPSILON; }
+    };
+    template <> struct quantlib_limits__<long double> {
+        static long double min() { return LDBL_MIN; }
+        static long double max() { return LDBL_MAX; }
+        static long double epsilon() { return LDBL_EPSILON; }
+    };
+    // limits used as such
+    #define QL_MIN_INTEGER          ((quantlib_limits__<QL_INTEGER>::min)())
+    #define QL_MAX_INTEGER          ((quantlib_limits__<QL_INTEGER>::max)())
+    #define QL_MIN_REAL            -((quantlib_limits__<QL_REAL>::max)())
+    #define QL_MAX_REAL             ((quantlib_limits__<QL_REAL>::max)())
+    #define QL_MIN_POSITIVE_REAL    ((quantlib_limits__<QL_REAL>::min)())
+    #define QL_EPSILON              ((quantlib_limits__<QL_REAL>::epsilon)())
+    // specific values---these should fit into any Integer or Real
+    #define QL_NULL_INTEGER         INT_MAX
+    #define QL_NULL_REAL            FLT_MAX
 #else
     #error Neither <limits> nor <float.h> found
 #endif

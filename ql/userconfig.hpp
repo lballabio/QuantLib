@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,8 +16,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_config_h
-#define quantlib_config_h
+#ifndef quantlib_config_hpp
+#define quantlib_config_hpp
 
 /***************************************************************
    User configuration section:
@@ -27,6 +27,17 @@
    it will not be read by the compiler. The definitions below 
    will be provided by running ./configure instead.
 ****************************************************************/
+
+/* Define this as the type to be used for integer calculations. At least an
+   int is required. */
+#define QL_INTEGER int
+
+/* Define this as the type to be used for large integer calculations. At least
+   4 bytes are required. */
+#define QL_BIG_INTEGER long
+
+/* Define this as the type to be used for floating-point calculations. */
+#define QL_REAL double
 
 /* Define this if error messages should include file and line information. */
 #define QL_ERROR_LINES 1

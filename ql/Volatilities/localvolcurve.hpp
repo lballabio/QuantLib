@@ -46,10 +46,10 @@ namespace QuantLib {
             return blackVarianceCurve_->maxDate(); 
         }
         Real minStrike() const { 
-            return QL_MIN_DOUBLE;
+            return QL_MIN_REAL;
         }
         Real maxStrike() const { 
-            return QL_MAX_DOUBLE;
+            return QL_MAX_REAL;
         }
         //@}
         //! \name Observer interface
