@@ -1,20 +1,4 @@
 
-verify PDB distribution
-remove defines in MS VC project settings
-solve copyright issues for external packages (COOOL, GAlib, etc.)
-Gnumeric
-ISDA/FpML
-Bloomberg
-BankOf
-ItalianBanks
-Waters
-DerivativesStrategies
-GARP
-PRMIA
-
-chech disable warning 4786 better
-understand difference between multi-threaded and multi-threaded dll
-&& (_MSC_VER >= 1200)
 
 DISTRIBUTING
     RPM package
@@ -25,8 +9,6 @@ COMPILING
     Borland projects
 
 LIBRARY
-
-    contact Broda
 
     MONTE CARLO FRAMEWORK
         add example of Martingale control variate
@@ -88,3 +70,22 @@ DOCUMENTATION
     use tidy (if available) on the HTML documentation
     enforce fulpath&classesinclude DoxyGen requirements
     add/update FAQ material in QuantLib-site TOD.txt
+
+VARIUOS
+    verify PDB distribution
+    remove defines in MS VC project settings
+    solve copyright issues for external packages (COOOL, GAlib, etc.)
+    Gnumeric
+    ISDA/FpML
+    Bloomberg
+    BankOf
+    ItalianBanks
+    Waters
+    DerivativesStrategies
+    GARP
+    PRMIA
+    Broda
+
+    chech disable warning 4786 better
+    understand difference between multi-threaded and multi-threaded dll
+    && (_MSC_VER >= 1200)
