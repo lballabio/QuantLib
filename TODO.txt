@@ -34,6 +34,12 @@ LIBRARY
         introduce continuous geometric ASO
         handle backward starting asian
 
+    OPTIMIZATION FRAMEWORK:
+        create a framework similar to the Solver1d framework
+        add GALib (genetic algorithm)
+        add COOOL algorithms
+
+
     Maxim integral
 
     QuEP:
