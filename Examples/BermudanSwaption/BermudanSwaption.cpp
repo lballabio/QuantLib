@@ -231,7 +231,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Calibrating to swaptions" << std::endl;
 
-        std::cout << "Hull-White (analitycal formulae):" << std::endl;
+        std::cout << "Hull-White (analytic formulae):" << std::endl;
         swaptions.setPricingEngine(
             Handle<OptionPricingEngine>(new JamshidianSwaption(modelHW)));
 
