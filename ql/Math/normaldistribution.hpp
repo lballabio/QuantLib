@@ -142,7 +142,7 @@ namespace QuantLib {
         };
 
         // backward compatibility
-//        typedef InverseCumulativeNormal InverseCumulativeNormal;
+        typedef InverseCumulativeNormal InvCumulativeNormalDistribution;
 
         //! Moro Inverse cumulative normal distribution class
         /*! Given x between zero and one as
