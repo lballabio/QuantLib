@@ -29,6 +29,7 @@
 #include "americanoption.hpp"
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
+#include "basketoption.hpp"
 #include "binarybarrieroption.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
@@ -65,6 +66,7 @@ int main() {
     runner.addTest(AmericanOptionTest::suite());
     runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());
+    runner.addTest(BasketOptionTest::suite());
     runner.addTest(BinaryBarrierOptionTest::suite());
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
