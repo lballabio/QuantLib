@@ -24,7 +24,7 @@
 
 class StatisticsTest : public CppUnit::TestCase {
   public:
-    StatisticsTest() : CppUnit::TestCase("Testing gaussianstatistics") {}
+    StatisticsTest() : CppUnit::TestCase("Testing Gaussian statistics") {}
     void runTest();
 };
 

@@ -49,7 +49,7 @@ void RiskStatisticsTest::runTest() {
             
             NormalDistribution               normal(averages[i],sigmas[j]);
             CumulativeNormalDistribution cumulative(averages[i],sigmas[j]);
-            InverseCumulativeNormal      inverseCum(averages[i],sigmas[j]);
+            // InverseCumulativeNormal      inverseCum(averages[i],sigmas[j]);
             SobolRsg rng(1);
 
             dataMin = averages[i] - numberOfSigma*sigmas[j];
@@ -99,7 +99,7 @@ void RiskStatisticsTest::runTest() {
             // weightSum()
             expected = std::accumulate(weights.begin(),weights.end(),0.0);
             calculated = igs.weightSum();
-            if (calculated != expected)
+            if (QL_FABS(calculated-expected) > 1.0e-10)
                 CPPUNIT_FAIL(
                     "IncrementalGaussianStatistics: "
                     "wrong sum of weights\n"
@@ -108,7 +108,7 @@ void RiskStatisticsTest::runTest() {
                     "    expected:   "
                     + DoubleFormatter::toString(expected,16));
             calculated = s.weightSum();
-            if (calculated != expected)
+            if (QL_FABS(calculated-expected) > 1.0e-10)
                 CPPUNIT_FAIL(
                     "Statistics: "
                     "wrong sum of weights\n"

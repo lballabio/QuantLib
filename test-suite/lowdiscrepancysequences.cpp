@@ -39,7 +39,7 @@ CppUnit::Test* LDSTest::suite() {
                    ("Testing Halton sequences",
                     &LDSTest::testHalton));
     tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing sequences' discrepancy",
+                   ("Testing Halton and Sobol discrepancy",
                     &LDSTest::testDiscrepancy));
     return tests;
 }
