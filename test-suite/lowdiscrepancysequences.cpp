@@ -25,7 +25,7 @@
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 
-// #define PRINT_ONLY
+//#define PRINT_ONLY
 #ifdef PRINT_ONLY
 #include <fstream>
 #endif
@@ -79,7 +79,7 @@ void LowDiscrepancyTest::testSobol() {
     // testing max dimensionality
     Size dimensionality = PPMT_MAX_DIM;
     BigNatural seed = 123456;
-    SobolRsg rsg(dimensionality, seed, SobolRsg::SobolLevitan);
+    SobolRsg rsg(dimensionality, seed);
     Size points = 100, i;
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
@@ -440,6 +440,10 @@ namespace {
         8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
         5.69e-005, 2.14e-005 // , -1.#Je+000
     };
+    const Real dim002DiscrSobLem_Sobol[] = {
+        8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
+        5.69e-005, 2.14e-005 // , -1.#Je+000
+    };
     const Real dim002DiscrMersenneTwis[] = {
         8.84e-003, 5.42e-003, 5.23e-003, 4.47e-003,
         4.75e-003, 3.11e-003, 2.97e-003
@@ -461,6 +465,10 @@ namespace {
         9.21e-005, 4.79e-005, 2.56e-005
     };
     const Real dim003DiscrSobLev_Sobol[] = {
+        1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
+        9.21e-005, 4.79e-005, 2.56e-005
+    };
+    const Real dim003DiscrSobLem_Sobol[] = {
         1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
         9.21e-005, 4.79e-005, 2.56e-005
     };
@@ -488,6 +496,10 @@ namespace {
         1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
         1.63e-004, 9.41e-005, 5.19e-005
     };
+    const Real dim005DiscrSobLem_Sobol[] = {
+        1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
+        1.63e-004, 9.41e-005, 5.19e-005
+    };
     const Real dim005DiscrMersenneTwis[] = {
         4.28e-003, 3.48e-003, 2.48e-003, 1.98e-003,
         1.57e-003, 1.39e-003, 6.33e-004
@@ -510,7 +522,12 @@ namespace {
     };
     const Real dim010DiscrSobLev_Sobol[] = {
         7.41e-004, 5.10e-004, 3.28e-004, 2.21e-004,
-        1.57e-004, 1.08e-004, 6.38e-005};
+        1.57e-004, 1.08e-004, 6.38e-005
+    };
+    const Real dim010DiscrSobLem_Sobol[] = {
+        7.41e-004, 5.10e-004, 3.28e-004, 2.21e-004,
+        1.57e-004, 1.08e-004, 6.38e-005
+    };
     const Real dim010DiscrMersenneTwis[] = {
         8.83e-004, 6.56e-004, 4.87e-004, 3.37e-004,
         3.06e-004, 1.73e-004, 1.43e-004
@@ -532,6 +549,10 @@ namespace {
         3.91e-005, 2.73e-005, 1.96e-005
     };
     const Real dim015DiscrSobLev_Sobol[] = {
+        1.48e-004, 1.06e-004, 8.19e-005, 6.29e-005,
+        4.16e-005, 2.54e-005, 1.73e-005
+    };
+    const Real dim015DiscrSobLem_Sobol[] = {
         1.48e-004, 1.06e-004, 8.19e-005, 6.29e-005,
         4.16e-005, 2.54e-005, 1.73e-005
     };
@@ -559,6 +580,10 @@ namespace {
         6.13e-007, 6.06e-007, 3.81e-007, 2.71e-007,
         2.68e-007, 1.73e-007, 1.21e-007
     };
+    const Real dim030DiscrSobLem_Sobol[] = {
+        6.13e-007, 6.06e-007, 3.81e-007, 2.71e-007,
+        2.68e-007, 1.73e-007, 1.21e-007
+    };
     const Real dim030DiscrMersenneTwis[] = {
         4.38e-007, 3.25e-007, 4.47e-007, 2.85e-007,
         2.03e-007, 1.50e-007, 1.17e-007
@@ -583,6 +608,10 @@ namespace {
         2.55e-010, 2.52e-010, 1.61e-010, 1.54e-010,
         1.11e-010, 8.60e-011, 1.17e-010
     };
+    const Real dim050DiscrSobLem_Sobol[] = {
+        2.83e-010, 6.84e-010, 3.68e-010, 2.20e-010,
+        1.81e-010, 1.14e-010, 8.31e-011
+    };
     const Real dim050DiscrMersenneTwis[] = {
         3.27e-010, 2.42e-010, 1.47e-010, 1.98e-010,
         2.31e-010, 1.30e-010, 8.09e-011
@@ -605,7 +634,12 @@ namespace {
     };
     const Real dim100DiscrSobLev_Sobol[] = {
         9.30e-019, 2.65e-018, 1.45e-018, 7.28e-019,
-        6.33e-019, 3.36e-019, 3.43e-019};
+        6.33e-019, 3.36e-019, 3.43e-019
+    };
+    const Real dim100DiscrSobLem_Sobol[] = {
+        8.79e-019, 4.60e-019, 6.69e-019, 7.17e-019,
+        5.81e-019, 2.97e-019, 2.64e-019
+    };
     const Real dim100DiscrMersenneTwis[] = {
         5.30e-019, 7.29e-019, 3.71e-019, 3.33e-019,
         1.33e-017, 6.70e-018, 3.36e-018
@@ -662,6 +696,9 @@ namespace {
                 case SobolRsg::SobolLevitan:
                     prefix = "SobolLevitan-initialized ";
                     break;
+                case SobolRsg::SobolLevitanLemieux:
+                    prefix = "SobolLevitanLemieux-initialized ";
+                    break;
             }
             return prefix + "Sobol sequences: ";
         }
@@ -696,18 +733,21 @@ namespace {
                                   const std::string& fileName,
                                   const std::string& arrayName) {
 
-        #ifndef PRINT_ONLY
         // just to avoid Borland warning
+        #ifndef PRINT_ONLY
         fileName;
         arrayName;
+        Real tolerance = 1.0e-2;
+        #else
+        discrepancy;
         #endif
 
         Array point;
         Size dim;
         BigNatural seed = 123456;
-        Real discr, tolerance = 1.0e-2;
+        Real discr;
         // more than 1 discrepancy measures take long time
-        Size sampleLoops = Size(QL_MAX<Real>(1.0, discrepancyMeasuresNumber));
+        Size sampleLoops = QL_MAX<Size>(1, discrepancyMeasuresNumber);
 
         #ifdef PRINT_ONLY
         std::ofstream outStream(fileName.c_str());
@@ -869,15 +909,31 @@ void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
     BOOST_MESSAGE("Testing SobolLevitan-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
-        dim002DiscrSobLev_Sobol, dim003DiscrSobLev_Sobol,
-        dim005DiscrSobLev_Sobol, dim010DiscrSobLev_Sobol,
-        dim015DiscrSobLev_Sobol, dim030DiscrSobLev_Sobol,
-        dim050DiscrSobLev_Sobol, dim100DiscrSobLev_Sobol};
+        dim002DiscrSobLem_Sobol, dim003DiscrSobLem_Sobol,
+        dim005DiscrSobLem_Sobol, dim010DiscrSobLem_Sobol,
+        dim015DiscrSobLem_Sobol, dim030DiscrSobLem_Sobol,
+        dim050DiscrSobLem_Sobol, dim100DiscrSobLem_Sobol};
 
     testGeneratorDiscrepancy(SobolFactory(SobolRsg::SobolLevitan),
                              discrepancy,
                              "SobolLevitanSobolDiscrepancy.txt",
                              "DiscrSobLev_Sobol");
+}
+
+void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
+
+    BOOST_MESSAGE("Testing SobolLevitanLemieux-Sobol discrepancy...");
+
+    const Real * const discrepancy[8] = {
+        dim002DiscrSobLev_Sobol, dim003DiscrSobLev_Sobol,
+        dim005DiscrSobLev_Sobol, dim010DiscrSobLev_Sobol,
+        dim015DiscrSobLev_Sobol, dim030DiscrSobLev_Sobol,
+        dim050DiscrSobLev_Sobol, dim100DiscrSobLev_Sobol};
+
+    testGeneratorDiscrepancy(SobolFactory(SobolRsg::SobolLevitanLemieux),
+                             discrepancy,
+                             "SobolLevitanLemieuxSobolDiscrepancy.txt",
+                             "DiscrSobLevLem_Sobol");
 }
 
 void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
@@ -925,6 +981,8 @@ test_suite* LowDiscrepancyTest::suite() {
            &LowDiscrepancyTest::testJackelSobolDiscrepancy));
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy));
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy));
 
     return suite;
 }
