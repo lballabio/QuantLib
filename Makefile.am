@@ -38,6 +38,16 @@ dist-hook:
 	cp -p $(srcdir)/lib/README.txt $(distdir)/lib/README.txt
 	cp -p $(srcdir)/lib/Win32/Borland/README.txt $(distdir)/lib/Win32/Borland/README.txt
 	cp -p $(srcdir)/lib/Win32/VisualStudio/README.txt $(distdir)/lib/Win32/VisualStudio/README.txt
+	mkdir $(distdir)/Docs
+	cp $(srcdir)/Docs/*.in $(distdir)/Docs
+	cp $(srcdir)/Docs/*.am  $(distdir)/Docs
+	cp $(srcdir)/Docs/*.mak $(distdir)/Docs
+	cp $(srcdir)/Docs/*.tex $(distdir)/Docs
+	cp $(srcdir)/Docs/*.css $(distdir)/Docs
+	cp $(srcdir)/Docs/*.docs $(distdir)/Docs
+	cp $(srcdir)/Docs/*.doxy $(distdir)/Docs
+	cp $(srcdir)/Docs/*.html $(distdir)/Docs
+	cp $(srcdir)/Docs/README.txt $(distdir)/Docs
 	mkdir $(distdir)/Docs/Examples
 	cp $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/
 	mkdir $(distdir)/Docs/images
