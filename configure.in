@@ -147,7 +147,6 @@ AC_OUTPUT(Makefile \
     Examples/DiscreteHedging/Makefile \
     Examples/EuropeanOption/Makefile \
     Examples/Swap/Makefile \
-    test/Makefile \
     quantlib-config \
     )
 
