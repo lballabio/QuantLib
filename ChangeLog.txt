@@ -1,3 +1,35 @@
+2004-03-02 15:23  Luigi Ballabio <luigi.ballabio@users.sf.net>
+
+	* BUGS.txt (1.1), ChangeLog.txt (1.41), UFILE (1.4),
+	dev_tools/developers (1.1), dev_tools/update_changelog.sh (1.1):
+
+	Added (bash) script for updating changelog
+
+2004-03-02 15:23  Luigi Ballabio <luigi.ballabio@users.sf.net>
+
+	* Makefile.am (1.84), Docs/Makefile.am (1.60):
+
+	Doxygen glitch
+
+2004-03-02 15:21  Luigi Ballabio <luigi.ballabio@users.sf.net>
+
+	* ql/Pricers/fddividendamericanoption.hpp (1.9):
+
+	Flagged as buggy
+
+2004-03-02 15:20  Luigi Ballabio <luigi.ballabio@users.sf.net>
+
+	* ql/: Math/svd.hpp (1.7),
+	PricingEngines/Basket/mcamericanbasketengine.hpp (1.3):
+
+	Flagged as non-buggy
+
+2004-03-02 15:18  Luigi Ballabio <luigi.ballabio@users.sf.net>
+
+	* ql/Math/: matrix.cpp (1.23), matrix.hpp (1.25):
+
+	(conditionally) added extra checks
+
 2004-03-01 18:31  Ferdinando Ametrano <nando AT ametrano DOT net>
 
 	* QuantLib.dsp (1.221):
