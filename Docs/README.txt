@@ -10,11 +10,10 @@ The basic requirement to produce html documentation are:
 
 If you want to produce PDF and/or PS documentation you will need also:
 4) TeX/LaTeX
-5) LaTeX Fancy Header package
-6) LaTeX pxfonts
-7) epstopdf. It's available as Perl script (you will also need Perl, of
+5) epstopdf. It's available as Perl script (you will also need Perl, of
    course), C source to be compiled or Windows executable.
-The above are available through the CTAN (http://www.ctan.org/)
+The above, and any additional packages your LaTeX installation might need, 
+are available through the CTAN (http://www.ctan.org/)
 
 
 *********
@@ -31,17 +30,9 @@ To produce HTML documentation:
 
 If you want to produce TeX/PDF/PS documentation:
 5) install MiKTeX 2 or higher from http://www.miktex.org
-   Choose to create your "Local TEXMF Tree".
-   Add miktex\bin (where latex.exe is) to your PATH.
-6) under your "Local TEXMF Tree" create a folder \tex\latex\fancyhdr
-   that includes fancyhdr.sty, extramarks.sty and fixmarks.sty (the 3 files
-   can be downloaded from 
-   http://mechatro2.me.berkeley.edu/resources/latex_resources/latex/fancyhdr/
-7) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
+6) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
    and copy it into a directory on your path
-8) Open MikTeX Options panel from "Programs/MiKTeX 2" list and click on the
-   "Refresh Now" button in the "General" folder.
-9) a) Borland users: type 'make ps' or 'make pdf' from the Docs
+7) a) Borland users: type 'make ps' or 'make pdf' from the Docs
       directory
    b) VC user: go to the Docs\latex directory and type:
         latex refman
@@ -55,10 +46,10 @@ If you want to produce TeX/PDF/PS documentation:
    Just ignore TeX/LaTeX warning/error.
 
 If you want to compile the HTML documentation into Microsoft Help format:
-10) download and install the HTML Help Workshop from
-    msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/vsconhh1start.asp
+8) download and install the HTML Help Workshop from
+   msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/vsconhh1start.asp
     and add to your path the directory created by the installer
-11) type 'hhc index.hhp' from the Docs\html directory. The file
+9) type 'hhc index.hhp' from the Docs\html directory. The file
     index.chm will be created.
 
 
@@ -80,3 +71,4 @@ You'll end up with:
 - and a directory Docs/man containing the man pages.
 
 Look in Makefile.am for additional directives
+
