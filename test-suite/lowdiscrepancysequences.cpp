@@ -432,17 +432,9 @@ void LowDiscrepancyTest::testHalton() {
 
 namespace {
 
-    const Real dim002DiscrJackel_Sobol[] = {
+    const Real dim002Discr_Sobol[] = {
         8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
         5.69e-005, 2.14e-005 // , null
-    };
-    const Real dim002DiscrSobLev_Sobol[] = {
-        8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
-        5.69e-005, 2.14e-005 // , -1.#Je+000
-    };
-    const Real dim002DiscrSobLem_Sobol[] = {
-        8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
-        5.69e-005, 2.14e-005 // , -1.#Je+000
     };
     const Real dim002DiscrMersenneTwis[] = {
         8.84e-003, 5.42e-003, 5.23e-003, 4.47e-003,
@@ -460,15 +452,7 @@ namespace {
         5.69e-005, 2.14e-005 // , null
     };
 
-    const Real dim003DiscrJackel_Sobol[] = {
-        1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
-        9.21e-005, 4.79e-005, 2.56e-005
-    };
-    const Real dim003DiscrSobLev_Sobol[] = {
-        1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
-        9.21e-005, 4.79e-005, 2.56e-005
-    };
-    const Real dim003DiscrSobLem_Sobol[] = {
+    const Real dim003Discr_Sobol[] = {
         1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
         9.21e-005, 4.79e-005, 2.56e-005
     };
@@ -488,15 +472,7 @@ namespace {
         9.21e-005, 4.79e-005, 2.56e-005
     };
 
-    const Real dim005DiscrJackel_Sobol[] = {
-        1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
-        1.63e-004, 9.41e-005, 5.19e-005
-    };
-    const Real dim005DiscrSobLev_Sobol[] = {
-        1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
-        1.63e-004, 9.41e-005, 5.19e-005
-    };
-    const Real dim005DiscrSobLem_Sobol[] = {
+    const Real dim005Discr_Sobol[] = {
         1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
         1.63e-004, 9.41e-005, 5.19e-005
     };
@@ -524,10 +500,6 @@ namespace {
         7.41e-004, 5.10e-004, 3.28e-004, 2.21e-004,
         1.57e-004, 1.08e-004, 6.38e-005
     };
-    const Real dim010DiscrSobLem_Sobol[] = {
-        7.41e-004, 5.10e-004, 3.28e-004, 2.21e-004,
-        1.57e-004, 1.08e-004, 6.38e-005
-    };
     const Real dim010DiscrMersenneTwis[] = {
         8.83e-004, 6.56e-004, 4.87e-004, 3.37e-004,
         3.06e-004, 1.73e-004, 1.43e-004
@@ -552,10 +524,6 @@ namespace {
         1.48e-004, 1.06e-004, 8.19e-005, 6.29e-005,
         4.16e-005, 2.54e-005, 1.73e-005
     };
-    const Real dim015DiscrSobLem_Sobol[] = {
-        1.48e-004, 1.06e-004, 8.19e-005, 6.29e-005,
-        4.16e-005, 2.54e-005, 1.73e-005
-    };
     const Real dim015DiscrMersenneTwis[] = {
         1.63e-004, 1.12e-004, 8.36e-005, 6.09e-005,
         4.34e-005, 2.95e-005, 2.10e-005
@@ -577,10 +545,6 @@ namespace {
         2.09e-007, 1.55e-007, 1.07e-007
     };
     const Real dim030DiscrSobLev_Sobol[] = {
-        6.13e-007, 6.06e-007, 3.81e-007, 2.71e-007,
-        2.68e-007, 1.73e-007, 1.21e-007
-    };
-    const Real dim030DiscrSobLem_Sobol[] = {
         6.13e-007, 6.06e-007, 3.81e-007, 2.71e-007,
         2.68e-007, 1.73e-007, 1.21e-007
     };
@@ -893,8 +857,8 @@ void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
     BOOST_MESSAGE("Testing Jäckel-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
-        dim002DiscrJackel_Sobol, dim003DiscrJackel_Sobol,
-        dim005DiscrJackel_Sobol, dim010DiscrJackel_Sobol,
+        dim002Discr_Sobol, dim003Discr_Sobol,
+        dim005Discr_Sobol, dim010DiscrJackel_Sobol,
         dim015DiscrJackel_Sobol, dim030DiscrJackel_Sobol,
         dim050DiscrJackel_Sobol, dim100DiscrJackel_Sobol};
 
@@ -909,10 +873,10 @@ void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
     BOOST_MESSAGE("Testing SobolLevitan-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
-        dim002DiscrSobLem_Sobol, dim003DiscrSobLem_Sobol,
-        dim005DiscrSobLem_Sobol, dim010DiscrSobLem_Sobol,
-        dim015DiscrSobLem_Sobol, dim030DiscrSobLem_Sobol,
-        dim050DiscrSobLem_Sobol, dim100DiscrSobLem_Sobol};
+        dim002Discr_Sobol, dim003Discr_Sobol,
+        dim005Discr_Sobol, dim010DiscrSobLev_Sobol,
+        dim015DiscrSobLev_Sobol, dim030DiscrSobLev_Sobol,
+        dim050DiscrSobLev_Sobol, dim100DiscrSobLev_Sobol};
 
     testGeneratorDiscrepancy(SobolFactory(SobolRsg::SobolLevitan),
                              discrepancy,
@@ -925,10 +889,10 @@ void LowDiscrepancyTest::testSobolLevitanLemieuxSobolDiscrepancy() {
     BOOST_MESSAGE("Testing SobolLevitanLemieux-Sobol discrepancy...");
 
     const Real * const discrepancy[8] = {
-        dim002DiscrSobLev_Sobol, dim003DiscrSobLev_Sobol,
-        dim005DiscrSobLev_Sobol, dim010DiscrSobLev_Sobol,
+        dim002Discr_Sobol, dim003Discr_Sobol,
+        dim005Discr_Sobol, dim010DiscrSobLev_Sobol,
         dim015DiscrSobLev_Sobol, dim030DiscrSobLev_Sobol,
-        dim050DiscrSobLev_Sobol, dim100DiscrSobLev_Sobol};
+        dim050DiscrSobLem_Sobol, dim100DiscrSobLem_Sobol};
 
     testGeneratorDiscrepancy(SobolFactory(SobolRsg::SobolLevitanLemieux),
                              discrepancy,
