@@ -62,6 +62,25 @@ void InterestRateTest::testConversions() {
         {0.0800,     Simple,           Annual,  1.0/6, Compounded,         Bimonthly, 0.0800, 4},
         {0.0900, Compounded,          Monthly, 1.0/12,     Simple,            Annual, 0.0900, 4},
         {0.1000,     Simple,           Annual, 1.0/12, Compounded,           Monthly, 0.1000, 4},
+
+        {0.0300, SimpleThenCompounded,       Semiannual,   0.25,               Simple,            Annual, 0.0300, 4},
+        {0.0300, SimpleThenCompounded,       Semiannual,   0.25,               Simple,        Semiannual, 0.0300, 4},
+        {0.0300, SimpleThenCompounded,       Semiannual,   0.25,               Simple,         Quarterly, 0.0300, 4},
+        {0.0300, SimpleThenCompounded,       Semiannual,   0.50,               Simple,            Annual, 0.0300, 4},
+        {0.0300, SimpleThenCompounded,       Semiannual,   0.50,               Simple,        Semiannual, 0.0300, 4},
+        {0.0300, SimpleThenCompounded,       Semiannual,   0.75,           Compounded,        Semiannual, 0.0300, 4},
+
+        {0.0400,               Simple,       Semiannual,   0.25, SimpleThenCompounded,         Quarterly, 0.0400, 4},
+        {0.0400,               Simple,       Semiannual,   0.25, SimpleThenCompounded,        Semiannual, 0.0400, 4},
+        {0.0400,               Simple,       Semiannual,   0.25, SimpleThenCompounded,            Annual, 0.0400, 4},
+
+        {0.0400,           Compounded,        Quarterly,   0.50, SimpleThenCompounded,         Quarterly, 0.0400, 4},
+        {0.0400,               Simple,       Semiannual,   0.50, SimpleThenCompounded,        Semiannual, 0.0400, 4},
+        {0.0400,               Simple,       Semiannual,   0.50, SimpleThenCompounded,            Annual, 0.0400, 4},
+
+        {0.0400,           Compounded,        Quarterly,   0.75, SimpleThenCompounded,         Quarterly, 0.0400, 4},
+        {0.0400,           Compounded,       Semiannual,   0.75, SimpleThenCompounded,        Semiannual, 0.0400, 4},
+        {0.0400,               Simple,       Semiannual,   0.75, SimpleThenCompounded,            Annual, 0.0400, 4}
     };
 
     Rounding roundingPrecision;
@@ -89,20 +108,6 @@ void InterestRateTest::testConversions() {
                        + DecimalFormatter::toString(disc, 16) +
                        "\n        error: "
                        + DecimalFormatter::toExponential(error));
-
-        // check that the equivalent rate with *same* daycounter,
-        // compounding, and frequency is the *same* rate
-        r2 = ir.equivalentRate(d1, d2, ir.dayCounter(),
-                                       ir.compounding(),
-                                       ir.frequency());
-        error = QL_FABS(ir.rate()-r2);
-        if (error>1e-15)
-            BOOST_FAIL("\n    original rate: "
-                       + InterestRateFormatter::toString(ir, 12) +
-                       "\n  equivalent rate: "
-                       + RateFormatter::toString(r2,12) +
-                       "\n            error: "
-                       + DecimalFormatter::toExponential(error, 1));
 
         // check that the equivalent InterestRate with *same* daycounter,
         // compounding, and frequency is the *same* InterestRate
@@ -136,20 +141,18 @@ void InterestRateTest::testConversions() {
                        "\n  equivalent interest rate: "
                        + InterestRateFormatter::toString(ir2,4));
 
-        // check that the equivalent rate with *different*
-        // compounding, and frequency is the *expected* rate
-        r3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
-                               cases[i].comp2, cases[i].freq2);
-        roundingPrecision = Rounding(cases[i].precision);
-        r3 = roundingPrecision(r3);
-        error = QL_FABS(r3-cases[i].expected);
-        if (error>1.0e-17)
-            BOOST_FAIL("\n  calculated equivalent rate: "
-                       + RateFormatter::toString(r3,cases[i].precision-2) +
-                       "\n    expected equivalent rate: "
-                       + RateFormatter::toString(cases[i].expected,
-                                                 cases[i].precision-2) +
-                       "\n                       error: "
+        // check that the equivalent rate with *same* daycounter,
+        // compounding, and frequency is the *same* rate
+        r2 = ir.equivalentRate(d1, d2, ir.dayCounter(),
+                                       ir.compounding(),
+                                       ir.frequency());
+        error = QL_FABS(ir.rate()-r2);
+        if (error>1e-15)
+            BOOST_FAIL("\n    original rate: "
+                       + InterestRateFormatter::toString(ir, 12) +
+                       "\n  equivalent rate: "
+                       + RateFormatter::toString(r2,12) +
+                       "\n            error: "
                        + DecimalFormatter::toExponential(error, 1));
 
         // check that the equivalent InterestRate with *different*
@@ -187,6 +190,22 @@ void InterestRateTest::testConversions() {
                        + InterestRateFormatter::toString(ir3, 4) +
                        "\n  equivalent interest rate: "
                        + InterestRateFormatter::toString(expectedIR,4));
+
+        // check that the equivalent rate with *different*
+        // compounding, and frequency is the *expected* rate
+        r3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
+                               cases[i].comp2, cases[i].freq2);
+        roundingPrecision = Rounding(cases[i].precision);
+        r3 = roundingPrecision(r3);
+        error = QL_FABS(r3-cases[i].expected);
+        if (error>1.0e-17)
+            BOOST_FAIL("\n  calculated equivalent rate: "
+                       + RateFormatter::toString(r3,cases[i].precision-2) +
+                       "\n    expected equivalent rate: "
+                       + RateFormatter::toString(cases[i].expected,
+                                                 cases[i].precision-2) +
+                       "\n                       error: "
+                       + DecimalFormatter::toExponential(error, 1));
 
     }
 }
