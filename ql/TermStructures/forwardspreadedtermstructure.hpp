@@ -18,7 +18,7 @@
     \brief Forward spreaded term structure
 
     \fullpath
-    ql/%forwardspreadedtermstructure.hpp
+    ql/TermStructures/%forwardspreadedtermstructure.hpp
 */
 
 // $Id$

@@ -18,7 +18,7 @@
     \brief Zero spreaded term structure
 
     \fullpath
-    ql/%zerospreadedtermstructure.hpp
+    ql/TermStructures/%zerospreadedtermstructure.hpp
 */
 
 // $Id$

@@ -18,7 +18,7 @@
     \brief Implied term structure
 
     \fullpath
-    ql/%impliedtermstructure.hpp
+    ql/TermStructures/%impliedtermstructure.hpp
 */
 
 // $Id$
