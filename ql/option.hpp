@@ -30,11 +30,12 @@ namespace QuantLib {
     class Option : public Instrument {
       public:
         enum Type { Call, Put, Straddle };
-        Option(const Handle<PricingEngine>& engine,
+        Option(const Handle<PricingEngine>& engine = Handle<PricingEngine>(),
                const std::string& isinCode = "",
                const std::string& description = "")
         : Instrument(isinCode, description) {
-            setPricingEngine(engine);
+            if (!engine.isNull())
+                setPricingEngine(engine);
         }
     };
 
