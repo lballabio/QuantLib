@@ -69,7 +69,7 @@ namespace QuantLib {
         return blackForwardVol(time1, time2, strike, extrapolate);
     }
 
-        
+
     double BlackVolTermStructure::blackForwardVol(Time time1, Time time2,
         double strike, bool extrapolate) const {
 
@@ -112,41 +112,38 @@ namespace QuantLib {
         return (v2-v1);
     }
 
- 
+
 	double BlackVolTermStructure::timeDerivative(Time maturity,
-                        double strike,
-                        bool extrapolate) const {
+        double strike, bool extrapolate) const {
 		return (blackVol(maturity+dT, strike, extrapolate) -
-			blackVol(maturity, strike, extrapolate))/dT	;
+                blackVol(maturity,    strike, extrapolate))/dT;
 	}
-     
+
 
      double BlackVolTermStructure::strikeDerivative(Time maturity,
-                        double strike,
-                        bool extrapolate) const {
+         double strike, bool extrapolate) const {
 		 double dK = 1.0e-3*strike;
 		 return (blackVol(maturity, strike+dK, extrapolate) -
-			blackVol(maturity, strike-dK, extrapolate))/(2*dK);
+                 blackVol(maturity, strike-dK, extrapolate))/(2*dK);
 	 }
-     
+
 
      double BlackVolTermStructure::strikeSecondDerivative(Time maturity,
-                        double strike,
-                        bool extrapolate) const {
-		 double dK = 1.0e-3*strike;
-		 return (blackVol(maturity, strike+dK, extrapolate) +
-			blackVol(maturity, strike-dK, extrapolate) -
-			2*blackVol(maturity, strike, extrapolate))/(dK*dK);
-	 } 
+         double strike, bool extrapolate) const {
+             double dK = 1.0e-3*strike;
+             return (blackVol(maturity, strike+dK, extrapolate) +
+			         blackVol(maturity, strike-dK, extrapolate) -
+                   2*blackVol(maturity, strike,    extrapolate))/(dK*dK);
+	 }
 
-	  
+
 	 double BlackVolatilityTermStructure ::blackVarianceImpl(Time maturity,
         double strike, bool extrapolate) const {
 
         double vol = blackVolImpl(maturity, strike, extrapolate);
         return vol*vol*maturity;
     }
-	 
+
 	 double BlackVarianceTermStructure ::blackVolImpl(Time maturity,
 		 double strike, bool extrapolate) const {
 

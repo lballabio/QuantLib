@@ -55,7 +55,7 @@ namespace QuantLib {
                                      DefaultExtrapolation,
                                  Extrapolation upperExtrapolation =
                                      DefaultExtrapolation,
-                                 const DayCounter& dayCounter = 
+                                 const DayCounter& dayCounter =
                                      DayCounters::Actual365());
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
@@ -63,8 +63,9 @@ namespace QuantLib {
             // Observer interface
             void update();
           protected:
-            virtual double blackVarianceImpl(Time t, double strike,
-                bool extrapolate = false) const;
+            virtual double blackVarianceImpl(Time t,
+                                             double strike,
+                                             bool extrapolate = false) const;
           private:
             Date referenceDate_;
             DayCounter dayCounter_;
@@ -119,7 +120,7 @@ namespace QuantLib {
             }
             varianceSurface_ = Handle<Interpolator2D> (new
                 Interpolator2D(times_.begin(), times_.end(),
-                               strikes_.begin(), strikes_.end(), 
+                               strikes_.begin(), strikes_.end(),
                                variances_));
         }
 
@@ -134,11 +135,11 @@ namespace QuantLib {
             blackVarianceImpl(Time t, double strike, bool extrapolate) const {
 
             // enforce constant extrapolation when required
-            if (strike < strikes_.front() 
+            if (strike < strikes_.front()
                 && extrapolate
                 && lowerExtrapolation_ == ConstantExtrapolation)
                 strike = strikes_.front();
-            if (strike > strikes_.back() 
+            if (strike > strikes_.back()
                 && extrapolate
                 && upperExtrapolation_ == ConstantExtrapolation)
                 strike = strikes_.back();
