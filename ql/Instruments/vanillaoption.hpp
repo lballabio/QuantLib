@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! Vanilla option (no discrete dividends, no barriers) on a single asset
+    /*! \ingroup instruments */
     class VanillaOption : public OneAssetStrikedOption {
       public:
         VanillaOption(const boost::shared_ptr<BlackScholesStochasticProcess>&,

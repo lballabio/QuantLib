@@ -34,6 +34,7 @@ namespace QuantLib {
     };
 
     //! Asian option
+    /*! \ingroup instruments */
     class DiscreteAveragingAsianOption : public OneAssetStrikedOption {
       public:
           DiscreteAveragingAsianOption(

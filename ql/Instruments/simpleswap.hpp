@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! Simple fixed-rate vs Libor swap
+    /*! \ingroup instruments */
     class SimpleSwap : public Swap {
       public:
         class arguments;

@@ -38,6 +38,7 @@ namespace QuantLib {
     };
 
     //! Forward version of a vanilla option
+    /*! \ingroup instruments */
     class ForwardVanillaOption : public VanillaOption {
       public:
         typedef ForwardOptionArguments<VanillaOption::arguments> arguments;

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,11 +21,9 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page instruments Instruments and pricers
+/*! \defgroup instruments Financial instruments
 
-    \section instruments A developer's guide to the Instrument class
-
-    Since version 0.3.4, the Instrument class was reworked
+    Since version 0.3.4, the <tt>Instrument</tt> class was reworked
     as shown in the following figure.
 
     \latexonly
@@ -75,7 +73,8 @@
 
     which was more difficult to write with <tt>setupEngine()</tt>.            
 
-    Therefore, there are now two ways to inherit from Instrument, namely:
+    Therefore, there are now two ways to inherit from
+    <tt>Instrument</tt>, namely:
 
         -# implement the <tt>isExpired</tt> method, and completely 
            override the <tt>performCalculations</tt> method so that 
@@ -85,7 +84,7 @@
            should also be extended so that those results are set to a
            value suitable for an expired instrument. This was the migration
            path taken for all instruments not previously deriving from
-           the Option class.
+           the <tt>Option</tt> class.
         -# define suitable argument and result classes for the instrument
            and implement the <tt>isExpired</tt> and <tt>setupArguments</tt>
            methods, reusing the pricing-engine machinery provided by

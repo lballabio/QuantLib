@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! %Swaption class
+    /*! \ingroup instruments */
     class Swaption : public Option {
       public:
         class arguments;

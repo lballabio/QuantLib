@@ -52,6 +52,7 @@ namespace QuantLib {
     };
 
     //! quanto version of a vanilla option
+    /*! \ingroup instruments */
     class QuantoVanillaOption : public VanillaOption {
       public:
         typedef QuantoOptionArguments<VanillaOption::arguments> arguments;

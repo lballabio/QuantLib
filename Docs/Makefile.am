@@ -67,7 +67,6 @@ tex-files: docs-html
            -e "/include{history}/d" \
            -e "/include{index}/d" \
            -e "/include{install}/d" \
-           -e "/include{instruments}/d" \
            -e "/include{lattices}/d" \
            -e "/include{license}/d" \
            -e "/include{math}/d" \

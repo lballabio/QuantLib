@@ -32,6 +32,8 @@ namespace QuantLib {
     //! Interest rate swap
     /*! The cash flows belonging to the first leg are payed;
         the ones belonging to the first leg are received. 
+
+        \ingroup instruments
     */
     class Swap : public Instrument {
       public:

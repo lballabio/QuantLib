@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! Quanto version of a forward vanilla option
+    /*! \ingroup instruments */ 
     class QuantoForwardVanillaOption : public QuantoVanillaOption {
       public:
         typedef QuantoOptionArguments<ForwardVanillaOption::arguments>

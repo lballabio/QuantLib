@@ -30,6 +30,7 @@
 namespace QuantLib {
 
     //! Base class for cap-like instruments
+    /*! \ingroup instruments */
     class CapFloor : public Instrument {
       public:
         enum Type { Cap, Floor, Collar };
@@ -88,6 +89,7 @@ namespace QuantLib {
     };
 
     //! Concrete cap class
+    /*! \ingroup instruments */
     class Cap : public CapFloor {
       public:
         Cap(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
@@ -100,6 +102,7 @@ namespace QuantLib {
     };
 
     //! Concrete floor class
+    /*! \ingroup instruments */
     class Floor : public CapFloor {
       public:
         Floor(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
@@ -112,6 +115,7 @@ namespace QuantLib {
     };
 
     //! Concrete collar class
+    /*! \ingroup instruments */
     class Collar : public CapFloor {
       public:
         Collar(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,

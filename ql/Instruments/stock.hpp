@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! Simple stock class
+    /*! \ingroup instruments */
     class Stock : public Instrument {
       public:
         Stock(const RelinkableHandle<Quote>& quote);

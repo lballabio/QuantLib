@@ -28,6 +28,7 @@
 namespace QuantLib {
 
     //! Basket option on a number of assets
+    /*! \ingroup instruments */
     class BasketOption : public MultiAssetOption {
       public:
         class arguments;
