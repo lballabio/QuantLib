@@ -1819,6 +1819,14 @@ SOURCE=.\ql\RandomNumbers\centrallimitgaussianrng.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\RandomNumbers\faurersg.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\faurersg.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\RandomNumbers\haltonrsg.cpp
 # End Source File
 # Begin Source File

@@ -182,6 +182,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\faurersg.obj"
+	-@erase "$(INTDIR)\faurersg.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -446,6 +448,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
@@ -569,23 +572,23 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr" \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\currency.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\indexmanager.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr" \
-	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\exchangeratemanager.sbr"
+	"$(INTDIR)\faurersg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -632,6 +635,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
@@ -755,23 +759,23 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\exchangeratemanager.obj" \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\currency.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\indexmanager.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
-	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\exchangeratemanager.obj"
+	"$(INTDIR)\faurersg.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -931,6 +935,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\faurersg.obj"
+	-@erase "$(INTDIR)\faurersg.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -1196,6 +1202,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
@@ -1319,23 +1326,23 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr" \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\currency.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\indexmanager.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr" \
-	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\exchangeratemanager.sbr"
+	"$(INTDIR)\faurersg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1382,6 +1389,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
@@ -1505,23 +1513,23 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\exchangeratemanager.obj" \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\currency.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\indexmanager.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
-	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\exchangeratemanager.obj"
+	"$(INTDIR)\faurersg.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1681,6 +1689,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\faurersg.obj"
+	-@erase "$(INTDIR)\faurersg.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -1945,6 +1955,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
@@ -2068,23 +2079,23 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr" \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\currency.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\indexmanager.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr" \
-	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\exchangeratemanager.sbr"
+	"$(INTDIR)\faurersg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2131,6 +2142,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
@@ -2254,23 +2266,23 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\exchangeratemanager.obj" \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\currency.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\indexmanager.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
-	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\exchangeratemanager.obj"
+	"$(INTDIR)\faurersg.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2430,6 +2442,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\faurersg.obj"
+	-@erase "$(INTDIR)\faurersg.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -2695,6 +2709,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
@@ -2818,23 +2833,23 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr" \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\currency.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\indexmanager.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr" \
-	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\exchangeratemanager.sbr"
+	"$(INTDIR)\faurersg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2881,6 +2896,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
@@ -3004,23 +3020,23 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\exchangeratemanager.obj" \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\currency.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\indexmanager.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
-	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\exchangeratemanager.obj"
+	"$(INTDIR)\faurersg.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3180,6 +3196,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\faurersg.obj"
+	-@erase "$(INTDIR)\faurersg.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -3444,6 +3462,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
@@ -3567,23 +3586,23 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr" \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\currency.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\indexmanager.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr" \
-	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\exchangeratemanager.sbr"
+	"$(INTDIR)\faurersg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3630,6 +3649,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
@@ -3753,23 +3773,23 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\exchangeratemanager.obj" \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\currency.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\indexmanager.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
-	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\exchangeratemanager.obj"
+	"$(INTDIR)\faurersg.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3929,6 +3949,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\faurersg.obj"
+	-@erase "$(INTDIR)\faurersg.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -4194,6 +4216,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\indexmanager.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
@@ -4317,23 +4340,23 @@ BSC32_SBRS= \
 	"$(INTDIR)\blackvariancecurve.sbr" \
 	"$(INTDIR)\blackvariancesurface.sbr" \
 	"$(INTDIR)\localvolsurface.sbr" \
+	"$(INTDIR)\exchangeratemanager.sbr" \
 	"$(INTDIR)\basicdataformatters.sbr" \
 	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\currency.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\errors.sbr" \
+	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\indexmanager.sbr" \
-	"$(INTDIR)\money.sbr" \
-	"$(INTDIR)\exchangerate.sbr" \
-	"$(INTDIR)\currency.sbr" \
-	"$(INTDIR)\exchangeratemanager.sbr"
+	"$(INTDIR)\faurersg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4380,6 +4403,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\indexmanager.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
@@ -4503,23 +4527,23 @@ LIB32_OBJS= \
 	"$(INTDIR)\blackvariancecurve.obj" \
 	"$(INTDIR)\blackvariancesurface.obj" \
 	"$(INTDIR)\localvolsurface.obj" \
+	"$(INTDIR)\exchangeratemanager.obj" \
 	"$(INTDIR)\basicdataformatters.obj" \
 	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\currency.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\errors.obj" \
+	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\indexmanager.obj" \
-	"$(INTDIR)\money.obj" \
-	"$(INTDIR)\exchangerate.obj" \
-	"$(INTDIR)\currency.obj" \
-	"$(INTDIR)\exchangeratemanager.obj"
+	"$(INTDIR)\faurersg.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -5367,6 +5391,12 @@ SOURCE=.\ql\PricingEngines\americanpayoffathit.cpp
 SOURCE=.\ql\PricingEngines\blackformula.cpp
 
 "$(INTDIR)\blackformula.obj"	"$(INTDIR)\blackformula.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\faurersg.cpp
+
+"$(INTDIR)\faurersg.obj"	"$(INTDIR)\faurersg.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
