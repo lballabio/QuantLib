@@ -121,6 +121,7 @@ namespace QuantLib {
 
     namespace {
 
+        // not appropriate for path and american dependant option
         class TimeGridCalculator : public AcyclicVisitor,
                                    public Visitor<BlackVolTermStructure>,
                                    public Visitor<BlackConstantVol>,
@@ -131,14 +132,16 @@ namespace QuantLib {
             Size size() { return result_; }
             // generic case
             void visit(BlackVolTermStructure&) {
-                result_ = Size(maturity_ * stepsPerYear_);
+                result_ = Size(QL_MAX(maturity_ * stepsPerYear_, 1.0));
             }
             // specializations
             void visit(BlackConstantVol&) {
                 result_ = 1;
+//                result_ = Size(QL_MAX(maturity_ * stepsPerYear_, 1.0));
             }
             void visit(BlackVarianceCurve&) {
                 result_ = 1;
+//                result_ = Size(QL_MAX(maturity_ * stepsPerYear_, 1.0));
             }
           private:
             Time maturity_;
