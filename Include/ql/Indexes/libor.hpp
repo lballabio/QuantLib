@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -38,7 +41,6 @@
 
 #include "ql/qldefines.hpp"
 #include "ql/Indexes/xibor.hpp"
-#include "ql/Currencies/gbp.hpp"
 #include "ql/Calendars/london.hpp"
 #include "ql/DayCounters/actual365.hpp"
 
@@ -49,13 +51,12 @@ namespace QuantLib {
         //! Libor index
         class Libor : public Xibor {
           public:
-            Handle<Currency> currency() const { 
-                return Handle<Currency>(new Currencies::GBP);
-            }
+            Currency currency() const { return GBP; }
             Handle<Calendar> calendar() const { 
                 return Handle<Calendar>(new Calendars::London);
             }
-            bool modifiedFollowing() const { return true; }
+            bool isAdjusted() const { return true; }
+            bool isModifiedFollowing() const { return true; }
             Handle<DayCounter> dayCounter() const { 
                 return Handle<DayCounter>(new DayCounters::Actual365);
             }

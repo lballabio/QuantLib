@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -48,7 +51,7 @@ namespace QuantLib {
                 Rate pastFixing = 
                     LiborManager::getHistory(currency(),n,unit)[fixingDate];
                 QL_REQUIRE(pastFixing != Null<double>(),
-                    "Missing " + currency()->name() +
+                    "Missing " + CurrencyFormatter::toString(currency()) +
                         " Libor fixing for " + 
                         DateFormatter::toString(fixingDate));
                 return pastFixing;
@@ -66,14 +69,15 @@ namespace QuantLib {
                     ;       // fall through and forecast
                 }
             }
-            Date fixingEndDate = 
-                calendar()->advance(fixingDate,n,unit,modifiedFollowing());
+            Date endDate = fixingDate.plus(n,unit);
+            if (isAdjusted())
+                endDate = calendar()->roll(endDate,isModifiedFollowing());
             DiscountFactor fixingDiscount = 
                 termStructure()->discount(fixingDate);
             DiscountFactor endDiscount = 
-                termStructure()->discount(fixingEndDate);
+                termStructure()->discount(endDate);
             double fixingPeriod = 
-                dayCounter()->yearFraction(fixingDate, fixingEndDate);
+                dayCounter()->yearFraction(fixingDate, endDate);
             return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
         }
 

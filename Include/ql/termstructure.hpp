@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.4  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.3  2001/05/14 17:09:47  lballabio
     Went for simplicity and removed Observer-Observable relationships from Instrument
 
@@ -51,7 +54,6 @@
 
 #include "ql/qldefines.hpp"
 #include "ql/date.hpp"
-#include "ql/calendar.hpp"
 #include "ql/rate.hpp"
 #include "ql/spread.hpp"
 #include "ql/discountfactor.hpp"
@@ -72,32 +74,28 @@ namespace QuantLib {
         //@{
         //! zero yield rate for a given date
         virtual Rate zeroYield(const Date&,
-                               bool extrapolate = false) const = 0;
+            bool extrapolate = false) const = 0;
         //! zero yield rate for a given set of dates
         std::vector<Rate> zeroYield(const std::vector<Date>&,
-                                    bool extrapolate = false) const;
+            bool extrapolate = false) const;
         //! discount factor for a given date
         virtual DiscountFactor discount(const Date&,
-                                        bool extrapolate = false) const = 0;
+            bool extrapolate = false) const = 0;
         //! discount factor for a given set of dates
         std::vector<DiscountFactor> discount(const std::vector<Date>&,
-                                             bool extrapolate = false) const;
+            bool extrapolate = false) const;
         //! instantaneous forward rate for a given date
         virtual Rate forward(const Date&,
-                             bool extrapolate = false) const = 0;
+            bool extrapolate = false) const = 0;
         //! instantaneous forward rate for a given set of dates
         std::vector<Rate> forward(const std::vector<Date>&,
-                                  bool extrapolate = false) const;
+            bool extrapolate = false) const;
         //@}
 
         //! \name Other inspectors
         //@{
         //! returns the currency upon which the term structure is defined
-        virtual Handle<Currency> currency() const = 0;
-        //! returns the calendar upon which the term structure is defined
-        virtual Handle<Calendar> calendar() const = 0;
-        //! returns the date at which the structure is defined
-        virtual Date todaysDate() const = 0;
+        virtual Currency currency() const = 0;
         //! returns the settlement date relative to today's date
         virtual Date settlementDate() const = 0;
         //! returns the earliest date for which the curve can return rates
@@ -170,19 +168,16 @@ namespace QuantLib {
     class ImpliedTermStructure : public DiscountStructure {
       public:
         ImpliedTermStructure(const Handle<TermStructure>&,
-            const Date& evaluationDate);
-        Handle<Currency> currency() const;
-        Date todaysDate() const;
+            const Date& settlementDate);
+        Currency currency() const;
         Date settlementDate() const;
-        Handle<Calendar> calendar() const;
         Date maxDate() const;
         Date minDate() const;
         //! returns the discount factor as seen from the evaluation date
         DiscountFactor discount(const Date&, bool extrapolate = false) const;
       private:
         Handle<TermStructure> originalCurve_;
-        Date evaluationDate_;
-        Date evaluationSettlement_;
+        Date settlementDate_;
     };
 
     //! Term structure with an added spread on the zero yield rate
@@ -192,10 +187,8 @@ namespace QuantLib {
     class SpreadedTermStructure : public ZeroYieldStructure {
       public:
         SpreadedTermStructure(const Handle<TermStructure>&, Spread spread);
-        Handle<Currency> currency() const;
-        Date todaysDate() const;
+        Currency currency() const;
         Date settlementDate() const;
-        Handle<Calendar> calendar() const;
         Date maxDate() const;
         Date minDate() const;
         //! returns the spreaded zero yield rate
@@ -209,123 +202,108 @@ namespace QuantLib {
     // inline definitions
 
     inline std::vector<Rate> TermStructure::zeroYield(
-                              const std::vector<Date>& x,
-                              bool extrapolate) const {
-        std::vector<Rate> y(x.size());
-        std::vector<Date>::const_iterator j=x.begin();
-        for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
-            *i = zeroYield(*j, extrapolate);
-        return y;
+        const std::vector<Date>& x, bool extrapolate) const {
+            std::vector<Rate> y(x.size());
+            std::vector<Date>::const_iterator j=x.begin();
+            for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
+                *i = zeroYield(*j, extrapolate);
+            return y;
     }
 
     inline std::vector<DiscountFactor> TermStructure::discount(
-                                            const std::vector<Date>& x,
-                                            bool extrapolate) const {
-        std::vector<DiscountFactor> y(x.size());
-        std::vector<Date>::const_iterator j=x.begin();
-        for (std::vector<DiscountFactor>::iterator i=y.begin(); i!=y.end();
-                                                                    ++i,++j)
-            *i = discount(*j, extrapolate);
-        return y;
+        const std::vector<Date>& x, bool extrapolate) const {
+            std::vector<DiscountFactor> y(x.size());
+            std::vector<Date>::const_iterator j=x.begin();
+            for (std::vector<DiscountFactor>::iterator i=y.begin(); i!=y.end();
+                                                                        ++i,++j)
+                *i = discount(*j, extrapolate);
+            return y;
     }
 
-    inline std::vector<Rate> TermStructure::forward(const std::vector<Date>& x,
-                                                    bool extrapolate) const {
-        std::vector<Rate> y(x.size());
-        std::vector<Date>::const_iterator j=x.begin();
-        for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
-            *i = forward(*j, extrapolate);
-        return y;
+    inline std::vector<Rate> TermStructure::forward(
+        const std::vector<Date>& x, bool extrapolate) const {
+            std::vector<Rate> y(x.size());
+            std::vector<Date>::const_iterator j=x.begin();
+            for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
+                *i = forward(*j, extrapolate);
+            return y;
     }
 
 
     // curve deriving discount and forward from zero yield
 
-    inline DiscountFactor ZeroYieldStructure::discount(const Date& d,
-                                                       bool extrapolate) const {
-        Rate r = zeroYield(d, extrapolate);
-        double t = double(d-settlementDate())/365;
-        return DiscountFactor(QL_EXP(-r*t));
+    inline DiscountFactor ZeroYieldStructure::discount(const Date& d, 
+        bool extrapolate) const {
+            Rate r = zeroYield(d, extrapolate);
+            double t = double(d-settlementDate())/365;
+            return DiscountFactor(QL_EXP(-r*t));
     }
 
     inline Rate ZeroYieldStructure::forward(const Date& d,
-                                            bool extrapolate) const {
-        Rate r1 = zeroYield(d, extrapolate), r2 = zeroYield(d+1, true);
-        // r1+t*(r2-r1)/dt = r1+(days/365)*(r2-r1)/(1 day/365)
-        return r1+(d-settlementDate())*double(r2-r1);
+        bool extrapolate) const {
+            Rate r1 = zeroYield(d, extrapolate), r2 = zeroYield(d+1, true);
+            // r1+t*(r2-r1)/dt = r1+(days/365)*(r2-r1)/(1 day/365)
+            return r1+(d-settlementDate())*double(r2-r1);
     }
 
 
     // curve deriving zero yield and forward from discount
 
     inline Rate DiscountStructure::zeroYield(const Date& d,
-                                             bool extrapolate) const {
-        DiscountFactor f = discount(d, extrapolate);
-        double t = double(d-settlementDate())/365;
-        return Rate(-QL_LOG(f)/t);
+        bool extrapolate) const {
+            DiscountFactor f = discount(d, extrapolate);
+            double t = double(d-settlementDate())/365;
+            return Rate(-QL_LOG(f)/t);
     }
 
     inline Rate DiscountStructure::forward(const Date& d,
-                                           bool extrapolate) const {
-        DiscountFactor f1 = discount(d, extrapolate),
-                       f2 = discount(d+1, true);
-        // log(f1/f2)/dt = log(f1/f2)/(1/365)
-        return Rate(QL_LOG(f1/f2)*365);
+        bool extrapolate) const {
+            DiscountFactor f1 = discount(d, extrapolate),
+                           f2 = discount(d+1, true);
+            // log(f1/f2)/dt = log(f1/f2)/(1/365)
+            return Rate(QL_LOG(f1/f2)*365);
     }
 
 
     // curve deriving zero yield and discount from forward
 
     inline Rate ForwardRateStructure::zeroYield(const Date& d,
-                                                bool extrapolate) const {
-        // This is just a default, highly inefficient implementation.
-        // Derived classes should implement their own zeroYield method.
-        if (d == settlementDate())
-            return forward(settlementDate());
-        double sum = 0.5*forward(settlementDate());
-        for (Date i=settlementDate()+1; i<d; i++)
-            sum += forward(i, extrapolate);
-        sum += 0.5*forward(d, extrapolate);
-        return Rate(sum/(d-settlementDate()));
+        bool extrapolate) const {
+            // This is just a default, highly inefficient implementation.
+            // Derived classes should implement their own zeroYield method.
+            if (d == settlementDate())
+                return forward(settlementDate());
+            double sum = 0.5*forward(settlementDate());
+            for (Date i=settlementDate()+1; i<d; i++)
+                sum += forward(i, extrapolate);
+            sum += 0.5*forward(d, extrapolate);
+            return Rate(sum/(d-settlementDate()));
     }
 
-    inline DiscountFactor ForwardRateStructure::discount(
-                                                    const Date& d,
-                                                    bool extrapolate) const {
-        Rate r = zeroYield(d, extrapolate);
-        double t = double(d-settlementDate())/365;
-        return DiscountFactor(QL_EXP(-r*t));
+    inline DiscountFactor ForwardRateStructure::discount(const Date& d,
+        bool extrapolate) const {
+            Rate r = zeroYield(d, extrapolate);
+            double t = double(d-settlementDate())/365;
+            return DiscountFactor(QL_EXP(-r*t));
     }
 
 
     // time-shifted curve
 
     inline ImpliedTermStructure::ImpliedTermStructure(
-        const Handle<TermStructure>& h, const Date& evaluationDate)
-    : originalCurve_(h), evaluationDate_(evaluationDate) {
-        evaluationSettlement_ = 
-            originalCurve_->currency()->settlementDate(evaluationDate_);
-        QL_REQUIRE(evaluationSettlement_ <= originalCurve_->maxDate(),
-            "ImpliedTermStructure::ImpliedTermStructure : "
-            "the evaluation settlement date "
-            "can't be greater than the original curve max date");
-
+        const Handle<TermStructure>& h, const Date& settlementDate)
+    : originalCurve_(h), settlementDate_(settlementDate) {
+        QL_REQUIRE(settlementDate_ <= originalCurve_->maxDate(),
+            "the settlement date of an implied term structure"
+            "can't be later than the max date of the original curve");
     }
 
-    inline Handle<Currency> ImpliedTermStructure::currency() const {
+    inline Currency ImpliedTermStructure::currency() const {
         return originalCurve_->currency();
     }
 
-    inline Date ImpliedTermStructure::todaysDate() const {
-        return evaluationDate_;
-    }
-
     inline Date ImpliedTermStructure::settlementDate() const {
-        return evaluationSettlement_;
-    }
-
-    inline Handle<Calendar> ImpliedTermStructure::calendar() const {
-        return originalCurve_->calendar();
+        return settlementDate_;
     }
 
     inline Date ImpliedTermStructure::maxDate() const {
@@ -333,17 +311,17 @@ namespace QuantLib {
     }
 
     inline Date ImpliedTermStructure::minDate() const {
-        return evaluationSettlement_;
+        return settlementDate_;
     }
 
-    inline DiscountFactor ImpliedTermStructure::discount(
-                                                    const Date& d,
-                                                    bool extrapolate) const {
-        // evaluationDate cannot be an extrapolation
-        /* discount at evaluation date cannot be cached since the original curve 
-           could change between invocations of this method */
-        return originalCurve_->discount(d, extrapolate) /
-            originalCurve_->discount(evaluationSettlement_, false);
+    inline DiscountFactor ImpliedTermStructure::discount(const Date& d,
+        bool extrapolate) const {
+            // evaluationDate cannot be an extrapolation
+            /* discount at evaluation date cannot be cached 
+               since the original curve could change between 
+               invocations of this method */
+            return originalCurve_->discount(d, extrapolate) /
+                originalCurve_->discount(settlementDate_);
     }
 
 
@@ -353,20 +331,12 @@ namespace QuantLib {
         const Handle<TermStructure>& h, Spread spread)
     : originalCurve_(h), spread_(spread) {}
 
-    inline Handle<Currency> SpreadedTermStructure::currency() const {
+    inline Currency SpreadedTermStructure::currency() const {
         return originalCurve_->currency();
-    }
-
-    inline Date SpreadedTermStructure::todaysDate() const {
-        return originalCurve_->todaysDate();
     }
 
     inline Date SpreadedTermStructure::settlementDate() const {
         return originalCurve_->settlementDate();
-    }
-
-    inline Handle<Calendar> SpreadedTermStructure::calendar() const {
-        return originalCurve_->calendar();
     }
 
     inline Date SpreadedTermStructure::maxDate() const {
@@ -378,8 +348,8 @@ namespace QuantLib {
     }
 
     inline Rate SpreadedTermStructure::zeroYield(const Date& d,
-                                                 bool extrapolate) const {
-        return originalCurve_->zeroYield(d, extrapolate)+spread_;
+        bool extrapolate) const {
+            return originalCurve_->zeroYield(d, extrapolate)+spread_;
     }
 
 }

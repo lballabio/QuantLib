@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -52,21 +55,18 @@ namespace QuantLib {
         class LiborManager {
           public:
             // discount curves
-            static void setTermStructure(const Handle<Currency>&,
+            static void setTermStructure(Currency, 
                 const Handle<TermStructure>&);
-            static Handle<TermStructure> getTermStructure(
-                const Handle<Currency>&);
-            static bool hasTermStructure(const Handle<Currency>&);
+            static Handle<TermStructure> getTermStructure(Currency);
+            static bool hasTermStructure(Currency);
             // historical fixings
-            static void setHistory(const Handle<Currency>&, 
-                int n, TimeUnit unit, const History&);
-            static const History& getHistory(const Handle<Currency>&, 
-                int n, TimeUnit unit);
-            static bool hasHistory(const Handle<Currency>&,
-                int n, TimeUnit unit);
+            static void setHistory(Currency, int n, TimeUnit unit, 
+                const History&);
+            static const History& getHistory(Currency, int n, TimeUnit unit);
+            static bool hasHistory(Currency, int n, TimeUnit unit);
           private:
             static std::string tag(int n, TimeUnit unit);
-            typedef std::map<std::string,Handle<TermStructure> >
+            typedef std::map<Currency,Handle<TermStructure> >
                 TermStructureMap;
             static TermStructureMap termStructureMap_;
             typedef std::map<std::string,History> HistoryMap;

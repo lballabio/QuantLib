@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.2  2001/05/14 17:09:47  lballabio
     Went for simplicity and removed Observer-Observable relationships from Instrument
 
@@ -75,16 +78,14 @@ namespace QuantLib {
         class PiecewiseConstantForwards : public TermStructure {
           public:
             // constructor
-            PiecewiseConstantForwards(Handle<Currency> currency,
+            PiecewiseConstantForwards(Currency currency,
                                       Handle<DayCounter> dayCounter,
-                                      const Date& today,
+                                      const Date& settlementDate,
                                       const std::vector<DepositRate>& deposits);
             // inspectors
-            Handle<Currency> currency() const;
+            Currency currency() const;
             Handle<DayCounter> dayCounter() const;
-            Date todaysDate() const;
             Date settlementDate() const;
-            Handle<Calendar> calendar() const;
             Date maxDate() const;
             Date minDate() const;
             // zero yield
@@ -98,9 +99,9 @@ namespace QuantLib {
             // methods
             int nextNode_(const Date& d, bool extrapolate) const;
             // data members
-            Handle<Currency> currency_;
+            Currency currency_;
             Handle<DayCounter> dayCounter_;
-            Date today_;
+            Date settlementDate_;
             int nodesNumber_;
             std::vector<Date> nodes_;
             std::vector<Time> times_;
@@ -113,7 +114,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Handle<Currency> PiecewiseConstantForwards::currency() const {
+        inline Currency PiecewiseConstantForwards::currency() const {
             return currency_;
         }
 
@@ -121,16 +122,8 @@ namespace QuantLib {
             return dayCounter_;
         }
 
-        inline Date PiecewiseConstantForwards::todaysDate() const {
-            return today_;
-        }
-
         inline Date PiecewiseConstantForwards::settlementDate() const {
-            return currency_->settlementDate(today_);
-        }
-
-        inline Handle<Calendar> PiecewiseConstantForwards::calendar() const {
-            return currency_->settlementCalendar();
+            return settlementDate_;
         }
 
         inline Date PiecewiseConstantForwards::maxDate() const {

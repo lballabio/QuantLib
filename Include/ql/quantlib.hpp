@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.8  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.7  2001/05/18 08:20:48  marmar
     USD-Libor index added
 
@@ -90,13 +93,6 @@
 #include "ql/Calendars/wellington.hpp"
 #include "ql/Calendars/westerncalendar.hpp"
 #include "ql/Calendars/zurich.hpp"
-
-#include "ql/Currencies/chf.hpp"
-#include "ql/Currencies/dem.hpp"
-#include "ql/Currencies/eur.hpp"
-#include "ql/Currencies/gbp.hpp"
-#include "ql/Currencies/itl.hpp"
-#include "ql/Currencies/usd.hpp"
 
 #include "ql/DayCounters/actual360.hpp"
 #include "ql/DayCounters/actual365.hpp"
@@ -228,7 +224,6 @@
 /*** shortcuts for the full namespaces ***/
 namespace QL    = QuantLib;
 namespace QLCAL = QuantLib::Calendars;
-namespace QLCUR = QuantLib::Currencies;
 namespace QLDCO = QuantLib::DayCounters;
 namespace QLIDX = QuantLib::Indexes;
 namespace QLINS = QuantLib::Instruments;

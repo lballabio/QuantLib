@@ -156,34 +156,6 @@ SOURCE=.\Sources\Calendars\zurich.cpp
 SOURCE=.\Include\ql\Calendars\zurich.hpp
 # End Source File
 # End Group
-# Begin Group "Currencies"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\chf.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\dem.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\eur.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\gbp.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\itl.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\usd.hpp
-# End Source File
-# End Group
 # Begin Group "Day Counters"
 
 # PROP Default_Filter ""

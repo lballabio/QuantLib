@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.3  2001/05/17 15:33:30  lballabio
     Deposit rate helpers now use conventions in Currency
 
@@ -43,6 +46,8 @@
 
 #include "ql/qldefines.hpp"
 #include "ql/termstructure.hpp"
+#include "ql/calendar.hpp"
+#include "ql/daycounter.hpp"
 
 namespace QuantLib {
 
@@ -63,9 +68,7 @@ namespace QuantLib {
                 be used only in term structure constructors, setting the term 
                 structure to <b>this</b>, i.e., the one being constructed. 
             */
-            virtual void setTermStructure(const TermStructure* t) {
-                termStructure_ = t;
-            }
+            virtual void setTermStructure(const TermStructure*);
             //! maturity date
             virtual Date maturity() const = 0;
           protected:
@@ -76,20 +79,23 @@ namespace QuantLib {
         //! deposit rate
         class DepositRateHelper : public RateHelper {
           public:
-            DepositRateHelper(const Handle<Currency>& currency, 
-                int n, TimeUnit units, Rate rate)
-            : currency_(currency), n_(n), units_(units), rate_(rate) {}
+            DepositRateHelper(Rate rate, const Date& settlement, 
+                int n, TimeUnit units, const Handle<Calendar>& calendar, 
+                bool isAdjusted, bool isModifiedFollowing, 
+                const Handle<DayCounter>& dayCounter);
             double rateError() const;
             double discountGuess() const;
-            void setTermStructure(const TermStructure*);
             Date maturity() const;
           private:
+            Rate rate_;
+            Date settlement_;
             int n_;
             TimeUnit units_;
+            Handle<Calendar> calendar_;
+            bool isAdjusted_, isModified_;
+            Handle<DayCounter> dayCounter_;
             Date maturity_;
             double yearFraction_;
-            Rate rate_;
-            Handle<Currency> currency_;
         };
 
     }

@@ -2,7 +2,7 @@
 # $Id$
 # $Source$
 
-SUBDIRS = Calendars Currencies DayCounters FiniteDifferences Indexes \
+SUBDIRS = Calendars DayCounters FiniteDifferences Indexes \
     Instruments Math MonteCarlo Patterns Pricers Solvers1D \
     TermStructures Utilities
 

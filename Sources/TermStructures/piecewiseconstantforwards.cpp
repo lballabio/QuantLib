@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.22  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.21  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -78,12 +81,12 @@ namespace QuantLib {
     namespace TermStructures {
 
         PiecewiseConstantForwards::PiecewiseConstantForwards(
-                                    Handle<Currency> currency,
+                                    Currency currency,
                                     Handle<DayCounter> dayCounter,
-                                    const Date& today,
+                                    const Date& settlementDate,
                                     const std::vector<DepositRate>& deposits)
-        : currency_(currency), dayCounter_(dayCounter), today_(today),
-          deposits_(deposits) {
+        : currency_(currency), dayCounter_(dayCounter), 
+          settlementDate_(settlementDate), deposits_(deposits) {
 
             nodesNumber_ = deposits_.size()+1;
             QL_REQUIRE(deposits_.size()>1, "No deposits given");
@@ -93,18 +96,18 @@ namespace QuantLib {
             forwards_.resize(nodesNumber_);
             zeroYields_.resize(nodesNumber_);
             // values at settlement date
-            Date settlement = settlementDate();
             discounts_[0] = DiscountFactor(1.0);
-            nodes_[0] = settlement;
+            nodes_[0] = settlementDate_;
             times_[0] = Time(0.0);
             // loop on deposits_
             for (int i=1; i<nodesNumber_; i++) {
                 DepositRate& deposit = deposits_[i-1];
                 nodes_[i] = deposit.maturity();
-                times_[i] = dayCounter_ ->yearFraction(settlementDate(),
-                                                                  nodes_[i]);
+                times_[i] = dayCounter_ ->yearFraction(
+                    settlementDate_,nodes_[i]);
                 discounts_[i] = 1.0/(1.0+deposit.rate() *
-                    deposit.dayCounter()->yearFraction(settlement,nodes_[i]));
+                    deposit.dayCounter()->yearFraction(
+                        settlementDate_,nodes_[i]));
                 forwards_[i] = QL_LOG(discounts_[i-1]/discounts_[i]) /
                                                     (times_[i]-times_[i-1]);
                 zeroYields_[i] = -QL_LOG(discounts_[i])/times_[i];
@@ -115,14 +118,14 @@ namespace QuantLib {
 
         Rate PiecewiseConstantForwards::zeroYield(const Date& d,
                                                   bool extrapolate) const {
-            if (d == settlementDate()) {
+            if (d == settlementDate_) {
                 return zeroYields_[0];
             } else {
                 int n = nextNode_(d, extrapolate);
                 if (d == nodes_[n]) {
                     return zeroYields_[n];
                 } else {
-                    Time t = dayCounter_->yearFraction(settlementDate(),d);
+                    Time t = dayCounter_->yearFraction(settlementDate_,d);
                     Time tn = times_[n-1];
                     return (zeroYields_[n-1]*tn+forwards_[n]*(t-tn))/t;
                 }
@@ -133,14 +136,14 @@ namespace QuantLib {
         DiscountFactor PiecewiseConstantForwards::discount(
                                                     const Date& d,
                                                     bool extrapolate) const {
-            if (d == settlementDate()) {
+            if (d == settlementDate_) {
                 return discounts_[0];
             } else {
                 int n = nextNode_(d, extrapolate);
                 if (d == nodes_[n]) {
                     return discounts_[n];
                 } else {
-                    Time t = dayCounter_->yearFraction(settlementDate(),d);
+                    Time t = dayCounter_->yearFraction(settlementDate_,d);
                     return discounts_[n-1]*QL_EXP(-forwards_[n] *
                                                         (t-times_[n-1]));
                 }
@@ -150,7 +153,7 @@ namespace QuantLib {
 
         Rate PiecewiseConstantForwards::forward(const Date& d,
                                                 bool extrapolate) const {
-            if (d == settlementDate()) {
+            if (d == settlementDate_) {
                 return forwards_[0];
             } else {
                 return forwards_[nextNode_(d, extrapolate)];

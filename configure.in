@@ -118,7 +118,6 @@ AC_OUTPUT(Makefile \
     Include/Makefile \
     Include/ql/Makefile \
     Include/ql/Calendars/Makefile \
-    Include/ql/Currencies/Makefile \
     Include/ql/DayCounters/Makefile \
     Include/ql/FiniteDifferences/Makefile \
     Include/ql/Indexes/Makefile \

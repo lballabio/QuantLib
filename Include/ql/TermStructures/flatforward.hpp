@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.2  2001/05/14 17:09:47  lballabio
     Went for simplicity and removed Observer-Observable relationships from Instrument
 
@@ -80,16 +83,12 @@ namespace QuantLib {
         class FlatForward : public TermStructure {
           public:
             // constructor
-            FlatForward(const Handle<Currency>& currency,
-                        const Handle<DayCounter>& dayCounter,
-                        const Date& today,
-                        Rate forward);
+            FlatForward(Currency currency, const Handle<DayCounter>& dayCounter,
+                const Date& settlementDate, Rate forward);
             // inspectors
-            Handle<Currency> currency() const;
+            Currency currency() const;
             Handle<DayCounter> dayCounter() const;
-            Date todaysDate() const;
             Date settlementDate() const;
-            Handle<Calendar> calendar() const;
             Date maxDate() const;
             Date minDate() const;
             // zero yield
@@ -100,22 +99,21 @@ namespace QuantLib {
             // forward (instantaneous)
             Rate forward(const Date&, bool extrapolate = false) const;
           private:
-            Handle<Currency> currency_;
+            Currency currency_;
             Handle<DayCounter> dayCounter_;
-            Date today_;
+            Date settlementDate_;
             Rate forward_;
         };
 
         // inline definitions
 
-        inline FlatForward::FlatForward(const Handle<Currency>& currency,
-                                        const Handle<DayCounter>& dayCounter,
-                                        const Date& today,
-                                        Rate forward)
-        : currency_(currency), dayCounter_(dayCounter), today_(today),
-          forward_(forward) {}
+        inline FlatForward::FlatForward(Currency currency,
+            const Handle<DayCounter>& dayCounter, const Date& settlementDate,
+            Rate forward)
+        : currency_(currency), dayCounter_(dayCounter), 
+          settlementDate_(settlementDate), forward_(forward) {}
 
-        inline Handle<Currency> FlatForward::currency() const {
+        inline Currency FlatForward::currency() const {
             return currency_;
         }
 
@@ -123,16 +121,8 @@ namespace QuantLib {
             return dayCounter_;
         }
 
-        inline Date FlatForward::todaysDate() const {
-            return today_;
-        }
-
         inline Date FlatForward::settlementDate() const {
-            return currency_->settlementDate(today_);
-        }
-
-        inline Handle<Calendar> FlatForward::calendar() const {
-            return currency_->settlementCalendar();
+            return settlementDate_;
         }
 
         inline Date FlatForward::maxDate() const {
@@ -140,7 +130,7 @@ namespace QuantLib {
         }
 
         inline Date FlatForward::minDate() const {
-            return settlementDate();
+            return settlementDate_;
         }
 
         /*! \pre the given date must be in the range of definition
@@ -166,7 +156,7 @@ namespace QuantLib {
                 " outside curve definition [" +
                 DateFormatter::toString(minDate()) + "-" +
                 DateFormatter::toString(maxDate()) + "]");
-            double t = dayCounter_->yearFraction(settlementDate(),d);
+            double t = dayCounter_->yearFraction(settlementDate_,d);
             return DiscountFactor(QL_EXP(-forward_*t));
         }
 

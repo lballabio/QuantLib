@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -44,16 +47,15 @@ namespace QuantLib {
 
         const double PiecewiseFlatForward::accuracy_ = 1.0e-12;
         
-        PiecewiseFlatForward::PiecewiseFlatForward(
-            const Handle<Currency>& currency, 
-            const Handle<DayCounter>& dayCounter, const Date& today,
+        PiecewiseFlatForward::PiecewiseFlatForward(Currency currency, 
+            const Handle<DayCounter>& dayCounter, const Date& settlementDate,
             const std::vector<Handle<RateHelper> >& instruments)
-        : currency_(currency), dayCounter_(dayCounter), today_(today) {
+        : currency_(currency), dayCounter_(dayCounter), 
+          settlementDate_(settlementDate) {
             QL_REQUIRE(instruments.size()>0, "No instrument given");
             // values at settlement date
-            Date settlement = settlementDate();
             discounts_.push_back(1.0);
-            nodes_.push_back(settlement);
+            nodes_.push_back(settlementDate_);
             times_.push_back(0.0);
 
             Brent solver;
@@ -79,14 +81,14 @@ namespace QuantLib {
 
         Rate PiecewiseFlatForward::zeroYield(
             const Date& d, bool extrapolate) const {
-                if (d == settlementDate()) {
+                if (d == settlementDate_) {
                     return zeroYields_[0];
                 } else {
                     int n = referenceNode(d, extrapolate);
                     if (d == nodes_[n]) {
                         return zeroYields_[n];
                     } else {
-                        Time t = dayCounter_->yearFraction(settlementDate(),d);
+                        Time t = dayCounter_->yearFraction(settlementDate_,d);
                         Time tn = times_[n-1];
                         return (zeroYields_[n-1]*tn+forwards_[n]*(t-tn))/t;
                     }
@@ -96,14 +98,14 @@ namespace QuantLib {
 
         DiscountFactor PiecewiseFlatForward::discount(
             const Date& d, bool extrapolate) const {
-                if (d == settlementDate()) {
+                if (d == settlementDate_) {
                     return discounts_[0];
                 } else {
                     int n = referenceNode(d, extrapolate);
                     if (d == nodes_[n]) {
                         return discounts_[n];
                     } else {
-                        Time t = dayCounter_->yearFraction(settlementDate(),d);
+                        Time t = dayCounter_->yearFraction(settlementDate_,d);
                         return discounts_[n-1] * 
                             QL_EXP(-forwards_[n] * (t-times_[n-1]));
                     }
@@ -113,7 +115,7 @@ namespace QuantLib {
 
         Rate PiecewiseFlatForward::forward(
             const Date& d, bool extrapolate) const {
-                if (d == settlementDate()) {
+                if (d == settlementDate_) {
                     return forwards_[0];
                 } else {
                     return forwards_[referenceNode(d, extrapolate)];
@@ -142,8 +144,7 @@ namespace QuantLib {
         PiecewiseFlatForward::FFObjFunction::FFObjFunction(
             PiecewiseFlatForward* curve, const Handle<RateHelper>& rateHelper,
             int segment)
-        : curve_(curve), rateHelper_(rateHelper), 
-          segment_(segment) {
+        : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
             // extend curve to next point
             curve_->nodes_.push_back(rateHelper_->maturity());
             curve_->times_.push_back(curve_->dayCounter()->yearFraction(

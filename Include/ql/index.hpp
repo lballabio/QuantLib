@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -51,9 +54,10 @@ namespace QuantLib {
       public:
         //! \name inspectors
         //@{
-        virtual Handle<Currency> currency() const = 0;
+        virtual Currency currency() const = 0;
         virtual Handle<Calendar> calendar() const = 0;
-        virtual bool modifiedFollowing() const = 0;
+        virtual bool isAdjusted() const = 0;
+        virtual bool isModifiedFollowing() const = 0;
         virtual Handle<DayCounter> dayCounter() const = 0;
         virtual std::string name() const = 0;
         //@}

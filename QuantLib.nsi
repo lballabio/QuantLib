@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.11  2001/05/24 11:15:57  lballabio
+# Stripped conventions from Currencies
+#
 # Revision 1.10  2001/05/22 14:43:19  nando
 # comment added
 #
@@ -50,8 +53,6 @@ SetOutPath  $INSTDIR\Include\ql
 File /r "Include\ql\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Calendars
 File /r "Include\ql\Calendars\*.hpp"
-SetOutPath  $INSTDIR\Include\ql\Currencies
-File /r "Include\ql\Currencies\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\DayCounters
 File /r "Include\ql\DayCounters\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\FiniteDifferences

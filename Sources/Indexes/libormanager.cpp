@@ -28,12 +28,16 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
 */
 
 #include "ql/Indexes/libormanager.hpp"
+#include "ql/dataformatters.hpp"
 
 namespace QuantLib {
 
@@ -43,29 +47,30 @@ namespace QuantLib {
 
         LiborManager::HistoryMap LiborManager::historyMap_;
 
-        void LiborManager::setTermStructure(
-            const Handle<Currency>& currency,
+        void LiborManager::setTermStructure(Currency c,
             const Handle<TermStructure>& termStructure) {
-                QL_REQUIRE(termStructure->currency() == currency,
+                QL_REQUIRE(termStructure->currency() == c,
                     "currency mismatch while setting " +
-                    currency->name() + " Libor term structure "
+                    CurrencyFormatter::toString(c) 
+                    + " Libor term structure "
                     "(the given term structure has " +
-                    termStructure->currency()->name() +
+                    CurrencyFormatter::toString(termStructure->currency()) +
                     " currency");
-                termStructureMap_[currency->name()] = termStructure;
+                termStructureMap_[c] = termStructure;
         }
         
         Handle<TermStructure> LiborManager::getTermStructure(
-            const Handle<Currency>& currency) {
+            Currency c) {
                 LiborManager::TermStructureMap::const_iterator i = 
-                    termStructureMap_.find(currency->name());
+                    termStructureMap_.find(c);
                 QL_REQUIRE(i != termStructureMap_.end(),
-                    currency->name() + " Libor term structure not loaded");
+                    CurrencyFormatter::toString(c) + 
+                    " Libor term structure not loaded");
                 return i->second;
         }
         
-        bool LiborManager::hasTermStructure(const Handle<Currency>& currency) {
-            return (termStructureMap_.find(currency->name()) != 
+        bool LiborManager::hasTermStructure(Currency c) {
+            return (termStructureMap_.find(c) != 
                     termStructureMap_.end());
         }
 
@@ -85,24 +90,27 @@ namespace QuantLib {
             QL_DUMMY_RETURN(std::string())
         }
 
-        void LiborManager::setHistory(const Handle<Currency>& currency, 
+        void LiborManager::setHistory(Currency c, 
             int n, TimeUnit unit, const History& history) {
-                historyMap_[currency->name()+tag(n,unit)] = history;
+                historyMap_[CurrencyFormatter::toString(c)+tag(n,unit)] = 
+                    history;
         }
         
         const History& LiborManager::getHistory(
-            const Handle<Currency>& currency, int n, TimeUnit unit) {
+            Currency c, int n, TimeUnit unit) {
                 LiborManager::HistoryMap::const_iterator i = 
-                    historyMap_.find(currency->name()+tag(n,unit));
+                    historyMap_.find(
+                        CurrencyFormatter::toString(c)+tag(n,unit));
                 QL_REQUIRE(i != historyMap_.end(),
-                    currency->name() + " Libor " + 
+                    CurrencyFormatter::toString(c) + " Libor " + 
                     tag(n,unit) + " history not loaded");
                 return i->second;
         }
         
-        bool LiborManager::hasHistory(const Handle<Currency>& currency, 
+        bool LiborManager::hasHistory(Currency c, 
             int n, TimeUnit unit) {
-                return (historyMap_.find(currency->name()+tag(n,unit)) != 
+                return (historyMap_.find(
+                    CurrencyFormatter::toString(c)+tag(n,unit)) != 
                         historyMap_.end());
         }
         

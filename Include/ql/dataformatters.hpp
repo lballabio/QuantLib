@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/04/09 14:03:54  nando
     all the *.hpp moved below the Include/ql level
 
@@ -43,7 +46,7 @@
 
 #include "ql/qldefines.hpp"
 #include "ql/date.hpp"
-#include "ql/null.hpp"
+#include "ql/currency.hpp"
 #include <string>
 
 namespace QuantLib {
@@ -76,10 +79,18 @@ namespace QuantLib {
     };
 
     //! Formats dates for output
-    /*! Formatting can be in short (mm/dd/yyyy) or long (Month ddth, yyyy) form */
+    /*! Formatting can be in short (mm/dd/yyyy) 
+        or long (Month ddth, yyyy) form.
+    */
     class DateFormatter {
       public:
         static std::string toString(const Date& d, bool shortFormat = false);
+    };
+
+    //! Formats currencies for output
+    class CurrencyFormatter {
+      public:
+        static std::string toString(Currency c);
     };
 
     //! Formats strings as lower- or uppercase

@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.4  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.3  2001/05/17 15:33:30  lballabio
     Deposit rate helpers now use conventions in Currency
 
@@ -39,25 +42,29 @@
 */
 
 #include "ql/TermStructures/ratehelpers.hpp"
+#include "ql/dataformatters.hpp"
 
 namespace QuantLib {
 
     namespace TermStructures {
-        
-        void DepositRateHelper::setTermStructure(const TermStructure* t) {
+
+        void RateHelper::setTermStructure(const TermStructure* t) {
             QL_REQUIRE(t != 0, "null term structure given");
-            QL_REQUIRE(t->currency() == currency_,
-                "Mismatch between deposit currency (" +
-                currency_->name() +
-                ") and term structure currency (" +
-                t->currency()->name() + ")");
-            RateHelper::setTermStructure(t);
-            maturity_ = termStructure_->settlementDate().plus(n_,units_);
-            if (currency_->depositIsAdjusted())
-                maturity_ = currency_->settlementCalendar()->roll(
-                    maturity_,currency_->depositIsModified());
-            yearFraction_ = currency_->depositDayCounter()->yearFraction(
-                termStructure_->settlementDate(),maturity_);
+            termStructure_ = t;
+        }
+
+        
+        DepositRateHelper::DepositRateHelper(Rate rate, const Date& settlement, 
+            int n, TimeUnit units, const Handle<Calendar>& calendar, 
+            bool isAdjusted, bool isModifiedFollowing, 
+            const Handle<DayCounter>& dayCounter)
+        : rate_(rate), settlement_(settlement), n_(n), units_(units), 
+          calendar_(calendar), isAdjusted_(isAdjusted), 
+          isModified_(isModifiedFollowing), dayCounter_(dayCounter) {
+            maturity_ = settlement_.plus(n_,units_);
+            if (isAdjusted_)
+                maturity_ = calendar_->roll(maturity_,isModified_);
+            yearFraction_ = dayCounter_->yearFraction(settlement_,maturity_);
         }
         
         double DepositRateHelper::rateError() const {

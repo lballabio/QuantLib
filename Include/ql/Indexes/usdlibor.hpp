@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/05/18 08:20:31  marmar
     USD-Libor index added
 
@@ -41,7 +44,6 @@
 
 #include "ql/qldefines.hpp"
 #include "ql/Indexes/xibor.hpp"
-#include "ql/Currencies/usd.hpp"
 #include "ql/Calendars/newyork.hpp"
 #include "ql/DayCounters/actual360.hpp"
 
@@ -52,13 +54,12 @@ namespace QuantLib {
         //! Libor index
         class USDLibor : public Xibor {
           public:
-            Handle<Currency> currency() const { 
-                return Handle<Currency>(new Currencies::USD);
-            }
+            Currency currency() const { return USD; }
             Handle<Calendar> calendar() const { 
                 return Handle<Calendar>(new Calendars::NewYork);
             }
-            bool modifiedFollowing() const { return true; }
+            bool isAdjusted() const { return true; }
+            bool isModifiedFollowing() const { return true; }
             Handle<DayCounter> dayCounter() const { 
                 return Handle<DayCounter>(new DayCounters::Actual360);
             }

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.19  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.18  2001/05/09 11:06:19  nando
     A few comments modified/removed
 
@@ -145,6 +148,23 @@ namespace QuantLib {
             }
         }
         return output;
+    }
+
+    std::string CurrencyFormatter::toString(Currency c) {
+        switch (c) {
+          case EUR: return "EUR";
+          case GBP: return "GBP";
+          case USD: return "USD";
+          case DEM: return "DEM";
+          case ITL: return "ITL";
+          case CHF: return "CHF";
+          case AUD: return "AUD";
+          case CAD: return "CAD";
+          case DKK: return "DKK";
+          case JPY: return "JPY";
+          case SEK: return "SEK";
+          default:  return "unknown";
+        }
     }
 
     std::string StringFormatter::toLowercase(const std::string& s) {

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:15:57  lballabio
+    Stripped conventions from Currencies
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -36,6 +39,7 @@
 #define quantlib_piecewise_flat_forward_curve_h
 
 #include "ql/qldefines.hpp"
+#include "ql/daycounter.hpp"
 #include "ql/TermStructures/ratehelpers.hpp"
 #include "ql/solver1d.hpp"
 
@@ -49,15 +53,14 @@ namespace QuantLib {
         class PiecewiseFlatForward : public TermStructure {
           public:
             // constructor
-            PiecewiseFlatForward(const Handle<Currency>& currency,
-                const Handle<DayCounter>& dayCounter, const Date& today,
+            PiecewiseFlatForward(Currency currency,
+                const Handle<DayCounter>& dayCounter, 
+                const Date& settlementDate,
                 const std::vector<Handle<RateHelper> >& instruments);
             // inspectors
-            Handle<Currency> currency() const;
+            Currency currency() const;
             Handle<DayCounter> dayCounter() const;
-            Date todaysDate() const;
             Date settlementDate() const;
-            Handle<Calendar> calendar() const;
             Date maxDate() const;
             Date minDate() const;
             // zero yield
@@ -91,9 +94,9 @@ namespace QuantLib {
             // methods
             int referenceNode(const Date& d, bool extrapolate) const;
             // data members
-            Handle<Currency> currency_;
+            Currency currency_;
             Handle<DayCounter> dayCounter_;
-            Date today_;
+            Date settlementDate_;
             std::vector<Date> nodes_;
             std::vector<Time> times_;
             std::vector<DiscountFactor> discounts_;
@@ -103,7 +106,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Handle<Currency> PiecewiseFlatForward::currency() const {
+        inline Currency PiecewiseFlatForward::currency() const {
             return currency_;
         }
 
@@ -111,16 +114,8 @@ namespace QuantLib {
             return dayCounter_;
         }
 
-        inline Date PiecewiseFlatForward::todaysDate() const {
-            return today_;
-        }
-
         inline Date PiecewiseFlatForward::settlementDate() const {
-            return currency_->settlementDate(today_);
-        }
-
-        inline Handle<Calendar> PiecewiseFlatForward::calendar() const {
-            return currency_->settlementCalendar();
+            return settlementDate_;
         }
 
         inline Date PiecewiseFlatForward::maxDate() const {
@@ -128,7 +123,7 @@ namespace QuantLib {
         }
 
         inline Date PiecewiseFlatForward::minDate() const {
-            return settlementDate();
+            return settlementDate_;
         }
 
     }
