@@ -28,7 +28,7 @@ namespace QuantLib {
 
     //! integer number
     /*! \ingroup types */
-    typedef long Integer;
+    typedef int Integer;
 
     //! large integer number
     /*! This type is required to be at least 4 bytes.
