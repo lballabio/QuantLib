@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/03/22 12:25:31  marmar
+    Chaged method errorEstimate
+
     Revision 1.12  2001/01/24 09:19:05  marmar
     Documentation revised
 
@@ -192,7 +195,15 @@ namespace QuantLib {
         
 
         inline double Statistics::errorEstimate() const {
-          return QL_SQRT(variance()/samples());
+            double var = variance();             
+            QL_REQUIRE(samples() != 0.0,
+                       "Statistics: samples are not sufficient");
+            if(QL_FABS(var) < 1e-12) var =0.0;
+            QL_REQUIRE(var >= 0.0,
+                       "Statistics: variance, " +
+                       DoubleFormatter::toString(var,20)
+                       +" is NEGATIVE");
+          return QL_SQRT(var/samples());
         }
         
         inline double Statistics::skewness() const {
