@@ -36,9 +36,9 @@ namespace QuantLib {
             const Date& settlementDate,
             const std::vector<Handle<RateHelper> >& instruments,
             const DayCounter& dayCounter, double accuracy)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
-          instruments_(instruments), dayCounter_(dayCounter),
-          accuracy_(accuracy), needsBootstrap_(true) {
+        : dayCounter_(dayCounter), todaysDate_(todaysDate), 
+          settlementDate_(settlementDate), instruments_(instruments), 
+          needsBootstrap_(true), accuracy_(accuracy) {
 
             QL_REQUIRE(instruments_.size()>0, "No instrument given");
 
@@ -65,10 +65,11 @@ namespace QuantLib {
             const Date& todaysDate,
             const std::vector<Date>& dates, const std::vector<Rate>& forwards,
             const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(dates[0]),
-          dates_(dates), times_(dates.size()),
-          discounts_(dates.size()), forwards_(forwards), dayCounter_(dayCounter),
-          zeroYields_(dates.size()), needsBootstrap_(false) {
+        : dayCounter_(dayCounter), todaysDate_(todaysDate), 
+          settlementDate_(dates[0]), needsBootstrap_(false),
+          times_(dates.size()), dates_(dates), 
+          discounts_(dates.size()), forwards_(forwards), 
+          zeroYields_(dates.size()) {
 
             QL_REQUIRE(dates_.size()>0, "No dates given");
             QL_REQUIRE(dates_.size()==forwards_.size(),

@@ -40,10 +40,10 @@ namespace QuantLib {
             const RelinkableHandle<MarketElement>& volatility,
             const Handle<PricingEngine>& engine,
             const std::string& isinCode, const std::string& description)
-        : Option(engine, isinCode, description), type_(type),
-          underlying_(underlying), strike_(strike),
-          dividendYield_(dividendYield), riskFreeRate_(riskFreeRate),
-          exerciseDate_(exerciseDate), volatility_(volatility) {
+        : Option(engine, isinCode, description), exerciseDate_(exerciseDate), 
+          riskFreeRate_(riskFreeRate), type_(type), underlying_(underlying), 
+          strike_(strike), dividendYield_(dividendYield), 
+          volatility_(volatility) {
 //            QL_REQUIRE(!engine.isNull(),
 //                "VanillaOption::VanillaOption : "
 //                "null engine or wrong engine type");

@@ -48,7 +48,7 @@ namespace QuantLib {
     }
 
     std::string ArrayFormatter::toString(const Array& a, int precision, 
-                                         int digits, int perRow) {
+                                         int digits, Size perRow) {
         std::string s = "[ ";
         for (Size i=0, n=0; i<a.size(); i++,n++) {
             if (n == perRow) {

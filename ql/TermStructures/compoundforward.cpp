@@ -42,9 +42,10 @@ namespace QuantLib {
                                          const int compoundFrequency,
                                          const DayCounter & dayCounter)
         : todaysDate_(todaysDate), settlementDate_(settlementDate),
-          calendar_(calendar), dates_(dates), forwards_(forwards), roll_(roll),
+          calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
-          needsBootstrap_(true), inputDates_(dates) {
+          needsBootstrap_(true), inputDates_(dates),
+          dates_(dates), forwards_(forwards) {
 
             QL_REQUIRE(dates_.size() > 0, "No input Dates given");
             QL_REQUIRE(forwards_.size() > 0, "No input rates given");
@@ -65,9 +66,9 @@ namespace QuantLib {
                                  const int compoundFrequency,
                                  const DayCounter& dayCounter)
         : todaysDate_(todaysDate), settlementDate_(settlementDate),
-          calendar_(calendar), forwards_(forwards), roll_(roll),
+          calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
-          needsBootstrap_(true) {
+          needsBootstrap_(true), forwards_(forwards) {
 
             QL_REQUIRE(identifiers.size() > 0, "No input Identifiers given");
             QL_REQUIRE(forwards_.size() > 0, "No input rates given");
@@ -94,9 +95,9 @@ namespace QuantLib {
                                       const int compoundFrequency,
                                       const DayCounter& dayCounter)
         : todaysDate_(todaysDate), settlementDate_(settlementDate),
-          calendar_(calendar), forwards_(forwards), roll_(roll),
+          calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
-          needsBootstrap_(true) {
+          needsBootstrap_(true), forwards_(forwards)  {
 
             QL_REQUIRE(inpPeriods.size() > 0, "No input Periods given");
             QL_REQUIRE(forwards_.size() > 0, "No input rates given");

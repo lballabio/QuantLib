@@ -38,7 +38,7 @@ namespace QuantLib
             const std::vector<double>& volatility)
         : // SingleAssetOption(type, underlying, underlying, dividendYield,
           // riskFreeRate, times[times.size()-1], volatility),
-          moneyness_(moneyness), dividendYield_(dividendYield), times_(times),
+          moneyness_(moneyness), times_(times), dividendYield_(dividendYield), 
           numOptions_(times.size()), optionlet_(numOptions_),
           weight_(numOptions_), forwardDiscounts_(numOptions_) {
 

@@ -50,7 +50,7 @@ namespace QuantLib {
     class ArrayFormatter {
       public:
         static std::string toString(const Array& x, int precision = 6,
-            int digits = 0, int elementsPerRow = QL_MAX_INT);
+            int digits = 0, Size elementsPerRow = QL_MAX_INT);
     };
 
     /*! \relates Array */
