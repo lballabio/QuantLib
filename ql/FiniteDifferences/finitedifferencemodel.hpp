@@ -43,13 +43,23 @@ namespace QuantLib {
         FiniteDifferenceModel(
                            const operatorType& L,
                            const std::vector<boost::shared_ptr<bcType> >& bcs,
-                           const std::vector<Time>& stoppingTimes = 
+                           const std::vector<Time>& stoppingTimes =
                                                           std::vector<Time>())
-        : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {}
+        : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {
+            std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
+            std::vector<Time>::iterator last =
+                std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
+            stoppingTimes_.erase(last, stoppingTimes_.end());
+        }
         FiniteDifferenceModel(const Evolver& evolver,
-                              const std::vector<Time>& stoppingTimes = 
+                              const std::vector<Time>& stoppingTimes =
                                                           std::vector<Time>())
-        : evolver_(evolver), stoppingTimes_(stoppingTimes) {}
+        : evolver_(evolver), stoppingTimes_(stoppingTimes) {
+            std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
+            std::vector<Time>::iterator last =
+                std::unique(stoppingTimes_.begin(), stoppingTimes_.end());
+            stoppingTimes_.erase(last, stoppingTimes_.end());
+        }
         // methods
         // arrayType grid() const { return evolver.xGrid(); }
         /*! solves the problem between the given times, possibly
@@ -81,31 +91,41 @@ namespace QuantLib {
         evolver_.setStep(dt);
 
         for (Size i=0; i<steps; i++, t -= dt) {
-            Size j;
-            for (j=0; j < stoppingTimes_.size(); j++)
-                if (t-dt <= stoppingTimes_[j] && stoppingTimes_[j] < t)
-                    break;
-            if (j == stoppingTimes_.size()) {
-                // No stopping time was hit
-                evolver_.step(a,t);
-                if (condition)
-                    condition->applyTo(a, t-dt);
-            } else {
-                // A stopping time was hit
+            Time now = t, next = t-dt;
+            bool hit = false;
+            for (Integer j = Integer(stoppingTimes_.size()-1); j >= 0 ; j--) {
+                if (next <= stoppingTimes_[j] && stoppingTimes_[j] < now) {
+                    // a stopping time was hit
+                    hit = true;
 
-                // First baby step from t to stoppingTimes_[j]
-                evolver_.setStep(t-stoppingTimes_[j]);
-                evolver_.step(a,t);
-                if (condition)
-                    condition->applyTo(a,stoppingTimes_[j]);
-
-                // Second baby step from stoppingTimes_[j] to t-dt
-                evolver_.setStep(stoppingTimes_[j] - (t-dt));
-                evolver_.step(a,stoppingTimes_[j]);
-                if (condition)
-                    condition->applyTo(a,t-dt);
-
+                    // perform a small step from now to stoppingTimes_[j]...
+                    evolver_.setStep(now-stoppingTimes_[j]);
+                    evolver_.step(a,now);
+                    if (condition)
+                        condition->applyTo(a,stoppingTimes_[j]);
+                    // and continue the cycle
+                    now = stoppingTimes_[j];
+                }
+            }
+            // if we did hit...
+            if (hit) {
+                // ...we might have to make a small step to complete
+                // the big one...
+                if (now > next) {
+                    evolver_.setStep(now - next);
+                    evolver_.step(a,now);
+                    if (condition)
+                        condition->applyTo(a,next);
+                }
+                // ...and in any case, we have to reset the evolver to the
+                // default step.
                 evolver_.setStep(dt);
+            } else {
+                // if we didn't, the evolver is already set to the
+                // default step, which is ok for us.
+                evolver_.step(a,now);
+                if (condition)
+                    condition->applyTo(a, next);
             }
         }
     }
