@@ -1,30 +1,10 @@
-"""
-/*
- * Copyright (C) 2000-2001 QuantLib Group
- *
- * This file is part of QuantLib.
- * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated
- * in the QuantLib License.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
- *
- * You should have received a copy of the license along with this file;
- * if not, contact ferdinando@ametrano.net
- *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
-*/
-"""
 
 """
     $Source$
     $Log$
+    Revision 1.4  2001/01/17 16:34:31  nando
+    new improved version
+
     Revision 1.3  2001/01/16 11:33:23  nando
     updated RiskTool.
     now constructor doesn't require target, while
@@ -40,7 +20,7 @@
 
 """
 
-from QuantLib import *
+from QuantLib import RiskTool, NormalDistribution
 import time
 from math import exp, sqrt
 
@@ -54,8 +34,9 @@ def gaussian(x, average, sigma):
 
 startTime = time.time()
 print 'Testing RiskTool'
+s = RiskTool()
 
-average = 0.0
+average = -100.0
 sigma = 1.0
 #cannot be changed, it is a strong assumption to compute values to be checked
 target = average
@@ -78,7 +59,6 @@ for i in range(N):
 
 weights = map(lambda x: gaussian(x,average,sigma), data)
 
-s = RiskTool()
 s.addWeightedSequence(data, weights)
 
 print 'samples .......... %9d' % s.samples(),
@@ -99,10 +79,14 @@ if (s.min()==dataMin):
 else:
     raise 'wrong min value'
 
-print 'max .............. %9.3g' % s.max(),
-if (s.max()==dataMax):
+maxDist = s.max()
+print 'max .............. %9.3g' % maxDist,
+if (maxDist==dataMax):
     print 'OK'
 else:
+    print
+    print 'wrong max value %f should be %f' % (maxDist, dataMax)
+    print 'error %e' % (abs(maxDist-dataMax))
     raise 'wrong max value'
 
 print 'mean ............. %9.3f' % s.mean(),
@@ -128,7 +112,7 @@ else:
     raise 'wrong standard deviation'
 
 print 'skewness ......... %+9.1e' % s.skewness(),
-if abs(s.skewness())<1e-12:
+if abs(s.skewness())<1e-7:
     print 'OK'
 else:
     print
@@ -184,6 +168,8 @@ else:
     print 'error %e' % ( abs(averageShortfall - rightAverageShortfall) )
     raise 'wrong average shortfall'
 
+
+s.reset()
 
 print
 print 'Test passed (elapsed time', time.time() - startTime, ')'
