@@ -1,13 +1,5 @@
 
 # $Id$
-# $Source$
-# $Log$
-# Revision 1.24  2001/08/29 09:15:13  nando
-# added dep files to avoid annoying warning
-#
-# Revision 1.23  2001/08/27 13:16:57  nando
-# typos fixed
-#
 
 #############################
 # to be used with NSIS 1.44 #
@@ -26,8 +18,8 @@
     #do not change the name below
     OutFile "..\QuantLib-full-inst.exe"
 
-    InstType Normal
     InstType "Full (w/ Source Code)"
+    InstType Normal
     InstType Minimal
 
     ComponentText "This will install QuantLib on your computer:"
