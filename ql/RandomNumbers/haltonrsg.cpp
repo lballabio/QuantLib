@@ -27,7 +27,7 @@
 // ===========================================================================
 
 #include <ql/RandomNumbers/haltonrsg.hpp>
-#include <ql/RandomNumbers/rngtypedefs.hpp>
+#include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/Math/primenumbers.hpp>
 
 namespace QuantLib {

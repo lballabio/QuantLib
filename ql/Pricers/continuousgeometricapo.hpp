@@ -74,7 +74,7 @@ namespace QuantLib {
         double qDiscount = QL_EXP(-q*residualTime);
         double forward = underlying*qDiscount/discount;
         double variance = sigma*sigma*residualTime;
-        Handle<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type,strike));
+        boost::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type,strike));
         BlackFormula black(forward, discount, variance, payoff);
 
         value_ = black.value();
