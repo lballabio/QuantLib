@@ -47,6 +47,9 @@ namespace QuantLib {
             MonteCarloModel<S, PG, PP> puts together these three elements.
             The constructor accepts two safe references, i.e. two smart
             pointers, one to a path generator and the other to a path pricer.
+            In case of control variate technique the user should provide the
+            additional control option, namely the option path pricer and the
+            option value.
 
             The minimal interfaces for the classes S, PG, and PP are:
 
