@@ -134,8 +134,8 @@ namespace QuantLib {
     }
 
     double Tian::underlying(Size i, Size index) const {
-        return x0_ * QL_POW(down_, long(i)-long(index))
-                   * QL_POW(up_, long(index));
+        return x0_ * QL_POW(down_, double(long(i)-long(index)))
+                   * QL_POW(up_, double(index));
     }
 
     double Tian::probability(Size, Size, Size branch) const {
@@ -169,8 +169,8 @@ namespace QuantLib {
     }
 
     double LeisenReimer::underlying(Size i, Size index) const {
-        return x0_ * QL_POW(down_, long(i)-long(index))
-                   * QL_POW(up_, long(index));
+        return x0_ * QL_POW(down_, double(long(i)-long(index)))
+                   * QL_POW(up_, double(index));
     }
 
     double LeisenReimer::probability(Size, Size, Size branch) const {
