@@ -105,7 +105,7 @@ namespace QuantLib {
         QL_REQUIRE(componentRetainedPercentage<=1.0,
             "Matrix rankReducedSqrt: percentage to be retained > 100%");
 
-        QL_REQUIRE(maxRank>1,
+        QL_REQUIRE(maxRank>=1,
             "Matrix rankReducedSqrt: max rank required < 1");
 
         // spectral (a.k.a Principal Component) analysis
@@ -126,9 +126,9 @@ namespace QuantLib {
         double enough = componentRetainedPercentage * size;
         double components = 0.0;
         for (i=0; i<QL_MIN(size, maxRank); i++) {
-            components += jd.eigenvalues()[i];
             diagonal[i][i] =
                 (components<enough ? QL_SQRT(jd.eigenvalues()[i]) : 0.0);
+            components += jd.eigenvalues()[i];
         }
 
         result = jd.eigenvectors() * diagonal;
