@@ -128,8 +128,8 @@ namespace QuantLib {
                        "VanillaOption::setupEngine : "
                        "pricing engine does not supply needed arguments");
 
-            arguments->strike = strike_;
-            arguments->type = type_;
+            arguments->payoff = Handle<Payoff>(
+                new PlainPayoff(type_,strike_));
 
             QL_REQUIRE(!underlying_.isNull(),
                        "VanillaOption::setupEngine : "

@@ -39,7 +39,7 @@ namespace QuantLib {
                           double strike,
                           const RelinkableHandle<TermStructure>& dividendTS,
                           const RelinkableHandle<TermStructure>& riskFreeTS,
-                          const Exercise& exerciseDate,
+                          const Exercise& exercise,
                           const RelinkableHandle<BlackVolTermStructure>& volTS,
                           const Handle<PricingEngine>& engine,
                           const std::string& isinCode = "",
