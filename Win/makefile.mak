@@ -28,8 +28,7 @@ PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj \
                    $(OUTPUT_DIR)\date.obj \
                    $(OUTPUT_DIR)\solver1d.obj \
-                   $(OUTPUT_DIR)\dataformatters.obj \
-                   $(OUTPUT_DIR)\risktool.obj
+                   $(OUTPUT_DIR)\dataformatters.obj
 
 CALENDAR_OBJS    = $(OUTPUT_DIR)\westerncalendar.obj \
                    $(OUTPUT_DIR)\frankfurt.obj \
@@ -37,32 +36,32 @@ CALENDAR_OBJS    = $(OUTPUT_DIR)\westerncalendar.obj \
                    $(OUTPUT_DIR)\milan.obj \
                    $(OUTPUT_DIR)\newyork.obj \
                    $(OUTPUT_DIR)\target.obj \
-                   $(OUTPUT_DIR)\zurich.obj 
-                   
+                   $(OUTPUT_DIR)\zurich.obj
+
 DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj \
                    $(OUTPUT_DIR)\thirty360.obj \
                    $(OUTPUT_DIR)\thirty360italian.obj
-                   
+
 MATH_OBJS        = $(OUTPUT_DIR)\normaldistribution.obj \
                    $(OUTPUT_DIR)\statistics.obj
-                   
+
 MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
                    $(OUTPUT_DIR)\averageasianpathpricer.obj \
                    $(OUTPUT_DIR)\geometricasianpathpricer.obj \
                    $(OUTPUT_DIR)\europeanpathpricer.obj \
                    $(OUTPUT_DIR)\controlvariatedpathpricer.obj
-		  
+
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
                    $(OUTPUT_DIR)\bsmoperator.obj
-                   
+
 PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\bsmnumericaloption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
                    $(OUTPUT_DIR)\bsmamericanoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
                    $(OUTPUT_DIR)\mcasianpricer.obj \
-                   $(OUTPUT_DIR)\mceuropeanpricer.obj 
-                   
+                   $(OUTPUT_DIR)\mceuropeanpricer.obj
+
 SOLVER1D_OBJS    = $(OUTPUT_DIR)\bisection.obj \
                    $(OUTPUT_DIR)\brent.obj \
                    $(OUTPUT_DIR)\falseposition.obj \
@@ -70,8 +69,8 @@ SOLVER1D_OBJS    = $(OUTPUT_DIR)\bisection.obj \
                    $(OUTPUT_DIR)\newtonsafe.obj \
                    $(OUTPUT_DIR)\ridder.obj \
                    $(OUTPUT_DIR)\secant.obj
-                   
-TERMSTRUC_OBJS   = $(OUTPUT_DIR)\piecewiseconstantforwards.obj 
+
+TERMSTRUC_OBJS   = $(OUTPUT_DIR)\piecewiseconstantforwards.obj
 
 QUANTLIB_OBJS    = $(CORE_OBJS) \
                    $(CALENDAR_OBJS) \
@@ -81,14 +80,14 @@ QUANTLIB_OBJS    = $(CORE_OBJS) \
                    $(FDM_OBJS) \
                    $(PRICER_OBJS) \
                    $(SOLVER1D_OBJS) \
-                   $(TERMSTRUC_OBJS) 
-                   
-WIN_OBJS         = c0d32.obj 
+                   $(TERMSTRUC_OBJS)
+
+WIN_OBJS         = c0d32.obj
 
 # Libraries
 WIN_LIBS         = import32.lib cw32mt.lib
 PYTHON_BCC_LIB   = bccpython.lib
-    
+
 # Tools to be used
 CC        = bcc32
 LINK      = ilink32
@@ -186,7 +185,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\Statistics.i \
     $(SWIG_DIR)\String.i \
     $(SWIG_DIR)\TermStructures.i \
-    $(SWIG_DIR)\Vectors.i 
+    $(SWIG_DIR)\Vectors.i
     echo Generating wrappers...
     $(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
     copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
@@ -203,7 +202,6 @@ $(OUTPUT_DIR)\calendar.obj: $(SOURCES_DIR)\calendar.cpp
 $(OUTPUT_DIR)\dataformatters.obj: $(SOURCES_DIR)\dataformatters.cpp
 $(OUTPUT_DIR)\date.obj: $(SOURCES_DIR)\date.cpp
 $(OUTPUT_DIR)\solver1d.obj: $(SOURCES_DIR)\solver1d.cpp
-$(OUTPUT_DIR)\risktool.obj: $(SOURCES_DIR)\risktool.cpp
 
 
 # Calendars
@@ -241,11 +239,11 @@ MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
 $(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
     $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
 $(OUTPUT_DIR)\europeanpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\europeanpathpricer.cpp 
+    $(SOURCES_DIR)\MonteCarlo\europeanpathpricer.cpp
 $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp 
+    $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp
 $(OUTPUT_DIR)\averageasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\averageasianpathpricer.cpp 
+    $(SOURCES_DIR)\MonteCarlo\averageasianpathpricer.cpp
 $(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\controlvariatedpathpricer.cpp
 
@@ -258,7 +256,7 @@ $(OUTPUT_DIR)\bsmeuropeanoption.obj: $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cp
 $(OUTPUT_DIR)\bsmamericanoption.obj: $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
 $(OUTPUT_DIR)\dividendamericanoption.obj: $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
 $(OUTPUT_DIR)\mcasianpricer.obj: $(SOURCES_DIR)\Pricers\mcasianpricer.cpp
-$(OUTPUT_DIR)\mceuropeanpricer.obj: $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp  
+$(OUTPUT_DIR)\mceuropeanpricer.obj: $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp
 
 
 # 1D solvers
