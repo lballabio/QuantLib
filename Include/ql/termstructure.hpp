@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/05/29 10:00:07  lballabio
+// Removed check that would fail on null relinkable handle
+//
 // Revision 1.7  2001/05/29 09:24:06  lballabio
 // Using relinkable handle to term structure
 //
@@ -280,11 +283,7 @@ namespace QuantLib {
 
     inline ImpliedTermStructure::ImpliedTermStructure(
         const RelinkableHandle<TermStructure>& h, const Date& settlementDate)
-    : originalCurve_(h), settlementDate_(settlementDate) {
-        QL_REQUIRE(settlementDate_ <= originalCurve_->maxDate(),
-            "the settlement date of an implied term structure"
-            "can't be later than the max date of the original curve");
-    }
+    : originalCurve_(h), settlementDate_(settlementDate) {}
 
     inline Currency ImpliedTermStructure::currency() const {
         return originalCurve_->currency();
