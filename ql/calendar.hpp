@@ -96,6 +96,12 @@ namespace QuantLib {
         Date advance(const Date&, int n, TimeUnit unit,
                      RollingConvention convention = Following) const;
         //@}
+        /*! Advances the given date as specified by the given period and
+            returns the result.
+            \note The input date is not modified.
+        */
+       Date advance(const Date & d,
+		    const Period & p, RollingConvention c) const;
 
         //! abstract base class for calendar implementations
         class CalendarImpl {

@@ -79,7 +79,16 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Date());
     }
 
-    // Western calendars
+    Date Calendar::advance(const Date & d,
+                           const Period & p,
+                           RollingConvention c)const {
+        return advance(d,
+                       p.length(),
+                       p.units(),
+                       c);
+    }
+
+   // Western calendars
 
     Day Calendar::WesternCalendarImpl::easterMonday(Year y) {
         static const Day EasterMonday[] = {
