@@ -1,21 +1,18 @@
 
 group together "standard" typedefs in FiniteDifferences and MonteCarlo
-replace static array members with arrays in anonymous namespaces 
+replace static array members with arrays in anonymous namespaces
     in Date and WesternCalendar
 config.h is installed?
 installer splash screen
 MonteCarloModel refactoring (remove old classes)
-
 review QuantLib.org
 
 DISTRIBUTING
     RPM package
 
 COMPILING
-    *** borland compiler build tree indipendent from source tree
-    *** understand why bootstrap does not work under cygwin
-    **** check compile success/failure on (SourceForge compile farm)
-    *** check compile success/failure on other platforms/compilers
+    borland compiler build tree indipendent from source tree
+    check compile success/failure on other platforms/compilers
     Borland projects
 
 LIBRARY
@@ -25,7 +22,7 @@ LIBRARY
     Actual/actual and 30/360 factory taking conventions
     Currency as class with methods returning related info
     QuantLib dynamic Win32 library (QuantLib.dll)
-    develop C++ unit test suite based on 
+    develop C++ unit test suite based on
         http://sourceforge.net/projects/cppunit
     clean up accuracy definition in solver1D (x or f(x) accuracy ?)
     implement currency as per OMG definition
@@ -35,7 +32,7 @@ LIBRARY
     add futures (and convexity adjustment) to the bootstrapping method
     allow for negative dividendYield (that is cost of carry)
     implement dividendRho for dividendOption
-    redesign payoff class for integral (Green) option pricing, step 
+    redesign payoff class for integral (Green) option pricing, step
         condition, etc
     redesign segment integral
     what about barrier or FD with dividends ???
