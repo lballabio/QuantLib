@@ -34,42 +34,34 @@ namespace QuantLib {
 
     namespace CashFlows {
 
-        //! helper class building a sequence of fixed rate coupons
-        class FixedRateCouponVector
-        : public std::vector<Handle<CashFlow> > {
-          public:
-            FixedRateCouponVector(
-                const std::vector<double>& nominals,
-                const std::vector<Rate>& couponRates,
-                const Date& startDate, const Date& endDate,
-                int frequency, const Calendar& calendar,
-                RollingConvention rollingConvention, bool isAdjusted,
-                const DayCounter& dayCount,
-                const DayCounter& firstPeriodDayCount,
-                const Date& stubDate = Date());
-        };
+        //! helper function building a sequence of fixed rate coupons
+        std::vector<Handle<CashFlow> > FixedRateCouponVector(
+            const std::vector<double>& nominals,
+            const std::vector<Rate>& couponRates,
+            const Date& startDate, const Date& endDate,
+            int frequency, const Calendar& calendar,
+            RollingConvention rollingConvention, bool isAdjusted,
+            const DayCounter& dayCount,
+            const DayCounter& firstPeriodDayCount,
+            const Date& stubDate = Date());
 
-        //! helper class building a sequence of floating rate coupons
+        //! helper function building a sequence of floating rate coupons
         /*! \warning The passing of a non-null stub date - i.e., the creation
             of a short/long first coupon - is currently disabled.
             \todo A suitable algorithm should be implemented for the
             calculation of the interpolated index fixing for a
             short/long first coupon.
         */
-        class FloatingRateCouponVector
-        : public std::vector<Handle<CashFlow> > {
-          public:
-            FloatingRateCouponVector(
-                const std::vector<double>& nominals,
-                const Date& startDate, const Date& endDate,
-                int frequency, const Calendar& calendar,
-                RollingConvention rollingConvention,
-                const RelinkableHandle<TermStructure>& termStructure,
-                const Handle<Indexes::Xibor>& index,
-                int fixingDays,
-                const std::vector<Spread>& spreads = std::vector<Spread>(),
-                const Date& stubDate = Date());
-        };
+        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
+            const std::vector<double>& nominals,
+            const Date& startDate, const Date& endDate,
+            int frequency, const Calendar& calendar,
+            RollingConvention rollingConvention,
+            const RelinkableHandle<TermStructure>& termStructure,
+            const Handle<Indexes::Xibor>& index,
+            int fixingDays,
+            const std::vector<Spread>& spreads = std::vector<Spread>(),
+            const Date& stubDate = Date());
 
     }
 

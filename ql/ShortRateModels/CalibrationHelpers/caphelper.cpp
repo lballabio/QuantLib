@@ -66,15 +66,17 @@ namespace QuantLib {
                     plus(length.length(), length.units());
 
                 std::vector<double> nominals(1,1.0);
-                FloatingRateCouponVector floatingLeg(
-                    nominals, startDate, maturity, frequency,
-                    index->calendar(), index->rollingConvention(), 
-                    termStructure, index, 0, std::vector<double>(1, 0.0));
-                FixedRateCouponVector fixedLeg(
-                    nominals, std::vector<Rate>(1, fixedRate), 
-                    startDate, maturity, frequency, 
-                    index->calendar(), index->rollingConvention(),
-                    false, index->dayCounter(), index->dayCounter());
+                std::vector<Handle<CashFlow> > floatingLeg = 
+                    FloatingRateCouponVector(nominals, startDate, maturity, 
+                        frequency, index->calendar(), 
+                        index->rollingConvention(), termStructure, index, 0, 
+                        std::vector<double>(1, 0.0));
+                std::vector<Handle<CashFlow> > fixedLeg = 
+                    FixedRateCouponVector(nominals, 
+                        std::vector<Rate>(1, fixedRate), startDate, maturity, 
+                        frequency, index->calendar(), 
+                        index->rollingConvention(), false, index->dayCounter(), 
+                        index->dayCounter());
 
                 Handle<Swap> swap(
                     new Swap(floatingLeg, fixedLeg, termStructure));

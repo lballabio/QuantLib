@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file cashflowvectors.cpp
     \brief Cash flow vector builders
 
@@ -36,7 +36,7 @@ namespace QuantLib {
 
     namespace CashFlows {
 
-        FixedRateCouponVector::FixedRateCouponVector(
+        std::vector<Handle<CashFlow> > FixedRateCouponVector(
           const std::vector<double>& nominals,
           const std::vector<Rate>& couponRates,
           const Date& startDate, const Date& endDate,
@@ -46,6 +46,8 @@ namespace QuantLib {
           const Date& stubDate) {
             QL_REQUIRE(couponRates.size() != 0, "unspecified coupon rates");
             QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
+
+            std::vector<Handle<CashFlow> > leg;
             Scheduler scheduler(calendar, startDate, endDate, frequency,
                 rollingConvention, isAdjusted, stubDate);
             // first period might be short or long
@@ -56,7 +58,7 @@ namespace QuantLib {
                 QL_REQUIRE(dayCount == firstPeriodDayCount,
                     "regular first bond coupon "
                     "does not allow a first period day count");
-                push_back(Handle<CashFlow>(
+                leg.push_back(Handle<CashFlow>(
                     new FixedRateCoupon(nominal, rate, calendar,
                         rollingConvention, dayCount,
                         start, end, start, end)));
@@ -65,7 +67,7 @@ namespace QuantLib {
                 if (isAdjusted)
                     reference =
                         calendar.roll(reference,rollingConvention);
-                push_back(Handle<CashFlow>(
+                leg.push_back(Handle<CashFlow>(
                     new FixedRateCoupon(nominal, rate, calendar,
                         rollingConvention, firstPeriodDayCount,
                         start, end, reference, end)));
@@ -81,7 +83,7 @@ namespace QuantLib {
                     nominal = nominals[i-1];
                 else
                     nominal = nominals.back();
-                push_back(Handle<CashFlow>(
+                leg.push_back(Handle<CashFlow>(
                     new FixedRateCoupon(nominal, rate, calendar,
                         rollingConvention, dayCount, start, end,
                         start, end)));
@@ -99,7 +101,7 @@ namespace QuantLib {
                 else
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
-                    push_back(Handle<CashFlow>(
+                    leg.push_back(Handle<CashFlow>(
                         new FixedRateCoupon(nominal, rate, calendar,
                             rollingConvention, dayCount, start, end,
                             start, end)));
@@ -108,16 +110,17 @@ namespace QuantLib {
                     if (isAdjusted)
                         reference =
                             calendar.roll(reference,rollingConvention);
-                    push_back(Handle<CashFlow>(
+                    leg.push_back(Handle<CashFlow>(
                         new FixedRateCoupon(nominal, rate, calendar,
                             rollingConvention, dayCount, start, end,
                             start, reference)));
                 }
             }
+            return leg;
         }
 
 
-        FloatingRateCouponVector::FloatingRateCouponVector(
+        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
           const std::vector<double>& nominals,
           const Date& startDate, const Date& endDate,
           int frequency, const Calendar& calendar,
@@ -128,6 +131,7 @@ namespace QuantLib {
           const Date& stubDate) {
             QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
 
+            std::vector<Handle<CashFlow> > leg;
             Scheduler scheduler(calendar, startDate, endDate, frequency,
                 rollingConvention, true, stubDate);
             // first period might be short or long
@@ -139,14 +143,14 @@ namespace QuantLib {
                 spread = 0.0;
             double nominal = nominals[0];
             if (scheduler.isRegular(1)) {
-                push_back(Handle<CashFlow>(
+                leg.push_back(Handle<CashFlow>(
                     new FloatingRateCoupon(nominal, index, termStructure,
                         start, end, fixingDays, spread, start, end)));
             } else {
                 Date reference = end.plusMonths(-12/frequency);
                 reference =
                     calendar.roll(reference,rollingConvention);
-                push_back(Handle<CashFlow>(
+                leg.push_back(Handle<CashFlow>(
                     new ShortFloatingRateCoupon(nominal, index, termStructure,
                         start, end, fixingDays, spread, reference, end)));
             }
@@ -163,7 +167,7 @@ namespace QuantLib {
                     nominal = nominals[i-1];
                 else
                     nominal = nominals.back();
-                push_back(Handle<CashFlow>(
+                leg.push_back(Handle<CashFlow>(
                     new FloatingRateCoupon(nominal, index, termStructure,
                         start, end, fixingDays, spread, start, end)));
             }
@@ -182,19 +186,20 @@ namespace QuantLib {
                 else
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
-                    push_back(Handle<CashFlow>(
+                    leg.push_back(Handle<CashFlow>(
                         new FloatingRateCoupon(nominal, index, termStructure,
                             start, end, fixingDays, spread, start, end)));
                 } else {
                     Date reference = start.plusMonths(12/frequency);
                     reference =
                         calendar.roll(reference,rollingConvention);
-                    push_back(Handle<CashFlow>(
+                    leg.push_back(Handle<CashFlow>(
                         new ShortFloatingRateCoupon(nominal, index, 
                             termStructure, start, end, fixingDays, spread, 
                             start, reference)));
                 }
             }
+            return leg;
         }
 
     }
