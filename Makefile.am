@@ -51,8 +51,10 @@ dist-hook:
 	mkdir $(distdir)/Docs/Examples
 	cp $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/
 	mkdir $(distdir)/Docs/images
+	cp $(srcdir)/Docs/images/QL-largish.bmp $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.jpg $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-small-notitle.jpg $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.eps $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.pdf $(distdir)/Docs/images/
+	cp $(srcdir)/Docs/images/sflogo.png $(distdir)/Docs/images/
 

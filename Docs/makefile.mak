@@ -14,7 +14,7 @@ DVIPS     = dvips
 
 # Options
 TEX_OPTS = --quiet --pool-size=1000000
-
+GENERATE_MAN = NO
 
 # Primary target:
 # all docs
@@ -28,9 +28,10 @@ all:: tex-files
     cd ..
 
 # HTML documentation only
-html::
-    $(DOXYGEN) quantlib.win32.doxy
+html: 
+    $(DOXYGEN) quantlib.doxy
     copy images\*.jpg html
+    copy images\*.png html
     copy images\*.pdf latex
     copy images\*.eps latex
 

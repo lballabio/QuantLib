@@ -1,25 +1,6 @@
 
 # $Id$
-# $Source$
-# $Log$
-# Revision 1.23  2001/09/11 15:26:33  lballabio
-# Finite differences docs enhanced
-#
-# Revision 1.22  2001/09/04 15:15:28  lballabio
-# Finite difference docs updated
-#
-# Revision 1.21  2001/09/03 13:32:43  lballabio
-# *** empty log message ***
-#
-# Revision 1.20  2001/08/27 11:56:25  nando
-# improved installer
-#
-# Revision 1.19  2001/08/23 11:22:17  nando
-# Win32 documentation installer
-#
-# Revision 1.18  2001/08/23 08:42:57  lballabio
-# A few fixes for making docs on Linux
-#
+
 EXTRA_DIST = makefile.mak \
              groups.docs \
              index.docs \
@@ -32,17 +13,28 @@ EXTRA_DIST = makefile.mak \
              findiff.docs \
              mcarlo.docs \
              quantlib.doxy \
-             quantlib.linux.doxy \
-             quantlib.win32.doxy \
              quantlibheader.html \
              quantlibfooter.html \
+             quantlibfooteronline.html \
              quantlibheader.tex \
              README.txt
 
 docs-all: docs-pdf
-docs-html:
-	$(DOXYGEN) quantlib.linux.doxy
+docs-html: docs-html-offline
+docs-html-offline:
+	export GENERATE_MAN=YES
+	export HTML=
+	$(DOXYGEN) quantlib.doxy
 	cp images/*.jpg html
+	cp images/*.png html
+	cp images/*.eps latex
+	cp images/*.pdf latex
+docs-html-online:
+	export GENERATE_MAN=YES
+	export HTML=online
+	$(DOXYGEN) quantlib.doxy
+	cp images/*.jpg html
+	cp images/*.png html
 	cp images/*.eps latex
 	cp images/*.pdf latex
 docs-ps: tex-files
