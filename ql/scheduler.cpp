@@ -51,21 +51,8 @@ namespace QuantLib {
                     DateFormatter::toString(stubDate_) +
                     ") later than start date (" +
                     DateFormatter::toString(startDate_) + ")");
-            QL_REQUIRE(!calendar_.isHoliday(stubDate_) ||
-                       !isEndOfMonth(stubDate_),
-                "stub date (" +
-                    DateFormatter::toString(stubDate_) +
-                    ") is holiday and end of month for " +
-                    calendar_.name() + " calendar");
-        } else {
-            QL_REQUIRE(!calendar_.isHoliday(startDate_) ||
-                       !isEndOfMonth(startDate_),
-                "start date (" +
-                    DateFormatter::toString(startDate_) +
-                    ") is holiday and end of month for " +
-                    calendar_.name() + " calendar");
         }
-        QL_REQUIRE(12%frequency_ == 0,
+        QL_REQUIRE(12 % frequency_ == 0,
             "frequency (" +
             IntegerFormatter::toString(frequency_) +
             " per year) does not correspond to a whole number of months");
