@@ -66,7 +66,10 @@ namespace QuantLib {
         }
 
         void QuantoForwardVanillaOption::setupEngine() const {
-            QuantoVanillaOption::setupEngine();
+            // cannot use this - arguments do not match
+            // QuantoVanillaOption::setupEngine();
+
+            VanillaOption::setupEngine();
             QuantoOptionArguments<ForwardOptionArguments<
                 VanillaOptionArguments> >* arguments =
                 dynamic_cast
@@ -76,6 +79,14 @@ namespace QuantLib {
             QL_REQUIRE(arguments != 0,
                "QuantoForwardVanillaOption::setupEngine() : "
                "pricing engine does not supply needed arguments");
+
+            arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
+            arguments->exchRateVolTS = exchRateVolTS_;
+            QL_REQUIRE(!correlation_.isNull(),
+                "QuantoVanillaOption::setupEngine() : "
+                "null correlation given");
+            arguments->correlation =
+                correlation_->value();
 
             arguments->moneyness = moneyness_;
             arguments->resetDate = resetDate_;

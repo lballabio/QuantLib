@@ -77,6 +77,7 @@ install-data-hook:
                -e "s,/\* install-hook \*/,#define QL_HAVE_CONFIG_H," \
            $(includedir)/qldefines.hpp > .qldefines.hpp
 	$(INSTALL_DATA) .qldefines.hpp $(includedir)/qldefines.hpp
+	rm .qldefines.hpp
 depend:
 	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
 

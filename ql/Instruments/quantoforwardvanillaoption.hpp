@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file quantoforwardvanillaoption.hpp
     \brief Quanto version of a forward vanilla option
 
@@ -54,7 +55,6 @@ namespace QuantLib {
                 const std::string& description = "");
           protected:
             void setupEngine() const;
-            void performCalculations() const;
           private:
             // arguments
             double moneyness_;

@@ -123,6 +123,7 @@
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Instruments/quantovanillaoption.hpp>
+#include <ql/Instruments/quantoforwardvanillaoption.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Instruments/stock.hpp>
 #include <ql/Instruments/swap.hpp>

@@ -21,6 +21,7 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
+using namespace QuantLib::PricingEngines;
 
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::McEuropean;
@@ -130,7 +131,8 @@ int main(int argc, char* argv[])
         method ="Call-Put parity";
         value = EuropeanOption(Option::Put, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility).value()
-            + underlying*QL_EXP(-dividendYield*maturity) - strike*QL_EXP(- riskFreeRate*maturity);
+            + underlying*QL_EXP(-dividendYield*maturity) 
+            - strike*QL_EXP(- riskFreeRate*maturity);
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
@@ -148,7 +150,8 @@ int main(int argc, char* argv[])
             dividendYield);
         SegmentIntegral integrator(5000);
 
-        double nuT = (riskFreeRate - dividendYield + 0.5*volatility*volatility)*maturity;
+        double nuT = (riskFreeRate - dividendYield 
+                      + 0.5*volatility*volatility)*maturity;
         double infinity = 10.0*volatility*QL_SQRT(maturity);
 
         value = integrator(po, nuT-infinity, nuT+infinity);
@@ -250,7 +253,7 @@ int main(int argc, char* argv[])
             exercise,
             flatVolTS,
             Handle<PricingEngine>(
-                new PricingEngines::EuropeanAnalyticalEngine()));
+                new EuropeanAnalyticalEngine()));
             
         // method: Black Scholes Engine
         method = "Black Scholes";
@@ -267,8 +270,8 @@ int main(int argc, char* argv[])
         // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new PricingEngines::EuropeanBinomialEngine(
-                PricingEngines::EuropeanBinomialEngine::JarrowRudd, 800)));
+            new EuropeanBinomialEngine(
+                EuropeanBinomialEngine::JarrowRudd, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -282,8 +285,8 @@ int main(int argc, char* argv[])
         // Binomial Method (CRR)
         method = "Binomial (CRR)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new PricingEngines::EuropeanBinomialEngine(
-                PricingEngines::EuropeanBinomialEngine::CoxRossRubinstein, 800)));
+            new EuropeanBinomialEngine(
+                EuropeanBinomialEngine::CoxRossRubinstein, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -295,16 +298,12 @@ int main(int argc, char* argv[])
              << std::endl;
         
 
-        Handle<PricingEngines::EuropeanAnalyticalEngine> baseEngine(new
-            PricingEngines::EuropeanAnalyticalEngine);
-        Handle<PricingEngines::QuantoEngine<PricingEngines::VanillaOptionArguments,
-                                            PricingEngines::VanillaOptionResults> >
-                                            quantoEngine(new
-                                            PricingEngines::QuantoEngine<
-                                            PricingEngines::VanillaOptionArguments,
-                                            PricingEngines::VanillaOptionResults>
-                                            (baseEngine)
-                                            );
+        Handle<EuropeanAnalyticalEngine> baseEngine(new
+            EuropeanAnalyticalEngine);
+        Handle<QuantoEngine<VanillaOptionArguments,
+                            VanillaOptionResults> >
+            quantoEngine(new QuantoEngine<VanillaOptionArguments,
+                                          VanillaOptionResults>(baseEngine));
 
         double correlation = 0.0;
         Instruments::QuantoVanillaOption quantoOption(
@@ -363,14 +362,10 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-        Handle<PricingEngines::ForwardEngine<PricingEngines::VanillaOptionArguments,
-                                             PricingEngines::VanillaOptionResults> >
-                                             forwardEngine(new
-                                             PricingEngines::ForwardEngine<
-                                             PricingEngines::VanillaOptionArguments,
-                                             PricingEngines::VanillaOptionResults>
-                                             (baseEngine)
-                                             );
+        Handle<ForwardEngine<VanillaOptionArguments,
+                             VanillaOptionResults> >
+            forwardEngine(new ForwardEngine<VanillaOptionArguments,
+                                            VanillaOptionResults>(baseEngine));
 
         Instruments::ForwardVanillaOption forwardOption(
             Option::Call,
@@ -414,14 +409,12 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-        Handle<PricingEngines::ForwardPerformanceEngine<PricingEngines::VanillaOptionArguments,
-                                             PricingEngines::VanillaOptionResults> >
-                                             forwardPerformanceEngine(new
-                                             PricingEngines::ForwardPerformanceEngine<
-                                             PricingEngines::VanillaOptionArguments,
-                                             PricingEngines::VanillaOptionResults>
-                                             (baseEngine)
-                                             );
+        Handle<ForwardPerformanceEngine<VanillaOptionArguments,
+                                        VanillaOptionResults> >
+            forwardPerformanceEngine(
+                new ForwardPerformanceEngine<VanillaOptionArguments,
+                                             VanillaOptionResults>(
+                    baseEngine));
 
         forwardOption.setPricingEngine(forwardPerformanceEngine);
 
@@ -456,32 +449,39 @@ int main(int argc, char* argv[])
 
 
 
+        Handle<QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
+                            VanillaOptionResults> >
+            quantoForwardEngine(
+               new QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
+                                VanillaOptionResults>(forwardEngine));
 
-///////////////////////////////////
+        Instruments::QuantoForwardVanillaOption quantoForwardOption(
+            Option::Call,
+            underlyingH,
+            strike,
+            flatDividendTS,
+            flatTermStructure,
+            exercise,
+            flatVolTS,
+            quantoForwardEngine,
+            flatTermStructure,
+            flatVolTS,
+            RelinkableHandle<MarketElement>(
+                Handle<MarketElement>(new SimpleMarketElement(correlation))),
+            1.1, // moneyness
+            settlementDate.plusMonths(1) // reset Date
+        );
 
-/*        
-
-
-        Handle<PricingEngines::QuantoEngine<PricingEngines::ForwardOptionArguments,
-                                            PricingEngines::VanillaOptionResults> >
-                                            quantoForwardEngine(new
-                                            PricingEngines::QuantoEngine<
-                                            PricingEngines::ForwardOptionArguments,
-                                            PricingEngines::VanillaOptionResults>
-                                            (forwardEngine)
-                                            );
-        quantoOption.setPricingEngine(quantoForwardEngine);
-
-        value   = quantoOption.NPV();
-        delta   = quantoOption.delta();
-        gamma   = quantoOption.gamma();
-        theta   = quantoOption.theta();
-        vega    = quantoOption.vega();
-        rho     = quantoOption.rho();
-        divRho  = quantoOption.dividendRho();
-        qvega   = quantoOption.qvega();
-        qrho    = quantoOption.qrho();
-        qlambda = quantoOption.qlambda();
+        value   = quantoForwardOption.NPV();
+        delta   = quantoForwardOption.delta();
+        gamma   = quantoForwardOption.gamma();
+        theta   = quantoForwardOption.theta();
+        vega    = quantoForwardOption.vega();
+        rho     = quantoForwardOption.rho();
+        divRho  = quantoForwardOption.dividendRho();
+        qvega   = quantoForwardOption.qvega();
+        qrho    = quantoForwardOption.qrho();
+        qlambda = quantoForwardOption.qlambda();
         std::cout << std::endl << std::endl << "quanto forward: "
              << DoubleFormatter::toString(value, 4)
              << std::endl;
@@ -513,24 +513,25 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(qlambda, 4)
              << std::endl;
 
-
         
-        
-        Handle<PricingEngines::QuantoVanillaAnalyticEngine>
-            quantoForwardPerformanceEngine(new
-            PricingEngines::QuantoVanillaAnalyticEngine(forwardPerformanceEngine));
-        quantoOption.setPricingEngine(quantoForwardPerformanceEngine);
+        Handle<QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
+                            VanillaOptionResults> >
+            quantoForwardPerformanceEngine(
+               new QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
+                                VanillaOptionResults>(
+                   forwardPerformanceEngine));
+        quantoForwardOption.setPricingEngine(quantoForwardPerformanceEngine);
 
-        value   = quantoOption.NPV();
-        delta   = quantoOption.delta();
-        gamma   = quantoOption.gamma();
-        theta   = quantoOption.theta();
-        vega    = quantoOption.vega();
-        rho     = quantoOption.rho();
-        divRho  = quantoOption.dividendRho();
-        qvega   = quantoOption.qvega();
-        qrho    = quantoOption.qrho();
-        qlambda = quantoOption.qlambda();
+        value   = quantoForwardOption.NPV();
+        delta   = quantoForwardOption.delta();
+        gamma   = quantoForwardOption.gamma();
+        theta   = quantoForwardOption.theta();
+        vega    = quantoForwardOption.vega();
+        rho     = quantoForwardOption.rho();
+        divRho  = quantoForwardOption.dividendRho();
+        qvega   = quantoForwardOption.qvega();
+        qrho    = quantoForwardOption.qrho();
+        qlambda = quantoForwardOption.qlambda();
         std::cout << std::endl << std::endl << "quanto forward performance: "
              << DoubleFormatter::toString(value, 4)
              << std::endl;
@@ -562,11 +563,6 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(qlambda, 4)
              << std::endl;
 
-*/
-
-
-
-            
         return 0;
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;

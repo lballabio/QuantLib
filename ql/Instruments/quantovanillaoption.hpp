@@ -60,7 +60,6 @@ namespace QuantLib {
           protected:
             void setupEngine() const;
             void performCalculations() const;
-          private:
             // arguments
             RelinkableHandle<TermStructure> foreignRiskFreeTS_;
             RelinkableHandle<BlackVolTermStructure> exchRateVolTS_;
