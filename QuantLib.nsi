@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.22  2001/08/27 12:43:16  nando
+# 2 Win32 binaries installer: full and light
+#
 # Revision 1.21  2001/08/27 11:23:45  nando
 # improved installer
 #
@@ -22,7 +25,7 @@
     Name "QuantLib"
     Caption "QuantLib - Setup"
     #do not change the name below
-    OutFile "..\QuantLib-inst.exe"
+    OutFile "..\QuantLib-full-inst.exe"
 
     InstType Normal
     InstType "Full (w/ Source Code)"
