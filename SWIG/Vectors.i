@@ -58,11 +58,14 @@ typedef std::vector<int> IntVector;
 
 class IntVector {
   public:
-    // hide constructor - python sequences can be used
     ~IntVector();
 };
 
 %addmethods IntVector {
+
+    IntVector(const IntVector& v) {
+        return new IntVector(v);
+    }
 
     int __len__() {
         return self->size();
@@ -170,11 +173,14 @@ typedef std::vector<double> DoubleVector;
 
 class DoubleVector {
   public:
-    // hide constructor - python sequences can be used
     ~DoubleVector();
 };
 
 %addmethods DoubleVector {
+
+    DoubleVector(const DoubleVector& v) {
+        return new DoubleVector(v);
+    }
 
     int __len__() {
         return self->size();

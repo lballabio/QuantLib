@@ -53,12 +53,14 @@ typedef QuantLib::Math::LexicographicalView<Array::iterator>::y_iterator
 
 class Array {
   public:
-    // hide constructor - Arrays can be initially built as 
-    // Python sequences
     ~Array();
 };
 
 %addmethods Array {
+    // constructor
+    Array(const Array& a) {
+        return new Array(a);
+    }
     // sequence methods
     int __len__() {
         return self->size();

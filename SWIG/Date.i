@@ -349,11 +349,14 @@ using QuantLib::Null;
 
 class DateVector {
   public:
-    // hide constructor - python sequences can be used
     ~DateVector();
 };
 
 %addmethods DateVector {
+
+    DateVector(const DateVector& v) {
+        return new DateVector(v);
+    }
 
     int __len__() {
         return self->size();
