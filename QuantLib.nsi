@@ -43,7 +43,8 @@ SetDateSave on
 
 Section "-QuantLib"
 SectionIn 1 2 3
-#    CreateDirectory "$SMPROGRAMS\QuantLib"
+# this directory must be created first, or the CreateShortCut will not work
+    CreateDirectory "$SMPROGRAMS\QuantLib"
     SetOutPath $INSTDIR
     File "Authors.txt"
     File "Contributors.txt"
@@ -243,7 +244,7 @@ SectionIn 1 2
   File "Docs\html\*.*"
   CreateShortCut "$INSTDIR\Docs\refman.html.lnk" "$INSTDIR\Docs\html\index.html"
   CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (HTML).lnk" \
-                 "$INSTDIR\Docs\html\index.htm"
+                 "$INSTDIR\Docs\html\index.html"
 SectionEnd
 
 Section "PDF documentation"
