@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/14 12:36:46  lballabio
+    Bug fixed in operator-
+
     Revision 1.7  2001/02/14 10:38:28  lballabio
     Found out what 14.6.2.3 of the standard means
 
@@ -234,7 +237,7 @@ namespace QuantLib {
         inline combining_iterator<Iterator,Function>::difference_type 
         combining_iterator<Iterator, Function>::operator-(
           const combining_iterator<Iterator, Function>& rhs) const {
-            if( 0 < iteratorVector_.size() && 0 < rhs.iteratorVector_())
+            if( iteratorVector_.size() > 0 && rhs.iteratorVector_.size() > 0)
                 return iteratorVector_[0] - rhs.iteratorVector_[0];
             else 
                 return 0;     
