@@ -7,4 +7,4 @@ the version number is in:
     QuantLib-Python/setup.py
 
 Also update any script for automatic building with hard coded version number
-(e.g. release-job.sh, release-job.bat, nigh-job.bat)
+(e.g. release-job.sh, release-job.bat, night-job.bat)
