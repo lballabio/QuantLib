@@ -1523,10 +1523,6 @@ SOURCE=.\ql\PricingEngines\binaryengines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\cliquetengines.hpp
 # End Source File
 # Begin Source File

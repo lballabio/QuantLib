@@ -81,8 +81,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -493,7 +491,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -662,7 +659,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -762,8 +758,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -1175,7 +1169,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -1344,7 +1337,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -1444,8 +1436,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -1856,7 +1846,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -2025,7 +2014,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -2125,8 +2113,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -2537,7 +2523,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -2706,7 +2691,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -2806,8 +2790,6 @@ CLEAN :
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -3219,7 +3201,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
-	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -3388,7 +3369,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
-	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -4240,12 +4220,6 @@ SOURCE=.\ql\PricingEngines\analyticeuropeanbinaryengine.cpp
 SOURCE=.\ql\PricingEngines\analyticeuropeanengine.cpp
 
 "$(INTDIR)\analyticeuropeanengine.obj"	"$(INTDIR)\analyticeuropeanengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
-
-"$(INTDIR)\binomialvanillaengine.obj"	"$(INTDIR)\binomialvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
