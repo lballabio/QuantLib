@@ -1,6 +1,5 @@
 
-solve copyright issues (COOOL, GAlib, etc.)
-separate SF projects for QuantLib-Python, etc.
+solve copyright issues for external packages (COOOL, GAlib, etc.)
 
 DISTRIBUTING
     RPM package
@@ -37,9 +36,6 @@ LIBRARY
         add GALib (genetic algorithm)
         add COOOL algorithms
 
-
-    Maxim integral
-
     QuEP:
         Currency as class with methods returning related info
         implement currency as per OMG definition
@@ -48,7 +44,6 @@ LIBRARY
 
     introduce compoundpathpricer
     GaussianPathGenerator, etc: allow for more general random walks
-
 
     what about barrier or FD with dividends ???
     revisite model/slice interface
