@@ -17,6 +17,7 @@
 
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
+//#include <ql/PricingEngines/Asian/analyticdiscreteasianengine.hpp>
 
 namespace QuantLib {
 
@@ -154,6 +155,17 @@ namespace QuantLib {
 
             Real controlVariatePrice = DiscreteGeometricAPO(type,
                 underlying, strike, q, r, times, sigma).value();
+
+            /*
+            boost::shared_ptr<PlainVanillaPayoff> payoff(new
+                PlainVanillaPayoff(type, strike));
+            boost::shared_ptr<PricingEngine> engine(new
+                AnalyticDiscreteAveragingAsianEngine);
+            DiscreteAveragingAsianOption option(Average::Geometric,
+                0.0, 0, fixingDates,
+                diffusion, payoff, exercise, engine);
+            Real controlVariatePrice = option.NPV();
+            */
 
             // initialize the Monte Carlo model
             mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset<

@@ -34,8 +34,12 @@ namespace QuantLib {
         Option", E. Levy (1997) in "Exotic Options: The State of the
         Art", edited by L. Clewlow, C. Strickland, pag65-97
 
-        \todo add analytical greeks
+        \deprecated use the DiscreteAveragingAsianOption instrument 
+        with AnalyticDiscreteAveragingAsianEngine instead
+
     */
+    // it is deprecated, but it cannot be removed until mcdiscretearithmeticapo
+    // old pricer is replaced with the new instrument/engine
     class DiscreteGeometricAPO : public SingleAssetOption    {
       public:
         DiscreteGeometricAPO(Option::Type type,
