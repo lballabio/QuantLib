@@ -151,31 +151,9 @@ AC_ARG_ENABLE([early-payments],
               [ql_early_payments=$enableval],
               [ql_early_payments=yes])
 if test "$ql_early_payments" = "no" ; then
-   AC_DEFINE([QL_LATE_PAYMENTS],[1],
+   AC_DEFINE([QL_TODAYS_PAYMENTS],[1],
              [Define this if payments occurring today should enter the NPV
               of an instrument.])
-else
-   AC_DEFINE([QL_EARLY_PAYMENTS],[1],
-             [Define this if payments occurring today should not enter
-              the NPV of an instrument.])
-fi
-
-AC_ARG_ENABLE([early-swap-payments],
-              AC_HELP_STRING([--enable-early-swap-payments],
-                             [Same as --enable-early-payments.
-                              If given, it overrides the former for
-                              interest rate swaps.]),
-              [ql_early_swap_payments=$enableval])
-if test "$ql_early_swap_payments" = "no" ; then
-   AC_DEFINE([QL_LATE_SWAP_PAYMENTS],[1],
-             [Define this if payments occurring today should enter the NPV
-              of a swap.])
-else
-if test "$ql_early_swap_payments" = "yes" ; then
-   AC_DEFINE([QL_EARLY_SWAP_PAYMENTS],[1],
-             [Define this if payments occurring today should not enter the NPV
-              of a swap.])
-fi
 fi
 
 AC_ARG_ENABLE([examples],

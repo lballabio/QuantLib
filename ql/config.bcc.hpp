@@ -24,30 +24,19 @@
  *************************************************************/
 
 /* Define this if error messages should include file and line information. */
-// #define QL_ERROR_LINES
+// #define QL_ERROR_LINES 1
 
 /* Define this if negative yield rates should be allowed. This might not be
    safe. */
-/* #undef QL_NEGATIVE_RATES */
+// #define QL_NEGATIVE_RATES 1
 
 /* Define this if extra safety checks should be performed. This can degrade
    performance. */
-// #define QL_EXTRA_SAFETY_CHECKS
-
-/* Define this if payments occurring today should not enter the NPV of an
-   instrument. */
-// #define QL_EARLY_PAYMENTS
-
-/* Define this if payments occurring today should not enter the NPV of a swap.
-   */
-// #define QL_EARLY_SWAP_PAYMENTS
+// #define QL_EXTRA_SAFETY_CHECKS 1
 
 /* Define this if payments occurring today should enter the NPV of an
    instrument. */
-// #define QL_LATE_PAYMENTS
-
-/* Define this if payments occurring today should enter the NPV of a swap. */
-// #define QL_LATE_SWAP_PAYMENTS
+// #define QL_TODAYS_PAYMENTS 1
 
 
 /*******************************************

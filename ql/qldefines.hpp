@@ -35,15 +35,9 @@
     @{
 */
 
-
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
     #define QL_DEBUG
 #endif
-
-#ifdef DEBUG
-    #define QL_DEBUG
-#endif
-
 
 //! version hexadecimal number
 #define QL_HEX_VERSION 0x000304a1
@@ -55,9 +49,7 @@
     #define QL_VERSION "0.3.4a1"
 #endif
 
-//! global trace level (may be superseded locally by a greater value)
-#define QL_TRACE_LEVEL 0
-
+//! specific per-compiler definitions
 #if   defined(__BORLANDC__)     // Borland C++ 5.5
     #include <ql/config.bcc.hpp>
 #elif defined(__MWERKS__)       // Metrowerks CodeWarrior
@@ -69,7 +61,6 @@
 #else
     #error Unsupported compiler - please contact the QuantLib team
 #endif
-
 
 /*! \def QL_DUMMY_RETURN
     \brief Is a dummy return statement required?
