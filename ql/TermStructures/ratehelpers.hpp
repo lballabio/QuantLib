@@ -228,7 +228,7 @@ namespace QuantLib {
             // and may not avoid the root-finding process
             Date maturity() const;
             void setTermStructure(TermStructure*);
-          private:
+          protected:  
             int settlementDays_;
             int lengthInYears_;
             Calendar calendar_;
