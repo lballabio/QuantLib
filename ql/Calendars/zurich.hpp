@@ -34,7 +34,7 @@
 #ifndef quantlib_zurich_calendar_h
 #define quantlib_zurich_calendar_h
 
-#include "ql/Calendars/westerncalendar.hpp"
+#include "ql/calendar.hpp"
 
 namespace QuantLib {
 
@@ -57,19 +57,20 @@ namespace QuantLib {
             <li>St. Stephen's Day, December 26th</li>
             </ul>
         */
-        class Zurich : public WesternCalendar {
-          public:
-            Zurich() {}
-            std::string name() const { return "Zurich"; }
-            bool isBusinessDay(const Date&) const;
+        class Zurich : public Calendar {
           private:
             class ZurCalendarFactory : public Calendar::factory {
               public:
-                Handle<Calendar> create() const {
-                    return Handle<Calendar>(new Zurich);
-                }
+                Calendar create() const { return Zurich(); }
+            };
+            class ZurCalendarImpl : public Calendar::WesternCalendarImpl {
+              public:
+                std::string name() const { return "Zurich"; }
+                bool isBusinessDay(const Date&) const;
             };
           public:
+            Zurich()
+            : Calendar(Handle<CalendarImpl>(new ZurCalendarImpl)) {}
             //! returns a factory of %Zurich calendars
             Handle<factory> getFactory() const {
                 return Handle<factory>(new ZurCalendarFactory);

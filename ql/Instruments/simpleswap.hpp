@@ -47,11 +47,11 @@ namespace QuantLib {
             SimpleSwap(bool payFixedRate,
                 // dates
                 const Date& startDate, int n, TimeUnit units,
-                const Handle<Calendar>& calendar, 
+                const Calendar& calendar, 
                 RollingConvention rollingConvention, 
                 /* nominals (if the vector length is lower than the number
-                   of coupons, the last nominal will prevail for the remaining
-                   coupons)
+                   of coupons, the last nominal will prevail for the 
+                   remaining coupons)
                 */
                 const std::vector<double>& nominals, 
                 // fixed leg
@@ -62,7 +62,7 @@ namespace QuantLib {
                 */
                 const std::vector<Rate>& couponRates, 
                 bool fixedIsAdjusted, 
-                const Handle<DayCounter>& fixedDayCount, 
+                const DayCounter& fixedDayCount, 
                 // floating leg
                 int floatingFrequency, 
                 const Handle<Indexes::Xibor>& index, 

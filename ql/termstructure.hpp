@@ -78,9 +78,9 @@ namespace QuantLib {
         //! returns the number of settlement days
         virtual int settlementDays() const = 0;
         //! returns the calendar for settlement calculation
-        virtual Handle<Calendar> calendar() const = 0;
+        virtual Calendar calendar() const = 0;
         //! returns the day counter
-        virtual Handle<DayCounter> dayCounter() const = 0;
+        virtual DayCounter dayCounter() const = 0;
 
         //! returns the settlement date
         virtual Date settlementDate() const = 0;
@@ -188,8 +188,8 @@ namespace QuantLib {
         Currency currency() const;
         Date todaysDate() const;
         int settlementDays() const;
-        Handle<Calendar> calendar() const;
-        Handle<DayCounter> dayCounter() const;
+        Calendar calendar() const;
+        DayCounter dayCounter() const;
         Date settlementDate() const;
         Date maxDate() const;
         Date minDate() const;
@@ -224,8 +224,8 @@ namespace QuantLib {
         Currency currency() const;
         Date todaysDate() const;
         int settlementDays() const;
-        Handle<Calendar> calendar() const;
-        Handle<DayCounter> dayCounter() const;
+        Calendar calendar() const;
+        DayCounter dayCounter() const;
         Date settlementDate() const;
         Date maxDate() const;
         Date minDate() const;
@@ -249,7 +249,7 @@ namespace QuantLib {
 
     inline Rate TermStructure::zeroYield(const Date& d,
         bool extrapolate) const {
-            Time t = dayCounter()->yearFraction(settlementDate(),d);
+            Time t = dayCounter().yearFraction(settlementDate(),d);
             return zeroYieldImpl(t,extrapolate);
     }
 
@@ -259,7 +259,7 @@ namespace QuantLib {
         
     inline DiscountFactor TermStructure::discount(const Date& d,
         bool extrapolate) const {
-            Time t = dayCounter()->yearFraction(settlementDate(),d);
+            Time t = dayCounter().yearFraction(settlementDate(),d);
             return discountImpl(t,extrapolate);
     }
 
@@ -270,7 +270,7 @@ namespace QuantLib {
 
     inline Rate TermStructure::forward(const Date& d,
         bool extrapolate) const {
-            Time t = dayCounter()->yearFraction(settlementDate(),d);
+            Time t = dayCounter().yearFraction(settlementDate(),d);
             return forwardImpl(t,extrapolate);
     }
 
@@ -362,16 +362,16 @@ namespace QuantLib {
         return originalCurve_->settlementDays();
     }
 
-    inline Handle<Calendar> ImpliedTermStructure::calendar() const {
+    inline Calendar ImpliedTermStructure::calendar() const {
         return originalCurve_->calendar();
     }
 
-    inline Handle<DayCounter> ImpliedTermStructure::dayCounter() const {
+    inline DayCounter ImpliedTermStructure::dayCounter() const {
         return originalCurve_->dayCounter();
     }
 
     inline Date ImpliedTermStructure::settlementDate() const {
-        return calendar()->advance(
+        return calendar().advance(
             todaysDate_,settlementDays(),Days);
     }
 
@@ -384,7 +384,7 @@ namespace QuantLib {
     }
 
     inline Time ImpliedTermStructure::maxTime() const {
-        return dayCounter()->yearFraction(
+        return dayCounter().yearFraction(
             settlementDate(),originalCurve_->maxDate());
     }
 
@@ -401,7 +401,7 @@ namespace QuantLib {
             /* t is relative to the current settlement date
                and needs to be converted to the time relative
                to the settlement date of the original curve */
-            Time originalTime = t + dayCounter()->yearFraction(
+            Time originalTime = t + dayCounter().yearFraction(
                 originalCurve_->settlementDate(),settlementDate());
             // evaluationDate cannot be an extrapolation
             /* discount at evaluation date cannot be cached
@@ -438,11 +438,11 @@ namespace QuantLib {
         return originalCurve_->settlementDays();
     }
 
-    inline Handle<Calendar> SpreadedTermStructure::calendar() const {
+    inline Calendar SpreadedTermStructure::calendar() const {
         return originalCurve_->calendar();
     }
 
-    inline Handle<DayCounter> SpreadedTermStructure::dayCounter() const {
+    inline DayCounter SpreadedTermStructure::dayCounter() const {
         return originalCurve_->dayCounter();
     }
 

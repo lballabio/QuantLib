@@ -52,36 +52,48 @@ namespace QuantLib {
         class ActualActual : public DayCounter {
           public:
             enum Convention { ISMA, Bond, ISDA, Historical, AFB, Euro };
-            explicit ActualActual(Convention c = ISMA)
-            : convention_(c) {}
-            //! \name DayCounter interface
-            //@{
-            std::string name() const;
-            int dayCount(const Date& d1, const Date& d2) const;
-            Time yearFraction(const Date& d1, const Date& d2,
-                const Date& refPeriodStart, const Date& refPeriodEnd) const;
-            //@}
           private:
-              class ActActFactory : public DayCounter::factory {
+            class ActActFactory : public DayCounter::factory {
               public:
                 ActActFactory(Convention c) : convention_(c) {}
-                Handle<DayCounter> create() const {
-                    return Handle<DayCounter>(new ActualActual(convention_));
+                DayCounter create() const {
+                    return ActualActual(convention_);
                 }
               private:
                 Convention convention_;
             };
+            class ActActISMAImpl : public DayCounter::DayCounterImpl {
+              public:
+                std::string name() const { return std::string("act/act(b)");}
+                int dayCount(const Date& d1, const Date& d2) const {
+                    return (d2-d1); }
+                Time yearFraction(const Date& d1, const Date& d2,
+                    const Date&, const Date&) const;
+            };
+            class ActActISDAImpl : public DayCounter::DayCounterImpl {
+              public:
+                std::string name() const { return std::string("act/act(h)");}
+                int dayCount(const Date& d1, const Date& d2) const {
+                    return (d2-d1); }
+                Time yearFraction(const Date& d1, const Date& d2,
+                    const Date&, const Date&) const;
+            };
+            class ActActAFBImpl : public DayCounter::DayCounterImpl {
+              public:
+                std::string name() const { return std::string("act/act(e)");}
+                int dayCount(const Date& d1, const Date& d2) const {
+                    return (d2-d1); }
+                Time yearFraction(const Date& d1, const Date& d2,
+                    const Date&, const Date&) const;
+            };
+            static Handle<DayCounterImpl> implementation(Convention c);
           public:
+            ActualActual(Convention c = ActualActual::ISMA)
+            : DayCounter(implementation(c)) {}
             //! returns a factory of actual/actual day counters
             Handle<factory> getFactory(Convention c) const {
                 return Handle<factory>(new ActActFactory(c));
             }
-          private:
-            Convention convention_;
-            Time ismaYearFraction(const Date& d1, const Date& d2,
-                const Date& refPeriodStart, const Date& refPeriodEnd) const;
-            Time isdaYearFraction(const Date& d1, const Date& d2) const;
-            Time afbYearFraction(const Date& d1, const Date& d2) const;
         };
 
     }

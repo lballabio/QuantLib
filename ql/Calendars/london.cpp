@@ -37,7 +37,7 @@ namespace QuantLib {
 
 	namespace Calendars {
 
-		bool London::isBusinessDay(const Date& date) const {
+		bool London::LonCalendarImpl::isBusinessDay(const Date& date) const {
 			Weekday w = date.weekday();
 			Day d = date.dayOfMonth(), dd = date.dayOfYear();
 			Month m = date.month();

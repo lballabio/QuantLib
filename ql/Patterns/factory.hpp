@@ -47,13 +47,14 @@ namespace QuantLib {
             implemented in Bruce Eckel, Thinking in Patterns
             (http://www.bruceeckel.com).
 
-            The class <tt>Type</tt> must define a type <tt>Type::factory</tt>.
+            The class <tt>Type</tt> must define a type 
+            <tt>Type::factory</tt>.
             Instances of the latter must implement a method
             \code
-            Handle<Type> create() const;
+            Type create() const;
             \endcode
-            which returns a handle to a properly initialized instance of
-            <tt>Type</tt> or a <tt>Type</tt> subclass.
+            which returns a properly initialized instance of
+            <tt>Type</tt>
 
             Such factories are stored in a <tt>Factory</tt> instance
             each with a corresponding tag. The latter can be used to
@@ -75,7 +76,7 @@ namespace QuantLib {
             /*! The object creation is delegated to the factory
                 previously stored with the passed tag.
             */
-            Handle<Type> create(const std::string& tag) const {
+            Type create(const std::string& tag) const {
                 map_type::const_iterator i = factories_.find(tag);
                 QL_REQUIRE(i != factories_.end(),
                            "factory called with unknown tag (" + tag + ")");

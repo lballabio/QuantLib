@@ -43,15 +43,15 @@ namespace QuantLib {
         const double PiecewiseFlatForward::accuracy_ = 1.0e-12;
 
         PiecewiseFlatForward::PiecewiseFlatForward(Currency currency,
-            const Handle<DayCounter>& dayCounter, const Date& todaysDate, 
-            const Handle<Calendar>& calendar, int settlementDays,
+            const DayCounter& dayCounter, const Date& todaysDate, 
+            const Calendar& calendar, int settlementDays,
             const std::vector<Handle<RateHelper> >& instruments)
         : currency_(currency), dayCounter_(dayCounter),
           todaysDate_(todaysDate), calendar_(calendar), 
           settlementDays_(settlementDays), instruments_(instruments),
           needsBootstrap_(true) {
             QL_REQUIRE(instruments_.size()>0, "No instrument given");
-            settlementDate_ = calendar_->advance(
+            settlementDate_ = calendar_.advance(
                 todaysDate_,settlementDays_,Days);
             // sort risk helpers
 			size_t i;
@@ -94,6 +94,9 @@ namespace QuantLib {
                 // bootstrapping loop
                 for (size_t i=1; i<instruments_.size()+1; i++) {
                     Handle<RateHelper> instrument = instruments_[i-1];
+                    // don't try this at home!
+                    instrument->setTermStructure(
+                        const_cast<PiecewiseFlatForward*>(this));
                     double guess = instrument->discountGuess();
                     if (guess == Null<double>()) {
                         if (i > 1) {    // we can extrapolate 
@@ -190,7 +193,7 @@ namespace QuantLib {
         : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
             // extend curve to next point
             curve_->maxDate_ = rateHelper_->maturity();
-            curve_->times_.push_back(curve_->dayCounter()->yearFraction(
+            curve_->times_.push_back(curve_->dayCounter().yearFraction(
                 curve_->settlementDate(),curve_->maxDate_));
             if (segment_ == 1) {
                 // add dummy values at settlement
@@ -215,7 +218,7 @@ namespace QuantLib {
                     curve_->forwards_[0] = curve_->zeroYields_[0] =
                         curve_->forwards_[1];
                 }
-                return rateHelper_->rateError();
+                return rateHelper_->quoteError();
         }
 
         bool PiecewiseFlatForward::RateHelperSorter::operator()(

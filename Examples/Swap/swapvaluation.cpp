@@ -51,11 +51,10 @@ using TermStructures::SwapRateHelper;
 int main(int argc, char* argv[])
 {
     try {
-        Handle<Calendar> calendar(new TARGET);
+        Calendar calendar = TARGET();
         Currency currency = EUR;
         int settlementDays = 2;
         Date todaysDate(6, November, 2001);
-
 
         /*********************
          ***  MARKET DATA  ***
@@ -78,14 +77,14 @@ int main(int argc, char* argv[])
         Handle<MarketElement> fra6x9Rate(new SimpleMarketElement(0.037125));
         Handle<MarketElement> fra6x12Rate(new SimpleMarketElement(0.037125));
         // futures
-        Handle<MarketElement> fut1Price(new SimpleMarketElement(0.037125));
-        Handle<MarketElement> fut2Price(new SimpleMarketElement(0.037125));
-        Handle<MarketElement> fut3Price(new SimpleMarketElement(0.037125));
-        Handle<MarketElement> fut4Price(new SimpleMarketElement(0.037125));
-        Handle<MarketElement> fut5Price(new SimpleMarketElement(0.037125));
-        Handle<MarketElement> fut6Price(new SimpleMarketElement(0.037125));
-        Handle<MarketElement> fut7Price(new SimpleMarketElement(0.037125));
-        Handle<MarketElement> fut8Price(new SimpleMarketElement(0.037125));
+        Handle<MarketElement> fut1Price(new SimpleMarketElement(96.2875));
+        Handle<MarketElement> fut2Price(new SimpleMarketElement(96.2875));
+        Handle<MarketElement> fut3Price(new SimpleMarketElement(96.2875));
+        Handle<MarketElement> fut4Price(new SimpleMarketElement(96.2875));
+        Handle<MarketElement> fut5Price(new SimpleMarketElement(96.2875));
+        Handle<MarketElement> fut6Price(new SimpleMarketElement(96.2875));
+        Handle<MarketElement> fut7Price(new SimpleMarketElement(96.2875));
+        Handle<MarketElement> fut8Price(new SimpleMarketElement(96.2875));
         // swaps
         Handle<MarketElement> s2yRate(new SimpleMarketElement(0.037125));
         Handle<MarketElement> s3yRate(new SimpleMarketElement(0.0398));
@@ -101,15 +100,15 @@ int main(int argc, char* argv[])
          *********************/
         
         // RateHelpers are built from the above quotes together with other
-        // instrument dependant infos. Quotes are passed in relinkable handles
-        // which could be relinked to some other data source later.
+        // instrument dependant infos. Quotes are passed in relinkable 
+        // handles which could be relinked to some other data source later.
 
         // setup deposits
-        Handle<DayCounter> depositDayCounter(new Actual360);
+        DayCounter depositDayCounter = Actual360();
 
         Handle<RateHelper> d1w(new DepositRateHelper(
             RelinkableHandle<MarketElement>(d1wRate), settlementDays,
-            1, Days, calendar, ModifiedFollowing, depositDayCounter));
+            1, Weeks, calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d1m(new DepositRateHelper(
             RelinkableHandle<MarketElement>(d1mRate), settlementDays,
             1, Months, calendar, ModifiedFollowing, depositDayCounter));
@@ -187,8 +186,7 @@ int main(int argc, char* argv[])
         // setup swaps
         int swFixedLegFrequency = 1;
         bool swFixedLegIsAdjusted = false;
-        Handle<DayCounter> swFixedLegDayCounter(new
-            Thirty360(Thirty360::European));
+        DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
         int swFloatingLegFrequency = 2;
 
         Handle<RateHelper> s2y(new SwapRateHelper(
@@ -224,9 +222,8 @@ int main(int argc, char* argv[])
 
         // Any DayCounter would be fine.
         // ActualActual::ISDA ensures that 30 years is 30.0
-        Handle<DayCounter> termStructureDayCounter(
-            new ActualActual(ActualActual::ISDA));
-
+        DayCounter termStructureDayCounter = 
+            ActualActual(ActualActual::ISDA);
 
         // A depo-futures-swap curve
         std::vector<Handle<RateHelper> > depoFutSwapInstruments;
@@ -248,10 +245,6 @@ int main(int argc, char* argv[])
             PiecewiseFlatForward(currency, termStructureDayCounter,
             todaysDate, calendar, settlementDays, depoFutSwapInstruments));
 
-/*
-
-// adding the following 2 curves, even if unused, make it crash
-// the 2 following curves do work if used instead of the above
 
         // A depo-swap curve
         std::vector<Handle<RateHelper> > depoSwapInstruments;
@@ -288,8 +281,6 @@ int main(int argc, char* argv[])
             PiecewiseFlatForward(currency, termStructureDayCounter,
             todaysDate, calendar, settlementDays, depoFRASwapInstruments));
 
-*/
-
         
         /**********************
          * SWAPS TO BE PRICED *
@@ -303,7 +294,7 @@ int main(int argc, char* argv[])
 
         
         // spot start
-        Date spotDate = calendar->advance(todaysDate, settlementDays, Days,
+        Date spotDate = calendar.advance(todaysDate, settlementDays, Days,
             Following);
         // constant nominal 1,000,000 Euro
         std::vector<double> nominals;
@@ -312,8 +303,7 @@ int main(int argc, char* argv[])
         int fixedLegFrequency = 1; // annual
         bool fixedLegIsAdjusted = false;
         RollingConvention roll = ModifiedFollowing;
-        Handle<DayCounter> fixedLegDayCounter(new
-            Thirty360(Thirty360::European));
+        DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Rate fixedRate = 0.04;
         // constant coupon
         std::vector<double> couponRates;
@@ -329,13 +319,13 @@ int main(int argc, char* argv[])
 
         int lenghtInYears = 5;
         bool payFixedRate = true;
-        SimpleSwap spot5YearSwap(payFixedRate, spotDate, lenghtInYears, Years,
-            calendar, roll, nominals, fixedLegFrequency, couponRates,
+        SimpleSwap spot5YearSwap(payFixedRate, spotDate, lenghtInYears, 
+            Years, calendar, roll, nominals, fixedLegFrequency, couponRates,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             euriborIndex, spreads,
             discountingTermStructure); // using the discounting curve
         SimpleSwap oneYearForward5YearSwap(payFixedRate,
-            calendar->advance(spotDate, 1, Years, ModifiedFollowing),
+            calendar.advance(spotDate, 1, Years, ModifiedFollowing),
             lenghtInYears, Years,
             calendar, roll, nominals, fixedLegFrequency, couponRates,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
@@ -436,7 +426,7 @@ int main(int argc, char* argv[])
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(abs(fairFixedRate-s5yRate->value())<1e-8,
+        QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
             "5 years swap mispriced!");
 
         // now let's price the 1Y forward 5Y swap
@@ -456,9 +446,7 @@ int main(int argc, char* argv[])
         std::cout << "1Yx5Y fixed rate:               " 
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
-
-
-
+            
         return 0;
 
     } catch (std::exception& e) {

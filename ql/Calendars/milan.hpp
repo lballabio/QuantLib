@@ -34,7 +34,7 @@
 #ifndef quantlib_milan_calendar_h
 #define quantlib_milan_calendar_h
 
-#include "ql/Calendars/westerncalendar.hpp"
+#include "ql/calendar.hpp"
 
 namespace QuantLib {
 
@@ -50,6 +50,7 @@ namespace QuantLib {
             <li>Easter Monday</li>
             <li>Liberation Day, April 25th</li>
             <li>Labour Day, May 1st</li>
+            <li>Republic Day, June 2nd (since 2000)</li>
             <li>Assumption, August 15th</li>
             <li>All Saint's Day, November 1st</li>
             <li>Immaculate Conception, December 8th</li>
@@ -57,19 +58,20 @@ namespace QuantLib {
             <li>St. Stephen, December 26th</li>
             </ul>
         */
-        class Milan : public WesternCalendar {
-          public:
-            Milan() {}
-            std::string name() const { return "Milan"; }
-            bool isBusinessDay(const Date&) const;
+        class Milan : public Calendar {
           private:
             class MilCalendarFactory : public Calendar::factory {
               public:
-                Handle<Calendar> create() const {
-                    return Handle<Calendar>(new Milan);
-                }
+                Calendar create() const { return Milan(); }
+            };
+            class MilCalendarImpl : public Calendar::WesternCalendarImpl {
+              public:
+                std::string name() const { return "Milan"; }
+                bool isBusinessDay(const Date&) const;
             };
           public:
+            Milan()
+            : Calendar(Handle<CalendarImpl>(new MilCalendarImpl)) {}
             //! returns a factory of %Milan calendars
             Handle<factory> getFactory() const {
                 return Handle<factory>(new MilCalendarFactory);

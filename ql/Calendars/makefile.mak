@@ -15,8 +15,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = westerncalendar.obj$(_D) \
-       frankfurt.obj$(_D) \
+OBJS = frankfurt.obj$(_D) \
        helsinki.obj$(_D) \
        london.obj$(_D) \
        milan.obj$(_D) \

@@ -37,7 +37,7 @@ namespace QuantLib {
 
 	namespace Calendars {
 
-		bool NewYork::isBusinessDay(const Date& date) const {
+		bool NewYork::NYCalendarImpl::isBusinessDay(const Date& date) const {
 			Weekday w = date.weekday();
 			Day d = date.dayOfMonth();
 			Month m = date.month();

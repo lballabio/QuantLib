@@ -62,7 +62,6 @@
 #include "ql/Calendars/newyork.hpp"
 #include "ql/Calendars/target.hpp"
 #include "ql/Calendars/wellington.hpp"
-#include "ql/Calendars/westerncalendar.hpp"
 #include "ql/Calendars/zurich.hpp"
 
 #include "ql/CashFlows/cashflowvectors.hpp"

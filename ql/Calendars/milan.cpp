@@ -37,7 +37,7 @@ namespace QuantLib {
 
 	namespace Calendars {
 
-		bool Milan::isBusinessDay(const Date& date) const {
+		bool Milan::MilCalendarImpl::isBusinessDay(const Date& date) const {
 			Weekday w = date.weekday();
 			Day d = date.dayOfMonth(), dd = date.dayOfYear();
 			Month m = date.month();
@@ -54,6 +54,8 @@ namespace QuantLib {
 				|| (d == 25 && m == April)
 				// Labour Day
 				|| (d == 1 && m == May)
+				// Republic Day
+				|| (d == 2 && m == June && y >= 2000)
 				// Assumption
 				|| (d == 15 && m == August)
 				// All Saints' Day

@@ -66,19 +66,19 @@ namespace QuantLib {
             // constructor
             PiecewiseFlatForward(
                 Currency currency,
-                const Handle<DayCounter>& dayCounter,
+                const DayCounter& dayCounter,
                 const Date& todaysDate,
-                const Handle<Calendar>& calendar,
+                const Calendar& calendar,
                 int settlementDays,
                 const std::vector<Handle<RateHelper> >& instruments);
             ~PiecewiseFlatForward();
             //! \name TermStructure interface
             //@{
             Currency currency() const;
-            Handle<DayCounter> dayCounter() const;
+            DayCounter dayCounter() const;
             Date todaysDate() const;
             int settlementDays() const;
-            Handle<Calendar> calendar() const;
+            Calendar calendar() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -120,9 +120,9 @@ namespace QuantLib {
             void bootstrap() const;
             // data members
             Currency currency_;
-            Handle<DayCounter> dayCounter_;
+            DayCounter dayCounter_;
             Date todaysDate_;
-            Handle<Calendar> calendar_;
+            Calendar calendar_;
             int settlementDays_;
             Date settlementDate_;
             std::vector<Handle<RateHelper> > instruments_;
@@ -140,7 +140,7 @@ namespace QuantLib {
             return currency_;
         }
 
-        inline Handle<DayCounter> PiecewiseFlatForward::dayCounter() const {
+        inline DayCounter PiecewiseFlatForward::dayCounter() const {
             return dayCounter_;
         }
 
@@ -148,7 +148,7 @@ namespace QuantLib {
             return todaysDate_;
         }
 
-        inline Handle<Calendar> PiecewiseFlatForward::calendar() const {
+        inline Calendar PiecewiseFlatForward::calendar() const {
             return calendar_;
         }
 

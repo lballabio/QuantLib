@@ -36,7 +36,7 @@
 
 namespace QuantLib {
 
-    Scheduler::Scheduler(const Handle<Calendar>& calendar,
+    Scheduler::Scheduler(const Calendar& calendar,
       const Date& startDate, const Date& endDate, int frequency,
       RollingConvention rollingConvention, bool isAdjusted,
       const Date& stubDate)
@@ -44,7 +44,6 @@ namespace QuantLib {
       frequency_(frequency), rollingConvention_(rollingConvention),
       isAdjusted_(isAdjusted), stubDate_(stubDate), lastIsRegular_(true) {
         // sanity checks
-        QL_REQUIRE(!calendar_.isNull(), "null calendar");
         QL_REQUIRE(startDate_ != Date(), "null start date");
         QL_REQUIRE(endDate_ != Date(),   "null end date");
         QL_REQUIRE(startDate_ < endDate_,
@@ -59,19 +58,19 @@ namespace QuantLib {
                     DateFormatter::toString(stubDate_) +
                     ") later than start date (" +
                     DateFormatter::toString(startDate_) + ")");
-            QL_REQUIRE(!calendar_->isHoliday(stubDate_) ||
+            QL_REQUIRE(!calendar_.isHoliday(stubDate_) ||
                        !isEndOfMonth(stubDate_),
                 "stub date (" +
                     DateFormatter::toString(stubDate_) +
                     ") is holiday and end of month for " +
-                    calendar->name() + " calendar");
+                    calendar_.name() + " calendar");
         } else {
-            QL_REQUIRE(!calendar_->isHoliday(startDate_) ||
+            QL_REQUIRE(!calendar_.isHoliday(startDate_) ||
                        !isEndOfMonth(startDate_),
                 "start date (" +
                     DateFormatter::toString(startDate_) +
                     ") is holiday and end of month for " +
-                    calendar->name() + " calendar");
+                    calendar_.name() + " calendar");
         }
         QL_REQUIRE(12%frequency_ == 0,
             "frequency (" +
@@ -81,7 +80,7 @@ namespace QuantLib {
         // calculations
         Date seed = startDate_;
         Date last = (isAdjusted_ ?
-                     calendar_->roll(endDate_,rollingConvention_) :
+                     calendar_.roll(endDate_,rollingConvention_) :
                      endDate_);
         // add start date
         dates_.push_back(startDate_);
@@ -90,7 +89,7 @@ namespace QuantLib {
         if (stubDate_ != Date()) {
             seed = stubDate_;
             dates_.push_back(isAdjusted_ ?
-                             calendar_->roll(stubDate_) :
+                             calendar_.roll(stubDate_) :
                              stubDate_);
         }
 
@@ -99,7 +98,7 @@ namespace QuantLib {
         while (true) {
             Date temp = seed.plus(periods*months,Months);
             if (isAdjusted_)
-                temp = calendar_->roll(temp,rollingConvention_);
+                temp = calendar_.roll(temp,rollingConvention_);
             dates_.push_back(temp);
             // check exit condition
             if (temp >= last)
@@ -116,8 +115,8 @@ namespace QuantLib {
 
         // possibly collapse last two dates
         int N = dates_.size();
-        if (calendar_->roll(dates_[N-2],rollingConvention_) ==
-            calendar_->roll(dates_[N-1],rollingConvention_)) {
+        if (calendar_.roll(dates_[N-2],rollingConvention_) ==
+            calendar_.roll(dates_[N-1],rollingConvention_)) {
                 dates_[N-2] = dates_[N-1];
                 dates_.pop_back();
                 lastIsRegular_ = true;
@@ -136,7 +135,7 @@ namespace QuantLib {
     }
 
     bool Scheduler::isEndOfMonth(const Date& d) const {
-        return (d.month() != calendar_->roll(d+1).month());
+        return (d.month() != calendar_.roll(d+1).month());
     }
 
 }

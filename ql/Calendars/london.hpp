@@ -34,7 +34,7 @@
 #ifndef quantlib_london_calendar_h
 #define quantlib_london_calendar_h
 
-#include "ql/Calendars/westerncalendar.hpp"
+#include "ql/calendar.hpp"
 
 namespace QuantLib {
 
@@ -57,19 +57,20 @@ namespace QuantLib {
                 Tuesday)</li>
             </ul>
         */
-        class London : public WesternCalendar {
-          public:
-            London() {}
-            std::string name() const { return "London"; }
-            bool isBusinessDay(const Date&) const;
+        class London : public Calendar {
           private:
             class LonCalendarFactory : public Calendar::factory {
               public:
-                Handle<Calendar> create() const {
-                    return Handle<Calendar>(new London);
-                }
+                Calendar create() const { return London(); }
+            };
+            class LonCalendarImpl : public Calendar::WesternCalendarImpl {
+              public:
+                std::string name() const { return "London"; }
+                bool isBusinessDay(const Date&) const;
             };
           public:
+            London()
+            : Calendar(Handle<CalendarImpl>(new LonCalendarImpl)) {}
             //! returns a factory of %London calendars
             Handle<factory> getFactory() const {
                 return Handle<factory>(new LonCalendarFactory);

@@ -46,9 +46,9 @@ namespace QuantLib {
           public:
             Xibor(const std::string& familyName, 
                 int n, TimeUnit units, Currency currency, 
-                const Handle<Calendar>& calendar, bool isAdjusted, 
+                const Calendar& calendar, bool isAdjusted, 
                 RollingConvention rollingConvention,
-                const Handle<DayCounter>& dayCounter,
+                const DayCounter& dayCounter,
                 const RelinkableHandle<TermStructure>& h)
             : familyName_(familyName), n_(n), units_(units), 
               currency_(currency), calendar_(calendar), 
@@ -64,21 +64,21 @@ namespace QuantLib {
             std::string name() const;
             Period tenor() const { return Period(n_,units_); }
             Currency currency() const { return currency_; }
-            Handle<Calendar> calendar() const { return calendar_; }
+            Calendar calendar() const { return calendar_; }
             bool isAdjusted() const { return isAdjusted_; }
             RollingConvention rollingConvention() const { 
                 return rollingConvention_; }
-            Handle<DayCounter> dayCounter() const { return dayCounter_; }
+            DayCounter dayCounter() const { return dayCounter_; }
             //@}
           private:
             std::string familyName_;
             int n_;
             TimeUnit units_;
             Currency currency_;
-            Handle<Calendar> calendar_;
+            Calendar calendar_;
             bool isAdjusted_;
             RollingConvention rollingConvention_;
-            Handle<DayCounter> dayCounter_;
+            DayCounter dayCounter_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 

@@ -44,9 +44,9 @@ namespace QuantLib {
         class FixedRateCoupon : public Coupon {
           public:
             FixedRateCoupon(double nominal, Rate rate, 
-                const Handle<Calendar>& calendar, 
+                const Calendar& calendar, 
                 RollingConvention rollingConvention,
-                const Handle<DayCounter>& dayCounter,
+                const DayCounter& dayCounter,
                 const Date& startDate, const Date& endDate,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date())

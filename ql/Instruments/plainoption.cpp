@@ -142,10 +142,11 @@ namespace QuantLib {
         	    dividendYield_->zeroYield(exerciseDate_);
 
             QL_REQUIRE(!riskFreeRate_.isNull(), "null risk free rate given");
-            parameters->riskFreeRate = riskFreeRate_->zeroYield(exerciseDate_);
+            parameters->riskFreeRate = 
+                riskFreeRate_->zeroYield(exerciseDate_);
 
             parameters->residualTime = 
-                riskFreeRate_->dayCounter()->yearFraction(
+                riskFreeRate_->dayCounter().yearFraction(
                     riskFreeRate_->settlementDate(), exerciseDate_);
 
             QL_REQUIRE(!volatility_.isNull(), "null volatility given");

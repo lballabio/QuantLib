@@ -191,14 +191,6 @@ SOURCE=.\ql\Calendars\wellington.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\westerncalendar.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\westerncalendar.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Calendars\zurich.cpp
 # End Source File
 # Begin Source File

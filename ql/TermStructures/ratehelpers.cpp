@@ -42,8 +42,8 @@ namespace QuantLib {
     
     namespace TermStructures {
 
-        RateHelper::RateHelper(const RelinkableHandle<MarketElement>& rate) 
-        : quote_(rate), termStructure_(0) {
+        RateHelper::RateHelper(const RelinkableHandle<MarketElement>& quote) 
+        : quote_(quote), termStructure_(0) {
             quote_.registerObserver(this);
         }
 
@@ -56,8 +56,8 @@ namespace QuantLib {
             termStructure_ = t;
         }
 
-        Rate RateHelper::rateError() const {
-            return quote_->value()-impliedRate();
+        double RateHelper::quoteError() const {
+            return quote_->value()-impliedQuote();
         }
 
 
@@ -65,13 +65,13 @@ namespace QuantLib {
         DepositRateHelper::DepositRateHelper(
             const RelinkableHandle<MarketElement>& rate, 
             int settlementDays, int n, TimeUnit units, 
-            const Handle<Calendar>& calendar, RollingConvention convention, 
-            const Handle<DayCounter>& dayCounter)
+            const Calendar& calendar, RollingConvention convention, 
+            const DayCounter& dayCounter)
         : RateHelper(rate), settlementDays_(settlementDays), 
           n_(n), units_(units), calendar_(calendar), convention_(convention), 
           dayCounter_(dayCounter) {}
 
-        Rate DepositRateHelper::impliedRate() const {
+        double DepositRateHelper::impliedQuote() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
             return (termStructure_->discount(settlement_) / 
                     termStructure_->discount(maturity_)-1.0) /
@@ -88,11 +88,11 @@ namespace QuantLib {
 
         void DepositRateHelper::setTermStructure(TermStructure* t) {
             RateHelper::setTermStructure(t);
-            settlement_ = calendar_->advance(
+            settlement_ = calendar_.advance(
                 termStructure_->todaysDate(),settlementDays_,Days);
-            maturity_ = calendar_->advance(
+            maturity_ = calendar_.advance(
                 settlement_,n_,units_,convention_);
-            yearFraction_ = dayCounter_->yearFraction(settlement_,maturity_);
+            yearFraction_ = dayCounter_.yearFraction(settlement_,maturity_);
         }
 
         Date DepositRateHelper::maturity() const {
@@ -105,14 +105,14 @@ namespace QuantLib {
         FraRateHelper::FraRateHelper(
             const RelinkableHandle<MarketElement>& rate, 
             int settlementDays, int monthsToStart, int monthsToEnd, 
-            const Handle<Calendar>& calendar, RollingConvention convention, 
-            const Handle<DayCounter>& dayCounter)
+            const Calendar& calendar, RollingConvention convention, 
+            const DayCounter& dayCounter)
         : RateHelper(rate), settlementDays_(settlementDays), 
           monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
           calendar_(calendar), convention_(convention), 
           dayCounter_(dayCounter) {}
 
-        Rate FraRateHelper::impliedRate() const {
+        double FraRateHelper::impliedQuote() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
             return (termStructure_->discount(start_) / 
                     termStructure_->discount(maturity_)-1.0) /
@@ -129,13 +129,13 @@ namespace QuantLib {
 
         void FraRateHelper::setTermStructure(TermStructure* t) {
             RateHelper::setTermStructure(t);
-            settlement_ = calendar_->advance(
+            settlement_ = calendar_.advance(
                 termStructure_->todaysDate(),settlementDays_,Days);
-            start_ = calendar_->advance(
+            start_ = calendar_.advance(
                 settlement_,monthsToStart_,Months,convention_);
-            maturity_ = calendar_->advance(
+            maturity_ = calendar_.advance(
                 start_,monthsToEnd_-monthsToStart_,Months,convention_);
-            yearFraction_ = dayCounter_->yearFraction(start_,maturity_);
+            yearFraction_ = dayCounter_.yearFraction(start_,maturity_);
         }
 
         Date FraRateHelper::maturity() const {
@@ -146,22 +146,22 @@ namespace QuantLib {
         FuturesRateHelper::FuturesRateHelper(
             const RelinkableHandle<MarketElement>& price,
             const Date& ImmDate, int settlementDays, int nMonths,
-            const Handle<Calendar>& calendar, RollingConvention convention,
-            const Handle<DayCounter>& dayCounter)
+            const Calendar& calendar, RollingConvention convention,
+            const DayCounter& dayCounter)
         : RateHelper(price), ImmDate_(ImmDate),
           settlementDays_(settlementDays), nMonths_(nMonths),
           calendar_(calendar), convention_(convention), 
           dayCounter_(dayCounter) {
-            maturity_ = calendar_->advance(
+            maturity_ = calendar_.advance(
                 ImmDate_, nMonths_, Months, convention_);
-            yearFraction_ = dayCounter_->yearFraction(ImmDate_, maturity_);
+            yearFraction_ = dayCounter_.yearFraction(ImmDate_, maturity_);
         }
 
-        Rate FuturesRateHelper::impliedRate() const {
+        double FuturesRateHelper::impliedQuote() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
-            return (termStructure_->discount(ImmDate_) / 
-                    termStructure_->discount(maturity_)-1.0) /
-                    yearFraction_;
+            return 100 * (1.0-(termStructure_->discount(ImmDate_) / 
+                               termStructure_->discount(maturity_)-1.0) /
+                               yearFraction_);
         }
 
         DiscountFactor FuturesRateHelper::discountGuess() const {
@@ -179,9 +179,9 @@ namespace QuantLib {
         SwapRateHelper::SwapRateHelper(
             const RelinkableHandle<MarketElement>& rate, 
             int settlementDays, int lengthInYears, 
-            const Handle<Calendar>& calendar, RollingConvention convention, 
+            const Calendar& calendar, RollingConvention convention, 
             int fixedFrequency, bool fixedIsAdjusted, 
-            const Handle<DayCounter>& fixedDayCount, 
+            const DayCounter& fixedDayCount, 
             int floatingFrequency)
         : RateHelper(rate), settlementDays_(settlementDays), 
           lengthInYears_(lengthInYears), calendar_(calendar), 
@@ -197,8 +197,7 @@ namespace QuantLib {
             termStructureHandle_.linkTo(
                 Handle<TermStructure>(t,false),false);
             RateHelper::setTermStructure(t);
-            QL_REQUIRE(termStructure_ != 0, "null term structure set");
-            settlement_ = calendar_->advance(
+            settlement_ = calendar_.advance(
                 termStructure_->todaysDate(),settlementDays_,Days);
             // any index would do and will give the same results - 
             // it must be a concrete one, though
@@ -222,7 +221,7 @@ namespace QuantLib {
             return swap_->maturity();
         }
 
-        Rate SwapRateHelper::impliedRate() const {
+        double SwapRateHelper::impliedQuote() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
             // we didn't register as observers - force calculation
             swap_->recalculate();

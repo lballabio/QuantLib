@@ -45,15 +45,15 @@ namespace QuantLib {
           public:
             // constructor
             FlatForward(Currency currency, 
-                const Handle<DayCounter>& dayCounter,
-                const Date& todaysDate, const Handle<Calendar>& calendar, 
+                const DayCounter& dayCounter,
+                const Date& todaysDate, const Calendar& calendar, 
                 int settlementDays, Rate forward);
             // inspectors
             Currency currency() const;
-            Handle<DayCounter> dayCounter() const;
+            DayCounter dayCounter() const;
             Date todaysDate() const;
             int settlementDays() const;
-            Handle<Calendar> calendar() const;
+            Calendar calendar() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -66,9 +66,9 @@ namespace QuantLib {
             Rate forwardImpl(Time, bool extrapolate = false) const;
           private:
             Currency currency_;
-            Handle<DayCounter> dayCounter_;
+            DayCounter dayCounter_;
             Date todaysDate_;
-            Handle<Calendar> calendar_;
+            Calendar calendar_;
             int settlementDays_;
             Date settlementDate_;
             Rate forward_;
@@ -77,13 +77,13 @@ namespace QuantLib {
         // inline definitions
 
         inline FlatForward::FlatForward(Currency currency,
-            const Handle<DayCounter>& dayCounter, const Date& todaysDate, 
-            const Handle<Calendar>& calendar, int settlementDays, 
+            const DayCounter& dayCounter, const Date& todaysDate, 
+            const Calendar& calendar, int settlementDays, 
             Rate forward)
         : currency_(currency), dayCounter_(dayCounter),
           todaysDate_(todaysDate), calendar_(calendar), 
           settlementDays_(settlementDays), forward_(forward) {
-            settlementDate_ = calendar_->advance(
+            settlementDate_ = calendar_.advance(
                 todaysDate_,settlementDays_,Days);
         }
 
@@ -91,7 +91,7 @@ namespace QuantLib {
             return currency_;
         }
 
-        inline Handle<DayCounter> FlatForward::dayCounter() const {
+        inline DayCounter FlatForward::dayCounter() const {
             return dayCounter_;
         }
 
@@ -99,7 +99,7 @@ namespace QuantLib {
             return todaysDate_;
         }
 
-        inline Handle<Calendar> FlatForward::calendar() const {
+        inline Calendar FlatForward::calendar() const {
             return calendar_;
         }
 
@@ -120,7 +120,7 @@ namespace QuantLib {
         }
 
         inline Time FlatForward::maxTime() const {
-            return dayCounter()->yearFraction(
+            return dayCounter().yearFraction(
                 settlementDate(), Date::maxDate());
         }
 

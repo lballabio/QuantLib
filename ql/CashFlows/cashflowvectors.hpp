@@ -49,12 +49,11 @@ namespace QuantLib {
                 const std::vector<double>& nominals,
                 const std::vector<Rate>& couponRates,
                 const Date& startDate, const Date& endDate,
-                int frequency, const Handle<Calendar>& calendar,
+                int frequency, const Calendar& calendar,
                 RollingConvention rollingConvention, bool isAdjusted,
-                const Handle<DayCounter>& dayCount,
-                const Date& stubDate = Date(),
-                const Handle<DayCounter>& firstPeriodDayCount =
-                    Handle<DayCounter>());
+                const DayCounter& dayCount,
+                const DayCounter& firstPeriodDayCount,
+                const Date& stubDate = Date());
         };
 
         //! helper class building a sequence of floating rate coupons
@@ -70,7 +69,7 @@ namespace QuantLib {
             FloatingRateCouponVector(
                 const std::vector<double>& nominals,
                 const Date& startDate, const Date& endDate,
-                int frequency, const Handle<Calendar>& calendar,
+                int frequency, const Calendar& calendar,
                 RollingConvention rollingConvention,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<Indexes::Xibor>& index,

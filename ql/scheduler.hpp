@@ -42,7 +42,7 @@ namespace QuantLib {
     //! %Date scheduler
     class Scheduler {
       public:
-        Scheduler(const Handle<Calendar>& calendar,
+        Scheduler(const Calendar& calendar,
             const Date& startDate, const Date& endDate,
             int frequency, RollingConvention rollingConvention,
             bool isAdjusted, const Date& stubDate = Date());
@@ -55,7 +55,7 @@ namespace QuantLib {
         const_iterator begin() const { return dates_.begin(); }
         const_iterator end() const { return dates_.end(); }
       private:
-        Handle<Calendar> calendar_;
+        Calendar calendar_;
         Date startDate_, endDate_;
         int frequency_;
         RollingConvention rollingConvention_;

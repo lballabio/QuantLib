@@ -37,7 +37,8 @@ namespace QuantLib {
 
 	namespace Calendars {
 
-		bool Helsinki::isBusinessDay(const Date& date) const {
+		bool Helsinki::HSKCalendarImpl::isBusinessDay(
+		  const Date& date) const {
 			Weekday w = date.weekday();
 			Day d = date.dayOfMonth(), dd = date.dayOfYear();
 			Month m = date.month();

@@ -37,54 +37,34 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        std::string ActualActual::name() const { 
-            switch (convention_) {
+        Handle<DayCounter::DayCounterImpl> 
+        ActualActual::implementation(ActualActual::Convention c) {
+            switch (c) {
               case ISMA:
               case Bond:
-                return std::string("act/act(b)");
+                return Handle<DayCounterImpl>(new ActActISMAImpl);
               case ISDA:
               case Historical:
-                return std::string("act/act(h)");
+                return Handle<DayCounterImpl>(new ActActISDAImpl);
               case AFB:
               case Euro:
-                return std::string("act/act(e)");
+                return Handle<DayCounterImpl>(new ActActAFBImpl);
               default:
                 throw Error("Unknown act/act convention");
             }
-            QL_DUMMY_RETURN(std::string());
-        }
-            
-        int ActualActual::dayCount(const Date& d1, const Date& d2) const {
-            return (d2-d1);
-        }
-
-        Time ActualActual::yearFraction(const Date& d1, const Date& d2,
-          const Date& refPeriodStart, const Date& refPeriodEnd) const {
-            if (d1 == d2)
-                return 0.0;
-            switch (convention_) {
-              case ISMA:
-              case Bond:
-                return ismaYearFraction(d1,d2,refPeriodStart,refPeriodEnd);
-              case ISDA:
-              case Historical:
-                return isdaYearFraction(d1,d2);
-              case AFB:
-              case Euro:
-                return afbYearFraction(d1,d2);
-              default:
-                throw Error("Unknown act/act convention");
-            }
-            QL_DUMMY_RETURN(Time());
         }
 
 
-        Time ActualActual::ismaYearFraction(const Date& d1, const Date& d2,
+        Time ActualActual::ActActISMAImpl::yearFraction(
+          const Date& d1, const Date& d2,
           const Date& refPeriodStart, const Date& refPeriodEnd) const {
             QL_REQUIRE(d1<=d2, "invalid dates");
             QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
                 refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
                 "Invalid reference period");
+
+            if (d1 == d2)
+                return 0.0;
 
             // estimate roughly the length in months of a period
             int months = int(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
@@ -151,9 +131,12 @@ namespace QuantLib {
             }
         }
 
-        Time ActualActual::isdaYearFraction(const Date& d1, 
-          const Date& d2) const {
+        Time ActualActual::ActActISDAImpl::yearFraction(
+          const Date& d1, const Date& d2, const Date&, const Date&) const {
             QL_REQUIRE(d2>=d1, "Invalid reference period");
+
+            if (d1 == d2)
+                return 0.0;
 
 	        int y1 = d1.year(), y2 = d2.year();
 	        double dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
@@ -165,9 +148,12 @@ namespace QuantLib {
 	        return sum;
         }
 
-        Time ActualActual::afbYearFraction(const Date& d1, 
-          const Date& d2) const {
+        Time ActualActual::ActActAFBImpl::yearFraction(
+          const Date& d1, const Date& d2, const Date&, const Date&) const {
             QL_REQUIRE(d1<=d2, "Invalid reference period");
+
+            if (d1 == d2)
+                return 0.0;
 
             Date newD2=d2, temp=d2;
             Time sum = 0.0;

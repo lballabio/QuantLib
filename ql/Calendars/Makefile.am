@@ -11,7 +11,6 @@ include_HEADERS = \
 	newyork.hpp \
 	target.hpp \
 	wellington.hpp \
-	westerncalendar.hpp \
 	zurich.hpp
 
 
@@ -25,7 +24,6 @@ libCalendars_la_SOURCES = \
 	newyork.cpp \
 	target.cpp \
 	wellington.cpp \
-	westerncalendar.cpp \
 	zurich.cpp
 
 noinst_LTLIBRARIES = libCalendars.la

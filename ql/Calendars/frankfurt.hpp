@@ -34,7 +34,7 @@
 #ifndef quantlib_frankfurt_calendar_h
 #define quantlib_frankfurt_calendar_h
 
-#include "ql/Calendars/westerncalendar.hpp"
+#include "ql/calendar.hpp"
 
 namespace QuantLib {
 
@@ -59,19 +59,20 @@ namespace QuantLib {
             <li>New Year's Eve, December 31st</li>
             </ul>
         */
-        class Frankfurt : public WesternCalendar {
-          public:
-            Frankfurt() {}
-            std::string name() const { return "Frankfurt"; }
-            bool isBusinessDay(const Date&) const;
+        class Frankfurt : public Calendar {
           private:
-              class FFTCalendarFactory : public Calendar::factory {
+            class FFTCalendarFactory : public Calendar::factory {
               public:
-                Handle<Calendar> create() const {
-                    return Handle<Calendar>(new Frankfurt);
-                }
+                Calendar create() const { return Frankfurt(); }
+            };
+            class FFTCalendarImpl : public Calendar::WesternCalendarImpl {
+              public:
+                std::string name() const { return "Frankfurt"; }
+                bool isBusinessDay(const Date&) const;
             };
           public:
+            Frankfurt()
+            : Calendar(Handle<CalendarImpl>(new FFTCalendarImpl)) {}
             //! returns a factory of %Frankfurt calendars
             Handle<factory> getFactory() const {
                 return Handle<factory>(new FFTCalendarFactory);

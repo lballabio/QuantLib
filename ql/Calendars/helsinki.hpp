@@ -34,7 +34,7 @@
 #ifndef quantlib_helsinki_calendar_h
 #define quantlib_helsinki_calendar_h
 
-#include "ql/Calendars/westerncalendar.hpp"
+#include "ql/calendar.hpp"
 
 namespace QuantLib {
 
@@ -60,19 +60,20 @@ namespace QuantLib {
             \note The holiday rules for Wellington were documented by
             Veli-Pekka Mattila for IDB (http://www.jrefinery.com/ibd/)
         */
-        class Helsinki : public WesternCalendar {
-          public:
-            Helsinki() {}
-            std::string name() const { return "Helsinki"; }
-            bool isBusinessDay(const Date&) const;
+        class Helsinki : public Calendar {
           private:
-              class HSKCalendarFactory : public Calendar::factory {
+            class HSKCalendarFactory : public Calendar::factory {
               public:
-                Handle<Calendar> create() const {
-                    return Handle<Calendar>(new Helsinki);
-                }
+                Calendar create() const { return Helsinki(); }
+            };
+            class HSKCalendarImpl : public Calendar::WesternCalendarImpl {
+              public:
+                std::string name() const { return "Helsinki"; }
+                bool isBusinessDay(const Date&) const;
             };
           public:
+            Helsinki()
+            : Calendar(Handle<CalendarImpl>(new HSKCalendarImpl)) {}
             //! returns a factory of %Helsinki calendars
             Handle<factory> getFactory() const {
                 return Handle<factory>(new HSKCalendarFactory);

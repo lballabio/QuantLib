@@ -34,7 +34,7 @@
 #ifndef quantlib_target_calendar_h
 #define quantlib_target_calendar_h
 
-#include "ql/Calendars/westerncalendar.hpp"
+#include "ql/calendar.hpp"
 
 namespace QuantLib {
 
@@ -53,19 +53,20 @@ namespace QuantLib {
             <li>Day of Goodwill, December 26th</li>
             </ul>
         */
-        class TARGET : public WesternCalendar {
-          public:
-            TARGET() {}
-            std::string name() const { return "TARGET"; }
-            bool isBusinessDay(const Date&) const;
+        class TARGET : public Calendar {
           private:
             class EurCalendarFactory : public Calendar::factory {
               public:
-                Handle<Calendar> create() const {
-                    return Handle<Calendar>(new TARGET);
-                }
+                Calendar create() const { return TARGET(); }
+            };
+            class EurCalendarImpl : public Calendar::WesternCalendarImpl {
+              public:
+                std::string name() const { return "TARGET"; }
+                bool isBusinessDay(const Date&) const;
             };
           public:
+            TARGET()
+            : Calendar(Handle<CalendarImpl>(new EurCalendarImpl)) {}
             //! returns a factory of %TARGET calendars
             Handle<factory> getFactory() const {
                 return Handle<factory>(new EurCalendarFactory);

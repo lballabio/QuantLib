@@ -34,7 +34,7 @@
 #ifndef quantlib_newyork_calendar_h
 #define quantlib_newyork_calendar_h
 
-#include "ql/Calendars/westerncalendar.hpp"
+#include "ql/calendar.hpp"
 
 namespace QuantLib {
 
@@ -61,19 +61,20 @@ namespace QuantLib {
                 if Saturday)</li>
             </ul>
         */
-        class NewYork : public WesternCalendar {
-          public:
-            NewYork() {}
-            std::string name() const { return "NewYork"; }
-            bool isBusinessDay(const Date&) const;
+        class NewYork : public Calendar {
           private:
             class NYCalendarFactory : public Calendar::factory {
               public:
-                Handle<Calendar> create() const {
-                    return Handle<Calendar>(new NewYork);
-                }
+                Calendar create() const { return NewYork(); }
+            };
+            class NYCalendarImpl : public Calendar::WesternCalendarImpl {
+              public:
+                std::string name() const { return "NewYork"; }
+                bool isBusinessDay(const Date&) const;
             };
           public:
+            NewYork()
+            : Calendar(Handle<CalendarImpl>(new NYCalendarImpl)) {}
             //! returns a factory of New York calendars
             Handle<factory> getFactory() const {
                 return Handle<factory>(new NYCalendarFactory);

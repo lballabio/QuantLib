@@ -55,12 +55,12 @@ namespace QuantLib {
         class RateHelper : public Patterns::Observer, 
                            public Patterns::Observable {
           public:
-            RateHelper(const RelinkableHandle<MarketElement>& rate);
+            RateHelper(const RelinkableHandle<MarketElement>& quote);
             virtual ~RateHelper();
             //! \name RateHelper interface
             //@{
-            Rate rateError() const;
-            virtual Rate impliedRate() const = 0;
+            double quoteError() const;
+            virtual double impliedQuote() const = 0;
             virtual DiscountFactor discountGuess() const { 
                 return Null<double>(); 
             }
@@ -95,12 +95,11 @@ namespace QuantLib {
           public:
             DepositRateHelper(const RelinkableHandle<MarketElement>& rate,
                               int settlementDays,
-                              int n,
-                              TimeUnit units,
-                              const Handle<Calendar>& calendar,
+                              int n, TimeUnit units,
+                              const Calendar& calendar,
                               RollingConvention convention,
-                              const Handle<DayCounter>& dayCounter);
-            Rate impliedRate() const;
+                              const DayCounter& dayCounter);
+            double impliedQuote() const;
             DiscountFactor discountGuess() const;
             void setTermStructure(TermStructure*);
             Date maturity() const;
@@ -108,9 +107,9 @@ namespace QuantLib {
             int settlementDays_;
             int n_;
             TimeUnit units_;
-            Handle<Calendar> calendar_;
+            Calendar calendar_;
             RollingConvention convention_;
-            Handle<DayCounter> dayCounter_;
+            DayCounter dayCounter_;
             Date settlement_, maturity_;
             double yearFraction_;
         };
@@ -126,12 +125,11 @@ namespace QuantLib {
           public:
             FraRateHelper(const RelinkableHandle<MarketElement>& rate,
                           int settlementDays,
-                          int monthsToStart,
-                          int monthsToEnd,
-                          const Handle<Calendar>& calendar,
+                          int monthsToStart, int monthsToEnd,
+                          const Calendar& calendar,
                           RollingConvention convention,
-                          const Handle<DayCounter>& dayCounter);
-            Rate impliedRate() const;
+                          const DayCounter& dayCounter);
+            double impliedQuote() const;
             DiscountFactor discountGuess() const;
             void setTermStructure(TermStructure*);
             Date maturity() const;
@@ -139,9 +137,9 @@ namespace QuantLib {
             int settlementDays_;
             int monthsToStart_, monthsToEnd_;
             TimeUnit units_;
-            Handle<Calendar> calendar_;
+            Calendar calendar_;
             RollingConvention convention_;
-            Handle<DayCounter> dayCounter_;
+            DayCounter dayCounter_;
             Date settlement_, start_, maturity_;
             double yearFraction_;
         };
@@ -157,19 +155,19 @@ namespace QuantLib {
                               const Date& ImmDate,
                               int settlementDays,
                               int nMonths,
-                              const Handle<Calendar>& calendar,
+                              const Calendar& calendar,
                               RollingConvention convention,
-                              const Handle<DayCounter>& dayCounter);
-            Rate impliedRate() const;
+                              const DayCounter& dayCounter);
+            double impliedQuote() const;
             DiscountFactor discountGuess() const;
             Date maturity() const;
           private:
             Date ImmDate_;
             int settlementDays_;
             int nMonths_;
-            Handle<Calendar> calendar_;
+            Calendar calendar_;
             RollingConvention convention_;
-            Handle<DayCounter> dayCounter_;
+            DayCounter dayCounter_;
             Date maturity_;
             double yearFraction_;
         };
@@ -186,26 +184,26 @@ namespace QuantLib {
             SwapRateHelper(const RelinkableHandle<MarketElement>& rate,
                            int settlementDays,
                            int lengthInYears,
-                           const Handle<Calendar>& calendar,
+                           const Calendar& calendar,
                            RollingConvention convention,
                            // fixed leg
                            int fixedFrequency,
                            bool fixedIsAdjusted,
-                           const Handle<DayCounter>& fixedDayCount,
+                           const DayCounter& fixedDayCount,
                            // floating leg
                            int floatingFrequency);
-            Rate impliedRate() const;
+            double impliedQuote() const;
             // double discountGuess() const; // null for the time being
             Date maturity() const;
             void setTermStructure(TermStructure*);
           private:
             int settlementDays_;
             int lengthInYears_;
-            Handle<Calendar> calendar_;
+            Calendar calendar_;
             RollingConvention convention_;
             int fixedFrequency_, floatingFrequency_;
             bool fixedIsAdjusted_;
-            Handle<DayCounter> fixedDayCount_;
+            DayCounter fixedDayCount_;
             Date settlement_;
             Handle<Instruments::SimpleSwap> swap_;
             RelinkableHandle<TermStructure> termStructureHandle_;

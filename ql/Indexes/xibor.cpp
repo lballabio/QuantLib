@@ -82,13 +82,13 @@ namespace QuantLib {
             }
             Date endDate = fixingDate.plus(n_,units_);
             if (isAdjusted_)
-                endDate = calendar_->roll(endDate,rollingConvention_);
+                endDate = calendar_.roll(endDate,rollingConvention_);
             DiscountFactor fixingDiscount =
                 termStructure_->discount(fixingDate);
             DiscountFactor endDiscount =
                 termStructure_->discount(endDate);
             double fixingPeriod =
-                dayCounter_->yearFraction(fixingDate, endDate);
+                dayCounter_.yearFraction(fixingDate, endDate);
             return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
         }
 

@@ -41,36 +41,54 @@ namespace QuantLib {
     namespace DayCounters {
 
         //! 30/360 day count convention
+        /*! The day count can be calculated according to US, European, or 
+            Italian conventions.
+        */
         class Thirty360 : public DayCounter {
           public:
             enum Convention { USA, European, Italian };
-            explicit Thirty360(Convention c = USA)
-            : convention_(c) {}
-            //! \name DayCounter interface
-            //@{
-            std::string name() const;
-            int dayCount(const Date& d1, const Date& d2) const;
-            Time yearFraction(const Date& d1, const Date& d2,
-              const Date& refPeriodStart = Date(), 
-              const Date& refPeriodEnd = Date()) const;
-            //@}
           private:
             class Thirty360Factory : public DayCounter::factory {
               public:
                 Thirty360Factory(Convention c) : convention_(c) {}
-                Handle<DayCounter> create() const {
-                    return Handle<DayCounter>(new Thirty360(convention_));
+                DayCounter create() const {
+                    return Thirty360(convention_);
                 }
               private:
                 Convention convention_;
             };
+            class Thirty360USImpl : public DayCounter::DayCounterImpl {
+              public:
+                std::string name() const { return std::string("30/360");}
+                int dayCount(const Date& d1, const Date& d2) const;
+                Time yearFraction(const Date& d1, const Date& d2,
+                    const Date&, const Date&) const {
+                        return dayCount(d1,d2)/360.0; }
+            };
+            class Thirty360EuImpl : public DayCounter::DayCounterImpl {
+              public:
+                std::string name() const { return std::string("30/360eu");}
+                int dayCount(const Date& d1, const Date& d2) const;
+                Time yearFraction(const Date& d1, const Date& d2,
+                    const Date&, const Date&) const {
+                        return dayCount(d1,d2)/360.0; }
+            };
+            class Thirty360ItImpl : public DayCounter::DayCounterImpl {
+              public:
+                std::string name() const { return std::string("30/360it");}
+                int dayCount(const Date& d1, const Date& d2) const;
+                Time yearFraction(const Date& d1, const Date& d2,
+                    const Date&, const Date&) const {
+                        return dayCount(d1,d2)/360.0; }
+            };
+            static Handle<DayCounterImpl> implementation(Convention c);
           public:
+            Thirty360(Convention c = Thirty360::USA)
+            : DayCounter(implementation(c)) {}
             //! returns a factory of 30/360 day counters
             Handle<factory> getFactory(Convention c) const {
                 return Handle<factory>(new Thirty360Factory(c));
             }
-          private:
-            Convention convention_;
         };
 
     }
