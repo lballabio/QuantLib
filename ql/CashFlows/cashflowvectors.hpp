@@ -73,6 +73,7 @@ namespace QuantLib {
                 RollingConvention rollingConvention,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<Indexes::Xibor>& index,
+                int fixingDays,
                 const std::vector<Spread>& spreads = std::vector<Spread>(),
                 const Date& stubDate = Date());
         };

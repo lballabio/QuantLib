@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2001 QuantLib Group
  *
@@ -45,12 +44,14 @@ namespace QuantLib {
           const Handle<Xibor>& index, 
           const RelinkableHandle<TermStructure>& termStructure,
           const Date& startDate, const Date& endDate,
-          Spread spread, 
+          int fixingDays, Spread spread, 
           const Date& refPeriodStart, const Date& refPeriodEnd)
         : Coupon(nominal, index->calendar(),index->rollingConvention(),
               index->dayCounter(), startDate, endDate,
               refPeriodStart, refPeriodEnd), 
-          termStructure_(termStructure), index_(index), spread_(spread) {
+          termStructure_(termStructure), index_(index), fixingDays_(fixingDays),
+          spread_(spread) 
+        {
             termStructure_.registerObserver(this);
         }
 
@@ -58,20 +59,21 @@ namespace QuantLib {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set to par coupon");
             Date settlementDate = termStructure_->settlementDate();
-            if (startDate_ < settlementDate) {
+            Date fixingDate = startDate_ - fixingDays_;
+            if (fixingDate < settlementDate) {
                 // must have been fixed
                 Rate pastFixing = XiborManager::getHistory(
-                    index_->name())[startDate_];
+                    index_->name())[fixingDate];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + index_->name() + " fixing for " +
-                        DateFormatter::toString(startDate_));
+                        DateFormatter::toString(fixingDate));
                 return (pastFixing+spread_)*accrualPeriod()*nominal();
             }
-            if (startDate_ == settlementDate) {
+            if (fixingDate == settlementDate) {
                 // might have been fixed
                 try {
                     Rate pastFixing = XiborManager::getHistory(
-                        index_->name())[startDate_];
+                        index_->name())[fixingDate];
                     if (pastFixing != Null<double>())
                         return (pastFixing+spread_) * 
                             accrualPeriod() * nominal();
@@ -82,14 +84,11 @@ namespace QuantLib {
                 }
             }
             DiscountFactor startDiscount =
-                termStructure_->discount(startDate_);
+                termStructure_->discount(startDate_ - fixingDays_);
             DiscountFactor endDiscount =
-                termStructure_->discount(endDate_);
-            if (spread_ == 0.0)
-                return (startDiscount/endDiscount-1.0) * nominal();
-            else
-                return ((startDiscount/endDiscount-1.0) +
-                    spread_*accrualPeriod()) * nominal();
+                termStructure_->discount(endDate_ - fixingDays_);
+            return ((startDiscount/endDiscount-1.0) +
+                spread_*accrualPeriod()) * nominal();
         }
 
     }

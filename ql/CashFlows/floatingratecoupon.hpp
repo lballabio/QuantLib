@@ -53,6 +53,7 @@ namespace QuantLib {
                 const Handle<Indexes::Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Date& startDate, const Date& endDate,
+                int fixingDays,
                 Spread spread = 0.0,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date());
@@ -74,6 +75,7 @@ namespace QuantLib {
             RelinkableHandle<TermStructure> termStructure_;
             Handle<Indexes::Xibor> index_;
             Spread spread_;
+            int fixingDays_;
         };
 
 
