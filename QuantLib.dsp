@@ -1111,6 +1111,14 @@ SOURCE=.\ql\Solvers1D\secant.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\affinetermstructure.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\affinetermstructure.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\flatforward.hpp
 # End Source File
 # Begin Source File

@@ -15,8 +15,10 @@ INCLUDE_DIR    = ..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
-OBJS = piecewiseflatforward.obj$(_D) \
-       ratehelpers.obj$(_D)
+OBJS = \
+    affinetermstructure.obj$(_D) \
+    piecewiseflatforward.obj$(_D) \
+    ratehelpers.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
