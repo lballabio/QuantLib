@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/09 19:21:09  lballabio
+    removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
+
     Revision 1.7  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -78,10 +81,11 @@ namespace QuantLib {
 
     // comparison based on name
 
-    QL_DECLARE_TEMPLATE_SPECIALIZATION(
-    bool operator==(const Handle<Currency>&, const Handle<Currency>&))
-    QL_DECLARE_TEMPLATE_SPECIALIZATION(
-    bool operator!=(const Handle<Currency>&, const Handle<Currency>&))
+    QL_TEMPLATE_SPECIALIZATION
+    bool operator==(const Handle<Currency>&, const Handle<Currency>&);
+    
+    QL_TEMPLATE_SPECIALIZATION
+    bool operator!=(const Handle<Currency>&, const Handle<Currency>&);
 
 
     // inline definitions
@@ -94,14 +98,16 @@ namespace QuantLib {
         \relates Currency
     */
     QL_TEMPLATE_SPECIALIZATION
-    inline bool operator==(const Handle<Currency>& c1, const Handle<Currency>& c2) {
-        return (c1->name() == c2->name());
+    inline bool operator==(const Handle<Currency>& c1, 
+        const Handle<Currency>& c2) {
+            return (c1->name() == c2->name());
     }
 
     /*! \relates Currency */
     QL_TEMPLATE_SPECIALIZATION
-    inline bool operator!=(const Handle<Currency>& c1, const Handle<Currency>& c2) {
-        return (c1->name() != c2->name());
+    inline bool operator!=(const Handle<Currency>& c1, 
+        const Handle<Currency>& c2) {
+            return (c1->name() != c2->name());
     }
 
 }

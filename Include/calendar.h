@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/09 19:21:09  lballabio
+    removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
+
     Revision 1.7  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -77,10 +80,11 @@ namespace QuantLib {
         Date advance(const Date&, int n, TimeUnit unit, bool modified = false) const;
     };
 
-    QL_DECLARE_TEMPLATE_SPECIALIZATION(
-    bool operator==(const Handle<Calendar>&, const Handle<Calendar>&))
-    QL_DECLARE_TEMPLATE_SPECIALIZATION(
-    bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&))
+    QL_TEMPLATE_SPECIALIZATION
+    bool operator==(const Handle<Calendar>&, const Handle<Calendar>&);
+    
+    QL_TEMPLATE_SPECIALIZATION
+    bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&);
 
     namespace Calendars {
 
@@ -102,14 +106,16 @@ namespace QuantLib {
         \relates Calendar
     */
     QL_TEMPLATE_SPECIALIZATION
-    inline bool operator==(const Handle<Calendar>& h1, const Handle<Calendar>& h2) {
-        return (h1->name() == h2->name());
+    inline bool operator==(const Handle<Calendar>& h1, 
+        const Handle<Calendar>& h2) {
+            return (h1->name() == h2->name());
     }
 
     /*! \relates Calendar */
     QL_TEMPLATE_SPECIALIZATION
-    inline bool operator!=(const Handle<Calendar>& h1, const Handle<Calendar>& h2) {
-        return (h1->name() != h2->name());
+    inline bool operator!=(const Handle<Calendar>& h1, 
+        const Handle<Calendar>& h2) {
+            return (h1->name() != h2->name());
     }
 
 }

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/02/09 19:21:09  lballabio
+    removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
+
     Revision 1.6  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -70,10 +73,11 @@ namespace QuantLib {
     };
 
     // comparison based on name
-    QL_DECLARE_TEMPLATE_SPECIALIZATION(
-    bool operator==(const Handle<DayCounter>&, const Handle<DayCounter>&))
-    QL_DECLARE_TEMPLATE_SPECIALIZATION(
-    bool operator!=(const Handle<DayCounter>&, const Handle<DayCounter>&))
+    QL_TEMPLATE_SPECIALIZATION
+    bool operator==(const Handle<DayCounter>&, const Handle<DayCounter>&);
+    
+    QL_TEMPLATE_SPECIALIZATION
+    bool operator!=(const Handle<DayCounter>&, const Handle<DayCounter>&);
 
 
     // inline definitions
@@ -82,14 +86,16 @@ namespace QuantLib {
         \relates DayCounter
     */
     QL_TEMPLATE_SPECIALIZATION
-    inline bool operator==(const Handle<DayCounter>& h1, const Handle<DayCounter>& h2) {
-        return (h1->name() == h2->name());
+    inline bool operator==(const Handle<DayCounter>& h1, 
+        const Handle<DayCounter>& h2) {
+            return (h1->name() == h2->name());
     }
 
     /*! \relates DayCounter */
     QL_TEMPLATE_SPECIALIZATION
-    inline bool operator!=(const Handle<DayCounter>& h1, const Handle<DayCounter>& h2) {
-        return (h1->name() != h2->name());
+    inline bool operator!=(const Handle<DayCounter>& h1, 
+        const Handle<DayCounter>& h2) {
+            return (h1->name() != h2->name());
     }
 
 }
