@@ -2,7 +2,7 @@
 # $Source$
 
 #
-# makefile for QuantLib under Borland C++
+# makefile for QuantLib static library under Borland C++
 #
 
 .autodepend
@@ -14,18 +14,10 @@
 !else
     OUTPUT_DIR = .\Release
 !endif
-PYTHON_DIR     = ..\Python
-SWIG_DIR       = ..\Swig
 SOURCES_DIR    = ..\Sources
 INCLUDE_DIR    = ..\Include
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
-!if "$(PYTHON_HOME)" == ""
-!message Please set the PYTHON_HOME environment variable to the absolute path of your Python installation (or any string if you don't plan to use Python).
-!error terminated
-!endif
-PYTHON_INCLUDE = "$(PYTHON_HOME)"\include
-PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 
 # Object files
 CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj \
@@ -111,14 +103,11 @@ WIN_OBJS         = c0d32.obj
 
 # Libraries
 WIN_LIBS         = import32.lib cw32mt.lib
-PYTHON_BCC_LIB   = bccpython.lib
 
 # Tools to be used
 CC        = bcc32
-LINK      = ilink32
 TLIB      = tlib
 COFF2OMF  = coff2omf
-SWIG      = swig
 DOXYGEN   = doxygen
 LATEX     = latex
 PDFLATEX  = pdflatex
@@ -141,15 +130,9 @@ CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) \
     -I$(INCLUDE_DIR)\Solvers1D \
     -I$(INCLUDE_DIR)\TermStructures \
     -I$(INCLUDE_DIR)\Utilities \
-    -I$(PYTHON_INCLUDE) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
-!endif
-
-LINK_OPTS    = -q -x -L$(BCC_LIBS)
-!ifdef DEBUG
-LINK_OPTS    = $(LINK_OPTS) -v
 !endif
 
 TLIB_OPTS    = /P32
@@ -167,73 +150,9 @@ TEX_OPTS     = --quiet --pool-size=1000000
 # QuantLib library
 QuantLib: $(OUTPUT_DIR)\QuantLib.lib
 
-# Python module
-Python: $(PYTHON_DIR)\QuantLibc.dll
-
-$(PYTHON_DIR)\QuantLibc.dll::   $(OUTPUT_DIR) \
-                                $(OUTPUT_DIR)\QuantLib.lib \
-                                $(OUTPUT_DIR)\quantlib_wrap.obj \
-                                $(PYTHON_BCC_LIB)
-    echo Linking Python module...
-    $(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj \
-        $(WIN_OBJS), \
-        $(PYTHON_DIR)\QuantLibc.dll,, \
-        $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), \
-        QuantLibc.def
-    del $(PYTHON_DIR)\QuantLibc.ilc
-    del $(PYTHON_DIR)\QuantLibc.ild
-    del $(PYTHON_DIR)\QuantLibc.ilf
-    del $(PYTHON_DIR)\QuantLibc.ils
-    echo Build completed
-
 # make sure the output directory exists
 $(OUTPUT_DIR):
     if not exist $(OUTPUT_DIR) md $(OUTPUT_DIR)
-
-# Python lib in OMF format
-$(PYTHON_BCC_LIB):
-    if exist $(PYTHON_LIBS)\python15.lib $(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
-    if exist $(PYTHON_LIBS)\python20.lib $(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
-
-# Wrapper functions
-$(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
-    echo Compiling wrappers...
-    $(CC) $(CC_OPTS) -vi- -w-8057 -w-8004 -w-8060 \
-    -D__WIN32__ -DMSC_CORE_BC_EXT \
-    $(PYTHON_DIR)\quantlib_wrap.cpp
-
-$(PYTHON_DIR)\quantlib_wrap.cpp:: \
-    $(SWIG_DIR)\QuantLib.i \
-    $(SWIG_DIR)\Barrier.i \
-    $(SWIG_DIR)\BoundaryConditions.i \
-    $(SWIG_DIR)\Calendars.i \
-    $(SWIG_DIR)\Currencies.i \
-    $(SWIG_DIR)\Date.i \
-    $(SWIG_DIR)\DayCounters.i \
-    $(SWIG_DIR)\Distributions.i \
-    $(SWIG_DIR)\Financial.i \
-    $(SWIG_DIR)\History.i \
-    $(SWIG_DIR)\Instruments.i \
-    $(SWIG_DIR)\Interpolation.i \
-    $(SWIG_DIR)\Matrix.i \
-    $(SWIG_DIR)\MontecarloPricers.i \
-    $(SWIG_DIR)\MontecarloTools.i \
-    $(SWIG_DIR)\Operators.i \
-    $(SWIG_DIR)\Options.i \
-    $(SWIG_DIR)\Pricers.i \
-    $(SWIG_DIR)\QLArray.i \
-    $(SWIG_DIR)\RandomGenerators.i \
-    $(SWIG_DIR)\RiskStatistics.i \
-    $(SWIG_DIR)\Solvers1D.i \
-    $(SWIG_DIR)\Statistics.i \
-    $(SWIG_DIR)\String.i \
-    $(SWIG_DIR)\TermStructures.i \
-    $(SWIG_DIR)\Vectors.i
-    echo Generating wrappers...
-    $(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) \
-            -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
-    copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
-    del .\QuantLib.py
 
 # QuantLib library
 $(OUTPUT_DIR)\QuantLib.lib:: Core Calendars DayCounters FiniteDifferences Math MonteCarlo Pricers Solvers1D TermStructures
@@ -364,16 +283,14 @@ $(OUTPUT_DIR)\secant.obj: $(SOURCES_DIR)\Solvers1D\secant.cpp
 
 # Term structures
 TermStructures: $(OUTPUT_DIR) $(TERMSTRUC_OBJS)
-$(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp
+$(OUTPUT_DIR)\piecewiseconstantforwards.obj: \
+                $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp
 
 
 # Clean up
 clean::
-    if exist $(PYTHON_BCC_LIB)            del $(PYTHON_BCC_LIB)
-    if exist $(PYTHON_DIR)\QuantLib.pyc   del $(PYTHON_DIR)\QuantLib.pyc
-    if exist $(PYTHON_DIR)\QuantLibc.dll  del $(PYTHON_DIR)\QuantLibc.dll
-    if exist $(PYTHON_DIR)\QuantLibc.tds  del $(PYTHON_DIR)\QuantLibc.tds
-    if exist $(OUTPUT_DIR) rd /s /q $(OUTPUT_DIR)
+    if exist .\Debug    rd /s /q .\Debug
+    if exist .\Release  rd /s /q .\Release
 
 
 # Documentation
@@ -412,33 +329,5 @@ alldocs::
     $(MAKEINDEX) refman.idx
     $(LATEX) $(TEX_OPTS) refman
     $(DVIPS) refman
-    cd ..\..\Win
-
-# Install PyQuantLib
-install::
-    copy $(PYTHON_DIR)\QuantLib.py "$(PYTHON_HOME)"\QuantLib.py
-    copy $(PYTHON_DIR)\QuantLibc.dll "$(PYTHON_HOME)"\QuantLibc.dll
-
-# Test PyQuantLib
-test::
-    cd ..\Python\Tests
-    python american_option.py -b
-    python barrier_option.py -b
-    python binary_option.py -b
-    python date.py -b
-    python distributions.py -b
-    python everest_option.py -b
-    python european_option.py -b
-    python european_with_dividends.py -b
-    python finite_difference_european.py -b
-    python get_covariance.py -b
-    python himalaya_option.py -b
-    python implied_volatility.py -b
-    python montecarlo_pricers.py -b
-    python plain_basket_option.py -b
-    python random_generators.py -b
-    python risk_statistics.py -b
-    python statistics.py -b
-    python term_structures.py -b
     cd ..\..\Win
 
