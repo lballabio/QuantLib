@@ -1532,6 +1532,14 @@ SOURCE=.\ql\Pricers\treeswaption.hpp
 # Begin Group "Asian"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\analyticasianengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Asian\asianengines.hpp
+# End Source File
 # End Group
 # Begin Group "Barrier"
 
@@ -1560,10 +1568,6 @@ SOURCE=.\ql\PricingEngines\Cliquet\cliquetengines.hpp
 
 SOURCE=.\ql\PricingEngines\Forward\forwardengines.hpp
 # End Source File
-# End Group
-# Begin Group "Lookback"
-
-# PROP Default_Filter ""
 # End Group
 # Begin Group "Quanto"
 
@@ -1625,6 +1629,22 @@ SOURCE=.\ql\PricingEngines\Vanilla\mcvanillaengine.hpp
 SOURCE=.\ql\PricingEngines\Vanilla\vanillaengines.hpp
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\blackformula.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\genericmodelengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\mcsimulation.hpp
+# End Source File
 # End Group
 # Begin Group "RandomNumbers"
 
