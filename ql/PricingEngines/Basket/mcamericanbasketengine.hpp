@@ -19,8 +19,8 @@
     \brief Least-square Monte Carlo engines
 */
 
-#ifndef quantlib_american_montecarlo_engine_h
-#define quantlib_american_montecarlo_engine_h
+#ifndef quantlib_american_basket_montecarlo_engine_h
+#define quantlib_american_basket_montecarlo_engine_h
 
 #include <ql/grid.hpp>
 #include <ql/Math/svd.hpp>
