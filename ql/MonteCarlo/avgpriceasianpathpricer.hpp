@@ -40,7 +40,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! path pricer for average price Asian option
+        //! %path pricer for average price Asian option
         class AveragePriceAsianPathPricer 
         : public EuropeanPathPricer {
           public:

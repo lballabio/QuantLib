@@ -40,7 +40,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! path pricer for pagoda options
+        //! %path pricer for pagoda options
         class PagodaPathPricer : public MultiPathPricer {
           public:
             PagodaPathPricer() {}

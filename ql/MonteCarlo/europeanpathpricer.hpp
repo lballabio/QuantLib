@@ -41,7 +41,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! path pricer for European options
+        //! %path pricer for European options
         class EuropeanPathPricer : public PathPricer {
           public:
             EuropeanPathPricer(Option::Type type, double underlying,

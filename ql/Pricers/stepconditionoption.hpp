@@ -41,7 +41,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! Option requiring additional code to be executed at each time step
+        //! %option executing additional code at each time step
         class StepConditionOption : public BSMNumericalOption {
           protected:
             // constructor
