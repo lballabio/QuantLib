@@ -417,6 +417,14 @@ SOURCE=.\ql\Instruments\swap.cpp
 
 SOURCE=.\ql\Instruments\swap.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\swaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\swaption.hpp
+# End Source File
 # End Group
 # Begin Group "Math"
 
@@ -631,6 +639,14 @@ SOURCE=.\ql\Patterns\observable.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Pricers\analyticalcapfloor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\analyticalcapfloor.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\barrieroption.cpp
 # End Source File
 # Begin Source File
@@ -771,6 +787,14 @@ SOURCE=.\ql\Pricers\fdstepconditionoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\jamshidianswaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\jamshidianswaption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\mcbasket.cpp
 # End Source File
 # Begin Source File
@@ -844,6 +868,14 @@ SOURCE=.\ql\Pricers\singleassetoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\singleassetoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\treecapfloor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\treecapfloor.hpp
 # End Source File
 # Begin Source File
 
@@ -1022,6 +1054,14 @@ SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollrossplus.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\coxingersollrossplus.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullwhite.cpp
 # End Source File
 # Begin Source File
@@ -1049,6 +1089,30 @@ SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.cpp
 SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaptionhelper.hpp
 # End Source File
 # End Group
+# Begin Group "TwoFactorModels"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\TwoFactorModels\g2.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\TwoFactorModels\g2.hpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\calibrationhelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\calibrationhelper.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\grid.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\grid.hpp
@@ -1063,15 +1127,15 @@ SOURCE=.\ql\InterestRateModelling\model.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\InterestRateModelling\onefactormodel.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\InterestRateModelling\onefactormodel.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\shortrateprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\timefunction.cpp
 # End Source File
 # Begin Source File
 
@@ -1084,6 +1148,10 @@ SOURCE=.\ql\InterestRateModelling\trinomialtree.cpp
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\trinomialtree.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\twofactormodel.hpp
 # End Source File
 # End Group
 # Begin Group "Optimization"
@@ -1161,6 +1229,10 @@ SOURCE=.\ql\argsandresults.hpp
 # Begin Source File
 
 SOURCE=.\ql\array.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\asset.hpp
 # End Source File
 # Begin Source File
 
