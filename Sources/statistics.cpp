@@ -12,8 +12,12 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 QL_BEGIN_NAMESPACE(QuantLib)
 
 Statistics::Statistics() {
-  theMin = std::numeric_limits<double>::min();
-  theMax = std::numeric_limits<double>::max();
+  reset();
+}
+
+void Statistics::reset() {
+  theMin = std::numeric_limits<double>::max();
+  theMax = std::numeric_limits<double>::min();
   theSampleNumber = 0;
   theSampleWeight = 0.0;
   theSum = 0.0;
