@@ -16,7 +16,7 @@
 */
 
 /*! \file discountcurve.hpp
-  \brief pre-bootstrapped discount factor structure
+    \brief pre-bootstrapped discount factor structure
 */
 
 #ifndef quantlib_discount_curve_h
@@ -59,10 +59,7 @@ namespace QuantLib {
         mutable std::vector<Date> dates_;
         mutable std::vector<DiscountFactor> discounts_;
         mutable std::vector<Time> times_;
-	typedef Math::Interpolation <
-	    std::vector<Time>::const_iterator,
-	    std::vector<DiscountFactor>::const_iterator > GenericInterp;
-	mutable boost::shared_ptr<GenericInterp> interpolation_;
+        mutable Interpolation interpolation_;
     };
 
     // inline definitions
