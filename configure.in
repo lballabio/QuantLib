@@ -137,8 +137,9 @@ AC_OUTPUT(Makefile \
     ql/TermStructures/Makefile \
     ql/Utilities/Makefile \
     Examples/Makefile \
-    Examples/Parities/Makefile \
     Examples/DiscreteHedging/Makefile \
+    Examples/Parities/Makefile \
+    Examples/Swap/Makefile \
     quantlib-config \
     )
 
