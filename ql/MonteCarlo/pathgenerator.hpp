@@ -62,7 +62,7 @@ namespace QuantLib {
         TimeGrid timeGrid_;
         Handle<DiffusionProcess> diffProcess_;
         mutable sample_type next_;
-        Handle<BrownianBridge<GSG> > bb_;
+        BrownianBridge<GSG> bb_;
         mutable double asset_;
     };
 
@@ -77,7 +77,7 @@ namespace QuantLib {
       dimension_(generator_.dimension()),
       timeGrid_(length, timeSteps), diffProcess_(diffProcess),
       next_(Path(timeGrid_),1.0),
-      bb_(new BrownianBridge<GSG>(diffProcess_, timeGrid_, generator_)) {
+      bb_(diffProcess_, timeGrid_, generator_) {
         QL_REQUIRE(dimension_==timeSteps,
                    "PathGenerator::PathGenerator :"
                    "sequence generator dimensionality ("
@@ -97,7 +97,7 @@ namespace QuantLib {
       dimension_(generator_.dimension()),
       timeGrid_(timeGrid), diffProcess_(diffProcess),
       next_(Path(timeGrid_),1.0),
-      bb_(new BrownianBridge<GSG>(diffProcess_, timeGrid_, generator_)) {
+      bb_(diffProcess_, timeGrid_, generator_) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "PathGenerator::PathGenerator :"
                    "sequence generator dimensionality ("
@@ -114,7 +114,7 @@ namespace QuantLib {
 
         if (brownianBridge_) {
             typedef typename BrownianBridge<GSG>::sample_type sequence_type;
-            const sequence_type& stdDev_ = bb_->next();
+            const sequence_type& stdDev_ = bb_.next();
 
             next_.weight = stdDev_.weight;
 
@@ -131,7 +131,6 @@ namespace QuantLib {
                 next_.value.diffusion()[i] =
                     stdDev_.value[i] - stdDev_.value[i-1];
             }
-
             return next_;
         } else {
             typedef typename GSG::sample_type sequence_type;
@@ -164,7 +163,7 @@ namespace QuantLib {
 
         if (brownianBridge_) {
             typedef typename BrownianBridge<GSG>::sample_type sequence_type;
-            const sequence_type& stdDev_ = bb_->last();
+            const sequence_type& stdDev_ = bb_.last();
 
             next_.weight = stdDev_.weight;
 
