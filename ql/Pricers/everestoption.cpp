@@ -48,7 +48,7 @@ namespace QuantLib {
             const Math::Matrix &covariance, Rate riskFreeRate,
             Time residualTime, unsigned int samples, bool antitheticVariance,
             long seed)
-        : MultiFactorPricer(samples, seed) {
+        : McMultiFactorPricer(samples, seed) {
             unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
                 "EverestOption: covariance matrix not square");

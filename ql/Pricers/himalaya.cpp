@@ -49,7 +49,7 @@ namespace QuantLib {
             Rate riskFreeRate, double strike,
             const std::vector<Time>& times,
             unsigned int samples, bool antitheticVariance, long seed)
-        : MultiFactorPricer(samples, seed){
+        : McMultiFactorPricer(samples, seed){
             unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
                 "Himalaya: covariance matrix not square");

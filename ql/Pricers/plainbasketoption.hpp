@@ -41,7 +41,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! simple example of multi-factor Monte Carlo pricer
-        class PlainBasketOption : public MultiFactorPricer {
+        class PlainBasketOption : public McMultiFactorPricer {
           public:
             PlainBasketOption(const Array& underlying,
                               const Array& dividendYield,

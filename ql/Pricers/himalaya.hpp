@@ -47,7 +47,7 @@ namespace QuantLib {
             N periods the option pays the max between the strike and the
             average of the best performers.
         */
-        class Himalaya : public MultiFactorPricer {
+        class Himalaya : public McMultiFactorPricer {
         public:
             Himalaya(const Array& underlying,
                      const Array& dividendYield,

@@ -51,7 +51,7 @@ namespace QuantLib {
             Rate riskFreeRate,
             const std::vector<Time>& times,
             unsigned int samples, bool antitheticVariance, long seed)
-        : MultiFactorPricer(samples, seed){
+        : McMultiFactorPricer(samples, seed){
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "PagodaOption: covariance matrix not square");
             QL_REQUIRE(covariance.rows() == portfolio.size(),

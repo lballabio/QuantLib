@@ -44,7 +44,7 @@ namespace QuantLib {
         /*! The payoff of an Everest option is simply given by the
             final price / initial price ratio of the worst performer
         */
-        class EverestOption : public MultiFactorPricer {
+        class EverestOption : public McMultiFactorPricer {
           public:
             EverestOption(const Array& dividendYield,
                           const Math::Matrix& covariance,

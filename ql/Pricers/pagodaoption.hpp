@@ -46,7 +46,7 @@ namespace QuantLib {
             If the performance of the portfolio is below then the payoff
             is null.
         */
-        class PagodaOption : public MultiFactorPricer {
+        class PagodaOption : public McMultiFactorPricer {
           public:
             PagodaOption(const Array& portfolio,
                          double fraction,
