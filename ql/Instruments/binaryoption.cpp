@@ -143,7 +143,7 @@ namespace QuantLib {
                    "BinaryOption::setupArguments : "
                    "Arguments wrong type");
 
-        arguments->payoff = Handle<Payoff>(
+        arguments->payoff = Handle<PlainVanillaPayoff>(
                                       new PlainVanillaPayoff(type_,barrier_));
 
         arguments->binaryType = binaryType_;

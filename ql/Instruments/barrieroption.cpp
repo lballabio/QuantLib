@@ -122,7 +122,7 @@ namespace QuantLib {
                    "BarrierOption::setupArguments : "
                    "wrong argument type");
 
-        arguments->payoff = Handle<Payoff>(
+        arguments->payoff = Handle<PlainVanillaPayoff>(
                                        new PlainVanillaPayoff(type_,strike_));
 
         arguments->barrierType = barrierType_;
