@@ -105,32 +105,26 @@ SOURCE=..\Sources\DayCounters\thirty360italian.cpp
 # Begin Source File
 
 SOURCE=..\Sources\Calendars\frankfurt.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Calendars\london.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Calendars\milan.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Calendars\newyork.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Calendars\target.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Calendars\westerncalendar.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # End Group
 # Begin Group "Term Structures"
@@ -139,7 +133,6 @@ SOURCE=..\Sources\Calendars\westerncalendar.cpp
 # Begin Source File
 
 SOURCE=..\Sources\TermStructures\piecewiseconstantforwards.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # End Group
 # Begin Group "Operators"
@@ -164,7 +157,6 @@ SOURCE=..\Sources\Pricers\bsmamericanoption.cpp
 # Begin Source File
 
 SOURCE=..\Sources\Pricers\bsmeuropeanoption.cpp
-# ADD CPP /I "..\Sources" /I "..\Sources\Operators" /I "..\Sources\PDE"
 # End Source File
 # Begin Source File
 
@@ -215,6 +207,14 @@ SOURCE=..\Sources\date.cpp
 
 SOURCE=..\Sources\solver1d.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\Sources\statistics.cpp
+# End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\Sources\statistics.h
+# End Source File
 # End Target
 # End Project
