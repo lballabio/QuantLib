@@ -29,8 +29,6 @@
 #include <algorithm>
 #include <vector>
 
-#ifndef QL_PATCH_BORLAND
-
 namespace QuantLib {
 
     namespace MultiSplineDetails {
@@ -452,6 +450,16 @@ namespace QuantLib {
     //| N-dimensional cubic spline interpolation between discrete points
     /*! \test interpolated values are checked against the original
               function.
+
+        \todo - fix it for Borland compilation
+              - allow extrapolation as for the other interpolations
+              - investigate if and how to implement Hyman filters and
+                different boundary conditions
+
+        \bug a) cannot interpolate at the grid points on the boundary surface
+                of the N-dimensional region
+             b) it does not compile under Borland
+        
     */
     template <Size i> class MultiCubicSpline {
         typedef typename MultiSplineDetails::Int2Type<i>::c_spline c_spline;
@@ -552,8 +560,6 @@ namespace QuantLib {
     #endif
 
 }
-
-#endif  // QL_PATCH_BORLAND
 
 
 #endif
