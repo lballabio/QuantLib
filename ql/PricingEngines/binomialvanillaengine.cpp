@@ -28,7 +28,7 @@
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/Lattices/binomialtree.hpp>
 
-using QuantLib::Pricers::ExercisePayoff;
+using namespace QuantLib::Lattices;
 
 namespace QuantLib {
 
@@ -49,25 +49,33 @@ namespace QuantLib {
                 BlackScholesProcess(r, q, v, s0));
             switch(type_) {
                 case CoxRossRubinstein:
-                    tree = Handle<Lattices::Tree>(
-                        new Lattices::CoxRossRubinstein(bs, t, steps_));
+                    tree = Handle<Tree>(new
+                        Lattices::CoxRossRubinstein(bs, t, steps_));
                     break;
                 case JarrowRudd:
-                    tree = Handle<Lattices::Tree>(
-                        new Lattices::JarrowRudd(bs, t, steps_));
+                    tree = Handle<Tree>(new
+                        Lattices::JarrowRudd(bs, t, steps_));
                     break;
                 case EQP:
-                    tree = Handle<Lattices::Tree>(
-                        new Lattices::AdditiveEQPBinomialTree(bs, t, steps_));
+                    tree = Handle<Tree>(new
+                        Lattices::AdditiveEQPBinomialTree(bs, t, steps_));
                     break;
                 case Trigeorgis:
-                    tree = Handle<Lattices::Tree>(
-                        new Lattices::Trigeorgis(bs, t, steps_));
+                    tree = Handle<Tree>(new
+                        Lattices::Trigeorgis(bs, t, steps_));
                     break;
+                case Tian:
+                    tree = Handle<Tree>(new
+                        Lattices::Tian(bs, t, steps_));
+                    break;
+                default:
+                    throw IllegalArgumentError(
+                        "BinomialVanillaEngine::calculate :"
+                        "undefined binomial model");
             }
 
-            Handle<Lattices::Lattice> lattice(
-                new Lattices::BlackScholesLattice(tree, r, t, steps_));
+            Handle<Lattice> lattice(new
+                BlackScholesLattice(tree, r, t, steps_));
 
             Handle<DiscretizedAsset> option(
                 new DiscretizedVanillaOption(lattice,arguments_));
