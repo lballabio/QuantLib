@@ -52,6 +52,14 @@ namespace QuantLib {
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date maxDate() const { return maxDate_; }
+            double strikeDerivative(Time t, 
+                                    double strike, 
+                                    bool extrapolate = false) const {
+                return 0.0;}
+            double strikeSecondDerivative(Time t, 
+                                          double strike, 
+                                          bool extrapolate = false) const {
+                return 0.0;}
             // Observer interface
             void update();
           protected:

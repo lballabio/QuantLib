@@ -56,7 +56,19 @@ namespace QuantLib {
             double blackForwardVol(Time t1,
                                    Time t2,
                                    double,
-                                   bool) const;
+                                   bool extrapolate = false) const;
+            double timeDerivative(Time t, 
+                                  double, 
+                                  bool extrapolate = false) const {
+                return 0.0;}
+            double strikeDerivative(Time t, 
+                                    double strike, 
+                                    bool extrapolate = false) const {
+                return 0.0;}
+            double strikeSecondDerivative(Time t, 
+                                          double strike, 
+                                          bool extrapolate = false) const {
+                return 0.0;}
             // Observer interface
             void update();
           protected:
