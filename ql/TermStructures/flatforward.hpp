@@ -52,6 +52,8 @@ namespace QuantLib {
             DiscountFactor discountImpl(Time,
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
+	    Rate compoundForwardImpl(Time t, int compFreq,
+		bool extrapolate) const;
           private:
             Date todaysDate_, referenceDate_;
             DayCounter dayCounter_;
@@ -120,6 +122,17 @@ namespace QuantLib {
                 DoubleFormatter::toString(t) + ")");
             return forward_->value();
         }
+
+        inline Rate FlatForward::compoundForwardImpl(Time t, int compFreq, 
+						     bool extrapolate) const {
+	    double zy = zeroYieldImpl(t, extrapolate);
+	    if (compFreq == 0)
+	       return zy;
+	    if (t <= 1.0/compFreq)
+	       return (QL_EXP(zy*t)-1.0)/t;
+	    return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
+	}
+
 
     }
 

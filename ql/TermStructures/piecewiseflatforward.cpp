@@ -205,6 +205,16 @@ namespace QuantLib {
             QL_DUMMY_RETURN(Rate());
         }
 
+        Rate PiecewiseFlatForward::compoundForwardImpl(Time t, int compFreq, 
+	    bool extrapolate) const {
+		double zy = zeroYieldImpl(t, extrapolate);
+		if (compFreq == 0)
+		   return zy;
+		if (t <= 1.0/compFreq)
+		   return (QL_EXP(zy*t)-1.0)/t;
+		return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
+	}
+
         int PiecewiseFlatForward::referenceNode(Time t, 
                                                 bool extrapolate) const {
             QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),

@@ -87,6 +87,8 @@ namespace QuantLib {
             DiscountFactor discountImpl(Time,
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
+	    Rate compoundForwardImpl(Time t, int compFreq,
+		bool extrapolate) const;
           private:
             // inner classes
             // objective function for solver
