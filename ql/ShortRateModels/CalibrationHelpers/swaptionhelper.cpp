@@ -113,6 +113,8 @@ namespace QuantLib {
                 Size i;
                 for (i=0; i<params->exerciseTimes.size(); i++)
                     times.push_back(params->exerciseTimes[i]);
+                for (i=0; i<params->fixedResetTimes.size(); i++)
+                    times.push_back(params->fixedResetTimes[i]);
                 for (i=0; i<params->fixedPayTimes.size(); i++)
                     times.push_back(params->fixedPayTimes[i]);
                 for (i=0; i<params->floatingResetTimes.size(); i++)
