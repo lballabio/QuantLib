@@ -166,14 +166,14 @@ namespace QuantLib {
     }
 
     inline double IncrementalStatistics::min() const {
-        QL_REQUIRE(sampleNumber_>0,
-                   "IncrementalStatistics::min_() : empty sample");
+        QL_REQUIRE(samples() > 0,
+                   "IncrementalStatistics::min() : empty sample set");
         return min_;
     }
 
     inline double IncrementalStatistics::max() const {
-        QL_REQUIRE(sampleNumber_>0,
-                   "IncrementalStatistics::max_() : empty sample");
+        QL_REQUIRE(samples() > 0,
+                   "IncrementalStatistics::max() : empty sample set");
         return max_;
     }
 
