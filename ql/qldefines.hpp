@@ -49,7 +49,7 @@
 */
 
 //! version number
-#define QL_HEXVERSION 0x000201a0
+#define QL_HEX_VERSION 0x000201a0
 
 //! version string
 #define QL_VERSION 0.2.1a0
