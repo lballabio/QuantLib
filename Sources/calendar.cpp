@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.14  2001/03/01 11:37:07  lballabio
+    Fixed bug in advance(...,Days)
+
     Revision 1.13  2001/01/24 13:17:46  marmar
     style redefined
 
@@ -60,19 +63,22 @@ namespace QuantLib {
         return d1;
     }
 
-    Date Calendar::advance(const Date& d, int n, TimeUnit unit, bool modified) const {
+    Date Calendar::advance(const Date& d, int n, TimeUnit unit, 
+      bool modified) const {
         if (n == 0) {
             return roll(d,modified);
         } else if (unit == Days) {
             Date d1 = d;
-            if (n >= 0) {
-                while (n >= 0) {
+            if (n > 0) {
+                while (n > 0) {
+                    d1++;
                     while (isHoliday(d1))
                         d1++;
                     n--;
                 }
             } else {
-                while (n <= 0) {
+                while (n < 0) {
+                    d1--;
                     while(isHoliday(d1))
                         d1--;
                     n--;
@@ -81,11 +87,12 @@ namespace QuantLib {
             return d1;
         } else {
             Date d1 = d.plus(n,unit);
-            if (modified && d.month() != roll(d.plusDays(1)).month()    // i.e., d is end of month
+            if (modified && d.month() != roll(d.plusDays(1)).month() // EOM
               && (unit == Months || unit == Years)) {
                 Month m = d1.month();
-                Date firstOfNextMonth = (m == December ? Date(1,January,d1.year()+1) : Date(1,Month(m+1),d1.year()));
-                Date d1 = firstOfNextMonth.plusDays(-1);    // i.e., last day of this month
+                Date firstOfNextMonth = (m == December ? 
+                    Date(1,January,d1.year()+1) : Date(1,Month(m+1),d1.year()));
+                Date d1 = firstOfNextMonth.plusDays(-1);    // last of month
                 while (isHoliday(d1))
                     d1--;
             } else {
