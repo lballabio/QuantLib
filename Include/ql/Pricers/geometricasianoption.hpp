@@ -23,12 +23,16 @@
 */
 
 /*! \file geometricasianoption.hpp
+    \brief geometric Asian option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.5  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -45,7 +49,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! Geometric Asian option
+        //! geometric Asian option
         class GeometricAsianOption : public BSMEuropeanOption    {
            public:
             GeometricAsianOption(Type type, double underlying, double    strike,

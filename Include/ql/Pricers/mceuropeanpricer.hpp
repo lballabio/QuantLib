@@ -23,12 +23,16 @@
 */
 
 /*! \file mceuropeanpricer.hpp
+    \brief simple example of Monte Carlo pricer
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.6  2001/07/05 15:57:23  lballabio
 // Collected typedefs in a single file
 //

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.12  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
@@ -61,6 +64,10 @@
 #include "ql/currency.hpp"
 #include "ql/relinkablehandle.hpp"
 #include <vector>
+
+/*! \namespace QuantLib::TermStructures
+    \brief Concrete implementations of the TermStructure interface
+*/
 
 namespace QuantLib {
 

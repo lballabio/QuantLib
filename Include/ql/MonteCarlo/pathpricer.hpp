@@ -23,12 +23,16 @@
 */
 
 /*! \file pathpricer.hpp
-
+    \brief base class for single-path pricers
+    
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -46,9 +50,7 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! base class for single-path pricers
-        /*! PathPricer is the base class for an hierarchy of single-path 
-            pricers.
-            Given a path the value of an option is returned on that path.
+        /*! Given a path the value of an option is returned on that path.
         */
         class PathPricer {
           public:

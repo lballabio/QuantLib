@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.7  2001/07/13 14:29:08  sigmud
 // removed a few gcc compile warnings
 //
@@ -48,7 +51,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! Option value sampler
+        //! %Option value sampler
         /*! Given a path generator class PG, together with an instance 
             "samplePath", and a path pricer PP, again with an instance 
             "pathpricer", a sample generator OptionSample<PG, PP> returns, 

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -42,6 +45,7 @@
 
 namespace QuantLib {
 
+    //! Mathematical functions and classes
     namespace Math {
 
         //! %matrix used in linear algebra.

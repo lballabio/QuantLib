@@ -22,12 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file everestoption.hpp
+    \brief Everest-type option pricer
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.7  2001/07/05 15:57:23  lballabio
 // Collected typedefs in a single file
 //
@@ -52,7 +56,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! Everest-type option pricer.
+        //! Everest-type option pricer
         /*! The payoff of an Everest option is simply given by the
             final price / initial price ratio of the worst performer
         */

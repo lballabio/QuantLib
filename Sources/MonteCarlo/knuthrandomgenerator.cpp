@@ -23,13 +23,16 @@
 */
 
 /*! \file knuthrandomgenerator.cpp
-    \brief Knuth uniform random-number generator
+    \brief Knuth uniform random number generator
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.3  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.2  2001/07/04 08:05:15  uid37043
 // Worked around Visual C++ being off-standard again
 //

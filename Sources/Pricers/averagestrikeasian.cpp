@@ -23,12 +23,16 @@
 */
 
 /*! \file averagestrikeasian.cpp
+    \brief example of Monte Carlo pricer using a control variate
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.12  2001/07/13 15:25:13  marmar
 // MonteCarlo interface changed
 //

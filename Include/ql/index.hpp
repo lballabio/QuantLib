@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.8  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
@@ -53,6 +56,10 @@
 #include "ql/currency.hpp"
 #include "ql/daycounter.hpp"
 #include "ql/types.hpp"
+
+/*! \namespace QuantLib::Indexes
+    \brief Concrete implementations of the Index interface
+*/
 
 namespace QuantLib {
 

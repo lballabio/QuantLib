@@ -23,13 +23,16 @@
 */
 
 /*! \file bermudanoption.hpp
-    \brief Finite-difference evaluation of bermudan option
+    \brief Finite-difference evaluation of Bermudan option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.7  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.5  2001/07/05 12:35:09  enri
 // - added some static_cast<int>() to prevent gcc warnings
 // - added some virtual constructor (same reason)
@@ -41,16 +44,16 @@
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
-/*! \namespace QuantLib::Calendars
-    \brief Concrete implementations of the Calendar interface
-*/
-
 #ifndef quantlib_calendar_h
 #define quantlib_calendar_h
 
 #include "ql/date.hpp"
 #include "ql/handle.hpp"
 #include "ql/null.hpp"
+
+/*! \namespace QuantLib::Calendars
+    \brief Concrete implementations of the Calendar interface
+*/
 
 namespace QuantLib {
 

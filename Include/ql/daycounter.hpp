@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.4  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -37,16 +40,16 @@
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
-/*! \namespace QuantLib::DayCounters
-    \brief Concrete implementations of the DayCounter interface
-*/
-
 #ifndef quantlib_day_counter_h
 #define quantlib_day_counter_h
 
 #include "ql/date.hpp"
 #include "ql/handle.hpp"
 #include "ql/null.hpp"
+
+/*! \namespace QuantLib::DayCounters
+    \brief Concrete implementations of the DayCounter interface
+*/
 
 namespace QuantLib {
 

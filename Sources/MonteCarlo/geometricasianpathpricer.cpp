@@ -23,12 +23,16 @@
 */
 
 /*! \file geometricasianpathpricer.cpp
+    \brief path pricer for geometric Asian options
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.10  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //

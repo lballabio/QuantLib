@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.8  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -45,6 +48,20 @@
 
 /*! \mainpage
 
+    \htmlonly
+    <center>
+    <img src="QL-largish.jpg" alt="QuantLib">
+    <h2>A C++ open source library for quantitative finance</h2>
+    </center>
+    \endhtmlonly
+    
+    \latexonly
+    \begin{center}
+    \includegraphics[width=10cm]{QL-largish} \\
+    {\Large \bf A C++ open source library for quantitative finance}
+    \end{center}
+    \endlatexonly
+    
     \section copyright Copyright
     Copyright (C) 2000-2001 --- The %QuantLib Group
 

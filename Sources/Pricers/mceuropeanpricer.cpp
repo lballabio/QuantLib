@@ -23,12 +23,16 @@
 */
 
 /*! \file mceuropeanpricer.cpp
+    \brief simple example of Monte Carlo pricer
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.14  2001/07/13 15:25:13  marmar
 // MonteCarlo interface changed
 //

@@ -23,12 +23,16 @@
 */
 
 /*! \file avgpriceasianpathpricer.hpp
+    \brief path pricer for average price Asian option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -45,10 +49,11 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+        //! path pricer for average price Asian option
         class AveragePriceAsianPathPricer 
         : public EuropeanPathPricer {
           public:
-            AveragePriceAsianPathPricer(): EuropeanPathPricer() {}
+            AveragePriceAsianPathPricer() {}
             AveragePriceAsianPathPricer(Option::Type type,
                 double underlying, double strike, double discount);
             virtual double value(const Path &path) const;

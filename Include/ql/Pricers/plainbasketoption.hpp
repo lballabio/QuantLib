@@ -22,12 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file plainbasketoption.hpp
+    \brief simple example of multi-factor Monte Carlo pricer
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.7  2001/07/05 15:57:23  lballabio
 // Collected typedefs in a single file
 //
@@ -51,7 +55,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! Simple example of multi-factor Monte Carlo pricer
+        //! simple example of multi-factor Monte Carlo pricer
         class PlainBasketOption : public MultiFactorPricer {
           public:
             PlainBasketOption(const Array& underlying, 

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.4  2001/06/22 16:38:16  lballabio
 // Improved documentation
 //
@@ -44,6 +47,7 @@
 
 namespace QuantLib {
 
+    //! Classes and functions of general utility
     namespace Utilities {
 
         //! most generic of two given iterator categories

@@ -23,12 +23,16 @@
 */
 
 /*! \file himalayapathpricer.cpp
+    \brief multipath pricer for European-type Himalaya option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.9  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //

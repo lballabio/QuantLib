@@ -22,13 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file generalmontecarlo.hpp
-    \brief Generic model for MonteCarlo simulations
+    \brief Generic model for Monte Carlo simulations
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.10  2001/07/13 15:25:13  marmar
 // MonteCarlo interface changed
 //
@@ -55,7 +58,7 @@
 
 namespace QuantLib {
 
-    //! Framework for %MonteCarlo models
+    //! Monte Carlo framework
     /*! \htmlonly
         <table width="100%" border="0" cellpadding="0" cellspacing="0">
         <tr><td width="50%">&nbsp</td>

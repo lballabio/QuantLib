@@ -23,13 +23,16 @@
 */
 
 /*! \file bermudanoption.cpp
-    \brief Finite-difference evaluation of bermudan option
+    \brief Finite-difference evaluation of Bermudan option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.13  2001/07/19 14:27:27  sigmud
 // warnings purged
 //

@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.4  2001/07/19 16:40:10  lballabio
+//  Improved docs a bit
+//
 //  Revision 1.3  2001/07/16 16:07:42  lballabio
 //  Market elements and stuff
 //
@@ -45,6 +48,10 @@
 
 #include "ql/date.hpp"
 #include "ql/Patterns/observable.hpp"
+
+/*! \namespace QuantLib::CashFlows
+    \brief Concrete implementations of the CashFlow interface
+*/
 
 namespace QuantLib {
 

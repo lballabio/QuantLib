@@ -23,12 +23,16 @@
 */
 
 /*! \file mcpricer.hpp
+    \brief base class for one-factor Monte Carlo pricers
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.10  2001/07/13 14:29:08  sigmud
 // removed a few gcc compile warnings
 //
@@ -55,16 +59,14 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! Base class for one-factor Monte Carlo pricers
-        /*! Base class for the Monte Carlo pricers depending
-            from one factor.
-            Eventually it might be linked to the general tree of pricers,
-            in order to have available tools like impliedVolaitlity.
+        //! base class for one-factor Monte Carlo pricers
+        /*! Eventually this class might be linked to the general tree of 
+            pricers, in order to have tools like impliedVolatility available.
             Also, it will, eventually, implement the calculation of greeks
-            in montecarlo methods.
+            in Monte Carlo methods.
             Deriving a class from McPricer gives an easy way to write
             a one-factor Monte Carlo Pricer.
-            See McEuropeanPricer as an example
+            See McEuropeanPricer as an example.
         */
         class McPricer {
           public:

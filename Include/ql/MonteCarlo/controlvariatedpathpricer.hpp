@@ -22,13 +22,17 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file controlvariatedpathpricer.hpp
+/*! \file controlvariatedpathpricer.hpp 
+    \brief generic control variated path pricer
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -46,14 +50,14 @@ namespace QuantLib {
 
     namespace MonteCarlo {
         
-        //! generic control variated path pricer.
+        //! generic control variated path pricer
         /*! ControlVariatedPathPricer combines two PathPricer and a value into a
             control variated path pricer. To be used with McPricer, see
             McAsianPricer for an example.
         */
         class ControlVariatedPathPricer: public PathPricer {
           public:
-            ControlVariatedPathPricer() : PathPricer() {}
+            ControlVariatedPathPricer() {}
             ControlVariatedPathPricer(Handle<PathPricer> pricer,
                 Handle<PathPricer> controlVariate, double controlVariateValue);
             double value(const Path &path) const;

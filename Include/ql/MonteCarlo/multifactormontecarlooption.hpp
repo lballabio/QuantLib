@@ -23,12 +23,16 @@
 */
 
 /*! \file multifactormontecarlooption.hpp
+    \brief basic Monte Carlo pricer based on a multi-factor model
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //

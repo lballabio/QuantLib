@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.33  2001/07/19 16:40:10  lballabio
+# Improved docs a bit
+#
 # Revision 1.32  2001/07/18 17:30:55  nando
 # to do list
 #
@@ -47,7 +50,13 @@ dist-hook:
 	cp -p $(srcdir)/lib/Win32/Borland/README.txt $(distdir)/lib/Win32/Borland/README.txt
 	cp -p $(srcdir)/lib/Win32/VisualStudio/README.txt $(distdir)/lib/Win32/VisualStudio/README.txt
 	mkdir $(distdir)/Docs/Examples
-	cp  $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/
+	cp $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/
+	mkdir $(distdir)/Docs/html
+	cp $(srcdir)/Docs/html/QL-largish.jpg $(distdir)/Docs/html/
+	cp $(srcdir)/Docs/html/QL-small-notitle.jpg $(distdir)/Docs/html/
+	mkdir $(distdir)/Docs/latex
+	cp $(srcdir)/Docs/latex/QL-largish.eps $(distdir)/Docs/latex/
+	cp $(srcdir)/Docs/latex/QL-largish.pdf $(distdir)/Docs/latex/
 
 if DOXYGEN_FOUND
 docs-html:

@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.10  2001/07/19 16:40:10  lballabio
+# Improved docs a bit
+#
 # Revision 1.9  2001/06/05 09:35:13  lballabio
 # Updated docs to use Doxygen 1.2.8
 #
@@ -65,5 +68,19 @@ ps::
 
 # Clean up
 clean::
-    if exist .\html     rd /s /q .\html
-    if exist .\latex    rd /s /q .\latex
+    cd html
+    del /q *.html
+    del /q *.gif
+    del /q index.*
+    del doxygen.css
+    del formula.repository
+    del graph_legend.dot
+    cd ..\latex
+    del /q *.tex
+    del /q *.aux
+    del /q a*.eps
+    del /q a*.pdf
+    del /q refman.*
+    del doxygen.sty
+    del Makefile
+    cd ..

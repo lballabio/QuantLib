@@ -23,12 +23,16 @@
 */
 
 /*! \file averagepriceasian.hpp
+    \brief example of Monte Carlo pricer using a control variate
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.6  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
@@ -50,7 +54,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! example of Monte Carlo pricer using a control variate.
+        //! example of Monte Carlo pricer using a control variate
         class AveragePriceAsian : public McPricer {
           public:
             AveragePriceAsian(Option::Type type, double underlying,

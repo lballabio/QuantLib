@@ -23,12 +23,16 @@
 */
 
 /*! \file pagodapathpricer.hpp
+    \brief path pricer for pagoda options
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.8  2001/07/13 14:29:08  sigmud
 // removed a few gcc compile warnings
 //
@@ -54,7 +58,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! Path pricer for pagoda options
+        //! path pricer for pagoda options
         class PagodaPathPricer : public MultiPathPricer {
           public:
             PagodaPathPricer() {}

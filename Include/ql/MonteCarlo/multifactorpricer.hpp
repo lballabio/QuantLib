@@ -23,12 +23,16 @@
 */
 
 /*! \file multifactorpricer.hpp
+    \brief base class for multi-factor Monte Carlo pricers
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.7  2001/07/05 12:35:09  enri
 // - added some static_cast<int>() to prevent gcc warnings
 // - added some virtual constructor (same reason)
@@ -49,15 +53,14 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! Base class for multi-factor Monte Carlo pricers
-        /*! MultiFactorPricer is the base class for the Monte Carlo pricers
-            depending from more than one factor. Eventually it might be linked
-            to the general tree of pricers, in order to have available tools
-            like impliedVolaitlity. Also, it will, eventually, implement the
-            calculation of greeks in montecarlo methods.
+        //! base class for multi-factor Monte Carlo pricers
+        /*! Eventually this class might be linked to the general tree of 
+            pricers, in order to have tools like impliedVolatility available. 
+            Also, it will, eventually, implement the calculation of greeks in 
+            Monte Carlo methods.
             Deriving a class from MultiFactorPricer gives an easy way to write
             a multi-factor Monte Carlo Pricer.
-            See PlainBasketOption for an example
+            See PlainBasketOption for an example.
         */
         class MultiFactorPricer {
           public:

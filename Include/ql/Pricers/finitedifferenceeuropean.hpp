@@ -23,13 +23,16 @@
 */
 
 /*! \file finitedifferenceeuropean.hpp
-    \brief Example of european option calculated using finite differences
+    \brief Example of European option calculated using finite differences
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.5  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -50,6 +53,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        //! Example of European option calculated using finite differences
         class FiniteDifferenceEuropean : public BSMNumericalOption {
           public:
             FiniteDifferenceEuropean(Type type,

@@ -22,12 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file himalaya.hpp
+    \brief Himalayan-type option pricer
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.7  2001/07/05 15:57:23  lballabio
 // Collected typedefs in a single file
 //
@@ -52,7 +56,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! Himalayan-type option pricer.
+        //! Himalayan-type option pricer
         /*! The payoff of a Himalaya option is computed in the following way:
             Given a basket of N assets, and N time periods, at end of
             each period the option who performed the best is added to the

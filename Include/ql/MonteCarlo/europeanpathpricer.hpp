@@ -23,12 +23,16 @@
 */
 
 /*! \file europeanpathpricer.hpp
+    \brief path pricer for European options
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.5  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //

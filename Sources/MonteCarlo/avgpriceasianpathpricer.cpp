@@ -23,12 +23,16 @@
 */
 
 /*! \file avgpriceasianpathpricer.cpp
+    \brief path pricer for average price Asian option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.8  2001/05/24 15:40:09  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //

@@ -23,12 +23,16 @@
 */
 
 /*! \file pagodaoption.cpp
+    \brief roofed Asian option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.10  2001/07/13 15:25:13  marmar
 // MonteCarlo interface changed
 //

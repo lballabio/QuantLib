@@ -22,12 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file pagodaoption.hpp
+    \brief roofed Asian option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/19 16:40:11  lballabio
+// Improved docs a bit
+//
 // Revision 1.7  2001/07/05 15:57:23  lballabio
 // Collected typedefs in a single file
 //
@@ -51,7 +55,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! Roofed asian option.
+        //! roofed Asian option
         /*! Given a certain portfolio of assets at the end of the period
             it is returned the minimum of a given roof and a certain fraction 
             of the positive portfolio performance.

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.8  2001/07/05 12:35:09  enri
 // - added some static_cast<int>() to prevent gcc warnings
 // - added some virtual constructor (same reason)
@@ -52,6 +55,10 @@
 
 #include "ql/Patterns/observable.hpp"
 #include <string>
+
+/*! \namespace QuantLib::Instruments
+    \brief Concrete implementations of the Instrument interface
+*/
 
 namespace QuantLib {
 

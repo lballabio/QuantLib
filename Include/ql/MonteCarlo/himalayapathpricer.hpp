@@ -23,12 +23,16 @@
 */
 
 /*! \file himalayapathpricer.hpp
+    \brief multipath pricer for European-type Himalaya option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/19 16:40:10  lballabio
+// Improved docs a bit
+//
 // Revision 1.7  2001/07/13 14:29:08  sigmud
 // removed a few gcc compile warnings
 //
@@ -53,9 +57,8 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        /*! HimalayaPathPricer evaluates the european-type himalaya option
-            on a multi-path.
-            The payoff of an himalaya option is computed in the following way:
+        //! multipath pricer for European-type Himalaya option
+        /*! The payoff of an himalaya option is computed in the following way:
             given a basket of N assets, and N time periods, at end of
             each period the option who performed the best is added to the
             average and then discarded from the basket. At the end of the
