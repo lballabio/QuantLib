@@ -46,12 +46,9 @@ namespace QuantLib
                         riskFreeRate, residualTime, volatility),
             cashPayoff_(cashPayoff)
         {
-            D1_ = QL_LOG(underlying_/strike_)/volSqrtTime_ +
-                volSqrtTime_/2.0 + (riskFreeRate_ - dividendYield_)*
-                residualTime_/volSqrtTime_;
             discount_ = QL_EXP(-riskFreeRate_ * residualTime_);
-
             volSqrtTime_ = volatility_ * QL_SQRT(residualTime_);
+
             D1_ = QL_LOG(underlying_ / strike_) / volSqrtTime_
                 + (riskFreeRate_ - dividendYield_) * residualTime_ / volSqrtTime_
                 + volSqrtTime_/2.0;

@@ -43,6 +43,13 @@ namespace QuantLib {
 
     Option::~Option() {}
 
+    void Option::setPricingEngine(const Handle<OptionPricingEngine>& engine) {
+        QL_REQUIRE(!engine.isNull(), "null pricing engine");
+        engine_ = engine;
+        // this will trigger recalculation and notify observers
+        update();
+    }
+
     void Option::performCalculations() const {
         setupEngine();
         engine_->validateParameters();
