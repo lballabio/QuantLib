@@ -21,10 +21,8 @@ AC_PROG_CXX
 AC_LANG_CPLUSPLUS
 AM_PROG_LIBTOOL
 
-if test "$GXX" = yes; then
+if test "$GXX" = yes -a -z "$CXXFLAGS"; then
     CXXFLAGS="-g -O3 -pedantic -Wall"
-else
-    CXXFLAGS=""
 fi
 
 AC_PATH_PROG(SED, sed, notfound)
