@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/01/24 13:17:46  marmar
+    style redefined
+
     Revision 1.12  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -45,7 +48,7 @@
 
 namespace QuantLib {
 
-    Date Calendar::roll(const Date& d, bool modified) const {
+    Date Calendar::roll(const Date& d , bool modified) const {
         Date d1 = d;
         while (isHoliday(d1))
             d1++;
