@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2003 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -14,19 +14,20 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file bilinearinterpolation.hpp
-    \brief bilinear interpolation between discrete points
+/*! \file bicubicsplineinterpolation.hpp
+    \brief bicubic spline interpolation between discrete points
 
     \fullpath
-    ql/Math/%bilinearinterpolation.hpp
+    ql/Math/%bicubicsplineinterpolation.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_bilinear_interpolation_h
-#define quantlib_bilinear_interpolation_h
+#ifndef quantlib_bicubicspline_interpolation_h
+#define quantlib_bicubicspline_interpolation_h
 
 #include <ql/Math/interpolation2D.hpp>
+#include <ql/Math/cubicspline.hpp>
 
 namespace QuantLib {
 
@@ -36,7 +37,7 @@ namespace QuantLib {
         template <class RandomAccessIteratorX, 
                   class RandomAccessIteratorY,
                   class MatricialData>
-        class BilinearInterpolation
+        class BicubicSplineInterpolation
         : public Interpolation2D<RandomAccessIteratorX,
                                  RandomAccessIteratorY,
                                  MatricialData> {
@@ -48,50 +49,56 @@ namespace QuantLib {
             typename QL_ITERATOR_TRAITS<RandomAccessIteratorY>::value_type
                 second_argument_type;
             typedef double result_type;
-            BilinearInterpolation(
+            BicubicSplineInterpolation(
                 const RandomAccessIteratorX& xBegin,
                 const RandomAccessIteratorX& xEnd,
                 const RandomAccessIteratorY& yBegin,
                 const RandomAccessIteratorY& yEnd,
-                const MatricialData& data)
-             : Interpolation2D<RandomAccessIteratorX,
-                               RandomAccessIteratorY,
-                               MatricialData>(
-                 xBegin,xEnd,yBegin,yEnd,data) {}
+                const MatricialData& data);
             result_type operator()(
                 const first_argument_type& x,
                 const second_argument_type& y,
                 bool allowExtrapolation = false) const;
+          private:
+              Size rows_;
+              std::vector<CubicSpline<RandomAccessIteratorX,
+                  std::vector<result_type>::const_iterator> > splines_;
         };
 
 
         // inline definitions
+        template <class I1, class I2, class M>
+        BicubicSplineInterpolation<I1,I2,M>::BicubicSplineInterpolation(
+            const RandomAccessIteratorX& xBegin,
+            const RandomAccessIteratorX& xEnd,
+            const RandomAccessIteratorY& yBegin,
+            const RandomAccessIteratorY& yEnd,
+            const MatricialData& data)
+        : Interpolation2D<RandomAccessIteratorX, RandomAccessIteratorY,
+          MatricialData>(xBegin,xEnd,yBegin,yEnd,data), rows_(data_.rows()) {
+                for (Size i = 0; i< rows_; i++)
+                    splines_.push_back(CubicSpline<RandomAccessIteratorX,
+                        std::vector<result_type>::const_iterator>(
+                        xBegin, xEnd, data_.row_begin(i)));
+
+        }
 
         template <class I1, class I2, class M>
-        double BilinearInterpolation<I1,I2,M>::operator()(
+        double BicubicSplineInterpolation<I1,I2,M>::operator()(
             const BilinearInterpolation<I1,I2,M>::first_argument_type& x,
             const BilinearInterpolation<I1,I2,M>::second_argument_type& y,
             bool allowExtrapolation) const {
 
-                locate(x, y);
-                if (isOutOfRange_) {
-                    QL_REQUIRE(allowExtrapolation,
-                        "BilinearInterpolation::operator() : "
-                        "extrapolation not allowed");
-                }
+            std::vector<result_type> newColumn(rows_);
+            for (Size i = 0; i< rows_; i++) {
+                newColumn[i]=splines_[i](x, allowExtrapolation);
+            }
+                
+            CubicSpline<RandomAccessIteratorY,
+              std::vector<result_type>::const_iterator> columnSpline(
+              yBegin_, yEnd_, newColumn.begin());
 
-                double z1=data_[yPos_-yBegin_]   [xPos_-xBegin_];
-                double z2=data_[yPos_-yBegin_]   [xPos_-xBegin_+1];
-                double z3=data_[yPos_-yBegin_+1] [xPos_-xBegin_];
-                double z4=data_[yPos_-yBegin_+1] [xPos_-xBegin_+1];
-
-                double t=(x-*xPos_)/(*(xPos_+1)-*xPos_);
-                double u=(y-*yPos_)/(*(yPos_+1)-*yPos_);
-
-                return (1.0-t) * (1.0-u) * z1+
-                          t    * (1.0-u) * z2+
-                       (1.0-t) *    u    * z3+
-                          t    *    u    * z4;
+            return columnSpline(y, allowExtrapolation);
         }
 
     }

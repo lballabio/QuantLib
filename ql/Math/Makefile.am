@@ -6,6 +6,7 @@ includedir = $(prefix)/include/ql/Math
 
 include_HEADERS = \
 	bilinearinterpolation.hpp \
+	bicubicsplineinterpolation.hpp \
     chisquaredistribution.hpp \
 	cubicspline.hpp \
 	interpolation.hpp \

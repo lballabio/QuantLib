@@ -144,6 +144,7 @@
 #include <ql/Lattices/trinomialtree.hpp>
 
 #include <ql/Math/bilinearinterpolation.hpp>
+#include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/gammadistribution.hpp>

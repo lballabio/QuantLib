@@ -27,6 +27,7 @@
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
+#include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/riskmeasures.hpp>
 
 using QuantLib::Array;
@@ -37,6 +38,7 @@ using QuantLib::Math::LogLinearInterpolation;
 using QuantLib::Math::CubicSpline;
 using QuantLib::Math::Interpolation2D;
 using QuantLib::Math::BilinearInterpolation;
+using QuantLib::Math::BicubicSplineInterpolation;
 using QuantLib::Math::NormalDistribution;
 using QuantLib::Math::CumulativeNormalDistribution;
 using QuantLib::Math::InvCumulativeNormalDistribution;
@@ -95,6 +97,14 @@ namespace QuantLib {
             switch (interpolation2DType) {
                 case 1:
                     result = BilinearInterpolation<
+                        std::vector<double>::const_iterator,
+			            std::vector<double>::const_iterator,
+                        Matrix>(x_values.begin(), x_values.end(),
+                        y_values.begin(), y_values.end(), dataMatrix)(x,y,
+                        allowExtrapolation);
+                    break;
+                case 2:
+                    result = BicubicSplineInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
                         Matrix>(x_values.begin(), x_values.end(),
