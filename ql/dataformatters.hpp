@@ -65,7 +65,7 @@ namespace QuantLib {
 
             unsigned long power = 0;
             std::string sign = "";
-            if (l <= int_type(0)) {
+            if (!(l >= int_type(0))) {
                 sign = "-"
                 l = -l;
             }

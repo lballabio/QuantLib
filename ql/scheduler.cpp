@@ -157,8 +157,8 @@ namespace QuantLib {
 
             // possibly collapse last two dates
             Size N = dates_.size();
-            if (calendar.roll(dates_[N-2],rollingConvention) ==
-                calendar.roll(dates_[N-1],rollingConvention)) {
+            if (N>=2 && (calendar.roll(dates_[N-2],rollingConvention) ==
+                         calendar.roll(dates_[N-1],rollingConvention))) {
                 dates_[N-2] = dates_[N-1];
                 dates_.pop_back();
                 finalIsRegular_ = true;
