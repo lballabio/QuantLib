@@ -2,9 +2,20 @@
 .autodepend
 .silent
 
-# Debug version
-!ifdef DEBUG
-    _D = _d
+!ifdef _DEBUG
+!ifndef _RTLDLL
+    _D = -sd
+!else
+    _D = -d
+!endif
+!else
+!ifndef _RTLDLL
+    _D = -s
+!endif
+!endif
+
+!ifdef __MT__
+    _mt = -mt
 !endif
 
 # Directories
@@ -13,61 +24,66 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    asianoption.obj$(_D) \
-    barrieroption.obj$(_D) \
-    basketoption.obj$(_D) \
-    capfloor.obj$(_D) \
-    forwardvanillaoption.obj$(_D) \
-    multiassetoption.obj$(_D) \
-    oneassetoption.obj$(_D) \
-    oneassetstrikedoption.obj$(_D) \
-    quantoforwardvanillaoption.obj$(_D) \
-    quantovanillaoption.obj$(_D) \
-    simpleswap.obj$(_D) \
-    stock.obj$(_D) \
-    swap.obj$(_D) \
-    swaption.obj$(_D) \
-    vanillaoption.obj$(_D)
+    "asianoption.obj$(_mt)$(_D)" \
+    "barrieroption.obj$(_mt)$(_D)" \
+    "basketoption.obj$(_mt)$(_D)" \
+    "capfloor.obj$(_mt)$(_D)" \
+    "forwardvanillaoption.obj$(_mt)$(_D)" \
+    "multiassetoption.obj$(_mt)$(_D)" \
+    "oneassetoption.obj$(_mt)$(_D)" \
+    "oneassetstrikedoption.obj$(_mt)$(_D)" \
+    "quantoforwardvanillaoption.obj$(_mt)$(_D)" \
+    "quantovanillaoption.obj$(_mt)$(_D)" \
+    "simpleswap.obj$(_mt)$(_D)" \
+    "stock.obj$(_mt)$(_D)" \
+    "swap.obj$(_mt)$(_D)" \
+    "swaption.obj$(_mt)$(_D)" \
+    "vanillaoption.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
 
-#                 -w-8026 -w-8027 -w-8012 \
-
 # Options
-CC_OPTS = -vi- -q -c -tWM \
-    -I$(INCLUDE_DIR)
+CC_OPTS = -vi- -q -c -I$(INCLUDE_DIR)
 
-!ifdef DEBUG
-CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+!ifdef _DEBUG
+CC_OPTS = $(CC_OPTS) -v -D_DEBUG
 !else
 CC_OPTS = $(CC_OPTS) -O2
 !endif
+
+!ifdef _RTLDLL
+    CC_OPTS = $(CC_OPTS) -D_RTLDLL
+!endif
+
+!ifdef __MT__
+    CC_OPTS = $(CC_OPTS) -tWM
+!endif
+
 !ifdef SAFE
 CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 TLIB_OPTS    = /P128
-!ifdef DEBUG
+!ifdef _DEBUG
 TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<
-.cpp.obj$(_D):
+.cpp.obj$(_mt)$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-Instruments$(_D).lib:: $(OBJS)
-    if exist Instruments$(_D).lib     del Instruments$(_D).lib
-    $(TLIB) $(TLIB_OPTS) Instruments$(_D).lib /a $(OBJS)
+Instruments$(_mt)$(_D).lib:: $(OBJS)
+    if exist Instruments$(_mt)$(_D).lib     del Instruments$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "Instruments$(_mt)$(_D).lib" /a $(OBJS)
 
 
 # Clean up
 clean::
-    if exist *.obj         del /q *.obj
-    if exist *.obj$(_D)    del /q *.obj
-    if exist *.lib         del /q *.lib
+    if exist *.obj* del /q *.obj*
+    if exist *.lib  del /q *.lib

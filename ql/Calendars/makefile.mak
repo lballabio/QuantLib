@@ -2,9 +2,20 @@
 .autodepend
 .silent
 
-# Debug version
-!ifdef DEBUG
-    _D = _d
+!ifdef _DEBUG
+!ifndef _RTLDLL
+    _D = -sd
+!else
+    _D = -d
+!endif
+!else
+!ifndef _RTLDLL
+    _D = -s
+!endif
+!endif
+
+!ifdef __MT__
+    _mt = -mt
 !endif
 
 # Directories
@@ -12,24 +23,24 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    budapest.obj$(_D) \
-    copenhagen.obj$(_D) \
-    frankfurt.obj$(_D) \
-    helsinki.obj$(_D) \
-    johannesburg.obj$(_D) \
-    jointcalendar.obj$(_D) \
-    london.obj$(_D) \
-    milan.obj$(_D) \
-    newyork.obj$(_D) \
-    oslo.obj$(_D) \
-    target.obj$(_D) \
-    tokyo.obj$(_D) \
-    toronto.obj$(_D) \
-    stockholm.obj$(_D) \
-    sydney.obj$(_D) \
-    warsaw.obj$(_D) \
-    wellington.obj$(_D) \
-    zurich.obj$(_D)
+    "budapest.obj$(_mt)$(_D)" \
+    "copenhagen.obj$(_mt)$(_D)" \
+    "frankfurt.obj$(_mt)$(_D)" \
+    "helsinki.obj$(_mt)$(_D)" \
+    "johannesburg.obj$(_mt)$(_D)" \
+    "jointcalendar.obj$(_mt)$(_D)" \
+    "london.obj$(_mt)$(_D)" \
+    "milan.obj$(_mt)$(_D)" \
+    "newyork.obj$(_mt)$(_D)" \
+    "oslo.obj$(_mt)$(_D)" \
+    "target.obj$(_mt)$(_D)" \
+    "tokyo.obj$(_mt)$(_D)" \
+    "toronto.obj$(_mt)$(_D)" \
+    "stockholm.obj$(_mt)$(_D)" \
+    "sydney.obj$(_mt)$(_D)" \
+    "warsaw.obj$(_mt)$(_D)" \
+    "wellington.obj$(_mt)$(_D)" \
+    "zurich.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
@@ -38,34 +49,46 @@ TLIB      = tlib
 
 
 # Options
-CC_OPTS        = -vi- -q -c -tWM \
-    -I$(INCLUDE_DIR)
+CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR)
 
-!ifdef DEBUG
-CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+!ifdef _DEBUG
+CC_OPTS = $(CC_OPTS) -v -D_DEBUG
 !else
 CC_OPTS = $(CC_OPTS) -O2
 !endif
+
+!ifdef _RTLDLL
+    CC_OPTS = $(CC_OPTS) -D_RTLDLL
+!endif
+
+!ifdef _RTLDLL
+    CC_OPTS = $(CC_OPTS) -D_RTLDLL
+!endif
+
+!ifdef __MT__
+    CC_OPTS = $(CC_OPTS) -tWM
+!endif
+
 !ifdef SAFE
 CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 TLIB_OPTS    = /P128
-!ifdef DEBUG
+!ifdef _DEBUG
 TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<
-.cpp.obj$(_D):
+.cpp.obj$(_mt)$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-Calendars$(_D).lib:: $(OBJS)
-    if exist Calendars$(_D).lib     del Calendars$(_D).lib
-    $(TLIB) $(TLIB_OPTS) Calendars$(_D).lib /a $(OBJS)
+Calendars$(_mt)$(_D).lib:: $(OBJS)
+    if exist Calendars$(_mt)$(_D).lib     del Calendars$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "Calendars$(_mt)$(_D).lib" /a $(OBJS)
 
 
 
@@ -73,6 +96,5 @@ Calendars$(_D).lib:: $(OBJS)
 
 # Clean up
 clean::
-    if exist *.obj         del /q *.obj
-    if exist *.obj$(_D)    del /q *.obj
-    if exist *.lib         del /q *.lib
+    if exist *.obj* del /q *.obj*
+    if exist *.lib  del /q *.lib

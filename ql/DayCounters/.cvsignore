@@ -1,4 +1,4 @@
-*.obj_d
+*.obj*
 *.obj
 *.lib
 Makefile.in

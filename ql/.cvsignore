@@ -4,5 +4,5 @@ config.hpp.in
 stamp-h1
 .qldefines.hpp
 *.obj
-*.obj_d
+*.obj*
 *.lib

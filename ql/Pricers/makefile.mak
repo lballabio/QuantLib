@@ -2,9 +2,20 @@
 .autodepend
 .silent
 
-# Debug version
-!ifdef DEBUG
-    _D = _d
+!ifdef _DEBUG
+!ifndef _RTLDLL
+    _D = -sd
+!else
+    _D = -d
+!endif
+!else
+!ifndef _RTLDLL
+    _D = -s
+!endif
+!endif
+
+!ifdef __MT__
+    _mt = -mt
 !endif
 
 # Directories
@@ -13,30 +24,30 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    cliquetoption.obj$(_D) \
-    discretegeometricapo.obj$(_D) \
-    discretegeometricaso.obj$(_D) \
-    europeanoption.obj$(_D) \
-    fdbermudanoption.obj$(_D) \
-    fdbsmoption.obj$(_D) \
-    fddividendamericanoption.obj$(_D) \
-    fddividendeuropeanoption.obj$(_D) \
-    fddividendoption.obj$(_D) \
-    fddividendshoutoption.obj$(_D) \
-    fdeuropean.obj$(_D) \
-    fdmultiperiodoption.obj$(_D) \
-    fdstepconditionoption.obj$(_D) \
-    mcbasket.obj$(_D) \
-    mccliquetoption.obj$(_D) \
-    mcdiscretearithmeticapo.obj$(_D) \
-    mcdiscretearithmeticaso.obj$(_D) \
-    mceverest.obj$(_D) \
-    mchimalaya.obj$(_D) \
-    mcmaxbasket.obj$(_D) \
-    mcpagoda.obj$(_D) \
-    mcperformanceoption.obj$(_D) \
-    performanceoption.obj$(_D) \
-    singleassetoption.obj$(_D)
+    "cliquetoption.obj$(_mt)$(_D)" \
+    "discretegeometricapo.obj$(_mt)$(_D)" \
+    "discretegeometricaso.obj$(_mt)$(_D)" \
+    "europeanoption.obj$(_mt)$(_D)" \
+    "fdbermudanoption.obj$(_mt)$(_D)" \
+    "fdbsmoption.obj$(_mt)$(_D)" \
+    "fddividendamericanoption.obj$(_mt)$(_D)" \
+    "fddividendeuropeanoption.obj$(_mt)$(_D)" \
+    "fddividendoption.obj$(_mt)$(_D)" \
+    "fddividendshoutoption.obj$(_mt)$(_D)" \
+    "fdeuropean.obj$(_mt)$(_D)" \
+    "fdmultiperiodoption.obj$(_mt)$(_D)" \
+    "fdstepconditionoption.obj$(_mt)$(_D)" \
+    "mcbasket.obj$(_mt)$(_D)" \
+    "mccliquetoption.obj$(_mt)$(_D)" \
+    "mcdiscretearithmeticapo.obj$(_mt)$(_D)" \
+    "mcdiscretearithmeticaso.obj$(_mt)$(_D)" \
+    "mceverest.obj$(_mt)$(_D)" \
+    "mchimalaya.obj$(_mt)$(_D)" \
+    "mcmaxbasket.obj$(_mt)$(_D)" \
+    "mcpagoda.obj$(_mt)$(_D)" \
+    "mcperformanceoption.obj$(_mt)$(_D)" \
+    "performanceoption.obj$(_mt)$(_D)" \
+    "singleassetoption.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
@@ -45,13 +56,20 @@ TLIB      = tlib
 
 
 # Options
-CC_OPTS        = -vi- -q -c -tWM \
-    -I$(INCLUDE_DIR)
+CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR)
 
-!ifdef DEBUG
-CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+!ifdef _DEBUG
+CC_OPTS = $(CC_OPTS) -v -D_DEBUG
 !else
 CC_OPTS = $(CC_OPTS) -O2
+!endif
+
+!ifdef _RTLDLL
+    CC_OPTS = $(CC_OPTS) -D_RTLDLL
+!endif
+
+!ifdef __MT__
+    CC_OPTS = $(CC_OPTS) -tWM
 !endif
 
 !ifdef SAFE
@@ -59,26 +77,25 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 TLIB_OPTS    = /P128
-!ifdef DEBUG
+!ifdef _DEBUG
 TLIB_OPTS    = /P256
 !endif
 
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<
-.cpp.obj$(_D):
+.cpp.obj$(_mt)$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
-Pricers$(_D).lib:: $(OBJS)
-    if exist Pricers$(_D).lib     del Pricers$(_D).lib
-    $(TLIB) $(TLIB_OPTS) Pricers$(_D).lib /a $(OBJS)
+Pricers$(_mt)$(_D).lib:: $(OBJS)
+    if exist Pricers$(_mt)$(_D).lib     del Pricers$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "Pricers$(_mt)$(_D).lib" /a $(OBJS)
 
 
 
 # Clean up
 clean::
-    if exist *.obj         del /q *.obj
-    if exist *.obj$(_D)    del /q *.obj$(_D)
-    if exist *.lib         del /q *.lib
+    if exist *.obj* del /q *.obj*
+    if exist *.lib  del /q *.lib

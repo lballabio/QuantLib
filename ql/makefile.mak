@@ -2,57 +2,68 @@
 .autodepend
 .silent
 
-# Debug version
-!ifdef DEBUG
-    _D = _d
+!ifdef _DEBUG
+!ifndef _RTLDLL
+    _D = -sd
+!else
+    _D = -d
+!endif
+!else
+!ifndef _RTLDLL
+    _D = -s
+!endif
+!endif
+
+!ifdef __MT__
+    _mt = -mt
 !endif
 
 # Directories
 INCLUDE_DIR    = ..
-OUTPUT_DIR     = ..\lib\Win32\Borland
+OUTPUT_DIR     = ..\lib
 
 # Object files
 CORE_OBJS = \
-    calendar.obj$(_D) \
-    dataformatters.obj$(_D) \
-    dataparsers.obj$(_D) \
-    date.obj$(_D) \
-    diffusionprocess.obj$(_D) \
-    discretizedasset.obj$(_D) \
-    errors.obj$(_D) \
-    exercise.obj$(_D) \
-    grid.obj$(_D) \
-    scheduler.obj$(_D) \
-    voltermstructure.obj$(_D)
+    "calendar.obj$(_mt)$(_D)" \
+    "dataformatters.obj$(_mt)$(_D)" \
+    "dataparsers.obj$(_mt)$(_D)" \
+    "date.obj$(_mt)$(_D)" \
+    "diffusionprocess.obj$(_mt)$(_D)" \
+    "discretizedasset.obj$(_mt)$(_D)" \
+    "errors.obj$(_mt)$(_D)" \
+    "exercise.obj$(_mt)$(_D)" \
+    "grid.obj$(_mt)$(_D)" \
+    "scheduler.obj$(_mt)$(_D)" \
+    "voltermstructure.obj$(_mt)$(_D)"
 
-CALENDAR_LIB         = Calendars\Calendars$(_D).lib
-CASHFLOWS_LIB        = CashFlows\CashFlows$(_D).lib
-DAYCOUNTER_LIB       = DayCounters\DayCounters$(_D).lib
-FDM_LIB              = FiniteDifferences\FiniteDifferences$(_D).lib
-FUNCTIONS            = functions\functions$(_D).lib
-INDEXES_LIB          = Indexes\Indexes$(_D).lib
-INSTRUMENTS_LIB      = Instruments\Instruments$(_D).lib
-LATTICES_LIB         = Lattices\Lattices$(_D).lib
-MATH_LIB             = Math\Math$(_D).lib
-OPTIMIZATION_LIB     = Optimization\Optimization$(_D).lib
-PRICER_LIB           = Pricers\Pricers$(_D).lib
-PRICING_ENGINES_LIB  = PricingEngines\PricingEngines$(_D).lib
-ASIAN_ENGINES_LIB    = PricingEngines\Asian\AsianEngines$(_D).lib
-BARRIER_ENGINES_LIB  = PricingEngines\Barrier\BarrierEngines$(_D).lib
-BASKET_ENGINES_LIB   = PricingEngines\Basket\BasketEngines$(_D).lib
-CAPFLOOR_ENGINES_LIB = PricingEngines\CapFloor\CapFloorEngines$(_D).lib
-SWAPTION_ENGINES_LIB = PricingEngines\Swaption\SwaptionEngines$(_D).lib
-VANILLA_ENGINES_LIB  = PricingEngines\Vanilla\VanillaEngines$(_D).lib
-RNG_LIB              = RandomNumbers\RandomNumbers$(_D).lib
-SHORTRATEMODELS_LIB  = ShortRateModels\ShortRateModels$(_D).lib
+CALENDAR_LIB         = "Calendars\Calendars$(_mt)$(_D).lib"
+CASHFLOWS_LIB        = "CashFlows\CashFlows$(_mt)$(_D).lib"
+DAYCOUNTER_LIB       = "DayCounters\DayCounters$(_mt)$(_D).lib"
+FDM_LIB              = "FiniteDifferences\FiniteDifferences$(_mt)$(_D).lib"
+FUNCTIONS            = "functions\functions$(_mt)$(_D).lib"
+INDEXES_LIB          = "Indexes\Indexes$(_mt)$(_D).lib"
+INSTRUMENTS_LIB      = "Instruments\Instruments$(_mt)$(_D).lib"
+LATTICES_LIB         = "Lattices\Lattices$(_mt)$(_D).lib"
+MATH_LIB             = "Math\Math$(_mt)$(_D).lib"
+OPTIMIZATION_LIB     = "Optimization\Optimization$(_mt)$(_D).lib"
+PRICER_LIB           = "Pricers\Pricers$(_mt)$(_D).lib"
+PRICING_ENGINES_LIB  = "PricingEngines\PricingEngines$(_mt)$(_D).lib"
+ASIAN_ENGINES_LIB    = "PricingEngines\Asian\AsianEngines$(_mt)$(_D).lib"
+BARRIER_ENGINES_LIB  = "PricingEngines\Barrier\BarrierEngines$(_mt)$(_D).lib"
+BASKET_ENGINES_LIB   = "PricingEngines\Basket\BasketEngines$(_mt)$(_D).lib"
+CAPFLOOR_ENGINES_LIB = "PricingEngines\CapFloor\CapFloorEngines$(_mt)$(_D).lib"
+SWAPTION_ENGINES_LIB = "PricingEngines\Swaption\SwaptionEngines$(_mt)$(_D).lib"
+VANILLA_ENGINES_LIB  = "PricingEngines\Vanilla\VanillaEngines$(_mt)$(_D).lib"
+RNG_LIB              = "RandomNumbers\RandomNumbers$(_mt)$(_D).lib"
+SHORTRATEMODELS_LIB  = "ShortRateModels\ShortRateModels$(_mt)$(_D).lib"
 CALIBRATION_LIB      = \
-                ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_D).lib
+                "ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_mt)$(_D).lib"
 ONEFACTOR_LIB        = \
-                ShortRateModels\OneFactorModels\OneFactorModels$(_D).lib
+                "ShortRateModels\OneFactorModels\OneFactorModels$(_mt)$(_D).lib"
 TWOFACTOR_LIB        = \
-                ShortRateModels\TwoFactorModels\TwoFactorModels$(_D).lib
-TERMSTRUCT_LIB       = TermStructures\TermStructures$(_D).lib
-VOLATILITY_LIB       = Volatilities\Volatilities$(_D).lib
+                "ShortRateModels\TwoFactorModels\TwoFactorModels$(_mt)$(_D).lib"
+TERMSTRUCT_LIB       = "TermStructures\TermStructures$(_mt)$(_D).lib"
+VOLATILITY_LIB       = "Volatilities\Volatilities$(_mt)$(_D).lib"
 
 QUANTLIB_OBJS = \
     $(CALENDAR_LIB) \
@@ -85,48 +96,64 @@ QUANTLIB_OBJS = \
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
-!ifdef DEBUG
-    MAKE = $(MAKE) -DDEBUG
+
+# MAKE Options
+!ifdef __MT__
+    MAKE = $(MAKE) -D__MT__
+!endif
+!ifdef _RTLDLL
+    MAKE = $(MAKE) -D_RTLDLL
+!endif
+!ifdef _DEBUG
+    MAKE = $(MAKE) -D_DEBUG
 !endif
 !ifdef SAFE
     MAKE = $(MAKE) -DSAFE
 !endif
 
 
-
 # Options
-CC_OPTS = -vi- -q -c -tWM \
-    -I$(INCLUDE_DIR)
-!ifdef DEBUG
-CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+CC_OPTS = -vi- -q -c -I$(INCLUDE_DIR)
+
+!ifdef _DEBUG
+    CC_OPTS = $(CC_OPTS) -v -D_DEBUG
 !else
-CC_OPTS = $(CC_OPTS) -O2
+    CC_OPTS = $(CC_OPTS) -O2
 !endif
+
+!ifdef _RTLDLL
+    CC_OPTS = $(CC_OPTS) -D_RTLDLL
+!endif
+
+!ifdef __MT__
+    CC_OPTS = $(CC_OPTS) -tWM
+!endif
+
 !ifdef SAFE
-CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
+    CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
+
+
 
 TLIB_OPTS    = /P512
-!ifdef DEBUG
+!ifdef _DEBUG
 TLIB_OPTS    = /P1024
 !endif
 
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<
-.cpp.obj$(_D):
+.cpp.obj$(_mt)$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # QuantLib library
-$(OUTPUT_DIR)\QuantLib$(_D).lib:: $(OUTPUT_DIR) $(CORE_OBJS) SubLibraries
-    if exist $(OUTPUT_DIR)\QuantLib$(_D).lib del $(OUTPUT_DIR)\QuantLib$(_D).lib
-    $(TLIB) $(TLIB_OPTS) $(OUTPUT_DIR)\QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
+$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_6.lib:: $(OUTPUT_DIR) $(CORE_OBJS) SubLibraries
+    if exist $(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_6.lib del $(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_6.lib
+    $(TLIB) $(TLIB_OPTS) "$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-0_3_6.lib" /a $(QUANTLIB_OBJS)
 
 $(OUTPUT_DIR):
     if not exist ..\lib md ..\lib
-    if not exist ..\lib\Win32 md ..\lib\Win32
-    if not exist ..\lib\Win32\Borland md ..\lib\Win32\Borland
 
 SubLibraries:
     cd Calendars
@@ -237,8 +264,7 @@ clean::
     $(MAKE) clean
     cd ..
     cd ..
-    if exist *.obj         del /q *.obj
-    if exist *.obj$(_D)    del /q *.obj
-    if exist *.lib                   del /q *.lib
-    if exist $(OUTPUT_DIR)\*.lib     del /q $(OUTPUT_DIR)\*.lib
+    if exist *.obj*              del /q *.obj*
+    if exist *.lib               del /q *.lib
+    if exist $(OUTPUT_DIR)\*.lib del /q $(OUTPUT_DIR)\*.lib
 

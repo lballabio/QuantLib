@@ -4,9 +4,15 @@
 .autodepend
 .silent
 
-# Options
-!ifdef DEBUG
-    MAKE = $(MAKE) -DDEBUG
+# MAKE Options
+!ifdef __MT__
+    MAKE = $(MAKE) -D__MT__
+!endif
+!ifdef _RTLDLL
+    MAKE = $(MAKE) -D_RTLDLL
+!endif
+!ifdef _DEBUG
+    MAKE = $(MAKE) -D_DEBUG
 !endif
 !ifdef SAFE
     MAKE = $(MAKE) -DSAFE
@@ -54,12 +60,9 @@ inst:: quantlib
     xcopy ql\*.hpp "$(QL_DIR)\ql" /S /I
     xcopy ql\*.h   "$(QL_DIR)\ql" /S /I
 
-    if exist "$(QL_DIR)\lib\Win32\VisualStudio" rmdir /S /Q "$(QL_DIR)\lib\Win32\VisualStudio"
-    xcopy lib\Win32\VisualStudio\*.lib "$(QL_DIR)\lib\Win32\VisualStudio" /S /I
-    xcopy lib\Win32\VisualStudio\*.pdb "$(QL_DIR)\lib\Win32\VisualStudio" /S /I
-
-    if exist "$(QL_DIR)\lib\Win32\Borland" rmdir /S /Q "$(QL_DIR)\lib\Win32\Borland"
-    xcopy lib\Win32\Borland\*.lib "$(QL_DIR)\lib\Win32\Borland" /S /I
+    if exist "$(QL_DIR)\lib" rmdir /S /Q "$(QL_DIR)\lib"
+    xcopy lib\*.lib "$(QL_DIR)\lib" /S /I
+    xcopy lib\*.pdb "$(QL_DIR)\lib" /S /I
 
 
 # Documentation
