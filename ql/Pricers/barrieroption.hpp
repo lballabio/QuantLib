@@ -22,8 +22,11 @@
 #ifndef quantlib_barrier_option_pricer_h
 #define quantlib_barrier_option_pricer_h
 
+#include <ql/Instruments/barrieroption.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Math/normaldistribution.hpp>
+
+using QuantLib::Instruments::BarrierOption::BarrierType;
 
 namespace QuantLib {
 
@@ -39,8 +42,8 @@ namespace QuantLib {
         class BarrierOption : public SingleAssetOption {
           public:
             // constructor
-            enum BarrierType { DownIn, UpIn, DownOut, UpOut };
-            BarrierOption(BarrierType barrType,
+            //enum BarrierType { DownIn, UpIn, DownOut, UpOut };
+              BarrierOption(BarrierType barrType,
                           Option::Type type,
                           double underlying,
                           double strike,
