@@ -45,25 +45,26 @@ namespace QuantLib {
             for (Size i=0; i<5; i++) { 
                 for (Size j=0;j<5; j++) {
                     sum += x[i]*x[j]*
-                        QL_EXP(a1*(2.0*y[i]-a1)+b1*(2.0*y[j]-b1)+2.0*rho_*(y[i]-a1)*(y[j]-b1));
+                        QL_EXP(a1*(2.0*y[i]-a1)+b1*(2.0*y[j]-b1)
+                               +2.0*rho_*(y[i]-a1)*(y[j]-b1));
                 }
             }
             result= QL_SQRT(1.0 - rho_*rho_)/M_PI*sum;
         } else if (a<=0 && b>=0 && rho_>=0) {
-            CumulativeNormalDistribution CND;
-            BivariateCumulativeNormalDistribution CBND(-rho_);
-            result= CND(a) - CBND(a, -b);
+            CumulativeNormalDistribution cumNormalDist;
+            BivariateCumulativeNormalDistribution bivCumNormalDist(-rho_);
+            result= cumNormalDist(a) - bivCumNormalDist(a, -b);
         } else if (a>=0.0 && b<=0.0 && rho_>=0.0) {
-            CumulativeNormalDistribution CND;
-            BivariateCumulativeNormalDistribution CBND(-rho_);
-            result= CND(b) - CBND(-a, b);
+            CumulativeNormalDistribution cumNormalDist;
+            BivariateCumulativeNormalDistribution bivCumNormalDist(-rho_);
+            result= cumNormalDist(b) - bivCumNormalDist(-a, b);
         } else if (a>=0.0 && b>=0.0 && rho_<=0.0) {
-            CumulativeNormalDistribution CND;
-            result= CND(a) + CND(b) - 1.0 + (*this)(-a, -b);
+            CumulativeNormalDistribution cumNormalDist;
+            result= cumNormalDist(a) + cumNormalDist(b) -1.0 + (*this)(-a, -b);
         } else if (a*b*rho_>0.0) {
             double rho1 = (rho_*a-b)*(a>0.0 ? 1.0: -1.0)/
                 QL_SQRT(a*a-2.0*rho_*a*b+b*b);
-            BivariateCumulativeNormalDistribution CBND(rho1);
+            BivariateCumulativeNormalDistribution bivCumNormalDist(rho1);
 
             double rho2 = (rho_*b-a)*(b>0.0 ? 1.0: -1.0)/
                 QL_SQRT(a*a-2.0*rho_*a*b+b*b);
@@ -71,7 +72,7 @@ namespace QuantLib {
 
             double delta = (1.0-(a>0.0 ? 1.0: -1.0)*(b>0.0 ? 1.0: -1.0))/4.0;
 
-            result= CBND(a, 0.0) + CBND2(b, 0.0) - delta;
+            result= bivCumNormalDist(a, 0.0) + CBND2(b, 0.0) - delta;
         } else {
             throw Error("BivariateCumulativeNormalDistribution::operator() : "
                 "case not handled");
