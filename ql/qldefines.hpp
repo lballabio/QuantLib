@@ -94,24 +94,6 @@
     #error Neither <cstdlib> nor <stdlib.h> found
 #endif
 
-/*! \def QL_NEEDS_EXPLICIT_GLOBAL_INIT
-    \brief Is initialization of global variables working?
-
-    On Sun Solaris, g++ will not correctly initialize a global variable
-    if one relies on its default constructor being called, as in:
-    \code
-    static const Foo::Bar foobar;
-    \endcode
-    Instead, one must explicitly call the constructor, as in:
-    \code
-    static const Foo::Bar foobar = Bar();
-    \endcode
-*/
-#if defined(SOLARIS)
-    #define QL_NEEDS_EXPLICIT_GLOBAL_INIT
-#endif
-
-
 /*! \def QL_IO_INIT
     \brief I/O initialization
 

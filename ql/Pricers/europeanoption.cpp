@@ -30,12 +30,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        #if defined(QL_NEEDS_EXPLICIT_GLOBAL_INIT)
-        const Math::CumulativeNormalDistribution EuropeanOption::f_ =
-              Math::CumulativeNormalDistribution(0.0, 1.0);
-        #else
         const Math::CumulativeNormalDistribution EuropeanOption::f_;
-        #endif
 
         EuropeanOption::EuropeanOption(Option::Type type, double underlying,
             double strike, Spread dividendYield, Rate riskFreeRate,
