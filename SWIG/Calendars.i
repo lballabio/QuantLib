@@ -24,9 +24,12 @@
 
 /*  $Source$
 	$Log$
+	Revision 1.18  2001/03/26 10:00:45  lballabio
+	Turned string-based factory into Calendar constructor
+
 	Revision 1.17  2001/03/26 09:59:35  lballabio
 	Added Helsinki and Wellington calendars
-
+	
 	Revision 1.16  2001/03/12 17:35:11  lballabio
 	Removed global IsNull function - could have caused very vicious loops
 	
