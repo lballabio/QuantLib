@@ -87,13 +87,18 @@ namespace QuantLib {
     std::string InterestRateFormatter::toString(InterestRate ir,
                                                 Integer precision) {
         static std::ostringstream out;
-        out << RateFormatter::toString(ir.rate(),precision);
-        out << " ";
-        out << ir.dayCounter().name();
-        out << " ";
-        out << CompoundingRuleFormatter::toString(ir.compounding(),
-                                                  ir.frequency());
-        return out.str();
+        if (ir.rate() == Null<Rate>()) {
+            return "null interest rate";
+        } else {
+            out.str(""); // clear
+            out << RateFormatter::toString(ir.rate(),precision);
+            out << " ";
+            out << ir.dayCounter().name();
+            out << " ";
+            out << CompoundingRuleFormatter::toString(ir.compounding(),
+                                                      ir.frequency());
+            return out.str();
+        }
     }
 
     std::string CompoundingRuleFormatter::toString(Compounding comp,
