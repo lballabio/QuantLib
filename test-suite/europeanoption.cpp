@@ -39,6 +39,8 @@ namespace {
                       JR, CRR, EQP, TGEO, TIAN, LR,
                       PseudoMonteCarlo, QuasiMonteCarlo };
 
+    enum PayoffType { StandardPayoff, DigitalCashPayoff };
+
     double relativeError(double x1, double x2, double reference) {
         if (reference != 0.0)
             return QL_FABS(x1-x2)/reference;
@@ -47,12 +49,11 @@ namespace {
     }
 
     Handle<VanillaOption>
-    makeEuropeanOption(Option::Type type,
+    makeOption(const Handle<StrikedTypePayoff>& payoff,
+                       const Handle<Exercise>& exercise,
                        const Handle<Quote>& u,
-                       double k,
                        const Handle<TermStructure>& q,
                        const Handle<TermStructure>& r,
-                       const Date& exDate,
                        const Handle<BlackVolTermStructure>& vol,
                        EngineType engineType = Analytic) {
 
@@ -114,11 +115,6 @@ namespace {
         }
 
 
-        Handle<StrikedTypePayoff> payoff(new
-            PlainVanillaPayoff(type, k));
-
-        Handle<Exercise> exercise(new EuropeanExercise(exDate));
-
         return Handle<VanillaOption>(
             new VanillaOption(payoff, exercise,
                               RelinkableHandle<Quote>(u),
@@ -129,24 +125,17 @@ namespace {
     }
 
     Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward,
-        DayCounter dc = Actual365()) {
+        DayCounter dc) {
         Date today = Date::todaysDate();
-        Date reference = today;
-        return Handle<TermStructure>(
-            new FlatForward(today,reference,
-                            RelinkableHandle<Quote>(forward),
-                            dc));
+        return Handle<TermStructure>(new
+            FlatForward(today, today, RelinkableHandle<Quote>(forward), dc));
     }
 
     Handle<BlackVolTermStructure> makeFlatVolatility(
-                                     const Handle<Quote>& volatility,
-                                     DayCounter dc = Actual365()) {
+        const Handle<Quote>& volatility, DayCounter dc) {
         Date today = Date::todaysDate();
-        Date reference = today;
-        return Handle<BlackVolTermStructure>(
-            new BlackConstantVol(reference,
-                                 RelinkableHandle<Quote>(volatility),
-                                 dc));
+        return Handle<BlackVolTermStructure>(new
+            BlackConstantVol(today, RelinkableHandle<Quote>(volatility), dc));
     }
 
     std::string engineTypeToString(EngineType type) {
@@ -174,46 +163,156 @@ namespace {
         }
     }
 
+    std::string payoffTypeToString(const Handle<Payoff>& payoff) {
 
+        // PlainVanillaPayoff?
+        Handle<PlainVanillaPayoff> pv;
+        #if defined(HAVE_BOOST)
+        pv = boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
+        #else
+        try {
+            pv = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(pv)) {
+            // ok, the payoff is PlainVanillaPayoff
+            return "PlainVanillaPayoff";
+        }
+
+        // CashOrNothingPayoff?
+        Handle<CashOrNothingPayoff> coo;
+        #if defined(HAVE_BOOST)
+        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
+        #else
+        try {
+            coo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(coo)) {
+            // ok, the payoff is CashOrNothingPayoff
+            return "CashOrNothingPayoff";
+        }
+
+        // AssetOrNothingPayoff?
+        Handle<AssetOrNothingPayoff> aoo;
+        #if defined(HAVE_BOOST)
+        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
+        #else
+        try {
+            aoo = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(aoo)) {
+            // ok, the payoff is AssetOrNothingPayoff
+            return "AssetOrNothingPayoff";
+        }
+
+        // SuperSharePayoff?
+        Handle<SuperSharePayoff> ss;
+        #if defined(HAVE_BOOST)
+        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
+        #else
+        try {
+            ss = payoff;
+        } catch (...) {}
+        #endif
+        if (!IsNull(ss)) {
+            // ok, the payoff is SuperSharePayoff
+            return "SuperSharePayoff";
+        }
+
+        throw Error("payoffTypeToString : unknown payoff type");
+    }
+
+
+    std::string exerciseTypeToString(const Handle<Exercise>& exercise) {
+
+        // EuropeanExercise?
+        Handle<EuropeanExercise> european;
+        #if defined(HAVE_BOOST)
+        european = boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
+        #else
+        try {
+            european = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(european)) {
+            return "European";
+        }
+
+        // AmericanExercise?
+        Handle<AmericanExercise> american;
+        #if defined(HAVE_BOOST)
+        american = boost::dynamic_pointer_cast<AmericanExercise>(exercise);
+        #else
+        try {
+            american = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(american)) {
+            return "American";
+        }
+
+        // BermudanExercise?
+        Handle<BermudanExercise> bermudan;
+        #if defined(HAVE_BOOST)
+        bermudan = boost::dynamic_pointer_cast<BermudanExercise>(exercise);
+        #else
+        try {
+            bermudan = exercise;
+        } catch (...) {}
+        #endif
+        if (!IsNull(bermudan)) {
+            return "Bermudan";
+        }
+
+        throw Error("exerciseTypeToString : unknown exercise type");
+    }
 
     void check(std::string greekName,
-               Option::Type type,
+               const Handle<StrikedTypePayoff>& payoff,
+               const Handle<Exercise>& exercise,
                double s,
-               double strike,
                double q,
                double r,
                Date today,
-               Date exDate,
                double v,
-               double result,
-               double calculated,
-               double tol) {
-        if (QL_FABS(calculated-result) > tol) {
-          CPPUNIT_FAIL(greekName + " of European "
-              + OptionTypeFormatter::toString(type) +
-              " option :\n"
-              "    underlying value: "
-              + DoubleFormatter::toString(s) + "\n"
-              "    strike:           "
-              + DoubleFormatter::toString(strike) +"\n"
-              "    dividend yield:   "
-              + DoubleFormatter::toString(q) + "\n"
-              "    risk-free rate:   "
-              + DoubleFormatter::toString(r) + "\n"
-              "    reference date:   "
-              + DateFormatter::toString(today) + "\n"
-              "    maturity:         "
-              + DateFormatter::toString(exDate) + "\n"
-              "    volatility:       "
-              + DoubleFormatter::toString(v) + "\n\n"
-              "    tabulated value:  "
-              + DoubleFormatter::toString(result) + "\n"
-              "    result:  "
-              + DoubleFormatter::toString(calculated));
-        }
-
+               double tabulated,
+               double calculated) {
+      CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+          + OptionTypeFormatter::toString(payoff->optionType()) +
+          " option with "
+          + payoffTypeToString(payoff) + ":\n"
+          "    underlying value: "
+          + DoubleFormatter::toString(s) + "\n"
+          "    strike:           "
+          + DoubleFormatter::toString(payoff->strike()) +"\n"
+          "    dividend yield:   "
+          + DoubleFormatter::toString(q) + "\n"
+          "    risk-free rate:   "
+          + DoubleFormatter::toString(r) + "\n"
+          "    reference date:   "
+          + DateFormatter::toString(today) + "\n"
+          "    maturity:         "
+          + DateFormatter::toString(exercise->lastDate()) + "\n"
+          "    volatility:       "
+          + DoubleFormatter::toString(v) + "\n\n"
+          "    expected   " + greekName + ": "
+          + DoubleFormatter::toString(tabulated) + "\n"
+          "    calculated " + greekName + ": "
+          + DoubleFormatter::toString(calculated));
     }
 
+    struct VanillaOptionData {
+        Option::Type type;
+        double strike;
+        double s;      //spot
+        double q;      // dividend
+        double r;      // risk-free rate
+        Time t;        // time to maturity
+        double v;      // volatility
+        double result; // result
+    };
 
 
 }
@@ -223,67 +322,58 @@ namespace {
 
 void EuropeanOptionTest::testValues() {
 
-    struct VanillaOptionData {
-        Option::Type type;
-        double strike;
-        double s;   //spot
-        double q;   // dividend
-        double r;   // risk-free rate
-        Time t;     // time to maturity
-        double v;   // volatility
-        double result;   // result
-        double tol;   // tolerance
-    };
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
     */
     VanillaOptionData values[] = {
       // pag 2-8
-      // type, strike,   spot,    q,    r,    t,  vol,   value,  tol
-      { Option::Call,  65.00,  60.00, 0.00, 0.08, 0.25, 0.30,  2.1334, 1e-4 },
-      { Option::Put,   95.00, 100.00, 0.05, 0.10, 0.50, 0.20,  2.4648, 1e-4 },
-      { Option::Put,   19.00,  19.00, 0.10, 0.10, 0.75, 0.28,  1.7011, 1e-4 },
-      { Option::Call,  19.00,  19.00, 0.10, 0.10, 0.75, 0.28,  1.7011, 1e-4 },
-      { Option::Call,   1.60,   1.56, 0.08, 0.06, 0.50, 0.12,  0.0291, 1e-4 },
-      { Option::Put,   70.00,  75.00, 0.05, 0.10, 0.50, 0.35,  4.0870, 1e-4 },
+      //        type, strike,   spot,    q,    r,    t,  vol,   value
+      { Option::Call,  65.00,  60.00, 0.00, 0.08, 0.25, 0.30,  2.1334},
+      { Option::Put,   95.00, 100.00, 0.05, 0.10, 0.50, 0.20,  2.4648},
+      { Option::Put,   19.00,  19.00, 0.10, 0.10, 0.75, 0.28,  1.7011},
+      { Option::Call,  19.00,  19.00, 0.10, 0.10, 0.75, 0.28,  1.7011},
+      { Option::Call,   1.60,   1.56, 0.08, 0.06, 0.50, 0.12,  0.0291},
+      { Option::Put,   70.00,  75.00, 0.05, 0.10, 0.50, 0.35,  4.0870},
       // pag 24
-      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.15,  0.0205, 1e-4 },
-      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8734, 1e-4 },
-      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.15,  9.9413, 1e-4 },
-      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.25,  0.3150, 1e-4 },
-      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1217, 1e-4 },
-      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.25, 10.3556, 1e-4 },
-      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.35,  0.9474, 1e-4 },
-      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3693, 1e-4 },
-      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.35, 11.1381, 1e-4 },
-      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.15,  0.8069, 1e-4 },
-      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.15,  4.0232, 1e-4 },
-      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.15, 10.5769, 1e-4 },
-      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.25,  2.7026, 1e-4 },
-      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.25,  6.6997, 1e-4 },
-      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.25, 12.7857, 1e-4 },
-      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.35,  4.9329, 1e-4 },
-      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.3679, 1e-4 },
-      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.35, 15.3086, 1e-4 },
-      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.15,  9.9210, 1e-4 },
-      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8734, 1e-4 },
-      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.15,  0.0408, 1e-4 },
-      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.25, 10.2155, 1e-4 },
-      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1217, 1e-4 },
-      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.25,  0.4551, 1e-4 },
-      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.35, 10.8479, 1e-4 },
-      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3693, 1e-4 },
-      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.35,  1.2376, 1e-4 },
-      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.15, 10.3192, 1e-4 },
-      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.15,  4.0232, 1e-4 },
-      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.15,  1.0646, 1e-4 },
-      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.25, 12.2149, 1e-4 },
-      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.25,  6.6997, 1e-4 },
-      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.25,  3.2734, 1e-4 },
-      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.35, 14.4452, 1e-4 },
-      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.3679, 1e-4 },
-      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.35,  5.7963, 1e-4 }
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.15,  0.0205},
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8734},
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.15,  9.9413},
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.25,  0.3150},
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1217},
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.25, 10.3556},
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.35,  0.9474},
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3693},
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.35, 11.1381},
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.15,  0.8069},
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.15,  4.0232},
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.15, 10.5769},
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.25,  2.7026},
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.25,  6.6997},
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.25, 12.7857},
+      { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.50, 0.35,  4.9329},
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.3679},
+      { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.50, 0.35, 15.3086},
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.15,  9.9210},
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8734},
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.15,  0.0408},
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.25, 10.2155},
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1217},
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.25,  0.4551},
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.10, 0.35, 10.8479},
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3693},
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.10, 0.35,  1.2376},
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.15, 10.3192},
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.15,  4.0232},
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.15,  1.0646},
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.25, 12.2149},
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.25,  6.6997},
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.25,  3.2734},
+      { Option::Put,  100.00,  90.00, 0.10, 0.10, 0.50, 0.35, 14.4452},
+      { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.3679},
+      { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.35,  5.7963},
+      // pag27
+      { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.0975}
     };
 
     DayCounter dc = Actual360();
@@ -316,7 +406,7 @@ void EuropeanOptionTest::testValues() {
                              engine);
         double value = option.NPV();
 
-        if (QL_FABS(value-values[i].result) > values[i].tol) {
+        if (QL_FABS(value-values[i].result) > 1e-4) {
           CPPUNIT_FAIL("European "
               + OptionTypeFormatter::toString(values[i].type) +
               " option :\n"
@@ -336,7 +426,7 @@ void EuropeanOptionTest::testValues() {
               + DoubleFormatter::toString(values[i].v) + "\n\n"
               "    tabulated value:  "
               + DoubleFormatter::toString(values[i].result) + "\n"
-              "    result:  "
+              "    calculated value: "
               + DoubleFormatter::toString(value));
         }
     }
@@ -347,23 +437,13 @@ void EuropeanOptionTest::testValues() {
 
 void EuropeanOptionTest::testGreekValues() {
 
-    struct VanillaOptionData {
-        Option::Type type;
-        double strike;
-        double s;   //spot
-        double q;   // dividend
-        double r;   // risk-free rate
-        Time t;     // time to maturity
-        double v;   // volatility
-        double result;   // result
-    };
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
        pag 11-16
     */
     VanillaOptionData values[] = {
-              // type, strike,   spot,    q,    r,       t,  vol,   value
+        //        type, strike,   spot,    q,    r,        t,  vol,  value
         // delta
         { Option::Call, 100.00, 105.00, 0.10, 0.10, 0.500000, 0.36,  0.5946 },
         { Option::Put,  100.00, 105.00, 0.10, 0.10, 0.500000, 0.36, -0.3566 },
@@ -420,9 +500,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->delta();
-    check("delta", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("delta", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
     i++;
     payoff = Handle<StrikedTypePayoff>(new
@@ -441,9 +521,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->delta();
-    check("delta", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("delta", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
     i++;
     payoff = Handle<StrikedTypePayoff>(new
@@ -462,9 +542,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->elasticity();
-    check("elasticity", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("elasticity", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 
     i++;
@@ -484,9 +564,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->gamma();
-    check("gamma", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("gamma", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 
     i++;
@@ -506,9 +586,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->gamma();
-    check("gamma", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("gamma", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 
     i++;
@@ -528,9 +608,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->vega();
-    check("vega", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("vega", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 
     i++;
@@ -550,9 +630,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->vega();
-    check("vega", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("vega", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 
     i++;
@@ -572,9 +652,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->theta();
-    check("theta", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("theta", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 
     i++;
@@ -594,9 +674,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->thetaPerDay();
-    check("thetaPerDay", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("thetaPerDay", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 
     i++;
@@ -616,9 +696,9 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->rho();
-    check("rho", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("rho", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 
     i++;
@@ -638,26 +718,27 @@ void EuropeanOptionTest::testGreekValues() {
         RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine));
     calculated = option->dividendRho();
-    check("dividendRho", values[i].type, values[i].s, values[i].strike, values[i].q,
-        values[i].r, today, exDate, values[i].v, values[i].result, calculated,
-        1e-4);
+    if (QL_FABS(calculated-values[i].result) > 1e-4)
+        check("dividendRho", payoff, exercise, values[i].s, values[i].q,
+            values[i].r, today, values[i].v, values[i].result, calculated);
 
 }
 
 void EuropeanOptionTest::testGreeks() {
 
     std::map<std::string,double> calculated, expected, tolerance;
-    tolerance["delta"]  = 1.0e-4;
-    tolerance["gamma"]  = 1.0e-4;
-    tolerance["theta"]  = 1.0e-2;
-    tolerance["rho"]    = 1.0e-4;
-    tolerance["divRho"] = 1.0e-4;
-    tolerance["vega"]   = 1.0e-4;
+    tolerance["delta"]  = 1.0e-5;
+    tolerance["gamma"]  = 1.0e-5;
+    tolerance["theta"]  = 1.0e-5;
+    tolerance["rho"]    = 1.0e-5;
+    tolerance["divRho"] = 1.0e-5;
+    tolerance["vega"]   = 1.0e-5;
 
     // test options
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+    double cashPayoff = 100.0;
     double strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    int lengths[] = { 2 };
+    int lengths[] = { 1, 2 };
 
     // test data
     double underlyings[] = { 100.0 };
@@ -667,32 +748,44 @@ void EuropeanOptionTest::testGreeks() {
 
     Handle<SimpleQuote> underlying(new SimpleQuote(0.0));
     Handle<SimpleQuote> volatility(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
+    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility,
+        Actual360());
     Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> divCurve = makeFlatCurve(qRate);
+    Handle<TermStructure> divCurve = makeFlatCurve(qRate, Actual360());
     Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
+    Handle<TermStructure> rfCurve = makeFlatCurve(rRate, Actual360());
+    Handle<StrikedTypePayoff> payoff;
 
     Date today = Date::todaysDate();
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(lengths); k++) {
+        for (Size kk=0; kk<2; kk++) {
           // option to check
-          Date exDate = today.plusDays(lengths[k]*365);
-          Handle<VanillaOption> option =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volCurve);
+          if (kk==0) {
+              payoff = Handle<StrikedTypePayoff>(new
+                PlainVanillaPayoff(types[i], strikes[j]));
+          } else if (kk==1) {
+              payoff = Handle<StrikedTypePayoff>(new
+                CashOrNothingPayoff(types[i], strikes[j], cashPayoff));
+          }
+          Date exDate = today.plusDays(lengths[k]*360);
+          Handle<Exercise> exercise(new EuropeanExercise(exDate));
+          Handle<VanillaOption> option = makeOption(payoff, exercise,
+              underlying, divCurve, rfCurve,volCurve);
           // time-shifted exercise dates and options
           Date exDateP = exDate.plusDays(1),
                exDateM = exDate.plusDays(-1);
-          Time dT = (exDateP-exDateM)/365.0;
+          Time dT = (exDateP-exDateM)/360.0;
+          Handle<Exercise> exerciseP(new EuropeanExercise(exDateP));
           Handle<VanillaOption> optionP =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDateP,volCurve);
+              makeOption(payoff,exerciseP, underlying,
+                                 divCurve,rfCurve,volCurve);
+          Handle<Exercise> exerciseM(new EuropeanExercise(exDateM));
           Handle<VanillaOption> optionM =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDateM,volCurve);
+              makeOption(payoff, exerciseM, underlying,
+                                 divCurve, rfCurve, volCurve);
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
             for (Size m=0; m<LENGTH(qRates); m++) {
@@ -766,25 +859,8 @@ void EuropeanOptionTest::testGreeks() {
                                  expct = expected[greek],
                                  tol = tolerance[greek];
                           if (relativeError(calcl,expct,u) > tol) {
-                              CPPUNIT_FAIL(
-                                  OptionTypeFormatter::toString(types[i])
-                                  + " option :\n"
-                                  "    underlying value: "
-                                  + DoubleFormatter::toString(u) + "\n"
-                                  "    strike:           "
-                                  + DoubleFormatter::toString(strikes[j]) +"\n"
-                                  "    dividend yield:   "
-                                  + DoubleFormatter::toString(q) + "\n"
-                                  "    risk-free rate:   "
-                                  + DoubleFormatter::toString(r) + "\n"
-                                  "    maturity:         "
-                                  + DateFormatter::toString(exDate) + "\n"
-                                  "    volatility:       "
-                                  + DoubleFormatter::toString(v) + "\n\n"
-                                  "    calculated " + greek + ": "
-                                  + DoubleFormatter::toString(calcl) + "\n"
-                                  "    expected " + greek + ":   "
-                                  + DoubleFormatter::toString(expct));
+                              check(greek, payoff, exercise, u, q, r, today,
+                                  v, expct, calcl);
                           }
                       }
                   }
@@ -792,6 +868,7 @@ void EuropeanOptionTest::testGreeks() {
               }
             }
           }
+        }
         }
       }
     }
@@ -812,13 +889,17 @@ void EuropeanOptionTest::testImpliedVol() {
     Rate rRates[] = { 0.01, 0.05, 0.10 };
     double vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
+    // will fail with Actual 360 ??????????????????????
+//    DayCounter dc = Actual360();
+    DayCounter dc = Actual365();
+
     Handle<SimpleQuote> underlying(new SimpleQuote(0.0));
     Handle<SimpleQuote> volatility(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
+    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility,dc);
     Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> divCurve = makeFlatCurve(qRate);
+    Handle<TermStructure> divCurve = makeFlatCurve(qRate, dc);
     Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
+    Handle<TermStructure> rfCurve = makeFlatCurve(rRate, dc);
 
     Date today = Date::todaysDate();
 
@@ -827,9 +908,12 @@ void EuropeanOptionTest::testImpliedVol() {
         for (Size k=0; k<LENGTH(lengths); k++) {
           // option to check
           Date exDate = today.plusDays(lengths[k]);
+          Handle<Exercise> exercise(new EuropeanExercise(exDate));
+          Handle<StrikedTypePayoff> payoff(new
+              PlainVanillaPayoff(types[i], strikes[j]));
           Handle<VanillaOption> option =
-              makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volCurve);
+              makeOption(payoff, exercise, underlying,
+                                 divCurve, rfCurve, volCurve);
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
             for (Size m=0; m<LENGTH(qRates); m++) {
@@ -931,28 +1015,31 @@ namespace {
         Handle<SimpleQuote> underlying(new SimpleQuote(0.0));
         Handle<SimpleQuote> volatility(new SimpleQuote(0.0));
         Handle<BlackVolTermStructure> volCurve =
-            makeFlatVolatility(volatility);
+            makeFlatVolatility(volatility, Actual360());
         Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
-        Handle<TermStructure> divCurve = makeFlatCurve(qRate);
+        Handle<TermStructure> divCurve = makeFlatCurve(qRate, Actual360());
         Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
-        Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
+        Handle<TermStructure> rfCurve = makeFlatCurve(rRate, Actual360());
 
         Date today = Date::todaysDate();
 
         for (Size i=0; i<LENGTH(types); i++) {
           for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(lengths); k++) {
-              Date exDate = today.plusDays(lengths[k]*365);
+              Date exDate = today.plusDays(lengths[k]*360);
+              Handle<Exercise> exercise(new EuropeanExercise(exDate));
+              Handle<StrikedTypePayoff> payoff(new
+                  PlainVanillaPayoff(types[i], strikes[j]));
               // reference option
               Handle<VanillaOption> refOption =
-                  makeEuropeanOption(types[i],underlying,strikes[j],
-                                     divCurve,rfCurve,exDate,volCurve);
+                  makeOption(payoff, exercise, underlying,
+                                     divCurve, rfCurve, volCurve);
               // options to check
               std::map<EngineType,Handle<VanillaOption> > options;
               for (Size ii=0; ii<N; ii++) {
                   options[engines[ii]] =
-                      makeEuropeanOption(types[i],underlying,strikes[j],
-                                         divCurve,rfCurve,exDate,volCurve,
+                      makeOption(payoff, exercise, underlying,
+                                         divCurve, rfCurve, volCurve,
                                          engines[ii]);
               }
 
@@ -1029,20 +1116,25 @@ CppUnit::Test* EuropeanOptionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing European option greek values",
                     &EuropeanOptionTest::testGreekValues));
+
+    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
+                   ("Testing European option analytic greeks against finite "
+                    "difference greeks",
+                    &EuropeanOptionTest::testGreeks));
+
+    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
+                   ("Testing European option implied volatility",
+                    &EuropeanOptionTest::testImpliedVol));
+
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing binomial European engines "
                     "against analytic results",
                     &EuropeanOptionTest::testBinomialEngines));
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
-                   ("Testing European option greeks",
-                    &EuropeanOptionTest::testGreeks));
-    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
-                   ("Testing European option implied volatility",
-                    &EuropeanOptionTest::testImpliedVol));
-    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing Monte Carlo European engines "
                     "against analytic results",
                     &EuropeanOptionTest::testMcEngines));
+
     return tests;
 }
 
