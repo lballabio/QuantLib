@@ -1,2 +1,4 @@
 quantlib-config
 build
+QuantLib.plg
+QuantLib.dep

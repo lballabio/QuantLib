@@ -60,7 +60,7 @@ namespace QuantLib {
           protected:
             double localVarianceImpl(Time t1, Time t2, double, bool extrapolate) const;
           private:
-            Handle<BlackVarianceCurve<Interpolator1D> >& blackVarianceCurve_;
+            Handle<BlackVarianceCurve<Interpolator1D> > blackVarianceCurve_;
         };
 
 
