@@ -67,8 +67,8 @@ int main(int argc, char* argv[])
         QL_IO_INIT
 
         // our option
-        double underlying = 102;
-        double strike = 100;
+        double underlying = 8;
+        double strike = 8;
         Spread dividendYield = 0.05;
         Rate riskFreeRate = 0.05;
 
@@ -97,9 +97,9 @@ int main(int argc, char* argv[])
         std::string method;
         double value, discrepancy, rightValue, relativeDiscrepancy;
 
-        
+
         std::cout << std::endl << std::endl ;
-        
+
         // write column headings
         std::cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
             "\tRel. Discr." << std::endl;
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
         method ="Call-Put parity";
         value = EuropeanOption(Option::Put, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility).value()
-            + underlying*QL_EXP(-dividendYield*maturity) 
+            + underlying*QL_EXP(-dividendYield*maturity)
             - strike*QL_EXP(- riskFreeRate*maturity);
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -151,7 +151,7 @@ int main(int argc, char* argv[])
             dividendYield);
         SegmentIntegral integrator(5000);
 
-        double nuT = (riskFreeRate - dividendYield 
+        double nuT = (riskFreeRate - dividendYield
                       + 0.5*volatility*volatility)*maturity;
         double infinity = 10.0*volatility*QL_SQRT(maturity);
 
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
 
 /************************************/
 
-        // New option pricing framework 
+        // New option pricing framework
         std::cout << "\nNew Pricing engine framework" << std::endl;
 
         Date midlifeDate(19, November, 1998);
@@ -252,18 +252,18 @@ int main(int argc, char* argv[])
                 new BlackConstantVol(settlementDate, volatility)));
 
         std::vector<Date> dates(3);
-        dates[0] = settlementDate.plusMonths(6);
-        dates[1] = settlementDate.plusMonths(12);
-        dates[2] = settlementDate.plusMonths(18);
+        dates[0] = settlementDate.plusMonths(1);
+        dates[1] = exerciseDate;
+        dates[2] = exerciseDate.plusMonths(6);
         std::vector<double> strikes(3);
         strikes[0] = underlying*0.9;
         strikes[1] = underlying;
         strikes[2] = underlying*1.1;
 
         Matrix vols(3,3);
-        vols[0][0] = 0.2; vols[0][1] = 0.18; vols[0][2] = 0.16; 
-        vols[1][0] = 0.2; vols[1][1] = 0.18; vols[1][2] = 0.16; 
-        vols[2][0] = 0.2; vols[2][1] = 0.18; vols[2][2] = 0.16; 
+        vols[0][0] = volatility*1.1; vols[0][1] = volatility*1.1; vols[0][2] = volatility*1.0;
+        vols[1][0] = volatility;     vols[1][1] = volatility;     vols[1][2] = volatility*0.9;
+        vols[2][0] = volatility*0.8; vols[2][1] = volatility*0.8; vols[2][2] = volatility*0.7;
         RelinkableHandle<BlackVolTermStructure> blackSurface(
             Handle<BlackVolTermStructure> (new
             VolTermStructures::BlackVarianceSurface<
@@ -272,36 +272,6 @@ int main(int argc, char* argv[])
 			std::vector<double>::const_iterator,
             Math::Matrix> >(settlementDate, dates, strikes, vols)));
 
-        VolTermStructures::LocalVolSurface locVol(blackSurface,
-            flatTermStructure, flatDividendTS, underlyingH);
-
-        double dt = 0.0001;
-        std::cout << strikes[0] << "\t"
-             << locVol.localVol(0.5, strikes[0], true) -
-                blackSurface->blackForwardVol(0.5-dt, 0.5+dt,strikes[0], true)  << "\t"
-             << locVol.localVol(1.0, strikes[0], true) -
-                blackSurface->blackForwardVol(1.0-dt, 1.0+dt,strikes[0], true) << "\t"
-             << locVol.localVol(1.5, strikes[0], true) -
-                blackSurface->blackForwardVol(1.5-dt, 1.5+dt,strikes[0], true) << "\t"
-             << std::endl;
-
-        std::cout << strikes[1] << "\t"
-             << locVol.localVol(0.5, strikes[1], true) -
-                blackSurface->blackForwardVol(0.5-dt, 0.5+dt,strikes[1], true)  << "\t"
-             << locVol.localVol(1.0, strikes[1], true) -
-                blackSurface->blackForwardVol(1.0-dt, 1.0+dt,strikes[1], true)  << "\t"
-             << locVol.localVol(1.5, strikes[1], true) -
-                blackSurface->blackForwardVol(1.5-dt, 1.5+dt,strikes[1], true)  << "\t"
-             << std::endl;
-
-        std::cout << strikes[2] << "\t"
-             << locVol.localVol(0.5, strikes[2], true) -
-                blackSurface->blackForwardVol(0.5-dt, 0.5+dt,strikes[2], true)  << "\t"
-             << locVol.localVol(1.0, strikes[2], true) -
-                blackSurface->blackForwardVol(1.0-dt, 1.0+dt,strikes[2], true)  << "\t"
-             << locVol.localVol(1.5, strikes[2], true) -
-                blackSurface->blackForwardVol(1.5-dt, 1.5+dt,strikes[2], true)  << "\t"
-             << std::endl;
 
         Instruments::VanillaOption option(
             Option::Call,
@@ -314,7 +284,7 @@ int main(int argc, char* argv[])
             Handle<PricingEngine>(
                 new AnalyticalVanillaEngine()));
 
-        
+
         // method: Black Scholes Engine
         method = "Black Scholes";
         option.setPricingEngine(Handle<PricingEngine>(
@@ -421,7 +391,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
-        
+
 
         // Monte Carlo Method
         method = "MC (crude)";
@@ -439,8 +409,8 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
-        
-        
+
+
 
         Handle<AnalyticalVanillaEngine> baseEngine(new
             AnalyticalVanillaEngine);
@@ -464,7 +434,7 @@ int main(int argc, char* argv[])
             flatVolTS,
             RelinkableHandle<MarketElement>(
                 Handle<MarketElement>(new SimpleMarketElement(correlation))));
-            
+
         value = quantoOption.NPV();
         double delta = quantoOption.delta();
         double gamma = quantoOption.gamma();
@@ -523,7 +493,7 @@ int main(int argc, char* argv[])
             1.1, // moneyness
             settlementDate.plusMonths(1) // reset Date
             );
-            
+
         value   = forwardOption.NPV();
         delta   = forwardOption.delta();
         gamma   = forwardOption.gamma();
@@ -659,7 +629,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(qlambda, 4)
              << std::endl;
 
-        
+
         Handle<QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
                             VanillaOptionResults> >
             quantoForwardPerformanceEngine(
