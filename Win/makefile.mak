@@ -337,6 +337,7 @@ test::
     python european_with_dividends.py
     python impliedVol.py
     python mcpricers.py
+    python RiskTool.py
     python statistics_test.py
     python testRNGs.py
     cd ..\..\Win
