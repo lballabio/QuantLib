@@ -1492,10 +1492,6 @@ SOURCE=.\ql\config.bcc.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\config.decc.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\config.msvc.hpp
 # End Source File
 # Begin Source File
