@@ -1,6 +1,46 @@
 # This file was created automatically by SWIG.
 import QuantLibc
 import new
+class UniformRandomGenerator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_UniformRandomGenerator,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_UniformRandomGenerator(self)
+    def __repr__(self):
+        return "<C UniformRandomGenerator instance at %s>" % (self.this,)
+class UniformRandomGeneratorPtr(UniformRandomGenerator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = UniformRandomGenerator
+
+
+UniformRandomGenerator.next = new.instancemethod(QuantLibc.UniformRandomGenerator_next, None, UniformRandomGenerator)
+UniformRandomGenerator.weight = new.instancemethod(QuantLibc.UniformRandomGenerator_weight, None, UniformRandomGenerator)
+
+class GaussianRandomGenerator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_GaussianRandomGenerator,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_GaussianRandomGenerator(self)
+    def __repr__(self):
+        return "<C GaussianRandomGenerator instance at %s>" % (self.this,)
+class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = GaussianRandomGenerator
+
+
+GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
+GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
+
 class BoundaryCondition:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_BoundaryCondition,args,kwargs)
@@ -20,6 +60,65 @@ class BoundaryConditionPtr(BoundaryCondition):
 
 BoundaryCondition.type = new.instancemethod(QuantLibc.BoundaryCondition_type, None, BoundaryCondition)
 BoundaryCondition.value = new.instancemethod(QuantLibc.BoundaryCondition_value, None, BoundaryCondition)
+
+class NormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_NormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_NormalDistribution(self)
+    def __repr__(self):
+        return "<C NormalDistribution instance at %s>" % (self.this,)
+class NormalDistributionPtr(NormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = NormalDistribution
+
+
+NormalDistribution.derivative = new.instancemethod(QuantLibc.NormalDistribution_derivative, None, NormalDistribution)
+NormalDistribution.__call__ = new.instancemethod(QuantLibc.NormalDistribution___call__, None, NormalDistribution)
+
+class CumulativeNormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_CumulativeNormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_CumulativeNormalDistribution(self)
+    def __repr__(self):
+        return "<C CumulativeNormalDistribution instance at %s>" % (self.this,)
+class CumulativeNormalDistributionPtr(CumulativeNormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = CumulativeNormalDistribution
+
+
+CumulativeNormalDistribution.derivative = new.instancemethod(QuantLibc.CumulativeNormalDistribution_derivative, None, CumulativeNormalDistribution)
+CumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.CumulativeNormalDistribution___call__, None, CumulativeNormalDistribution)
+
+class InvCumulativeNormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_InvCumulativeNormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_InvCumulativeNormalDistribution(self)
+    def __repr__(self):
+        return "<C InvCumulativeNormalDistribution instance at %s>" % (self.this,)
+class InvCumulativeNormalDistributionPtr(InvCumulativeNormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = InvCumulativeNormalDistribution
+
+
+InvCumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.InvCumulativeNormalDistribution___call__, None, InvCumulativeNormalDistribution)
 
 class Date:
     def __init__(self,*args,**kwargs):
@@ -117,6 +216,133 @@ DateVector.__setslice__ = new.instancemethod(QuantLibc.DateVector___setslice__, 
 DateVector.__str__ = new.instancemethod(QuantLibc.DateVector___str__, None, DateVector)
 DateVector.__nonzero__ = new.instancemethod(QuantLibc.DateVector___nonzero__, None, DateVector)
 
+class Array:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_Array,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_Array(self)
+    def __getslice__(*args, **kwargs):
+        val = apply(QuantLibc.Array___getslice__,args, kwargs)
+        if val: val = ArrayPtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C Array instance at %s>" % (self.this,)
+class ArrayPtr(Array):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = Array
+
+
+Array.__len__ = new.instancemethod(QuantLibc.Array___len__, None, Array)
+Array.__getitem__ = new.instancemethod(QuantLibc.Array___getitem__, None, Array)
+Array.__setitem__ = new.instancemethod(QuantLibc.Array___setitem__, None, Array)
+Array.__setslice__ = new.instancemethod(QuantLibc.Array___setslice__, None, Array)
+Array.__str__ = new.instancemethod(QuantLibc.Array___str__, None, Array)
+Array.__nonzero__ = new.instancemethod(QuantLibc.Array___nonzero__, None, Array)
+
+class ArrayLexicographicalView:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_ArrayLexicographicalView(self)
+    def __getitem__(*args, **kwargs):
+        val = apply(QuantLibc.ArrayLexicographicalView___getitem__,args, kwargs)
+        if val: val = ArrayLexicographicalViewColumnPtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C ArrayLexicographicalView instance at %s>" % (self.this,)
+class ArrayLexicographicalViewPtr(ArrayLexicographicalView):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = ArrayLexicographicalView
+
+
+ArrayLexicographicalView.xSize = new.instancemethod(QuantLibc.ArrayLexicographicalView_xSize, None, ArrayLexicographicalView)
+ArrayLexicographicalView.ySize = new.instancemethod(QuantLibc.ArrayLexicographicalView_ySize, None, ArrayLexicographicalView)
+ArrayLexicographicalView.__str__ = new.instancemethod(QuantLibc.ArrayLexicographicalView___str__, None, ArrayLexicographicalView)
+
+class ArrayLexicographicalViewColumn:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_ArrayLexicographicalViewColumn(self)
+    def __repr__(self):
+        return "<C ArrayLexicographicalViewColumn instance at %s>" % (self.this,)
+class ArrayLexicographicalViewColumnPtr(ArrayLexicographicalViewColumn):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = ArrayLexicographicalViewColumn
+
+
+ArrayLexicographicalViewColumn.__getitem__ = new.instancemethod(QuantLibc.ArrayLexicographicalViewColumn___getitem__, None, ArrayLexicographicalViewColumn)
+ArrayLexicographicalViewColumn.__setitem__ = new.instancemethod(QuantLibc.ArrayLexicographicalViewColumn___setitem__, None, ArrayLexicographicalViewColumn)
+
+class IntVector:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_IntVector,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_IntVector(self)
+    def __getslice__(*args, **kwargs):
+        val = apply(QuantLibc.IntVector___getslice__,args, kwargs)
+        if val: val = IntVectorPtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C IntVector instance at %s>" % (self.this,)
+class IntVectorPtr(IntVector):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = IntVector
+
+
+IntVector.__len__ = new.instancemethod(QuantLibc.IntVector___len__, None, IntVector)
+IntVector.__getitem__ = new.instancemethod(QuantLibc.IntVector___getitem__, None, IntVector)
+IntVector.__setitem__ = new.instancemethod(QuantLibc.IntVector___setitem__, None, IntVector)
+IntVector.__setslice__ = new.instancemethod(QuantLibc.IntVector___setslice__, None, IntVector)
+IntVector.__str__ = new.instancemethod(QuantLibc.IntVector___str__, None, IntVector)
+IntVector.__nonzero__ = new.instancemethod(QuantLibc.IntVector___nonzero__, None, IntVector)
+
+class DoubleVector:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DoubleVector,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DoubleVector(self)
+    def __getslice__(*args, **kwargs):
+        val = apply(QuantLibc.DoubleVector___getslice__,args, kwargs)
+        if val: val = DoubleVectorPtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C DoubleVector instance at %s>" % (self.this,)
+class DoubleVectorPtr(DoubleVector):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DoubleVector
+
+
+DoubleVector.__len__ = new.instancemethod(QuantLibc.DoubleVector___len__, None, DoubleVector)
+DoubleVector.__getitem__ = new.instancemethod(QuantLibc.DoubleVector___getitem__, None, DoubleVector)
+DoubleVector.__setitem__ = new.instancemethod(QuantLibc.DoubleVector___setitem__, None, DoubleVector)
+DoubleVector.__setslice__ = new.instancemethod(QuantLibc.DoubleVector___setslice__, None, DoubleVector)
+DoubleVector.__str__ = new.instancemethod(QuantLibc.DoubleVector___str__, None, DoubleVector)
+DoubleVector.__nonzero__ = new.instancemethod(QuantLibc.DoubleVector___nonzero__, None, DoubleVector)
+
 class Calendar:
     def __init__(self,this):
         self.this = this
@@ -197,121 +423,6 @@ DayCounter.yearFraction = new.instancemethod(QuantLibc.DayCounter_yearFraction, 
 DayCounter.__str__ = new.instancemethod(QuantLibc.DayCounter___str__, None, DayCounter)
 DayCounter.__cmp__ = new.instancemethod(QuantLibc.DayCounter___cmp__, None, DayCounter)
 DayCounter.__nonzero__ = new.instancemethod(QuantLibc.DayCounter___nonzero__, None, DayCounter)
-
-class NormalDistribution:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_NormalDistribution,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_NormalDistribution(self)
-    def __repr__(self):
-        return "<C NormalDistribution instance at %s>" % (self.this,)
-class NormalDistributionPtr(NormalDistribution):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = NormalDistribution
-
-
-NormalDistribution.derivative = new.instancemethod(QuantLibc.NormalDistribution_derivative, None, NormalDistribution)
-NormalDistribution.__call__ = new.instancemethod(QuantLibc.NormalDistribution___call__, None, NormalDistribution)
-
-class CumulativeNormalDistribution:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_CumulativeNormalDistribution,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_CumulativeNormalDistribution(self)
-    def __repr__(self):
-        return "<C CumulativeNormalDistribution instance at %s>" % (self.this,)
-class CumulativeNormalDistributionPtr(CumulativeNormalDistribution):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = CumulativeNormalDistribution
-
-
-CumulativeNormalDistribution.derivative = new.instancemethod(QuantLibc.CumulativeNormalDistribution_derivative, None, CumulativeNormalDistribution)
-CumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.CumulativeNormalDistribution___call__, None, CumulativeNormalDistribution)
-
-class InvCumulativeNormalDistribution:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_InvCumulativeNormalDistribution,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_InvCumulativeNormalDistribution(self)
-    def __repr__(self):
-        return "<C InvCumulativeNormalDistribution instance at %s>" % (self.this,)
-class InvCumulativeNormalDistributionPtr(InvCumulativeNormalDistribution):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = InvCumulativeNormalDistribution
-
-
-InvCumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.InvCumulativeNormalDistribution___call__, None, InvCumulativeNormalDistribution)
-
-class IntVector:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_IntVector,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_IntVector(self)
-    def __getslice__(*args, **kwargs):
-        val = apply(QuantLibc.IntVector___getslice__,args, kwargs)
-        if val: val = IntVectorPtr(val) ; val.thisown = 1
-        return val
-    def __repr__(self):
-        return "<C IntVector instance at %s>" % (self.this,)
-class IntVectorPtr(IntVector):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = IntVector
-
-
-IntVector.__len__ = new.instancemethod(QuantLibc.IntVector___len__, None, IntVector)
-IntVector.__getitem__ = new.instancemethod(QuantLibc.IntVector___getitem__, None, IntVector)
-IntVector.__setitem__ = new.instancemethod(QuantLibc.IntVector___setitem__, None, IntVector)
-IntVector.__setslice__ = new.instancemethod(QuantLibc.IntVector___setslice__, None, IntVector)
-IntVector.__str__ = new.instancemethod(QuantLibc.IntVector___str__, None, IntVector)
-IntVector.__nonzero__ = new.instancemethod(QuantLibc.IntVector___nonzero__, None, IntVector)
-
-class DoubleVector:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_DoubleVector,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_DoubleVector(self)
-    def __getslice__(*args, **kwargs):
-        val = apply(QuantLibc.DoubleVector___getslice__,args, kwargs)
-        if val: val = DoubleVectorPtr(val) ; val.thisown = 1
-        return val
-    def __repr__(self):
-        return "<C DoubleVector instance at %s>" % (self.this,)
-class DoubleVectorPtr(DoubleVector):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = DoubleVector
-
-
-DoubleVector.__len__ = new.instancemethod(QuantLibc.DoubleVector___len__, None, DoubleVector)
-DoubleVector.__getitem__ = new.instancemethod(QuantLibc.DoubleVector___getitem__, None, DoubleVector)
-DoubleVector.__setitem__ = new.instancemethod(QuantLibc.DoubleVector___setitem__, None, DoubleVector)
-DoubleVector.__setslice__ = new.instancemethod(QuantLibc.DoubleVector___setslice__, None, DoubleVector)
-DoubleVector.__str__ = new.instancemethod(QuantLibc.DoubleVector___str__, None, DoubleVector)
-DoubleVector.__nonzero__ = new.instancemethod(QuantLibc.DoubleVector___nonzero__, None, DoubleVector)
 
 class HistoryIterator:
     def __init__(self,this):
@@ -587,77 +698,6 @@ Instrument.price = new.instancemethod(QuantLibc.Instrument_price, None, Instrume
 Instrument.__str__ = new.instancemethod(QuantLibc.Instrument___str__, None, Instrument)
 Instrument.__cmp__ = new.instancemethod(QuantLibc.Instrument___cmp__, None, Instrument)
 Instrument.__nonzero__ = new.instancemethod(QuantLibc.Instrument___nonzero__, None, Instrument)
-
-class Array:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_Array,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_Array(self)
-    def __getslice__(*args, **kwargs):
-        val = apply(QuantLibc.Array___getslice__,args, kwargs)
-        if val: val = ArrayPtr(val) ; val.thisown = 1
-        return val
-    def __repr__(self):
-        return "<C Array instance at %s>" % (self.this,)
-class ArrayPtr(Array):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = Array
-
-
-Array.__len__ = new.instancemethod(QuantLibc.Array___len__, None, Array)
-Array.__getitem__ = new.instancemethod(QuantLibc.Array___getitem__, None, Array)
-Array.__setitem__ = new.instancemethod(QuantLibc.Array___setitem__, None, Array)
-Array.__setslice__ = new.instancemethod(QuantLibc.Array___setslice__, None, Array)
-Array.__str__ = new.instancemethod(QuantLibc.Array___str__, None, Array)
-Array.__nonzero__ = new.instancemethod(QuantLibc.Array___nonzero__, None, Array)
-
-class ArrayLexicographicalView:
-    def __init__(self,this):
-        self.this = this
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_ArrayLexicographicalView(self)
-    def __getitem__(*args, **kwargs):
-        val = apply(QuantLibc.ArrayLexicographicalView___getitem__,args, kwargs)
-        if val: val = ArrayLexicographicalViewColumnPtr(val) ; val.thisown = 1
-        return val
-    def __repr__(self):
-        return "<C ArrayLexicographicalView instance at %s>" % (self.this,)
-class ArrayLexicographicalViewPtr(ArrayLexicographicalView):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = ArrayLexicographicalView
-
-
-ArrayLexicographicalView.xSize = new.instancemethod(QuantLibc.ArrayLexicographicalView_xSize, None, ArrayLexicographicalView)
-ArrayLexicographicalView.ySize = new.instancemethod(QuantLibc.ArrayLexicographicalView_ySize, None, ArrayLexicographicalView)
-ArrayLexicographicalView.__str__ = new.instancemethod(QuantLibc.ArrayLexicographicalView___str__, None, ArrayLexicographicalView)
-
-class ArrayLexicographicalViewColumn:
-    def __init__(self,this):
-        self.this = this
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_ArrayLexicographicalViewColumn(self)
-    def __repr__(self):
-        return "<C ArrayLexicographicalViewColumn instance at %s>" % (self.this,)
-class ArrayLexicographicalViewColumnPtr(ArrayLexicographicalViewColumn):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = ArrayLexicographicalViewColumn
-
-
-ArrayLexicographicalViewColumn.__getitem__ = new.instancemethod(QuantLibc.ArrayLexicographicalViewColumn___getitem__, None, ArrayLexicographicalViewColumn)
-ArrayLexicographicalViewColumn.__setitem__ = new.instancemethod(QuantLibc.ArrayLexicographicalViewColumn___setitem__, None, ArrayLexicographicalViewColumn)
 
 class Interpolation:
     def __init__(self,this):
@@ -1309,46 +1349,6 @@ class BarrierOptionPtr(BarrierOption):
 
 BarrierOption.value = new.instancemethod(QuantLibc.BarrierOption_value, None, BarrierOption)
 
-class UniformRandomGenerator:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_UniformRandomGenerator,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_UniformRandomGenerator(self)
-    def __repr__(self):
-        return "<C UniformRandomGenerator instance at %s>" % (self.this,)
-class UniformRandomGeneratorPtr(UniformRandomGenerator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = UniformRandomGenerator
-
-
-UniformRandomGenerator.next = new.instancemethod(QuantLibc.UniformRandomGenerator_next, None, UniformRandomGenerator)
-UniformRandomGenerator.weight = new.instancemethod(QuantLibc.UniformRandomGenerator_weight, None, UniformRandomGenerator)
-
-class GaussianRandomGenerator:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_GaussianRandomGenerator,args,kwargs)
-        self.thisown = 1
-
-    def __del__(self,QuantLibc=QuantLibc):
-        if self.thisown == 1 :
-            QuantLibc.delete_GaussianRandomGenerator(self)
-    def __repr__(self):
-        return "<C GaussianRandomGenerator instance at %s>" % (self.this,)
-class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = GaussianRandomGenerator
-
-
-GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
-GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
-
 class VarTool:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_VarTool,args,kwargs)
@@ -1635,6 +1635,11 @@ def DateFromSerialNumber(*args, **kwargs):
     if val: val = DatePtr(val); val.thisown = 1
     return val
 
+def LexicographicalView(*args, **kwargs):
+    val = apply(QuantLibc.LexicographicalView,args,kwargs)
+    if val: val = ArrayLexicographicalViewPtr(val); val.thisown = 1
+    return val
+
 def TARGET(*args, **kwargs):
     val = apply(QuantLibc.TARGET,args,kwargs)
     if val: val = CalendarPtr(val); val.thisown = 1
@@ -1785,11 +1790,6 @@ def Stock(*args, **kwargs):
     if val: val = InstrumentPtr(val); val.thisown = 1
     return val
 
-def LexicographicalView(*args, **kwargs):
-    val = apply(QuantLibc.LexicographicalView,args,kwargs)
-    if val: val = ArrayLexicographicalViewPtr(val); val.thisown = 1
-    return val
-
 def LinearInterpolation(*args, **kwargs):
     val = apply(QuantLibc.LinearInterpolation,args,kwargs)
     if val: val = InterpolationPtr(val); val.thisown = 1
@@ -1817,6 +1817,11 @@ def matrixProduct(*args, **kwargs):
 
 def matrixSqrt(*args, **kwargs):
     val = apply(QuantLibc.matrixSqrt,args,kwargs)
+    if val: val = MatrixPtr(val); val.thisown = 1
+    return val
+
+def getCovariance(*args, **kwargs):
+    val = apply(QuantLibc.getCovariance,args,kwargs)
     if val: val = MatrixPtr(val); val.thisown = 1
     return val
 
