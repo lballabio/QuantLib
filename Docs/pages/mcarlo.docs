@@ -83,7 +83,7 @@
 
     \subsection pathgen Path generation
     The Black-Scholes equation
-    \f[ \frac{\partial t}{\partial t} +
+    \f[ \frac{\partial f}{\partial t} +
         \frac{\sigma^2}{2} \frac{\partial^2 f}{\partial x^2} +
         \nu \frac{\partial f}{\partial x} - r f = 0,
     \f]
