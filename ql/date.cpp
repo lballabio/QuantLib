@@ -57,6 +57,10 @@ namespace QuantLib {
         serialNumber_ = d + offset + yearOffset(y);
     }
 
+    Date::Date(const std::string& str, const std::string& fmt) {
+       *this = DateParser::parse(str,fmt);
+    }
+   
     Month Date::month() const {
         Day d = dayOfYear(); // dayOfYear is 1 based
         int m = d/30 + 1;

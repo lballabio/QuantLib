@@ -25,6 +25,7 @@
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
 #include <utility>
+#include <functional>
 
 namespace QuantLib {
 
@@ -72,14 +73,87 @@ namespace QuantLib {
         : length_(0), units_(Days) {}
         Period(int n, TimeUnit units)
         : length_(n), units_(units) {}
-       explicit Period(const std::string& pstring);
+        explicit Period(const std::string& pstring);
         int length() const { return length_; }
         TimeUnit units() const { return units_; }
       private:
         int length_;
         TimeUnit units_;
     };
+   
+    /*! \relates Period */
+    bool operator==(const Period&, const Period&);
+    /*! \relates Period */
+    bool operator<(const Period&, const Period&);
 
+    inline bool operator==(const Period& p1, const Period& p2) {
+        if (p1.units() == p2.units())
+	   return (p1.length() == p2.length());
+	if (p1.units() == Days) {
+	   if (p2.units() == Weeks)
+	      return (p1.length() == (p2.length() * 7));
+	   else if (p2.units() == Months)
+	      return (p1.length() == (p2.length() * 30));
+	   else if (p2.units() == Years)
+	      return (p1.length() == (p2.length() * 365));
+	} else if (p1.units() == Weeks) {
+	   if (p2.units() == Days)
+	      return ((double)p1.length() == ((double)p2.length() / 7.0));
+	   else if (p2.units() == Months)
+	      return (p1.length() == (p2.length() * 4));
+	   else if (p2.units() == Years)
+	      return (p1.length() == (p2.length() * 52));
+	} else if (p1.units() == Months) {
+	   if (p2.units() == Days)
+	      return ((double)p1.length() == ((double)p2.length() / 30.0));
+	   else if (p2.units() == Weeks)
+	      return ((double)p1.length() == ((double)p2.length() / 4.0));
+	   else if (p2.units() == Years)
+	      return (p1.length() == (p2.length() * 12));
+	} else if (p1.units() == Years) {
+	   if (p2.units() == Days)
+	      return ((double)p1.length() == ((double)p2.length() / 365.0));
+	   else if (p2.units() == Weeks)
+	      return ((double)p1.length() == ((double)p2.length() / 52.0));
+	   else if (p2.units() == Months)
+	      return ((double)p1.length() == ((double)p2.length() / 12.0));
+	}
+	return 0;
+    }
+    inline bool operator<(const Period& p1, const Period& p2) {
+        if (p1.units() == p2.units())
+	   return (p1.length() < p2.length());
+	if (p1.units() == Days) {
+	   if (p2.units() == Weeks)
+	      return (p1.length() < (p2.length() * 7));
+	   else if (p2.units() == Months)
+	      return (p1.length() < (p2.length() * 30));
+	   else if (p2.units() == Years)
+	      return (p1.length() < (p2.length() * 365));
+	} else if (p1.units() == Weeks) {
+	   if (p2.units() == Days)
+	      return ((double)p1.length() < ((double)p2.length() / 7.0));
+	   else if (p2.units() == Months)
+	      return (p1.length() < (p2.length() * 4));
+	   else if (p2.units() == Years)
+	      return (p1.length() < (p2.length() * 52));
+	} else if (p1.units() == Months) {
+	   if (p2.units() == Days)
+	      return ((double)p1.length() < ((double)p2.length() / 30.0));
+	   else if (p2.units() == Weeks)
+	      return ((double)p1.length() < ((double)p2.length() / 4.0));
+	   else if (p2.units() == Years)
+	      return (p1.length() < (p2.length() * 12));
+	} else if (p1.units() == Years) {
+	   if (p2.units() == Days)
+	      return ((double)p1.length() < ((double)p2.length() / 365.0));
+	   else if (p2.units() == Weeks)
+	      return ((double)p1.length() < ((double)p2.length() / 52.0));
+	   else if (p2.units() == Months)
+	      return ((double)p1.length() < ((double)p2.length() / 12.0));
+	}
+	return 0;
+    }
 
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
@@ -96,12 +170,16 @@ namespace QuantLib {
         explicit Date(long serialNumber);
         //! More traditional constructor.
         Date(Day d, Month m, Year y);
+        //! Construct from a string
+        Date(const std::string& str, const std::string& fmt);
         //@}
 
         //! \name inspectors
         //@{
         Weekday weekday() const;
         Day dayOfMonth() const;
+        bool isLastDayOfMonth() const;
+        Day lastDayOfMonth() const;
         //! One-based (Jan 1st = 1)
         Day dayOfYear() const;
         Month month() const;
@@ -148,6 +226,12 @@ namespace QuantLib {
         static Date maxDate();
         //! today's date.
         static Date todaysDate();
+
+        //! \name Function objects
+        //@{ 
+        class less_equal;
+        class ascending;
+        class descending;
         //@}
       private:
         long serialNumber_;
@@ -177,6 +261,24 @@ namespace QuantLib {
     bool operator>=(const Date&, const Date&);
 
 
+    class Date::less_equal : public std::unary_function<Date,bool> {
+    public:
+       explicit less_equal(const Date& date) : date_(date) {}
+       bool operator()(const Date& d) const { return d <= date_; }
+    private:
+       const Date date_;
+    };
+    class Date::ascending {
+    public:
+       bool operator()(const Date& d1, const Date& d2) const
+       { return d1 < d2; }
+    };
+    class Date::descending {
+    public:
+       bool operator()(const Date& d1, const Date& d2) const
+       { return d1 > d2; }
+    };
+
     // inline definitions
     
     inline Weekday Date::weekday() const {
@@ -188,6 +290,14 @@ namespace QuantLib {
         return dayOfYear() - monthOffset(month(),isLeap(year()));
     }
 
+    inline bool Date::isLastDayOfMonth() const {
+       return (dayOfMonth() == monthLength(month(), isLeap(year())));
+    }
+   
+    inline Day Date::lastDayOfMonth() const {
+       return monthLength(month(), isLeap(year()));
+    }
+   
     inline Day Date::dayOfYear() const {
         return serialNumber_ - yearOffset(year());
     }

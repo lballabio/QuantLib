@@ -22,6 +22,7 @@
 #ifndef quantlib_data_parsers_h
 #define quantlib_data_parsers_h
 
+#include <vector>
 #include <ql/date.hpp>
 
 namespace QuantLib {
@@ -29,6 +30,12 @@ namespace QuantLib {
     class PeriodParser {
       public:
         static Period parse(const std::string& str);
+    };
+    class DateParser {
+      public:
+        static std::vector<std::string> split(const std::string& str,
+					      const char delim);
+        static Date parse(const std::string& str, const std::string& fmt);
     };
 }
 
