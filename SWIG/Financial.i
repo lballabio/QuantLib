@@ -10,6 +10,14 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 %module Financial
 
+#if !defined(SWIGPYTHON)
+#if !defined(PYTHON_WARNING_ISSUED)
+#define PYTHON_WARNING_ISSUED
+%echo "Warning: this is a Python module!!"
+%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+#endif
+#endif
+
 %{
 #include "yield.h"
 #include "spread.h"
