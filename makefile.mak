@@ -2,7 +2,7 @@
 # main makefile for QuantLib under Borland C++
 
 .autodepend
-#.silent
+.silent
 
 # Options
 !ifdef DEBUG
@@ -16,8 +16,8 @@ quantlib::
     $(MAKE)
     cd ..\Examples
     $(MAKE) -DQL_DIR="..\.."
-    cd ..\test-suite
-    $(MAKE) -DQL_DIR=".."
+    #cd ..\test-suite
+    #$(MAKE) -DQL_DIR=".."
     cd ..
 
 # the installation directive requires the QL_DIR environment variable to
