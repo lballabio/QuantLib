@@ -26,6 +26,7 @@
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
+
     //! symmetric threshold Jacobi algorithm.
     /*! Given a real symmetric matrix S, the Schur decomposition
         finds the eigenvalues and eigenvectors of S. If D is the
