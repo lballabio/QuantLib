@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -237,7 +234,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -306,6 +336,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -318,23 +349,22 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\model.sbr" \
 	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\hullwhite.sbr" \
-	"$(INTDIR)\swaptionhelper.sbr" \
-	"$(INTDIR)\caphelper.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\treeswaption.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -409,6 +439,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -421,23 +452,22 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\model.obj" \
 	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\hullwhite.obj" \
-	"$(INTDIR)\swaptionhelper.obj" \
-	"$(INTDIR)\caphelper.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\treeswaption.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -652,7 +682,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -721,6 +784,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -733,23 +797,22 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\model.sbr" \
 	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\hullwhite.sbr" \
-	"$(INTDIR)\swaptionhelper.sbr" \
-	"$(INTDIR)\caphelper.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\treeswaption.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -824,6 +887,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -836,23 +900,22 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\model.obj" \
 	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\hullwhite.obj" \
-	"$(INTDIR)\swaptionhelper.obj" \
-	"$(INTDIR)\caphelper.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\treeswaption.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1066,7 +1129,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1135,6 +1231,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -1147,23 +1244,22 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\model.sbr" \
 	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\hullwhite.sbr" \
-	"$(INTDIR)\swaptionhelper.sbr" \
-	"$(INTDIR)\caphelper.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\treeswaption.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1238,6 +1334,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -1250,23 +1347,22 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\model.obj" \
 	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\hullwhite.obj" \
-	"$(INTDIR)\swaptionhelper.obj" \
-	"$(INTDIR)\caphelper.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\treeswaption.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1481,7 +1577,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1550,6 +1679,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -1562,23 +1692,22 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\hullwhite.sbr" \
+	"$(INTDIR)\caphelper.sbr" \
+	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\model.sbr" \
 	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\hullwhite.sbr" \
-	"$(INTDIR)\swaptionhelper.sbr" \
-	"$(INTDIR)\caphelper.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\treeswaption.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1653,6 +1782,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -1665,23 +1795,22 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\hullwhite.obj" \
+	"$(INTDIR)\caphelper.obj" \
+	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\model.obj" \
 	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\hullwhite.obj" \
-	"$(INTDIR)\swaptionhelper.obj" \
-	"$(INTDIR)\caphelper.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\treeswaption.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1689,36 +1818,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
