@@ -42,14 +42,14 @@ namespace QuantLib {
 
 
     double EqualJumpsBinomialTree::underlying(Size i, Size index) const {
-        long j = long(2*index - i);
+        long j = 2*long(index) - long(i);
         // exploiting equal jump and the x0_ tree centering
         return x0_*QL_EXP(j*dx_);
     }
 
     double EqualProbabilitiesBinomialTree::underlying(Size i,
                                                       Size index) const {
-        long j = long(2*index - i);
+        long j = 2*long(index) - long(i);
         // exploiting the forward value tree centering
         return x0_*QL_EXP(i*driftPerStep_ + j*up_);
     }
@@ -134,7 +134,8 @@ namespace QuantLib {
     }
 
     double Tian::underlying(Size i, Size index) const {
-        return x0_*QL_POW(down_, int(i-index)) * QL_POW(up_, int(index));
+        return x0_ * QL_POW(down_, long(i)-long(index))
+                   * QL_POW(up_, long(index));
     }
 
     double Tian::probability(Size, Size, Size branch) const {
@@ -160,14 +161,16 @@ namespace QuantLib {
                                                             QL_SQRT(variance);
         pu_ = PeizerPrattMethod2Inversion(d2, oddSteps);
         pd_ = 1.0 - pu_;
-        double pdash = PeizerPrattMethod2Inversion(d2+QL_SQRT(variance), oddSteps);
+        double pdash = PeizerPrattMethod2Inversion(d2+QL_SQRT(variance),
+                                                   oddSteps);
         up_ = ermqdt * pdash / pu_;
         down_ = (ermqdt - pu_ * up_) / (1.0 - pu_);
 
     }
 
     double LeisenReimer::underlying(Size i, Size index) const {
-        return x0_*QL_POW(down_, int(i-index)) * QL_POW(up_, int(index));
+        return x0_ * QL_POW(down_, long(i)-long(index))
+                   * QL_POW(up_, long(index));
     }
 
     double LeisenReimer::probability(Size, Size, Size branch) const {
