@@ -34,6 +34,10 @@ namespace QuantLib {
         \test b) the correctness of the curve is tested by checking
                  the consistency between returned rates and swaps
                  priced on the curve.
+
+        \bug swap rates are not reproduced exactly when using indexed
+             coupons. Apparently, some assumption about the swap
+             fixings is hard-coded into the bootstrapping algorithm.
     */
     class CompoundForward : public ForwardRateStructure {
       public:

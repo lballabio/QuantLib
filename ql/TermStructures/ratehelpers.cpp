@@ -16,6 +16,7 @@
 */
 
 #include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
@@ -91,12 +92,11 @@ namespace QuantLib {
         RateHelper::setTermStructure(t);
         Date today = Settings::instance().evaluationDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
-        maturity_ = calendar_.advance(
-                                      settlement_,n_,units_,convention_);
+        maturity_ = calendar_.advance(settlement_,n_,units_,convention_);
         yearFraction_ = dayCounter_.yearFraction(settlement_,maturity_);
     }
 
-    Date DepositRateHelper::maturity() const {
+    Date DepositRateHelper::latestDate() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return maturity_;
     }
@@ -157,7 +157,7 @@ namespace QuantLib {
         yearFraction_ = dayCounter_.yearFraction(start_,maturity_);
     }
 
-    Date FraRateHelper::maturity() const {
+    Date FraRateHelper::latestDate() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return maturity_;
     }
@@ -218,7 +218,7 @@ namespace QuantLib {
             (1.0+(100.0-quote_->value())/100.0*yearFraction_);
     }
 
-    Date FuturesRateHelper::maturity() const {
+    Date FuturesRateHelper::latestDate() const {
         return maturity_;
     }
 
@@ -294,11 +294,27 @@ namespace QuantLib {
                                   fixedSchedule, 0.0, fixedDayCount_,
                                   floatSchedule, dummyIndex, fixingDays, 0.0,
                                   termStructureHandle_));
+
+        // Usually...
+        latestDate_ = swap_->maturity();
+        // ...but due to adjustments, the last floating coupon might
+        // need a later date for fixing
+        #ifdef QL_USE_INDEXED_COUPON
+        boost::shared_ptr<FloatingRateCoupon> lastFloating =
+            boost::dynamic_pointer_cast<FloatingRateCoupon>(
+                                                 swap_->floatingLeg().back());
+        Date fixingValueDate = calendar_.advance(lastFloating->fixingDate(),
+                                                 settlementDays_,Days);
+        Date endValueDate = calendar_.advance(fixingValueDate,
+                                              12/floatingFrequency_,Months,
+                                              floatingConvention_);
+        latestDate_ = QL_MAX(latestDate_,endValueDate);
+        #endif
     }
 
-    Date SwapRateHelper::maturity() const {
+    Date SwapRateHelper::latestDate() const {
         QL_REQUIRE(termStructure_ != 0, "null term structure set");
-        return swap_->maturity();
+        return latestDate_;
     }
 
     Real SwapRateHelper::impliedQuote() const {

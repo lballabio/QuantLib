@@ -61,8 +61,18 @@ namespace QuantLib {
                      <b>this</b>, i.e., the one being constructed.
         */
         virtual void setTermStructure(YieldTermStructure*);
+        //! latest relevant date
+        /*! The latest date at which discounts are needed by the
+            helper in order to provide a quote. It does not
+            necessarily equal the maturity of the underlying
+            instrument.
+        */
+        virtual Date latestDate() const = 0;
+        #ifndef QL_DISABLE_DEPRECATED
         //! maturity date
-        virtual Date maturity() const = 0;
+        /*! \deprecated renamed to latestDate() */
+        Date maturity() const { return latestDate(); }
+        #endif
         //@}
         //! \name Observer interface
         //@{
@@ -95,7 +105,7 @@ namespace QuantLib {
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
         void setTermStructure(YieldTermStructure*);
-        Date maturity() const;
+        Date latestDate() const;
       private:
         Integer n_;
         TimeUnit units_;
@@ -131,7 +141,7 @@ namespace QuantLib {
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
         void setTermStructure(YieldTermStructure*);
-        Date maturity() const;
+        Date latestDate() const;
       private:
         Integer monthsToStart_, monthsToEnd_;
         Integer settlementDays_;
@@ -169,7 +179,7 @@ namespace QuantLib {
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-        Date maturity() const;
+        Date latestDate() const;
       private:
         Date immDate_;
         Integer nMonths_;
@@ -213,7 +223,7 @@ namespace QuantLib {
         Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
-        Date maturity() const;
+        Date latestDate() const;
         void setTermStructure(YieldTermStructure*);
       protected:
         Integer n_;
@@ -223,7 +233,7 @@ namespace QuantLib {
         BusinessDayConvention fixedConvention_, floatingConvention_;
         Frequency fixedFrequency_, floatingFrequency_;
         DayCounter fixedDayCount_;
-        Date settlement_;
+        Date settlement_, latestDate_;
         boost::shared_ptr<SimpleSwap> swap_;
         Handle<YieldTermStructure> termStructureHandle_;
     };

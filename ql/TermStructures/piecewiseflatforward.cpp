@@ -26,7 +26,7 @@ namespace QuantLib {
           public:
             bool operator()(const boost::shared_ptr<RateHelper>& h1,
                             const boost::shared_ptr<RateHelper>& h2) const {
-                return (h1->maturity() < h2->maturity());
+                return (h1->latestDate() < h2->latestDate());
             }
         };
 
@@ -138,8 +138,8 @@ namespace QuantLib {
                   RateHelperSorter());
         // check that there is no instruments with the same maturity
         for (i=1; i<instruments_.size(); i++) {
-            Date m1 = instruments_[i-1]->maturity(),
-                 m2 = instruments_[i]->maturity();
+            Date m1 = instruments_[i-1]->latestDate(),
+                 m2 = instruments_[i]->latestDate();
             QL_REQUIRE(m1 != m2,
                        "two instruments have the same maturity (" +
                        DateFormatter::toString(m1) + ")");
@@ -168,7 +168,7 @@ namespace QuantLib {
             DiscountFactor guess = instrument->discountGuess();
             if (guess == Null<DiscountFactor>()) {
                 if (i > 1) {    // we can extrapolate
-                    guess = this->discount(instrument->maturity(),true);
+                    guess = this->discount(instrument->latestDate(),true);
                 } else {        // any guess will do
                     guess = 0.9;
                 }
@@ -255,7 +255,7 @@ namespace QuantLib {
                               Size segment)
     : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
         // extend curve to next point
-        curve_->dates_.push_back(rateHelper_->maturity());
+        curve_->dates_.push_back(rateHelper_->latestDate());
         curve_->times_.push_back(curve_->dayCounter().yearFraction(
                               curve_->referenceDate(),curve_->dates_.back()));
         if (segment_ == 1) {
