@@ -108,6 +108,7 @@ namespace QuantLib {
                                             dayCounter()));
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     Rate ExtendedDiscountCurve::compoundForwardImpl(Time t,
                                                     Integer f) const {
         if (f == 0) {
@@ -127,7 +128,6 @@ namespace QuantLib {
         #endif
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     Rate ExtendedDiscountCurve::zeroYieldImpl(Time t) const {
         DiscountFactor df;
         if (t==0.0) {
