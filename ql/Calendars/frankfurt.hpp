@@ -22,41 +22,17 @@
 #ifndef quantlib_frankfurt_calendar_h
 #define quantlib_frankfurt_calendar_h
 
-#include <ql/calendar.hpp>
+#include <ql/Calendars/germany.hpp>
 
 namespace QuantLib {
 
-    //! %Frankfurt calendar
-    /*! Holidays:
-        <ul>
-        <li>Saturdays</li>
-        <li>Sundays</li>
-        <li>New Year's Day, January 1st</li>
-        <li>Good Friday</li>
-        <li>Easter Monday</li>
-        <li>Ascension Thursday</li>
-        <li>Whit Monday</li>
-        <li>Corpus Christi</li>
-        <li>Labour Day, May 1st</li>
-        <li>National Day, October 3rd</li>
-        <li>Christmas Eve, December 24th</li>
-        <li>Christmas, December 25th</li>
-        <li>Boxing Day, December 26th</li>
-        <li>New Year's Eve, December 31st</li>
-        </ul>
-
-        \ingroup calendars
-    */
-    class Frankfurt : public Calendar {
-      private:
-        class Impl : public Calendar::WesternImpl {
-          public:
-            std::string name() const { return "Frankfurt"; }
-            bool isBusinessDay(const Date&) const;
-        };
+    #if !defined(QL_DISABLE_DEPRECATED)
+    //! \deprecated use Germany with the FrankfurtStockExchange market
+    class Frankfurt : public Germany {
       public:
-        Frankfurt();
+        Frankfurt() : Germany(Germany::FrankfurtStockExchange) {}
     };
+    #endif
 
 }
 
