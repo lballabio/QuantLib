@@ -17,7 +17,6 @@
 
 #include <ql/grid.hpp>
 #include <ql/Math/comparison.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
@@ -37,7 +36,7 @@ namespace QuantLib {
 
 
     Size TimeGrid::findIndex(Time t) const {
-        const_iterator result = std::find_if(begin(), end(), 
+        const_iterator result = std::find_if(begin(), end(),
                                              CloseEnoughTo(t));
         if (result == end()) {
             Size i;
@@ -63,7 +62,7 @@ namespace QuantLib {
                 QL_FAIL("using inadequate time grid: the nodes closest "
                         "to the required time t = "
                         + DecimalFormatter::toString(t,12) +
-                        " are t1 = " 
+                        " are t1 = "
                         + DecimalFormatter::toString((*this)[i-1],12) +
                         " and t2 = "
                         + DecimalFormatter::toString((*this)[i],12));

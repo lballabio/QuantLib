@@ -19,7 +19,6 @@
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <ql/basicdataformatters.hpp>
-#include <iostream>
 
 namespace QuantLib {
 
