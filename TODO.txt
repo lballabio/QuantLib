@@ -1,7 +1,11 @@
+
+set QL_DIR environment variable in the Win32 binary installer
+compile with gcc 3.0
+
 quantlib.hpp is enough
 cash flow stream for IRR, duration
 documentation of path (where it is? continously compounded)
-refactoring di MonteCarloModel refactoring
+MonteCarloModel refactoring
 
 
 DISTRIBUTING
