@@ -27,9 +27,12 @@
 
 	$Source$
 	$Log$
+	Revision 1.12  2001/03/26 08:51:49  lballabio
+	really fixed line wrappings
+
 	Revision 1.11  2001/03/26 08:47:00  lballabio
 	Fixed line wrappings
-
+	
 	Revision 1.10  2001/01/04 20:09:31  nando
 	few changes: enumerations, tab/spaces, more checks, python test, bug fixed
 	
@@ -51,7 +54,8 @@ namespace QuantLib {
 			Year y = date.year();
 			if ((w == Saturday || w == Sunday)
 				// New Year's Day (possibly moved to Monday)
-				|| ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m == January)
+				|| ((d == 1 || ((d == 2 || d == 3) && w == Monday)) &&
+				    m == January)
 				// Good Friday
 				|| (dd == easterMonday[y-1900]-3)
 				// Easter Monday
@@ -61,9 +65,11 @@ namespace QuantLib {
 				// last Monday of May or August (Bank Holidays)
 				|| (d >= 25 && w == Monday && (m == May || m == August))
 				// Christmas (possibly moved to Monday or Tuesday)
-				|| ((d == 25 || (d == 27 && (w == Monday || w == Tuesday))) && m == December)
+				|| ((d == 25 || (d == 27 && (w == Monday || w == Tuesday))) && 
+				    m == December)
 				// Boxing Day (possibly moved to Monday or Tuesday)
-				|| ((d == 26 || (d == 28 && (w == Monday || w == Tuesday))) && m == December)
+				|| ((d == 26 || (d == 28 && (w == Monday || w == Tuesday))) && 
+				    m == December)
 				// December 31st, 1999 only
 				|| (d == 31 && m == December && y == 1999))
 					return false;

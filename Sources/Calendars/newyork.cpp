@@ -27,9 +27,12 @@
 
 	$Source$
 	$Log$
+	Revision 1.13  2001/03/26 08:51:49  lballabio
+	really fixed line wrappings
+
 	Revision 1.12  2001/03/26 08:47:00  lballabio
 	Fixed line wrappings
-
+	
 	Revision 1.11  2001/01/04 20:09:31  nando
 	few changes: enumerations, tab/spaces, more checks, python test, bug fixed
 	
@@ -59,18 +62,21 @@ namespace QuantLib {
 				|| ((d >= 15 && d <= 21) && w == Monday && m == February)
 				// Memorial Day (last Monday in May)
 				|| (d >= 25 && w == Monday && m == May)
-				// Independence Day (moved to Monday if Sunday or Friday if Saturday)
-				|| ((d == 4 || (d == 5 && w == Monday) || (d == 3 && w == Friday)) && m == July)
+				// Independence Day (Monday if Sunday or Friday if Saturday)
+				|| ((d == 4 || (d == 5 && w == Monday) || 
+				    (d == 3 && w == Friday)) && m == July)
 				// Labor Day (first Monday in September)
 				|| (d <= 7 && w == Monday && m == September)
 				// Columbus Day (second Monday in October)
 				|| ((d >= 8 && d <= 14) && w == Monday && m == October)
-				// Veteran's Day (moved to Monday if Sunday or Friday if Saturday)
-				|| ((d == 11 || (d == 12 && w == Monday) || (d == 10 && w == Friday)) && m == November)
+				// Veteran's Day (Monday if Sunday or Friday if Saturday)
+				|| ((d == 11 || (d == 12 && w == Monday) || 
+				    (d == 10 && w == Friday)) && m == November)
 				// Thanksgiving Day (fourth Thursday in November)
 				|| ((d >= 22 && d <= 28) && w == Thursday && m == November)
 				// Christmas (moved to Monday if Sunday or Friday if Saturday)
-				|| ((d == 25 || (d == 26 && w == Monday) || (d == 24 && w == Friday)) && m == December))
+				|| ((d == 25 || (d == 26 && w == Monday) || 
+				    (d == 24 && w == Friday)) && m == December))
 					return false;
 			return true;
 		}
