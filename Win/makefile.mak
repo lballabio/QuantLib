@@ -68,12 +68,13 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\binaryoption.obj \ 
                    $(OUTPUT_DIR)\bsmnumericaloption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
-                   $(OUTPUT_DIR)\bsmamericanoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
                    $(OUTPUT_DIR)\dividendeuropeanoption.obj \
                    $(OUTPUT_DIR)\himalaya.obj \
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
-                   $(OUTPUT_DIR)\plainbasketoption.obj 
+                   $(OUTPUT_DIR)\plainbasketoption.obj \
+                   $(OUTPUT_DIR)\stepconditionoption.obj 
+
 
 SOLVER1D_OBJS    = $(OUTPUT_DIR)\bisection.obj \
                    $(OUTPUT_DIR)\brent.obj \
@@ -306,8 +307,6 @@ $(OUTPUT_DIR)\bsmnumericaloption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
 $(OUTPUT_DIR)\bsmeuropeanoption.obj:  \
                 $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp
-$(OUTPUT_DIR)\bsmamericanoption.obj: \
-                $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
 $(OUTPUT_DIR)\dividendamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
 $(OUTPUT_DIR)\dividendeuropeanoption.obj: \
@@ -318,6 +317,9 @@ $(OUTPUT_DIR)\mceuropeanpricer.obj: \
                 $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp
 $(OUTPUT_DIR)\plainbasketoption.obj: \
                 $(SOURCES_DIR)\Pricers\plainbasketoption.cpp
+$(OUTPUT_DIR)\stepconditionoption.obj: \
+                $(SOURCES_DIR)\Pricers\stepconditionoption.cpp
+                
                 
                 
 
