@@ -462,6 +462,34 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
 # End Source File
 # End Group
+# Begin Group "functions"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\functions\daycounters.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\daycounters.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\mathf.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\mathf.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\vols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\vols.hpp
+# End Source File
+# End Group
 # Begin Group "Indexes"
 
 # PROP Default_Filter ""
@@ -588,6 +616,54 @@ SOURCE=.\ql\Instruments\vanillaoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\vanillaoption.hpp
+# End Source File
+# End Group
+# Begin Group "Lattices"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Lattices\binomialtree.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\binomialtree.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\bsmlattice.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\bsmlattice.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\lattice.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\lattice.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\lattice2d.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\lattice2d.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\tree.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\trinomialtree.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\trinomialtree.hpp
 # End Source File
 # End Group
 # Begin Group "Math"
@@ -830,6 +906,70 @@ SOURCE=.\ql\MonteCarlo\performanceoptionpathpricer.hpp
 SOURCE=.\ql\MonteCarlo\sample.hpp
 # End Source File
 # End Group
+# Begin Group "Optimization"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Optimization\armijo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\armijo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\conjugategradient.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\conjugategradient.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\constraint.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\costfunction.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\criteria.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\leastsquare.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\linesearch.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\method.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\problem.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\simplex.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\simplex.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\steepestdescent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\steepestdescent.hpp
+# End Source File
+# End Group
 # Begin Group "Patterns"
 
 # PROP Default_Filter ""
@@ -839,7 +979,15 @@ SOURCE=.\ql\Patterns\bridge.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Patterns\lazyobject.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Patterns\observable.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Patterns\visitor.hpp
 # End Source File
 # End Group
 # Begin Group "Pricers"
@@ -1142,6 +1290,54 @@ SOURCE=.\ql\Pricers\treeswaption.cpp
 SOURCE=.\ql\Pricers\treeswaption.hpp
 # End Source File
 # End Group
+# Begin Group "PricingEngines"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\analyticalvanillaengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\discretizedvanillaoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\forwardengines.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\genericengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\mcengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\quantoengines.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\vanillaengines.hpp
+# End Source File
+# End Group
 # Begin Group "RandomNumbers"
 
 # PROP Default_Filter ""
@@ -1180,6 +1376,122 @@ SOURCE=.\ql\RandomNumbers\randomarraygenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\rngtypedefs.hpp
+# End Source File
+# End Group
+# Begin Group "ShortRateModels"
+
+# PROP Default_Filter ""
+# Begin Group "CalibrationHelpers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.hpp
+# End Source File
+# End Group
+# Begin Group "OneFactorModels"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\coxingersollross.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\coxingersollross.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\hullwhite.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\hullwhite.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.hpp
+# End Source File
+# End Group
+# Begin Group "TwoFactorModels"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.hpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\calibrationhelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\calibrationhelper.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\model.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\model.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\onefactormodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\onefactormodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\parameter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\twofactormodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\twofactormodel.hpp
 # End Source File
 # End Group
 # Begin Group "Solvers 1D"
@@ -1346,146 +1658,6 @@ SOURCE=.\ql\Utilities\processingiterator.hpp
 SOURCE=.\ql\Utilities\steppingiterator.hpp
 # End Source File
 # End Group
-# Begin Group "Optimization"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\Optimization\armijo.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\armijo.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\conjugategradient.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\conjugategradient.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\constraint.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\costfunction.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\criteria.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\leastsquare.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\linesearch.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\method.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\problem.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\simplex.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\simplex.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\steepestdescent.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\steepestdescent.hpp
-# End Source File
-# End Group
-# Begin Group "Lattices"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\Lattices\binomialtree.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\binomialtree.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\bsmlattice.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\bsmlattice.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\lattice.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\lattice.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\lattice2d.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\lattice2d.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\tree.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\trinomialtree.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\trinomialtree.hpp
-# End Source File
-# End Group
-# Begin Group "functions"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\functions\daycounters.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\daycounters.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\mathf.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\mathf.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\vols.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\vols.hpp
-# End Source File
-# End Group
 # Begin Group "Volatilities"
 
 # PROP Default_Filter ""
@@ -1516,170 +1688,6 @@ SOURCE=.\ql\Volatilities\localvolcurve.hpp
 # Begin Source File
 
 SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
-# End Source File
-# End Group
-# Begin Group "ShortRateModels"
-
-# PROP Default_Filter ""
-# Begin Group "CalibrationHelpers"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\CalibrationHelpers\caphelper.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\CalibrationHelpers\swaptionhelper.hpp
-# End Source File
-# End Group
-# Begin Group "OneFactorModels"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\blackkarasinski.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\coxingersollross.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\coxingersollross.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\extendedcoxingersollross.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\hullwhite.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\hullwhite.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\OneFactorModels\vasicek.hpp
-# End Source File
-# End Group
-# Begin Group "TwoFactorModels"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.hpp
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\calibrationhelper.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\calibrationhelper.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\model.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\model.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\onefactormodel.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\onefactormodel.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\parameter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\twofactormodel.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\ShortRateModels\twofactormodel.hpp
-# End Source File
-# End Group
-# Begin Group "PricingEngines"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\analyticalvanillaengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\discretizedvanillaoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\forwardengines.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\genericengine.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\mcengine.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\quantoengines.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\vanillaengines.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -1769,6 +1777,10 @@ SOURCE=.\ql\diffusionprocess.hpp
 # Begin Source File
 
 SOURCE=.\ql\errors.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\exercise.cpp
 # End Source File
 # Begin Source File
 
