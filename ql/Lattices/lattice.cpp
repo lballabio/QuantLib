@@ -77,15 +77,17 @@ namespace QuantLib {
 
         if (from > to) {
             Size iFrom = t_.findIndex(from);
-            int iTo = t_.findIndex(to);
+            Size iTo = t_.findIndex(to);
+            Size ii;
 
-            for (int i=iFrom-1; i>=iTo; i--) {
-                Array newValues(size(i));
+            for (Size i=iFrom; i>iTo; i--) {
+                ii = i-1; // ii can be zero, i cannot be zero
+                Array newValues(size(ii));
                 stepback(i, asset->values(), newValues);
-                asset->time() = t_[i];
+                asset->time() = t_[ii];
                 asset->values() = newValues;
                 // skip the very last post-adjustment
-                if (i != iTo)
+                if (ii != iTo)
                     asset->adjustValues();
                 else
                     asset->preAdjustValues();

@@ -37,11 +37,16 @@ namespace QuantLib {
         Size size(Size i) const {
             return i+1;
         }
-        Size descendant(Size, Size index, Size branch) const {
+        Size descendant(Size,
+                        Size index,
+                        Size branch) const {
             return index + branch;
         }
-        virtual double underlying(Size i, Size index) const = 0;
-        virtual double probability(Size i, Size index, Size branch) const = 0;
+        virtual double underlying(Size i,
+                                  Size index) const = 0;
+        virtual double probability(Size i,
+                                   Size index,
+                                   Size branch) const = 0;
       protected:
         double x0_, driftPerStep_;
         Time dt_;
@@ -58,8 +63,11 @@ namespace QuantLib {
                            Time end,
                            unsigned long steps)
         : BinomialTree(process, end, steps) {}
-        double underlying(Size i, Size index) const;
-        double probability(Size, Size, Size) const {return 0.5 ; }
+        double underlying(Size i,
+                          Size index) const;
+        double probability(Size,
+                           Size,
+                           Size) const {return 0.5 ; }
       protected:
         double up_;
     };
@@ -74,8 +82,11 @@ namespace QuantLib {
                            Time end,
                            unsigned long steps)
         : BinomialTree(process, end, steps) {}
-        double underlying(Size i, Size index) const;
-        double probability(Size, Size, Size branch) const;
+        double underlying(Size i,
+                          Size index) const;
+        double probability(Size,
+                           Size,
+                           Size branch) const;
       protected:
         double dx_, pu_, pd_;
     };
@@ -128,8 +139,11 @@ namespace QuantLib {
              Time end,
              unsigned long steps,
              double strike);
-        double underlying(Size i, Size index) const;
-        double probability(Size, Size, Size) const;
+        double underlying(Size i,
+                          Size index) const;
+        double probability(Size,
+                           Size,
+                           Size) const;
       protected:
         double up_, down_, pu_, pd_;
     };
@@ -141,8 +155,11 @@ namespace QuantLib {
                      Time end,
                      unsigned long steps,
                      double strike);
-        double underlying(Size i, Size index) const;
-        double probability(Size, Size, Size) const;
+        double underlying(Size i,
+                          Size index) const;
+        double probability(Size,
+                           Size,
+                           Size) const;
       protected:
         double up_, down_, pu_, pd_;
     };

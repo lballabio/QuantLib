@@ -31,10 +31,15 @@ namespace QuantLib {
       public:
         Tree(Size nColumns) : nColumns_(nColumns) {}
         virtual ~Tree() {}
-        virtual double underlying(Size i, Size index) const = 0;
+        virtual double underlying(Size i,
+                                  Size index) const = 0;
         virtual Size size(Size i) const = 0;
-        virtual Size descendant(Size i, Size index, Size branch) const = 0;
-        virtual double probability(Size i, Size index, Size branch) const = 0;
+        virtual Size descendant(Size i,
+                                Size index,
+                                Size branch) const = 0;
+        virtual double probability(Size i,
+                                   Size index,
+                                   Size branch) const = 0;
 
         Size nColumns() const { return nColumns_; }
       private:

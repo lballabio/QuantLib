@@ -33,7 +33,8 @@ namespace QuantLib {
     */
     class Lattice : public NumericalMethod {
       public:
-        Lattice(const TimeGrid& timeGrid, Size n)
+        Lattice(const TimeGrid& timeGrid,
+                Size n)
         : NumericalMethod(timeGrid), n_(n) {
             QL_REQUIRE(n>0, "There is no zeronomial lattice!");
             statePrices_ = std::vector<Array>(1, Array(1, 1.0));
@@ -62,13 +63,18 @@ namespace QuantLib {
         virtual Size size(Size i) const = 0;
 
         //! Discount factor at time t_i and node indexed by index.
-        virtual DiscountFactor discount(Size i, Size index) const = 0;
+        virtual DiscountFactor discount(Size i,
+                                        Size index) const = 0;
 
         const Array& statePrices(Size i);
 
         //! Tree properties
-        virtual Size descendant(Size i, Size index, Size branch) const = 0;
-        virtual double probability(Size i, Size index, Size branch) const = 0;
+        virtual Size descendant(Size i,
+                                Size index,
+                                Size branch) const = 0;
+        virtual double probability(Size i,
+                                   Size index,
+                                   Size branch) const = 0;
 
       protected:
         void computeStatePrices(Size until);

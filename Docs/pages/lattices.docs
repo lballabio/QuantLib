@@ -50,8 +50,8 @@
     \f[
         dy_t = \mu(t, y_t) dt + \sigma(t, y_t) dW_t.
     \f]
-    At each node, there is a probability \f$ p_u, p_m and p_d \f$ to go through
-    respectively the upper, the middle and the lower branch.
+    At each node, there is a probability \f$ p_u, p_m \f$ and \f$ p_d \f$ to go
+    through respectively the upper, the middle and the lower branch.
     These probabilities must satisfy
     \f[
         p_{u}y_{i+1,k+1}+p_{m}y_{i+1,k}+p_{d}y_{i+1,k-1}=E_{i,j}
