@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/21 11:37:05  lballabio
+    Changed phony QL_REQUIRE into genuine throws
+
     Revision 1.1  2001/02/20 11:11:13  marmar
     BarrierOption implements the analytical barrier option
 
@@ -155,23 +158,23 @@ namespace QuantLib {
         }        
 
         inline double BarrierOption::delta() const{
-            QL_REQUIRE(1 != 0, "BarrierOption: delta not definied");      
+            throw Error("BarrierOption: delta not defined");      
         }
         
         inline double BarrierOption::gamma() const{
-            QL_REQUIRE(1 != 0, "BarrierOption: gamma not definied");      
+            throw Error("BarrierOption: gamma not defined");      
         }
         
         inline double BarrierOption::theta() const{
-            QL_REQUIRE(1 != 0, "BarrierOption: theta not definied");      
+            throw Error("BarrierOption: theta not defined");      
         }
         
         inline double BarrierOption::vega() const{
-            QL_REQUIRE(1 != 0, "BarrierOption: vega not definied");      
+            throw Error("BarrierOption: vega not defined");      
         }
         
         inline double BarrierOption::rho() const{
-            QL_REQUIRE(1 != 0, "BarrierOption: rho not definied");      
+            throw Error("BarrierOption: rho not defined");      
         }
         
     }
