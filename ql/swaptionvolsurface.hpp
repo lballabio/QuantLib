@@ -42,11 +42,11 @@ namespace QuantLib {
         virtual ~SwaptionVolatilitySurface() {}
         //! returns today's date
         virtual Date todaysDate() const = 0;
-        //! This method could disappear. <b>Do not use it</b>.
-        virtual Time dateToTime(const Date&) const = 0;
+        //! returns the day counter used for internal date/time conversions
+        virtual DayCounter dayCounter() const = 0;
         //! returns the volatility for a given starting date and length
         double volatility(const Date& start, Time length) {
-            Time startTime = dateToTime(start);
+            Time startTime = dayCounter().yearFraction(todaysDate(),start);
             return volatilityImpl(startTime,length);
         }
         //! returns the volatility for a given starting time and length
@@ -70,7 +70,7 @@ namespace QuantLib {
             const RelinkableHandle<MarketElement>& spread);
         //! Observer interface
         void update() { notifyObservers(); }
-        Time dateToTime(const Date&) const;
+        DayCounter dayCounter() const;
       private:
         RelinkableHandle<SwaptionVolatilitySurface> originalSurface_;
         RelinkableHandle<MarketElement> spread_;
@@ -96,9 +96,8 @@ namespace QuantLib {
                    spread_->value();
     }
 
-    inline Time SpreadedSwaptionVolatilitySurface::dateToTime(
-        const Date& d) const {
-            return originalSurface_->dateToTime(d);
+    inline DayCounter SpreadedSwaptionVolatilitySurface::dayCounter() const {
+        return originalSurface_->dayCounter();
     }
 
 }
