@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +23,7 @@
 #include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
@@ -68,6 +69,7 @@ namespace {
 
     enum EngineType { Analytic,
                       JR, CRR, EQP, TGEO, TIAN, LR,
+                      FiniteDifferences,
                       PseudoMonteCarlo, QuasiMonteCarlo };
 
     boost::shared_ptr<VanillaOption>
@@ -111,6 +113,10 @@ namespace {
             engine = boost::shared_ptr<PricingEngine>(
                 new BinomialVanillaEngine<LeisenReimer>(binomialSteps));
             break;
+          case FiniteDifferences:
+            engine = boost::shared_ptr<PricingEngine>(
+                new FDEuropeanEngine(binomialSteps,samples));
+            break;
           case PseudoMonteCarlo:
             engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
                                                          .withSamples(samples)
@@ -151,6 +157,8 @@ namespace {
             return "Tian";
           case LR:
             return "LeisenReimer";
+          case FiniteDifferences:
+            return "FiniteDifferences";
           case PseudoMonteCarlo:
             return "MonteCarlo";
           case QuasiMonteCarlo:
@@ -1014,7 +1022,7 @@ void EuropeanOptionTest::testJRBinomialEngines() {
     Size steps = 251;
     Size samples = Null<Size>();
     Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
 }
 
 void EuropeanOptionTest::testCRRBinomialEngines() {
@@ -1026,7 +1034,7 @@ void EuropeanOptionTest::testCRRBinomialEngines() {
     Size steps = 501;
     Size samples = Null<Size>();
     Real relativeTol = 0.02;
-    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
 }
 
 void EuropeanOptionTest::testEQPBinomialEngines() {
@@ -1038,7 +1046,7 @@ void EuropeanOptionTest::testEQPBinomialEngines() {
     Size steps = 501;
     Size samples = Null<Size>();
     Real relativeTol = 0.02;
-    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
 }
 
 void EuropeanOptionTest::testTGEOBinomialEngines() {
@@ -1050,7 +1058,7 @@ void EuropeanOptionTest::testTGEOBinomialEngines() {
     Size steps = 251;
     Size samples = Null<Size>();
     Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
 }
 
 void EuropeanOptionTest::testTIANBinomialEngines() {
@@ -1062,7 +1070,7 @@ void EuropeanOptionTest::testTIANBinomialEngines() {
     Size steps = 251;
     Size samples = Null<Size>();
     Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
 }
 
 void EuropeanOptionTest::testLRBinomialEngines() {
@@ -1074,7 +1082,20 @@ void EuropeanOptionTest::testLRBinomialEngines() {
     Size steps = 251;
     Size samples = Null<Size>();
     Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
+}
+
+void EuropeanOptionTest::testFdEngines() {
+
+    BOOST_MESSAGE("Testing finite-difference European engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { FiniteDifferences };
+    Size timeSteps = 300;
+    Size gridPoints = 300;
+    Real relativeTol = 0.0001;
+    testEngineConsistency(engines,LENGTH(engines),
+                          timeSteps,gridPoints,relativeTol);
 }
 
 void EuropeanOptionTest::testMcEngines() {
@@ -1086,7 +1107,7 @@ void EuropeanOptionTest::testMcEngines() {
     Size steps = Null<Size>();
     Size samples = 40000;
     Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
 }
 
 void EuropeanOptionTest::testQmcEngines() {
@@ -1098,7 +1119,7 @@ void EuropeanOptionTest::testQmcEngines() {
     Size steps = Null<Size>();
     Size samples = 4095; // 2^12-1
     Real relativeTol = 0.01;
-    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+    testEngineConsistency(engines,LENGTH(engines),steps,samples,relativeTol);
 }
 
 test_suite* EuropeanOptionTest::suite() {
@@ -1116,6 +1137,7 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testTGEOBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testTIANBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testLRBinomialEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testFdEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
     return suite;

@@ -291,18 +291,19 @@ int main(int, char* [])
                   << value << "\t" << "N/A\t\t"
                   << discrepancy << "\t" << relativeDiscrepancy << std::endl;
 
-        // Finite Differences Method: not implemented
+        // Finite Differences
 
-        /*method = "Finite Diff.";
+        method = "Finite Diff.";
+        timeSteps = 100;
+        Size gridPoints = 100;
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
-            new FDVanillaEngine()));
+            new FDEuropeanEngine(timeSteps, gridPoints)));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
                   << value << "\t" << "N/A\t\t"
-                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;*/
-
+                  << discrepancy << "\t" << relativeDiscrepancy << std::endl;
 
         // Monte Carlo Method
         timeSteps = 1;
