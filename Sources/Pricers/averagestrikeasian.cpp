@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/13 15:05:24  lballabio
+    Trimmed a couple of long file names for Mac compatibility
+
     Revision 1.2  2001/02/13 10:02:57  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -39,7 +42,7 @@
 #include "standardpathgenerator.h"
 #include "averagestrikeasian.h"
 #include "controlvariatedpathpricer.h"
-#include "averagestrikeasianpathpricer.h"
+#include "avgstrikeasianpathpricer.h"
 #include "geometricasianpathpricer.h"
 #include "geometricasianoption.h"
 

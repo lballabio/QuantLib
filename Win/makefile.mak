@@ -48,8 +48,8 @@ MATH_OBJS        = $(OUTPUT_DIR)\matrix.obj      \
                    $(OUTPUT_DIR)\normaldistribution.obj \
                    $(OUTPUT_DIR)\statistics.obj
 
-MONTECARLO_OBJS  = $(OUTPUT_DIR)\averagepriceasianpathpricer.obj \ 
-                   $(OUTPUT_DIR)\averagestrikeasianpathpricer.obj \
+MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \ 
+                   $(OUTPUT_DIR)\avgstrikeasianpathpricer.obj \
                    $(OUTPUT_DIR)\basketpathpricer.obj       \
                    $(OUTPUT_DIR)\controlvariatedpathpricer.obj \
                    $(OUTPUT_DIR)\europeanpathpricer.obj        \
@@ -267,10 +267,10 @@ $(OUTPUT_DIR)\multivariateaccumulator.obj: \
 
 # Monte Carlo
 MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
-$(OUTPUT_DIR)\averagepriceasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\averagepriceasianpathpricer.cpp
-$(OUTPUT_DIR)\averagestrikeasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\averagestrikeasianpathpricer.cpp
+$(OUTPUT_DIR)\avgpriceasianpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\avgpriceasianpathpricer.cpp
+$(OUTPUT_DIR)\avgstrikeasianpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\avgstrikeasianpathpricer.cpp
 $(OUTPUT_DIR)\basketpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\basketpathpricer.cpp    
 $(OUTPUT_DIR)\controlvariatedpathpricer.obj: \

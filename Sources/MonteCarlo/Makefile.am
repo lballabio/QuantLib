@@ -3,8 +3,9 @@ INCLUDES = -I$(top_srcdir)/Include/ \
 	-I$(top_srcdir)/Include/Math \
 	-I$(top_srcdir)/Include/Utilities
 
-libMonteCarlo_la_SOURCES = averagestrikeasianpathpricer.cpp \
-    averagepriceasianpathpricer.cpp \
+libMonteCarlo_la_SOURCES = \
+    avgstrikeasianpathpricer.cpp \
+    avgpriceasianpathpricer.cpp \
     basketpathpricer.cpp    \
 	controlvariatedpathpricer.cpp \
 	europeanpathpricer.cpp \

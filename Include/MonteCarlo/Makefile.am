@@ -1,7 +1,7 @@
 includedir = $(prefix)/include/QuantLib/MonteCarlo
 include_HEADERS = antitheticcv.h \
-	averagepriceasianpathpricer.h \
-	averagestrikeasianpathpricer.h \
+	avgpriceasianpathpricer.h \
+	avgstrikeasianpathpricer.h \
 	basketpathpricer.h \
 	boxmuller.h \
 	centrallimitgaussian.h \

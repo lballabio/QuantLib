@@ -21,48 +21,41 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file averagestrikeasianpathpricer.cpp
+/*! \file avgstrikeasianpathpricer.h
     
     $Source$
     $Name$
     $Log$
-    Revision 1.1  2001/02/05 16:52:06  marmar
+    Revision 1.1  2001/02/13 15:05:23  lballabio
+    Trimmed a couple of long file names for Mac compatibility
+
+    Revision 1.1  2001/02/05 16:51:10  marmar
     AverageAsianPathPricer substituted by AveragePriceAsianPathPricer
     and AverageStrikeAsianPathPricer
 
 */
 
-#include "averagestrikeasianpathpricer.h"
+#ifndef quantlib_montecarlo_average_strike_asian_path_pricer_h
+#define quantlib_montecarlo_average_strike_asian_path_pricer_h
+
+#include "qldefines.h"
+#include "europeanpathpricer.h"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        AverageStrikeAsianPathPricer::AverageStrikeAsianPathPricer(
-          Option::Type type, double underlying, double strike, double discount)
-        : EuropeanPathPricer(type, underlying, strike, discount) {
-            isInitialized_=true;
-        }
-
-        double AverageStrikeAsianPathPricer::value(const Path & path) const {
-
-            int n = path.size();
-            QL_REQUIRE(n>0,"the path cannot be empty");
-            QL_REQUIRE(isInitialized_,
-                "AverageStrikeAsianPathPricer: pricer not initialized");
-
-            double price = underlying_;
-            double averageStrike = 0.0;
-
-            for (int i=0; i<n; i++) {
-                price *= QL_EXP(path[i]);
-                averageStrike += price;
-            }
-            averageStrike = averageStrike/n;
-
-            return computePlainVanilla(type_, price, averageStrike, discount_);
-        }
+        class AverageStrikeAsianPathPricer : public EuropeanPathPricer {
+        public:
+            AverageStrikeAsianPathPricer(): EuropeanPathPricer() {}
+            AverageStrikeAsianPathPricer(Option::Type type, 
+                double underlying, double strike, double discount);
+            virtual double value(const Path &path) const;
+        };
         
     }
 
 }
+
+
+#endif

@@ -20,11 +20,14 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file averagepriceasianpathpricer.h
+/*! \file avgpriceasianpathpricer.h
     
     $Source$
     $Name$
     $Log$
+    Revision 1.1  2001/02/13 15:05:23  lballabio
+    Trimmed a couple of long file names for Mac compatibility
+
     Revision 1.1  2001/02/05 16:51:10  marmar
     AverageAsianPathPricer substituted by AveragePriceAsianPathPricer
     and AverageStrikeAsianPathPricer
