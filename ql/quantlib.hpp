@@ -317,6 +317,8 @@
 #include <ql/Volatilities/localvolsurface.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
+// needed for Sobol low discrepancy sequences
+#include <PrimitivePolynomialsModuloTwoUpToDegree27.h>
 
 /*** shortcuts for the full namespaces ***/
 

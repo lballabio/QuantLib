@@ -20,7 +20,7 @@ quantlib::
     #    cd ..\test-suite
     #    $(MAKE) -DQL_DIR=".."
     cd ..\Examples
-    $(MAKE) -DQL_DIR="..\.."
+    $(MAKE) -DQL_DIR="..\.." -DPPMT_DIR="..\..\..\PrimitivePolynomialsModuloTwo"
     cd ..
 
 # the installation directive requires the QL_DIR environment variable to

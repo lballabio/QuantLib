@@ -40,6 +40,16 @@
     @{
 */
 
+
+#ifdef _DEBUG
+    #define QL_DEBUG
+#endif
+
+#ifdef DEBUG
+    #define QL_DEBUG
+#endif
+
+
 //! version hexadecimal number
 #define QL_HEX_VERSION 0x000302a1
 

@@ -55,7 +55,7 @@ namespace QuantLib {
             mutable std::vector<unsigned long> mt;
             static const Size N, M;
             static const unsigned long MATRIX_A, UPPER_MASK, LOWER_MASK;
-            static int mti;
+            static Size mti;
         };
 
         inline MersenneTwisterUniformRng::MersenneTwisterUniformRng(
@@ -85,7 +85,7 @@ namespace QuantLib {
             const std::vector<unsigned long>& seeds)
         : mt(N) {
             seedInitialization(19650218UL);
-            int i=1, j=0, k = (N>seeds.size() ? N : seeds.size());
+            Size i=1, j=0, k = (N>seeds.size() ? N : seeds.size());
             for (; k; k--) {
                 mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL))
                   + seeds[j] + j; /* non linear */

@@ -16,6 +16,10 @@
     MAKE = $(MAKE) -DQL_DIR="$(QL_DIR)"
 !endif
 
+!ifdef PPMT_DIR
+    MAKE = $(MAKE) -DPPMT_DIR="$(PPMT_DIR)"
+!endif
+
 # Primary target:
 # QuantLib Examples
 examples::

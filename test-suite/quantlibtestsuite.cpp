@@ -30,6 +30,7 @@
 #include "europeanoption.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
+#include "lowdiscrepancysequences.hpp"
 #include "marketelements.hpp"
 #include "matrices.hpp"
 #include "mersennetwister.hpp"
@@ -48,6 +49,7 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(LDSTest::suite());
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
     runner.addTest(new CovarianceTest);
