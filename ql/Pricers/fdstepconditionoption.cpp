@@ -56,7 +56,8 @@ namespace QuantLib {
             /* StandardFiniteDifferenceModel is Crank-Nicolson.
                Alternatively, ImplicitEuler or ExplicitEuler
                could have been used instead*/
-            StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
+            StandardFiniteDifferenceModel model(finiteDifferenceOperator_,
+                                                BCs_);
 
             // Control-variate variance reduction:
             // 1) calculate value/greeks of the European option analytically

@@ -78,42 +78,56 @@ namespace QuantLib {
             // typedefs
             typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
+            typedef BoundaryCondition<Operator> bcType;
             // constructors
-            MixedScheme(const Operator& L, double theta)
-            : L_(L), I_(Operator::identity(L.size())), dt_(0.0), theta_(theta) {}
+            MixedScheme(const Operator& L, double theta,
+                        const std::vector<Handle<bcType> >& bcs)
+            : L_(L), I_(Operator::identity(L.size())), 
+              dt_(0.0), theta_(theta) , bcs_(bcs) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
                 dt_ = dt;
                 if (theta_!=1.0) // there is an explicit part
                     explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
                 if (theta_!=0.0) // there is an implicit part
-                    implicitPart_ = I_+(     theta_  * dt_)*L_;
+                    implicitPart_ = I_+(theta_ * dt_)*L_;
             }
             Operator L_;
             Operator I_;
             Operator explicitPart_, implicitPart_;
             Time dt_;
             double theta_;
+            std::vector<Handle<bcType> > bcs_;
         };
 
         // inline definitions
 
         template <class Operator>
         inline void MixedScheme<Operator>::step(arrayType& a, Time t) {
+            int i;
+            for (i=0; i<bcs_.size(); i++)
+                bcs_[i]->setTime(t);
             if (theta_!=1.0) { // there is an explicit part
                 if (L_.isTimeDependent()) {
                     L_.setTime(t);
                     explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
                 }
+                for (i=0; i<bcs_.size(); i++)
+                    bcs_[i]->applyBeforeApplying(explicitPart_);
                 a = explicitPart_.applyTo(a);
+                for (i=0; i<bcs_.size(); i++)
+                    bcs_[i]->applyAfterApplying(a);
             }
             if (theta_!=0.0) { // there is an implicit part
                 if (L_.isTimeDependent()) {
                     L_.setTime(t-dt_);
-                    implicitPart_ = I_+(     theta_  * dt_)*L_;
+                    implicitPart_ = I_+(theta_ * dt_)*L_;
                 }
+                for (i=0; i<bcs_.size(); i++)
+                    bcs_[i]->applyBeforeSolving(implicitPart_,a);
                 a = implicitPart_.solveFor(a);
-//                a = implicitPart_.SOR(a, 1e-8);
+                for (i=0; i<bcs_.size(); i++)
+                    bcs_[i]->applyAfterSolving(a);
             }
         }
 

@@ -181,7 +181,7 @@ namespace QuantLib {
         void FdMultiPeriodOption::initializeModel() const{
             model_ = Handle<StandardFiniteDifferenceModel> (
                      new StandardFiniteDifferenceModel
-                            (finiteDifferenceOperator_));
+                            (finiteDifferenceOperator_,BCs_));
         }
 
         double FdMultiPeriodOption::controlVariateCorrection() const{

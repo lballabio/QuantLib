@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -28,8 +27,10 @@
 #define quantlib_finite_difference_model_h
 
 #include <ql/FiniteDifferences/stepcondition.hpp>
+#include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/handle.hpp>
 #include <ql/null.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -44,8 +45,11 @@ namespace QuantLib {
           public:
             typedef typename Evolver::arrayType arrayType;
             typedef typename Evolver::operatorType operatorType;
+            typedef BoundaryCondition<operatorType> bcType;
             // constructor
-            FiniteDifferenceModel(const operatorType& L) : evolver(L) {}
+            FiniteDifferenceModel(const operatorType& L,
+                                  const std::vector<Handle<bcType> >& bcs) 
+            : evolver_(L,bcs) {}
             // methods
             // arrayType grid() const { return evolver.xGrid(); }
             /*! solves the problem between the given times, possibly
@@ -58,7 +62,7 @@ namespace QuantLib {
               Handle<StepCondition<arrayType> > condition =
                 Handle<StepCondition<arrayType> >());
           private:
-            Evolver evolver;
+            Evolver evolver_;
         };
 
         // template definitions
@@ -68,9 +72,9 @@ namespace QuantLib {
             Time from, Time to, Size steps,
             Handle<StepCondition<arrayType> > condition) {
                 Time dt = (from-to)/steps, t = from;
-                evolver.setStep(dt);
+                evolver_.setStep(dt);
                 for (Size i=0; i<steps; i++, t -= dt) {
-                    evolver.step(a,t);
+                    evolver_.step(a,t);
                     if (!condition.isNull())
                         condition->applyTo(a,t);
             }

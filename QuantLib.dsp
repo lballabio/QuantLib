@@ -307,6 +307,10 @@ SOURCE=.\ql\FiniteDifferences\americancondition.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\boundarycondition.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\boundarycondition.hpp
 # End Source File
 # Begin Source File

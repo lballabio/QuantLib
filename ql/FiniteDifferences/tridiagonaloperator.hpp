@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -27,9 +26,8 @@
 #ifndef quantlib_tridiagonal_operator_h
 #define quantlib_tridiagonal_operator_h
 
-#include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/array.hpp>
-#include <ql/date.hpp>
+#include <ql/types.hpp>
 #include <ql/handle.hpp>
 
 namespace QuantLib {
@@ -88,8 +86,6 @@ namespace QuantLib {
             //@}
             //! \name Modifiers
             //@{
-            void setLowerBC(const BoundaryCondition& bc);
-            void setUpperBC(const BoundaryCondition& bc);
             void setFirstRow(double, double);
             void setMidRow(Size, double, double, double);
             void setMidRows(double, double, double);
@@ -105,7 +101,6 @@ namespace QuantLib {
             };
           protected:
             Array diagonal_, belowDiagonal_, aboveDiagonal_;
-            BoundaryCondition lowerBC_, upperBC_;
             Handle<TimeSetter> timeSetter_;
         };
 
@@ -118,8 +113,6 @@ namespace QuantLib {
                     belowDiagonal_ = L.belowDiagonal_;
                     diagonal_      = L.diagonal_;
                     aboveDiagonal_ = L.aboveDiagonal_;
-                    lowerBC_       = L.lowerBC_;
-                    upperBC_       = L.upperBC_;
                     timeSetter_    = L.timeSetter_;
             }
             inline TridiagonalOperator& TridiagonalOperator::operator=(
@@ -127,8 +120,6 @@ namespace QuantLib {
                     belowDiagonal_ = L.belowDiagonal_;
                     diagonal_      = L.diagonal_;
                     aboveDiagonal_ = L.aboveDiagonal_;
-                    lowerBC_       = L.lowerBC_;
-                    upperBC_       = L.upperBC_;
                     timeSetter_    = L.timeSetter_;
                     return *this;
             }
@@ -188,54 +179,24 @@ namespace QuantLib {
             Array low = -D.belowDiagonal_, mid = -D.diagonal_,
                 high = -D.aboveDiagonal_;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.lowerBC_);
-            result.setUpperBC(D.upperBC_);
             return result;
         }
 
         inline TridiagonalOperator operator+(const TridiagonalOperator& D1,
           const TridiagonalOperator& D2) {
-            QL_REQUIRE(D1.lowerBC_.type() == BoundaryCondition::None ||
-                       D2.lowerBC_.type() == BoundaryCondition::None,
-                "Adding operators with colliding boundary conditions");
-            QL_REQUIRE(D1.upperBC_.type() == BoundaryCondition::None ||
-                       D2.upperBC_.type() == BoundaryCondition::None,
-                "Adding operators with colliding boundary conditions");
             Array low = D1.belowDiagonal_+D2.belowDiagonal_,
                 mid = D1.diagonal_+D2.diagonal_,
                 high = D1.aboveDiagonal_+D2.aboveDiagonal_;
             TridiagonalOperator result(low,mid,high);
-            if (D1.lowerBC_.type() == BoundaryCondition::None)
-                result.setLowerBC(D2.lowerBC_);
-            else
-                result.setLowerBC(D1.lowerBC_);
-            if (D1.upperBC_.type() == BoundaryCondition::None)
-                result.setUpperBC(D2.upperBC_);
-            else
-                result.setUpperBC(D1.upperBC_);
             return result;
         }
 
         inline TridiagonalOperator operator-(const TridiagonalOperator& D1,
           const TridiagonalOperator& D2) {
-            QL_REQUIRE(D1.lowerBC_.type() == BoundaryCondition::None ||
-                       D2.lowerBC_.type() == BoundaryCondition::None,
-                "Subtracting operators with colliding boundary conditions");
-            QL_REQUIRE(D1.upperBC_.type() == BoundaryCondition::None ||
-                       D2.upperBC_.type() == BoundaryCondition::None,
-                "Subtracting operators with colliding boundary conditions");
             Array low = D1.belowDiagonal_-D2.belowDiagonal_,
                 mid = D1.diagonal_-D2.diagonal_,
                 high = D1.aboveDiagonal_-D2.aboveDiagonal_;
             TridiagonalOperator result(low,mid,high);
-            if (D1.lowerBC_.type() == BoundaryCondition::None)
-                result.setLowerBC(D2.lowerBC_);
-            else
-                result.setLowerBC(D1.lowerBC_);
-            if (D1.upperBC_.type() == BoundaryCondition::None)
-                result.setUpperBC(D2.upperBC_);
-            else
-                result.setUpperBC(D1.upperBC_);
             return result;
         }
 
@@ -244,8 +205,6 @@ namespace QuantLib {
             Array low = D.belowDiagonal_*a, mid = D.diagonal_*a,
                 high = D.aboveDiagonal_*a;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.lowerBC_);
-            result.setUpperBC(D.upperBC_);
             return result;
         }
 
@@ -254,8 +213,6 @@ namespace QuantLib {
             Array low = D.belowDiagonal_*a, mid = D.diagonal_*a,
                 high = D.aboveDiagonal_*a;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.lowerBC_);
-            result.setUpperBC(D.upperBC_);
             return result;
         }
 
@@ -264,8 +221,6 @@ namespace QuantLib {
             Array low = D.belowDiagonal_/a, mid = D.diagonal_/a,
                 high = D.aboveDiagonal_/a;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.lowerBC_);
-            result.setUpperBC(D.upperBC_);
             return result;
         }
 

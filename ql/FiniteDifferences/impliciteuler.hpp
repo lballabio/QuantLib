@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -71,9 +70,11 @@ namespace QuantLib {
             // typedefs
             typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
+            typedef BoundaryCondition<Operator> bcType;
             // constructors
-            ImplicitEuler(const Operator& L)
-            : MixedScheme<Operator>(L, 1.0) {}
+            ImplicitEuler(const Operator& L,
+                          const std::vector<Handle<bcType> >& bcs)
+            : MixedScheme<Operator>(L, 1.0, bcs) {}
         };
 
     }

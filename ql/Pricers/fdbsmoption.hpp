@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -29,6 +28,9 @@
 
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/FiniteDifferences/bsmoperator.hpp>
+#include <ql/FiniteDifferences/boundarycondition.hpp>
+#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -62,13 +64,17 @@ namespace QuantLib {
             mutable Array grid_;
             mutable FiniteDifferences::BSMOperator finiteDifferenceOperator_;
             mutable Array initialPrices_;
+            typedef FiniteDifferences::BoundaryCondition<
+                        FiniteDifferences::TridiagonalOperator>
+                            BoundaryCondition;
+            mutable std::vector<Handle<BoundaryCondition> > BCs_;
             // temporaries
             mutable double sMin_, center_, sMax_;
           private:
             // temporaries
             mutable double gridLogSpacing_;
             Size safeGridPoints(Size gridPoints,
-            Time residualTime);
+                                Time residualTime);
         };
 
         //! This is a safety check to be sure we have enough grid points.

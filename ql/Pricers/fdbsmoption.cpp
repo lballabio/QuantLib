@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -25,13 +24,14 @@
 // $Id$
 
 #include <ql/Pricers/fdbsmoption.hpp>
+#include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        using FiniteDifferences::BoundaryCondition;
+        using FiniteDifferences::NeumannBC;
         using FiniteDifferences::BSMOperator;
         using FiniteDifferences::valueAtCenter;
         using FiniteDifferences::firstDerivativeAtCenter;
@@ -44,7 +44,8 @@ namespace QuantLib {
         : SingleAssetOption(type, underlying, strike, dividendYield,
             riskFreeRate, residualTime, volatility),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
-            grid_(gridPoints_), initialPrices_(gridPoints_){
+            grid_(gridPoints_), initialPrices_(gridPoints_),
+            BCs_(2) {
                 hasBeenCalculated_ = false;
         }
 
@@ -123,14 +124,13 @@ namespace QuantLib {
             finiteDifferenceOperator_ = BSMOperator(gridPoints_,
                 gridLogSpacing_, riskFreeRate_, dividendYield_, volatility_);
 
-            finiteDifferenceOperator_.setLowerBC(
-                BoundaryCondition(BoundaryCondition::Neumann,
-                    initialPrices_[1]-initialPrices_[0]));
-
-            finiteDifferenceOperator_.setUpperBC(
-                BoundaryCondition(BoundaryCondition::Neumann,
-                    initialPrices_[gridPoints_-1] -
-                        initialPrices_[gridPoints_-2]));
+            BCs_[0] = Handle<BoundaryCondition>(
+                new NeumannBC(initialPrices_[1]-initialPrices_[0],
+                              BoundaryCondition::Lower));
+            BCs_[1] = Handle<BoundaryCondition>(
+                new NeumannBC(initialPrices_[gridPoints_-1] -
+                              initialPrices_[gridPoints_-2],
+                              BoundaryCondition::Upper));
         }
 
     }

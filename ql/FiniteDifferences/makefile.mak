@@ -15,6 +15,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = bsmoperator.obj$(_D) \
+       boundarycondition.obj$(_D) \
        onefactoroperator.obj$(_D) \
        tridiagonaloperator.obj$(_D) \
        valueatcenter.obj$(_D)

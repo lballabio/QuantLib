@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
@@ -58,39 +57,6 @@ namespace QuantLib {
                 "wrong size for upper diagonal vector");
         }
 
-        void TridiagonalOperator::setLowerBC(
-          const BoundaryCondition& bc) {
-            lowerBC_ = bc;
-            switch (lowerBC_.type()) {
-              case BoundaryCondition::None:
-                // does nothing
-                break;
-              case BoundaryCondition::Neumann:
-                setFirstRow(-1.0,1.0);
-                break;
-              case BoundaryCondition::Dirichlet:
-                setFirstRow(1.0,0.0);
-                break;
-            }
-        }
-
-        void TridiagonalOperator::setUpperBC(
-          const BoundaryCondition& bc) {
-            upperBC_ = bc;
-            switch (upperBC_.type()) {
-              case BoundaryCondition::None:
-                // does nothing
-                break;
-              case BoundaryCondition::Neumann:
-                setLastRow(-1.0,1.0);
-                break;
-              case BoundaryCondition::Dirichlet:
-                setLastRow(0.0,1.0);
-                break;
-            }
-        }
-
-
         Array TridiagonalOperator::applyTo(const Array& v) const {
             QL_REQUIRE(v.size()==size(),
                 "TridiagonalOperator::applyTo: vector of the wrong size (" +
@@ -106,76 +72,26 @@ namespace QuantLib {
             result[size()-1] = belowDiagonal_[size()-2]*v[size()-2] +
                 diagonal_[size()-1]*v[size()-1];
 
-            // apply lower boundary condition
-            switch (lowerBC_.type()) {
-              case BoundaryCondition::None:
-                // does nothing
-                break;
-              case BoundaryCondition::Neumann:
-                result[0] = result[1] - lowerBC_.value();
-                break;
-              case BoundaryCondition::Dirichlet:
-                result[0] = lowerBC_.value();
-                break;
-            }
-
-            // apply upper boundary condition
-            switch (upperBC_.type()) {
-              case BoundaryCondition::None:
-                // does nothing
-                break;
-              case BoundaryCondition::Neumann:
-                result[size()-1] = result[size()-2] + upperBC_.value();
-                break;
-              case BoundaryCondition::Dirichlet:
-                result[size()-1] = upperBC_.value();
-                break;
-            }
-
             return result;
         }
 
         Array TridiagonalOperator::solveFor(const Array& rhs) const {
             QL_REQUIRE(rhs.size()==size(),
                 "TridiagonalOperator::solveFor: rhs has the wrong size");
-            Array bcRhs = rhs;
 
-            // apply lower boundary condition
-            switch (lowerBC_.type()) {
-              case BoundaryCondition::None:
-                // does nothing
-                break;
-              case BoundaryCondition::Neumann:
-              case BoundaryCondition::Dirichlet:
-                bcRhs[0] = lowerBC_.value();
-                break;
-            }
-
-            // apply upper boundary condition
-            switch (upperBC_.type()) {
-              case BoundaryCondition::None:
-                // does nothing
-                break;
-              case BoundaryCondition::Neumann:
-              case BoundaryCondition::Dirichlet:
-                bcRhs[size()-1] = upperBC_.value();
-                break;
-            }
-
-            // solve tridiagonal system
             Array result(size()), tmp(size());
 
             double bet=diagonal_[0];
             QL_REQUIRE(bet != 0.0,
                 "TridiagonalOperator::solveFor: division by zero");
-            result[0] = bcRhs[0]/bet;
+            result[0] = rhs[0]/bet;
             Size j;
             for (j=1;j<=size()-1;j++){
                 tmp[j]=aboveDiagonal_[j-1]/bet;
                 bet=diagonal_[j]-belowDiagonal_[j-1]*tmp[j];
                 QL_ENSURE(bet != 0.0,
                     "TridiagonalOperator::solveFor: division by zero");
-                result[j] = (bcRhs[j]-belowDiagonal_[j-1]*result[j-1])/bet;
+                result[j] = (rhs[j]-belowDiagonal_[j-1]*result[j-1])/bet;
             }
             // cannot be j>=0 with Size j
             for (j=size()-2;j>0;j--)
@@ -193,28 +109,6 @@ namespace QuantLib {
 
             // initial guess
             Array result = rhs;
-
-            // apply lower boundary condition
-            switch (lowerBC_.type()) {
-              case BoundaryCondition::None:
-                // does nothing
-                break;
-              case BoundaryCondition::Neumann:
-              case BoundaryCondition::Dirichlet:
-                result[0] = lowerBC_.value();
-                break;
-            }
-
-            // apply upper boundary condition
-            switch (upperBC_.type()) {
-              case BoundaryCondition::None:
-                // does nothing
-                break;
-              case BoundaryCondition::Neumann:
-              case BoundaryCondition::Dirichlet:
-                result[size()-1] = upperBC_.value();
-                break;
-            }
 
             // solve tridiagonal system with SOR technique
             Size sorIteration, i;

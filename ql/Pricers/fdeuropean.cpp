@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -52,7 +51,7 @@ namespace QuantLib {
             initializeOperator();
 
             FiniteDifferences::StandardFiniteDifferenceModel
-                                model(finiteDifferenceOperator_);
+                                model(finiteDifferenceOperator_,BCs_);
 
             euroPrices_ = initialPrices_;
 

@@ -53,6 +53,7 @@ CLEAN :
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -326,7 +327,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\boundarycondition.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -356,6 +358,7 @@ CLEAN :
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -630,7 +633,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\boundarycondition.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -660,6 +664,7 @@ CLEAN :
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -933,7 +938,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\boundarycondition.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -963,6 +969,7 @@ CLEAN :
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -1237,7 +1244,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\boundarycondition.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1386,6 +1394,12 @@ SOURCE=.\ql\DayCounters\actualactual.cpp
 SOURCE=.\ql\DayCounters\thirty360.cpp
 
 "$(INTDIR)\thirty360.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\FiniteDifferences\boundarycondition.cpp
+
+"$(INTDIR)\boundarycondition.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
