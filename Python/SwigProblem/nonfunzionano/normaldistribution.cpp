@@ -19,7 +19,7 @@ namespace QuantLib {
 
             QL_REQUIRE(sigma_>0.0,
                 "NormalDistribution: sigma must be greater than 0.0 "
-//                + DoubleFormatter::toString(sigma_) + " not allowed)"
+                + DoubleFormatter::toString(sigma_) + " not allowed)"
                 );
 
             normalizationFactor_ = 1.0/(sigma_*sqrt(2.0*pi_));

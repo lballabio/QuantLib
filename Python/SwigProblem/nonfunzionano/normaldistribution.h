@@ -1,8 +1,8 @@
 #ifndef quantlib_normal_distribution_h
 #define quantlib_normal_distribution_h
 
- #include "qldefines.h"
- #include "qlerrors.h"
+#include "qldefines.h"
+#include "qlerrors.h"
 
 #include <functional>
 

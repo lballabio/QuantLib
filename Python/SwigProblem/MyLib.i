@@ -3,7 +3,7 @@
 
 %{
 #include "helloworld.h"
-#include "quantlib.h"
+#include "normaldistribution.h"
 using QuantLib::Math::NormalDistribution;
 %}
 
