@@ -106,8 +106,8 @@ namespace QuantLib {
     }
 
     inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t) const {
-        return originalCurve_->instantaneousForward(t, true) +
-               spread_->value();
+        return originalCurve_->forwardRate(t, t, Continuous, NoFrequency, true)
+            + spread_->value();
     }
 
 }

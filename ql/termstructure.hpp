@@ -185,12 +185,6 @@ namespace QuantLib {
             of year from the reference date.
         */
         //@{
-        //! instantaneous forward rate
-        Rate instantaneousForward(const Date&,
-                                  bool extrapolate = false) const;
-        //! instantaneous forward rate
-        Rate instantaneousForward(Time,
-                                  bool extrapolate = false) const;
         //! instantaneous forward rate at a given compounding frequency
         Rate compoundForward(const Date&,
                              Integer,
@@ -200,6 +194,21 @@ namespace QuantLib {
                              Integer,
                              bool extrapolate = false) const;
         #ifndef QL_DISABLE_DEPRECATED
+        //! instantaneous forward rate
+        /*! \deprecated use forwardRate(const Date& d1, const Date& d1,
+                                        const DayCounter& dc,
+                                        Continuous, NoFrequency, bool extrapolate)
+                        instead
+        */
+        Rate instantaneousForward(const Date&,
+                                  bool extrapolate = false) const;
+        //! instantaneous forward rate
+        /*! \deprecated use forwardRate(Time t1, Time t1,
+                                        Continuous, NoFrequency, bool extrapolate)
+                        instead
+        */
+        Rate instantaneousForward(Time,
+                                  bool extrapolate = false) const;
         //! discrete forward rate between two dates
         /*! \deprecated use forwardRate(const Date& d1, const Date& d2,
                                         const DayCounter& dc,
@@ -495,9 +504,7 @@ namespace QuantLib {
         else
             return QL_LOG(discountImpl(t1)/discountImpl(t2))/(t2-t1);
     }
-    #endif
 
-                                            
     inline Rate YieldTermStructure::instantaneousForward(const Date& d,
                                                          bool extrapolate)
                                                                        const {
@@ -512,6 +519,9 @@ namespace QuantLib {
         checkRange(t, extrapolate);
         return forwardImpl(t);
     }
+    #endif
+
+                                            
 
 
 

@@ -73,7 +73,7 @@ namespace QuantLib {
 
         Real sigma2 = sigma()*sigma();
         Real h = QL_SQRT(k()*k() + 2.0*sigma2);
-        Real r0 = termStructure()->instantaneousForward(0.0);
+        Real r0 = termStructure()->forwardRate(0.0, 0.0, Continuous, NoFrequency);
         Real b = B(t,s);
 
         Real rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));

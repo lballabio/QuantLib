@@ -152,7 +152,7 @@ namespace QuantLib {
               a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho) {}
 
             Real value(const Array& params, Time t) const {
-                Rate forward = termStructure_->instantaneousForward(t);
+                Rate forward = termStructure_->forwardRate(t, t, Continuous, NoFrequency);
                 Real temp1 = sigma_*(1.0-QL_EXP(-a_*t))/a_;
                 Real temp2 = eta_*(1.0-QL_EXP(-b_*t))/b_;
                 Real value = 0.5*temp1*temp1 + 0.5*temp2*temp2 +

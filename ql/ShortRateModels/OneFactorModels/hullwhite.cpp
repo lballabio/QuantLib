@@ -23,7 +23,8 @@ namespace QuantLib {
 
     HullWhite::HullWhite(const Handle<YieldTermStructure>& termStructure,
                          Real a, Real sigma)
-    : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma),
+    : Vasicek(termStructure->forwardRate(0.0, 0.0, Continuous, NoFrequency),
+                                         a, 0.0, sigma),
       TermStructureConsistentModel(termStructure) {
         arguments_[1] = NullParameter();
         generateArguments();
@@ -67,7 +68,7 @@ namespace QuantLib {
     Real HullWhite::A(Time t, Time T) const {
         DiscountFactor discount1 = termStructure()->discount(t);
         DiscountFactor discount2 = termStructure()->discount(T);
-        Rate forward = termStructure()->instantaneousForward(t);
+        Rate forward = termStructure()->forwardRate(t, t, Continuous, NoFrequency);
         Real temp = sigma()*B(t,T);
         Real value = B(t,T)*forward - 0.25*temp*temp*B(0.0,2.0*t);
         return QL_EXP(value)*discount2/discount1;

@@ -125,7 +125,7 @@ namespace QuantLib {
                 DiscountFactor df;
                 Date rateDate = dates_[i];
                 Time t = dayCounter_.yearFraction(referenceDate(),rateDate);
-                Rate r = instantaneousForward(t);
+                Rate r = forwardRate(t, t, Continuous, NoFrequency);
                 if (t <= compoundTime) {
                     df = 1.0/(1.0+r*t);
                     qFactor = df*t;

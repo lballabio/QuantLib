@@ -119,7 +119,7 @@ namespace QuantLib {
 
             Real value(const Array&, Time t) const {
                 Rate forwardRate =
-                    termStructure_->instantaneousForward(t);
+                    termStructure_->forwardRate(t, t, Continuous, NoFrequency);
                 Real h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
                 Real expth = QL_EXP(t*h);
                 Real temp = 2.0*h + (k_+h)*(expth-1.0);
