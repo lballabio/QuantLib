@@ -15,13 +15,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/Asian/analyticdiscreteasianengine.hpp>
+#include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 #include <numeric>
 
 namespace QuantLib {
 
-    void AnalyticDiscreteAveragingAsianEngine::calculate() const {
+    void AnalyticDiscreteGeometricAveragePriceAsianEngine::calculate() const {
 
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
                    "not a geometric average option");
@@ -29,9 +29,9 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
 
-        QL_REQUIRE(arguments_.runningProduct>0.0,
+        QL_REQUIRE(arguments_.runningAccumulator>0.0,
                    "positive running product required: "
-                   + DecimalFormatter::toString(arguments_.runningProduct) +
+                   + DecimalFormatter::toString(arguments_.runningAccumulator) +
                    " not allowed");
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
@@ -77,7 +77,7 @@ namespace QuantLib {
         Rate riskFreeRate = process->riskFreeRate()->zeroYield(
                                              arguments_.exercise->lastDate());
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
-        Real runningLog = QL_LOG(arguments_.runningProduct);
+        Real runningLog = QL_LOG(arguments_.runningAccumulator);
         Real muG = pastWeight * runningLog +
             futureWeight * QL_LOG(process->stateVariable()->value()) +
             nu*timeSum/N;

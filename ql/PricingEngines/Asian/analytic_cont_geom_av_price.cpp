@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/Asian/analyticcontinuousasianengine.hpp>
+#include <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
 
-    void AnalyticContinuousAveragingAsianEngine::calculate() const {
+    void AnalyticContinuousGeometricAveragePriceAsianEngine::calculate() const {
 
         QL_REQUIRE(arguments_.averageType == Average::Geometric,
                    "not a geometric average option");

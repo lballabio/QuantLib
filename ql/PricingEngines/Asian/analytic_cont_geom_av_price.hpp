@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticcontinuousasianengine.hpp
-    \brief Analytic continuous-averaging Asian option engine
+/*! \file analytic_cont_geom_av_price.hpp
+    \brief Analytic engine for continuous geometric average price Asian
 */
 
-#ifndef quantlib_analytic_continuous_asian_engines_hpp
-#define quantlib_analytic_continuous_asian_engines_hpp
+#ifndef quantlib_analytic_continuous_geometric_average_price_asian_engine_hpp
+#define quantlib_analytic_continuous_geometric_average_price_asian_engine_hpp
 
 #include <ql/Instruments/asianoption.hpp>
 
@@ -33,7 +33,7 @@ namespace QuantLib {
 
         \ingroup asianengines
     */
-    class AnalyticContinuousAveragingAsianEngine 
+    class AnalyticContinuousGeometricAveragePriceAsianEngine 
         : public ContinuousAveragingAsianOption::engine {
       public:
         void calculate() const;
