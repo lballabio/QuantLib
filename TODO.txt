@@ -6,9 +6,7 @@ config.h is installed?
 make bootstrap work under cygwin
 make Parities to work
 installer splash screen
-
 add examples to documentation
-cash flow stream for IRR, duration
 documentation of path (where it is? continously compounded)
 MonteCarloModel refactoring
 check compile success/failure on (SourceForge compile farm)
@@ -24,6 +22,7 @@ COMPILING
     *** check compile success/failure on other platforms/compilers
 
 LIBRARY
+    cash flow stream for IRR, duration
     Actual/actual and 30/360 factory taking conventions
     Currency as class with methods returning related info
     QuantLib dynamic Win32 library (QuantLib.dll)
@@ -46,12 +45,14 @@ LIBRARY
 DOCUMENTATION ***
     enforce fulpath&classesinclude DoxyGen requirements
     automated changelog update for each cvs commit
-    add ChangeLog or History to DoxyGen
-    add QuantLib Team and contributors to DoxyGen
     add/update DoxyGen TODO with CVS TODO.txt file
-    add reference to FAQ to DoxyGen
-    add CVS reference to DoxyGen
-    add Coding standards reference to DoxyGen
-    add status.html content into DoxyGen documentation
     insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
-    add mailing list reference to DoxyGen
+
+    add status.html content into DoxyGen documentation
+    add QuantLib Team and contributors to DoxyGen
+    add mailing list, bug tracker, etc. reference to DoxyGen
+    add NEWS.txt content
+    add CVS reference to DoxyGen
+    add reference to FAQ to DoxyGen
+    add Coding standards reference to DoxyGen
+    add History    
