@@ -31,11 +31,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-
         //! %path pricer for European options
-        /* %Path pricer for European options
-            
-        */
         class EuropeanPathPricer : public PathPricer<Path> {
           public:
             EuropeanPathPricer(
@@ -43,26 +39,6 @@ namespace QuantLib {
                 double underlying,
                 double strike,
                 const RelinkableHandle<TermStructure>& riskFreeTS);
-            double operator()(const Path& path) const;
-          private:
-            double underlying_;
-            // it would be easy to generalize to more exotic payoffs
-            PlainVanillaPayoff payoff_;
-        };
-
-
-        //! %path pricer for European options
-        /* %Path pricer for European options
-            
-           \deprecated use EuropeanPathPricer instead
-        */
-        class EuropeanPathPricer_old : public PathPricer_old<Path> {
-          public:
-            EuropeanPathPricer_old(Option::Type type,
-                               double underlying,
-                               double strike,
-                               DiscountFactor discount,
-                               bool useAntitheticVariance);
             double operator()(const Path& path) const;
           private:
             double underlying_;
