@@ -73,6 +73,8 @@
 #define QL_LOG       log
 #define QL_SIN       sin
 #define QL_COS       cos
+#define QL_SINH      sinh
+#define QL_COSH      cosh
 #define QL_POW       pow
 #define QL_MODF      modf
 #define QL_FLOOR     floor

@@ -20,11 +20,10 @@
 #include "utilities.hpp"
 #include <ql/null.hpp>
 #include <ql/Math/cubicspline.hpp>
-#include <ql/Math/segmentintegral.hpp>
+#include <ql/Math/multicubicspline.hpp>
 #include <ql/Math/simpsonintegral.hpp>
-#include <ql/Math/trapezoidintegral.hpp>
-#include <ql/Math/kronrodintegral.hpp>
 #include <ql/Math/functional.hpp>
+#include <ql/RandomNumbers/sobolrsg.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -64,11 +63,11 @@ namespace {
         while (xBegin != xEnd) {
             Real interpolated = spline(*xBegin);
             if (QL_FABS(interpolated-*yBegin) > tolerance) {
-                BOOST_FAIL(std::string(type) + 
+                BOOST_FAIL(std::string(type) +
                            " interpolation failed at x = " +
                            DecimalFormatter::toString(*xBegin) +
                            "\n    interpolated value: " +
-                           DecimalFormatter::toExponential(interpolated) + 
+                           DecimalFormatter::toExponential(interpolated) +
                            "\n    expected value:     " +
                            DecimalFormatter::toExponential(*yBegin) +
                            "\n    error:              "
@@ -87,7 +86,7 @@ namespace {
         Real interpolated = spline.derivative(x);
         Real error = QL_FABS(interpolated-value);
         if (error > tolerance) {
-            BOOST_FAIL(std::string(type) + 
+            BOOST_FAIL(std::string(type) +
                        " interpolation first derivative failure\n"
                        "at x="
                        + DecimalFormatter::toString(x) +
@@ -108,7 +107,7 @@ namespace {
         Real interpolated = spline.secondDerivative(x);
         Real error = QL_FABS(interpolated-value);
         if (error > tolerance) {
-            BOOST_FAIL(std::string(type) + 
+            BOOST_FAIL(std::string(type) +
                        " interpolation second derivative failure\n"
                        "at x="
                        + DecimalFormatter::toString(x) +
@@ -171,9 +170,9 @@ namespace {
     class errorFunction : public std::unary_function<Real,Real> {
       public:
         errorFunction(const F& f) : f_(f) {}
-        Real operator()(Real x) const { 
-            Real temp = f_(x)-QL_EXP(-x*x); 
-            return temp*temp; 
+        Real operator()(Real x) const {
+            Real temp = f_(x)-QL_EXP(-x*x);
+            return temp*temp;
         }
       private:
         F f_;
@@ -183,6 +182,13 @@ namespace {
     errorFunction<F> make_error_function(const F& f) {
         return errorFunction<F>(f);
     }
+
+    Real multif(Real s, Real t, Real u, Real v, Real w) {
+        return QL_SQRT(s * QL_SINH(QL_LOG(t)) +
+                       QL_EXP(QL_SIN(u) * QL_SIN(3 * v)) +
+                       QL_SINH(QL_LOG(v * w)));
+    }
+
 }
 
 /* See J. M. Hyman, "Accurate monotonicity preserving cubic interpolation"
@@ -209,7 +215,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
     SimpsonIntegral integral(1e-12);
     std::vector<Real> x, y;
 
-    // still unexplained scale factor needed to obtain the numerical 
+    // still unexplained scale factor needed to obtain the numerical
     // results from the paper
     Real scaleFactor = 1.9;
 
@@ -335,19 +341,19 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
     BOOST_MESSAGE("Testing spline interpolation on RPN15A data set...");
 
-    const Real RPN15A_x[] = { 
+    const Real RPN15A_x[] = {
         7.99,       8.09,       8.19,      8.7,
-        9.2,     10.0,     12.0,     15.0,     20.0 
+        9.2,     10.0,     12.0,     15.0,     20.0
     };
     const Real RPN15A_y[] = {
         0.0, 2.76429e-5, 4.37498e-5, 0.169183,
-        0.469428, 0.943740, 0.998636, 0.999919, 0.999994 
+        0.469428, 0.943740, 0.998636, 0.999919, 0.999994
     };
 
     Real interpolated;
 
     // Natural spline
-    CubicSpline f = NaturalCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x), 
+    CubicSpline f = NaturalCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x),
                                        BEGIN(RPN15A_y));
     checkValues("Natural spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -415,7 +421,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
 
     // MC natural spline values
-    f = NaturalMonotonicCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x), 
+    f = NaturalMonotonicCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x),
                                     BEGIN(RPN15A_y));
     checkValues("MC natural spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -491,7 +497,7 @@ void InterpolationTest::testSplineOnGenericValues() {
     std::vector<Real> x35(3);
 
     // Natural spline
-    CubicSpline f = CubicSpline(BEGIN(generic_x), END(generic_x), 
+    CubicSpline f = CubicSpline(BEGIN(generic_x), END(generic_x),
                                 BEGIN(generic_y),
                                 CubicSpline::SecondDerivative,
                                 generic_natural_y2[0],
@@ -730,7 +736,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                    " interpolation failed at x = " +
                    DecimalFormatter::toString(zero) +
                    "\n    interpolated value: " +
-                   DecimalFormatter::toString(interpolated) + 
+                   DecimalFormatter::toString(interpolated) +
                    "\n    expected value:     " +
                    DecimalFormatter::toString(expected) +
                    "\n    error:              "
@@ -750,7 +756,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                    " interpolation failed at x = " +
                    DecimalFormatter::toString(zero) +
                    "\n    interpolated value: " +
-                   DecimalFormatter::toString(interpolated) + 
+                   DecimalFormatter::toString(interpolated) +
                    "\n    expected value:     " +
                    DecimalFormatter::toString(expected) +
                    "\n    error:              "
@@ -769,7 +775,7 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                    " interpolation failed at x = " +
                    DecimalFormatter::toString(zero) +
                    "\n    interpolated value: " +
-                   DecimalFormatter::toString(interpolated) + 
+                   DecimalFormatter::toString(interpolated) +
                    "\n    expected value:     " +
                    DecimalFormatter::toString(expected) +
                    "\n    error:              "
@@ -779,6 +785,79 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
 }
 
+void InterpolationTest::testMultiSpline() {
+
+    BOOST_MESSAGE("Testing N-dimensional cubic spline...");
+
+    std::vector<Size> dim(5);
+    dim[0] = 6; dim[1] = 5; dim[2] = 5; dim[3] = 6; dim[4] = 4;
+
+    std::vector<Real> args(5), offsets(5);
+    offsets[0] = 1.005; offsets[1] = 14.0; offsets[2] = 33.005;
+    offsets[3] = 35.025; offsets[4] = 19.025;
+
+    Real &s = args[0] = offsets[0],
+         &t = args[1] = offsets[1],
+         &u = args[2] = offsets[2],
+         &v = args[3] = offsets[3],
+         &w = args[4] = offsets[4];
+
+	Size i, j, k, l, m;
+
+    SplineGrid grid(5);
+
+    Real r = 0.15;
+
+    for (i = 0; i < 5; ++i) {
+        Real temp = offsets[i];
+        for (j = 0; j < dim[i]; temp += r, ++j)
+            grid[i].push_back(temp);
+    }
+
+    r = 0.01;
+
+    MultiCubicSpline<5>::data_table y5(dim);
+
+    for (i = 0; i < dim[0]; ++i)
+        for (j = 0; j < dim[1]; ++j)
+            for (k = 0; k < dim[2]; ++k)
+                for (l = 0; l < dim[3]; ++l)
+                    for (m = 0; m < dim[4]; ++m)
+                        y5[i][j][k][l][m] =
+                            multif(grid[0][i], grid[1][j], grid[2][k],
+                                   grid[3][l], grid[4][m]);
+
+    MultiCubicSpline<5> cs(grid, y5);
+
+    unsigned long seed = 42;
+    SobolRsg rsg(5, seed);
+
+    Real tolerance = 1.5e-4;
+
+    for (i = 0; i < 127; ++i) {
+        const Array& next = rsg.nextSequence().value;
+        s = grid[0].front() + next[0]*(grid[0].back()-grid[0].front());
+        t = grid[1].front() + next[1]*(grid[1].back()-grid[1].front());
+        u = grid[2].front() + next[2]*(grid[2].back()-grid[2].front());
+        v = grid[3].front() + next[3]*(grid[3].back()-grid[3].front());
+        w = grid[4].front() + next[4]*(grid[4].back()-grid[4].front());
+        Real interpolated = cs(args), expected = multif(s, t, u, v, w);
+        Real error = QL_FABS(interpolated-expected);
+        if (error > tolerance) {
+            BOOST_FAIL("At (" + DecimalFormatter::toString(s) + ","
+                       + DecimalFormatter::toString(t) + ","
+                       + DecimalFormatter::toString(u) + ","
+                       + DecimalFormatter::toString(v) + ","
+                       + DecimalFormatter::toString(w) + "):\n"
+                       "    interpolated: "
+                       + DecimalFormatter::toString(interpolated,4) + "\n"
+                       "    actual value: "
+                       + DecimalFormatter::toString(expected,4) + "\n"
+                       "    error: "
+                       + DecimalFormatter::toExponential(error,1));
+        }
+    }
+}
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -794,6 +873,7 @@ test_suite* InterpolationTest::suite() {
                         &InterpolationTest::testSplineOnGaussianValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSplineErrorOnGaussianValues));
+    suite->add(BOOST_TEST_CASE(&InterpolationTest::testMultiSpline));
     return suite;
 }
 
