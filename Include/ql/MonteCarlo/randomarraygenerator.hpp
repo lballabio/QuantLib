@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/06 08:08:43  aleppo
+// Bug fixed
+//
 // Revision 1.9  2001/07/05 13:51:04  nando
 // Maxim "Ronin" contribution on efficiency and style
 //
@@ -60,9 +63,9 @@ namespace QuantLib {
                                  long seed=0);
             RandomArrayGenerator(const std::vector<Time> & dates,
                                  double average = 0.0,
-                                 double variance = 1.0,
+                                 double variance = 1.0, 
                                  long seed=0);
-            RandomArrayGenerator(const Math::Matrix &covariance,
+            RandomArrayGenerator(const Math::Matrix &covariance, 
                                  long seed=0);
             RandomArrayGenerator(const Array &average,
                                  const Math::Matrix &covariance,
@@ -105,17 +108,18 @@ namespace QuantLib {
                 average_(average), rndPoint_(seed),
                 averageArray_(0),sqrtCovariance_(0,0){
 
-            QL_REQUIRE(size_ > 0,
-                "The number of Dates ("+
-                IntegerFormatter::toString(size_)+
-                ") is too small");
+            QL_REQUIRE(variance >= 0,
+                    "RandomArrayGenerator: variance is negative!");
+            sqrtVariance_ = QL_SQRT(variance);
 
-            QL_REQUIRE(dates[0] >= 0,
-                 "MultiPathGenerator: first date(" +
-                 DoubleFormatter::toString(dates[0])+
-                 ") must be positive");
-            timeDelays_[0] = dates[0];
-
+            if( size_ > 0){
+                QL_REQUIRE(dates[0] >= 0,
+                     "MultiPathGenerator: first date(" +
+                    DoubleFormatter::toString(dates[0])+
+                    ") must be positive");
+                timeDelays_[0] = dates[0];
+            }
+            
             if(size_ > 1){
                 for(int i = 1; i < size_; i++){
                     QL_REQUIRE(dates[i] >= dates[i-1],
