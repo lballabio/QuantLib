@@ -26,9 +26,11 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.29  2001/04/09 15:51:16  lballabio
+    Compiling again under Linux
+
     Revision 1.28  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
-
 */
 
 #ifndef quantlib_date_i
@@ -498,9 +500,6 @@ class Date {
     }
 };
 
-#if defined(SWIGPYTHON)
-// typemap Python sequence of Dates to std::vector<Date>
-
 %{
 typedef std::vector<Date> DateVector;
 using QuantLib::Null;
@@ -515,18 +514,46 @@ class DateVector {
 
     #if defined(SWIGRUBY)
     void crash() {}
+    DateVector(VALUE v) {
+    	if (rb_obj_is_kind_of(v,rb_cArray)) {
+            int size = RARRAY(v)->len;
+            DateVector* temp = new DateVector(size);
+            for (int i=0; i<size; i++) {
+                VALUE o = RARRAY(v)->ptr[i];
+                if (o == Qnil) {
+                    (*temp)[i] = Date();
+                } else {
+                    Date* d;
+                    Get_Date(o,d);
+                    (*temp)[i] = *d;
+                }
+            }
+            return temp;
+        } else {
+            rb_raise(rb_eTypeError,
+                "wrong argument type (expected array)");
+        }
+    }
     #endif
-
+    #if defined(SWIGPYTHON)
     DateVector(const DateVector& v) {
         return new DateVector(v);
     }
-
-    #if defined(SWIGPYTHON)
-
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    String __str__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+                s += ", ";
+            s += DateFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
     int __len__() {
         return self->size();
     }
-
     Date __getitem__(int i) {
         if (i>=0 && i<self->size()) {
             return (*self)[i];
@@ -537,7 +564,6 @@ class DateVector {
         }
         QL_DUMMY_RETURN(Date())
     }
-
     void __setitem__(int i, const Date& x) {
         if (i>=0 && i<self->size()) {
             (*self)[i] = x;
@@ -547,7 +573,8 @@ class DateVector {
             throw IndexError("DateVector index out of range");
         }
     }
-
+    #endif
+    #if defined(SWIGPYTHON)
     DateVector __getslice__(int i, int j) {
         if (i<0)
             i = self->size()+i;
@@ -561,7 +588,6 @@ class DateVector {
         std::copy(self->begin()+i,self->begin()+j,tmp.begin());
         return tmp;
     }
-
     void __setslice__(int i, int j, const DateVector& rhs) {
         if (i<0)
             i = self->size()+i;
@@ -574,26 +600,11 @@ class DateVector {
         QL_ENSURE(rhs.size() == j-i, "DateVectors are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-
-    String __str__() {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-                s += ", ";
-            s += DateFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
-
     int __nonzero__() {
         return (self->size() == 0 ? 0 : 1);
     }
-
     #endif
-
-};
-#endif
+}; 
 
 %typemap(python,in) DateVector (DateVector temp),
   DateVector * (DateVector temp), const DateVector & (DateVector temp),

@@ -5,7 +5,7 @@ SUBDIRS = Calendars Currencies DayCounters FiniteDifferences Instruments \
 EXTRA_DIST=config.ansi.hpp config.bcc.hpp config.decc.hpp \
 	config.msvc.hpp config.mwcw.hpp
 
-includedir = $(prefix)/include/QuantLib
+includedir = $(prefix)/include/ql
 include_HEADERS = \
 	array.hpp \
 	calendar.hpp \

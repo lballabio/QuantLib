@@ -121,7 +121,7 @@ class test(Command):
 # class test
 
 # the directory where QL headers has been installed
-predir = "/usr/local/include/QuantLib"
+predir = "/usr/local/include"
 
 cmdclass = {'test': test}
 

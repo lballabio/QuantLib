@@ -5,9 +5,9 @@ dnl This is QuantLib's configure.in
 dnl Process this file with autoconf to produce a configure script.
 dnl
 
-AC_INIT(Include/qldefines.hpp)
+AC_INIT(Include/ql/qldefines.hpp)
 
-AM_CONFIG_HEADER(Include/config.hpp)
+AM_CONFIG_HEADER(Include/ql/config.hpp)
 AM_INIT_AUTOMAKE(QuantLib, 0.1.1)
 
 dnl Check for programs
@@ -138,18 +138,19 @@ QL_CHECK_TEMPLATE_CLASS([iterator_traits],[int*],[iterator],[])
 
 AC_OUTPUT(Makefile \
 	Include/Makefile \
-	Include/Calendars/Makefile \
-        Include/Currencies/Makefile \
-        Include/DayCounters/Makefile \
-	Include/FiniteDifferences/Makefile \
-        Include/Instruments/Makefile \
-        Include/Math/Makefile \
-	Include/MonteCarlo/Makefile \
-        Include/Patterns/Makefile \
-	Include/Pricers/Makefile \
-        Include/Solvers1D/Makefile \
-        Include/TermStructures/Makefile \
-	Include/Utilities/Makefile \
+	Include/ql/Makefile \
+	Include/ql/Calendars/Makefile \
+        Include/ql/Currencies/Makefile \
+        Include/ql/DayCounters/Makefile \
+	Include/ql/FiniteDifferences/Makefile \
+        Include/ql/Instruments/Makefile \
+        Include/ql/Math/Makefile \
+	Include/ql/MonteCarlo/Makefile \
+        Include/ql/Patterns/Makefile \
+	Include/ql/Pricers/Makefile \
+        Include/ql/Solvers1D/Makefile \
+        Include/ql/TermStructures/Makefile \
+	Include/ql/Utilities/Makefile \
 	Sources/Makefile \
 	Sources/Calendars/Makefile \
 	Sources/DayCounters/Makefile \

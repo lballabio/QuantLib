@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.15  2001/04/09 15:51:16  lballabio
+    Compiling again under Linux
+
     Revision 1.14  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -47,10 +50,13 @@ typedef QuantLib::History::const_iterator HistoryIterator;
 typedef QuantLib::History::const_valid_iterator HistoryValidIterator;
 typedef QuantLib::History::const_data_iterator HistoryDataIterator;
 typedef QuantLib::History::const_valid_data_iterator HistoryValidDataIterator;
+typedef HistoryIterator HistoryEntry;
+typedef HistoryValidIterator HistoryValidEntry;
 using QuantLib::DateFormatter;
 using QuantLib::DoubleFormatter;
 %}
 
+#if defined(SWIGPYTHON)
 class HistoryIterator {
   public:
     ~HistoryIterator();
@@ -70,6 +76,19 @@ class HistoryValidDataIterator {
   public:
     ~HistoryValidDataIterator();
 };
+#endif
+
+#if defined(SWIGRUBY)
+class HistoryEntry {
+  public:
+    ~HistoryEntry();
+};
+
+class HistoryValidEntry {
+  public:
+    ~HistoryValidEntry();
+};
+#endif
 
 class History {
   public:

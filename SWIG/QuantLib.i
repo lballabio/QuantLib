@@ -26,12 +26,14 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.37  2001/04/09 15:51:16  lballabio
+    Compiling again under Linux
+
     Revision 1.36  2001/04/09 14:17:26  nando
     all the *.hpp moved below the Include/ql level
 
     Revision 1.35  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
-
 */
 
 
@@ -84,6 +86,7 @@ using QuantLib::IndexError;
 %include Date.i
 %include DayCounters.i
 %include Distributions.i
+%include Financial.i
 %include RandomGenerators.i
 %include Statistics.i
 %include Solvers1D.i
@@ -94,7 +97,6 @@ using QuantLib::IndexError;
 #if defined(SWIGPYTHON)
 %include Barrier.i
 %include BoundaryConditions.i
-%include Financial.i
 %include History.i
 %include Instruments.i
 %include Interpolation.i
@@ -108,5 +110,10 @@ using QuantLib::IndexError;
 %include RiskStatistics.i
 %include TermStructures.i
 #endif
+
+
+
+
+
 
 
