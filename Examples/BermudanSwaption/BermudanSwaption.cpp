@@ -18,26 +18,23 @@
 
 #include <ql/quantlib.hpp>
 
+//#define ALSO_NUMERICAL_MODELS
+
 using namespace QuantLib;
 
 //Number of swaptions to be calibrated to...
 
 Size numRows = 5;
-Size numCols = 10;
+Size numCols = 5;
 
-Integer swaptionLengths[] = {
-      1,     2,     3,     4,     5,     7,    10,    15,    20,    25,    30};
+Integer swapLenghts[] = {
+      1,     2,     3,     4,     5};
 Volatility swaptionVols[] = {
-  23.92, 22.80, 19.80, 18.10, 16.00, 14.26, 13.56, 12.79, 12.30, 11.09, 21.85,
-  21.50, 19.50, 17.20, 14.70, 13.23, 12.59, 12.29, 11.10, 10.30, 19.46, 19.40,
-  17.90, 15.90, 13.90, 12.69, 12.15, 11.83, 10.80, 10.00, 17.97, 17.80, 16.70,
-  14.90, 13.40, 12.28, 11.89, 11.48, 10.50,  9.80, 16.29, 16.40, 15.10, 14.00,
-  12.90, 12.01, 11.46, 11.08, 10.40,  9.77, 14.71, 14.90, 14.30, 13.20, 12.30,
-  11.49, 11.12, 10.70, 10.10,  9.57, 12.93, 13.30, 12.80, 12.20, 11.60, 10.82,
-  10.47, 10.21,  9.80,  9.51, 12.70, 12.10, 11.90, 11.20, 10.80, 10.40, 10.20,
-  10.00,  9.50,  9.00, 12.30, 11.60, 11.60, 10.90, 10.50, 10.30, 10.00,  9.80,
-   9.30,  8.80, 12.00, 11.40, 11.50, 10.80, 10.30, 10.00,  9.80,  9.60,  9.50,
-   9.10, 11.50, 11.20, 11.30, 10.60, 10.20, 10.10,  9.70,  9.50,  9.40,  8.60};
+  14.90, 13.40, 12.28, 11.89, 11.48,
+  12.90, 12.01, 11.46, 11.08, 10.40,
+  11.49, 11.12, 10.70, 10.10,  9.57,
+  10.47, 10.21,  9.80,  9.51, 12.70,
+  10.00,  9.50,  9.00, 12.30, 11.60};
 
 void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
                     const std::vector<boost::shared_ptr<CalibrationHelper> >&
@@ -56,17 +53,15 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
     // Output the implied Black volatilities
     Size i;
     for (i=0; i<numRows; i++) {
-        std::cout << IntegerFormatter::toString(swaptionLengths[i],2) << "y|";
         for (Size j=0; j<numCols; j++) {
             Size k = i*numCols + j;
             Real npv = helpers[k]->modelValue();
             Volatility implied = helpers[k]->impliedVolatility(npv, 1e-4,
                 1000, 0.05, 0.50)*100.0;
             std::cout << DecimalFormatter::toString(implied,1,4) << " (";
-            k = i*10 + j;
             Volatility diff = implied - swaptionVols[k];
             std::cout << DecimalFormatter::toString(diff,1,4)
-                      << ")|";
+                      << ")| ";
         }
         std::cout << std::endl;
     }
@@ -192,16 +187,11 @@ int main(int, char* [])
             rhTermStructure));
 
         std::vector<Period> swaptionMaturities;
-        swaptionMaturities.push_back(Period(1, Months));
-        swaptionMaturities.push_back(Period(3, Months));
-        swaptionMaturities.push_back(Period(6, Months));
         swaptionMaturities.push_back(Period(1, Years));
         swaptionMaturities.push_back(Period(2, Years));
         swaptionMaturities.push_back(Period(3, Years));
         swaptionMaturities.push_back(Period(4, Years));
         swaptionMaturities.push_back(Period(5, Years));
-        swaptionMaturities.push_back(Period(7, Years));
-        swaptionMaturities.push_back(Period(10, Years));
 
         std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
 
@@ -210,12 +200,12 @@ int main(int, char* [])
 
         for (i=0; i<numRows; i++) {
             for (Size j=0; j<numCols; j++) {
-                Size k = i*10 + j;
+                Size k = i*numCols + j;
                 boost::shared_ptr<Quote> vol(
                                        new SimpleQuote(swaptionVols[k]*0.01));
                 swaptions.push_back(boost::shared_ptr<CalibrationHelper>(
-                    new SwaptionHelper(swaptionMaturities[j],
-                                       Period(swaptionLengths[i], Years),
+                    new SwaptionHelper(swaptionMaturities[i],
+                                       Period(swapLenghts[j], Years),
                                        RelinkableHandle<Quote>(vol),
                                        indexSixMonths,
                                        rhTermStructure)));
@@ -231,9 +221,11 @@ int main(int, char* [])
 
         boost::shared_ptr<G2> modelG2(new G2(rhTermStructure));
         boost::shared_ptr<HullWhite> modelHW(new HullWhite(rhTermStructure));
+#ifdef ALSO_NUMERICAL_MODELS
         boost::shared_ptr<HullWhite> modelHW2(new HullWhite(rhTermStructure));
         boost::shared_ptr<BlackKarasinski> modelBK(
                                         new BlackKarasinski(rhTermStructure));
+#endif
 
 
         std::cout << "Calibrating to swaptions" << std::endl;
@@ -267,6 +259,7 @@ int main(int, char* [])
                   << std::endl
                   << std::endl;
 
+#ifdef ALSO_NUMERICAL_MODELS
         std::cout << "Hull-White (numerical calibration):" << std::endl;
         for (i=0; i<swaptions.size(); i++)
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -291,13 +284,14 @@ int main(int, char* [])
                   << std::endl
                   << std::endl;
 
+#endif
 
         std::cout << "Pricing an ATM bermudan swaption" << std::endl;
 
         // Define the bermudan swaption
         std::vector<Date> bermudanDates;
         const std::vector<boost::shared_ptr<CashFlow> >& leg = 
-            swap->floatingLeg();
+            swap->fixedLeg();
         for (i=0; i<leg.size(); i++) {
             boost::shared_ptr<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(leg[i]);
@@ -324,6 +318,7 @@ int main(int, char* [])
                                       new TreeSwaptionEngine(modelHW, 100)));
         std::cout << "HW:       " << bermudanSwaption.NPV() << std::endl;
 
+#ifdef ALSO_NUMERICAL_MODELS
         bermudanSwaption.setPricingEngine(
             boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelHW2, 100)));
@@ -333,6 +328,7 @@ int main(int, char* [])
             boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelBK, 100)));
         std::cout << "BK:       " << bermudanSwaption.NPV() << std::endl;
+#endif
 
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
 
@@ -353,6 +349,7 @@ int main(int, char* [])
                                       new TreeSwaptionEngine(modelHW, 100)));
         std::cout << "HW:       " << otmBermudanSwaption.NPV() << std::endl;
 
+#ifdef ALSO_NUMERICAL_MODELS
         otmBermudanSwaption.setPricingEngine(
             boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelHW2, 100)));
@@ -362,6 +359,7 @@ int main(int, char* [])
             boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelBK, 100)));
         std::cout << "BK:       " << otmBermudanSwaption.NPV() << std::endl;
+#endif
 
         std::cout << "Pricing an ITM bermudan swaption" << std::endl;
 
@@ -382,6 +380,7 @@ int main(int, char* [])
                                       new TreeSwaptionEngine(modelHW, 100)));
         std::cout << "HW:       " << itmBermudanSwaption.NPV() << std::endl;
 
+#ifdef ALSO_NUMERICAL_MODELS
         itmBermudanSwaption.setPricingEngine(
             boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelHW2, 100)));
@@ -390,6 +389,7 @@ int main(int, char* [])
             boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelBK, 100)));
         std::cout << "BK:       " << itmBermudanSwaption.NPV() << std::endl;
+#endif
 
         return 0;
     } catch (std::exception& e) {
