@@ -1535,10 +1535,6 @@ SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\mcbarrierengine.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\PricingEngines\mcengine.hpp
 # End Source File
 # Begin Source File

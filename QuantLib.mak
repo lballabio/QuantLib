@@ -233,8 +233,6 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
-	-@erase "$(INTDIR)\mcbarrierengine.obj"
-	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -496,11 +494,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -538,8 +536,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -667,11 +664,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
-	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -709,8 +706,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -919,8 +915,6 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
-	-@erase "$(INTDIR)\mcbarrierengine.obj"
-	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -1183,11 +1177,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1225,8 +1219,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1354,11 +1347,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
-	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1396,8 +1389,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1606,8 +1598,6 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
-	-@erase "$(INTDIR)\mcbarrierengine.obj"
-	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -1869,11 +1859,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1911,8 +1901,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2040,11 +2029,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
-	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2082,8 +2071,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2292,8 +2280,6 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
-	-@erase "$(INTDIR)\mcbarrierengine.obj"
-	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -2556,11 +2542,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2598,8 +2584,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2727,11 +2712,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
-	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2769,8 +2754,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2979,8 +2963,6 @@ CLEAN :
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
-	-@erase "$(INTDIR)\mcbarrierengine.obj"
-	-@erase "$(INTDIR)\mcbarrierengine.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -3242,11 +3224,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
-	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -3284,8 +3266,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3413,11 +3394,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
+	"$(INTDIR)\analyticeuropeanbinaryengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
-	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -3455,8 +3436,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanbinaryengine.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -4289,12 +4269,6 @@ SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
 SOURCE=.\ql\PricingEngines\integralengines.cpp
 
 "$(INTDIR)\integralengines.obj"	"$(INTDIR)\integralengines.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\mcbarrierengine.cpp
-
-"$(INTDIR)\mcbarrierengine.obj"	"$(INTDIR)\mcbarrierengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
