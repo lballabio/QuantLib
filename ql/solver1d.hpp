@@ -24,6 +24,7 @@
 
 #include <ql/null.hpp>
 #include <ql/dataformatters.hpp>
+#include <ql/Patterns/curiouslyrecurring.hpp>
 
 namespace QuantLib {
 
@@ -59,7 +60,7 @@ namespace QuantLib {
         of the above.
     */
     template <class Impl>
-    class Solver1D {
+    class Solver1D : public Patterns::CuriouslyRecurringTemplate<Impl> {
       public:
         Solver1D()
         : maxEvaluations_(MAX_FUNCTION_EVALUATIONS),
@@ -216,9 +217,6 @@ namespace QuantLib {
         mutable double root_, xMin_, xMax_, fxMin_, fxMax_;
         Size maxEvaluations_;
         mutable Size evaluationNumber_;
-        // core of the Barton-Nackman trick
-        Impl& impl() { return static_cast<Impl&>(*this); }
-        const Impl& impl() const { return static_cast<const Impl&>(*this); }
       private:
         double enforceBounds_(double x) const;
         double lowerBound_, upperBound_;
