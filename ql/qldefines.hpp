@@ -31,6 +31,13 @@
     #define BOOST_ENABLE_ASSERT_HANDLER
 #endif
 
+/* these will go into userconfig.hpp some time.
+   For the time being, we hard code them here.
+*/
+#define QL_INTEGER int
+#define QL_BIG_INTEGER long
+#define QL_REAL double
+
 
 /*! \defgroup macros QuantLib macros
     Global definitions and quite a few macros which help porting the code to

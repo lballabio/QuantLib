@@ -28,17 +28,6 @@
    will be provided by running ./configure instead.
 ****************************************************************/
 
-/* Define this as the type to be used for integer calculations. At least an
-   int is required. */
-#define QL_INTEGER int
-
-/* Define this as the type to be used for large integer calculations. At least
-   4 bytes are required. */
-#define QL_BIG_INTEGER long
-
-/* Define this as the type to be used for floating-point calculations. */
-#define QL_REAL double
-
 /* Define this if error messages should include file and line information. */
 #define QL_ERROR_LINES 1
 
