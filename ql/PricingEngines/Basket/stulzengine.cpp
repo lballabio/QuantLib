@@ -41,18 +41,13 @@ namespace QuantLib {
             double stdDev1 = QL_SQRT(variance1);
             double stdDev2 = QL_SQRT(variance2);
 
-            double gamma1, a1;
-            double gamma2, a2;
+            double D1_1, D1_2;
             if (strike != 0.0) {
-                gamma1 = (QL_LOG(forward1/strike) - 0.5 * variance1) / stdDev1;
-                gamma2 = (QL_LOG(forward2/strike) - 0.5 * variance2) / stdDev2;
-                a1 = gamma1 + stdDev1;
-                a2 = gamma2 + stdDev2;
+                D1_1 = (QL_LOG(forward1/strike) + 0.5 * variance1) / stdDev1;
+                D1_2 = (QL_LOG(forward2/strike) + 0.5 * variance2) / stdDev2;
             } else {
-                gamma1 = 1000;
-                gamma2 = 1000;
-                a1 = gamma1 + stdDev1;
-                a2 = gamma2 + stdDev2;
+                D1_1 = 1000;
+                D1_2 = 1000;
             }
 
             double variance = variance1 + variance2 - 2 * rho * stdDev1 * stdDev2;
@@ -71,9 +66,9 @@ namespace QuantLib {
                 BivariateCumulativeNormalDistribution(modRho1);
 
             return riskFreeDiscount * (
-                forward1 * bivCNormMod1(a1, b1) + 
-                forward2 * bivCNormMod2(a2, b2) - 
-                strike   * bivCNorm(gamma1, gamma2)
+                forward1 * bivCNormMod1(D1_1, b1) + 
+                forward2 * bivCNormMod2(D1_2, b2) - 
+                strike   * bivCNorm(D1_1 - stdDev1, D1_2 - stdDev2)
                 );
 
         }
