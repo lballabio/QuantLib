@@ -22,8 +22,10 @@
 namespace QuantLib {
 
     ArithmeticAPOPathPricer::ArithmeticAPOPathPricer(Option::Type type,
-        Real underlying, Real strike, DiscountFactor discount)
-    : underlying_(underlying), payoff_(type, strike), discount_(discount) {
+        Real underlying, Real strike, DiscountFactor discount,
+        Real runningSum, Size pastFixings)
+    : underlying_(underlying), payoff_(type, strike), discount_(discount),
+    runningSum_(runningSum), pastFixings_(pastFixings) {
         QL_REQUIRE(underlying>0.0,
             "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,

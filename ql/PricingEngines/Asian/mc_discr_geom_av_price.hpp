@@ -54,28 +54,37 @@ namespace QuantLib {
 
 
     class GeometricAPOPathPricer : public PathPricer<Path> {
-        public:
+      public:
         GeometricAPOPathPricer(Option::Type type,
-                                Real underlying,
-                                Real strike,
-                                DiscountFactor discount);
+                               Real underlying,
+                               Real strike,
+                               DiscountFactor discount,
+                               Real runningProduct = 1.0,
+                               Size pastFixings = 0);
         Real operator()(const Path& path) const {
             Size n = path.size();
             QL_REQUIRE(n>0, "the path cannot be empty");
-            Real geoLogVariation = 0.0;
+            Real runningLog = runningLog_;
+            // path[i] is d log(S), the log increment 
             for (Size i=0; i<n; i++)
-                geoLogVariation += (n-i)*path[i];
+                runningLog += (n-i)*path[i];
             Real averagePrice1;
+            // not sure the if case is correct
             if (path.timeGrid().mandatoryTimes()[0]==0.0)
-                averagePrice1=underlying_*QL_EXP(geoLogVariation/(n+1));
+                averagePrice1 = underlying_ *
+                                    QL_EXP(runningLog/(n+pastFixings_+1));
             else
-                averagePrice1=underlying_*QL_EXP(geoLogVariation/n);
+                averagePrice1 = underlying_ * 
+                                    QL_EXP(runningLog/n+pastFixings_);
+
             return discount_ * payoff_(averagePrice1);
         }
-        private:
+      private:
         Real underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
+        Real runningLog_;
+        Size pastFixings_;
     };
 
 

@@ -21,12 +21,14 @@
 namespace QuantLib {
 
     GeometricAPOPathPricer::GeometricAPOPathPricer(Option::Type type,
-        Real underlying, Real strike, DiscountFactor discount)
-    : underlying_(underlying), payoff_(type, strike), discount_(discount) {
+        Real underlying, Real strike, DiscountFactor discount,
+        Real runningProduct, Size pastFixings)
+    : underlying_(underlying), payoff_(type, strike), discount_(discount),
+      runningLog_(QL_LOG(runningProduct)), pastFixings_(pastFixings) {
         QL_REQUIRE(underlying>0.0,
             "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
             "strike less than zero not allowed");
-    }
+      }
 
 }
