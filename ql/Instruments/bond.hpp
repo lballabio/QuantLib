@@ -47,14 +47,21 @@ namespace QuantLib {
       protected:
         Bond(const DayCounter& dayCount,
              const Calendar& calendar,
+             BusinessDayConvention businessDayConvention,
              Integer settlementDays);
       public:
+        //! \name Inspectors
+        //@{
         Date settlementDate() const;
-        const std::vector<boost::shared_ptr<CashFlow> >& cashflows() const {
-            return cashFlows_;
-        }
-        const Calendar& calendar() const { return calendar_; }
-        const DayCounter& dayCounter() const { return dayCount_; }
+        const std::vector<boost::shared_ptr<CashFlow> >& cashflows() const;
+        const boost::shared_ptr<CashFlow>& redemption() const;
+        const Calendar& calendar() const;
+        BusinessDayConvention businessDayConvention() const;
+        const DayCounter& dayCounter() const;
+        Frequency frequency() const;
+        //@}
+        //! \name Calculations
+        //@{
         //! clean price given a yield and settlement date
         /*! The default bond settlement is used if no date is given. */
         Real cleanPrice(Rate yield,
@@ -72,20 +79,45 @@ namespace QuantLib {
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
         Real accruedAmount(Date d = Date()) const;
-        //! \name Instrument interface
-        //@{
         bool isExpired() const;
+        //@}
       protected:
         void performCalculations() const;
-        //@}
         Integer settlementDays_;
         Calendar calendar_;
+        BusinessDayConvention businessDayConvention_;
 		DayCounter dayCount_;
 
         Date issueDate_, datedDate_, maturityDate_;
-        Real redemption_;
+        Frequency frequency_;
         std::vector<boost::shared_ptr<CashFlow> > cashFlows_;
+        boost::shared_ptr<CashFlow> redemption_;
     };
+
+
+    // inline definitions
+
+    inline
+    const std::vector<boost::shared_ptr<CashFlow> >& Bond::cashflows() const {
+        return cashFlows_;
+    }
+
+    inline
+    const boost::shared_ptr<CashFlow>& Bond::redemption() const {
+        return redemption_;
+    }
+
+    inline const Calendar& Bond::calendar() const {
+        return calendar_;
+    }
+
+    inline BusinessDayConvention Bond::businessDayConvention() const {
+        return businessDayConvention_;
+    }
+
+    inline Frequency Bond::frequency() const {
+        return frequency_;
+    }
 
 }
 

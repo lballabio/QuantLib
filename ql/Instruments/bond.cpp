@@ -26,7 +26,7 @@ namespace QuantLib {
 
         Real dirtyPriceFromYield(
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
-                   Real redemption,
+                   const boost::shared_ptr<CashFlow>& redemption,
                    Rate yield,
                    const DayCounter& dayCounter,
                    const Date& settlement) {
@@ -46,9 +46,6 @@ namespace QuantLib {
 
                 Date nextDate = cashflows[i]->date();
                 Real amount = cashflows[i]->amount();
-                if (i == cashflows.size()-1)
-                    amount += redemption;
-
                 Time t1, t2;
                 if (lastDate == Date()) {
                     // first not-expired coupon
@@ -66,14 +63,28 @@ namespace QuantLib {
                                                  lastDate, nextDate);
                     t2 = dayCounter.yearFraction(lastDate, nextDate);
                 } else  {
-                    t1 = dayCounter.yearFraction(lastDate, nextDate);
-                    t2 = t1;
+                    t1 = t2 = dayCounter.yearFraction(lastDate, nextDate);
                 }
 
                 discount /= std::pow(1 + yield*t2, t1/t2);
                 price += amount * discount;
                 lastDate = nextDate;
             }
+
+            Date nextDate = redemption->date();
+            Real amount = redemption->amount();
+            Time t1, t2;
+            if (lastDate == Date()) {
+                // no coupons
+                lastDate = nextDate - 1*Years;
+                t1 = dayCounter.yearFraction(settlement, nextDate,
+                                             lastDate, nextDate);
+                t2 = dayCounter.yearFraction(lastDate, nextDate);
+            } else {
+                t1 = t2 = dayCounter.yearFraction(lastDate, nextDate);
+            }
+            discount /= std::pow(1 + yield*t2, t1/t2);
+            price += amount * discount;
 
             return price;
         }
@@ -82,7 +93,7 @@ namespace QuantLib {
           public:
             YieldFinder(
                    const std::vector<boost::shared_ptr<CashFlow> >& cashflows,
-                   Real redemption,
+                   const boost::shared_ptr<CashFlow>& redemption,
                    Real dirtyPrice,
                    const DayCounter& dayCounter,
                    const Date& settlement)
@@ -98,7 +109,8 @@ namespace QuantLib {
             }
           private:
             std::vector<boost::shared_ptr<CashFlow> > cashflows_;
-            Real redemption_, dirtyPrice_;
+            boost::shared_ptr<CashFlow> redemption_;
+            Real dirtyPrice_;
             DayCounter dayCounter_;
             Date settlement_;
         };
@@ -107,9 +119,11 @@ namespace QuantLib {
 
 
     Bond::Bond(const DayCounter& dayCount, const Calendar& calendar,
+               BusinessDayConvention businessDayConvention,
                Integer settlementDays)
     : settlementDays_(settlementDays), calendar_(calendar),
-      dayCount_(dayCount) {
+      businessDayConvention_(businessDayConvention), dayCount_(dayCount),
+      frequency_(NoFrequency) {
         registerWith(Settings::instance().evaluationDateGuard());
     }
 

@@ -17,6 +17,7 @@
 
 #include <ql/Instruments/fixedcouponbond.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/simplecashflow.hpp>
 
 namespace QuantLib {
 
@@ -30,13 +31,15 @@ namespace QuantLib {
                                      const Calendar& calendar,
                                      BusinessDayConvention convention,
                                      Real redemption)
-    : Bond(dayCounter, calendar, settlementDays) {
+    : Bond(dayCounter, calendar, convention, settlementDays) {
 
         issueDate_ = issueDate;
         datedDate_ = datedDate;
         maturityDate_ = maturityDate;
+        frequency_ = couponFrequency;
 
-        redemption_ = redemption;
+        redemption_ = boost::shared_ptr<CashFlow>(
+                                 new SimpleCashFlow(redemption,maturityDate));
 
         Schedule schedule(calendar, datedDate, maturityDate,
                           couponFrequency, convention,
