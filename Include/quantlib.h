@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.28  2001/03/15 13:49:01  marmar
+    getCovariance function added
+
     Revision 1.27  2001/03/09 12:40:39  lballabio
     Spring cleaning for SWIG interfaces
 
@@ -171,6 +174,7 @@
 #include "centrallimitgaussian.h"
 #include "gaussianarraygenerator.h"
 #include "gaussianrandomgenerator.h"
+#include "getcovariance.h"
 #include "lecuyerrandomgenerator.h"
 #include "uniformrandomgenerator.h"
 #include "standardmultipathgenerator.h"

@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/03/15 13:49:35  marmar
+    getCovariance function added
+
     Revision 1.1  2001/02/22 14:43:36  lballabio
     Renamed test script to follow a single naming scheme
 
@@ -33,33 +36,20 @@
 
 """
 
-from QuantLib import Matrix, PlainBasketOption
+from QuantLib import Matrix, PlainBasketOption, getCovariance
 from TestUnit import TestUnit
 from math import fabs
 
-def initCovariance(corr, vol):
-    n = len(vol)
-    cov = Matrix(n,n)
-    if(n != corr.rows()):
-        print "correlation matrix and volatility vector have different size"
-    for i in range(n):
-        cov[i][i] = vol[i]*vol[i]
-        for j in range(i):
-            cov[i][j] = corr[i][j]*vol[i]*vol[j]
-            cov[j][i] = cov[i][j]
-    return cov
-
 class PlainBasketTest(TestUnit):
-    def doTest(self):
-        
+    def doTest(self):        
         cor = Matrix(4,4)
-        cor[0][0] = 1.00
-        cor[1][0] = 0.50; cor[1][1] = 1.00
-        cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00
+        cor[0][0] = 1.00; cor[0][1] = 0.50; cor[0][2] = 0.30; cor[0][3] = 0.10
+        cor[1][0] = 0.50; cor[1][1] = 1.00; cor[1][2] = 0.20; cor[1][3] = 0.40
+        cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00; cor[2][3] = 0.60
         cor[3][0] = 0.10; cor[3][1] = 0.40; cor[3][2] = 0.60; cor[3][3] = 1.00
-        
+         
         volatility = [ 0.3,  0.3,  0.3,  0.3]
-        covariance = initCovariance(cor,volatility)
+        covariance = getCovariance(volatility, cor)
         
         assetValues = [100, 100, 100, 100]
         dividendYields = [0.0, 0.0, 0.0, 0]

@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.6  2001/03/15 13:50:26  marmar
+   getCovariance function added
+
    Revision 1.5  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -41,6 +44,7 @@
 using QuantLib::MonteCarlo::GaussianArrayGenerator;
 using QuantLib::MonteCarlo::StandardPathGenerator;
 using QuantLib::MonteCarlo::StandardMultiPathGenerator;
+using QuantLib::MonteCarlo::getCovariance;
 %}
 
 class GaussianArrayGenerator {
@@ -74,5 +78,6 @@ class StandardMultiPathGenerator {
 	double weight() const;
 };
 
+Matrix getCovariance(const Array &volatilities, const Matrix &correlations);
 
 #endif

@@ -56,6 +56,7 @@ MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \
                    $(OUTPUT_DIR)\europeanpathpricer.obj        \
                    $(OUTPUT_DIR)\everestpathpricer.obj        \
                    $(OUTPUT_DIR)\geometricasianpathpricer.obj  \
+                   $(OUTPUT_DIR)\getcovariance.obj        \
                    $(OUTPUT_DIR)\himalayapathpricer.obj  \
                    $(OUTPUT_DIR)\lecuyerrandomgenerator.obj
 
@@ -293,6 +294,8 @@ $(OUTPUT_DIR)\everestpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\everestpathpricer.cpp
 $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp
+$(OUTPUT_DIR)\getcovariance.obj: \
+    $(SOURCES_DIR)\MonteCarlo\getcovariance.cpp
 $(OUTPUT_DIR)\himalayapathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\himalayapathpricer.cpp
 $(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
@@ -414,6 +417,7 @@ test::
     python european_option.py -b
     python european_with_dividends.py -b
     python finite_difference_european.py -b
+    python get_covariance.py -b
     python himalaya_option.py -b
     python implied_volatility.py -b
     python montecarlo_pricers.py -b
