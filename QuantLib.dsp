@@ -243,10 +243,6 @@ SOURCE=.\ql\Calendars\copenhagen.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\frankfurt.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Calendars\germany.cpp
 # End Source File
 # Begin Source File
@@ -292,18 +288,6 @@ SOURCE=.\ql\Calendars\jointcalendar.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\jointcalendar.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\london.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\milan.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\newyork.hpp
 # End Source File
 # Begin Source File
 
@@ -1299,18 +1283,6 @@ SOURCE=.\ql\Pricers\all.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\cliquetoptionpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\cliquetoptionpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\continuousgeometricapo.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\core.hpp
 # End Source File
 # Begin Source File
@@ -1328,14 +1300,6 @@ SOURCE=.\ql\Pricers\discretegeometricaso.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\discretegeometricaso.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendeuropeanoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\dividendeuropeanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -1411,37 +1375,6 @@ SOURCE=.\ql\Pricers\fdstepconditionoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\mcbasket.cpp
-
-!IF  "$(CFG)" == "QuantLib - Win32 Release"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release MTDLL"
-
-# ADD BASE CPP /O2
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release SingleThread"
-
-# ADD BASE CPP /O2
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mcbasket.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\mccliquetoption.cpp
 # End Source File
 # Begin Source File
@@ -1507,14 +1440,6 @@ SOURCE=.\ql\Pricers\mcperformanceoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\performanceoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\performanceoption.hpp
 # End Source File
 # Begin Source File
 
@@ -1694,6 +1619,14 @@ SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\juquadraticengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\juquadraticengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1927,10 +1860,6 @@ SOURCE=.\ql\RandomNumbers\randomsequencegenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\rngtraits.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\rngtypedefs.hpp
 # End Source File
 # Begin Source File
 
@@ -2335,10 +2264,6 @@ SOURCE=.\ql\daycounter.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\diffusionprocess.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\discretizedasset.cpp
 # End Source File
 # Begin Source File
@@ -2372,10 +2297,6 @@ SOURCE=.\ql\grid.cpp
 # Begin Source File
 
 SOURCE=.\ql\grid.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\handle.hpp
 # End Source File
 # Begin Source File
 

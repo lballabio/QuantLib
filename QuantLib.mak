@@ -29,6 +29,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -39,11 +42,11 @@ OutDir=.\build\Release
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release" ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : "QuantLibFunctions - Win32 Release" ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ENDIF 
 
@@ -138,8 +141,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -170,8 +171,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\dividendvanillaoption.obj"
 	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
@@ -240,6 +239,8 @@ CLEAN :
 	-@erase "$(INTDIR)\jointcalendar.sbr"
 	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
 	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
+	-@erase "$(INTDIR)\juquadraticengine.obj"
+	-@erase "$(INTDIR)\juquadraticengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -254,8 +255,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
 	-@erase "$(INTDIR)\mcbarrierengine.sbr"
-	-@erase "$(INTDIR)\mcbasket.obj"
-	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -296,8 +295,6 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
-	-@erase "$(INTDIR)\performanceoption.obj"
-	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -404,45 +401,12 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-s-0_3_7.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-s-0_3_8.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -529,10 +493,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
@@ -541,7 +503,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -550,7 +511,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
 	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
@@ -567,6 +527,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\juquadraticengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
 	"$(INTDIR)\analyticcapfloorengine.sbr" \
 	"$(INTDIR)\blackcapfloorengine.sbr" \
@@ -628,7 +589,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_7.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_8.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -713,10 +674,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
@@ -725,7 +684,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -734,7 +692,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\analyticcontinuousasianengine.obj" \
 	"$(INTDIR)\analyticdiscreteasianengine.obj" \
@@ -751,6 +708,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\juquadraticengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
 	"$(INTDIR)\analyticcapfloorengine.obj" \
 	"$(INTDIR)\blackcapfloorengine.obj" \
@@ -805,9 +763,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
+	".\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib"
 
-".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -825,11 +783,11 @@ OutDir=.\build\Debug
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug" ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : "QuantLibFunctions - Win32 Debug" ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ENDIF 
 
@@ -924,8 +882,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -956,8 +912,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\dividendvanillaoption.obj"
 	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
@@ -1026,6 +980,8 @@ CLEAN :
 	-@erase "$(INTDIR)\jointcalendar.sbr"
 	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
 	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
+	-@erase "$(INTDIR)\juquadraticengine.obj"
+	-@erase "$(INTDIR)\juquadraticengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -1040,8 +996,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
 	-@erase "$(INTDIR)\mcbarrierengine.sbr"
-	-@erase "$(INTDIR)\mcbasket.obj"
-	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -1082,8 +1036,6 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
-	-@erase "$(INTDIR)\performanceoption.obj"
-	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -1189,47 +1141,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_7.idb"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib"
-	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_7.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_8.idb"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_8.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_7" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_8" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1316,10 +1235,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
@@ -1328,7 +1245,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -1337,7 +1253,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
 	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
@@ -1354,6 +1269,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\juquadraticengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
 	"$(INTDIR)\analyticcapfloorengine.sbr" \
 	"$(INTDIR)\blackcapfloorengine.sbr" \
@@ -1415,7 +1331,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -1500,10 +1416,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
@@ -1512,7 +1426,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -1521,7 +1434,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\analyticcontinuousasianengine.obj" \
 	"$(INTDIR)\analyticdiscreteasianengine.obj" \
@@ -1538,6 +1450,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\juquadraticengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
 	"$(INTDIR)\analyticcapfloorengine.obj" \
 	"$(INTDIR)\blackcapfloorengine.obj" \
@@ -1592,9 +1505,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
+	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
 
-".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -1612,11 +1525,11 @@ OutDir=.\build\ReleaseMTDLL
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\lib\QuantLib-vc6-mt-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release MTDLL" ".\lib\QuantLib-vc6-mt-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : "QuantLibFunctions - Win32 Release MTDLL" ".\lib\QuantLib-vc6-mt-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ENDIF 
 
@@ -1711,8 +1624,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -1743,8 +1654,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\dividendvanillaoption.obj"
 	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
@@ -1813,6 +1722,8 @@ CLEAN :
 	-@erase "$(INTDIR)\jointcalendar.sbr"
 	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
 	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
+	-@erase "$(INTDIR)\juquadraticengine.obj"
+	-@erase "$(INTDIR)\juquadraticengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -1827,8 +1738,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
 	-@erase "$(INTDIR)\mcbarrierengine.sbr"
-	-@erase "$(INTDIR)\mcbasket.obj"
-	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -1869,8 +1778,6 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
-	-@erase "$(INTDIR)\performanceoption.obj"
-	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -1977,45 +1884,12 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-0_3_7.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-0_3_8.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2102,10 +1976,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
@@ -2114,7 +1986,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -2123,7 +1994,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
 	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
@@ -2140,6 +2010,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\juquadraticengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
 	"$(INTDIR)\analyticcapfloorengine.sbr" \
 	"$(INTDIR)\blackcapfloorengine.sbr" \
@@ -2201,7 +2072,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-0_3_7.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-0_3_8.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -2286,10 +2157,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
@@ -2298,7 +2167,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -2307,7 +2175,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\analyticcontinuousasianengine.obj" \
 	"$(INTDIR)\analyticdiscreteasianengine.obj" \
@@ -2324,6 +2191,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\juquadraticengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
 	"$(INTDIR)\analyticcapfloorengine.obj" \
 	"$(INTDIR)\blackcapfloorengine.obj" \
@@ -2378,9 +2246,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
+	".\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
 
-".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -2398,11 +2266,11 @@ OutDir=.\build\DebugMTDLL
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug MTDLL" ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : "QuantLibFunctions - Win32 Debug MTDLL" ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ENDIF 
 
@@ -2497,8 +2365,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -2529,8 +2395,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\dividendvanillaoption.obj"
 	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
@@ -2599,6 +2463,8 @@ CLEAN :
 	-@erase "$(INTDIR)\jointcalendar.sbr"
 	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
 	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
+	-@erase "$(INTDIR)\juquadraticengine.obj"
+	-@erase "$(INTDIR)\juquadraticengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -2613,8 +2479,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
 	-@erase "$(INTDIR)\mcbarrierengine.sbr"
-	-@erase "$(INTDIR)\mcbasket.obj"
-	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -2655,8 +2519,6 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
-	-@erase "$(INTDIR)\performanceoption.obj"
-	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -2762,47 +2624,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_7.idb"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib"
-	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_7.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_8.idb"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_8.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_7" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_8" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2889,10 +2718,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
@@ -2901,7 +2728,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -2910,7 +2736,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
 	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
@@ -2927,6 +2752,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\juquadraticengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
 	"$(INTDIR)\analyticcapfloorengine.sbr" \
 	"$(INTDIR)\blackcapfloorengine.sbr" \
@@ -2988,7 +2814,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -3073,10 +2899,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
@@ -3085,7 +2909,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -3094,7 +2917,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\analyticcontinuousasianengine.obj" \
 	"$(INTDIR)\analyticdiscreteasianengine.obj" \
@@ -3111,6 +2933,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\juquadraticengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
 	"$(INTDIR)\analyticcapfloorengine.obj" \
 	"$(INTDIR)\blackcapfloorengine.obj" \
@@ -3165,9 +2988,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
+	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
 
-".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -3185,11 +3008,11 @@ OutDir=.\build\ReleaseST
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\lib\QuantLib-vc6-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release SingleThread" ".\lib\QuantLib-vc6-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : "QuantLibFunctions - Win32 Release SingleThread" ".\lib\QuantLib-vc6-s-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ENDIF 
 
@@ -3284,8 +3107,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -3316,8 +3137,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\dividendvanillaoption.obj"
 	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
@@ -3386,6 +3205,8 @@ CLEAN :
 	-@erase "$(INTDIR)\jointcalendar.sbr"
 	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
 	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
+	-@erase "$(INTDIR)\juquadraticengine.obj"
+	-@erase "$(INTDIR)\juquadraticengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -3400,8 +3221,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
 	-@erase "$(INTDIR)\mcbarrierengine.sbr"
-	-@erase "$(INTDIR)\mcbasket.obj"
-	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -3442,8 +3261,6 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
-	-@erase "$(INTDIR)\performanceoption.obj"
-	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -3550,45 +3367,12 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-s-0_3_7.lib"
+	-@erase ".\lib\QuantLib-vc6-s-0_3_8.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -3675,10 +3459,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
@@ -3687,7 +3469,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -3696,7 +3477,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
 	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
@@ -3713,6 +3493,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\juquadraticengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
 	"$(INTDIR)\analyticcapfloorengine.sbr" \
 	"$(INTDIR)\blackcapfloorengine.sbr" \
@@ -3774,7 +3555,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-s-0_3_7.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-s-0_3_8.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -3859,10 +3640,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
@@ -3871,7 +3650,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -3880,7 +3658,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\analyticcontinuousasianengine.obj" \
 	"$(INTDIR)\analyticdiscreteasianengine.obj" \
@@ -3897,6 +3674,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\juquadraticengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
 	"$(INTDIR)\analyticcapfloorengine.obj" \
 	"$(INTDIR)\blackcapfloorengine.obj" \
@@ -3951,9 +3729,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
+	".\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
 
-".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -3971,11 +3749,11 @@ OutDir=.\build\DebugST
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\lib\QuantLib-vc6-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : ".\lib\QuantLib-vc6-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug SingleThread" ".\lib\QuantLib-vc6-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+ALL : "QuantLibFunctions - Win32 Debug SingleThread" ".\lib\QuantLib-vc6-sgd-0_3_8.lib" "$(OUTDIR)\QuantLib.bsc"
 
 !ENDIF 
 
@@ -4070,8 +3848,6 @@ CLEAN :
 	-@erase "$(INTDIR)\choleskydecomposition.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\cliquetoptionpricer.obj"
-	-@erase "$(INTDIR)\cliquetoptionpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -4102,8 +3878,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedswaption.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\dividendvanillaoption.obj"
 	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
@@ -4172,6 +3946,8 @@ CLEAN :
 	-@erase "$(INTDIR)\jointcalendar.sbr"
 	-@erase "$(INTDIR)\jumpdiffusionengine.obj"
 	-@erase "$(INTDIR)\jumpdiffusionengine.sbr"
+	-@erase "$(INTDIR)\juquadraticengine.obj"
+	-@erase "$(INTDIR)\juquadraticengine.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lattice.obj"
@@ -4186,8 +3962,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
 	-@erase "$(INTDIR)\mcbarrierengine.sbr"
-	-@erase "$(INTDIR)\mcbasket.obj"
-	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
@@ -4228,8 +4002,6 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\parcoupon.obj"
 	-@erase "$(INTDIR)\parcoupon.sbr"
-	-@erase "$(INTDIR)\performanceoption.obj"
-	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
@@ -4335,47 +4107,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_7.idb"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_7.lib"
-	-@erase ".\lib\QuantLib-vc6-sgd-0_3_7.pdb"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_8.idb"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_8.lib"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_8.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_7" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_8" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -4462,10 +4201,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
@@ -4474,7 +4211,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
-	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -4483,7 +4219,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\mcperformanceoption.sbr" \
-	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
 	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
 	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
@@ -4500,6 +4235,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\juquadraticengine.sbr" \
 	"$(INTDIR)\mcdigitalengine.sbr" \
 	"$(INTDIR)\analyticcapfloorengine.sbr" \
 	"$(INTDIR)\blackcapfloorengine.sbr" \
@@ -4561,7 +4297,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-sgd-0_3_7.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-sgd-0_3_8.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
@@ -4646,10 +4382,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
@@ -4658,7 +4392,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
-	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -4667,7 +4400,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\mcperformanceoption.obj" \
-	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
 	"$(INTDIR)\analyticcontinuousasianengine.obj" \
 	"$(INTDIR)\analyticdiscreteasianengine.obj" \
@@ -4684,6 +4416,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\juquadraticengine.obj" \
 	"$(INTDIR)\mcdigitalengine.obj" \
 	"$(INTDIR)\analyticcapfloorengine.obj" \
 	"$(INTDIR)\blackcapfloorengine.obj" \
@@ -4738,9 +4471,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
+	".\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
 
-".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
+".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
@@ -4749,6 +4482,36 @@ LIB32_OBJS= \
 SOURCE="$(InputPath)"
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -5259,12 +5022,6 @@ SOURCE=.\ql\Optimization\steepestdescent.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\cliquetoptionpricer.cpp
-
-"$(INTDIR)\cliquetoptionpricer.obj"	"$(INTDIR)\cliquetoptionpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Pricers\discretegeometricapo.cpp
 
 "$(INTDIR)\discretegeometricapo.obj"	"$(INTDIR)\discretegeometricapo.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5274,12 +5031,6 @@ SOURCE=.\ql\Pricers\discretegeometricapo.cpp
 SOURCE=.\ql\Pricers\discretegeometricaso.cpp
 
 "$(INTDIR)\discretegeometricaso.obj"	"$(INTDIR)\discretegeometricaso.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\dividendeuropeanoption.cpp
-
-"$(INTDIR)\dividendeuropeanoption.obj"	"$(INTDIR)\dividendeuropeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -5331,70 +5082,6 @@ SOURCE=.\ql\Pricers\fdstepconditionoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\mcbasket.cpp
-
-!IF  "$(CFG)" == "QuantLib - Win32 Release"
-
-CPP_SWITCHES=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
-
-CPP_SWITCHES=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_7" /FD /GZ /c 
-
-"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release MTDLL"
-
-CPP_SWITCHES=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
-
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_7" /FD /GZ /c 
-
-"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release SingleThread"
-
-CPP_SWITCHES=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
-
-CPP_SWITCHES=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_7" /FD /GZ /c 
-
-"$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) @<<
-  $(CPP_SWITCHES) $(SOURCE)
-<<
-
-
-!ENDIF 
-
 SOURCE=.\ql\Pricers\mccliquetoption.cpp
 
 "$(INTDIR)\mccliquetoption.obj"	"$(INTDIR)\mccliquetoption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5440,12 +5127,6 @@ SOURCE=.\ql\Pricers\mcpagoda.cpp
 SOURCE=.\ql\Pricers\mcperformanceoption.cpp
 
 "$(INTDIR)\mcperformanceoption.obj"	"$(INTDIR)\mcperformanceoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\performanceoption.cpp
-
-"$(INTDIR)\performanceoption.obj"	"$(INTDIR)\performanceoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -5542,6 +5223,12 @@ SOURCE=.\ql\PricingEngines\Vanilla\integralengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp
 
 "$(INTDIR)\jumpdiffusionengine.obj"	"$(INTDIR)\jumpdiffusionengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\juquadraticengine.cpp
+
+"$(INTDIR)\juquadraticengine.obj"	"$(INTDIR)\juquadraticengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
