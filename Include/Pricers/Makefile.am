@@ -8,13 +8,16 @@ include_HEADERS = americancondition.h \
     bsmeuropeanoption.h \
     bsmnumericaloption.h \
     bsmoption.h \
+    dividendoption.h \
     dividendamericanoption.h \
     dividendeuropeanoption.h \
+    dividendshoutoption.h \
     everestoption.h \
     finitedifferenceeuropean.h \
     geometricasianoption.h \
     himalaya.h  \
     mceuropeanpricer.h  \
+    multiperiodoption.h \
     plainbasketoption.h \
     shoutcondition.h    \
     stepconditionoption.h \
