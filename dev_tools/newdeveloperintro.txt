@@ -13,7 +13,7 @@ General SourceForge documentation is at http://sourceforge.net/docman/?group_id=
 
 I would also suggest you take a look at our QuantLib Enhancement Proposals http://quantlib.org/quep.html: if you plan some large contribution you may want to write one before you start coding. It will be a very useful effort since it will be re-cycled as documentation when you actually implement your ideas.
 
-Assuming that you own the copyright of the code you will contribute I see no problem: you just have to use the QuantLib licence.
+Assuming that you own the copyright of the code you will contribute I see no problem: you just have to use the QuantLib license.
 Anyway I may be forced to ask for a disclaimer from your employer, because of possible conflicts of interest.
 I'm not really picky about legal matter, but I think you can understand my concern: I don't want someone to step out 2 years from now claiming copyright infringements, etc.
 
