@@ -54,8 +54,9 @@ void DistributionTest::runTest() {
     double h = (xMax-xMin)/(N-1);
 
     std::vector<double> x(N), y(N), yd(N), temp(N), diff(N);
-    
-    for (int i=0; i<N; i++)
+
+    int i;
+    for (i=0; i<N; i++)
         x[i] = xMin+h*i;
     std::transform(x.begin(),x.end(),y.begin(),std::ptr_fun(gaussian));
     std::transform(x.begin(),x.end(),yd.begin(),
@@ -91,10 +92,8 @@ void DistributionTest::runTest() {
     }
 
     // check that cum.derivative = Gaussian
-    std::transform(x.begin(),x.end(),temp.begin(),
-                   std::bind1st(
-                       std::mem_fun(&CumulativeNormalDistribution::derivative),
-                       &cum));
+    for (i=0; i<x.size(); i++)
+        temp[i] = cum.derivative(x[i]);
     std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),
                    std::minus<double>());
     e = norm(diff.begin(),diff.end(),h);
@@ -108,10 +107,8 @@ void DistributionTest::runTest() {
     }
 
     // check that normal.derivative = gaussianDerivative
-    std::transform(x.begin(),x.end(),temp.begin(),
-                   std::bind1st(
-                       std::mem_fun(&NormalDistribution::derivative),
-                       &normal));
+    for (i=0; i<x.size(); i++)
+        temp[i] = normal.derivative(x[i]);
     std::transform(yd.begin(),yd.end(),temp.begin(),diff.begin(),
                    std::minus<double>());
     e = norm(diff.begin(),diff.end(),h);

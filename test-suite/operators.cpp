@@ -43,14 +43,13 @@ void OperatorTest::runTest() {
 
     Array x(N), y(N), yi(N), yd(N), temp(N), diff(N);
     
-    for (int i=0; i<N; i++)
+    int i;
+    for (i=0; i<N; i++)
         x[i] = xMin+h*i;
     std::transform(x.begin(),x.end(),y.begin(),normal);
     std::transform(x.begin(),x.end(),yi.begin(),cum);
-    std::transform(x.begin(),x.end(),yd.begin(),
-                   std::bind1st(
-                       std::mem_fun(&NormalDistribution::derivative),
-                       &normal));
+    for (i=0; i<x.size(); i++)
+        yd[i] = normal.derivative(x[i]);
 
     // define the differential operators
     DZero D(N,h);
