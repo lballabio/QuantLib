@@ -133,6 +133,7 @@ AC_OUTPUT(Makefile \
     ql/InterestRateModelling/Makefile \
     ql/InterestRateModelling/CalibrationHelpers/Makefile \
     ql/InterestRateModelling/OneFactorModels/Makefile \
+    ql/Lattices/Makefile \
     ql/MonteCarlo/Makefile \
     ql/Optimization/Makefile \
     ql/Patterns/Makefile \
