@@ -85,13 +85,19 @@ namespace QuantLib {
             const DayCounter& dayCounter)
         : todaysDate_(today), calendar_(calendar), 
           settlementDays_(settlementDays), dayCounter_(dayCounter), 
-          lengths_(lengths), volatilities_(vols) {
+          lengths_(lengths), timeLengths_(lengths.size()+1), 
+          volatilities_(vols.size()+1) {
+            QL_REQUIRE(lengths.size() == vols.size(),
+                       "mismatch between number of cap lengths "
+                       "and cap volatilities");
             settlementDate_ = calendar_.advance(today,settlementDays,Days);
-            timeLengths_.resize(lengths_.size());
+            timeLengths_[0] = 0.0;
+            volatilities_[0] = vols[0];
             for (Size i=0; i<lengths_.size(); i++) {
                 Date endDate = settlementDate_.plus(lengths_[i]);
-                timeLengths_[i] = dayCounter_.yearFraction(
+                timeLengths_[i+1] = dayCounter_.yearFraction(
                     settlementDate_,endDate,settlementDate_,endDate);
+                volatilities_[i+1] = vols[i];
             }
             interpolation_ = Handle<VolInterpolation>(
                 new VolInterpolation(timeLengths_.begin(),
