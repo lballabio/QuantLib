@@ -127,7 +127,11 @@ namespace QuantLib {
             setupExpired();
             calculated_ = true;
         } else {
+            #if defined(QL_PATCH_MICROSOFT)
+            LazyObject::calculate();
+            #else
             Patterns::LazyObject::calculate();
+            #endif
         }
     }
 
