@@ -61,6 +61,7 @@
 %include Options.i
 %include Pricers.i
 %include RandomGenerators.i
+%include RiskTool.i
 %include Solvers1D.i
 %include Statistics.i
 %include String.i

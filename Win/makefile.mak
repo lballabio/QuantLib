@@ -28,7 +28,8 @@ PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj \
                    $(OUTPUT_DIR)\date.obj \
                    $(OUTPUT_DIR)\solver1d.obj \
-                   $(OUTPUT_DIR)\dataformatters.obj
+                   $(OUTPUT_DIR)\dataformatters.obj \
+                   $(OUTPUT_DIR)\risktool.obj
 
 CALENDAR_OBJS    = $(OUTPUT_DIR)\westerncalendar.obj \
                    $(OUTPUT_DIR)\frankfurt.obj \
@@ -180,6 +181,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\Options.i \
     $(SWIG_DIR)\Pricers.i \
     $(SWIG_DIR)\RandomGenerators.i \
+    $(SWIG_DIR)\RiskTool.i \
     $(SWIG_DIR)\Solvers1D.i \
     $(SWIG_DIR)\Statistics.i \
     $(SWIG_DIR)\String.i \
@@ -201,6 +203,7 @@ $(OUTPUT_DIR)\calendar.obj: $(SOURCES_DIR)\calendar.cpp
 $(OUTPUT_DIR)\dataformatters.obj: $(SOURCES_DIR)\dataformatters.cpp
 $(OUTPUT_DIR)\date.obj: $(SOURCES_DIR)\date.cpp
 $(OUTPUT_DIR)\solver1d.obj: $(SOURCES_DIR)\solver1d.cpp
+$(OUTPUT_DIR)\risktool.obj: $(SOURCES_DIR)\risktool.cpp
 
 
 # Calendars

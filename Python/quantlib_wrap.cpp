@@ -494,9 +494,9 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_BSMAmericanOption swig_types[4] 
 #define  SWIGTYPE_p_BSMEuropeanOption swig_types[5] 
 #define  SWIGTYPE_p_GeometricAsianOption swig_types[6] 
-#define  SWIGTYPE_p_Bisection swig_types[7] 
-#define  SWIGTYPE_p_DPlusDMinus swig_types[8] 
-#define  SWIGTYPE_p_DMinus swig_types[9] 
+#define  SWIGTYPE_p_DPlusDMinus swig_types[7] 
+#define  SWIGTYPE_p_DMinus swig_types[8] 
+#define  SWIGTYPE_p_Bisection swig_types[9] 
 #define  SWIGTYPE_p_BoundaryCondition swig_types[10] 
 #define  SWIGTYPE_p_DZero swig_types[11] 
 #define  SWIGTYPE_p_CurrencyHandle swig_types[12] 
@@ -520,15 +520,16 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_NewtonSafe swig_types[30] 
 #define  SWIGTYPE_p_History swig_types[31] 
 #define  SWIGTYPE_p_Solver1D swig_types[32] 
-#define  SWIGTYPE_p_Ridder swig_types[33] 
-#define  SWIGTYPE_p_ObjectiveFunction swig_types[34] 
-#define  SWIGTYPE_p_McAsianPricer swig_types[35] 
-#define  SWIGTYPE_p_McEuropeanPricer swig_types[36] 
-#define  SWIGTYPE_p_CalendarHandle swig_types[37] 
-#define  SWIGTYPE_p_DayCounterHandle swig_types[38] 
-#define  SWIGTYPE_p_InstrumentHandle swig_types[39] 
-#define  SWIGTYPE_p_FalsePosition swig_types[40] 
-static swig_type_info *swig_types[42];
+#define  SWIGTYPE_p_RiskTool swig_types[33] 
+#define  SWIGTYPE_p_Ridder swig_types[34] 
+#define  SWIGTYPE_p_ObjectiveFunction swig_types[35] 
+#define  SWIGTYPE_p_McAsianPricer swig_types[36] 
+#define  SWIGTYPE_p_McEuropeanPricer swig_types[37] 
+#define  SWIGTYPE_p_CalendarHandle swig_types[38] 
+#define  SWIGTYPE_p_DayCounterHandle swig_types[39] 
+#define  SWIGTYPE_p_InstrumentHandle swig_types[40] 
+#define  SWIGTYPE_p_FalsePosition swig_types[41] 
+static swig_type_info *swig_types[43];
 
 /* -------- TYPES TABLE (END) -------- */
 
@@ -816,6 +817,11 @@ using QuantLib::Pricers::DividendEuropeanOption;
 
 using QuantLib::MonteCarlo::UniformRandomGenerator;
 using QuantLib::MonteCarlo::GaussianRandomGenerator;
+
+#include "quantlib.h"
+#include "risktool.h"
+
+using QuantLib::RiskTool::RiskTool;
 
 #include "quantlib.h"
 
@@ -8845,6 +8851,670 @@ static PyObject *_wrap_GaussianRandomGenerator_weight(PyObject *self, PyObject *
 }
 
 
+static PyObject *_wrap_new_RiskTool(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    double arg0 ;
+    char *kwnames[] = {
+        "target", NULL 
+    };
+    RiskTool *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"d:new_RiskTool",kwnames,&arg0)) return NULL;
+    {
+        try {
+            result = (RiskTool *)new RiskTool(arg0);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_RiskTool);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_RiskTool(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_RiskTool",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_samples(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_samples",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (int )arg0->samples();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_weightSum(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_weightSum",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->weightSum();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_mean(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_mean",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->mean();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_variance(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_variance",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->variance();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_standardDeviation(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_standardDeviation",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->standardDeviation();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_errorEstimate(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_errorEstimate",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->errorEstimate();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_skewness(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_skewness",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->skewness();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_kurtosis(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_kurtosis",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->kurtosis();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_min(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_min",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->min();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_max(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_max",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->max();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_valueAtRisk(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    double arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","percentile", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskTool_valueAtRisk",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->valueAtRisk(arg1);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_shortfall(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_shortfall",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->shortfall();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_averageShortfall(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:RiskTool_averageShortfall",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )arg0->averageShortfall();
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_add(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    double arg1 ;
+    double arg2 = 1.0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","value","weight", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od|d:RiskTool_add",kwnames,&argo0,&arg1,&arg2)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            arg0->add(arg1,arg2);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_RiskTool_reset(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    double arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","target", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:RiskTool_reset",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        try {
+            arg0->reset(arg1);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+void  RiskTool_addSequence(RiskTool *self,DoubleVector values) {
+    {
+        self->addSequence(values.begin(), values.end());
+    }
+}
+
+
+static PyObject *_wrap_RiskTool_addSequence(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    DoubleVector *arg1 ;
+    PyObject * argo0 =0 ;
+    PyObject * obj1  = 0 ;
+    char *kwnames[] = {
+        "self","values", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:RiskTool_addSequence",kwnames,&argo0,&obj1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        if (PyTuple_Check(obj1)) {
+            int size = PyTuple_Size(obj1);
+            arg1 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyTuple_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
+                    delete arg1;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj1)) {
+            int size = PyList_Size(obj1);
+            arg1 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyList_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
+                    delete arg1;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            RiskTool_addSequence(arg0,*arg1);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    {
+        delete arg1;
+    }
+    return resultobj;
+}
+
+
+void  RiskTool_addWeightedSequence(RiskTool *self,DoubleVector values,DoubleVector weights) {
+    {
+        self->addSequence(values.begin(), values.end(), weights.begin());
+    }
+}
+
+
+static PyObject *_wrap_RiskTool_addWeightedSequence(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    RiskTool *arg0 ;
+    DoubleVector *arg1 ;
+    DoubleVector *arg2 ;
+    PyObject * argo0 =0 ;
+    PyObject * obj1  = 0 ;
+    PyObject * obj2  = 0 ;
+    char *kwnames[] = {
+        "self","values","weights", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:RiskTool_addWeightedSequence",kwnames,&argo0,&obj1,&obj2)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskTool,1)) == -1) return NULL;
+    {
+        if (PyTuple_Check(obj1)) {
+            int size = PyTuple_Size(obj1);
+            arg1 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyTuple_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
+                    delete arg1;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj1)) {
+            int size = PyList_Size(obj1);
+            arg1 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyList_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
+                    delete arg1;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        if (PyTuple_Check(obj2)) {
+            int size = PyTuple_Size(obj2);
+            arg2 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyTuple_GetItem(obj2,i);
+                if (PyFloat_Check(o)) {
+                    (*arg2)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg2)[i] = double(PyInt_AsLong(o));
+                }else if (o == Py_None) {
+                    (*arg2)[i] = Null<double>();
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
+                    delete arg2;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj2)) {
+            int size = PyList_Size(obj2);
+            arg2 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyList_GetItem(obj2,i);
+                if (PyFloat_Check(o)) {
+                    (*arg2)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg2)[i] = double(PyInt_AsLong(o));
+                }else if (o == Py_None) {
+                    (*arg2)[i] = Null<double>();
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
+                    delete arg2;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            RiskTool_addWeightedSequence(arg0,*arg1,*arg2);
+            
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    {
+        delete arg1;
+    }
+    {
+        delete arg2;
+    }
+    return resultobj;
+}
+
+
 static PyObject *_wrap_ObjectiveFunction_value(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     ObjectiveFunction *arg0 ;
@@ -10260,6 +10930,25 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "delete_GaussianRandomGenerator", (PyCFunction) _wrap_delete_GaussianRandomGenerator, METH_VARARGS | METH_KEYWORDS },
 	 { "GaussianRandomGenerator_next", (PyCFunction) _wrap_GaussianRandomGenerator_next, METH_VARARGS | METH_KEYWORDS },
 	 { "GaussianRandomGenerator_weight", (PyCFunction) _wrap_GaussianRandomGenerator_weight, METH_VARARGS | METH_KEYWORDS },
+	 { "new_RiskTool", (PyCFunction) _wrap_new_RiskTool, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_RiskTool", (PyCFunction) _wrap_delete_RiskTool, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_samples", (PyCFunction) _wrap_RiskTool_samples, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_weightSum", (PyCFunction) _wrap_RiskTool_weightSum, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_mean", (PyCFunction) _wrap_RiskTool_mean, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_variance", (PyCFunction) _wrap_RiskTool_variance, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_standardDeviation", (PyCFunction) _wrap_RiskTool_standardDeviation, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_errorEstimate", (PyCFunction) _wrap_RiskTool_errorEstimate, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_skewness", (PyCFunction) _wrap_RiskTool_skewness, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_kurtosis", (PyCFunction) _wrap_RiskTool_kurtosis, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_min", (PyCFunction) _wrap_RiskTool_min, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_max", (PyCFunction) _wrap_RiskTool_max, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_valueAtRisk", (PyCFunction) _wrap_RiskTool_valueAtRisk, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_shortfall", (PyCFunction) _wrap_RiskTool_shortfall, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_averageShortfall", (PyCFunction) _wrap_RiskTool_averageShortfall, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_add", (PyCFunction) _wrap_RiskTool_add, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_reset", (PyCFunction) _wrap_RiskTool_reset, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_addSequence", (PyCFunction) _wrap_RiskTool_addSequence, METH_VARARGS | METH_KEYWORDS },
+	 { "RiskTool_addWeightedSequence", (PyCFunction) _wrap_RiskTool_addWeightedSequence, METH_VARARGS | METH_KEYWORDS },
 	 { "ObjectiveFunction_value", (PyCFunction) _wrap_ObjectiveFunction_value, METH_VARARGS | METH_KEYWORDS },
 	 { "ObjectiveFunction_derivative", (PyCFunction) _wrap_ObjectiveFunction_derivative, METH_VARARGS | METH_KEYWORDS },
 	 { "Solver1D_solve", (PyCFunction) _wrap_Solver1D_solve, METH_VARARGS | METH_KEYWORDS },
@@ -10346,9 +11035,9 @@ static swig_type_info _swigt__p_DividendAmericanOption[] = {{"_p_DividendAmerica
 static swig_type_info _swigt__p_BSMAmericanOption[] = {{"_p_BSMAmericanOption", 0, "BSMAmericanOption *"},{"_p_BSMAmericanOption"},{0}};
 static swig_type_info _swigt__p_BSMEuropeanOption[] = {{"_p_BSMEuropeanOption", 0, "BSMEuropeanOption *"},{"_p_BSMEuropeanOption"},{0}};
 static swig_type_info _swigt__p_GeometricAsianOption[] = {{"_p_GeometricAsianOption", 0, "GeometricAsianOption *"},{"_p_GeometricAsianOption"},{0}};
-static swig_type_info _swigt__p_Bisection[] = {{"_p_Bisection", 0, "Bisection *"},{"_p_Bisection"},{0}};
 static swig_type_info _swigt__p_DPlusDMinus[] = {{"_p_DPlusDMinus", 0, "DPlusDMinus *"},{"_p_DPlusDMinus"},{0}};
 static swig_type_info _swigt__p_DMinus[] = {{"_p_DMinus", 0, "DMinus *"},{"_p_DMinus"},{0}};
+static swig_type_info _swigt__p_Bisection[] = {{"_p_Bisection", 0, "Bisection *"},{"_p_Bisection"},{0}};
 static swig_type_info _swigt__p_BoundaryCondition[] = {{"_p_BoundaryCondition", 0, "BoundaryCondition *"},{"_p_BoundaryCondition"},{0}};
 static swig_type_info _swigt__p_DZero[] = {{"_p_DZero", 0, "DZero *"},{"_p_DZero"},{0}};
 static swig_type_info _swigt__p_CurrencyHandle[] = {{"_p_CurrencyHandle", 0, "CurrencyHandle *"},{"_p_CurrencyHandle"},{0}};
@@ -10372,6 +11061,7 @@ static swig_type_info _swigt__p_Deposit[] = {{"_p_Deposit", 0, "Deposit *"},{"_p
 static swig_type_info _swigt__p_NewtonSafe[] = {{"_p_NewtonSafe", 0, "NewtonSafe *"},{"_p_NewtonSafe"},{0}};
 static swig_type_info _swigt__p_History[] = {{"_p_History", 0, "History *"},{"_p_History"},{0}};
 static swig_type_info _swigt__p_Solver1D[] = {{"_p_Solver1D", 0, "Solver1D *"},{"_p_Newton", _p_NewtonTo_p_Solver1D},{"_p_Ridder", _p_RidderTo_p_Solver1D},{"_p_FalsePosition", _p_FalsePositionTo_p_Solver1D},{"_p_Brent", _p_BrentTo_p_Solver1D},{"_p_Solver1D"},{"_p_Secant", _p_SecantTo_p_Solver1D},{"_p_NewtonSafe", _p_NewtonSafeTo_p_Solver1D},{"_p_Bisection", _p_BisectionTo_p_Solver1D},{0}};
+static swig_type_info _swigt__p_RiskTool[] = {{"_p_RiskTool", 0, "RiskTool *"},{"_p_RiskTool"},{0}};
 static swig_type_info _swigt__p_Ridder[] = {{"_p_Ridder", 0, "Ridder *"},{"_p_Ridder"},{0}};
 static swig_type_info _swigt__p_ObjectiveFunction[] = {{"_p_ObjectiveFunction", 0, "ObjectiveFunction *"},{"_p_ObjectiveFunction"},{0}};
 static swig_type_info _swigt__p_McAsianPricer[] = {{"_p_McAsianPricer", 0, "McAsianPricer *"},{"_p_McAsianPricer"},{0}};
@@ -10389,9 +11079,9 @@ _swigt__p_DividendAmericanOption,
 _swigt__p_BSMAmericanOption, 
 _swigt__p_BSMEuropeanOption, 
 _swigt__p_GeometricAsianOption, 
-_swigt__p_Bisection, 
 _swigt__p_DPlusDMinus, 
 _swigt__p_DMinus, 
+_swigt__p_Bisection, 
 _swigt__p_BoundaryCondition, 
 _swigt__p_DZero, 
 _swigt__p_CurrencyHandle, 
@@ -10415,6 +11105,7 @@ _swigt__p_Deposit,
 _swigt__p_NewtonSafe, 
 _swigt__p_History, 
 _swigt__p_Solver1D, 
+_swigt__p_RiskTool, 
 _swigt__p_Ridder, 
 _swigt__p_ObjectiveFunction, 
 _swigt__p_McAsianPricer, 
