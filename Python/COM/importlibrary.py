@@ -1,25 +1,27 @@
 """
 /*
- * Copyright (C) 2001
- * Marco Marchioro, Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin
+ * Copyright (C) 2000-2001 QuantLib Group
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
+ * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
  *
- * QuantLib license is also available at:
- * http://quantlib.sourceforge.net/LICENSE.TXT
+ * The members of the QuantLib Group are listed in the Authors.txt file, also
+ * available at http://quantlib.sourceforge.net/Authors.txt
 */
+
 """
 """
     \file importlibrary.py
@@ -27,51 +29,29 @@
     
     $Source$
     $Log$
+    Revision 1.7  2001/05/15 13:03:06  marmar
+    Wrappers simplified, copyright changed, exceptions removed
+
     Revision 1.6  2001/03/30 09:59:33  marmar
-    Documentation updated, Matrix call did not work properly: rmoved
+    Documentation updated, Matrix call did not work properly: removed
 
     Revision 1.5  2001/03/30 09:56:20  marmar
     Debug is now the default, simplified and speeded up
 
     Revision 1.4  2001/03/14 13:36:20  marmar
     Changed to accomodate some bad behaviour of VB
-    
-    Revision 1.1  2001/03/06 13:52:35  marmar
-    Export the QuantLib functionalities to the COM world
-    
-"""
-
-"""
-Example:
-    ' The following is an example of VB code that creates the
-    ' QuantLib module and uses it
-
-    Set importQL = CreateObject("QuantLib.Import")
-    Set QuantLib = importQL.QuantLib
-    Set uniformDeviate = QuantLib.UniformRandomGenerator()
-    RndNumber = uniformDeviate.Next()
-    MsgBox RndNumber
-
-COM Exceptions raised:
-    #5, ERROR_ACCESS_DENIED if import is called with
-                    DISPATCH_PROPERTYGET or DISPATCH_METHOD
-    #2, ERROR_FILE_NOT_FOUND if import of required python module failed
-    #12, ERROR_INVALID_ACCESS if problems arise in applying method to object
-All the other errors are not transformed into COM exception but presented as 
-Unknown python errors.
 """
 
 import pywintypes, string, types, winerror, exceptions
 import win32com.client, win32com.server.util, win32com.server.policy
 from win32com.server.dispatcher import DefaultDebugDispatcher
-from win32com.server.exception import COMException
 from win32com.server.policy import BasicWrapPolicy
 from win32com.server.policy import DynamicPolicy
 from pythoncom import *
 
 def FixArguments(args):
     """Unicode objects are converted to strings, PyIDispatch objects and
-    collections are unwrapped. Does this recursively on lists
+    collections are unwrapped.
     """
     newArgs = []
     for arg in args:
@@ -87,17 +67,13 @@ def FixVisualBasicName(name):
     to type from VB.  E.g. if you type 'value' it will be converted into
     'Value', 'next' into 'Next' and so on.  This function tries to fix 
     this behaviour.
-    Also, if 'Count' is encountered it is transformed into '__len__'
     """
-    if name == 'Count' :
-        return '__len__'
-    else:
-        return string.lower(name[0]) + name[1:]
+    return string.lower(name[0]) + name[1:]
 
 def PrepareForReturn(object):
     objectType = type(object)
     print "----> Returning", object, objectType
-    if(objectType is types.InstanceType or objectType is types.ModuleType):
+    if(objectType is types.InstanceType):
         print "Returning wrapped object"
         return WrapObject(
                     DefaultDebugDispatcher(
@@ -124,40 +100,18 @@ class QuitePermissivePolicy(DynamicPolicy):
                                      DISPID_NEWENUM:'_NewEnum' }
      
     def _invokeex_(self, dispid, lcid, wFlags, args, kwargs, serviceProvider):
-        try:
-          name = str(self._dyn_dispid_to_name_[dispid])
-        except KeyError:
-          raise COMException(scode = winerror.DISP_E_MEMBERNOTFOUND,
-                             desc="Member not found")
+        name = str(self._dyn_dispid_to_name_[dispid])
                  
         args = FixArguments(args)
         if not hasattr(self._obj_, name):
             name = FixVisualBasicName(name)
-
+        # Printing debug info
         print "self._obj_:",self._obj_
         print "name:",name
         print "args:",args
-
         if wFlags & DISPATCH_METHOD:
-            if name == '_value_':
-                # VB calls to COM of the type "PyCOM_object(args)" are mapped
-                # into calls to the method "_value_".
-                # When 'self._obj_' has the attribute '__call__' then it
-                #is returned 'self._obj_(args)'
-                if hasattr(self._obj_, '__call__'):
-                    return PrepareForReturn(apply(self._obj_,args))
-                else:
-                    raise COMException(
-                    "Cannot compute '%s %s'" % (repr(self._obj_), args),
-                    winerror.ERROR_INVALID_ACCESS)
-               
             #Next we evaluate calls of the type "PyCOM_object.name(args)"
-            try:
-                qlMethod = getattr(self._obj_, name)
-            except AttributeError:
-                raise COMException(
-                    "Attribute '%s' not found for object '%s'" % (
-                    name, repr(self._obj_)), winerror.ERROR_INVALID_ACCESS)
+            qlMethod = getattr(self._obj_, name)
             initializedObject = apply(qlMethod, args)
             return PrepareForReturn(initializedObject)
          
@@ -171,29 +125,18 @@ class QuitePermissivePolicy(DynamicPolicy):
             
         if wFlags & (DISPATCH_PROPERTYPUT | DISPATCH_PROPERTYPUTREF):
             # Calls of the type "PyCOM_object = VB_value" are 
-            if len(args) == 1:
-                setattr(self._obj_, name, args)
-            else:
-                raise COMException(
-                    "DISPATCH_PROPERTYPUT called with too many arguments",
-                    winerror.E_INVALIDARG)
-        raise COMException(scode=winerror.E_INVALIDARG, desc="invalid wFlags")
+            setattr(self._obj_, name, args)
 
 class ComImportLibrary:
-    """ Creates a COM wrapper for QuantLib.
-    """
     _reg_clsid_ = "{389276A1-24EB-11D5-83D4-0050DA367EDA}"
     _reg_progid_ = "QuantLib.Import"
     _public_methods_ = ['QuantLib']
     def QuantLib(self):
         print "ComImportLibrary called"
-        try :
-            import QuantLib
-            return PrepareForReturn(QuantLib)
-        except:
-            raise COMException("Module QuantLib not found",
-                               winerror.ERROR_FILE_NOT_FOUND)
+        import QuantLib
+        return WrapObject(DefaultDebugDispatcher(QuitePermissivePolicy, QuantLib))
 
 if __name__ == '__main__':
     import win32com.server.register
     win32com.server.register.UseCommandLine(ComImportLibrary)
+    
