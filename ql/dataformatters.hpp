@@ -25,6 +25,7 @@
 
 #include <ql/date.hpp>
 #include <ql/currency.hpp>
+#include <ql/option.hpp>
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
@@ -118,6 +119,12 @@ namespace QuantLib {
       public:
         static std::string toLowercase(const std::string& s);
         static std::string toUppercase(const std::string& s);
+    };
+
+    //! Formats option type for output
+    class OptionTypeFormatter {
+      public:
+        static std::string toString(Option::Type type);
     };
 
 }

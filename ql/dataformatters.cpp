@@ -254,4 +254,15 @@ namespace QuantLib {
         return output;
     }
 
+    std::string OptionTypeFormatter::toString(Option::Type type) {
+        switch (type) {
+          case Option::Call:     return "call";
+          case Option::Put:      return "put";
+          case Option::Straddle: return "straddle";
+          default:
+            throw Error("unknown option type");
+        }
+    }
+
+
 }
