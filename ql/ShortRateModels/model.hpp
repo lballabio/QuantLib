@@ -30,11 +30,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace ShortRateModels = ::QuantLib;
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace CalibrationHelpers = ::QuantLib;
-
     //! Affine model class
     /*! This is the base class for analytically tractable models */
     class AffineModel {

@@ -31,9 +31,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace VolTermStructures = ::QuantLib;
-
     //! Black Volatility Term structure
     /*! This abstract class defines the interface of concrete
         Black volatility term structures which will be derived from this one.

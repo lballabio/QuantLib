@@ -29,9 +29,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Indexes = ::QuantLib;
-
     //! purely virtual base class for indexes
     class Index : public Observable {
       public:

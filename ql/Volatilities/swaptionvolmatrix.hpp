@@ -29,9 +29,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Volatilities = ::QuantLib;
-
     //! Swaption at-the-money volatility matrix
     /*! This class provides the at-the-money volatility for a given
         swaption by interpolating a volatility matrix whose elements

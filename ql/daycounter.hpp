@@ -27,9 +27,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace DayCounters = ::QuantLib;
-
     //! abstract base class for day counter implementations
     class DayCounterImpl {
       public:

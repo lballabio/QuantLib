@@ -28,9 +28,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Solvers1D = ::QuantLib;
-
     #define MAX_FUNCTION_EVALUATIONS 100
 
     //! Base class for 1-D solvers

@@ -27,9 +27,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Patterns = ::QuantLib;
-
     //! Object that notifies its changes to a set of observables
     class Observable {
         friend class Observer;

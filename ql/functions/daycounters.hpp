@@ -26,9 +26,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Functions = ::QuantLib;
-
     int accrualDays(DayCounter dc, Date d1, Date d2);
     double accrualFactor(DayCounter dc, Date d1, Date d2, Date d3, Date d4);
 

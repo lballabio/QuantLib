@@ -26,9 +26,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Optimization = ::QuantLib;
-
     //! Constrained optimization problem
     class Problem {
       public:

@@ -27,9 +27,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Instruments = ::QuantLib;
-
     //! Abstract instrument class
     /*! This class is purely abstract and defines the interface of concrete
         instruments which will be derived from this one.

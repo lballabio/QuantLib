@@ -27,9 +27,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Pricers = ::QuantLib;
-
     //! Black-Scholes-Merton option
     class SingleAssetOption {
       public:

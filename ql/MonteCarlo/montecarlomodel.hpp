@@ -28,9 +28,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace MonteCarlo = ::QuantLib;
-
     //! General purpose Monte Carlo model for path samples
     /*! The template arguments of this class correspond to available
         policies for the particular model to be instantiated---i.e.,

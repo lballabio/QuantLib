@@ -27,9 +27,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace RandomNumbers = ::QuantLib;
-
     //! Uniform random number generator
     /*! Random number generator by Knuth.
         For more details see Knuth, Seminumerical Algorithms,

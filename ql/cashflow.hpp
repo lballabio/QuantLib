@@ -28,9 +28,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace CashFlows = ::QuantLib;
-
     //! Base class for cash flows
     /*! This class is purely virtual and acts as a base class for the actual
         cash flow implementations.

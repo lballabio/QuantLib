@@ -26,10 +26,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Utilities = ::QuantLib;
-
-
     //! most generic of two given iterator categories
     /*! Specializations of this struct define a typedef
         iterator_category which corresponds to the most generic of the

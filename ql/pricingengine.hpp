@@ -27,9 +27,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace PricingEngines = ::QuantLib;
-
     //! base class for pricing engines
     class PricingEngine {
       public:

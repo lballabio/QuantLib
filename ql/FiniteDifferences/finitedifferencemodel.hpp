@@ -27,9 +27,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace FiniteDifferences = ::QuantLib;
-
     //! Generic finite difference model
     /*! See sect. \ref findiff */
     template<class Evolver>

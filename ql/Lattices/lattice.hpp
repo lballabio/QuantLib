@@ -26,9 +26,6 @@
 
 namespace QuantLib {
 
-    //! \deprecated inner namespace aliases will be removed in next release
-    namespace Lattices = ::QuantLib;
-
     //! Lattice-method base class
     /*! This class defines a lattice method that is able to rollback
         (with discount) a discretized asset object. It will usually be
