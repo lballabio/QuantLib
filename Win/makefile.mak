@@ -7,79 +7,79 @@
 
 # Directories
 !ifdef DEBUG
-	OUTPUT_DIR	= .\Debug
+    OUTPUT_DIR    = .\Debug
 !else
-	OUTPUT_DIR	= .\Release
+    OUTPUT_DIR    = .\Release
 !endif
-PYTHON_DIR		= ..\Python
-SWIG_DIR		= ..\Swig
-SOURCES_DIR		= ..\Sources
-INCLUDE_DIR		= ..\Include
-BCC_INCLUDE		= $(MAKEDIR)\..\include
-BCC_LIBS		= $(MAKEDIR)\..\lib
+PYTHON_DIR        = ..\Python
+SWIG_DIR        = ..\Swig
+SOURCES_DIR        = ..\Sources
+INCLUDE_DIR        = ..\Include
+BCC_INCLUDE        = $(MAKEDIR)\..\include
+BCC_LIBS        = $(MAKEDIR)\..\lib
 !if "$(PYTHON_HOME)" == ""
 !message Please set the PYTHON_HOME environment variable to the absolute path of your Python installation (or any string if you don't plan to use Python).
 !error terminated
 !endif
-PYTHON_INCLUDE	= "$(PYTHON_HOME)"\include
-PYTHON_LIBS		= "$(PYTHON_HOME)"\libs
+PYTHON_INCLUDE    = "$(PYTHON_HOME)"\include
+PYTHON_LIBS        = "$(PYTHON_HOME)"\libs
 
 # Object files
-CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
-CALENDAR_OBJS	= $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj $(OUTPUT_DIR)\zurich.obj 
-DAYCOUNT_OBJS	= $(OUTPUT_DIR)\actualactual.obj $(OUTPUT_DIR)\thirty360.obj $(OUTPUT_DIR)\thirty360italian.obj
-MATH_OBJS		= $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj  $(OUTPUT_DIR)\newcubicspline.obj
-MONTECARLO_OBJS	= $(OUTPUT_DIR)\lecuyerrandomgenerator.obj
-FDM_OBJS		= $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
-PRICER_OBJS		= $(OUTPUT_DIR)\bsmoption.obj $(OUTPUT_DIR)\bsmnumericaloption.obj $(OUTPUT_DIR)\bsmeuropeanoption.obj $(OUTPUT_DIR)\bsmamericanoption.obj $(OUTPUT_DIR)\dividendamericanoption.obj 
-SOLVER1D_OBJS	= $(OUTPUT_DIR)\bisection.obj $(OUTPUT_DIR)\brent.obj $(OUTPUT_DIR)\falseposition.obj $(OUTPUT_DIR)\newton.obj $(OUTPUT_DIR)\newtonsafe.obj $(OUTPUT_DIR)\ridder.obj $(OUTPUT_DIR)\secant.obj
-TERMSTRUC_OBJS	= $(OUTPUT_DIR)\piecewiseconstantforwards.obj 
-QUANTLIB_OBJS	= $(CORE_OBJS) $(CALENDAR_OBJS) $(DAYCOUNT_OBJS) $(MATH_OBJS) $(MONTECARLO_OBJS) $(FDM_OBJS) $(PRICER_OBJS) $(SOLVER1D_OBJS) $(TERMSTRUC_OBJS) 
-WIN_OBJS		= c0d32.obj 
+CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
+CALENDAR_OBJS    = $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj $(OUTPUT_DIR)\zurich.obj 
+DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj $(OUTPUT_DIR)\thirty360.obj $(OUTPUT_DIR)\thirty360italian.obj
+MATH_OBJS        = $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj  $(OUTPUT_DIR)\newcubicspline.obj
+MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj
+FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
+PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj $(OUTPUT_DIR)\bsmnumericaloption.obj $(OUTPUT_DIR)\bsmeuropeanoption.obj $(OUTPUT_DIR)\bsmamericanoption.obj $(OUTPUT_DIR)\dividendamericanoption.obj 
+SOLVER1D_OBJS    = $(OUTPUT_DIR)\bisection.obj $(OUTPUT_DIR)\brent.obj $(OUTPUT_DIR)\falseposition.obj $(OUTPUT_DIR)\newton.obj $(OUTPUT_DIR)\newtonsafe.obj $(OUTPUT_DIR)\ridder.obj $(OUTPUT_DIR)\secant.obj
+TERMSTRUC_OBJS   = $(OUTPUT_DIR)\piecewiseconstantforwards.obj 
+QUANTLIB_OBJS    = $(CORE_OBJS) $(CALENDAR_OBJS) $(DAYCOUNT_OBJS) $(MATH_OBJS) $(MONTECARLO_OBJS) $(FDM_OBJS) $(PRICER_OBJS) $(SOLVER1D_OBJS) $(TERMSTRUC_OBJS) 
+WIN_OBJS         = c0d32.obj 
 
 # Libraries
-WIN_LIBS 		= import32.lib cw32mt.lib
-PYTHON_BCC_LIB	= bccpython.lib
-
+WIN_LIBS         = import32.lib cw32mt.lib
+PYTHON_BCC_LIB   = bccpython.lib
+    
 # Tools to be used
-CC			= bcc32
-LINK		= ilink32
-TLIB		= tlib
-COFF2OMF	= coff2omf
-SWIG		= swig
-DOXYGEN		= doxygen
-LATEX		= latex
-PDFLATEX	= pdflatex
-MAKEINDEX	= makeindex
-DVIPS		= dvips
+CC        = bcc32
+LINK      = ilink32
+TLIB      = tlib
+COFF2OMF  = coff2omf
+SWIG      = swig
+DOXYGEN   = doxygen
+LATEX     = latex
+PDFLATEX  = pdflatex
+MAKEINDEX = makeindex
+DVIPS     = dvips
 
 # Options
-CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8026 -w-8027 -w-8012 \
-	-I$(INCLUDE_DIR) \
-	-I$(INCLUDE_DIR)\Calendars \
-	-I$(INCLUDE_DIR)\Currencies \
-	-I$(INCLUDE_DIR)\DayCounters \
-	-I$(INCLUDE_DIR)\FiniteDifferences \
-	-I$(INCLUDE_DIR)\Instruments \
-	-I$(INCLUDE_DIR)\Math \
-	-I$(INCLUDE_DIR)\MonteCarlo \
-	-I$(INCLUDE_DIR)\Patterns \
-	-I$(INCLUDE_DIR)\Pricers \
-	-I$(INCLUDE_DIR)\Solvers1D \
-	-I$(INCLUDE_DIR)\TermStructures \
-	-I$(PYTHON_INCLUDE) \
-	-I$(BCC_INCLUDE)
+CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) -w-8026 -w-8027 -w-8012 \
+    -I$(INCLUDE_DIR) \
+    -I$(INCLUDE_DIR)\Calendars \
+    -I$(INCLUDE_DIR)\Currencies \
+    -I$(INCLUDE_DIR)\DayCounters \
+    -I$(INCLUDE_DIR)\FiniteDifferences \
+    -I$(INCLUDE_DIR)\Instruments \
+    -I$(INCLUDE_DIR)\Math \
+    -I$(INCLUDE_DIR)\MonteCarlo \
+    -I$(INCLUDE_DIR)\Patterns \
+    -I$(INCLUDE_DIR)\Pricers \
+    -I$(INCLUDE_DIR)\Solvers1D \
+    -I$(INCLUDE_DIR)\TermStructures \
+    -I$(PYTHON_INCLUDE) \
+    -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 
-LINK_OPTS	= -q -x -L$(BCC_LIBS)
+LINK_OPTS    = -q -x -L$(BCC_LIBS)
 !ifdef DEBUG
-LINK_OPTS	= $(LINK_OPTS) -v
+LINK_OPTS    = $(LINK_OPTS) -v
 !endif
 
 !ifdef DEBUG
-TLIB_OPTS	= /P64
+TLIB_OPTS    = /P64
 !endif
 
 # Generic rules
@@ -94,41 +94,41 @@ QuantLib: $(OUTPUT_DIR)\QuantLib.lib
 Python: $(PYTHON_DIR)\QuantLibc.dll
 
 $(PYTHON_DIR)\QuantLibc.dll:: $(OUTPUT_DIR) $(OUTPUT_DIR)\quantlib_wrap.obj $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB)
-	echo Linking Python module...
-	$(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj $(WIN_OBJS),$(PYTHON_DIR)\QuantLibc.dll,, $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), QuantLibc.def
-	del $(PYTHON_DIR)\QuantLibc.ilc
-	del $(PYTHON_DIR)\QuantLibc.ild
-	del $(PYTHON_DIR)\QuantLibc.ilf
-	del $(PYTHON_DIR)\QuantLibc.ils
-	echo Build completed
+    echo Linking Python module...
+    $(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj $(WIN_OBJS),$(PYTHON_DIR)\QuantLibc.dll,, $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), QuantLibc.def
+    del $(PYTHON_DIR)\QuantLibc.ilc
+    del $(PYTHON_DIR)\QuantLibc.ild
+    del $(PYTHON_DIR)\QuantLibc.ilf
+    del $(PYTHON_DIR)\QuantLibc.ils
+    echo Build completed
 
 # make sure the output directory exists
 $(OUTPUT_DIR):
-	if not exist $(OUTPUT_DIR) md $(OUTPUT_DIR)
+    if not exist $(OUTPUT_DIR) md $(OUTPUT_DIR)
 
 # Python lib in OMF format
 $(PYTHON_BCC_LIB):
-	if exist $(PYTHON_LIBS)\python15.lib	$(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
-	if exist $(PYTHON_LIBS)\python20.lib	$(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python15.lib    $(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python20.lib    $(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
 
 # Wrapper functions
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
-	echo Compiling wrappers...
-	$(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT $(PYTHON_DIR)\quantlib_wrap.cpp
+    echo Compiling wrappers...
+    $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT $(PYTHON_DIR)\quantlib_wrap.cpp
 $(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i \
   $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Currencies.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Options.i \
   $(SWIG_DIR)\Instruments.i $(SWIG_DIR)\Operators.i $(SWIG_DIR)\Pricers.i $(SWIG_DIR)\Solvers1D.i \
   $(SWIG_DIR)\TermStructures.i $(SWIG_DIR)\Vectors.i $(SWIG_DIR)\BoundaryConditions.i $(SWIG_DIR)\Statistics.i \
   $(SWIG_DIR)\History.i
-	echo Generating wrappers...
-	$(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
-	copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
-	del .\QuantLib.py
+    echo Generating wrappers...
+    $(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
+    copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
+    del .\QuantLib.py
 
 # QuantLib library
 $(OUTPUT_DIR)\QuantLib.lib:: Core Calendars DayCounters FiniteDifferences Math MonteCarlo Pricers Solvers1D TermStructures
-	if exist $(OUTPUT_DIR)\QuantLib.lib del $(OUTPUT_DIR)\QuantLib.lib
-	$(TLIB) $(TLIB_OPTS) $(OUTPUT_DIR)\QuantLib.lib /a $(QUANTLIB_OBJS)
+    if exist $(OUTPUT_DIR)\QuantLib.lib del $(OUTPUT_DIR)\QuantLib.lib
+    $(TLIB) $(TLIB_OPTS) $(OUTPUT_DIR)\QuantLib.lib /a $(QUANTLIB_OBJS)
 
 # Core
 Core: $(OUTPUT_DIR) $(CORE_OBJS)
@@ -199,62 +199,64 @@ $(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\TermStructures\piece
 
 # Clean up
 clean::
-	if exist $(PYTHON_BCC_LIB)				del $(PYTHON_BCC_LIB)
-	if exist $(PYTHON_DIR)\QuantLib.pyc		del $(PYTHON_DIR)\QuantLib.pyc
-	if exist $(PYTHON_DIR)\QuantLibc.dll	del $(PYTHON_DIR)\QuantLibc.dll
-	if exist $(OUTPUT_DIR) rd /s /q $(OUTPUT_DIR)
+    if exist $(PYTHON_BCC_LIB)            del $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_DIR)\QuantLib.pyc   del $(PYTHON_DIR)\QuantLib.pyc
+    if exist $(PYTHON_DIR)\QuantLibc.dll  del $(PYTHON_DIR)\QuantLibc.dll
+    if exist $(OUTPUT_DIR) rd /s /q $(OUTPUT_DIR)
 
 
 # Documentation
 HTML::
-	cd ..\Docs
-	$(DOXYGEN) offline.doxy
-	cd ..\Win
+    cd ..\Docs
+    $(DOXYGEN) offline.doxy
+    cd ..\Win
 
 PDF::
-	cd ..\Docs
-	$(DOXYGEN) offline.doxy
-	cd latex
-	$(PDFLATEX) refman
-	$(MAKEINDEX) refman.idx
-	$(PDFLATEX) refman
-	cd ..\..\Win
+    cd ..\Docs
+    $(DOXYGEN) offline.doxy
+    cd latex
+    $(PDFLATEX) refman
+    $(MAKEINDEX) refman.idx
+    $(PDFLATEX) refman
+    cd ..\..\Win
 
 PS::
-	cd ..\Docs
-	$(DOXYGEN) offline.doxy
-	cd latex
-	$(LATEX) refman
-	$(MAKEINDEX) refman.idx
-	$(LATEX) refman
-	$(DVIPS) refman
-	cd ..\..\Win
+    cd ..\Docs
+    $(DOXYGEN) offline.doxy
+    cd latex
+    $(LATEX) refman
+    $(MAKEINDEX) refman.idx
+    $(LATEX) refman
+    $(DVIPS) refman
+    cd ..\..\Win
 
 alldocs::
-	cd ..\Docs
-	$(DOXYGEN) offline.doxy
-	cd latex
-	$(PDFLATEX) refman
-	$(MAKEINDEX) refman.idx
-	$(PDFLATEX) refman
-	$(LATEX) refman
-	$(MAKEINDEX) refman.idx
-	$(LATEX) refman
-	$(DVIPS) refman
-	cd ..\..\Win
-
-# Test
-test::
-	cd ..\Python\Tests
-	python statistics_test.py
-	python impliedVol.py
-	python greeks_in_european.py
-	python greeks_in_american.py
-	python greeks_in_european_with_dividend.py
-	cd ..\..\Win
+    cd ..\Docs
+    $(DOXYGEN) offline.doxy
+    cd latex
+    $(PDFLATEX) refman
+    $(MAKEINDEX) refman.idx
+    $(PDFLATEX) refman
+    $(LATEX) refman
+    $(MAKEINDEX) refman.idx
+    $(LATEX) refman
+    $(DVIPS) refman
+    cd ..\..\Win
 
 # Install PyQuantLib
 install::
-	if exist $(PYTHON_HOME)\QuantLib.pyc      del "$(PYTHON_HOME)"\QuantLib.pyc
-	copy $(PYTHON_DIR)\QuantLib.py "$(PYTHON_HOME)"\QuantLib.py
-	copy $(PYTHON_DIR)\QuantLibc.dll "$(PYTHON_HOME)"\QuantLibc.dll
+    if exist $(PYTHON_HOME)\QuantLib.pyc      del "$(PYTHON_HOME)"\QuantLib.pyc
+    copy $(PYTHON_DIR)\QuantLib.py "$(PYTHON_HOME)"\QuantLib.py
+    copy $(PYTHON_DIR)\QuantLibc.dll "$(PYTHON_HOME)"\QuantLibc.dll
+
+# Test PyQuantLib
+test::
+    cd ..\Python\Tests
+    python statistics_test.py
+    python testRNGs.py
+    python impliedVol.py
+    python greeks_in_european.py
+    python greeks_in_european_with_dividend.py
+    python greeks_in_american.py
+    cd ..\..\Win
+
