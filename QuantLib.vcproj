@@ -1688,7 +1688,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Day Counters"
+			Name="DayCounters"
 			Filter="">
 			<File
 				RelativePath="ql\DayCounters\actual360.hpp">
@@ -1896,7 +1896,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Finite Differences"
+			Name="FiniteDifferences"
 			Filter="">
 			<File
 				RelativePath="ql\FiniteDifferences\americancondition.hpp">
@@ -8865,7 +8865,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Solvers 1D"
+			Name="Solvers1D"
 			Filter="">
 			<File
 				RelativePath="ql\Solvers1D\bisection.hpp">
@@ -8890,7 +8890,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Term Structures"
+			Name="TermStructures"
 			Filter="">
 			<File
 				RelativePath="ql\TermStructures\affinetermstructure.cpp">
@@ -9771,6 +9771,9 @@
 		</File>
 		<File
 			RelativePath="ql\config.bcc.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\config.mingw.hpp">
 		</File>
 		<File
 			RelativePath="ql\config.msvc.hpp">
