@@ -16,6 +16,8 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libVolatilities_la_SOURCES = \
+    blackvariancecurve.cpp \
+    blackvariancesurface.cpp \
     localvolsurface.cpp
 
 noinst_LTLIBRARIES = libVolatilities.la

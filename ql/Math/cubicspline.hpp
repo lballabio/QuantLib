@@ -33,7 +33,7 @@ namespace QuantLib {
 
         //! cubic spline interpolation between discrete points
         template <class RandomAccessIterator1, class RandomAccessIterator2>
-        class CubicSpline
+        class CubicSplineInterpolation
         : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {
           public:
             typedef
@@ -42,16 +42,15 @@ namespace QuantLib {
             typedef
               typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
                 result_type;
-            CubicSpline(const RandomAccessIterator1& xBegin,
-                const RandomAccessIterator1& xEnd,
-                const RandomAccessIterator2& yBegin);
+            CubicSplineInterpolation(const RandomAccessIterator1& xBegin,
+                                     const RandomAccessIterator1& xEnd,
+                                     const RandomAccessIterator2& yBegin);
             result_type operator()(const argument_type& x,
                                    bool allowExtrapolation = false) const;
             result_type derivative(const argument_type& x,
                                    bool allowExtrapolation = false) const;
             result_type secondDerivative(const argument_type& x,
                                         bool allowExtrapolation = false) const;
-            virtual ~CubicSpline() {}
           private:
             // P[i](x) = y[i] +
             //           a[i]*(x-x[i]) +
@@ -67,8 +66,8 @@ namespace QuantLib {
         // template definitions
 
         template <class I1, class I2>
-        CubicSpline<I1,I2>::CubicSpline(const I1& xBegin, const I1& xEnd,
-            const I2& yBegin)
+        CubicSplineInterpolation<I1,I2>::CubicSplineInterpolation(
+            const I1& xBegin, const I1& xEnd, const I2& yBegin)
         : Interpolation<I1,I2>(xBegin,xEnd,yBegin), a_(xEnd-xBegin-1),
           b_(xEnd-xBegin-1), c_(xEnd-xBegin-1), d2y_(xEnd-xBegin),
           isNRapproach_(true) {
@@ -94,7 +93,7 @@ namespace QuantLib {
                     d2y_[i] = d2y_[i]*d2y_[i+1] + u[i];
             } else {
                 QL_REQUIRE(n_ >= 4,
-                    "CubicSpline::CubicSpline : "
+                    "CubicSplineInterpolation : "
                     "not enough points for cubic spline interpolation");
                 FiniteDifferences::TridiagonalOperator L(n_);
                 Array tmp(n_);
@@ -143,23 +142,23 @@ namespace QuantLib {
         }
 
         template <class I1, class I2>
-        typename CubicSpline<I1,I2>::result_type
-        CubicSpline<I1,I2>::operator()(
-            const typename CubicSpline<I1,I2>::argument_type& x,
+        typename CubicSplineInterpolation<I1,I2>::result_type
+        CubicSplineInterpolation<I1,I2>::operator()(
+            const typename CubicSplineInterpolation<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {
                 locate(x);
                 if (isOutOfRange_) {
                     QL_REQUIRE(allowExtrapolation,
-                        "CubicSpline::operator() : "
+                        "CubicSplineInterpolation::operator() : "
                         "extrapolation not allowed");
                 }
 
                 if (isNRapproach_) {
                     I2 j = yBegin_+(position_-xBegin_);
-                    
+
                     std::vector<double>::const_iterator k =
                         d2y_.begin()+(position_-xBegin_);
-                        
+
                     double h = double(*(position_+1)-*position_);
                     double a = double(*(position_+1)-x)/h;
                     double b = 1.0-a;
@@ -171,25 +170,25 @@ namespace QuantLib {
                     return yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
                 }
         }
-        
+
         template <class I1, class I2>
-        typename CubicSpline<I1,I2>::result_type
-        CubicSpline<I1,I2>::derivative(
-            const typename CubicSpline<I1,I2>::argument_type& x,
+        typename CubicSplineInterpolation<I1,I2>::result_type
+        CubicSplineInterpolation<I1,I2>::derivative(
+            const typename CubicSplineInterpolation<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {
                 locate(x);
                 if (isOutOfRange_) {
                     QL_REQUIRE(allowExtrapolation,
-                        "CubicSpline::derivative() : "
+                        "CubicSplineInterpolation::derivative() : "
                         "extrapolation not allowed");
                 }
 
                 if (isNRapproach_) {
                     I2 j = yBegin_+(position_-xBegin_);
-                    
+
                     std::vector<double>::const_iterator k =
                         d2y_.begin()+(position_-xBegin_);
-                        
+
                     double h = double(*(position_+1)-*position_);
                     double a = double(*(position_+1)-x)/h;
                     double b = 1.0-a;
@@ -203,23 +202,23 @@ namespace QuantLib {
         }
 
         template <class I1, class I2>
-        typename CubicSpline<I1,I2>::result_type
-        CubicSpline<I1,I2>::secondDerivative(
-            const typename CubicSpline<I1,I2>::argument_type& x,
+        typename CubicSplineInterpolation<I1,I2>::result_type
+        CubicSplineInterpolation<I1,I2>::secondDerivative(
+            const typename CubicSplineInterpolation<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {
                 locate(x);
                 if (isOutOfRange_) {
                     QL_REQUIRE(allowExtrapolation,
-                        "CubicSpline::secondDerivative() : "
+                        "CubicSplineInterpolation::secondDerivative() : "
                         "extrapolation not allowed");
                 }
 
                 if (isNRapproach_) {
                     I2 j = yBegin_+(position_-xBegin_);
-                    
+
                     std::vector<double>::const_iterator k =
                         d2y_.begin()+(position_-xBegin_);
-                        
+
                     double h = double(*(position_+1)-*position_);
                     double a = double(*(position_+1)-x)/h;
                     double b = 1.0-a;

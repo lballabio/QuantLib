@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,128 +24,95 @@
 #define quantlib_blackvariancecurve_hpp
 
 #include <ql/voltermstructure.hpp>
+#include <ql/Math/interpolation.hpp>
+#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
     namespace VolTermStructures {
 
         //! Black volatility curve modelled as variance curve
-        /*! This class calculates time dependant Black volatilities
+        /*! This class calculates time-dependent Black volatilities
             using as input a vector of (ATM) Black volatilities
             observed in the market.
 
             The calculation is performed interpolating on the variance curve.
-
-            For strike dependance see BlackVarianceSurface
+            Linear interpolation is used as default; this can be changed
+            by the setInterpolation() method.
+            
+            For strike dependence, see BlackVarianceSurface.
         */
-        template<class Interpolator1D>
         class BlackVarianceCurve : public BlackVarianceTermStructure,
                                    public Patterns::Observer {
           public:
             BlackVarianceCurve(const Date& referenceDate,
                                const std::vector<Date>& dates,
                                const std::vector<double>& blackVolCurve,
-                               const DayCounter& dayCounter = DayCounters::Actual365());
-            Date referenceDate() const { return referenceDate_; }
-            DayCounter dayCounter() const { return dayCounter_; }
-            Date maxDate() const { return maxDate_; }
+                               const DayCounter& dayCounter = 
+                                   DayCounters::Actual365());
+            Date referenceDate() const;
+            DayCounter dayCounter() const;
+            Date maxDate() const;
             double strikeDerivative(Time t, 
                                     double strike, 
-                                    bool extrapolate = false) const {
-                return 0.0;}
+                                    bool extrapolate = false) const;
             double strikeSecondDerivative(Time t, 
                                           double strike, 
-                                          bool extrapolate = false) const {
-                return 0.0;}
+                                          bool extrapolate = false) const;
+            // modifiers
+            template <class Traits>
+            void setInterpolation() {
+                varianceCurve_ = 
+                    Traits::make_interpolation(times_.begin(), times_.end(),
+                                               variances_.begin());
+                notifyObservers();
+            }
             // Observer interface
             void update();
           protected:
             virtual double blackVarianceImpl(Time t, double,
-                bool extrapolate = false) const;
+                                             bool extrapolate = false) const;
           private:
+            typedef Math::Interpolation<std::vector<Time>::const_iterator,
+                                        std::vector<double>::const_iterator>
+                Interpolation;
             Date referenceDate_;
             DayCounter dayCounter_;
             Date maxDate_;
             std::vector<Time> times_;
             std::vector<double> variances_;
-            Handle < Interpolator1D> varianceSurface_;
+            Handle<Interpolation> varianceCurve_;
         };
 
 
-        template<class Interpolator1D>
-        BlackVarianceCurve<Interpolator1D>::BlackVarianceCurve(
-            const Date& referenceDate,
-            const std::vector<Date>& dates,
-            const std::vector<double>& blackVolCurve,
-            const DayCounter& dayCounter)
-        : referenceDate_(referenceDate), dayCounter_(dayCounter),
-          maxDate_(dates.back()) {
+        // inline definitions
 
-            QL_REQUIRE(dates.size()==blackVolCurve.size(),
-                "BlackVarianceCurve::BlackVarianceCurve : "
-                "mismatch between date vector and black vol vector");
-
-            // cannot have dates[0]==referenceDate, since the
-            // value of the vol at dates[0] would be lost
-            // (variance at referenceDate must be zero)
-            QL_REQUIRE(dates[0]>referenceDate,
-                "BlackVarianceCurve::BlackVarianceCurve : "
-                "cannot have dates[0]<=referenceDate");
-
-            variances_ = std::vector<double>(dates.size());
-            times_ = std::vector<Time>(dates.size());
-            Size j;
-            for (j=0; j<blackVolCurve.size(); j++) {
-                times_[j] = dayCounter_.yearFraction(referenceDate, dates[j]);
-                QL_REQUIRE(j==0 || times_[j]>times_[j-1],
-                    "BlackVarianceCurve::BlackVarianceCurve : "
-                    "dates must be sorted unique!");
-                variances_[j] = times_[j] *
-                    blackVolCurve[j]*blackVolCurve[j];
-                if (j==0) QL_REQUIRE(variances_[0]>0.0,
-                    "BlackVarianceCurve::BlackVarianceCurve : "
-                    "variance must be positive");
-                if (j>0) QL_REQUIRE(variances_[j]>=variances_[j-1],
-                    "BlackVarianceCurve::BlackVarianceCurve : "
-                    "variance must be and non-decreasing");
-            }
-            varianceSurface_ = Handle<Interpolator1D> (new
-                Interpolator1D(times_.begin(), times_.end(),
-                variances_.begin()));
+        inline Date BlackVarianceCurve::referenceDate() const { 
+            return referenceDate_; 
         }
 
+        inline DayCounter BlackVarianceCurve::dayCounter() const { 
+            return dayCounter_; 
+        }
 
-        template<class Interpolator1D>
-        void BlackVarianceCurve<Interpolator1D>::update() {
+        inline Date BlackVarianceCurve::maxDate() const { 
+            return maxDate_; 
+        }
+
+        inline double 
+        BlackVarianceCurve::strikeDerivative(Time t, double strike, 
+                                             bool extrapolate) const {
+            return 0.0;
+        }
+
+        inline double 
+        BlackVarianceCurve::strikeSecondDerivative(Time t, double strike, 
+                                                   bool extrapolate) const {
+            return 0.0;
+        }
+
+        inline void BlackVarianceCurve::update() {
             notifyObservers();
-        }
-
-        template<class Interpolator1D>
-        double BlackVarianceCurve<Interpolator1D>::
-            blackVarianceImpl(Time t, double, bool extrapolate) const {
-
-            QL_REQUIRE(t>=0.0,
-                "BlackVarianceCurve::blackVarianceImpl :"
-                "negative time (" + DoubleFormatter::toString(t) +
-                ") not allowed");
-
-            // for early times extrapolate with flat vol
-            if (t<=times_[0])
-                return (*varianceSurface_)(times_[0], extrapolate)*
-                    t/times_[0];
-            else if (t<=times_.back())
-                return (*varianceSurface_)(t, extrapolate);
-            // for later times extrapolate with flat vol
-            else { // t>times_.back() || extrapolate
-                QL_REQUIRE(extrapolate,
-                    "ConstantVol::blackVolImpl : "
-                    "time (" + DoubleFormatter::toString(t) +
-                    ") greater than max time (" +
-                    DoubleFormatter::toString(times_.back()) +
-                    ")");
-                return (*varianceSurface_)(times_.back(), extrapolate)*
-                    t/times_.back();
-            }
         }
 
     }

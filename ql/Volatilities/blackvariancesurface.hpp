@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2003 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,20 +24,23 @@
 #define quantlib_blackvariancesurface_hpp
 
 #include <ql/voltermstructure.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/Math/matrix.hpp>
+#include <ql/Math/interpolation2D.hpp>
+#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
     namespace VolTermStructures {
 
         //! Black volatility surface modelled as variance surface
-        /*! This class calculates time/strike dependant Black volatilities
+        /*! This class calculates time/strike dependent Black volatilities
             using as input a matrix of Black volatilities
             observed in the market.
 
             The calculation is performed interpolating on the variance surface.
+            Bilinear interpolation is used as default; this can be changed
+            by the setInterpolation() method.
         */
-        template<class Interpolator2D>
         class BlackVarianceSurface : public BlackVarianceTermStructure,
                                      public Patterns::Observer {
           public:
@@ -45,130 +49,53 @@ namespace QuantLib {
             BlackVarianceSurface(const Date& referenceDate,
                                  const std::vector<Date>& dates,
                                  const std::vector<double>& strikes,
-                                 const QuantLib::Math::Matrix& blackVolMatrix,
+                                 const Math::Matrix& blackVolMatrix,
                                  Extrapolation lowerExtrapolation =
                                      InterpolatorDefaultExtrapolation,
                                  Extrapolation upperExtrapolation =
                                      InterpolatorDefaultExtrapolation,
                                  const DayCounter& dayCounter =
                                      DayCounters::Actual365());
-            Date referenceDate() const { return referenceDate_; }
-            DayCounter dayCounter() const { return dayCounter_; }
-            Date maxDate() const { return maxDate_; }
+            Date referenceDate() const { 
+                return referenceDate_; 
+            }
+            DayCounter dayCounter() const { 
+                return dayCounter_; 
+            }
+            Date maxDate() const { 
+                return maxDate_; 
+            }
+            // modifiers
+            template <class Traits>
+            void setInterpolation() {
+                varianceSurface_ = 
+                    Traits::make_interpolation(times_.begin(), times_.end(),
+                                               strikes_.begin(), 
+                                               strikes_.end(),
+                                               variances_);
+                notifyObservers();
+            }
             // Observer interface
-            void update();
+            void update() {
+                notifyObservers();
+            }
           protected:
             virtual double blackVarianceImpl(Time t,
                                              double strike,
                                              bool extrapolate = false) const;
           private:
+            typedef Math::Interpolation2D<std::vector<Time>::const_iterator,
+                                          std::vector<double>::const_iterator,
+                                          Math::Matrix> Interpolation;
             Date referenceDate_;
             DayCounter dayCounter_;
             Date maxDate_;
             std::vector<double> strikes_;
             std::vector<Time> times_;
-            QuantLib::Math::Matrix variances_;
-            Handle < Interpolator2D> varianceSurface_;
+            Math::Matrix variances_;
+            Handle<Interpolation> varianceSurface_;
             Extrapolation lowerExtrapolation_, upperExtrapolation_;
         };
-
-
-        template<class Interpolator2D>
-        BlackVarianceSurface<Interpolator2D>::BlackVarianceSurface(
-            const Date& referenceDate,
-            const std::vector<Date>& dates,
-            const std::vector<double>& strikes,
-            const QuantLib::Math::Matrix& blackVolMatrix,
-            typename BlackVarianceSurface<Interpolator2D>::Extrapolation 
-                lowerEx,
-            typename BlackVarianceSurface<Interpolator2D>::Extrapolation 
-                upperEx,
-            const DayCounter& dayCounter)
-        : referenceDate_(referenceDate), dayCounter_(dayCounter),
-          maxDate_(dates.back()), strikes_(strikes),
-          lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
-
-            QL_REQUIRE(dates.size()==blackVolMatrix.columns(),
-                "BlackVarianceSurface::BlackVarianceSurface : "
-                "mismatch between date vector and vol matrix colums");
-            QL_REQUIRE(strikes_.size()==blackVolMatrix.rows(),
-                "BlackVarianceSurface::BlackVarianceSurface : "
-                "mismatch between money-strike vector and vol matrix rows");
-
-            QL_REQUIRE(dates[0]>=referenceDate,
-                "BlackVarianceSurface::BlackVarianceSurface : "
-                "cannot have dates[0]<=referenceDate");
-
-            variances_ = QuantLib::Math::Matrix(strikes_.size(), dates.size());
-            times_ = std::vector<Time>(dates.size());
-            Size j, i;
-            for (j=0; j<blackVolMatrix.columns(); j++) {
-                times_[j] = dayCounter_.yearFraction(referenceDate, dates[j]);
-                QL_REQUIRE(j==0 || times_[j]>times_[j-1],
-                    "BlackVarianceSurface::BlackVarianceSurface : "
-                    "dates must be sorted unique!");
-                for (i=0; i<blackVolMatrix.rows(); i++) {
-                    variances_[i][j] = times_[j] *
-                        blackVolMatrix[i][j]*blackVolMatrix[i][j];
-                    if (j==0) {
-                        QL_REQUIRE(variances_[i][0]>0.0 || times_[0]==0.0,
-                            "BlackVarianceCurve::BlackVarianceCurve : "
-                            "variance must be positive");
-                    } else {
-                        QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
-                            "BlackVarianceCurve::BlackVarianceCurve : "
-                            "variance must be non-decreasing");
-                    }
-                }
-            }
-            varianceSurface_ = Handle<Interpolator2D> (new
-                Interpolator2D(times_.begin(), times_.end(),
-                               strikes_.begin(), strikes_.end(),
-                               variances_));
-        }
-
-
-        template<class Interpolator2D>
-        void BlackVarianceSurface<Interpolator2D>::update() {
-            notifyObservers();
-        }
-
-        template<class Interpolator2D>
-        double BlackVarianceSurface<Interpolator2D>::
-            blackVarianceImpl(Time t, double strike, bool extrapolate) const {
-
-            // it doesn't check if extrapolation is performed/allowed
-            if (t==0.0) return 0.0;
-
-            // enforce constant extrapolation when required
-            if (strike < strikes_.front() && strike < strikes_.back()
-                && extrapolate
-                && lowerExtrapolation_ == ConstantExtrapolation)
-                strike = strikes_.front();
-            if (strike > strikes_.back() && strike > strikes_.front()
-                && extrapolate
-                && upperExtrapolation_ == ConstantExtrapolation)
-                strike = strikes_.back();
-
-            QL_REQUIRE(t>=0.0,
-                "BlackVarianceSurface::blackVarianceImpl : "
-                "negative time (" + DoubleFormatter::toString(t) +
-                ") not allowed");
-            if (t<=times_[0])
-                return (*varianceSurface_)(times_[0], strike, extrapolate)*
-                    t/times_[0];
-            else if (t<=times_.back())
-                return (*varianceSurface_)(t, strike, extrapolate);
-            else // t>times_.back() || extrapolate
-                QL_REQUIRE(extrapolate,
-                    "ConstantVol::blackVolImpl : "
-                    "time (" + DoubleFormatter::toString(t) +
-                    ") greater than max time (" +
-                    DoubleFormatter::toString(times_.back()) +
-                    ")");
-                return (*varianceSurface_)(times_.back(), strike, extrapolate)*
-                    t/times_.back();
-        }
 
     }
 

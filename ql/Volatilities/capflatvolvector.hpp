@@ -23,13 +23,13 @@
 #define quantlib_cap_volatility_vector_h
 
 #include "ql/capvolstructures.hpp"
-#include "ql/Math/linearinterpolation.hpp"
+#include "ql/Math/interpolationtraits.hpp"
 #include <vector>
 
 namespace QuantLib {
 
     namespace Volatilities {
-        
+
         //! Cap/floor at-the-money flat volatility vector
         /*! This class provides the at-the-money volatility for a given 
             cap by interpolating a volatility vector whose elements are 
@@ -63,7 +63,7 @@ namespace QuantLib {
             std::vector<Time> timeLengths_;
             std::vector<double> volatilities_;
             // interpolation
-            typedef Math::LinearInterpolation<
+            typedef Math::Interpolation<
                 std::vector<Time>::const_iterator,
                 std::vector<double>::const_iterator> VolInterpolation;
             Handle<VolInterpolation> interpolation_;
@@ -72,7 +72,7 @@ namespace QuantLib {
 
 
         // inline definitions
-    
+
         inline CapFlatVolatilityVector::CapFlatVolatilityVector(
             const Date& today, const Calendar& calendar, int settlementDays, 
             const std::vector<Period>& lengths, 
@@ -95,20 +95,20 @@ namespace QuantLib {
                     settlementDate_,endDate,settlementDate_,endDate);
                 volatilities_[i+1] = vols[i];
             }
-            interpolation_ = Handle<VolInterpolation>(
-                new VolInterpolation(timeLengths_.begin(),
-                                     timeLengths_.end(),
-                                     volatilities_.begin()));
+            interpolation_ = 
+                Math::Linear::make_interpolation(timeLengths_.begin(),
+                                                 timeLengths_.end(),
+                                                 volatilities_.begin());
         }
 
         inline Date CapFlatVolatilityVector::todaysDate() const {
             return todaysDate_;
         }
-        
+
         inline Date CapFlatVolatilityVector::settlementDate() const {
             return settlementDate_;
         }
-        
+
         inline DayCounter CapFlatVolatilityVector::dayCounter() const {
             return dayCounter_;
         }
@@ -117,7 +117,7 @@ namespace QuantLib {
             Time length, Rate) const {
                 return (*interpolation_)(length, false);
         }
-        
+
     }
 
 }

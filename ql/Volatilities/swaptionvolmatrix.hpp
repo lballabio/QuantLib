@@ -24,13 +24,13 @@
 
 #include "ql/swaptionvolstructure.hpp"
 #include "ql/Math/matrix.hpp"
-#include "ql/Math/bilinearinterpolation.hpp"
+#include "ql/Math/interpolationtraits.hpp"
 #include <vector>
 
 namespace QuantLib {
 
     namespace Volatilities {
-        
+
         //! Swaption at-the-money volatility matrix
         /*! This class provides the at-the-money volatility for a given 
             swaption by interpolating a volatility matrix whose elements are
@@ -64,7 +64,7 @@ namespace QuantLib {
             std::vector<Time> timeLengths_;
             Math::Matrix volatilities_;
             // interpolation
-            typedef Math::BilinearInterpolation<
+            typedef Math::Interpolation<
                 std::vector<Time>::const_iterator,
                 std::vector<Time>::const_iterator,
                 Math::Matrix> VolInterpolation;
@@ -76,7 +76,7 @@ namespace QuantLib {
 
 
         // inline definitions
-    
+
         inline SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
             const Date& today, const std::vector<Date>& dates, 
             const std::vector<Period>& lengths, const Math::Matrix& vols,
@@ -97,18 +97,18 @@ namespace QuantLib {
                 timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate,
                                                            startDate,endDate);
             }
-            interpolation_ = Handle<VolInterpolation>(
-                new VolInterpolation(exerciseTimes_.begin(),
-                                     exerciseTimes_.end(),
-                                     timeLengths_.begin(),
-                                     timeLengths_.end(),
-                                     volatilities_));
+            interpolation_ = 
+                Math::Linear::make_interpolation(exerciseTimes_.begin(),
+                                                 exerciseTimes_.end(),
+                                                 timeLengths_.begin(),
+                                                 timeLengths_.end(),
+                                                 volatilities_);
         }
 
         inline Date SwaptionVolatilityMatrix::todaysDate() const {
             return todaysDate_;
         }
-        
+
         inline DayCounter SwaptionVolatilityMatrix::dayCounter() const {
             return dayCounter_;
         }
@@ -117,7 +117,7 @@ namespace QuantLib {
         SwaptionVolatilityMatrix::exerciseDates() const { 
             return exerciseDates_;
         }
-        
+
         inline const std::vector<Period>& 
         SwaptionVolatilityMatrix::lengths() const { 
             return lengths_;
@@ -127,7 +127,7 @@ namespace QuantLib {
                 Time start, Time length, Rate) const {
             return (*interpolation_)(start,length,false);
         }
-        
+
         inline std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(
                 const Date& start, const Period& length) const {
             Time exerciseTime = dayCounter_.yearFraction(todaysDate_,start,

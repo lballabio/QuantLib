@@ -58,7 +58,7 @@ namespace QuantLib {
           private:
               Size rows_;
               std::vector<
-                  CubicSpline<RandomAccessIteratorX,
+                  CubicSplineInterpolation<RandomAccessIteratorX,
                               typename MatricialData::const_row_iterator> > 
               splines_;
         };
@@ -74,7 +74,7 @@ namespace QuantLib {
           rows_(data_.rows()) {
             typedef typename M::const_row_iterator row_iterator;
             for (Size i = 0; i< rows_; i++)
-                splines_.push_back(CubicSpline<I1, row_iterator>(
+                splines_.push_back(CubicSplineInterpolation<I1, row_iterator>(
                     xBegin, xEnd, data_.row_begin(i)));
 
         }
@@ -91,8 +91,8 @@ namespace QuantLib {
             for (Size i = 0; i< rows_; i++) {
                 newColumn[i]=splines_[i](x, allowExtrapolation);
             }
-                
-            CubicSpline<I2,
+
+            CubicSplineInterpolation<I2,
                 std::vector<result_type>::const_iterator> columnSpline(
               yBegin_, yEnd_, newColumn.begin());
 

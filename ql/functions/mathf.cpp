@@ -53,7 +53,7 @@ namespace QuantLib {
                         y_values.begin())(x, allowExtrapolation);
                     break;
                 case 2:
-                    result = CubicSpline<
+                    result = CubicSplineInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),

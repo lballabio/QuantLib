@@ -29,7 +29,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::CubicSpline;
+        using Math::CubicSplineInterpolation;
         using FiniteDifferences::valueAtCenter;
 
         FdDividendOption::FdDividendOption(Option::Type type, double underlying,
@@ -117,7 +117,7 @@ namespace QuantLib {
                 }
             }
 
-            CubicSpline<std::vector<double>::iterator,
+            CubicSplineInterpolation<std::vector<double>::iterator,
               std::vector<double>::iterator> priceSpline(
                 logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin());
 

@@ -39,18 +39,14 @@ namespace QuantLib {
                         const DayCounter& dc,
                         const std::vector<Date>& dates,
                         const std::vector<double>& strikes,
-                        const QuantLib::Math::Matrix& blackVolSurface,
+                        const Matrix& blackVolSurface,
                         const Date& date1,
                         const Date& date2,
                         double strike,
                         int interpolation2DType,
                         bool allowExtrapolation) {
 
-            typedef BlackVarianceSurface<
-                        BilinearInterpolation<
-                        std::vector<double>::const_iterator,
-			            std::vector<double>::const_iterator,
-                        Matrix> > surface_t;
+            typedef BlackVarianceSurface surface_t;
 
             double result = 0.0;
 

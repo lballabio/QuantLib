@@ -29,13 +29,14 @@ namespace QuantLib {
     namespace VolTermStructures {
 
         //! Local volatility curve derived from a Black curve
-        template<class Interpolator1D>
         class LocalVolCurve : public LocalVolTermStructure,
                               public Patterns::Observer {
           public:
             // constructor
-            LocalVolCurve(const Handle<BlackVarianceCurve<
-                Interpolator1D> >& blackVarianceCurve);
+            LocalVolCurve(const RelinkableHandle<BlackVarianceCurve>& curve)
+            : blackVarianceCurve_(curve) {
+                registerWith(blackVarianceCurve_);
+            }
             // inspectors
             Date referenceDate() const {
                 return blackVarianceCurve_->referenceDate();
@@ -43,27 +44,19 @@ namespace QuantLib {
             DayCounter dayCounter() const {
                 return blackVarianceCurve_->dayCounter();
             }
-            Date maxDate() const { return blackVarianceCurve_->maxDate(); }
+            Date maxDate() const { 
+                return blackVarianceCurve_->maxDate(); 
+            }
             // Observer interface
-            void update();
+            void update() {
+                notifyObservers();
+            }
           protected:
             double localVolImpl(Time, double, bool extrapolate) const;
           private:
-            Handle<BlackVarianceCurve<Interpolator1D> > blackVarianceCurve_;
+            RelinkableHandle<BlackVarianceCurve> blackVarianceCurve_;
         };
 
-
-        template<class Interpolator1D>
-        LocalVolCurve<Interpolator1D>::LocalVolCurve(
-            const Handle<BlackVarianceCurve<Interpolator1D> >&
-                blackVarianceCurve)
-        : blackVarianceCurve_(blackVarianceCurve) {}
-
-
-        template<class Interpolator1D>
-        void LocalVolCurve<Interpolator1D>::update() {
-            notifyObservers();
-        }
 
         /*! The relation
             \f[
@@ -77,15 +70,14 @@ namespace QuantLib {
             \f]
             can be deduced which is here implemented.
         */
-        template<class Interpolator1D>
-        double LocalVolCurve<Interpolator1D>::localVolImpl(
-            Time t, double dummyValue, bool extrapolate) const {
+        inline double LocalVolCurve::localVolImpl(Time t, double dummy, 
+                                                  bool extrapolate) const {
 
             double dt = (1.0/365.0);
-            double var1 = blackVarianceCurve_->blackVariance(t, dummyValue,
-                extrapolate);
-            double var2 = blackVarianceCurve_->blackVariance(t+dt, dummyValue,
-                true);
+            double var1 = blackVarianceCurve_->blackVariance(t, dummy,
+                                                             extrapolate);
+            double var2 = blackVarianceCurve_->blackVariance(t+dt, dummy,
+                                                             true);
             double derivative = (var2-var1)/dt;
             return QL_SQRT(derivative);
         }

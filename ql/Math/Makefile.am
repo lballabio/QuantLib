@@ -12,6 +12,7 @@ include_HEADERS = \
 	functional.hpp \
 	interpolation.hpp \
 	interpolation2D.hpp \
+	interpolationtraits.hpp \
 	gammadistribution.hpp \
 	gaussianstatistics.hpp \
 	generalstatistics.hpp \
