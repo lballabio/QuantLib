@@ -27,6 +27,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.8  2001/05/10 15:32:18  nando
+    now when it runs as main it doesn't stop waiting for user keystroke anymore
+
     Revision 1.7  2001/04/27 10:44:15  lballabio
     Support for unittest in Python 2.1
 
@@ -121,4 +124,3 @@ def test():
 
 if __name__ == '__main__':
     test()
-    raw_input('press any key to continue')
