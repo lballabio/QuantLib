@@ -34,7 +34,7 @@ namespace QuantLib {
                      double discount,
                      double variance,
                      double maturity,
-                     Handle<PlainVanillaPayoff> payoff);
+                     Handle<StrikedTypePayoff> payoff);
         double value() const;
         double delta() const;
         double deltaForward() const;
@@ -46,19 +46,21 @@ namespace QuantLib {
         double strikeSensitivity() const;
     private:
         double spot_, forward_, discount_, variance_, maturity_;
-        Handle<PlainVanillaPayoff> payoff_;
+        Handle<StrikedTypePayoff> payoff_;
 
         double stdDev_, strike_, rate_, dividendDiscount_, dividendRate_;
-        double fD1_, fD2_, fderD1_, vol_;
-        double alpha_, beta_, NID1_;
+        double fD1_, fD2_, vol_;
+        double alpha_, beta_, NID1_, NID2_;
+        bool cashOrNothing_;
     };
 
 
     inline BlackFormula::BlackFormula(double spot, double forward,
         double discount, double variance, double maturity,
-        Handle<PlainVanillaPayoff> payoff)
+        Handle<StrikedTypePayoff> payoff)
     : spot_(spot), forward_(forward), discount_(discount),
-      variance_(variance), maturity_(maturity), payoff_(payoff) {
+      variance_(variance), maturity_(maturity), payoff_(payoff),
+      cashOrNothing_(false) {
 
         QL_REQUIRE(spot>0.0,
             "BlackFormula::BlackFormula : "
@@ -86,10 +88,13 @@ namespace QuantLib {
         dividendDiscount_ = forward / spot * discount;
         dividendRate_ = -QL_LOG(dividendDiscount_)/maturity;
 
+
+        double fderD1, fderD2;
         if (variance>0.0) {
             vol_ = QL_SQRT(variance/maturity);
             if (strike_==0.0) {
-                fderD1_ = 0.0;
+                fderD1 = 0.0;
+                fderD2 = 0.0;
                 fD1_ = 1.0;
                 fD2_ = 1.0;
             } else {
@@ -99,11 +104,13 @@ namespace QuantLib {
                 double D2 = D1-stdDev_;
                 fD1_ = f(D1);
                 fD2_ = f(D2);
-                fderD1_ = f.derivative(D1);
+                fderD1 = f.derivative(D1);
+                fderD2 = f.derivative(D2);
             }
         } else {
             vol_ = 0.0;
-            fderD1_ = 0.0;
+            fderD1 = 0.0;
+            fderD2 = 0.0;
             if (forward>strike_) {
                 fD1_ = 1.0;
                 fD2_ = 1.0;
@@ -113,26 +120,78 @@ namespace QuantLib {
             }
         }
 
+
+
         switch (payoff->optionType()) {
           case Option::Call:
             alpha_ = fD1_;
             beta_  = fD2_;
-            NID1_  = fderD1_;
+            NID1_  = fderD1;
+            NID2_  = fderD2;
             break;
           case Option::Put:
             alpha_ = fD1_-1.0;
             beta_  = fD2_-1.0;
-            NID1_  = fderD1_;
+            NID1_  = fderD1;
+            NID2_  = fderD2;
             break;
           case Option::Straddle:
             alpha_ = 2.0*fD1_-1.0;
             beta_  = 2.0*fD2_-1.0;
-            NID1_  = 2.0*fderD1_;
+            NID1_  = 2.0*fderD1;
+            NID2_  = 2.0*fderD2;
             break;
           default:
             throw IllegalArgumentError("BlackFormula::BlackFormula : "
                                        "invalid option type");
         }
+
+
+        // Binary Cash-Or-Nothing payoff?
+        Handle<CashOrNothingPayoff> coo;
+        #if defined(HAVE_BOOST)
+        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
+        #else
+        try {
+            coo = payoff_;
+        } catch (...) {}
+        #endif
+        if (!IsNull(coo)) {
+            // ok, the payoff is Binary Cash-Or-Nothing
+            alpha_ = 0.0;
+            strike_ = - coo->cashPayoff();
+            cashOrNothing_ = true;
+        }
+
+        // Binary Asset-Or-Nothing payoff?
+        Handle<AssetOrNothingPayoff> aoo;
+        #if defined(HAVE_BOOST)
+        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
+        #else
+        try {
+            aoo = payoff_;
+        } catch (...) {}
+        #endif
+        if (!IsNull(aoo)) {
+            // ok, the payoff is Binary Asset-Or-Nothing
+            beta_ = 0.0;
+        }
+
+        // Binary Super-Share payoff?
+        Handle<SuperSharePayoff> ss;
+        #if defined(HAVE_BOOST)
+        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff_);
+        #else
+        try {
+            ss = payoff_;
+        } catch (...) {}
+        #endif
+        if (!IsNull(ss)) {
+            // ok, the payoff is Binary Super-Share
+            throw Error("Binary Super-Share payoff not handled yet");
+
+        }
+
     }
 
     inline double BlackFormula::value() const {
@@ -161,15 +220,32 @@ namespace QuantLib {
     }
 
     inline double BlackFormula::dividendRho() const {
-        return - maturity_ * dividendDiscount_ * spot_ * alpha_;
+        return - maturity_ * discount_ * forward_ * alpha_;
     }
 
     inline double BlackFormula::vega() const {
-        return spot_ * NID1_ * dividendDiscount_ * QL_SQRT(maturity_);
+        return NID1_ * discount_ * forward_ * QL_SQRT(maturity_);
     }
 
     inline double BlackFormula::strikeSensitivity() const {
-        return - discount_ * beta_;
+
+        if (cashOrNothing_) {
+            // to be checked!!!!!!!!!!
+            double strike = payoff_->strike();
+            QL_REQUIRE(strike!=0.0,
+                "BlackFormula::strikeSensitivity() : "
+                "cannot be calculated for a cash-or-nothing with null strike");
+            if (stdDev_>0.0) {
+                return - discount_ * NID2_; // * payoff_->cashPayoff() / (stdDev_ * strike);
+            } else {
+                if (spot_!=strike)
+                    return 0.0;
+                else // should return infinity. what to do?
+                    return 0.0;
+            }
+        } else {
+            return - discount_ * beta_;
+        }
     }
 
 }
