@@ -129,13 +129,13 @@ void JumpDiffusionTest::testMerton76() {
     BOOST_MESSAGE("Testing Merton 76 jump-diffusion model "
                   "for European options...");
 
-    /* The data below are from 
+    /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998, pag 9
 
-       Haug use the arbitrary truncation criterium of 11 terms in the sum, 
+       Haug use the arbitrary truncation criterium of 11 terms in the sum,
        which doesn't guarantee convergence up to 1e-2.
-       Using Haug's criterium Haug's values have been correctly reproduced. 
-       the following values have the right 1e-2 accuracy: any value different 
+       Using Haug's criterium Haug's values have been correctly reproduced.
+       the following values have the right 1e-2 accuracy: any value different
        from Haug has been noted.
     */
     HaugMertonData values[] = {
@@ -353,7 +353,7 @@ void JumpDiffusionTest::testMerton76() {
         Real meanJump = 0.0;
         meanLogJump->setValue(QL_LOG(1.0+meanJump)-0.5*jVol*jVol);
 
-        Volatility totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol + 
+        Volatility totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol +
                                       diffusionVol*diffusionVol);
         Volatility volError = QL_FABS(totalVol-values[i].v);
         QL_REQUIRE(volError<1e-13,
@@ -367,7 +367,7 @@ void JumpDiffusionTest::testMerton76() {
         if (error>values[i].tol) {
             REPORT_FAILURE_2("value", payoff, exercise,
                              values[i].s, values[i].q, values[i].r,
-                             today, values[i].v, values[i].jumpIntensity, 
+                             today, values[i].v, values[i].jumpIntensity,
                              values[i].gamma, values[i].result, calculated,
                              error, values[i].tol);
         }
@@ -520,7 +520,7 @@ void JumpDiffusionTest::testGreeks() {
 
                           // compare
                           std::map<std::string,Real>::iterator it;
-                          for (it = expected.begin(); 
+                          for (it = expected.begin();
                                it != expected.end(); ++it) {
                               std::string greek = it->first;
                               Real expct = expected  [greek],
@@ -530,7 +530,7 @@ void JumpDiffusionTest::testGreeks() {
                               if (error>tol) {
                                   REPORT_FAILURE_1(greek, payoff, exercise,
                                                    u, q, r, today, v,
-                                                   jInt[jj1], mLJ[jj2], 
+                                                   jInt[jj1], mLJ[jj2],
                                                    jV[jj3], expct, calcl,
                                                    error, tol);
                               }

@@ -16,7 +16,7 @@
 */
 
 #include <ql/dataparsers.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 #include <ql/null.hpp>
 
 namespace QuantLib {

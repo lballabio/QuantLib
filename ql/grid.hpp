@@ -19,11 +19,10 @@
     \brief Grid classes with useful constructors for trees and finite diffs
 */
 
-#ifndef quantlib_time_grid_h
-#define quantlib_time_grid_h
+#ifndef quantlib_time_grid_hpp
+#define quantlib_time_grid_hpp
 
-#include <ql/dataformatters.hpp>
-#include <list>
+#include <ql/Math/array.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -60,7 +59,7 @@ namespace QuantLib {
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
-            std::vector<Time>::iterator e = 
+            std::vector<Time>::iterator e =
                 std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
@@ -95,7 +94,7 @@ namespace QuantLib {
             // (even though I'm not sure that I agree.)
             QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
                        "negative times not allowed");
-            std::vector<Time>::iterator e = 
+            std::vector<Time>::iterator e =
                 std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
 
@@ -118,8 +117,8 @@ namespace QuantLib {
 
             Time periodBegin = 0.0;
             push_back(periodBegin);
-            for (std::vector<Time>::const_iterator t=mandatoryTimes_.begin(); 
-                                                   t<mandatoryTimes_.end(); 
+            for (std::vector<Time>::const_iterator t=mandatoryTimes_.begin();
+                                                   t<mandatoryTimes_.end();
                                                    t++) {
                 Time periodEnd = *t;
                 if (periodEnd != 0.0) {
@@ -138,8 +137,8 @@ namespace QuantLib {
                                      std::back_inserter(dt_));
         }
         Size findIndex(Time t) const;
-        const std::vector<Time>& mandatoryTimes() const { 
-            return mandatoryTimes_; 
+        const std::vector<Time>& mandatoryTimes() const {
+            return mandatoryTimes_;
         }
         Time dt(Size i) const;
       private:
@@ -149,7 +148,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Disposable<Array> CenteredGrid(Real center, Real dx, 
+    inline Disposable<Array> CenteredGrid(Real center, Real dx,
                                           Size steps) {
         Array result(steps+1);
         for (Size i=0; i<steps+1; i++)
@@ -157,7 +156,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<Array> BoundedGrid(Real xMin, Real xMax, 
+    inline Disposable<Array> BoundedGrid(Real xMin, Real xMax,
                                          Size steps) {
         Array result(steps+1);
         Real x=xMin, dx=(xMax-xMin)/steps;

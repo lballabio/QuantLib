@@ -124,7 +124,7 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
-                           values[i].r, today, values[i].v, values[i].result, 
+                           values[i].r, today, values[i].v, values[i].result,
                            calculated, error, values[i].tol);
         }
     }
@@ -177,7 +177,7 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
-                           values[i].r, today, values[i].v, values[i].result, 
+                           values[i].r, today, values[i].v, values[i].result,
                            calculated, error, values[i].tol);
         }
     }
@@ -230,7 +230,7 @@ void DigitalOptionTest::testGapEuropeanValues() {
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
-                           values[i].r, today, values[i].v, values[i].result, 
+                           values[i].r, today, values[i].v, values[i].result,
                            calculated, error, values[i].tol);
         }
     }
@@ -276,7 +276,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
             values[i].type, values[i].strike, 15.00));
 
         Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
-        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
         spot ->setValue(values[i].s);
@@ -296,8 +296,8 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         Real calculated = opt.NPV();
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
-                           values[i].q, values[i].r, today, values[i].v, 
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s,
+                           values[i].q, values[i].r, today, values[i].v,
                            values[i].result, calculated, error, values[i].tol);
         }
     }
@@ -341,7 +341,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
             values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
-        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
         spot ->setValue(values[i].s);
@@ -361,8 +361,8 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         Real calculated = opt.NPV();
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
-                           values[i].q, values[i].r, today, values[i].v, 
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s,
+                           values[i].q, values[i].r, today, values[i].v,
                            values[i].result, calculated, error, values[i].tol);
         }
     }
@@ -401,8 +401,8 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
             values[i].type, values[i].strike, 15.0));
 
         Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
-        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
-                                                                    exDate, 
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+                                                                    exDate,
                                                                     true));
 
         spot ->setValue(values[i].s);
@@ -422,8 +422,8 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         Real calculated = opt.NPV();
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
-                           values[i].q, values[i].r, today, values[i].v, 
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s,
+                           values[i].q, values[i].r, today, values[i].v,
                            values[i].result, calculated, error, values[i].tol);
         }
     }
@@ -468,8 +468,8 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
             values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
-        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
-                                                                    exDate, 
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+                                                                    exDate,
                                                                     true));
 
         spot ->setValue(values[i].s);
@@ -489,8 +489,8 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         Real calculated = opt.NPV();
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
-                           values[i].q, values[i].r, today, values[i].v, 
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s,
+                           values[i].q, values[i].r, today, values[i].v,
                            values[i].result, calculated, error, values[i].tol);
         }
     }
@@ -531,8 +531,8 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     // there is no cycling on different residual times
     Date exDate = today.plusDays(360);
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-    boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
-                                                                exDate, 
+    boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
+                                                                exDate,
                                                                 false));
     boost::shared_ptr<Exercise> exercises[] = { exercise, amExercise };
 
@@ -636,7 +636,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
                       // check
                       std::map<std::string,Real>::iterator it;
-                      for (it = calculated.begin(); 
+                      for (it = calculated.begin();
                            it != calculated.end(); ++it) {
                           std::string greek = it->first;
                           Real expct = expected  [greek],
@@ -644,8 +644,8 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                                tol   = tolerance [greek];
                           Real error = relativeError(expct,calcl,value);
                           if (error > tol) {
-                              REPORT_FAILURE(greek, payoff, exercise, 
-                                             u, q, r, today, v, 
+                              REPORT_FAILURE(greek, payoff, exercise,
+                                             u, q, r, today, v,
                                              expct, calcl, error, tol);
                           }
                       }
@@ -744,7 +744,7 @@ void DigitalOptionTest::testMCCashAtHit() {
 */
         Real error = relativeError(calculated, values[i].result, values[i].result);
         if (error > 2.0*values[i].tol) {
-            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
                            values[i].result, calculated, error, values[i].tol);
         }

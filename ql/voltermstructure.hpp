@@ -26,7 +26,7 @@
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/quote.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <ql/Patterns/visitor.hpp>
 #include <vector>
@@ -128,7 +128,7 @@ namespace QuantLib {
 
 
     //! Black-volatility term structure
-    /*! This abstract class acts as an adapter to BlackVolTermStructure 
+    /*! This abstract class acts as an adapter to BlackVolTermStructure
         allowing the programmer to implement only the
         <tt>blackVolImpl(Time, Real, bool)</tt> method in derived classes.
 
@@ -149,7 +149,7 @@ namespace QuantLib {
 
 
     //! Black variance term structure
-    /*! This abstract class acts as an adapter to VolTermStructure allowing 
+    /*! This abstract class acts as an adapter to VolTermStructure allowing
         the programmer to implement only the
         <tt>blackVarianceImpl(Time, Real, bool)</tt> method in derived
         classes.
@@ -237,7 +237,7 @@ namespace QuantLib {
     }
 
     inline Volatility BlackVolTermStructure::blackVol(const Date& maturity,
-                                                      Real strike, 
+                                                      Real strike,
                                                       bool extrapolate) const {
         checkRange(maturity,strike,extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(), maturity);
@@ -245,15 +245,15 @@ namespace QuantLib {
     }
 
     inline Volatility BlackVolTermStructure::blackVol(Time maturity,
-                                                      Real strike, 
+                                                      Real strike,
                                                       bool extrapolate) const {
         checkRange(maturity,strike,extrapolate);
         return blackVolImpl(maturity, strike);
     }
 
     inline Real BlackVolTermStructure::blackVariance(const Date& maturity,
-                                                     Real strike, 
-                                                     bool extrapolate) 
+                                                     Real strike,
+                                                     bool extrapolate)
                                                                       const {
         checkRange(maturity,strike,extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(), maturity);
@@ -261,14 +261,14 @@ namespace QuantLib {
     }
 
     inline Real BlackVolTermStructure::blackVariance(Time maturity,
-                                                     Real strike, 
+                                                     Real strike,
                                                      bool extrapolate) const {
         checkRange(maturity,strike,extrapolate);
         return blackVarianceImpl(maturity, strike);
     }
 
     inline void BlackVolTermStructure::accept(AcyclicVisitor& v) {
-        Visitor<BlackVolTermStructure>* v1 = 
+        Visitor<BlackVolTermStructure>* v1 =
             dynamic_cast<Visitor<BlackVolTermStructure>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
@@ -276,13 +276,13 @@ namespace QuantLib {
             QL_FAIL("not a Black-volatility term structure visitor");
     }
 
-    inline void BlackVolTermStructure::checkRange(const Date& d, Real k, 
+    inline void BlackVolTermStructure::checkRange(const Date& d, Real k,
                                                   bool extrapolate) const {
         Time t = dayCounter().yearFraction(referenceDate(),d);
         checkRange(t,k,extrapolate);
     }
 
-    inline void BlackVolTermStructure::checkRange(Time t, Real k, 
+    inline void BlackVolTermStructure::checkRange(Time t, Real k,
                                                   bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
                    "negative time (" +
@@ -293,7 +293,7 @@ namespace QuantLib {
                    DecimalFormatter::toString(t) +
                    ") is past max curve time (" +
                    DecimalFormatter::toString(maxTime()) + ")");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() || 
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" +
                    DecimalFormatter::toString(k) +
@@ -309,7 +309,7 @@ namespace QuantLib {
     }
 
     inline void BlackVolatilityTermStructure::accept(AcyclicVisitor& v) {
-        Visitor<BlackVolatilityTermStructure>* v1 = 
+        Visitor<BlackVolatilityTermStructure>* v1 =
             dynamic_cast<Visitor<BlackVolatilityTermStructure>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
@@ -327,7 +327,7 @@ namespace QuantLib {
     }
 
     inline void BlackVarianceTermStructure::accept(AcyclicVisitor& v) {
-        Visitor<BlackVarianceTermStructure>* v1 = 
+        Visitor<BlackVarianceTermStructure>* v1 =
             dynamic_cast<Visitor<BlackVarianceTermStructure>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
@@ -342,7 +342,7 @@ namespace QuantLib {
     }
 
     inline Volatility LocalVolTermStructure::localVol(const Date& d,
-                                                      Real underlyingLevel, 
+                                                      Real underlyingLevel,
                                                       bool extrapolate) const {
         checkRange(d,underlyingLevel,extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(), d);
@@ -350,14 +350,14 @@ namespace QuantLib {
     }
 
     inline Volatility LocalVolTermStructure::localVol(Time t,
-                                                      Real underlyingLevel, 
+                                                      Real underlyingLevel,
                                                       bool extrapolate) const {
         checkRange(t,underlyingLevel,extrapolate);
         return localVolImpl(t, underlyingLevel);
     }
 
     inline void LocalVolTermStructure::accept(AcyclicVisitor& v) {
-        Visitor<LocalVolTermStructure>* v1 = 
+        Visitor<LocalVolTermStructure>* v1 =
             dynamic_cast<Visitor<LocalVolTermStructure>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
@@ -365,13 +365,13 @@ namespace QuantLib {
             QL_FAIL("not a local-volatility term structure visitor");
     }
 
-    inline void LocalVolTermStructure::checkRange(const Date& d, Real k, 
+    inline void LocalVolTermStructure::checkRange(const Date& d, Real k,
                                                   bool extrapolate) const {
         Time t = dayCounter().yearFraction(referenceDate(),d);
         checkRange(t,k,extrapolate);
     }
 
-    inline void LocalVolTermStructure::checkRange(Time t, Real k, 
+    inline void LocalVolTermStructure::checkRange(Time t, Real k,
                                                   bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
                    "negative time (" +
@@ -382,7 +382,7 @@ namespace QuantLib {
                    DecimalFormatter::toString(t) +
                    ") is past max curve time (" +
                    DecimalFormatter::toString(maxTime()) + ")");
-        QL_REQUIRE(extrapolate || allowsExtrapolation() || 
+        QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" +
                    DecimalFormatter::toString(k) +

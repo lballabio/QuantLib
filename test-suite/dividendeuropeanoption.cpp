@@ -96,7 +96,7 @@ void DividendEuropeanOptionTest::testGreeks() {
 
           std::vector<Date> dividendDates;
           std::vector<Real> dividends;
-          for (Date d = today.plusMonths(3); d < exercise->lastDate(); 
+          for (Date d = today.plusMonths(3); d < exercise->lastDate();
                     d = d.plusMonths(6)) {
               dividendDates.push_back(d);
               dividends.push_back(5.0);
@@ -111,7 +111,7 @@ void DividendEuropeanOptionTest::testGreeks() {
           boost::shared_ptr<BlackScholesProcess> stochProcess(
               new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));
 
-          DividendVanillaOption option(stochProcess, payoff, exercise, 
+          DividendVanillaOption option(stochProcess, payoff, exercise,
                                        dividendDates, dividends, engine);
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -190,8 +190,8 @@ void DividendEuropeanOptionTest::testGreeks() {
                                  tol   = tolerance [greek];
                             Real error = relativeError(expct,calcl,u);
                             if (error>tol) {
-                                REPORT_FAILURE(greek, payoff, exercise, 
-                                               u, q, r, today, v, 
+                                REPORT_FAILURE(greek, payoff, exercise,
+                                               u, q, r, today, v,
                                                expct, calcl, error, tol);
                             }
                         }

@@ -19,10 +19,10 @@
     \brief Poisson distribution
 */
 
-#ifndef quantlib_poisson_distribution_h
-#define quantlib_poisson_distribution_h
+#ifndef quantlib_poisson_distribution_hpp
+#define quantlib_poisson_distribution_hpp
 
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 #include <ql/Math/factorial.hpp>
 #include <ql/Math/incompletegamma.hpp>
 
@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! Normal distribution function
     /*! formula here ...
-        Given an integer \f$ k \f$, it returns its probability 
+        Given an integer \f$ k \f$, it returns its probability
         in a Poisson distribution.
     */
     class PoissonDistribution : public std::unary_function<Real,Real> {
@@ -83,7 +83,7 @@ namespace QuantLib {
             if (k==0) return 1.0;
             else      return 0.0;
         }
-        Real logFactorial = Factorial::ln(k); 
+        Real logFactorial = Factorial::ln(k);
         return QL_EXP(k*QL_LOG(mu_) - logFactorial - mu_);
     }
 

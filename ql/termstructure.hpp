@@ -25,7 +25,7 @@
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/quote.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <vector>
 
@@ -51,7 +51,7 @@ namespace QuantLib {
         virtual ~TermStructure() {}
         /*! \name Rates and discount
 
-            These methods are either function of dates or times. 
+            These methods are either function of dates or times.
             In the latter case, times are calculated as fraction
             of year from the reference date.
         */
@@ -69,7 +69,7 @@ namespace QuantLib {
         //! instantaneous forward rate
         Rate instantaneousForward(Time, bool extrapolate = false) const;
         //! instantaneous forward rate at a given compounding frequency
-        Rate compoundForward(const Date&, Integer, 
+        Rate compoundForward(const Date&, Integer,
                              bool extrapolate = false) const;
         //! instantaneous forward rate at a given compounding frequency
         Rate compoundForward(Time, Integer, bool extrapolate = false) const;
@@ -112,7 +112,7 @@ namespace QuantLib {
         virtual DiscountFactor discountImpl(Time) const = 0;
         //! instantaneous forward-rate calculation
         virtual Rate forwardImpl(Time) const = 0;
-        //! compound forward-rate calculation 
+        //! compound forward-rate calculation
         virtual Rate compoundForwardImpl(Time, Integer) const = 0;
         //@}
       private:
@@ -246,20 +246,20 @@ namespace QuantLib {
         return forwardImpl(t);
     }
 
-    inline Rate TermStructure::compoundForward(const Date& d, Integer f, 
+    inline Rate TermStructure::compoundForward(const Date& d, Integer f,
                                                bool extrapolate) const {
         checkRange(d, extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(),d);
         return compoundForwardImpl(t,f);
     }
 
-    inline Rate TermStructure::compoundForward(Time t, Integer f, 
+    inline Rate TermStructure::compoundForward(Time t, Integer f,
                                                bool extrapolate) const {
         checkRange(t, extrapolate);
         return compoundForwardImpl(t,f);
     }
 
-    inline Rate TermStructure::forward(const Date& d1, const Date& d2, 
+    inline Rate TermStructure::forward(const Date& d1, const Date& d2,
                                        bool extrapolate) const {
         QL_REQUIRE(d1 <= d2,
                    DateFormatter::toString(d1) +
@@ -280,7 +280,7 @@ namespace QuantLib {
         checkRange(t2, extrapolate);
         if (t2==t1)
 	        return instantaneousForward(t1);
-        else 
+        else
             return QL_LOG(discountImpl(t1)/discountImpl(t2))/(t2-t1);
     }
 
@@ -325,7 +325,7 @@ namespace QuantLib {
     }
 
 
-    // curve deriving discount and forward from zero yield 
+    // curve deriving discount and forward from zero yield
 
     inline DiscountFactor ZeroYieldStructure::discountImpl(Time t) const {
         Rate r = zeroYieldImpl(t);
@@ -340,7 +340,7 @@ namespace QuantLib {
         return r2+t*(r2-r1)/dt;
     }
 
-    inline Rate ZeroYieldStructure::compoundForwardImpl(Time t, 
+    inline Rate ZeroYieldStructure::compoundForwardImpl(Time t,
                                                         Integer f) const {
         Rate zy = zeroYieldImpl(t);
         if (f == 0)
@@ -372,7 +372,7 @@ namespace QuantLib {
         return Rate(QL_LOG(df1/df2)/dt);
     }
 
-    inline Rate DiscountStructure::compoundForwardImpl(Time t, 
+    inline Rate DiscountStructure::compoundForwardImpl(Time t,
                                                        Integer f) const {
         Rate zy = zeroYieldImpl(t);
         if (f == 0)
@@ -401,7 +401,7 @@ namespace QuantLib {
         return DiscountFactor(QL_EXP(-r*t));
     }
 
-    inline Rate ForwardRateStructure::compoundForwardImpl(Time t, 
+    inline Rate ForwardRateStructure::compoundForwardImpl(Time t,
                                                           Integer f) const {
         Rate zy = zeroYieldImpl(t);
         if (f == 0)

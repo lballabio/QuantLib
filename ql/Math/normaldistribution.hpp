@@ -20,11 +20,12 @@
     \brief normal, cumulative and inverse cumulative distributions
 */
 
-#ifndef quantlib_normal_distribution_h
-#define quantlib_normal_distribution_h
+#ifndef quantlib_normal_distribution_hpp
+#define quantlib_normal_distribution_hpp
 
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 #include <ql/Math/errorfunction.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 

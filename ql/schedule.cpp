@@ -16,17 +16,17 @@
 */
 
 #include <ql/schedule.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 
     Schedule::Schedule(const Calendar& calendar,
-                       const Date& startDate, const Date& endDate, 
+                       const Date& startDate, const Date& endDate,
                        Frequency frequency,
-                       BusinessDayConvention convention, 
-                       const Date& stubDate, bool startFromEnd, 
+                       BusinessDayConvention convention,
+                       const Date& stubDate, bool startFromEnd,
                        bool longFinal)
-    : calendar_(calendar), frequency_(Frequency(frequency)), 
+    : calendar_(calendar), frequency_(Frequency(frequency)),
       convention_(convention), stubDate_(stubDate),
       startFromEnd_(startFromEnd), longFinal_(longFinal),
       finalIsRegular_(true) {

@@ -23,6 +23,7 @@
 #define quantlib_sequence_statistics_hpp
 
 #include <ql/Math/statistics.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -253,7 +254,7 @@ namespace QuantLib {
                     if (variances[i]==0.0) {
                         correlation[i][j] = 1.0;
                     } else {
-                        correlation[i][j] *= 
+                        correlation[i][j] *=
                             1.0/QL_SQRT(variances[i]*variances[j]);
                     }
                 } else {
@@ -262,7 +263,7 @@ namespace QuantLib {
                     } else if (variances[i]==0.0 || variances[j]==0.0) {
                         correlation[i][j] = 0.0;
                     } else {
-                        correlation[i][j] *= 
+                        correlation[i][j] *=
                             1.0/QL_SQRT(variances[i]*variances[j]);
                     }
                 }

@@ -21,7 +21,6 @@
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/svd.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
-#include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -66,9 +65,9 @@ namespace {
         M3[1][0] = 2; M3[1][1] = 0; M3[1][2] = 2; M3[1][3] = 1;
         M3[2][0] = 0; M3[2][1] = 1; M3[2][2] = 0; M3[2][3] = 0;
 
-        M4[0][0] = 1; M4[0][1] = 2; M4[0][2] = 400; 
-        M4[1][0] = 2; M4[1][1] = 0; M4[1][2] = 1; 
-        M4[2][0] = 30; M4[2][1] = 2; M4[2][2] = 0; 
+        M4[0][0] = 1; M4[0][1] = 2; M4[0][2] = 400;
+        M4[1][0] = 2; M4[1][1] = 0; M4[1][2] = 1;
+        M4[2][0] = 30; M4[2][1] = 2; M4[2][2] = 0;
         M4[3][0] = 2; M4[3][1] = 0; M4[3][2] = 1.05;
     }
 
@@ -102,8 +101,7 @@ void MatricesTest::testEigenvectors() {
             // check decreasing ordering
             if (eigenValues[i] >= minHolder)
                 BOOST_FAIL("Eigenvalues nor ordered: "
-                + ArrayFormatter::toString(eigenValues.begin(),
-                                           eigenValues.end()));
+                + ArrayFormatter::toString(eigenValues));
             else
                 minHolder = eigenValues[i];
         }
@@ -127,15 +125,12 @@ void MatricesTest::testSqrt() {
     Real tolerance = 1.0e-12;
     if (error>tolerance) {
         BOOST_FAIL("Matrix square root calculation failed"
-                   "\noriginal matrix:\n" 
-                   + ArrayFormatter::toString(M1.begin(), M1.end(), 
-                                              6, 0, M1.columns()) +
-                   "\npseudoSqrt:\n" 
-                   + ArrayFormatter::toString(m.begin(), m.end(), 
-                                              6, 0, M1.columns()) +
-                   "\npseudoSqrt*pseudoSqrt:\n" 
-                   + ArrayFormatter::toString(temp.begin(), temp.end(), 
-                                              6, 0, M1.columns()) +
+                   "\noriginal matrix:\n"
+                   + MatrixFormatter::toString(M1) +
+                   "\npseudoSqrt:\n"
+                   + MatrixFormatter::toString(m) +
+                   "\npseudoSqrt*pseudoSqrt:\n"
+                   + MatrixFormatter::toString(temp) +
                    "\nerror:     " + DecimalFormatter::toString(error) +
                    "\ntolerance: " + DecimalFormatter::toString(tolerance));
     }
@@ -152,7 +147,7 @@ void MatricesTest::testSVD() {
     Matrix testMatrices[] = { M1, M2, M3, M4 };
 
     for (Size j = 0; j < LENGTH(testMatrices); j++) {
-        // m >= n required (rows >= columns)        
+        // m >= n required (rows >= columns)
         Matrix& A = testMatrices[j];
         SVD svd(A);
         // U is m x n
@@ -161,7 +156,7 @@ void MatricesTest::testSVD() {
         Array s = svd.singularValues();
         // S is n x n
         Matrix S = svd.S();
-        // V is n x n 
+        // V is n x n
         Matrix V = svd.V();
 
         for (Size i=0; i < S.rows(); i++) {

@@ -63,6 +63,46 @@ namespace QuantLib {
         static std::string toUppercase(const std::string& s);
     };
 
+    //! Formats numeric sequences for output
+    class SequenceFormatter {
+      public:
+        template<class Iterator>
+        static std::string toString(Iterator begin,
+                                    Iterator end,
+                                    Integer precision = 6,
+                                    Integer digits = 0,
+                                    Size elementsPerRow = QL_MAX_INTEGER) {
+            std::string s = "[ ";
+            for (Size n=0; begin!=end; ++begin, ++n) {
+                if (n == elementsPerRow) {
+                    s += ";\n  ";
+                    n = 0;
+                }
+                if (n!=0)
+                    s += " ; ";
+                s += DecimalFormatter::toString(*begin, precision, digits);
+            }
+            s += " ]";
+            return s;
+        }
+    };
+
+    //! Formats rates for output
+    /*! Formatting is in percentage form (xx.xxxxx%) */
+    class RateFormatter {
+      public:
+        static std::string toString(Rate rate,
+                                    Integer precision = 5);
+    };
+
+    //! Formats volatilities for output
+    /*! Formatting is in percentage form (xx.xxxxx%) */
+    class VolatilityFormatter {
+      public:
+        static std::string toString(Volatility vol,
+                                    Integer precision = 5);
+    };
+
 }
 
 

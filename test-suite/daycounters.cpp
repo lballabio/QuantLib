@@ -18,7 +18,7 @@
 #include "daycounters.hpp"
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

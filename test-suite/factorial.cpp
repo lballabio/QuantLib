@@ -18,7 +18,6 @@
 #include "factorial.hpp"
 #include <ql/Math/factorial.hpp>
 #include <ql/Math/gammadistribution.hpp>
-#include <ql/dataformatters.hpp>
 #include <ql/Math/poissondistribution.hpp>
 
 using namespace QuantLib;

@@ -162,6 +162,14 @@ namespace QuantLib {
     };
 
 
+    //! format currencies for output
+    class CurrencyFormatter {
+      public:
+        static std::string toString(CurrencyTag c);
+        static std::string toString(const Currency& c);
+    };
+
+
     // inline definitions
 
     inline bool operator==(const Currency& c1, const Currency& c2) {

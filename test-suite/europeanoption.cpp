@@ -612,7 +612,7 @@ void EuropeanOptionTest::testGreeks() {
               }
 
               boost::shared_ptr<BlackScholesProcess> stochProcess(
-                                 new BlackScholesProcess(Handle<Quote>(spot), 
+                                 new BlackScholesProcess(Handle<Quote>(spot),
                                                          qTS, rTS, volTS));
 
               EuropeanOption option(stochProcess, payoff, exercise);

@@ -24,8 +24,8 @@
 #define quantlib_data_formatters_hpp
 
 #include <ql/basicdataformatters.hpp>
+#include <ql/date.hpp>
 #include <ql/currency.hpp>
-#include <ql/option.hpp>
 #include <ql/Math/matrix.hpp>
 #include <iostream>
 
@@ -38,86 +38,23 @@ namespace QuantLib {
         static std::string toString(Decimal amount);
     };
 
-    //! Formats rates for output
-    /*! Formatting is in percentage form (xx.xxxxx%) */
-    class RateFormatter {
-      public:
-        static std::string toString(Rate rate,
-                                    Integer precision = 5);
-    };
 
-    //! Formats volatilities for output
-    /*! Formatting is in percentage form (xx.xxxxx%) */
-    class VolatilityFormatter {
-      public:
-        static std::string toString(Volatility vol,
-                                    Integer precision = 5);
-    };
-
-
-    //! Formats dates for output
-    /*! Formatting can be in short (mm/dd/yyyy)
-        or long (Month ddth, yyyy) form.
+    /*! \relates Date
+        \deprecated send to the stream the output of DateFormatter
     */
-    class DateFormatter {
-      public:
-        enum Format { Long, Short, ISO };
-        static std::string toString(const Date& d,
-                                    Format f = Long);
-    };
-
-    /*! \relates Date */
     std::ostream& operator<<(std::ostream&, const Date&);
 
 
-    //! Formats currencies for output
-    class CurrencyFormatter {
-      public:
-        static std::string toString(CurrencyTag c);
-    };
-
-    //! Formats option type for output
-    class OptionTypeFormatter {
-      public:
-        static std::string toString(Option::Type type);
-    };
-
-
-    //! Formats arrays for output
-    class ArrayFormatter {
-      public:
-        template<class DataIterator>
-        static std::string toString(DataIterator begin,
-                                    DataIterator end,
-                                    Integer precision = 6,
-                                    Integer digits = 0,
-                                    Size elementsPerRow = QL_MAX_INTEGER) {
-            std::string s = "[ ";
-            DataIterator i;
-            Size n;
-            for (i=begin, n=0; i!=end; i++, n++) {
-                if (n == elementsPerRow) {
-                    s += ";\n  ";
-                    n = 0;
-                }
-                if (n!=0)
-                    s += " ; ";
-                s += DecimalFormatter::toString(*i, precision, digits);
-            }
-            s += " ]";
-            return s;
-        }
-    };
-
-
     #ifndef QL_PATCH_MICROSOFT
-    /*! \relates Array */
-    std::ostream& operator<< (std::ostream&,
-                              const Array&);
+    /*! \relates Array
+        \deprecated send to the stream the output of ArrayFormatter
+    */
+    std::ostream& operator<<(std::ostream&, const Array&);
 
-    /*! \relates Matrix */
-    std::ostream& operator<< (std::ostream&,
-                              const Matrix&);
+    /*! \relates Matrix
+        \deprecated send to the stream the output of MatrixFormatter
+    */
+    std::ostream& operator<<(std::ostream&, const Matrix&);
     #endif
 
 }

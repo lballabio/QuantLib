@@ -109,7 +109,7 @@ namespace {
         }
 
         // rate helpers
-        std::vector<boost::shared_ptr<RateHelper> > 
+        std::vector<boost::shared_ptr<RateHelper> >
             instruments(deposits+swaps);
         for (i=0; i<deposits; i++) {
             Handle<Quote> r(rates[i]);

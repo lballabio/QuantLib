@@ -27,7 +27,7 @@ namespace QuantLib {
         const boost::shared_ptr<Exercise>& exercise,
         const Matrix& correlation,
         const boost::shared_ptr<PricingEngine>& engine)
-    : MultiAssetOption(stochProcs, payoff, exercise, correlation, engine), 
+    : MultiAssetOption(stochProcs, payoff, exercise, correlation, engine),
       basketType_(basketType) {}
 
     void BasketOption::setupArguments(Arguments* args) const {

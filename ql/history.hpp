@@ -19,12 +19,12 @@
     \brief history class
 */
 
-#ifndef quantlib_history_h
-#define quantlib_history_h
+#ifndef quantlib_history_hpp
+#define quantlib_history_hpp
 
 #include <ql/null.hpp>
+#include <ql/date.hpp>
 #include <ql/Utilities/filteringiterator.hpp>
-#include <ql/dataformatters.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -73,7 +73,7 @@ namespace QuantLib {
                       "history size incompatible with date range");
         }
         History(const Date& firstDate, const std::vector<Real>& values)
-        : firstDate_(firstDate), 
+        : firstDate_(firstDate),
           lastDate_(firstDate + BigInteger(values.size())),
           values_(values) {}
         /*! This constructor initializes the history with the given set of
@@ -346,7 +346,7 @@ namespace QuantLib {
             Date d = dates[i];
             Real x = values[i];
             QL_REQUIRE(d>=lastDate_,
-                       "unsorted date after " + 
+                       "unsorted date after " +
                        DateFormatter::toString(lastDate_));
             if (d == lastDate_) {
                 QL_REQUIRE(x==lastValue,

@@ -315,7 +315,7 @@ void BarrierOptionTest::testBabsiriValues() {
     boost::shared_ptr<TermStructure> rTS = flatRate(today, rH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
+    boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
@@ -421,7 +421,7 @@ void BarrierOptionTest::testBeagleholeValues() {
     boost::shared_ptr<TermStructure> rTS = flatRate(today, rH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
-    boost::shared_ptr<BlackVolTermStructure> volTS = 
+    boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);

@@ -20,17 +20,18 @@
     \brief statistics tool based on incremental accumulation
 */
 
-#ifndef quantlib_incremental_statistics_h
-#define quantlib_incremental_statistics_h
+#ifndef quantlib_incremental_statistics_hpp
+#define quantlib_incremental_statistics_hpp
 
 #include <ql/null.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
     //! Statistics tool based on incremental accumulation
     /*! It can accumulate a set of data and return statistics (e.g: mean,
-        variance, skewness, kurtosis, error estimation, etc.) 
+        variance, skewness, kurtosis, error estimation, etc.)
 
         \warning high moments are numerically unstable for high
                  average/standardDeviation ratios

@@ -62,7 +62,7 @@ namespace {
     boost::shared_ptr<CapFloor> makeCapFloor(
                          CapFloor::Type type,
                          const std::vector<boost::shared_ptr<CashFlow> >& leg,
-                         Rate strike, 
+                         Rate strike,
                          Volatility volatility) {
         switch (type) {
           case CapFloor::Cap:
@@ -130,26 +130,26 @@ void CapFloorTest::testStrikeDependency() {
             // store the results for different strikes...
             std::vector<Real> cap_values, floor_values;
             for (Size k=0; k<LENGTH(strikes); k++) {
-                std::vector<boost::shared_ptr<CashFlow> > leg = 
+                std::vector<boost::shared_ptr<CashFlow> > leg =
                     makeLeg(startDate,lengths[i]);
-                boost::shared_ptr<Instrument> cap = 
+                boost::shared_ptr<Instrument> cap =
                     makeCapFloor(CapFloor::Cap,leg,
                                  strikes[k],vols[j]);
                 cap_values.push_back(cap->NPV());
-                boost::shared_ptr<Instrument> floor = 
+                boost::shared_ptr<Instrument> floor =
                     makeCapFloor(CapFloor::Floor,leg,
                                  strikes[k],vols[j]);
                 floor_values.push_back(floor->NPV());
             }
             // and check that they go the right way
-            std::vector<Real>::iterator it = 
+            std::vector<Real>::iterator it =
                 std::adjacent_find(cap_values.begin(),cap_values.end(),
                                    std::less<Real>());
             if (it != cap_values.end()) {
                 Size n = it - cap_values.begin();
                 BOOST_FAIL(
                     "NPV is increasing with the strike in a cap: \n"
-                    "    length: " + 
+                    "    length: " +
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    volatility: " +
                     VolatilityFormatter::toString(vols[j],2) + "\n"
@@ -169,7 +169,7 @@ void CapFloorTest::testStrikeDependency() {
                 Size n = it - floor_values.begin();
                 BOOST_FAIL(
                     "NPV is decreasing with the strike in a floor: \n"
-                    "    length: " + 
+                    "    length: " +
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    volatility: " +
                     VolatilityFormatter::toString(vols[j]*100,2) + "\n"
@@ -204,12 +204,12 @@ void CapFloorTest::testConsistency() {
         for (Size k=0; k<LENGTH(floor_rates); k++) {
           for (Size l=0; l<LENGTH(vols); l++) {
 
-              std::vector<boost::shared_ptr<CashFlow> > leg = 
+              std::vector<boost::shared_ptr<CashFlow> > leg =
                   makeLeg(startDate,lengths[i]);
-              boost::shared_ptr<Instrument> cap = 
+              boost::shared_ptr<Instrument> cap =
                   makeCapFloor(CapFloor::Cap,leg,
                                cap_rates[j],vols[l]);
-              boost::shared_ptr<Instrument> floor = 
+              boost::shared_ptr<Instrument> floor =
                   makeCapFloor(CapFloor::Floor,leg,
                                floor_rates[k],vols[l]);
               Collar collar(leg,std::vector<Rate>(1,cap_rates[j]),
@@ -219,7 +219,7 @@ void CapFloorTest::testConsistency() {
               if (QL_FABS((cap->NPV()-floor->NPV())-collar.NPV()) > 1.0e-10) {
                   BOOST_FAIL(
                     "inconsistency between cap, floor and collar:\n"
-                    "    length: " + 
+                    "    length: " +
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    volatility: " +
                     VolatilityFormatter::toString(vols[l],2) + "\n"
@@ -256,12 +256,12 @@ void CapFloorTest::testParity() {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(vols); k++) {
 
-            std::vector<boost::shared_ptr<CashFlow> > leg = 
+            std::vector<boost::shared_ptr<CashFlow> > leg =
                 makeLeg(startDate,lengths[i]);
-            boost::shared_ptr<Instrument> cap = 
+            boost::shared_ptr<Instrument> cap =
                 makeCapFloor(CapFloor::Cap,leg,
                              strikes[j],vols[k]);
-            boost::shared_ptr<Instrument> floor = 
+            boost::shared_ptr<Instrument> floor =
                 makeCapFloor(CapFloor::Floor,leg,
                              strikes[j],vols[k]);
             Date maturity = calendar_.advance(startDate,lengths[i],Years,
@@ -275,7 +275,7 @@ void CapFloorTest::testParity() {
             if (QL_FABS((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "put/call parity violated:\n"
-                    "    length: " + 
+                    "    length: " +
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    volatility: " +
                     VolatilityFormatter::toString(vols[k],2) + "\n"
@@ -311,13 +311,13 @@ void CapFloorTest::testImpliedVolatility() {
     Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
     for (Size k=0; k<LENGTH(lengths); k++) {
-        std::vector<boost::shared_ptr<CashFlow> > leg = 
+        std::vector<boost::shared_ptr<CashFlow> > leg =
             makeLeg(settlement_, lengths[k]);
 
         for (Size i=0; i<LENGTH(types); i++) {
             for (Size j=0; j<LENGTH(strikes); j++) {
 
-                boost::shared_ptr<CapFloor> capfloor = 
+                boost::shared_ptr<CapFloor> capfloor =
                     makeCapFloor(types[i], leg, strikes[j], 0.0);
 
                 for (Size n=0; n<LENGTH(rRates); n++) {
@@ -335,8 +335,8 @@ void CapFloorTest::testImpliedVolatility() {
                         Volatility implVol = 0.0;
 
                         try {
-                            implVol = 
-                                capfloor->impliedVolatility(value, 
+                            implVol =
+                                capfloor->impliedVolatility(value,
                                                             tolerance,
                                                             maxEvaluations);
                         } catch (std::exception& e) {
@@ -347,7 +347,7 @@ void CapFloorTest::testImpliedVolatility() {
                                 "    risk-free rate:   "
                                 + DecimalFormatter::toString(r) + "\n"
                                 "    length:         "
-                                + IntegerFormatter::toString(lengths[k]) 
+                                + IntegerFormatter::toString(lengths[k])
                                 + " years\n"
                                 "    volatility:       "
                                 + DecimalFormatter::toString(v) + "\n\n"
@@ -361,12 +361,12 @@ void CapFloorTest::testImpliedVolatility() {
                                 BOOST_FAIL(
                                     typeToString(types[i]) + ":\n"
                                     "    strike:           "
-                                    + DecimalFormatter::toString(strikes[j]) 
+                                    + DecimalFormatter::toString(strikes[j])
                                     + "\n"
                                     "    risk-free rate:   "
                                     + DecimalFormatter::toString(r) + "\n"
                                     "    length:         "
-                                    + IntegerFormatter::toString(lengths[k]) 
+                                    + IntegerFormatter::toString(lengths[k])
                                     + " years\n\n"
                                     "    original volatility: "
                                     + DecimalFormatter::toString(v) + "\n"

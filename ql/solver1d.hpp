@@ -19,11 +19,11 @@
     \brief Abstract 1-D solver class
 */
 
-#ifndef quantlib_solver1d_h
-#define quantlib_solver1d_h
+#ifndef quantlib_solver1d_hpp
+#define quantlib_solver1d_hpp
 
 #include <ql/null.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 #include <ql/Patterns/curiouslyrecurring.hpp>
 
 namespace QuantLib {
@@ -105,7 +105,7 @@ namespace QuantLib {
                     if (fxMax_ == 0.0)    return xMax_;
                     root_ = (xMax_+xMin_)/2.0;
                     // check whether we really want to pass epsilon
-                    return impl().solveImpl(f, QL_MAX(QL_FABS(accuracy), 
+                    return impl().solveImpl(f, QL_MAX(QL_FABS(accuracy),
                                                       QL_EPSILON));
                 }
                 if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {
@@ -130,7 +130,7 @@ namespace QuantLib {
             QL_FAIL("unable to bracket root in " +
                     SizeFormatter::toString(maxEvaluations_) +
                     " function evaluations (last bracket attempt: f[" +
-                    DecimalFormatter::toString(xMin_) + "," + 
+                    DecimalFormatter::toString(xMin_) + "," +
                     DecimalFormatter::toString(xMax_) + "] -> [" +
                     DecimalFormatter::toExponential(fxMin_) + "," +
                     DecimalFormatter::toExponential(fxMax_) + "])");
@@ -156,14 +156,14 @@ namespace QuantLib {
 
             QL_REQUIRE(xMin_ < xMax_, "invalid range: xMin_ (" +
                        DecimalFormatter::toString(xMin_) +
-                       ") >= xMax_ (" + 
+                       ") >= xMax_ (" +
                        DecimalFormatter::toString(xMax_) + ")");
-            QL_REQUIRE(!lowerBoundEnforced_ || xMin_ >= lowerBound_, 
+            QL_REQUIRE(!lowerBoundEnforced_ || xMin_ >= lowerBound_,
                        "xMin_ (" +
-                       DecimalFormatter::toString(xMin_) + 
+                       DecimalFormatter::toString(xMin_) +
                        ") < enforced low bound (" +
                        DecimalFormatter::toString(lowerBound_) + ")");
-            QL_REQUIRE(!upperBoundEnforced_ || xMax_ <= upperBound_, 
+            QL_REQUIRE(!upperBoundEnforced_ || xMax_ <= upperBound_,
                        "xMax_ (" +
                        DecimalFormatter::toString(xMax_) +
                        ") > enforced hi bound (" +
@@ -186,11 +186,11 @@ namespace QuantLib {
                        DecimalFormatter::toExponential(fxMin_) + "," +
                        DecimalFormatter::toExponential(fxMax_) + "]");
 
-            QL_REQUIRE(guess > xMin_, 
+            QL_REQUIRE(guess > xMin_,
                        "guess (" +
                        DecimalFormatter::toString(guess) + ") < xMin_ (" +
                        DecimalFormatter::toString(xMin_) + ")");
-            QL_REQUIRE(guess < xMax_, 
+            QL_REQUIRE(guess < xMax_,
                        "guess (" +
                        DecimalFormatter::toString(guess) + ") > xMax_ (" +
                        DecimalFormatter::toString(xMax_) + ")");

@@ -16,7 +16,6 @@
 */
 
 #include <ql/DayCounters/actualactual.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -39,13 +38,13 @@ namespace QuantLib {
 
 
     Time ActualActual::ISMA_Impl::yearFraction(const Date& d1, const Date& d2,
-                                               const Date& d3, 
+                                               const Date& d3,
                                                const Date& d4) const {
 
         if (d1 == d2)
             return 0.0;
 
-        QL_REQUIRE(d1<=d2, 
+        QL_REQUIRE(d1<=d2,
                    "invalid dates: start = " + DateFormatter::toString(d1) +
                    ", end = " + DateFormatter::toString(d2));
         Date refPeriodStart = (d3 != Date() ? d3 : d1);
@@ -60,7 +59,7 @@ namespace QuantLib {
                    DateFormatter::toString(refPeriodEnd));
 
         // estimate roughly the length in months of a period
-        Integer months = 
+        Integer months =
             Integer(0.5+12*Real(refPeriodEnd-refPeriodStart)/365);
         QL_REQUIRE(months != 0,
                    "number of months does not divide 12 exactly");
@@ -104,7 +103,7 @@ namespace QuantLib {
             // now it is: refPeriodStart <= d1 < refPeriodEnd < d2
 
             // the part from d1 to refPeriodEnd
-            Time sum = yearFraction(d1, refPeriodEnd, 
+            Time sum = yearFraction(d1, refPeriodEnd,
                                     refPeriodStart, refPeriodEnd);
 
             // the part from refPeriodEnd to d2
@@ -127,8 +126,8 @@ namespace QuantLib {
         }
     }
 
-    Time ActualActual::ISDA_Impl::yearFraction(const Date& d1, const Date& d2, 
-                                               const Date&, 
+    Time ActualActual::ISDA_Impl::yearFraction(const Date& d1, const Date& d2,
+                                               const Date&,
                                                const Date&) const {
         QL_REQUIRE(d2>=d1, "Invalid reference period");
 
@@ -145,7 +144,7 @@ namespace QuantLib {
         return sum;
     }
 
-    Time ActualActual::AFB_Impl::yearFraction(const Date& d1, const Date& d2, 
+    Time ActualActual::AFB_Impl::yearFraction(const Date& d1, const Date& d2,
                                               const Date&, const Date&) const {
         QL_REQUIRE(d1<=d2, "Invalid reference period");
 

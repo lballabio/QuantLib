@@ -70,7 +70,7 @@ void OldPricerTest::testFdEuropeanPricer() {
             Real variance = vol*vol*resTime;
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                     new PlainVanillaPayoff(types[j], strike));
-            Real anValue = BlackFormula(forward, rDiscount, 
+            Real anValue = BlackFormula(forward, rDiscount,
                                         variance, payoff).value();
             Real numValue = FdEuropean(types[j], under, strike,
                                        qRate, rRate, resTime,
@@ -579,10 +579,10 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
     Matrix correlation(4,4);
     correlation[0][0] = 1.00;
-                    correlation[0][1] = 0.50; 
-                                    correlation[0][2] = 0.30; 
+                    correlation[0][1] = 0.50;
+                                    correlation[0][2] = 0.30;
                                                     correlation[0][3] = 0.10;
-    correlation[1][0] = 0.50; 
+    correlation[1][0] = 0.50;
                     correlation[1][1] = 1.00;
                                     correlation[1][2] = 0.20;
                                                     correlation[1][3] = 0.40;
@@ -590,7 +590,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
                     correlation[2][1] = 0.20;
                                     correlation[2][2] = 1.00;
                                                     correlation[2][3] = 0.60;
-    correlation[3][0] = 0.10; 
+    correlation[3][0] = 0.10;
                     correlation[3][1] = 0.40;
                                     correlation[3][2] = 0.60;
                                                     correlation[3][3] = 1.00;
@@ -666,7 +666,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
     // McHimalaya
     strike = 101.0;
     testMcMFPricer(McHimalaya(assetValues, dividendYields, riskFreeRate,
-                              volatilities, correlation, strike, 
+                              volatilities, correlation, strike,
                               timeIncrements, seed),
                    5.80409038,
                    1.0e-8,

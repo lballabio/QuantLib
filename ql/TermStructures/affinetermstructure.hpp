@@ -23,7 +23,6 @@
 #ifndef quantlib_term_structures_affine_hpp
 #define quantlib_term_structures_affine_hpp
 
-#include <ql/dataformatters.hpp>
 #include <ql/ShortRateModels/model.hpp>
 #include <ql/Optimization/method.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>

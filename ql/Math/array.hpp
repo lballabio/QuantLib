@@ -163,6 +163,21 @@ namespace QuantLib {
     /*! \relates Array */
     const Disposable<Array> Exp(const Array&);
 
+
+    //! format arrays for output
+    class ArrayFormatter {
+      public:
+        static std::string toString(const Array& a,
+                                    Integer precision = 6,
+                                    Integer digits = 0,
+                                    Size elementsPerRow = QL_MAX_INTEGER) {
+            return SequenceFormatter::toString(a.begin(),a.end(),
+                                               precision,digits,
+                                               elementsPerRow);
+        }
+    };
+
+
     // inline definitions
 
     inline Array::Array(Size size)

@@ -19,8 +19,8 @@
     \brief Base option class
 */
 
-#ifndef quantlib_option_h
-#define quantlib_option_h
+#ifndef quantlib_option_hpp
+#define quantlib_option_hpp
 
 #include <ql/instrument.hpp>
 #include <ql/payoff.hpp>
@@ -35,7 +35,7 @@ namespace QuantLib {
         enum Type { Call, Put };
         Option(const boost::shared_ptr<Payoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
-               const boost::shared_ptr<PricingEngine>& engine = 
+               const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>())
         : payoff_(payoff), exercise_(exercise) {
             if (engine)
@@ -92,6 +92,20 @@ namespace QuantLib {
         }
         Real itmCashProbability, deltaForward, elasticity, thetaPerDay,
              strikeSensitivity;
+    };
+
+
+    //! format option type for output
+    class OptionTypeFormatter {
+      public:
+        static std::string toString(Option::Type type) {
+            switch (type) {
+              case Option::Call:     return "call";
+              case Option::Put:      return "put";
+              default:
+                QL_FAIL("unknown option type");
+            }
+        }
     };
 
 }

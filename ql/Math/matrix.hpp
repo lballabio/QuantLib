@@ -167,6 +167,20 @@ namespace QuantLib {
     const Disposable<Matrix> outerProduct(Iterator1 v1begin, Iterator1 v1end,
                                           Iterator2 v2begin, Iterator2 v2end);
 
+
+    //! format matrices for output
+    class MatrixFormatter {
+      public:
+        static std::string toString(const Matrix& m,
+                                    Integer precision = 6,
+                                    Integer digits = 0) {
+            return SequenceFormatter::toString(m.begin(),m.end(),
+                                               precision,digits,
+                                               m.columns());
+        }
+    };
+
+
     // inline definitions
 
     inline Matrix::Matrix()

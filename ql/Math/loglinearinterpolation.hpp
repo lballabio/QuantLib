@@ -24,7 +24,6 @@
 #define quantlib_loglinear_interpolation_hpp
 
 #include <ql/Math/linearinterpolation.hpp>
-#include <vector>
 
 namespace QuantLib {
 
@@ -45,7 +44,7 @@ namespace QuantLib {
                                "negative values not allowed");
                     logY_[i]=QL_LOG(yBegin[i]);
                 }
-                linearInterpolation_ = LinearInterpolation(xBegin, xEnd, 
+                linearInterpolation_ = LinearInterpolation(xBegin, xEnd,
                                                            logY_.begin());
             }
             Real value(Real x) const {

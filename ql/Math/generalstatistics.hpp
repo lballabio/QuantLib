@@ -20,22 +20,25 @@
     \brief statistics tool
 */
 
-#ifndef quantlib_general_statistics_h
-#define quantlib_general_statistics_h
+#ifndef quantlib_general_statistics_hpp
+#define quantlib_general_statistics_hpp
 
 #include <ql/null.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
+#include <vector>
+#include <utility>
 
 namespace QuantLib {
 
     //! Statistics tool
-    /*! This class accumulates a set of data and returns their 
-        statistics (e.g: mean, variance, skewness, kurtosis, 
-        error estimation, percentile, etc.) based on the empirical 
+    /*! This class accumulates a set of data and returns their
+        statistics (e.g: mean, variance, skewness, kurtosis,
+        error estimation, percentile, etc.) based on the empirical
         distribution (no gaussian assumption)
 
-        It doesn't suffer the numerical instability problem of 
-        IncrementalStatistics. The downside is that it stores all 
+        It doesn't suffer the numerical instability problem of
+        IncrementalStatistics. The downside is that it stores all
         samples, thus increasing the memory requirements.
     */
     class GeneralStatistics {
@@ -95,8 +98,8 @@ namespace QuantLib {
         Real max() const;
 
         /*! Expectation value of a function \f$ f \f$ on a given
-            range \f$ \mathcal{R} \f$, i.e., 
-            \f[ \mathrm{E}\left[f \;|\; \mathcal{R}\right] = 
+            range \f$ \mathcal{R} \f$, i.e.,
+            \f[ \mathrm{E}\left[f \;|\; \mathcal{R}\right] =
                 \frac{\sum_{x_i \in \mathcal{R}} f(x_i) w_i}{
                       \sum_{x_i \in \mathcal{R}} w_i}. \f]
             The range is passed as a boolean function returning
@@ -106,7 +109,7 @@ namespace QuantLib {
             The function returns a pair made of the result and
             the number of observations in the given range.
         */
-        template <class Func, class Predicate> 
+        template <class Func, class Predicate>
         std::pair<Real,Size> expectationValue(const Func& f,
                                               const Predicate& inRange)
             const {
@@ -128,7 +131,7 @@ namespace QuantLib {
         }
 
         /*! \f$ y \f$-th percentile, defined as the value \f$ \bar{x} \f$
-            such that 
+            such that
             \f[ y = \frac{\sum_{x_i < \bar{x}} w_i}{
                           \sum_i w_i} \f]
 
@@ -136,8 +139,8 @@ namespace QuantLib {
         */
         Real percentile(Real y) const;
 
-        /*! \f$ y \f$-th top percentile, defined as the value 
-            \f$ \bar{x} \f$ such that 
+        /*! \f$ y \f$-th top percentile, defined as the value
+            \f$ \bar{x} \f$ such that
             \f[ y = \frac{\sum_{x_i > \bar{x}} w_i}{
                           \sum_i w_i} \f]
 
@@ -178,15 +181,15 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline GeneralStatistics::GeneralStatistics() { 
-        reset(); 
+    inline GeneralStatistics::GeneralStatistics() {
+        reset();
     }
 
-    inline Size GeneralStatistics::samples() const { 
-        return samples_.size(); 
+    inline Size GeneralStatistics::samples() const {
+        return samples_.size();
     }
 
-    inline const std::vector<std::pair<Real,Real> >& 
+    inline const std::vector<std::pair<Real,Real> >&
     GeneralStatistics::data() const {
         return samples_;
     }
@@ -201,13 +204,13 @@ namespace QuantLib {
 
     inline Real GeneralStatistics::min() const {
         QL_REQUIRE(samples() > 0, "empty sample set");
-        return std::min_element(samples_.begin(), 
+        return std::min_element(samples_.begin(),
                                 samples_.end())->first;
     }
 
     inline Real GeneralStatistics::max() const {
         QL_REQUIRE(samples() > 0, "empty sample set");
-        return std::max_element(samples_.begin(), 
+        return std::max_element(samples_.begin(),
                                 samples_.end())->first;
     }
 

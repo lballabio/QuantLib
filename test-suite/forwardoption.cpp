@@ -273,7 +273,7 @@ namespace {
                                        new PlainVanillaPayoff(types[i], 0.0));
 
             ForwardVanillaOption option(moneyness[j], reset,
-                                        stochProcess, payoff, 
+                                        stochProcess, payoff,
                                         exercise, engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -362,8 +362,8 @@ namespace {
                                    tol   = tolerance [greek];
                               Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
-                                  REPORT_FAILURE(greek, payoff, exercise, 
-                                                 u, q, r, today, v, 
+                                  REPORT_FAILURE(greek, payoff, exercise,
+                                                 u, q, r, today, v,
                                                  moneyness[j], reset,
                                                  expct, calcl, error, tol);
                               }

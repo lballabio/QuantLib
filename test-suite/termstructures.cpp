@@ -66,7 +66,7 @@ namespace {
         Size deposits = LENGTH(depositData),
             swaps = LENGTH(swapData);
 
-        std::vector<boost::shared_ptr<RateHelper> > 
+        std::vector<boost::shared_ptr<RateHelper> >
             instruments(deposits+swaps);
         Size i;
         for (i=0; i<deposits; i++) {

@@ -20,11 +20,12 @@
     \brief Option on multiple assets
 */
 
-#ifndef quantlib_multiasset_option_h
-#define quantlib_multiasset_option_h
+#ifndef quantlib_multiasset_option_hpp
+#define quantlib_multiasset_option_hpp
 
 #include <ql/option.hpp>
 #include <ql/stochasticprocess.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -32,12 +33,12 @@ namespace QuantLib {
     class MultiAssetOption : public Option {
       public:
         MultiAssetOption(
-               const std::vector<boost::shared_ptr<BlackScholesProcess> >& 
+               const std::vector<boost::shared_ptr<BlackScholesProcess> >&
                                                                    stochProcs,
                const boost::shared_ptr<Payoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
                const Matrix& correlation,
-               const boost::shared_ptr<PricingEngine>& engine = 
+               const boost::shared_ptr<PricingEngine>& engine =
                                            boost::shared_ptr<PricingEngine>());
         //! \name Instrument interface
         //@{
@@ -53,7 +54,7 @@ namespace QuantLib {
         Real vega() const;
         Real rho() const;
         Real dividendRho() const;
-        //@}        
+        //@}
         void setupArguments(Arguments*) const;
       protected:
         void setupExpired() const;
@@ -61,8 +62,8 @@ namespace QuantLib {
         // results
         mutable Real delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
-        // arguments        
-        std::vector< boost::shared_ptr<BlackScholesProcess> > 
+        // arguments
+        std::vector< boost::shared_ptr<BlackScholesProcess> >
             blackScholesProcesses_;
         Matrix correlation_;
     };
@@ -72,7 +73,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        std::vector< boost::shared_ptr<BlackScholesProcess> > 
+        std::vector< boost::shared_ptr<BlackScholesProcess> >
             blackScholesProcesses;
         Matrix correlation;
     };

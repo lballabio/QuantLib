@@ -17,7 +17,7 @@
 */
 
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 

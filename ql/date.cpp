@@ -15,7 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/dataformatters.hpp>
+#include <ql/date.hpp>
+#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 
@@ -396,6 +397,63 @@ namespace QuantLib {
 
     BigInteger Date::maximumSerialNumber() {
         return 73050;    // Dec 31st, 2099
+    }
+
+
+    std::string DateFormatter::toString(const Date& d,
+                                        DateFormatter::Format f) {
+        static const std::string monthName[] = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+        std::string output;
+        if (d == Date()) {
+            output = "Null date";
+        } else {
+            Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
+                    yyyy = d.year();
+            switch (f) {
+              case Long:
+                output = monthName[mm-1] + " ";
+                output += IntegerFormatter::toString(dd);
+                switch (dd) {
+                  case 1:
+                  case 21:
+                  case 31:
+                    output += "st, ";
+                    break;
+                  case 2:
+                  case 22:
+                    output += "nd, ";
+                    break;
+                  case 3:
+                  case 23:
+                    output += "rd, ";
+                    break;
+                  default:
+                    output += "th, ";
+                }
+                output += IntegerFormatter::toString(yyyy);
+                break;
+              case Short:
+                output = (mm < 10 ? "0" : "") +
+                         IntegerFormatter::toString(mm);
+                output += (dd < 10 ? "/0" : "/") +
+                         IntegerFormatter::toString(dd);
+                output += "/" + IntegerFormatter::toString(yyyy);
+                break;
+              case ISO:
+                output = IntegerFormatter::toString(yyyy);
+                output += (mm < 10 ? "-0" : "-") +
+                         IntegerFormatter::toString(mm);
+                output += (dd < 10 ? "-0" : "-") +
+                         IntegerFormatter::toString(dd);
+                break;
+              default:
+                QL_FAIL("unknown date format");
+            }
+        }
+        return output;
     }
 
 }

@@ -17,6 +17,7 @@
 
 #include <ql/PricingEngines/Asian/analyticdiscreteasianengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <numeric>
 
 namespace QuantLib {
 

@@ -25,6 +25,8 @@
 
 #include <ql/numericalmethod.hpp>
 #include <ql/Math/comparison.hpp>
+#include <ql/exercise.hpp>
+#include <list>
 
 namespace QuantLib {
 
@@ -88,8 +90,8 @@ namespace QuantLib {
         virtual void reset(Size size) = 0;
 
         /*! This method will be invoked after rollback and before any
-            other asset (i.e., an option on this one) has any chance to 
-            look at the values. For instance, payments happening at times 
+            other asset (i.e., an option on this one) has any chance to
+            look at the values. For instance, payments happening at times
             already spanned by the rollback will be added here.
 
             This method is not virtual; derived classes must override
@@ -98,9 +100,9 @@ namespace QuantLib {
         void preAdjustValues();
 
         /*! This method will be invoked after rollback and after any
-            other asset had their chance to look at the values. For 
-            instance, payments happening at the present time (and therefore 
-            not included in an option to be exercised at this time) will be 
+            other asset had their chance to look at the values. For
+            instance, payments happening at the present time (and therefore
+            not included in an option to be exercised at this time) will be
             added here.
 
             This method is not virtual; derived classes must override

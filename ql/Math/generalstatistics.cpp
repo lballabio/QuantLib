@@ -18,6 +18,7 @@
 
 #include <ql/Math/generalstatistics.hpp>
 #include <ql/Math/functional.hpp>
+#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 
@@ -40,7 +41,7 @@ namespace QuantLib {
 
     Real GeneralStatistics::variance() const {
         Size N = samples();
-        QL_REQUIRE(N > 1, 
+        QL_REQUIRE(N > 1,
                    "sample number <=1, unsufficient");
         // Subtract the mean and square. Repeat on the whole range.
         // Hopefully, the whole thing will be inlined in a single loop.

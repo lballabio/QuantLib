@@ -16,7 +16,6 @@
 */
 
 #include "calendars.hpp"
-#include <ql/dataformatters.hpp>
 #include <ql/calendar.hpp>
 #include <ql/Calendars/germany.hpp>
 #include <ql/Calendars/italy.hpp>
@@ -26,6 +25,7 @@
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Functions/calendars.hpp>
+#include <ql/basicdataformatters.hpp>
 #include <fstream>
 
 using namespace QuantLib;
@@ -52,19 +52,19 @@ void CalendarTest::testModifiedCalendars() {
 
     // test
     if (c1.isHoliday(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) + 
+        BOOST_FAIL(DateFormatter::toString(d1) +
                    " still a holiday for original TARGET instance");
     if (c1.isBusinessDay(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) + 
+        BOOST_FAIL(DateFormatter::toString(d2) +
                    " still a business day for original TARGET instance");
 
     // any instance of TARGET should be modified...
     Calendar c3 = TARGET();
     if (c3.isHoliday(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) + 
+        BOOST_FAIL(DateFormatter::toString(d1) +
                    " still a holiday for generic TARGET instance");
     if (c3.isBusinessDay(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) + 
+        BOOST_FAIL(DateFormatter::toString(d2) +
                    " still a business day for generic TARGET instance");
 
     // ...but not other calendars

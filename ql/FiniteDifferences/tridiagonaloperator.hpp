@@ -19,8 +19,8 @@
     \brief tridiagonal operator
 */
 
-#ifndef quantlib_tridiagonal_operator_h
-#define quantlib_tridiagonal_operator_h
+#ifndef quantlib_tridiagonal_operator_hpp
+#define quantlib_tridiagonal_operator_hpp
 
 #include <ql/Math/array.hpp>
 #include <boost/shared_ptr.hpp>
@@ -36,7 +36,7 @@ namespace QuantLib {
     */
     class TridiagonalOperator {
         // unary operators
-        friend Disposable<TridiagonalOperator> 
+        friend Disposable<TridiagonalOperator>
         operator+(const TridiagonalOperator&);
         friend Disposable<TridiagonalOperator>
         operator-(const TridiagonalOperator&);
@@ -175,8 +175,8 @@ namespace QuantLib {
     }
 
     inline void TridiagonalOperator::setMidRow(Size i,
-                                               Real valA, 
-                                               Real valB, 
+                                               Real valA,
+                                               Real valB,
                                                Real valC) {
         QL_REQUIRE(i>=1 && i<=size()-2,
                    "out of range in TridiagonalSystem::setMidRow");
@@ -186,7 +186,7 @@ namespace QuantLib {
     }
 
     inline void TridiagonalOperator::setMidRows(Real valA,
-                                                Real valB, 
+                                                Real valB,
                                                 Real valC) {
         for (Size i=1; i<=size()-2; i++) {
             lowerDiagonal_[i-1] = valA;
@@ -250,7 +250,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<TridiagonalOperator> 
+    inline Disposable<TridiagonalOperator>
     operator*(Real a,
               const TridiagonalOperator& D) {
         Array low = D.lowerDiagonal_*a, mid = D.diagonal_*a,

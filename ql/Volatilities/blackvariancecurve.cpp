@@ -18,7 +18,6 @@
 
 #include <ql/Volatilities/blackvariancecurve.hpp>
 #include <ql/Math/interpolationtraits.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 

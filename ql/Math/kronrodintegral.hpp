@@ -20,11 +20,11 @@
 
 */
 
-#ifndef quantlib_kronrod_integral_h
-#define quantlib_kronrod_integral_h
+#ifndef quantlib_kronrod_integral_hpp
+#define quantlib_kronrod_integral_hpp
 
 #include <ql/errors.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 

@@ -94,7 +94,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
       { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8771, 1e-2 },
       { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.15, 10.0089, 1e-2 },
       { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.25,  0.3159, 1e-2 },
-      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1280, 1e-2 },      
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1280, 1e-2 },
       { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.25, 10.3919, 1e-2 },
       { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.35,  0.9495, 1e-2 },
       { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3777, 1e-2 },
@@ -167,7 +167,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
-                           values[i].r, today, values[i].v, values[i].result, 
+                           values[i].r, today, values[i].v, values[i].result,
                            calculated, error, values[i].tol);
         }
     }
@@ -227,7 +227,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
-                           values[i].r, today, values[i].v, values[i].result, 
+                           values[i].r, today, values[i].v, values[i].result,
                            calculated, error, values[i].tol);
         }
     }
@@ -242,7 +242,7 @@ void AmericanOptionTest::testJuValues() {
     /* The data below are from
         An Approximate Formula for Pricing American Options
         Journal of Derivatives Winter 1999
-        Ju, N.               
+        Ju, N.
     */
     AmericanOptionData values[] = {
       //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
@@ -258,7 +258,7 @@ void AmericanOptionTest::testJuValues() {
       { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  5.000, 1e-3 },
       { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  5.084, 1e-3 },
       { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  5.260, 1e-3 },
-      
+
       { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  0.078, 1e-3 },
       { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  0.697, 1e-3 },
       { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  1.218, 1e-3 },
@@ -291,19 +291,19 @@ void AmericanOptionTest::testJuValues() {
       { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.2,  5.182, 1e-3 },
       { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.2,  9.065, 1e-3 },
       { Option::Call, 100.00,   110.00,  0.07,  0.03, 3.0,  0.2,  14.430, 1e-3 },
-      { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.2,  21.398, 1e-3 },      
+      { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.2,  21.398, 1e-3 },
 
       { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.4,  11.336, 1e-3 },
       { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.4,  15.711, 1e-3 },
-      { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.4,  20.760, 1e-3 },      
+      { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.4,  20.760, 1e-3 },
       { Option::Call, 100.00,   110.00,  0.07,  0.03, 3.0,  0.4,  26.440, 1e-3 },
-      { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.4,  32.709, 1e-3 },      
+      { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.4,  32.709, 1e-3 },
 
       { Option::Call, 100.00,   80.00,  0.07,  0.0, 3.0,  0.3,  5.552, 1e-3 },
       { Option::Call, 100.00,   90.00,  0.07,  0.0, 3.0,  0.3,  8.868, 1e-3 },
       { Option::Call, 100.00,   100.00,  0.07,  0.0, 3.0,  0.3,  13.158, 1e-3 },
       { Option::Call, 100.00,   110.00,  0.07,  0.0, 3.0,  0.3,  18.458, 1e-3 },
-      { Option::Call, 100.00,   120.00,  0.07,  0.0, 3.0,  0.3,  24.786, 1e-3 },      
+      { Option::Call, 100.00,   120.00,  0.07,  0.0, 3.0,  0.3,  24.786, 1e-3 },
 
       { Option::Call, 100.00,   80.00,  0.03,  0.07, 3.0,  0.3,  12.177, 1e-3 },
       { Option::Call, 100.00,   90.00,  0.03,  0.07, 3.0,  0.3,  17.411, 1e-3 },
@@ -351,7 +351,7 @@ void AmericanOptionTest::testJuValues() {
         Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
-                           values[i].r, today, values[i].v, values[i].result, 
+                           values[i].r, today, values[i].v, values[i].result,
                            calculated, error, values[i].tol);
         }
     }

@@ -19,10 +19,10 @@
     \brief base class for Monte Carlo pricers
 */
 
-#ifndef quantlib_montecarlo_pricer_h
-#define quantlib_montecarlo_pricer_h
+#ifndef quantlib_montecarlo_pricer_hpp
+#define quantlib_montecarlo_pricer_hpp
 
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 
 namespace QuantLib {
@@ -76,7 +76,7 @@ namespace QuantLib {
         Real result = mcModel_->sampleAccumulator().mean();
         Real accuracy = mcModel_->sampleAccumulator().errorEstimate()/result;
         while (accuracy > tolerance) {
-            // conservative estimate of how many samples are needed 
+            // conservative estimate of how many samples are needed
             order = accuracy*accuracy/tolerance/tolerance;
 
             nextBatch = Size(QL_MAX<Real>(sampleNumber*order*0.8-sampleNumber,

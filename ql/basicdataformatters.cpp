@@ -116,4 +116,13 @@ namespace QuantLib {
         return output;
     }
 
+    std::string RateFormatter::toString(Rate rate, Integer precision) {
+        return DecimalFormatter::toPercentage(rate,precision);
+    }
+
+    std::string VolatilityFormatter::toString(Volatility vol,
+                                              Integer precision) {
+        return DecimalFormatter::toPercentage(vol,precision);
+    }
+
 }

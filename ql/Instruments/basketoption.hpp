@@ -24,6 +24,7 @@
 
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/Instruments/multiassetoption.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -36,12 +37,12 @@ namespace QuantLib {
         enum BasketType { Min, Max };
         BasketOption(
                const BasketType basketType,
-               const std::vector<boost::shared_ptr<BlackScholesProcess> >& 
+               const std::vector<boost::shared_ptr<BlackScholesProcess> >&
                                                                   stochProcs,
                const boost::shared_ptr<PlainVanillaPayoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
                const Matrix& correlation,
-               const boost::shared_ptr<PricingEngine>& engine = 
+               const boost::shared_ptr<PricingEngine>& engine =
                                           boost::shared_ptr<PricingEngine>());
 
         void setupArguments(Arguments*) const;
@@ -59,7 +60,7 @@ namespace QuantLib {
 
 
     //! %Basket option engine base class
-    class BasketOption::engine 
+    class BasketOption::engine
         : public GenericEngine<BasketOption::arguments,
                                BasketOption::results> {};
 

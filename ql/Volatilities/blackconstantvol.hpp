@@ -25,7 +25,6 @@
 
 #include <ql/voltermstructure.hpp>
 #include <ql/DayCounters/actual365.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -71,7 +70,7 @@ namespace QuantLib {
     // inline definitions
 
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
-                                              Volatility volatility, 
+                                              Volatility volatility,
                                               const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter) {
         volatility_.linkTo(
@@ -112,7 +111,7 @@ namespace QuantLib {
     }
 
     inline void BlackConstantVol::accept(AcyclicVisitor& v) {
-        Visitor<BlackConstantVol>* v1 = 
+        Visitor<BlackConstantVol>* v1 =
             dynamic_cast<Visitor<BlackConstantVol>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

@@ -93,13 +93,13 @@ void SwapTest::testFairRate() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(spreads); j++) {
 
-            boost::shared_ptr<SimpleSwap> swap = 
+            boost::shared_ptr<SimpleSwap> swap =
                 makeSwap(lengths[i],0.0,spreads[j]);
             swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
             if (QL_FABS(swap->NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "recalculating with implied rate:\n"
-                    "    length: " + 
+                    "    length: " +
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    floating spread: " +
                     RateFormatter::toString(spreads[j],2) + "\n"
@@ -123,13 +123,13 @@ void SwapTest::testFairSpread() {
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(rates); j++) {
 
-            boost::shared_ptr<SimpleSwap> swap = 
+            boost::shared_ptr<SimpleSwap> swap =
                 makeSwap(lengths[i],rates[j],0.0);
             swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
             if (QL_FABS(swap->NPV()) > 1.0e-10) {
                 BOOST_FAIL(
                     "recalculating with implied spread:\n"
-                    "    length: " + 
+                    "    length: " +
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    fixed rate: " +
                     RateFormatter::toString(rates[j],2) + "\n"
@@ -155,19 +155,19 @@ void SwapTest::testRateDependency() {
             // store the results for different rates...
             std::vector<Real> swap_values;
             for (Size k=0; k<LENGTH(rates); k++) {
-                boost::shared_ptr<SimpleSwap> swap = 
+                boost::shared_ptr<SimpleSwap> swap =
                     makeSwap(lengths[i],rates[k],spreads[j]);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
-            std::vector<Real>::iterator it = 
+            std::vector<Real>::iterator it =
                 std::adjacent_find(swap_values.begin(),swap_values.end(),
                                    std::less<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
                 BOOST_FAIL(
                     "NPV is increasing with the fixed rate in a swap: \n"
-                    "    length: " + 
+                    "    length: " +
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    value: " +
                     DecimalFormatter::toString(swap_values[n]) +
@@ -197,19 +197,19 @@ void SwapTest::testSpreadDependency() {
             // store the results for different spreads...
             std::vector<Real> swap_values;
             for (Size k=0; k<LENGTH(spreads); k++) {
-                boost::shared_ptr<SimpleSwap> swap = 
+                boost::shared_ptr<SimpleSwap> swap =
                     makeSwap(lengths[i],rates[j],spreads[k]);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
-            std::vector<Real>::iterator it = 
+            std::vector<Real>::iterator it =
                 std::adjacent_find(swap_values.begin(),swap_values.end(),
                                    std::greater<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
                 BOOST_FAIL(
                     "NPV is decreasing with the floating spread in a swap: \n"
-                    "    length: " + 
+                    "    length: " +
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    value: " +
                     DecimalFormatter::toString(swap_values[n]) +

@@ -18,7 +18,6 @@
 
 #include <ql/Volatilities/blackvariancesurface.hpp>
 #include <ql/Math/interpolationtraits.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -74,7 +73,7 @@ namespace QuantLib {
         if (t==0.0) return 0.0;
 
         // enforce constant extrapolation when required
-        if (strike < strikes_.front() 
+        if (strike < strikes_.front()
             && lowerExtrapolation_ == ConstantExtrapolation)
             strike = strikes_.front();
         if (strike > strikes_.back()

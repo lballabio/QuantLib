@@ -19,10 +19,10 @@
     \brief Chi-square (central and non-central) distributions
 */
 
-#ifndef quantlib_chi_square_distribution_h
-#define quantlib_chi_square_distribution_h
+#ifndef quantlib_chi_square_distribution_hpp
+#define quantlib_chi_square_distribution_hpp
 
-#include <ql/dataformatters.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
@@ -37,7 +37,7 @@ namespace QuantLib {
     class NonCentralChiSquareDistribution
     : public std::unary_function<Real,Real> {
       public:
-        NonCentralChiSquareDistribution(Real df, Real ncp) 
+        NonCentralChiSquareDistribution(Real df, Real ncp)
         : df_(df), ncp_(ncp) {}
         Real operator()(Real x) const;
       private:

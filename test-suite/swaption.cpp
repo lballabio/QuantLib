@@ -47,9 +47,9 @@ namespace {
 
     // utilities
 
-    boost::shared_ptr<SimpleSwap> makeSwap(const Date& start, Integer length, 
-                                           Rate fixedRate, 
-                                           Spread floatingSpread, 
+    boost::shared_ptr<SimpleSwap> makeSwap(const Date& start, Integer length,
+                                           Rate fixedRate,
+                                           Spread floatingSpread,
                                            bool payFixed) {
         Date maturity = calendar_.advance(start,length,Years,
                                           floatingConvention_);
@@ -66,7 +66,7 @@ namespace {
 
     boost::shared_ptr<Swaption> makeSwaption(
                                     const boost::shared_ptr<SimpleSwap>& swap,
-                                    const Date& exercise, 
+                                    const Date& exercise,
                                     Volatility volatility) {
         boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
         Handle<Quote> vol_rh(vol_me);
@@ -121,16 +121,16 @@ void SwaptionTest::testStrikeDependency() {
                 // store the results for different rates...
                 std::vector<Real> values;
                 for (Size l=0; l<LENGTH(strikes); l++) {
-                    boost::shared_ptr<SimpleSwap> swap = 
+                    boost::shared_ptr<SimpleSwap> swap =
                         makeSwap(startDate,lengths[j],strikes[l],
                                  0.0,payFixed[k]);
-                    boost::shared_ptr<Swaption> swaption = 
+                    boost::shared_ptr<Swaption> swaption =
                         makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
                 }
                 // and check that they go the right way
                 if (payFixed[k]) {
-                    std::vector<Real>::iterator it = 
+                    std::vector<Real>::iterator it =
                         std::adjacent_find(values.begin(), values.end(),
                                            std::less<Real>());
                     if (it != values.end()) {
@@ -140,7 +140,7 @@ void SwaptionTest::testStrikeDependency() {
                             "in a payer swaption: \n"
                             "    exercise date: " +
                             DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " + 
+                            "    length: " +
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    value: " +
                             DecimalFormatter::toString(values[n]) +
@@ -152,7 +152,7 @@ void SwaptionTest::testStrikeDependency() {
                             RateFormatter::toString(strikes[n+1],2));
                     }
                 } else {
-                    std::vector<Real>::iterator it = 
+                    std::vector<Real>::iterator it =
                         std::adjacent_find(values.begin(), values.end(),
                                            std::greater<Real>());
                     if (it != values.end()) {
@@ -162,7 +162,7 @@ void SwaptionTest::testStrikeDependency() {
                             "in a receiver swaption: \n"
                             "    exercise date: " +
                             DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " + 
+                            "    length: " +
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    value: " +
                             DecimalFormatter::toString(values[n]) +
@@ -197,16 +197,16 @@ void SwaptionTest::testSpreadDependency() {
                 // store the results for different rates...
                 std::vector<Real> values;
                 for (Size l=0; l<LENGTH(spreads); l++) {
-                    boost::shared_ptr<SimpleSwap> swap = 
+                    boost::shared_ptr<SimpleSwap> swap =
                         makeSwap(startDate,lengths[j],0.06,
                                  spreads[l],payFixed[k]);
-                    boost::shared_ptr<Swaption> swaption = 
+                    boost::shared_ptr<Swaption> swaption =
                         makeSwaption(swap,exerciseDate,0.20);
                     values.push_back(swaption->NPV());
                 }
                 // and check that they go the right way
                 if (payFixed[k]) {
-                    std::vector<Real>::iterator it = 
+                    std::vector<Real>::iterator it =
                         std::adjacent_find(values.begin(), values.end(),
                                            std::greater<Real>());
                     if (it != values.end()) {
@@ -216,7 +216,7 @@ void SwaptionTest::testSpreadDependency() {
                             "in a payer swaption: \n"
                             "    exercise date: " +
                             DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " + 
+                            "    length: " +
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    value: " +
                             DecimalFormatter::toString(values[n]) +
@@ -228,7 +228,7 @@ void SwaptionTest::testSpreadDependency() {
                             RateFormatter::toString(spreads[n+1],2));
                     }
                 } else {
-                    std::vector<Real>::iterator it = 
+                    std::vector<Real>::iterator it =
                         std::adjacent_find(values.begin(), values.end(),
                                            std::less<Real>());
                     if (it != values.end()) {
@@ -238,7 +238,7 @@ void SwaptionTest::testSpreadDependency() {
                             "in a receiver swaption: \n"
                             "    exercise date: " +
                             DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " + 
+                            "    length: " +
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    value: " +
                             DecimalFormatter::toString(values[n]) +
@@ -271,11 +271,11 @@ void SwaptionTest::testSpreadTreatment() {
                 Date startDate = calendar_.advance(exerciseDate,
                                                    settlementDays_,Days);
                 for (Size l=0; l<LENGTH(spreads); l++) {
-                    boost::shared_ptr<SimpleSwap> swap = 
+                    boost::shared_ptr<SimpleSwap> swap =
                         makeSwap(startDate,lengths[j],0.06,
                                  spreads[l],payFixed[k]);
                     Spread correction = spreads[l] *
-                                        swap->floatingLegBPS() / 
+                                        swap->floatingLegBPS() /
                                         swap->fixedLegBPS();
                     boost::shared_ptr<SimpleSwap> equivalentSwap =
                         makeSwap(startDate,lengths[j],0.06+correction,
@@ -289,10 +289,10 @@ void SwaptionTest::testSpreadTreatment() {
                             "wrong spread treatment: \n"
                             "    exercise date: " +
                             DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " + 
+                            "    length: " +
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    pay " +
-                            std::string(payFixed[k] ? "fixed\n" 
+                            std::string(payFixed[k] ? "fixed\n"
                                                     : "floating\n") +
                             "    spread: " +
                             RateFormatter::toString(spreads[l],2) + "\n"
@@ -320,7 +320,7 @@ void SwaptionTest::testCachedValue() {
     Date exerciseDate = calendar_.advance(settlement_,5,Years);
     Date startDate = calendar_.advance(exerciseDate,settlementDays_,Days);
     boost::shared_ptr<SimpleSwap> swap = makeSwap(startDate,10,0.06,0.0,true);
-    boost::shared_ptr<Swaption> swaption = 
+    boost::shared_ptr<Swaption> swaption =
         makeSwaption(swap,exerciseDate,0.20);
     Real cachedNPV = 3.639365179345;
 

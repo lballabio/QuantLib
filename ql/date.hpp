@@ -19,8 +19,8 @@
     \brief date- and time-related classes, typedefs and enumerations
 */
 
-#ifndef quantlib_date_h
-#define quantlib_date_h
+#ifndef quantlib_date_hpp
+#define quantlib_date_hpp
 
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
@@ -60,7 +60,7 @@ namespace QuantLib {
                  September = 9,
                  October   = 10,
                  November  = 11,
-                 December  = 12 
+                 December  = 12
     };
 
     //! Year number
@@ -82,7 +82,7 @@ namespace QuantLib {
     enum TimeUnit { Days   = 0,
                     Weeks  = 1,
                     Months = 2,
-                    Years  = 3 
+                    Years  = 3
     };
 
     //! Time period described by a number of a given time unit
@@ -231,6 +231,18 @@ namespace QuantLib {
     bool operator>(const Date&, const Date&);
     /*! \relates Date */
     bool operator>=(const Date&, const Date&);
+
+    //! Formats dates for output
+    /*! Formatting can be in short (mm/dd/yyyy)
+        or long (Month ddth, yyyy) form.
+    */
+    class DateFormatter {
+      public:
+        enum Format { Long, Short, ISO };
+        static std::string toString(const Date& d,
+                                    Format f = Long);
+    };
+
 
     // inline definitions
 

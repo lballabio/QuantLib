@@ -24,7 +24,7 @@
 #define quantlib_interpolation2D_hpp
 
 #include <ql/Patterns/bridge.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 
@@ -47,7 +47,7 @@ namespace QuantLib {
         \f$ variables, and a \f$ N \times M \f$ matrix representing
         the tabulated function values.
     */
-    class Interpolation2D 
+    class Interpolation2D
         : public Bridge<Interpolation2D,Interpolation2DImpl> {
       public:
         typedef Real first_argument_type;
@@ -62,7 +62,7 @@ namespace QuantLib {
         template <class I1, class I2, class M>
         class templateImpl : public Interpolation2DImpl {
           public:
-            templateImpl(const I1& xBegin, const I1& xEnd, 
+            templateImpl(const I1& xBegin, const I1& xEnd,
                          const I2& yBegin, const I2& yEnd,
                          const M& zData)
             : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin), yEnd_(yEnd),

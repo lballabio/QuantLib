@@ -75,7 +75,7 @@ void CliquetOptionTest::testValues() {
     boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine);
 
     boost::shared_ptr<BlackScholesProcess> process(
-               new BlackScholesProcess(Handle<Quote>(spot), 
+               new BlackScholesProcess(Handle<Quote>(spot),
                                        Handle<TermStructure>(qTS),
                                        Handle<TermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
@@ -154,8 +154,8 @@ namespace {
 
             std::vector<Date> reset;
             Integer months = 12/frequencies[kk];
-            for (Date d = today.plusMonths(months); 
-                 d < maturity->lastDate(); 
+            for (Date d = today.plusMonths(months);
+                 d < maturity->lastDate();
                  d = d.plusMonths(months))
                 reset.push_back(d);
 
@@ -250,7 +250,7 @@ namespace {
                               Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
                                   REPORT_FAILURE(greek, payoff, maturity,
-                                                 u, q, r, today, v, 
+                                                 u, q, r, today, v,
                                                  expct, calcl, error, tol);
                               }
                           }

@@ -283,7 +283,7 @@ void QuantoOptionTest::testGreeks() {
           boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
-          QuantoVanillaOption option(fxrTS, fxVolTS, 
+          QuantoVanillaOption option(fxrTS, fxVolTS,
                                      Handle<Quote>(correlation),
                                      stochProcess, payoff, exercise, engine);
 
@@ -418,8 +418,8 @@ void QuantoOptionTest::testGreeks() {
                                    tol   = tolerance [greek];
                               Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
-                                  QUANTO_REPORT_FAILURE(greek, payoff, exercise, 
-                                                 u, q, r, today, v, 
+                                  QUANTO_REPORT_FAILURE(greek, payoff, exercise,
+                                                 u, q, r, today, v,
                                                  fxr, fxv, corr,
                                                  expct, calcl, error, tol);
                               }
@@ -506,7 +506,7 @@ void QuantoOptionTest::testForwardValues() {
         QuantoForwardVanillaOption option(fxrTS, fxVolTS,
                                           Handle<Quote>(correlation),
                                           values[i].moneyness, reset,
-                                          stochProcess, payoff, exercise, 
+                                          stochProcess, payoff, exercise,
                                           engine);
 
         Real calculated = option.NPV();
@@ -591,10 +591,10 @@ void QuantoOptionTest::testForwardGreeks() {
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                        new PlainVanillaPayoff(types[i], 0.0));
 
-            QuantoForwardVanillaOption option(fxrTS, fxVolTS, 
+            QuantoForwardVanillaOption option(fxrTS, fxVolTS,
                                               Handle<Quote>(correlation),
                                               moneyness[j], reset,
-                                              stochProcess, payoff, 
+                                              stochProcess, payoff,
                                               exercise, engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -695,7 +695,7 @@ void QuantoOptionTest::testForwardGreeks() {
                             correlation->setValue(corr-dcorr);
                             value_m = option.NPV();
                             correlation->setValue(corr);
-                            expected["qlambda"] = 
+                            expected["qlambda"] =
                                 (value_p - value_m)/(2*dcorr);
 
                             // perturb date and get theta
@@ -818,7 +818,7 @@ void QuantoOptionTest::testForwardPerformanceValues() {
         QuantoForwardVanillaOption option(fxrTS, fxVolTS,
                                           Handle<Quote>(correlation),
                                           values[i].moneyness, reset,
-                                          stochProcess, payoff, exercise, 
+                                          stochProcess, payoff, exercise,
                                           engine);
 
         Real calculated = option.NPV();

@@ -23,6 +23,7 @@
 #define quantlib_linear_interpolation_hpp
 
 #include <ql/Math/interpolation.hpp>
+#include <vector>
 
 namespace QuantLib {
 

@@ -18,7 +18,7 @@
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/choleskydecomposition.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 
@@ -56,7 +56,7 @@ namespace QuantLib {
             // salvaging algorithm:
             // negative eigenvalues set to zero
             for (i=0; i<size; i++)
-                diagonal[i][i] = 
+                diagonal[i][i] =
                     QL_SQRT(QL_MAX<Real>(jd.eigenvalues()[i], 0.0));
 
             result = jd.eigenvectors() * diagonal;
@@ -92,7 +92,7 @@ namespace QuantLib {
 
     const Disposable<Matrix> rankReducedSqrt(
                                          const Matrix& matrix,
-                                         Size maxRank, 
+                                         Size maxRank,
                                          Real componentRetainedPercentage,
                                          SalvagingAlgorithm::Type sa) {
 

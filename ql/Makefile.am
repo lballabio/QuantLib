@@ -104,6 +104,7 @@ libQuantLib_la_LIBADD = \
 libQuantLib_la_SOURCES = \
     basicdataformatters.cpp \
     calendar.cpp \
+    currency.cpp \
     dataformatters.cpp \
     dataparsers.cpp \
     date.cpp \

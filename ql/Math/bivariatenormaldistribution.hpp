@@ -19,10 +19,11 @@
     \brief bivariate cumulative normal distribution
 */
 
-#ifndef quantlib_bivariatenormal_distribution_h
-#define quantlib_bivariatenormal_distribution_h
+#ifndef quantlib_bivariatenormal_distribution_hpp
+#define quantlib_bivariatenormal_distribution_hpp
 
-#include <ql/dataformatters.hpp>
+#include <ql/basicdataformatters.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
@@ -38,7 +39,7 @@ namespace QuantLib {
                  Mathematics of Computation 32, pp. 277-279.
               2) Drezner, Z. and Wesolowsky, G. O. (1990)
                  `On the Computation of the Bivariate Normal Integral',
-                 Journal of Statistical Computation and Simulation 35, 
+                 Journal of Statistical Computation and Simulation 35,
                  pp. 101-107.
               3) Drezner, Z (1992)
                  Computation of the Multivariate Normal Integral,
@@ -47,7 +48,7 @@ namespace QuantLib {
                  Computation of the Trivariate Normal Integral,
                  Mathematics of Computation 62, pp. 289-294.
               5) Genz, A. (1992)
-                `Numerical Computation of the Multivariate Normal 
+                `Numerical Computation of the Multivariate Normal
                  Probabilities', J. Comput. Graph. Stat. 1, pp. 141-150.
 
     */
