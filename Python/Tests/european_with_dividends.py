@@ -25,13 +25,22 @@
 """ 
     $Source$
     $Log$
+    Revision 1.3  2001/01/08 16:19:29  nando
+    more homogeneous format
+
     Revision 1.2  2001/01/08 15:33:23  nando
     improved
 
 """
 
-# Make sure that Python path contains the directory of QuantLib and that of this file
+# Make sure that Python path contains the directory of QuantLib and
+# that of this file
 from QuantLib import DividendEuropeanOption
+import time
+startTime = time.time()
+
+print "Testing class DividendEuropeanOption"
+
 pricer = DividendEuropeanOption
 nstp = 150
 ngrd = nstp+1
@@ -63,7 +72,6 @@ err_rho  =  1e-4
 err_vega =  1e-4
 total_number_of_error = 0
 
-print "Testing class DividendEuropeanOption"
 print "     Type  items err-delta err-gamma err-theta  err-rho  err-vega "
 
 for typ in ['Call','Put','Straddle']:
@@ -130,7 +138,7 @@ print "\nFinal maximum global error on numerical derivatives = %g\n" % max(maxNu
 if total_number_of_error > 1:
         print "Test not passed, total number of failures:",total_number_of_error
 else:
-        print "Test passed!!"
+        print 'Test passed (elapsed time', time.time() - startTime, ')'
 
 print 'Press return to end this test'
 raw_input()

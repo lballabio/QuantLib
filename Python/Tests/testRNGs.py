@@ -25,17 +25,26 @@
 """ 
     $Source$
     $Log$
+    Revision 1.4  2001/01/08 16:19:29  nando
+    more homogeneous format
+
     Revision 1.3  2001/01/08 15:33:23  nando
     improved
 
 """
 
 
-print "Testing random number generators"
 
 from QuantLib import Statistics
 from QuantLib import UniformRandomGenerator
 from QuantLib import GaussianRandomGenerator
+
+import time
+startTime = time.time()
+
+print "Testing random number generators"
+
+
 
 tol = 1e-9
 seed = 576919
@@ -49,5 +58,7 @@ for RNG in [UniformRandomGenerator, GaussianRandomGenerator]:
   print "%35s: %7.4f %8.4f %8.4f %8.4f %7.3f %7.3f " %  (RNG, s.mean(),
     s.standardDeviation(), s.skewness(), s.kurtosis(), s.min(), s.max())
 
+print
+print 'Test passed (elapsed time', time.time() - startTime, ')'
 print 'Press return to end this test'
 raw_input()

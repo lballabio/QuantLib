@@ -25,15 +25,21 @@
 """ 
     $Source$
     $Log$
+    Revision 1.3  2001/01/08 16:19:29  nando
+    more homogeneous format
+
     Revision 1.2  2001/01/08 15:33:23  nando
     improved
 
 """
 
-print "Testing Monte Carlo pricers"
 
 from QuantLib import McEuropeanPricer
 from QuantLib import McAsianPricer
+import time
+startTime = time.time()
+
+print "Testing Monte Carlo pricers"
 
 type = "Call"
 underlying = 100
@@ -52,5 +58,7 @@ for pricer in [McEuropeanPricer, McAsianPricer]:
              residualTime, volatility, timesteps, numIte, seed=seed)
   print "%30s: %7i %12.6f %12.6f" %(pricer, numIte, p.value(), p.errorEstimate())
 
+print
+print 'Test passed (elapsed time', time.time() - startTime, ')'
 print 'Press return to end this test'
 raw_input()

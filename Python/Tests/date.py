@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/01/08 16:19:29  nando
+    more homogeneous format
+
     Revision 1.1  2001/01/08 15:12:45  nando
     added test for date and distributions
 
@@ -32,11 +35,15 @@
 
 
 from QuantLib import *
+import time
+startTime = time.time()
+
 
 # check su Day, Month, etc in debug: adesso il check e' solo su Month in SWIG
 
 # ci vorrebbe un general offset su cos'e' il serial number zero
 
+print 'Testing class date'
 
 try:
     mindate = Date_minDate().serialNumber()
@@ -150,5 +157,8 @@ except Exception, e:
 
 
 print "test ends with", i, t
+
+print
+print 'Test passed (elapsed time', time.time() - startTime, ')'
 print 'Press return to end this test'
 raw_input()

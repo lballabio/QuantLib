@@ -25,15 +25,19 @@
 """ 
     $Source$
     $Log$
+    Revision 1.3  2001/01/08 16:19:29  nando
+    more homogeneous format
+
     Revision 1.2  2001/01/08 15:33:09  nando
     improved
-
-    Revision 1.1  2001/01/08 15:12:45  nando
-    added test for date and distributions
-
 """
 
 from QuantLib import *
+import time
+startTime = time.time()
+
+
+print 'Testing distributions'
 
 tolerance = 1e-3
 steps = 100000
@@ -77,6 +81,7 @@ except Exception, e:
     print 'iter n.', x, 'increment', dx,
     raise e
 
-print 'test passed'
+print
+print 'Test passed (elapsed time', time.time() - startTime, ')'
 print 'Press return to end this test'
 raw_input()

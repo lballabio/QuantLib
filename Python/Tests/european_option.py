@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.3  2001/01/08 16:19:29  nando
+    more homogeneous format
+
     Revision 1.2  2001/01/08 15:33:23  nando
     improved
 
@@ -34,14 +37,17 @@
 # that of this file
 
 from QuantLib  import BSMEuropeanOption
-import copy
-import math
+import copy, math
+import time
+startTime = time.time()
+
+print "Testing class BSMEuropeanOption, maximum-error"
 
 pricer = BSMEuropeanOption
 
 def relErr(x1, x2, reference):
     if reference != 0.0:
-    return abs(x1-x2)/reference
+        return abs(x1-x2)/reference
     else:
         return 10e10
         
@@ -63,7 +69,6 @@ err_rho  =  5e-5
 err_vega =  5e-5
 total_number_of_error = 0
 
-print "Test of the class BSMEuropeanOption, maximum-error"
 print "     Type  items err-value err-delta err-gamma err-theta  err-rho  err-vega "
 for under in rangeUnder:
   for Qrate in rangeQrate:
@@ -163,9 +168,10 @@ print "Final maximum C+P-S = %g" % max(maxCPSerrorList)
 print "Final maximum global error on numerical derivatives = %g" % max(maxNumDerErrorList)
 print 
 if total_number_of_error > 1:
-        print "Test not passed, total noumber of failures:",total_number_of_error
+        print "Test not passed, total noumber of failures:", \
+              total_number_of_error
 else:
-        print "Test passed!!"
+        print 'Test passed (elapsed time', time.time() - startTime, ')'
 
 print 'Press return to end this test'
 raw_input()

@@ -25,12 +25,18 @@
 """ 
     $Source$
     $Log$
+    Revision 1.9  2001/01/08 16:19:29  nando
+    more homogeneous format
+
     Revision 1.8  2001/01/08 15:33:23  nando
     improved
 
 """
 
 from QuantLib import Statistics
+import time
+startTime = time.time()
+print 'Testing Statistics'
 
 tol = 1e-9
 
@@ -100,5 +106,7 @@ print 'error estimate', s.errorEstimate(), 'not checked'
 #else:
 #  print 'wrong'
 
+print
+print 'Test passed (elapsed time', time.time() - startTime, ')'
 print 'Press return to end this test'
 raw_input()
