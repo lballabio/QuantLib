@@ -37,6 +37,7 @@
 #include "stats.hpp"
 #include "swap.hpp"
 #include "swaption.hpp"
+#include "termstructures.hpp"
 
 int main() {
     CppUnit::TextUi::TestRunner runner;
@@ -59,6 +60,7 @@ int main() {
     runner.addTest(new StatisticsTest);
     runner.addTest(SimpleSwapTest::suite());
     runner.addTest(SwaptionTest::suite());
+    runner.addTest(TermStructureTest::suite());
 
     std::string header = "Testing QuantLib " QL_VERSION ;
     std::cerr << std::string(header.length(),'=') << std::endl;
