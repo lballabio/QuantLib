@@ -50,12 +50,16 @@ namespace QuantLib {
         void QuantoOptionParameters<ArgumentsType>::validate() const {
             ArgumentsType::validate();
             QL_REQUIRE(foreignRiskFreeRate != Null<double>(),
+                       "QuantoOptionParameters::validate() : "
                        "null risk free rate given");
             QL_REQUIRE(exchangeRateVolatility != Null<double>(),
+                       "QuantoOptionParameters::validate() : "
                        "null exchange rate volatility given");
             QL_REQUIRE(exchangeRateVolatility >= 0.0,
+                       "QuantoOptionParameters::validate() : "
                        "negative exchange rate volatility given");
             QL_REQUIRE(correlation != Null<double>(),
+                       "QuantoOptionParameters::validate() : "
                        "null correlation given");
         }
 
@@ -79,34 +83,62 @@ namespace QuantLib {
         public:
             QuantoEngine(const Handle<GenericEngine<ArgumentsType,
                 ResultsType> >&);
-            void calculate() const;
         protected:
             Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
-            ArgumentsType* originalArgs_;
+            ArgumentsType* originalParameters_;
             const ResultsType* originalResults_;
         };
 
         template<class ArgumentsType, class ResultsType>
         QuantoEngine<ArgumentsType, ResultsType>::QuantoEngine(
-            const Handle<GenericEngine<ArgumentsType, ResultsType> >& originalEngine)
+            const Handle<GenericEngine<ArgumentsType, ResultsType> >&
+            originalEngine)
         : originalEngine_(originalEngine) {
-            QL_REQUIRE(!originalEngine_.isNull(), "null engine or wrong engine type");
-            originalResults_ = dynamic_cast<const ResultsType*>(originalEngine_->results());
-            originalArgs_ = dynamic_cast<ArgumentsType*>(originalEngine_->arguments());
+            QL_REQUIRE(!originalEngine_.isNull(),
+                "QuantoEngine::QuantoEngine : "
+                "null engine or wrong engine type");
+            originalResults_ = dynamic_cast<const ResultsType*>(
+                originalEngine_->results());
+            originalParameters_ = dynamic_cast<ArgumentsType*>(
+                originalEngine_->parameters());
         }
 
 
         //! Quanto vanilla engine base class
-        class QuantoVanillaEngine : public
-            QuantoEngine<VanillaOptionParameters,
-                         VanillaOptionResults> {
+        class QuantoVanillaEngine : public QuantoEngine<
+                                        VanillaOptionParameters,
+                                        VanillaOptionResults> {
+        public:
+            QuantoVanillaEngine(const Handle<VanillaEngine>& vanillaEngine);
         };
+
+        inline QuantoVanillaEngine::QuantoVanillaEngine(const Handle<VanillaEngine>&
+            vanillaEngine)
+        : QuantoEngine<VanillaOptionParameters,
+                        VanillaOptionResults>(vanillaEngine) {
+            QL_REQUIRE(!vanillaEngine.isNull(),
+                "QuantoVanillaEngine::QuantoVanillaEngine : "
+                "null engine or wrong engine type");
+        }
+
 
         //! Quanto vanilla engine base class
         class QuantoVanillaAnalyticEngine : public QuantoVanillaEngine {
         public:
+            QuantoVanillaAnalyticEngine(const Handle<VanillaEngine>&
+                vanillaEngine);
             void calculate() const;
         };
+
+        inline QuantoVanillaAnalyticEngine::QuantoVanillaAnalyticEngine(const
+            Handle<VanillaEngine>& vanillaEngine)
+        : QuantoVanillaEngine(vanillaEngine) {
+            QL_REQUIRE(!vanillaEngine.isNull(),
+                "QuantoVanillaAnalyticEngine::QuantoVanillaAnalyticEngine : "
+                "null engine or wrong engine type");
+        }
+
+
 
     }
 }

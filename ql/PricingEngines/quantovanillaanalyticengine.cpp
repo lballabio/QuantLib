@@ -31,18 +31,18 @@ namespace QuantLib {
 
         void QuantoVanillaAnalyticEngine::calculate() const {
 
-            originalArgs_->type = parameters_.type;
-            originalArgs_->underlying = parameters_.underlying;
-            originalArgs_->strike = parameters_.strike;
-            originalArgs_->dividendYield = parameters_.dividendYield +
+            originalParameters_->type = parameters_.type;
+            originalParameters_->underlying = parameters_.underlying;
+            originalParameters_->strike = parameters_.strike;
+            originalParameters_->dividendYield = parameters_.dividendYield +
                 parameters_.riskFreeRate - parameters_.foreignRiskFreeRate +
                 parameters_.correlation * parameters_.volatility *
                 parameters_.exchangeRateVolatility;
-            originalArgs_->riskFreeRate = parameters_.riskFreeRate;
-            originalArgs_->residualTime = parameters_.residualTime;
-            originalArgs_->volatility = parameters_.volatility;
+            originalParameters_->riskFreeRate = parameters_.riskFreeRate;
+            originalParameters_->residualTime = parameters_.residualTime;
+            originalParameters_->volatility = parameters_.volatility;
 
-            originalArgs_->validate();
+            originalParameters_->validate();
             
             originalEngine_->calculate();
 
@@ -52,7 +52,8 @@ namespace QuantLib {
             results_.theta = originalResults_->theta;
             results_.rho = 0.0;
             results_.dividendRho = 0.0;
-            results_.vega = 0.0;
+            results_.vega = originalResults_->vega +
+                parameters_.underlying ;
 
             results_.qvega = 0.0;
             results_.qrho = 0.0;

@@ -303,6 +303,8 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
@@ -432,6 +434,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -575,6 +578,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -876,6 +880,8 @@ CLEAN :
 	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
@@ -1007,6 +1013,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -1150,6 +1157,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -1452,6 +1460,8 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\wellington.sbr"
 	-@erase "$(INTDIR)\xibor.obj"
@@ -1581,6 +1591,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\mathf.sbr" \
+	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -1724,6 +1735,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -1892,6 +1904,7 @@ CLEAN :
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\vanillaoption.obj"
 	-@erase "$(INTDIR)\vasicek.obj"
+	-@erase "$(INTDIR)\vols.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -2022,6 +2035,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
+	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -5641,6 +5655,38 @@ SOURCE=.\ql\functions\mathf.cpp
 
 
 "$(INTDIR)\mathf.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=.\ql\functions\vols.cpp
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+
+"$(INTDIR)\vols.obj"	"$(INTDIR)\vols.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+
+"$(INTDIR)\vols.obj"	"$(INTDIR)\vols.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+
+"$(INTDIR)\vols.obj"	"$(INTDIR)\vols.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+
+"$(INTDIR)\vols.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

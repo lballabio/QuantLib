@@ -41,7 +41,6 @@ namespace QuantLib {
                 QL_SQRT(parameters_.residualTime);
 
             static Math::CumulativeNormalDistribution f;
-            double alpha, beta, NID1;
 
             double D1 = 
                 QL_LOG(parameters_.underlying/parameters_.strike)/stdDev +
@@ -50,6 +49,7 @@ namespace QuantLib {
                     parameters_.residualTime/stdDev;
             double D2 = D1-stdDev;
 
+            double alpha, beta, NID1;
             switch (parameters_.type) {
               case Option::Call:
                 alpha = f(D1);

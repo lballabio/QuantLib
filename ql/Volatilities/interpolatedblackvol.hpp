@@ -14,17 +14,17 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file interpolatedblackvols.hpp
-    \brief Black volatility term structure interpolation based
+/*! \file interpolatedblackvol.hpp
+    \brief Black volatility term structure
 
-    \fullpath
-    ql/%interpolatedblackvols.hpp
+  \fullpath
+    ql/Volatilities/%interpolatedblackvol.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_interpolatedblackvols_hpp
-#define quantlib_interpolatedblackvols_hpp
+#ifndef quantlib_interpolatedblackvol_hpp
+#define quantlib_interpolatedblackvol_hpp
 
 #include <ql/Math/matrix.hpp>
 #include <ql/voltermstructure.hpp>
@@ -35,20 +35,21 @@ namespace QuantLib {
     namespace VolTermStructures {
 
         //! Black volatility term structure interpolation based
-        /*! This class calculates Black volatilies based on
+        /*! This class calculates interpolated Black volatilies based on
             a matrix of Black volatilities observed in the market
 
-            The interpolation is performed on the variance. 
+            The interpolation is performed on the variance.
         */
-        template<class Interpolation2D>
+        template<class Interpolator2D>
         class InterpolatedBlackVolStructure : public VolTermStructure {
           public:
-            InterpolatedBlackVolStructure(const Date& referenceDate,
-                                          const std::vector<Date>& dates,
-                                          const std::vector<double>& strikes,
-                                          const QuantLib::Math::Matrix& blackVolMatrix,
-                                          const Daycounter& dayCounter,
-                                          const std::string& underlying = "");
+            InterpolatedBlackVolStructure(
+                                const Date& referenceDate,
+                                const std::vector<Date>& dates,
+                                const std::vector<double>& strikes,
+                                const QuantLib::Math::Matrix& blackVolMatrix,
+                                const DayCounter& dayCounter,
+                                const std::string& underlying = "");
             double blackVol(const Date& maturity, double strike, bool extrapolate = false) const;
             double blackVol(Time maturity, double strike, bool extrapolate = false) const;
             double localVol(const Date& evaluationDate, double strike, bool extrapolate = false) const;
@@ -64,17 +65,17 @@ namespace QuantLib {
               DayCounter dayCounter_;
               std::string underlying_;
               std::vector<Time> times_;
-              Interpolation2D varianceSurface_;
+              Interpolator2D varianceSurface_;
         };
 
-    
-        template<class Interpolation2D>
-        InterpolatedBlackVolStructure<Interpolation2D>::InterpolatedBlackVolStructure(
+
+        template<class Interpolator2D>
+        InterpolatedBlackVolStructure<Interpolator2D>::InterpolatedBlackVolStructure(
             const Date& referenceDate,
             const std::vector<Date>& dates,
             const std::vector<double>& moneyStrikes,
             const QuantLib::Math::Matrix& blackVolMatrix,
-            const Daycounter& dayCounter,
+            const DayCounter& dayCounter,
             const std::string& underlying)
         : referenceDate_(referenceDate), dates_(dates), dayCounter_(dayCounter),
           underlying_(underlying) {
@@ -102,7 +103,7 @@ namespace QuantLib {
                     variances[i][j]=times_[j]*blackVolMatrix[i][j]*blackVolMatrix[i][j];
                 }
             }
-            varianceSurface_ = Interpolation2D<
+            varianceSurface_ = Interpolator2D<
                         std::vector<Time>::const_iterator,
 			            std::vector<double>::const_iterator,
                         QuantLib::Math::Matrix>(times_.begin(), times_.end(),
@@ -110,38 +111,38 @@ namespace QuantLib {
         }
 
 
-        template<class Interpolation2D>
-            double InterpolatedBlackVolStructure<Interpolation2D>::blackVol(
+        template<class Interpolator2D>
+            double InterpolatedBlackVolStructure<Interpolator2D>::blackVol(
                 const Date& evaluationDate, double strike,
-                bool extrapolate = false) const {
+                bool extrapolate) const {
             return blackVol(dayCounter_.yearFraction(referenceDate, evaluationDate),
                 strike,extrapolate)
 
-        template<class Interpolation2D>
-        double InterpolatedBlackVolStructure<Interpolation2D>::blackVol(
+        template<class Interpolator2D>
+        double InterpolatedBlackVolStructure<Interpolator2D>::blackVol(
             Time evaluationTime, double strike,
-            bool extrapolate = false) const {
+            bool extrapolate) const {
             QL_REQUIRE(evaluationTime>=0.0, "negative time not allowed");
             douvle variance = varianceSurface_(evaluationTime, strike, extrapolate);
             return QL_SQRT(variance/evaluationTime);
         }
 
-        template<class Interpolation2D>
-        double InterpolatedBlackVolStructure<Interpolation2D>::localVol(
+        template<class Interpolator2D>
+        double InterpolatedBlackVolStructure<Interpolator2D>::localVol(
             const Date& evaluationDate, double strike,
-            bool extrapolate = false) const {
+            bool extrapolate) const {
             return localVol(dayCounter_.yearFraction(referenceDate, evaluationDate),
                 strike,extrapolate)
         }
 
-        template<class Interpolation2D>
-        double InterpolatedBlackVolStructure<Interpolation2D>::localVol(
+        template<class Interpolator2D>
+        double InterpolatedBlackVolStructure<Interpolator2D>::localVol(
             Time evaluationTime, double strike,
-            bool extrapolate = false) const {
+            bool extrapolate) const {
             QL_REQUIRE(evaluationTime>=0.0, "negative time not allowed");
             return 0.0;
         }
-        
+
     }
 
 }

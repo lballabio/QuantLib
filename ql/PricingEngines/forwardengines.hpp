@@ -26,7 +26,7 @@
 #ifndef quantlib_forward_engines_h
 #define quantlib_forward_engines_h
 
-#include <ql/PricingEngines/genericengine.hpp>
+#include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
 
@@ -47,14 +47,19 @@ namespace QuantLib {
         void ForwardOptionParameters<ArgumentsType>::validate() const {
             ArgumentsType::validate();
             QL_REQUIRE(moneyness != Null<double>(),
+                       "ForwardOptionParameters::validate() : "
                        "null moneyness given");
             QL_REQUIRE(moneyness > 0.0,
+                       "ForwardOptionParameters::validate() : "
                        "negative or zero moneyness given");
             QL_REQUIRE(resetTime != Null<double>(),
+                       "ForwardOptionParameters::validate() : "
                        "null reset time given");
             QL_REQUIRE(resetTime >= 0.0,
+                       "ForwardOptionParameters::validate() : "
                        "negative reset time given");
             QL_REQUIRE(residualTime >= resetTime,
+                       "ForwardOptionParameters::validate() : "
                        "reset time greater than residual time");
         }
 
@@ -66,25 +71,44 @@ namespace QuantLib {
         public:
             ForwardEngine(const Handle<GenericEngine<ArgumentsType,
                 ResultsType> >&);
-            void calculate() const;
-        private:
+        protected:
             Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
-            ArgumentsType* args_;
-            const ResultsType* results_;
+            ArgumentsType* originalParameters_;
+            const ResultsType* originalResults_;
         };
 
         template<class ArgumentsType, class ResultsType>
         ForwardEngine<ArgumentsType, ResultsType>::ForwardEngine(
-            const Handle<GenericEngine<ArgumentsType, ResultsType> >& originalEngine)
+            const Handle<GenericEngine<ArgumentsType, ResultsType> >&
+            originalEngine)
         : originalEngine_(originalEngine) {
-            QL_REQUIRE(!originalEngine_.isNull(), "null engine or wrong engine type");
-            results_ = dynamic_cast<const ResultsType*>(originalEngine_->results());
-            args_ = dynamic_cast<ArgumentsType*>(originalEngine_->arguments());
+            QL_REQUIRE(!originalEngine_.isNull(),
+                "ForwardEngine::ForwardEngine : "
+                "null engine or wrong engine type");
+            originalResults_ = dynamic_cast<const ResultsType*>(
+                originalEngine_->results());
+            originalParameters_ = dynamic_cast<ArgumentsType*>(
+                originalEngine_->parameters());
         }
 
-        template<class ArgumentsType, class ResultsType>
-        void ForwardEngine<ArgumentsType, ResultsType>::calculate() const {
-        }
+        //! Forward vanilla engine base class
+        class ForwardVanillaEngine : public ForwardEngine<
+                                        VanillaOptionParameters,
+                                        VanillaOptionResults> {
+        public:
+            ForwardVanillaEngine(const Handle<VanillaEngine>& vanillaEngine)
+                : ForwardEngine<VanillaOptionParameters,
+                                VanillaOptionResults>(vanillaEngine) {}
+        };
+
+        //! Forward vanilla engine base class
+        class ForwardVanillaAnalyticEngine : public ForwardVanillaEngine {
+        public:
+            ForwardVanillaAnalyticEngine(
+                const Handle<VanillaEngine>& vanillaEngine)
+                : ForwardVanillaEngine(vanillaEngine) {}
+            void calculate() const;
+        };
 
     }
 

@@ -48,6 +48,9 @@ namespace QuantLib {
           foreignRiskFreeRate_(foreignRiskFreeRate),
           exchangeRateVolatility_(exchangeRateVolatility),
           correlation_(correlation) {
+            QL_REQUIRE(!engine.isNull(),
+                "QuantoVanillaOption::QuantoVanillaOption : "
+                "null engine or wrong engine type");
             registerWith(foreignRiskFreeRate_);
             registerWith(exchangeRateVolatility_);
             registerWith(correlation_);

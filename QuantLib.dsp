@@ -1374,6 +1374,14 @@ SOURCE=.\ql\functions\mathf.cpp
 
 SOURCE=.\ql\functions\mathf.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\vols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\vols.hpp
+# End Source File
 # End Group
 # Begin Group "Volatilities"
 
@@ -1381,6 +1389,10 @@ SOURCE=.\ql\functions\mathf.hpp
 # Begin Source File
 
 SOURCE=.\ql\Volatilities\capflatvolvector.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\interpolatedblackvol.hpp
 # End Source File
 # Begin Source File
 
@@ -1541,14 +1553,6 @@ SOURCE=.\ql\PricingEngines\quantovanillaanalyticengine.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\vanillaengines.hpp
-# End Source File
-# End Group
-# Begin Group "VolTermStructure"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\Volatilities\interpolatedblackvol.hpp
 # End Source File
 # End Group
 # Begin Source File

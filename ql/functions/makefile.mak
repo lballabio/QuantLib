@@ -16,7 +16,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 # Object files
 OBJS = \
     daycounters.obj$(_D) \
-    mathf.obj$(_D)
+    mathf.obj$(_D) \
+    vols.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

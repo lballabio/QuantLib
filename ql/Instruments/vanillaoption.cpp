@@ -44,6 +44,9 @@ namespace QuantLib {
           underlying_(underlying), strike_(strike),
           dividendYield_(dividendYield), riskFreeRate_(riskFreeRate),
           exerciseDate_(exerciseDate), volatility_(volatility) {
+            QL_REQUIRE(!engine.isNull(),
+                "VanillaOption::VanillaOption : "
+                "null engine or wrong engine type");
             registerWith(underlying_);
             registerWith(dividendYield_);
             registerWith(riskFreeRate_);

@@ -32,14 +32,14 @@ namespace QuantLib {
         const std::string& isinCode, const std::string& description)
     : Instrument(isinCode, description), engine_(engine) {
         QL_REQUIRE(!engine_.isNull(), 
-                   "Option: null pricing engine not allowed");
+                   "Option::Option : null pricing engine not allowed");
     }
 
     Option::~Option() {}
 
     void Option::setPricingEngine(const Handle<PricingEngine>& engine) {
         QL_REQUIRE(!engine.isNull(), 
-                   "Option: null pricing engine not allowed");
+                   "Option::setPricingEngine : null pricing engine not allowed");
         engine_ = engine;
         // this will trigger recalculation and notify observers
         update();
@@ -52,7 +52,9 @@ namespace QuantLib {
         engine_->calculate();
         const OptionValue* results =
             dynamic_cast<const OptionValue*>(engine_->results());
-        QL_ENSURE(results != 0, "no results returned from option pricer");
+        QL_ENSURE(results != 0,
+            "Option::performCalculations : "
+            "no results returned from option pricer");
         NPV_ = results->value;
     }
 

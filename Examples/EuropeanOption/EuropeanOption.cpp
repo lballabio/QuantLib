@@ -79,6 +79,12 @@ int main(int argc, char* argv[])
                   << std::endl;
         std::cout << std::endl;
 
+        std::string method;
+        double value, discrepancy, rightValue, relativeDiscrepancy;
+
+        
+        std::cout << std::endl << std::endl ;
+        
         // write column headings
         std::cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
             "\tRel. Discr." << std::endl;
@@ -86,12 +92,12 @@ int main(int argc, char* argv[])
 
 
         // first method: Black Scholes analytic solution
-        std::string method ="Black Scholes";
-        double value = EuropeanOption(Option::Call, underlying, strike,
+        method ="Black Scholes";
+        value = EuropeanOption(Option::Call, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility).value();
         double estimatedError = 0.0;
-        double discrepancy = 0.0;
-        double relativeDiscrepancy = 0.0;
+        discrepancy = 0.0;
+        relativeDiscrepancy = 0.0;
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
@@ -101,7 +107,7 @@ int main(int argc, char* argv[])
 
 
         // store the Black Scholes value as the correct one
-        double rightValue = value;
+        rightValue = value;
 
 
 
@@ -167,7 +173,7 @@ int main(int argc, char* argv[])
         McEuropean mcEur(Option::Call, underlying, strike, dividendYield,
             riskFreeRate, maturity, volatility, antitheticVariance);
         // let's require a tolerance of 0.002%
-        value = mcEur.value(0.002);
+        value = mcEur.value(0.02);
         estimatedError = mcEur.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -198,8 +204,6 @@ int main(int argc, char* argv[])
 
 
 
-
-
         // New option pricing framework 
         std::cout << "\nNew Pricing engine framework" << std::endl;
 
@@ -224,7 +228,6 @@ int main(int argc, char* argv[])
             );
             
 
-        
         // method: Black Scholes Engine
         method = "Black Scholes";
         value = option.NPV();
@@ -268,8 +271,32 @@ int main(int argc, char* argv[])
              << std::endl;
         
 
-        PricingEngines::EuropeanAnalyticalEngine baseEngine();
-//        PricingEngines::QuantoVanillaAnalyticEngine quantoEngine(baseEngine);
+        Handle<PricingEngines::EuropeanAnalyticalEngine> baseEngine(new
+            PricingEngines::EuropeanAnalyticalEngine);
+        Handle<PricingEngines::QuantoVanillaAnalyticEngine> quantoEngine(new
+            PricingEngines::QuantoVanillaAnalyticEngine(baseEngine));
+
+        double correlation = 0.5;
+        Instruments::QuantoVanillaOption quantoOption(
+            Option::Call,
+            Handle<MarketElement>(new SimpleMarketElement(underlying)),
+            strike,
+            Handle<TermStructure>(),
+            flatTermStructure,
+            todaysDate.plus(3, Months),
+            Handle<MarketElement>(new SimpleMarketElement(volatility)),
+            quantoEngine,
+            Handle<TermStructure>(),
+            Handle<MarketElement>(new SimpleMarketElement(volatility)),
+            Handle<MarketElement>(new SimpleMarketElement(correlation))
+            );
+            
+        value = quantoOption.NPV();
+        std::cout << std::endl << std::endl << "quanto: "
+             << DoubleFormatter::toString(value, 4)
+             << std::endl;
+
+
             
         return 0;
     } catch (std::exception& e) {

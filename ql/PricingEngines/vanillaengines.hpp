@@ -55,27 +55,27 @@ namespace QuantLib {
 
         inline void VanillaOptionParameters::validate() const {
             QL_REQUIRE(type != Option::Type(-1),
-                       "no option type given");
+                       "VanillaOptionParameters::validate() : no option type given");
             QL_REQUIRE(underlying != Null<double>(),
-                       "null underlying given");
+                       "VanillaOptionParameters::validate() : null underlying given");
             QL_REQUIRE(underlying > 0.0,
-                       "negative or zero underlying given");
+                       "VanillaOptionParameters::validate() : negative or zero underlying given");
             QL_REQUIRE(strike != Null<double>(),
-                       "null strike given");
+                       "VanillaOptionParameters::validate() : null strike given");
             QL_REQUIRE(strike >= 0.0,
-                       "negative strike given");
+                       "VanillaOptionParameters::validate() : negative strike given");
             QL_REQUIRE(dividendYield != Null<double>(),
-                       "null dividend yield given");
+                       "VanillaOptionParameters::validate() : null dividend yield given");
             QL_REQUIRE(riskFreeRate != Null<double>(),
-                       "null risk free rate given");
+                       "VanillaOptionParameters::validate() : null risk free rate given");
             QL_REQUIRE(residualTime != Null<double>(),
-                       "null residual time given");
+                       "VanillaOptionParameters::validate() : null residual time given");
             QL_REQUIRE(residualTime >= 0.0,
-                       "negative residual time given");
+                       "VanillaOptionParameters::validate() : negative residual time given");
             QL_REQUIRE(volatility != Null<double>(),
-                       "null volatility given");
+                       "VanillaOptionParameters::validate() : null volatility given");
             QL_REQUIRE(volatility >= 0.0,
-                       "negative volatility given");
+                       "VanillaOptionParameters::validate() : negative volatility given");
         }
 
         //! %results from vanilla option calculation
