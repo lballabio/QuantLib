@@ -59,10 +59,10 @@ namespace QuantLib {
           private:
             SG generator_;
             Size dimension_;
+            TimeGrid timeGrid_;
+            Handle<DiffusionProcess> diffProcess_;
             mutable sample_type next_;
             mutable double asset_;
-            Handle<DiffusionProcess> diffProcess_;
-            TimeGrid timeGrid_;
         };
 
         template <class SG>
@@ -70,8 +70,8 @@ namespace QuantLib {
             const Handle<DiffusionProcess>& diffProcess,
             Time length, Size timeSteps, const SG& generator)
         : generator_(generator), dimension_(generator_.dimension()),
-          next_(Path(timeGrid),1.0), diffProcess_(diffProcess),
-          timeGrid_(length, timeSteps) {
+          timeGrid_(length, timeSteps), diffProcess_(diffProcess),
+          next_(Path(timeGrid_),1.0) {
             QL_REQUIRE(dimension_==timeSteps,
                 "PathGenerator::PathGenerator :"
                 "sequence generator dimensionality ("
@@ -86,8 +86,8 @@ namespace QuantLib {
             const Handle<DiffusionProcess>& diffProcess,
             const TimeGrid& timeGrid, const SG& generator)
         : generator_(generator), dimension_(generator_.dimension()),
-          next_(Path(timeGrid),1.0), diffProcess_(diffProcess),
-          timeGrid_(timeGrid) {
+          timeGrid_(timeGrid), diffProcess_(diffProcess),
+          next_(Path(timeGrid_),1.0) {
             QL_REQUIRE(dimension_==timeGrid_.size()-1,
                 "PathGenerator::PathGenerator :"
                 "sequence generator dimensionality ("
@@ -188,28 +188,30 @@ namespace QuantLib {
         };
 
         template <class RNG>
-        PathGenerator_old<RNG>::PathGenerator_old(double drift, double variance,
-            Time length, Size timeSteps, long seed)
+        PathGenerator_old<RNG>::PathGenerator_old(double drift, 
+            double variance, Time length, Size timeSteps, long seed)
         : next_(Path(TimeGrid(length, timeSteps)),1.0) {
             QL_REQUIRE(timeSteps > 0, "PathGenerator_old: Time steps(" +
-                IntegerFormatter::toString(timeSteps) +
-                ") must be greater than zero");
+                       IntegerFormatter::toString(timeSteps) +
+                       ") must be greater than zero");
             QL_REQUIRE(length > 0, "PathGenerator_old: length must be > 0");
             Time dt = length/timeSteps;
 
             next_.value.drift() = Array(timeSteps, drift*dt);
 
-            QL_REQUIRE(variance >= 0.0, "PathGenerator_old: negative variance");
+            QL_REQUIRE(variance >= 0.0, 
+                       "PathGenerator_old: negative variance");
             generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
                 new RandomNumbers::RandomArrayGenerator<RNG>(
                     Array(timeSteps, variance*dt), seed));
         }
 
         template <class RNG>
-        PathGenerator_old<RNG>::PathGenerator_old(double drift, double variance,
-            const TimeGrid& times, long seed)
+        PathGenerator_old<RNG>::PathGenerator_old(double drift, 
+            double variance, const TimeGrid& times, long seed)
         : next_(Path(times),1.0) {
-            QL_REQUIRE(variance >= 0.0, "PathGenerator_old: negative variance");
+            QL_REQUIRE(variance >= 0.0, 
+                       "PathGenerator_old: negative variance");
             QL_REQUIRE(times.size() > 1, "PathGenerator_old: no times given");
             Array variancePerTime(times.size()-1);
             for(Size i = 0; i < times.size()-1; i++) {
@@ -230,15 +232,16 @@ namespace QuantLib {
         : next_(Path(times),1.0) {
             QL_REQUIRE(times.size() > 1, "PathGenerator_old: no times given");
             QL_REQUIRE(variance.size()==times.size()-1,
-                "PathGenerator_old: mismatch between variance and time arrays");
+                       "PathGenerator_old: "
+                       "mismatch between variance and time arrays");
             QL_REQUIRE(drift.size()==times.size()-1,
                 "PathGenerator_old: mismatch between drift and time arrays");
-            
             
             Array variancePerTime(times.size()-1);
             for(Size i = 0; i < times.size()-1; i++) {
                 next_.value.drift()[i] = drift[i]*times.dt(i);
-                QL_REQUIRE(variance[i] >= 0.0, "PathGenerator_old: negative variance");
+                QL_REQUIRE(variance[i] >= 0.0, 
+                           "PathGenerator_old: negative variance");
                 variancePerTime[i] = variance[i]*times.dt(i);
             }
 
@@ -255,14 +258,6 @@ namespace QuantLib {
             next_.value.diffusion() = sample.value;
             return next_;
         }
-
-
-
-
-
-
-
-
 
     }
 
