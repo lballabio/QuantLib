@@ -44,8 +44,7 @@ DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj \
                    $(OUTPUT_DIR)\thirty360italian.obj
                    
 MATH_OBJS        = $(OUTPUT_DIR)\normaldistribution.obj \
-                   $(OUTPUT_DIR)\statistics.obj \
-                   $(OUTPUT_DIR)\newcubicspline.obj
+                   $(OUTPUT_DIR)\statistics.obj
                    
 MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
                    $(OUTPUT_DIR)\averageasianpathpricer.obj \
@@ -235,7 +234,6 @@ $(OUTPUT_DIR)\bsmoperator.obj: $(SOURCES_DIR)\FiniteDifferences\bsmoperator.cpp
 Math: $(OUTPUT_DIR) $(MATH_OBJS)
 $(OUTPUT_DIR)\normaldistribution.obj: $(SOURCES_DIR)\Math\normaldistribution.cpp
 $(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\Math\statistics.cpp
-$(OUTPUT_DIR)\newcubicspline.obj: $(SOURCES_DIR)\Math\newcubicspline.cpp
 
 
 # Monte Carlo
