@@ -34,6 +34,7 @@
 #include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
 
 namespace QuantLib {
 
@@ -253,7 +254,8 @@ namespace QuantLib {
             } else {
                 mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
                     new MonteCarlo::MonteCarloModel<S, PG, PP>(
-                        pathGenerator(), pathPricer(), S(), antitheticVariate_));
+                        pathGenerator(), pathPricer(), S(), 
+                        antitheticVariate_));
             }
 
             value(0.01);
@@ -280,7 +282,8 @@ namespace QuantLib {
               controlVariate, maxTimeStepPerYear, sequenceGenerator) {}
           protected:
             TimeGrid timeGrid() const;
-            Handle<MonteCarlo::PathPricer<MonteCarlo::Path> > pathPricer() const;
+            Handle<MonteCarlo::PathPricer<MonteCarlo::Path> > 
+            pathPricer() const;
         };
 
         template<class S, class SG, class PG>
@@ -302,7 +305,8 @@ namespace QuantLib {
                 return TimeGrid(arguments_.maturity, 1);
             } catch (...) {
                 return TimeGrid(arguments_.maturity, 
-                                Size(arguments_.maturity*maxTimeStepsPerYear_));
+                                Size(arguments_.maturity * 
+                                     maxTimeStepsPerYear_));
             }
         }
 

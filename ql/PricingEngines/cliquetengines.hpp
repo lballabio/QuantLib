@@ -103,14 +103,16 @@ namespace QuantLib {
                             bool controlVariate,
                             Size maxTimeStepPerYear,
                             SG sequenceGenerator)
-            : antitheticVariate_(antitheticVariate),
-              controlVariate_(controlVariate), maxTimeStepPerYear_(maxTimeStepPerYear),
+            : McSimulation<S, PG, MonteCarlo::PathPricer<MonteCarlo::Path> >(
+                  antitheticVariate,controlVariate), 
+              maxTimeStepPerYear_(maxTimeStepPerYear),
               sequenceGenerator_(sequenceGenerator) {}
             void calculate() const;
           protected:
             TimeGrid timeGrid() const;
             Handle<PG> pathGenerator() const;
-            Handle<MonteCarlo::PathPricer<MonteCarlo::Path> > pathPricer() const;
+            Handle<MonteCarlo::PathPricer<MonteCarlo::Path> > 
+            pathPricer() const;
           private:
             Size maxTimeStepPerYear_;
             SG sequenceGenerator_;
@@ -206,7 +208,7 @@ namespace QuantLib {
                     MonteCarlo::PathPricer<MonteCarlo::Path> > >(
                     new MonteCarlo::MonteCarloModel<S, PG,
                         MonteCarlo::PathPricer<MonteCarlo::Path> >(
-                        pathGenerator(), pathPricer(), S(), antitheticVariate_
+                        pathGenerator(), pathPricer(), S(), antitheticVariate_,
                         controlPP, controlVariateValue));
            
             } else {
@@ -214,7 +216,8 @@ namespace QuantLib {
                     MonteCarlo::PathPricer<MonteCarlo::Path> > >(
                     new MonteCarlo::MonteCarloModel<S, PG,
                         MonteCarlo::PathPricer<MonteCarlo::Path> >(
-                        pathGenerator(), pathPricer(), S(), antitheticVariate_));
+                        pathGenerator(), pathPricer(), S(), 
+                        antitheticVariate_));
             }
 
             value(0.01);

@@ -342,7 +342,7 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // each path is priced using myPathPricer
     // prices will be accumulated into statisticAccumulator
     OneFactorMonteCarloOption_old MCSimulation(myPathGenerator,
-        myPathPricer, statisticAccumulator);
+        myPathPricer, statisticAccumulator, false);
 
     // the model simulates nSamples paths
     MCSimulation.addSamples(nSamples);
