@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PYQUANTLIB_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob2 /I "..\Sources" /I "..\Sources\Calendars" /I "..\Sources\DayCounters" /I "..\Sources\Currencies" /I "..\Sources\Instruments" /I "..\Sources\Operators" /I "..\Sources\PDE" /I "..\Sources\Pricers" /I "..\Sources\Solvers1D" /I "..\Sources\TermStructures" /D "WIN32" /D "__WIN32__" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PYQUANTLIB_EXPORTS" /D "QL_RELEASE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob2 /I "..\Include" /D "WIN32" /D "__WIN32__" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PYQUANTLIB_EXPORTS" /D "QL_RELEASE" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PYQUANTLIB_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\Sources" /I "..\Sources\Calendars" /I "..\Sources\DayCounters" /I "..\Sources\Currencies" /I "..\Sources\Instruments" /I "..\Sources\Operators" /I "..\Sources\PDE" /I "..\Sources\Pricers" /I "..\Sources\Solvers1D" /I "..\Sources\TermStructures" /D "WIN32" /D "__WIN32__" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PYQUANTLIB_EXPORTS" /D "QL_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\Include" /D "WIN32" /D "__WIN32__" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PYQUANTLIB_EXPORTS" /D "QL_DEBUG" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
