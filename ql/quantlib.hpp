@@ -299,6 +299,7 @@
 #include <ql/Volatilities/blackvariancecurve.hpp>
 #include <ql/Volatilities/blackvariancesurface.hpp>
 #include <ql/Volatilities/capflatvolvector.hpp>
+#include <ql/Volatilities/impliedvoltermstructure.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
