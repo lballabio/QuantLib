@@ -15,35 +15,65 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vanillaoption.hpp
-    \brief Vanilla option on a single asset
+/*! \file asianoption.hpp
+    \brief Asian option on a single asset
 */
 
 #ifndef quantlib_asian_option_h
 #define quantlib_asian_option_h
 
 #include <ql/Instruments/oneassetstrikedoption.hpp>
+#include <vector>
 
 namespace QuantLib {
 
+    //! placeholder for enumerated averaging types
+    struct Average {
+        enum Type { Arithmetic, Geometric };
+    };
+
     //! Asian option
-    class AsianOption : public OneAssetStrikedOption {
+    class DiscreteAveragingAsianOption : public OneAssetStrikedOption {
       public:
-        AsianOption(Option::Type type,
-                      const RelinkableHandle<Quote>& underlying,
-                      double strike,
-                      const RelinkableHandle<TermStructure>& dividendTS,
-                      const RelinkableHandle<TermStructure>& riskFreeTS,
-                      const Exercise& exercise,
-                      const RelinkableHandle<BlackVolTermStructure>& volTS,
-                      const Handle<PricingEngine>& engine =
-                      Handle<PricingEngine>(),
-                      const std::string& isinCode = "",
-                      const std::string& description = "");
+          DiscreteAveragingAsianOption(Average::Type averageType,
+                    Option::Type type,
+                    const RelinkableHandle<Quote>& underlying,
+                    double strike,
+                    double runningAverage,
+                    double pastWeight,
+                    std::vector<Time> fixingTimes,
+                    const RelinkableHandle<TermStructure>& dividendTS,
+                    const RelinkableHandle<TermStructure>& riskFreeTS,
+                    const Exercise& exercise,
+                    const RelinkableHandle<BlackVolTermStructure>& volTS,
+                    const Handle<PricingEngine>& engine =
+                    Handle<PricingEngine>(),
+                    const std::string& isinCode = "",
+                    const std::string& description = "");
+        //! \name Instrument interface
+        //@{
+        class arguments;
+        //@}
+        void setupArguments(Arguments*) const;
       protected:
         // enforce in this class any check on engine/payoff
         void performCalculations() const;
+        // arguments
+        Average::Type averageType_;
+        double runningAverage_, pastWeight_;
+        std::vector<Time> fixingTimes_;
     };
+
+    //! extra arguments for single asset asian option calculation
+    class DiscreteAveragingAsianOption::arguments : public OneAssetStrikedOption::arguments {
+      public:
+        void validate() const;
+        Average::Type averageType;
+        double runningAverage, pastWeight;
+        std::vector<Time> fixingTimes;
+    };
+
+
 
 }
 

@@ -41,8 +41,8 @@ namespace QuantLib {
                               Handle<PricingEngine>(),
                               const std::string& isinCode = "",
                               const std::string& description = "");
-        //! \name Instrument interface
         //@{
+        class arguments;
         class results;
         //@}
         //! \name greeks
@@ -59,15 +59,27 @@ namespace QuantLib {
     };
 
 
+    //! arguments for single asset option calculation
+    class OneAssetStrikedOption::arguments : public OneAssetOption::arguments {
+      public:
+        void validate() const;
+        Handle<Payoff> payoff_;
+    };
+
     //! %results from single asset sriked option calculation
     class OneAssetStrikedOption::results : public OneAssetOption::results,
                                            public MoreGreeks {
       public:
         void reset() {
-            // works on Borland, not on Visual ???
-//            OneAssetOption::results::reset();
-            Value::reset();
-            Greeks::reset();
+
+            
+            #if defined(QL_PATCH_MICROSOFT)
+            OneAssetOption::results copy = *this;
+            copy.reset();
+            #else
+            OneAssetOption::results::reset();
+            #endif
+            
             MoreGreeks::reset();
         }
     };

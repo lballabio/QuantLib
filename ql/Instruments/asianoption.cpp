@@ -23,10 +23,14 @@
 
 namespace QuantLib {
 
-    AsianOption::AsianOption(
+    DiscreteAveragingAsianOption::DiscreteAveragingAsianOption(
+                         Average::Type averageType,
                          Option::Type type,
                          const RelinkableHandle<Quote>& underlying,
                          double strike,
+                         double runningAverage,
+                         double pastWeight,
+                         std::vector<Time> fixingTimes,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const Exercise& exercise,
@@ -35,13 +39,61 @@ namespace QuantLib {
                          const std::string& isinCode,
                          const std::string& description)
     : OneAssetStrikedOption(type, underlying, strike, dividendTS, riskFreeTS,
-      exercise, volTS, engine, isinCode, description) {}
+      exercise, volTS, engine, isinCode, description),
+      averageType_(averageType), 
+      runningAverage_(runningAverage), pastWeight_(pastWeight),
+      fixingTimes_(fixingTimes) {}
 
-    void AsianOption::performCalculations() const {
-        // enforce in this class any check on engine/payoff
+
+
+    void DiscreteAveragingAsianOption::setupArguments(Arguments* args) const {
+
+        DiscreteAveragingAsianOption::arguments* moreArgs =
+            dynamic_cast<DiscreteAveragingAsianOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != 0,
+                   "DiscreteAveragingAsianOption::setupArguments : "
+                   "wrong argument type");
+        moreArgs->averageType = averageType_;
+        moreArgs->runningAverage = runningAverage_;
+        moreArgs->pastWeight = pastWeight_;
+        moreArgs->fixingTimes = fixingTimes_;
+
+        OneAssetStrikedOption::arguments* arguments =
+            dynamic_cast<OneAssetStrikedOption::arguments*>(args);
+        QL_REQUIRE(arguments != 0,
+                   "DiscreteAveragingAsianOption::setupArguments : "
+                   "wrong argument type");
+        OneAssetStrikedOption::setupArguments(arguments);
+
+    }
+
+    void DiscreteAveragingAsianOption::performCalculations() const {
+        // enforce in this class any check on engine/payoff coupling
         OneAssetStrikedOption::performCalculations();
     }
 
+    void DiscreteAveragingAsianOption::arguments::validate() const {
+
+        #if defined(QL_PATCH_MICROSOFT)
+        OneAssetStrikedOption::arguments copy = *this;
+        copy.validate();
+        #else
+        OneAssetStrikedOption::arguments::validate();
+        #endif
+
+        QL_REQUIRE(runningAverage >= 0.0,
+                   "DiscreteAveragingAsianOption::arguments::validate() : "
+                   "negative running average");
+        QL_REQUIRE(pastWeight >= 0.0,
+                   "DiscreteAveragingAsianOption::arguments::validate() : "
+                   "negative weight to past observations");
+        QL_REQUIRE(pastWeight <= 1.0,
+                   "DiscreteAveragingAsianOption::arguments::validate() : "
+                   "past observations' weight > 1");
+
+
+        // check fixingTimes_ here
+    }
 
 }
 

@@ -19,38 +19,72 @@
     \brief European option engine using analytic formulas
 */
 
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
+#include <ql/PricingEngines/Asian/asianengines.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
 
-    void AnalyticEuropeanEngine::calculate() const {
+    void AnalyticDiscreteAveragingAsianEngine::calculate() const {
+
+
+        QL_REQUIRE(arguments_.averageType == Average::Geometric,
+                   "AnalyticDiscreteAveragingAsianEngine::calculate() : "
+                   "not a geometric average option");
 
         QL_REQUIRE(arguments_.exerciseType == Exercise::European,
-                   "AnalyticEuropeanEngine::calculate() : "
+                   "AnalyticDiscreteAveragingAsianEngine::calculate() : "
                    "not an European Option");
+
+
 
         #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "AnalyticEuropeanEngine: non-plain payoff given");
+                   "AnalyticDiscreteAveragingAsianEngine: non-plain payoff given");
         #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        double variance = arguments_.volTS->blackVariance(arguments_.maturity,
-                                                          payoff->strike());
-        DiscountFactor dividendDiscount =
-            arguments_.dividendTS->discount(arguments_.maturity);
+
+        double pastWeight = arguments_.pastWeight;
+        double futureWeight = 1.0-pastWeight;
+
+        Size remainingFixings = arguments_.fixingTimes.size();
+        Size N = remainingFixings / futureWeight;
+        Size m = N - remainingFixings;
+
+        double timeSum = std::accumulate(arguments_.fixingTimes.begin(),
+            arguments_.fixingTimes.end(), 0.0);
+
+
+        double vola = arguments_.volTS->blackVol(arguments_.maturity,
+            payoff->strike());
+        double temp = 0.0;
+        for (Size i=m+1; i<N; i++)
+            temp += arguments_.fixingTimes[i-m-1]*(N-i);
+        double variance = vola*vola /N/N * 
+            (timeSum+ 2.0*temp);
+
+
+        Rate dividendRate =
+            arguments_.dividendTS->zeroYield(arguments_.maturity);
+        Rate riskFreeRate =
+            arguments_.riskFreeTS->zeroYield(arguments_.maturity);
+        double nu = riskFreeRate - dividendRate - 0.5*vola*vola;
+        double runningAverage = arguments_.runningAverage;
+        double runningLogAverage = QL_LOG(runningAverage);
+        double muG = pastWeight * runningLogAverage +
+            futureWeight * QL_LOG(arguments_.underlying) +
+            nu*timeSum/N;
+        double forwardPrice = QL_EXP(muG + variance / 2.0);
+
+
         DiscountFactor riskFreeDiscount =
             arguments_.riskFreeTS->discount(arguments_.maturity);
-        double forwardPrice = arguments_.underlying *
-            dividendDiscount / riskFreeDiscount;
 
         BlackFormula black(arguments_.underlying, forwardPrice, riskFreeDiscount,
             variance, arguments_.maturity, payoff);
-
 
         results_.value = black.value();
         results_.delta = black.delta();
@@ -61,6 +95,7 @@ namespace QuantLib {
         results_.dividendRho = black.dividendRho();
         results_.vega = black.vega();
         results_.strikeSensitivity = black.strikeSensitivity();
+
     }
 
 }

@@ -6,6 +6,7 @@ SUBDIRS = Barrier Cliquet Forward Quanto Vanilla
 
 include_HEADERS = \
     all.hpp \
+    blackformula.hpp \
     core.hpp \
     genericmodelengine.hpp \
     latticeshortratemodelengine.hpp \

@@ -87,5 +87,19 @@ namespace QuantLib {
     }
 
 
+
+    void OneAssetStrikedOption::arguments::validate() const {
+
+        #if defined(QL_PATCH_MICROSOFT)
+        OneAssetOption::arguments copy = *this;
+        copy.validate();
+        #else
+        OneAssetOption::arguments::validate();
+        #endif
+
+
+    }
+
+
 }
 

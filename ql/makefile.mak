@@ -38,6 +38,7 @@ MATH_LIB            = Math\Math$(_D).lib
 MONTECARLO_LIB      = MonteCarlo\MonteCarlo$(_D).lib
 OPTIMIZATION_LIB    = Optimization\Optimization$(_D).lib
 PRICER_LIB          = Pricers\Pricers$(_D).lib
+ASIAN_ENGINES_LIB   = PricingEngines\Asian\AsianEngines$(_D).lib
 BARRIER_ENGINES_LIB = PricingEngines\Barrier\BarrierEngines$(_D).lib
 VANILLA_ENGINES_LIB = PricingEngines\Vanilla\VanillaEngines$(_D).lib
 RNG_LIB             = RandomNumbers\RandomNumbers$(_D).lib
@@ -145,7 +146,9 @@ SubLibraries:
     cd ..\Pricers
     $(MAKE)
     cd ..\PricingEngines
-    cd Barrier
+    cd Asian
+    $(MAKE)
+    cd ..\Barrier
     $(MAKE)
     cd ..\Vanilla
     $(MAKE)
