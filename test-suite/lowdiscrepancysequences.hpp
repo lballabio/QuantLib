@@ -57,6 +57,7 @@ class LowDiscrepancyTest {
     static void testRandomShiftHaltonDiscrepancy();
     static void testRandomStartRandomShiftHaltonDiscrepancy();
     static void testJackelSobolDiscrepancy();
+    static void testSobolLevitanSobolDiscrepancy();
     static void testUnitSobolDiscrepancy();
 
     static boost::unit_test_framework::test_suite* suite();

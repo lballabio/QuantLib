@@ -79,7 +79,7 @@ void LowDiscrepancyTest::testSobol() {
     // testing max dimensionality
     Size dimensionality = PPMT_MAX_DIM;
     BigNatural seed = 123456;
-    SobolRsg rsg(dimensionality, seed);
+    SobolRsg rsg(dimensionality, seed, SobolRsg::DirectionIntegers::SobolLevitan);
     Size points = 100, i;
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
@@ -97,7 +97,7 @@ void LowDiscrepancyTest::testSobol() {
     seed = 123456;
     rsg = SobolRsg(dimensionality, seed);
     SequenceStatistics<> stat(dimensionality);
-    std::vector<Real> mean, stdev, variance, skewness, kurtosis;
+    std::vector<Real> mean;
     Size k = 0;
     for (Integer j=1; j<5; j++) { // five cycle
         points = Size(QL_POW(2.0, j))-1; // base 2
@@ -436,6 +436,10 @@ namespace {
         8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
         5.69e-005, 2.14e-005 // , null
     };
+    const Real dim002DiscrSobLev_Sobol[] = {
+        8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004,
+        5.69e-005, 2.14e-005 // , -1.#Je+000
+    };
     const Real dim002DiscrMersenneTwis[] = {
         8.84e-003, 5.42e-003, 5.23e-003, 4.47e-003,
         4.75e-003, 3.11e-003, 2.97e-003
@@ -453,6 +457,10 @@ namespace {
     };
 
     const Real dim003DiscrJackel_Sobol[] = {
+        1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
+        9.21e-005, 4.79e-005, 2.56e-005
+    };
+    const Real dim3DiscrSobLev_Sobol[] = {
         1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
         9.21e-005, 4.79e-005, 2.56e-005
     };
@@ -476,6 +484,7 @@ namespace {
         1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004,
         1.63e-004, 9.41e-005, 5.19e-005
     };
+    const Real dim005DiscrSobLev_Sobol[] = {1.59e-003};
     const Real dim005DiscrMersenneTwis[] = {
         4.28e-003, 3.48e-003, 2.48e-003, 1.98e-003,
         1.57e-003, 1.39e-003, 6.33e-004
@@ -496,6 +505,7 @@ namespace {
         7.08e-004, 5.31e-004, 3.60e-004, 2.18e-004,
         1.57e-004, 1.12e-004, 6.39e-005
     };
+    const Real dim010DiscrSobLev_Sobol[] = {7.41e-004};
     const Real dim010DiscrMersenneTwis[] = {
         8.83e-004, 6.56e-004, 4.87e-004, 3.37e-004,
         3.06e-004, 1.73e-004, 1.43e-004
@@ -516,6 +526,7 @@ namespace {
         1.59e-004, 1.23e-004, 7.73e-005, 5.51e-005,
         3.91e-005, 2.73e-005, 1.96e-005
     };
+    const Real dim015DiscrSobLev_Sobol[] = {1.48e-004};
     const Real dim015DiscrMersenneTwis[] = {
         1.63e-004, 1.12e-004, 8.36e-005, 6.09e-005,
         4.34e-005, 2.95e-005, 2.10e-005
@@ -536,6 +547,7 @@ namespace {
         6.43e-007, 5.28e-007, 3.88e-007, 2.49e-007,
         2.09e-007, 1.55e-007, 1.07e-007
     };
+    const Real dim030DiscrSobLev_Sobol[] = {6.13e-007};
     const Real dim030DiscrMersenneTwis[] = {
         4.38e-007, 3.25e-007, 4.47e-007, 2.85e-007,
         2.03e-007, 1.50e-007, 1.17e-007
@@ -556,6 +568,7 @@ namespace {
         2.98e-010, 2.91e-010, 2.62e-010, 1.53e-010,
         1.48e-010, 1.15e-010, 8.41e-011
     };
+    const Real dim050DiscrSobLev_Sobol[] = {2.55e-010};
     const Real dim050DiscrMersenneTwis[] = {
         3.27e-010, 2.42e-010, 1.47e-010, 1.98e-010,
         2.31e-010, 1.30e-010, 8.09e-011
@@ -576,6 +589,7 @@ namespace {
         1.26e-018, 1.55e-018, 8.46e-019, 4.43e-019,
         4.04e-019, 2.44e-019, 4.86e-019
     };
+    const Real dim100DiscrSobLev_Sobol[] = {9.30e-019};
     const Real dim100DiscrMersenneTwis[] = {
         5.30e-019, 7.29e-019, 3.71e-019, 3.33e-019,
         1.33e-017, 6.70e-018, 3.36e-018
@@ -594,9 +608,9 @@ namespace {
 
     const Size dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
 
-    // 7 (all tabulated dimensions) loops on all sequence generators would
-    // take a few days ... too long for usual/frequent test running
-    const Size minimumLoops = 1;
+    // 7 discrepancy measures for each dimension of all sequence generators
+    // would take a few days ... too long for usual/frequent test running
+    const Size discrepancyMeasuresNumber = 1;
 
     // let's add some generality here...
 
@@ -615,19 +629,28 @@ namespace {
     class SobolFactory {
       public:
         typedef SobolRsg generator_type;
-        SobolFactory(bool unit = false) : unit_(unit) {}
+        SobolFactory(SobolRsg::DirectionIntegers unit) : unit_(unit) {}
         SobolRsg make(Size dim,
                       BigNatural seed) const {
             return SobolRsg(dim,seed,unit_);
         }
         std::string name() const {
-            std::string prefix = unit_ ?
-                                 "unit-initialized " :
-                                 "";
-            return prefix + "Sobol";
+            std::string prefix;
+            switch (unit_) {
+                case SobolRsg::DirectionIntegers::Unit:
+                    prefix = "unit-initialized ";
+                    break;
+                case SobolRsg::DirectionIntegers::Jaeckel:
+                    prefix = "Jäckel-initialized ";
+                    break;
+                case SobolRsg::DirectionIntegers::SobolLevitan:
+                    prefix = "SobolLevitan-initialized ";
+                    break;
+            }
+            return prefix + "Sobol sequences: ";
         }
       private:
-        bool unit_;
+        SobolRsg::DirectionIntegers unit_;
     };
 
     class HaltonFactory {
@@ -667,8 +690,8 @@ namespace {
         Size dim;
         BigNatural seed = 123456;
         Real discr, tolerance = 1.0e-2;
-        // 7 loops would take too long for usual/frequent test running
-        Size sampleLoops = Size(QL_MAX<Real>(1.0, minimumLoops));
+        // more than 1 discrepancy measures take long time
+        Size sampleLoops = Size(QL_MAX<Real>(1.0, discrepancyMeasuresNumber));
 
         #ifdef PRINT_ONLY
         std::ofstream outStream(fileName.c_str());
@@ -819,10 +842,26 @@ void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
         dim015DiscrJackel_Sobol, dim030DiscrJackel_Sobol,
         dim050DiscrJackel_Sobol, dim100DiscrJackel_Sobol};
 
-    testGeneratorDiscrepancy(SobolFactory(),
+    testGeneratorDiscrepancy(SobolFactory(SobolRsg::DirectionIntegers::Jaeckel),
                              discrepancy,
                              "JackelSobolDiscrepancy.txt",
                              "DiscrJackel_Sobol");
+}
+
+void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
+
+    BOOST_MESSAGE("Testing SobolLevitan-Sobol discrepancy...");
+
+    const Real * const discrepancy[8] = {
+        dim002DiscrSobLev_Sobol, dim003DiscrSobLev_Sobol,
+        dim005DiscrSobLev_Sobol, dim010DiscrSobLev_Sobol,
+        dim015DiscrSobLev_Sobol, dim030DiscrSobLev_Sobol,
+        dim050DiscrSobLev_Sobol, dim100DiscrSobLev_Sobol};
+
+    testGeneratorDiscrepancy(SobolFactory(SobolRsg::DirectionIntegers::SobolLevitan),
+                             discrepancy,
+                             "SobolLevitanSobolDiscrepancy.txt",
+                             "DiscrSobLev_Sobol");
 }
 
 void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
@@ -835,7 +874,7 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
         dim015Discr__Unit_Sobol, dim030Discr__Unit_Sobol,
         dim050Discr__Unit_Sobol, dim100Discr__Unit_Sobol};
 
-    testGeneratorDiscrepancy(SobolFactory(true),
+        testGeneratorDiscrepancy(SobolFactory(SobolRsg::DirectionIntegers::Unit),
                              discrepancy,
                              "UnitSobolDiscrepancy.txt",
                              "Discr__Unit_Sobol");
@@ -863,9 +902,13 @@ test_suite* LowDiscrepancyTest::suite() {
     suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testPolynomialsModuloTwo));
 
     suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testSobol));
+
+    suite->add(BOOST_TEST_CASE(
+        &LowDiscrepancyTest::testUnitSobolDiscrepancy));
     suite->add(BOOST_TEST_CASE(
            &LowDiscrepancyTest::testJackelSobolDiscrepancy));
-    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testUnitSobolDiscrepancy));
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy));
 
     return suite;
 }
