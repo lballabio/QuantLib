@@ -22,31 +22,28 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file inversecumulativegaussian.hpp
-    \brief Inverse Cumulative Gaussian random-number generator
+/*! \file centrallimitgaussianrng.hpp
+    \brief Central limit Gaussian random-number generator
 
     \fullpath
-    ql/RandomNumbers/%inversecumulativegaussian.hpp
+    ql/RandomNumbers/%centrallimitgaussianrng.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_inversecumulative_gaussian_h
-#define quantlib_inversecumulative_gaussian_h
+#ifndef quantlib_central_limit_gaussian_rng_h
+#define quantlib_central_limit_gaussian_rng_h
 
-#include "ql/Math/normaldistribution.hpp"
+#include "ql/qldefines.hpp"
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
-        //! Inverse Cumulative Gaussian random number generator
-        /*! It uses a uniform deviate in (0, 1) as the source of cumulative
-            normal distribution values.
-            Then an Inverse Cumulative Normal Distribution is used as it is
-            approximately a Gaussian deviate with average 0.0 and standard
-            deviation 1.0,
-
+        //! Gaussian random number generator
+        /*! It uses the well-known fact that the sum of 12 uniform deviate
+            in (-.5,.5) is approximately a Gaussian deviate with average 0
+            and standard deviation 1.
             The uniform deviate is supplied by U.
 
             Class U should satisfies
@@ -57,10 +54,10 @@ namespace QuantLib {
             \endcode
         */
         template <class U>
-        class ICGaussian {
+        class CLGaussianRng {
           public:
             typedef double sample_type;
-            explicit ICGaussian(long seed=0);
+            explicit CLGaussianRng(long seed=0);
             //! returns next sample from the Gaussian distribution
             double next() const;
             //! returns the weight of the last extracted sample
@@ -68,24 +65,26 @@ namespace QuantLib {
           private:
             U basicGenerator_;
             mutable double gaussWeight_;
-            QuantLib::Math::InvCumulativeNormalDistribution ICND_;
         };
 
         template <class U>
-        ICGaussian<U>::ICGaussian(long seed):
-            basicGenerator_(seed), gaussWeight_(0.0), ICND_() {}
+        CLGaussianRng<U>::CLGaussianRng(long seed):
+            basicGenerator_(seed), gaussWeight_(0.0) {}
 
         template <class U>
-        inline double ICGaussian<U>::next() const {
+        inline double CLGaussianRng<U>::next() const {
 
-            double gaussPoint = ICND_(basicGenerator_.next());
-            gaussWeight_ = basicGenerator_.weight();
-
+            double gaussPoint = -6.0;
+            gaussWeight_ = 1.0;
+            for(int i=1;i<=12;i++){
+                gaussPoint += basicGenerator_.next();
+                gaussWeight_ *= basicGenerator_.weight();
+            }
             return gaussPoint;
         }
 
         template <class U>
-        inline double ICGaussian<U>::weight() const {
+        inline double CLGaussianRng<U>::weight() const {
             return gaussWeight_;
         }
 

@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file lecuyerrandomgenerator.hpp
+/*! \file lecuyeruniformrng.hpp
     \brief L'Ecuyer uniform random number generator
 
     \fullpath
-    ql/RandomNumbers/%lecuyerrandomgenerator.hpp
+    ql/RandomNumbers/%lecuyeruniformrng.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_lecuyer_random_generator_h
-#define quantlib_lecuyer_random_generator_h
+#ifndef quantlib_lecuyer_uniform_rng_h
+#define quantlib_lecuyer_uniform_rng_h
 
 #include "ql/qldefines.hpp"
 #include <iostream>
@@ -49,11 +49,11 @@ namespace QuantLib {
             Edition, Cambridge University Press (available at
             http://www.nr.com/)
         */
-        class LecuyerRandomGenerator {
+        class LecuyerUniformRng {
           public:
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
-            explicit LecuyerRandomGenerator(long seed = 0);
+            explicit LecuyerUniformRng(long seed = 0);
             typedef double sample_type;
             //! returns a random number uniformly chosen from (0.0,1.0)
             double next() const;
@@ -76,7 +76,7 @@ namespace QuantLib {
             static const long double maxRandom;
         };
 
-        inline LecuyerRandomGenerator::LecuyerRandomGenerator(long seed) : buffer(LecuyerRandomGenerator::bufferSize) {
+        inline LecuyerUniformRng::LecuyerUniformRng(long seed) : buffer(LecuyerUniformRng::bufferSize) {
             temp2 = temp1 = (seed != 0 ? seed : long(QL_TIME(0)));
             for (int j=bufferSize+7; j>=0; j--) {
                 long k = temp1/q1;
@@ -89,7 +89,7 @@ namespace QuantLib {
             y = buffer[0];
         }
 
-        inline double LecuyerRandomGenerator::next() const {
+        inline double LecuyerUniformRng::next() const {
             long k = temp1/q1;
             temp1 = a1*(temp1-k*q1)-k*r1;
             if (temp1 < 0)
@@ -107,7 +107,7 @@ namespace QuantLib {
             return (result > maxRandom ? maxRandom : result);
         }
 
-        inline double LecuyerRandomGenerator::weight() const {
+        inline double LecuyerUniformRng::weight() const {
             return 1.0;
         }
     }

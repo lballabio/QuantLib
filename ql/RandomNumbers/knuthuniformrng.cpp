@@ -22,33 +22,33 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file knuthrandomgenerator.cpp
+/*! \file knuthuniformrng.cpp
     \brief Knuth uniform random number generator
 
     \fullpath
-    ql/RandomNumbers/%knuthrandomgenerator.cpp
+    ql/RandomNumbers/%knuthuniformrng.cpp
 */
 
 // $Id$
 
-#include "ql/RandomNumbers/knuthrandomgenerator.hpp"
+#include "ql/RandomNumbers/knuthuniformrng.hpp"
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
-        const int KnuthRandomGenerator::KK = 100;
-        const int KnuthRandomGenerator::LL = 37;
-        const int KnuthRandomGenerator::TT = 70;
-        const int KnuthRandomGenerator::QUALITY = 1009;
+        const int KnuthUniformRng::KK = 100;
+        const int KnuthUniformRng::LL = 37;
+        const int KnuthUniformRng::TT = 70;
+        const int KnuthUniformRng::QUALITY = 1009;
 
-        KnuthRandomGenerator::KnuthRandomGenerator(long seed)
+        KnuthUniformRng::KnuthUniformRng(long seed)
         : ranf_arr_buf(QUALITY), ran_u(QUALITY) {
             ranf_arr_ptr = ranf_arr_sentinel = ranf_arr_buf.end();
             ranf_start(seed != 0 ? seed : long(QL_TIME(0)));
         }
 
-        void KnuthRandomGenerator::ranf_start(long seed) {
+        void KnuthUniformRng::ranf_start(long seed) {
             int t,s,j;
             std::vector<double> u(KK+KK-1),ul(KK+KK-1);
             double ulp=(1.0/(1L<<30))/(1L<<22);                // 2 to the -52
@@ -81,7 +81,7 @@ namespace QuantLib {
             for (;j<KK;j++) ran_u[j-LL]=u[j];
         }
 
-        void KnuthRandomGenerator::ranf_array(std::vector<double>& aa,
+        void KnuthUniformRng::ranf_array(std::vector<double>& aa,
           int n) const {
             int i,j;
             for (j=0;j<KK;j++) aa[j]=ran_u[j];
@@ -90,7 +90,7 @@ namespace QuantLib {
             for (;i<KK;i++,j++) ran_u[i]=mod_sum(aa[j-KK],ran_u[i-LL]);
         }
 
-        double KnuthRandomGenerator::ranf_arr_cycle() const {
+        double KnuthUniformRng::ranf_arr_cycle() const {
             ranf_array(ranf_arr_buf,QUALITY);
             ranf_arr_ptr=ranf_arr_buf.begin()+1;
             return ranf_arr_buf[0];

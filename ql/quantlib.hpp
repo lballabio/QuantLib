@@ -167,11 +167,11 @@
 #include "ql/Pricers/singleassetoption.hpp"
 #include "ql/Pricers/stepconditionoption.hpp"
 
-#include "ql/RandomNumbers/boxmuller.hpp"
-#include "ql/RandomNumbers/centrallimitgaussian.hpp"
-#include "ql/RandomNumbers/inversecumulativegaussian.hpp"
-#include "ql/RandomNumbers/knuthrandomgenerator.hpp"
-#include "ql/RandomNumbers/lecuyerrandomgenerator.hpp"
+#include "ql/RandomNumbers/boxmullergaussianrng.hpp"
+#include "ql/RandomNumbers/centrallimitgaussianrng.hpp"
+#include "ql/RandomNumbers/inversecumulativegaussianrng.hpp"
+#include "ql/RandomNumbers/knuthuniformrng.hpp"
+#include "ql/RandomNumbers/lecuyeruniformrng.hpp"
 #include "ql/RandomNumbers/randomarraygenerator.hpp"
 #include "ql/RandomNumbers/rngtypedefs.hpp"
 

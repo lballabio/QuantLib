@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file knuthrandomgenerator.hpp
+/*! \file knuthuniformrng.hpp
     \brief Knuth uniform random number generator
 
     \fullpath
-    ql/RandomNumbers/%knuthrandomgenerator.hpp
+    ql/RandomNumbers/%knuthuniformrng.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_knuth_random_generator_h
-#define quantlib_knuth_random_generator_h
+#ifndef quantlib_knuth_uniform_rng_h
+#define quantlib_knuth_uniform_rng_h
 
 #include "ql/qldefines.hpp"
 #include <vector>
@@ -53,11 +53,11 @@ namespace QuantLib {
             structures used, which were converted in their C++/STL
             equivalents.
         */
-        class KnuthRandomGenerator {
+        class KnuthUniformRng {
           public:
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
-            explicit KnuthRandomGenerator(long seed = 0);
+            explicit KnuthUniformRng(long seed = 0);
             typedef double sample_type;
             //! returns a random number uniformly chosen from (0.0,1.0)
             double next() const;
@@ -81,21 +81,21 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline double KnuthRandomGenerator::next() const {
+        inline double KnuthUniformRng::next() const {
             return (ranf_arr_ptr != ranf_arr_sentinel ?
                     *ranf_arr_ptr++ :
                     ranf_arr_cycle());
         }
 
-        inline double KnuthRandomGenerator::weight() const {
+        inline double KnuthUniformRng::weight() const {
             return 1.0;
         }
 
-        inline double KnuthRandomGenerator::mod_sum(double x, double y) const {
+        inline double KnuthUniformRng::mod_sum(double x, double y) const {
             return (x+y)-int(x+y);
         }
 
-        inline bool KnuthRandomGenerator::is_odd(int s) const {
+        inline bool KnuthUniformRng::is_odd(int s) const {
             return (s&1) != 0;
         }
 

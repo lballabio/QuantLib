@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file boxmuller.hpp
+/*! \file boxmullergaussianrng.hpp
     \brief Box-Muller Gaussian random-number generator
 
     \fullpath
-    ql/RandomNumbers/%boxmuller.hpp
+    ql/RandomNumbers/%boxmullergaussianrng.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_box_muller_transformation_h
-#define quantlib_box_muller_transformation_h
+#ifndef quantlib_box_muller_gaussian_rng_h
+#define quantlib_box_muller_gaussian_rng_h
 
 #include "ql/qldefines.hpp"
 
@@ -53,9 +53,9 @@ namespace QuantLib {
             \endcode
         */
         template <class U>
-        class BoxMuller {
+        class BoxMullerGaussianRng {
           public:
-            explicit BoxMuller(long seed=0);
+            explicit BoxMullerGaussianRng(long seed=0);
             typedef double sample_type;
             //! returns next sample from the Gaussian distribution
             double next() const;
@@ -70,11 +70,11 @@ namespace QuantLib {
         };
 
         template <class U>
-        BoxMuller<U>::BoxMuller(long seed):
+        BoxMullerGaussianRng<U>::BoxMullerGaussianRng(long seed):
             basicGenerator_(seed), returnFirst_(true), weight_(0.0){}
 
         template <class U>
-        inline double BoxMuller<U>::next() const {
+        inline double BoxMullerGaussianRng<U>::next() const {
             if(returnFirst_) {
                 double x1,x2,r,ratio;
                 do {
@@ -99,7 +99,7 @@ namespace QuantLib {
         }
 
         template <class U>
-        inline double BoxMuller<U>::weight() const {
+        inline double BoxMullerGaussianRng<U>::weight() const {
             return weight_;
         }
 

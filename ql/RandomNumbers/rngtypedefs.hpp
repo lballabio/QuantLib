@@ -34,18 +34,18 @@
 #ifndef quantlib_rng_typedefs_h
 #define quantlib_rng_typedefs_h
 
-#include "ql/RandomNumbers/lecuyerrandomgenerator.hpp"
-#include "ql/RandomNumbers/boxmuller.hpp"
+#include "ql/RandomNumbers/lecuyeruniformrng.hpp"
+#include "ql/RandomNumbers/boxmullergaussianrng.hpp"
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
         //! default choice for uniform random number generator.
-        typedef LecuyerRandomGenerator UniformRandomGenerator;
+        typedef LecuyerUniformRng UniformRandomGenerator;
 
         //! default choice for Gaussian random number generator.
-        typedef BoxMuller<UniformRandomGenerator> GaussianRandomGenerator;
+        typedef BoxMullerGaussianRng<UniformRandomGenerator> GaussianRandomGenerator;
 
     }
 }

@@ -939,14 +939,6 @@ SOURCE=.\ql\RandomNumbers\inversecumulativegaussian.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\knuthrandomgenerator.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\knuthrandomgenerator.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\RandomNumbers\lecuyerrandomgenerator.cpp
 # End Source File
 # Begin Source File

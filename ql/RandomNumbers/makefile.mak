@@ -16,8 +16,8 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-    knuthrandomgenerator.obj$(_D) \
-    lecuyerrandomgenerator.obj$(_D)
+    knuthuniformrng.obj$(_D) \
+    lecuyeruniformrng.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
