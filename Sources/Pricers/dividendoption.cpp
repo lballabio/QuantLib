@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.8  2001/04/23 07:34:23  marmar
+    Changed control variate
+
     Revision 1.7  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -70,8 +73,6 @@ namespace QuantLib {
 
         using Math::CubicSpline;
         using FiniteDifferences::valueAtCenter;
-        using FiniteDifferences::firstDerivativeAtCenter;
-        using FiniteDifferences::secondDerivativeAtCenter;
 
         DividendOption::DividendOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
@@ -84,18 +85,24 @@ namespace QuantLib {
           exdivdates, timeSteps, gridPoints) {
 
             QL_REQUIRE(dateNumber_ == dividends_.size(),
-                "the number of dividends is different "
-                "from the number of dates");
+                       "the number of dividends is different "
+                       "from the number of dates");
 
-            QL_REQUIRE(underlying - addElements(dividends)>0,
-                "Dividends cannot exceed underlying");
+            QL_REQUIRE(underlying > addElements(dividends),
+                       "Dividends cannot exceed underlying");
         }
 
         void DividendOption::initializeControlVariate() const{
-            analytic_ = Handle<BSMOption> (new DividendEuropeanOption (type_,
-                underlying_ + addElements(dividends_), strike_,
-                dividendYield_, riskFreeRate_, residualTime_,
-                volatility_, dividends_, dates_));
+            analytic_ = Handle<BSMOption> (new 
+                            DividendEuropeanOption (type_,
+                                                    underlying_, 
+                                                    strike_,
+                                                    dividendYield_, 
+                                                    riskFreeRate_, 
+                                                    residualTime_,
+                                                    volatility_, 
+                                                    dividends_, 
+                                                    dates_));
         }
 
         void DividendOption::executeIntermediateStep(int step) const{
@@ -103,17 +110,17 @@ namespace QuantLib {
             double centre = valueAtCenter(grid_);
             double mltp = centre/grid_[0];
             double newMltp = mltp / (1 + (mltp - 1) *
-                dividends_[step] / (centre + dividends_[step]));
+                             dividends_[step] / (centre + dividends_[step]));
             QL_ENSURE(newMltp > 1, "Dividends are to big");
             sMin_ = (centre + dividends_[step])/newMltp;
             sMax_ = (centre + dividends_[step])*newMltp;
             initializeGrid();
             initializeInitialCondition();
             initializeOperator();
-            movePricesBeforeExDiv(dividends_[step],
-                grid_, prices_, oldGrid);
-            movePricesBeforeExDiv(dividends_[step],
-                grid_, controlPrices_, oldGrid);
+            movePricesBeforeExDiv(dividends_[step], grid_, 
+                                  prices_, oldGrid);
+            movePricesBeforeExDiv(dividends_[step], grid_, 
+                                  controlPrices_, oldGrid);
         }
 
         void DividendOption::movePricesBeforeExDiv(double Div,
