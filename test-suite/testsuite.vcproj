@@ -1981,9 +1981,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\quantoforwardoptions.cpp">
-			</File>
-			<File
 				RelativePath=".\quantooption.cpp">
 			</File>
 			<File
@@ -2550,9 +2547,6 @@
 			</File>
 			<File
 				RelativePath="piecewiseflatforward.hpp">
-			</File>
-			<File
-				RelativePath=".\quantoforwardoptions.hpp">
 			</File>
 			<File
 				RelativePath=".\quantooption.hpp">
