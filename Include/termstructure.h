@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/01/18 13:18:11  nando
+    now term structure allows extrapolation
+
     Revision 1.10  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -67,17 +70,23 @@ namespace QuantLib {
         //! \name Rates
         //@{
         //! zero yield rate for a given date
-        virtual Rate zeroYield(const Date&) const = 0;
+        virtual Rate zeroYield(const Date&,
+                               bool extrapolate = false) const = 0;
         //! zero yield rate for a given set of dates
-        std::vector<Rate> zeroYield(const std::vector<Date>&) const;
+        std::vector<Rate> zeroYield(const std::vector<Date>&,
+                                    bool extrapolate = false) const;
         //! discount factor for a given date
-        virtual DiscountFactor discount(const Date&) const = 0;
+        virtual DiscountFactor discount(const Date&,
+                                        bool extrapolate = false) const = 0;
         //! discount factor for a given set of dates
-        std::vector<DiscountFactor> discount(const std::vector<Date>&) const;
+        std::vector<DiscountFactor> discount(const std::vector<Date>&,
+                                             bool extrapolate = false) const;
         //! instantaneous forward rate for a given date
-        virtual Rate forward(const Date&) const = 0;
+        virtual Rate forward(const Date&,
+                             bool extrapolate = false) const = 0;
         //! instantaneous forward rate for a given set of dates
-        std::vector<Rate> forward(const std::vector<Date>&) const;
+        std::vector<Rate> forward(const std::vector<Date>&,
+                                  bool extrapolate = false) const;
         //@}
 
         //! \name Other inspectors
@@ -108,11 +117,11 @@ namespace QuantLib {
         /*! returns the discount factor for the given date calculating it from
             the zero yield.
         */
-        DiscountFactor discount(const Date&) const;
+        DiscountFactor discount(const Date&, bool extrapolate = false) const;
         /*! returns the instantaneous forward rate for the given date
             calculating it from the zero yield.
         */
-        Rate forward(const Date&) const;
+        Rate forward(const Date&, bool extrapolate = false) const;
     };
 
     //! Discount factor term structure
@@ -126,11 +135,11 @@ namespace QuantLib {
         /*! returns the zero yield rate for the given date calculating it from
             the discount.
         */
-        Rate zeroYield(const Date&) const;
+        Rate zeroYield(const Date&, bool extrapolate = false) const;
         /*! returns the instantaneous forward rate for the given date
             calculating it from the discount.
         */
-        Rate forward(const Date&) const;
+        Rate forward(const Date&, bool extrapolate = false) const;
     };
 
     //! Forward rate term structure
@@ -144,11 +153,11 @@ namespace QuantLib {
         /*! returns the zero yield rate for the given date calculating it from
             the instantaneous forward rate.
         */
-        Rate zeroYield(const Date&) const;
+        Rate zeroYield(const Date&, bool extrapolate = false) const;
         /*! returns the discount factor for the given date calculating it from
             the instantaneous forward rate.
         */
-        DiscountFactor discount(const Date&) const;
+        DiscountFactor discount(const Date&, bool extrapolate = false) const;
     };
 
     //! Implied term structure at a given date in the future
@@ -167,7 +176,8 @@ namespace QuantLib {
         Date maxDate() const;
         Date minDate() const;
         //! returns the discount factor as seen from the evaluation date
-        DiscountFactor discount(const Date&) const;
+        DiscountFactor discount(const Date&,
+                                bool extrapolate = false) const;
         //! registers with the original structure as well
         void registerObserver(Patterns::Observer*);
         //! unregisters with the original structure as well
@@ -194,7 +204,7 @@ namespace QuantLib {
         Date maxDate() const;
         Date minDate() const;
         //! returns the spreaded zero yield rate
-        Rate zeroYield(const Date&) const;
+        Rate zeroYield(const Date&, bool extrapolate = false) const;
         //! registers with the original structure as well
         void registerObserver(Patterns::Observer*);
         //! unregisters with the original structure as well
@@ -210,44 +220,48 @@ namespace QuantLib {
     // inline definitions
 
     inline std::vector<Rate> TermStructure::zeroYield(
-      const std::vector<Date>& x) const {
+                              const std::vector<Date>& x,
+                              bool extrapolate) const {
         std::vector<Rate> y(x.size());
         std::vector<Date>::const_iterator j=x.begin();
         for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
-            *i = zeroYield(*j);
+            *i = zeroYield(*j, extrapolate);
         return y;
     }
 
     inline std::vector<DiscountFactor> TermStructure::discount(
-      const std::vector<Date>& x) const {
+                                            const std::vector<Date>& x,
+                                            bool extrapolate) const {
         std::vector<DiscountFactor> y(x.size());
         std::vector<Date>::const_iterator j=x.begin();
         for (std::vector<DiscountFactor>::iterator i=y.begin(); i!=y.end();
-          ++i,++j)
-            *i = discount(*j);
+                                                                    ++i,++j)
+            *i = discount(*j, extrapolate);
         return y;
     }
 
-    inline std::vector<Rate> TermStructure::forward(const std::vector<Date>& x)
-      const {
+    inline std::vector<Rate> TermStructure::forward(const std::vector<Date>& x,
+                                                    bool extrapolate) const {
         std::vector<Rate> y(x.size());
         std::vector<Date>::const_iterator j=x.begin();
         for (std::vector<Rate>::iterator i=y.begin(); i!=y.end(); ++i,++j)
-            *i = forward(*j);
+            *i = forward(*j, extrapolate);
         return y;
     }
 
 
     // curve deriving discount and forward from zero yield
 
-    inline DiscountFactor ZeroYieldStructure::discount(const Date& d) const {
-        Rate r = zeroYield(d);
+    inline DiscountFactor ZeroYieldStructure::discount(const Date& d,
+                                                       bool extrapolate) const {
+        Rate r = zeroYield(d, extrapolate);
         double t = double(d-settlementDate())/365;
         return DiscountFactor(QL_EXP(-r*t));
     }
 
-    inline Rate ZeroYieldStructure::forward(const Date& d) const {
-        Rate r1 = zeroYield(d), r2 = zeroYield(d+1);
+    inline Rate ZeroYieldStructure::forward(const Date& d,
+                                            bool extrapolate) const {
+        Rate r1 = zeroYield(d, extrapolate), r2 = zeroYield(d+1, true);
         // r1+t*(r2-r1)/dt = r1+(days/365)*(r2-r1)/(1 day/365)
         return r1+(d-settlementDate())*double(r2-r1);
     }
@@ -255,14 +269,17 @@ namespace QuantLib {
 
     // curve deriving zero yield and forward from discount
 
-    inline Rate DiscountStructure::zeroYield(const Date& d) const {
-        DiscountFactor f = discount(d);
+    inline Rate DiscountStructure::zeroYield(const Date& d,
+                                             bool extrapolate) const {
+        DiscountFactor f = discount(d, extrapolate);
         double t = double(d-settlementDate())/365;
         return Rate(-QL_LOG(f)/t);
     }
 
-    inline Rate DiscountStructure::forward(const Date& d) const {
-        DiscountFactor f1 = discount(d), f2 = discount(d+1);
+    inline Rate DiscountStructure::forward(const Date& d,
+                                           bool extrapolate) const {
+        DiscountFactor f1 = discount(d, extrapolate),
+                       f2 = discount(d+1, true);
         // log(f1/f2)/dt = log(f1/f2)/(1/365)
         return Rate(QL_LOG(f1/f2)*365);
     }
@@ -270,20 +287,23 @@ namespace QuantLib {
 
     // curve deriving zero yield and discount from forward
 
-    inline Rate ForwardRateStructure::zeroYield(const Date& d) const {
+    inline Rate ForwardRateStructure::zeroYield(const Date& d,
+                                                bool extrapolate) const {
         // This is just a default, highly inefficient implementation.
         // Derived classes should implement their own zeroYield method.
         if (d == settlementDate())
             return forward(settlementDate());
         double sum = 0.5*forward(settlementDate());
         for (Date i=settlementDate()+1; i<d; i++)
-            sum += forward(i);
-        sum += 0.5*forward(d);
+            sum += forward(i, extrapolate);
+        sum += 0.5*forward(d, extrapolate);
         return Rate(sum/(d-settlementDate()));
     }
 
-    inline DiscountFactor ForwardRateStructure::discount(const Date& d) const {
-        Rate r = zeroYield(d);
+    inline DiscountFactor ForwardRateStructure::discount(
+                                                    const Date& d,
+                                                    bool extrapolate) const {
+        Rate r = zeroYield(d, extrapolate);
         double t = double(d-settlementDate())/365;
         return DiscountFactor(QL_EXP(-r*t));
     }
@@ -293,7 +313,14 @@ namespace QuantLib {
 
     inline ImpliedTermStructure::ImpliedTermStructure(
         const Handle<TermStructure>& h, const Date& evaluationDate)
-    : theOriginalCurve(h), theEvaluationDate(evaluationDate) {}
+    : theOriginalCurve(h), theEvaluationDate(evaluationDate) {
+
+        QL_REQUIRE(evaluationDate<=theOriginalCurve->maxDate(),
+            "ImpliedTermStructure::ImpliedTermStructure : "
+            "the evaluation date "
+            "can't be greater than the original curve max date");
+
+    }
 
     inline Handle<Currency> ImpliedTermStructure::currency() const {
         return theOriginalCurve->currency();
@@ -319,9 +346,12 @@ namespace QuantLib {
         return settlementDate();
     }
 
-    inline DiscountFactor ImpliedTermStructure::discount(const Date& d) const {
-        return theOriginalCurve->discount(d) /
-            theOriginalCurve->discount(theEvaluationDate);
+    inline DiscountFactor ImpliedTermStructure::discount(
+                                                    const Date& d,
+                                                    bool extrapolate) const {
+        // theEvaluationDate cannot be an extrapolation
+        return theOriginalCurve->discount(d, extrapolate) /
+            theOriginalCurve->discount(theEvaluationDate, false);
     }
 
     inline Handle<TermStructure> ImpliedTermStructure::clone() const {
@@ -378,8 +408,9 @@ namespace QuantLib {
         return theOriginalCurve->minDate();
     }
 
-    inline Rate SpreadedTermStructure::zeroYield(const Date& d) const {
-        return theOriginalCurve->zeroYield(d)+theSpread;
+    inline Rate SpreadedTermStructure::zeroYield(const Date& d,
+                                                 bool extrapolate) const {
+        return theOriginalCurve->zeroYield(d, extrapolate)+theSpread;
     }
 
     inline Handle<TermStructure> SpreadedTermStructure::clone() const {

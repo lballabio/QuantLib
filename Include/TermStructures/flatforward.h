@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/01/18 13:18:50  nando
+    now term structure allows extrapolation
+
     Revision 1.5  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -64,11 +67,11 @@ namespace QuantLib {
             Date maxDate() const;
             Date minDate() const;
             // zero yield
-            Rate zeroYield(const Date&) const;
+            Rate zeroYield(const Date&, bool extrapolate = false) const;
             // discount
-            DiscountFactor discount(const Date&) const;
+            DiscountFactor discount(const Date&, bool extrapolate = false) const;
             // forward (instantaneous)
-            Rate forward(const Date&) const;
+            Rate forward(const Date&, bool extrapolate = false) const;
           private:
             Handle<Currency> theCurrency;
             Handle<DayCounter> theDayCounter;
@@ -115,21 +118,24 @@ namespace QuantLib {
         }
 
         /*! \pre the given date must be in the range of definition of the term structure */
-        inline Rate FlatForward::zeroYield(const Date& d) const {
-            QL_REQUIRE(d>=minDate() && d<=maxDate(), "date outside curve definition");
+        inline Rate FlatForward::zeroYield(const Date& d, bool extrapolate) const {
+            QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
+                "date outside curve definition");
             return theForward;
         }
 
         /*! \pre the given date must be in the range of definition of the term structure */
-        inline DiscountFactor FlatForward::discount(const Date& d) const {
-            QL_REQUIRE(d>=minDate() && d<=maxDate(), "date outside curve definition");
+        inline DiscountFactor FlatForward::discount(const Date& d, bool extrapolate) const {
+            QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
+                "date outside curve definition");
             double t = theDayCounter->yearFraction(settlementDate(),d);
             return DiscountFactor(QL_EXP(-theForward*t));
         }
 
         /*! \pre the given date must be in the range of definition of the term structure */
-        inline Rate FlatForward::forward(const Date& d) const {
-            QL_REQUIRE(d>=minDate() && d<=maxDate(), "date outside curve definition");
+        inline Rate FlatForward::forward(const Date& d, bool extrapolate) const {
+            QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
+                "date outside curve definition");
             return theForward;
         }
 

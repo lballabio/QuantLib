@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/01/18 13:18:50  nando
+    now term structure allows extrapolation
+
     Revision 1.5  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -50,8 +53,10 @@ namespace QuantLib {
         class PiecewiseConstantForwards : public TermStructure {
           public:
             // constructor
-            PiecewiseConstantForwards(Handle<Currency> currency, Handle<DayCounter> dayCounter, const Date& today,
-              const std::vector<Deposit>& deposits);
+            PiecewiseConstantForwards(Handle<Currency> currency,
+                                      Handle<DayCounter> dayCounter,
+                                      const Date& today,
+                                      const std::vector<Deposit>& deposits);
             // clone
             Handle<TermStructure> clone() const;
             // inspectors
@@ -63,18 +68,20 @@ namespace QuantLib {
             Date maxDate() const;
             Date minDate() const;
             // zero yield
-            Rate zeroYield(const Date&) const;
+            Rate zeroYield(const Date&, bool extrapolate = false) const;
             // discount
-            DiscountFactor discount(const Date&) const;
+            DiscountFactor discount(const Date&,
+                                    bool extrapolate = false) const;
             // forward (instantaneous)
-            Rate forward(const Date&) const;
+            Rate forward(const Date&, bool extrapolate = false) const;
           private:
             // methods
-            int nextNode(const Date& d) const;
+            int nextNode(const Date& d, bool extrapolate) const;
             // data members
             Handle<Currency> theCurrency;
             Handle<DayCounter> theDayCounter;
             Date today;
+            int nodesNumber_;
             std::vector<Date> theNodes;
             std::vector<Time> theTimes;
             std::vector<DiscountFactor> theDiscounts;
@@ -85,14 +92,18 @@ namespace QuantLib {
         // inline definitions
 
         inline Handle<TermStructure> PiecewiseConstantForwards::clone() const {
-            return Handle<TermStructure>(new PiecewiseConstantForwards(theCurrency,theDayCounter,today,theDeposits));
+            return Handle<TermStructure>(new PiecewiseConstantForwards(
+                                                                 theCurrency,
+                                                                 theDayCounter,
+                                                                 today,
+                                                                 theDeposits));
         }
 
         inline Handle<Currency> PiecewiseConstantForwards::currency() const {
             return theCurrency;
         }
 
-        inline Handle<DayCounter> PiecewiseConstantForwards::dayCounter() const {
+        inline Handle<DayCounter> PiecewiseConstantForwards::dayCounter() const{
             return theDayCounter;
         }
 

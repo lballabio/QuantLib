@@ -2,16 +2,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -81,14 +81,14 @@ typedef Handle<TermStructure> TermStructureHandle;
 	Date minDate() {
 		return (*self)->minDate();
 	}
-	Rate zeroYield(const Date& d) {
-		return (*self)->zeroYield(d);
+	Rate zeroYield(const Date& d, bool extrapolate = false) {
+		return (*self)->zeroYield(d, extrapolate);
 	}
-	DiscountFactor discount(const Date& d) {
-		return (*self)->discount(d);
+	DiscountFactor discount(const Date& d, bool extrapolate = false) {
+		return (*self)->discount(d, extrapolate);
 	}
-	Rate forward(const Date& d) {
-		return (*self)->forward(d);
+	Rate forward(const Date& d, bool extrapolate = false) {
+		return (*self)->forward(d, extrapolate);
 	}
 	#if defined (SWIGPYTHON)
 	int __nonzero__() {
@@ -102,14 +102,14 @@ typedef Handle<TermStructure> TermStructureHandle;
 %{
 using QuantLib::ImpliedTermStructure;
 
-TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, 
+TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve,
   Date evaluationDate) {
 	return Handle<TermStructure>(
 	  new ImpliedTermStructure(curve,evaluationDate));
 }
 %}
 
-%name(ImpliedTermStructure) TermStructureHandle 
+%name(ImpliedTermStructure) TermStructureHandle
 NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate);
 
 
@@ -118,7 +118,7 @@ NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate);
 %{
 using QuantLib::SpreadedTermStructure;
 
-TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, 
+TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve,
   Spread spread) {
 	return Handle<TermStructure>(new SpreadedTermStructure(curve,spread));
 }
@@ -131,7 +131,7 @@ TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve,
 %{
 using QuantLib::TermStructures::FlatForward;
 
-TermStructureHandle NewFlatForward(CurrencyHandle currency, 
+TermStructureHandle NewFlatForward(CurrencyHandle currency,
   DayCounterHandle dayCounter, Date today, Rate forward) {
 	return Handle<TermStructure>(
 	  new FlatForward(currency,dayCounter,today,forward));
@@ -211,14 +211,14 @@ typedef std::vector<Deposit> DepositList;
 // piecewise constant forward generation
 
 %{
-TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, 
+TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency,
   DayCounterHandle dayCounter, Date today, DepositList deposits) {
 	return Handle<TermStructure>(
 	  new PiecewiseConstantForwards(currency,dayCounter,today,deposits));
 }
 %}
 
-%name(PiecewiseConstantForwards) TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, 
+%name(PiecewiseConstantForwards) TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency,
   DayCounterHandle dayCounter, Date today, DepositList deposits);
 
 
