@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -28,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/03/07 15:27:50  lballabio
+    Modified Handle to allow keeping ownership
+
     Revision 1.7  2001/02/09 19:16:21  lballabio
     removed QL_PTR_CONST macro
 
@@ -52,7 +54,7 @@ namespace QuantLib {
     //! Reference-counted pointer
     /*! This class acts as a proxy to a pointer contained in it. Such pointer is
         owned by the handle, i.e., the handle will be responsible for its 
-        deletion.
+        deletion, unless explicitly stated by the programmer.
         A count of the references to the contained pointer is incremented every
         time a handle is copied, and decremented every time a handle is deleted 
         or goes out of scope. This mechanism ensures on one hand, that the 
@@ -70,13 +72,23 @@ namespace QuantLib {
         SomeObj* so = new SomeObj;
         Handle<SomeObj> h1(so);
         Handle<SomeObj> h2 = h1;    // this is safe.
-        Handle<SomeObj> h3(so);        // this is definitely not.
+        Handle<SomeObj> h3(so);     // this is definitely not.
         \endcode
         It is good practice to create the pointer and immediately pass it to the 
         handle, as in
         \code
         Handle<SomeObj> h1(new SomeObj);    // this is as safe as can be.
         \endcode
+        
+        \warning When the programmer keeps the ownership of the pointer, as 
+        explicitly declared in
+        \code
+        SomeObj so;
+        Handle<SomeObj> h(&so,false);
+        \endcode
+        it is responsibility of the programmer to make sure that the object 
+        remain in scope as long as there are handles pointing to it. Also, the 
+        programmer must explicitly delete the object if required. 
     */
     template <class Type>
     class Handle {
@@ -85,19 +97,27 @@ namespace QuantLib {
         //@{
         //! Default constructor returning a null handle.
         Handle()
-        : ptr(0), n(new int(1)) {}
-        explicit Handle(Type* ptr)
-        : ptr(ptr), n(new int(1)) {}
+        : ptr_(0), n_(new int(1)), owns_(true) {}
+        //! Constructor taking a pointer. 
+        /*! If <b>owns</b> is set to <tt>true</tt> (the default), the handle 
+            will be responsible for the deletion of the pointer. If it is set to 
+            <tt>false</tt>, the programmer must make sure that the pointed 
+            object remains in scope for the lifetime of the handle and its 
+            copies. Destruction of the object is also responsibility of the 
+            programmer.
+        */
+        explicit Handle(Type* ptr, bool owns=true)
+        : ptr_(ptr), n_(new int(1)), owns_(owns) {}
         //! Copy from a handle to a different but compatible type
         template <class Type2> explicit Handle(const Handle<Type2>& from)
-        : ptr(0), n(new int(1)) { HandleCopier().copy(*this,from); }
+        : ptr_(0), n_(new int(1)) { HandleCopier().copy(*this,from); }
         Handle(const Handle& from)
-        : ptr(from.ptr), n(from.n) { (*n)++; }
+        : ptr_(from.ptr_), n_(from.n_), owns_(from.owns_) { (*n_)++; }
         ~Handle();
         Handle& operator=(const Handle& from);
         //@}
 
-        //! \name Proxy to pointer dereferencing
+        //! \name Dereferencing
         //@{
         Type& operator*() const;
         Type* operator->() const;
@@ -111,8 +131,9 @@ namespace QuantLib {
         Type * pointer();
         //@}
       private:
-        Type* ptr;
-        int* n;
+        Type* ptr_;
+        int* n_;
+        bool owns_;
         // used to convert handles to different but compatible types
         class HandleCopier;
         friend class HandleCopier;
@@ -121,15 +142,16 @@ namespace QuantLib {
             HandleCopier() {}
             template <class Type1, class Type2> void copy(Handle<Type1>& to, 
               Handle<Type2> from) const {
-                if (to.ptr != from.ptr) {
-                    if (--(*(to.n)) == 0) {
-                        if (to.ptr != 0)
-                            delete to.ptr;
-                        delete to.n;
+                if (to.ptr_ != from.ptr_) {
+                    if (--(*(to.n_)) == 0) {
+                        if (to.ptr_ != 0 && to.owns_)
+                            delete to.ptr_;
+                        delete to.n_;
                     }
-                    to.ptr = from.ptr;
-                    to.n = from.n;
-                    (*(to.n))++;
+                    to.ptr_  = from.ptr_;
+                    to.n_    = from.n_;
+                    to.owns_ = from.owns_;
+                    (*(to.n_))++;
                 }
             }
         };
@@ -146,46 +168,47 @@ namespace QuantLib {
 
     template <class Type>
     inline Handle<Type>::~Handle() {
-        if (--(*n) == 0) {
-            if (ptr != 0)
-                delete ptr;
-            delete n;
+        if (--(*n_) == 0) {
+            if (ptr_ != 0 && owns_)
+                delete ptr_;
+            delete n_;
         }
     }
 
     template <class Type>
     inline Handle<Type>& Handle<Type>::operator=(const Handle& from) {
-        if (ptr != from.ptr) {
-            if (--(*n) == 0) {
-                if (ptr != 0)
-                    delete ptr;
-                delete n;
+        if (ptr_ != from.ptr_) {
+            if (--(*n_) == 0) {
+                if (ptr_ != 0 && owns_)
+                    delete ptr_;
+                delete n_;
             }
-            ptr = from.ptr;
-            n = from.n;
-            (*n)++;
+            ptr_  = from.ptr_;
+            n_    = from.n_;
+            owns_ = from.owns_;
+            (*n_)++;
         }
         return *this;
     }
 
     template <class Type>
     inline Type& Handle<Type>::operator*() const {
-        return *ptr;
+        return *ptr_;
     }
 
     template <class Type>
     inline Type* Handle<Type>::operator->() const {
-        return ptr;
+        return ptr_;
     }
 
     template <class Type>
     inline const Type * Handle<Type>::pointer() const {
-        return ptr;
+        return ptr_;
     }
 
     template <class Type>
     inline Type* Handle<Type>::pointer() {
-        return ptr;
+        return ptr_;
     }
 
     /*! \relates Handle
