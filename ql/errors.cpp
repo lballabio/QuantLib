@@ -32,8 +32,8 @@ namespace {
             return file.substr(n+1);
     }
 
-    std::string format(const std::string& file, long line, 
-                       const std::string& function, 
+    std::string format(const std::string& file, long line,
+                       const std::string& function,
                        const std::string& message) {
         std::ostringstream msg;
         #if QL_ERROR_LINES
@@ -50,10 +50,10 @@ namespace {
 namespace boost {
 
     // must be defined by the user
-    void assertion_failed(char const * expr, char const * function, 
+    void assertion_failed(char const * expr, char const * function,
                           char const * file, long line) {
         throw std::runtime_error(format(file, line, function,
-                                        "assertion failed: " + 
+                                        "assertion failed: " +
                                         std::string(expr)));
     }
 

@@ -44,10 +44,10 @@
                 "Integer" "BigInteger" "Natural" "BigNatural" "Real" "Decimal"
                 "Time" "Rate" "Spread" "DiscountFactor" "Size" "Volatility"
                 "Date" "Day" "Month" "Year" "Weekday"
-                "TimeUnit" "Frequency" "Period"
-                "DayCounter"
+                "TimeUnit" "Frequency" "Period" "DayCounter"
                 "Calendar" "BusinessDayConvention" "RollingConvention"
-                "Currency" "Rounding"
+                "Currency" "ExchangeRate" "Money" "Rounding"
+                "History"
                 "Handle" "RelinkableHandle")))
 ; from Boost:
 (setq c++-font-lock-extra-types

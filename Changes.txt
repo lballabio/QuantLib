@@ -1,8 +1,25 @@
 
 Changes since latest release:
 
-- Added pricing engine for American options with Ju quadratic approximation
-- Reworked the DiscretizedAsset interface
-- Added current coupon to discretized swap and cap/floor
-- Renamed RelinkableHandle to Handle
-- Added currency classes
+- Added pricing engine for American options with Ju quadratic approximation.
+
+- Reworked the DiscretizedAsset interface.
+
+- Added current coupon to discretized swap and cap/floor.
+
+- Renamed RelinkableHandle to Handle.
+
+- Partial implementation of QuEP 6:
+  - added currency classes; CurrencyTag replaced in library code;
+  - added money class providing arithmetic with or without conversions;
+    tests provided;
+  - added exchange-rate class; tests provided;
+  - added exchange-rate manager with smart rate lookup, i.e., able to
+    derive a missing exchange rate as a chain of provided rates; tests
+    provided.
+
+- Added Singleton pattern.
+
+- Added IndexManager as a singleton (will replace XiborManager--already
+  obsoleted in library code.)
+

@@ -24,7 +24,7 @@
    modify the following definitions to suit your preferences.
 
    Do not modify this file if you are using a Linux/Unix system:
-   it will not be read by the compiler. The definitions below 
+   it will not be read by the compiler. The definitions below
    will be provided by running ./configure instead.
 ****************************************************************/
 

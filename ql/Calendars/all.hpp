@@ -30,8 +30,8 @@
 #include <ql/Calendars/johannesburg.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
-#include <ql/Calendars/riyadh.hpp>
 #include <ql/Calendars/oslo.hpp>
+#include <ql/Calendars/riyadh.hpp>
 #include <ql/Calendars/seoul.hpp>
 #include <ql/Calendars/singapore.hpp>
 #include <ql/Calendars/stockholm.hpp>

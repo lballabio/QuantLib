@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    /*! Follows somewhat the advice of Knuth on checking for floating-point 
+    /*! Follows somewhat the advice of Knuth on checking for floating-point
         equality. The closeness relationship is:
         \f[
         \mathrm{close}(x,y,n) \equiv |x-y| \leq \varepsilon |x|
@@ -36,7 +36,7 @@ namespace QuantLib {
     */
     bool close(Real x, Real y, Size n = 42);
 
-    /*! Follows somewhat the advice of Knuth on checking for floating-point 
+    /*! Follows somewhat the advice of Knuth on checking for floating-point
         equality. The closeness relationship is:
         \f[
         \mathrm{close}(x,y,n) \equiv |x-y| \leq \varepsilon |x|
