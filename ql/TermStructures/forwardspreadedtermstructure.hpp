@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,7 +16,7 @@
 */
 
 /*! \file forwardspreadedtermstructure.hpp
-    \brief Forward spreaded term structure
+    \brief Forward-spreaded term structure
 */
 
 #ifndef quantlib_forward_spreaded_term_structure_hpp
@@ -105,7 +105,6 @@ namespace QuantLib {
     }
 
     inline Rate ForwardSpreadedTermStructure::zeroYieldImpl(Time t) const {
-        // return originalCurve_->zeroYield(t, true) + spread_->value();
         return originalCurve_->zeroRate(t, Continuous, NoFrequency) +
             spread_->value();
     }

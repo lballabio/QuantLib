@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     #ifdef QL_DISABLE_DEPRECATED
-    typedef DiscountStructure YieldTermStructure
+    typedef YieldTermStructure DiscountStructure;
     #else
     //! Discount factor term structure
     /*! This abstract class acts as an adapter to YieldTermStructure

@@ -61,11 +61,11 @@ namespace QuantLib {
         /*! Returns the zero yield rate for the given date calculating it
             from the instantaneous forward rate.
 
-            \warning This is just a default, highly inefficient
-                     implementation. Derived classes should implement
-                     their own zeroYield method.
+            \warning This is just a default, highly inefficient and
+                     possibly wildly inaccurate implementation. Derived
+                     classes should implement their own zeroYield method.
         */
-        Rate zeroYieldImpl(Time) const;
+        virtual Rate zeroYieldImpl(Time) const;
         /*! Returns the discount factor for the given date calculating it
             from the instantaneous forward rate.
         */
