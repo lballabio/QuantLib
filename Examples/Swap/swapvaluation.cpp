@@ -1,5 +1,6 @@
 
 /*!
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -34,10 +35,28 @@ int main(int, char* [])
          ***  MARKET DATA  ***
          *********************/
 
+//        Calendar calendar = Tokyo();
         Calendar calendar = TARGET();
-        Date todaysDate(6, November, 2001);
-        Date settlementDate(8, November, 2001);
+        Date settlementDate(22, September, 2004);
+        // must be a business day
+        settlementDate = calendar.adjust(settlementDate);
+
+        Integer fixingDays = 2;
+        Date todaysDate = calendar.advance(settlementDate, -fixingDays, Days);
+        // nothing to do with Date::todaysDate
         Settings::instance().setEvaluationDate(todaysDate);
+
+
+        todaysDate = Settings::instance().evaluationDate();
+        std::cout << "Today: "
+            << WeekdayFormatter::toString(todaysDate)
+            << ", " + DateFormatter::toString(todaysDate)
+            << std::endl;
+
+        std::cout << "Settlement date: "
+            << WeekdayFormatter::toString(settlementDate)
+            << ", " + DateFormatter::toString(settlementDate)
+            << std::endl;
 
         // deposits
         Rate d1wQuote=0.0382;
@@ -114,89 +133,96 @@ int main(int, char* [])
 
         // deposits
         DayCounter depositDayCounter = Actual360();
-        Integer settlementDays = 2;
 
         boost::shared_ptr<RateHelper> d1w(new DepositRateHelper(
             Handle<Quote>(d1wRate),
-            1, Weeks, settlementDays,
+            1, Weeks, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d1m(new DepositRateHelper(
             Handle<Quote>(d1mRate),
-            1, Months, settlementDays,
+            1, Months, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d3m(new DepositRateHelper(
             Handle<Quote>(d3mRate),
-            3, Months, settlementDays,
+            3, Months, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d6m(new DepositRateHelper(
             Handle<Quote>(d6mRate),
-            6, Months, settlementDays,
+            6, Months, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d9m(new DepositRateHelper(
             Handle<Quote>(d9mRate),
-            9, Months, settlementDays,
+            9, Months, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d1y(new DepositRateHelper(
             Handle<Quote>(d1yRate),
-            1, Years, settlementDays,
+            1, Years, fixingDays,
             calendar, ModifiedFollowing, depositDayCounter));
 
 
         // setup FRAs
         boost::shared_ptr<RateHelper> fra3x6(new FraRateHelper(
             Handle<Quote>(fra3x6Rate),
-            3, 6, settlementDays, calendar, ModifiedFollowing,
+            3, 6, fixingDays, calendar, ModifiedFollowing,
             depositDayCounter));
         boost::shared_ptr<RateHelper> fra6x9(new FraRateHelper(
             Handle<Quote>(fra6x9Rate),
-            6, 9, settlementDays, calendar, ModifiedFollowing,
+            6, 9, fixingDays, calendar, ModifiedFollowing,
             depositDayCounter));
         boost::shared_ptr<RateHelper> fra6x12(new FraRateHelper(
             Handle<Quote>(fra6x12Rate),
-            6, 12, settlementDays, calendar, ModifiedFollowing,
+            6, 12, fixingDays, calendar, ModifiedFollowing,
             depositDayCounter));
 
 
         // setup futures
         Integer futMonths = 3;
+        Date imm = settlementDate.nextIMM();
         boost::shared_ptr<RateHelper> fut1(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
-            Date(19, December, 2001),
+            imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
+        imm = imm.plusDays(1).nextIMM();
         boost::shared_ptr<RateHelper> fut2(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
-            Date(20, March, 2002),
+            imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
+        imm = imm.plusDays(1).nextIMM();
         boost::shared_ptr<RateHelper> fut3(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
-            Date(19, June, 2002),
+            imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
+        imm = imm.plusDays(1).nextIMM();
         boost::shared_ptr<RateHelper> fut4(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
-            Date(18, September, 2002),
+            imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
+        imm = imm.plusDays(1).nextIMM();
         boost::shared_ptr<RateHelper> fut5(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
-            Date(18, December, 2002),
+            imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
+        imm = imm.plusDays(1).nextIMM();
         boost::shared_ptr<RateHelper> fut6(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
-            Date(19, March, 2003),
+            imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
+        imm = imm.plusDays(1).nextIMM();
         boost::shared_ptr<RateHelper> fut7(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
-            Date(18, June, 2003),
+            imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
+        imm = imm.plusDays(1).nextIMM();
         boost::shared_ptr<RateHelper> fut8(new FuturesRateHelper(
             Handle<Quote>(fut1Price),
-            Date(17, September, 2003),
+            imm,
             futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
 
@@ -209,31 +235,31 @@ int main(int, char* [])
 
         boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
             Handle<Quote>(s2yRate),
-            2, Years, settlementDays,
+            2, Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s3y(new SwapRateHelper(
             Handle<Quote>(s3yRate),
-            3, Years, settlementDays,
+            3, Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s5y(new SwapRateHelper(
             Handle<Quote>(s5yRate),
-            5, Years, settlementDays,
+            5, Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s10y(new SwapRateHelper(
             Handle<Quote>(s10yRate),
-            10, Years, settlementDays,
+            10, Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s15y(new SwapRateHelper(
             Handle<Quote>(s15yRate),
-            15, Years, settlementDays,
+            15, Years, fixingDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
@@ -324,7 +350,6 @@ int main(int, char* [])
         BusinessDayConvention fixedLegConvention = Unadjusted;
         BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
-        Integer fixingDays = 2;
         Rate fixedRate = 0.04;
 
         // floating leg
@@ -420,7 +445,8 @@ int main(int, char* [])
 
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(QL_FABS(fairRate-s5yQuote)<1e-8,
-                   "5-years swap mispriced!");
+                   "5-years swap mispriced by "
+                   + DecimalFormatter::toString(QL_FABS(fairRate-s5yQuote)));
 
 
         forecastingTermStructure.linkTo(depoFutSwapTermStructure);
