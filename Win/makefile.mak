@@ -56,7 +56,8 @@ MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \
                    $(OUTPUT_DIR)\lecuyerrandomgenerator.obj
 
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
-                   $(OUTPUT_DIR)\bsmoperator.obj
+                   $(OUTPUT_DIR)\bsmoperator.obj\
+                   $(OUTPUT_DIR)\valueatcenter.obj
 
 
 PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
@@ -189,8 +190,12 @@ $(OUTPUT_DIR)\thirty360italian.obj: $(SOURCES_DIR)\DayCounters\thirty360italian.
 
 # Finite difference methods
 FiniteDifferences: $(OUTPUT_DIR) $(FDM_OBJS)
-$(OUTPUT_DIR)\tridiagonaloperator.obj: $(SOURCES_DIR)\FiniteDifferences\tridiagonaloperator.cpp
-$(OUTPUT_DIR)\bsmoperator.obj: $(SOURCES_DIR)\FiniteDifferences\bsmoperator.cpp
+$(OUTPUT_DIR)\tridiagonaloperator.obj: \
+        $(SOURCES_DIR)\FiniteDifferences\tridiagonaloperator.cpp
+$(OUTPUT_DIR)\bsmoperator.obj: \
+        $(SOURCES_DIR)\FiniteDifferences\bsmoperator.cpp
+$(OUTPUT_DIR)\valueatcenter.obj: \
+        $(SOURCES_DIR)\FiniteDifferences\valueatcenter.cpp
 
 
 # Math

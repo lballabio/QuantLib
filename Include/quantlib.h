@@ -26,6 +26,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.31  2001/03/21 10:49:58  marmar
+    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
+    are no longer methods of BSMNumericalOption but separate
+    functions
+
     Revision 1.30  2001/03/21 09:58:26  marmar
     BermudanOption file added
 
@@ -202,6 +207,7 @@
 #include "operatortraits.h"
 #include "stepcondition.h"
 #include "tridiagonaloperator.h"
+#include "valueatcenter.h"
 
 
 // 1-D solvers

@@ -24,6 +24,11 @@
 
 /* $Source$
    $Log$
+   Revision 1.14  2001/03/21 10:48:31  marmar
+   valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
+   are no longer methods of BSMNumericalOption but separate
+   functions
+
    Revision 1.13  2001/03/14 16:20:49  lballabio
    Added augmented assignment operators for Python 2.0
 
@@ -135,5 +140,17 @@ class DPlusDMinus : public TridiagonalOperator {
 };
 
 
+%{
+using QuantLib::FiniteDifferences::valueAtCenter;
+using QuantLib::FiniteDifferences::firstDerivativeAtCenter;
+using QuantLib::FiniteDifferences::secondDerivativeAtCenter;
+%}
+
+double valueAtCenter(const Array& a);
+
+double firstDerivativeAtCenter(const Array& a, const Array& g);
+
+double secondDerivativeAtCenter(const Array& a, const Array& g);        
 
 #endif
+

@@ -901,6 +901,10 @@ using QuantLib::FiniteDifferences::DMinus;
 using QuantLib::FiniteDifferences::DZero;
 using QuantLib::FiniteDifferences::DPlusDMinus;
 
+using QuantLib::FiniteDifferences::valueAtCenter;
+using QuantLib::FiniteDifferences::firstDerivativeAtCenter;
+using QuantLib::FiniteDifferences::secondDerivativeAtCenter;
+
 using QuantLib::Pricers::AmericanOption;
 using QuantLib::Pricers::BinaryOption;
 using QuantLib::Pricers::BermudanOption;
@@ -2556,6 +2560,251 @@ static PyObject *_wrap_Identity(PyObject *self, PyObject *args, PyObject *kwargs
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_TridiagonalOperator);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_valueAtCenter(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "a", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:valueAtCenter",kwnames,&obj0)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"Array expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (double )valueAtCenter((Array const &)*arg0);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_firstDerivativeAtCenter(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array *arg1 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    Array temp0 ;
+    PyObject * obj1  = 0 ;
+    char *kwnames[] = {
+        "a","g", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:firstDerivativeAtCenter",kwnames,&obj0,&obj1)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"Array expected");
+            return NULL;
+        }
+    }
+    {
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"Array expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (double )firstDerivativeAtCenter((Array const &)*arg0,(Array const &)*arg1);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_secondDerivativeAtCenter(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array *arg1 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    Array temp0 ;
+    PyObject * obj1  = 0 ;
+    char *kwnames[] = {
+        "a","g", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:secondDerivativeAtCenter",kwnames,&obj0,&obj1)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"Array expected");
+            return NULL;
+        }
+    }
+    {
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"Array expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (double )secondDerivativeAtCenter((Array const &)*arg0,(Array const &)*arg1);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
     return resultobj;
 }
 
@@ -21225,6 +21474,9 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "matrixSqrt", (PyCFunction) _wrap_matrixSqrt, METH_VARARGS | METH_KEYWORDS },
 	 { "getCovariance", (PyCFunction) _wrap_getCovariance, METH_VARARGS | METH_KEYWORDS },
 	 { "Identity", (PyCFunction) _wrap_Identity, METH_VARARGS | METH_KEYWORDS },
+	 { "valueAtCenter", (PyCFunction) _wrap_valueAtCenter, METH_VARARGS | METH_KEYWORDS },
+	 { "firstDerivativeAtCenter", (PyCFunction) _wrap_firstDerivativeAtCenter, METH_VARARGS | METH_KEYWORDS },
+	 { "secondDerivativeAtCenter", (PyCFunction) _wrap_secondDerivativeAtCenter, METH_VARARGS | METH_KEYWORDS },
 	 { "new_UniformRandomGenerator", (PyCFunction) _wrap_new_UniformRandomGenerator, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_UniformRandomGenerator", (PyCFunction) _wrap_delete_UniformRandomGenerator, METH_VARARGS | METH_KEYWORDS },
 	 { "UniformRandomGenerator_next", (PyCFunction) _wrap_UniformRandomGenerator_next, METH_VARARGS | METH_KEYWORDS },

@@ -27,6 +27,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.15  2001/03/21 10:49:27  marmar
+    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
+    are no longer methods of BSMNumericalOption but separate
+    functions
+
     Revision 1.14  2001/03/12 12:59:53  marmar
     Public method getGrid added
 
@@ -86,11 +91,6 @@ namespace QuantLib {
 
           protected:
             // methods
-            double valueAtCenter(const Array& a) const;
-            double firstDerivativeAtCenter(const Array& a, 
-                    const Array& g) const;
-            double secondDerivativeAtCenter(const Array& a, 
-                    const Array& g) const;
             virtual void setGridLimits() const;
             virtual void initializeGrid() const;
             virtual void initializeInitialCondition() const;

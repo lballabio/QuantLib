@@ -1880,6 +1880,12 @@ def Identity(*args, **kwargs):
     if val: val = TridiagonalOperatorPtr(val); val.thisown = 1
     return val
 
+valueAtCenter = QuantLibc.valueAtCenter
+
+firstDerivativeAtCenter = QuantLibc.firstDerivativeAtCenter
+
+secondDerivativeAtCenter = QuantLibc.secondDerivativeAtCenter
+
 Date_isLeap = QuantLibc.Date_isLeap
 
 def Date_minDate(*args, **kwargs):

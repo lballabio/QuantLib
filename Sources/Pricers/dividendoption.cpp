@@ -26,6 +26,11 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/03/21 10:48:08  marmar
+    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
+    are no longer methods of BSMNumericalOption but separate
+    functions
+
     Revision 1.1  2001/03/20 15:27:38  marmar
     DividendOption and DividendShoutOption are examples of
      MultiPeriodOption's
@@ -35,12 +40,16 @@
 #include "dividendoption.h"
 #include "cubicspline.h"
 #include "dividendeuropeanoption.h"
+#include "valueatcenter.h"
 
 namespace QuantLib {
 
     namespace Pricers {
 
         using Math::CubicSpline;
+        using FiniteDifferences::valueAtCenter;
+        using FiniteDifferences::firstDerivativeAtCenter;
+        using FiniteDifferences::secondDerivativeAtCenter;
 
         DividendOption::DividendOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,

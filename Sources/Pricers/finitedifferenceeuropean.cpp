@@ -26,6 +26,11 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/03/21 10:48:08  marmar
+    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
+    are no longer methods of BSMNumericalOption but separate
+    functions
+
     Revision 1.2  2001/03/12 13:12:00  marmar
     Public method getPrices added
 
@@ -37,10 +42,15 @@
 #include "finitedifferenceeuropean.h"
 #include "bsmnumericaloption.h"
 #include "standardfdmodel.h"
+#include "valueatcenter.h"
 
 namespace QuantLib {
 
     namespace Pricers {
+
+        using FiniteDifferences::valueAtCenter;
+        using FiniteDifferences::firstDerivativeAtCenter;
+        using FiniteDifferences::secondDerivativeAtCenter;
 
         FiniteDifferenceEuropean::FiniteDifferenceEuropean(
             Type type, double underlying, double strike,

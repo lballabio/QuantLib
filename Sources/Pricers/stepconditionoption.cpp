@@ -26,6 +26,11 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/03/21 10:48:08  marmar
+    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
+    are no longer methods of BSMNumericalOption but separate
+    functions
+
     Revision 1.2  2001/03/02 13:50:01  marmar
     Purely virtual method initializeStepCondition()
     introduced in the design of StepConditionOption
@@ -45,11 +50,17 @@
 #include "bsmeuropeanoption.h"
 #include "standardfdmodel.h"
 #include "standardstepcondition.h"
+#include "valueatcenter.h"
 
 namespace QuantLib {
     namespace Pricers {
+        
         using FiniteDifferences::StandardStepCondition;
         using FiniteDifferences::StandardFiniteDifferenceModel;
+        using FiniteDifferences::valueAtCenter;
+        using FiniteDifferences::firstDerivativeAtCenter;
+        using FiniteDifferences::secondDerivativeAtCenter;
+        
         StepConditionOption::StepConditionOption(Type type, double underlying,
                  double strike, Rate dividendYield, Rate riskFreeRate, 
                  Time residualTime, double volatility, int timeSteps, 
