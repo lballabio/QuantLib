@@ -20,6 +20,7 @@
     ql/Optimization/%powell.cpp
 */
 
+#include <vector>
 #include "ql/Optimization/powell.hpp"
 
 namespace QuantLib {
