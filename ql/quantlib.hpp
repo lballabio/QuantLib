@@ -155,9 +155,11 @@
 #include <ql/Math/discrepancystatistics.hpp>
 #include <ql/Math/errorfunction.hpp>
 #include <ql/Math/functional.hpp>
+#include <ql/Math/factorial.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/generalstatistics.hpp>
+#include <ql/Math/incompletegamma.hpp>
 #include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/interpolation.hpp>
 #include <ql/Math/interpolation2D.hpp>
@@ -167,6 +169,7 @@
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/normaldistribution.hpp>
+#include <ql/Math/poissondistribution.hpp>
 #include <ql/Math/primenumbers.hpp>
 #include <ql/Math/riskstatistics.hpp>
 #include <ql/Math/segmentintegral.hpp>

@@ -811,6 +811,14 @@ SOURCE=.\ql\Math\generalstatistics.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\incompletegamma.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\incompletegamma.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\incrementalstatistics.cpp
 # End Source File
 # Begin Source File
@@ -864,6 +872,10 @@ SOURCE=.\ql\Math\normaldistribution.cpp
 # Begin Source File
 
 SOURCE=.\ql\Math\normaldistribution.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\poissondistribution.hpp
 # End Source File
 # Begin Source File
 

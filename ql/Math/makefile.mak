@@ -14,12 +14,13 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
+	factorial.obj$(_D) \
     chisquaredistribution.obj$(_D) \
     discrepancystatistics.obj$(_D) \
     errorfunction.obj$(_D) \
-	factorial.obj$(_D) \
     gammadistribution.obj$(_D) \
     generalstatistics.obj$(_D) \
+    incompletegamma.obj$(_D) \
     incrementalstatistics.obj$(_D) \
     matrix.obj$(_D) \
     normaldistribution.obj$(_D) \
