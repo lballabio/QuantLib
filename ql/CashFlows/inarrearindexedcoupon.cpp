@@ -33,7 +33,7 @@ namespace QuantLib {
         if (capletVolatility_.empty()) {
             return 0.0;
         } else {
-            // see Hull, page 550
+            // see Hull, 4th ed., page 550
             Date d1 = fixingDate(),
                  referenceDate = capletVolatility_->referenceDate();
             if (d1 <= referenceDate) {

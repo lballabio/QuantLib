@@ -252,7 +252,10 @@ void SwapTest::testInArrears() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    // See Hull, page 550
+    /* See Hull, 4th ed., page 550
+       Note: the calculation in the book is wrong (work out the
+       adjustment and you'll get 0.05 + 0.000115 T1)
+    */
 
     Date maturity = today_.plusYears(5);
     Calendar calendar = NullCalendar();
