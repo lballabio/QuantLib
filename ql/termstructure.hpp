@@ -38,6 +38,7 @@
 #include <ql/currency.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/relinkablehandle.hpp>
+#include <ql/marketelement.hpp>
 #include <vector>
 
 /*! \namespace QuantLib::TermStructures
@@ -213,12 +214,12 @@ namespace QuantLib {
             structure, i.e., any changes in the latter will be reflected in
             this structure as well.
     */
-    class SpreadedTermStructure : public ZeroYieldStructure,
+    class ZeroSpreadedTermStructure : public ZeroYieldStructure,
                                   public Patterns::Observer {
       public:
-        SpreadedTermStructure(const RelinkableHandle<TermStructure>&,
-            Spread spread);
-        ~SpreadedTermStructure();
+        ZeroSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
+            const RelinkableHandle<MarketElement>& spreadHandle);
+        ~ZeroSpreadedTermStructure();
         //! \name TermStructure interface
         //@{
         Currency currency() const;
@@ -241,8 +242,48 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time, bool extrapolate = false) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
-        Spread spread_;
+        RelinkableHandle<MarketElement> spreadHandle_;
     };
+
+
+
+    //! Term structure with an added spread on the instantaneous forward rate
+    /*! \note This term structure will remain linked to the original
+            structure, i.e., any changes in the latter will be reflected in
+            this structure as well.
+    */
+    class ForwardSpreadedTermStructure : public ForwardRateStructure,
+                                  public Patterns::Observer {
+      public:
+        ForwardSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
+            const RelinkableHandle<MarketElement>& spreadHandle);
+        ~ForwardSpreadedTermStructure();
+        //! \name TermStructure interface
+        //@{
+        Currency currency() const;
+        Date todaysDate() const;
+        int settlementDays() const;
+        Calendar calendar() const;
+        DayCounter dayCounter() const;
+        Date settlementDate() const;
+        Date maxDate() const;
+        Date minDate() const;
+        Time maxTime() const;
+        Time minTime() const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
+        //@}
+      protected:
+        //! returns the spreaded zero yield rate
+        Rate forwardImpl(Time, bool extrapolate = false) const;
+      private:
+        RelinkableHandle<TermStructure> originalCurve_;
+        RelinkableHandle<MarketElement> spreadHandle_;
+    };
+
+
 
 
     // inline definitions
@@ -412,68 +453,138 @@ namespace QuantLib {
     }
 
 
-    // spreaded curve
-
-    inline SpreadedTermStructure::SpreadedTermStructure(
-        const RelinkableHandle<TermStructure>& h, Spread spread)
-    : originalCurve_(h), spread_(spread) {
+    // zero-yield spreaded curves
+    inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(
+        const RelinkableHandle<TermStructure>& h, 
+        const RelinkableHandle<MarketElement>& spreadHandle)
+    : originalCurve_(h), spreadHandle_(spreadHandle) {
         if (!originalCurve_.isNull())
             originalCurve_.registerObserver(this);
+        spreadHandle_.registerObserver(this);
     }
 
-    inline SpreadedTermStructure::~SpreadedTermStructure() {
+    inline ZeroSpreadedTermStructure::~ZeroSpreadedTermStructure() {
         if (!originalCurve_.isNull())
             originalCurve_.unregisterObserver(this);
+        spreadHandle_.unregisterObserver(this);
     }
 
-    inline Currency SpreadedTermStructure::currency() const {
+    inline Currency ZeroSpreadedTermStructure::currency() const {
         return originalCurve_->currency();
     }
 
-    inline Date SpreadedTermStructure::todaysDate() const {
+    inline Date ZeroSpreadedTermStructure::todaysDate() const {
         return originalCurve_->todaysDate();
     }
 
-    inline int SpreadedTermStructure::settlementDays() const {
+    inline int ZeroSpreadedTermStructure::settlementDays() const {
         return originalCurve_->settlementDays();
     }
 
-    inline Calendar SpreadedTermStructure::calendar() const {
+    inline Calendar ZeroSpreadedTermStructure::calendar() const {
         return originalCurve_->calendar();
     }
 
-    inline DayCounter SpreadedTermStructure::dayCounter() const {
+    inline DayCounter ZeroSpreadedTermStructure::dayCounter() const {
         return originalCurve_->dayCounter();
     }
 
-    inline Date SpreadedTermStructure::settlementDate() const {
+    inline Date ZeroSpreadedTermStructure::settlementDate() const {
         return originalCurve_->settlementDate();
     }
 
-    inline Date SpreadedTermStructure::maxDate() const {
+    inline Date ZeroSpreadedTermStructure::maxDate() const {
         return originalCurve_->maxDate();
     }
 
-    inline Date SpreadedTermStructure::minDate() const {
+    inline Date ZeroSpreadedTermStructure::minDate() const {
         return originalCurve_->minDate();
     }
 
-    inline Time SpreadedTermStructure::maxTime() const {
+    inline Time ZeroSpreadedTermStructure::maxTime() const {
         return originalCurve_->maxTime();
     }
 
-    inline Time SpreadedTermStructure::minTime() const {
+    inline Time ZeroSpreadedTermStructure::minTime() const {
         return originalCurve_->minTime();
     }
 
-    inline void SpreadedTermStructure::update() {
+    inline void ZeroSpreadedTermStructure::update() {
         notifyObservers();
     }
 
-    inline Rate SpreadedTermStructure::zeroYieldImpl(Time t,
+    inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t,
         bool extrapolate) const {
-            return originalCurve_->zeroYield(t, extrapolate) + spread_;
+            return originalCurve_->zeroYield(t, extrapolate) + spreadHandle_->value();
     }
+
+
+    // forward spreaded curves
+    inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
+        const RelinkableHandle<TermStructure>& h, 
+        const RelinkableHandle<MarketElement>& spreadHandle)
+    : originalCurve_(h), spreadHandle_(spreadHandle) {
+        if (!originalCurve_.isNull())
+            originalCurve_.registerObserver(this);
+        spreadHandle_.registerObserver(this);
+    }
+
+    inline ForwardSpreadedTermStructure::~ForwardSpreadedTermStructure() {
+        if (!originalCurve_.isNull())
+            originalCurve_.unregisterObserver(this);
+        spreadHandle_.unregisterObserver(this);
+    }
+
+    inline Currency ForwardSpreadedTermStructure::currency() const {
+        return originalCurve_->currency();
+    }
+
+    inline Date ForwardSpreadedTermStructure::todaysDate() const {
+        return originalCurve_->todaysDate();
+    }
+
+    inline int ForwardSpreadedTermStructure::settlementDays() const {
+        return originalCurve_->settlementDays();
+    }
+
+    inline Calendar ForwardSpreadedTermStructure::calendar() const {
+        return originalCurve_->calendar();
+    }
+
+    inline DayCounter ForwardSpreadedTermStructure::dayCounter() const {
+        return originalCurve_->dayCounter();
+    }
+
+    inline Date ForwardSpreadedTermStructure::settlementDate() const {
+        return originalCurve_->settlementDate();
+    }
+
+    inline Date ForwardSpreadedTermStructure::maxDate() const {
+        return originalCurve_->maxDate();
+    }
+
+    inline Date ForwardSpreadedTermStructure::minDate() const {
+        return originalCurve_->minDate();
+    }
+
+    inline Time ForwardSpreadedTermStructure::maxTime() const {
+        return originalCurve_->maxTime();
+    }
+
+    inline Time ForwardSpreadedTermStructure::minTime() const {
+        return originalCurve_->minTime();
+    }
+
+    inline void ForwardSpreadedTermStructure::update() {
+        notifyObservers();
+    }
+
+    inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t,
+        bool extrapolate) const {
+            return originalCurve_->forward(t, extrapolate) + spreadHandle_->value();
+    }
+
+
 
 }
 
