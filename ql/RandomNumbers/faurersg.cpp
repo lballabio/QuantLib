@@ -54,7 +54,7 @@ namespace QuantLib {
             for (int j1=base_+1; j1<2*(int)base_-1; j1++ )
                 powBase_[ii][j1] = powBase_[ii][j1-1] + powBase_[ii][base_];
             for (int j2=base_-1; j2>=0; j2--)
-                powBase_[ii][j2] = powBase_[ii][j2] - powBase_[ii][base_];
+                powBase_[ii][j2] = powBase_[ii][j2+1] - powBase_[ii][base_];
         }
 
         addOne_.resize(base_);
