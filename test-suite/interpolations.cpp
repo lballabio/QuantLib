@@ -335,7 +335,6 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     };
 
     double interpolated;
-    Size n = LENGTH(RPN15A_x);
 
     // Natural spline
     Interpolation f = NaturalCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x), 

@@ -771,7 +771,7 @@ void BasketOptionTest::testOneDAmericanValues() {
         double expected = values[i].result;            
         double errorEstimate = basketOption.errorEstimate();
         double relError = relativeError(calculated, expected, values[i].s);
-        double error = QL_FABS(calculated-expected);
+        // double error = QL_FABS(calculated-expected);
             
         if (relError > values[i].tol) {
             std::cout << "TEST FAILED" << "\n MC LSMC value " 
