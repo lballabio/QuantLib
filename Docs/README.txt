@@ -42,7 +42,7 @@ If you want to produce TeX/PDF/PS documentation:
    can be downloaded from http://toocool.calpoly.edu/latex/fancy_header.html)
 7) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
    and copy it into a directory on your path
-8) Open MikTeX Option panel from Programs/MiKTeX 2 list and click on the
+8) Open MikTeX Options panel from "Programs/MiKTeX 2" list and click on the
    "Refresh Now" button in the "General" folder.
 9) a) Borland users: type 'make ps' or 'make pdf' from the QuantLib\Docs
       directory
