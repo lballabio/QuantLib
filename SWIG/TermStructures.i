@@ -34,7 +34,7 @@
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
-%echo "Warning: this is a Python module!!"
+%echo "Warning: TermStructures is a Python module!!"
 %echo "Exporting it to any other language is not advised"
 %echo "as it could lead to unpredicted results."
 #endif
