@@ -271,6 +271,7 @@
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/TermStructures/zerospreadedtermstructure.hpp>
+#include <ql/TermStructures/zerocurve.hpp>
 
 #include <ql/Utilities/combiningiterator.hpp>
 #include <ql/Utilities/couplingiterator.hpp>

@@ -1267,6 +1267,14 @@ SOURCE=.\ql\TermStructures\ratehelpers.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\zerocurve.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\zerocurve.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\zerospreadedtermstructure.hpp
 # End Source File
 # End Group

@@ -13,6 +13,7 @@ include_HEADERS = \
     impliedtermstructure.hpp \
     piecewiseflatforward.hpp \
     ratehelpers.hpp \
+    zerocurve.hpp \
     zerospreadedtermstructure.hpp
 
 EXTRA_DIST=makefile.mak
@@ -22,6 +23,7 @@ libTermStructures_la_SOURCES = \
     compoundforward.cpp \
     discountcurve.cpp \
     piecewiseflatforward.cpp \
-    ratehelpers.cpp
+    ratehelpers.cpp \
+    zerocurve.cpp
 
 noinst_LTLIBRARIES = libTermStructures.la

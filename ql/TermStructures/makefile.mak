@@ -20,7 +20,8 @@ OBJS = \
     compoundforward.obj$(_D) \
     discountcurve.obj$(_D) \
     piecewiseflatforward.obj$(_D) \
-    ratehelpers.obj$(_D)
+    ratehelpers.obj$(_D) \
+    zerocurve.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
