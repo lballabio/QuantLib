@@ -35,6 +35,7 @@ namespace QuantLib {
         typedef typename Evolver::arrayType arrayType;
         typedef typename Evolver::operatorType operatorType;
         typedef BoundaryCondition<operatorType> bcType;
+        typedef StepCondition<arrayType> conditionType;
         // constructors
         FiniteDifferenceModel(const operatorType& L,
                               const std::vector<Handle<bcType> >& bcs,
@@ -56,8 +57,8 @@ namespace QuantLib {
                       Time from,
                       Time to,
                       Size steps,
-                      const Handle<StepCondition<arrayType> >& condition =
-                      Handle<StepCondition<arrayType> >());
+                      const Handle<conditionType>& condition =
+                      Handle<conditionType>());
         const Evolver& evolver() const{return evolver_;};
       private:
         Evolver evolver_;
