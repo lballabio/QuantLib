@@ -15,6 +15,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file europeanbinomialengine.cpp
     \brief European option engine using binomial methods
 
@@ -34,18 +35,19 @@ namespace QuantLib {
 
         void EuropeanBinomialEngine::calculate() const {
             double s0 = arguments_.underlying;
-            Date referenceDate = arguments_.volTS->referenceDate();
+            Date referenceDate = arguments_.riskFreeTS->referenceDate();
             double v = arguments_.volTS->blackVol(referenceDate, s0);
             Rate r = arguments_.riskFreeTS->zeroYield(referenceDate);
             Rate q = arguments_.dividendTS->zeroYield(referenceDate);
-            Time t = arguments_.volTS->dayCounter().yearFraction(
+            Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
                 referenceDate, arguments_.exercise.date());
 
             Handle<Lattices::Tree> tree;
             switch(type_) {
                 case CoxRossRubinstein:
                     tree = Handle<Lattices::Tree>(
-                        new Lattices::CoxRossRubinstein(v, r, q, s0, t, steps_));
+                        new Lattices::CoxRossRubinstein(v, r, q, 
+                                                        s0, t, steps_));
                     break;
                 case JarrowRudd:
                     tree = Handle<Lattices::Tree>(
@@ -57,7 +59,7 @@ namespace QuantLib {
                 new Lattices::BlackScholesLattice(tree, r, t, steps_));
 
             Handle<DiscretizedAsset> option(
-            new DiscretizedVanillaOption(lattice, arguments_));
+                new DiscretizedVanillaOption(lattice, arguments_));
 
             lattice->initialize(option, t);
             lattice->rollback(option, 0.0);
