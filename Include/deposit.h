@@ -21,6 +21,10 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/*! \file deposit.h
+	\brief Deposit rate
+*/
+
 #ifndef quantlib_deposit_h
 #define quantlib_deposit_h
 
@@ -32,7 +36,7 @@
 
 namespace QuantLib {
 
-	//! deposit rate
+	//! %deposit rate
 	class Deposit {
 	  public:
 		Deposit() {}

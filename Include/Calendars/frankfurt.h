@@ -35,7 +35,7 @@ namespace QuantLib {
 
 	namespace Calendars {
 	
-		//! Frankfurt calendar
+		//! %Frankfurt calendar
 		/*! Holidays:
 			<ul>
 			<li>Saturdays</li>
