@@ -61,7 +61,7 @@ namespace QuantLib {
             if (xMax>model.maxStateVariable())
                 xMax = model.maxStateVariable();
             dx_ = (xMax - xMin)/(size()-1);
-            for (unsigned j=0; j<size(); j++)
+            for (Size j=0; j<size(); j++)
                 (*this)[j] = xMin + j*dx_;
             index_ = size_t(((initialCenter - xMin)/dx_ + 0.5));
         }

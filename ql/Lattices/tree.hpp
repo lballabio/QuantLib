@@ -49,7 +49,7 @@ namespace QuantLib {
         class Tree {
           public:
             Tree() {}
-            Tree(unsigned int n)
+            Tree(Size n)
             : n_(n), dx_(0) {
                 nodes_.push_back(std::vector<Handle<Node> >());
                 nodes_[0].push_back(Handle<Node>(new Node(n,0,0)));
@@ -57,9 +57,9 @@ namespace QuantLib {
             }
             virtual ~Tree() {}
 
-            virtual const Node& node(unsigned int i, int j) const = 0;
+            virtual const Node& node(Size i, int j) const = 0;
 
-            virtual Node& node(unsigned int i, int j) = 0;
+            virtual Node& node(Size i, int j) = 0;
 
             const TimeGrid& timeGrid() const { return t_; }
 
@@ -69,22 +69,22 @@ namespace QuantLib {
                           Time from, Time to) const;
 
             //! Returns t_i
-            Time t(unsigned int i) const { return t_[i]; }
+            Time t(Size i) const { return t_[i]; }
 
             //! Returns \delta t_i = t_{i+1} - t_i
-            Time dt(unsigned int i) const { return t_[i+1] - t_[i]; }
+            Time dt(Size i) const { return t_[i+1] - t_[i]; }
 
             //! Returns \delta x_i
-            double dx(unsigned int i) const { return dx_[i]; }
+            double dx(Size i) const { return dx_[i]; }
 
             //! Returns jMin
-            int jMin(unsigned int i) const { return nodes_[i].front()->j(); }
+            int jMin(Size i) const { return nodes_[i].front()->j(); }
 
             //! Returns jMax
-            int jMax(unsigned int i) const { return nodes_[i].back()->j(); }
+            int jMax(Size i) const { return nodes_[i].back()->j(); }
 
           protected:
-            unsigned int n_;
+            Size n_;
             TimeGrid t_;
             std::vector<double> dx_;
             std::vector<std::vector<Handle<Node> > > nodes_;

@@ -49,8 +49,8 @@ namespace QuantLib {
 
             double operator()(double x) const {
                 double value = strike_;
-                unsigned size = times_.size();
-                for (unsigned i=0; i<size; i++) {
+                Size size = times_.size();
+                for (Size i=0; i<size; i++) {
                     double dbValue = 
                         model_->discountBond(maturity_, times_[i], x);
                     value -= amounts_[i]*dbValue;
@@ -95,9 +95,9 @@ namespace QuantLib {
             double rStar = s1d.solve(finder, 1e-8, r0, minStrike, maxStrike);
 
             Option::Type type = parameters_.payFixed?Option::Put:Option::Call;
-            unsigned size = parameters_.fixedCoupons.size();
+            Size size = parameters_.fixedCoupons.size();
             double value = 0.0;
-            for (unsigned i=0; i<size; i++) {
+            for (Size i=0; i<size; i++) {
                 double strike = model->discountBond(maturity, 
                     parameters_.fixedPayTimes[i], rStar);
                 double dboValue = model->discountBondOption(

@@ -48,7 +48,7 @@ namespace QuantLib {
 
         Type type() const { return type_; }
 
-        Date date(unsigned index = 0) const { return dates_[index]; }
+        Date date(Size index = 0) const { return dates_[index]; }
         const std::vector<Date>& dates() const { return dates_; }
       private:
         Type type_;

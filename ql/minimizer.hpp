@@ -43,14 +43,14 @@ namespace QuantLib {
 
     class CostFunction {
       public:
-        CostFunction(unsigned dimensions) : dimensions_(dimensions) {};
+        CostFunction(Size dimensions) : dimensions_(dimensions) {};
         virtual ~CostFunction() {}
         //! returns \f$ f(x) \f$
         virtual double operator()(const Array& x) const = 0;
         virtual void gradient(const Array& x, Array& grad) const {
             Array y(x);
 
-            for (unsigned i=0; i<dimensions_; i++) {
+            for (Size i=0; i<dimensions_; i++) {
                 double off = 1e-6;
                 y[i] -= off;
                 double newValue = (*this)(y);
@@ -61,9 +61,9 @@ namespace QuantLib {
                 y[i] = x[i];
             }
         }
-        unsigned dimensions() const { return dimensions_; }
+        Size dimensions() const { return dimensions_; }
       private:
-        const unsigned dimensions_;
+        const Size dimensions_;
     };
 
     //! Abstract base class for minimizers

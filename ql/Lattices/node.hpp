@@ -45,26 +45,26 @@ namespace QuantLib {
 
         class Node {
           public:
-            Node(unsigned int nDescendants, unsigned int i, int j)
+            Node(Size nDescendants, Size i, int j)
             : descendants_(nDescendants), probabilities_(nDescendants),
               i_(i), j_(j), discount_(0.0), statePrice_(0.0) {}
 
-            unsigned int i() const { return i_; }
+            Size i() const { return i_; }
             int j() const { return j_; }
 
-            double probability(unsigned int branch) const {
+            double probability(Size branch) const {
                 return probabilities_[branch];
             }
-            void setProbability(double prob, unsigned int branch) {
+            void setProbability(double prob, Size branch) {
                 probabilities_[branch] = prob;
             }
-            Node& descendant(unsigned int branch) {
+            Node& descendant(Size branch) {
                 return *(descendants_[branch]);
             }
-            const Node& descendant(unsigned int branch) const {
+            const Node& descendant(Size branch) const {
                 return *(descendants_[branch]);
             }
-            void setDescendant(Node& node, unsigned int branch) {
+            void setDescendant(Node& node, Size branch) {
                 descendants_[branch] = &node;
             }
 
@@ -78,7 +78,7 @@ namespace QuantLib {
             std::vector<Node*> descendants_;
             std::vector<double> probabilities_;
 
-            unsigned int i_;
+            Size i_;
             int j_;
 
             double discount_;

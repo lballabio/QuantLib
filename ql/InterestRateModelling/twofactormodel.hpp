@@ -41,7 +41,7 @@ namespace QuantLib {
         class TwoFactorModel : public Model {
           public:
             TwoFactorModel(
-                unsigned nParams,
+                Size nParams,
                 const RelinkableHandle<TermStructure>& termStructure)
             : Model(nParams, TwoFactor, termStructure) {}
             virtual ~TwoFactorModel() {}

@@ -43,7 +43,7 @@ namespace QuantLib {
         class OneFactorModel : public Model {
           public:
             OneFactorModel(
-                unsigned nParams,
+                Size nParams,
                 const RelinkableHandle<TermStructure>& termStructure)
             : Model(nParams, OneFactor, termStructure) {}
             virtual ~OneFactorModel() {}

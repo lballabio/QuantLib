@@ -52,7 +52,7 @@ namespace QuantLib {
                 const Array& statePrices,
                 std::vector<double>& values,
                 CustomFiniteDifferenceModel& fd,
-                double dt, unsigned nit, const Grid& grid)
+                double dt, Size nit, const Grid& grid)
             : discountBond_(discountBond), statePrices_(statePrices),
               values_(values), fd_(fd), nit_(nit), grid_(grid) {
                 from_ = (nit_ - 1)*dt;
@@ -66,7 +66,7 @@ namespace QuantLib {
                 fd_.rollback(prices, from_, to_, 1);
 
                 double value = discountBond_;
-                for (unsigned k=(index-nit_-1); k<=(index+nit_+1); k++) {
+                for (Size k=(index-nit_-1); k<=(index+nit_+1); k++) {
                     std::cout << k << "," << x <<  " --> " << prices[k] << std::endl;
                     value -= prices[k];
                 }
@@ -77,7 +77,7 @@ namespace QuantLib {
             const Array& statePrices_;
             std::vector<double>& values_;
             CustomFiniteDifferenceModel& fd_;
-            unsigned nit_;
+            Size nit_;
             const Grid& grid_;
             double from_;
             double to_;

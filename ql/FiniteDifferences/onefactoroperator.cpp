@@ -48,8 +48,8 @@ namespace QuantLib {
 
         void OneFactorOperator::SpecificTimeSetter::setTime(Time t, 
             TridiagonalOperator& op) const {
-            unsigned length = op.size();
-            for (unsigned i=0; i<length; i++) {
+            Size length = op.size();
+            for (Size i=0; i<length; i++) {
                 double x = x0_ + dx_*i;
 
                 Rate r = process_->shortRate(x, t);

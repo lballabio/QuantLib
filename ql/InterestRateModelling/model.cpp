@@ -51,7 +51,7 @@ namespace QuantLib {
                 std::vector<Handle<CalibrationHelper> >& instruments)
             : model_(model, false), instruments_(instruments),
               prices_(instruments.size()) {
-                for (unsigned i=0; i<instruments_.size(); i++)
+                for (Size i=0; i<instruments_.size(); i++)
                     prices_[i] = instruments_[i]->marketValue();
             }
             virtual ~CalibrationProblem() {}
@@ -127,7 +127,7 @@ namespace QuantLib {
             setParams(solution);
 
             std::cout << "Model calibrated to the following values:" << std::endl;
-            for (unsigned i=0; i<params_.size(); i++)
+            for (Size i=0; i<params_.size(); i++)
                 std::cout << i << "    " << solution[i]*100.0 << "%" << std::endl;
         }
 

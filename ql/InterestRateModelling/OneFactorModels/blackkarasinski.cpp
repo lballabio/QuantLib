@@ -79,7 +79,7 @@ namespace QuantLib {
 
             double operator()(double x) const {
                 double value = discountBondPrice_;
-                unsigned k=0;
+                Size k=0;
                 for (int j=jMin_; j<=jMax_; j++)
                     value -= statePrices_[k++]*QL_EXP(-QL_EXP(x + j*dx_)*dt_);
                 return value;
@@ -107,14 +107,14 @@ namespace QuantLib {
                 //adjust space intervals
                 dx_.resize(t_.size());
                 dx_[0] = 0.0; //Just one node
-                unsigned i;
+                Size i;
                 for (i=0; i<(dx_.size()-1); i++) {
                     double v = sigma*
                         QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a*dt(i)))/a);
                     dx_[i+1] = v*QL_SQRT(3);
                 }
 
-                unsigned int nTimeSteps = t_.size() - 1;
+                Size nTimeSteps = t_.size() - 1;
 
                 alpha->reset();
 

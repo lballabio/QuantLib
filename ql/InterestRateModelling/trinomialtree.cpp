@@ -95,7 +95,7 @@ namespace QuantLib {
         }
 
         void TrinomialTree::addLevel(const std::vector<int>& k) {
-            unsigned i = nodes_.size();
+            Size i = nodes_.size();
             nodes_.push_back(std::vector<Handle<Node> >());
 
             int jMin = k.front() - 1;
@@ -106,11 +106,11 @@ namespace QuantLib {
             }
 
             QL_REQUIRE(k.size()==nodes_[i-1].size(), "Error!!!");
-            for (unsigned l=0; l<k.size(); l++) {
+            for (Size l=0; l<k.size(); l++) {
                 nodes_[i-1][l]->setDescendant(node(i, k[l] - 1), 0);
                 nodes_[i-1][l]->setDescendant(node(i, k[l]    ), 1);
                 nodes_[i-1][l]->setDescendant(node(i, k[l] + 1), 2);
-                for (unsigned n=0; n<n_; n++)
+                for (Size n=0; n<n_; n++)
                     nodes_[i-1][l]->descendant(n).statePrice() +=
                         nodes_[i-1][l]->statePrice()*
                         nodes_[i-1][l]->probability(n)*

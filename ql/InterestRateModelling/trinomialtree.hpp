@@ -53,12 +53,12 @@ namespace QuantLib {
 
             void addLevel(const std::vector<int>& k);
 
-            virtual Lattices::Node& node(unsigned int i, int j) {
+            virtual Lattices::Node& node(Size i, int j) {
                 int jMin = nodes_[i][0]->j();
                 return *(nodes_[i][j-jMin]);
             }
 
-            virtual const Lattices::Node& node(unsigned int i, int j) const {
+            virtual const Lattices::Node& node(Size i, int j) const {
                 int jMin = nodes_[i][0]->j();
                 return *(nodes_[i][j-jMin]);
             }

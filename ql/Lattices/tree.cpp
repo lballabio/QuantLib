@@ -39,7 +39,7 @@ namespace QuantLib {
         using std::endl;
 
         double Tree::presentValue(const Handle<Asset>& asset) const {
-            unsigned int i = t_.findIndex(asset->time());
+            Size i = t_.findIndex(asset->time());
             double value = 0.0;
             size_t l = 0;
             for (int j=jMin(i); j<=jMax(i); j++, l++) {
@@ -54,8 +54,8 @@ namespace QuantLib {
 
             QL_REQUIRE(from>=to, "Wrong rollback extremities");
 
-            unsigned int iFrom = t_.findIndex(from);
-            unsigned int iTo = t_.findIndex(to);
+            Size iFrom = t_.findIndex(from);
+            Size iTo = t_.findIndex(to);
 
             size_t width = jMax(iFrom) - jMin(iFrom) + 1;
             std::vector<Handle<Asset> >::const_iterator begin;
@@ -71,7 +71,7 @@ namespace QuantLib {
                     size_t l = 0;
                     for (int j=jMin(i); j<=jMax(i); j++, l++) {
                         double value = 0.0;
-                        for (unsigned k=0; k<n_; k++) {
+                        for (Size k=0; k<n_; k++) {
                             size_t index = node(i,j).descendant(k).j() -
                                 jMin(i+1);
                             value += node(i,j).probability(k)

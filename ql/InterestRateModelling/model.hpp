@@ -49,7 +49,7 @@ namespace QuantLib {
           public:
             enum Type { OneFactor, TwoFactor, Market };
 
-            Model(unsigned nParams, Type type,
+            Model(Size nParams, Type type,
                   const RelinkableHandle<TermStructure>& termStructure)
             : params_(nParams), termStructure_(termStructure) {}
             virtual ~Model() {}

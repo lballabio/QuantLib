@@ -52,16 +52,16 @@ namespace QuantLib {
                 for (t = times.begin(); t != times.end(); t++) {
                     Time end = *t;
                     if (begin == end) continue;
-                    unsigned nSteps = (unsigned int)((end - begin)/dtMax + 1.0);
+                    Size nSteps = (Size)((end - begin)/dtMax + 1.0);
                     double dt = (end - begin)/nSteps;
-                    for (unsigned int n=0; n<nSteps; n++)
+                    for (Size n=0; n<nSteps; n++)
                         push_back(begin + n*dt);
                     begin = end;
                 }
                 push_back(begin);
             }
 
-            unsigned int findIndex(Time t) const {
+            Size findIndex(Time t) const {
                 for (Size i=0; i<size(); i++) {
                     if ((*this)[i] == t)
                         return i;
@@ -70,7 +70,7 @@ namespace QuantLib {
                 QL_DUMMY_RETURN(0);
             }
 
-            Time dt(unsigned int i) {
+            Time dt(Size i) {
                 return (*this)[i+1]  - (*this)[i];
             }
 
