@@ -145,6 +145,7 @@ namespace QuantLib {
             engine_.calculate();
             double valueMinus = result->value;
             
+            args->underlying = underlying_;
             args->maturity = residualTime_ + dt;
             engine_.calculate();
             double valueTimePlus = result->value;
