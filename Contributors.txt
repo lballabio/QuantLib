@@ -6,6 +6,7 @@ David Binderman
 Dirk Eddelbuettel - Debian packager
 Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
 Gilbert Peffer
+Sadruddin Rejeb (sad.rejeb@riskmap.it)
 Peter Schmitteckert
 Bernd Johannes Wuebben
 
