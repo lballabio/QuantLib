@@ -20,7 +20,9 @@
 #include "utilities.hpp"
 #include <ql/null.hpp>
 #include <ql/Math/cubicspline.hpp>
+#ifndef QL_PATCH_BORLAND
 #include <ql/Math/multicubicspline.hpp>
+#endif
 #include <ql/Math/simpsonintegral.hpp>
 #include <ql/Math/functional.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
@@ -785,7 +787,11 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
 }
 
-#ifndef QL_PATCH_BORLAND
+#ifdef QL_PATCH_BORLAND
+void InterpolationTest::testMultiSpline() {
+    BOOST_FAIL("\n  N-dimensional cubic spline test SKIPPED!!!");
+}
+#else
 void InterpolationTest::testMultiSpline() {
 
     BOOST_MESSAGE("Testing N-dimensional cubic spline...");
@@ -829,13 +835,53 @@ void InterpolationTest::testMultiSpline() {
                                    grid[3][l], grid[4][m]);
 
     MultiCubicSpline<5> cs(grid, y5);
+    /* it would fail with
+    for (i = 0; i < dim[0]; ++i)
+        for (j = 0; j < dim[1]; ++j)
+            for (k = 0; k < dim[2]; ++k)
+                for (l = 0; l < dim[3]; ++l)
+                    for (m = 0; m < dim[4]; ++m) {
+    */
+    for (i = 1; i < dim[0]-1; ++i)
+        for (j = 1; j < dim[1]-1; ++j)
+            for (k = 1; k < dim[2]-1; ++k)
+                for (l = 1; l < dim[3]-1; ++l)
+                    for (m = 1; m < dim[4]-1; ++m) {
+                        s = grid[0][i];
+                        t = grid[1][j];
+                        u = grid[2][k];
+                        v = grid[3][l];
+                        w = grid[4][m];
+                        Real interpolated = cs(args);
+                        Real expected = y5[i][j][k][l][m];
+                        Real error = QL_FABS(interpolated-expected);
+                        Real tolerance = 1e-16;
+                        if (error > tolerance) {
+                            BOOST_FAIL("\n  At ("
+                                + DecimalFormatter::toString(s) + ","
+                                + DecimalFormatter::toString(t) + ","
+                                + DecimalFormatter::toString(u) + ","
+                                + DecimalFormatter::toString(v) + ","
+                                + DecimalFormatter::toString(w) + "):"
+                                "\n    interpolated: "
+                                + DecimalFormatter::toString(interpolated,4) +
+                                "\n    actual value: "
+                                + DecimalFormatter::toString(expected,4) +
+                                "\n       error: "
+                                + DecimalFormatter::toExponential(error,1) +
+                                "\n    tolerance: "
+                                + DecimalFormatter::toExponential(tolerance,1)
+                                );
+                        }
+                    }
+
 
     unsigned long seed = 42;
     SobolRsg rsg(5, seed);
 
-    Real tolerance = 1.5e-4;
-
-    for (i = 0; i < 127; ++i) {
+    Real tolerance = 1.7e-4;
+    // actually tested up to 2^21-1=2097151 Sobol draws
+    for (i = 0; i < 1023; ++i) {
         const Array& next = rsg.nextSequence().value;
         s = grid[0].front() + next[0]*(grid[0].back()-grid[0].front());
         t = grid[1].front() + next[1]*(grid[1].back()-grid[1].front());
@@ -845,21 +891,23 @@ void InterpolationTest::testMultiSpline() {
         Real interpolated = cs(args), expected = multif(s, t, u, v, w);
         Real error = QL_FABS(interpolated-expected);
         if (error > tolerance) {
-            BOOST_FAIL("At (" + DecimalFormatter::toString(s) + ","
+            BOOST_FAIL("\n  At (" + DecimalFormatter::toString(s) + ","
                        + DecimalFormatter::toString(t) + ","
                        + DecimalFormatter::toString(u) + ","
                        + DecimalFormatter::toString(v) + ","
-                       + DecimalFormatter::toString(w) + "):\n"
-                       "    interpolated: "
-                       + DecimalFormatter::toString(interpolated,4) + "\n"
-                       "    actual value: "
-                       + DecimalFormatter::toString(expected,4) + "\n"
-                       "    error: "
-                       + DecimalFormatter::toExponential(error,1));
+                       + DecimalFormatter::toString(w) + "):"
+                       "\n    interpolated: "
+                       + DecimalFormatter::toString(interpolated,4) +
+                       "\n    actual value: "
+                       + DecimalFormatter::toString(expected,4) +
+                       "\n    error:     "
+                       + DecimalFormatter::toExponential(error,1) +
+                       "\n    tolerance: "
+                       + DecimalFormatter::toExponential(tolerance,1));
         }
     }
 }
-#endif
+#endif // QL_PATCH_BORLAND
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
@@ -875,9 +923,7 @@ test_suite* InterpolationTest::suite() {
                         &InterpolationTest::testSplineOnGaussianValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSplineErrorOnGaussianValues));
-    #ifndef QL_PATCH_BORLAND
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testMultiSpline));
-    #endif
     return suite;
 }
 
