@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/04 16:27:46  uid38474
+// * history.hpp (History(const Date& firstDate, const Date& lastDate, const std::vector<double>& values)): added static_cast<unsigned int> to prevent gcc compiler warning
+//
 // Revision 1.5  2001/07/04 16:23:39  uid38474
 // * history.hpp (History(const Date& firstDate, const Date& lastDate, Iterator begin, Iterator end)): added static_cast to prevent gcc warning
 //
@@ -325,7 +328,7 @@ namespace QuantLib {
         const std::vector<double>& values)
     : firstDate_(firstDate), lastDate_(lastDate), values_(values) {
         QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-        QL_REQUIRE(values.size() == (lastDate-firstDate)+1,
+        QL_REQUIRE(values.size() == static_cast<unsinged int>((lastDate-firstDate))+1,
             "history size incompatible with date range");
     }
 
