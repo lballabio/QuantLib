@@ -309,6 +309,14 @@ SOURCE=..\Include\Solvers1D\secant.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\Include\Math\boxmullergaussian.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Math\centrallimitgaussian.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\Math\location.h
 # End Source File
 # Begin Source File
@@ -326,6 +334,14 @@ SOURCE=..\Sources\Math\normaldistribution.cpp
 # Begin Source File
 
 SOURCE=..\Include\Math\normaldistribution.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Math\randomgenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Math\randomgenerator.h
 # End Source File
 # Begin Source File
 
