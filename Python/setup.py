@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.14  2001/04/23 14:52:30  marmar
+    Optimization disabled, now psses the tests!
+
     Revision 1.13  2001/04/23 12:29:29  lballabio
     Fixed linking in setup.py (and some tweakings in SWIG interfaces)
 
@@ -54,16 +57,15 @@ if sys.platform == 'win32':
         raise('Please set environment variable "QL_DIR" to installation directory of QuantLib')
     include_dirs = [quantLibInstallDirectory + "\\Include"]
     library_dirs = [quantLibInstallDirectory + '\\lib\\win32\\VisualStudio']
-    extra_compile_args = ['/Fp"..\Release\PyQuantLib.pch"',
-                          '/YX',
-                          '/Fd"..\Release"',
-                          '/FD']
-    extra_link_args = ['/subsystem:windows',
-                       '/pdb:"..\Release\QuantLibc.pdb"',
-                       '/machine:I386']
+    extra_compile_args = ['/nologo','/MD', '/W3', '/GX', '/Od',
+                          '/Fp"..\Release\PyQuantLib.pch"',
+                          '/YX','/Fd"..\Release"','/FD']
     define_macros = [('WIN32', None),
                      ('NDEBUG', None),
                      ('_WINDOWS', None)]
+    extra_link_args = ['/subsystem:windows',
+                       '/pdb:"..\Release\QuantLibc.pdb"',
+                       '/machine:I386']
 else:
     include_dirs = ["/usr/local/include"]
     library_dirs = None
