@@ -119,7 +119,7 @@ namespace QuantLib {
             instrument->setTermStructure(
                                      const_cast<PiecewiseFlatForward*>(this));
             double guess = instrument->discountGuess();
-            if (guess == Null<double>()) {
+            if (guess == Null<Real>()) {
                 if (i > 1) {    // we can extrapolate
                     guess = this->discount(instrument->maturity(),true);
                 } else {        // any guess will do
@@ -177,7 +177,7 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Rate());
     }
 
-    Rate PiecewiseFlatForward::compoundForwardImpl(Time t, int compFreq) 
+    Rate PiecewiseFlatForward::compoundForwardImpl(Time t, Integer compFreq) 
                                                                       const {
 		double zy = zeroYieldImpl(t);
 		if (compFreq == 0)

@@ -69,17 +69,18 @@ namespace QuantLib {
         //! instantaneous forward rate
         Rate instantaneousForward(Time, bool extrapolate = false) const;
         //! instantaneous forward rate at a given compounding frequency
-        Rate compoundForward(const Date&, int, bool extrapolate = false) const;
+        Rate compoundForward(const Date&, Integer, 
+                             bool extrapolate = false) const;
         //! instantaneous forward rate at a given compounding frequency
-        Rate compoundForward(Time, int, bool extrapolate = false) const;
+        Rate compoundForward(Time, Integer, bool extrapolate = false) const;
         //! discrete forward rate between two dates
         Rate forward(const Date&, const Date&, bool extrapolate = false) const;
         //! discrete forward rate between two times
         Rate forward(Time, Time, bool extrapolate = false) const;
         //! zero-coupon rate
-        Rate zeroCoupon(const Date&, int, bool extrapolate = false) const;
+        Rate zeroCoupon(const Date&, Integer, bool extrapolate = false) const;
         //! zero-coupon rate
-        Rate zeroCoupon(Time, int, bool extrapolate = false) const;
+        Rate zeroCoupon(Time, Integer, bool extrapolate = false) const;
         //@}
 
         //! \name Dates
@@ -112,7 +113,7 @@ namespace QuantLib {
         //! instantaneous forward-rate calculation
         virtual Rate forwardImpl(Time) const = 0;
         //! compound forward-rate calculation 
-        virtual Rate compoundForwardImpl(Time, int) const = 0;
+        virtual Rate compoundForwardImpl(Time, Integer) const = 0;
         //@}
       private:
         void checkRange(const Date&, bool extrapolate) const;
@@ -144,7 +145,7 @@ namespace QuantLib {
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
-        Rate compoundForwardImpl(Time, int) const;
+        Rate compoundForwardImpl(Time, Integer) const;
     };
 
     //! Discount factor term structure
@@ -171,7 +172,7 @@ namespace QuantLib {
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
-        Rate compoundForwardImpl(Time, int) const;
+        Rate compoundForwardImpl(Time, Integer) const;
     };
 
     //! Forward rate term structure
@@ -201,7 +202,7 @@ namespace QuantLib {
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
-        Rate compoundForwardImpl(Time, int) const;
+        Rate compoundForwardImpl(Time, Integer) const;
     };
 
 
@@ -245,14 +246,14 @@ namespace QuantLib {
         return forwardImpl(t);
     }
 
-    inline Rate TermStructure::compoundForward(const Date& d, int f, 
+    inline Rate TermStructure::compoundForward(const Date& d, Integer f, 
                                                bool extrapolate) const {
         checkRange(d, extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(),d);
         return compoundForwardImpl(t,f);
     }
 
-    inline Rate TermStructure::compoundForward(Time t, int f, 
+    inline Rate TermStructure::compoundForward(Time t, Integer f, 
                                                bool extrapolate) const {
         checkRange(t, extrapolate);
         return compoundForwardImpl(t,f);
@@ -273,9 +274,9 @@ namespace QuantLib {
     inline Rate TermStructure::forward(Time t1, Time t2,
                                        bool extrapolate) const {
         QL_REQUIRE(t1 <= t2,
-                   DoubleFormatter::toString(t1) +
+                   DecimalFormatter::toString(t1) +
                    " later than " +
-                   DoubleFormatter::toString(t2));
+                   DecimalFormatter::toString(t2));
         checkRange(t2, extrapolate);
         if (t2==t1)
 	        return instantaneousForward(t1);
@@ -283,19 +284,19 @@ namespace QuantLib {
             return QL_LOG(discountImpl(t1)/discountImpl(t2))/(t2-t1);
     }
 
-    inline Rate TermStructure::zeroCoupon(const Date& d, int f,
+    inline Rate TermStructure::zeroCoupon(const Date& d, Integer f,
                                           bool extrapolate) const {
         Time t = dayCounter().yearFraction(referenceDate(),d);
         return zeroCoupon(t,f,extrapolate);
     }
 
-    inline Rate TermStructure::zeroCoupon(Time t, int f,
+    inline Rate TermStructure::zeroCoupon(Time t, Integer f,
                                           bool extrapolate) const {
         checkRange(t, extrapolate);
         DiscountFactor df = discountImpl(t);
         if (t == 0.0)
             return zeroYieldImpl(0.0); // limit for t -> 0
-	    else if (f > 0 && t <= (1.0/(double)f))
+	    else if (f > 0 && t <= (1.0/f))
             return Rate((1.0/df-1.0)/t);
         else
             return Rate((QL_POW(1.0/df,1.0/(t*f))-1.0)*f);
@@ -314,13 +315,13 @@ namespace QuantLib {
     inline void TermStructure::checkRange(Time t, bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
                    "negative time (" +
-                   DoubleFormatter::toString(t) +
+                   DecimalFormatter::toString(t) +
                    ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
                    "time (" +
-                   DoubleFormatter::toString(t) +
+                   DecimalFormatter::toString(t) +
                    ") is past max curve time (" +
-                   DoubleFormatter::toString(maxTime()) + ")");
+                   DecimalFormatter::toString(maxTime()) + ")");
     }
 
 
@@ -339,7 +340,8 @@ namespace QuantLib {
         return r2+t*(r2-r1)/dt;
     }
 
-    inline Rate ZeroYieldStructure::compoundForwardImpl(Time t, int f) const {
+    inline Rate ZeroYieldStructure::compoundForwardImpl(Time t, 
+                                                        Integer f) const {
         Rate zy = zeroYieldImpl(t);
         if (f == 0)
             return zy;
@@ -370,7 +372,8 @@ namespace QuantLib {
         return Rate(QL_LOG(df1/df2)/dt);
     }
 
-    inline Rate DiscountStructure::compoundForwardImpl(Time t, int f) const {
+    inline Rate DiscountStructure::compoundForwardImpl(Time t, 
+                                                       Integer f) const {
         Rate zy = zeroYieldImpl(t);
         if (f == 0)
             return zy;
@@ -384,9 +387,9 @@ namespace QuantLib {
     inline Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
         if (t == 0.0)
             return forwardImpl(0.0);
-        double sum = 0.5*forwardImpl(0.0);
+        Rate sum = 0.5*forwardImpl(0.0);
         Size N = 1000;
-        double dt = t/N;
+        Time dt = t/N;
         for (Time i=dt; i<t; i+=dt)
             sum += forwardImpl(i);
         sum += 0.5*forwardImpl(t);
@@ -398,8 +401,8 @@ namespace QuantLib {
         return DiscountFactor(QL_EXP(-r*t));
     }
 
-    inline Rate ForwardRateStructure::compoundForwardImpl(Time t, int f) 
-                                                                       const {
+    inline Rate ForwardRateStructure::compoundForwardImpl(Time t, 
+                                                          Integer f) const {
         Rate zy = zeroYieldImpl(t);
         if (f == 0)
             return zy;

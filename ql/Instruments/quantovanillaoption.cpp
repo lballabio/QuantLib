@@ -38,21 +38,21 @@ namespace QuantLib {
 
     double QuantoVanillaOption::qvega() const {
         calculate();
-        QL_REQUIRE(qvega_ != Null<double>(),
+        QL_REQUIRE(qvega_ != Null<Real>(),
                    "exchange rate vega calculation failed");
         return qvega_;
     }
 
     double QuantoVanillaOption::qrho() const {
         calculate();
-        QL_REQUIRE(qrho_ != Null<double>(),
+        QL_REQUIRE(qrho_ != Null<Real>(),
                    "foreign interest rate rho calculation failed");
         return qrho_;
     }
 
     double QuantoVanillaOption::qlambda() const {
         calculate();
-        QL_REQUIRE(qlambda_ != Null<double>(),
+        QL_REQUIRE(qlambda_ != Null<Real>(),
                    "quanto correlation sensitivity calculation failed");
         return qlambda_;
     }

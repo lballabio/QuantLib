@@ -56,27 +56,27 @@ namespace {
         if (calculated != expected)
             BOOST_FAIL(name + ": wrong sum of weights\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
 
         expected = *std::min_element(data,data+LENGTH(data));
         calculated = s.min();
         if (calculated != expected)
             BOOST_FAIL(name + ": wrong minimum value\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
 
         expected = *std::max_element(data,data+LENGTH(data));
         calculated = s.max();
         if (calculated != expected)
             BOOST_FAIL(name + ": wrong maximum value\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
 
         expected = 4.3;
         tolerance = 1.0e-9;
@@ -84,45 +84,45 @@ namespace {
         if (QL_FABS(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong mean value\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
 
         expected = 2.23333333333;
         calculated = s.variance();
         if (QL_FABS(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong variance\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
 
         expected = 1.4944341181;
         calculated = s.standardDeviation();
         if (QL_FABS(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong standard deviation\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
 
         expected = 0.359543071407;
         calculated = s.skewness();
         if (QL_FABS(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong skewness\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
 
         expected = -0.151799637209;
         calculated = s.kurtosis();
         if (QL_FABS(calculated-expected) > tolerance)
             BOOST_FAIL(name + ": wrong kurtosis\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
     }
 
 }
@@ -167,9 +167,9 @@ namespace {
             BOOST_FAIL("SequenceStatistics<" + name + ">: "
                        "wrong sum of weights\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(ss.weightSum()) + "\n"
+                       + DecimalFormatter::toString(ss.weightSum()) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected));
+                       + DecimalFormatter::toString(expected));
 
         expected = *std::min_element(data,data+LENGTH(data));
         calculated = ss.min();
@@ -179,9 +179,9 @@ namespace {
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong minimum value\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated[i]) + "\n"
+                           + DecimalFormatter::toString(calculated[i]) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected));
+                           + DecimalFormatter::toString(expected));
         }
 
         expected = *std::max_element(data,data+LENGTH(data));
@@ -192,9 +192,9 @@ namespace {
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong maximun value\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated[i]) + "\n"
+                           + DecimalFormatter::toString(calculated[i]) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected));
+                           + DecimalFormatter::toString(expected));
         }
 
         expected = 4.3;
@@ -206,9 +206,9 @@ namespace {
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong mean value\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated[i]) + "\n"
+                           + DecimalFormatter::toString(calculated[i]) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected));
+                           + DecimalFormatter::toString(expected));
         }
 
         expected = 2.23333333333;
@@ -219,9 +219,9 @@ namespace {
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong variance\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated[i]) + "\n"
+                           + DecimalFormatter::toString(calculated[i]) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected));
+                           + DecimalFormatter::toString(expected));
         }
 
         expected = 1.4944341181;
@@ -232,9 +232,9 @@ namespace {
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong standard deviation\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated[i]) + "\n"
+                           + DecimalFormatter::toString(calculated[i]) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected));
+                           + DecimalFormatter::toString(expected));
         }
 
         expected = 0.359543071407;
@@ -245,9 +245,9 @@ namespace {
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong skewness\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated[i]) + "\n"
+                           + DecimalFormatter::toString(calculated[i]) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected));
+                           + DecimalFormatter::toString(expected));
         }
 
         expected = -0.151799637209;
@@ -258,9 +258,9 @@ namespace {
                            + SizeFormatter::toOrdinal(i+1)+" dimension: "
                            "wrong kurtosis\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated[i]) + "\n"
+                           + DecimalFormatter::toString(calculated[i]) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected));
+                           + DecimalFormatter::toString(expected));
         }
     }
 

@@ -50,9 +50,9 @@ namespace QuantLib {
     class Swaption::arguments : public SimpleSwap::arguments,
                                 public Option::arguments {
       public:
-        arguments() : fairRate(Null<double>()),
-                      fixedRate(Null<double>()),
-                      fixedBPS(Null<double>())
+        arguments() : fairRate(Null<Real>()),
+                      fixedRate(Null<Real>()),
+                      fixedBPS(Null<Real>())
 //                      , exerciseType(Exercise::Type(-1))
         {}
         Rate fairRate;

@@ -31,24 +31,24 @@ namespace QuantLib {
       public:
         virtual ~Quote() {}
         //! returns the current value
-        virtual double value() const = 0;
+        virtual Real value() const = 0;
     };
 
 
     //! market element returning a stored value
     class SimpleQuote : public Quote {
       public:
-        SimpleQuote(double value);
+        SimpleQuote(Real value);
         //! \name Quote interface
         //@{
-        double value() const;
+        Real value() const;
         //@}
         //! \name Modifiers
         //@{
-        void setValue(double value);
+        void setValue(Real value);
         //@}
       private:
-        double value_;
+        Real value_;
     };
 
 
@@ -60,7 +60,7 @@ namespace QuantLib {
                      const UnaryFunction& f);
         //! \name Market element interface
         //@{
-        double value() const;
+        Real value() const;
         //@}
         //! \name Observer interface
         //@{
@@ -82,7 +82,7 @@ namespace QuantLib {
             const BinaryFunction& f);
         //! \name Quote interface
         //@{
-        double value() const;
+        Real value() const;
         //@}
         //! \name Observer interface
         //@{
@@ -98,14 +98,14 @@ namespace QuantLib {
 
     // simple quote
 
-    inline SimpleQuote::SimpleQuote(double value)
+    inline SimpleQuote::SimpleQuote(Real value)
     : value_(value) {}
 
-    inline double SimpleQuote::value() const {
+    inline Real SimpleQuote::value() const {
         return value_;
     }
 
-    inline void SimpleQuote::setValue(double value) {
+    inline void SimpleQuote::setValue(Real value) {
         if (value_ == value)
             return;
         value_ = value;
@@ -124,7 +124,7 @@ namespace QuantLib {
     }
 
     template <class UnaryFunction>
-    inline double DerivedQuote<UnaryFunction>::value() const {
+    inline Real DerivedQuote<UnaryFunction>::value() const {
         QL_REQUIRE(!element_.isNull(),
                    "null market element set");
         return f_(element_->value());
@@ -149,7 +149,7 @@ namespace QuantLib {
     }
 
     template <class BinaryFunction>
-    inline double CompositeQuote<BinaryFunction>::value() const {
+    inline Real CompositeQuote<BinaryFunction>::value() const {
         QL_REQUIRE(!element1_.isNull() && !element2_.isNull(),
                    "null quote set");
         return f_(element1_->value(),element2_->value());

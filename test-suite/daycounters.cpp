@@ -156,9 +156,9 @@ void DayCounterTest::testActualActual() {
             BOOST_FAIL(dayCounter.name() + ":\n"
                        + period + refPeriod +
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated) + "\n"
+                       + DecimalFormatter::toString(calculated) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(testCases[i].result,11));
+                       + DecimalFormatter::toString(testCases[i].result,11));
         }
     }
 }
@@ -184,9 +184,9 @@ void DayCounterTest::testSimple() {
                 BOOST_FAIL("from " + DateFormatter::toString(start) +
                            " to " + DateFormatter::toString(end) + ":\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated,12) + "\n"
+                           + DecimalFormatter::toString(calculated,12) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected[i],2));
+                           + DecimalFormatter::toString(expected[i],2));
             }
         }
     }

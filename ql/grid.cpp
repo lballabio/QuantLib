@@ -23,14 +23,14 @@ namespace QuantLib {
 
     namespace {
 
-        class CloseEnoughTo : public std::unary_function<double,bool> {
+        class CloseEnoughTo : public std::unary_function<Real,bool> {
           public:
-            CloseEnoughTo(double target) : target_(target) {}
-            bool operator()(double x) const {
+            CloseEnoughTo(Real target) : target_(target) {}
+            bool operator()(Real x) const {
                 return close_enough(x,target_);
             }
           private:
-            double target_;
+            Real target_;
         };
 
     }
@@ -40,33 +40,33 @@ namespace QuantLib {
         const_iterator result = std::find_if(begin(), end(), 
                                              CloseEnoughTo(t));
         if (result == end()) {
-            int i;
-            for (i=0; i<int(size()); i++) {
+            Size i;
+            for (i=0; i<size(); i++) {
                 if ((*this)[i] > t)
                     break;
             }
             if (i == 0) {
                 QL_FAIL("using inadequate time grid: all nodes "
                         "are later than the required time t = "
-                        + DoubleFormatter::toString(t,12) +
+                        + DecimalFormatter::toString(t,12) +
                         " (earliest node is t1 = "
-                        + DoubleFormatter::toString((*this)[0],12) +
+                        + DecimalFormatter::toString((*this)[0],12) +
                         ")");
-            } else if (i == int(size())) {
+            } else if (i == size()) {
                 QL_FAIL("using inadequate time grid: all nodes "
                         "are earlier than the required time t = "
-                        + DoubleFormatter::toString(t,12) +
+                        + DecimalFormatter::toString(t,12) +
                         " (latest node is t1 = "
-                        + DoubleFormatter::toString((*this)[size()-1],12) +
+                        + DecimalFormatter::toString((*this)[size()-1],12) +
                         ")");
             } else {
                 QL_FAIL("using inadequate time grid: the nodes closest "
                         "to the required time t = "
-                        + DoubleFormatter::toString(t,12) +
+                        + DecimalFormatter::toString(t,12) +
                         " are t1 = " 
-                        + DoubleFormatter::toString((*this)[i-1],12) +
+                        + DecimalFormatter::toString((*this)[i-1],12) +
                         " and t2 = "
-                        + DoubleFormatter::toString((*this)[i],12));
+                        + DecimalFormatter::toString((*this)[i],12));
             }
         }
         return result - begin();

@@ -60,7 +60,8 @@ namespace QuantLib {
                    DateFormatter::toString(refPeriodEnd));
 
         // estimate roughly the length in months of a period
-        int months = int(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
+        Integer months = 
+            Integer(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
         QL_REQUIRE(months != 0,
                    "number of months does not divide 12 exactly");
         double period = double(months)/12.0;
@@ -109,7 +110,7 @@ namespace QuantLib {
             // the part from refPeriodEnd to d2
             // count how many regular periods are in [refPeriodEnd, d2],
             // then add the remaining time
-            int i=0;
+            Integer i=0;
             Date newRefStart, newRefEnd;
             do {
                 newRefStart = refPeriodEnd.plusMonths(months*i);
@@ -134,7 +135,7 @@ namespace QuantLib {
         if (d1 == d2)
             return 0.0;
 
-        int y1 = d1.year(), y2 = d2.year();
+        Integer y1 = d1.year(), y2 = d2.year();
         double dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
             dib2 = (Date::isLeap(y2) ? 366.0 : 365.0);
 

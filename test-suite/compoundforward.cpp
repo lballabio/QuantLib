@@ -64,7 +64,7 @@ namespace {
     Date today, settlement;
     RollingConvention rollingConvention;
     DayCounter dayCounter;
-    int frequency;
+    Frequency frequency;
 
     Size deposits, swaps;
     std::vector<Rate> rates;
@@ -83,7 +83,7 @@ namespace {
         settlement = calendar.advance(today,settlementDays,Days);
         rollingConvention = ModifiedFollowing;
         dayCounter = Actual365();
-        frequency = 2;
+        frequency = Semiannual;
 
         deposits = LENGTH(depositData);
         swaps = LENGTH(swapData);
@@ -159,7 +159,7 @@ void CompoundForwardTest::testConvertedRates() {
     liborHandle.linkTo(termStructure);
 
     Size i;
-    frequency = 4;
+    frequency = Quarterly;
     // check swaps against quarterly rates
     boost::shared_ptr<Xibor> index(
                                new ZARLibor(12/frequency,Months,liborHandle));
@@ -170,7 +170,7 @@ void CompoundForwardTest::testConvertedRates() {
                         dayCounter,frequency,index,
                         fixingDays,0.0,liborHandle);
         double expectedRate = termStructure->compoundForward(swap.maturity(),
-							     frequency),
+                                                             frequency),
                estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(

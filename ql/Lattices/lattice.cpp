@@ -69,9 +69,9 @@ namespace QuantLib {
 
         QL_REQUIRE(from >= to,
                    "cannot roll the asset back to" +
-                   DoubleFormatter::toString(to) +
+                   DecimalFormatter::toString(to) +
                    " (it is already at t = " +
-                   DoubleFormatter::toString(from) + ")");
+                   DecimalFormatter::toString(from) + ")");
 
         if (from > to) {
             int iFrom = int(t_.findIndex(from));

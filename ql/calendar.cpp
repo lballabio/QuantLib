@@ -62,10 +62,10 @@ namespace QuantLib {
                 std::string key = m[1];
                 std::string flag = m[2];
                 if (key == name()) {
-                    Day day = boost::lexical_cast<int>(std::string(m[5]));
+                    Day day = boost::lexical_cast<Day>(std::string(m[5]));
                     Month month = 
-                        Month(boost::lexical_cast<int>(std::string(m[4])));
-                    Year year = boost::lexical_cast<int>(std::string(m[3]));
+                        Month(boost::lexical_cast<Integer>(std::string(m[4])));
+                    Year year = boost::lexical_cast<Year>(std::string(m[3]));
                     if (flag == "-")
                         removeHoliday(Date(day,month,year));
                     else
@@ -114,7 +114,7 @@ namespace QuantLib {
         return d1;
     }
 
-    Date Calendar::advance(const Date& d, int n, TimeUnit unit,
+    Date Calendar::advance(const Date& d, Integer n, TimeUnit unit,
                            RollingConvention c) const {
         QL_REQUIRE(d!=Date(), "null date");
         if (n == 0) {

@@ -38,27 +38,27 @@ using namespace boost::unit_test_framework;
                " option with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    spot value: " \
-               + DoubleFormatter::toString(s) + "\n" \
+               + DecimalFormatter::toString(s) + "\n" \
                "    strike:           " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "    dividend yield:   " \
-               + DoubleFormatter::toString(q) + "\n" \
+               + RateFormatter::toString(q) + "\n" \
                "    risk-free rate:   " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + RateFormatter::toString(r) + "\n" \
                "    reference date:   " \
                + DateFormatter::toString(today) + "\n" \
                "    maturity:         " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:       " \
-               + DoubleFormatter::toString(v) + "\n\n" \
+               + VolatilityFormatter::toString(v) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
+               + DecimalFormatter::toString(error) + "\n" \
                "    tolerance:        " \
-               + DoubleFormatter::toString(tolerance));
+               + DecimalFormatter::toString(tolerance));
 
 namespace {
 
@@ -125,8 +125,8 @@ namespace {
             engine = boost::shared_ptr<PricingEngine>(new
                 MCEuropeanEngine<PseudoRandom>(1,
                                                false, false,
-                                               Null<int>(), 0.05,
-                                               Null<int>(), 42));
+                                               Null<Size>(), 0.05,
+                                               Null<Size>(), 42));
             #else
             engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
                                                          .withTolerance(0.05)
@@ -138,8 +138,8 @@ namespace {
             engine = boost::shared_ptr<PricingEngine>(new
                 MCEuropeanEngine<LowDiscrepancy>(1,
                                                  false, false,
-                                                 1023, Null<double>(),
-                                                 Null<int>()));
+                                                 1023, Null<Real>(),
+                                                 Null<Size>()));
             #else
             engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
                                                            .withSamples(1023);
@@ -804,17 +804,17 @@ void EuropeanOptionTest::testImpliedVol() {
                               OptionTypeFormatter::toString(types[i])
                               + " option :\n"
                               "    spot value: "
-                              + DoubleFormatter::toString(u) + "\n"
+                              + DecimalFormatter::toString(u) + "\n"
                               "    strike:           "
-                              + DoubleFormatter::toString(strikes[j]) +"\n"
+                              + DecimalFormatter::toString(strikes[j]) +"\n"
                               "    dividend yield:   "
-                              + DoubleFormatter::toString(q) + "\n"
+                              + RateFormatter::toString(q) + "\n"
                               "    risk-free rate:   "
-                              + DoubleFormatter::toString(r) + "\n"
+                              + RateFormatter::toString(r) + "\n"
                               "    maturity:         "
                               + DateFormatter::toString(exDate) + "\n"
                               "    volatility:       "
-                              + DoubleFormatter::toString(v) + "\n\n"
+                              + VolatilityFormatter::toString(v) + "\n\n"
                               + std::string(e.what()));
                       }
                       if (QL_FABS(implVol-v) > tolerance) {
@@ -827,25 +827,25 @@ void EuropeanOptionTest::testImpliedVol() {
                                   OptionTypeFormatter::toString(types[i])
                                   + " option :\n"
                                   "    spot value: "
-                                  + DoubleFormatter::toString(u) + "\n"
+                                  + DecimalFormatter::toString(u) + "\n"
                                   "    strike:           "
-                                  + DoubleFormatter::toString(strikes[j]) +"\n"
+                                  + DecimalFormatter::toString(strikes[j])+"\n"
                                   "    dividend yield:   "
-                                  + DoubleFormatter::toString(q) + "\n"
+                                  + RateFormatter::toString(q) + "\n"
                                   "    risk-free rate:   "
-                                  + DoubleFormatter::toString(r) + "\n"
+                                  + RateFormatter::toString(r) + "\n"
                                   "    maturity:         "
                                   + DateFormatter::toString(exDate) + "\n\n"
                                   "    original volatility: "
-                                  + DoubleFormatter::toString(v) + "\n"
+                                  + VolatilityFormatter::toString(v) + "\n"
                                   "    price:               "
-                                  + DoubleFormatter::toString(value) + "\n"
+                                  + DecimalFormatter::toString(value) + "\n"
                                   "    implied volatility:  "
-                                  + DoubleFormatter::toString(implVol) + "\n"
+                                  + VolatilityFormatter::toString(implVol)+"\n"
                                   "    corresponding price: "
-                                  + DoubleFormatter::toString(value2) + "\n"
+                                  + DecimalFormatter::toString(value2) + "\n"
                                   "    error:               "
-                                  + DoubleFormatter::toExponential(error));
+                                  + DecimalFormatter::toExponential(error));
                           }
                       }
                   }
@@ -918,11 +918,11 @@ void EuropeanOptionTest::testImpliedVolContainment() {
         BOOST_FAIL("implied volatility calculation changed the value "
                    "of another instrument: \n"
                    "previous value: " +
-                   DoubleFormatter::toString(refValue,8) + "\n"
+                   DecimalFormatter::toString(refValue,8) + "\n"
                    "current value:  " +
-                   DoubleFormatter::toString(option2->NPV(),8));
+                   DecimalFormatter::toString(option2->NPV(),8));
 
-    vol->setValue(0.30);
+    vol->setValue(vol->value()*1.5);
 
     if (!f.isUp())
         BOOST_FAIL("volatility change not notified");
@@ -1003,24 +1003,24 @@ namespace {
                                   + OptionTypeFormatter::toString(types[i]) +
                                   " option :\n"
                                   "    spot value: "
-                                  + DoubleFormatter::toString(u) + "\n"
+                                  + DecimalFormatter::toString(u) + "\n"
                                   "    strike:           "
-                                  + DoubleFormatter::toString(strikes[j]) +"\n"
+                                  + DecimalFormatter::toString(strikes[j])+"\n"
                                   "    dividend yield:   "
-                                  + DoubleFormatter::toString(q) + "\n"
+                                  + RateFormatter::toString(q) + "\n"
                                   "    risk-free rate:   "
-                                  + DoubleFormatter::toString(r) + "\n"
+                                  + RateFormatter::toString(r) + "\n"
                                   "    reference date:   "
                                   + DateFormatter::toString(today) + "\n"
                                   "    maturity:         "
                                   + DateFormatter::toString(exDate) + "\n"
                                   "    volatility:       "
-                                  + DoubleFormatter::toString(v) + "\n\n"
+                                  + VolatilityFormatter::toString(v) + "\n\n"
                                   "    analytic value: "
-                                  + DoubleFormatter::toString(refValue) + "\n"
+                                  + DecimalFormatter::toString(refValue) + "\n"
                                   "    "
                                   + engineTypeToString(engines[ii]) + ":  "
-                                  + DoubleFormatter::toString(value));
+                                  + DecimalFormatter::toString(value));
                           }
                       }
                     }

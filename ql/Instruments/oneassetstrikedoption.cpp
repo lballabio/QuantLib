@@ -31,7 +31,7 @@ namespace QuantLib {
 
     double OneAssetStrikedOption::strikeSensitivity() const {
         calculate();
-        QL_REQUIRE(strikeSensitivity_ != Null<double>(),
+        QL_REQUIRE(strikeSensitivity_ != Null<Real>(),
                    "strike sensitivity not provided");
         return strikeSensitivity_;
     }

@@ -134,7 +134,7 @@ namespace QuantLib {
             \note The input date is not modified.
         */
         Date advance(const Date&,
-                     int n,
+                     Integer n,
                      TimeUnit unit,
                      RollingConvention convention = Following) const;
         /*! Advances the given date as specified by the given period and

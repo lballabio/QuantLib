@@ -84,7 +84,7 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time) const;
         DiscountFactor discountImpl(Time) const;
         Rate forwardImpl(Time) const;
-	    Rate compoundForwardImpl(Time t, int compFreq) const;
+	    Rate compoundForwardImpl(Time t, Integer compFreq) const;
       private:
         // helper class for bootstrapping
         class FFObjFunction;

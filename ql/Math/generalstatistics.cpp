@@ -89,7 +89,7 @@ namespace QuantLib {
 
         QL_REQUIRE(percent > 0.0 && percent <= 1.0,
                    "percentile (" +
-                   DoubleFormatter::toString(percent) +
+                   DecimalFormatter::toString(percent) +
                    ") must be in (0.0, 1.0]");
 
         double sampleWeight = weightSum();
@@ -115,7 +115,7 @@ namespace QuantLib {
 
         QL_REQUIRE(percent > 0.0 && percent <= 1.0,
                    "percentile (" +
-                   DoubleFormatter::toString(percent) +
+                   DecimalFormatter::toString(percent) +
                    ") must be in (0.0, 1.0]");
 
         double sampleWeight = weightSum();

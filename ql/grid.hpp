@@ -28,8 +28,8 @@
 
 namespace QuantLib {
 
-    Disposable<Array> CenteredGrid(double center, double dx, Size steps);
-    Disposable<Array> BoundedGrid(double xMin, double xMax, Size steps);
+    Disposable<Array> CenteredGrid(Real center, Real dx, Size steps);
+    Disposable<Array> BoundedGrid(Real xMin, Real xMax, Size steps);
 
     //! time grid class
     /*! \todo What was the rationale for limiting the grid to
@@ -127,7 +127,7 @@ namespace QuantLib {
                     Size nSteps = Size((periodEnd - periodBegin)/dtMax+0.5);
                     // at least one time step!
                     nSteps = (nSteps!=0 ? nSteps : 1);
-                    double dt = (periodEnd - periodBegin)/nSteps;
+                    Time dt = (periodEnd - periodBegin)/nSteps;
                     for (Size n=1; n<=nSteps; n++)
                         push_back(periodBegin + n*dt);
                 }
@@ -149,7 +149,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Disposable<Array> CenteredGrid(double center, double dx, 
+    inline Disposable<Array> CenteredGrid(Real center, Real dx, 
                                           Size steps) {
         Array result(steps+1);
         for (Size i=0; i<steps+1; i++)
@@ -157,10 +157,10 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<Array> BoundedGrid(double xMin, double xMax, 
+    inline Disposable<Array> BoundedGrid(Real xMin, Real xMax, 
                                          Size steps) {
         Array result(steps+1);
-        double x=xMin, dx=(xMax-xMin)/double(steps);
+        Real x=xMin, dx=(xMax-xMin)/steps;
         for (Size i=0; i<steps+1; i++, x+=dx)
             result[i] = x;
         return result;

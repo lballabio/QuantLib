@@ -61,8 +61,7 @@ namespace boost {
 
 namespace QuantLib {
 
-    Error::Error(const std::string& file,
-                 long line,
+    Error::Error(const std::string& file, long line,
                  const std::string& function,
                  const std::string& message)
     : file_(file), line_(line), function_(function), message_(message) {

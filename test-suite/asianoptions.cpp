@@ -38,35 +38,35 @@ using namespace boost::unit_test_framework;
                + averageTypeToString(averageType) + " and " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    running product:  " \
-               + DoubleFormatter::toString(runningProduct) + "\n" \
+               + DecimalFormatter::toString(runningProduct) + "\n" \
                "    past fixings:     " \
                + SizeFormatter::toString(pastFixings) + "\n" \
                "    future fixings:   " \
                + SizeFormatter::toString(fixingDates.size()) + "\n" \
                "    underlying value: " \
-               + DoubleFormatter::toString(s) + "\n" \
+               + DecimalFormatter::toString(s) + "\n" \
                "    strike:           " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "    dividend yield:   " \
-               + DoubleFormatter::toString(q) + "\n" \
+               + DecimalFormatter::toString(q) + "\n" \
                "    risk-free rate:   " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + DecimalFormatter::toString(r) + "\n" \
                "    reference date:   " \
                + DateFormatter::toString(today) + "\n" \
                "    maturity:         " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:       " \
-               + DoubleFormatter::toString(v) + "\n\n" \
+               + DecimalFormatter::toString(v) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(QL_FABS(expected-calculated)) \
+               + DecimalFormatter::toString(QL_FABS(expected-calculated)) \
                + "\n" \
-               + (tolerance==Null<double>() ? std::string("") : \
+               + (tolerance==Null<Real>() ? std::string("") : \
                   "    tolerance:        " \
-                  + DoubleFormatter::toString(tolerance)));
+                  + DecimalFormatter::toString(tolerance)));
 
 namespace {
 
@@ -126,7 +126,7 @@ void AsianOptionTest::testGeometricContinuousAverage() {
     double expected = 4.6922;
     double tolerance = 1.0e-4;
     if (QL_FABS(calculated-expected) > tolerance) {
-        REPORT_FAILURE("value", averageType, Null<double>(), Null<int>(),
+        REPORT_FAILURE("value", averageType, Null<Real>(), Null<Size>(),
                        std::vector<Date>(), payoff, exercise, spot->value(),
                        qRate->value(), rRate->value(), today, 
                        vol->value(), expected, calculated, tolerance);
@@ -272,7 +272,7 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
                               double error = relativeError(expct,calcl,u);
                               if (error>tol) {
                                   REPORT_FAILURE(greek, Average::Geometric,
-                                                 Null<double>(), Null<int>(),
+                                                 Null<Real>(), Null<Size>(),
                                                  std::vector<Date>(),
                                                  payoff, maturity,
                                                  u, q, r, today, v, 
@@ -507,7 +507,7 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
                               double error = relativeError(expct,calcl,u);
                               if (error>tol) {
                                   REPORT_FAILURE(greek, Average::Geometric,
-                                                 Null<double>(), Null<int>(),
+                                                 Null<Real>(), Null<Size>(),
                                                  std::vector<Date>(),
                                                  payoff, maturity,
                                                  u, q, r, today, v, 

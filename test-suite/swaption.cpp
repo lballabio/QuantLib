@@ -39,7 +39,7 @@ namespace {
     double nominal_;
     Calendar calendar_;
     RollingConvention rollingConvention_;
-    int fixedFrequency_, floatingFrequency_;
+    Frequency fixedFrequency_, floatingFrequency_;
     DayCounter fixedDayCount_;
     bool fixedIsAdjusted_;
     boost::shared_ptr<Xibor> index_;
@@ -82,8 +82,8 @@ namespace {
         fixingDays_ = 2;
         nominal_ = 100.0;
         rollingConvention_ = ModifiedFollowing;
-        fixedFrequency_ = 1;
-        floatingFrequency_ = 2;
+        fixedFrequency_ = Annual;
+        floatingFrequency_ = Semiannual;
         fixedDayCount_ = Thirty360();
         fixedIsAdjusted_ = false;
         index_ = boost::shared_ptr<Xibor>(
@@ -138,11 +138,11 @@ void SwaptionTest::testStrikeDependency() {
                             "    length: " + 
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    value: " +
-                            DoubleFormatter::toString(values[n]) +
+                            DecimalFormatter::toString(values[n]) +
                             " at strike: " +
                             RateFormatter::toString(strikes[n],2) + "\n"
                             "    value: " +
-                            DoubleFormatter::toString(values[n+1]) +
+                            DecimalFormatter::toString(values[n+1]) +
                             " at strike: " +
                             RateFormatter::toString(strikes[n+1],2));
                     }
@@ -160,11 +160,11 @@ void SwaptionTest::testStrikeDependency() {
                             "    length: " + 
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    value: " +
-                            DoubleFormatter::toString(values[n]) +
+                            DecimalFormatter::toString(values[n]) +
                             " at strike: " +
                             RateFormatter::toString(strikes[n],2) + "\n"
                             "    value: " +
-                            DoubleFormatter::toString(values[n+1]) +
+                            DecimalFormatter::toString(values[n+1]) +
                             " at strike: " +
                             RateFormatter::toString(strikes[n+1],2));
                     }
@@ -214,11 +214,11 @@ void SwaptionTest::testSpreadDependency() {
                             "    length: " + 
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    value: " +
-                            DoubleFormatter::toString(values[n]) +
+                            DecimalFormatter::toString(values[n]) +
                             " for spread: " +
                             RateFormatter::toString(spreads[n],2) + "\n"
                             "    value: " +
-                            DoubleFormatter::toString(values[n+1]) +
+                            DecimalFormatter::toString(values[n+1]) +
                             " for spread: " +
                             RateFormatter::toString(spreads[n+1],2));
                     }
@@ -236,11 +236,11 @@ void SwaptionTest::testSpreadDependency() {
                             "    length: " + 
                             IntegerFormatter::toString(lengths[j]) + " years\n"
                             "    value: " +
-                            DoubleFormatter::toString(values[n]) +
+                            DecimalFormatter::toString(values[n]) +
                             " for spread: " +
                             RateFormatter::toString(spreads[n],2) + "\n"
                             "    value: " +
-                            DoubleFormatter::toString(values[n+1]) +
+                            DecimalFormatter::toString(values[n+1]) +
                             " for spread: " +
                             RateFormatter::toString(spreads[n+1],2));
                     }
@@ -292,9 +292,9 @@ void SwaptionTest::testSpreadTreatment() {
                             "    spread: " +
                             RateFormatter::toString(spreads[l],2) + "\n"
                             "    value of original swaption:   " +
-                            DoubleFormatter::toString(swaption1->NPV()) + "\n"
+                            DecimalFormatter::toString(swaption1->NPV()) + "\n"
                             "    value of equivalent swaption: " +
-                            DoubleFormatter::toString(swaption2->NPV()));
+                            DecimalFormatter::toString(swaption2->NPV()));
                 }
             }
         }
@@ -323,9 +323,9 @@ void SwaptionTest::testCachedValue() {
         BOOST_FAIL(
             "failed to reproduce cached swaption value:\n"
             "    calculated: " +
-            DoubleFormatter::toString(swaption->NPV(),12) + "\n"
+            DecimalFormatter::toString(swaption->NPV(),12) + "\n"
             "    expected:   " +
-            DoubleFormatter::toString(cachedNPV,12));
+            DecimalFormatter::toString(cachedNPV,12));
 }
 
 

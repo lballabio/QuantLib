@@ -38,7 +38,7 @@ namespace QuantLib {
     class KronrodIntegral {
       public:
         KronrodIntegral(double tolerance,
-                        Size maxFunctionEvaluations = Null<int>());
+                        Size maxFunctionEvaluations = Null<Size>());
 
         template <class F>
         double operator()(const F& f, double a, double b) const {
@@ -145,12 +145,12 @@ namespace QuantLib {
       maxFunctionEvaluations_(maxFunctionEvaluations) {
         QL_REQUIRE(tolerance > QL_EPSILON,
                    "required tolerance ("
-                   + DoubleFormatter::toExponential(tolerance) +
+                   + DecimalFormatter::toExponential(tolerance) +
                    ") not allowed. It must be > "
-                   + DoubleFormatter::toExponential(QL_EPSILON));
+                   + DecimalFormatter::toExponential(QL_EPSILON));
         QL_REQUIRE(maxFunctionEvaluations >= 15,
                    "required maxFunctionEvaluations ("
-                   + DoubleFormatter::toExponential(maxFunctionEvaluations) +
+                   + DecimalFormatter::toExponential(maxFunctionEvaluations) +
                    ") not allowed. It must be >= 15");
     }
 

@@ -35,13 +35,13 @@ namespace QuantLib {
             QL_REQUIRE(exdivdates[j] >= 0, "the "+
                        SizeFormatter::toOrdinal(j) +
                        " dividend time is negative"    + "(" +
-                       DoubleFormatter::toString(exdivdates[j]) + ")");
+                       DecimalFormatter::toString(exdivdates[j]) + ")");
 
             QL_REQUIRE(exdivdates[j] <= residualTime,"the " +
                        SizeFormatter::toOrdinal(j) +
                        " dividend time is greater than residual time" + "(" +
-                       DoubleFormatter::toString(exdivdates[j]) + ">" +
-                       DoubleFormatter::toString(residualTime)    + ")");
+                       DecimalFormatter::toString(exdivdates[j]) + ">" +
+                       DecimalFormatter::toString(residualTime)    + ")");
         }
 
         double riskless = 0.0;

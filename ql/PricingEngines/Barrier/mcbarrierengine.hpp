@@ -52,9 +52,9 @@ namespace QuantLib {
         MCBarrierEngine(Size maxTimeStepsPerYear,
                         bool antitheticVariate = false,
                         bool controlVariate = false,
-                        Size requiredSamples = Null<int>(),
-                        double requiredTolerance = Null<double>(),
-                        Size maxSamples = Null<int>(),
+                        Size requiredSamples = Null<Size>(),
+                        Real requiredTolerance = Null<Real>(),
+                        Size maxSamples = Null<Size>(),
                         bool isBiased = false,
                         long seed = 0);
 
@@ -222,8 +222,8 @@ namespace QuantLib {
     template <class RNG, class S>
     void MCBarrierEngine<RNG,S>::calculate() const {
 
-        QL_REQUIRE(requiredTolerance_ != Null<double>() ||
-                   int(requiredSamples_) != Null<int>(),
+        QL_REQUIRE(requiredTolerance_ != Null<Real>() ||
+                   requiredSamples_ != Null<Size>(),
                    "neither tolerance nor number of samples set");
 
         // what exercise type is a barrier option?
@@ -272,8 +272,8 @@ namespace QuantLib {
                         antitheticVariate_));
         }
 
-        if (requiredTolerance_ != Null<double>()) {
-            if (int(maxSamples_) != Null<int>())
+        if (requiredTolerance_ != Null<Real>()) {
+            if (maxSamples_ != Null<Size>())
                 value(requiredTolerance_, maxSamples_);
             else
                 value(requiredTolerance_);

@@ -128,8 +128,8 @@ void MatricesTest::testSqrt() {
                    "\npseudoSqrt*pseudoSqrt:\n" 
                    + ArrayFormatter::toString(temp.begin(), temp.end(), 
                                               6, 0, M1.columns()) +
-                   "\nerror:     " + DoubleFormatter::toString(error) +
-                   "\ntolerance: " + DoubleFormatter::toString(tolerance));
+                   "\nerror:     " + DecimalFormatter::toString(error) +
+                   "\ntolerance: " + DecimalFormatter::toString(tolerance));
     }
 
 }
@@ -165,19 +165,19 @@ void MatricesTest::testSVD() {
         Matrix U_Utranspose = transpose(U)*U;
         if (norm(U_Utranspose-I) > tol)
             BOOST_FAIL("U not orthogonal (norm of U^T*U-I = " +
-                       DoubleFormatter::toExponential(norm(U_Utranspose-I))
+                       DecimalFormatter::toExponential(norm(U_Utranspose-I))
                        + ")");
 
         Matrix V_Vtranspose = transpose(V)*V;
         if (norm(V_Vtranspose-I) > tol)
             BOOST_FAIL("V not orthogonal (norm of V^T*V-I = " +
-                       DoubleFormatter::toExponential(norm(V_Vtranspose-I))
+                       DecimalFormatter::toExponential(norm(V_Vtranspose-I))
                        + ")");
 
         Matrix A_reconstructed = U * S * transpose(V);
         if (norm(A_reconstructed-A) > tol)
             BOOST_FAIL("Product does not recover A: (norm of U*S*V^T-A = " +
-                       DoubleFormatter::toExponential(norm(A_reconstructed-A))
+                       DecimalFormatter::toExponential(norm(A_reconstructed-A))
                        + ")");
     }
 }

@@ -19,12 +19,12 @@
 
 namespace QuantLib {
 
-	const double BlackVolTermStructure::dT = 1.0/365.0;
+	const Time BlackVolTermStructure::dT = 1.0/365.0;
 
-    double BlackVolTermStructure::blackForwardVol(const Date& date1,
-                                                  const Date& date2, 
-                                                  double strike, 
-                                                  bool extrapolate) const {
+    Volatility BlackVolTermStructure::blackForwardVol(const Date& date1,
+                                                      const Date& date2, 
+                                                      Real strike, 
+                                                      bool extrapolate) const {
         QL_REQUIRE(date1 <= date2,
                    DateFormatter::toString(date1) +
                    " later than " +
@@ -34,40 +34,40 @@ namespace QuantLib {
         return blackForwardVol(time1, time2, strike, extrapolate);
     }
 
-    double BlackVolTermStructure::blackForwardVol(Time time1, Time time2,
-                                                  double strike, 
-                                                  bool extrapolate) const {
+    Volatility BlackVolTermStructure::blackForwardVol(Time time1, Time time2,
+                                                      Real strike, 
+                                                      bool extrapolate) const {
         QL_REQUIRE(time1 <= time2,
-                   DoubleFormatter::toString(time1) +
+                   DecimalFormatter::toString(time1) +
                    " later than " +
-                   DoubleFormatter::toString(time2));
+                   DecimalFormatter::toString(time2));
         checkRange(time2,strike,extrapolate);
         if (time2==time1) {
             if (time1==0.0) {
                 Time epsilon = 0.00001;
-                double var = blackVarianceImpl(epsilon, strike);
+                Real var = blackVarianceImpl(epsilon, strike);
                 return QL_SQRT(var/epsilon);
             } else {
                 Time epsilon = QL_MIN(0.00001, time1);
-                double var1 = blackVarianceImpl(time1-epsilon, strike);
-                double var2 = blackVarianceImpl(time1+epsilon, strike);
+                Real var1 = blackVarianceImpl(time1-epsilon, strike);
+                Real var2 = blackVarianceImpl(time1+epsilon, strike);
                 QL_ENSURE(var2>=var1,
                           "variances must be non-decreasing");
                 return QL_SQRT((var2-var1)/(2*epsilon));
             }
         } else {
-            double var1 = blackVarianceImpl(time1, strike);
-            double var2 = blackVarianceImpl(time2, strike);
-            QL_ENSURE(var2>=var1,
+            Real var1 = blackVarianceImpl(time1, strike);
+            Real var2 = blackVarianceImpl(time2, strike);
+            QL_ENSURE(var2 >= var1,
                       "variances must be non-decreasing");
             return QL_SQRT((var2-var1)/(time2-time1));
         }
     }
 
-    double BlackVolTermStructure::blackForwardVariance(const Date& date1,
-                                                       const Date& date2, 
-                                                       double strike,
-                                                       bool extrapolate) 
+    Real BlackVolTermStructure::blackForwardVariance(const Date& date1,
+                                                     const Date& date2, 
+                                                     Real strike,
+                                                     bool extrapolate) 
                                                                       const {
         QL_REQUIRE(date1 <= date2,
                    DateFormatter::toString(date1) +
@@ -79,21 +79,19 @@ namespace QuantLib {
     }
 
 
-    double BlackVolTermStructure::blackForwardVariance(Time time1, Time time2, 
-                                                       double strike,
-                                                       bool extrapolate) 
-                                                                      const {
+    Real BlackVolTermStructure::blackForwardVariance(Time time1, Time time2, 
+                                                     Real strike,
+                                                     bool extrapolate) const {
         QL_REQUIRE(time1 <= time2,
-                   DoubleFormatter::toString(time1) +
+                   DecimalFormatter::toString(time1) +
                    " later than " +
-                   DoubleFormatter::toString(time2));
+                   DecimalFormatter::toString(time2));
         checkRange(time2, strike, extrapolate);
-        double v1 = blackVarianceImpl(time1, strike);
-        double v2 = blackVarianceImpl(time2, strike);
-        double result = v2-v1;
-        QL_ENSURE(result>=0.0,
+        Real v1 = blackVarianceImpl(time1, strike);
+        Real v2 = blackVarianceImpl(time2, strike);
+        QL_ENSURE(v2 >= v1,
                   "variances must be non-decreasing");
-        return result;
+        return v2-v1;
     }
 
 }

@@ -26,7 +26,7 @@ namespace QuantLib {
                                      const std::vector<Rate> &forwards,
                                      const Calendar & calendar,
                                      const RollingConvention roll,
-                                     const int compounding,
+                                     const Integer compounding,
                                      const DayCounter & dayCounter)
     : todaysDate_(todaysDate), referenceDate_(referenceDate),
       dayCounter_(dayCounter), calendar_(calendar), roll_(roll),
@@ -43,7 +43,7 @@ namespace QuantLib {
 
     void CompoundForward::calibrateNodes() const {
         Size i;
-        int ci;
+        Integer ci;
 
         times_.resize(dates_.size());
         for (i = 0; i < dates_.size(); i++)
@@ -99,7 +99,7 @@ namespace QuantLib {
                                                          compoundDate);
             double qFactor = 0.0;
             Size i;
-            int ci;
+            Integer ci;
             for (i = 0, ci = 1; i < dates_.size(); i++) {
                 DiscountFactor df;
                 Date rateDate = dates_[i];
@@ -182,7 +182,7 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Rate());
     }
 
-    Rate CompoundForward::compoundForwardImpl(Time t, int f) const {
+    Rate CompoundForward::compoundForwardImpl(Time t, Integer f) const {
         if (f == compounding_)
             return forwardImpl(t);
         if (needsBootstrap_)

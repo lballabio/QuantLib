@@ -34,7 +34,7 @@ namespace {
     Date today_, settlement_;
     std::vector<double> nominals_;
     RollingConvention rollingConvention_;
-    int frequency_;
+    Frequency frequency_;
     boost::shared_ptr<Xibor> index_;
     Calendar calendar_;
     int settlementDays_, fixingDays_;
@@ -95,7 +95,7 @@ namespace {
 
     void initialize() {
         nominals_ = std::vector<double>(1,100.0);
-        frequency_ = 2;
+        frequency_ = Semiannual;
         index_ = boost::shared_ptr<Xibor>(
                             new Euribor(12/frequency_,Months,termStructure_));
         calendar_ = index_->calendar();
@@ -152,15 +152,15 @@ void CapFloorTest::testStrikeDependency() {
                     "    length: " + 
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    volatility: " +
-                    DoubleFormatter::toString(vols[j]*100,2) + " %\n"
+                    VolatilityFormatter::toString(vols[j],2) + "\n"
                     "    value: " +
-                    DoubleFormatter::toString(cap_values[n]) +
+                    DecimalFormatter::toString(cap_values[n]) +
                     " at strike: " +
-                    DoubleFormatter::toString(strikes[n]*100,2) + " %\n"
+                    RateFormatter::toString(strikes[n],2) + "\n"
                     "    value: " +
-                    DoubleFormatter::toString(cap_values[n+1]) +
+                    DecimalFormatter::toString(cap_values[n+1]) +
                     " at strike: " +
-                    DoubleFormatter::toString(strikes[n+1]*100,2) + " %");
+                    RateFormatter::toString(strikes[n+1],2));
             }
             // same for floors
             it = std::adjacent_find(floor_values.begin(),floor_values.end(),
@@ -172,15 +172,15 @@ void CapFloorTest::testStrikeDependency() {
                     "    length: " + 
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    volatility: " +
-                    DoubleFormatter::toString(vols[j]*100,2) + " %\n"
+                    VolatilityFormatter::toString(vols[j]*100,2) + "\n"
                     "    value: " +
-                    DoubleFormatter::toString(floor_values[n]) +
+                    DecimalFormatter::toString(floor_values[n]) +
                     " at strike: " +
-                    DoubleFormatter::toString(strikes[n]*100,2) + " %\n"
+                    RateFormatter::toString(strikes[n],2) + "\n"
                     "    value: " +
-                    DoubleFormatter::toString(floor_values[n+1]) +
+                    DecimalFormatter::toString(floor_values[n+1]) +
                     " at strike: " +
-                    DoubleFormatter::toString(strikes[n+1]*100,2) + " %");
+                    RateFormatter::toString(strikes[n+1],2));
             }
         }
     }
@@ -222,17 +222,17 @@ void CapFloorTest::testConsistency() {
                     "    length: " + 
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    volatility: " +
-                    DoubleFormatter::toString(vols[l]*100,2) + " %\n"
+                    VolatilityFormatter::toString(vols[l],2) + "\n"
                     "    cap value: " +
-                    DoubleFormatter::toString(cap->NPV()) +
+                    DecimalFormatter::toString(cap->NPV()) +
                     " at strike: " +
-                    DoubleFormatter::toString(cap_rates[j]*100,2) + " %\n"
+                    RateFormatter::toString(cap_rates[j],2) + "\n"
                     "    floor value: " +
-                    DoubleFormatter::toString(floor->NPV()) +
+                    DecimalFormatter::toString(floor->NPV()) +
                     " at strike: " +
-                    DoubleFormatter::toString(floor_rates[k]*100,2) + " %\n"
+                    RateFormatter::toString(floor_rates[k],2) + "\n"
                     "    collar value: " +
-                    DoubleFormatter::toString(collar.NPV()));
+                    DecimalFormatter::toString(collar.NPV()));
               }
           }
         }
@@ -276,15 +276,15 @@ void CapFloorTest::testParity() {
                     "    length: " + 
                     IntegerFormatter::toString(lengths[i]) + " years\n"
                     "    volatility: " +
-                    DoubleFormatter::toString(vols[k]*100,2) + " %\n"
+                    VolatilityFormatter::toString(vols[k],2) + "\n"
                     "    strike: " +
-                    DoubleFormatter::toString(strikes[j]*100,2) + " %\n"
+                    RateFormatter::toString(strikes[j],2) + "\n"
                     "    cap value: " +
-                    DoubleFormatter::toString(cap->NPV()) + "\n"
+                    DecimalFormatter::toString(cap->NPV()) + "\n"
                     "    floor value: " +
-                    DoubleFormatter::toString(floor->NPV()) + "\n"
+                    DecimalFormatter::toString(floor->NPV()) + "\n"
                     "    swap value: " +
-                    DoubleFormatter::toString(swap.NPV()));
+                    DecimalFormatter::toString(swap.NPV()));
             }
         }
       }
@@ -341,14 +341,14 @@ void CapFloorTest::testImpliedVolatility() {
                             BOOST_FAIL(
                                 typeToString(types[i]) + ":\n"
                                 "    strike:           "
-                                + DoubleFormatter::toString(strikes[j]) +"\n"
+                                + DecimalFormatter::toString(strikes[j]) +"\n"
                                 "    risk-free rate:   "
-                                + DoubleFormatter::toString(r) + "\n"
+                                + DecimalFormatter::toString(r) + "\n"
                                 "    length:         "
                                 + IntegerFormatter::toString(lengths[k]) 
                                 + " years\n"
                                 "    volatility:       "
-                                + DoubleFormatter::toString(v) + "\n\n"
+                                + DecimalFormatter::toString(v) + "\n\n"
                                 + std::string(e.what()));
                         }
                         if (QL_FABS(implVol-v) > tolerance) {
@@ -359,21 +359,21 @@ void CapFloorTest::testImpliedVolatility() {
                                 BOOST_FAIL(
                                     typeToString(types[i]) + ":\n"
                                     "    strike:           "
-                                    + DoubleFormatter::toString(strikes[j]) 
+                                    + DecimalFormatter::toString(strikes[j]) 
                                     + "\n"
                                     "    risk-free rate:   "
-                                    + DoubleFormatter::toString(r) + "\n"
+                                    + DecimalFormatter::toString(r) + "\n"
                                     "    length:         "
                                     + IntegerFormatter::toString(lengths[k]) 
                                     + " years\n\n"
                                     "    original volatility: "
-                                    + DoubleFormatter::toString(v) + "\n"
+                                    + DecimalFormatter::toString(v) + "\n"
                                     "    price:               "
-                                    + DoubleFormatter::toString(value) + "\n"
+                                    + DecimalFormatter::toString(value) + "\n"
                                     "    implied volatility:  "
-                                    + DoubleFormatter::toString(implVol) + "\n"
+                                    + DecimalFormatter::toString(implVol) +"\n"
                                     "    corresponding price: "
-                                    + DoubleFormatter::toString(value2));
+                                    + DecimalFormatter::toString(value2));
                             }
                         }
                     }
@@ -408,17 +408,17 @@ void CapFloorTest::testCachedValue() {
         BOOST_FAIL(
             "failed to reproduce cached cap value:\n"
             "    calculated: " +
-            DoubleFormatter::toString(cap->NPV(),12) + "\n"
+            DecimalFormatter::toString(cap->NPV(),12) + "\n"
             "    expected:   " +
-            DoubleFormatter::toString(cachedCapNPV,12));
+            DecimalFormatter::toString(cachedCapNPV,12));
 
     if (QL_FABS(floor->NPV()-cachedFloorNPV) > 1.0e-11)
         BOOST_FAIL(
             "failed to reproduce cached floor value:\n"
             "    calculated: " +
-            DoubleFormatter::toString(floor->NPV(),12) + "\n"
+            DecimalFormatter::toString(floor->NPV(),12) + "\n"
             "    expected:   " +
-            DoubleFormatter::toString(cachedFloorNPV,12));
+            DecimalFormatter::toString(cachedFloorNPV,12));
 }
 
 

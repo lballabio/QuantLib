@@ -57,9 +57,9 @@ namespace QuantLib {
         #endif
 
         QL_REQUIRE(int(averageType) != -1, "unspecified average type");
-        QL_REQUIRE(runningProduct != Null<double>(), "null running product");
+        QL_REQUIRE(runningProduct != Null<Real>(), "null running product");
         QL_REQUIRE(runningProduct >= 0.0, "negative running product");
-        QL_REQUIRE(pastFixings != Null<int>(), "null past-fixing number");
+        QL_REQUIRE(pastFixings != Null<Size>(), "null past-fixing number");
 
         // check fixingTimes_ here
     }

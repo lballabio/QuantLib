@@ -41,7 +41,7 @@ namespace QuantLib {
         /*! \note The amount is not discounted, i.e., it is the actual amount
             paid at the cash flow date.
         */
-        virtual double amount() const = 0;
+        virtual Real amount() const = 0;
         //! returns the date at which the cash flow is settled
         virtual Date date() const = 0;
         //@}

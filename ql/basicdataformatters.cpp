@@ -25,8 +25,8 @@
 
 namespace QuantLib {
 
-    std::string IntegerFormatter::toString(long l, int digits) {
-        static long null = long(Null<int>());
+    std::string IntegerFormatter::toString(BigInteger l, Integer digits) {
+        static BigInteger null = Null<BigInteger>();
         if (l == null)
             return std::string("null");
         char s[64];
@@ -34,15 +34,15 @@ namespace QuantLib {
         return std::string(s);
     }
 
-    std::string IntegerFormatter::toPowerOfTwo(long l, int digits) {
+    std::string IntegerFormatter::toPowerOfTwo(BigInteger l, Integer digits) {
         if (l < 0L)
             return "-" + SizeFormatter::toPowerOfTwo(Size(-l),digits);
         else
             return SizeFormatter::toPowerOfTwo(Size(l),digits);
     }
 
-    std::string SizeFormatter::toString(Size l, int digits) {
-        static Size null = Size(Null<int>());
+    std::string SizeFormatter::toString(Size l, Integer digits) {
+        static Size null = Null<Size>();
         if (l == null)
             return std::string("null");
         char s[64];
@@ -50,10 +50,9 @@ namespace QuantLib {
         return std::string(s);
     }
 
-    std::string SizeFormatter::toOrdinal(Size ll) {
+    std::string SizeFormatter::toOrdinal(Size l) {
         std::string suffix;
-        unsigned long l = (unsigned long)(ll);
-        if (l == 11UL || l == 12UL || l == 13UL) {
+        if (l == Size(11) || l == Size(12) || l == Size(13)) {
             suffix = "th";
         } else {
             switch (l % 10) {
@@ -63,14 +62,14 @@ namespace QuantLib {
               default: suffix = "th";
             }
         }
-        return toString(ll)+suffix;
+        return toString(l)+suffix;
     }
 
-    std::string SizeFormatter::toPowerOfTwo(Size l, int digits) {
-        static Size null = Size(Null<int>());
+    std::string SizeFormatter::toPowerOfTwo(Size l, Integer digits) {
+        static Size null = Null<Size>();
         if (l == null)
             return std::string("null");
-        int power = 0;
+        Integer power = 0;
         while (!(l & 1UL)) {
             power++;
             l >>= 1;
@@ -78,9 +77,9 @@ namespace QuantLib {
         return toString(l,digits) + "*2^" + toString(power,2);
     }
 
-    std::string DoubleFormatter::toString(double x, int precision,
-                                          int digits) {
-        if (x == Null<double>())
+    std::string DecimalFormatter::toString(Decimal x, Integer precision,
+                                           Integer digits) {
+        if (x == Null<Decimal>())
             return std::string("null");
         char s[64];
         QL_SPRINTF(s,"%*.*f",(digits>64?64:digits),
@@ -88,9 +87,9 @@ namespace QuantLib {
         return std::string(s);
     }
 
-    std::string DoubleFormatter::toExponential(double x, int precision,
-                                               int digits) {
-        if (x == Null<double>())
+    std::string DecimalFormatter::toExponential(Decimal x, Integer precision,
+                                                Integer digits) {
+        if (x == Null<Decimal>())
             return std::string("null");
         char s[64];
         QL_SPRINTF(s,"%*.*e",(digits>64?64:digits),
@@ -98,7 +97,12 @@ namespace QuantLib {
         return std::string(s);
     }
 
-    std::string EuroFormatter::toString(double amount) {
+    std::string DecimalFormatter::toPercentage(Decimal x, Integer precision,
+                                               Integer digits) {
+        return toString(x*100,precision,digits)+" %";
+    }
+
+    std::string EuroFormatter::toString(Decimal amount) {
         std::string output;
         if (amount < 0.0) {
             output = "-";
@@ -106,26 +110,31 @@ namespace QuantLib {
         } else {
             output = " ";
         }
-        int triples = 0;
+        Integer triples = 0;
         while (amount >= 1000.0) {
             amount /= 1000;
             triples++;
         }
-        output += IntegerFormatter::toString(int(amount));
-        amount -= int(amount);
+        output += IntegerFormatter::toString(Integer(amount));
+        amount -= Integer(amount);
         while (triples > 0) {
             amount *= 1000;
-            output += ","+IntegerFormatter::toString(int(amount),3);
-            amount -= int(amount);
+            output += ","+IntegerFormatter::toString(Integer(amount),3);
+            amount -= Integer(amount);
             triples--;
         }
         amount *= 100;
-        output += "."+IntegerFormatter::toString(int(amount+0.5),2);
+        output += "."+IntegerFormatter::toString(Integer(amount+0.5),2);
         return output;
     }
 
-    std::string RateFormatter::toString(double rate, int precision) {
-        return DoubleFormatter::toString(rate*100,precision)+"%";
+    std::string RateFormatter::toString(Rate rate, Integer precision) {
+        return DecimalFormatter::toPercentage(rate,precision);
+    }
+
+    std::string VolatilityFormatter::toString(Volatility vol, 
+                                              Integer precision) {
+        return DecimalFormatter::toPercentage(vol,precision);
     }
 
     std::string DateFormatter::toString(const Date& d,
@@ -138,7 +147,8 @@ namespace QuantLib {
         if (d == Date()) {
             output = "Null date";
         } else {
-            int dd = d.dayOfMonth(), mm = int(d.month()), yyyy = d.year();
+            Integer dd = d.dayOfMonth(), mm = Integer(d.month()), 
+                    yyyy = d.year();
             switch (f) {
               case Long:
                 output = monthName[mm-1] + " ";

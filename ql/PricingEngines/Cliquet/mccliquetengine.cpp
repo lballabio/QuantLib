@@ -40,22 +40,22 @@ namespace QuantLib {
         QL_REQUIRE(moneyness_>0.0,
                    "moneyness must be greater than zero");
 
-        if (accruedCoupon == Null<double>())
+        if (accruedCoupon == Null<Real>())
             accruedCoupon_ = 0.0;
 
-        if (localCap == Null<double>())
+        if (localCap == Null<Real>())
             localCap_ = QL_MAX_DOUBLE;
 
-        if (localFloor == Null<double>())
+        if (localFloor == Null<Real>())
             localFloor_ = 0.0;
 
         QL_REQUIRE(localCap_>=localFloor_,
                    "localCap cannot be less then localFloor");
 
-        if (globalCap == Null<double>())
+        if (globalCap == Null<Real>())
             globalCap_ = QL_MAX_DOUBLE;
 
-        if (globalFloor == Null<double>())
+        if (globalFloor == Null<Real>())
             globalFloor_ = 0.0;
 
         QL_REQUIRE(globalCap_>=globalFloor_,
@@ -86,7 +86,7 @@ namespace QuantLib {
                     k++;
                 }
                 // incorporate payoff
-                if (lastFixing != Null<double>()) {
+                if (lastFixing != Null<Real>()) {
                     payoff = PlainVanillaPayoff(type_,
                         moneyness_*lastFixing)(underlying) / lastFixing;
                     payoff = QL_MAX(payoff, localFloor_);
@@ -113,7 +113,7 @@ namespace QuantLib {
                     k++;
                 }
                 // incorporate payoff
-                if (lastFixing != Null<double>()) {
+                if (lastFixing != Null<Real>()) {
                     payoff = PlainVanillaPayoff(type_,
                         moneyness_*lastFixing)(underlying) / lastFixing;
                     payoff = QL_MAX(payoff, localFloor_);

@@ -31,12 +31,14 @@ namespace QuantLib {
       public:
         static Period parse(const std::string& str);
     };
+
     class DateParser {
       public:
         static std::vector<std::string> split(const std::string& str,
-					      const char delim);
+                                              char delim);
         static Date parse(const std::string& str, const std::string& fmt);
     };
+
 }
 
 

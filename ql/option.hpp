@@ -73,12 +73,12 @@ namespace QuantLib {
         Greeks() { reset(); }
         void reset() {
             delta =  gamma = theta = vega =
-                rho = dividendRho = Null<double>();
+                rho = dividendRho = Null<Real>();
         }
-        double delta, gamma;
-        double theta;
-        double vega;
-        double rho, dividendRho;
+        Real delta, gamma;
+        Real theta;
+        Real vega;
+        Real rho, dividendRho;
     };
 
     //! more additional %option results
@@ -88,10 +88,10 @@ namespace QuantLib {
         MoreGreeks() { reset(); }
         void reset() {
             itmCashProbability = deltaForward = elasticity = thetaPerDay =
-                strikeSensitivity = Null<double>();
+                strikeSensitivity = Null<Real>();
         }
-        double itmCashProbability, deltaForward, elasticity, thetaPerDay,
-            strikeSensitivity;
+        Real itmCashProbability, deltaForward, elasticity, thetaPerDay,
+             strikeSensitivity;
     };
 
 }

@@ -134,6 +134,24 @@ AC_DEFUN([QL_CHECK_CONSTANT],
 ])
 
 
+# QL_CHECK_LONG_LONG
+# ----------------------------------------------
+# Check whether long long is supported.
+AC_DEFUN([QL_CHECK_LONG_LONG],
+[AC_MSG_CHECKING([long long support])
+ AC_TRY_COMPILE(
+    [],
+    [long long i;
+     unsigned long long j;
+    ],
+    [AC_MSG_RESULT([yes])
+     AC_DEFINE([HAVE_LONG_LONG],[],
+               [Define this if your compiler supports the long long type.])
+    ]
+    [AC_MSG_RESULT([no])
+    ])
+])
+
 # QL_CHECK_NAMESPACES
 # ----------------------------------------------
 # Check whether namespaces are supported.

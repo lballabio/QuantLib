@@ -33,7 +33,7 @@ namespace QuantLib {
         thus resulting in actual move semantics. Typical use of this
         class is along the following lines:
         \code
-        Disposable<Foo> bar(int i) {
+        Disposable<Foo> bar(Integer i) {
             Foo f(i*2);
             return f;
         }

@@ -455,7 +455,7 @@ void MersenneTwisterTest::testValues() {
             BOOST_FAIL("Mersenne Twister test failed at index: "
                        + IntegerFormatter::toString(i) + "\n"
                        "error: "
-                       + DoubleFormatter::toExponential(e,2));
+                       + DecimalFormatter::toExponential(e,2));
         }
     }
 

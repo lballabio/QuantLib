@@ -48,7 +48,7 @@ namespace QuantLib {
             // eigenvalues are sorted in decreasing order
             QL_REQUIRE(jd.eigenvalues()[size-1]>=-1e-16,
                 "negative eigenvalue(s) ("
-                + DoubleFormatter::toExponential(jd.eigenvalues()[size-1]) +
+                + DecimalFormatter::toExponential(jd.eigenvalues()[size-1]) +
                 ")");
             result = CholeskyDecomposition(matrix, true);
             break;

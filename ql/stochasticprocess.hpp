@@ -39,25 +39,25 @@ namespace QuantLib {
       public:
         virtual ~StochasticProcess() {}
         //! returns the initial value of the state variable
-        virtual double x0() const = 0;
+        virtual Real x0() const = 0;
         //! returns the drift part of the equation, i.e. \f$ \mu(t, x_t) \f$
-        virtual double drift(Time t, double x) const = 0;
+        virtual Real drift(Time t, Real x) const = 0;
         /*! \brief returns the diffusion part of the equation, i.e.
             \f$ \sigma(t, x_t) \f$
         */
-        virtual double diffusion(Time t, double x) const = 0;
+        virtual Real diffusion(Time t, Real x) const = 0;
         //! returns the expectation of the process after a time interval
         /*! returns \f$ E(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$.
             By default, it returns the Euler approximation defined by
             \f$ x_0 + \mu(t_0, x_0) \Delta t \f$.
         */
-        virtual double expectation(Time t0, double x0, Time dt) const;
+        virtual Real expectation(Time t0, Real x0, Time dt) const;
         //! returns the variance of the process after a time interval
         /*! returns \f$ Var(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$.
             By default, it returns the Euler approximation defined by
             \f$ \sigma(t_0, x_0)^2 \Delta t \f$.
         */
-        virtual double variance(Time t0, double x0, Time dt) const;
+        virtual Real variance(Time t0, Real x0, Time dt) const;
     };
 
 
@@ -77,11 +77,11 @@ namespace QuantLib {
             const RelinkableHandle<BlackVolTermStructure>& blackVolTS);
         //! \name StochasticProcess interface
         //@{
-        double x0() const;
+        Real x0() const;
         /*! \todo revise extrapolation */
-        double drift(Time t, double x) const ;
+        Real drift(Time t, Real x) const ;
         /*! \todo revise extrapolation */
-        double diffusion(Time t, double x) const;
+        Real diffusion(Time t, Real x) const;
         //@}
         //! \name Observer interface
         //@{
@@ -122,8 +122,8 @@ namespace QuantLib {
                         const RelinkableHandle<Quote>& logJVol);
         //! \name StochasticProcess interface
         //@{
-        double drift(Time, double) const { QL_FAIL("not implemented"); }
-        double diffusion(Time, double) const { QL_FAIL("not implemented"); }
+        Real drift(Time, Real) const { QL_FAIL("not implemented"); }
+        Real diffusion(Time, Real) const { QL_FAIL("not implemented"); }
         //@}
         //! \name Inspectors
         //@{
@@ -150,19 +150,20 @@ namespace QuantLib {
     */
     class OrnsteinUhlenbeckProcess : public StochasticProcess {
       public:
-        OrnsteinUhlenbeckProcess(double speed,
-                                 double vol,
-                                 double x0 = 0.0);
+        OrnsteinUhlenbeckProcess(Real speed,
+                                 Volatility vol,
+                                 Real x0 = 0.0);
         //! \name StochasticProcess interface
         //@{
-        double x0() const;
-        double drift(Time t, double x) const;
-        double diffusion(Time t, double x) const;
-        double expectation(Time t, double x0, Time dt) const;
-        double variance(Time t, double x0, Time dt) const;
+        Real x0() const;
+        Real drift(Time t, Real x) const;
+        Real diffusion(Time t, Real x) const;
+        Real expectation(Time t, Real x0, Time dt) const;
+        Real variance(Time t, Real x0, Time dt) const;
         //@}
       private:
-        double x0_, speed_, volatility_;
+        Real x0_, speed_;
+        Volatility volatility_;
     };
 
 
@@ -174,18 +175,19 @@ namespace QuantLib {
     */
     class SquareRootProcess : public StochasticProcess {
       public:
-        SquareRootProcess(double b,
-                          double a,
-                          double sigma,
-                          double x0 = 0.0);
+        SquareRootProcess(Real b,
+                          Real a,
+                          Volatility sigma,
+                          Real x0 = 0.0);
         //! \name StochasticProcess interface
         //@{
-        double x0() const;
-        double drift(Time t, double x) const;
-        double diffusion(Time t, double x) const;
+        Real x0() const;
+        Real drift(Time t, Real x) const;
+        Real diffusion(Time t, Real x) const;
         //@}
       private:
-        double x0_, mean_, speed_, volatility_;
+        Real x0_, mean_, speed_;
+        Volatility volatility_;
     };
 
 }

@@ -93,6 +93,7 @@ QL_CHECK_TEMPLATE_TYPE([iterator],[std::input_iterator_tag,double],
 QL_CHECK_TEMPLATE_TYPE([iterator_traits],[double*],
                        [],[iterator])
 
+QL_CHECK_LONG_LONG
 QL_CHECK_NAMESPACES
 QL_CHECK_STRING
 

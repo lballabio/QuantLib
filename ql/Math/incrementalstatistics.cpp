@@ -41,7 +41,7 @@ namespace QuantLib {
     void IncrementalStatistics::add(double value, double weight) {
         QL_REQUIRE(weight>=0.0,
                    "negative weight (" +
-                   DoubleFormatter::toString(weight) + ") not allowed");
+                   DecimalFormatter::toString(weight) + ") not allowed");
 
         Size oldSamples = sampleNumber_;
         sampleNumber_++;
@@ -86,7 +86,7 @@ namespace QuantLib {
 
         QL_ENSURE(v >= 0.0,
                   "negative variance (" +
-                  DoubleFormatter::toString(v,20) + ")");
+                  DecimalFormatter::toString(v,20) + ")");
 
         return v;
     }

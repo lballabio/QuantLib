@@ -81,8 +81,8 @@ namespace {
                           new SwapRateHelper(swapData[i].rate/100,
                                              swapData[i].n, swapData[i].units,
                                              settlementDays_, calendar_,
-                                             ModifiedFollowing, 1, false,
-                                             Thirty360(), 2));
+                                             ModifiedFollowing, Annual, false,
+                                             Thirty360(), Semiannual));
         }
         termStructure_ = boost::shared_ptr<TermStructure>(
           new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
@@ -111,9 +111,9 @@ void TermStructureTest::testImplied() {
         BOOST_FAIL(
             "unable to reproduce discount from implied curve\n"
             "    calculated: "
-            + DoubleFormatter::toString(baseDiscount*impliedDiscount,10) + "\n"
+            + DecimalFormatter::toString(baseDiscount*impliedDiscount,10)+"\n"
             "    expected:   "
-            + DoubleFormatter::toString(discount,10));
+            + DecimalFormatter::toString(discount,10));
 }
 
 void TermStructureTest::testImpliedObs() {
@@ -153,9 +153,9 @@ void TermStructureTest::testFSpreaded() {
         BOOST_FAIL(
             "unable to reproduce forward from spreaded curve\n"
             "    calculated: "
-            + DoubleFormatter::toString(spreadedForward-me->value(),10) + "\n"
+            + RateFormatter::toString(spreadedForward-me->value(),10) + "\n"
             "    expected:   "
-            + DoubleFormatter::toString(forward,10));
+            + RateFormatter::toString(forward,10));
 }
 
 void TermStructureTest::testFSpreadedObs() {
@@ -200,9 +200,9 @@ void TermStructureTest::testZSpreaded() {
         BOOST_FAIL(
             "unable to reproduce zero yield from spreaded curve\n"
             "    calculated: "
-            + DoubleFormatter::toString(spreadedZero-me->value(),10) + "\n"
+            + RateFormatter::toString(spreadedZero-me->value(),10) + "\n"
             "    expected:   "
-            + DoubleFormatter::toString(zero,10));
+            + RateFormatter::toString(zero,10));
 }
 
 void TermStructureTest::testZSpreadedObs() {

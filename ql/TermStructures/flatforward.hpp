@@ -51,7 +51,7 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time) const;
         DiscountFactor discountImpl(Time) const;
         Rate forwardImpl(Time) const;
-        Rate compoundForwardImpl(Time t, int compFreq) const;
+        Rate compoundForwardImpl(Time t, Integer compFreq) const;
       private:
         Date todaysDate_, referenceDate_;
         DayCounter dayCounter_;
@@ -106,7 +106,8 @@ namespace QuantLib {
         return forward_->value();
     }
 
-    inline Rate FlatForward::compoundForwardImpl(Time t, int compFreq) const {
+    inline Rate FlatForward::compoundForwardImpl(Time t, 
+                                                 Integer compFreq) const {
         double zy = zeroYieldImpl(t);
         if (compFreq == 0)
             return zy;

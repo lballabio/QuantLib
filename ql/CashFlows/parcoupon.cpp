@@ -43,7 +43,7 @@ namespace QuantLib {
             // must have been fixed
             Rate pastFixing = XiborManager::getHistory(
                                                  index_->name())[fixing_date];
-            QL_REQUIRE(pastFixing != Null<double>(),
+            QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " + index_->name() + " fixing for " +
                        DateFormatter::toString(fixing_date));
             return (pastFixing+spread_)*accrualPeriod()*nominal();
@@ -53,7 +53,7 @@ namespace QuantLib {
             try {
                 Rate pastFixing = XiborManager::getHistory(
                                                  index_->name())[fixing_date];
-                if (pastFixing != Null<double>())
+                if (pastFixing != Null<Real>())
                     return (pastFixing+spread_) *
                         accrualPeriod() * nominal();
                 else

@@ -47,19 +47,19 @@ namespace QuantLib {
                 QL_REQUIRE(moneyness>0.0,
                            "moneyness less/equal zero not allowed");
 
-                if (accruedCoupon == Null<double>())
+                if (accruedCoupon == Null<Real>())
                     accruedCoupon_ = 0.0;
 
-                if (localCap == Null<double>())
+                if (localCap == Null<Real>())
                     localCap_ = QL_MAX_DOUBLE;
 
-                if (localFloor == Null<double>())
+                if (localFloor == Null<Real>())
                     localFloor_ = 0.0;
 
-                if (globalCap == Null<double>())
+                if (globalCap == Null<Real>())
                     globalCap_ = QL_MAX_DOUBLE;
 
-                if (globalFloor == Null<double>())
+                if (globalFloor == Null<Real>())
                     globalFloor_ = 0.0;
             }
 
@@ -84,7 +84,7 @@ namespace QuantLib {
                 for (i=0; i<n; i++) {
                     underlying *= QL_EXP(path[i]);
                     // incorporate payoff
-                    if (lastFixing != Null<double>()) {
+                    if (lastFixing != Null<Real>()) {
                         payoff =
                             PlainVanillaPayoff(type_,
                                                moneyness_*lastFixing)

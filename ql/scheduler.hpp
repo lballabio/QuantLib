@@ -33,7 +33,7 @@ namespace QuantLib {
       public:
         Schedule(const Calendar& calendar,
                  const Date& startDate, const Date& endDate,
-                 int frequency, RollingConvention rollingConvention,
+                 Frequency frequency, RollingConvention rollingConvention,
                  bool isAdjusted, const Date& stubDate = Date(),
                  bool startFromEnd = false, bool longFinal = false);
         Schedule(const std::vector<Date>&,
@@ -83,7 +83,7 @@ namespace QuantLib {
       public:
         MakeSchedule(const Calendar& calendar,
                      const Date& startDate, const Date& endDate,
-                     int frequency, RollingConvention rollingConvention,
+                     Frequency frequency, RollingConvention rollingConvention,
                      bool isAdjusted)
         : calendar_(calendar), startDate_(startDate), endDate_(endDate),
           frequency_(frequency), rollingConvention_(rollingConvention),
@@ -118,7 +118,7 @@ namespace QuantLib {
       private:
         Calendar calendar_;
         Date startDate_, endDate_;
-        int frequency_;
+        Frequency frequency_;
         RollingConvention rollingConvention_;
         bool isAdjusted_;
         Date stubDate_;
@@ -168,7 +168,7 @@ namespace QuantLib {
     }
 
     inline Frequency Schedule::frequency() const {
-        QL_REQUIRE(int(frequency_) != -1,
+        QL_REQUIRE(Integer(frequency_) != -1,
                    "frequency not available");
         return frequency_;
     }

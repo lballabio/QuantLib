@@ -31,17 +31,7 @@ namespace QuantLib {
     : CalibrationHelper(volatility,termStructure) {
 
         Period indexTenor = index->tenor();
-        int frequency;
-        if (indexTenor.units() == Months) {
-            QL_REQUIRE((12%indexTenor.length()) == 0, 
-                       "invalid index tenor");
-            frequency = 12/indexTenor.length();
-        } else if (indexTenor.units() == Years) {
-            QL_REQUIRE(indexTenor.length()==1, "invalid index tenor");
-            frequency=1;
-        } else {
-            QL_FAIL("invalid index tenor");
-        }
+        Frequency frequency = index->frequency();
         Date startDate = index->calendar().advance(
                                          termStructure->referenceDate(),
                                          maturity.length(), maturity.units());

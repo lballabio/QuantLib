@@ -79,11 +79,11 @@ namespace QuantLib {
         SimpleSwap::arguments::validate();
         #endif
 
-        QL_REQUIRE(fixedRate != Null<double>(), 
+        QL_REQUIRE(fixedRate != Null<Real>(), 
                    "fixed swap rate null or not set");
-        QL_REQUIRE(fairRate != Null<double>(), 
+        QL_REQUIRE(fairRate != Null<Real>(), 
                    "fair swap rate null or not set");
-        QL_REQUIRE(fixedBPS != Null<double>(), 
+        QL_REQUIRE(fixedBPS != Null<Real>(), 
                    "fixed swap BPS null or not set");
     }
 

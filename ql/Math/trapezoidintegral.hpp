@@ -46,7 +46,7 @@ namespace QuantLib {
         enum Method { Default, MidPoint };
         TrapezoidIntegral(double accuracy, 
                           Method method = Default,
-                          Size maxIterations = Null<int>())
+                          Size maxIterations = Null<Size>())
         : accuracy_(accuracy), method_(method), 
           maxIterations_(maxIterations) {}
         template <class F>

@@ -57,7 +57,7 @@ namespace QuantLib {
         //@{
         std::string name() const;
         Period tenor() const;
-        int frequency() const;
+        Frequency frequency() const;
         int settlementDays() const;
         Currency currency() const;
         Calendar calendar() const;

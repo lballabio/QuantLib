@@ -22,13 +22,13 @@ namespace QuantLib {
 
     void AnalyticPerformanceEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.accruedCoupon == Null<double>() &&
-                   arguments_.lastFixing == Null<double>(),
+        QL_REQUIRE(arguments_.accruedCoupon == Null<Real>() &&
+                   arguments_.lastFixing == Null<Real>(),
                    "this engine cannot price options already started");
-        QL_REQUIRE(arguments_.localCap == Null<double>() &&
-                   arguments_.localFloor == Null<double>() &&
-                   arguments_.globalCap == Null<double>() &&
-                   arguments_.globalFloor == Null<double>(),
+        QL_REQUIRE(arguments_.localCap == Null<Real>() &&
+                   arguments_.localFloor == Null<Real>() &&
+                   arguments_.globalCap == Null<Real>() &&
+                   arguments_.globalFloor == Null<Real>(),
                    "this engine cannot price capped/floored options");
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,

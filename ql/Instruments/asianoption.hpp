@@ -83,8 +83,8 @@ namespace QuantLib {
         : public OneAssetStrikedOption::arguments {
       public:
         arguments() : averageType(Average::Type(-1)),
-                      runningProduct(Null<double>()),
-                      pastFixings(Null<int>()) {}
+                      runningProduct(Null<Real>()),
+                      pastFixings(Null<Size>()) {}
         void validate() const;
         Average::Type averageType;
         double runningProduct;

@@ -29,17 +29,7 @@ namespace QuantLib {
     : CalibrationHelper(volatility,termStructure) {
 
         Period indexTenor = index->tenor();
-        int frequency;
-        if (indexTenor.units() == Months) {
-            QL_REQUIRE((12%indexTenor.length()) == 0, 
-                       "invalid index tenor");
-            frequency = 12/indexTenor.length();
-        } else if (indexTenor.units() == Years) {
-            QL_REQUIRE(indexTenor.length()==1, "invalid index tenor");
-            frequency=1;
-        } else {
-            QL_FAIL("invalid index tenor");
-        }
+        Frequency frequency = index->frequency();
         Rate fixedRate = 0.04;//dummy value
         Date startDate = termStructure->referenceDate().
             plus(indexTenor.length(), indexTenor.units());
@@ -60,15 +50,13 @@ namespace QuantLib {
 
         std::vector<double> nominals(1,1.0);
         Schedule floatSchedule(index->calendar(), startDate, maturity,
-                               frequency, index->rollingConvention(),
-                               true);
+                               frequency, index->rollingConvention(), true);
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg = 
             FloatingRateCouponVector(floatSchedule, nominals, 
                                      index, 0);
 
         Schedule fixedSchedule(index->calendar(), startDate, maturity,
-                               frequency, index->rollingConvention(),
-                               false);
+                               frequency, index->rollingConvention(), false);
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg = 
             FixedRateCouponVector(fixedSchedule, nominals, 
                                   std::vector<Rate>(1, fixedRate), 

@@ -34,9 +34,9 @@ void FactorialTest::testFactorial() {
     if (calculated!=expected)
         BOOST_FAIL("Factorial(0)"
                    "    calculated: "
-                   + DoubleFormatter::toExponential(calculated,16) + "\n"
+                   + DecimalFormatter::toExponential(calculated,16) + "\n"
                    "    expected:   "
-                   + DoubleFormatter::toExponential(expected,16));
+                   + DecimalFormatter::toExponential(expected,16));
     for (i=1; i<28; i++) {
         expected *= i;
         calculated   = Factorial::get(i);
@@ -44,9 +44,9 @@ void FactorialTest::testFactorial() {
             BOOST_FAIL("Factorial("
                        + IntegerFormatter::toString(i) + ")"
                        "    calculated: "
-                       + DoubleFormatter::toExponential(calculated,16) + "\n"
+                       + DecimalFormatter::toExponential(calculated,16) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toExponential(expected,16));
+                       + DecimalFormatter::toExponential(expected,16));
     }
     // Borland cannot stand i>=171
     // ????????????????????????????
@@ -57,11 +57,11 @@ void FactorialTest::testFactorial() {
             BOOST_FAIL("Factorial("
                        + IntegerFormatter::toString(i) + ")"
                        "    calculated: "
-                       + DoubleFormatter::toExponential(calculated,16) + "\n"
+                       + DecimalFormatter::toExponential(calculated,16) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toExponential(expected,16) + "\n"
+                       + DecimalFormatter::toExponential(expected,16) + "\n"
                        "    rel error:   "
-                       + DoubleFormatter::toExponential(
+                       + DecimalFormatter::toExponential(
                                    QL_FABS(calculated-expected)/expected,16));
     }
 }
@@ -76,9 +76,9 @@ void FactorialTest::testGammaFunction() {
         BOOST_FAIL("GammaFunction("
                    + IntegerFormatter::toString(1) + ")"
                    "    calculated: "
-                   + DoubleFormatter::toExponential(calculated,16) + "\n"
+                   + DecimalFormatter::toExponential(calculated,16) + "\n"
                    "    expected:   "
-                   + DoubleFormatter::toExponential(expected,16));
+                   + DecimalFormatter::toExponential(expected,16));
 
     for (Size i=2; i<9000; i++) {
         expected  += QL_LOG(double(i));
@@ -87,11 +87,11 @@ void FactorialTest::testGammaFunction() {
             BOOST_FAIL("GammaFunction("
                        + SizeFormatter::toString(i) + ")"
                        "    calculated: "
-                       + DoubleFormatter::toExponential(calculated,16) + "\n"
+                       + DecimalFormatter::toExponential(calculated,16) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toExponential(expected,16) + "\n"
+                       + DecimalFormatter::toExponential(expected,16) + "\n"
                        "    rel error:   "
-                       + DoubleFormatter::toExponential(
+                       + DecimalFormatter::toExponential(
                                    QL_FABS(calculated-expected)/expected,16));
     }
 }
@@ -111,54 +111,54 @@ void FactorialTest::testPoissonDistribution() {
     double error = QL_FABS(calculated-expected);
     if (error>1.0e-16)
         BOOST_FAIL("Poisson pdf("
-                   + DoubleFormatter::toString(mean) + ")("
+                   + DecimalFormatter::toString(mean) + ")("
                    + IntegerFormatter::toString(i) + ")\n"
                    "    calculated: "
-                   + DoubleFormatter::toString(calculated,16) + "\n"
+                   + DecimalFormatter::toString(calculated,16) + "\n"
                    "    expected:   "
-                   + DoubleFormatter::toString(expected,16)+
+                   + DecimalFormatter::toString(expected,16)+
                    "    error:   "
-                   + DoubleFormatter::toExponential(error));
+                   + DecimalFormatter::toExponential(error));
 
     CumulativePoissonDistribution cdf(mean);
     double cumCalculated = cdf(i);
     double cumExpected = 1.0;
     if (cumCalculated!=cumExpected)
         BOOST_FAIL("Poisson cdf("
-                   + DoubleFormatter::toString(mean) + ")("
+                   + DecimalFormatter::toString(mean) + ")("
                    + IntegerFormatter::toString(i) + ")\n"
                    "    calculated: "
-                   + DoubleFormatter::toString(cumCalculated,16) + "\n"
+                   + DecimalFormatter::toString(cumCalculated,16) + "\n"
                    "    expected:   "
-                   + DoubleFormatter::toString(cumExpected,16)+
+                   + DecimalFormatter::toString(cumExpected,16)+
                    "    error:   "
-                   + DoubleFormatter::toExponential(error));
+                   + DecimalFormatter::toExponential(error));
 
     for (i=1; i<25; i++) {
         calculated = pdf(i);
         expected = 0.0;
         if (calculated!=expected)
             BOOST_FAIL("Poisson pdf("
-                       + DoubleFormatter::toString(mean) + ")("
+                       + DecimalFormatter::toString(mean) + ")("
                        + IntegerFormatter::toString(i) + ")\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated,16) + "\n"
+                       + DecimalFormatter::toString(calculated,16) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected,16)+
+                       + DecimalFormatter::toString(expected,16)+
                        "    error:   "
-                       + DoubleFormatter::toExponential(error));
+                       + DecimalFormatter::toExponential(error));
         cumCalculated = cdf(i);
         cumExpected = 1.0;
         if (cumCalculated!=cumExpected)
             BOOST_FAIL("Poisson cdf("
-                       + DoubleFormatter::toString(mean) + ")("
+                       + DecimalFormatter::toString(mean) + ")("
                        + IntegerFormatter::toString(i) + ")\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(cumCalculated,16) + "\n"
+                       + DecimalFormatter::toString(cumCalculated,16) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(cumExpected,16)+
+                       + DecimalFormatter::toString(cumExpected,16)+
                        "    error:   "
-                       + DoubleFormatter::toExponential(error));
+                       + DecimalFormatter::toExponential(error));
     }
 
 
@@ -171,14 +171,14 @@ void FactorialTest::testPoissonDistribution() {
         error = QL_FABS(calculated-expected);
         if (error>1e-16)
             BOOST_FAIL("Poisson pdf("
-                       + DoubleFormatter::toString(mean) + ")("
+                       + DecimalFormatter::toString(mean) + ")("
                        + IntegerFormatter::toString(i) + ")\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(calculated,16) + "\n"
+                       + DecimalFormatter::toString(calculated,16) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(expected,16)+
+                       + DecimalFormatter::toString(expected,16)+
                        "    error:   "
-                       + DoubleFormatter::toExponential(error));
+                       + DecimalFormatter::toExponential(error));
 
         cdf = CumulativePoissonDistribution(mean);
         cumCalculated = cdf(i);
@@ -186,14 +186,14 @@ void FactorialTest::testPoissonDistribution() {
         error = QL_FABS(cumCalculated-cumExpected);
         if (error>1.0e-13)
             BOOST_FAIL("Poisson cdf("
-                       + DoubleFormatter::toString(mean) + ")("
+                       + DecimalFormatter::toString(mean) + ")("
                        + IntegerFormatter::toString(i) + ")\n"
                        "    calculated: "
-                       + DoubleFormatter::toString(cumCalculated,16) + "\n"
+                       + DecimalFormatter::toString(cumCalculated,16) + "\n"
                        "    expected:   "
-                       + DoubleFormatter::toString(cumExpected,16)+
+                       + DecimalFormatter::toString(cumExpected,16)+
                        "    error:   "
-                       + DoubleFormatter::toExponential(error));
+                       + DecimalFormatter::toExponential(error));
         for (unsigned long i=1; i<25; i++) {
             calculated = pdf(i);
             logHelper = logHelper+QL_LOG(mean)-QL_LOG(double(i));
@@ -201,27 +201,27 @@ void FactorialTest::testPoissonDistribution() {
             error = QL_FABS(calculated-expected);
             if (error>1.0e-13)
                 BOOST_FAIL("Poisson pdf("
-                           + DoubleFormatter::toString(mean) + ")("
+                           + DecimalFormatter::toString(mean) + ")("
                            + IntegerFormatter::toString(i) + ")\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated,16) + "\n"
+                           + DecimalFormatter::toString(calculated,16) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected,16)+
+                           + DecimalFormatter::toString(expected,16)+
                            "    error:   "
-                           + DoubleFormatter::toExponential(error));
+                           + DecimalFormatter::toExponential(error));
             cumCalculated = cdf(i);
             cumExpected += expected;
             error = QL_FABS(cumCalculated-cumExpected);
             if (error>1.0e-12)
                 BOOST_FAIL("Poisson cdf("
-                           + DoubleFormatter::toString(mean) + ")("
+                           + DecimalFormatter::toString(mean) + ")("
                            + IntegerFormatter::toString(i) + ")\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(cumCalculated,16) + "\n"
+                           + DecimalFormatter::toString(cumCalculated,16)+"\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(cumExpected,16)+
+                           + DecimalFormatter::toString(cumExpected,16)+
                            "    error:   "
-                           + DoubleFormatter::toExponential(error));
+                           + DecimalFormatter::toExponential(error));
         }
     }
 }

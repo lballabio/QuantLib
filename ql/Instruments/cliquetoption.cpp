@@ -53,15 +53,15 @@ namespace QuantLib {
                    "wrong payoff type");
         QL_REQUIRE(moneyness->strike() > 0.0,
                    "negative or zero moneyness given");
-        QL_REQUIRE(accruedCoupon == Null<double>() || accruedCoupon >= 0.0,
+        QL_REQUIRE(accruedCoupon == Null<Real>() || accruedCoupon >= 0.0,
                    "negative accrued coupon");
-        QL_REQUIRE(localCap == Null<double>() || localCap >= 0.0,
+        QL_REQUIRE(localCap == Null<Real>() || localCap >= 0.0,
                    "negative local cap");
-        QL_REQUIRE(localFloor == Null<double>() || localFloor >= 0.0,
+        QL_REQUIRE(localFloor == Null<Real>() || localFloor >= 0.0,
                    "negative local floor");
-        QL_REQUIRE(globalCap == Null<double>() || globalCap >= 0.0,
+        QL_REQUIRE(globalCap == Null<Real>() || globalCap >= 0.0,
                    "negative global cap");
-        QL_REQUIRE(globalFloor == Null<double>() || globalFloor >= 0.0,
+        QL_REQUIRE(globalFloor == Null<Real>() || globalFloor >= 0.0,
                    "negative global floor");
         QL_REQUIRE(!resetDates.empty(),
                    "no reset dates given");

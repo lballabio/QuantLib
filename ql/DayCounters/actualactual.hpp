@@ -46,7 +46,7 @@ namespace QuantLib {
             std::string name() const { 
                 return std::string("act/act (Bond)");
             }
-            int dayCount(const Date& d1, const Date& d2) const {
+            BigInteger dayCount(const Date& d1, const Date& d2) const {
                 return (d2-d1); 
             }
             Time yearFraction(const Date& d1, const Date& d2,
@@ -57,7 +57,7 @@ namespace QuantLib {
             std::string name() const { 
                 return std::string("act/act (ISDA)");
             }
-            int dayCount(const Date& d1, const Date& d2) const {
+            BigInteger dayCount(const Date& d1, const Date& d2) const {
                 return (d2-d1); 
             }
             Time yearFraction(const Date& d1, const Date& d2,
@@ -68,7 +68,7 @@ namespace QuantLib {
             std::string name() const { 
                 return std::string("act/act (Euro)");
             }
-            int dayCount(const Date& d1, const Date& d2) const {
+            BigInteger dayCount(const Date& d1, const Date& d2) const {
                 return (d2-d1); 
             }
             Time yearFraction(const Date& d1, const Date& d2,

@@ -47,41 +47,41 @@ namespace QuantLib {
         //! \name Black Volatility
         //@{
         //! present (a.k.a spot) volatility
-        double blackVol(const Date& maturity,
-                        double strike,
-                        bool extrapolate = false) const;
+        Volatility blackVol(const Date& maturity,
+                            Real strike,
+                            bool extrapolate = false) const;
         //! present (a.k.a spot) volatility
-        double blackVol(Time maturity,
-                        double strike,
-                        bool extrapolate = false) const;
+        Volatility blackVol(Time maturity,
+                            Real strike,
+                            bool extrapolate = false) const;
         //! present (a.k.a spot) variance
-        double blackVariance(const Date& maturity,
-                             double strike,
-                             bool extrapolate = false) const;
+        Real blackVariance(const Date& maturity,
+                           Real strike,
+                           bool extrapolate = false) const;
         //! present (a.k.a spot) variance
-        double blackVariance(Time maturity,
-                             double strike,
-                             bool extrapolate = false) const;
+        Real blackVariance(Time maturity,
+                           Real strike,
+                           bool extrapolate = false) const;
         //! future (a.k.a. forward) volatility
-        double blackForwardVol(const Date& date1,
-                               const Date& date2,
-                               double strike,
-                               bool extrapolate = false) const;
+        Volatility blackForwardVol(const Date& date1,
+                                   const Date& date2,
+                                   Real strike,
+                                   bool extrapolate = false) const;
         //! future (a.k.a. forward) volatility
-        double blackForwardVol(Time time1,
-                               Time time2,
-                               double strike,
-                               bool extrapolate = false) const;
+        Volatility blackForwardVol(Time time1,
+                                   Time time2,
+                                   Real strike,
+                                   bool extrapolate = false) const;
         //! future (a.k.a. forward) variance
-        double blackForwardVariance(const Date& date1,
-                                    const Date& date2,
-                                    double strike,
-                                    bool extrapolate = false) const;
+        Real blackForwardVariance(const Date& date1,
+                                  const Date& date2,
+                                  Real strike,
+                                  bool extrapolate = false) const;
         //! future (a.k.a. forward) variance
-        double blackForwardVariance(Time time1,
-                                    Time time2,
-                                    double strike,
-                                    bool extrapolate = false) const;
+        Real blackForwardVariance(Time time1,
+                                  Time time2,
+                                  Real strike,
+                                  bool extrapolate = false) const;
         //@}
         //! \name Dates
         //@{
@@ -97,9 +97,9 @@ namespace QuantLib {
         //! the latest time for which the term structure can return vols
         Time maxTime() const;
         //! the minimum strike for which the term structure can return vols
-        virtual double minStrike() const = 0;
+        virtual Real minStrike() const = 0;
         //! the maximum strike for which the term structure can return vols
-        virtual double maxStrike() const = 0;
+        virtual Real maxStrike() const = 0;
         //@}
         //! \name Visitability
         //@{
@@ -115,14 +115,14 @@ namespace QuantLib {
         */
         //@{
         //! Black variance calculation
-        virtual double blackVarianceImpl(Time t, double strike) const = 0;
+        virtual Real blackVarianceImpl(Time t, Real strike) const = 0;
         //! Black volatility calculation
-        virtual double blackVolImpl(Time t, double strike) const = 0;
+        virtual Volatility blackVolImpl(Time t, Real strike) const = 0;
         //@}
 	  private:
-        static const double dT;
-        void checkRange(const Date&, double strike, bool extrapolate) const;
-        void checkRange(Time, double strike, bool extrapolate) const;
+        static const Time dT;
+        void checkRange(const Date&, Real strike, bool extrapolate) const;
+        void checkRange(Time, Real strike, bool extrapolate) const;
     };
 
 
@@ -130,7 +130,7 @@ namespace QuantLib {
     //! Black-volatility term structure
     /*! This abstract class acts as an adapter to BlackVolTermStructure 
         allowing the programmer to implement only the
-        <tt>blackVolImpl(Time, double, bool)</tt> method in derived classes.
+        <tt>blackVolImpl(Time, Real, bool)</tt> method in derived classes.
 
         Volatility are assumed to be expressed on an annual basis.
     */
@@ -144,14 +144,14 @@ namespace QuantLib {
         /*! Returns the variance for the given strike and date calculating it
             from the volatility.
         */
-        double blackVarianceImpl(Time maturity, double strike) const;
+        Real blackVarianceImpl(Time maturity, Real strike) const;
     };
 
 
     //! Black variance term structure
     /*! This abstract class acts as an adapter to VolTermStructure allowing 
         the programmer to implement only the
-        <tt>blackVarianceImpl(Time, double, bool)</tt> method in derived
+        <tt>blackVarianceImpl(Time, Real, bool)</tt> method in derived
         classes.
 
         Volatility are assumed to be expressed on an annual basis.
@@ -166,7 +166,7 @@ namespace QuantLib {
         /*! Returns the volatility for the given strike and date calculating it
             from the variance.
         */
-        double blackVolImpl(Time maturity, double strike) const;
+        Volatility blackVolImpl(Time maturity, Real strike) const;
     };
 
 
@@ -182,12 +182,12 @@ namespace QuantLib {
         virtual ~LocalVolTermStructure() {}
         //! \name Local Volatility
         //@{
-        double localVol(const Date& d,
-                        double underlyingLevel,
-                        bool extrapolate = false) const;
-        double localVol(Time t,
-                        double underlyingLevel,
-                        bool extrapolate = false) const;
+        Volatility localVol(const Date& d,
+                            Real underlyingLevel,
+                            bool extrapolate = false) const;
+        Volatility localVol(Time t,
+                            Real underlyingLevel,
+                            bool extrapolate = false) const;
         //@}
         //! \name Dates
         //@{
@@ -203,9 +203,9 @@ namespace QuantLib {
         //! the latest time for which the term structure can return vols
         Time maxTime() const;
         //! the minimum strike for which the term structure can return vols
-        virtual double minStrike() const = 0;
+        virtual Real minStrike() const = 0;
         //! the maximum strike for which the term structure can return vols
-        virtual double maxStrike() const = 0;
+        virtual Real maxStrike() const = 0;
         //@}
         //! \name Visitability
         //@{
@@ -221,49 +221,48 @@ namespace QuantLib {
         */
         //@{
         //! local vol calculation
-        virtual double localVolImpl(Time t, double strike) const = 0;
+        virtual Volatility localVolImpl(Time t, Real strike) const = 0;
         //@}
       private:
-        void checkRange(const Date&, double strike, bool extrapolate) const;
-        void checkRange(Time, double strike, bool extrapolate) const;
+        void checkRange(const Date&, Real strike, bool extrapolate) const;
+        void checkRange(Time, Real strike, bool extrapolate) const;
     };
 
 
 
     // inline definitions
 
-	inline double BlackVolTermStructure::maxTime() const {
+	inline Time BlackVolTermStructure::maxTime() const {
         return dayCounter().yearFraction(referenceDate(), maxDate());
     }
 
-    inline double BlackVolTermStructure::blackVol(const Date& maturity,
-                                                  double strike, 
-                                                  bool extrapolate) const {
+    inline Volatility BlackVolTermStructure::blackVol(const Date& maturity,
+                                                      Real strike, 
+                                                      bool extrapolate) const {
         checkRange(maturity,strike,extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(), maturity);
         return blackVolImpl(t, strike);
     }
 
-    inline double BlackVolTermStructure::blackVol(Time maturity,
-                                                  double strike, 
-                                                  bool extrapolate) const {
+    inline Volatility BlackVolTermStructure::blackVol(Time maturity,
+                                                      Real strike, 
+                                                      bool extrapolate) const {
         checkRange(maturity,strike,extrapolate);
         return blackVolImpl(maturity, strike);
     }
 
-    inline double BlackVolTermStructure::blackVariance(const Date& maturity,
-                                                       double strike, 
-                                                       bool extrapolate) 
+    inline Real BlackVolTermStructure::blackVariance(const Date& maturity,
+                                                     Real strike, 
+                                                     bool extrapolate) 
                                                                       const {
         checkRange(maturity,strike,extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(), maturity);
         return blackVarianceImpl(t, strike);
     }
 
-    inline double BlackVolTermStructure::blackVariance(Time maturity,
-                                                       double strike, 
-                                                       bool extrapolate) 
-                                                                      const {
+    inline Real BlackVolTermStructure::blackVariance(Time maturity,
+                                                     Real strike, 
+                                                     bool extrapolate) const {
         checkRange(maturity,strike,extrapolate);
         return blackVarianceImpl(maturity, strike);
     }
@@ -277,35 +276,35 @@ namespace QuantLib {
             QL_FAIL("not a Black-volatility term structure visitor");
     }
 
-    inline void BlackVolTermStructure::checkRange(const Date& d, double k, 
+    inline void BlackVolTermStructure::checkRange(const Date& d, Real k, 
                                                   bool extrapolate) const {
         Time t = dayCounter().yearFraction(referenceDate(),d);
         checkRange(t,k,extrapolate);
     }
 
-    inline void BlackVolTermStructure::checkRange(Time t, double k, 
+    inline void BlackVolTermStructure::checkRange(Time t, Real k, 
                                                   bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
                    "negative time (" +
-                   DoubleFormatter::toString(t) +
+                   DecimalFormatter::toString(t) +
                    ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
                    "time (" +
-                   DoubleFormatter::toString(t) +
+                   DecimalFormatter::toString(t) +
                    ") is past max curve time (" +
-                   DoubleFormatter::toString(maxTime()) + ")");
+                   DecimalFormatter::toString(maxTime()) + ")");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || 
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" +
-                   DoubleFormatter::toString(k) +
+                   DecimalFormatter::toString(k) +
                    ") is outside the curve domain [" +
-                   DoubleFormatter::toString(minStrike()) + "," +
-                   DoubleFormatter::toString(maxStrike()) + "]");
+                   DecimalFormatter::toString(minStrike()) + "," +
+                   DecimalFormatter::toString(maxStrike()) + "]");
     }
 
-    inline double BlackVolatilityTermStructure::blackVarianceImpl(
-                                         Time maturity, double strike) const {
-        double vol = blackVolImpl(maturity, strike);
+    inline Real BlackVolatilityTermStructure::blackVarianceImpl(
+                                         Time maturity, Real strike) const {
+        Volatility vol = blackVolImpl(maturity, strike);
         return vol*vol*maturity;
     }
 
@@ -320,10 +319,10 @@ namespace QuantLib {
 
 
 
-    inline double BlackVarianceTermStructure ::blackVolImpl(
-                                         Time maturity, double strike) const {
+    inline Volatility BlackVarianceTermStructure ::blackVolImpl(
+                                         Time maturity, Real strike) const {
         Time nonZeroMaturity = (maturity==0.0 ? 0.00001 : maturity);
-        double var = blackVarianceImpl(nonZeroMaturity, strike);
+        Real var = blackVarianceImpl(nonZeroMaturity, strike);
         return QL_SQRT(var/nonZeroMaturity);
     }
 
@@ -338,21 +337,21 @@ namespace QuantLib {
 
 
 
-    inline double LocalVolTermStructure::maxTime() const {
+    inline Time LocalVolTermStructure::maxTime() const {
         return dayCounter().yearFraction(referenceDate(), maxDate());
     }
 
-    inline double LocalVolTermStructure::localVol(const Date& d,
-                                                  double underlyingLevel, 
-                                                  bool extrapolate) const {
+    inline Volatility LocalVolTermStructure::localVol(const Date& d,
+                                                      Real underlyingLevel, 
+                                                      bool extrapolate) const {
         checkRange(d,underlyingLevel,extrapolate);
         Time t = dayCounter().yearFraction(referenceDate(), d);
         return localVolImpl(t, underlyingLevel);
     }
 
-    inline double LocalVolTermStructure::localVol(Time t,
-                                                  double underlyingLevel, 
-                                                  bool extrapolate) const {
+    inline Volatility LocalVolTermStructure::localVol(Time t,
+                                                      Real underlyingLevel, 
+                                                      bool extrapolate) const {
         checkRange(t,underlyingLevel,extrapolate);
         return localVolImpl(t, underlyingLevel);
     }
@@ -366,30 +365,30 @@ namespace QuantLib {
             QL_FAIL("not a local-volatility term structure visitor");
     }
 
-    inline void LocalVolTermStructure::checkRange(const Date& d, double k, 
+    inline void LocalVolTermStructure::checkRange(const Date& d, Real k, 
                                                   bool extrapolate) const {
         Time t = dayCounter().yearFraction(referenceDate(),d);
         checkRange(t,k,extrapolate);
     }
 
-    inline void LocalVolTermStructure::checkRange(Time t, double k, 
+    inline void LocalVolTermStructure::checkRange(Time t, Real k, 
                                                   bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
                    "negative time (" +
-                   DoubleFormatter::toString(t) +
+                   DecimalFormatter::toString(t) +
                    ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
                    "time (" +
-                   DoubleFormatter::toString(t) +
+                   DecimalFormatter::toString(t) +
                    ") is past max curve time (" +
-                   DoubleFormatter::toString(maxTime()) + ")");
+                   DecimalFormatter::toString(maxTime()) + ")");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || 
                    (k >= minStrike() && k <= maxStrike()),
                    "strike (" +
-                   DoubleFormatter::toString(k) +
+                   DecimalFormatter::toString(k) +
                    ") is outside the curve domain [" +
-                   DoubleFormatter::toString(minStrike()) + "," +
-                   DoubleFormatter::toString(maxStrike()) + "]");
+                   DecimalFormatter::toString(minStrike()) + "," +
+                   DecimalFormatter::toString(maxStrike()) + "]");
     }
 
 }

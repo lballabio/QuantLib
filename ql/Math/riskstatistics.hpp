@@ -167,7 +167,7 @@ namespace QuantLib {
         const {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
-                   DoubleFormatter::toString(centile) +
+                   DecimalFormatter::toString(centile) +
                    ") must be in [0.9,1.0)");
 
         // must be a gain, i.e., floored at 0.0
@@ -180,7 +180,7 @@ namespace QuantLib {
 
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
-                   DoubleFormatter::toString(centile) +
+                   DecimalFormatter::toString(centile) +
                    ") must be in [0.9,1.0)");
 
         // must be a loss, i.e., capped at 0.0 and negated
@@ -192,7 +192,7 @@ namespace QuantLib {
     double GenericRiskStatistics<S>::expectedShortfall(double centile) const {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
                    "percentile (" +
-                   DoubleFormatter::toString(centile) +
+                   DecimalFormatter::toString(centile) +
                    ") must be in [0.9,1.0)");
         QL_ENSURE(samples() != 0, "empty sample set");
         double target = -valueAtRisk(centile);

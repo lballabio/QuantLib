@@ -44,9 +44,9 @@ namespace QuantLib {
 
         QL_REQUIRE(underlying > addElements(dividends),
                    "dividends(" +
-                   DoubleFormatter::toString(underlying - underlying_) +
+                   DecimalFormatter::toString(underlying - underlying_) +
                    ") cannot exceed underlying(" +
-                   DoubleFormatter::toString(underlying) +
+                   DecimalFormatter::toString(underlying) +
                    ")");
     }
 

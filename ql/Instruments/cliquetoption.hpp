@@ -56,12 +56,12 @@ namespace QuantLib {
     // should inherit from a strikeless version of VanillaOption::arguments
     class CliquetOption::arguments : public OneAssetStrikedOption::arguments {
       public:
-        arguments() : accruedCoupon(Null<double>()),
-                      lastFixing(Null<double>()),
-                      localCap(Null<double>()),
-                      localFloor(Null<double>()),
-                      globalCap(Null<double>()),
-                      globalFloor(Null<double>()) {}
+        arguments() : accruedCoupon(Null<Real>()),
+                      lastFixing(Null<Real>()),
+                      localCap(Null<Real>()),
+                      localFloor(Null<Real>()),
+                      globalCap(Null<Real>()),
+                      globalFloor(Null<Real>()) {}
         void validate() const;
         double accruedCoupon, lastFixing;
         double localCap, localFloor, globalCap, globalFloor;

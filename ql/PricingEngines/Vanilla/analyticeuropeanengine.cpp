@@ -72,8 +72,8 @@ namespace QuantLib {
             results_.thetaPerDay = 
                 black.thetaPerDay(spot, t);
         } catch (Error&) {
-            results_.theta = Null<double>();
-            results_.thetaPerDay = Null<double>();
+            results_.theta = Null<Real>();
+            results_.thetaPerDay = Null<Real>();
         }
 
         results_.strikeSensitivity  = black.strikeSensitivity();

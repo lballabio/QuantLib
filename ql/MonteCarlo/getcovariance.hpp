@@ -57,10 +57,10 @@ namespace QuantLib {
                            "invalid correlation matrix:"
                            "\nc[" + SizeFormatter::toString(i) +
                            ", "   + SizeFormatter::toString(j) +
-                           "] = " + DoubleFormatter::toString(corr[i][j]) +
+                           "] = " + DecimalFormatter::toString(corr[i][j]) +
                            "\nc[" + SizeFormatter::toString(j) +
                            ", "   + SizeFormatter::toString(i) +
-                           "] = " + DoubleFormatter::toString(corr[j][i]));
+                           "] = " + DecimalFormatter::toString(corr[j][i]));
                 covariance[i][i] = (*iIt) * (*iIt);
                 covariance[i][j] = (*iIt) * (*jIt) *
                     0.5 * (corr[i][j] + corr[j][i]);
@@ -70,7 +70,7 @@ namespace QuantLib {
                        "invalid correlation matrix, diagonal element of the "
                        + SizeFormatter::toOrdinal(i) +
                        " row is "
-                       + DoubleFormatter::toString(corr[i][i]) +
+                       + DecimalFormatter::toString(corr[i][i]) +
                        " instead of 1.0");
             covariance[i][i] = (*iIt) * (*iIt);
         }

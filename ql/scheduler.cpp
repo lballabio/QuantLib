@@ -22,7 +22,7 @@ namespace QuantLib {
 
     Schedule::Schedule(const Calendar& calendar,
                        const Date& startDate, const Date& endDate, 
-                       int frequency,
+                       Frequency frequency,
                        RollingConvention rollingConvention, 
                        bool isAdjusted,
                        const Date& stubDate, bool startFromEnd, 
@@ -86,7 +86,7 @@ namespace QuantLib {
             }
 
             // add subsequent dates
-            int periods = 1, months = 12/frequency;
+            Integer periods = 1, months = 12/frequency;
             while (true) {
                 Date temp = seed.plus(-periods*months,Months);
                 if (isAdjusted_)
@@ -134,7 +134,7 @@ namespace QuantLib {
             }
 
             // add subsequent dates
-            int periods = 1, months = 12/frequency;
+            Integer periods = 1, months = 12/frequency;
             while (true) {
                 Date temp = seed.plus(periods*months,Months);
                 if (isAdjusted)

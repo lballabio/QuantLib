@@ -71,7 +71,7 @@ namespace QuantLib {
 
         QL_REQUIRE(mu_>=0.0,
                    "mu must be non negative (" +
-                   DoubleFormatter::toString(mu_) + " not allowed)");
+                   DecimalFormatter::toString(mu_) + " not allowed)");
 
         if (mu_!=0.0) logMu_ = QL_LOG(mu_);
     }

@@ -31,7 +31,7 @@ namespace QuantLib {
     template<class ArgumentsType>
     class QuantoOptionArguments : public ArgumentsType {
       public:
-        QuantoOptionArguments() : correlation(Null<double>()) {}
+        QuantoOptionArguments() : correlation(Null<Real>()) {}
         void validate() const;
         double correlation;
         RelinkableHandle<TermStructure> foreignRiskFreeTS;
@@ -45,7 +45,7 @@ namespace QuantLib {
         QuantoOptionResults() { reset() ;}
         void reset() { 
             ResultsType::reset();
-            qvega = qrho = qlambda = Null<double>();
+            qvega = qrho = qlambda = Null<Real>();
         }
         double qvega;
         double qrho;
@@ -90,7 +90,7 @@ namespace QuantLib {
                    "null foreign risk free term structure");
         QL_REQUIRE(!exchRateVolTS.isNull(),
                    "null exchange rate vol term structure");
-        QL_REQUIRE(correlation != Null<double>(),
+        QL_REQUIRE(correlation != Null<Real>(),
                    "null correlation given");
     }
 

@@ -31,7 +31,7 @@ namespace QuantLib {
     class SimpsonIntegral : public TrapezoidIntegral {
       public:
         SimpsonIntegral(double accuracy, 
-                        Size maxIterations = Null<int>())
+                        Size maxIterations = Null<Size>())
         : TrapezoidIntegral(accuracy,Default,maxIterations) {}
         template <class F>
         double operator()(const F& f, double a, double b) const {

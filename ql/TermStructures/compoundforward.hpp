@@ -37,14 +37,14 @@ namespace QuantLib {
                         const std::vector<Rate> &forwards,
                         const Calendar & calendar,
                         const RollingConvention roll,
-                        const int compounding,
+                        const Integer compounding,
                         const DayCounter & dayCounter);
         Date todaysDate() const { return todaysDate_; }
         Date referenceDate() const { return referenceDate_; };
         Calendar calendar() const { return calendar_; };
         RollingConvention roll() const { return roll_; };
         DayCounter dayCounter() const { return dayCounter_; };
-        int compounding() const { return compounding_; };
+        Integer compounding() const { return compounding_; };
         Date maxDate() const;
         Time maxTime() const;
         const std::vector<Time>& times() const;
@@ -63,7 +63,7 @@ namespace QuantLib {
         DiscountFactor discountImpl(Time) const;
         Size referenceNode(Time) const;
         Rate forwardImpl(Time) const;
-        Rate compoundForwardImpl(Time, int) const;
+        Rate compoundForwardImpl(Time, Integer) const;
       private:
         // data members
         Date todaysDate_;
@@ -71,7 +71,7 @@ namespace QuantLib {
         DayCounter dayCounter_;
         Calendar calendar_;
         RollingConvention roll_;
-        int compounding_;
+        Integer compounding_;
         mutable bool needsBootstrap_;
         mutable std::vector<Date> dates_;
         mutable std::vector<Rate> forwards_;

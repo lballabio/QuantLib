@@ -48,7 +48,7 @@ namespace QuantLib {
         double referenceQuote() const { return quote_->value(); }
         virtual double impliedQuote() const = 0;
         virtual DiscountFactor discountGuess() const {
-            return Null<double>();
+            return Null<Real>();
         }
         //! sets the term structure to be used for pricing
         /*! \warning Being a pointer and not a shared_ptr, the term
@@ -81,14 +81,14 @@ namespace QuantLib {
     class DepositRateHelper : public RateHelper {
       public:
         DepositRateHelper(const RelinkableHandle<Quote>& rate,
-                          int n, TimeUnit units,
-                          int settlementDays,
+                          Integer n, TimeUnit units,
+                          Integer settlementDays,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
         DepositRateHelper(double rate,
-                          int n, TimeUnit units,
-                          int settlementDays,
+                          Integer n, TimeUnit units,
+                          Integer settlementDays,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
@@ -97,9 +97,9 @@ namespace QuantLib {
         void setTermStructure(TermStructure*);
         Date maturity() const;
       private:
-        int n_;
+        Integer n_;
         TimeUnit units_;
-        int settlementDays_;
+        Integer settlementDays_;
         Calendar calendar_;
         RollingConvention convention_;
         DayCounter dayCounter_;
@@ -117,14 +117,14 @@ namespace QuantLib {
     class FraRateHelper : public RateHelper {
       public:
         FraRateHelper(const RelinkableHandle<Quote>& rate,
-                      int monthsToStart, int monthsToEnd,
-                      int settlementDays,
+                      Integer monthsToStart, Integer monthsToEnd,
+                      Integer settlementDays,
                       const Calendar& calendar,
                       RollingConvention convention,
                       const DayCounter& dayCounter);
         FraRateHelper(double rate,
-                      int monthsToStart, int monthsToEnd,
-                      int settlementDays,
+                      Integer monthsToStart, Integer monthsToEnd,
+                      Integer settlementDays,
                       const Calendar& calendar,
                       RollingConvention convention,
                       const DayCounter& dayCounter);
@@ -133,8 +133,8 @@ namespace QuantLib {
         void setTermStructure(TermStructure*);
         Date maturity() const;
       private:
-        int monthsToStart_, monthsToEnd_;
-        int settlementDays_;
+        Integer monthsToStart_, monthsToEnd_;
+        Integer settlementDays_;
         Calendar calendar_;
         RollingConvention convention_;
         DayCounter dayCounter_;
@@ -151,7 +151,7 @@ namespace QuantLib {
       public:
         FuturesRateHelper(const RelinkableHandle<Quote>& price,
                           const Date& ImmDate,
-                          int nMonths,
+                          Integer nMonths,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
@@ -163,7 +163,7 @@ namespace QuantLib {
                           const DayCounter& dayCounter);
         FuturesRateHelper(double price,
                           const Date& ImmDate,
-                          int nMonths,
+                          Integer nMonths,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
@@ -172,7 +172,7 @@ namespace QuantLib {
         Date maturity() const;
       private:
         Date ImmDate_;
-        int nMonths_;
+        Integer nMonths_;
         Calendar calendar_;
         RollingConvention convention_;
         DayCounter dayCounter_;
@@ -188,39 +188,39 @@ namespace QuantLib {
     class SwapRateHelper : public RateHelper {
       public:
         SwapRateHelper(const RelinkableHandle<Quote>& rate,
-                       int n, TimeUnit units,
-                       int settlementDays,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
                        const Calendar& calendar,
                        RollingConvention convention,
                        // fixed leg
-                       int fixedFrequency,
+                       Frequency fixedFrequency,
                        bool fixedIsAdjusted,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       int floatingFrequency);
+                       Frequency floatingFrequency);
         SwapRateHelper(double rate,
-                       int n, TimeUnit units,
-                       int settlementDays,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
                        const Calendar& calendar,
                        RollingConvention convention,
                        // fixed leg
-                       int fixedFrequency,
+                       Frequency fixedFrequency,
                        bool fixedIsAdjusted,
                        const DayCounter& fixedDayCount,
                        // floating leg
-                       int floatingFrequency);
+                       Frequency floatingFrequency);
         double impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
         Date maturity() const;
         void setTermStructure(TermStructure*);
       protected:
-        int n_;
+        Integer n_;
         TimeUnit units_;
-        int settlementDays_;
+        Integer settlementDays_;
         Calendar calendar_;
         RollingConvention convention_;
-        int fixedFrequency_, floatingFrequency_;
+        Frequency fixedFrequency_, floatingFrequency_;
         bool fixedIsAdjusted_;
         DayCounter fixedDayCount_;
         Date settlement_;

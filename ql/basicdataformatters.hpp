@@ -32,42 +32,60 @@ namespace QuantLib {
     //! Formats integers for output
     class IntegerFormatter {
       public:
-        static std::string toString(long l, int digits = 0);
-        static std::string toPowerOfTwo(long l, int digits = 0);
+        static std::string toString(BigInteger l, Integer digits = 0);
+        static std::string toPowerOfTwo(BigInteger l, Integer digits = 0);
     };
 
     //! Formats unsigned integers for output
     class SizeFormatter {
       public:
-        static std::string toString(Size l, int digits = 0);
+        static std::string toString(Size l, Integer digits = 0);
         static std::string toOrdinal(Size l);
-        static std::string toPowerOfTwo(Size l, int digits = 0);
+        static std::string toPowerOfTwo(Size l, Integer digits = 0);
     };
 
-    //! Formats doubles for output
-    class DoubleFormatter {
+    //! Formats real numbers for output
+    class DecimalFormatter {
       public:
-        static std::string toString(double x,
-                                    int precision = 6,
-                                    int digits = 0);
-        static std::string toExponential(double x,
-                                         int precision = 6,
-                                         int digits = 0);
+        static std::string toString(Decimal x,
+                                    Integer precision = 6,
+                                    Integer digits = 0);
+        static std::string toExponential(Decimal x,
+                                         Integer precision = 6,
+                                         Integer digits = 0);
+        static std::string toPercentage(Decimal x,
+                                        Integer precision = 6,
+                                        Integer digits = 0);
     };
+
+
+#ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated Renamed to DecimalFormatter
+    typedef DecimalFormatter DoubleFormatter;
+#endif
+
 
     //! Formats amounts in Euro for output
     /*! Formatting follows Euro convention (x,xxx,xxx.xx) */
     class EuroFormatter {
       public:
-        static std::string toString(double amount);
+        static std::string toString(Decimal amount);
     };
 
     //! Formats rates for output
     /*! Formatting is in percentage form (xx.xxxxx%) */
     class RateFormatter {
       public:
-        static std::string toString(double rate,
-                                    int precision = 5);
+        static std::string toString(Rate rate,
+                                    Integer precision = 5);
+    };
+
+    //! Formats volatilities for output
+    /*! Formatting is in percentage form (xx.xxxxx%) */
+    class VolatilityFormatter {
+      public:
+        static std::string toString(Volatility vol,
+                                    Integer precision = 5);
     };
 
 
@@ -83,8 +101,7 @@ namespace QuantLib {
     };
 
     /*! \relates Date */
-    std::ostream& operator<< (std::ostream&,
-                              const Date&);
+    std::ostream& operator<<(std::ostream&, const Date&);
 
     //! Formats currencies for output
     class CurrencyFormatter {

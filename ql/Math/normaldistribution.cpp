@@ -85,7 +85,7 @@ namespace QuantLib {
     double InverseCumulativeNormal::operator()(double x) const {
         QL_REQUIRE(x > 0.0 && x < 1.0, 
                    "InverseCumulativeNormal(" +
-                   DoubleFormatter::toString(x) + 
+                   DecimalFormatter::toString(x) + 
                    ") undefined: must be 0 < x < 1");
 
         double z, r;
@@ -147,7 +147,7 @@ namespace QuantLib {
     double MoroInverseCumulativeNormal::operator()(double x) const {
         QL_REQUIRE(x > 0.0 && x < 1.0, 
                    "MoroInverseCumulativeNormal(" +
-                   DoubleFormatter::toString(x) + 
+                   DecimalFormatter::toString(x) + 
                    ") undefined: must be 0<x<1");
 
         double result;

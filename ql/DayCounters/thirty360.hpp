@@ -54,7 +54,7 @@ namespace QuantLib {
         class US_Impl : public DayCounter::Impl {
           public:
             std::string name() const { return std::string("30/360");}
-            int dayCount(const Date& d1, const Date& d2) const;
+            BigInteger dayCount(const Date& d1, const Date& d2) const;
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const {
                 return dayCount(d1,d2)/360.0; }
@@ -62,7 +62,7 @@ namespace QuantLib {
         class EU_Impl : public DayCounter::Impl {
           public:
             std::string name() const { return std::string("30/360eu");}
-            int dayCount(const Date& d1, const Date& d2) const;
+            BigInteger dayCount(const Date& d1, const Date& d2) const;
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const {
                 return dayCount(d1,d2)/360.0; }
@@ -70,7 +70,7 @@ namespace QuantLib {
         class IT_Impl : public DayCounter::Impl {
           public:
             std::string name() const { return std::string("30/360it");}
-            int dayCount(const Date& d1, const Date& d2) const;
+            BigInteger dayCount(const Date& d1, const Date& d2) const;
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const {
                 return dayCount(d1,d2)/360.0; }

@@ -39,79 +39,71 @@ namespace QuantLib {
 
     double OneAssetOption::delta() const {
         calculate();
-        QL_REQUIRE(delta_ != Null<double>(),
-                   "delta not provided");
+        QL_REQUIRE(delta_ != Null<Real>(), "delta not provided");
         return delta_;
     }
 
     double OneAssetOption::deltaForward() const {
         calculate();
-        QL_REQUIRE(deltaForward_ != Null<double>(),
+        QL_REQUIRE(deltaForward_ != Null<Real>(),
                    "forward delta not provided");
         return deltaForward_;
     }
 
     double OneAssetOption::elasticity() const {
         calculate();
-        QL_REQUIRE(elasticity_ != Null<double>(),
-                   "elasticity not provided");
+        QL_REQUIRE(elasticity_ != Null<Real>(), "elasticity not provided");
         return elasticity_;
     }
 
     double OneAssetOption::gamma() const {
         calculate();
-        QL_REQUIRE(gamma_ != Null<double>(),
-                   "gamma not provided");
+        QL_REQUIRE(gamma_ != Null<Real>(), "gamma not provided");
         return gamma_;
     }
 
     double OneAssetOption::theta() const {
         calculate();
-        QL_REQUIRE(theta_ != Null<double>(),
-                   "theta not provided");
+        QL_REQUIRE(theta_ != Null<Real>(), "theta not provided");
         return theta_;
     }
 
     double OneAssetOption::thetaPerDay() const {
         calculate();
-        QL_REQUIRE(thetaPerDay_ != Null<double>(),
-                   "thetaPerDay not provided");
+        QL_REQUIRE(thetaPerDay_ != Null<Real>(), "theta per-day not provided");
         return thetaPerDay_;
     }
 
     double OneAssetOption::vega() const {
         calculate();
-        QL_REQUIRE(vega_ != Null<double>(),
-                   "vega not provided");
+        QL_REQUIRE(vega_ != Null<Real>(), "vega not provided");
         return vega_;
     }
 
     double OneAssetOption::rho() const {
         calculate();
-        QL_REQUIRE(rho_ != Null<double>(),
-                   "rho not provided");
+        QL_REQUIRE(rho_ != Null<Real>(), "rho not provided");
         return rho_;
     }
 
     double OneAssetOption::dividendRho() const {
         calculate();
-        QL_REQUIRE(dividendRho_ != Null<double>(),
-                   "dividend rho not provided");
+        QL_REQUIRE(dividendRho_ != Null<Real>(), "dividend rho not provided");
         return dividendRho_;
     }
 
     double OneAssetOption::itmCashProbability() const {
         calculate();
-        QL_REQUIRE(itmCashProbability_ != Null<double>(),
+        QL_REQUIRE(itmCashProbability_ != Null<Real>(),
                    "in-the-money cash probability not provided");
         return itmCashProbability_;
     }
 
     double OneAssetOption::impliedVolatility(double targetValue,
-                                            double accuracy,
-                                            Size maxEvaluations,
-                                            double minVol,
-                                            double maxVol) const {
+                                             double accuracy,
+                                             Size maxEvaluations,
+                                             double minVol,
+                                             double maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(), "option expired");
 

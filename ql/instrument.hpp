@@ -37,9 +37,9 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         //! returns the net present value of the instrument.
-        double NPV() const;
+        Real NPV() const;
         //! returns the error estimate on the NPV when available.
-        double errorEstimate() const;
+        Real errorEstimate() const;
         //! returns whether the instrument is still tradable.
         virtual bool isExpired() const = 0;
         //@}
@@ -78,7 +78,7 @@ namespace QuantLib {
             classes might declare must be set during calculation.
         */
         //@{
-        mutable double NPV_, errorEstimate_;
+        mutable Real NPV_, errorEstimate_;
         //@}
       protected:
         boost::shared_ptr<PricingEngine> engine_;
@@ -89,17 +89,17 @@ namespace QuantLib {
       public:
         Value() { reset(); }
         void reset() {
-            value = errorEstimate = Null<double>();
+            value = errorEstimate = Null<Real>();
         }
-        double value;
-        double errorEstimate;
+        Real value;
+        Real errorEstimate;
     };
 
 
     // inline definitions
 
     inline Instrument::Instrument()
-    : NPV_(0.0), errorEstimate_(Null<double>()) {}
+    : NPV_(0.0), errorEstimate_(Null<Real>()) {}
 
     inline void Instrument::setPricingEngine(
                                   const boost::shared_ptr<PricingEngine>& e) {
@@ -142,14 +142,14 @@ namespace QuantLib {
         errorEstimate_ = results->errorEstimate;
     }
 
-    inline double Instrument::NPV() const {
+    inline Real Instrument::NPV() const {
         calculate();
         return NPV_;
     }
 
-    inline double Instrument::errorEstimate() const {
+    inline Real Instrument::errorEstimate() const {
         calculate();
-        QL_REQUIRE(errorEstimate_ != Null<double>(),
+        QL_REQUIRE(errorEstimate_ != Null<Real>(),
                    "error estimate not provided");
         return errorEstimate_;
     }

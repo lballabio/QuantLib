@@ -183,15 +183,15 @@ void DistributionTest::testBivariate() {
               "case "
               + SizeFormatter::toString(i+1) + "\n"
               "    a:   "
-              + DoubleFormatter::toString(values[i].a) + "\n"
+              + DecimalFormatter::toString(values[i].a) + "\n"
               "    b:   "
-              + DoubleFormatter::toString(values[i].b) + "\n"
+              + DecimalFormatter::toString(values[i].b) + "\n"
               "    rho:           "
-              + DoubleFormatter::toString(values[i].rho) +"\n"
+              + DecimalFormatter::toString(values[i].rho) +"\n"
               "    tabulated value:  "
-              + DoubleFormatter::toString(values[i].result) + "\n"
+              + DecimalFormatter::toString(values[i].result) + "\n"
               "    result:  "
-              + DoubleFormatter::toString(value));
+              + DecimalFormatter::toString(value));
         }
     }
 

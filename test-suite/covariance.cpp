@@ -57,9 +57,9 @@ void CovarianceTest::testSalvagingCorrelation() {
                            "cor[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated,16) + "\n"
+                           + DecimalFormatter::toString(calculated,16) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected,16));
+                           + DecimalFormatter::toString(expected,16));
         }
     }
 }
@@ -115,9 +115,9 @@ void CovarianceTest::testCovariance() {
                            "cor[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated,16) + "\n"
+                           + DecimalFormatter::toString(calculated,16) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected,16));
+                           + DecimalFormatter::toString(expected,16));
 
             expected   =  expCov[i][j];
             calculated = calcCov[i][j];
@@ -126,9 +126,9 @@ void CovarianceTest::testCovariance() {
                            "cov[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated,16) + "\n"
+                           + DecimalFormatter::toString(calculated,16) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected,16));
+                           + DecimalFormatter::toString(expected,16));
         }
     }
 
@@ -143,9 +143,9 @@ void CovarianceTest::testCovariance() {
                            "cov[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
-                           + DoubleFormatter::toString(calculated,11) + "\n"
+                           + DecimalFormatter::toString(calculated,11) + "\n"
                            "    expected:   "
-                           + DoubleFormatter::toString(expected,11));
+                           + DecimalFormatter::toString(expected,11));
             }
         }
     }

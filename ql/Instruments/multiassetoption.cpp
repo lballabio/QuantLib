@@ -46,43 +46,37 @@ namespace QuantLib {
 
     double MultiAssetOption::delta() const {
         calculate();
-        QL_REQUIRE(delta_ != Null<double>(),
-                   "delta not provided");
+        QL_REQUIRE(delta_ != Null<Real>(), "delta not provided");
         return delta_;
     }
 
     double MultiAssetOption::gamma() const {
         calculate();
-        QL_REQUIRE(gamma_ != Null<double>(),
-                   "gamma not provided");
+        QL_REQUIRE(gamma_ != Null<Real>(), "gamma not provided");
         return gamma_;
     }
 
     double MultiAssetOption::theta() const {
         calculate();
-        QL_REQUIRE(theta_ != Null<double>(),
-                   "theta not provided");
+        QL_REQUIRE(theta_ != Null<Real>(), "theta not provided");
         return theta_;
     }
 
     double MultiAssetOption::vega() const {
         calculate();
-        QL_REQUIRE(vega_ != Null<double>(),
-                   "vega not provided");
+        QL_REQUIRE(vega_ != Null<Real>(), "vega not provided");
         return vega_;
     }
 
     double MultiAssetOption::rho() const {
         calculate();
-        QL_REQUIRE(rho_ != Null<double>(),
-                   "rho not provided");
+        QL_REQUIRE(rho_ != Null<Real>(), "rho not provided");
         return rho_;
     }
 
     double MultiAssetOption::dividendRho() const {
         calculate();
-        QL_REQUIRE(dividendRho_ != Null<double>(),
-                   "dividend rho not provided");
+        QL_REQUIRE(dividendRho_ != Null<Real>(), "dividend rho not provided");
         return dividendRho_;
     }
 

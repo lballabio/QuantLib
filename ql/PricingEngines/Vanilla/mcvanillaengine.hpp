@@ -46,9 +46,9 @@ namespace QuantLib {
         MCVanillaEngine(Size maxTimeStepsPerYear,
                         bool antitheticVariate = false,
                         bool controlVariate = false,
-                        Size requiredSamples = Null<int>(),
-                        double requiredTolerance = Null<double>(),
-                        Size maxSamples = Null<int>(),
+                        Size requiredSamples = Null<Size>(),
+                        Real requiredTolerance = Null<Real>(),
+                        Size maxSamples = Null<Size>(),
                         long seed = 0);
         // McSimulation implementation
         boost::shared_ptr<path_generator_type> pathGenerator() const;
@@ -95,8 +95,8 @@ namespace QuantLib {
     template<class RNG, class S>
     inline void MCVanillaEngine<RNG,S>::calculate() const {
 
-        QL_REQUIRE(requiredTolerance_ != Null<double>() ||
-                   int(requiredSamples_) != Null<int>(),
+        QL_REQUIRE(requiredTolerance_ != Null<Real>() ||
+                   requiredSamples_ != Null<Size>(),
                    "neither tolerance nor number of samples set");
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -143,8 +143,8 @@ namespace QuantLib {
                            antitheticVariate_));
         }
 
-        if (requiredTolerance_ != Null<double>()) {
-            if (int(maxSamples_) != Null<int>())
+        if (requiredTolerance_ != Null<Real>()) {
+            if (maxSamples_ != Null<Size>())
                 value(requiredTolerance_, maxSamples_);
             else
                 value(requiredTolerance_);

@@ -78,7 +78,7 @@ namespace QuantLib {
         try {
             results_.theta = black.theta(spot, t_v);
         } catch (Error&) {
-            results_.theta = Null<double>();
+            results_.theta = Null<Real>();
         }
     }
 

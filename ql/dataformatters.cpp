@@ -33,7 +33,7 @@ namespace QuantLib {
     std::ostream& operator<< (std::ostream& stream, const Matrix& matrix) {
         for (Size i=0; i<matrix.rows(); i++) {
             for (Size j=0; j<matrix.columns(); j++) {
-                stream << DoubleFormatter::toString(matrix[i][j]) << " ";
+                stream << DecimalFormatter::toString(matrix[i][j]) << " ";
             }
             stream << "\n";
         }

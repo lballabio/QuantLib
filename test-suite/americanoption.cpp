@@ -35,27 +35,27 @@ using namespace boost::unit_test_framework;
                " option with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    spot value: " \
-               + DoubleFormatter::toString(s) + "\n" \
+               + DecimalFormatter::toString(s) + "\n" \
                "    strike:           " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "    dividend yield:   " \
-               + DoubleFormatter::toString(q) + "\n" \
+               + DecimalFormatter::toString(q) + "\n" \
                "    risk-free rate:   " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + DecimalFormatter::toString(r) + "\n" \
                "    reference date:   " \
                + DateFormatter::toString(today) + "\n" \
                "    maturity:         " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:       " \
-               + DoubleFormatter::toString(v) + "\n\n" \
+               + DecimalFormatter::toString(v) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
+               + DecimalFormatter::toString(error) + "\n" \
                "    tolerance:        " \
-               + DoubleFormatter::toString(tolerance));
+               + DecimalFormatter::toString(tolerance));
 
 namespace {
 

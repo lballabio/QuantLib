@@ -37,15 +37,15 @@ namespace QuantLib {
       vegaComputed_(false), thetaComputed_(false) {
         QL_REQUIRE(strike>=0.0,
                    "strike ("+
-                   DoubleFormatter::toString(strike)+
+                   DecimalFormatter::toString(strike)+
                    ") must be non negative");
         QL_REQUIRE(underlying > 0.0,
                    "underlying ("+
-                   DoubleFormatter::toString(underlying)+
+                   DecimalFormatter::toString(underlying)+
                    ") must be positive");
         QL_REQUIRE(residualTime > 0.0,
                    "residual time ("+
-                   DoubleFormatter::toString(residualTime)+
+                   DecimalFormatter::toString(residualTime)+
                    ") must be positive");
         // checks on volatility values are in setVolatility
         setVolatility(volatility);
@@ -56,12 +56,12 @@ namespace QuantLib {
     void SingleAssetOption::setVolatility(double volatility) {
         QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
                    "volatility too small ("+
-                   DoubleFormatter::toString(volatility)+
+                   DecimalFormatter::toString(volatility)+
                    ")");
 
         QL_REQUIRE(volatility <= QL_MAX_VOLATILITY,
                    "volatility too high ("+
-                   DoubleFormatter::toString(volatility)+
+                   DecimalFormatter::toString(volatility)+
                    ")");
 
         volatility_ = volatility;

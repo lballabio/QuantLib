@@ -38,13 +38,13 @@ using namespace boost::unit_test_framework;
                " option with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    spot value:        " \
-               + DoubleFormatter::toString(s) + "\n" \
+               + DecimalFormatter::toString(s) + "\n" \
                "    moneyness:         " \
-               + DoubleFormatter::toString(moneyness) +"\n" \
+               + DecimalFormatter::toString(moneyness) +"\n" \
                "    dividend yield:    " \
-               + DoubleFormatter::toString(q) + "\n" \
+               + RateFormatter::toString(q) + "\n" \
                "    risk-free rate:    " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + RateFormatter::toString(r) + "\n" \
                "    reference date:    " \
                + DateFormatter::toString(today) + "\n" \
                "    reset date:        " \
@@ -52,15 +52,15 @@ using namespace boost::unit_test_framework;
                "    maturity:          " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:        " \
-               + DoubleFormatter::toString(v) + "\n\n" \
+               + VolatilityFormatter::toString(v) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
+               + DecimalFormatter::toString(error) + "\n" \
                "    tolerance:        " \
-               + DoubleFormatter::toString(tolerance));
+               + DecimalFormatter::toString(tolerance));
 
 namespace {
 

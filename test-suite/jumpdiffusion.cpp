@@ -36,34 +36,34 @@ using namespace boost::unit_test_framework;
                " option with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    underlying value: " \
-               + DoubleFormatter::toString(s) + "\n" \
+               + DecimalFormatter::toString(s) + "\n" \
                "    strike:           " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "    dividend yield:   " \
-               + DoubleFormatter::toString(q) + "\n" \
+               + RateFormatter::toString(q) + "\n" \
                "    risk-free rate:   " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + RateFormatter::toString(r) + "\n" \
                "    reference date:   " \
                + DateFormatter::toString(today) + "\n" \
                "    maturity:         " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:       " \
-               + DoubleFormatter::toString(v) + "\n\n" \
+               + VolatilityFormatter::toString(v) + "\n\n" \
                "    intensity:        " \
-               + DoubleFormatter::toString(intensity) + "\n" \
+               + DecimalFormatter::toString(intensity) + "\n" \
                "    mean log-jump:    " \
-               + DoubleFormatter::toString(meanLogJump) + "\n" \
+               + DecimalFormatter::toString(meanLogJump) + "\n" \
                "    jump volatility:  " \
-               + DoubleFormatter::toString(jumpVol) + "\n\n" \
+               + VolatilityFormatter::toString(jumpVol) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
-               + (tolerance==Null<double>() ? std::string("") : \
+               + DecimalFormatter::toString(error) + "\n" \
+               + (tolerance==Null<Real>() ? std::string("") : \
                   "    tolerance:        "  \
-                  + DoubleFormatter::toString(tolerance)));
+                  + DecimalFormatter::toString(tolerance)));
 
 #define REPORT_FAILURE_2(greekName, payoff, exercise, s, q, r, today, v, \
                          intensity, gamma, expected, calculated, \
@@ -73,32 +73,32 @@ using namespace boost::unit_test_framework;
                " option with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    underlying value: " \
-               + DoubleFormatter::toString(s) + "\n" \
+               + DecimalFormatter::toString(s) + "\n" \
                "    strike:           " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "    dividend yield:   " \
-               + DoubleFormatter::toString(q) + "\n" \
+               + RateFormatter::toString(q) + "\n" \
                "    risk-free rate:   " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + RateFormatter::toString(r) + "\n" \
                "    reference date:   " \
                + DateFormatter::toString(today) + "\n" \
                "    maturity:         " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:       " \
-               + DoubleFormatter::toString(v) + "\n" \
+               + VolatilityFormatter::toString(v) + "\n" \
                "    intensity:        " \
-               + DoubleFormatter::toString(intensity) + "\n" \
+               + DecimalFormatter::toString(intensity) + "\n" \
                "    gamma:            " \
-               + DoubleFormatter::toString(gamma) + "\n\n" \
+               + DecimalFormatter::toString(gamma) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
-               + (tolerance==Null<double>() ? std::string("") : \
+               + DecimalFormatter::toString(error) + "\n" \
+               + (tolerance==Null<Real>() ? std::string("") : \
                   "    tolerance:        " \
-                  + DoubleFormatter::toString(tolerance)));
+                  + DecimalFormatter::toString(tolerance)));
 
 
 namespace {
@@ -357,7 +357,7 @@ void JumpDiffusionTest::testMerton76() {
                                   diffusionVol*diffusionVol);
         double volError = QL_FABS(totalVol-values[i].v);
         QL_REQUIRE(volError<1e-13,
-                   DoubleFormatter::toString(volError) +
+                   DecimalFormatter::toString(volError) +
                    " mismatch");
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);

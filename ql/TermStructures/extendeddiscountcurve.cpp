@@ -34,7 +34,7 @@ namespace QuantLib {
 
     void ExtendedDiscountCurve::calibrateNodes() const {
         Size i;
-        int ci;
+        Integer ci;
 	 
         std::vector<Date> dates = dates_;
         std::vector<Time> times = times_;
@@ -66,7 +66,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<TermStructure> 
-    ExtendedDiscountCurve::reversebootstrap(int compounding) const {
+    ExtendedDiscountCurve::reversebootstrap(Integer compounding) const {
         std::vector<Rate> forwards;
         Date compoundDate = calendar_.advance(referenceDate_,
                                               12/compounding,
@@ -75,7 +75,7 @@ namespace QuantLib {
                                                      compoundDate);
         double qFactor = 0.0;
         Size i;
-        int ci;
+        Integer ci;
         // Ignore first entry (SPOT with df=1.0)
         for (i = 1, ci = 1; i < dates_.size(); i++) {
             Rate fwd;
@@ -109,7 +109,8 @@ namespace QuantLib {
                                             compounding, dayCounter_));
     }
 
-    Rate ExtendedDiscountCurve::compoundForwardImpl(Time t, int compounding) 
+    Rate ExtendedDiscountCurve::compoundForwardImpl(Time t, 
+                                                    Integer compounding) 
                                                                       const {
         if (compounding == 0)
             return DiscountCurve::compoundForwardImpl(t, compounding);
@@ -118,7 +119,7 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<TermStructure> 
-    ExtendedDiscountCurve::forwardCurve(int compounding) const {
+    ExtendedDiscountCurve::forwardCurve(Integer compounding) const {
         if (forwardCurveMap_.find(compounding) == forwardCurveMap_.end())
             forwardCurveMap_[compounding] = reversebootstrap(compounding);
         return forwardCurveMap_[compounding];

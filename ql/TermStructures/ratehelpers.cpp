@@ -48,7 +48,7 @@ namespace QuantLib {
 
     DepositRateHelper::DepositRateHelper(
                        const RelinkableHandle<Quote>& rate,
-                       int n, TimeUnit units, int settlementDays,
+                       Integer n, TimeUnit units, Integer settlementDays,
                        const Calendar& calendar, RollingConvention convention,
                        const DayCounter& dayCounter)
     : RateHelper(rate), n_(n), units_(units), 
@@ -57,7 +57,7 @@ namespace QuantLib {
 
     DepositRateHelper::DepositRateHelper(
                        double rate,
-                       int n, TimeUnit units, int settlementDays,
+                       Integer n, TimeUnit units, Integer settlementDays,
                        const Calendar& calendar, RollingConvention convention,
                        const DayCounter& dayCounter)
     : RateHelper(rate), n_(n), units_(units), 
@@ -75,7 +75,7 @@ namespace QuantLib {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we'll play it safe - no extrapolation
         if (termStructure_->maxDate() < settlement_)
-            return Null<double>();
+            return Null<Real>();
         else
             return termStructure_->discount(settlement_) /
                 (1.0+quote_->value()*yearFraction_);
@@ -98,8 +98,8 @@ namespace QuantLib {
 
 
     FraRateHelper::FraRateHelper(const RelinkableHandle<Quote>& rate,
-                                 int monthsToStart, int monthsToEnd,
-                                 int settlementDays,
+                                 Integer monthsToStart, Integer monthsToEnd,
+                                 Integer settlementDays,
                                  const Calendar& calendar, 
                                  RollingConvention convention,
                                  const DayCounter& dayCounter)
@@ -110,8 +110,8 @@ namespace QuantLib {
       dayCounter_(dayCounter) {}
 
     FraRateHelper::FraRateHelper(double rate,
-                                 int monthsToStart, int monthsToEnd,
-                                 int settlementDays,
+                                 Integer monthsToStart, Integer monthsToEnd,
+                                 Integer settlementDays,
                                  const Calendar& calendar, 
                                  RollingConvention convention,
                                  const DayCounter& dayCounter)
@@ -155,7 +155,7 @@ namespace QuantLib {
 
     FuturesRateHelper::FuturesRateHelper(
                        const RelinkableHandle<Quote>& price,
-                       const Date& ImmDate, int nMonths,
+                       const Date& ImmDate, Integer nMonths,
                        const Calendar& calendar, RollingConvention convention,
                        const DayCounter& dayCounter)
     : RateHelper(price), ImmDate_(ImmDate),
@@ -178,7 +178,7 @@ namespace QuantLib {
     }
 
     FuturesRateHelper::FuturesRateHelper(double price,
-                                         const Date& ImmDate, int nMonths,
+                                         const Date& ImmDate, Integer nMonths,
                                          const Calendar& calendar, 
                                          RollingConvention convention,
                                          const DayCounter& dayCounter)
@@ -211,13 +211,13 @@ namespace QuantLib {
     }
 
     SwapRateHelper::SwapRateHelper(
-                                   const RelinkableHandle<Quote>& rate,
-                                   int n, TimeUnit units, int settlementDays,
-                                   const Calendar& calendar, 
-                                   RollingConvention convention,
-                                   int fixedFrequency, bool fixedIsAdjusted,
-                                   const DayCounter& fixedDayCount,
-                                   int floatingFrequency)
+                            const RelinkableHandle<Quote>& rate,
+                            Integer n, TimeUnit units, Integer settlementDays,
+                            const Calendar& calendar, 
+                            RollingConvention convention,
+                            Frequency fixedFrequency, bool fixedIsAdjusted,
+                            const DayCounter& fixedDayCount,
+                            Frequency floatingFrequency)
     : RateHelper(rate), 
       n_(n), units_(units), settlementDays_(settlementDays),
       calendar_(calendar), convention_(convention),
@@ -226,13 +226,14 @@ namespace QuantLib {
       fixedIsAdjusted_(fixedIsAdjusted),
       fixedDayCount_(fixedDayCount) {}
 
-    SwapRateHelper::SwapRateHelper(double rate,
-                                   int n, TimeUnit units, int settlementDays,
-                                   const Calendar& calendar, 
-                                   RollingConvention convention,
-                                   int fixedFrequency, bool fixedIsAdjusted,
-                                   const DayCounter& fixedDayCount,
-                                   int floatingFrequency)
+    SwapRateHelper::SwapRateHelper(
+                            double rate,
+                            Integer n, TimeUnit units, Integer settlementDays,
+                            const Calendar& calendar, 
+                            RollingConvention convention,
+                            Frequency fixedFrequency, bool fixedIsAdjusted,
+                            const DayCounter& fixedDayCount,
+                            Frequency floatingFrequency)
     : RateHelper(rate), 
       n_(n), units_(units), settlementDays_(settlementDays),
       calendar_(calendar), convention_(convention),
@@ -250,7 +251,7 @@ namespace QuantLib {
         RateHelper::setTermStructure(t);
         Date today = termStructure_->todaysDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
-        int fixingDays = settlementDays_;
+        Integer fixingDays = settlementDays_;
         // dummy Libor index with curve/swap arguments
         boost::shared_ptr<Xibor> dummyIndex(
                                      new Xibor("dummy",

@@ -40,35 +40,35 @@ using namespace boost::unit_test_framework;
                " with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "1st underlying value: " \
-               + DoubleFormatter::toString(s1) + "\n" \
+               + DecimalFormatter::toString(s1) + "\n" \
                "2nd underlying value: " \
-               + DoubleFormatter::toString(s2) + "\n" \
+               + DecimalFormatter::toString(s2) + "\n" \
                "              strike: " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "  1st dividend yield: " \
-               + DoubleFormatter::toString(q1) + "\n" \
+               + DecimalFormatter::toString(q1) + "\n" \
                "  2nd dividend yield: " \
-               + DoubleFormatter::toString(q2) + "\n" \
+               + DecimalFormatter::toString(q2) + "\n" \
                "      risk-free rate: " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + DecimalFormatter::toString(r) + "\n" \
                "      reference date: " \
                + DateFormatter::toString(today) + "\n" \
                "            maturity: " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "1st asset volatility: " \
-               + DoubleFormatter::toString(v1) + "\n" \
+               + DecimalFormatter::toString(v1) + "\n" \
                "2nd asset volatility: " \
-               + DoubleFormatter::toString(v2) + "\n" \
+               + DecimalFormatter::toString(v2) + "\n" \
                "         correlation: " \
-               + DoubleFormatter::toString(rho) + "\n\n" \
+               + DecimalFormatter::toString(rho) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
+               + DecimalFormatter::toString(error) + "\n" \
                "    tolerance:        " \
-               + DoubleFormatter::toString(tolerance));
+               + DecimalFormatter::toString(tolerance));
 
 #define REPORT_FAILURE_3(greekName, basketType, payoff, exercise, \
                          s1, s2, s3, r, today, v1, v2, v3, rho, \
@@ -80,35 +80,35 @@ using namespace boost::unit_test_framework;
                " with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "1st underlying value: " \
-               + DoubleFormatter::toString(s1) + "\n" \
+               + DecimalFormatter::toString(s1) + "\n" \
                "2nd underlying value: " \
-               + DoubleFormatter::toString(s2) + "\n" \
+               + DecimalFormatter::toString(s2) + "\n" \
                "3rd underlying value: " \
-               + DoubleFormatter::toString(s3) + "\n" \
+               + DecimalFormatter::toString(s3) + "\n" \
                "              strike: " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "      risk-free rate: " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + DecimalFormatter::toString(r) + "\n" \
                "      reference date: " \
                + DateFormatter::toString(today) + "\n" \
                "            maturity: " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "1st asset volatility: " \
-               + DoubleFormatter::toString(v1) + "\n" \
+               + DecimalFormatter::toString(v1) + "\n" \
                "2nd asset volatility: " \
-               + DoubleFormatter::toString(v2) + "\n" \
+               + DecimalFormatter::toString(v2) + "\n" \
                "3rd asset volatility: " \
-               + DoubleFormatter::toString(v3) + "\n" \
+               + DecimalFormatter::toString(v3) + "\n" \
                "         correlation: " \
-               + DoubleFormatter::toString(rho) + "\n\n" \
+               + DecimalFormatter::toString(rho) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
+               + DecimalFormatter::toString(error) + "\n" \
                "    tolerance:        " \
-               + DoubleFormatter::toString(tolerance));
+               + DecimalFormatter::toString(tolerance));
 
 
 namespace {
@@ -260,10 +260,10 @@ void BasketOptionTest::testEuroTwoValues() {
 
     double mcRelativeErrorTolerance = 0.01;
     //boost::shared_ptr<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
-      //  (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
+      //  (1, false, false, Null<Size>(), 0.005, Null<Size>(), false, 42));
     boost::shared_ptr<PricingEngine> mcEngine(
         new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 10000,
-                                                     Null<double>(), 100000,
+                                                     Null<Real>(), 100000,
                                                      false, 42));
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -443,14 +443,14 @@ void BasketOptionTest::testBarraquandThreeValues() {
     double mcAmericanRelativeErrorTolerance = 0.1;
     boost::shared_ptr<PricingEngine> mcEngine(
         new MCBasketEngine<PseudoRandom, Statistics>(1, false, false,
-                                                     Null<int>(), 0.005,
+                                                     Null<Size>(), 0.005,
                                                      maxSamples, false, 42));
 
     // use a 3D sobol sequence...
     // Think long and hard before moving to more than 1 timestep....
     boost::shared_ptr<PricingEngine> mcQuasiEngine(
         new MCBasketEngine<LowDiscrepancy, Statistics>(1, false, false,
-                                                       Null<int>(), 0.005,
+                                                       Null<Size>(), 0.005,
                                                        maxSamples, false, 42));
 
     Size requiredSamples = 20000;
@@ -587,7 +587,7 @@ void BasketOptionTest::testTavellaValues() {
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
     //boost::shared_ptr<PricingEngine> mcEuroEngine(new MCBasketEngine<PseudoRandom, Statistics>
-    //   (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
+    //   (1, false, false, Null<Size>(), 0.005, Null<Size>(), false, 42));
 
     boost::shared_ptr<PlainVanillaPayoff> payoff(new
         PlainVanillaPayoff(values[0].type, values[0].strike));
@@ -737,8 +737,8 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     boost::shared_ptr<PricingEngine> mcEngine(
         new MCBasketEngine<PseudoRandom, Statistics>(1, false, false,
-                                                     Null<int>(), 0.005,
-                                                     Null<int>(), false, 42));
+                                                     Null<Size>(), 0.005,
+                                                     Null<Size>(), false, 42));
 
     for (Size i=0; i<LENGTH(values); i++) {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
@@ -764,9 +764,9 @@ void BasketOptionTest::testOneDAmericanValues() {
 
         if (relError > values[i].tol) {
             BOOST_FAIL("expected value: "
-                       + DoubleFormatter::toString(values[i].result) + "\n"
+                       + DecimalFormatter::toString(values[i].result) + "\n"
                        "calculated: "
-                       + DoubleFormatter::toString(calculated));
+                       + DecimalFormatter::toString(calculated));
         }
 
     }

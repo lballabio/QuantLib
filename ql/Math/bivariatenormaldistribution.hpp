@@ -67,10 +67,10 @@ namespace QuantLib {
 
         QL_REQUIRE(rho>=-1.0,
                    "rho must be >= -1.0 (" +
-                   DoubleFormatter::toString(rho) + " not allowed)");
+                   DecimalFormatter::toString(rho) + " not allowed)");
         QL_REQUIRE(rho<=1.0,
                    "rho must be <= 1.0 (" +
-                   DoubleFormatter::toString(rho) + " not allowed)");
+                   DecimalFormatter::toString(rho) + " not allowed)");
     }
 
 }

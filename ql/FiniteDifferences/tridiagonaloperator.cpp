@@ -103,11 +103,11 @@ namespace QuantLib {
         for (sorIteration=0; err>tol ; sorIteration++) {
             QL_REQUIRE(sorIteration<100000,
                        "tolerance ["
-                       + DoubleFormatter::toString(tol) +
+                       + DecimalFormatter::toString(tol) +
                        "] not reached in "
                        + SizeFormatter::toString(sorIteration) +
                        " iterations. The error still is "
-                       + DoubleFormatter::toString(err));
+                       + DecimalFormatter::toString(err));
             err=0.0;
             for (i=1; i<size()-2 ; i++) {
                 temp = omega * (rhs[i]     -

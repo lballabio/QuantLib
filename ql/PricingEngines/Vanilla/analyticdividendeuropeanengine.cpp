@@ -86,7 +86,7 @@ namespace QuantLib {
             results_.theta = black.theta(spot, t) +
                              delta_theta * black.delta(spot);
         } catch (Error&) {
-            results_.theta = Null<double>();
+            results_.theta = Null<Real>();
         }
 
         results_.rho = black.rho(t) +

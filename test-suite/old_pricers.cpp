@@ -61,9 +61,9 @@ void OldPricerTest::testCliquetPricer() {
     if (QL_FABS(calculated-expected) > 1.0e-4)
         BOOST_FAIL(
             "calculated value: " +
-            DoubleFormatter::toString(calculated) + "\n"
+            DecimalFormatter::toString(calculated) + "\n"
             "expected:         " +
-            DoubleFormatter::toString(expected));
+            DecimalFormatter::toString(expected));
 }
 #endif
 
@@ -161,22 +161,22 @@ void OldPricerTest::testDividendEuropeanPricer() {
                               "    type:           " +
                               OptionTypeFormatter::toString(type) + "\n"
                               "    underlying:     " +
-                              DoubleFormatter::toString(u) + "\n"
+                              DecimalFormatter::toString(u) + "\n"
                               "    strike:         " +
-                              DoubleFormatter::toString(k) + "\n"
+                              DecimalFormatter::toString(k) + "\n"
                               "    dividend yield: " +
                               RateFormatter::toString(q) + "\n"
                               "    risk-free rate: " +
                               RateFormatter::toString(r) + "\n"
                               "    residual time:  " +
-                              DoubleFormatter::toString(T) + "\n"
+                              DecimalFormatter::toString(T) + "\n"
                               "    volatility:     " +
-                              RateFormatter::toString(v) + "\n\n"
+                              VolatilityFormatter::toString(v) + "\n\n"
                               "    calculated " + greek + ": " +
-                              DoubleFormatter::toString(calcl) + "\n"
+                              DecimalFormatter::toString(calcl) + "\n"
                               "    expected:    " +
                               std::string(greek.size(),' ') +
-                              DoubleFormatter::toString(expct));
+                              DecimalFormatter::toString(expct));
                     }
                   }
                 }
@@ -234,21 +234,21 @@ void OldPricerTest::testFdEuropeanPricer() {
                     "    type:           " +
                     OptionTypeFormatter::toString(types[j]) + "\n"
                     "    underlying:     " +
-                    DoubleFormatter::toString(under) + "\n"
+                    DecimalFormatter::toString(under) + "\n"
                     "    strike:         " +
-                    DoubleFormatter::toString(strike) + "\n"
+                    DecimalFormatter::toString(strike) + "\n"
                     "    dividend yield: " +
                     RateFormatter::toString(qRate) + "\n"
                     "    risk-free rate: " +
                     RateFormatter::toString(rRate) + "\n"
                     "    residual time:  " +
-                    DoubleFormatter::toString(resTime) + "\n"
+                    DecimalFormatter::toString(resTime) + "\n"
                     "    volatility:     " +
-                    RateFormatter::toString(vol) + "\n\n"
+                    VolatilityFormatter::toString(vol) + "\n\n"
                     "    calculated value: " +
-                    DoubleFormatter::toString(numValue) + "\n"
+                    DecimalFormatter::toString(numValue) + "\n"
                     "    expected:         " +
-                    DoubleFormatter::toString(anValue));
+                    DecimalFormatter::toString(anValue));
         }
     }
 }
@@ -317,22 +317,22 @@ namespace {
                         name + " " + OptionTypeFormatter::toString(type)
                         + "\n"
                         "    underlying:     " +
-                        DoubleFormatter::toString(u) + "\n"
+                        DecimalFormatter::toString(u) + "\n"
                         "    strike:         " +
-                        DoubleFormatter::toString(k) + "\n"
+                        DecimalFormatter::toString(k) + "\n"
                         "    dividend yield: " +
                         RateFormatter::toString(q) + "\n"
                         "    risk-free rate: " +
                         RateFormatter::toString(r) + "\n"
                         "    residual time:  " +
-                        DoubleFormatter::toString(T) + "\n"
+                        DecimalFormatter::toString(T) + "\n"
                         "    volatility:     " +
-                        RateFormatter::toString(v) + "\n\n"
+                        VolatilityFormatter::toString(v) + "\n\n"
                         "    calculated " + greek + ": " +
-                        DoubleFormatter::toString(calcl) + "\n"
+                        DecimalFormatter::toString(calcl) + "\n"
                         "    expected:    " +
                         std::string(greek.size(),' ') +
-                        DoubleFormatter::toString(expct));
+                        DecimalFormatter::toString(expct));
             }
         }
     }
@@ -430,9 +430,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
         BOOST_FAIL(
             "Batch 1, case 1:\n"
             "    calculated value: "
-            + DoubleFormatter::toString(pricer.value(),10) + "\n"
+            + DecimalFormatter::toString(pricer.value(),10) + "\n"
             "    expected:         "
-            + DoubleFormatter::toString(storedValue,10));
+            + DecimalFormatter::toString(storedValue,10));
 
     Time residualTime;
 #ifndef QL_DISABLE_DEPRECATED
@@ -455,9 +455,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
         BOOST_FAIL(
             "Batch 2:\n"
             "    calculated value: "
-            + DoubleFormatter::toString(pricer2.value(),10) + "\n"
+            + DecimalFormatter::toString(pricer2.value(),10) + "\n"
             "    expected:         "
-            + DoubleFormatter::toString(storedValue,10));
+            + DecimalFormatter::toString(storedValue,10));
 
 #endif
 
@@ -484,9 +484,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
         BOOST_FAIL(
             "Batch 3, case 1:\n"
             "    calculated value: "
-            + DoubleFormatter::toString(pricer3.value(),10) + "\n"
+            + DecimalFormatter::toString(pricer3.value(),10) + "\n"
             "    expected:         "
-            + DoubleFormatter::toString(storedValue,10));
+            + DecimalFormatter::toString(storedValue,10));
 
     // batch 4
     //
@@ -585,9 +585,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
             BOOST_FAIL(
                 "Batch 4, case " + SizeFormatter::toString(k+1) + ":\n"
                 "    calculated value: "
-                + DoubleFormatter::toString(value,10) + "\n"
+                + DecimalFormatter::toString(value,10) + "\n"
                 "    expected:         "
-                + DoubleFormatter::toString(cases4[k].result,10));
+                + DecimalFormatter::toString(cases4[k].result,10));
         double tolerance = pricer.errorEstimate()/value;
         tolerance = QL_MIN(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
@@ -596,9 +596,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
             BOOST_FAIL(
                 "Batch 4, case " + SizeFormatter::toString(k+1) + ":\n"
                 "    reached accuracy: "
-                + DoubleFormatter::toString(accuracy,10) + "\n"
+                + DecimalFormatter::toString(accuracy,10) + "\n"
                 "    expected:         "
-                + DoubleFormatter::toString(tolerance,10));
+                + DecimalFormatter::toString(tolerance,10));
     }
 
     // batch 5
@@ -697,9 +697,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
             BOOST_FAIL(
                 "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
                 "    calculated value: "
-                + DoubleFormatter::toString(value,10) + "\n"
+                + DecimalFormatter::toString(value,10) + "\n"
                 "    expected:         "
-                + DoubleFormatter::toString(cases5[l].result,10));
+                + DecimalFormatter::toString(cases5[l].result,10));
         double tolerance = pricer.errorEstimate()/value;
         tolerance = QL_MIN(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
@@ -708,9 +708,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
             BOOST_FAIL(
                 "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
                 "    reached accuracy: "
-                + DoubleFormatter::toString(accuracy,10) + "\n"
+                + DecimalFormatter::toString(accuracy,10) + "\n"
                 "    expected:         "
-                + DoubleFormatter::toString(tolerance,10));
+                + DecimalFormatter::toString(tolerance,10));
     }
 
 }
@@ -731,9 +731,9 @@ namespace {
             BOOST_FAIL(
                 name + ":\n"
                 "    calculated value: "
-                + DoubleFormatter::toString(value,10) + "\n"
+                + DecimalFormatter::toString(value,10) + "\n"
                 "    expected:         "
-                + DoubleFormatter::toString(storedValue,10));
+                + DecimalFormatter::toString(storedValue,10));
 
         tolerance = pricer.errorEstimate()/value;
         tolerance = QL_MIN(tolerance/2.0, minimumTol);
@@ -743,9 +743,9 @@ namespace {
             BOOST_FAIL(
                 name + ":\n"
                 "    reached accuracy: "
-                + DoubleFormatter::toString(accuracy,10) + "\n"
+                + DecimalFormatter::toString(accuracy,10) + "\n"
                 "    expected:         "
-                + DoubleFormatter::toString(tolerance,10));
+                + DecimalFormatter::toString(tolerance,10));
 
     }
 

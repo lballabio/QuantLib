@@ -84,11 +84,11 @@ namespace QuantLib {
             wpt = blackTS_->blackVariance(t+dt, strike, true);
             QL_ENSURE(wpt>=w,
                       "decreasing variance at strike "
-                      + DoubleFormatter::toString(strike) +
+                      + DecimalFormatter::toString(strike) +
                       " between time "
-                      + DoubleFormatter::toString(t) +
+                      + DecimalFormatter::toString(t) +
                       " and time "
-                      + DoubleFormatter::toString(t+dt));
+                      + DecimalFormatter::toString(t+dt));
             dwdt = (wpt-w)/dt;
         } else {
             dt = QL_MIN(0.0001, t/2.0);
@@ -96,18 +96,18 @@ namespace QuantLib {
             wmt = blackTS_->blackVariance(t-dt, strike, true);
             QL_ENSURE(wpt>=w,
                       "decreasing variance at strike "
-                      + DoubleFormatter::toString(strike) +
+                      + DecimalFormatter::toString(strike) +
                       " between time "
-                      + DoubleFormatter::toString(t) +
+                      + DecimalFormatter::toString(t) +
                       " and time "
-                      + DoubleFormatter::toString(t+dt));
+                      + DecimalFormatter::toString(t+dt));
             QL_ENSURE(w>=wmt,
                       "decreasing variance at strike "
-                      + DoubleFormatter::toString(strike) +
+                      + DecimalFormatter::toString(strike) +
                       " between time "
-                      + DoubleFormatter::toString(t-dt) +
+                      + DecimalFormatter::toString(t-dt) +
                       " and time "
-                      + DoubleFormatter::toString(t));
+                      + DecimalFormatter::toString(t));
             dwdt = (wpt-wmt)/(2.0*dt);
         }
 
@@ -121,9 +121,9 @@ namespace QuantLib {
             double result = dwdt / den;
             QL_ENSURE(result>=0.0,
                       "negative local vol^2 at strike "
-                      + DoubleFormatter::toString(strike) +
+                      + DecimalFormatter::toString(strike) +
                       " and time "
-                      + DoubleFormatter::toString(t) +
+                      + DecimalFormatter::toString(t) +
                       "; the black vol surface is not smooth enough");
             return QL_SQRT(result);
             // return QL_SQRT(dwdt / (1.0 - y/w*dwdy +

@@ -37,42 +37,42 @@ namespace QuantLib {
     }
 
     std::vector<std::string> DateParser::split(const std::string& str,
-					       const char delim) {
-       std::vector<std::string> list;
-       Size sx= str.find(delim), so=0;
+                                               char delim) {
+        std::vector<std::string> list;
+        Size sx= str.find(delim), so=0;
 
-       while (sx != std::string::npos) {
-	  list.push_back(str.substr(so,sx));
-	  so += sx+1;
-	  sx = str.substr(so).find(delim);
-       }
-       list.push_back(str.substr(so));
-       return list;
+        while (sx != std::string::npos) {
+            list.push_back(str.substr(so,sx));
+            so += sx+1;
+            sx = str.substr(so).find(delim);
+        }
+        list.push_back(str.substr(so));
+        return list;
     }
-   
+
     Date DateParser::parse(const std::string& str, const std::string& fmt) {
-       std::vector<std::string> slist;
-       std::vector<std::string> flist;
-       int d=0, m=0, y=0;
+        std::vector<std::string> slist;
+        std::vector<std::string> flist;
+        Integer d=0, m=0, y=0;
 
-       slist = split(str,'/');
-       flist = split(fmt,'/');
-       if (slist.size() != flist.size())
-	  return Null<Date>();
-       Size i;
-       for (i=0;i<flist.size();i++) {
-	  std::string sub = flist[i];
-	  if (StringFormatter::toLowercase(sub) == "dd")
-	     d = QL_ATOI(slist[i].c_str());
-	  else if (StringFormatter::toLowercase(sub) == "mm")
-	     m = QL_ATOI(slist[i].c_str());
-	  else if (StringFormatter::toLowercase(sub) == "yyyy") {
-	     y = QL_ATOI(slist[i].c_str());
-	     if (y < 100)
-		y += 2000;
-	  }
-       }
-       return Date(d,(Month)m,y);
+        slist = split(str,'/');
+        flist = split(fmt,'/');
+        if (slist.size() != flist.size())
+            return Null<Date>();
+        Size i;
+        for (i=0;i<flist.size();i++) {
+            std::string sub = flist[i];
+            if (StringFormatter::toLowercase(sub) == "dd")
+                d = QL_ATOI(slist[i].c_str());
+            else if (StringFormatter::toLowercase(sub) == "mm")
+                m = QL_ATOI(slist[i].c_str());
+            else if (StringFormatter::toLowercase(sub) == "yyyy") {
+                y = QL_ATOI(slist[i].c_str());
+                if (y < 100)
+                    y += 2000;
+            }
+        }
+        return Date(d,Month(m),y);
     }
-   
+
 }

@@ -63,7 +63,7 @@ namespace QuantLib {
 
             froot = f(root_);
             dfroot = f.derivative(root_);
-            QL_REQUIRE(dfroot != Null<double>(),
+            QL_REQUIRE(dfroot != Null<Real>(),
                        "NewtonSafe requires function's derivative");
             evaluationNumber_++;
 

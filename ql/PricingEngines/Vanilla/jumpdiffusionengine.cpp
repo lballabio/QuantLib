@@ -152,13 +152,13 @@ namespace QuantLib {
         QL_ENSURE(i<maxIterations_,
                   SizeFormatter::toString(i) +
                   " iterations have been not enough to reach the required "
-                  + DoubleFormatter::toExponential(relativeAccuracy_) +
+                  + DecimalFormatter::toExponential(relativeAccuracy_) +
                   " accuracy. The "
                   + SizeFormatter::toOrdinal(i) +
                   " addendum was "
-                  + DoubleFormatter::toExponential(lastContribution) +
+                  + DecimalFormatter::toExponential(lastContribution) +
                   " while the running sum was "
-                  + DoubleFormatter::toExponential(results_.value));
+                  + DecimalFormatter::toExponential(results_.value));
     }
 
 }

@@ -41,18 +41,18 @@ namespace QuantLib {
         return familyName_+tenor+" "+dayCounter_.name();
     }
 
-    int Xibor::frequency() const {
+    Frequency Xibor::frequency() const {
         switch (units_) {
           case Months:
             QL_REQUIRE(12%n_ == 0, "undefined frequency");
-            return 12/n_;
+            return Frequency(12/n_);
           case Years:
             QL_REQUIRE(n_ == 1, "undefined frequency");
-            return n_;
+            return Annual;
           default:
             QL_FAIL("undefined frequency");
         }
-        QL_DUMMY_RETURN(0)
+        QL_DUMMY_RETURN(Once)
     }
 
     Rate Xibor::fixing(const Date& fixingDate) const {
@@ -63,7 +63,7 @@ namespace QuantLib {
             // must have been fixed
             Rate pastFixing =
                 XiborManager::getHistory(name())[fixingDate];
-            QL_REQUIRE(pastFixing != Null<double>(),
+            QL_REQUIRE(pastFixing != Null<Real>(),
                        "Missing " + name() + " fixing for " +
                        DateFormatter::toString(fixingDate));
             return pastFixing;
@@ -73,7 +73,7 @@ namespace QuantLib {
             try {
                 Rate pastFixing =
                     XiborManager::getHistory(name())[fixingDate];
-                if (pastFixing != Null<double>())
+                if (pastFixing != Null<Real>())
                     return pastFixing;
                 else
                     ;   // fall through and forecast

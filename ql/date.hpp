@@ -31,7 +31,7 @@ namespace QuantLib {
 
     //! Day number
     /*! \ingroup datetime */
-    typedef int Day;
+    typedef Integer Day;
 
     /*! Day's serial number MOD 7;
         WEEKDAY Excel function is the same except for Sunday = 7.
@@ -65,7 +65,7 @@ namespace QuantLib {
 
     //! Year number
     /*! \ingroup datetime */
-    typedef int Year;
+    typedef Integer Year;
 
     //! Frequency of events
     /*! \ingroup datetime */
@@ -91,12 +91,12 @@ namespace QuantLib {
       public:
         Period()
         : length_(0), units_(Days) {}
-        Period(int n, TimeUnit units)
+        Period(Integer n, TimeUnit units)
         : length_(n), units_(units) {}
-        int length() const { return length_; }
+        Integer length() const { return length_; }
         TimeUnit units() const { return units_; }
       private:
-        int length_;
+        Integer length_;
         TimeUnit units_;
     };
 
@@ -148,7 +148,7 @@ namespace QuantLib {
         //! Default constructor returning a null date.
         Date();
         //! Constructor taking a serial number as given by Applix or Excel.
-        explicit Date(long serialNumber);
+        explicit Date(BigInteger serialNumber);
         //! More traditional constructor.
         Date(Day d, Month m, Year y);
 
@@ -162,15 +162,15 @@ namespace QuantLib {
         Day dayOfYear() const;
         Month month() const;
         Year year() const;
-        long serialNumber() const;
+        BigInteger serialNumber() const;
         //@}
 
         //! \name date algebra
         //@{
         //! increments date in place
-        Date& operator+=(int days);
+        Date& operator+=(BigInteger days);
         //! decrement date in place
-        Date& operator-=(int days);
+        Date& operator-=(BigInteger days);
         //! 1-day pre-increment
         Date& operator++();
         //! 1-day post-increment
@@ -180,18 +180,18 @@ namespace QuantLib {
         //! 1-day post-decrement
         Date operator--(int );
         //! returns a new incremented date
-        Date operator+(int days) const;
+        Date operator+(BigInteger days) const;
         //! returns a new decremented date
-        Date operator-(int days) const;
+        Date operator-(BigInteger days) const;
         //@}
 
         //! \name other methods to increment/decrement dates
         //@{
-        Date plusDays(int days) const;
-        Date plusWeeks(int weeks) const;
-        Date plusMonths(int months) const;
-        Date plusYears(int years) const;
-        Date plus(int units, TimeUnit) const;
+        Date plusDays(Integer days) const;
+        Date plusWeeks(Integer weeks) const;
+        Date plusMonths(Integer months) const;
+        Date plusYears(Integer years) const;
+        Date plus(Integer units, TimeUnit) const;
         Date plus(const Period&) const;
         //@}
 
@@ -206,18 +206,18 @@ namespace QuantLib {
         static Date todaysDate();
         //@}
       private:
-        long serialNumber_;
-        static int monthLength(Month m, bool leapYear);
-        static int monthOffset(Month m, bool leapYear);
-        static long yearOffset(Year y);
-        static long minimumSerialNumber();
-        static long maximumSerialNumber();
+        BigInteger serialNumber_;
+        static Integer monthLength(Month m, bool leapYear);
+        static Integer monthOffset(Month m, bool leapYear);
+        static BigInteger yearOffset(Year y);
+        static BigInteger minimumSerialNumber();
+        static BigInteger maximumSerialNumber();
     };
 
     /*! \relates Date
         \brief Difference in days between dates
     */
-    long operator-(const Date&, const Date&);
+    BigInteger operator-(const Date&, const Date&);
 
     /*! \relates Date */
     bool operator==(const Date&, const Date&);
@@ -235,7 +235,7 @@ namespace QuantLib {
     // inline definitions
 
     inline Weekday Date::weekday() const {
-        int w = serialNumber_ % 7;
+        Integer w = serialNumber_ % 7;
         return Weekday(w == 0 ? 7 : w);
     }
 
@@ -255,23 +255,23 @@ namespace QuantLib {
         return serialNumber_ - yearOffset(year());
     }
 
-    inline long Date::serialNumber() const {
+    inline BigInteger Date::serialNumber() const {
         return serialNumber_;
     }
 
-    inline Date Date::operator+(int days) const {
+    inline Date Date::operator+(BigInteger days) const {
         return Date(serialNumber_+days);
     }
 
-    inline Date Date::operator-(int days) const {
+    inline Date Date::operator-(BigInteger days) const {
         return Date(serialNumber_-days);
     }
 
-    inline Date Date::plusDays(int days) const {
+    inline Date Date::plusDays(Integer days) const {
         return Date(serialNumber_+days);
     }
 
-    inline Date Date::plusWeeks(int weeks) const {
+    inline Date Date::plusWeeks(Integer weeks) const {
         return Date(serialNumber_+weeks*7);
     }
 
@@ -279,7 +279,7 @@ namespace QuantLib {
         return plus(p.length(),p.units());
     }
 
-    inline long operator-(const Date& d1, const Date& d2) {
+    inline BigInteger operator-(const Date& d1, const Date& d2) {
         return d1.serialNumber()-d2.serialNumber();
     }
 

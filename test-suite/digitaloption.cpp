@@ -38,27 +38,27 @@ using namespace boost::unit_test_framework;
                " option with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    spot value: " \
-               + DoubleFormatter::toString(s) + "\n" \
+               + DecimalFormatter::toString(s) + "\n" \
                "    strike:           " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "    dividend yield:   " \
-               + DoubleFormatter::toString(q) + "\n" \
+               + RateFormatter::toString(q) + "\n" \
                "    risk-free rate:   " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + RateFormatter::toString(r) + "\n" \
                "    reference date:   " \
                + DateFormatter::toString(today) + "\n" \
                "    maturity:         " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:       " \
-               + DoubleFormatter::toString(v) + "\n\n" \
+               + VolatilityFormatter::toString(v) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
+               + DecimalFormatter::toString(error) + "\n" \
                "    tolerance:        " \
-               + DoubleFormatter::toString(tolerance));
+               + DecimalFormatter::toString(tolerance));
 
 namespace {
 
@@ -722,7 +722,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         boost::shared_ptr<PricingEngine> mcEngine(new
             MCDigitalEngine<PseudoRandom>(maxTimeStepsPerYear,
                                           antitheticVariate, controlVariate,
-                                          Null<int>(), values[i].tol,
+                                          Null<Size>(), values[i].tol,
                                           maxSamples, seed));
 
         antitheticVariate = false;
@@ -730,7 +730,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         boost::shared_ptr<PricingEngine> mcldEngine(new
             MCDigitalEngine<LowDiscrepancy>(maxTimeStepsPerYear,
                                             antitheticVariate, controlVariate,
-                                            requiredSamples, Null<double>(),
+                                            requiredSamples, Null<Real>(),
                                             maxSamples, seed));
 
 
@@ -740,16 +740,16 @@ void DigitalOptionTest::testMCCashAtHit() {
 
         double calculated = opt.NPV();
 /*
-        std::cout << "\n MC:   " << DoubleFormatter::toString(calculated);
+        std::cout << "\n MC:   " << DecimalFormatter::toString(calculated);
 
         opt.setPricingEngine(mcldEngine);
         double calculatedLD = opt.NPV();
-        std::cout << "\n MCLD: " << DoubleFormatter::toString(calculatedLD) << " with samples: " << requiredSamples;
+        std::cout << "\n MCLD: " << DecimalFormatter::toString(calculatedLD) << " with samples: " << requiredSamples;
 
         boost::shared_ptr<PricingEngine> amEngine(new AnalyticDigitalAmericanEngine());
         opt.setPricingEngine(amEngine);
         double calcAnalytic = opt.NPV();
-        std::cout << "\n anal: " << DoubleFormatter::toString(calcAnalytic);
+        std::cout << "\n anal: " << DecimalFormatter::toString(calcAnalytic);
 */
         double error = relativeError(calculated, values[i].result, values[i].result);
         if (error > 2.0*values[i].tol) {

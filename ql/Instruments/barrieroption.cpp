@@ -74,40 +74,40 @@ namespace QuantLib {
             QL_REQUIRE(blackScholesProcess->stateVariable()->value() 
                        >= barrier,
                        "underlying (" +
-                       DoubleFormatter::toString(blackScholesProcess
-                                                 ->stateVariable()->value()) +
+                       DecimalFormatter::toString(blackScholesProcess
+                                                  ->stateVariable()->value()) +
                        ") < barrier (" +
-                       DoubleFormatter::toString(barrier) +
+                       DecimalFormatter::toString(barrier) +
                        "): down-and-in barrier undefined");
             break;
           case Barrier::UpIn:
             QL_REQUIRE(blackScholesProcess->stateVariable()->value()
                        <= barrier,
                        "underlying ("+
-                       DoubleFormatter::toString(blackScholesProcess
-                                                 ->stateVariable()->value()) +
+                       DecimalFormatter::toString(blackScholesProcess
+                                                  ->stateVariable()->value()) +
                        ") > barrier ("+
-                       DoubleFormatter::toString(barrier) +
+                       DecimalFormatter::toString(barrier) +
                        "): up-and-in barrier undefined");
             break;
           case Barrier::DownOut:
             QL_REQUIRE(blackScholesProcess->stateVariable()->value() 
                        >= barrier,
                        "underlying ("+
-                       DoubleFormatter::toString(blackScholesProcess
-                                                 ->stateVariable()->value()) +
+                       DecimalFormatter::toString(blackScholesProcess
+                                                  ->stateVariable()->value()) +
                        ") < barrier ("+ 
-                       DoubleFormatter::toString(barrier) +
+                       DecimalFormatter::toString(barrier) +
                        "): down-and-out barrier undefined");
             break;
           case Barrier::UpOut:
             QL_REQUIRE(blackScholesProcess->stateVariable()->value() 
                        <= barrier,
                        "underlying ("+
-                       DoubleFormatter::toString(blackScholesProcess
-                                                 ->stateVariable()->value()) +
+                       DecimalFormatter::toString(blackScholesProcess
+                                                  ->stateVariable()->value()) +
                        ") > barrier ("+
-                       DoubleFormatter::toString(barrier) +
+                       DecimalFormatter::toString(barrier) +
                        "): up-and-out barrier undefined");
             break;
           default:

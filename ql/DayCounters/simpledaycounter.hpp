@@ -43,7 +43,7 @@ namespace QuantLib {
         class Impl : public DayCounter::Impl {
           public:
             std::string name() const { return "Simple"; }
-            int dayCount(const Date& d1, const Date& d2) const;
+            BigInteger dayCount(const Date& d1, const Date& d2) const;
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const;
         };

@@ -127,11 +127,11 @@ namespace QuantLib {
 
         QL_REQUIRE(percentile>0.0,
                    "percentile (" +
-                   DoubleFormatter::toString(percentile) +
+                   DecimalFormatter::toString(percentile) +
                    ") must be >= 0.0");
         QL_REQUIRE(percentile<1.0,
                    "percentile (" +
-                   DoubleFormatter::toString(percentile) +
+                   DecimalFormatter::toString(percentile) +
                    ") must be < 1.0");
 
         InverseCumulativeNormal gInverse(Stat::mean(),
@@ -147,11 +147,11 @@ namespace QuantLib {
 
         QL_REQUIRE(percentile>=0.9,
                    "percentile (" +
-                   DoubleFormatter::toString(percentile) +
+                   DecimalFormatter::toString(percentile) +
                    ") must be >= 0.90");
         QL_REQUIRE(percentile<1.0,
                    "percentile (" +
-                   DoubleFormatter::toString(percentile) +
+                   DecimalFormatter::toString(percentile) +
                    ") must be < 1.0");
 
         double result = gaussianPercentile(percentile);
@@ -168,11 +168,11 @@ namespace QuantLib {
 
         QL_REQUIRE(percentile>=0.9,
                    "percentile (" +
-                   DoubleFormatter::toString(percentile) +
+                   DecimalFormatter::toString(percentile) +
                    ") must be >= 0.90");
         QL_REQUIRE(percentile<1.0,
                    "percentile (" +
-                   DoubleFormatter::toString(percentile) +
+                   DecimalFormatter::toString(percentile) +
                    ") must be < 1.0");
 
         double result = gaussianPercentile(1.0-percentile);
@@ -189,7 +189,7 @@ namespace QuantLib {
                                                     double percentile) const {
         QL_REQUIRE(percentile<1.0 && percentile>=0.9,
                    "percentile (" +
-                   DoubleFormatter::toString(percentile) +
+                   DecimalFormatter::toString(percentile) +
                    ") out of range 90%-100%");
 
         double m = mean();

@@ -66,13 +66,13 @@ namespace {
             if (QL_FABS(interpolated-*yBegin) > tolerance) {
                 BOOST_FAIL(std::string(type) + 
                            " interpolation failed at x = " +
-                           DoubleFormatter::toString(*xBegin) +
+                           DecimalFormatter::toString(*xBegin) +
                            "\n    interpolated value: " +
-                           DoubleFormatter::toExponential(interpolated) + 
+                           DecimalFormatter::toExponential(interpolated) + 
                            "\n    expected value:     " +
-                           DoubleFormatter::toExponential(*yBegin) +
+                           DecimalFormatter::toExponential(*yBegin) +
                            "\n    error:              "
-                           + DoubleFormatter::toExponential(
+                           + DecimalFormatter::toExponential(
                                               QL_FABS(interpolated-*yBegin)));
             }
             ++xBegin; ++yBegin;
@@ -90,13 +90,13 @@ namespace {
             BOOST_FAIL(std::string(type) + 
                        " interpolation first derivative failure\n"
                        "at x="
-                       + DoubleFormatter::toString(x) +
+                       + DecimalFormatter::toString(x) +
                        "\n    interpolated value: "
-                       + DoubleFormatter::toString(interpolated) +
+                       + DecimalFormatter::toString(interpolated) +
                        "\n    expected value:     "
-                       + DoubleFormatter::toString(value) +
+                       + DecimalFormatter::toString(value) +
                        "\n    error:              "
-                       + DoubleFormatter::toExponential(error));
+                       + DecimalFormatter::toExponential(error));
         }
     }
 
@@ -111,13 +111,13 @@ namespace {
             BOOST_FAIL(std::string(type) + 
                        " interpolation second derivative failure\n"
                        "at x="
-                       + DoubleFormatter::toString(x) +
+                       + DecimalFormatter::toString(x) +
                        "\n    interpolated value: "
-                       + DoubleFormatter::toString(interpolated) +
+                       + DecimalFormatter::toString(interpolated) +
                        "\n    expected value:     "
-                       + DoubleFormatter::toString(value) +
+                       + DecimalFormatter::toString(value) +
                        "\n    error:              "
-                       + DoubleFormatter::toExponential(error));
+                       + DecimalFormatter::toExponential(error));
         }
     }
 
@@ -131,10 +131,10 @@ namespace {
                        " interpolation failure"
                        "\n    cubic coefficient of the first"
                        " polinomial is "
-                       + DoubleFormatter::toString(c[0]) +
+                       + DecimalFormatter::toString(c[0]) +
                        "\n    cubic coefficient of the second"
                        " polinomial is "
-                       + DoubleFormatter::toString(c[1]));
+                       + DecimalFormatter::toString(c[1]));
         }
         Size n = c.size();
         if (QL_FABS(c[n-2]-c[n-1]) > tolerance) {
@@ -142,10 +142,10 @@ namespace {
                        " interpolation failure"
                        "\n    cubic coefficient of the 2nd to last"
                        " polinomial is "
-                       + DoubleFormatter::toString(c[n-2]) +
+                       + DecimalFormatter::toString(c[n-2]) +
                        "\n    cubic coefficient of the last"
                        " polinomial is "
-                       + DoubleFormatter::toString(c[n-1]));
+                       + DecimalFormatter::toString(c[n-1]));
         }
     }
 
@@ -158,11 +158,11 @@ namespace {
             if (QL_FABS(y1-y2) > tolerance) {
                 BOOST_FAIL(std::string(type) +
                            " interpolation not symmetric"
-                           "\n    x = "   + DoubleFormatter::toString(x) +
-                           "\n    g(x)  = " + DoubleFormatter::toString(y1) +
-                           "\n    g(-x) = " + DoubleFormatter::toString(y2) +
+                           "\n    x = "   + DecimalFormatter::toString(x) +
+                           "\n    g(x)  = " + DecimalFormatter::toString(y1) +
+                           "\n    g(-x) = " + DecimalFormatter::toString(y2) +
                            "\n    error:              "
-                           + DoubleFormatter::toExponential(QL_FABS(y1-y2)));
+                           + DecimalFormatter::toExponential(QL_FABS(y1-y2)));
             }
         }
     }
@@ -220,8 +220,8 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
 
         // Not-a-knot
         CubicSpline f = CubicSpline(x.begin(), x.end(), y.begin(),
-                                    CubicSpline::NotAKnot, Null<double>(),
-                                    CubicSpline::NotAKnot, Null<double>(),
+                                    CubicSpline::NotAKnot, Null<Real>(),
+                                    CubicSpline::NotAKnot, Null<Real>(),
                                     false);
         double result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
@@ -230,14 +230,14 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
                        "\n    sample points:      " +
                        SizeFormatter::toString(n) +
                        "\n    norm of difference: " +
-                       DoubleFormatter::toExponential(result,1) +
+                       DecimalFormatter::toExponential(result,1) +
                        "\n    it should be:       " +
-                       DoubleFormatter::toExponential(tabulatedErrors[i],1));
+                       DecimalFormatter::toExponential(tabulatedErrors[i],1));
 
         // MC not-a-knot
         f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
-                                 CubicSpline::NotAKnot, Null<double>(),
-                                 CubicSpline::NotAKnot, Null<double>());
+                                 CubicSpline::NotAKnot, Null<Real>(),
+                                 CubicSpline::NotAKnot, Null<Real>());
         result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
         if (QL_FABS(result-tabulatedMCErrors[i]) > toleranceOnTabMCErr[i])
@@ -245,9 +245,10 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
                        "\n    sample points:      " +
                        SizeFormatter::toString(n) +
                        "\n    norm of difference: " +
-                       DoubleFormatter::toExponential(result,1) +
+                       DecimalFormatter::toExponential(result,1) +
                        "\n    it should be:       " +
-                       DoubleFormatter::toExponential(tabulatedMCErrors[i],1));
+                       DecimalFormatter::toExponential(
+                                                     tabulatedMCErrors[i],1));
     }
 
 }
@@ -272,8 +273,8 @@ void InterpolationTest::testSplineOnGaussianValues() {
 
         // Not-a-knot spline
         CubicSpline f = CubicSpline(x.begin(), x.end(), y.begin(),
-                                    CubicSpline::NotAKnot, Null<double>(),
-                                    CubicSpline::NotAKnot, Null<double>(),
+                                    CubicSpline::NotAKnot, Null<Real>(),
+                                    CubicSpline::NotAKnot, Null<Real>(),
                                     false);
         checkValues("Not-a-knot spline", f,
                     x.begin(), x.end(), y.begin());
@@ -285,20 +286,20 @@ void InterpolationTest::testSplineOnGaussianValues() {
             BOOST_FAIL("Not-a-knot spline interpolation "
                        "bad performance unverified"
                        "\nat x="
-                       + DoubleFormatter::toString(x1_bad) +
+                       + DecimalFormatter::toString(x1_bad) +
                        " interpolated value: "
-                       + DoubleFormatter::toString(interpolated) +
+                       + DecimalFormatter::toString(interpolated) +
                        "\nat x="
-                       + DoubleFormatter::toString(x2_bad) +
+                       + DecimalFormatter::toString(x2_bad) +
                        " interpolated value: "
-                       + DoubleFormatter::toString(interpolated) +
+                       + DecimalFormatter::toString(interpolated) +
                        "\n at least one of them was expected to be < 0.0");
         }
 
         // MC not-a-knot spline
         f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
-                                 CubicSpline::NotAKnot, Null<double>(),
-                                 CubicSpline::NotAKnot, Null<double>());
+                                 CubicSpline::NotAKnot, Null<Real>(),
+                                 CubicSpline::NotAKnot, Null<Real>());
         checkValues("MC not-a-knot spline", f,
                     x.begin(), x.end(), y.begin());
         // good performance
@@ -307,9 +308,9 @@ void InterpolationTest::testSplineOnGaussianValues() {
             BOOST_FAIL("MC not-a-knot spline interpolation "
                        "good performance unverified\n"
                        "at x="
-                       + DoubleFormatter::toString(x1_bad) +
+                       + DecimalFormatter::toString(x1_bad) +
                        "\ninterpolated value: "
-                       + DoubleFormatter::toString(interpolated) +
+                       + DecimalFormatter::toString(interpolated) +
                        "\nexpected value > 0.0");
         }
         interpolated = f(x2_bad);
@@ -317,9 +318,9 @@ void InterpolationTest::testSplineOnGaussianValues() {
             BOOST_FAIL("MC not-a-knot spline interpolation "
                        "good performance unverified\n"
                        "at x="
-                       + DoubleFormatter::toString(x2_bad) +
+                       + DecimalFormatter::toString(x2_bad) +
                        "\ninterpolated value: "
-                       + DoubleFormatter::toString(interpolated) +
+                       + DecimalFormatter::toString(interpolated) +
                        "\nexpected value > 0.0");
         }
     }
@@ -361,9 +362,9 @@ void InterpolationTest::testSplineOnRPN15AValues() {
         BOOST_FAIL("Natural spline interpolation "
                    "poor performance unverified\n"
                    "at x="
-                   + DoubleFormatter::toString(x_bad) +
+                   + DecimalFormatter::toString(x_bad) +
                    "\ninterpolated value: "
-                   + DoubleFormatter::toString(interpolated) +
+                   + DecimalFormatter::toString(interpolated) +
                    "\nexpected value > 1.0");
     }
 
@@ -385,17 +386,17 @@ void InterpolationTest::testSplineOnRPN15AValues() {
         BOOST_FAIL("Clamped spline interpolation "
                    "poor performance unverified\n"
                    "at x="
-                   + DoubleFormatter::toString(x_bad) +
+                   + DecimalFormatter::toString(x_bad) +
                    "\ninterpolated value: "
-                   + DoubleFormatter::toString(interpolated) +
+                   + DecimalFormatter::toString(interpolated) +
                    "\nexpected value > 1.0");
     }
 
 
     // Not-a-knot spline
     f = CubicSpline(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
-                    CubicSpline::NotAKnot, Null<double>(),
-                    CubicSpline::NotAKnot, Null<double>(),
+                    CubicSpline::NotAKnot, Null<Real>(),
+                    CubicSpline::NotAKnot, Null<Real>(),
                     false);
     checkValues("Not-a-knot spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
@@ -406,9 +407,9 @@ void InterpolationTest::testSplineOnRPN15AValues() {
         BOOST_FAIL("Not-a-knot spline interpolation "
                    "poor performance unverified\n"
                    "at x="
-                   + DoubleFormatter::toString(x_bad) +
+                   + DecimalFormatter::toString(x_bad) +
                    "\ninterpolated value: "
-                   + DoubleFormatter::toString(interpolated) +
+                   + DecimalFormatter::toString(interpolated) +
                    "\nexpected value > 1.0");
     }
 
@@ -424,9 +425,9 @@ void InterpolationTest::testSplineOnRPN15AValues() {
         BOOST_FAIL("MC natural spline interpolation "
                    "good performance unverified\n"
                    "at x="
-                   + DoubleFormatter::toString(x_bad) +
+                   + DecimalFormatter::toString(x_bad) +
                    "\ninterpolated value: "
-                   + DoubleFormatter::toString(interpolated) +
+                   + DecimalFormatter::toString(interpolated) +
                    "\nexpected value < 1.0");
     }
 
@@ -447,17 +448,17 @@ void InterpolationTest::testSplineOnRPN15AValues() {
         BOOST_FAIL("MC clamped spline interpolation "
                    "good performance unverified\n"
                    "at x="
-                   + DoubleFormatter::toString(x_bad) +
+                   + DecimalFormatter::toString(x_bad) +
                    "\ninterpolated value: "
-                   + DoubleFormatter::toString(interpolated) +
+                   + DecimalFormatter::toString(interpolated) +
                    "\nexpected value < 1.0");
     }
 
 
     // MC not-a-knot spline values
     f = MonotonicCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y),
-                             CubicSpline::NotAKnot, Null<double>(),
-                             CubicSpline::NotAKnot, Null<double>());
+                             CubicSpline::NotAKnot, Null<Real>(),
+                             CubicSpline::NotAKnot, Null<Real>());
     checkValues("MC not-a-knot spline", f,
                 BEGIN(RPN15A_x), END(RPN15A_x), BEGIN(RPN15A_y));
     // good performance
@@ -466,9 +467,9 @@ void InterpolationTest::testSplineOnRPN15AValues() {
         BOOST_FAIL("MC clamped spline interpolation "
                    "good performance unverified\n"
                    "at x="
-                   + DoubleFormatter::toString(x_bad) +
+                   + DecimalFormatter::toString(x_bad) +
                    "\ninterpolated value: "
-                   + DoubleFormatter::toString(interpolated) +
+                   + DecimalFormatter::toString(interpolated) +
                    "\nexpected value < 1.0");
     }
 }
@@ -506,13 +507,13 @@ void InterpolationTest::testSplineOnGenericValues() {
         if (QL_FABS(error)>3e-16) {
             BOOST_FAIL("Natural spline interpolation "
                        "second derivative failed at x="
-                       + DoubleFormatter::toString(generic_x[i]) +
+                       + DecimalFormatter::toString(generic_x[i]) +
                        "\ninterpolated value: "
-                       + DoubleFormatter::toString(interpolated) +
+                       + DecimalFormatter::toString(interpolated) +
                        "\nexpected value:     "
-                       + DoubleFormatter::toString(generic_natural_y2[i]) +
+                       + DecimalFormatter::toString(generic_natural_y2[i]) +
                        "\nerror:              "
-                       + DoubleFormatter::toExponential(error));
+                       + DecimalFormatter::toExponential(error));
         }
     }
     x35[1] = f(3.5);
@@ -535,8 +536,8 @@ void InterpolationTest::testSplineOnGenericValues() {
 
     // Not-a-knot spline
     f = CubicSpline(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
-                    CubicSpline::NotAKnot, Null<double>(),
-                    CubicSpline::NotAKnot, Null<double>(),
+                    CubicSpline::NotAKnot, Null<Real>(),
+                    CubicSpline::NotAKnot, Null<Real>(),
                     false);
     checkValues("Not-a-knot spline", f,
                 BEGIN(generic_x), END(generic_x), BEGIN(generic_y));
@@ -547,10 +548,10 @@ void InterpolationTest::testSplineOnGenericValues() {
     if (x35[0]>x35[1] || x35[1]>x35[2]) {
         BOOST_FAIL("Spline interpolation failure"
                    "\nat x="
-                   + DoubleFormatter::toString(3.5) +
-                   "\nclamped spline    " + DoubleFormatter::toString(x35[0]) +
-                   "\nnatural spline    " + DoubleFormatter::toString(x35[1]) +
-                   "\nnot-a-knot spline " + DoubleFormatter::toString(x35[2]) +
+                   + DecimalFormatter::toString(3.5) +
+                   "\nclamped spline    " + DecimalFormatter::toString(x35[0])+
+                   "\nnatural spline    " + DecimalFormatter::toString(x35[1])+
+                   "\nnot-a-knot spline " + DecimalFormatter::toString(x35[2])+
                    "\nvalues should be in increasing order");
     }
 }
@@ -569,8 +570,8 @@ void InterpolationTest::testSimmetricEndConditions() {
 
     // Not-a-knot spline
     CubicSpline f = CubicSpline(x.begin(), x.end(), y.begin(),
-                                CubicSpline::NotAKnot, Null<double>(),
-                                CubicSpline::NotAKnot, Null<double>(),
+                                CubicSpline::NotAKnot, Null<Real>(),
+                                CubicSpline::NotAKnot, Null<Real>(),
                                 false);
     checkValues("Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
@@ -580,8 +581,8 @@ void InterpolationTest::testSimmetricEndConditions() {
 
     // MC not-a-knot spline
     f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
-                             CubicSpline::NotAKnot, Null<double>(),
-                             CubicSpline::NotAKnot, Null<double>());
+                             CubicSpline::NotAKnot, Null<Real>(),
+                             CubicSpline::NotAKnot, Null<Real>());
     checkValues("MC not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
     checkSymmetry("MC not-a-knot spline", f, x[0]);
@@ -601,8 +602,8 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     // Not-a-knot spline
     CubicSpline f = CubicSpline(x.begin(), x.end(), y.begin(),
-                                CubicSpline::NotAKnot, Null<double>(),
-                                CubicSpline::NotAKnot, Null<double>(),
+                                CubicSpline::NotAKnot, Null<Real>(),
+                                CubicSpline::NotAKnot, Null<Real>(),
                                 false);
     checkValues("Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
@@ -651,8 +652,8 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     // MC Not-a-knot spline
     f = CubicSpline(x.begin(), x.end(), y.begin(),
-                    CubicSpline::NotAKnot, Null<double>(),
-                    CubicSpline::NotAKnot, Null<double>(),
+                    CubicSpline::NotAKnot, Null<Real>(),
+                    CubicSpline::NotAKnot, Null<Real>(),
                     true);
     checkValues("MC Not-a-knot spline", f,
                 x.begin(), x.end(), y.begin());
@@ -720,20 +721,20 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
     // MC Not-a-knot spline
     Interpolation f = CubicSpline(x.begin(), x.end(), y.begin(),
-                                  CubicSpline::NotAKnot, Null<double>(),
-                                  CubicSpline::NotAKnot, Null<double>(),
+                                  CubicSpline::NotAKnot, Null<Real>(),
+                                  CubicSpline::NotAKnot, Null<Real>(),
                                   true);
     interpolated = f(zero);
     if (QL_FABS(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC not-a-knot spline"
                    " interpolation failed at x = " +
-                   DoubleFormatter::toString(zero) +
+                   DecimalFormatter::toString(zero) +
                    "\n    interpolated value: " +
-                   DoubleFormatter::toString(interpolated) + 
+                   DecimalFormatter::toString(interpolated) + 
                    "\n    expected value:     " +
-                   DoubleFormatter::toString(expected) +
+                   DecimalFormatter::toString(expected) +
                    "\n    error:              "
-                   + DoubleFormatter::toExponential(
+                   + DecimalFormatter::toExponential(
                                              QL_FABS(interpolated-expected)));
     }
 
@@ -747,13 +748,13 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
     if (QL_FABS(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC clamped spline"
                    " interpolation failed at x = " +
-                   DoubleFormatter::toString(zero) +
+                   DecimalFormatter::toString(zero) +
                    "\n    interpolated value: " +
-                   DoubleFormatter::toString(interpolated) + 
+                   DecimalFormatter::toString(interpolated) + 
                    "\n    expected value:     " +
-                   DoubleFormatter::toString(expected) +
+                   DecimalFormatter::toString(expected) +
                    "\n    error:              "
-                   + DoubleFormatter::toExponential(
+                   + DecimalFormatter::toExponential(
                                              QL_FABS(interpolated-expected)));
     }
 
@@ -766,13 +767,13 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
     if (QL_FABS(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC SecondDerivative spline"
                    " interpolation failed at x = " +
-                   DoubleFormatter::toString(zero) +
+                   DecimalFormatter::toString(zero) +
                    "\n    interpolated value: " +
-                   DoubleFormatter::toString(interpolated) + 
+                   DecimalFormatter::toString(interpolated) + 
                    "\n    expected value:     " +
-                   DoubleFormatter::toString(expected) +
+                   DecimalFormatter::toString(expected) +
                    "\n    error:              "
-                   + DoubleFormatter::toExponential(
+                   + DecimalFormatter::toExponential(
                                              QL_FABS(interpolated-expected)));
     }
 

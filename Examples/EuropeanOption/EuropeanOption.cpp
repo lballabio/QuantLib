@@ -346,8 +346,8 @@ int main(int, char* [])
         #if defined(QL_PATCH_MICROSOFT)
         boost::shared_ptr<PricingEngine> mcengine1(
             new MCEuropeanEngine<PseudoRandom>(timeSteps, false, false,
-                                               Null<int>(), 0.02,
-                                               Null<int>(), mcSeed));
+                                               Null<Size>(), 0.02,
+                                               Null<Size>(), mcSeed));
         #else
         boost::shared_ptr<PricingEngine> mcengine1 =
             MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
@@ -374,8 +374,8 @@ int main(int, char* [])
         #if defined(QL_PATCH_MICROSOFT)
         boost::shared_ptr<PricingEngine> mcengine2(
             new MCEuropeanEngine<LowDiscrepancy>(timeSteps, false, false,
-                                                 nSamples, Null<double>(),
-                                                 Null<int>()));
+                                                 nSamples, Null<Real>(),
+                                                 Null<Size>()));
         #else
         boost::shared_ptr<PricingEngine> mcengine2 =
             MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)

@@ -44,9 +44,9 @@ namespace QuantLib {
         MCEuropeanEngine(Size maxTimeStepPerYear,
                          bool antitheticVariate = false,
                          bool controlVariate = false,
-                         Size requiredSamples = Null<int>(),
-                         double requiredTolerance = Null<double>(),
-                         Size maxSamples = Null<int>(),
+                         Size requiredSamples = Null<Size>(),
+                         Real requiredTolerance = Null<Real>(),
+                         Size maxSamples = Null<Size>(),
                          long seed = 0);
       protected:
         TimeGrid timeGrid() const;
@@ -178,8 +178,8 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>::MakeMCEuropeanEngine()
     : antithetic_(false), controlVariate_(false),
-      steps_(Null<int>()), samples_(Null<int>()), maxSamples_(Null<int>()),
-      tolerance_(Null<double>()), seed_(0) {}
+      steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
+      tolerance_(Null<Real>()), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
@@ -191,7 +191,7 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
     MakeMCEuropeanEngine<RNG,S>::withSamples(Size samples) {
-        QL_REQUIRE(tolerance_ == Null<double>(),
+        QL_REQUIRE(tolerance_ == Null<Real>(),
                    "tolerance already set");
         samples_ = samples;
         return *this;
@@ -200,7 +200,7 @@ namespace QuantLib {
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
     MakeMCEuropeanEngine<RNG,S>::withTolerance(double tolerance) {
-        QL_REQUIRE(samples_ == Size(Null<int>()),
+        QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,
                    "chosen random generator policy "
@@ -241,7 +241,7 @@ namespace QuantLib {
     inline
     MakeMCEuropeanEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>() 
                                                                       const {
-        QL_REQUIRE(steps_ != Size(Null<int>()),
+        QL_REQUIRE(steps_ != Null<Size>(),
                    "max number of steps per year not given");
         return boost::shared_ptr<PricingEngine>(
                              new MCEuropeanEngine<RNG,S>(steps_, antithetic_,

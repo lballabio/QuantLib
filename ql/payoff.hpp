@@ -28,10 +28,10 @@
 namespace QuantLib {
 
     //! Base class for option payoffs
-    class Payoff : std::unary_function<double,double> {
+    class Payoff : std::unary_function<Real,Real> {
       public:
         virtual ~Payoff() {}
-        virtual double operator()(double price) const = 0;
+        virtual Real operator()(Real price) const = 0;
     };
 
 }

@@ -69,10 +69,10 @@ namespace {
     RollingConvention depoRollingConvention;
     DayCounter depoDayCounter;
     RollingConvention swapRollingConvention;
-    int fixedLegFrequency;
+    Frequency fixedLegFrequency;
     bool fixedLegIsAdjusted;
     DayCounter fixedLegDayCounter;
-    int floatingLegFrequency;
+    Frequency floatingLegFrequency;
 
     Size deposits, swaps;
     std::vector<boost::shared_ptr<SimpleQuote> > rates;
@@ -89,10 +89,10 @@ namespace {
         depoRollingConvention = ModifiedFollowing;
         depoDayCounter = Actual360();
         swapRollingConvention = ModifiedFollowing;
-        fixedLegFrequency = 1;
+        fixedLegFrequency = Annual;
         fixedLegIsAdjusted = false;
         fixedLegDayCounter = Thirty360();
-        floatingLegFrequency = 2;
+        floatingLegFrequency = Semiannual;
 
         deposits = LENGTH(depositData);
         swaps = LENGTH(swapData);

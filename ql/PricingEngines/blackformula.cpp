@@ -28,17 +28,17 @@ namespace QuantLib {
 
         QL_REQUIRE(forward>0.0,
                    "positive forward value required: " +
-                   DoubleFormatter::toString(forward) +
+                   DecimalFormatter::toString(forward) +
                    " not allowed");
 
         QL_REQUIRE(discount>0.0,
                    "positive discount required " +
-                   DoubleFormatter::toString(discount) +
+                   DecimalFormatter::toString(discount) +
                    " not allowed");
 
         QL_REQUIRE(variance>=0.0,
                    "non-negative variance required " +
-                   DoubleFormatter::toString(variance) +
+                   DecimalFormatter::toString(variance) +
                    " not allowed");
 
         stdDev_ = QL_SQRT(variance);

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,7 +22,7 @@
 #ifndef quantlib_null_h
 #define quantlib_null_h
 
-#include <ql/qldefines.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
@@ -34,21 +34,75 @@ namespace QuantLib {
         operator Type() const { return Type(); }
     };
 
-    #if !defined(__DOXYGEN__)
+#if !defined(__DOXYGEN__)
+
+    /* here we're trying to cover a number of types that one would possibly
+       use as Real, Integer and such. Were one to add his own user-defined
+       type, a suitable Null specialization should be added. */
+
     template <>
     class Null<int> {
       public:
         Null() {}
-        operator int() const { return QL_MAX_INT; }
+        operator int() const { return int(QL_MAX_INT); }
     };
+
+    template <>
+    class Null<long> {
+      public:
+        Null() {}
+        operator long() const { return long(QL_MAX_INT); }
+    };
+
+    template <>
+    class Null<unsigned int> {
+      public:
+        Null() {}
+        operator unsigned int() const { return (unsigned int)(QL_MAX_INT); }
+    };
+
+    template <>
+    class Null<unsigned long> {
+      public:
+        Null() {}
+        operator unsigned long() const { return (unsigned long)(QL_MAX_INT); }
+    };
+
+    #if defined(HAVE_LONG_LONG)
+
+    template <>
+    class Null<long long> {
+      public:
+        Null() {}
+        operator long long() const { return (long long)(QL_MAX_INT); }
+    };
+
+    template <>
+    class Null<unsigned long long> {
+      public:
+        Null() {}
+        operator unsigned long long() const {
+            return (unsigned long long)(QL_MAX_INT);
+        }
+    };
+
+    #endif
 
     template <>
     class Null<double> {
       public:
         Null() {}
-        operator double() const { return QL_MAX_DOUBLE; }
+        operator double() const { return double(QL_MAX_DOUBLE); }
     };
-    #endif
+
+    template <>
+    class Null<long double> {
+      public:
+        Null() {}
+        operator long double() const { return (long double)(QL_MAX_DOUBLE); }
+    };
+
+#endif
 
 }
 

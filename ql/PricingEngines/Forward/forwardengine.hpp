@@ -31,7 +31,7 @@ namespace QuantLib {
     template <class ArgumentsType> 
     class ForwardOptionArguments : public ArgumentsType {
       public:
-        ForwardOptionArguments() : moneyness(Null<double>()),
+        ForwardOptionArguments() : moneyness(Null<Real>()),
                                    resetDate(Null<Date>()) {}
         void validate() const;
         double moneyness;
@@ -65,10 +65,8 @@ namespace QuantLib {
     void ForwardOptionArguments<ArgumentsType>::validate() const {
         ArgumentsType::validate();
 
-        QL_REQUIRE(moneyness != Null<double>(),
-                   "null moneyness given");
-        QL_REQUIRE(moneyness > 0.0,
-                   "negative or zero moneyness given");
+        QL_REQUIRE(moneyness != Null<Real>(), "null moneyness given");
+        QL_REQUIRE(moneyness > 0.0, "negative or zero moneyness given");
 
         QL_REQUIRE(resetDate != Null<Date>(), "null reset date given");
         QL_REQUIRE(resetDate >= blackScholesProcess->riskFreeRate()

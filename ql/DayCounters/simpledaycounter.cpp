@@ -22,8 +22,8 @@ namespace QuantLib {
 
     namespace { DayCounter fallback = Thirty360(); }
 
-    int SimpleDayCounter::Impl::dayCount(const Date& d1,
-                                         const Date& d2) const {
+    BigInteger SimpleDayCounter::Impl::dayCount(const Date& d1,
+                                                const Date& d2) const {
         return fallback.dayCount(d1,d2);
     }
 
@@ -41,7 +41,7 @@ namespace QuantLib {
             (dm1 < dm2 && d1.isEndOfMonth())) {
 
             return (d2.year()-d1.year()) +
-                (int(d2.month())-int(d1.month()))/12.0;
+                (Integer(d2.month())-Integer(d1.month()))/12.0;
 
         } else {
             return fallback.yearFraction(d1,d2);

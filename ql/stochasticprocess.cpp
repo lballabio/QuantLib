@@ -24,12 +24,12 @@
 
 namespace QuantLib {
 
-    double StochasticProcess::expectation(Time t0, double x0, Time dt) const {
+    Real StochasticProcess::expectation(Time t0, Real x0, Time dt) const {
         return x0 + drift(t0, x0)*dt;
     }
 
-    double StochasticProcess::variance(Time t0, double x0, Time dt) const {
-        double sigma = diffusion(t0, x0);
+    Real StochasticProcess::variance(Time t0, Real x0, Time dt) const {
+        Real sigma = diffusion(t0, x0);
         return sigma*sigma*dt;
     }
 
@@ -48,21 +48,21 @@ namespace QuantLib {
         registerWith(blackVolatility_);
     }
 
-    double BlackScholesProcess::x0() const {
+    Real BlackScholesProcess::x0() const {
         return x0_->value();
     }
 
-    double BlackScholesProcess::drift(Time t, double x) const {
-        double sigma = diffusion(t,x);
+    Real BlackScholesProcess::drift(Time t, Real x) const {
+        Real sigma = diffusion(t,x);
         // we could be more anticipatory if we know the right dt
         // for which the drift will be used
-        double t1 = t + 0.0001;
+        Time t1 = t + 0.0001;
         return riskFreeRate_->forward(t, t1, true)
              - dividendYield_->forward(t, t1, true)
              - 0.5 * sigma * sigma;
     }
 
-    double BlackScholesProcess::diffusion(Time t, double x) const {
+    Real BlackScholesProcess::diffusion(Time t, Real x) const {
         return localVolatility()->localVol(t, x, true);
     }
 
@@ -170,49 +170,49 @@ namespace QuantLib {
     }
 
 
-    OrnsteinUhlenbeckProcess::OrnsteinUhlenbeckProcess(double speed,
-                                                       double vol,
-                                                       double x0)
+    OrnsteinUhlenbeckProcess::OrnsteinUhlenbeckProcess(Real speed,
+                                                       Volatility vol,
+                                                       Real x0)
     : x0_(x0), speed_(speed), volatility_(vol) {}
 
-    double OrnsteinUhlenbeckProcess::x0() const {
+    Real OrnsteinUhlenbeckProcess::x0() const {
         return x0_;
     }
 
-    double OrnsteinUhlenbeckProcess::drift(Time, double x) const {
+    Real OrnsteinUhlenbeckProcess::drift(Time, Real x) const {
         return - speed_*x;
     }
 
-    double OrnsteinUhlenbeckProcess::diffusion(Time, double) const {
+    Real OrnsteinUhlenbeckProcess::diffusion(Time, Real) const {
         return volatility_;
     }
 
-    double OrnsteinUhlenbeckProcess::expectation(Time, double x0, 
-                                                 Time dt) const {
+    Real OrnsteinUhlenbeckProcess::expectation(Time, Real x0, 
+                                               Time dt) const {
         return x0*QL_EXP(-speed_*dt);
     }
 
-    double OrnsteinUhlenbeckProcess::variance(Time, double, Time dt) const {
+    Real OrnsteinUhlenbeckProcess::variance(Time, Real, Time dt) const {
         return 0.5*volatility_*volatility_/speed_*
                (1.0 - QL_EXP(-2.0*speed_*dt));
     }
 
 
-    SquareRootProcess::SquareRootProcess(double b,
-                                         double a,
-                                         double sigma,
-                                         double x0)
+    SquareRootProcess::SquareRootProcess(Real b,
+                                         Real a,
+                                         Volatility sigma,
+                                         Real x0)
     : x0_(x0), mean_(b), speed_(a), volatility_(sigma) {}
 
-    double SquareRootProcess::x0() const {
+    Real SquareRootProcess::x0() const {
         return x0_;
     }
 
-    double SquareRootProcess::drift(Time, double x) const {
+    Real SquareRootProcess::drift(Time, Real x) const {
         return speed_*(mean_ - x);
     }
 
-    double SquareRootProcess::diffusion(Time, double x) const {
+    Real SquareRootProcess::diffusion(Time, Real x) const {
         return volatility_*QL_SQRT(x);
     }
 

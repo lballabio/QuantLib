@@ -40,32 +40,32 @@ using namespace boost::unit_test_framework;
                " option with " \
                + payoffTypeToString(payoff) + " payoff:\n" \
                "    underlying value: " \
-               + DoubleFormatter::toString(s) + "\n" \
+               + DecimalFormatter::toString(s) + "\n" \
                "    strike:           " \
-               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               + DecimalFormatter::toString(payoff->strike()) +"\n" \
                "    barrier:          " \
-               + DoubleFormatter::toString(barrier) +"\n" \
+               + DecimalFormatter::toString(barrier) +"\n" \
                "    rebate:           " \
-               + DoubleFormatter::toString(rebate) +"\n" \
+               + DecimalFormatter::toString(rebate) +"\n" \
                "    dividend yield:   " \
-               + DoubleFormatter::toString(q) + "\n" \
+               + DecimalFormatter::toString(q) + "\n" \
                "    risk-free rate:   " \
-               + DoubleFormatter::toString(r) + "\n" \
+               + DecimalFormatter::toString(r) + "\n" \
                "    reference date:   " \
                + DateFormatter::toString(today) + "\n" \
                "    maturity:         " \
                + DateFormatter::toString(exercise->lastDate()) + "\n" \
                "    volatility:       " \
-               + DoubleFormatter::toString(v) + "\n\n" \
+               + DecimalFormatter::toString(v) + "\n\n" \
                "    expected   " + greekName + ": " \
-               + DoubleFormatter::toString(expected) + "\n" \
+               + DecimalFormatter::toString(expected) + "\n" \
                "    calculated " + greekName + ": " \
-               + DoubleFormatter::toString(calculated) + "\n" \
+               + DecimalFormatter::toString(calculated) + "\n" \
                "    error:            " \
-               + DoubleFormatter::toString(error) + "\n" \
-               + (tolerance==Null<double>() ? std::string("") : \
+               + DecimalFormatter::toString(error) + "\n" \
+               + (tolerance==Null<Real>() ? std::string("") : \
                   "    tolerance:        " \
-                  + DoubleFormatter::toString(tolerance)));
+                  + DecimalFormatter::toString(tolerance)));
 
 namespace {
 
@@ -359,9 +359,9 @@ void BarrierOptionTest::testBabsiriValues() {
                 "Data at index " + SizeFormatter::toString(i) + ", "
                 "Barrier call option:\n"
                     "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
+                    DecimalFormatter::toString(calculated) + "\n"
                     "    expected: " +
-                    DoubleFormatter::toString(expected));
+                    DecimalFormatter::toString(expected));
         }
 
         barrierCallOption.setPricingEngine(mcEngine);
@@ -371,9 +371,9 @@ void BarrierOptionTest::testBabsiriValues() {
                 "Data at index " + SizeFormatter::toString(i) + ", "
                 "Barrier call option MC:\n"
                     "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
+                    DecimalFormatter::toString(calculated) + "\n"
                     "    expected: " +
-                    DoubleFormatter::toString(expected));
+                    DecimalFormatter::toString(expected));
         }
 
     }
@@ -466,9 +466,9 @@ void BarrierOptionTest::testBeagleholeValues() {
                 "Data at index " + SizeFormatter::toString(i) + ", "
                 "Barrier call option:\n"
                     "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
+                    DecimalFormatter::toString(calculated) + "\n"
                     "    expected: " +
-                    DoubleFormatter::toString(expected));
+                    DecimalFormatter::toString(expected));
         }
 
         barrierCallOption.setPricingEngine(mcEngine);
@@ -478,9 +478,9 @@ void BarrierOptionTest::testBeagleholeValues() {
                 "Data at index " + SizeFormatter::toString(i) + ", "
                 "Barrier call option MC:\n"
                     "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
+                    DecimalFormatter::toString(calculated) + "\n"
                     "    expected: " +
-                    DoubleFormatter::toString(expected));
+                    DecimalFormatter::toString(expected));
         }
     }
 }

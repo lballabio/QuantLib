@@ -46,22 +46,22 @@ namespace {
                 BOOST_FAIL(
                     name + " solver:\n"
                     "    expected:   " 
-                    + DoubleFormatter::toString(expected) + "\n"
+                    + DecimalFormatter::toString(expected) + "\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(root) + "\n"
+                    + DecimalFormatter::toString(root) + "\n"
                     "    accuracy:   "
-                    + DoubleFormatter::toString(accuracy[i]));
+                    + DecimalFormatter::toString(accuracy[i]));
             }
             root = solver.solve(Foo(),accuracy[i],1.5,0.0,1.0);
             if (QL_FABS(root-expected) > accuracy[i]) {
                 BOOST_FAIL(
                     name + " solver (bracketed):\n"
                     "    expected:   " 
-                    + DoubleFormatter::toString(expected) + "\n"
+                    + DecimalFormatter::toString(expected) + "\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(root) + "\n"
+                    + DecimalFormatter::toString(root) + "\n"
                     "    accuracy:   "
-                    + DoubleFormatter::toString(accuracy[i]));
+                    + DecimalFormatter::toString(accuracy[i]));
             }
         }
     }

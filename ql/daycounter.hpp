@@ -32,8 +32,8 @@ namespace QuantLib {
       public:
         virtual ~DayCounterImpl() {}
         virtual std::string name() const = 0;
-        virtual int dayCount(const Date&,
-                             const Date&) const = 0;
+        virtual BigInteger dayCount(const Date&,
+                                    const Date&) const = 0;
         virtual Time yearFraction(const Date&, const Date&,
                                   const Date& refPeriodStart,
                                   const Date& refPeriodEnd) const = 0;
@@ -60,8 +60,8 @@ namespace QuantLib {
         */
         std::string name() const;
         //! Returns the number of days between two dates.
-        int dayCount(const Date&,
-                     const Date&) const;
+        BigInteger dayCount(const Date&,
+                            const Date&) const;
         //! Returns the period between two dates as a fraction of year.
         Time yearFraction(const Date&, const Date&,
                           const Date& refPeriodStart = Date(),
@@ -97,7 +97,8 @@ namespace QuantLib {
         return impl_->name();
     }
 
-    inline int DayCounter::dayCount(const Date& d1, const Date& d2) const {
+    inline BigInteger DayCounter::dayCount(const Date& d1, 
+                                           const Date& d2) const {
         return impl_->dayCount(d1,d2);
     }
 

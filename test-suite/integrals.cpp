@@ -37,8 +37,8 @@ namespace {
         if (QL_FABS(calculated-expected) > tolerance) {
             BOOST_FAIL(
                 "integrating " + tag +
-                "    calculated: " + DoubleFormatter::toString(calculated) +
-                "    expected:   " + DoubleFormatter::toString(expected));
+                "    calculated: " + DecimalFormatter::toString(calculated) +
+                "    expected:   " + DecimalFormatter::toString(expected));
         }
     }
 

@@ -28,11 +28,11 @@ namespace QuantLib {
                          const Calendar& calendar,
                          RollingConvention rollingConvention,
                          double nominal,
-                         int fixedFrequency,
+                         Frequency fixedFrequency,
                          Rate fixedRate,
                          bool fixedIsAdjusted,
                          const DayCounter& fixedDayCount,
-                         int floatingFrequency,
+                         Frequency floatingFrequency,
                          const boost::shared_ptr<Xibor>& index,
                          int indexFixingDays,
                          Spread spread,
@@ -177,7 +177,7 @@ namespace QuantLib {
 
 
     void SimpleSwap::arguments::validate() const {
-        QL_REQUIRE(nominal != Null<double>(),
+        QL_REQUIRE(nominal != Null<Real>(),
                    "nominal null or not set");
         QL_REQUIRE(fixedResetTimes.size() == fixedPayTimes.size(), 
                    "number of fixed start times different from "

@@ -45,7 +45,7 @@ namespace QuantLib {
         if (dateNumber_ > 0){
             QL_REQUIRE(dates_[0] >= 0,
                        "first date " +
-                       DoubleFormatter::toString(dates_[0]) +
+                       DecimalFormatter::toString(dates_[0]) +
                        " cannot be negative");
             if(dates_[0] < residualTime * dateTollerance ){
                 firstDateIsZero_ = true;
@@ -61,9 +61,9 @@ namespace QuantLib {
 
             QL_REQUIRE(dates_[dateNumber_-1] <= residualTime,
                        "last date, " +
-                       DoubleFormatter::toString(dates_[dateNumber_-1]) +
+                       DecimalFormatter::toString(dates_[dateNumber_-1]) +
                        ", must be within the residual time of " +
-                       DoubleFormatter::toString(residualTime) );
+                       DecimalFormatter::toString(residualTime) );
 
             if (dateNumber_ >= 2){
                 if (!firstDateIsZero_)
@@ -71,9 +71,9 @@ namespace QuantLib {
                 for (Size j = 1; j < dateNumber_; j++)
                     QL_REQUIRE(dates_[j-1] < dates_[j],
                                "dates must be in increasing order:" +
-                               DoubleFormatter::toString(dates_[j-1]) +
+                               DecimalFormatter::toString(dates_[j-1]) +
                                " is not strictly smaller than " +
-                               DoubleFormatter::toString(dates_[j]) );
+                               DecimalFormatter::toString(dates_[j]) );
             }
         }
 

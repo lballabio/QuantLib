@@ -64,9 +64,9 @@ namespace QuantLib {
 
     // constructors
     Date::Date()
-    : serialNumber_(0L) {}
+    : serialNumber_(BigInteger(0)) {}
 
-    Date::Date(long serialNumber)
+    Date::Date(BigInteger serialNumber)
     : serialNumber_(serialNumber) {
         QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
                    serialNumber <= maximumSerialNumber(),
@@ -77,30 +77,30 @@ namespace QuantLib {
     }
 
     Date::Date(Day d, Month m, Year y) {
-        QL_REQUIRE(int(y) > 1900 && int(y) < 2100,
-                   "year " + IntegerFormatter::toString(int(y)) +
+        QL_REQUIRE(y > 1900 && y < 2100,
+                   "year " + IntegerFormatter::toString(y) +
                    " out of bound. It must be in [1901,2099]");
-        QL_REQUIRE(int(m) > 0 && int(m) < 13,
-                   "month " + IntegerFormatter::toString(int(m)) +
+        QL_REQUIRE(Integer(m) > 0 && Integer(m) < 13,
+                   "month " + IntegerFormatter::toString(Integer(m)) +
                    " outside January-December range [1,12]");
 
         bool leap = isLeap(y);
         Day len = monthLength(m,leap), offset = monthOffset(m,leap);
-        QL_REQUIRE(int(d) <= len && int(d) > 0,
+        QL_REQUIRE(d <= len && d > 0,
                    "day outside month (" +
-                   IntegerFormatter::toString(int(m)) + ") day-range "
-                   "[1," + IntegerFormatter::toString(int(len)) + "]");
+                   IntegerFormatter::toString(Integer(m)) + ") day-range "
+                   "[1," + IntegerFormatter::toString(len) + "]");
 
         serialNumber_ = d + offset + yearOffset(y);
     }
 
     Month Date::month() const {
         Day d = dayOfYear(); // dayOfYear is 1 based
-        int m = d/30 + 1;
+        Integer m = d/30 + 1;
         bool leap = isLeap(year());
-        while (d <= int(monthOffset(Month(m),leap)))
+        while (d <= monthOffset(Month(m),leap))
             m--;
-        while (d > int(monthOffset(Month(m+1),leap)))
+        while (d > monthOffset(Month(m+1),leap))
             m++;
         return Month(m);
     }
@@ -108,14 +108,14 @@ namespace QuantLib {
     Year Date::year() const {
         Year y = (serialNumber_ / 365)+1900;
         // yearOffset(y) is December 31st of the preceding year
-        if (serialNumber_ <= int(yearOffset(y)))
+        if (serialNumber_ <= yearOffset(y))
             y--;
         return y;
     }
 
-    Date Date::plusMonths(int months) const {
+    Date Date::plusMonths(Integer months) const {
         Day d = dayOfMonth();
-        int m = int(month())+months;
+        Integer m = Integer(month())+months;
         Year y = year();
         while (m > 12) {
             m -= 12;
@@ -130,13 +130,13 @@ namespace QuantLib {
                   "year " + IntegerFormatter::toString(y) +
                   " out of bound. It must be in [1901,2099]");
 
-        int length = monthLength(Month(m), isLeap(y));
+        Integer length = monthLength(Month(m), isLeap(y));
         if (d > length)
             d = length;
         return Date(d,Month(m),y);
     }
 
-    Date Date::plusYears(int years) const {
+    Date Date::plusYears(Integer years) const {
         Day d = dayOfMonth();
         Month m = month();
         Year y = year()+years;
@@ -150,7 +150,7 @@ namespace QuantLib {
         return Date(d,m,y);
     }
 
-    Date Date::plus(int units, TimeUnit theUnit) const {
+    Date Date::plus(Integer units, TimeUnit theUnit) const {
         Date d;
         switch (theUnit) {
           case Days:
@@ -171,8 +171,8 @@ namespace QuantLib {
         return d;
     }
 
-    Date& Date::operator+=(int days) {
-        long serial = serialNumber_ + days;
+    Date& Date::operator+=(BigInteger days) {
+        BigInteger serial = serialNumber_ + days;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " + IntegerFormatter::toString(serial) +
@@ -183,8 +183,8 @@ namespace QuantLib {
         return *this;
     }
 
-    Date& Date::operator-=(int days) {
-        long serial = serialNumber_ - days;
+    Date& Date::operator-=(BigInteger days) {
+        BigInteger serial = serialNumber_ - days;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " + IntegerFormatter::toString(serial) +
@@ -196,7 +196,7 @@ namespace QuantLib {
     }
 
     Date& Date::operator++() {
-        long serial = serialNumber_ + 1;
+        BigInteger serial = serialNumber_ + 1;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " + IntegerFormatter::toString(serial) +
@@ -209,7 +209,7 @@ namespace QuantLib {
 
     Date Date::operator++(int ) {
         Date temp = *this;
-        long serial = serialNumber_ + 1;
+        BigInteger serial = serialNumber_ + 1;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " + IntegerFormatter::toString(serial) +
@@ -221,7 +221,7 @@ namespace QuantLib {
     }
 
     Date& Date::operator--() {
-        long serial = serialNumber_ - 1;
+        BigInteger serial = serialNumber_ - 1;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " + IntegerFormatter::toString(serial) +
@@ -234,7 +234,7 @@ namespace QuantLib {
 
     Date Date::operator--(int ) {
         Date temp = *this;
-        long serial = serialNumber_ - 1;
+        BigInteger serial = serialNumber_ - 1;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " + IntegerFormatter::toString(serial) +
@@ -316,23 +316,23 @@ namespace QuantLib {
         return YearIsLeap[y-1900];
     }
 
-    int Date::monthLength(Month m, bool leapYear) {
-        static const int MonthLength[] = {
+    Integer Date::monthLength(Month m, bool leapYear) {
+        static const Integer MonthLength[] = {
             31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
         };
-        static const int MonthLeapLength[] = {
+        static const Integer MonthLeapLength[] = {
             31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
         };
         return (leapYear? MonthLeapLength[m-1] : MonthLength[m-1]);
     }
 
-    int Date::monthOffset(Month m, bool leapYear) {
-        static const int MonthOffset[] = {
+    Integer Date::monthOffset(Month m, bool leapYear) {
+        static const Integer MonthOffset[] = {
               0,  31,  59,  90, 120, 151,   // Jan - Jun
             181, 212, 243, 273, 304, 334,   // Jun - Dec
             365     // used in dayOfMonth to bracket day
         };
-        static const int MonthLeapOffset[] = {
+        static const Integer MonthLeapOffset[] = {
               0,  31,  60,  91, 121, 152,   // Jan - Jun
             182, 213, 244, 274, 305, 335,   // Jun - Dec
             366     // used in dayOfMonth to bracket day
@@ -340,10 +340,10 @@ namespace QuantLib {
         return (leapYear? MonthLeapOffset[m-1] : MonthOffset[m-1]);
     }
 
-    long Date::yearOffset(Year y) {
+    BigInteger Date::yearOffset(Year y) {
         // the list of all December 31st in the preceding year
         // e.g. for 1901 yearOffset[1] is 366, that is, December 31 1900
-        static const long YearOffset[] = {
+        static const BigInteger YearOffset[] = {
             // 1900-1909
                 0,  366,  731, 1096, 1461, 1827, 2192, 2557, 2922, 3288,
             // 1910-1919
@@ -390,11 +390,11 @@ namespace QuantLib {
         return YearOffset[y-1900];
     }
 
-    long Date::minimumSerialNumber() {
+    BigInteger Date::minimumSerialNumber() {
         return 367;       // Jan 1st, 1901
     }
 
-    long Date::maximumSerialNumber() {
+    BigInteger Date::maximumSerialNumber() {
         return 73050;    // Dec 31st, 2099
     }
 

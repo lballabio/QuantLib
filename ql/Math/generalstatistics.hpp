@@ -122,7 +122,7 @@ namespace QuantLib {
                 }
             }
             if (N == 0)
-                return std::make_pair(Null<double>(),0);
+                return std::make_pair(Null<Real>(),0);
             else
                 return std::make_pair(num/den,N);
         }

@@ -72,8 +72,9 @@ namespace QuantLib {
             QL_ENSURE(values_.size() == Size((lastDate-firstDate)+1),
                       "history size incompatible with date range");
         }
-        History(const Date& firstDate, const std::vector<double>& values)
-        : firstDate_(firstDate), lastDate_(firstDate + int(values.size())),
+        History(const Date& firstDate, const std::vector<Real>& values)
+        : firstDate_(firstDate), 
+          lastDate_(firstDate + BigInteger(values.size())),
           values_(values) {}
         /*! This constructor initializes the history with the given set of
             values, corresponding to the date range between
@@ -84,7 +85,7 @@ namespace QuantLib {
                  included.
         */
         History(const Date& firstDate, const Date& lastDate,
-            const std::vector<double>& values);
+                const std::vector<Real>& values);
         /*! This constructor initializes the history with the given set of
             values, corresponding each to the element with the same index in
             the given set of dates. The whole date range between
@@ -106,7 +107,7 @@ namespace QuantLib {
                  included.
         */
         History(const std::vector<Date>& dates,
-            const std::vector<double>& values);
+                const std::vector<Real>& values);
         //! \name Inspectors
         //@{
         //! returns the first date for which a historical datum exists
@@ -119,7 +120,7 @@ namespace QuantLib {
         //! \name Historical data access
         //@{
         //! returns the (possibly null) datum corresponding to the given date
-        double operator[](const Date&) const;
+        Real operator[](const Date&) const;
         //@}
         // forward declarations
         class const_iterator;
@@ -130,34 +131,34 @@ namespace QuantLib {
           public:
             Entry() {
                 #if defined(QL_PATCH_DARWIN)
-                std::vector<double> v(1,Null<double>());
+                std::vector<Real> v(1,Null<Real>());
                 #else
-                static std::vector<double> v(1,Null<double>());
+                static std::vector<Real> v(1,Null<Real>());
                 #endif
                 date_ = Date();
                 value_ = v.begin();
             }
             const Date& date() const { return date_; }
-            double value() const { return *value_; }
+            Real value() const { return *value_; }
           private:
             Entry(const Date& date,
-                const std::vector<double>::const_iterator& value)
+                  const std::vector<Real>::const_iterator& value)
             : date_(date), value_(value) {}
             Date date_;
-            std::vector<double>::const_iterator value_;
+            std::vector<Real>::const_iterator value_;
         };
 
         //! random access iterator on history entries
         class const_iterator : public QL_ITERATOR<
             std::random_access_iterator_tag, Entry,
-            int, const Entry*, const Entry&>
+            BigInteger, const Entry*, const Entry&>
         {
             friend class History;
           public:
             /* These typedefs are needed even though inherited from
                QL_ITERATOR (see 14.6.2.3 of the standard).  */
             typedef Entry                           value_type;
-            typedef int                             difference_type;
+            typedef BigInteger                      difference_type;
             typedef const Entry*                    pointer;
             typedef const Entry&                    reference;
             //! \name Dereferencing
@@ -228,7 +229,7 @@ namespace QuantLib {
             //@}
           private:
             const_iterator(const Date& d,
-                const std::vector<double>::const_iterator& v)
+                           const std::vector<Real>::const_iterator& v)
             : entry_(d,v) {}
             Entry entry_;
         };
@@ -241,7 +242,7 @@ namespace QuantLib {
             const_valid_iterator;
 
         //! random access iterator on historical data
-        typedef std::vector<double>::const_iterator const_data_iterator;
+        typedef std::vector<Real>::const_iterator const_data_iterator;
 
         //! bidirectional iterator on non-null historical data
         typedef filtering_iterator<const_data_iterator,DataValidator>
@@ -266,7 +267,7 @@ namespace QuantLib {
         const_iterator end() const {
             return const_iterator(lastDate_+1,values_.end()); }
         const_iterator iterator(const Date& d) const {
-            int i = d-firstDate_;
+            BigInteger i = d-firstDate_;
             return begin()+i;
         }
 
@@ -304,14 +305,14 @@ namespace QuantLib {
         //@}
       private:
         Date firstDate_, lastDate_;
-        std::vector<double> values_;
+        std::vector<Real> values_;
         class DataValidator {
           public:
-            bool operator()(double x) {
-                return x != Null<double>();
+            bool operator()(Real x) {
+                return x != Null<Real>();
             }
             bool operator()(const Entry& e) {
-                return e.value() != Null<double>();
+                return e.value() != Null<Real>();
             }
         };
     };
@@ -326,7 +327,7 @@ namespace QuantLib {
     // inline definitions
 
     inline History::History(const Date& firstDate, const Date& lastDate,
-        const std::vector<double>& values)
+                            const std::vector<Real>& values)
     : firstDate_(firstDate), lastDate_(lastDate), values_(values) {
         QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
         QL_REQUIRE(values.size() == Size((lastDate-firstDate)+1),
@@ -334,16 +335,16 @@ namespace QuantLib {
     }
 
     inline History::History(const std::vector<Date>& dates,
-        const std::vector<double>& values) {
+                            const std::vector<Real>& values) {
         QL_REQUIRE(dates.size() == values.size(),
                    "different size for date and value vectors");
         QL_REQUIRE(dates.size() >= 1,"null history given");
         firstDate_ = lastDate_ = dates[0];
-        double lastValue = values[0];
-        values_ = std::vector<double>(1,lastValue);
-        for (int i=1; i<static_cast<int>(dates.size()); i++) {
+        Real lastValue = values[0];
+        values_ = std::vector<Real>(1,lastValue);
+        for (Size i=1; i<dates.size(); i++) {
             Date d = dates[i];
-            double x = values[i];
+            Real x = values[i];
             QL_REQUIRE(d>=lastDate_,
                        "unsorted date after " + 
                        DateFormatter::toString(lastDate_));
@@ -354,7 +355,7 @@ namespace QuantLib {
             } else {
                 while (d-lastDate_ > 1) {
                     lastDate_ = lastDate_.plusDays(1);
-                    values_.push_back(Null<double>());
+                    values_.push_back(Null<Real>());
                 }
                 lastDate_ = d;
                 values_.push_back(lastValue=x);
@@ -362,11 +363,11 @@ namespace QuantLib {
         }
     }
 
-    inline double History::operator[](const Date& d) const {
+    inline Real History::operator[](const Date& d) const {
         if (d>=firstDate_ && d<=lastDate_)
             return values_[d-firstDate_];
         else
-            return Null<double>();
+            return Null<Real>();
     }
 
 }

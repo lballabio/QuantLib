@@ -94,22 +94,22 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong sum of weights\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.weightSum();
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong sum of weights\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // min
@@ -121,22 +121,22 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong minimum value\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.min();
             if (QL_FABS(calculated-expected)>tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong minimum value\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // max
@@ -147,22 +147,22 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong maximum value\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.max();
             if (QL_FABS(calculated-expected)>tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong maximum value\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // mean
@@ -175,28 +175,28 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong mean value"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.mean();
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong mean value"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // variance
@@ -208,28 +208,28 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong variance"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.variance();
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong variance"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // standardDeviation
@@ -241,28 +241,28 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong standard deviation"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.standardDeviation();
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong standard deviation"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // missing errorEstimate() test
@@ -276,28 +276,28 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong skewness"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.skewness();
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong skewness"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // kurtosis
@@ -309,28 +309,28 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong kurtosis"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.kurtosis();
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong kurtosis"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // percentile
@@ -342,42 +342,42 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong Gaussian percentile"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.gaussianPercentile(0.5);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong Gaussian percentile"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.percentile(0.5);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong percentile"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
 
@@ -396,42 +396,42 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong Gaussian potential upside"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.gaussianPotentialUpside(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong Gaussian potential upside"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.potentialUpside(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong potential upside"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // just to check that GaussianStatistics<StatsHolder> does work
@@ -455,48 +455,48 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong Gaussian value-at-risk"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.gaussianValueAtRisk(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong Gaussian value-at-risk"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.valueAtRisk(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong value-at-risk"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
             if (averages[i] > 0.0 && sigmas[j] < averages[i]) {
                 // no data will miss the targets:
@@ -520,42 +520,42 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong Gaussian expected shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.gaussianExpectedShortfall(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong Gaussian expected shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.expectedShortfall(twoSigma);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong expected shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // shortfall
@@ -567,42 +567,42 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong Gaussian shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.gaussianShortfall(averages[i]);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong Gaussian shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.shortfall(averages[i]);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // average shortfall
@@ -614,42 +614,42 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong Gaussian average shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.gaussianAverageShortfall(averages[i]);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong Gaussian average shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.averageShortfall(averages[i]);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong average shortfall"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // regret
@@ -660,46 +660,46 @@ void RiskStatisticsTest::testResults() {
                 BOOST_FAIL(
                     "IncrementalGaussianStatistics: "
                     "wrong Gaussian regret("
-                    + DoubleFormatter::toString(averages[i],2) +
+                    + DecimalFormatter::toString(averages[i],2) +
                     ") for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.gaussianRegret(averages[i]);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong Gaussian regret("
-                    + DoubleFormatter::toString(averages[i],2) +
+                    + DecimalFormatter::toString(averages[i],2) +
                     ") for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = s.regret(averages[i]);
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "Statistics: "
                     "wrong regret("
-                    + DoubleFormatter::toString(averages[i],2) +
+                    + DecimalFormatter::toString(averages[i],2) +
                     ") for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
 
             // downsideVariance
@@ -711,28 +711,28 @@ void RiskStatisticsTest::testResults() {
                     "IncrementalGaussianStatistics: "
                     "wrong downside variance"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
             calculated = igs.gaussianDownsideVariance();
             if (QL_FABS(calculated-expected) > tolerance)
                 BOOST_FAIL(
                     "IncrementalGaussianStatistics: "
                     "wrong Gaussian downside variance"
                     " for N("
-                    + DoubleFormatter::toString(averages[i],2) + ", "
-                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    + DecimalFormatter::toString(averages[i],2) + ", "
+                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                     "    calculated: "
-                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    + DecimalFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
-                    + DoubleFormatter::toString(expected,16) + "\n"
+                    + DecimalFormatter::toString(expected,16) + "\n"
                     "    tolerance:   "
-                    + DoubleFormatter::toString(tolerance,16));
+                    + DecimalFormatter::toString(tolerance,16));
 
             // downsideVariance
             if (averages[i]==0.0) {
@@ -744,56 +744,56 @@ void RiskStatisticsTest::testResults() {
                         "IncrementalGaussianStatistics: "
                         "wrong downside variance"
                         " for N("
-                        + DoubleFormatter::toString(averages[i],2) + ", "
-                        + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                        + DecimalFormatter::toString(averages[i],2) + ", "
+                        + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                         "    calculated: "
-                        + DoubleFormatter::toString(calculated,16) + "\n"
+                        + DecimalFormatter::toString(calculated,16) + "\n"
                         "    expected:   "
-                        + DoubleFormatter::toString(expected,16) + "\n"
+                        + DecimalFormatter::toString(expected,16) + "\n"
                         "    tolerance:   "
-                        + DoubleFormatter::toString(tolerance,16));
+                        + DecimalFormatter::toString(tolerance,16));
                 calculated = igs.gaussianDownsideVariance();
                 if (QL_FABS(calculated-expected) > tolerance)
                     BOOST_FAIL(
                         "IncrementalGaussianStatistics: "
                         "wrong Gaussian downside variance"
                         " for N("
-                        + DoubleFormatter::toString(averages[i],2) + ", "
-                        + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                        + DecimalFormatter::toString(averages[i],2) + ", "
+                        + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                         "    calculated: "
-                        + DoubleFormatter::toString(calculated,16) + "\n"
+                        + DecimalFormatter::toString(calculated,16) + "\n"
                         "    expected:   "
-                        + DoubleFormatter::toString(expected,16) + "\n"
+                        + DecimalFormatter::toString(expected,16) + "\n"
                         "    tolerance:   "
-                        + DoubleFormatter::toString(tolerance,16));
+                        + DecimalFormatter::toString(tolerance,16));
                 calculated = s.downsideVariance();
                 if (QL_FABS(calculated-expected) > tolerance)
                     BOOST_FAIL(
                         "Statistics: "
                         "wrong downside variance"
                         " for N("
-                        + DoubleFormatter::toString(averages[i],2) + ", "
-                        + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                        + DecimalFormatter::toString(averages[i],2) + ", "
+                        + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                         "    calculated: "
-                        + DoubleFormatter::toString(calculated,16) + "\n"
+                        + DecimalFormatter::toString(calculated,16) + "\n"
                         "    expected:   "
-                        + DoubleFormatter::toString(expected,16) + "\n"
+                        + DecimalFormatter::toString(expected,16) + "\n"
                         "    tolerance:   "
-                        + DoubleFormatter::toString(tolerance,16));
+                        + DecimalFormatter::toString(tolerance,16));
                 calculated = s.gaussianDownsideVariance();
                 if (QL_FABS(calculated-expected) > tolerance)
                     BOOST_FAIL(
                         "Statistics: "
                         "wrong gaussian downside variance"
                         " for N("
-                        + DoubleFormatter::toString(averages[i],2) + ", "
-                        + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                        + DecimalFormatter::toString(averages[i],2) + ", "
+                        + DecimalFormatter::toString(sigmas[j],2) + ")\n"
                         "    calculated: "
-                        + DoubleFormatter::toString(calculated,16) + "\n"
+                        + DecimalFormatter::toString(calculated,16) + "\n"
                         "    expected:   "
-                        + DoubleFormatter::toString(expected,16) + "\n"
+                        + DecimalFormatter::toString(expected,16) + "\n"
                         "    tolerance:   "
-                        + DoubleFormatter::toString(tolerance,16));
+                        + DecimalFormatter::toString(tolerance,16));
             }
 
             igs.reset();

@@ -39,7 +39,7 @@ namespace QuantLib {
           public:
             ...
             template <class F>
-            double solveImpl(const F& f, double accuracy) const {
+            Real solveImpl(const F& f, Real accuracy) const {
                 ...
             }
         };
@@ -74,13 +74,13 @@ namespace QuantLib {
             range of the possible bracketing values.
         */
         template <class F>
-        double solve(const F& f,
-                     double accuracy,
-                     double guess,
-                     double step) const {
+        Real solve(const F& f,
+                   Real accuracy,
+                   Real guess,
+                   Real step) const {
 
-            const double growthFactor = 1.6;
-            int flipflop = -1;
+            const Real growthFactor = 1.6;
+            Integer flipflop = -1;
 
             root_ = guess;
             fxMax_ = f(root_);
@@ -131,10 +131,10 @@ namespace QuantLib {
             QL_FAIL("unable to bracket root in " +
                     SizeFormatter::toString(maxEvaluations_) +
                     " function evaluations (last bracket attempt: f[" +
-                    DoubleFormatter::toString(xMin_) + "," + 
-                    DoubleFormatter::toString(xMax_) + "] -> [" +
-                    DoubleFormatter::toExponential(fxMin_) + "," +
-                    DoubleFormatter::toExponential(fxMax_) + "])");
+                    DecimalFormatter::toString(xMin_) + "," + 
+                    DecimalFormatter::toString(xMax_) + "] -> [" +
+                    DecimalFormatter::toExponential(fxMin_) + "," +
+                    DecimalFormatter::toExponential(fxMax_) + "])");
         }
         /*! This method returns the zero of the function \f$ f \f$,
             determined with the given accuracy (i.e., \f$ x \f$ is
@@ -146,29 +146,29 @@ namespace QuantLib {
             \leq 0 \leq f(x_\mathrm{min}) \f$ must be true).
         */
         template <class F>
-        double solve(const F& f,
-                     double accuracy,
-                     double guess,
-                     double xMin,
-                     double xMax) const {
+        Real solve(const F& f,
+                   Real accuracy,
+                   Real guess,
+                   Real xMin,
+                   Real xMax) const {
 
             xMin_ = xMin;
             xMax_ = xMax;
 
             QL_REQUIRE(xMin_ < xMax_, "invalid range: xMin_ (" +
-                       DoubleFormatter::toString(xMin_) +
+                       DecimalFormatter::toString(xMin_) +
                        ") >= xMax_ (" + 
-                       DoubleFormatter::toString(xMax_) + ")");
+                       DecimalFormatter::toString(xMax_) + ")");
             QL_REQUIRE(!lowerBoundEnforced_ || xMin_ >= lowerBound_, 
                        "xMin_ (" +
-                       DoubleFormatter::toString(xMin_) + 
+                       DecimalFormatter::toString(xMin_) + 
                        ") < enforced low bound (" +
-                       DoubleFormatter::toString(lowerBound_) + ")");
+                       DecimalFormatter::toString(lowerBound_) + ")");
             QL_REQUIRE(!upperBoundEnforced_ || xMax_ <= upperBound_, 
                        "xMax_ (" +
-                       DoubleFormatter::toString(xMax_) +
+                       DecimalFormatter::toString(xMax_) +
                        ") > enforced hi bound (" +
-                       DoubleFormatter::toString(upperBound_) + ")");
+                       DecimalFormatter::toString(upperBound_) + ")");
 
             fxMin_ = f(xMin_);
             if (QL_FABS(fxMin_) < accuracy)
@@ -180,21 +180,21 @@ namespace QuantLib {
 
             evaluationNumber_ = 2;
 
-            QL_REQUIRE(fxMin_*fxMax_ < 0.0,  
+            QL_REQUIRE(fxMin_*fxMax_ < 0.0,
                        "root not bracketed: f[" +
-                       DoubleFormatter::toString(xMin_) + "," +
-                       DoubleFormatter::toString(xMax_) + "] -> [" +
-                       DoubleFormatter::toExponential(fxMin_) + "," +
-                       DoubleFormatter::toExponential(fxMax_) + "]");
+                       DecimalFormatter::toString(xMin_) + "," +
+                       DecimalFormatter::toString(xMax_) + "] -> [" +
+                       DecimalFormatter::toExponential(fxMin_) + "," +
+                       DecimalFormatter::toExponential(fxMax_) + "]");
 
             QL_REQUIRE(guess > xMin_, 
                        "guess (" +
-                       DoubleFormatter::toString(guess) + ") < xMin_ (" +
-                       DoubleFormatter::toString(xMin_) + ")");
+                       DecimalFormatter::toString(guess) + ") < xMin_ (" +
+                       DecimalFormatter::toString(xMin_) + ")");
             QL_REQUIRE(guess < xMax_, 
                        "guess (" +
-                       DoubleFormatter::toString(guess) + ") > xMax_ (" +
-                       DoubleFormatter::toString(xMax_) + ")");
+                       DecimalFormatter::toString(guess) + ") > xMax_ (" +
+                       DecimalFormatter::toString(xMax_) + ")");
 
             root_ = guess;
 
@@ -208,17 +208,17 @@ namespace QuantLib {
         */
         void setMaxEvaluations(Size evaluations);
         //! sets the lower bound for the function domain
-        void setLowerBound(double lowerBound);
+        void setLowerBound(Real lowerBound);
         //! sets the upper bound for the function domain
-        void setUpperBound(double upperBound);
+        void setUpperBound(Real upperBound);
         //@}
       protected:
-        mutable double root_, xMin_, xMax_, fxMin_, fxMax_;
+        mutable Real root_, xMin_, xMax_, fxMin_, fxMax_;
         Size maxEvaluations_;
         mutable Size evaluationNumber_;
       private:
-        double enforceBounds_(double x) const;
-        double lowerBound_, upperBound_;
+        Real enforceBounds_(Real x) const;
+        Real lowerBound_, upperBound_;
         bool lowerBoundEnforced_, upperBoundEnforced_;
     };
 
@@ -231,19 +231,19 @@ namespace QuantLib {
     }
 
     template <class T>
-    inline void Solver1D<T>::setLowerBound(double lowerBound) {
+    inline void Solver1D<T>::setLowerBound(Real lowerBound) {
         lowerBound_ = lowerBound;
         lowerBoundEnforced_ = true;
     }
 
     template <class T>
-    inline void Solver1D<T>::setUpperBound(double upperBound) {
+    inline void Solver1D<T>::setUpperBound(Real upperBound) {
         upperBound_ = upperBound;
         upperBoundEnforced_ = true;
     }
 
     template <class T>
-    inline double Solver1D<T>::enforceBounds_(double x) const {
+    inline Real Solver1D<T>::enforceBounds_(Real x) const {
         if (lowerBoundEnforced_ && x < lowerBound_)
             return lowerBound_;
         if (upperBoundEnforced_ && x > upperBound_)

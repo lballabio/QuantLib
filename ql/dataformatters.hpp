@@ -34,8 +34,8 @@ namespace QuantLib {
         template<class DataIterator>
         static std::string toString(DataIterator begin,
                                     DataIterator end,
-                                    int precision = 6,
-                                    int digits = 0,
+                                    Integer precision = 6,
+                                    Integer digits = 0,
                                     Size elementsPerRow = QL_MAX_INT) {
             std::string s = "[ ";
             DataIterator i;
@@ -47,7 +47,7 @@ namespace QuantLib {
                 }
                 if (n!=0)
                     s += " ; ";
-                s += DoubleFormatter::toString(*i, precision, digits);
+                s += DecimalFormatter::toString(*i, precision, digits);
             }
             s += " ]";
             return s;

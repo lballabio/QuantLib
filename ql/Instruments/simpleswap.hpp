@@ -41,12 +41,12 @@ namespace QuantLib {
                    RollingConvention rollingConvention,
                    double nominal,
                    // fixed leg
-                   int fixedFrequency,
+                   Frequency fixedFrequency,
                    Rate fixedRate,
                    bool fixedIsAdjusted,
                    const DayCounter& fixedDayCount,
                    // floating leg
-                   int floatingFrequency,
+                   Frequency floatingFrequency,
                    const boost::shared_ptr<Xibor>& index,
                    int indexFixingDays,
                    Spread spread,
@@ -87,7 +87,7 @@ namespace QuantLib {
     class SimpleSwap::arguments : public virtual Arguments {
       public:
         arguments() : payFixed(false),
-                      nominal(Null<double>()) {}
+                      nominal(Null<Real>()) {}
         bool payFixed;
         double nominal;
         std::vector<Time> fixedResetTimes;

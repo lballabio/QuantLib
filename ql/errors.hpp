@@ -36,8 +36,7 @@ namespace QuantLib {
         /*! The explicit use of this constructor is not advised.
             Use the QL_FAIL macro instead.
         */
-        Error(const std::string& file,
-              long line,
+        Error(const std::string& file, long line,
               const std::string& function,
               const std::string& message = "");
         ~Error() throw() {}

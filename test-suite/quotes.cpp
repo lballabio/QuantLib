@@ -86,9 +86,9 @@ void QuoteTest::testDerived() {
                y = funcs[i](me->value());
         if (QL_FABS(x-y) > 1.0e-10)
             BOOST_FAIL("derived quote yields " +
-                       DoubleFormatter::toString(x) + "\n"
+                       DecimalFormatter::toString(x) + "\n"
                        "function result is " +
-                       DoubleFormatter::toString(y));
+                       DecimalFormatter::toString(y));
     }
 }
 
@@ -109,9 +109,9 @@ void QuoteTest::testComposite() {
                y = funcs[i](me1->value(),me2->value());
         if (QL_FABS(x-y) > 1.0e-10)
             BOOST_FAIL("composite quote yields " +
-                       DoubleFormatter::toString(x) + "\n"
+                       DecimalFormatter::toString(x) + "\n"
                        "function result is " +
-                       DoubleFormatter::toString(y));
+                       DecimalFormatter::toString(y));
     }
 }
 
