@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.10  2001/04/23 14:23:18  marmar
+    Tricky bug fixed: american condition was applied to control price as well
+
     Revision 1.9  2001/04/23 07:48:21  marmar
     Control variate changed back, error messages modified
 
@@ -117,33 +120,40 @@ namespace QuantLib {
         }
 
         void DividendOption::executeIntermediateStep(int step) const{
-            Array oldGrid = grid_;
-            double centre = valueAtCenter(grid_);
-            double mltp = centre/grid_[0];
-            double newMltp = mltp / (1 + (mltp - 1) *
-                             dividends_[step] / (centre + dividends_[step]));
-            QL_ENSURE(newMltp > 1, "Dividends are to big");
-            sMin_ = (centre + dividends_[step])/newMltp;
-            sMax_ = (centre + dividends_[step])*newMltp;
-            initializeGrid();
+            Array oldGrid = grid_ + dividends_[step];
+            underlying_ += dividends_[step];
+            /*
+            Here something wierd happens: if residualTime_ is updated,
+            >>> residualTime_ = dates_[step];            
+            the new grid should be superior. However, it can be shown
+            that this extra step degrades the option price. The reason
+            for this is still unclear.  
+            Is it because of the special choices made in setGridLimits(),
+            i.e. beacuse of the variable "prefactor" introduced?
+            */
+            setGridLimits();
+            initializeGrid();    
             initializeInitialCondition();
+            // This operation was faster than the obvious:
+            //     movePricesBeforeExDiv(initialPrices_, grid_, oldGrid);
+
+            movePricesBeforeExDiv(prices_,        grid_, oldGrid);
+            movePricesBeforeExDiv(controlPrices_, grid_, oldGrid);
             initializeOperator();
-            movePricesBeforeExDiv(dividends_[step], grid_, 
-                                  prices_, oldGrid);
-            movePricesBeforeExDiv(dividends_[step], grid_, 
-                                  controlPrices_, oldGrid);
+            initializeModel();
+            initializeStepCondition();
+            stepCondition_ -> applyTo(prices_, dates_[step]);
         }
 
-        void DividendOption::movePricesBeforeExDiv(double Div,
-            const Array& newGrid, Array& prices, const Array& oldGrid) const {
-
-            Array vOldGrid(oldGrid + Div);
+        void DividendOption::movePricesBeforeExDiv(Array& prices,
+                                                   const Array& newGrid, 
+                                                   const Array& oldGrid) const {
+            Array vOldGrid(oldGrid);
             CubicSpline<Array::iterator, Array::iterator> priceSpline(
                 vOldGrid.begin(), vOldGrid.end(), prices.begin());
 
             for (int j = 0; j < prices.size(); j++)
-                prices[j] = QL_MAX(priceSpline(newGrid[j]),
-                                   initialPrices_[j]      );
+                prices[j] = priceSpline(newGrid[j]);
         }
 
     }
