@@ -40,7 +40,7 @@ namespace QuantLib {
                        Real requiredTolerance = Null<Real>(),
                        Size maxSamples = Null<Size>(),
                        bool brownianBridge = false,
-                       BigInteger seed = 0);
+                       BigNatural seed = 0);
 
         typedef typename McSimulation<MultiAsset<RNG>,S>::path_generator_type
             path_generator_type;
@@ -62,7 +62,7 @@ namespace QuantLib {
         Size maxSamples_;
         Real requiredTolerance_;
         bool brownianBridge_;
-        BigInteger seed_;
+        BigNatural seed_;
     };
 
     class EuropeanMultiPathPricer : public PathPricer<MultiPath> {
@@ -91,7 +91,7 @@ namespace QuantLib {
                                                    Real requiredTolerance,
                                                    Size maxSamples,
                                                    bool brownianBridge,
-                                                   BigInteger seed)
+                                                   BigNatural seed)
     : McSimulation<MultiAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), 

@@ -38,27 +38,27 @@ namespace QuantLib {
     class Vasicek : public OneFactorAffineModel {
       public:
         Vasicek(Rate r0 = 0.05, 
-                double a = 0.1, double b = 0.05, double sigma = 0.01);
+                Real a = 0.1, Real b = 0.05, Real sigma = 0.01);
 
-        virtual double discountBondOption(Option::Type type,
-                                          double strike,
-                                          Time maturity,
-                                          Time bondMaturity) const;
+        virtual Real discountBondOption(Option::Type type,
+                                        Real strike,
+                                        Time maturity,
+                                        Time bondMaturity) const;
 
         virtual boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
       protected:
-        virtual double A(Time t, Time T) const;
-        virtual double B(Time t, Time T) const;
+        virtual Real A(Time t, Time T) const;
+        virtual Real B(Time t, Time T) const;
 
-        double a() const { return a_(0.0); }
-        double b() const { return b_(0.0); }
-        double sigma() const { return sigma_(0.0); }
+        Real a() const { return a_(0.0); }
+        Real b() const { return b_(0.0); }
+        Real sigma() const { return sigma_(0.0); }
 
       private:
         class Dynamics;
 
-        double r0_;
+        Real r0_;
         Parameter& a_;
         Parameter& b_;
         Parameter& sigma_;
@@ -70,22 +70,22 @@ namespace QuantLib {
     */
     class Vasicek::Dynamics : public ShortRateDynamics {
       public:
-        Dynamics(double a,
-                 double b,
-                 double sigma,
-                 double r0)
+        Dynamics(Real a,
+                 Real b,
+                 Real sigma,
+                 Real r0)
         : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
                              new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
           a_(a), b_(b), r0_(r0) {}
 
-        virtual double variable(Time, Rate r) const {
+        virtual Real variable(Time, Rate r) const {
             return r - b_;
         }
-        virtual double shortRate(Time, double x) const {
+        virtual Real shortRate(Time, Real x) const {
             return x + b_;
         }
       private:
-        double a_, b_, r0_;
+        Real a_, b_, r0_;
     };
 
 

@@ -43,23 +43,23 @@ namespace QuantLib {
       public:
         ExtendedCoxIngersollRoss(
                          const RelinkableHandle<TermStructure>& termStructure,
-                         double theta = 0.1,
-                         double k = 0.1,
-                         double sigma = 0.1,
-                         double x0 = 0.05);
+                         Real theta = 0.1,
+                         Real k = 0.1,
+                         Real sigma = 0.1,
+                         Real x0 = 0.05);
 
         boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
-        double discountBondOption(Option::Type type,
-                                  double strike,
-                                  Time maturity,
-                                  Time bondMaturity) const;
+        Real discountBondOption(Option::Type type,
+                                Real strike,
+                                Time maturity,
+                                Time bondMaturity) const;
 
       protected:
         void generateArguments();
-        double A(Time t, Time T) const;
+        Real A(Time t, Time T) const;
 
       private:
         class Dynamics;
@@ -81,16 +81,16 @@ namespace QuantLib {
         : public CoxIngersollRoss::Dynamics {
       public:
         Dynamics(const Parameter& phi,
-                 double theta,
-                 double k,
-                 double sigma,
-                 double x0)
+                 Real theta,
+                 Real k,
+                 Real sigma,
+                 Real x0)
         : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(phi) {}
 
-        virtual double variable(Time t, Rate r) const {
+        virtual Real variable(Time t, Rate r) const {
             return QL_SQRT(r - phi_(t));
         }
-        virtual double shortRate(Time t, double y) const {
+        virtual Real shortRate(Time t, Real y) const {
             return y*y + phi_(t);
         }
       private:
@@ -113,29 +113,28 @@ namespace QuantLib {
         class Impl : public Parameter::Impl {
           public:
             Impl(const RelinkableHandle<TermStructure>& termStructure,
-                 double theta, double k, double sigma, double x0) 
+                 Real theta, Real k, Real sigma, Real x0) 
             : termStructure_(termStructure), 
               theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
 
-            double value(const Array&, Time t) const {
-                double forwardRate = 
+            Real value(const Array&, Time t) const {
+                Rate forwardRate = 
                     termStructure_->instantaneousForward(t);
-                double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
-                double expth = QL_EXP(t*h);
-                double temp = 2.0*h + (k_+h)*(expth-1.0);
-                double phi = forwardRate -
+                Real h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
+                Real expth = QL_EXP(t*h);
+                Real temp = 2.0*h + (k_+h)*(expth-1.0);
+                Real phi = forwardRate -
                     2.0*k_*theta_*(expth - 1.0)/temp -
                     x0_*4.0*h*h*expth/(temp*temp);
                 return phi;
             }
           private:
             RelinkableHandle<TermStructure> termStructure_;
-            double theta_, k_, sigma_, x0_;
+            Real theta_, k_, sigma_, x0_;
         };
       public:
-        FittingParameter(
-                         const RelinkableHandle<TermStructure>& termStructure,
-                         double theta, double k, double sigma, double x0) 
+        FittingParameter(const RelinkableHandle<TermStructure>& termStructure,
+                         Real theta, Real k, Real sigma, Real x0) 
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                  new FittingParameter::Impl(
                                      termStructure, theta, k, sigma, x0))) {}

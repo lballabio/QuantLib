@@ -56,7 +56,7 @@ namespace QuantLib {
                         Real requiredTolerance = Null<Real>(),
                         Size maxSamples = Null<Size>(),
                         bool isBiased = false,
-                        BigInteger seed = 0);
+                        BigNatural seed = 0);
 
         void calculate() const;
       protected:
@@ -77,7 +77,7 @@ namespace QuantLib {
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool isBiased_;
-        BigInteger seed_;
+        BigNatural seed_;
     };
 
 
@@ -135,7 +135,7 @@ namespace QuantLib {
                                                    Real requiredTolerance,
                                                    Size maxSamples,
                                                    bool isBiased,
-                                                   BigInteger seed)
+                                                   BigNatural seed)
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate,
                                        controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),

@@ -22,7 +22,7 @@
 namespace QuantLib {
 
     HullWhite::HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
-                         double a, double sigma)
+                         Real a, Real sigma)
     : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma), 
       TermStructureConsistentModel(termStructure) {
         arguments_[1] = NullParameter();
@@ -47,13 +47,13 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
         for (Size i=0; i<(grid.size() - 1); i++) {
-            double discountBond = termStructure()->discount(grid[i+1]);
+            Real discountBond = termStructure()->discount(grid[i+1]);
             const Array& statePrices = numericTree->statePrices(i);
             Size size = numericTree->size(i);
-            double dt = numericTree->timeGrid().dt(i);
-            double dx = trinomial->dx(i);
-            double x = trinomial->underlying(i,0);
-            double value = 0.0;
+            Time dt = numericTree->timeGrid().dt(i);
+            Real dx = trinomial->dx(i);
+            Real x = trinomial->underlying(i,0);
+            Real value = 0.0;
             for (Size j=0; j<size; j++) {
                 value += statePrices[j]*QL_EXP(-x*dt);
                 x += dx;
@@ -64,12 +64,12 @@ namespace QuantLib {
         return numericTree;
     }
 
-    double HullWhite::A(Time t, Time T) const {
-        double discount1 = termStructure()->discount(t);
-        double discount2 = termStructure()->discount(T);
-        double forward = termStructure()->instantaneousForward(t);
-        double temp = sigma()*B(t,T);
-        double value = B(t,T)*forward - 0.25*temp*temp*B(0.0,2.0*t);
+    Real HullWhite::A(Time t, Time T) const {
+        DiscountFactor discount1 = termStructure()->discount(t);
+        DiscountFactor discount2 = termStructure()->discount(T);
+        Rate forward = termStructure()->instantaneousForward(t);
+        Real temp = sigma()*B(t,T);
+        Real value = B(t,T)*forward - 0.25*temp*temp*B(0.0,2.0*t);
         return QL_EXP(value)*discount2/discount1;
     }
 
@@ -77,16 +77,16 @@ namespace QuantLib {
         phi_ = FittingParameter(termStructure(), a(), sigma());
     }
 
-    double HullWhite::discountBondOption(Option::Type type, double strike, 
-                                         Time maturity, 
-                                         Time bondMaturity) const {
+    Real HullWhite::discountBondOption(Option::Type type, Real strike, 
+                                       Time maturity, 
+                                       Time bondMaturity) const {
 
-        double v = sigma()*B(maturity, bondMaturity)*
+        Real v = sigma()*B(maturity, bondMaturity)*
             QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a()*maturity))/a());
-        double f = termStructure()->discount(bondMaturity);
-        double k = termStructure()->discount(maturity)*strike;
+        Real f = termStructure()->discount(bondMaturity);
+        Real k = termStructure()->discount(maturity)*strike;
 
-        double w = (type==Option::Call)? 1.0 : -1.0;
+        Real w = (type==Option::Call)? 1.0 : -1.0;
 
         return BlackModel::formula(f, k, v, w);
     }

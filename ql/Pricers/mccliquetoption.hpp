@@ -48,7 +48,7 @@ namespace QuantLib {
                     Real globalCap,
                     Real globalFloor,
                     bool redemptionOnly,
-                    BigInteger seed = 0);
+                    BigNatural seed = 0);
     };
 
 }

@@ -45,7 +45,7 @@ namespace QuantLib {
                                                              volatilities,
                  const Matrix& correlation,
                  const std::vector<Time>& times,
-                 BigInteger seed = 0);
+                 BigNatural seed = 0);
     };
 
 }

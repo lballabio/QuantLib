@@ -46,7 +46,7 @@ namespace QuantLib {
                const Matrix& correlation,
                Real strike,
                const std::vector<Time>& times,
-               BigInteger seed = 0);
+               BigNatural seed = 0);
     };
 
 }

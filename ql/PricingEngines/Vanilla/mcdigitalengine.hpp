@@ -70,7 +70,7 @@ namespace QuantLib {
                         Size requiredSamples = Null<Size>(),
                         Real requiredTolerance = Null<Real>(),
                         Size maxSamples = Null<Size>(),
-                        BigInteger seed = 0);
+                        BigNatural seed = 0);
 
         void calculate() const;
       protected:
@@ -85,7 +85,7 @@ namespace QuantLib {
 //        Size maxTimeStepsPerYear_;
 //        Size requiredSamples_, maxSamples_;
 //        Real requiredTolerance_;
-//        BigInteger seed_;
+//        BigNatural seed_;
     };
 
     class DigitalPathPricer : public PathPricer<Path> {
@@ -117,7 +117,7 @@ namespace QuantLib {
                                           Size requiredSamples,
                                           Real requiredTolerance,
                                           Size maxSamples,
-                                          BigInteger seed)
+                                          BigNatural seed)
     : MCVanillaEngine<RNG,S>(maxTimeStepsPerYear,
                              antitheticVariate,
                              controlVariate,

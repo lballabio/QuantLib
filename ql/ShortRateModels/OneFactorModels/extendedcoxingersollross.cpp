@@ -23,7 +23,7 @@ namespace QuantLib {
 
     ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
                          const RelinkableHandle<TermStructure>& termStructure,
-                         double theta, double k, double sigma, double x0)
+                         Real theta, Real k, Real sigma, Real x0)
     : CoxIngersollRoss(x0, theta, k, sigma),
       TermStructureConsistentModel(termStructure) {
         generateArguments();
@@ -46,23 +46,23 @@ namespace QuantLib {
                    new ShortRateTree(trinomial, numericDynamics, impl, grid));
     }
 
-    double ExtendedCoxIngersollRoss::A(Time t, Time s) const {
-        double pt = termStructure()->discount(t);
-        double ps = termStructure()->discount(s);
-        double value = CoxIngersollRoss::A(t,s)*QL_EXP(B(t,s)*phi_(t))*
+    Real ExtendedCoxIngersollRoss::A(Time t, Time s) const {
+        Real pt = termStructure()->discount(t);
+        Real ps = termStructure()->discount(s);
+        Real value = CoxIngersollRoss::A(t,s)*QL_EXP(B(t,s)*phi_(t))*
             (ps*CoxIngersollRoss::A(0.0,t)*QL_EXP(-B(0.0,t)*x0()))/
             (pt*CoxIngersollRoss::A(0.0,s)*QL_EXP(-B(0.0,s)*x0()));
         return value;
     }
 
-    double ExtendedCoxIngersollRoss::discountBondOption(Option::Type type, 
-                                                        double strike, 
-                                                        Time t, Time s) const {
+    Real ExtendedCoxIngersollRoss::discountBondOption(Option::Type type, 
+                                                      Real strike, 
+                                                      Time t, Time s) const {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
 
-        double discountT = termStructure()->discount(t);
-        double discountS = termStructure()->discount(s);
+        DiscountFactor discountT = termStructure()->discount(t);
+        DiscountFactor discountS = termStructure()->discount(s);
         if (t < QL_EPSILON) {
             switch(type) {
               case Option::Call: return QL_MAX(discountS - strike, 0.0);
@@ -71,23 +71,23 @@ namespace QuantLib {
             }
         }
 
-        double sigma2 = sigma()*sigma();
-        double h = QL_SQRT(k()*k() + 2.0*sigma2);
-        double r0 = termStructure()->instantaneousForward(0.0);
-        double b = B(t,s);
+        Real sigma2 = sigma()*sigma();
+        Real h = QL_SQRT(k()*k() + 2.0*sigma2);
+        Real r0 = termStructure()->instantaneousForward(0.0);
+        Real b = B(t,s);
 
-        double rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
-        double psi = (k() + h)/sigma2;
+        Real rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
+        Real psi = (k() + h)/sigma2;
  
-        double df = 4.0*k()*theta()/sigma2;
-        double ncps = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi+b);
-        double ncpt = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi);
+        Real df = 4.0*k()*theta()/sigma2;
+        Real ncps = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi+b);
+        Real ncpt = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi);
 
         NonCentralChiSquareDistribution chis(df, ncps);
         NonCentralChiSquareDistribution chit(df, ncpt);
 
-        double z = QL_LOG(CoxIngersollRoss::A(t,s)/strike)/b; 
-        double call = discountS*chis(2.0*z*(rho+psi+b)) -
+        Real z = QL_LOG(CoxIngersollRoss::A(t,s)/strike)/b; 
+        Real call = discountS*chis(2.0*z*(rho+psi+b)) -
             strike*discountT*chit(2.0*z*(rho+psi));
         if (type == Option::Call)
             return call;

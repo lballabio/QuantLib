@@ -80,7 +80,7 @@ namespace QuantLib {
                     const RelinkableHandle<TermStructure>& riskFreeRate,
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
-                    BigInteger seed) {
+                    BigNatural seed) {
 
         std::vector<DiscountFactor> discounts(times.size());
         for (Size i = 0; i<times.size(); i++)

@@ -70,12 +70,12 @@ namespace QuantLib {
       public:
         ShortRateDynamics(const boost::shared_ptr<StochasticProcess>& xProcess,
                           const boost::shared_ptr<StochasticProcess>& yProcess,
-                          double correlation)
+                          Real correlation)
         : xProcess_(xProcess), yProcess_(yProcess),
           correlation_(correlation) {}
         virtual ~ShortRateDynamics() {}
 
-        virtual Rate shortRate(Time t, double x, double y) const = 0;
+        virtual Rate shortRate(Time t, Real x, Real y) const = 0;
 
         //! Risk-neutral dynamics of the first state variable x
         const boost::shared_ptr<StochasticProcess>& xProcess() const {
@@ -88,12 +88,12 @@ namespace QuantLib {
         }
 
         //! Correlation \f$ \rho \f$ between the two brownian motions.
-        double correlation() const {
+        Real correlation() const {
             return correlation_;
         }
       private:
         boost::shared_ptr<StochasticProcess> xProcess_, yProcess_;
-        double correlation_;
+        Real correlation_;
     };
 
     //! Recombining two-dimensional tree discretizing the state variable
@@ -109,8 +109,8 @@ namespace QuantLib {
             Size index1 = index % modulo;
             Size index2 = index / modulo;
 
-            double x = tree1_->underlying(i, index1);
-            double y = tree1_->underlying(i, index2);
+            Real x = tree1_->underlying(i, index1);
+            Real y = tree1_->underlying(i, index2);
 
             Rate r = dynamics_->shortRate(timeGrid()[i], x, y);
             return QL_EXP(-r*timeGrid().dt(i));

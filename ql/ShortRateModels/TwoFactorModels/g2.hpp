@@ -51,19 +51,19 @@ namespace QuantLib {
                public TermStructureConsistentModel {
       public:
         G2(const RelinkableHandle<TermStructure>& termStructure,
-           double a = 0.1, 
-           double sigma = 0.01,
-           double b = 0.1, 
-           double eta = 0.01,
-           double rho = 0.9);
+           Real a = 0.1, 
+           Real sigma = 0.01,
+           Real b = 0.1, 
+           Real eta = 0.01,
+           Real rho = 0.9);
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
-        double discountBondOption(Option::Type type,
-                                  double strike,
-                                  Time maturity,
-                                  Time bondMaturity) const;
-        double swaption(const Swaption::arguments& arguments) const;
+        Real discountBondOption(Option::Type type,
+                                Real strike,
+                                Time maturity,
+                                Time bondMaturity) const;
+        Real swaption(const Swaption::arguments& arguments) const;
 
         DiscountFactor discount(Time t) const {
             return termStructure()->discount(t);
@@ -72,14 +72,14 @@ namespace QuantLib {
       protected:
         void generateArguments();
 
-        double A(Time t, Time T) const;
-        double B(double x, Time t) const;
+        Real A(Time t, Time T) const;
+        Real B(Real x, Time t) const;
 
       private:
         class Dynamics;
         class FittingParameter;
 
-        double sigmaP(Time t, Time s) const;
+        Real sigmaP(Time t, Time s) const;
 
         Parameter& a_;
         Parameter& sigma_;
@@ -89,13 +89,13 @@ namespace QuantLib {
 
         Parameter phi_;
 
-        double V(Time t) const;
+        Real V(Time t) const;
 
-        double a() const { return a_(0.0); }
-        double sigma() const { return sigma_(0.0); }
-        double b() const { return b_(0.0); }
-        double eta() const { return eta_(0.0); }
-        double rho() const { return rho_(0.0); }
+        Real a() const { return a_(0.0); }
+        Real sigma() const { return sigma_(0.0); }
+        Real b() const { return b_(0.0); }
+        Real eta() const { return eta_(0.0); }
+        Real rho() const { return rho_(0.0); }
 
         class SwaptionPricingFunction;
         friend class SwaptionPricingFunction;
@@ -104,14 +104,14 @@ namespace QuantLib {
     class G2::Dynamics : public TwoFactorModel::ShortRateDynamics {
       public:
         Dynamics(const Parameter& fitting, 
-                 double a, double sigma, double b, double eta, double rho)
+                 Real a, Real sigma, Real b, Real eta, Real rho)
         : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
                                       new OrnsteinUhlenbeckProcess(a, sigma)),
                             boost::shared_ptr<StochasticProcess>(
                                       new OrnsteinUhlenbeckProcess(b, eta)),
                             rho), 
           fitting_(fitting) {}
-        virtual Rate shortRate(Time t, double x, double y) const {
+        virtual Rate shortRate(Time t, Real x, Real y) const {
             return fitting_(t) + x + y;
         }
       private:
@@ -133,28 +133,28 @@ namespace QuantLib {
         class Impl : public Parameter::Impl {
           public:
             Impl(const RelinkableHandle<TermStructure>& termStructure,
-                 double a, double sigma, double b, double eta, 
-                 double rho) 
+                 Real a, Real sigma, Real b, Real eta, 
+                 Real rho) 
             : termStructure_(termStructure), 
               a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho) {}
 
-            double value(const Array&, Time t) const {
-                double forward = termStructure_->instantaneousForward(t);
-                double temp1 = sigma_*(1.0-QL_EXP(-a_*t))/a_;
-                double temp2 = eta_*(1.0-QL_EXP(-b_*t))/b_;
-                double value = 0.5*temp1*temp1 + 0.5*temp2*temp2 +
+            Real value(const Array&, Time t) const {
+                Real forward = termStructure_->instantaneousForward(t);
+                Real temp1 = sigma_*(1.0-QL_EXP(-a_*t))/a_;
+                Real temp2 = eta_*(1.0-QL_EXP(-b_*t))/b_;
+                Real value = 0.5*temp1*temp1 + 0.5*temp2*temp2 +
                     rho_*temp1*temp2 + forward;
                 return value;
             }
 
           private:
             RelinkableHandle<TermStructure> termStructure_;
-            double a_, sigma_, b_, eta_, rho_;
+            Real a_, sigma_, b_, eta_, rho_;
         };
       public:
         FittingParameter(const RelinkableHandle<TermStructure>& termStructure,
-                         double a, double sigma, double b, 
-                         double eta, double rho)
+                         Real a, Real sigma, Real b, 
+                         Real eta, Real rho)
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                           new FittingParameter::Impl(termStructure, a, sigma, 
                                                      b, eta, rho))) {}

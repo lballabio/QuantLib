@@ -48,7 +48,7 @@ namespace QuantLib {
                                                   termStructure->dayCounter(),
                                                   termStructure));
 
-        std::vector<double> nominals(1,1.0);
+        std::vector<Real> nominals(1,1.0);
         Schedule floatSchedule(index->calendar(), startDate, maturity,
                                frequency, index->rollingConvention(), true);
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg = 
@@ -83,19 +83,19 @@ namespace QuantLib {
         }
     }
 
-    double CapHelper::modelValue() const {
+    Real CapHelper::modelValue() const {
         cap_->setPricingEngine(engine_);
         return cap_->NPV();
     }
 
-    double CapHelper::blackPrice(double sigma) const {
+    Real CapHelper::blackPrice(Volatility sigma) const {
         boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
         boost::shared_ptr<BlackModel> blackModel(
                          new BlackModel(RelinkableHandle<Quote>(vol), 
                                         termStructure_));
         boost::shared_ptr<PricingEngine> black(new BlackCapFloor(blackModel));
         cap_->setPricingEngine(black);
-        double value = cap_->NPV();
+        Real value = cap_->NPV();
         cap_->setPricingEngine(engine_);
         return value;
     }

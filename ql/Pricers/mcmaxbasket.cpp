@@ -72,7 +72,7 @@ namespace QuantLib {
                                                              volatilities,
                const Matrix& correlation,
                Time residualTime,
-               BigInteger seed) {
+               BigNatural seed) {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
                    "correlation matrix not square");

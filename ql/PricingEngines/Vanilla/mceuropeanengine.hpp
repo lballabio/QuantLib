@@ -47,7 +47,7 @@ namespace QuantLib {
                          Size requiredSamples = Null<Size>(),
                          Real requiredTolerance = Null<Real>(),
                          Size maxSamples = Null<Size>(),
-                         BigInteger seed = 0);
+                         BigNatural seed = 0);
       protected:
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_pricer_type> pathPricer() const;
@@ -64,7 +64,7 @@ namespace QuantLib {
         MakeMCEuropeanEngine& withSamples(Size samples);
         MakeMCEuropeanEngine& withTolerance(Real tolerance);
         MakeMCEuropeanEngine& withMaxSamples(Size samples);
-        MakeMCEuropeanEngine& withSeed(BigInteger seed);
+        MakeMCEuropeanEngine& withSeed(BigNatural seed);
         MakeMCEuropeanEngine& withAntitheticVariate();
         MakeMCEuropeanEngine& withControlVariate();
         // conversion to pricing engine
@@ -73,7 +73,7 @@ namespace QuantLib {
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
         Real tolerance_;
-        BigInteger seed_;
+        BigNatural seed_;
     };
     #endif
 
@@ -100,7 +100,7 @@ namespace QuantLib {
                                               Size requiredSamples,
                                               Real requiredTolerance,
                                               Size maxSamples,
-                                              BigInteger seed)
+                                              BigNatural seed)
     : MCVanillaEngine<RNG,S>(maxTimeStepPerYear,
                              antitheticVariate,
                              controlVariate,
@@ -218,7 +218,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withSeed(BigInteger seed) {
+    MakeMCEuropeanEngine<RNG,S>::withSeed(BigNatural seed) {
         seed_ = seed;
         return *this;
     }

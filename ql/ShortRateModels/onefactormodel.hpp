@@ -55,10 +55,10 @@ namespace QuantLib {
         virtual ~ShortRateDynamics() {};
 
         //! Compute state variable from short rate
-        virtual double variable(Time t, Rate r) const = 0;
+        virtual Real variable(Time t, Rate r) const = 0;
 
         //! Compute short rate from state variable
-        virtual Rate shortRate(Time t, double variable) const = 0;
+        virtual Rate shortRate(Time t, Real variable) const = 0;
 
         //! Returns the risk-neutral dynamics of the state variable
         const boost::shared_ptr<StochasticProcess>& process() {
@@ -87,7 +87,7 @@ namespace QuantLib {
             return tree_->size(i);
         }
         DiscountFactor discount(Size i, Size index) const {
-            double x = tree_->underlying(i, index);
+            Real x = tree_->underlying(i, index);
             Rate r = dynamics_->shortRate(timeGrid()[i], x);
             return QL_EXP(-r*timeGrid().dt(i));
         }
@@ -95,7 +95,7 @@ namespace QuantLib {
         Size descendant(Size i, Size index, Size branch) const {
             return tree_->descendant(i, index, branch);
         }
-        double probability(Size i, Size index, Size branch) const {
+        Real probability(Size i, Size index, Size branch) const {
             return tree_->probability(i, index, branch);
         }
       private:
@@ -120,17 +120,17 @@ namespace QuantLib {
         OneFactorAffineModel(Size nArguments) 
         : OneFactorModel(nArguments) {}
 
-        double discountBond(Time now, Time maturity, Rate rate) const {
+        Real discountBond(Time now, Time maturity, Rate rate) const {
             return A(now, maturity)*QL_EXP(-B(now, maturity)*rate);
         }
         DiscountFactor discount(Time t) const {
-            double x0 = dynamics()->process()->x0();
+            Real x0 = dynamics()->process()->x0();
             Rate r0 = dynamics()->shortRate(0.0, x0);
             return discountBond(0.0, t, r0);
         }
       protected:
-        virtual double A(Time t, Time T) const = 0;
-        virtual double B(Time t, Time T) const = 0;
+        virtual Real A(Time t, Time T) const = 0;
+        virtual Real B(Time t, Time T) const = 0;
     };
 
 }

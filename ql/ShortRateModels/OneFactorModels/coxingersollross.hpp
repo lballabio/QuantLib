@@ -40,14 +40,14 @@ namespace QuantLib {
     class CoxIngersollRoss : public OneFactorAffineModel {
       public:
         CoxIngersollRoss(Rate r0 = 0.05,
-                         double theta = 0.1, 
-                         double k = 0.1, 
-                         double sigma = 0.1);
+                         Real theta = 0.1, 
+                         Real k = 0.1, 
+                         Real sigma = 0.1);
 
-        virtual double discountBondOption(Option::Type type,
-                                          double strike,
-                                          Time maturity,
-                                          Time bondMaturity) const;
+        virtual Real discountBondOption(Option::Type type,
+                                        Real strike,
+                                        Time maturity,
+                                        Time bondMaturity) const;
 
         virtual boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
@@ -55,13 +55,13 @@ namespace QuantLib {
 
         class Dynamics;
       protected:
-        double A(Time t, Time T) const;
-        double B(Time t, Time T) const;
+        Real A(Time t, Time T) const;
+        Real B(Time t, Time T) const;
 
-        double theta() const { return theta_(0.0); }
-        double k() const { return k_(0.0); }
-        double sigma() const { return sigma_(0.0); }
-        double x0() const { return r0_(0.0); }
+        Real theta() const { return theta_(0.0); }
+        Real k() const { return k_(0.0); }
+        Real sigma() const { return sigma_(0.0); }
+        Real x0() const { return r0_(0.0); }
 
       private:
         class VolatilityConstraint;
@@ -75,22 +75,22 @@ namespace QuantLib {
 
     class CoxIngersollRoss::HelperProcess : public StochasticProcess {
       public:
-        HelperProcess(double theta, double k, double sigma, double y0) 
+        HelperProcess(Real theta, Real k, Real sigma, Real y0) 
         : y0_(y0), theta_(theta), k_(k), sigma_(sigma) {}
 
-        double x0() const {
+        Real x0() const {
             return y0_;
         }
-        double drift(Time, double y) const {
+        Real drift(Time, Real y) const {
             return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y 
                 - 0.5*k_*y;
         }
-        double diffusion(Time, double) const {
+        Real diffusion(Time, Real) const {
             return 0.5*sigma_;
         }
 
       private:
-        double y0_, theta_, k_, sigma_;
+        Real y0_, theta_, k_, sigma_;
     };
 
     //! %Dynamics of the short-rate under the Cox-Ingersoll-Ross model
@@ -104,17 +104,17 @@ namespace QuantLib {
     */
     class CoxIngersollRoss::Dynamics : public ShortRateDynamics {
       public:
-        Dynamics(double theta,
-                 double k,
-                 double sigma,
-                 double x0)
+        Dynamics(Real theta,
+                 Real k,
+                 Real sigma,
+                 Real x0)
         : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
                           new HelperProcess(theta, k, sigma, QL_SQRT(x0)))) {}
 
-        virtual double variable(Time, Rate r) const {
+        virtual Real variable(Time, Rate r) const {
             return QL_SQRT(r);
         }
-        virtual double shortRate(Time, double y) const {
+        virtual Real shortRate(Time, Real y) const {
             return y*y;
         }
     };

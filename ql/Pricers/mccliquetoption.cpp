@@ -133,7 +133,7 @@ namespace QuantLib {
                     Real localCap, Real localFloor, 
                     Real globalCap, Real globalFloor, 
                     bool redemptionOnly, 
-                    BigInteger seed) {
+                    BigNatural seed) {
 
         std::vector<DiscountFactor> discounts(times.size());
         for (Size i = 0; i<times.size(); i++)

@@ -42,7 +42,7 @@ namespace QuantLib {
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
                     bool controlVariate,
-                    BigInteger seed = 0);
+                    BigNatural seed = 0);
     };
 
 }

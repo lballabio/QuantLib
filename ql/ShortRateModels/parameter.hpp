@@ -32,7 +32,7 @@ namespace QuantLib {
     class ParameterImpl {
       public:
         virtual ~ParameterImpl() {}
-        virtual double value(const Array& params, Time t) const = 0;
+        virtual Real value(const Array& params, Time t) const = 0;
     };
 
     //! Base class for model arguments
@@ -41,12 +41,12 @@ namespace QuantLib {
         Parameter()
         : constraint_(NoConstraint()) {}
         const Array& params() const { return params_; }
-        void setParam(Size i, double x) { params_[i] = x; }
+        void setParam(Size i, Real x) { params_[i] = x; }
         bool testParams(const Array& params) const {
             return constraint_.test(params);
         }
         Size size() const { return params_.size(); }
-        double operator()(Time t) const {
+        Real operator()(Time t) const {
             return impl_->value(params_, t);
         }
         const boost::shared_ptr<ParameterImpl>& implementation() const {
@@ -67,7 +67,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            double value(const Array& params, Time) const {
+            Real value(const Array& params, Time) const {
                 return params[0];
             }
         };
@@ -79,7 +79,7 @@ namespace QuantLib {
               constraint)
         {}
 
-        ConstantParameter(double value,
+        ConstantParameter(Real value,
                           const Constraint& constraint)
         : Parameter(
               1,
@@ -96,7 +96,7 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            double value(const Array&, Time) const {
+            Real value(const Array&, Time) const {
                 return 0.0;
             }
         };
@@ -121,7 +121,7 @@ namespace QuantLib {
             Impl(const std::vector<Time>& times)
             : times_(times) {}
 
-            double value(const Array& params, Time t) const {
+            Real value(const Array& params, Time t) const {
                 Size size = times_.size();
                 for (Size i=0; i<size; i++) {
                     if (t<times_[i])
@@ -149,18 +149,18 @@ namespace QuantLib {
             NumericalImpl(const RelinkableHandle<TermStructure>& termStructure)
             : times_(0), values_(0), termStructure_(termStructure) {}
 
-            void set(Time t, double x) {
+            void set(Time t, Real x) {
                 times_.push_back(t);
                 values_.push_back(x);
             }
-            void change(double x) {
+            void change(Real x) {
                 values_.back() = x;
             }
             void reset() {
                 times_.clear();
                 values_.clear();
             }
-            double value(const Array&, Time t) const {
+            Real value(const Array&, Time t) const {
                 std::vector<Time>::const_iterator result =
                     std::find(times_.begin(), times_.end(), t);
                 QL_REQUIRE(result!=times_.end(),
@@ -172,7 +172,7 @@ namespace QuantLib {
             }
           private:
             std::vector<Time> times_;
-            std::vector<double> values_;
+            std::vector<Real> values_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 

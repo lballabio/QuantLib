@@ -45,34 +45,34 @@ namespace QuantLib {
         }
 
         //! returns the actual price of the instrument (from volatility)
-        double marketValue() const { return marketValue_; }
+        Real marketValue() const { return marketValue_; }
 
         //! returns the price of the instrument according to the model
-        virtual double modelValue() const = 0;
+        virtual Real modelValue() const = 0;
 
         //! returns the error resulting from the model valuation
-        virtual double calibrationError() {
+        virtual Real calibrationError() {
             return QL_FABS(marketValue() - modelValue())/marketValue();
         }
 
         virtual void addTimesTo(std::list<Time>& times) const = 0;
 
         //! Black volatility implied by the model
-        double impliedVolatility(double targetValue,
-                                 double accuracy,
-                                 Size maxEvaluations,
-                                 double minVol,
-                                 double maxVol) const;
+        Volatility impliedVolatility(Real targetValue,
+                                     Real accuracy,
+                                     Size maxEvaluations,
+                                     Volatility minVol,
+                                     Volatility maxVol) const;
 
         //! Black price given a volatility
-        virtual double blackPrice(double volatility) const = 0;
+        virtual Real blackPrice(Volatility volatility) const = 0;
 
         void setPricingEngine(const boost::shared_ptr<PricingEngine>& engine) {
             engine_ = engine;
         }
 
       protected:
-        double marketValue_;
+        Real marketValue_;
         RelinkableHandle<Quote> volatility_;
         RelinkableHandle<TermStructure> termStructure_;
         boost::shared_ptr<BlackModel> blackModel_;

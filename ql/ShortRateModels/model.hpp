@@ -40,10 +40,10 @@ namespace QuantLib {
         //! Implied discount curve
         virtual DiscountFactor discount(Time t) const = 0;
 
-        virtual double discountBondOption(Option::Type type,
-                                          double strike,
-                                          Time maturity,
-                                          Time bondMaturity) const = 0;
+        virtual Real discountBondOption(Option::Type type,
+                                        Real strike,
+                                        Time maturity,
+                                        Time bondMaturity) const = 0;
     };
 
     //! Term-structure consistent model class

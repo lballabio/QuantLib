@@ -25,7 +25,7 @@ namespace QuantLib {
     class OneFactorModel::ShortRateTree::Helper {
       public:
         Helper(Size i,
-               double discountBondPrice,
+               Real discountBondPrice,
                const boost::shared_ptr
                    <TermStructureFittingParameter::NumericalImpl>& theta,
                ShortRateTree& tree)
@@ -38,8 +38,8 @@ namespace QuantLib {
             theta_->set(tree.timeGrid()[i], 0.0);
         }
 
-        double operator()(double theta) const {
-            double value = discountBondPrice_;
+        Real operator()(Real theta) const {
+            Real value = discountBondPrice_;
             theta_->change(theta);
             for (Size j=0; j<size_; j++)
                 value -= statePrices_[j]*tree_.discount(i_,j);
@@ -50,7 +50,7 @@ namespace QuantLib {
         Size size_;
         Size i_;
         const Array& statePrices_;
-        double discountBondPrice_;
+        Real discountBondPrice_;
         boost::shared_ptr<TermStructureFittingParameter::NumericalImpl> theta_;
         ShortRateTree& tree_;
     };
@@ -64,11 +64,11 @@ namespace QuantLib {
     : Lattice(timeGrid, tree->size(1)), tree_(tree), dynamics_(dynamics) {
 
         theta->reset();
-        double value = 1.0;
-        double vMin = -100.0;
-        double vMax = 100.0;
+        Real value = 1.0;
+        Real vMin = -100.0;
+        Real vMax = 100.0;
         for (Size i=0; i<(timeGrid.size() - 1); i++) {
-            double discountBond = theta->termStructure()->discount(t_[i+1]);
+            Real discountBond = theta->termStructure()->discount(t_[i+1]);
             Helper finder(i, discountBond, theta, *this);
             Brent s1d;
             s1d.setMaxEvaluations(1000);

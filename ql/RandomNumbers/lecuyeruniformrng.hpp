@@ -39,7 +39,7 @@ namespace QuantLib {
     */
     class LecuyerUniformRng {
       public:
-        typedef Sample<double> sample_type;
+        typedef Sample<Real> sample_type;
         /*! if the given seed is 0, a random seed will be chosen
              based on clock() */
         explicit LecuyerUniformRng(long seed = 0);

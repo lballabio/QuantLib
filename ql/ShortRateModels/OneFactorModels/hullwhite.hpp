@@ -39,21 +39,21 @@ namespace QuantLib {
     class HullWhite : public Vasicek, public TermStructureConsistentModel {
       public:
         HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
-                  double a = 0.1, double sigma = 0.01);
+                  Real a = 0.1, Real sigma = 0.01);
 
         boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
-        double discountBondOption(Option::Type type,
-                                  double strike,
-                                  Time maturity,
-                                  Time bondMaturity) const;
+        Real discountBondOption(Option::Type type,
+                                Real strike,
+                                Time maturity,
+                                Time bondMaturity) const;
 
       protected:
         void generateArguments();
 
-        double A(Time t, Time T) const;
+        Real A(Time t, Time T) const;
 
       private:
         class Dynamics;
@@ -74,16 +74,16 @@ namespace QuantLib {
     class HullWhite::Dynamics : public ShortRateDynamics {
       public:
         Dynamics(const Parameter& fitting,
-                 double a,
-                 double sigma)
+                 Real a,
+                 Real sigma)
         : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
                                      new OrnsteinUhlenbeckProcess(a, sigma))),
           fitting_(fitting) {}
 
-        double variable(Time t, Rate r) const { 
+        Real variable(Time t, Rate r) const { 
             return r - fitting_(t); 
         }
-        double shortRate(Time t, double x) const { 
+        Real shortRate(Time t, Real x) const { 
             return x + fitting_(t); 
         }
       private:
@@ -103,23 +103,22 @@ namespace QuantLib {
         class Impl : public Parameter::Impl {
           public:
             Impl(const RelinkableHandle<TermStructure>& termStructure,
-                 double a, double sigma) 
+                 Real a, Real sigma) 
             : termStructure_(termStructure), a_(a), sigma_(sigma) {}
 
-            double value(const Array& params, Time t) const {
-                double forwardRate = 
+            Real value(const Array& params, Time t) const {
+                Rate forwardRate = 
                     termStructure_->instantaneousForward(t);
-                double temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
+                Real temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
                 return (forwardRate + 0.5*temp*temp);
             }
           private:
             RelinkableHandle<TermStructure> termStructure_;
-            double a_, sigma_;
+            Real a_, sigma_;
         };
       public:
-        FittingParameter(
-                         const RelinkableHandle<TermStructure>& termStructure,
-                         double a, double sigma)
+        FittingParameter(const RelinkableHandle<TermStructure>& termStructure,
+                         Real a, Real sigma)
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                       new FittingParameter::Impl(termStructure, a, sigma))) {}
     };

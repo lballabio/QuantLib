@@ -80,19 +80,19 @@ namespace QuantLib {
             times.push_back(params.floatingPayTimes[i]);
     }
 
-    double SwaptionHelper::modelValue() const {
+    Real SwaptionHelper::modelValue() const {
         swaption_->setPricingEngine(engine_);
         return swaption_->NPV();
     }
 
-    double SwaptionHelper::blackPrice(double sigma) const {
+    Real SwaptionHelper::blackPrice(Volatility sigma) const {
         boost::shared_ptr<Quote> vol(new SimpleQuote(sigma));
         boost::shared_ptr<BlackModel> blackModel(
                          new BlackModel(RelinkableHandle<Quote>(vol), 
                                         termStructure_));
         boost::shared_ptr<PricingEngine> black(new BlackSwaption(blackModel));
         swaption_->setPricingEngine(black);
-        double value = swaption_->NPV();
+        Real value = swaption_->NPV();
         swaption_->setPricingEngine(engine_);
         return value;
     }

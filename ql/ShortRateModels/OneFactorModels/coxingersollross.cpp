@@ -45,8 +45,8 @@ namespace QuantLib {
                                  new VolatilityConstraint::Impl(theta, k))) {}
     };
 
-    CoxIngersollRoss::CoxIngersollRoss(Rate r0, double theta, 
-                                       double k, double sigma) 
+    CoxIngersollRoss::CoxIngersollRoss(Rate r0, Real theta, 
+                                       Real k, Real sigma) 
     : OneFactorAffineModel(4), 
       theta_(arguments_[0]), k_(arguments_[1]), 
       sigma_(arguments_[2]), r0_(arguments_[3]) {
@@ -62,32 +62,32 @@ namespace QuantLib {
                                   new Dynamics(theta(), k() , sigma(), x0()));
     }
 
-    double CoxIngersollRoss::A(Time t, Time T) const {
-        double sigma2 = sigma()*sigma();
-        double h = QL_SQRT(k()*k() + 2.0*sigma2);
-        double numerator = 2.0*h*QL_EXP(0.5*(k()+h)*(T-t));
-        double denominator = 2.0*h + (k()+h)*(QL_EXP((T-t)*h) - 1.0);
-        double value = QL_LOG(numerator/denominator)*
+    Real CoxIngersollRoss::A(Time t, Time T) const {
+        Real sigma2 = sigma()*sigma();
+        Real h = QL_SQRT(k()*k() + 2.0*sigma2);
+        Real numerator = 2.0*h*QL_EXP(0.5*(k()+h)*(T-t));
+        Real denominator = 2.0*h + (k()+h)*(QL_EXP((T-t)*h) - 1.0);
+        Real value = QL_LOG(numerator/denominator)*
             2.0*k()*theta()/sigma2;
         return QL_EXP(value);
     }
 
-    double CoxIngersollRoss::B(Time t, Time T) const {
-        double h = QL_SQRT(k()*k() + 2.0*sigma()*sigma());
-        double temp = QL_EXP((T-t)*h) - 1.0;
-        double numerator = 2.0*temp;
-        double denominator = 2.0*h + (k()+h)*temp;
-        double value = numerator/denominator;
+    Real CoxIngersollRoss::B(Time t, Time T) const {
+        Real h = QL_SQRT(k()*k() + 2.0*sigma()*sigma());
+        Real temp = QL_EXP((T-t)*h) - 1.0;
+        Real numerator = 2.0*temp;
+        Real denominator = 2.0*h + (k()+h)*temp;
+        Real value = numerator/denominator;
         return value;
     }
 
-    double CoxIngersollRoss::discountBondOption(Option::Type type, 
-                                                double strike, 
-                                                Time t, Time s) const {
+    Real CoxIngersollRoss::discountBondOption(Option::Type type, 
+                                              Real strike, 
+                                              Time t, Time s) const {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
-        double discountT = discountBond(0.0, t, x0());
-        double discountS = discountBond(0.0, s, x0());
+        DiscountFactor discountT = discountBond(0.0, t, x0());
+        DiscountFactor discountS = discountBond(0.0, s, x0());
 
         if (t < QL_EPSILON) {
             switch(type) {
@@ -97,22 +97,22 @@ namespace QuantLib {
             }
         }
 
-        double sigma2 = sigma()*sigma();
-        double h = QL_SQRT(k()*k() + 2.0*sigma2);
-        double b = B(t,s);
+        Real sigma2 = sigma()*sigma();
+        Real h = QL_SQRT(k()*k() + 2.0*sigma2);
+        Real b = B(t,s);
 
-        double rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
-        double psi = (k() + h)/sigma2;
+        Real rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
+        Real psi = (k() + h)/sigma2;
 
-        double df = 4.0*k()*theta()/sigma2;
-        double ncps = 2.0*rho*rho*x0()*QL_EXP(h*t)/(rho+psi+b);
-        double ncpt = 2.0*rho*rho*x0()*QL_EXP(h*t)/(rho+psi);
+        Real df = 4.0*k()*theta()/sigma2;
+        Real ncps = 2.0*rho*rho*x0()*QL_EXP(h*t)/(rho+psi+b);
+        Real ncpt = 2.0*rho*rho*x0()*QL_EXP(h*t)/(rho+psi);
 
         NonCentralChiSquareDistribution chis(df, ncps);
         NonCentralChiSquareDistribution chit(df, ncpt);
 
-        double z = QL_LOG(A(t,s)/strike)/b; 
-        double call = discountS*chis(2.0*z*(rho+psi+b)) -
+        Real z = QL_LOG(A(t,s)/strike)/b; 
+        Real call = discountS*chis(2.0*z*(rho+psi+b)) -
             strike*discountT*chit(2.0*z*(rho+psi));
 
         if (type == Option::Call)

@@ -57,7 +57,7 @@ namespace QuantLib {
                                                              volatilities,
                   const Matrix& correlation,
                   Time residualTime,
-                  BigInteger seed) {
+                  BigNatural seed) {
 
         Size n = correlation.rows();
         QL_REQUIRE(correlation.columns() == n,

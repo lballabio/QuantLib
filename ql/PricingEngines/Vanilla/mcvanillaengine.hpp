@@ -49,14 +49,14 @@ namespace QuantLib {
                         Size requiredSamples = Null<Size>(),
                         Real requiredTolerance = Null<Real>(),
                         Size maxSamples = Null<Size>(),
-                        BigInteger seed = 0);
+                        BigNatural seed = 0);
         // McSimulation implementation
         boost::shared_ptr<path_generator_type> pathGenerator() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
-        BigInteger seed_;
+        BigNatural seed_;
     };
 
 
@@ -69,7 +69,7 @@ namespace QuantLib {
                                                    Size requiredSamples,
                                                    Real requiredTolerance,
                                                    Size maxSamples,
-                                                   BigInteger seed)
+                                                   BigNatural seed)
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),

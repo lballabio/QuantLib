@@ -115,7 +115,7 @@ namespace QuantLib {
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
                     bool controlVariate,
-                    BigInteger seed) {
+                    BigNatural seed) {
 
         QL_REQUIRE(times.size() >= 2,
                    "you must have at least 2 time-steps");

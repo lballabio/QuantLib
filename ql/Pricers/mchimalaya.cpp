@@ -108,7 +108,7 @@ namespace QuantLib {
                const Matrix& correlation,
                Real strike,
                const std::vector<Time>& times,
-               BigInteger seed) {
+               BigNatural seed) {
 
         Size  n = correlation.rows();
         QL_REQUIRE(correlation.columns() == n,

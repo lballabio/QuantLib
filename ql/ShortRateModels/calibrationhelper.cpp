@@ -23,22 +23,22 @@ namespace QuantLib {
     class CalibrationHelper::ImpliedVolatilityHelper {
       public:
         ImpliedVolatilityHelper(const CalibrationHelper& helper,
-                                double value)
+                                Real value)
         : helper_(helper), value_(value) {}
 
-        double operator()(double x) const {
+        Real operator()(Volatility x) const {
             return value_ - helper_.blackPrice(x);
         }
       private:
         const CalibrationHelper& helper_;
-        double value_;
+        Real value_;
     };
 
-    double CalibrationHelper::impliedVolatility(double targetValue,
-                                                double accuracy, 
-                                                Size maxEvaluations,
-                                                double minVol, 
-                                                double maxVol) const {
+    Volatility CalibrationHelper::impliedVolatility(Real targetValue,
+                                                    Real accuracy, 
+                                                    Size maxEvaluations,
+                                                    Volatility minVol, 
+                                                    Volatility maxVol) const {
 
         ImpliedVolatilityHelper f(*this,targetValue);
         Brent solver;

@@ -24,8 +24,8 @@ namespace QuantLib {
     //Private function used by solver to determine time-dependent parameter
     class BlackKarasinski::Helper {
       public:
-        Helper(Size i, double xMin, double dx,
-               double discountBondPrice, 
+        Helper(Size i, Real xMin, Real dx,
+               Real discountBondPrice, 
                const boost::shared_ptr<ShortRateTree>& tree)
         : size_(tree->size(i)), 
           dt_(tree->timeGrid().dt(i)),
@@ -33,11 +33,11 @@ namespace QuantLib {
           statePrices_(tree->statePrices(i)),
           discountBondPrice_(discountBondPrice) {}
 
-        double operator()(double theta) const {
-            double value = discountBondPrice_;
-            double x = xMin_;
+        Real operator()(Real theta) const {
+            Real value = discountBondPrice_;
+            Real x = xMin_;
             for (Size j=0; j<size_; j++) {
-                double discount = QL_EXP(-QL_EXP(theta+x)*dt_);
+                Real discount = QL_EXP(-QL_EXP(theta+x)*dt_);
                 value -= statePrices_[j]*discount;
                 x += dx_;
             }
@@ -47,14 +47,14 @@ namespace QuantLib {
       private:
         Size size_;
         Time dt_;
-        double xMin_, dx_;
+        Real xMin_, dx_;
         const Array& statePrices_;
-        double discountBondPrice_;
+        Real discountBondPrice_;
     };
 
     BlackKarasinski::BlackKarasinski(
                          const RelinkableHandle<TermStructure>& termStructure,
-                         double a, double sigma)
+                         Real a, Real sigma)
     : OneFactorModel(2), TermStructureConsistentModel(termStructure), 
       a_(arguments_[0]), sigma_(arguments_[1]) {
         a_ = ConstantParameter(a, PositiveConstraint());
@@ -78,13 +78,13 @@ namespace QuantLib {
         boost::shared_ptr<NumericalImpl> impl = 
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
-        double value = 1.0;
-        double vMin = -50.0;
-        double vMax = 50.0;
+        Real value = 1.0;
+        Real vMin = -50.0;
+        Real vMax = 50.0;
         for (Size i=0; i<(grid.size() - 1); i++) {
-            double discountBond = termStructure()->discount(grid[i+1]);
-            double xMin = trinomial->underlying(i, 0);
-            double dx = trinomial->dx(i);
+            Real discountBond = termStructure()->discount(grid[i+1]);
+            Real xMin = trinomial->underlying(i, 0);
+            Real dx = trinomial->dx(i);
             Helper finder(i, xMin, dx, discountBond, numericTree);
             Brent s1d;
             s1d.setMaxEvaluations(1000);

@@ -38,9 +38,9 @@ namespace QuantLib {
 
         virtual void addTimesTo(std::list<Time>& times) const;
 
-        virtual double modelValue() const;
+        virtual Real modelValue() const;
 
-        virtual double blackPrice(double volatility) const;
+        virtual Real blackPrice(Volatility volatility) const;
 
       private:
         Rate exerciseRate_;
