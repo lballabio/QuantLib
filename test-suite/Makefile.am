@@ -1,6 +1,5 @@
 
-QL_TESTS =
-           calendars.hpp calendars.cpp \
+QL_TESTS = calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \
            covariance.hpp covariance.cpp \
            dates.hpp dates.cpp \
