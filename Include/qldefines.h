@@ -97,20 +97,20 @@
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
 
-#elif defined(__MWERKS__)					// Metrowerks CodeWarrior
+#elif defined(__MWERKS__)				// Metrowerks CodeWarrior
 	// set switches
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCHAR_IN_STD						1
 	#define QL_CTIME_IN_STD						1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
-	#define QL_EXPRESSION_TEMPLATES_WORK		0
+	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			1
 	#define QL_BROKEN_TEMPLATE_SPECIALIZATION	0
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
 
-#elif defined(__GNUC__)						// GNU C++
+#elif defined(__GNUC__)					// GNU C++
 	// set switches
 	#define QL_CMATH_IN_STD						0
 	#define QL_CCHAR_IN_STD						0
@@ -123,7 +123,7 @@
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
 
-#else										// Generic ANSI C++ compliant compiler
+#else									// Generic ANSI C++ compliant compiler
 	// set switches
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCHAR_IN_STD						1
