@@ -23,4 +23,5 @@ Changes since release 0.3.8:
   - fixed-rate coupon bonds can define different rates for each coupon
   - added zero-coupon and floating-rate bonds
 
+- FlatForward can now take rates with compounding other than continuous
 

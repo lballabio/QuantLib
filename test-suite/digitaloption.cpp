@@ -373,8 +373,8 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.3604, 1e-4 },
         { Option::Call, 100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 11.2223, 1e-4 },
         // in the money options (guaranteed discounted payoff)
-        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-16 },
-        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-16 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-12 },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 15.0000*std::exp(-0.05), 1e-12 }
     };
 
     DayCounter dc = Actual360();
@@ -438,10 +438,10 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         { Option::Call, 100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 76.5951, 1e-04 },
         // in the money options (guaranteed discounted payoff = forward * riskFreeDiscount
         //                                                    = spot * dividendDiscount)
-        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-16 },
-        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-16 },
-        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000*std::exp(-0.005), 1e-16 },
-        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*std::exp(-0.005), 1e-16 }
+        { Option::Call, 100.00, 105.00, 0.00, 0.10, 0.5, 0.20,105.0000, 1e-12 },
+        { Option::Put,  100.00,  95.00, 0.00, 0.10, 0.5, 0.20, 95.0000, 1e-12 },
+        { Option::Call, 100.00, 105.00, 0.01, 0.10, 0.5, 0.20,105.0000*std::exp(-0.005), 1e-12 },
+        { Option::Put,  100.00,  95.00, 0.01, 0.10, 0.5, 0.20, 95.0000*std::exp(-0.005), 1e-12 }
     };
 
     DayCounter dc = Actual360();

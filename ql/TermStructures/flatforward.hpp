@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,78 +34,104 @@ namespace QuantLib {
         // constructors
         FlatForward(const Date& referenceDate,
                     const Handle<Quote>& forward,
-                    const DayCounter& dayCounter);
+                    const DayCounter& dayCounter,
+                    Compounding compounding = Continuous,
+                    Frequency frequency = Annual);
         FlatForward(const Date& referenceDate,
                     Rate forward,
-                    const DayCounter& dayCounter);
-
+                    const DayCounter& dayCounter,
+                    Compounding compounding = Continuous,
+                    Frequency frequency = Annual);
         FlatForward(Integer settlementDays, const Calendar& calendar,
                     const Handle<Quote>& forward,
-                    const DayCounter& dayCounter);
+                    const DayCounter& dayCounter,
+                    Compounding compounding = Continuous,
+                    Frequency frequency = Annual);
         FlatForward(Integer settlementDays, const Calendar& calendar,
                     Rate forward,
-                    const DayCounter& dayCounter);
-
+                    const DayCounter& dayCounter,
+                    Compounding compounding = Continuous,
+                    Frequency frequency = Annual);
         // inspectors
         DayCounter dayCounter() const { return dayCounter_; }
+        Compounding compounding() const { return compounding_; }
+        Frequency compoundingFrequency() const { return frequency_; }
         Date maxDate() const;
-      protected:
-        Rate zeroYieldImpl(Time) const;
-        DiscountFactor discountImpl(Time) const;
-        Rate forwardImpl(Time) const;
+        void update();
       private:
+        DiscountFactor discountImpl(Time) const;
+        void updateRate();
         DayCounter dayCounter_;
         Handle<Quote> forward_;
+        Compounding compounding_;
+        Frequency frequency_;
+        InterestRate rate_;
     };
 
     // inline definitions
 
     inline FlatForward::FlatForward(const Date& referenceDate,
                                     const Handle<Quote>& forward,
-                                    const DayCounter& dayCounter)
+                                    const DayCounter& dayCounter,
+                                    Compounding compounding,
+                                    Frequency frequency)
     : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
-      forward_(forward) {
+      forward_(forward), compounding_(compounding), frequency_(frequency) {
         registerWith(forward_);
+        updateRate();
     }
 
     inline FlatForward::FlatForward(const Date& referenceDate,
                                     Rate forward,
-                                    const DayCounter& dayCounter)
-    : YieldTermStructure(referenceDate), dayCounter_(dayCounter) {
+                                    const DayCounter& dayCounter,
+                                    Compounding compounding,
+                                    Frequency frequency)
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
+      compounding_(compounding), frequency_(frequency) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
+        updateRate();
     }
 
     inline FlatForward::FlatForward(Integer settlementDays,
                                     const Calendar& calendar,
                                     const Handle<Quote>& forward,
-                                    const DayCounter& dayCounter)
+                                    const DayCounter& dayCounter,
+                                    Compounding compounding,
+                                    Frequency frequency)
     : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
-      forward_(forward) {
+      forward_(forward), compounding_(compounding), frequency_(frequency) {
         registerWith(forward_);
+        updateRate();
     }
 
     inline FlatForward::FlatForward(Integer settlementDays,
                                     const Calendar& calendar,
                                     Rate forward,
-                                    const DayCounter& dayCounter)
-    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter) {
+                                    const DayCounter& dayCounter,
+                                    Compounding compounding,
+                                    Frequency frequency)
+    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
+      compounding_(compounding), frequency_(frequency) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
+        updateRate();
     }
 
     inline Date FlatForward::maxDate() const {
         return Date::maxDate();
     }
 
-    inline Rate FlatForward::zeroYieldImpl(Time t) const {
-        return forward_->value();
+    inline void FlatForward::update() {
+        updateRate();
+        YieldTermStructure::update();
     }
 
     inline DiscountFactor FlatForward::discountImpl(Time t) const {
-        return DiscountFactor(std::exp(-forward_->value()*t));
+        return rate_.discountFactor(t);
     }
 
-    inline Rate FlatForward::forwardImpl(Time t) const {
-        return forward_->value();
+    inline void FlatForward::updateRate() {
+        rate_ = InterestRate(forward_->value(), dayCounter_,
+                             compounding_, frequency_);
     }
 
 }
