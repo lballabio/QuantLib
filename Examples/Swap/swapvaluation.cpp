@@ -161,9 +161,9 @@ int main(int argc, char* argv[])
 
         rhTermStructure.linkTo(myTermStructure);
         Rate fairFixedRate = fixedRate-mySwap.NPV()/mySwap.BPS();
-        std::cout << DoubleFormatter::toString(fairFixedRate*100,4)
-            << std::endl;
 
+        std::cout << DoubleFormatter::toString(fairFixedRate*100,4) 
+            << std::endl;
 
         // let's price the same swap on a different term structure
         // e.g. Flat Forward at 5.0%

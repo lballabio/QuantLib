@@ -22,7 +22,7 @@ QL_LIB_DIR     = "$(QL_DIR)\lib\Win32\Borland"
 #Warning W8057 : Parameter 'argc' is never used in function main(int,char * *)
 
 # Options
-CC_OPTS = -w-8026 -w-8027 -w-8012 -w-8057\
+CC_OPTS = -vi- -w-8026 -w-8027 -w-8012 -w-8057\
     -I$(QL_INCLUDE_DIR)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
