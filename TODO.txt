@@ -17,6 +17,7 @@ LIBRARY
 
     MONTE CARLO FRAMEWORK
         add example of Martingale control variate
+        add examples of Montecarlo internal and Montecarlo convergence
 
     ASIAN:
         continuous geometric APO backward starting instead of forward starting
