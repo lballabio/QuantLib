@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -136,11 +137,13 @@ namespace QuantLib {
 
     Bond::Bond(const DayCounter& dayCount, const Calendar& calendar,
                BusinessDayConvention businessDayConvention,
-               Integer settlementDays)
+               Integer settlementDays,
+               const Handle<YieldTermStructure>& discountCurve)
     : settlementDays_(settlementDays), calendar_(calendar),
       businessDayConvention_(businessDayConvention), dayCount_(dayCount),
-      frequency_(NoFrequency) {
+      frequency_(NoFrequency), discountCurve_(discountCurve) {
         registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(discountCurve_);
     }
 
     Date Bond::settlementDate() const {
@@ -149,6 +152,25 @@ namespace QuantLib {
                                    settlementDays_, Days);
         // ...but the bond won't be traded until the issue date.
         return std::max(d, issueDate_);
+    }
+
+    Real Bond::cleanPrice() const {
+        return dirtyPrice() - accruedAmount(settlementDate());
+    }
+
+    Real Bond::dirtyPrice() const {
+        calculate();
+        return NPV_;
+    }
+
+    Real Bond::yield(Compounding compounding,
+                     Real accuracy, Size maxEvaluations) const {
+        Brent solver;
+        solver.setMaxEvaluations(maxEvaluations);
+        YieldFinder objective(cashFlows_, redemption_, dirtyPrice(),
+                              compounding, dayCount_, frequency_,
+                              settlementDate());
+        return solver.solve(objective, accuracy, 0.02, 0.0, 1.0);
     }
 
     Real Bond::cleanPrice(Rate yield, Compounding compounding,
@@ -212,7 +234,30 @@ namespace QuantLib {
     }
 
     void Bond::performCalculations() const {
-        QL_FAIL("calculation of the theoretical price is not yet implemented");
+
+        QL_REQUIRE(!discountCurve_.empty(), "no term structure set");
+
+        Date settlement = settlementDate();
+		NPV_ = 0.0;
+
+        // add the discounted cash flows including redemption
+        for (Size i=0; i<cashFlows_.size(); i++) {
+
+            Date d = cashFlows_[i]->date();
+
+            #if QL_TODAYS_PAYMENTS
+            if (d >= settlement) {
+            #else
+            if (d > settlement) {
+            #endif
+                NPV_ += cashFlows_[i]->amount() * discountCurve_->discount(d);
+            }
+        }
+        NPV_ += redemption_->amount() *
+                discountCurve_->discount(redemption_->date());
+
+        // adjust to bond settlement
+        NPV_ /= discountCurve_->discount(settlement);
     }
 
 }

@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2004 Jeff Yu
  Copyright (C) 2004 M-Dimension Consulting Inc.
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +28,7 @@
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/interestrate.hpp>
+#include <ql/termstructure.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -49,7 +51,9 @@ namespace QuantLib {
         Bond(const DayCounter& dayCount,
              const Calendar& calendar,
              BusinessDayConvention businessDayConvention,
-             Integer settlementDays);
+             Integer settlementDays,
+             const Handle<YieldTermStructure>& discountCurve
+                                              = Handle<YieldTermStructure>());
       public:
         //! \name Inspectors
         //@{
@@ -60,9 +64,23 @@ namespace QuantLib {
         BusinessDayConvention businessDayConvention() const;
         const DayCounter& dayCounter() const;
         Frequency frequency() const;
+        boost::shared_ptr<YieldTermStructure> discountCurve() const;
         //@}
         //! \name Calculations
         //@{
+        //! theoretical clean price
+        /*! The default bond settlement is used for calculation. */
+        Real cleanPrice() const;
+        //! theoretical dirty price
+        /*! The default bond settlement is used for calculation. */
+        Real dirtyPrice() const;
+        //! theoretical bond yield
+        /*! The default bond settlement and theoretical price are used
+            for calculation.
+        */
+        Real yield(Compounding compounding,
+                   Real accuracy = 1.0e-8,
+                   Size maxEvaluations = 100) const;
         //! clean price given a yield and settlement date
         /*! The default bond settlement is used if no date is given. */
         Real cleanPrice(Rate yield,
@@ -80,6 +98,26 @@ namespace QuantLib {
                    Date settlementDate = Date(),
                    Real accuracy = 1.0e-8,
                    Size maxEvaluations = 100) const;
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the method taking a compounding */
+        Real cleanPrice(Rate yield,
+                        Date settlementDate = Date()) const {
+            return cleanPrice(yield, Compounded, settlementDate);
+        }
+        /*! \deprecated use the method taking a compounding */
+        Real dirtyPrice(Rate yield,
+                        Date settlementDate = Date()) const {
+            return dirtyPrice(yield, Compounded, settlementDate);
+        }
+        /*! \deprecated use the method taking a compounding */
+        Real yield(Real cleanPrice,
+                   Date settlementDate = Date(),
+                   Real accuracy = 1.0e-8,
+                   Size maxEvaluations = 100) const {
+            return yield(cleanPrice, Compounded, settlementDate,
+                         accuracy, maxEvaluations);
+        }
+        #endif
         //! accrued amount at a given date
         /*! The default bond settlement is used if no date is given. */
         Real accruedAmount(Date d = Date()) const;
@@ -96,6 +134,7 @@ namespace QuantLib {
         Frequency frequency_;
         std::vector<boost::shared_ptr<CashFlow> > cashFlows_;
         boost::shared_ptr<CashFlow> redemption_;
+        Handle<YieldTermStructure> discountCurve_;
     };
 
 
@@ -121,6 +160,10 @@ namespace QuantLib {
 
     inline Frequency Bond::frequency() const {
         return frequency_;
+    }
+
+    inline boost::shared_ptr<YieldTermStructure> Bond::discountCurve() const {
+        return discountCurve_.currentLink();
     }
 
 }

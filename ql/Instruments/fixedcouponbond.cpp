@@ -21,17 +21,19 @@
 
 namespace QuantLib {
 
-    FixedCouponBond::FixedCouponBond(const Date& issueDate,
-                                     const Date& datedDate,
-                                     const Date& maturityDate,
-                                     Integer settlementDays,
-                                     Rate coupon,
-                                     Frequency couponFrequency,
-                                     const DayCounter& dayCounter,
-                                     const Calendar& calendar,
-                                     BusinessDayConvention convention,
-                                     Real redemption)
-    : Bond(dayCounter, calendar, convention, settlementDays) {
+    FixedCouponBond::FixedCouponBond(
+                              const Date& issueDate,
+                              const Date& datedDate,
+                              const Date& maturityDate,
+                              Integer settlementDays,
+                              Rate coupon,
+                              Frequency couponFrequency,
+                              const DayCounter& dayCounter,
+                              const Calendar& calendar,
+                              BusinessDayConvention convention,
+                              Real redemption,
+                              const Handle<YieldTermStructure>& discountCurve)
+    : Bond(dayCounter, calendar, convention, settlementDays, discountCurve) {
 
         issueDate_ = issueDate;
         datedDate_ = datedDate;

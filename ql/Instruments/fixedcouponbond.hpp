@@ -39,7 +39,9 @@ namespace QuantLib {
                         const DayCounter& dayCounter,
                         const Calendar& calendar,
                         BusinessDayConvention convention = Following,
-                        Real redemption = 100.0);
+                        Real redemption = 100.0,
+                        const Handle<YieldTermStructure>& discountCurve
+                                              = Handle<YieldTermStructure>());
     };
 
 }
