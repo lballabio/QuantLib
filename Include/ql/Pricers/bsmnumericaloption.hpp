@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/26 16:04:52  marmar
+    underlying_ not mutable anymore
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -114,7 +117,7 @@ namespace QuantLib {
 
           protected:
             // methods
-            virtual void setGridLimits() const;
+            virtual void setGridLimits(double center) const;
             virtual void initializeGrid() const;
             virtual void initializeInitialCondition() const;
             virtual void initializeOperator() const;

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/04/26 16:04:52  marmar
+    underlying_ not mutable anymore
+
     Revision 1.2  2001/04/23 14:17:22  marmar
     Some variables are now mutable
 
@@ -127,10 +130,10 @@ namespace QuantLib {
           protected:
             // input data
             Type type_;
-            mutable double underlying_;
+            double underlying_;
             double strike_;
             Rate dividendYield_, riskFreeRate_;
-            mutable Time residualTime_;
+            Time residualTime_;
             double volatility_;
             // results
             // declared as mutable to preserve the logical
