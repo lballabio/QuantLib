@@ -28,12 +28,20 @@
 
 namespace QuantLib {
 
-	//! helper function building a leg of floating coupons (namely ParCoupon, UpFrontIndexedCoupon and InArrearIndexedCoupon) 
-    /*! 
-		\bug The last argument is used due to msvc6 bug with function template
+    //! helper function building a leg of floating coupons
+    /*! Either ParCoupon, UpFrontIndexedCoupon, InArrearIndexedCoupon,
+        or any other coupon can be used whose constructor takes the
+        same arguments.
+
+        \warning The last argument is used due to a known VC++ bug
+                 regarding function template instantiation. It must be
+                 passed explicitly when using the function with that
+                 compiler; the simplest choice for the value to be
+                 passed is <tt>(const Type*) 0</tt> where
+                 <tt>Type</tt> is the desired coupon type.
     */
     template <class IndexedCouponType>
-    std::vector<boost::shared_ptr<CashFlow> > 
+    std::vector<boost::shared_ptr<CashFlow> >
     IndexedCouponVector(const Schedule& schedule,
                         BusinessDayConvention paymentAdjustment,
                         const std::vector<Real>& nominals,
@@ -41,7 +49,7 @@ namespace QuantLib {
                         Integer fixingDays,
                         const std::vector<Spread>& spreads,
                         const DayCounter& dayCounter = DayCounter(),
-						const IndexedCouponType* msvc6_bug = 0) {
+                        const IndexedCouponType* msvc6_bug = 0) {
 
         QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
         QL_REQUIRE(paymentAdjustment != Unadjusted,
@@ -61,8 +69,8 @@ namespace QuantLib {
         Real nominal = nominals[0];
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new IndexedCouponType(nominal, paymentDate, index, 
-                                      start, end, fixingDays, spread, 
+                new IndexedCouponType(nominal, paymentDate, index,
+                                      start, end, fixingDays, spread,
                                       start, end, dayCounter)));
         } else {
             Date reference = end.plusMonths(-12/schedule.frequency());
@@ -70,8 +78,8 @@ namespace QuantLib {
                                         schedule.businessDayConvention());
             typedef Short<IndexedCouponType> ShortIndexedCouponType;
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new ShortIndexedCouponType(nominal, paymentDate, index, 
-                                           start, end, fixingDays, spread, 
+                new ShortIndexedCouponType(nominal, paymentDate, index,
+                                           start, end, fixingDays, spread,
                                            reference, end, dayCounter)));
         }
         // regular periods
@@ -89,8 +97,8 @@ namespace QuantLib {
             else
                 nominal = nominals.back();
             leg.push_back(boost::shared_ptr<CashFlow>(
-                new IndexedCouponType(nominal, paymentDate, index, 
-                                      start, end, fixingDays, spread, 
+                new IndexedCouponType(nominal, paymentDate, index,
+                                      start, end, fixingDays, spread,
                                       start, end, dayCounter)));
         }
         if (schedule.size() > 2) {
@@ -110,18 +118,18 @@ namespace QuantLib {
                 nominal = nominals.back();
             if (schedule.isRegular(N-1)) {
                 leg.push_back(boost::shared_ptr<CashFlow>(
-                    new IndexedCouponType(nominal, paymentDate, index, 
-                                          start, end, fixingDays, spread, 
+                    new IndexedCouponType(nominal, paymentDate, index,
+                                          start, end, fixingDays, spread,
                                           start, end, dayCounter)));
             } else {
-                Date reference = 
+                Date reference =
                     start.plusMonths(12/schedule.frequency());
                 reference = calendar.adjust(reference,
                                             schedule.businessDayConvention());
                 typedef Short<IndexedCouponType> ShortIndexedCouponType;
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new ShortIndexedCouponType(nominal, paymentDate, index,
-                                               start, end, fixingDays, 
+                                               start, end, fixingDays,
                                                spread, start, reference,
                                                dayCounter)));
             }
