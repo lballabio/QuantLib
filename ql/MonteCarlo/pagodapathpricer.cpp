@@ -48,8 +48,8 @@ namespace QuantLib {
         }
 
         double PagodaPathPricer::operator()(const MultiPath & multiPath) const {
-            unsigned int numAssets = multiPath.assetNumber();
-            unsigned int numSteps = multiPath.pathSize();
+            size_t numAssets = multiPath.assetNumber();
+            size_t numSteps = multiPath.pathSize();
             QL_REQUIRE(isInitialized_,
                 "PagodaPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
@@ -59,8 +59,8 @@ namespace QuantLib {
 
             if (antitheticVariance_) {
                 double averageGain = 0.0, averageGain2 = 0.0;
-                for(unsigned int i = 0; i < numSteps; i++)
-                    for(unsigned int j = 0; j < numAssets; j++) {
+                for(size_t i = 0; i < numSteps; i++)
+                    for(size_t j = 0; j < numAssets; j++) {
                         averageGain += underlying_[j] *
                             (QL_EXP(multiPath[j].drift()[i]+
                                     multiPath[j].diffusion()[i])
@@ -75,8 +75,8 @@ namespace QuantLib {
                      QL_MAX(0.0, QL_MIN(roof_, averageGain2)));
             } else {
                 double averageGain = 0.0;
-                for(unsigned int i = 0; i < numSteps; i++)
-                    for(unsigned int j = 0; j < numAssets; j++) {
+                for(size_t i = 0; i < numSteps; i++)
+                    for(size_t j = 0; j < numAssets; j++) {
                         averageGain += underlying_[j] *
                             (QL_EXP(multiPath[j].drift()[i]+
                                     multiPath[j].diffusion()[i])

@@ -51,7 +51,7 @@ namespace QuantLib {
             const std::vector<Time>& times,
             bool antitheticVariance, long seed) {
 
-            unsigned int  n = covariance.rows();
+            size_t  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
                 "McHimalaya: covariance matrix not square");
             QL_REQUIRE(underlying.size() == n,

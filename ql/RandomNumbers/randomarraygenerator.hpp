@@ -47,7 +47,7 @@ namespace QuantLib {
           public:
             typedef Array sample_type;
             // equal average, equal variance, no covariance
-            RandomArrayGenerator(unsigned int dimension,
+            RandomArrayGenerator(size_t dimension,
                                  double variance,
                                  long seed = 0);
             // equal average, different variances, no covariance
@@ -69,7 +69,7 @@ namespace QuantLib {
 
         template <class RNG>
         inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
-            unsigned int dimension, double variance,
+            size_t dimension, double variance,
             long seed)
         : next_(dimension), generator_(seed) {
             QL_REQUIRE(variance >= 0,
@@ -82,7 +82,7 @@ namespace QuantLib {
             const Array& variance, long seed)
         : next_(variance.size()), generator_(seed),
           sqrtVariance_(variance.size()) {
-            for (unsigned int i=0; i<variance.size(); i++) {
+            for (size_t i=0; i<variance.size(); i++) {
                 QL_REQUIRE(variance[i] >= 0,
                     "RandomArrayGenerator: negative variance"
                     + DoubleFormatter::toString(variance[i])
@@ -112,7 +112,7 @@ namespace QuantLib {
             // starting point for product
             weight_ = 1.0;
 
-            for (unsigned int j=0; j<next_.size(); j++) {
+            for (size_t j=0; j<next_.size(); j++) {
                 next_[j] = generator_.next();
                 weight_ *= generator_.weight();
             }
@@ -120,7 +120,7 @@ namespace QuantLib {
             if (sqrtCovariance_.rows() != 0) {  // general case
                 next_ = sqrtCovariance_ * next_;
             } else {                            // degenerate case
-                for (unsigned int j=0; j<next_.size(); j++)
+                for (size_t j=0; j<next_.size(); j++)
                     next_[j] *= sqrtVariance_[j];
             }
             return next_;

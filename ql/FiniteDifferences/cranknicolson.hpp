@@ -56,7 +56,7 @@ namespace QuantLib {
             Operator& operator=(const Operator&);
 
             // inspectors
-            unsigned int size(); 
+            size_t size(); 
 
             // modifiers
             void setTime(Time t);
@@ -64,7 +64,7 @@ namespace QuantLib {
             // operator interface
             arrayType applyTo(const arrayType&);
             arrayType solveFor(const arrayType&);
-            static Operator identity(unsigned int size);
+            static Operator identity(size_t size);
 
             // operator algebra
             Operator operator*(double, const Operator&);

@@ -54,7 +54,7 @@ namespace QuantLib {
             settlementDate_ = calendar_->advance(
                 todaysDate_,settlementDays_,Days);
             // sort risk helpers
-			unsigned int i;
+			size_t i;
             for (i=0; i<instruments_.size(); i++)
                 instruments_[i]->setTermStructure(this);
             std::sort(instruments_.begin(),instruments_.end(),
@@ -72,7 +72,7 @@ namespace QuantLib {
         }
 
         PiecewiseFlatForward::~PiecewiseFlatForward() {
-            for (unsigned int i=0; i<instruments_.size(); i++)
+            for (size_t i=0; i<instruments_.size(); i++)
                 instruments_[i]->unregisterObserver(this);
         }
 
@@ -92,7 +92,7 @@ namespace QuantLib {
                 Brent solver;
     
                 // bootstrapping loop
-                for (unsigned int i=1; i<instruments_.size()+1; i++) {
+                for (size_t i=1; i<instruments_.size()+1; i++) {
                     Handle<RateHelper> instrument = instruments_[i-1];
                     double guess = instrument->discountGuess();
                     if (guess == Null<double>()) {

@@ -55,7 +55,7 @@ namespace QuantLib {
                 int timeSteps);
             // Protected attributes
             std::vector<Time> dates_;
-            unsigned int dateNumber_;
+            size_t dateNumber_;
             int timeStepPerPeriod_;
             bool lastDateIsResTime_;
             int lastIndex_;

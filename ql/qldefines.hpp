@@ -34,7 +34,7 @@
 /*! \namespace QuantLib
     \brief a.k.a. the %QuantLib Foundation
 
-    /*! See sect. \ref coreclasses */
+    See sect. \ref coreclasses
 */
 
 #ifndef quantlib_defines_h

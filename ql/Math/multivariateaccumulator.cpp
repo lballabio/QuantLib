@@ -42,7 +42,7 @@ namespace QuantLib {
             reset();
         }
 
-        MultivariateAccumulator::MultivariateAccumulator(unsigned int size)
+        MultivariateAccumulator::MultivariateAccumulator(size_t size)
                 : size_(size){
             reset();
         }

@@ -51,7 +51,7 @@ namespace QuantLib {
             Rate riskFreeRate, Time residualTime,
             bool antitheticVariance, long seed) {
 
-            unsigned int  n = covariance.rows();
+            size_t  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
                 "McEverest: covariance matrix not square");
             QL_REQUIRE(dividendYield.size() == n,

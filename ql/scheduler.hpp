@@ -47,9 +47,9 @@ namespace QuantLib {
             int frequency, RollingConvention rollingConvention,
             bool isAdjusted, const Date& stubDate = Date());
         // inspectors
-        unsigned int size() const { return dates_.size(); }
+        size_t size() const { return dates_.size(); }
         const Date& date(int i) const;
-        bool isRegular(unsigned int i) const;
+        bool isRegular(size_t i) const;
         // iterators
         typedef std::vector<Date>::const_iterator const_iterator;
         const_iterator begin() const { return dates_.begin(); }

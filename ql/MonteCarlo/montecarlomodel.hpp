@@ -80,7 +80,7 @@ namespace QuantLib {
                             const S& sampleAccumulator,
                             const Handle<PP>& cvPathPricer = Handle<PP>(),
                             double cvOptionValue=0);
-            void addSamples(unsigned int samples);
+            void addSamples(size_t samples);
             const S& sampleAccumulator(void) const;
           private:
             Handle<PG> pathGenerator_;
@@ -108,8 +108,8 @@ namespace QuantLib {
 
         template<class S, class PG, class PP>
         inline void MonteCarloModel<S, PG, PP>::
-                    addSamples(unsigned int samples) {
-            for(unsigned int j = 1; j <= samples; j++) {
+                    addSamples(size_t samples) {
+            for(size_t j = 1; j <= samples; j++) {
                 typename PG::sample_type path = pathGenerator_->next();
                 typename PP::result_type price = (*pathPricer_)(path);
                 if (isControlVariate_)

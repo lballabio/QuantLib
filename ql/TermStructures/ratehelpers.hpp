@@ -49,9 +49,9 @@ namespace QuantLib {
             between the algorithms used during bootstrapping and later 
             instrument pricing. This is not yet fully enforced in the 
             available rate helpers, though - only SwapRateHelper contains a 
-            Swap instrument for the time being. 
+            Swap instrument for the time being.
+        */
             
-            \todo Futures rate helper should be implemented. */
         class RateHelper : public Patterns::Observer, 
                            public Patterns::Observable {
           public:
@@ -119,6 +119,8 @@ namespace QuantLib {
         //! Forward rate agreement
         /*! \warning This class assumes that today's date does not change 
             between calls of setTermStructure().
+
+            \todo convexity adjustment should be implemented.
         */
         class FraRateHelper : public RateHelper {
           public:
@@ -141,6 +143,35 @@ namespace QuantLib {
             RollingConvention convention_;
             Handle<DayCounter> dayCounter_;
             Date settlement_, start_, maturity_;
+            double yearFraction_;
+        };
+
+
+        //! Interest Rate Futures
+        /*! \warning This class assumes that today's date does not change 
+            between calls of setTermStructure().
+        */
+        class FuturesRateHelper : public RateHelper {
+          public:
+            FuturesRateHelper(const RelinkableHandle<MarketElement>& price,
+                              const Date& ImmDate,
+                              int settlementDays,
+                              int nMonths,
+                              const Handle<Calendar>& calendar,
+                              RollingConvention convention,
+                              const Handle<DayCounter>& dayCounter);
+            Rate impliedRate() const;
+            DiscountFactor discountGuess() const;
+            void setTermStructure(TermStructure*);
+            Date maturity() const;
+          private:
+            Date ImmDate_;
+            int settlementDays_;
+            int nMonths_;
+            Handle<Calendar> calendar_;
+            RollingConvention convention_;
+            Handle<DayCounter> dayCounter_;
+            Date settlement_, maturity_;
             double yearFraction_;
         };
 

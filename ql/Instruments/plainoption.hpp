@@ -70,7 +70,7 @@ namespace QuantLib {
             //@}
             double impliedVolatility(double targetValue, 
                                      double accuracy = 1.0e-4,
-                                     unsigned int maxEvaluations = 100,
+                                     size_t maxEvaluations = 100,
                                      double minVol = 1.0e-4,
                                      double maxVol = 4.0) const;
           protected:

@@ -37,7 +37,7 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        BSMOperator::BSMOperator(unsigned int size, double dx, double r,
+        BSMOperator::BSMOperator(size_t size, double dx, double r,
             double q, double sigma)
         : TridiagonalOperator(size) {
             double sigma2 = sigma*sigma;

@@ -161,7 +161,7 @@ namespace QuantLib {
         }
 
         double SingleAssetOption::impliedVolatility(double targetValue, double accuracy,
-                    unsigned int maxEvaluations, double minVol, double maxVol) const {
+                    size_t maxEvaluations, double minVol, double maxVol) const {
             // check option targetValue boundary condition
             QL_REQUIRE(targetValue > 0.0,
              "SingleAssetOption::impliedVol : targetValue must be positive");

@@ -43,7 +43,7 @@
 /*! \namespace QuantLib::TermStructures
     \brief Concrete implementations of the TermStructure interface
 
-    /*! See sect. \ref termstructures */
+    See sect. \ref termstructures
 */
 
 namespace QuantLib {
@@ -320,7 +320,7 @@ namespace QuantLib {
             if (t == 0.0)
                 return forward(0.0);
             double sum = 0.5*forward(0.0);
-            unsigned int N = 1000;
+            size_t N = 1000;
             double dt = t/N;
             for (Time i=t+dt; i<t; i+=dt)
                 sum += forward(i, extrapolate);

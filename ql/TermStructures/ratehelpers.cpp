@@ -145,7 +145,45 @@ namespace QuantLib {
             return maturity_;
         }
 
+        FuturesRateHelper::FuturesRateHelper(
+            const RelinkableHandle<MarketElement>& price,
+            const Date& ImmDate, int settlementDays, int nMonths,
+            const Handle<Calendar>& calendar, RollingConvention convention,
+            const Handle<DayCounter>& dayCounter)
+        : RateHelper(price), ImmDate_(ImmDate),
+          settlementDays_(settlementDays), nMonths_(nMonths),
+          calendar_(calendar), convention_(convention), 
+          dayCounter_(dayCounter) {
+            maturity_ = calendar_->advance(
+                ImmDate_, nMonths, Months, convention_);
+            yearFraction_ = dayCounter_->yearFraction(ImmDate_, maturity_);
+        }
 
+        Rate FuturesRateHelper::impliedRate() const {
+            QL_REQUIRE(termStructure_ != 0, "term structure not set");
+            return (termStructure_->discount(ImmDate_) / 
+                    termStructure_->discount(maturity_)-1.0) /
+                    yearFraction_;
+        }
+
+        DiscountFactor FuturesRateHelper::discountGuess() const {
+            QL_REQUIRE(termStructure_ != 0, "term structure not set");
+            // extrapolation shouldn't be needed if the input makes sense
+            // but we'll play it safe
+            return termStructure_->discount(ImmDate_,true) / 
+                   (1.0+(100.0-rate_->value())/100.0*yearFraction_);
+        }
+
+        void FuturesRateHelper::setTermStructure(TermStructure* t) {
+            RateHelper::setTermStructure(t);
+            QL_REQUIRE(termStructure_ != 0, "null term structure set");
+            settlement_ = calendar_->advance(
+                termStructure_->todaysDate(),settlementDays_,Days);
+        }
+
+        Date FuturesRateHelper::maturity() const {
+            return maturity_;
+        }
 
         SwapRateHelper::SwapRateHelper(
             const RelinkableHandle<MarketElement>& rate, 

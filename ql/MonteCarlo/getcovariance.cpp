@@ -40,7 +40,7 @@ namespace QuantLib {
 
         Matrix getCovariance(const Array& volatilities,
                              const Matrix& correlations) {
-            unsigned int size = volatilities.size();
+            size_t size = volatilities.size();
             QL_REQUIRE(correlations.rows() == size,
                        "getCovariance: volatilities and correlations "
                        "have different size");
@@ -48,8 +48,8 @@ namespace QuantLib {
                 "getCovariance: correlation matrix is not square");
 
             Matrix covariance(size,size);
-            for(unsigned int i = 0; i < size; i++){
-                for(unsigned int j = 0; j < i; j++){
+            for(size_t i = 0; i < size; i++){
+                for(size_t j = 0; j < i; j++){
                     covariance[i][j] = volatilities[i] * volatilities[j] *
                             0.5 * (correlations[i][j] + correlations[j][i]);
                     covariance[j][i] = covariance[i][j];

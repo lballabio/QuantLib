@@ -43,12 +43,12 @@ namespace QuantLib {
         //! single random walk
         class Path {
           public:
-            Path(unsigned int size);
+            Path(size_t size);
             Path(const Array& drift, const Array& diffusion);
             //! \name inspectors
             //@{
             double operator[](int i) const;
-            unsigned int size() const;
+            size_t size() const;
             //@}
             //! \name read/write access to components
             //@{
@@ -64,7 +64,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Path::Path(unsigned int size)
+        inline Path::Path(size_t size)
         : drift_(size), diffusion_(size) {}
         
         inline Path::Path(const Array& drift, const Array& diffusion)
@@ -77,7 +77,7 @@ namespace QuantLib {
             return drift_[i] + diffusion_[i]; 
         }
         
-        inline unsigned int Path::size() const {
+        inline size_t Path::size() const {
             return drift_.size(); 
         }
 

@@ -61,7 +61,7 @@ namespace QuantLib {
             typedef MultiPath sample_type;
             MultiPathGenerator(const Array& drifts,
                                const Math::Matrix& covariance,
-                               unsigned int timeSteps,
+                               size_t timeSteps,
                                Time lenght,
                                long seed);
             MultiPathGenerator(const Array& drifts,
@@ -72,9 +72,9 @@ namespace QuantLib {
             double weight() const {return weight_;}
         private:
             Array drifts_;
-            unsigned int timeSteps_;
+            size_t timeSteps_;
             std::vector<Time> timeDelays_;
-            unsigned int numAssets_;
+            size_t numAssets_;
             RAG rndArrayGen_;
             mutable double weight_;
         };
@@ -83,7 +83,7 @@ namespace QuantLib {
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
             const Array& drifts,
             const Math::Matrix& covariance,
-            unsigned int timeSteps,
+            size_t timeSteps,
             Time lenght,
             long seed)
         : drifts_(covariance.rows(),0.0), timeSteps_(timeSteps),
@@ -126,7 +126,7 @@ namespace QuantLib {
             timeDelays_[0] = times[0];
 
             if(timeSteps_ > 1){
-                for(unsigned int i = 1; i < timeSteps_; i++){
+                for(size_t i = 1; i < timeSteps_; i++){
                     QL_REQUIRE(times[i] >= times[i-1],
                         "MultiPathGenerator: time(" +
                         IntegerFormatter::toString(i-1)+")=" +
@@ -147,10 +147,10 @@ namespace QuantLib {
             MultiPath multiPath(numAssets_, timeSteps_);
             Array randomExtraction(numAssets_);
             weight_ = 1.0;
-            for (unsigned int i = 0; i < timeSteps_; i++) {
+            for (size_t i = 0; i < timeSteps_; i++) {
                 randomExtraction = rndArrayGen_.next();
                 weight_ *= rndArrayGen_.weight();
-                for (unsigned int j=0; j<numAssets_; j++) {
+                for (size_t j=0; j<numAssets_; j++) {
                     multiPath[j].drift()[i] = drifts_[j] * timeDelays_[i];
                     multiPath[j].diffusion()[i] = randomExtraction[j] * QL_SQRT(timeDelays_[i]);
                 }

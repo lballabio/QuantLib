@@ -49,17 +49,17 @@ namespace QuantLib {
 
 
         double EverestPathPricer::operator()(const MultiPath& multiPath) const {
-            unsigned int numAssets = multiPath.assetNumber();
-            unsigned int numSteps = multiPath.pathSize();
+            size_t numAssets = multiPath.assetNumber();
+            size_t numSteps = multiPath.pathSize();
             QL_REQUIRE(isInitialized_,
                 "EverestPathPricer: pricer not initialized");
 
             double log_drift, log_diffusion;
             if (antitheticVariance_) {
                 double minPrice = QL_MAX_DOUBLE, minPrice2 = QL_MAX_DOUBLE;
-                for(unsigned int j = 0; j < numAssets; j++) {
+                for(size_t j = 0; j < numAssets; j++) {
                     log_drift = log_diffusion = 0.0;
-                    for(unsigned int i = 0; i < numSteps; i++) {
+                    for(size_t i = 0; i < numSteps; i++) {
                         log_drift += multiPath[j].drift()[i];
                         log_diffusion += multiPath[j].diffusion()[i];
                     }
@@ -70,9 +70,9 @@ namespace QuantLib {
                 return discount_ * 0.5 * (minPrice+minPrice2);
             } else {
                 double minPrice = QL_MAX_DOUBLE;
-                for(unsigned int j = 0; j < numAssets; j++) {
+                for(size_t j = 0; j < numAssets; j++) {
                     log_drift = log_diffusion = 0.0;
-                    for(unsigned int i = 0; i < numSteps; i++) {
+                    for(size_t i = 0; i < numSteps; i++) {
                         log_drift += multiPath[j].drift()[i];
                         log_diffusion += multiPath[j].diffusion()[i];
                     }

@@ -157,9 +157,9 @@ namespace QuantLib {
         //@}
       private:
         int serialNumber_;
-        static unsigned int monthLength(Month m, bool leapYear);
-        static unsigned int monthOffset(Month m, bool leapYear);
-        static unsigned int yearOffset(Year y);
+        static size_t monthLength(Month m, bool leapYear);
+        static size_t monthOffset(Month m, bool leapYear);
+        static size_t yearOffset(Year y);
         
     };
 

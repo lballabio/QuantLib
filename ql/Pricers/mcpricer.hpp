@@ -55,30 +55,30 @@ namespace QuantLib {
           public:
             virtual ~McPricer() {}
             double value(double tolerance,
-                         unsigned int maxSample = QL_MAX_INT) const;
+                         size_t maxSample = QL_MAX_INT) const;
           protected:
             McPricer() {}
             mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
-            static const unsigned int minSample_;
+            static const size_t minSample_;
         };
 
 
         template<class S, class PG, class PP>
-        const unsigned int McPricer<S, PG, PP>::minSample_ = 10000;
+        const size_t McPricer<S, PG, PP>::minSample_ = 10000;
 
         // inline definitions
         template<class S, class PG, class PP>
         inline double McPricer<S, PG, PP>::value(double tolerance,
-            unsigned int maxSamples) const {
+            size_t maxSamples) const {
 
-            unsigned int sampleNumber =
+            size_t sampleNumber =
                 mcModel_->sampleAccumulator().samples();
             if (sampleNumber<minSample_) {
                 mcModel_->addSamples(minSample_-sampleNumber);
                 sampleNumber = mcModel_->sampleAccumulator().samples();
             }
 
-            unsigned int nextBatch;
+            size_t nextBatch;
             double order;
             double result = mcModel_->sampleAccumulator().mean();
             double accuracy = mcModel_->sampleAccumulator().errorEstimate()/

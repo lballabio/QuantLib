@@ -61,7 +61,7 @@ namespace QuantLib {
                 time than <tt>to</tt>.
             */
             void rollback(arrayType& a, Time from, Time to, 
-              unsigned int steps, 
+              size_t steps, 
               Handle<StepCondition<arrayType> > condition =
                 Handle<StepCondition<arrayType> >());
           private:
@@ -72,11 +72,11 @@ namespace QuantLib {
         template<class Evolver>
         void FiniteDifferenceModel<Evolver>::rollback(
             FiniteDifferenceModel::arrayType& a,
-            Time from, Time to, unsigned int steps,
+            Time from, Time to, size_t steps,
             Handle<StepCondition<arrayType> > condition) {
                 Time dt = (from-to)/steps, t = from;
                 evolver.setStep(dt);
-                for (unsigned int i=0; i<steps; i++, t -= dt) {
+                for (size_t i=0; i<steps; i++, t -= dt) {
                     evolver.step(a,t);
                     if (!condition.isNull())
                         condition->applyTo(a,t);

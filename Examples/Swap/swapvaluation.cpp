@@ -43,6 +43,8 @@ using TermStructures::PiecewiseFlatForward;
 using TermStructures::FlatForward;
 using TermStructures::RateHelper;
 using TermStructures::DepositRateHelper;
+using TermStructures::FraRateHelper;
+using TermStructures::FuturesRateHelper;
 using TermStructures::SwapRateHelper;
 
 
@@ -51,6 +53,7 @@ int main(int argc, char* argv[])
     try {
         Handle<Calendar> calendar(new TARGET);
         int settlementDays = 2;
+        Date todaysDate(1, October, 2001);
 
         // setup deposits
         Handle<DayCounter> depositDayCounter(new Actual360);
@@ -147,7 +150,6 @@ int main(int argc, char* argv[])
         // ActualActual::ISDA ensures that 30 years is 30.0
         Handle<DayCounter> termStructureDayCounter(
             new ActualActual(ActualActual::ISDA));
-        Date todaysDate(1, October, 2001);
 
         // create the curve
         Handle<TermStructure> myTermStructure(new
@@ -156,7 +158,7 @@ int main(int argc, char* argv[])
 
         // let's start with the swap pricing
 
-        // this will be use for discounting and for
+        // this will be used for discounting and for
         // forward rate forecasting
         // Of course, you're not forced to use the same curve
         RelinkableHandle<TermStructure> rhTermStructure;

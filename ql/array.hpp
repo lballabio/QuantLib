@@ -55,13 +55,13 @@ namespace QuantLib {
         //! \name Constructors, destructor, and assignment
         //@{
         //! creates the array with the given dimension
-        explicit Array(unsigned int size = 0);
+        explicit Array(size_t size = 0);
         //! creates the array and fills it with <tt>value</tt>
-        Array(unsigned int size, double value);
+        Array(size_t size, double value);
         /*! \brief creates the array and fills it according to 
             \f$ a_{0} = value, a_{i}=a_{i-1}+increment \f$
         */
-        Array(unsigned int size, double value, double increment);
+        Array(size_t size, double value, double increment);
         Array(const Array& from);
         #if QL_EXPRESSION_TEMPLATES_WORK
         template <class Iter> Array(const VectorialExpression<Iter>& e)
@@ -146,14 +146,14 @@ namespace QuantLib {
         //! \name Element access
         //@{
         //! read-only
-        double operator[](unsigned int ) const;
+        double operator[](size_t ) const;
         //! read-write
-        double& operator[](unsigned int );
+        double& operator[](size_t );
         //@}
         //! \name Inspectors
         //@{
         //! dimension of the array
-        unsigned int size() const;
+        size_t size() const;
         //@}
         typedef double* iterator;
         typedef const double* const_iterator;
@@ -172,8 +172,8 @@ namespace QuantLib {
         reverse_iterator rend();
         //@}
       private:
-        void allocate_(unsigned int size);
-        void resize_(unsigned int size);
+        void allocate_(size_t size);
+        void resize_(size_t size);
         void copy_(const Array& from) {
             std::copy(from.begin(),from.end(),begin());
         }
@@ -188,7 +188,7 @@ namespace QuantLib {
         }
         #endif
         double* pointer_;
-        unsigned int n_, bufferSize_;
+        size_t n_, bufferSize_;
     };
 
     /*! \relates Array */
@@ -489,20 +489,20 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Array::Array(unsigned int size)
+    inline Array::Array(size_t size)
     : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
             allocate_(size);
     }
 
-    inline Array::Array(unsigned int size, double value)
+    inline Array::Array(size_t size, double value)
     : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
             allocate_(size);
         std::fill(begin(),end(),value);
     }
 
-    inline Array::Array(unsigned int size, double value, double increment)
+    inline Array::Array(size_t size, double value, double increment)
     : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
             allocate_(size);
@@ -594,7 +594,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline double Array::operator[](unsigned int i) const {
+    inline double Array::operator[](size_t i) const {
         #ifdef QL_DEBUG
             QL_REQUIRE(i<n_,
                 "array cannot be accessed out of range");
@@ -602,7 +602,7 @@ namespace QuantLib {
         return pointer_[i];
     }
 
-    inline double& Array::operator[](unsigned int i) {
+    inline double& Array::operator[](size_t i) {
         #ifdef QL_DEBUG
             QL_REQUIRE(i<n_,
                 "array cannot be accessed out of range");
@@ -610,11 +610,11 @@ namespace QuantLib {
         return pointer_[i];
     }
 
-    inline unsigned int Array::size() const {
+    inline size_t Array::size() const {
         return n_;
     }
 
-    inline void Array::resize_(unsigned int size) {
+    inline void Array::resize_(size_t size) {
         if (size != n_) {
             if (size <= bufferSize_) {
                 n_ = size;
@@ -659,7 +659,7 @@ namespace QuantLib {
         return reverse_iterator(begin());
     }
 
-    inline void Array::allocate_(unsigned int size) {
+    inline void Array::allocate_(size_t size) {
         if (pointer_ != 0 && bufferSize_ != 0)
             delete[] pointer_;
         if (size <= 0) {

@@ -48,8 +48,8 @@ namespace QuantLib {
         }
 
         double HimalayaPathPricer::operator()(const MultiPath& multiPath) const {
-            unsigned int numAssets = multiPath.assetNumber();
-            unsigned int numSteps = multiPath.pathSize();
+            size_t numAssets = multiPath.assetNumber();
+            size_t numSteps = multiPath.pathSize();
             QL_REQUIRE(isInitialized_,
                 "HimalayaPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
@@ -64,7 +64,7 @@ namespace QuantLib {
                 double averagePrice = 0;
                 std::vector<bool> remainingAssets(numAssets, true);
                 double bestPrice;
-                unsigned int removeAsset, i, j;
+                size_t removeAsset, i, j;
                 for(i = 0; i < numSteps; i++) {
                     bestPrice = 0.0;
                     // dummy assignement to avoid compiler warning
@@ -114,12 +114,12 @@ namespace QuantLib {
                 double averagePrice = 0;
                 std::vector<bool> remainingAssets(numAssets, true);
                 double bestPrice;
-                unsigned int removeAsset;
-                for(unsigned int i = 0; i < numSteps; i++) {
+                size_t removeAsset;
+                for(size_t i = 0; i < numSteps; i++) {
                     bestPrice = 0.0;
                     // dummy assignement to avoid compiler warning
                     removeAsset=0;
-                    for(unsigned int j = 0; j < numAssets; j++) {
+                    for(size_t j = 0; j < numAssets; j++) {
                         if(remainingAssets[j]) {
                             prices[j] *= QL_EXP(multiPath[j].drift()[i]+
                                 multiPath[j].diffusion()[i]);

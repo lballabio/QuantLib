@@ -45,7 +45,7 @@ namespace QuantLib {
         FiniteDifferenceEuropean::FiniteDifferenceEuropean(Option::Type type,
             double underlying, double strike, Rate dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
-            unsigned int timeSteps, unsigned int gridPoints)
+            size_t timeSteps, size_t gridPoints)
             : BSMNumericalOption(type, underlying, strike, dividendYield,
                                  riskFreeRate, residualTime, volatility,
                                  gridPoints),

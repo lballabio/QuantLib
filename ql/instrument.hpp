@@ -40,7 +40,7 @@
 /*! \namespace QuantLib::Instruments
     \brief Concrete implementations of the Instrument interface
 
-    /*! See sect. \ref instruments */
+    See sect. \ref instruments
 */
 
 namespace QuantLib {

@@ -49,12 +49,12 @@ namespace QuantLib {
         */
         class DMinus : public TridiagonalOperator {
           public:
-            DMinus(unsigned int gridPoints, double h);
+            DMinus(size_t gridPoints, double h);
         };
 
         // inline definitions
 
-        inline DMinus::DMinus(unsigned int gridPoints, double h)
+        inline DMinus::DMinus(size_t gridPoints, double h)
         : TridiagonalOperator(gridPoints) {
             setFirstRow(-1/h,1/h);                  // linear extrapolation
             setMidRows(-1/h,1/h,0.0);

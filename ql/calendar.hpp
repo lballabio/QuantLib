@@ -41,7 +41,7 @@
 /*! \namespace QuantLib::Calendars
     \brief Concrete implementations of the Calendar interface
 
-    /*! See sect. \ref calendars */
+    See sect. \ref calendars
 */
 
 namespace QuantLib {

@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
 
         // fourth method: Finite Differences
         method ="Finite Diff.";
-        unsigned int grid = 100;
+        size_t grid = 100;
         value = FiniteDifferenceEuropean(Option::Call, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility, grid).value();
         discrepancy = QL_FABS(value-rightValue);

@@ -49,12 +49,12 @@ namespace QuantLib {
         */
         class DPlus : public TridiagonalOperator {
           public:
-            DPlus(unsigned int gridPoints, double h);
+            DPlus(size_t gridPoints, double h);
         };
 
         // inline definitions
 
-        inline DPlus::DPlus(unsigned int gridPoints, double h)
+        inline DPlus::DPlus(size_t gridPoints, double h)
         : TridiagonalOperator(gridPoints) {
             setFirstRow(-1/h,1/h);
             setMidRows(0.0,-1/h,1/h);

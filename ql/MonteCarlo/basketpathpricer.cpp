@@ -49,8 +49,8 @@ namespace QuantLib {
         }
 
         double BasketPathPricer::operator()(const MultiPath & multiPath) const {
-            unsigned int numAssets = multiPath.assetNumber();
-            unsigned int numSteps = multiPath.pathSize();
+            size_t numAssets = multiPath.assetNumber();
+            size_t numSteps = multiPath.pathSize();
             QL_REQUIRE(isInitialized_,
                 "BasketPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
@@ -60,9 +60,9 @@ namespace QuantLib {
             double log_drift, log_diffusion;
             if (antitheticVariance_) {
                 double maxPrice = -QL_MAX_DOUBLE, maxPrice2 = -QL_MAX_DOUBLE;
-                for(unsigned int j = 0; j < numAssets; j++) {
+                for(size_t j = 0; j < numAssets; j++) {
                     log_drift = log_diffusion = 0.0;
-                    for(unsigned int i = 0; i < numSteps; i++) {
+                    for(size_t i = 0; i < numSteps; i++) {
                         log_drift += multiPath[j].drift()[i];
                         log_diffusion += multiPath[j].diffusion()[i];
                     }
@@ -74,9 +74,9 @@ namespace QuantLib {
                 return discount_*0.5*(maxPrice+maxPrice2);
             } else {
                 double maxPrice = -QL_MAX_DOUBLE;
-                for(unsigned int j = 0; j < numAssets; j++) {
+                for(size_t j = 0; j < numAssets; j++) {
                     log_drift = log_diffusion = 0.0;
-                    for(unsigned int i = 0; i < numSteps; i++) {
+                    for(size_t i = 0; i < numSteps; i++) {
                         log_drift += multiPath[j].drift()[i];
                         log_diffusion += multiPath[j].diffusion()[i];
                     }

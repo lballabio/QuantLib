@@ -46,7 +46,7 @@ namespace QuantLib {
           public:
             BSMNumericalOption(Option::Type type, double underlying, 
                 double strike, Rate dividendYield, Rate riskFreeRate, 
-                Time residualTime, double volatility, unsigned int gridPoints);
+                Time residualTime, double volatility, size_t gridPoints);
             // accessors
             virtual void calculate() const = 0;
             double value() const;
@@ -63,7 +63,7 @@ namespace QuantLib {
             virtual void initializeInitialCondition() const;
             virtual void initializeOperator() const;
             // input data
-            unsigned int gridPoints_;
+            size_t gridPoints_;
             // results
             mutable double value_, delta_, gamma_, theta_;
 
@@ -75,7 +75,7 @@ namespace QuantLib {
           private:
             // temporaries
             mutable double gridLogSpacing_;
-            unsigned int safeGridPoints(unsigned int gridPoints, 
+            size_t safeGridPoints(size_t gridPoints, 
             Time residualTime);
         };
 
@@ -86,10 +86,10 @@ namespace QuantLib {
 
         // The following is a safety check to be sure we have enough grid
         // points.
-        inline unsigned int BSMNumericalOption::safeGridPoints(
-            unsigned int gridPoints, Time residualTime) {
+        inline size_t BSMNumericalOption::safeGridPoints(
+            size_t gridPoints, Time residualTime) {
             return QL_MAX(gridPoints, residualTime>1.0 ?
-                static_cast<unsigned int>(
+                static_cast<size_t>(
                     (QL_NUM_OPT_MIN_GRID_POINTS + 
                     (residualTime-1.0) * 
                     QL_NUM_OPT_GRID_POINTS_PER_YEAR))

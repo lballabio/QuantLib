@@ -79,7 +79,7 @@ namespace QuantLib {
         #endif
             QL_REQUIRE(lastDate >= firstDate, 
                 "invalid date range for history");
-            QL_ENSURE(values_.size() == (unsigned int)(lastDate-firstDate+1),
+            QL_ENSURE(values_.size() == (size_t)(lastDate-firstDate+1),
                 "history size incompatible with date range");
         }
         History(const Date& firstDate, const std::vector<double>& values) 
@@ -331,7 +331,7 @@ namespace QuantLib {
         const std::vector<double>& values)
     : firstDate_(firstDate), lastDate_(lastDate), values_(values) {
         QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-        QL_REQUIRE(values.size() == (unsigned int)(lastDate-firstDate)+1,
+        QL_REQUIRE(values.size() == (size_t)(lastDate-firstDate)+1,
             "history size incompatible with date range");
     }
 

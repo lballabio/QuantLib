@@ -80,7 +80,7 @@ namespace QuantLib {
                         start, end, reference, end)));
             }
             // regular periods
-            for (unsigned int i=2; i<scheduler.size()-1; i++) {
+            for (size_t i=2; i<scheduler.size()-1; i++) {
                 start = end; end = scheduler.date(i);
                 if ((i-1) < couponRates.size())
                     rate = couponRates[i-1];
@@ -97,7 +97,7 @@ namespace QuantLib {
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
-                unsigned int N = scheduler.size();
+                size_t N = scheduler.size();
                 start = end; end = scheduler.date(N-1);
                 if ((N-2) < couponRates.size())
                     rate = couponRates[N-2];
@@ -164,7 +164,7 @@ namespace QuantLib {
                         start, end, spread, reference, end)));
             }
             // regular periods
-            for (unsigned int i=2; i<scheduler.size()-1; i++) {
+            for (size_t i=2; i<scheduler.size()-1; i++) {
                 start = end; end = scheduler.date(i);
                 if ((i-1) < spreads.size())
                     spread = spreads[i-1];
@@ -182,7 +182,7 @@ namespace QuantLib {
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
-                unsigned int N = scheduler.size();
+                size_t N = scheduler.size();
                 start = end; end = scheduler.date(N-1);
                 if ((N-2) < spreads.size())
                     spread = spreads[N-2];
