@@ -67,7 +67,11 @@ namespace QuantLib {
             }
             // modifiers
             template <class Traits>
+            #if defined(QL_PATCH_MICROSOFT)
+            void setInterpolation(const Traits&) {
+            #else
             void setInterpolation() {
+            #endif
                 varianceSurface_ = 
                     Traits::make_interpolation(times_.begin(), times_.end(),
                                                strikes_.begin(), 

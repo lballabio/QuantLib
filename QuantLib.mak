@@ -87,6 +87,10 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
 	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackvariancecurve.obj"
+	-@erase "$(INTDIR)\blackvariancecurve.sbr"
+	-@erase "$(INTDIR)\blackvariancesurface.obj"
+	-@erase "$(INTDIR)\blackvariancesurface.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -531,7 +535,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\binarypathpricer.sbr" \
 	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
-	".\build\Release\old\binaryoption.sbr"
+	".\build\Release\old\binaryoption.sbr" \
+	"$(INTDIR)\blackvariancesurface.sbr" \
+	"$(INTDIR)\blackvariancecurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -699,7 +705,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\binarypathpricer.obj" \
 	"$(INTDIR)\analyticamericanbinaryengine.obj" \
-	".\build\Release\old\binaryoption.obj"
+	".\build\Release\old\binaryoption.obj" \
+	"$(INTDIR)\blackvariancesurface.obj" \
+	"$(INTDIR)\blackvariancecurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -762,6 +770,10 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
 	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackvariancecurve.obj"
+	-@erase "$(INTDIR)\blackvariancecurve.sbr"
+	-@erase "$(INTDIR)\blackvariancesurface.obj"
+	-@erase "$(INTDIR)\blackvariancesurface.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -1203,7 +1215,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\binarypathpricer.sbr" \
-	"$(INTDIR)\analyticamericanbinaryengine.sbr"
+	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
+	"$(INTDIR)\blackvariancesurface.sbr" \
+	"$(INTDIR)\blackvariancecurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1370,7 +1384,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\binarypathpricer.obj" \
-	"$(INTDIR)\analyticamericanbinaryengine.obj"
+	"$(INTDIR)\analyticamericanbinaryengine.obj" \
+	"$(INTDIR)\blackvariancesurface.obj" \
+	"$(INTDIR)\blackvariancecurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1433,6 +1449,10 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
 	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackvariancecurve.obj"
+	-@erase "$(INTDIR)\blackvariancecurve.sbr"
+	-@erase "$(INTDIR)\blackvariancesurface.obj"
+	-@erase "$(INTDIR)\blackvariancesurface.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -1873,7 +1893,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\binarypathpricer.sbr" \
-	"$(INTDIR)\analyticamericanbinaryengine.sbr"
+	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
+	"$(INTDIR)\blackvariancesurface.sbr" \
+	"$(INTDIR)\blackvariancecurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2040,7 +2062,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\binarypathpricer.obj" \
-	"$(INTDIR)\analyticamericanbinaryengine.obj"
+	"$(INTDIR)\analyticamericanbinaryengine.obj" \
+	"$(INTDIR)\blackvariancesurface.obj" \
+	"$(INTDIR)\blackvariancecurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2103,6 +2127,10 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
 	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackvariancecurve.obj"
+	-@erase "$(INTDIR)\blackvariancecurve.sbr"
+	-@erase "$(INTDIR)\blackvariancesurface.obj"
+	-@erase "$(INTDIR)\blackvariancesurface.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -2544,7 +2572,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\binarypathpricer.sbr" \
-	"$(INTDIR)\analyticamericanbinaryengine.sbr"
+	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
+	"$(INTDIR)\blackvariancesurface.sbr" \
+	"$(INTDIR)\blackvariancecurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2711,7 +2741,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\binarypathpricer.obj" \
-	"$(INTDIR)\analyticamericanbinaryengine.obj"
+	"$(INTDIR)\analyticamericanbinaryengine.obj" \
+	"$(INTDIR)\blackvariancesurface.obj" \
+	"$(INTDIR)\blackvariancecurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2774,6 +2806,10 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
 	-@erase "$(INTDIR)\blackswaption.sbr"
+	-@erase "$(INTDIR)\blackvariancecurve.obj"
+	-@erase "$(INTDIR)\blackvariancecurve.sbr"
+	-@erase "$(INTDIR)\blackvariancesurface.obj"
+	-@erase "$(INTDIR)\blackvariancesurface.sbr"
 	-@erase "$(INTDIR)\boundarycondition.obj"
 	-@erase "$(INTDIR)\boundarycondition.sbr"
 	-@erase "$(INTDIR)\bsmlattice.obj"
@@ -3214,7 +3250,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\binarypathpricer.sbr" \
-	"$(INTDIR)\analyticamericanbinaryengine.sbr"
+	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
+	"$(INTDIR)\blackvariancesurface.sbr" \
+	"$(INTDIR)\blackvariancecurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3381,7 +3419,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\binarypathpricer.obj" \
-	"$(INTDIR)\analyticamericanbinaryengine.obj"
+	"$(INTDIR)\analyticamericanbinaryengine.obj" \
+	"$(INTDIR)\blackvariancesurface.obj" \
+	"$(INTDIR)\blackvariancecurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -4412,6 +4452,18 @@ SOURCE=.\ql\TermStructures\ratehelpers.cpp
 SOURCE=.\ql\TermStructures\zerocurve.cpp
 
 "$(INTDIR)\zerocurve.obj"	"$(INTDIR)\zerocurve.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Volatilities\blackvariancecurve.cpp
+
+"$(INTDIR)\blackvariancecurve.obj"	"$(INTDIR)\blackvariancecurve.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Volatilities\blackvariancesurface.cpp
+
+"$(INTDIR)\blackvariancesurface.obj"	"$(INTDIR)\blackvariancesurface.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

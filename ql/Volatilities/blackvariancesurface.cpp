@@ -75,8 +75,12 @@ namespace QuantLib {
                     }
                 }
             }
-            // default
+            // default: bilinear interpolation
+            #if defined(QL_PATCH_MICROSOFT)
+            setInterpolation(Linear());
+            #else
             setInterpolation<Linear>();
+            #endif
         }
 
 

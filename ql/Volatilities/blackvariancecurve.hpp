@@ -61,7 +61,11 @@ namespace QuantLib {
                                           bool extrapolate = false) const;
             // modifiers
             template <class Traits>
+            #if defined(QL_PATCH_MICROSOFT)
+            void setInterpolation(const Traits&) {
+            #else
             void setInterpolation() {
+            #endif
                 varianceCurve_ = 
                     Traits::make_interpolation(times_.begin(), times_.end(),
                                                variances_.begin());

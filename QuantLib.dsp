@@ -1906,7 +1906,15 @@ SOURCE=.\ql\Volatilities\blackconstantvol.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Volatilities\blackvariancecurve.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Volatilities\blackvariancecurve.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\blackvariancesurface.cpp
 # End Source File
 # Begin Source File
 
