@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,9 +23,103 @@
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/dataformatters.hpp>
+#include <fstream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+void CalendarTest::testModifiedCalendars() {
+
+    BOOST_MESSAGE("Testing calendar modification...");
+
+    Calendar c1 = TARGET();
+    Calendar c2 = NewYork();
+    Date d1(1,May,2004);      // holiday for both calendars
+    Date d2(26,April,2004);   // business day
+
+    QL_REQUIRE(c1.isHoliday(d1), "wrong assumption---correct the test");
+    QL_REQUIRE(c1.isBusinessDay(d2), "wrong assumption---correct the test");
+
+    QL_REQUIRE(c2.isHoliday(d1), "wrong assumption---correct the test");
+    QL_REQUIRE(c2.isBusinessDay(d2), "wrong assumption---correct the test");
+
+    // modify the TARGET calendar
+    c1.removeHoliday(d1);
+    c1.addHoliday(d2);
+
+    // test
+    if (c1.isHoliday(d1))
+        BOOST_FAIL(DateFormatter::toString(d1) + 
+                   " still a holiday for original TARGET instance");
+    if (c1.isBusinessDay(d2))
+        BOOST_FAIL(DateFormatter::toString(d2) + 
+                   " still a business day for original TARGET instance");
+
+    // any instance of TARGET should be modified...
+    Calendar c3 = TARGET();
+    if (c3.isHoliday(d1))
+        BOOST_FAIL(DateFormatter::toString(d1) + 
+                   " still a holiday for generic TARGET instance");
+    if (c3.isBusinessDay(d2))
+        BOOST_FAIL(DateFormatter::toString(d2) + 
+                   " still a business day for generic TARGET instance");
+
+    // ...but not other calendars
+    if (c2.isBusinessDay(d1))
+        BOOST_FAIL(DateFormatter::toString(d1) + " business day for New York");
+    if (c2.isHoliday(d2))
+        BOOST_FAIL(DateFormatter::toString(d2) + " holiday for New York");
+
+    // restore original holiday set---test the other way around
+    c3.addHoliday(d1);
+    c3.removeHoliday(d2);
+
+    if (c1.isBusinessDay(d1))
+        BOOST_FAIL(DateFormatter::toString(d1) + " still a business day");
+    if (c1.isHoliday(d2))
+        BOOST_FAIL(DateFormatter::toString(d2) + " still a holiday");
+
+    // repeat, loading from file
+
+    std::ofstream f1("calendars.dat");
+    f1 << "TARGET: - "
+       << DateFormatter::toString(d1, DateFormatter::ISO)
+       << "    # a comment"
+       << std::endl;
+    f1 << std::endl;
+    f1 << "TARGET: + " 
+       << DateFormatter::toString(d2, DateFormatter::ISO)
+       << std::endl;
+    f1.close();
+    c1.load("calendars.dat");
+
+    if (c3.isHoliday(d1))
+        BOOST_FAIL(DateFormatter::toString(d1) + " holiday for TARGET");
+    if (c3.isBusinessDay(d2))
+        BOOST_FAIL(DateFormatter::toString(d2) + " business day for TARGET");
+
+    if (c2.isBusinessDay(d1))
+        BOOST_FAIL(DateFormatter::toString(d1) + " business day for New York");
+    if (c2.isHoliday(d2))
+        BOOST_FAIL(DateFormatter::toString(d2) + " holiday for New York");
+
+    std::ofstream f2("calendars.dat");
+    f2 << "    # another comment" << std::endl;
+    f2 << "TARGET: + " 
+       << DateFormatter::toString(d1, DateFormatter::ISO)
+       << std::endl;
+    f2 << "TARGET: - " 
+       << DateFormatter::toString(d2, DateFormatter::ISO)
+       << std::endl;
+    f2.close();
+    c3.load("calendars.dat");
+
+    if (c1.isBusinessDay(d1))
+        BOOST_FAIL(DateFormatter::toString(d1) + " business day for TARGET");
+    if (c1.isHoliday(d2))
+        BOOST_FAIL(DateFormatter::toString(d2) + " holiday for TARGET");
+}
+
 
 void CalendarTest::testJointCalendars() {
 
@@ -102,6 +196,7 @@ void CalendarTest::testJointCalendars() {
 
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testModifiedCalendars));
     suite->add(BOOST_TEST_CASE(&CalendarTest::testJointCalendars));
     return suite;
 }

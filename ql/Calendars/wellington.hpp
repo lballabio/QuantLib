@@ -59,8 +59,7 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Wellington()
-        : Calendar(boost::shared_ptr<Calendar::Impl>(new Wellington::Impl)) {}
+        Wellington();
     };
 
 }

@@ -7,3 +7,4 @@ test-suite.tds
 test-suite.exe
 quantlib-test-suite
 build
+calendars.dat

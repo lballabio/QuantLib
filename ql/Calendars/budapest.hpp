@@ -53,8 +53,7 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Budapest()
-        : Calendar(boost::shared_ptr<Calendar::Impl>(new Budapest::Impl)) {}
+        Budapest();
     };
 
 }

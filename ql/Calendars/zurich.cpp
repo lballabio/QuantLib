@@ -19,6 +19,12 @@
 
 namespace QuantLib {
 
+    Zurich::Zurich() {
+        // all calendar instances share the same implementation instance
+        static boost::shared_ptr<Calendar::Impl> impl(new Zurich::Impl);
+        impl_ = impl;
+    }
+
     bool Zurich::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();

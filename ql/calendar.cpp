@@ -1,6 +1,7 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2004 Jeff Yu
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,8 +17,63 @@
 */
 
 #include <ql/calendar.hpp>
+#include <boost/regex.hpp>
+#include <boost/lexical_cast.hpp>
+#include <fstream>
 
 namespace QuantLib {
+
+    void Calendar::addHoliday(const Date& d) {
+        // if d was a genuine holiday previously removed, revert the change
+        impl_->removedHolidays.erase(d);
+        // if it's already a holiday, leave the calendar alone.
+        // Otherwise, add it.
+        if (impl_->isBusinessDay(d))
+            impl_->addedHolidays.insert(d);
+    }
+
+    void Calendar::removeHoliday(const Date& d) {
+        // if d was an artificially-added holiday, revert the change
+        impl_->addedHolidays.erase(d);
+        // if it's already a business day, leave the calendar alone.
+        // Otherwise, add it.
+        if (!impl_->isBusinessDay(d))
+            impl_->removedHolidays.insert(d);
+    }
+
+    void Calendar::load(const std::string& filename) {
+        std::ifstream file(filename.c_str());
+        QL_REQUIRE(file, "failed to open " + filename);
+
+        static std::string comment = "(#.*)$";
+        boost::regex record(
+                   "^\\s*(\\w+)\\s*:\\s*([+-]?)\\s*(\\d{4})-(\\d{2})-(\\d{2})"
+                   "\\s*(#.*)?$");
+        boost::regex empty("^\\s*(#.*)?$");
+        boost::smatch m;
+
+        std::string line;
+        while (std::getline(file, line)) {
+            if (boost::regex_search(line, m, record)) {
+                std::string key = m[1];
+                std::string flag = m[2];
+                if (key == name()) {
+                    Day day = boost::lexical_cast<int>(std::string(m[5]));
+                    Month month = 
+                        Month(boost::lexical_cast<int>(std::string(m[4])));
+                    Year year = boost::lexical_cast<int>(std::string(m[3]));
+                    if (flag == "-")
+                        removeHoliday(Date(day,month,year));
+                    else
+                        addHoliday(Date(day,month,year));
+                }
+            } else if (boost::regex_search(line, m, empty)) {
+                continue;
+            } else {
+                QL_FAIL("badly formatted line: " + line);
+            }
+        }
+    }
 
     Date Calendar::roll(const Date& d ,
                         RollingConvention c,

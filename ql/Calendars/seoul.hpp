@@ -64,8 +64,7 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Seoul()
-        : Calendar(Handle<Calendar::Impl>(new Seoul::Impl)) {}
+        Seoul();
     };
 
 }

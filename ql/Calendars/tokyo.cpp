@@ -20,6 +20,12 @@
 
 namespace QuantLib {
 
+    Tokyo::Tokyo() {
+        // all calendar instances share the same implementation instance
+        static boost::shared_ptr<Calendar::Impl> impl(new Tokyo::Impl);
+        impl_ = impl;
+    }
+
     bool Tokyo::Impl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth();
@@ -32,7 +38,7 @@ namespace QuantLib {
         double moving_amount = (y-2000)*diff_per_year;
         int number_of_leap_years = (y-2000)/4+(y-2000)/100-(y-2000)/400;
         Day ve =    // vernal equinox day
-            Day(exact_vernal_equinox_time  
+            Day(exact_vernal_equinox_time
                 + moving_amount - number_of_leap_years);
         Day ae =    // autumnal equinox day
             Day(exact_autumnal_equinox_time

@@ -58,8 +58,7 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Taiwan()
-        : Calendar(Handle<Calendar::Impl>(new Taiwan::Impl)) {}
+        Taiwan();
     };
 
 }
