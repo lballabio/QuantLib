@@ -38,15 +38,15 @@ namespace QuantLib {
     class DiscreteGeometricASO : public SingleAssetOption    {
       public:
         DiscreteGeometricASO(Option::Type type,
-                             double underlying,
+                             Real underlying,
                              Spread dividendYield,
                              Rate riskFreeRate,
                              const std::vector<Time>& times,
-                             double volatility);
-        double value() const;
-        double delta() const {return 0.0;}
-        double gamma() const {return 0.0;}
-        double theta() const {return 0.0;}
+                             Volatility volatility);
+        Real value() const;
+        Real delta() const {return 0.0;}
+        Real gamma() const {return 0.0;}
+        Real theta() const {return 0.0;}
         boost::shared_ptr<SingleAssetOption> clone() const;
       private:
         static const CumulativeNormalDistribution f_;

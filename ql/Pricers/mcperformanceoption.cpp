@@ -27,8 +27,8 @@ namespace QuantLib {
           public:
             PerformanceOptionPathPricer(
                                  Option::Type type,
-                                 double underlying,
-                                 double moneyness,
+                                 Real underlying,
+                                 Real moneyness,
                                  const std::vector<DiscountFactor>& discounts)
             : underlying_(underlying), discounts_(discounts), 
               payoff_(type, moneyness) {
@@ -38,7 +38,7 @@ namespace QuantLib {
                            "moneyness less/equal zero not allowed");
             }
 
-            double operator()(const Path& path) const {
+            Real operator()(const Path& path) const {
                 Size n = path.size();
                 QL_REQUIRE(n>0,
                            "at least one option is required");
@@ -47,9 +47,9 @@ namespace QuantLib {
                 QL_REQUIRE(n==discounts_.size(),
                            "discounts/options mismatch");
 
-                std::vector<double> result(n);
-                std::vector<double> assetValue(n);
-                double log_variation = path[0];
+                std::vector<Real> result(n);
+                std::vector<Real> assetValue(n);
+                Real log_variation = path[0];
                 assetValue[0]  = underlying_ * QL_EXP(log_variation);
 
                 // removing first option
@@ -65,7 +65,7 @@ namespace QuantLib {
             }
 
           private:
-            double underlying_;
+            Real underlying_;
             std::vector<DiscountFactor> discounts_;
             PlainVanillaPayoff payoff_;
         };
@@ -74,15 +74,15 @@ namespace QuantLib {
 
     McPerformanceOption::McPerformanceOption(
                     Option::Type type,
-                    double underlying,
-                    double moneyness,
+                    Real underlying,
+                    Real moneyness,
                     const RelinkableHandle<TermStructure>& dividendYield,
                     const RelinkableHandle<TermStructure>& riskFreeRate,
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
-                    long seed) {
+                    BigInteger seed) {
 
-        std::vector<double> discounts(times.size());
+        std::vector<DiscountFactor> discounts(times.size());
         for (Size i = 0; i<times.size(); i++)
             discounts[i] = riskFreeRate->discount(times[i]);
 

@@ -40,7 +40,7 @@ namespace QuantLib {
                                                              volatilities,
                   const Matrix& correlation,
                   Time residualTime,
-                  long seed = 0);
+                  BigInteger seed = 0);
     };
 
 }

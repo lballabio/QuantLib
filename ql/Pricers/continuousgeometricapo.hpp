@@ -39,45 +39,46 @@ namespace QuantLib {
     class ContinuousGeometricAPO {
       public:
         ContinuousGeometricAPO(Option::Type type,
-                               double underlying,
-                               double strike,
+                               Real underlying,
+                               Real strike,
                                Spread dividendYield,
                                Rate riskFreeRate,
                                Time residualTime,
-                               double volatility);
-        double value() const { return value_; }
-        double delta() const { return delta_; }
-        double gamma() const { return gamma_; }
-        double theta() const { return theta_; }
-        double vega() const { return vega_; }
-        double rho() const { return rho_; }
-        double dividendRho() const { return dividendRho_; }
+                               Volatility volatility);
+        Real value() const { return value_; }
+        Real delta() const { return delta_; }
+        Real gamma() const { return gamma_; }
+        Real theta() const { return theta_; }
+        Real vega() const { return vega_; }
+        Real rho() const { return rho_; }
+        Real dividendRho() const { return dividendRho_; }
       private:
-        double value_;
-        double delta_, gamma_;
-        double theta_;
-        double vega_;
-        double rho_, dividendRho_;
+        Real value_;
+        Real delta_, gamma_;
+        Real theta_;
+        Real vega_;
+        Real rho_, dividendRho_;
     };
 
 
     // inline definitions
 
     inline ContinuousGeometricAPO::ContinuousGeometricAPO(
-                          Option::Type type, double underlying, double strike,
+                          Option::Type type, Real underlying, Real strike,
                           Spread dividendYield, Rate riskFreeRate, 
-                          Time residualTime, double volatility) {
+                          Time residualTime, Volatility volatility) {
 
-        double r = riskFreeRate;
-        double q = (riskFreeRate + dividendYield + 
-                    volatility*volatility/6.0)/2.0;
-        double sigma = volatility/QL_SQRT(3.0);
+        Rate r = riskFreeRate;
+        Rate q = (riskFreeRate + dividendYield + 
+                  volatility*volatility/6.0)/2.0;
+        Volatility sigma = volatility/QL_SQRT(3.0);
 
-        double discount = QL_EXP(-r*residualTime);
-        double qDiscount = QL_EXP(-q*residualTime);
-        double forward = underlying*qDiscount/discount;
-        double variance = sigma*sigma*residualTime;
-        boost::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type,strike));
+        DiscountFactor discount = QL_EXP(-r*residualTime);
+        DiscountFactor qDiscount = QL_EXP(-q*residualTime);
+        Real forward = underlying*qDiscount/discount;
+        Real variance = sigma*sigma*residualTime;
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                                         new PlainVanillaPayoff(type,strike));
         BlackFormula black(forward, discount, variance, payoff);
 
         value_ = black.value();

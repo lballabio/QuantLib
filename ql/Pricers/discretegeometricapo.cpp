@@ -23,43 +23,43 @@ namespace QuantLib {
     const CumulativeNormalDistribution DiscreteGeometricAPO::f_;
 
     DiscreteGeometricAPO::DiscreteGeometricAPO(
-                       Option::Type type, double underlying, double strike, 
+                       Option::Type type, Real underlying, Real strike, 
                        Spread dividendYield, Rate riskFreeRate, 
-                       const std::vector<Time>& times, double volatility)
+                       const std::vector<Time>& times, Volatility volatility)
     : SingleAssetOption(type, underlying, strike, dividendYield,
                         riskFreeRate, times.back(), volatility), 
       times_(times) {}
 
-    double DiscreteGeometricAPO::value() const {
+    Real DiscreteGeometricAPO::value() const {
         // almost ready for mid-life re-evaluation
-        std::vector<double> pastFixings(0, 0.0);
-        double runningAverage = std::accumulate(pastFixings.begin(),
-                                                pastFixings.end(), 1.0, 
-                                                std::multiplies<double>());
+        std::vector<Real> pastFixings(0, 0.0);
+        Real runningAverage = std::accumulate(pastFixings.begin(),
+                                              pastFixings.end(), 1.0, 
+                                              std::multiplies<Real>());
         Size m = pastFixings.size();
-        double runningLogAverage = QL_LOG(runningAverage);
+        Real runningLogAverage = QL_LOG(runningAverage);
 
-        double N = double(times_.size()+m);
-        double pastWeight = m/N;
-        double futureWeight = 1-pastWeight;
+        Real N = Real(times_.size()+m);
+        Real pastWeight = m/N;
+        Real futureWeight = 1-pastWeight;
 
-        double nu = riskFreeRate_ - dividendYield_ -
+        Rate nu = riskFreeRate_ - dividendYield_ -
             0.5*volatility_*volatility_;
-        double muG = pastWeight * runningLogAverage +
+        Real muG = pastWeight * runningLogAverage +
             futureWeight * QL_LOG(underlying_) +
             nu/N*std::accumulate(times_.begin(), times_.end(), 0.0);
 
         Size i;
-        double temp = 0.0;
+        Real temp = 0.0;
         for (i=m+1; i<N; i++)
             temp += times_[i-m-1]*(N-i);
-        double sigmaG_2 = volatility_*volatility_ /N/N * 
+        Real sigmaG_2 = volatility_*volatility_ /N/N * 
             (std::accumulate(times_.begin(), times_.end(), 0.0)+ 2.0*temp);
 
-        double x1 = (muG-QL_LOG(payoff_.strike())+sigmaG_2)/QL_SQRT(sigmaG_2);
-        double x2 = x1-QL_SQRT(sigmaG_2);
+        Real x1 = (muG-QL_LOG(payoff_.strike())+sigmaG_2)/QL_SQRT(sigmaG_2);
+        Real x2 = x1-QL_SQRT(sigmaG_2);
 
-        double result;
+        Real result;
         switch (payoff_.optionType()) {
           case Option::Call:
             result = QL_EXP(-riskFreeRate_*residualTime_)*

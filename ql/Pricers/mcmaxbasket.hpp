@@ -32,15 +32,15 @@ namespace QuantLib {
         : public McPricer<MultiAsset<PseudoRandom> > {
       public:
         McMaxBasket(
-               const std::vector<double>& underlyings,
+               const std::vector<Real>& underlyings,
                const std::vector<RelinkableHandle<TermStructure> >& 
                                                              dividendYields,
                const RelinkableHandle<TermStructure>& riskFreeRate,
                const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
                                                              volatilities,
                const Matrix& correlation,
-               double residualTime,
-               long seed = 0);
+               Time residualTime,
+               BigInteger seed = 0);
     };
 
 }

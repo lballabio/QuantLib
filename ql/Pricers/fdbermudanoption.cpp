@@ -19,10 +19,10 @@
 
 namespace QuantLib {
 
-    FdBermudanOption::FdBermudanOption(Option::Type type, double underlying,
-                                       double strike, Spread dividendYield, 
+    FdBermudanOption::FdBermudanOption(Option::Type type, Real underlying,
+                                       Real strike, Spread dividendYield, 
                                        Rate riskFreeRate, Time residualTime, 
-                                       double volatility,
+                                       Volatility volatility,
                                        const std::vector<Time>& dates,
                                        Size timeSteps, Size gridPoints)
     : FdMultiPeriodOption(type, underlying, strike, dividendYield,

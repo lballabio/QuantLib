@@ -35,9 +35,9 @@ namespace QuantLib {
     */
     class McPagoda : public McPricer<MultiAsset<PseudoRandom> > {
       public:
-        McPagoda(const std::vector<double>& underlyings,
-                 double fraction,
-                 double roof,
+        McPagoda(const std::vector<Real>& underlyings,
+                 Real fraction,
+                 Real roof,
                  const std::vector<RelinkableHandle<TermStructure> >& 
                                                              dividendYields,
                  const RelinkableHandle<TermStructure>& riskFreeRate,
@@ -45,7 +45,7 @@ namespace QuantLib {
                                                              volatilities,
                  const Matrix& correlation,
                  const std::vector<Time>& times,
-                 long seed = 0);
+                 BigInteger seed = 0);
     };
 
 }

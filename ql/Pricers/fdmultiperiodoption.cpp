@@ -22,9 +22,9 @@
 namespace QuantLib {
 
     FdMultiPeriodOption::FdMultiPeriodOption(
-                       Option::Type type, double underlying, double strike, 
+                       Option::Type type, Real underlying, Real strike, 
                        Spread dividendYield, Rate riskFreeRate, 
-                       Time residualTime, double volatility,
+                       Time residualTime, Volatility volatility,
                        Size gridPoints, const std::vector<Time>& dates,
                        Size timeSteps)
     : FdBsmOption(type, underlying, strike,
@@ -35,28 +35,28 @@ namespace QuantLib {
       dateNumber_(dates.size()),
       timeStepPerPeriod_(timeSteps),
       lastDateIsResTime_(false),
-      lastIndex_(int(dateNumber_) - 1),
+      lastIndex_(Integer(dateNumber_) - 1),
       firstDateIsZero_(false),
       firstNonZeroDate_(residualTime),
       firstIndex_(-1) {
 
-        double dateTollerance = 1e-6;
+        Real dateTolerance = 1e-6;
 
         if (dateNumber_ > 0){
             QL_REQUIRE(dates_[0] >= 0,
                        "first date " +
                        DecimalFormatter::toString(dates_[0]) +
                        " cannot be negative");
-            if(dates_[0] < residualTime * dateTollerance ){
+            if(dates_[0] < residualTime * dateTolerance ){
                 firstDateIsZero_ = true;
                 firstIndex_ = 0;
                 if(dateNumber_ >= 2)
                     firstNonZeroDate_ = dates_[1];
             }
 
-            if(QL_FABS(dates_[lastIndex_] - residualTime) < dateTollerance){
+            if(QL_FABS(dates_[lastIndex_] - residualTime) < dateTolerance){
                 lastDateIsResTime_ = true;
-                lastIndex_ = int(dateNumber_) - 2;
+                lastIndex_ = Integer(dateNumber_) - 2;
             }
 
             QL_REQUIRE(dates_[dateNumber_-1] <= residualTime,
@@ -95,15 +95,15 @@ namespace QuantLib {
         if(lastDateIsResTime_)
             executeIntermediateStep(dateNumber_ - 1);
 
-        double dt = residualTime_/(timeStepPerPeriod_*(dateNumber_+1));
+        Time dt = residualTime_/(timeStepPerPeriod_*(dateNumber_+1));
 
         // Ensure that dt is always smaller than the first non-zero date
         if (firstNonZeroDate_ <= dt)
             dt = firstNonZeroDate_/2.0;
 
-        int j = lastIndex_;
+        Integer j = lastIndex_;
         do{
-            if (j == int(dateNumber_) - 1)
+            if (j == Integer(dateNumber_) - 1)
                 beginDate = residualTime_;
             else
                 beginDate = dates_[j+1];
@@ -148,10 +148,10 @@ namespace QuantLib {
     }
 
     void FdMultiPeriodOption::initializeControlVariate() const {
-        double discount = QL_EXP(-riskFreeRate_*residualTime_);
-        double qDiscount = QL_EXP(-dividendYield_*residualTime_);
-        double forward = underlying_*qDiscount/discount;
-        double variance = volatility_*volatility_*residualTime_;
+        DiscountFactor discount = QL_EXP(-riskFreeRate_*residualTime_);
+        DiscountFactor qDiscount = QL_EXP(-dividendYield_*residualTime_);
+        Real forward = underlying_*qDiscount/discount;
+        Real variance = volatility_*volatility_*residualTime_;
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                              new PlainVanillaPayoff(payoff_));
         analytic_ = boost::shared_ptr<BlackFormula>(
@@ -168,7 +168,7 @@ namespace QuantLib {
             new StandardFiniteDifferenceModel(finiteDifferenceOperator_,BCs_));
     }
 
-    double FdMultiPeriodOption::controlVariateCorrection() const{
+    Real FdMultiPeriodOption::controlVariateCorrection() const{
         if(!hasBeenCalculated_)
             calculate();
         return controlVariateCorrection_;

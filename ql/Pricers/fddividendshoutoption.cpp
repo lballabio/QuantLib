@@ -20,12 +20,12 @@
 namespace QuantLib {
 
     FdDividendShoutOption::FdDividendShoutOption(
-                         Option::Type type, double underlying, double strike, 
+                         Option::Type type, Real underlying, Real strike, 
                          Spread dividendYield, Rate riskFreeRate, 
-                         Time residualTime, double volatility,
-                         const std::vector<double>& dividends,
+                         Time residualTime, Volatility volatility,
+                         const std::vector<Real>& dividends,
                          const std::vector<Time>& exdivdates,
-                         int timeSteps, int gridPoints)
+                         Size timeSteps, Size gridPoints)
     : FdDividendOption(type, underlying, strike, dividendYield,
                        riskFreeRate, residualTime, volatility,
                        dividends, exdivdates, timeSteps, gridPoints){}

@@ -20,16 +20,16 @@
 
 namespace QuantLib {
 
-    const double SingleAssetOption::dVolMultiplier_ = 0.0001;
-    const double SingleAssetOption::dRMultiplier_   = 0.0001;
-    // const double SingleAssetOption::dSMultiplier_   = 0.0001;
-    // const double SingleAssetOption::dTMultiplier_   = 0.0001;
+    const Real SingleAssetOption::dVolMultiplier_ = 0.0001;
+    const Real SingleAssetOption::dRMultiplier_   = 0.0001;
+    // const Real SingleAssetOption::dSMultiplier_   = 0.0001;
+    // const Real SingleAssetOption::dTMultiplier_   = 0.0001;
 
     SingleAssetOption::SingleAssetOption(Option::Type type,
-                                         double underlying, double strike, 
+                                         Real underlying, Real strike, 
                                          Spread dividendYield,
                                          Rate riskFreeRate, Time residualTime, 
-                                         double volatility)
+                                         Volatility volatility)
     : underlying_(underlying),
       payoff_(type, strike), dividendYield_(dividendYield),
       residualTime_(residualTime), hasBeenCalculated_(false),
@@ -53,7 +53,7 @@ namespace QuantLib {
         setRiskFreeRate(riskFreeRate);
     }
 
-    void SingleAssetOption::setVolatility(double volatility) {
+    void SingleAssetOption::setVolatility(Volatility volatility) {
         QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
                    "volatility too small ("+
                    DecimalFormatter::toString(volatility)+
@@ -82,7 +82,7 @@ namespace QuantLib {
         hasBeenCalculated_ = false;
     }
 
-    double SingleAssetOption::theta() const {
+    Real SingleAssetOption::theta() const {
 
         if(!thetaComputed_) {
 
@@ -96,16 +96,16 @@ namespace QuantLib {
         return theta_;
     }
 
-    double SingleAssetOption::vega() const {
+    Real SingleAssetOption::vega() const {
 
         if(!vegaComputed_) {
 
-            double valuePlus = value();
+            Real valuePlus = value();
 
             boost::shared_ptr<SingleAssetOption> brandNewFD = clone();
-            double volMinus = volatility_ * (1.0 - dVolMultiplier_);
+            Volatility volMinus = volatility_ * (1.0 - dVolMultiplier_);
             brandNewFD -> setVolatility(volMinus);
-            double valueMinus = brandNewFD -> value();
+            Real valueMinus = brandNewFD -> value();
 
             vega_ = (valuePlus - valueMinus )/
                 (volatility_ * dVolMultiplier_);
@@ -114,16 +114,16 @@ namespace QuantLib {
         return vega_;
     }
 
-    double SingleAssetOption::dividendRho() const {
+    Real SingleAssetOption::dividendRho() const {
 
         if(!dividendRhoComputed_){
-            double valuePlus = value();
+            Real valuePlus = value();
 
             boost::shared_ptr<SingleAssetOption> brandNewFD = clone();
             Rate dMinus = (dividendYield_ ?
                            dividendYield_ * (1.0 - dRMultiplier_) : 0.0001);
             brandNewFD -> setDividendYield(dMinus);
-            double valueMinus = brandNewFD -> value();
+            Real valueMinus = brandNewFD -> value();
 
             dividendRho_=(valuePlus - valueMinus) /
                 (dividendYield_ - dMinus);
@@ -132,16 +132,16 @@ namespace QuantLib {
         return dividendRho_;
     }
 
-    double SingleAssetOption::rho() const {
+    Real SingleAssetOption::rho() const {
 
         if(!rhoComputed_){
-            double valuePlus = value();
+            Real valuePlus = value();
 
             boost::shared_ptr<SingleAssetOption> brandNewFD = clone();
             Rate rMinus= (riskFreeRate_ ?
                           riskFreeRate_ * (1.0 - dRMultiplier_) : 0.0001);
             brandNewFD -> setRiskFreeRate(rMinus);
-            double valueMinus = brandNewFD -> value();
+            Real valueMinus = brandNewFD -> value();
 
             rho_=(valuePlus - valueMinus) /
                 (riskFreeRate_ - rMinus);
@@ -150,15 +150,15 @@ namespace QuantLib {
         return rho_;
     }
 
-    double SingleAssetOption::impliedVolatility(double targetValue, 
-                                                double accuracy, 
-                                                Size maxEvaluations, 
-                                                double minVol, 
-                                                double maxVol) const {
+    Volatility SingleAssetOption::impliedVolatility(Real targetValue, 
+                                                    Real accuracy, 
+                                                    Size maxEvaluations, 
+                                                    Volatility minVol, 
+                                                    Volatility maxVol) const {
         // check option targetValue boundary condition
         QL_REQUIRE(targetValue > 0.0,
                    "targetValue must be positive");
-        double optionValue = value();
+        Real optionValue = value();
         if (optionValue == targetValue)
             return volatility_;
         // clone used for root finding
@@ -174,15 +174,15 @@ namespace QuantLib {
         return s1d.solve(bsmf, accuracy, volatility_, minVol, maxVol);
     }
 
-    double SingleAssetOption::impliedDivYield(double targetValue, 
-                                              double accuracy, 
+    Spread SingleAssetOption::impliedDivYield(Real targetValue, 
+                                              Real accuracy, 
                                               Size maxEvaluations, 
-                                              double minDivYield, 
-                                              double maxDivYield) const {
+                                              Spread minDivYield, 
+                                              Spread maxDivYield) const {
         // check option targetValue boundary condition
         QL_REQUIRE(targetValue > 0.0,
                    "targetValue must be positive");
-        double optionValue = value();
+        Real optionValue = value();
         if (optionValue == targetValue)
             return dividendYield_;
         // clone used for root finding

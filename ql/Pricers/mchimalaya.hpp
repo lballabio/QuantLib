@@ -37,16 +37,16 @@ namespace QuantLib {
     class McHimalaya : public McPricer<MultiAsset<PseudoRandom> > {
       public:
         McHimalaya(
-               const std::vector<double>& underlyings,
+               const std::vector<Real>& underlyings,
                const std::vector<RelinkableHandle<TermStructure> >& 
                                                              dividendYields,
                const RelinkableHandle<TermStructure>& riskFreeRate,
                const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
                                                              volatilities,
                const Matrix& correlation,
-               double strike,
+               Real strike,
                const std::vector<Time>& times,
-               long seed = 0);
+               BigInteger seed = 0);
     };
 
 }

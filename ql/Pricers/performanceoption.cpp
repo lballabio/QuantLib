@@ -23,11 +23,11 @@ namespace QuantLib {
 #ifndef QL_DISABLE_DEPRECATED
 
     PerformanceOption::PerformanceOption(
-                       Option::Type type, double, double moneyness,
+                       Option::Type type, Real, Real moneyness,
                        const std::vector<Spread>& dividendYield,
                        const std::vector<Rate>& riskFreeRate,
                        const std::vector<Time>& times,
-                       const std::vector<double>& volatility) {
+                       const std::vector<Volatility>& volatility) {
 
         QL_REQUIRE(times.size() > 0,
                    "at least one time is required for performance options");
@@ -38,17 +38,17 @@ namespace QuantLib {
         QL_REQUIRE(volatility.size()==times.size(),
                    "volatility vector of wrong size");
 
-        double discount = QL_EXP(-riskFreeRate[0] * times[0]);
+        DiscountFactor discount = QL_EXP(-riskFreeRate[0] * times[0]);
 
         value_ = delta_ = gamma_ = theta_ =
             rho_ = dividendRho_ = vega_ = 0.0;
 
         for (Size i = 1; i < times.size(); i++) {
             Time dt = times[i] - times[i-1];
-            double rDiscount = QL_EXP(-riskFreeRate[i] * dt);
-            double qDiscount = QL_EXP(-dividendYield[i] * dt);
-            double forward = (1.0/moneyness)*qDiscount/rDiscount;
-            double variance = volatility[i]*volatility[i]*dt;
+            DiscountFactor rDiscount = QL_EXP(-riskFreeRate[i] * dt);
+            DiscountFactor qDiscount = QL_EXP(-dividendYield[i] * dt);
+            Real forward = (1.0/moneyness)*qDiscount/rDiscount;
+            Real variance = volatility[i]*volatility[i]*dt;
             boost::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(type,1.0));
             BlackFormula black(forward, rDiscount, variance, payoff);

@@ -43,25 +43,25 @@ namespace QuantLib {
     class CliquetOptionPricer {
       public:
         CliquetOptionPricer(Option::Type type,
-                            double underlying,
-                            double moneyness,
+                            Real underlying,
+                            Real moneyness,
                             const std::vector<Spread>& dividendYield,
                             const std::vector<Rate>& riskFreeRate,
                             const std::vector<Time>& times,
-                            const std::vector<double>& volatility);
-        double value() const { return value_; }
-        double delta() const { return delta_; }
-        double gamma() const { return gamma_; }
-        double theta() const { return theta_; }
-        double vega() const { return vega_; }
-        double rho() const { return rho_; }
-        double dividendRho() const { return dividendRho_; }
+                            const std::vector<Volatility>& volatility);
+        Real value() const { return value_; }
+        Real delta() const { return delta_; }
+        Real gamma() const { return gamma_; }
+        Real theta() const { return theta_; }
+        Real vega() const { return vega_; }
+        Real rho() const { return rho_; }
+        Real dividendRho() const { return dividendRho_; }
       private:
-        double value_;
-        double delta_, gamma_;
-        double theta_;
-        double vega_;
-        double rho_, dividendRho_;
+        Real value_;
+        Real delta_, gamma_;
+        Real theta_;
+        Real vega_;
+        Real rho_, dividendRho_;
     };
 
 #endif

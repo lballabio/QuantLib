@@ -31,36 +31,36 @@ namespace QuantLib {
     //! Black-Scholes-Merton option priced numerically
     class FdBsmOption : public SingleAssetOption {
       public:
-        FdBsmOption(Option::Type type, double underlying,
-                    double strike, Spread dividendYield, Rate riskFreeRate,
-                    Time residualTime, double volatility, Size gridPoints);
+        FdBsmOption(Option::Type type, Real underlying,
+                    Real strike, Spread dividendYield, Rate riskFreeRate,
+                    Time residualTime, Volatility volatility, Size gridPoints);
         // accessors
         virtual void calculate() const = 0;
-        double value() const;
-        double delta() const;
-        double gamma() const;
+        Real value() const;
+        Real delta() const;
+        Real gamma() const;
         const Array& getGrid() const{ return grid_; }
       protected:
         // methods
-        virtual void setGridLimits(double center,
-                                   double timeDelay) const;
+        virtual void setGridLimits(Real center,
+                                   Real timeDelay) const;
         virtual void initializeGrid() const;
         virtual void initializeInitialCondition() const;
         virtual void initializeOperator() const;
         // input data
         Size gridPoints_;
         // results
-        mutable double value_, delta_, gamma_;
+        mutable Real value_, delta_, gamma_;
         mutable Array grid_;
         mutable BSMOperator finiteDifferenceOperator_;
         mutable Array intrinsicValues_;
         typedef BoundaryCondition<TridiagonalOperator> BoundaryCondition;
         mutable std::vector<boost::shared_ptr<BoundaryCondition> > BCs_;
         // temporaries
-        mutable double sMin_, center_, sMax_;
+        mutable Real sMin_, center_, sMax_;
       private:
         // temporaries
-        mutable double gridLogSpacing_;
+        mutable Real gridLogSpacing_;
         Size safeGridPoints(Size gridPoints,
                             Time residualTime);
     };

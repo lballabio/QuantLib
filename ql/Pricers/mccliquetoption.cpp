@@ -26,14 +26,14 @@ namespace QuantLib {
           public:
             CliquetOptionPathPricer(
                                  Option::Type type,
-                                 double underlying,
-                                 double moneyness,
-                                 double accruedCoupon,
-                                 double lastFixing,
-                                 double localCap,
-                                 double localFloor,
-                                 double globalCap,
-                                 double globalFloor,
+                                 Real underlying,
+                                 Real moneyness,
+                                 Real accruedCoupon,
+                                 Real lastFixing,
+                                 Real localCap,
+                                 Real localFloor,
+                                 Real globalCap,
+                                 Real globalFloor,
                                  const std::vector<DiscountFactor>& discounts,
                                  bool redemptionOnly)
             : type_(type), underlying_(underlying), moneyness_(moneyness),
@@ -63,13 +63,13 @@ namespace QuantLib {
                     globalFloor_ = 0.0;
             }
 
-            double operator()(const Path& path) const {
+            Real operator()(const Path& path) const {
                 Size n = path.size();
                 QL_REQUIRE(n>0, "the path cannot be empty");
 
                 QL_REQUIRE(n==discounts_.size(), "discounts/options mismatch");
 
-                double result, lastFixing, underlying, payoff;
+                Real result, lastFixing, underlying, payoff;
 
                 // start the simulation
                 lastFixing = lastFixing_;
@@ -113,9 +113,9 @@ namespace QuantLib {
 
           private:
             Option::Type type_;
-            double underlying_, moneyness_, accruedCoupon_;
-            double lastFixing_, localCap_, localFloor_, 
-                   globalCap_, globalFloor_;
+            Real underlying_, moneyness_, accruedCoupon_;
+            Real lastFixing_, localCap_, localFloor_, 
+                 globalCap_, globalFloor_;
             std::vector<DiscountFactor> discounts_;
             bool redemptionOnly_;
         };
@@ -124,18 +124,18 @@ namespace QuantLib {
 
     McCliquetOption::McCliquetOption(
                     Option::Type type,
-                    double underlying, double moneyness,
+                    Real underlying, Real moneyness,
                     const RelinkableHandle<TermStructure>& dividendYield,
                     const RelinkableHandle<TermStructure>& riskFreeRate,
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
-                    double accruedCoupon, double lastFixing,
-                    double localCap, double localFloor, 
-                    double globalCap, double globalFloor, 
+                    Real accruedCoupon, Real lastFixing,
+                    Real localCap, Real localFloor, 
+                    Real globalCap, Real globalFloor, 
                     bool redemptionOnly, 
-                    long seed) {
+                    BigInteger seed) {
 
-        std::vector<double> discounts(times.size());
+        std::vector<DiscountFactor> discounts(times.size());
         for (Size i = 0; i<times.size(); i++)
             discounts[i] = riskFreeRate->discount(times[i]);
 

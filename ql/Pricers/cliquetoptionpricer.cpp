@@ -25,11 +25,11 @@ namespace QuantLib {
 
     CliquetOptionPricer::CliquetOptionPricer(
                                  Option::Type type,
-                                 double underlying, double moneyness,
+                                 Real underlying, Real moneyness,
                                  const std::vector<Spread>& dividendYield,
                                  const std::vector<Rate>& riskFreeRate,
                                  const std::vector<Time>& times,
-                                 const std::vector<double>& volatility) {
+                                 const std::vector<Volatility>& volatility) {
 
         QL_REQUIRE(times.size() > 0,
                    "at least one option is required for cliquet options");
@@ -40,11 +40,11 @@ namespace QuantLib {
         QL_REQUIRE(volatility.size() == times.size(),
                    "volatility vector of wrong size");
 
-        double weight = 0.0;
-        double discount = QL_EXP(-riskFreeRate[0]*times[0]);
-        double qDiscount = QL_EXP(-dividendYield[0]*times[0]);
-        double forward = underlying*qDiscount/discount;
-        double variance = volatility[0]*volatility[0]*times[0];
+        Real weight = 0.0;
+        DiscountFactor discount = QL_EXP(-riskFreeRate[0]*times[0]);
+        DiscountFactor qDiscount = QL_EXP(-dividendYield[0]*times[0]);
+        Real forward = underlying*qDiscount/discount;
+        Real variance = volatility[0]*volatility[0]*times[0];
         boost::shared_ptr<StrikedTypePayoff> payoff(
                           new PlainVanillaPayoff(type,underlying*moneyness));
         BlackFormula black(forward, discount, variance, payoff);

@@ -27,13 +27,13 @@ namespace QuantLib {
                                                                 discountTS)
             : PathPricer<MultiPath>(discountTS) {}
 
-            double operator()(const MultiPath& multiPath) const {
+            Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
 
-                double log_variation;
+                Real log_variation;
                 Size i,j;
-                double minPrice = QL_MAX_DOUBLE;
+                Real minPrice = QL_MAX_DOUBLE;
                 for( j = 0; j < numAssets; j++) {
                     log_variation = 0.0;
                     for( i = 0; i < numSteps; i++)
@@ -57,7 +57,7 @@ namespace QuantLib {
                                                              volatilities,
                   const Matrix& correlation,
                   Time residualTime,
-                  long seed) {
+                  BigInteger seed) {
 
         Size n = correlation.rows();
         QL_REQUIRE(correlation.columns() == n,

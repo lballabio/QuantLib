@@ -36,13 +36,13 @@ namespace QuantLib {
       public:
         McDiscreteArithmeticASO(
                     Option::Type type,
-                    double underlying,
+                    Real underlying,
                     const RelinkableHandle<TermStructure>& dividendYield,
                     const RelinkableHandle<TermStructure>& riskFreeRate,
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
                     bool controlVariate,
-                    long seed = 0);
+                    BigInteger seed = 0);
     };
 
 }

@@ -30,25 +30,25 @@ namespace QuantLib {
     class SingleAssetOption {
       public:
         SingleAssetOption(Option::Type type,
-                          double underlying,
-                          double strike,
+                          Real underlying,
+                          Real strike,
                           Spread dividendYield,
                           Rate riskFreeRate,
                           Time residualTime,
-                          double volatility);
+                          Volatility volatility);
         virtual ~SingleAssetOption() {}
         // modifiers
-        virtual void setVolatility(double newVolatility);
+        virtual void setVolatility(Volatility newVolatility);
         virtual void setRiskFreeRate(Rate newRate);
         virtual void setDividendYield(Rate newDividendYield);
         // accessors
-        virtual double value() const = 0;
-        virtual double delta() const = 0;
-        virtual double gamma() const = 0;
-        virtual double theta() const;
-        virtual double vega() const;
-        virtual double rho() const;
-        virtual double dividendRho() const;
+        virtual Real value() const = 0;
+        virtual Real delta() const = 0;
+        virtual Real gamma() const = 0;
+        virtual Real theta() const;
+        virtual Real vega() const;
+        virtual Real rho() const;
+        virtual Real dividendRho() const;
         /*! \warning Options with a gamma that changes sign have
                      values that are <b>not</b> monotonic in the
                      volatility, e.g binary options. In these cases
@@ -59,30 +59,31 @@ namespace QuantLib {
                      than the intrinsic value in the case of American
                      options. 
         */
-        double impliedVolatility(double targetValue,
-                                 double accuracy = 1e-4,
-                                 Size maxEvaluations = 100,
-                                 double minVol = QL_MIN_VOLATILITY,
-                                 double maxVol = QL_MAX_VOLATILITY) const;
-        double impliedDivYield(double targetValue,
-                               double accuracy = 1e-4,
+        Volatility impliedVolatility(Real targetValue,
+                                     Real accuracy = 1e-4,
+                                     Size maxEvaluations = 100,
+                                     Volatility minVol = QL_MIN_VOLATILITY,
+                                     Volatility maxVol = QL_MAX_VOLATILITY)
+                                                                        const;
+        Spread impliedDivYield(Real targetValue,
+                               Real accuracy = 1e-4,
                                Size maxEvaluations = 100,
-                               double minVol = QL_MIN_DIVYIELD,
-                               double maxVol = QL_MAX_DIVYIELD) const;
+                               Spread minYield = QL_MIN_DIVYIELD,
+                               Spread maxYield = QL_MAX_DIVYIELD) const;
         virtual boost::shared_ptr<SingleAssetOption> clone() const = 0;
       protected:
-        double underlying_;
+        Real underlying_;
         PlainVanillaPayoff payoff_;
         Spread dividendYield_;
         Rate riskFreeRate_;
         Time residualTime_;
-        double volatility_;
+        Volatility volatility_;
         mutable bool hasBeenCalculated_;
-        mutable double rho_, dividendRho_, vega_, theta_;
+        mutable Real rho_, dividendRho_, vega_, theta_;
         mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_,
             thetaComputed_;
-        const static double dVolMultiplier_;
-        const static double dRMultiplier_;
+        const static Real dVolMultiplier_;
+        const static Real dRMultiplier_;
       private:
         class VolatilityFunction;
         friend class VolatilityFunction;
@@ -93,33 +94,33 @@ namespace QuantLib {
     class SingleAssetOption::VolatilityFunction {
       public:
         VolatilityFunction(const boost::shared_ptr<SingleAssetOption>& tempBSM,
-                           double targetPrice);
-        double operator()(double x) const;
+                           Real targetPrice);
+        Real operator()(Volatility x) const;
       private:
         mutable boost::shared_ptr<SingleAssetOption> bsm;
-        double targetPrice_;
+        Real targetPrice_;
     };
 
     class SingleAssetOption::DivYieldFunction {
       public:
         DivYieldFunction(const boost::shared_ptr<SingleAssetOption>& tempBSM,
-                         double targetPrice);
-        double operator()(double x) const;
+                         Real targetPrice);
+        Real operator()(Spread x) const;
       private:
         mutable boost::shared_ptr<SingleAssetOption> bsm;
-        double targetPrice_;
+        Real targetPrice_;
     };
 
 
     inline SingleAssetOption::VolatilityFunction::VolatilityFunction(
                           const boost::shared_ptr<SingleAssetOption>& tempBSM,
-                          double targetPrice) {
+                          Real targetPrice) {
         bsm = tempBSM;
         targetPrice_ = targetPrice;
     }
 
-    inline double 
-    SingleAssetOption::VolatilityFunction::operator()(double x) const {
+    inline Real 
+    SingleAssetOption::VolatilityFunction::operator()(Volatility x) const {
         bsm -> setVolatility(x);
         return (bsm -> value() - targetPrice_);
     }
@@ -127,13 +128,13 @@ namespace QuantLib {
 
     inline SingleAssetOption::DivYieldFunction::DivYieldFunction(
                           const boost::shared_ptr<SingleAssetOption>& tempBSM,
-                          double targetPrice) {
+                          Real targetPrice) {
         bsm = tempBSM;
         targetPrice_ = targetPrice;
     }
 
-    inline double 
-    SingleAssetOption::DivYieldFunction::operator()(double x) const {
+    inline Real 
+    SingleAssetOption::DivYieldFunction::operator()(Spread x) const {
         bsm -> setDividendYield(x);
         return (bsm -> value() - targetPrice_);
     }

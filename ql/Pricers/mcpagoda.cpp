@@ -24,13 +24,13 @@ namespace QuantLib {
 
         class PagodaPathPricer : public PathPricer<MultiPath> {
           public:
-            PagodaPathPricer(const std::vector<double>& underlying,
-                             double roof, double fraction,
+            PagodaPathPricer(const std::vector<Real>& underlying,
+                             Real roof, Real fraction,
                              const RelinkableHandle<TermStructure>& discountTS)
             : PathPricer<MultiPath>(discountTS),
               underlying_(underlying), roof_(roof), fraction_(fraction) {}
 
-            double operator()(const MultiPath& multiPath) const {
+            Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
@@ -39,7 +39,7 @@ namespace QuantLib {
                            " assets");
 
                 Size i,j;
-                double averageGain = 0.0;
+                Real averageGain = 0.0;
                 for (i = 0; i < numSteps; i++)
                     for (j = 0; j < numAssets; j++) {
                         averageGain += underlying_[j] *
@@ -50,16 +50,16 @@ namespace QuantLib {
             }
 
           private:
-            std::vector<double> underlying_;
-            double roof_, fraction_;
+            std::vector<Real> underlying_;
+            Real roof_, fraction_;
         };
 
     }
 
     McPagoda::McPagoda(
-                 const std::vector<double>& underlying,
-                 double fraction,
-                 double roof,
+                 const std::vector<Real>& underlying,
+                 Real fraction,
+                 Real roof,
                  const std::vector<RelinkableHandle<TermStructure> >& 
                                                              dividendYield,
                  const RelinkableHandle<TermStructure>& riskFreeRate,
@@ -67,7 +67,7 @@ namespace QuantLib {
                                                              volatilities,
                  const Matrix& correlation,
                  const std::vector<Time>& times,
-                 long seed) {
+                 BigInteger seed) {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
                    "correlation matrix not square");

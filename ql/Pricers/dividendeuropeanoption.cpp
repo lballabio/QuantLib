@@ -23,9 +23,9 @@ namespace QuantLib {
 
 #ifndef QL_DISABLE_DEPRECATED
     DividendEuropeanOption::DividendEuropeanOption(
-                   Option::Type type, double underlying, double strike,
+                   Option::Type type, Real underlying, Real strike,
                    Spread dividendYield, Rate riskFreeRate, Time residualTime,
-                   double volatility, const std::vector<double>& dividends,
+                   Volatility volatility, const std::vector<Real>& dividends,
                    const std::vector<Time>& exdivdates) {
 
         QL_REQUIRE(dividends.size() == exdivdates.size(),
@@ -44,15 +44,15 @@ namespace QuantLib {
                        DecimalFormatter::toString(residualTime)    + ")");
         }
 
-        double riskless = 0.0;
+        Real riskless = 0.0;
         Size i;
         for (i = 0; i < dividends.size(); i++)
             riskless += dividends[i]*QL_EXP(-riskFreeRate*exdivdates[i]);
-        double spot = underlying-riskless;
-        double discount = QL_EXP(-riskFreeRate*residualTime);
-        double qDiscount = QL_EXP(-dividendYield*residualTime);
-        double forward = spot*qDiscount/discount;
-        double variance = volatility*volatility*residualTime;
+        Real spot = underlying-riskless;
+        DiscountFactor discount = QL_EXP(-riskFreeRate*residualTime);
+        DiscountFactor qDiscount = QL_EXP(-dividendYield*residualTime);
+        Real forward = spot*qDiscount/discount;
+        Real variance = volatility*volatility*residualTime;
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                          new PlainVanillaPayoff(type,strike));
         BlackFormula black(forward, discount, variance, payoff);
@@ -62,14 +62,14 @@ namespace QuantLib {
         gamma_ = black.gamma(spot);
         vega_ = black.vega(residualTime);
 
-        double delta_theta = 0.0;
+        Real delta_theta = 0.0;
         for (i = 0; i < dividends.size(); i++)
             delta_theta -= dividends[i] * riskFreeRate * 
                            QL_EXP(-riskFreeRate * exdivdates[i]);
         theta_ = black.theta(spot, residualTime) +
                  delta_theta * black.delta(spot);
 
-        double delta_rho = 0.0;
+        Real delta_rho = 0.0;
         for (i = 0; i < dividends.size(); i++)
             delta_rho += dividends[i] * exdivdates[i] *
                          QL_EXP(-riskFreeRate * exdivdates[i]);

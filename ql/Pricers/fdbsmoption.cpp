@@ -21,9 +21,10 @@
 namespace QuantLib {
 
     FdBsmOption::FdBsmOption(
-                         Option::Type type, double underlying, double strike, 
+                         Option::Type type, Real underlying, Real strike, 
                          Spread dividendYield, Rate riskFreeRate, 
-                         Time residualTime, double volatility, Size gridPoints)
+                         Time residualTime, Volatility volatility,
+                         Size gridPoints)
     : SingleAssetOption(type, underlying, strike, dividendYield,
                         riskFreeRate, residualTime, volatility),
       gridPoints_(safeGridPoints(gridPoints, residualTime)),
@@ -34,36 +35,36 @@ namespace QuantLib {
         hasBeenCalculated_ = false;
     }
 
-    double FdBsmOption::value() const {
+    Real FdBsmOption::value() const {
         if (!hasBeenCalculated_)
             calculate();
         return value_;
     }
 
-    double FdBsmOption::delta() const {
+    Real FdBsmOption::delta() const {
         if (!hasBeenCalculated_)
             calculate();
         return delta_;
     }
 
-    double FdBsmOption::gamma() const {
+    Real FdBsmOption::gamma() const {
         if(!hasBeenCalculated_)
             calculate();
         return gamma_;
     }
 
-    void FdBsmOption::setGridLimits(double center,
-                                    double timeDelay) const {
+    void FdBsmOption::setGridLimits(Real center,
+                                    Real timeDelay) const {
 
         center_ = center;
-        double volSqrtTime = volatility_*QL_SQRT(timeDelay);
+        Real volSqrtTime = volatility_*QL_SQRT(timeDelay);
         // the prefactor fine tunes performance at small volatilities
-        double prefactor = 1.0 + 0.02/volSqrtTime;
-        double minMaxFactor = QL_EXP(4.0 * prefactor * volSqrtTime);
+        Real prefactor = 1.0 + 0.02/volSqrtTime;
+        Real minMaxFactor = QL_EXP(4.0 * prefactor * volSqrtTime);
         sMin_ = center_/minMaxFactor;  // underlying grid min value
         sMax_ = center_*minMaxFactor;  // underlying grid max value
         // insure strike is included in the grid
-        double safetyZoneFactor = 1.1;
+        Real safetyZoneFactor = 1.1;
         if(sMin_ > payoff_.strike()/safetyZoneFactor){
             sMin_ = payoff_.strike()/safetyZoneFactor;
             // enforce central placement of the underlying
@@ -78,7 +79,7 @@ namespace QuantLib {
 
     void FdBsmOption::initializeGrid() const {
         gridLogSpacing_ = (QL_LOG(sMax_)-QL_LOG(sMin_))/(gridPoints_-1);
-        double edx = QL_EXP(gridLogSpacing_);
+        Real edx = QL_EXP(gridLogSpacing_);
         grid_[0] = sMin_;
         Size j;
         for (j=1; j<gridPoints_; j++)

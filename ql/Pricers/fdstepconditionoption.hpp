@@ -32,12 +32,12 @@ namespace QuantLib {
       protected:
         // constructor
         FdStepConditionOption(Option::Type type,
-                              double underlying,
-                              double strike,
+                              Real underlying,
+                              Real strike,
                               Spread dividendYield,
                               Rate riskFreeRate,
                               Time residualTime,
-                              double volatility,
+                              Volatility volatility,
                               Size timeSteps,
                               Size gridPoints);
         void calculate() const;

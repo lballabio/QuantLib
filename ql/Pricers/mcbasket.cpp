@@ -27,8 +27,8 @@ namespace QuantLib {
         class BasketPathPricer : public PathPricer<MultiPath> {
           public:
             BasketPathPricer(Option::Type type,
-                             const std::vector<double>& underlying,
-                             double strike,
+                             const std::vector<Real>& underlying,
+                             Real strike,
                              const RelinkableHandle<TermStructure>& discountTS)
             : PathPricer<MultiPath>(discountTS),
               underlying_(underlying), payoff_(type, strike) {
@@ -40,7 +40,7 @@ namespace QuantLib {
                 }
             }
 
-            double operator()(const MultiPath& multiPath) const {
+            Real operator()(const MultiPath& multiPath) const {
 
                 Size numSteps = multiPath.pathSize();
                 Size numAssets = multiPath.assetNumber();
@@ -52,9 +52,9 @@ namespace QuantLib {
                 QL_REQUIRE(numSteps>0, "the path cannot be empty");
 
                 // start the simulation
-                std::vector<double> log_variation(numAssets, 0.0);
+                std::vector<Real> log_variation(numAssets, 0.0);
                 Size i,j;
-                double basketPrice = 0.0;
+                Real basketPrice = 0.0;
                 for (j = 0; j < numAssets; j++) {
                     log_variation[j] = 0.0;
                     for (i = 0; i < numSteps; i++)
@@ -67,7 +67,7 @@ namespace QuantLib {
             }
 
           private:
-            std::vector<double> underlying_;
+            std::vector<Real> underlying_;
             PlainVanillaPayoff payoff_;
         };
 
@@ -76,16 +76,16 @@ namespace QuantLib {
 
     McBasket::McBasket(
                  Option::Type type, 
-                 const std::vector<double>& underlying,
-                 double strike,
+                 const std::vector<Real>& underlying,
+                 Real strike,
                  const std::vector<RelinkableHandle<TermStructure> >& 
                                                              dividendYield,
                  const RelinkableHandle<TermStructure>& riskFreeRate,
                  const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
                                                              volatilities,
                  const Matrix& correlation,
-                 double residualTime,
-                 long seed) {
+                 Time residualTime,
+                 BigInteger seed) {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
                    "correlation matrix not square");

@@ -35,20 +35,20 @@ namespace QuantLib {
       public:
         McCliquetOption(
                     Option::Type type,
-                    double underlying,
-                    double moneyness,
+                    Real underlying,
+                    Real moneyness,
                     const RelinkableHandle<TermStructure>& dividendYield,
                     const RelinkableHandle<TermStructure>& riskFreeRate,
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
-                    double accruedCoupon,
-                    double lastFixing,
-                    double localCap,
-                    double localFloor,
-                    double globalCap,
-                    double globalFloor,
+                    Real accruedCoupon,
+                    Real lastFixing,
+                    Real localCap,
+                    Real localFloor,
+                    Real globalCap,
+                    Real globalFloor,
                     bool redemptionOnly,
-                    long seed = 0);
+                    BigInteger seed = 0);
     };
 
 }

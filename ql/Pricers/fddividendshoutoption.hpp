@@ -32,15 +32,15 @@ namespace QuantLib {
       public:
         // constructor
         FdDividendShoutOption(
-                 Option::Type type, double underlying,
-                 double strike, Spread dividendYield, Rate riskFreeRate,
-                 Time residualTime, double volatility,
-                 const std::vector<double>& dividends = std::vector<double>(),
+                 Option::Type type, Real underlying,
+                 Real strike, Spread dividendYield, Rate riskFreeRate,
+                 Time residualTime, Volatility volatility,
+                 const std::vector<Real>& dividends = std::vector<Real>(),
                  const std::vector<Time>& exdivdates = std::vector<Time>(),
-                 int timeSteps = 100, int gridPoints = 100);
+                 Size timeSteps = 100, Size gridPoints = 100);
 
         boost::shared_ptr<SingleAssetOption> clone() const;
-        double dividendRho() const {
+        Real dividendRho() const {
             QL_FAIL("not implemented");
         }
       protected:

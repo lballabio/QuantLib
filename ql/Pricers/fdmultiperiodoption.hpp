@@ -30,13 +30,13 @@ namespace QuantLib {
 
     class FdMultiPeriodOption : public FdBsmOption {
       public:
-        double controlVariateCorrection() const;
+        Real controlVariateCorrection() const;
       protected:
         // constructor
-        FdMultiPeriodOption(Option::Type type, double underlying, 
-                            double strike, Spread dividendYield, 
+        FdMultiPeriodOption(Option::Type type, Real underlying, 
+                            Real strike, Spread dividendYield, 
                             Rate riskFreeRate, Time residualTime, 
-                            double volatility, Size gridPoints,
+                            Volatility volatility, Size gridPoints,
                             const std::vector<Time>& dates,
                             Size timeSteps);
         // Protected attributes
@@ -44,10 +44,10 @@ namespace QuantLib {
         Size dateNumber_;
         Size timeStepPerPeriod_;
         bool lastDateIsResTime_;
-        int lastIndex_;
+        Integer lastIndex_;
         bool firstDateIsZero_;
-        double firstNonZeroDate_;
-        int firstIndex_;
+        Time firstNonZeroDate_;
+        Integer firstIndex_;
         mutable boost::shared_ptr<BlackFormula> analytic_;
         mutable Array prices_, controlPrices_;
         mutable boost::shared_ptr<StandardStepCondition> stepCondition_;
@@ -59,7 +59,7 @@ namespace QuantLib {
         virtual void initializeStepCondition() const;
         virtual void executeIntermediateStep(Size step) const = 0;
       private:
-        mutable double controlVariateCorrection_;
+        mutable Real controlVariateCorrection_;
     };
 
 }

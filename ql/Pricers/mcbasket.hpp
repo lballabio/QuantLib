@@ -33,16 +33,16 @@ namespace QuantLib {
     class McBasket : public McPricer<MultiAsset<PseudoRandom> > {
       public:
         McBasket(Option::Type type,
-                 const std::vector<double>& underlyings,
-                 double strike,
+                 const std::vector<Real>& underlyings,
+                 Real strike,
                  const std::vector<RelinkableHandle<TermStructure> >& 
                                                              dividendYields,
                  const RelinkableHandle<TermStructure>& riskFreeRate,
                  const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
                                                              volatilities,
                  const Matrix& correlation,
-                 double residualTime,
-                 long seed = 0);
+                 Time residualTime,
+                 BigInteger seed = 0);
     };
 #endif
 

@@ -25,8 +25,8 @@ namespace QuantLib {
         class ArithmeticAPOPathPricer : public PathPricer<Path> {
           public:
             ArithmeticAPOPathPricer(Option::Type type,
-                                    double underlying,
-                                    double strike,
+                                    Real underlying,
+                                    Real strike,
                                     const RelinkableHandle<TermStructure>&
                                                                    discountTS)
             : PathPricer<Path>(discountTS),
@@ -37,14 +37,14 @@ namespace QuantLib {
                            "strike less than zero not allowed");
             }
 
-            double operator()(const Path& path) const  {
+            Real operator()(const Path& path) const  {
 
                 Size n = path.size();
                 QL_REQUIRE(n>0,
                            "the path cannot be empty");
 
-                double price1 = underlying_;
-                double averagePrice1 = 0.0;
+                Real price1 = underlying_;
+                Real averagePrice1 = 0.0;
                 Size fixings = n;
                 if (path.timeGrid().mandatoryTimes()[0]==0.0) {
                     averagePrice1 = price1;
@@ -62,15 +62,15 @@ namespace QuantLib {
             }
 
           private:
-            double underlying_;
+            Real underlying_;
             PlainVanillaPayoff payoff_;
         };
 
         class GeometricAPOPathPricer : public PathPricer<Path> {
           public:
             GeometricAPOPathPricer(Option::Type type,
-                                   double underlying,
-                                   double strike,
+                                   Real underlying,
+                                   Real strike,
                                    const RelinkableHandle<TermStructure>&
                                                                    discountTS)
             : PathPricer<Path>(discountTS),
@@ -81,19 +81,19 @@ namespace QuantLib {
                            "strike less than zero not allowed");
             }
 
-            double operator()(const Path& path) const {
+            Real operator()(const Path& path) const {
                 Size n = path.size();
                 QL_REQUIRE(n>0,
                            "the path cannot be empty");
 
-                double geoLogVariation = 0.0;
+                Real geoLogVariation = 0.0;
                 Size i;
                 for (i=0; i<n; i++)
                     geoLogVariation += (n-i)*path[i];
                 Size fixings = n;
                 if (path.timeGrid().mandatoryTimes()[0]==0.0)
                     fixings = n+1;
-                double averagePrice1 = underlying_*
+                Real averagePrice1 = underlying_*
                     QL_EXP(geoLogVariation/fixings);
 
                 return discountTS_->discount(path.timeGrid().back())
@@ -101,7 +101,7 @@ namespace QuantLib {
             }
 
           private:
-            double underlying_;
+            Real underlying_;
             PlainVanillaPayoff payoff_;
         };
 
@@ -110,14 +110,14 @@ namespace QuantLib {
 
     McDiscreteArithmeticAPO::McDiscreteArithmeticAPO(
                     Option::Type type,
-                    double underlying,
-                    double strike,
+                    Real underlying,
+                    Real strike,
                     const RelinkableHandle<TermStructure>& dividendYield,
                     const RelinkableHandle<TermStructure>& riskFreeRate,
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
                     bool controlVariate,
-                    long seed) {
+                    BigInteger seed) {
 
         QL_REQUIRE(times.size() >= 2,
                    "you must have at least 2 time-steps");
@@ -152,9 +152,9 @@ namespace QuantLib {
             Time exercise = times.back();
             Rate r = riskFreeRate->zeroYield(exercise);
             Rate q = dividendYield->zeroYield(exercise);
-            double sigma = volatility->blackVol(exercise,underlying);
+            Volatility sigma = volatility->blackVol(exercise,underlying);
 
-            double controlVariatePrice = DiscreteGeometricAPO(type,
+            Real controlVariatePrice = DiscreteGeometricAPO(type,
                 underlying, strike, q, r, times, sigma).value();
 
             // initialize the Monte Carlo model

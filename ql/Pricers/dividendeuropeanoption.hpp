@@ -33,24 +33,24 @@ namespace QuantLib {
     */
     class DividendEuropeanOption {
       public:
-        DividendEuropeanOption(Option::Type type, double underlying,
-                               double strike, Spread dividendYield, 
+        DividendEuropeanOption(Option::Type type, Real underlying,
+                               Real strike, Spread dividendYield, 
                                Rate riskFreeRate, Time residualTime, 
-                               double volatility,
-                               const std::vector<double>& dividends,
+                               Volatility volatility,
+                               const std::vector<Real>& dividends,
                                const std::vector<Time>& exdivdates);
-        double value() const { return value_; }
-        double delta() const { return delta_; }
-        double gamma() const { return gamma_; }
-        double theta() const { return theta_; }
-        double vega() const { return vega_; }
-        double rho() const { return rho_; }
+        Real value() const { return value_; }
+        Real delta() const { return delta_; }
+        Real gamma() const { return gamma_; }
+        Real theta() const { return theta_; }
+        Real vega() const { return vega_; }
+        Real rho() const { return rho_; }
       private:
-        double value_;
-        double delta_, gamma_;
-        double theta_;
-        double vega_;
-        double rho_;
+        Real value_;
+        Real delta_, gamma_;
+        Real theta_;
+        Real vega_;
+        Real rho_;
     };
 
 #endif

@@ -30,10 +30,10 @@ namespace QuantLib {
     class FdShoutOption : public FdStepConditionOption {
       public:
         // constructor
-        FdShoutOption(Option::Type type, double underlying, double strike,
+        FdShoutOption(Option::Type type, Real underlying, Real strike,
                       Spread dividendYield, Rate riskFreeRate,
-                      Time residualTime, double volatility,
-                      int timeSteps, int gridPoints);
+                      Time residualTime, Volatility volatility,
+                      Size timeSteps, Size gridPoints);
         void initializeStepCondition() const;
 
         // This method must be implemented to imply volatilities
@@ -47,10 +47,10 @@ namespace QuantLib {
     // inline definitions
 
     inline FdShoutOption::FdShoutOption(
-                       Option::Type type, double underlying,
-                       double strike, Spread dividendYield, Rate riskFreeRate,
-                       Time residualTime, double volatility, int timeSteps,
-                       int gridPoints)
+                       Option::Type type, Real underlying,
+                       Real strike, Spread dividendYield, Rate riskFreeRate,
+                       Time residualTime, Volatility volatility, 
+                       Size timeSteps, Size gridPoints)
     : FdStepConditionOption(type, underlying, strike, dividendYield,
                             riskFreeRate, residualTime, volatility,
                             timeSteps, gridPoints){}

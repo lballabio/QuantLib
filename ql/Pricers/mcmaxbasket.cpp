@@ -23,7 +23,7 @@ namespace QuantLib {
 
         class MaxBasketPathPricer : public PathPricer<MultiPath> {
           public:
-            MaxBasketPathPricer(const std::vector<double>& underlying,
+            MaxBasketPathPricer(const std::vector<Real>& underlying,
                                 const RelinkableHandle<TermStructure>& 
                                                                 discountTS)
             : PathPricer<MultiPath>(discountTS),
@@ -34,7 +34,7 @@ namespace QuantLib {
                 }
             }
 
-            double operator()(const MultiPath& multiPath) const {
+            Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
@@ -42,9 +42,9 @@ namespace QuantLib {
                            + SizeFormatter::toString(underlying_.size()) + 
                            " assets");
 
-                double log_variation;
+                Real log_variation;
                 Size i,j;
-                double maxPrice = -QL_MAX_DOUBLE;
+                Real maxPrice = -QL_MAX_DOUBLE;
                 for(j = 0; j < numAssets; j++) {
                     log_variation = 0.0;
                     for(i = 0; i < numSteps; i++)
@@ -57,22 +57,22 @@ namespace QuantLib {
             }
 
           private:
-            std::vector<double> underlying_;
+            std::vector<Real> underlying_;
         };
 
     }
 
 
     McMaxBasket::McMaxBasket(
-               const std::vector<double>& underlying,
+               const std::vector<Real>& underlying,
                const std::vector<RelinkableHandle<TermStructure> >& 
                                                              dividendYield,
                const RelinkableHandle<TermStructure>& riskFreeRate,
                const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
                                                              volatilities,
                const Matrix& correlation,
-               double residualTime,
-               long seed) {
+               Time residualTime,
+               BigInteger seed) {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
                    "correlation matrix not square");

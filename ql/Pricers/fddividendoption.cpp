@@ -23,12 +23,12 @@
 namespace QuantLib {
 
     FdDividendOption::FdDividendOption(
-                       Option::Type type, double underlying,
-                       double strike, Spread dividendYield, Rate riskFreeRate,
-                       Time residualTime, double volatility,
-                       const std::vector<double>& dividends,
+                       Option::Type type, Real underlying,
+                       Real strike, Spread dividendYield, Rate riskFreeRate,
+                       Time residualTime, Volatility volatility,
+                       const std::vector<Real>& dividends,
                        const std::vector<Time>& exdivdates,
-                       int timeSteps, int gridPoints)
+                       Size timeSteps, Size gridPoints)
     : FdMultiPeriodOption(type, underlying - addElements(dividends),
                           strike, dividendYield, riskFreeRate,
                           residualTime, volatility,
@@ -51,14 +51,14 @@ namespace QuantLib {
     }
 
     void FdDividendOption::initializeControlVariate() const{
-        double riskless = 0.0;
+        Real riskless = 0.0;
         for (Size i=0; i<dividends_.size(); i++)
             riskless += dividends_[i]*QL_EXP(-riskFreeRate_*dates_[i]);
-        double spot = underlying_ + addElements(dividends_) - riskless;
-        double discount = QL_EXP(-riskFreeRate_*residualTime_);
-        double qDiscount = QL_EXP(-dividendYield_*residualTime_);
-        double forward = spot*qDiscount/discount;
-        double variance = volatility_*volatility_*residualTime_;
+        Real spot = underlying_ + addElements(dividends_) - riskless;
+        DiscountFactor discount = QL_EXP(-riskFreeRate_*residualTime_);
+        DiscountFactor qDiscount = QL_EXP(-dividendYield_*residualTime_);
+        Real forward = spot*qDiscount/discount;
+        Real variance = volatility_*volatility_*residualTime_;
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                              new PlainVanillaPayoff(payoff_));
         // theta, rho, and dividend rho should be corrected. However,
@@ -69,8 +69,8 @@ namespace QuantLib {
 
     void FdDividendOption::executeIntermediateStep(Size step) const{
 
-        double newSMin = sMin_ + dividends_[step];
-        double newSMax = sMax_ + dividends_[step];
+        Real newSMin = sMin_ + dividends_[step];
+        Real newSMax = sMax_ + dividends_[step];
 
         setGridLimits(center_ + dividends_[step], dates_[step]);
         if (sMin_ < newSMin){
@@ -101,12 +101,12 @@ namespace QuantLib {
                                                  const Array& oldGrid) const {
         Size j, gridSize = oldGrid.size();
 
-        std::vector<double> logOldGrid(0);
-        std::vector<double> tmpPrices(0);
+        std::vector<Real> logOldGrid(0);
+        std::vector<Real> tmpPrices(0);
 
         for(j = 0; j<gridSize; j++){
-            double p = prices[j];
-            double g = oldGrid[j];
+            Real p = prices[j];
+            Real g = oldGrid[j];
             if (g > 0){
                 logOldGrid.push_back(QL_LOG(g));
                 tmpPrices.push_back(p);

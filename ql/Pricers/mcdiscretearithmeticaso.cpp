@@ -25,7 +25,7 @@ namespace QuantLib {
         class ArithmeticASOPathPricer : public PathPricer<Path> {
           public:
             ArithmeticASOPathPricer(Option::Type type,
-                                    double underlying,
+                                    Real underlying,
                                     const RelinkableHandle<TermStructure>&
                                                                    discountTS)
             : PathPricer<Path>(discountTS), 
@@ -34,14 +34,14 @@ namespace QuantLib {
                            "underlying less/equal zero not allowed");
             }
 
-            double operator()(const Path& path) const  {
+            Real operator()(const Path& path) const  {
 
                 Size n = path.size();
                 QL_REQUIRE(n > 0,
                            "the path cannot be empty");
 
-                double price1 = underlying_;
-                double averageStrike1 = 0.0;
+                Real price1 = underlying_;
+                Real averageStrike1 = 0.0;
                 Size fixings = n;
                 if (path.timeGrid().mandatoryTimes()[0]==0.0) {
                     averageStrike1 = price1;
@@ -60,13 +60,13 @@ namespace QuantLib {
 
           private:
             Option::Type type_;
-            double underlying_;
+            Real underlying_;
         };
 
         class GeometricASOPathPricer : public PathPricer<Path> {
           public:
             GeometricASOPathPricer(Option::Type type,
-                                   double underlying,
+                                   Real underlying,
                                    const RelinkableHandle<TermStructure>&
                                                                    discountTS)
             : PathPricer<Path>(discountTS), 
@@ -75,14 +75,14 @@ namespace QuantLib {
                            "underlying less/equal zero not allowed");
             }
 
-            double operator()(const Path& path) const {
+            Real operator()(const Path& path) const {
 
                 Size n = path.size();
                 QL_REQUIRE(n>0,
                            "the path cannot be empty");
 
-                double logVariation = 0.0;
-                double geoLogVariation = 0.0;
+                Real logVariation = 0.0;
+                Real geoLogVariation = 0.0;
                 Size i;
                 for (i=0; i<n; i++) {
                     logVariation += path[i];
@@ -92,7 +92,7 @@ namespace QuantLib {
                 if (path.timeGrid().mandatoryTimes()[0]==0.0) {
                     fixings = n+1;
                 }
-                double averageStrike1 = underlying_*
+                Real averageStrike1 = underlying_*
                     QL_EXP(geoLogVariation/fixings);
 
                 return discountTS_->discount(path.timeGrid().back())
@@ -102,20 +102,20 @@ namespace QuantLib {
 
           private:
             Option::Type type_;
-            double underlying_;
+            Real underlying_;
         };
 
     }
 
     McDiscreteArithmeticASO::McDiscreteArithmeticASO(
                     Option::Type type,
-                    double underlying,
+                    Real underlying,
                     const RelinkableHandle<TermStructure>& dividendYield,
                     const RelinkableHandle<TermStructure>& riskFreeRate,
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
                     bool controlVariate,
-                    long seed) {
+                    BigInteger seed) {
 
         QL_REQUIRE(times.size() >= 2,
                    "you must have at least 2 time-steps");
@@ -148,9 +148,9 @@ namespace QuantLib {
             Time exercise = times.back();
             Rate r = riskFreeRate->zeroYield(exercise);
             Rate q = dividendYield->zeroYield(exercise);
-            double sigma = volatility->blackVol(exercise,underlying);
+            Volatility sigma = volatility->blackVol(exercise,underlying);
 
-            double controlVariatePrice = DiscreteGeometricASO(type,
+            Real controlVariatePrice = DiscreteGeometricASO(type,
                 underlying, q, r, times, sigma).value();
 
             // initialize the one-dimensional Monte Carlo

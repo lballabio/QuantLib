@@ -39,13 +39,13 @@ namespace QuantLib {
       public:
         McPerformanceOption(
                     Option::Type type,
-                    double underlying,
-                    double moneyness,
+                    Real underlying,
+                    Real moneyness,
                     const RelinkableHandle<TermStructure>& dividendYield,
                     const RelinkableHandle<TermStructure>& riskFreeRate,
                     const RelinkableHandle<BlackVolTermStructure>& volatility,
                     const std::vector<Time>& times,
-                    long seed = 0);
+                    BigInteger seed = 0);
     };
 
 }

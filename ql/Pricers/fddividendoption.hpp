@@ -30,24 +30,24 @@ namespace QuantLib {
       public:
         // constructor
         FdDividendOption(
-                 Option::Type type, double underlying,
-                 double strike, Spread dividendYield, Rate riskFreeRate,
-                 Time residualTime, double volatility,
-                 const std::vector<double>& dividends = std::vector<double>(),
+                 Option::Type type, Real underlying,
+                 Real strike, Spread dividendYield, Rate riskFreeRate,
+                 Time residualTime, Volatility volatility,
+                 const std::vector<Real>& dividends = std::vector<Real>(),
                  const std::vector<Time>& exdivdates = std::vector<Time>(),
-                 int timeSteps = 100, int gridPoints = 100);
-        double dividendRho() const {
+                 Size timeSteps = 100, Size gridPoints = 100);
+        Real dividendRho() const {
             QL_FAIL("not implemented");
         }
       protected:
         void initializeControlVariate() const;
       private:
-        std::vector<double> dividends_;
+        std::vector<Real> dividends_;
         void executeIntermediateStep(Size step) const;
         void movePricesBeforeExDiv(Array& prices,
                                    const Array& newGrid,
                                    const Array& oldGrid) const;
-        double addElements(const std::vector<double>& A) const{
+        Real addElements(const std::vector<Real>& A) const{
             return std::accumulate(A.begin(), A.end(), 0.0);
         }
     };

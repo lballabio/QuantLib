@@ -24,8 +24,8 @@ namespace QuantLib {
 
         class HimalayaPathPricer : public PathPricer<MultiPath> {
           public:
-            HimalayaPathPricer(const std::vector<double>& underlying,
-                               double strike,
+            HimalayaPathPricer(const std::vector<Real>& underlying,
+                               Real strike,
                                const RelinkableHandle<TermStructure>& 
                                                                 discountTS)
             : PathPricer<MultiPath>(discountTS),
@@ -38,7 +38,7 @@ namespace QuantLib {
                 }
             }
 
-            double operator()(const MultiPath& multiPath) const {
+            Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
@@ -47,10 +47,10 @@ namespace QuantLib {
                            " assets");
                 QL_REQUIRE(numAssets>0, "no asset given");
 
-                std::vector<double> prices(underlying_);
-                double averagePrice = 0;
+                std::vector<Real> prices(underlying_);
+                Real averagePrice = 0;
                 std::vector<bool> remainingAssets(numAssets, true);
-                double bestPrice;
+                Real bestPrice;
                 Size removeAsset, i, j;
                 Size fixings = numSteps;
                 if (multiPath[0].timeGrid().mandatoryTimes()[0] == 0.0) {
@@ -84,7 +84,7 @@ namespace QuantLib {
                     averagePrice += bestPrice;
                 }
                 averagePrice /= QL_MIN(fixings, numAssets);
-                double optPrice = QL_MAX(averagePrice - strike_, 0.0);
+                Real optPrice = QL_MAX(averagePrice - strike_, 0.0);
 
                 return discountTS_->discount(multiPath[0].timeGrid().back())
                     * optPrice;
@@ -92,23 +92,23 @@ namespace QuantLib {
 
           private:
             Option::Type type_;
-            std::vector<double> underlying_;
-            double strike_;
+            std::vector<Real> underlying_;
+            Real strike_;
         };
 
     }
 
     McHimalaya::McHimalaya(
-               const std::vector<double>& underlying,
+               const std::vector<Real>& underlying,
                const std::vector<RelinkableHandle<TermStructure> >& 
                                                              dividendYield,
                const RelinkableHandle<TermStructure>& riskFreeRate,
                const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
                                                              volatilities,
                const Matrix& correlation,
-               double strike,
+               Real strike,
                const std::vector<Time>& times,
-               long seed) {
+               BigInteger seed) {
 
         Size  n = correlation.rows();
         QL_REQUIRE(correlation.columns() == n,

@@ -30,15 +30,15 @@ namespace QuantLib {
     class FdBermudanOption : public FdMultiPeriodOption {
       public:
         // constructor
-        FdBermudanOption(Option::Type type, double underlying,
-                         double strike, Spread dividendYield, 
+        FdBermudanOption(Option::Type type, Real underlying,
+                         Real strike, Spread dividendYield, 
                          Rate riskFreeRate, Time residualTime, 
-                         double volatility,
+                         Volatility volatility,
                          const std::vector<Time>& dates = std::vector<Time>(),
                          Size timeSteps = 100, Size gridPoints = 100);
         boost::shared_ptr<SingleAssetOption> clone() const;
       protected:
-        double extraTermInBermudan ;
+        Real extraTermInBermudan ;
         void initializeStepCondition() const;
         void executeIntermediateStep(Size ) const;
     };
