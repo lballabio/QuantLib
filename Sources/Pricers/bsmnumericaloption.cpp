@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.22  2001/01/19 08:52:07  marmar
+    Small bug fixed. Initialization of grid vectors is now after
+     the determination of their size
+
     Revision 1.21  2001/01/08 11:44:18  lballabio
     Array back into QuantLib namespace - Math namespace broke expression templates, go figure
 
@@ -50,28 +54,27 @@ namespace QuantLib {
         using FiniteDifferences::BoundaryCondition;
         using FiniteDifferences::BSMOperator;
         
-        double BSMNumericalOption::dVolMultiplier=0.0001; 
-        double BSMNumericalOption::dRMultiplier=0.0001; 
+        double BSMNumericalOption::dVolMultiplier = 0.0001; 
+        double BSMNumericalOption::dRMultiplier = 0.0001; 
         
         BSMNumericalOption::BSMNumericalOption(BSMNumericalOption::Type type,
             double underlying, double strike, Rate underlyingGrowthRate, 
             Rate riskFreeRate, Time residualTime, double volatility, 
             int gridPoints)
         : BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,
-            residualTime,volatility), theGridPoints(gridPoints), 
-            rhoComputed(false), vegaComputed(false), 
-            theInitialPrices(theGridPoints) {
-            
+            residualTime,volatility),rhoComputed(false), vegaComputed(false){
+            theGridPoints=gridPoints;
             // The following is a safety check to be sure we have enough grid 
             // points.
             #if defined(QL_NUM_OPT_MIN_GRID_POINTS) && \
                 defined(QL_NUM_OPT_GRID_POINTS_PER_YEAR)
-                theGridPoints = QL_MAX(theGridPoints, 
+                theGridPoints = QL_MAX(gridPoints, 
                   residualTime>1.0 ? (int)(QL_NUM_OPT_MIN_GRID_POINTS + 
                   (residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) :
                   QL_NUM_OPT_MIN_GRID_POINTS);
             #endif
             theGrid = Array(theGridPoints);
+            theInitialPrices = Array(theGridPoints);
             hasBeenCalculated = false;
         }
         
