@@ -225,7 +225,7 @@ void BasketOptionTest::testEuroTwoValues() {
         {BasketOption::Max,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.10,  3.223, 1.0e-3},
 
         //      basketType,   optionType, strike,    s1,    s2,   q1,   q2,    r,    t,   v1,   v2,  rho,  result, tol
-        // data from "Option pricing formulas" VB code + spreadsheet 
+        // data from "Option pricing formulas" VB code + spreadsheet
         {BasketOption::Min, Option::Call,   98.0, 100.0, 105.0, 0.00, 0.00, 0.05, 0.50, 0.11, 0.16, 0.63,  4.8177, 1.0e-4},
         {BasketOption::Max, Option::Call,   98.0, 100.0, 105.0, 0.00, 0.00, 0.05, 0.50, 0.11, 0.16, 0.63, 11.6323, 1.0e-4},
         {BasketOption::Min,  Option::Put,   98.0, 100.0, 105.0, 0.00, 0.00, 0.05, 0.50, 0.11, 0.16, 0.63,  2.0376, 1.0e-4},
@@ -250,20 +250,20 @@ void BasketOptionTest::testEuroTwoValues() {
     boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS1 =
         makeFlatVolatility(vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS2 =
         makeFlatVolatility(vol2, dc);
 
     boost::shared_ptr<PricingEngine> engine(new StulzEngine);
 
     double mcRelativeErrorTolerance = 0.01;
-    //boost::shared_ptr<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics> 
+    //boost::shared_ptr<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
       //  (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
     boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 10000, 
-                                                     Null<double>(), 100000, 
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 10000,
+                                                     Null<double>(), 100000,
                                                      false, 42));
 
     Date today = Date::todaysDate();
@@ -307,7 +307,7 @@ void BasketOptionTest::testEuroTwoValues() {
             correlationMatrix[j][j] = 1.0;
         }
 
-        BasketOption basketOption(values[i].basketType, procs, payoff, 
+        BasketOption basketOption(values[i].basketType, procs, payoff,
                                   exercise, correlationMatrix, engine);
 
         // analytic engine
@@ -315,10 +315,10 @@ void BasketOptionTest::testEuroTwoValues() {
         double expected = values[i].result;
         double error = QL_FABS(calculated-expected);
         if (error > values[i].tol) {
-            REPORT_FAILURE_2("value", values[i].basketType, payoff, exercise, 
-                             values[i].s1, values[i].s2, values[i].q1, 
-                             values[i].q2, values[i].r, today, values[i].v1, 
-                             values[i].v2, values[i].rho, values[i].result, 
+            REPORT_FAILURE_2("value", values[i].basketType, payoff, exercise,
+                             values[i].s1, values[i].s2, values[i].q1,
+                             values[i].q2, values[i].r, today, values[i].v1,
+                             values[i].v2, values[i].rho, values[i].result,
                              calculated, error, values[i].tol);
         }
 
@@ -327,11 +327,11 @@ void BasketOptionTest::testEuroTwoValues() {
         calculated = basketOption.NPV();
         double relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
-            REPORT_FAILURE_2("MC value", values[i].basketType, payoff, 
+            REPORT_FAILURE_2("MC value", values[i].basketType, payoff,
                              exercise, values[i].s1, values[i].s2,
                              values[i].q1, values[i].q2, values[i].r,
                              today, values[i].v1, values[i].v2, values[i].rho,
-                             values[i].result, calculated, relError, 
+                             values[i].result, calculated, relError,
                              mcRelativeErrorTolerance);
         }
 
@@ -348,11 +348,11 @@ void BasketOptionTest::testBarraquandThreeValues() {
         Data from:
         "Numerical Valuation of High Dimensional American Securities"
         Barraquand, J. and Martineau, D.
-        Journal of Financial and Quantitative Analysis 1995 3(30) 383-405        
+        Journal of Financial and Quantitative Analysis 1995 3(30) 383-405
     */
     BasketOptionThreeData  values[] = {
         // time in months is with 30 days to the month..
-        // basketType, optionType,       strike,    s1,    s2,   s3,    r,    t,   v1,   v2,  v3,  rho, euro, american,         
+        // basketType, optionType,       strike,    s1,    s2,   s3,    r,    t,   v1,   v2,  v3,  rho, euro, american,
         // Table 2
         // not using 4 month case to speed up test
   /*      {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 8.59, 8.59},
@@ -406,8 +406,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 2.65, 5.00},
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 0.17, 0.20},
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 0.91, 1.19},
-        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 2.63, 5.00},        
-       
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 2.63, 5.00},
+
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 0.01, 0.01},
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 0.84, 0.08},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 4.18, 5.00},
@@ -416,7 +416,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 4.49, 5.00},
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 0.41, 0.42},
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 1.87, 1.96},
-        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.70, 5.20}        
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.70, 5.20}
         */
     };
 
@@ -432,28 +432,28 @@ void BasketOptionTest::testBarraquandThreeValues() {
     boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS1 =
         makeFlatVolatility(vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS2 =
         makeFlatVolatility(vol2, dc);
     boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS3 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS3 =
         makeFlatVolatility(vol3, dc);
 
     Size maxSamples = 200000;
     double mcRelativeErrorTolerance = 0.01;
     double mcAmericanRelativeErrorTolerance = 0.1;
     boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 
-                                                     Null<int>(), 0.005, 
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false,
+                                                     Null<int>(), 0.005,
                                                      maxSamples, false, 42));
 
     // use a 3D sobol sequence...
     // Think long and hard before moving to more than 1 timestep....
     boost::shared_ptr<PricingEngine> mcQuasiEngine(
-        new MCBasketEngine<LowDiscrepancy, Statistics>(1, false, false, 
-                                                       Null<int>(), 0.005, 
+        new MCBasketEngine<LowDiscrepancy, Statistics>(1, false, false,
+                                                       Null<int>(), 0.005,
                                                        maxSamples, false, 42));
 
     Size requiredSamples = 20000;
@@ -471,7 +471,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
 
         Date exDate = today.plusDays(int(values[i].t*30+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today, 
+        boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
 
         spot1 ->setValue(values[i].s1);
@@ -513,23 +513,23 @@ void BasketOptionTest::testBarraquandThreeValues() {
             correlation[j][j] = 1.0;
         }
 
-        BasketOption euroBasketOption(values[i].basketType, procs, payoff, 
+        BasketOption euroBasketOption(values[i].basketType, procs, payoff,
                                   exercise, correlation, mcQuasiEngine);
 
         double expected = values[i].euroValue;
         double calculated = euroBasketOption.NPV();
         double relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
-            REPORT_FAILURE_3("MC Quasi value", values[i].basketType, payoff, 
-                             exercise, values[i].s1, values[i].s2, 
-                             values[i].s3, values[i].r, today, values[i].v1, 
+            REPORT_FAILURE_3("MC Quasi value", values[i].basketType, payoff,
+                             exercise, values[i].s1, values[i].s2,
+                             values[i].s3, values[i].r, today, values[i].v1,
                              values[i].v2, values[i].v3, values[i].rho,
-                             values[i].euroValue, calculated, relError, 
+                             values[i].euroValue, calculated, relError,
                              mcRelativeErrorTolerance);
         }
 
         //std::cout<<"\neuro " << calculated;
-        BasketOption amBasketOption(values[i].basketType, procs, payoff, 
+        BasketOption amBasketOption(values[i].basketType, procs, payoff,
                                   amExercise, correlation, mcLSMCEngine);
 
         expected = values[i].amValue;
@@ -537,11 +537,11 @@ void BasketOptionTest::testBarraquandThreeValues() {
         //std::cout<<"\namerican " << calculated << "\n";
         relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcAmericanRelativeErrorTolerance) {
-            REPORT_FAILURE_3("MC LSMC Value", values[i].basketType, payoff, 
-                             exercise, values[i].s1, values[i].s2, 
-                             values[i].s3, values[i].r, today, values[i].v1, 
+            REPORT_FAILURE_3("MC LSMC Value", values[i].basketType, payoff,
+                             exercise, values[i].s1, values[i].s2,
+                             values[i].s3, values[i].r, today, values[i].v1,
                              values[i].v2, values[i].v3, values[i].rho,
-                             values[i].amValue, calculated, relError, 
+                             values[i].amValue, calculated, relError,
                              mcRelativeErrorTolerance);
         }
 
@@ -556,7 +556,7 @@ void BasketOptionTest::testTavellaValues() {
     /*
         Data from:
         "Quantitative Methods in Derivatives Pricing"
-        Tavella, D. A.   -   Wiley (2002)  
+        Tavella, D. A.   -   Wiley (2002)
     */
     BasketOptionThreeData  values[] = {
         // time in months is with 30 days to the month..
@@ -576,13 +576,13 @@ void BasketOptionTest::testTavellaValues() {
     boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS1 =
         makeFlatVolatility(vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS2 =
         makeFlatVolatility(vol2, dc);
     boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS3 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS3 =
         makeFlatVolatility(vol3, dc);
 
     double mcRelativeErrorTolerance = 0.01;
@@ -646,7 +646,7 @@ void BasketOptionTest::testTavellaValues() {
     correlation[2][1] = 0.3;
     correlation[1][2] = 0.3;
 
-    BasketOption basketOption(values[0].basketType, procs, payoff, 
+    BasketOption basketOption(values[0].basketType, procs, payoff,
                                 exercise, correlation, mcLSMCEngine);
 
     double calculated = basketOption.NPV();
@@ -654,11 +654,11 @@ void BasketOptionTest::testTavellaValues() {
     double errorEstimate = basketOption.errorEstimate();
     double relError = relativeError(calculated, expected, values[0].s1);
     if (relError > mcRelativeErrorTolerance ) {
-        REPORT_FAILURE_3("MC LSMC Tavella value", values[0].basketType, 
-                         payoff, exercise, values[0].s1, values[0].s2, 
-                         values[0].s3, values[0].r, today, values[0].v1, 
+        REPORT_FAILURE_3("MC LSMC Tavella value", values[0].basketType,
+                         payoff, exercise, values[0].s1, values[0].s2,
+                         values[0].s3, values[0].r, today, values[0].v1,
                          values[0].v2, values[0].v3, values[0].rho,
-                         values[0].amValue, calculated, errorEstimate, 
+                         values[0].amValue, calculated, errorEstimate,
                          mcRelativeErrorTolerance);
     }
 }
@@ -719,7 +719,7 @@ void BasketOptionTest::testOneDAmericanValues() {
     boost::shared_ptr<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = 
+    boost::shared_ptr<BlackVolTermStructure> volTS1 =
         makeFlatVolatility(vol1, dc);
 
     Size requiredSamples = 10000;
@@ -744,8 +744,8 @@ void BasketOptionTest::testOneDAmericanValues() {
     Matrix correlation(1, 1, 1.0);
 
     boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, 
-                                                     Null<int>(), 0.005, 
+        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false,
+                                                     Null<int>(), 0.005,
                                                      Null<int>(), false, 42));
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -753,7 +753,7 @@ void BasketOptionTest::testOneDAmericanValues() {
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
-        boost::shared_ptr<Exercise> exercise(new AmericanExercise(today, 
+        boost::shared_ptr<Exercise> exercise(new AmericanExercise(today,
                                                                   exDate));
 
         spot1 ->setValue(values[i].s);
@@ -761,12 +761,12 @@ void BasketOptionTest::testOneDAmericanValues() {
         rRate ->setValue(values[i].r);
         qRate ->setValue(values[i].q);
 
-        BasketOption basketOption(BasketOption::Max, procs, payoff, 
+        BasketOption basketOption(BasketOption::Max, procs, payoff,
                                     exercise, correlation, mcLSMCEngine);
 
         double calculated = basketOption.NPV();
         double expected = values[i].result;
-        double errorEstimate = basketOption.errorEstimate();
+        // double errorEstimate = basketOption.errorEstimate();
         double relError = relativeError(calculated, expected, values[i].s);
         // double error = QL_FABS(calculated-expected);
 

@@ -550,6 +550,12 @@ namespace {
                                   const std::string& fileName,
                                   const std::string& arrayName) {
 
+        #ifndef PRINT_ONLY
+        // just to avoid Borland warning
+        fileName;
+        arrayName;
+        #endif
+
         Array point;
         unsigned long dim;
         unsigned long seed = 123456;
