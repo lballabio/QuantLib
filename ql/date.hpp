@@ -177,8 +177,6 @@ namespace QuantLib {
     bool operator>(const Date&, const Date&);
     /*! \relates Date */
     bool operator>=(const Date&, const Date&);
-    /*! \relates Date */
-    std::ostream& operator<< (std::ostream&, const Date&);
 
 
     // inline definitions

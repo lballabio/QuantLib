@@ -1419,17 +1419,6 @@ namespace QuantLib {
 
     #endif
 
-    inline std::ostream& operator<< (std::ostream& stream, const Array& array) {
-        stream << "[ ";
-        for (Size i=0; i<array.size(); i++) {
-            if (i>0)
-                stream << " ; ";
-            stream << array[i];
-        }
-        stream << " ]";
-        return stream;
-    }
-
 }
 
 

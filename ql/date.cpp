@@ -287,8 +287,4 @@ namespace QuantLib {
         return 73050;    // Dec 31st, 2099
     }
 
-    std::ostream& operator<< (std::ostream& stream, const Date& date) {
-        return stream << DateFormatter::toString(date, true);
-    }
-
 }

@@ -29,6 +29,8 @@
 
 #include <ql/date.hpp>
 #include <ql/currency.hpp>
+#include <ql/array.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -45,6 +47,16 @@ namespace QuantLib {
             int digits = 0);
     };
 
+    //! Formats arrays for output
+    class ArrayFormatter {
+      public:
+        static std::string toString(const Array& x, int precision = 6,
+            int digits = 0, int elementsPerRow = QL_MAX_INT);
+    };
+
+    /*! \relates Array */
+    std::ostream& operator<< (std::ostream&, const Array&);
+    
     //! Formats amounts in Euro for output
     /*! Formatting follows Euro convention (x,xxx,xxx.xx) */
     class EuroFormatter {
@@ -67,6 +79,9 @@ namespace QuantLib {
       public:
         static std::string toString(const Date& d, bool shortFormat = false);
     };
+
+    /*! \relates Date */
+    std::ostream& operator<< (std::ostream&, const Date&);
 
     //! Formats currencies for output
     class CurrencyFormatter {
