@@ -19,7 +19,7 @@ include_HEADERS = calendar.h \
 	null.h \
 	options.h qldefines.h \
 	qlerrors.h quantlib.h \
-	rate.h \
+	rate.h risktool.h \
 	solver1d.h spread.h \
 	swaptionvolsurface.h \
 	termstructure.h
