@@ -66,7 +66,7 @@ CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
 # Generic rules
 {$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
     $(CC) -c -q $(CC_OPTS) $<
-.cpp.obj$(_D):
+{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
     $(CC) -c -q $(CC_OPTS) -o$@ $<
 
 
