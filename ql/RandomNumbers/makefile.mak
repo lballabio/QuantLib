@@ -45,6 +45,8 @@ TLIB_OPTS    = /P128
     $(CC) $(CC_OPTS) $<
 .cpp.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
+.c.obj$(_D):
+    $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
 # static library
