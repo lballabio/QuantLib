@@ -77,7 +77,7 @@ namespace QuantLib {
 	        Matrix A(Arg);
             int wantu = 1;  					/* boolean */
             int wantv = 1;  					/* boolean */
-	        int i=0, j=0, k=0;
+	        int i, j, k;
 
             // Reduce A to bidiagonal form, storing the diagonal elements
             // in s and the super-diagonal elements in e.
@@ -264,8 +264,8 @@ namespace QuantLib {
             int iter = 0;
             double eps = pow(2.0,-52.0);
             while (p > 0) {
-                int k=0;
-		        int kase=0;
+                int k;
+		        int kase;
 
                 // Here is where a test for too many iterations would go.
 
@@ -371,7 +371,7 @@ namespace QuantLib {
                     case 3: {
 
                         // Calculate the shift.
-                        double asdfasdf = QL_MAX(1.12, 1.342);
+//                        double asdfasdf = QL_MAX(1.12, 1.342);
                         double scale = QL_MAX(QL_MAX(QL_MAX(QL_MAX(
                                 QL_FABS(s[p-1]),QL_FABS(s[p-2])),QL_FABS(e[p-2])), 
                                 QL_FABS(s[k])),QL_FABS(e[k]));

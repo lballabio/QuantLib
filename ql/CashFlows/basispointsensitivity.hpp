@@ -158,7 +158,7 @@ namespace QuantLib {
 	   //! \name Inspectors
 	   //@{
 	   //! returns the number of timeValue entries
-	   int size() const { return entries_.size(); }
+	   Size size() const { return entries_.size(); }
 	   //@}
 	   //! \name TimeBasket data access
 	   //@{
