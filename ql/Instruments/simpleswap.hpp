@@ -44,10 +44,6 @@ namespace QuantLib {
                 double nominal,
                 // fixed leg
                 int fixedFrequency,
-                /* fixed coupon rates (if the vector length is less than
-                   the number of coupons, the last rate will be used for
-                   the remaining coupons)
-                */
                 Rate fixedRate,
                 bool fixedIsAdjusted,
                 const DayCounter& fixedDayCount,
