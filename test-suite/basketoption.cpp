@@ -647,8 +647,9 @@ void BasketOptionTest::testTavellaValues() {
     BasketOption basketOption(values[0].basketType, procs, payoff, 
                                 exercise, correlation, mcLSMCEngine);
                                 
-    double calculated = basketOption.NPV();
+    double calculated;
 
+    //calculated = basketOption.NPV();
     //std::cout << "Euro value " << calculated << std::endl;
 
     //basketOption.setPricingEngine(mcLSMCEngine);
@@ -694,7 +695,7 @@ void BasketOptionTest::testOneDAmericanValues() {
     Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
     
-    double mcRelativeErrorTolerance = 0.01;    
+    //double mcRelativeErrorTolerance = 0.01;    
     Size requiredSamples = 1000;
     Size timeSteps = 20;
     long seed = 0;
@@ -737,15 +738,16 @@ void BasketOptionTest::testOneDAmericanValues() {
         BasketOption basketOption(BasketOption::Max, procs, payoff, 
                                     exercise, correlation, mcLSMCEngine);
                                     
-        double calculated = basketOption.NPV();
+        double calculated;
 
+        //calculated = basketOption.NPV();
         //std::cout << "Euro value " << calculated << std::endl;
 
         //basketOption.setPricingEngine(mcLSMCEngine);
         double expected = values[i].result;    
         calculated = basketOption.NPV();
         double errorEstimate = basketOption.errorEstimate();
-        double relError = relativeError(calculated, expected, values[i].s);
+        //double relError = relativeError(calculated, expected, values[i].s);
         double error = QL_FABS(calculated-expected);
             
         if (error > values[i].tol) {
