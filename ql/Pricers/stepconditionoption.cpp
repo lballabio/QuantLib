@@ -49,7 +49,7 @@ namespace QuantLib {
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             int timeSteps, int gridPoints)
-        : BSMNumericalOption(type, underlying, strike, dividendYield,
+        : BsmFdOption(type, underlying, strike, dividendYield,
             riskFreeRate, residualTime, volatility, gridPoints),
             timeSteps_(timeSteps) {}
 

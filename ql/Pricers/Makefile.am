@@ -10,7 +10,7 @@ include_HEADERS = \
     barrieroption.hpp \
     bermudanoption.hpp \
     binaryoption.hpp \
-    bsmnumericaloption.hpp \
+    bsmfdoption.hpp \
     cliquetoption.hpp \
     continuousgeometricapo.hpp \
     couponbondoption.hpp \
@@ -46,7 +46,7 @@ libPricers_la_SOURCES = \
     barrieroption.cpp \
     bermudanoption.cpp \
     binaryoption.cpp \
-    bsmnumericaloption.cpp \
+    bsmfdoption.cpp \
     cliquetoption.cpp \
     couponbondoption.cpp \
     discretegeometricaso.cpp \

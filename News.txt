@@ -24,6 +24,7 @@ Changes since Release 0.2.1:
     VARIOUS
     - Handle is now castable to an Handle of a compatible type
     - better spline interpolation algorithm
+    - added downsideVariance to the Statistics class
     - kustosis() and skewness() now handles the case of stddev == 0 and/or variance == 0
     - enforced MS VC compilation settings
 

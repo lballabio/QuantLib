@@ -19,7 +19,7 @@ OBJS = \
        barrieroption.obj$(_D) \
        bermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
-       bsmnumericaloption.obj$(_D) \
+       bsmfdoption.obj$(_D) \
        cliquetoption.obj$(_D) \
        couponbondoption.obj$(_D) \
        discretegeometricaso.obj$(_D) \

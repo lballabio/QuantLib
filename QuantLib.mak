@@ -63,8 +63,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
-	-@erase "$(INTDIR)\bsmnumericaloption.obj"
-	-@erase "$(INTDIR)\bsmnumericaloption.sbr"
+	-@erase "$(INTDIR)\bsmfdoption.obj"
+	-@erase "$(INTDIR)\bsmfdoption.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
@@ -323,7 +323,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\bsmnumericaloption.sbr" \
+	"$(INTDIR)\bsmfdoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\couponbondoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
@@ -430,7 +430,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\bsmnumericaloption.obj" \
+	"$(INTDIR)\bsmfdoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\couponbondoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
@@ -526,8 +526,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
-	-@erase "$(INTDIR)\bsmnumericaloption.obj"
-	-@erase "$(INTDIR)\bsmnumericaloption.sbr"
+	-@erase "$(INTDIR)\bsmfdoption.obj"
+	-@erase "$(INTDIR)\bsmfdoption.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
@@ -787,7 +787,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\bsmnumericaloption.sbr" \
+	"$(INTDIR)\bsmfdoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\couponbondoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
@@ -894,7 +894,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\bsmnumericaloption.obj" \
+	"$(INTDIR)\bsmfdoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\couponbondoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
@@ -990,8 +990,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
-	-@erase "$(INTDIR)\bsmnumericaloption.obj"
-	-@erase "$(INTDIR)\bsmnumericaloption.sbr"
+	-@erase "$(INTDIR)\bsmfdoption.obj"
+	-@erase "$(INTDIR)\bsmfdoption.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
@@ -1250,7 +1250,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\bsmnumericaloption.sbr" \
+	"$(INTDIR)\bsmfdoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\couponbondoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
@@ -1357,7 +1357,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\bsmnumericaloption.obj" \
+	"$(INTDIR)\bsmfdoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\couponbondoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
@@ -1453,8 +1453,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
-	-@erase "$(INTDIR)\bsmnumericaloption.obj"
-	-@erase "$(INTDIR)\bsmnumericaloption.sbr"
+	-@erase "$(INTDIR)\bsmfdoption.obj"
+	-@erase "$(INTDIR)\bsmfdoption.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
@@ -1714,7 +1714,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
-	"$(INTDIR)\bsmnumericaloption.sbr" \
+	"$(INTDIR)\bsmfdoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\couponbondoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
@@ -1821,7 +1821,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\bsmnumericaloption.obj" \
+	"$(INTDIR)\bsmfdoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\couponbondoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
@@ -2158,9 +2158,9 @@ SOURCE=.\ql\Pricers\binaryoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\bsmnumericaloption.cpp
+SOURCE=.\ql\Pricers\bsmfdoption.cpp
 
-"$(INTDIR)\bsmnumericaloption.obj"	"$(INTDIR)\bsmnumericaloption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\bsmfdoption.obj"	"$(INTDIR)\bsmfdoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

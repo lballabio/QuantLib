@@ -34,7 +34,7 @@
 #ifndef quantlib_multi_period_option_pricer_h
 #define quantlib_multi_period_option_pricer_h
 
-#include <ql/Pricers/bsmnumericaloption.hpp>
+#include <ql/Pricers/bsmfdoption.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <vector>
 
@@ -42,7 +42,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        class MultiPeriodOption : public BSMNumericalOption {
+        class MultiPeriodOption : public BsmFdOption {
           public:
             double controlVariateCorrection() const;
           protected:

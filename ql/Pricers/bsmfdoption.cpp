@@ -22,16 +22,16 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file bsmnumericaloption.cpp
+/*! \file bsmfdoption.cpp
     \brief common code for numerical option evaluation
 
     \fullpath
-    ql/Pricers/%bsmnumericaloption.cpp
+    ql/Pricers/%bsmfdoption.cpp
 */
 
 // $Id$
 
-#include <ql/Pricers/bsmnumericaloption.hpp>
+#include <ql/Pricers/bsmfdoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
@@ -44,7 +44,7 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        BSMNumericalOption::BSMNumericalOption(Option::Type type,
+        BsmFdOption::BsmFdOption(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             size_t gridPoints)
@@ -55,31 +55,31 @@ namespace QuantLib {
                 hasBeenCalculated_ = false;
         }
 
-        double BSMNumericalOption::value() const {
+        double BsmFdOption::value() const {
             if (!hasBeenCalculated_)
                 calculate();
             return value_;
         }
 
-        double BSMNumericalOption::delta() const {
+        double BsmFdOption::delta() const {
             if (!hasBeenCalculated_)
                 calculate();
             return delta_;
         }
 
-        double BSMNumericalOption::gamma() const {
+        double BsmFdOption::gamma() const {
             if(!hasBeenCalculated_)
                 calculate();
             return gamma_;
         }
 
-        double BSMNumericalOption::theta() const {
+        double BsmFdOption::theta() const {
             if(!hasBeenCalculated_)
                 calculate();
             return theta_;
         }
 
-        void BSMNumericalOption::setGridLimits(double center,
+        void BsmFdOption::setGridLimits(double center,
                                                double timeDelay) const {
 
             center_ = center;
@@ -103,7 +103,7 @@ namespace QuantLib {
             }
         }
 
-        void BSMNumericalOption::initializeGrid() const {
+        void BsmFdOption::initializeGrid() const {
             gridLogSpacing_ = (QL_LOG(sMax_)-QL_LOG(sMin_))/(gridPoints_-1);
             double edx = QL_EXP(gridLogSpacing_);
             grid_[0] = sMin_;
@@ -112,7 +112,7 @@ namespace QuantLib {
                 grid_[j] = grid_[j-1]*edx;
         }
 
-        void BSMNumericalOption::initializeInitialCondition() const {
+        void BsmFdOption::initializeInitialCondition() const {
             size_t j;
             switch (type_) {
               case Option::Call:
@@ -128,11 +128,11 @@ namespace QuantLib {
                     initialPrices_[j] = QL_FABS(strike_-grid_[j]);
                 break;
               default:
-                throw Error("BSMNumericalOption: invalid option type");
+                throw Error("BsmFdOption: invalid option type");
             }
         }
 
-        void BSMNumericalOption::initializeOperator() const {
+        void BsmFdOption::initializeOperator() const {
             finiteDifferenceOperator_ = BSMOperator(gridPoints_,
                 gridLogSpacing_, riskFreeRate_, dividendYield_, volatility_);
 

@@ -48,7 +48,7 @@ namespace QuantLib {
             Rate riskFreeRate, Time residualTime, double volatility,
             int gridPoints, const std::vector<Time>& dates,
             int timeSteps)
-        : BSMNumericalOption(type, underlying, strike,
+        : BsmFdOption(type, underlying, strike,
                              dividendYield, riskFreeRate,
                              residualTime, volatility,
                              gridPoints),

@@ -663,11 +663,11 @@ SOURCE=.\ql\Pricers\binaryoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\bsmnumericaloption.cpp
+SOURCE=.\ql\Pricers\bsmfdoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\bsmnumericaloption.hpp
+SOURCE=.\ql\Pricers\bsmfdoption.hpp
 # End Source File
 # Begin Source File
 

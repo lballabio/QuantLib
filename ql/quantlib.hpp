@@ -170,7 +170,7 @@
 #include <ql/Pricers/barrieroption.hpp>
 #include <ql/Pricers/bermudanoption.hpp>
 #include <ql/Pricers/binaryoption.hpp>
-#include <ql/Pricers/bsmnumericaloption.hpp>
+#include <ql/Pricers/bsmfdoption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>

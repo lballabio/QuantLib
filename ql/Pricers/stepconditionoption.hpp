@@ -34,7 +34,7 @@
 #ifndef quantlib_pricers_stepconditionoption_h
 #define quantlib_pricers_stepconditionoption_h
 
-#include <ql/Pricers/bsmnumericaloption.hpp>
+#include <ql/Pricers/bsmfdoption.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 
 namespace QuantLib {
@@ -42,7 +42,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! %option executing additional code at each time step
-        class StepConditionOption : public BSMNumericalOption {
+        class StepConditionOption : public BsmFdOption {
           protected:
             // constructor
             StepConditionOption(Option::Type type, double underlying,

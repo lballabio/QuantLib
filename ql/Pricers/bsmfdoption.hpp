@@ -22,11 +22,11 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file bsmnumericaloption.hpp
+/*! \file bsmfdoption.hpp
     \brief common code for numerical option evaluation
 
     \fullpath
-    ql/Pricers/%bsmnumericaloption.hpp
+    ql/Pricers/%bsmfdoption.hpp
 */
 
 // $Id$
@@ -42,9 +42,9 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Black-Scholes-Merton option priced numerically
-        class BSMNumericalOption : public SingleAssetOption {
+        class BsmFdOption : public SingleAssetOption {
           public:
-            BSMNumericalOption(Option::Type type, double underlying,
+            BsmFdOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility, size_t gridPoints);
             // accessors
@@ -86,7 +86,7 @@ namespace QuantLib {
 
         // The following is a safety check to be sure we have enough grid
         // points.
-        inline size_t BSMNumericalOption::safeGridPoints(
+        inline size_t BsmFdOption::safeGridPoints(
             size_t gridPoints, Time residualTime) {
             return QL_MAX(gridPoints, residualTime>1.0 ?
                 static_cast<size_t>(
