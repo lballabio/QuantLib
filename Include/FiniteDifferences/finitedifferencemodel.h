@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file finitedifferencemodel.h
     \brief generic finite difference model
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.6  2001/03/12 17:35:10  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.5  2001/03/02 08:36:44  enri
     Shout options added:
     	* BSMAmericanOption is now AmericanOption, same interface
@@ -55,7 +58,7 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        /*    Evolvers do not need to inherit from any base class.
+        /*  Evolvers do not need to inherit from any base class.
             However, they must implement the following interface:
 
             class Evolver {
@@ -65,7 +68,7 @@ namespace QuantLib {
                 // constructors
                 Evolver(const operatorType& D);
                 // member functions
-                void step(arrayType& a. Time t) const;    // The differential operator D could be time-dependent
+                void step(arrayType& a, Time t) const;
                 void setStep(Time dt);
             };
 
@@ -81,7 +84,8 @@ namespace QuantLib {
             // methods
             // arrayType grid() const { return evolver.xGrid(); }
             void rollback(arrayType& a, Time from, Time to, int steps,
-              Handle<StepCondition<arrayType> > condition = Handle<StepCondition<arrayType> >());
+              Handle<StepCondition<arrayType> > condition = 
+                Handle<StepCondition<arrayType> >());
           private:
             Evolver evolver;
         };
@@ -97,11 +101,12 @@ namespace QuantLib {
             evolver.setStep(dt);
             for (int i=0; i<steps; i++, t -= dt) {
                 evolver.step(a,t);
-                if (!IsNull(condition))
+                if (!condition.isNull())
                     condition->applyTo(a,t);
             }
         }
     }
 }
+
 
 #endif

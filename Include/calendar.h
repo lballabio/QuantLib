@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file calendar.h
     \brief Abstract calendar class
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.10  2001/03/12 17:35:09  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.9  2001/02/16 15:19:52  lballabio
     Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
 
@@ -52,6 +55,7 @@
 #include "qlerrors.h"
 #include "date.h"
 #include "handle.h"
+#include "null.h"
 #include <string>
 
 namespace QuantLib {
@@ -60,35 +64,40 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         calendar classes which will be derived from this one.
 
-        It provides methods for determining whether a date is a business day or a
-        holiday for a given market, and for incrementing/decrementing a date of a
-        given number of business days.
+        It provides methods for determining whether a date is a business day 
+        or a holiday for a given market, and for incrementing/decrementing a 
+        date of a given number of business days.
     */
     class Calendar {
       public:
         //! Returns the name of the calendar.
-        /*!    \warning This method is used for output and comparison between calendars.
+        /*! \warning This method is used for output and comparison between 
+            calendars.
             It is <b>not</b> meant to be used for writing switch-on-type code.
         */
         virtual std::string name() const = 0;
-        //! Returns <tt>true</tt> iff the date is a business day for the given market.
-        virtual bool isBusinessDay(const Date&) const = 0;
-        //! Returns <tt>true</tt> iff the date is a holiday for the given market.
-        bool isHoliday(const Date& d) const { return !isBusinessDay(d); }
-        //! Returns the next business day on the given market with respect to the given date and convention.
-        Date roll(const Date&, bool modified = false) const;
-        //! Advances the given date of the givn number of business days and returns the result.
-        /*! \note The input date is not modified.
+        /*! Returns <tt>true</tt> iff the date is a business day for the given 
+            market. 
         */
-        Date advance(const Date&, int n, TimeUnit unit, bool modified = false) const;
+        virtual bool isBusinessDay(const Date&) const = 0;
+        /*! Returns <tt>true</tt> iff the date is a holiday for the given 
+            market.
+        */
+        bool isHoliday(const Date& d) const { return !isBusinessDay(d); }
+        /*! Returns the next business day on the given market with respect to 
+            the given date and convention.
+        */
+        Date roll(const Date&, bool modified = false) const;
+        /*! Advances the given date of the given number of business days and 
+            returns the result.
+            \note The input date is not modified.
+        */
+        Date advance(const Date&, int n, TimeUnit unit, 
+            bool modified = false) const;
     };
 
-    #if defined(QL_DECLARE_TEMPLATE_SPECIALIZATIONS)
-        template<>
-        bool operator==(const Handle<Calendar>&, const Handle<Calendar>&);
-        template<>
-        bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&);
-    #endif
+    bool operator==(const Handle<Calendar>&, const Handle<Calendar>&);
+    bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&);
 
     namespace Calendars {
 
@@ -106,17 +115,16 @@ namespace QuantLib {
 
     // inline definitions
 
-    /*! Returns <tt>true</tt> iff the two calendars belong to the same derived class.
+    /*! Returns <tt>true</tt> iff the two calendars belong to the same derived 
+        class.
         \relates Calendar
     */
-    template<>
     inline bool operator==(const Handle<Calendar>& h1, 
         const Handle<Calendar>& h2) {
             return (h1->name() == h2->name());
     }
 
     /*! \relates Calendar */
-    template<>
     inline bool operator!=(const Handle<Calendar>& h1, 
         const Handle<Calendar>& h2) {
             return (h1->name() != h2->name());

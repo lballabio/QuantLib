@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file boundarycondition.h
     \brief boundary conditions for differential operators
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.7  2001/03/12 17:35:10  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.6  2001/02/19 12:21:40  marmar
     Added trailing _ to protected and private members
 
@@ -52,9 +55,11 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        // WARNING: for Neumann conditions. the value passed must not be the value of the derivative.
-        // Instead, it must be comprehensive of the grid step between the first two points--i.e., it must
-        // be the difference between f[0] and f[1].
+        /* WARNING: for Neumann conditions. the value passed must not be the 
+           value of the derivative. Instead, it must be comprehensive of the 
+           grid step between the first two points--i.e., it must be the 
+           difference between f[0] and f[1].
+        */
 
         class BoundaryCondition {
           public:
@@ -64,7 +69,9 @@ namespace QuantLib {
             BoundaryCondition(Type type = None, double value = Null<double>())
             : type_(type), value_(value) {
                 if (type_ != None)
-                    QL_REQUIRE(!IsNull(value), "A value must be supplied for this type of boundary condition");
+                    QL_REQUIRE(value != Null<double>(), 
+                        "A value must be supplied for "
+                        "this type of boundary condition");
             }
             // access methods
             Type type() const { return type_; }

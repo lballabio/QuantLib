@@ -24,9 +24,12 @@
 
 /*  $Source$
 	$Log$
+	Revision 1.5  2001/03/12 17:35:11  lballabio
+	Removed global IsNull function - could have caused very vicious loops
+
 	Revision 1.4  2001/03/09 12:40:41  lballabio
 	Spring cleaning for SWIG interfaces
-
+	
 */
 
 #ifndef quantlib_interpolation_i
@@ -39,7 +42,6 @@ using QuantLib::Handle;
 using QuantLib::Math::Interpolation;
 using QuantLib::Array;
 typedef Handle<Interpolation<Array::const_iterator, Array::const_iterator> > InterpolationHandle;
-using QuantLib::IsNull;
 %}
 
 // export Handle<Interpolation>
@@ -56,7 +58,7 @@ using QuantLib::IsNull;
 		return (**self)(x);
 	}
 	int __nonzero__() {
-		return (IsNull(*self) ? 0 : 1);
+		return (self->isNull() ? 0 : 1);
 	}
     #endif
 };

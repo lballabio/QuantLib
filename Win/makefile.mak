@@ -147,7 +147,7 @@ LINK_OPTS    = $(LINK_OPTS) -v
 
 TLIB_OPTS    = /P32
 !ifdef DEBUG
-TLIB_OPTS    = /P64
+TLIB_OPTS    = /P128
 !endif
 
 # Generic rules

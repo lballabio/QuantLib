@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.16  2001/03/12 17:35:11  lballabio
+   Removed global IsNull function - could have caused very vicious loops
+
    Revision 1.15  2001/03/12 12:59:01  marmar
    __str__ now represents the object while __repr__ is unchanged
 
@@ -78,6 +81,8 @@ typedef Handle<Instrument> InstrumentHandle;
 	}
 	#if defined(SWIGPYTHON)
 	String __str__() {
+	    if (self->isNull())
+	        return "Null instrument";
     	std::string isin = (*self)->isinCode();
     	if (isin == "")
     		isin = "unknown";
@@ -90,7 +95,7 @@ typedef Handle<Instrument> InstrumentHandle;
 		return ((*self) == other ? 0 : 1);
 	}
 	int __nonzero__() {
-		return (IsNull(*self) ? 0 : 1);
+		return (self->isNull() ? 0 : 1);
 	}
 	#endif
 }

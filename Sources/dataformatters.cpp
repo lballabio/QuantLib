@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file dataformatters.cpp
     \brief classes used to format data for output
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.13  2001/03/12 17:35:11  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.12  2001/02/23 17:24:45  lballabio
     Allow formatting of null dates
 
@@ -93,7 +96,7 @@ namespace QuantLib {
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December" };
         std::string output;
-        if (IsNull(d)) {
+        if (d == Date()) {
             output = "Null date";
         } else {
             int dd = d.dayOfMonth(), mm = int(d.month()), yyyy = d.year();

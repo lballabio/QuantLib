@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.20  2001/03/12 17:35:11  lballabio
+   Removed global IsNull function - could have caused very vicious loops
+
    Revision 1.19  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -85,7 +88,7 @@ typedef Handle<TermStructure> TermStructureHandle;
 	}
 	#if defined (SWIGPYTHON)
 	int __nonzero__() {
-		return (IsNull(*self) ? 0 : 1);
+		return (self->isNull() ? 0 : 1);
 	}
 	#endif
 }

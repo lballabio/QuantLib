@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.10  2001/03/12 17:35:11  lballabio
+   Removed global IsNull function - could have caused very vicious loops
+
    Revision 1.9  2001/03/12 12:59:01  marmar
    __str__ now represents the object while __repr__ is unchanged
 
@@ -126,7 +129,7 @@ class History {
     }
     String __str__() {
         return DateFormatter::toString((*self)->date()) + 
-        "\t" + (IsNull((*self)->value()) ? String("Null") : 
+        "\t" + ((*self)->value() == Null<double>() ? String("Null") : 
         DoubleFormatter::toString((*self)->value()));
     }
     #endif
@@ -148,7 +151,7 @@ class History {
     }
     String __str__() {
         return DateFormatter::toString((*self)->date()) + 
-        "\t" + (IsNull((*self)->value()) ? String("Null") : 
+        "\t" + ((*self)->value() == Null<double>() ? String("Null") : 
         DoubleFormatter::toString((*self)->value()));
     }
     #endif
@@ -166,8 +169,8 @@ class History {
         return (*self == other ? 0 : -1);
     }
     String __str__() {
-        return (IsNull(**self) ? String("Null") : 
-        DoubleFormatter::toString(**self));
+        return (**self == Null<double>() ? String("Null") : 
+            DoubleFormatter::toString(**self));
     }
     #endif
 }
@@ -184,8 +187,8 @@ class History {
         return (*self == other ? 0 : -1);
     }
     String __str__() {
-        return (IsNull(**self) ? String("Null") : 
-        DoubleFormatter::toString(**self));
+        return (**self == Null<double>() ? String("Null") : 
+            DoubleFormatter::toString(**self));
     }
     #endif
 }

@@ -18,38 +18,23 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file instrument.h
     \brief Abstract instrument class
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.14  2001/03/12 17:35:09  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.13  2001/02/16 15:19:52  lballabio
     Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
 
     Revision 1.12  2001/02/09 19:21:09  lballabio
     removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
-
-    Revision 1.11  2001/02/02 18:06:27  lballabio
-    Cosmetic changes (wrapping and docs)
-
-    Revision 1.10  2001/01/17 14:37:54  nando
-    tabs removed
-
-    Revision 1.9  2000/12/27 14:05:56  lballabio
-    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
-    Revision 1.8  2000/12/20 15:26:29  lballabio
-    #included null.h
-
-    Revision 1.7  2000/12/15 10:00:38  enri
-    Instrument interface slightly changed. PricedInstrument added.
-
-    Revision 1.6  2000/12/14 12:32:29  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 
@@ -68,8 +53,8 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         instruments which will be derived from this one.
 
-        \todo Methods should be added for adding a spread to the term structure or volatility surface
-        used to price the instrument.
+        \todo Methods should be added for adding a spread to the term structure 
+        or volatility surface used to price the instrument.
     */
     class Instrument {
       public:
@@ -224,12 +209,8 @@ namespace QuantLib {
 
     };
 
-    #if defined(QL_DECLARE_TEMPLATE_SPECIALIZATIONS)
-        template <>
-        bool operator==(const Handle<Instrument>&, const Handle<Instrument>&);
-        template <>
-        bool operator!=(const Handle<Instrument>&, const Handle<Instrument>&);
-    #endif
+    bool operator==(const Handle<Instrument>&, const Handle<Instrument>&);
+    bool operator!=(const Handle<Instrument>&, const Handle<Instrument>&);
 
     // derived classes
 
@@ -293,14 +274,14 @@ namespace QuantLib {
     }
 
     inline void Instrument::registerToTermStructure() {
-        if (!IsNull(theTermStructure)) {
+        if (!theTermStructure.isNull()) {
             theTermStructureObserver = TermStructureObserver(this);
             theTermStructure->registerObserver(&theTermStructureObserver);
         }
     }
 
     inline void Instrument::unregisterFromTermStructure() {
-        if (!IsNull(theTermStructure))
+        if (!theTermStructure.isNull())
             theTermStructure->unregisterObserver(&theTermStructureObserver);
     }
 
@@ -315,14 +296,14 @@ namespace QuantLib {
     }
 
     inline void Instrument::registerToSwaptionVol() {
-        if (!IsNull(theSwaptionVol)) {
+        if (!theSwaptionVol.isNull()) {
             theSwaptionVolObserver = SwaptionVolObserver(this);
             theSwaptionVol->registerObserver(&theSwaptionVolObserver);
         }
     }
 
     inline void Instrument::unregisterFromSwaptionVol() {
-        if (!IsNull(theSwaptionVol))
+        if (!theSwaptionVol.isNull())
             theSwaptionVol->unregisterObserver(&theSwaptionVolObserver);
     }
 
@@ -337,14 +318,14 @@ namespace QuantLib {
     }
 
     inline void Instrument::registerToForwardVol() {
-        if (!IsNull(theForwardVol)) {
+        if (!theForwardVol.isNull()) {
             theForwardVolObserver = ForwardVolObserver(this);
             theForwardVol->registerObserver(&theForwardVolObserver);
         }
     }
 
     inline void Instrument::unregisterFromForwardVol() {
-        if (!IsNull(theForwardVol))
+        if (!theForwardVol.isNull())
             theForwardVol->unregisterObserver(&theForwardVolObserver);
     }
 
@@ -363,14 +344,15 @@ namespace QuantLib {
 
     /*! \pre The term structure must have been set */
     inline Handle<TermStructure> Instrument::termStructure() const {
-        QL_REQUIRE(!IsNull(theTermStructure),"term structure not set");
+        QL_REQUIRE(!theTermStructure.isNull(),
+            "term structure not set");
         return theTermStructure;
     }
 
     /*! \pre The swaption volatility surface must have been set */
     inline Handle<SwaptionVolatilitySurface> Instrument::swaptionVolatility() 
     const {
-        QL_REQUIRE(!IsNull(theSwaptionVol),
+        QL_REQUIRE(!theSwaptionVol.isNull(),
             "swaption volatility surface not set");
         return theSwaptionVol;
     }
@@ -378,21 +360,9 @@ namespace QuantLib {
     /*! \pre The forward volatility surface must have been set */
     inline Handle<ForwardVolatilitySurface> Instrument::forwardVolatility() 
     const {
-        QL_REQUIRE(!IsNull(theForwardVol),"forward volatility surface not set");
+        QL_REQUIRE(!theForwardVol.isNull(), 
+            "forward volatility surface not set");
         return theForwardVol;
-    }
-
-    inline void Instrument::calculate() const {
-        if (termStructureHasChanged)
-            performTermStructureCalculations();
-        if (swaptionVolHasChanged)
-            performSwaptionVolCalculations();
-        if (forwardVolHasChanged)
-            performForwardVolCalculations();
-        if (needsFinalCalculations())
-            performFinalCalculations();
-        termStructureHasChanged = swaptionVolHasChanged = 
-            forwardVolHasChanged = false;
     }
 
     inline bool Instrument::needsFinalCalculations() const {
@@ -400,19 +370,39 @@ namespace QuantLib {
             forwardVolHasChanged);
     }
 
+    inline void Instrument::calculate() const {
+        if (useTermStructure() && termStructureHasChanged) {
+            QL_REQUIRE(!theTermStructure.isNull(),
+                "term structure not set");
+            performTermStructureCalculations();
+        }
+        if (useSwaptionVolatility() && swaptionVolHasChanged) {
+            QL_REQUIRE(!theSwaptionVol.isNull(), 
+                "swaption volatility surface not set");
+            performSwaptionVolCalculations();
+        }
+        if (useForwardVolatility() && forwardVolHasChanged) {
+            QL_REQUIRE(!theForwardVol.isNull(),
+                "forward volatility surface not set");
+            performForwardVolCalculations();
+        }
+        if (needsFinalCalculations())
+            performFinalCalculations();
+        termStructureHasChanged = swaptionVolHasChanged = 
+            forwardVolHasChanged = false;
+    }
+
     // comparisons
 
     /*! \relates Instrument
         \brief returns <tt>true</tt> iff two instruments have the same ISIN code
     */
-    template <>
     inline bool operator==(const Handle<Instrument>& i, 
         const Handle<Instrument>& j) {
             return (i->isinCode() == j->isinCode());
     }
 
     /*! \relates Instrument */
-    template <>
     inline bool operator!=(const Handle<Instrument>& i, 
         const Handle<Instrument>& j) {
             return (i->isinCode() != j->isinCode());

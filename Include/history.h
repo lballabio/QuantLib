@@ -26,8 +26,10 @@
     \brief history class
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.16  2001/03/12 17:35:09  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.15  2001/02/14 12:27:44  lballabio
     Bug fixed and guidelines enforced
 
@@ -309,8 +311,12 @@ namespace QuantLib {
         std::vector<double> values_;
         class DataValidator {
           public:
-            bool operator()(double x)       { return !IsNull(x); }
-            bool operator()(const Entry& e) { return !IsNull(e.value()); }
+            bool operator()(double x) { 
+                return x != Null<double>(); 
+            }
+            bool operator()(const Entry& e) { 
+                return e.value() != Null<double>(); 
+            }
         };
     };
 

@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.15  2001/03/12 17:35:11  lballabio
+   Removed global IsNull function - could have caused very vicious loops
+
    Revision 1.14  2001/03/12 12:59:01  marmar
    __str__ now represents the object while __repr__ is unchanged
 
@@ -61,13 +64,16 @@ typedef Handle<DayCounter> DayCounterHandle;
     }
     #if defined (SWIGPYTHON)
     String __str__() {
-        return (*self)->name()+" day counter";
+        if (!self->isNull())
+            return (*self)->name()+" day counter";
+        else
+            return "Null day counter";
     }
     int __cmp__(const DayCounterHandle& other) {
         return ((*self) == other ? 0 : 1);
     }
     int __nonzero__() {
-        return (IsNull(*self) ? 0 : 1);
+        return (self->isNull() ? 0 : 1);
     }
     #endif
 }

@@ -24,9 +24,12 @@
 
 /*  $Source$
 	$Log$
+	Revision 1.16  2001/03/12 17:35:11  lballabio
+	Removed global IsNull function - could have caused very vicious loops
+
 	Revision 1.15  2001/03/12 12:59:01  marmar
 	__str__ now represents the object while __repr__ is unchanged
-
+	
 	Revision 1.14  2001/03/09 12:40:41  lballabio
 	Spring cleaning for SWIG interfaces
 	
@@ -42,8 +45,6 @@
 using QuantLib::Handle;
 using QuantLib::Calendar;
 typedef Handle<Calendar> CalendarHandle;
-
-using QuantLib::IsNull;
 %}
 
 // export Handle<Calendar>
@@ -69,13 +70,16 @@ using QuantLib::IsNull;
     }
     #if defined (SWIGPYTHON)
     String __str__() {
-        return (*self)->name()+" calendar";
+        if (!self->isNull())
+            return (*self)->name()+" calendar";
+        else
+            return "Null calendar";
     }
     int __cmp__(const CalendarHandle& other) {
         return ((*self) == other ? 0 : 1);
     }
     int __nonzero__() {
-        return (IsNull(*self) ? 0 : 1);
+        return (self->isNull() ? 0 : 1);
     }
     #endif
 }

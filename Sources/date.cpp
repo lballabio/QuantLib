@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file date.cpp
     \brief date- and time-related classes, typedefs and enumerations
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.14  2001/03/12 17:35:11  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.13  2001/03/07 17:32:53  nando
     more complete error message
 
@@ -47,12 +50,13 @@
 */
 
 #include "date.h"
+#include "dataformatters.h"
 
 namespace QuantLib {
 
     // valid date interval definition
-    const int Date::minimumSerialNumber = 367;      // January 1st, 1901 included
-    const int Date::maximumSerialNumber = 73050;    // December 31st, 2099 included
+    const int Date::minimumSerialNumber = 367;      // January 1st, 1901 
+    const int Date::maximumSerialNumber = 73050;    // December 31st, 2099 
     const Date Date::MinimumDate = Date(Date::minimumSerialNumber);
     const Date Date::MaximumDate = Date(Date::maximumSerialNumber);
 
@@ -186,9 +190,8 @@ namespace QuantLib {
     : serialNumber_(serialNumber) {
         #ifdef QL_DEBUG
             QL_REQUIRE(*this >= minDate() && *this <= maxDate(),
-                "Date::Date : " +
-                "date " + IntegerFormatter::toString(serialNumber) +
-                "outside curve definition [" +
+                "Date " + IntegerFormatter::toString(serialNumber) +
+                "outside allowed range [" +
                 DateFormatter::toString(minDate()) + "-" +
                 DateFormatter::toString(maxDate()) + "]");
         #endif
@@ -196,7 +199,7 @@ namespace QuantLib {
 
     Date::Date(Day d, Month m, Year y) {
         QL_REQUIRE(int(y) > 1900 && int(y) < 2100,
-            "Date outside allowed range 1901-2099");
+            "Year outside allowed range 1901-2099");
 
         QL_REQUIRE(int(m) > 0 && int(m) < 13,
             "Month outside January-December range");

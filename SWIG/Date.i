@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -23,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.22  2001/03/12 17:35:11  lballabio
+   Removed global IsNull function - could have caused very vicious loops
+
    Revision 1.21  2001/03/12 12:59:01  marmar
    __str__ now represents the object while __repr__ is unchanged
 
@@ -307,7 +311,7 @@ class Date {
         return DateFormatter::toString(*self);
     }
     int __nonzero__() {
-        return (IsNull(*self) ? 0 : 1);
+        return (*self == Date() ? 0 : 1);
     }
     #endif
 }

@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file currency.h
     \brief Abstract currency class
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.10  2001/03/12 17:35:09  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.9  2001/02/16 15:19:52  lballabio
     Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
 
@@ -52,6 +55,7 @@
 #include "calendar.h"
 #include "date.h"
 #include "handle.h"
+#include "null.h"
 #include <string>
 
 namespace QuantLib {
@@ -66,7 +70,8 @@ namespace QuantLib {
     class Currency {
       public:
         //! Returns the name of the currency.
-        /*!    \warning This method is used for output and comparison between currencies.
+        /*! \warning This method is used for output and comparison between 
+            currencies.
             It is <b>not</b> meant to be used for writing switch-on-type code.
         */
         virtual std::string name() const = 0;
@@ -84,12 +89,8 @@ namespace QuantLib {
 
     // comparison based on name
 
-    #if defined(QL_DECLARE_TEMPLATE_SPECIALIZATIONS)
-        template<>
-        bool operator==(const Handle<Currency>&, const Handle<Currency>&);
-        template<>
-        bool operator!=(const Handle<Currency>&, const Handle<Currency>&);
-    #endif
+    bool operator==(const Handle<Currency>&, const Handle<Currency>&);
+    bool operator!=(const Handle<Currency>&, const Handle<Currency>&);
 
     // inline definitions
 
@@ -97,17 +98,16 @@ namespace QuantLib {
         return settlementCalendar()->advance(d,settlementDays(),Days);
     }
 
-    /*! Returns <tt>true</tt> iff the two currencies belong to the same derived class.
+    /*! Returns <tt>true</tt> iff the two currencies belong to the same derived 
+        class.
         \relates Currency
     */
-    template <>
     inline bool operator==(const Handle<Currency>& c1, 
         const Handle<Currency>& c2) {
             return (c1->name() == c2->name());
     }
 
     /*! \relates Currency */
-    template <>
     inline bool operator!=(const Handle<Currency>& c1, 
         const Handle<Currency>& c2) {
             return (c1->name() != c2->name());

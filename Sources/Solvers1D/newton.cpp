@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file newton.cpp
     \brief Newton 1-D solver
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.16  2001/03/12 17:35:11  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.15  2001/01/17 13:54:02  nando
     80 columns enforced
     tabs removed
@@ -59,8 +62,8 @@ namespace QuantLib {
 
             froot = f.value(root_);
             dfroot = f.derivative(root_);
-            QL_REQUIRE(!IsNull(dfroot),
-                        "Newton requires function's derivative");
+            QL_REQUIRE(dfroot != Null<double>(),
+                "Newton requires function's derivative");
             evaluationNumber_++;
 
             while (evaluationNumber_<=maxEvaluations_) {

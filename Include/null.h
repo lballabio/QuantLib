@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file null.h
     \brief null values
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.9  2001/03/12 17:35:09  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.8  2001/02/16 15:11:24  lballabio
     Hidden a few classes from Doxygen
 
@@ -70,31 +73,6 @@ namespace QuantLib {
         Null() {}
         operator double() const { return QL_MAX_DOUBLE; }
     };
-    #endif
-
-    template <class Type> bool IsNull(const Type&);
-    // specializations shouldn't be necessary.
-    // However, the dumb VC++ compiler gets stuck on Type(Null<Type>()).
-    #if !defined(__DOXYGEN__)
-    bool IsNull(int);
-    bool IsNull(double);
-    #endif
-
-    // inline definitions
-
-    template <class Type>
-    inline bool IsNull(const Type& x) {
-        return (x == Type());
-    }
-
-    #if !defined(__DOXYGEN__)
-    inline bool IsNull(int x) {
-        return (x == Null<int>());
-    }
-
-    inline bool IsNull(double x) {
-        return (x == Null<double>());
-    }
     #endif
 
 }

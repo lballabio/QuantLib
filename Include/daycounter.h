@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file daycounter.h
     \brief Abstract day counter class
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.9  2001/03/12 17:35:09  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.8  2001/02/16 15:19:52  lballabio
     Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
 
@@ -51,6 +54,7 @@
 #include "qldefines.h"
 #include "date.h"
 #include "handle.h"
+#include "null.h"
 
 namespace QuantLib {
 
@@ -58,13 +62,15 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         day counter classes which will be derived from this one.
 
-        It provides methods for determining the length of a time period according
-        to a number of market conventions, both as a number of days and as a year fraction.
+        It provides methods for determining the length of a time period 
+        according to a number of market conventions, both as a number of days 
+        and as a year fraction.
     */
     class DayCounter {
       public:
         //! Returns the name of the day counter.
-        /*!    \warning This method is used for output and comparison between day counters.
+        /*! \warning This method is used for output and comparison between day 
+            counters. 
             It is <b>not</b> meant to be used for writing switch-on-type code.
         */
         virtual std::string name() const = 0;
@@ -72,30 +78,26 @@ namespace QuantLib {
         virtual int dayCount(const Date&, const Date&) const = 0;
         //! Returns the period between two dates as a fraction of year.
         virtual Time yearFraction(const Date&, const Date&,
-          const Date& refPeriodStart = Date(), const Date& refPeriodEnd = Date()) const = 0;
+          const Date& refPeriodStart = Date(), 
+          const Date& refPeriodEnd = Date()) const = 0;
     };
 
     // comparison based on name
-    #if defined(QL_DECLARE_TEMPLATE_SPECIALIZATIONS)
-        template <>
-        bool operator==(const Handle<DayCounter>&, const Handle<DayCounter>&);
-        template <>
-        bool operator!=(const Handle<DayCounter>&, const Handle<DayCounter>&);
-    #endif
+    bool operator==(const Handle<DayCounter>&, const Handle<DayCounter>&);
+    bool operator!=(const Handle<DayCounter>&, const Handle<DayCounter>&);
 
     // inline definitions
 
-    /*! Returns <tt>true</tt> iff the two day counters belong to the same derived class.
+    /*! Returns <tt>true</tt> iff the two day counters belong to the same 
+        derived class.
         \relates DayCounter
     */
-    template <>
     inline bool operator==(const Handle<DayCounter>& h1, 
         const Handle<DayCounter>& h2) {
             return (h1->name() == h2->name());
     }
 
     /*! \relates DayCounter */
-    template <>
     inline bool operator!=(const Handle<DayCounter>& h1, 
         const Handle<DayCounter>& h2) {
             return (h1->name() != h2->name());

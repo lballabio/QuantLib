@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -25,8 +26,10 @@
     \brief Reference-counted pointer
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.9  2001/03/12 17:35:09  lballabio
+    Removed global IsNull function - could have caused very vicious loops
+
     Revision 1.8  2001/03/07 15:27:50  lballabio
     Modified Handle to allow keeping ownership
 
@@ -45,6 +48,7 @@
 #define quantlib_handle_h
 
 #include "qldefines.h"
+#include "qlerrors.h"
 
 // The implementation of this class is taken from
 // "The C++ Programming Language", 3rd edition, B.Stroustrup
@@ -92,6 +96,8 @@ namespace QuantLib {
     */
     template <class Type>
     class Handle {
+        friend bool operator==(const Handle<Type>&, const Handle<Type>&);
+        friend bool operator!=(const Handle<Type>&, const Handle<Type>&);
       public:
         //! \name constructors, destructor, and assignment
         //@{
@@ -123,13 +129,12 @@ namespace QuantLib {
         Type* operator->() const;
         //@}
 
-        // \name Pointer access
+        // \name Inspectors
         //@{
-        //! Read-only access
-        const Type * pointer() const;
-        //! Read-write access - <b>use with care</b>.
-        Type * pointer();
+        //! Checks if the contained pointer is actually allocated
+        bool isNull() const;
         //@}
+        
       private:
         Type* ptr_;
         int* n_;
@@ -156,12 +161,6 @@ namespace QuantLib {
             }
         };
     };
-
-    template <class Type>
-    bool operator==(const Handle<Type>&, const Handle<Type>&);
-    
-    template <class Type>
-    bool operator!=(const Handle<Type>&, const Handle<Type>&);
 
 
     // inline definitions
@@ -193,38 +192,32 @@ namespace QuantLib {
 
     template <class Type>
     inline Type& Handle<Type>::operator*() const {
+        QL_REQUIRE(ptr_ != 0, "tried to dereference null handle");
         return *ptr_;
     }
 
     template <class Type>
     inline Type* Handle<Type>::operator->() const {
+        QL_REQUIRE(ptr_ != 0, "tried to dereference null handle");
         return ptr_;
     }
 
     template <class Type>
-    inline const Type * Handle<Type>::pointer() const {
-        return ptr_;
+    inline bool Handle<Type>::isNull() const {
+        return (ptr_ == 0);
     }
 
-    template <class Type>
-    inline Type* Handle<Type>::pointer() {
-        return ptr_;
-    }
-
-    /*! \relates Handle
-        Returns <tt>true</tt> iff the two handles contain the same pointer.
-    */
+    //! Returns <tt>true</tt> iff the two handles contain the same pointer
+    /*! \relates Handle */
     template <class Type>
     inline bool operator==(const Handle<Type>& h1, const Handle<Type>& h2) {
-        return (h1.pointer() == h2.pointer());
+        return (h1.ptr_ == h2.ptr_);
     }
 
-    /*! \relates Handle
-        Returns <tt>true</tt> iff the two handles contain different pointers.
-    */
+    /*! \relates Handle */
     template <class Type>
     inline bool operator!=(const Handle<Type>& h1, const Handle<Type>& h2) {
-        return !(h1 == h2);
+        return (h1.ptr_ != h2.ptr_);
     }
 
 }
