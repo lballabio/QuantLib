@@ -70,16 +70,26 @@ tex-files:: html
     $(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
-           -e "54,$s/input{index}//" \
-           -e "54,$s/include{install}//" \
-           -e "54,$s/include{license}//" \
-           -e "54,$s/include{platforms}//" \
-           -e "54,$s/include{usage}//" \
-           -e "54,$s/include{where}//" \
-           -e "54,$s/include{todo}//" \
-           -e "54,$s/include{core}//" \
-           -e "54,$s/include{findiff}//" \
-           -e "54,$s/include{mcarlo}//" \
+           -e "54,$s/input{index}/ /" \
+           -e "54,$s/include{index}/ /" \
+           -e "54,$s/input{install}/ /" \
+           -e "54,$s/include{install}/ /" \
+           -e "54,$s/input{license}/ /" \
+           -e "54,$s/include{license}/ /" \
+           -e "54,$s/input{platforms}/ /" \
+           -e "54,$s/include{platforms}/ /" \
+           -e "54,$s/input{usage}/ /" \
+           -e "54,$s/include{usage}/ /" \
+           -e "54,$s/input{where}/ /" \
+           -e "54,$s/include{where}/ /" \
+           -e "54,$s/input{todo}/ /" \
+           -e "54,$s/include{todo}/ /" \
+           -e "54,$s/input{core}/ /" \
+           -e "54,$s/include{core}/ /" \
+           -e "54,$s/input{findiff}/ /" \
+           -e "54,$s/include{findiff}/ /" \
+           -e "54,$s/input{mcarlo}/ /" \
+           -e "54,$s/include{mcarlo}/ /" \
            oldrefman.tex > refman.tex
     del oldrefman.tex
     cd ..
