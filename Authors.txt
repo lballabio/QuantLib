@@ -1,11 +1,13 @@
-The QuantLib Group is:
+The QuantLib Group (QuantLib copyright holder) is formed by:
 
-RiskMap (info@riskmap.net) - main sponsor
-Ferdinando Ametrano (ferdinando@ametrano.net) - admin
+Mario Aleppo        mario.aleppo@riskmap.net
+Ferdinando Ametrano ferdinando@ametrano.net       admin
+Luigi Ballabio      luigi.ballabio@riskmap.net    designer
+Adolfo Benin        adolfo.benin@riskmap.net
+Marco Marchioro     marco.marchioro@riskmap.net
+RiskMap             www.riskmap.net               main sponsor
+Enrico Sirola       enrico.sirola@riskmap.net
+Maxim Sokolov       maxim_sokolov@rambler.ru
 
-Mario Aleppo (mario.aleppo@riskmap.net)
-Luigi Ballabio (luigi.ballabio@riskmap.net) (design)
-Adolfo Benin (adolfo.benin@riskmap.net)
-Marco Marchioro (marco.marchioro@riskmap.net) (finite difference, montecarlo)
-Enrico Sirola (enrico.sirala@riskmap.net)
-Maxim Sokolov <maxim_sokolov@rambler.ru> (examples)
+To get the SourceForge user name from the developer name go to
+http://sourceforge.net/project/memberlist.php?group_id=12740

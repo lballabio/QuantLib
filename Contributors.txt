@@ -3,7 +3,8 @@ Many thanks to the QuantLib contributors:
 Christopher Baus
 Thomas Becker
 David Binderman
-Matteo Gallivanoni
+Dirk Eddelbuettel - Debian packager
+Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
 Gilbert Peffer
 Peter Schmitteckert
 Bernd Johannes Wuebben
