@@ -60,8 +60,6 @@ namespace QuantLib {
                 coupons_.push_back(fixedLeg[i]->amount());
             }
             coupons_.back() += swap_->nominal();
-            for (unsigned i=0; i<coupons_.size(); i++)
-                cout << i << ": " << coupons_[i] << " at " << endTimes_[i] << endl;
         }
 
         void EuropeanSwaption::performCalculations() const {
