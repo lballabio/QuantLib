@@ -1,0 +1,108 @@
+
+/*
+ Copyright (C) 2002 Ferdinando Ametrano
+
+ This file is part of QuantLib, a free-software/open-source library
+ for financial quantitative analysts and developers - http://quantlib.org/
+
+ QuantLib is free software: you can redistribute it and/or modify it under the
+ terms of the QuantLib license.  You should have received a copy of the
+ license along with this program; if not, please email ferdinando@ametrano.net
+ The license is also available online at http://quantlib.org/html/license.html
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
+*/
+/*! \file performanceoptionpathpricer.cpp
+    \brief path pricer for performance options
+
+    \fullpath
+    ql/MonteCarlo/%performanceoptionpathpricer.cpp
+
+*/
+
+// $Id$
+
+#include <ql/MonteCarlo/performanceoptionpathpricer.hpp>
+#include <ql/Pricers/singleassetoption.hpp>
+
+using QuantLib::Pricers::ExercisePayoff;
+
+namespace QuantLib {
+
+    namespace MonteCarlo {
+
+        PerformanceOptionPathPricer::PerformanceOptionPathPricer(
+            Option::Type type,
+            double underlying, double moneyness,
+            const std::vector<DiscountFactor>& discounts,
+            bool useAntitheticVariance)
+        : PathPricer<Path>(1.0, useAntitheticVariance), type_(type),
+          underlying_(underlying), moneyness_(moneyness),
+          discounts_(discounts) {
+            QL_REQUIRE(underlying>0.0,
+                "PerformanceOptionPathPricer: "
+                "underlying less/equal zero not allowed");
+            QL_REQUIRE(moneyness>0.0,
+                "PerformanceOptionPathPricer: "
+                "moneyness less/equal zero not allowed");
+        }
+
+        double PerformanceOptionPathPricer::operator()(const Path& path) const{
+            Size n = path.size();
+            QL_REQUIRE(n>0,
+                "PerformanceOptionPathPricer: at least one option is required");
+            QL_REQUIRE(n==2,
+                "PerformanceOptionPathPricer: only one option for the time"
+                " being");
+            QL_REQUIRE(n==discounts_.size(),
+                "PerformanceOptionPathPricer: discounts/options mismatch");
+
+            std::vector<double> result(n);
+            std::vector<double> assetValue(n);
+            double log_drift = path.drift()[0];
+            double log_random = path.diffusion()[0];
+            assetValue[0]  = underlying_ * QL_EXP(log_drift+log_random);
+            double dummyStrike = assetValue[0];
+
+            if (useAntitheticVariance_) {
+                std::vector<double> assetValue2(n);
+                assetValue2[0] = underlying_ * QL_EXP(log_drift-log_random);
+                // removing first option, it should be 0.5
+                result[0] = 0.0 * discounts_[0] * (
+                    ExercisePayoff(type_, assetValue [0]/dummyStrike, 1.0) +
+                    ExercisePayoff(type_, assetValue2[0]/dummyStrike, 1.0));
+                for (Size i = 1 ; i < n; i++) {
+                    log_drift  += path.drift()[i];
+                    log_random += path.diffusion()[i];
+                    assetValue[i] =underlying_*QL_EXP(log_drift+log_random);
+                    assetValue2[i]=underlying_*QL_EXP(log_drift-log_random);
+                    result[i] = 0.5 * discounts_[i] * (ExercisePayoff(type_,
+                        assetValue [i]/(assetValue [i-1] *moneyness_), 1.0) +
+                        ExercisePayoff(type_,
+                        assetValue2[i]/(assetValue2[i-1] *moneyness_), 1.0)
+                        );
+                }
+            } else {
+                // removing first option
+                result[0] = 0.0 * discounts_[0] *
+                    ExercisePayoff(type_,assetValue [0]/dummyStrike, 1.0);
+                for (Size i = 1 ; i < n; i++) {
+                    log_drift  += path.drift()[i];
+                    log_random += path.diffusion()[i];
+                    assetValue[i]  = underlying_ *
+                        QL_EXP(log_drift+log_random);
+                    result[i] = discounts_[i] *
+                        ExercisePayoff(type_,
+                        assetValue [i]/(assetValue [i-1] *moneyness_), 1.0);
+                }
+            }
+
+            return result[1];
+        }
+
+    }
+
+}
+

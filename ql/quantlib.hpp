@@ -146,6 +146,7 @@
 #include <ql/MonteCarlo/arithmeticapopathpricer.hpp>
 #include <ql/MonteCarlo/arithmeticasopathpricer.hpp>
 #include <ql/MonteCarlo/basketpathpricer.hpp>
+#include <ql/MonteCarlo/cliquetoptionpathpricer.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
 #include <ql/MonteCarlo/everestpathpricer.hpp>
 #include <ql/MonteCarlo/geometricapopathpricer.hpp>
@@ -161,6 +162,7 @@
 #include <ql/MonteCarlo/path.hpp>
 #include <ql/MonteCarlo/pathgenerator.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/performanceoptionpathpricer.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 
 #include <ql/Optimization/armijo.hpp>
@@ -202,6 +204,7 @@
 #include <ql/Pricers/fdstepconditionoption.hpp>
 #include <ql/Pricers/jamshidianswaption.hpp>
 #include <ql/Pricers/mcbasket.hpp>
+#include <ql/Pricers/mccliquetoption.hpp>
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/mceuropean.hpp>
@@ -209,7 +212,9 @@
 #include <ql/Pricers/mchimalaya.hpp>
 #include <ql/Pricers/mcmaxbasket.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
+#include <ql/Pricers/mcperformanceoption.hpp>
 #include <ql/Pricers/mcpricer.hpp>
+#include <ql/Pricers/performanceoption.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Pricers/treecapfloor.hpp>
 #include <ql/Pricers/treeswaption.hpp>

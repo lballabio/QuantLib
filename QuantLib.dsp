@@ -619,6 +619,14 @@ SOURCE=.\ql\MonteCarlo\basketpathpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
 # End Source File
 # Begin Source File
@@ -708,6 +716,14 @@ SOURCE=.\ql\MonteCarlo\pathgenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\pathpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\performanceoptionpathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\performanceoptionpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -923,6 +939,14 @@ SOURCE=.\ql\Pricers\mcbasket.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\mccliquetoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mccliquetoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.cpp
 # End Source File
 # Begin Source File
@@ -979,7 +1003,23 @@ SOURCE=.\ql\Pricers\mcpagoda.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\mcperformanceoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcperformanceoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\mcpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\performanceoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\performanceoption.hpp
 # End Source File
 # Begin Source File
 

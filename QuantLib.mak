@@ -94,6 +94,8 @@ CLEAN :
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -186,6 +188,8 @@ CLEAN :
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mccliquetoption.obj"
+	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
@@ -200,6 +204,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcmaxbasket.sbr"
 	-@erase "$(INTDIR)\mcpagoda.obj"
 	-@erase "$(INTDIR)\mcpagoda.sbr"
+	-@erase "$(INTDIR)\mcperformanceoption.obj"
+	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
@@ -222,6 +228,10 @@ CLEAN :
 	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
+	-@erase "$(INTDIR)\performanceoption.obj"
+	-@erase "$(INTDIR)\performanceoption.sbr"
+	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
+	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainoption.obj"
@@ -427,7 +437,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\performanceoptionpathpricer.sbr" \
+	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -561,7 +576,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\performanceoptionpathpricer.obj" \
+	"$(INTDIR)\cliquetoptionpathpricer.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
+	"$(INTDIR)\performanceoption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -632,6 +652,8 @@ CLEAN :
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -724,6 +746,8 @@ CLEAN :
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mccliquetoption.obj"
+	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
@@ -738,6 +762,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcmaxbasket.sbr"
 	-@erase "$(INTDIR)\mcpagoda.obj"
 	-@erase "$(INTDIR)\mcpagoda.sbr"
+	-@erase "$(INTDIR)\mcperformanceoption.obj"
+	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
@@ -760,6 +786,10 @@ CLEAN :
 	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
+	-@erase "$(INTDIR)\performanceoption.obj"
+	-@erase "$(INTDIR)\performanceoption.sbr"
+	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
+	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainoption.obj"
@@ -966,7 +996,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\performanceoptionpathpricer.sbr" \
+	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1100,7 +1135,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\performanceoptionpathpricer.obj" \
+	"$(INTDIR)\cliquetoptionpathpricer.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
+	"$(INTDIR)\performanceoption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1171,6 +1211,8 @@ CLEAN :
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -1263,6 +1305,8 @@ CLEAN :
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mccliquetoption.obj"
+	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
@@ -1277,6 +1321,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcmaxbasket.sbr"
 	-@erase "$(INTDIR)\mcpagoda.obj"
 	-@erase "$(INTDIR)\mcpagoda.sbr"
+	-@erase "$(INTDIR)\mcperformanceoption.obj"
+	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
@@ -1299,6 +1345,10 @@ CLEAN :
 	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
+	-@erase "$(INTDIR)\performanceoption.obj"
+	-@erase "$(INTDIR)\performanceoption.sbr"
+	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
+	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainoption.obj"
@@ -1504,7 +1554,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\performanceoptionpathpricer.sbr" \
+	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1638,7 +1693,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\performanceoptionpathpricer.obj" \
+	"$(INTDIR)\cliquetoptionpathpricer.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
+	"$(INTDIR)\performanceoption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1709,6 +1769,8 @@ CLEAN :
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
+	-@erase "$(INTDIR)\cliquetoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
@@ -1801,6 +1863,8 @@ CLEAN :
 	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mccliquetoption.obj"
+	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
@@ -1815,6 +1879,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcmaxbasket.sbr"
 	-@erase "$(INTDIR)\mcpagoda.obj"
 	-@erase "$(INTDIR)\mcpagoda.sbr"
+	-@erase "$(INTDIR)\mcperformanceoption.obj"
+	-@erase "$(INTDIR)\mcperformanceoption.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
@@ -1837,6 +1903,10 @@ CLEAN :
 	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
+	-@erase "$(INTDIR)\performanceoption.obj"
+	-@erase "$(INTDIR)\performanceoption.sbr"
+	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
+	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainoption.obj"
@@ -2043,7 +2113,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\performanceoptionpathpricer.sbr" \
+	"$(INTDIR)\cliquetoptionpathpricer.sbr" \
+	"$(INTDIR)\mcperformanceoption.sbr" \
+	"$(INTDIR)\mccliquetoption.sbr" \
+	"$(INTDIR)\performanceoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2177,7 +2252,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\performanceoptionpathpricer.obj" \
+	"$(INTDIR)\cliquetoptionpathpricer.obj" \
+	"$(INTDIR)\mcperformanceoption.obj" \
+	"$(INTDIR)\mccliquetoption.obj" \
+	"$(INTDIR)\performanceoption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2461,6 +2541,12 @@ SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.cpp
+
+"$(INTDIR)\cliquetoptionpathpricer.obj"	"$(INTDIR)\cliquetoptionpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
 
 "$(INTDIR)\europeanpathpricer.obj"	"$(INTDIR)\europeanpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
@@ -2506,6 +2592,12 @@ SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.cpp
 SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
 
 "$(INTDIR)\pagodapathpricer.obj"	"$(INTDIR)\pagodapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\MonteCarlo\performanceoptionpathpricer.cpp
+
+"$(INTDIR)\performanceoptionpathpricer.obj"	"$(INTDIR)\performanceoptionpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2647,6 +2739,12 @@ SOURCE=.\ql\Pricers\mcbasket.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Pricers\mccliquetoption.cpp
+
+"$(INTDIR)\mccliquetoption.obj"	"$(INTDIR)\mccliquetoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.cpp
 
 "$(INTDIR)\mcdiscretearithmeticapo.obj"	"$(INTDIR)\mcdiscretearithmeticapo.sbr" : $(SOURCE) "$(INTDIR)"
@@ -2686,6 +2784,18 @@ SOURCE=.\ql\Pricers\mcmaxbasket.cpp
 SOURCE=.\ql\Pricers\mcpagoda.cpp
 
 "$(INTDIR)\mcpagoda.obj"	"$(INTDIR)\mcpagoda.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\mcperformanceoption.cpp
+
+"$(INTDIR)\mcperformanceoption.obj"	"$(INTDIR)\mcperformanceoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\performanceoption.cpp
+
+"$(INTDIR)\performanceoption.obj"	"$(INTDIR)\performanceoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
