@@ -19,8 +19,8 @@
     \brief Black formula
 */
 
-#ifndef quantlib_american_montecarlo_engine_h
-#define quantlib_american_montecarlo_engine_h
+#ifndef quantlib_blackformula_h
+#define quantlib_blackformula_h
 
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/Math/normaldistribution.hpp>
