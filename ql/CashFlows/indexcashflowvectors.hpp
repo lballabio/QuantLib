@@ -28,9 +28,8 @@
 
 namespace QuantLib {
 
-	//! helper function building a sequence of floating coupons (namely ParCoupon, UpFrontIndexedCoupon and InArrearIndexedCoupon) 
-    /*! \todo the dayCounter argument should be useless, the floating coupon "IndexedCouponType" should 
-		contain the dayCounter information : ParCoupon (TermStructure dayCounter) and IndexedCoupon (Xibor dayCounter)
+	//! helper function building a leg of floating coupons (namely ParCoupon, UpFrontIndexedCoupon and InArrearIndexedCoupon) 
+    /*! 
 		\bug The last argument is used due to msvc6 bug with function template
     */
     template <class IndexedCouponType>
