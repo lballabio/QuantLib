@@ -64,6 +64,7 @@ namespace QuantLib {
         static std::string toUppercase(const std::string& s);
     };
 
+    #ifndef QL_PATCH_MICROSOFT
     //! Formats numeric sequences for output
     class SequenceFormatter {
       public:
@@ -87,6 +88,7 @@ namespace QuantLib {
             return s;
         }
     };
+    #endif
 
     //! Formats rates for output
     /*! Formatting is in percentage form (xx.xxxxx%) */

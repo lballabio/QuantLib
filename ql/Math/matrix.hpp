@@ -168,6 +168,7 @@ namespace QuantLib {
                                           Iterator2 v2begin, Iterator2 v2end);
 
 
+    #ifndef QL_PATCH_MICROSOFT
     //! format matrices for output
     class MatrixFormatter {
       public:
@@ -179,6 +180,7 @@ namespace QuantLib {
                                                m.columns());
         }
     };
+    #endif
 
 
     // inline definitions

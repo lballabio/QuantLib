@@ -164,6 +164,7 @@ namespace QuantLib {
     const Disposable<Array> Exp(const Array&);
 
 
+    #ifndef QL_PATCH_MICROSOFT
     //! format arrays for output
     class ArrayFormatter {
       public:
@@ -176,6 +177,7 @@ namespace QuantLib {
                                                elementsPerRow);
         }
     };
+    #endif
 
 
     // inline definitions
