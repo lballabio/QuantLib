@@ -922,7 +922,27 @@ SOURCE=.\Sources\calendar.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\ql\calendar.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\config.ansi.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\config.bcc.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\config.decc.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Include\ql\config.msvc.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\config.mwcw.hpp
 # End Source File
 # Begin Source File
 
@@ -934,7 +954,15 @@ SOURCE=.\Sources\dataformatters.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\ql\dataformatters.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\date.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\date.hpp
 # End Source File
 # Begin Source File
 
@@ -987,6 +1015,10 @@ SOURCE=.\Include\ql\qldefines.hpp
 # Begin Source File
 
 SOURCE=.\Include\ql\qlerrors.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\quantlib.hpp
 # End Source File
 # Begin Source File
 
