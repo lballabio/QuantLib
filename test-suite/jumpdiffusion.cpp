@@ -33,8 +33,7 @@ using namespace boost::unit_test_framework;
                          intensity, meanLogJump, jumpVol, expected, \
                          calculated, error, tolerance) \
     BOOST_FAIL(exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option with " \
+               << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    underlying value: " << s << "\n" \
                << "    strike:           " << payoff->strike() <<"\n" \
@@ -55,8 +54,7 @@ using namespace boost::unit_test_framework;
                          intensity, gamma, expected, calculated, \
                          error, tolerance) \
     BOOST_FAIL(exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option with " \
+               << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    underlying value: " << s << "\n" \
                << "    strike:           " << payoff->strike() <<"\n" \

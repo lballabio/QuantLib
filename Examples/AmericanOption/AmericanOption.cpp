@@ -47,8 +47,7 @@ int main(int, char* [])
         Time maturity = dayCounter.yearFraction(settlementDate,
                                                 exerciseDate);
 
-        std::cout << "option type = "  << OptionTypeFormatter::toString(type)
-                  << std::endl;
+        std::cout << "option type = "  << type << std::endl;
         std::cout << "Time to maturity = "        << maturity
                   << std::endl;
         std::cout << "Underlying price = "        << underlying

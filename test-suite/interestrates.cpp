@@ -103,7 +103,7 @@ void InterestRateTest::testConversions() {
         disc = ir.discountFactor(d1, d2);
         error = std::fabs(disc-1.0/compoundf);
         if (error>1e-15)
-            BOOST_FAIL("\n  " << InterestRateFormatter::toString(ir)
+            BOOST_FAIL("\n  " << ir
                        << std::setprecision(16)
                        << "\n  1.0/compound_factor: " << 1.0/compoundf
                        << "\n  discount_factor:     " << disc
@@ -116,29 +116,22 @@ void InterestRateTest::testConversions() {
                                 ir.frequency());
         error = std::fabs(ir.rate()-ir2.rate());
         if (error>1e-15)
-            BOOST_FAIL("\n    original interest rate: "
-                       << InterestRateFormatter::toString(ir, 12)
-                       << "\n  equivalent interest rate: "
-                       << InterestRateFormatter::toString(ir2,12)
+            BOOST_FAIL(std::setprecision(12)
+                       << "\n    original interest rate: " << ir
+                       << "\n  equivalent interest rate: " << ir2
                        << "\n                rate error: " << error);
         if (ir.dayCounter()!=ir2.dayCounter())
             BOOST_FAIL("\n day counter error"
-                       "\n original interest rate:   "
-                       + InterestRateFormatter::toString(ir, 4) +
-                       "\n equivalent interest rate: "
-                       + InterestRateFormatter::toString(ir2,4));
+                       << "\n original interest rate:   " << ir
+                       << "\n equivalent interest rate: " << ir2);
         if (ir.compounding()!=ir2.compounding())
             BOOST_FAIL("\n compounding error"
-                       "\n original interest rate:   "
-                       + InterestRateFormatter::toString(ir, 4) +
-                       "\n equivalent interest rate: "
-                       + InterestRateFormatter::toString(ir2,4));
+                       << "\n original interest rate:   " << ir
+                       << "\n equivalent interest rate: " << ir2);
         if (ir.frequency()!=ir2.frequency())
             BOOST_FAIL("\n frequency error"
-                       "\n    original interest rate: "
-                       + InterestRateFormatter::toString(ir, 4) +
-                       "\n  equivalent interest rate: "
-                       + InterestRateFormatter::toString(ir2,4));
+                       << "\n    original interest rate: " << ir
+                       << "\n  equivalent interest rate: " << ir2);
 
         // check that the equivalent rate with *same* daycounter,
         // compounding, and frequency is the *same* rate
@@ -147,9 +140,8 @@ void InterestRateTest::testConversions() {
                                        ir.frequency());
         error = std::fabs(ir.rate()-r2);
         if (error>1e-15)
-            BOOST_FAIL("\n    original rate: "
-                       << std::setprecision(12)
-                       << InterestRateFormatter::toString(ir, 12)
+            BOOST_FAIL(std::setprecision(12)
+                       << "\n    original rate: " << ir
                        << "\n  equivalent rate: " << io::rate(r2)
                        << "\n            error: " << error);
 
@@ -163,37 +155,26 @@ void InterestRateTest::testConversions() {
         error = std::fabs(r3-expectedIR.rate());
         if (error>1.0e-17)
             BOOST_FAIL(std::setprecision(cases[i].precision+1)
-                       << "\n               original interest rate: "
-                       << InterestRateFormatter::toString(ir,
-                                                          cases[i].precision+1)
-                       << "\n  calculated equivalent interest rate: "
-                       << InterestRateFormatter::toString(ir3,
-                                                          cases[i].precision+1)
+                       << "\n               original interest rate: " << ir
+                       << "\n  calculated equivalent interest rate: " << ir3
                        << "\n            truncated equivalent rate: "
                        << io::rate(r3)
                        << "\n    expected equivalent interest rate: "
-                       << InterestRateFormatter::toString(expectedIR,
-                                                          cases[i].precision+1)
+                       << expectedIR
                        << "\n                           rate error: "
                        << error);
         if (ir3.dayCounter()!=expectedIR.dayCounter())
             BOOST_FAIL("\n day counter error"
-                       "\n    original interest rate: "
-                       + InterestRateFormatter::toString(ir3, 4) +
-                       "\n  equivalent interest rate: "
-                       + InterestRateFormatter::toString(expectedIR,4));
+                       << "\n    original interest rate: " << ir3
+                       << "\n  equivalent interest rate: " << expectedIR);
         if (ir3.compounding()!=expectedIR.compounding())
             BOOST_FAIL("\n compounding error"
-                       "\n    original interest rate: "
-                       + InterestRateFormatter::toString(ir3, 4) +
-                       "\n  equivalent interest rate: "
-                       + InterestRateFormatter::toString(expectedIR,4));
+                       << "\n    original interest rate: " << ir3
+                       << "\n  equivalent interest rate: " << expectedIR);
         if (ir3.frequency()!=expectedIR.frequency())
             BOOST_FAIL("\n frequency error"
-                       "\n    original interest rate: "
-                       + InterestRateFormatter::toString(ir3, 4) +
-                       "\n  equivalent interest rate: "
-                       + InterestRateFormatter::toString(expectedIR,4));
+                       << "\n    original interest rate: " << ir3
+                       << "\n  equivalent interest rate: " << expectedIR);
 
         // check that the equivalent rate with *different*
         // compounding, and frequency is the *expected* rate

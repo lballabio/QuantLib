@@ -38,10 +38,8 @@ void MoneyTest::testNone() {
 
     if (calculated != expected) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 }
 
@@ -75,10 +73,8 @@ void MoneyTest::testBaseCurrency() {
 
     if (calculated != expected) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 }
 
@@ -110,10 +106,8 @@ void MoneyTest::testAutomated() {
 
     if (calculated != expected) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 }
 

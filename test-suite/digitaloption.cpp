@@ -36,8 +36,7 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
     BOOST_FAIL(exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option with " \
+               << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:       " << s << "\n" \
                << "    strike:           " << payoff->strike() << "\n" \

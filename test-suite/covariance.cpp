@@ -86,11 +86,8 @@ void CovarianceTest::testSalvagingCorrelation() {
             std::scientific << error
             << " error while salvaging covariance matrix with spectral alg\n"
             << std::fixed
-            << "input matrix:\n"
-            << MatrixFormatter::toString(badCov)
-            << "\nsalvaged matrix:\n"
-            << MatrixFormatter::toString(goodCov));
-
+            << "input matrix:\n" << badCov
+            << "salvaged matrix:\n" << goodCov);
 }
 
 void CovarianceTest::testCovariance() {

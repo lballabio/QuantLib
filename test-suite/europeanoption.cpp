@@ -36,8 +36,7 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
     BOOST_FAIL(exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option with " \
+               << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:       " << s << "\n" \
                << "    strike:           " << payoff->strike() << "\n" \
@@ -778,8 +777,7 @@ void EuropeanOptionTest::testImpliedVol() {
                                                               maxEvaluations);
                       } catch (std::exception& e) {
                           BOOST_FAIL(
-                              OptionTypeFormatter::toString(types[i])
-                              << " option :\n"
+                              types[i] << " option :\n"
                               << "    spot value:     " << u << "\n"
                               << "    strike:         " << strikes[j] << "\n"
                               << "    dividend yield: " << io::rate(q) << "\n"
@@ -796,8 +794,7 @@ void EuropeanOptionTest::testImpliedVol() {
                           Real error = relativeError(value,value2,u);
                           if (error > tolerance) {
                               BOOST_FAIL(
-                                  OptionTypeFormatter::toString(types[i])
-                                  << " option :\n"
+                                  types[i] << " option :\n"
                                   << "    spot value:          " << u << "\n"
                                   << "    strike:              "
                                   << strikes[j] << "\n"
@@ -973,9 +970,8 @@ namespace {
                           Real value = options[engines[ii]]->NPV();
                           Real relErr = relativeError(value,refValue,u);
                           if (relErr > tolerance) {
-                              BOOST_FAIL("European "
-                                  << OptionTypeFormatter::toString(types[i])
-                                  << " option :\n"
+                              BOOST_FAIL(
+                                  "European " << types[i] << " option :\n"
                                   << "    spot value: " << u << "\n"
                                   << "    strike:           "
                                   << strikes[j] << "\n"

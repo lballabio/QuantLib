@@ -151,7 +151,7 @@ namespace QuantLib {
     }
 
     inline std::string Currency::format() const {
-        return data_->format;
+        return data_->formatString;
     }
 
     inline bool Currency::isValid() const {

@@ -78,8 +78,7 @@ void OldPricerTest::testFdEuropeanPricer() {
                                        vol, 100, 400).value();
             if (std::fabs(anValue-numValue) > tolerance)
                 BOOST_FAIL("Option details: \n"
-                           << "    type:           "
-                           << OptionTypeFormatter::toString(types[j]) << "\n"
+                           << "    type:           " << types[j] << "\n"
                            << "    underlying:     " << under << "\n"
                            << "    strike:         " << strike << "\n"
                            << "    dividend yield: " << io::rate(qRate) << "\n"
@@ -152,16 +151,14 @@ namespace {
                 Real tol = tolerance[greek];
                 if (relativeError(expct,calcl,u) > tol)
                     BOOST_FAIL(
-                        "Option details: \n"
-                        << "    type:           "
-                        << name << " " << OptionTypeFormatter::toString(type)
-                        << "\n"
-                        << "    underlying:     " << u << "\n"
-                        << "    strike:         " << k << "\n"
-                        << "    dividend yield: " << io::rate(q) << "\n"
-                        << "    risk-free rate: " << io::rate(r) << "\n"
-                        << "    residual time:  " << T << "\n"
-                        << "    volatility:     " << io::volatility(v)
+                        "Option details:"
+                        << "\n    type:           " << name << " " << type
+                        << "\n    underlying:     " << u
+                        << "\n    strike:         " << k
+                        << "\n    dividend yield: " << io::rate(q)
+                        << "\n    risk-free rate: " << io::rate(r)
+                        << "\n    residual time:  " << T
+                        << "\n    volatility:     " << io::volatility(v)
                         << "\n\n"
                         << "    calculated " << greek << ": " << calcl << "\n"
                         << "    expected:  " << greek << ": " << expct);

@@ -36,11 +36,9 @@ using namespace boost::unit_test_framework;
                          s1, s2, q1, q2, r, today, v1, v2, rho, \
                          expected, calculated, error, tolerance) \
     BOOST_FAIL(exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option on " \
+               << payoff->optionType() << " option on " \
                << basketTypeToString(basketType) \
-               << " with " \
-               << payoffTypeToString(payoff) << " payoff:\n" \
+               << " with " << payoffTypeToString(payoff) << " payoff:\n" \
                << "1st underlying value: " << s1 << "\n" \
                << "2nd underlying value: " << s2 << "\n" \
                << "              strike: " << payoff->strike() << "\n" \
@@ -61,11 +59,9 @@ using namespace boost::unit_test_framework;
                          s1, s2, s3, r, today, v1, v2, v3, rho, \
                          expected, calculated, error, tolerance) \
     BOOST_FAIL(exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option on " \
+               << payoff->optionType() << " option on " \
                << basketTypeToString(basketType) \
-               << " with " \
-               << payoffTypeToString(payoff) << " payoff:\n" \
+               << " with " << payoffTypeToString(payoff) << " payoff:\n" \
                << "1st underlying value: " << s1 << "\n" \
                << "2nd underlying value: " << s2 << "\n" \
                << "3rd underlying value: " << s3 << "\n" \

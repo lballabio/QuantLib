@@ -36,8 +36,7 @@ using namespace boost::unit_test_framework;
                         today, v, fxr, fxv, corr, expected, \
                         calculated, error, tolerance) \
     BOOST_FAIL("Quanto " << exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option with " \
+               << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:        " << s << "\n" \
                << "    strike:            " << payoff->strike() << "\n" \
@@ -59,8 +58,7 @@ using namespace boost::unit_test_framework;
                         today, reset, v, fxr, fxv, corr, expected, \
                         calculated, error, tolerance) \
     BOOST_FAIL("Quanto " << exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option with " \
+               << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:        " << s << "\n" \
                << "    strike:            " << payoff->strike() << "\n" \

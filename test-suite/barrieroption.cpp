@@ -36,8 +36,7 @@ using namespace boost::unit_test_framework;
                        error, tolerance) \
     BOOST_FAIL("\n" << barrierTypeToString(barrierType) << " " \
                << exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option with " \
+               << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    underlying value: " << s << "\n" \
                << "    strike:           " << payoff->strike() << "\n" \

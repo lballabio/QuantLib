@@ -34,8 +34,7 @@ using namespace boost::unit_test_framework;
                        v, moneyness, reset, expected, calculated, \
                        error, tolerance) \
     BOOST_FAIL("Forward " << exerciseTypeToString(exercise) << " " \
-               << OptionTypeFormatter::toString(payoff->optionType()) \
-               << " option with " \
+               << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                << "    spot value:        " << s << "\n" \
                << "    strike:            " << payoff->strike() <<"\n" \

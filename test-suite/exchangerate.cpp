@@ -38,10 +38,8 @@ void ExchangeRateTest::testDirect() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     calculated = eur_usd.exchange(m2);
@@ -49,10 +47,8 @@ void ExchangeRateTest::testDirect() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 }
 
@@ -75,10 +71,8 @@ void ExchangeRateTest::testDerived() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     calculated = derived.exchange(m2);
@@ -86,10 +80,8 @@ void ExchangeRateTest::testDerived() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 }
 
@@ -120,10 +112,8 @@ void ExchangeRateTest::testDirectLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     eur_usd = rateManager.lookup(EURCurrency(),
@@ -135,10 +125,8 @@ void ExchangeRateTest::testDirectLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     ExchangeRate usd_eur = rateManager.lookup(USDCurrency(),
@@ -151,10 +139,8 @@ void ExchangeRateTest::testDirectLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     usd_eur = rateManager.lookup(USDCurrency(),
@@ -167,10 +153,8 @@ void ExchangeRateTest::testDirectLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 }
 
@@ -199,10 +183,8 @@ void ExchangeRateTest::testTriangulatedLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     itl_usd = rateManager.lookup(ITLCurrency(),
@@ -213,10 +195,8 @@ void ExchangeRateTest::testTriangulatedLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     ExchangeRate usd_itl = rateManager.lookup(USDCurrency(),
@@ -228,10 +208,8 @@ void ExchangeRateTest::testTriangulatedLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     usd_itl = rateManager.lookup(USDCurrency(),
@@ -243,10 +221,8 @@ void ExchangeRateTest::testTriangulatedLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 }
 
@@ -302,10 +278,8 @@ void ExchangeRateTest::testSmartLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     usd_sek = rateManager.lookup(SEK, USD, Date(5,August,2004));
@@ -314,10 +288,8 @@ void ExchangeRateTest::testSmartLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     // three-rate chain
@@ -329,10 +301,8 @@ void ExchangeRateTest::testSmartLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     eur_sek = rateManager.lookup(SEK, EUR, Date(5,August,2004));
@@ -342,10 +312,8 @@ void ExchangeRateTest::testSmartLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     // four-rate chain
@@ -357,10 +325,8 @@ void ExchangeRateTest::testSmartLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     eur_jpy = rateManager.lookup(JPY, EUR, Date(5,August,2004));
@@ -370,10 +336,8 @@ void ExchangeRateTest::testSmartLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     // five-rate chain
@@ -385,10 +349,8 @@ void ExchangeRateTest::testSmartLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 
     gbp_jpy = rateManager.lookup(JPY, GBP, Date(5,August,2004));
@@ -398,10 +360,8 @@ void ExchangeRateTest::testSmartLookup() {
 
     if (!close(calculated,expected)) {
         BOOST_FAIL("Wrong result: \n"
-                   "    expected:   "
-                   + MoneyFormatter::toString(expected) + "\n"
-                   "    calculated: "
-                   + MoneyFormatter::toString(calculated));
+                   << "    expected:   " << expected << "\n"
+                   << "    calculated: " << calculated);
     }
 }
 
