@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:47  nando
     all the *.hpp moved below the Include/ql level
 
@@ -41,7 +44,6 @@
 #ifndef QUANTLIB_D_PLUS_D_MINUS_H
 #define QUANTLIB_D_PLUS_D_MINUS_H
 
-#include "ql/qldefines.hpp"
 #include "ql/FiniteDifferences/tridiagonaloperator.hpp"
 
 namespace QuantLib {

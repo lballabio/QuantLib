@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -45,27 +48,11 @@
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
 
-    Revision 1.5  2001/03/28 12:41:58  lballabio
-    Added constness to initialize() and mutableness to data members (how did this compile before?)
-
-    Revision 1.4  2001/03/27 17:18:55  marmar
-    Bug fixed in calculation of rho and vega
-
-    Revision 1.3  2001/03/22 16:37:48  marmar
-    Barrier option greeks included
-
-    Revision 1.2  2001/02/21 11:37:05  lballabio
-    Changed phony QL_REQUIRE into genuine throws
-
-    Revision 1.1  2001/02/20 11:11:13  marmar
-    BarrierOption implements the analytical barrier option
-
 */
 
 #ifndef quantlib_barrier_option_pricer_h
 #define quantlib_barrier_option_pricer_h
 
-#include "ql/qldefines.hpp"
 #include "ql/Pricers/bsmoption.hpp"
 #include "ql/Math/normaldistribution.hpp"
 

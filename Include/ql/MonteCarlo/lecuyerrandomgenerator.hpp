@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -41,16 +44,6 @@
 
     Revision 1.4  2001/01/17 14:37:56  nando
     tabs removed
-
-    Revision 1.3  2001/01/17 11:54:02  marmar
-    Some documentation added and 80 columns format enforced.
-
-    Revision 1.2  2000/12/27 17:56:16  lballabio
-    Cleaned up the documentation for use with Doxygen
-
-    Revision 1.1  2000/12/27 15:23:39  marmar
-    Random number generators has been updated and documented.
-    Now the Sample Generator idea is fully implemented
 
 */
 

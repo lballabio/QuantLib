@@ -25,6 +25,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:49  nando
     all the *.hpp moved below the Include/ql level
 
@@ -55,7 +58,6 @@
 #ifndef quantlib_himalaya_h
 #define quantlib_himalaya_h
 
-#include "ql/qldefines.hpp"
 #include "ql/rate.hpp"
 #include "ql/date.hpp"
 #include "ql/MonteCarlo/multifactorpricer.hpp"

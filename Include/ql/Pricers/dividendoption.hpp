@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/04/23 14:17:58  marmar
     Cosmetic changes
 
@@ -56,7 +59,6 @@
 #ifndef shaft_dividend_option_pricer_h
 #define shaft_dividend_option_pricer_h
 
-#include "ql/qldefines.hpp"
 #include "ql/Pricers/multiperiodoption.hpp"
 
 namespace QuantLib {
@@ -79,7 +81,7 @@ namespace QuantLib {
 
             void executeIntermediateStep(int step) const;
 
-            void movePricesBeforeExDiv(Array& prices, 
+            void movePricesBeforeExDiv(Array& prices,
                                        const Array& newGrid,
                                        const Array& oldGrid) const;
             double addElements(const std::vector<double>& A) const{

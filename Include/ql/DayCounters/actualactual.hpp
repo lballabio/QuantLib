@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.4  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.3  2001/05/08 17:21:11  lballabio
     changed comment
 
@@ -47,7 +50,6 @@
 #ifndef quantlib_actualactual_day_counter_h
 #define quantlib_actualactual_day_counter_h
 
-#include "ql/qldefines.hpp"
 #include "ql/daycounter.hpp"
 
 namespace QuantLib {
@@ -58,10 +60,10 @@ namespace QuantLib {
         class ActualActual : public DayCounter {
           public:
             std::string name() const { return std::string("act/act"); }
-            int dayCount(const Date& d1, const Date& d2) const { 
+            int dayCount(const Date& d1, const Date& d2) const {
                 return (d2-d1); }
             Time yearFraction(const Date& d1, const Date& d2,
-              const Date& refPeriodStart = Date(), 
+              const Date& refPeriodStart = Date(),
               const Date& refPeriodEnd = Date()) const;
         };
 

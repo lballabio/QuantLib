@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.3  2001/05/22 13:23:04  marmar
     Method controlVariateCorrection added
 
@@ -64,38 +67,11 @@
     Revision 1.14  2001/03/12 12:59:53  marmar
     Public method getGrid added
 
-    Revision 1.13  2001/03/01 14:20:51  marmar
-    Private-member syntax changed
-
-    Revision 1.12  2001/02/15 15:29:10  marmar
-    dVolMultiplier_ and dRMultiplier_ defined
-    constant
-
-    Revision 1.11  2001/02/14 10:11:05  marmar
-    BSMNumericalOption has  a cleaner constructor
-
-    Revision 1.10  2001/02/13 10:02:17  marmar
-    Ambiguous variable name underlyingGrowthRate changed in
-    unambiguos dividendYield
-
-    Revision 1.9  2001/01/17 14:37:56  nando
-    tabs removed
-
-    Revision 1.8  2001/01/08 11:44:17  lballabio
-    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
-
-    Revision 1.7  2001/01/08 10:28:16  lballabio
-    Moved Array to Math namespace
-
-    Revision 1.6  2000/12/14 12:32:30  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
 */
 
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h
 
-#include "ql/qldefines.hpp"
 #include "ql/Pricers/bsmoption.hpp"
 #include "ql/FiniteDifferences/bsmoperator.hpp"
 #include "ql/array.hpp"

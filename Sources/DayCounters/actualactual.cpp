@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.20  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.19  2001/05/08 17:22:08  lballabio
     Modified reference period calculation
 
@@ -70,7 +73,6 @@
 
 #include "ql/DayCounters/actualactual.hpp"
 #include "ql/DayCounters/thirty360european.hpp"
-#include "ql/null.hpp"
 
 namespace QuantLib {
 
@@ -88,18 +90,18 @@ namespace QuantLib {
             double period = double(months)/12;
             if (d2 <= refPeriodEnd) {
                 if (d1 >= refPeriodStart)
-                    return period*double(dayCount(d1,d2)) / 
+                    return period*double(dayCount(d1,d2)) /
                         dayCount(refPeriodStart,refPeriodEnd);
                 else {
                     Date previousRef = refPeriodStart.plusMonths(-months);
                     return yearFraction(
-                                d1,refPeriodStart,previousRef,refPeriodStart) + 
+                                d1,refPeriodStart,previousRef,refPeriodStart) +
                            yearFraction(
                                 refPeriodStart,d2,refPeriodStart,refPeriodEnd);
                 }
             } else {
                 Date nextRef = refPeriodEnd.plusMonths(months);
-                double sum = 
+                double sum =
                     yearFraction(d1,refPeriodEnd,refPeriodStart,refPeriodEnd);
                 int i=0;
                 Date newRefStart, newRefEnd;

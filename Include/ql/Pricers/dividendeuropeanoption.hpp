@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/04/12 12:17:21  marmar
     Theta is now consistent with DividendAmerican
 
@@ -67,7 +70,6 @@
 #ifndef BSM_dividend_european_option_pricer_h
 #define BSM_dividend_european_option_pricer_h
 
-#include "ql/qldefines.hpp"
 #include "ql/dataformatters.hpp"
 #include "ql/Pricers/bsmeuropeanoption.hpp"
 #include <vector>

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:49  nando
     all the *.hpp moved below the Include/ql level
 
@@ -50,7 +53,6 @@
 #define quantlib_pricers_cliquet_option_h
 
 #include <vector>
-#include "ql/qldefines.hpp"
 #include "ql/handle.hpp"
 #include "ql/Pricers/bsmoption.hpp"
 #include "ql/Pricers/bsmeuropeanoption.hpp"

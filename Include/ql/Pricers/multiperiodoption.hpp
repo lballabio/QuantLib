@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.3  2001/05/22 13:22:33  marmar
     Method controlVariateCorrection added
 
@@ -72,7 +75,6 @@
 #ifndef shaft_multi_period_option_pricer_h
 #define shaft_multi_period_option_pricer_h
 
-#include "ql/qldefines.hpp"
 #include "ql/Pricers/bsmnumericaloption.hpp"
 #include "ql/handle.hpp"
 #include "ql/FiniteDifferences/standardstepcondition.hpp"

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.6  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.5  2001/05/22 13:18:35  marmar
     Volatility limits change to [0.0001, 1.0]
 
@@ -47,7 +50,6 @@
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h
 
-#include "ql/qldefines.hpp"
 #include "ql/options.hpp"
 #include "ql/date.hpp"
 #include "ql/rate.hpp"

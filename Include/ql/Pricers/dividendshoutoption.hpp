@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:49  nando
     all the *.hpp moved below the Include/ql level
 
@@ -50,7 +53,6 @@
 #ifndef shaft_dividend_shout_option_pricer_h
 #define shaft_dividend_shout_option_pricer_h
 
-#include "ql/qldefines.hpp"
 #include "ql/Pricers/dividendoption.hpp"
 #include "ql/Pricers/shoutcondition.hpp"
 

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/23 19:30:27  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -41,25 +44,11 @@
     Revision 1.5  2001/01/30 15:48:51  marmar
     Documentation revised
 
-    Revision 1.4  2001/01/29 15:00:49  marmar
-    Modified to accomodate code-sharing with
-    multi-dimensional Monte Carlo
-
-    Revision 1.3  2001/01/17 14:37:56  nando
-    tabs removed
-
-    Revision 1.2  2001/01/17 11:54:02  marmar
-    Some documentation added and 80 columns format enforced.
-
-    Revision 1.1  2001/01/04 17:31:22  marmar
-    Alpha version of the Monte Carlo tools.
-
 */
 
 #ifndef quantlib_montecarlo_option_sample_h
 #define quantlib_montecarlo_option_sample_h
 
-#include "ql/qldefines.hpp"
 #include "ql/handle.hpp"
 
 namespace QuantLib {
