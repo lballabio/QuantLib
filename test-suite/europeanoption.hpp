@@ -30,7 +30,12 @@ class EuropeanOptionTest {
     static void testGreeks();
     static void testImpliedVol();
     static void testImpliedVolContainment();
-    static void testBinomialEngines();
+    static void testJRBinomialEngines();
+    static void testCRRBinomialEngines();
+    static void testEQPBinomialEngines();
+    static void testTGEOBinomialEngines();
+    static void testTIANBinomialEngines();
+    static void testLRBinomialEngines();
     static void testQmcEngines();
     static void testMcEngines();
     static boost::unit_test_framework::test_suite* suite();

@@ -26,6 +26,7 @@
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -87,9 +88,10 @@ namespace {
                const boost::shared_ptr<YieldTermStructure>& q,
                const boost::shared_ptr<YieldTermStructure>& r,
                const boost::shared_ptr<BlackVolTermStructure>& vol,
-               EngineType engineType = Analytic) {
+               EngineType engineType,
+               Size binomialSteps,
+               Size samples) {
 
-        Size binomialSteps = 251;
         boost::shared_ptr<PricingEngine> engine;
         switch (engineType) {
           case Analytic:
@@ -122,12 +124,12 @@ namespace {
             break;
           case PseudoMonteCarlo:
             engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
-                                                         .withSamples(2000)
+                                                         .withSamples(samples)
                                                          .withSeed(42);
             break;
           case QuasiMonteCarlo:
             engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
-                                                           .withSamples(1023);
+                                                           .withSamples(samples);
             break;
           default:
             QL_FAIL("unknown engine type");
@@ -759,7 +761,8 @@ void EuropeanOptionTest::testImpliedVol() {
           boost::shared_ptr<StrikedTypePayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
           boost::shared_ptr<VanillaOption> option =
-              makeOption(payoff, exercise, spot, qTS, rTS, volTS);
+              makeOption(payoff, exercise, spot, qTS, rTS, volTS,
+                         Analytic, Null<Size>(), Null<Size>());
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
             for (Size m=0; m<LENGTH(qRates); m++) {
@@ -918,13 +921,17 @@ void EuropeanOptionTest::testImpliedVolContainment() {
 
 namespace {
 
-    void testEngineConsistency(EngineType *engines, Size N) {
+    void testEngineConsistency(EngineType *engines,
+                               Size N,
+                               Size binomialSteps,
+                               Size samples,
+                               Real tolerance) {
 
-        Real tolerance = 0.03;
+        boost::progress_timer t;  // start timing
 
         // test options
         Option::Type types[] = { Option::Call, Option::Put };
-        Real strikes[] = { 50.0, 100.0, 150.0 };
+        Real strikes[] = { 75.0, 100.0, 125.0 };
         Integer lengths[] = { 1 };
 
         // test data
@@ -954,13 +961,15 @@ namespace {
                   PlainVanillaPayoff(types[i], strikes[j]));
               // reference option
               boost::shared_ptr<VanillaOption> refOption =
-                  makeOption(payoff, exercise, spot, qTS, rTS, volTS);
+                  makeOption(payoff, exercise, spot, qTS, rTS, volTS,
+                             Analytic, Null<Size>(), Null<Size>());
               // options to check
               std::map<EngineType,boost::shared_ptr<VanillaOption> > options;
               for (Size ii=0; ii<N; ii++) {
                   options[engines[ii]] =
                       makeOption(payoff, exercise, spot,
-                                 qTS, rTS, volTS, engines[ii]);
+                                 qTS, rTS, volTS, engines[ii],
+                                 binomialSteps, samples);
               }
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -979,7 +988,8 @@ namespace {
                       Real refValue = refOption->NPV();
                       for (Size ii=0; ii<N; ii++) {
                           Real value = options[engines[ii]]->NPV();
-                          if (relativeError(value,refValue,u) > tolerance) {
+                          Real relErr = relativeError(value,refValue,u);
+                          if (relErr > tolerance) {
                               BOOST_FAIL("European "
                                   + OptionTypeFormatter::toString(types[i]) +
                                   " option :\n"
@@ -1001,7 +1011,11 @@ namespace {
                                   + DecimalFormatter::toString(refValue) + "\n"
                                   "    "
                                   + engineTypeToString(engines[ii]) + ":  "
-                                  + DecimalFormatter::toString(value));
+                                  + DecimalFormatter::toString(value) + "\n"
+                                  "    relative error: " \
+                                  + DecimalFormatter::toString(relErr) + "\n"
+                                  "         tolerance: " \
+                                  + DecimalFormatter::toString(tolerance));
                           }
                       }
                     }
@@ -1015,13 +1029,76 @@ namespace {
 
 }
 
-void EuropeanOptionTest::testBinomialEngines() {
+void EuropeanOptionTest::testJRBinomialEngines() {
 
-    BOOST_MESSAGE("Testing binomial European engines "
+    BOOST_MESSAGE("Testing JR binomial European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { JR, CRR, EQP, TGEO, TIAN, LR };
-    testEngineConsistency(engines,LENGTH(engines));
+    EngineType engines[] = { JR };
+    Size steps = 251;
+    Size samples = Null<Size>();
+    Real relativeTol = 0.01;
+    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+}
+
+void EuropeanOptionTest::testCRRBinomialEngines() {
+
+    BOOST_MESSAGE("Testing CRR binomial European engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { CRR };
+    Size steps = 501;
+    Size samples = Null<Size>();
+    Real relativeTol = 0.02;
+    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+}
+
+void EuropeanOptionTest::testEQPBinomialEngines() {
+
+    BOOST_MESSAGE("Testing EQP binomial European engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { EQP };
+    Size steps = 501;
+    Size samples = Null<Size>();
+    Real relativeTol = 0.02;
+    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+}
+
+void EuropeanOptionTest::testTGEOBinomialEngines() {
+
+    BOOST_MESSAGE("Testing TGEO binomial European engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { TGEO };
+    Size steps = 251;
+    Size samples = Null<Size>();
+    Real relativeTol = 0.01;
+    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+}
+
+void EuropeanOptionTest::testTIANBinomialEngines() {
+
+    BOOST_MESSAGE("Testing TIAN binomial European engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { TIAN };
+    Size steps = 251;
+    Size samples = Null<Size>();
+    Real relativeTol = 0.01;
+    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
+}
+
+void EuropeanOptionTest::testLRBinomialEngines() {
+
+    BOOST_MESSAGE("Testing LR binomial European engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { LR };
+    Size steps = 251;
+    Size samples = Null<Size>();
+    Real relativeTol = 0.01;
+    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
 }
 
 void EuropeanOptionTest::testMcEngines() {
@@ -1030,7 +1107,10 @@ void EuropeanOptionTest::testMcEngines() {
                   "against analytic results...");
 
     EngineType engines[] = { PseudoMonteCarlo };
-    testEngineConsistency(engines,LENGTH(engines));
+    Size steps = Null<Size>();
+    Size samples = 40000;
+    Real relativeTol = 0.01;
+    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
 }
 
 void EuropeanOptionTest::testQmcEngines() {
@@ -1039,7 +1119,10 @@ void EuropeanOptionTest::testQmcEngines() {
                   "against analytic results...");
 
     EngineType engines[] = { QuasiMonteCarlo };
-    testEngineConsistency(engines,LENGTH(engines));
+    Size steps = Null<Size>();
+    Size samples = 4095; // 2^12-1
+    Real relativeTol = 0.01;
+    testEngineConsistency(engines,LENGTH(engines),steps, samples, relativeTol);
 }
 
 test_suite* EuropeanOptionTest::suite() {
@@ -1051,7 +1134,12 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testImpliedVol));
     suite->add(BOOST_TEST_CASE(
                            &EuropeanOptionTest::testImpliedVolContainment));
-    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testBinomialEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testJRBinomialEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testCRRBinomialEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testEQPBinomialEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testTGEOBinomialEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testTIANBinomialEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testLRBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
     return suite;

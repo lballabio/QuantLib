@@ -31,6 +31,7 @@
 #include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
 #include <ql/DayCounters/actual365.hpp>
+#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -40,6 +41,7 @@ void OldPricerTest::testFdEuropeanPricer() {
 
     BOOST_MESSAGE("Testing old-style finite-difference European pricer...");
 
+    boost::progress_timer t;  // start timing
     Real under = 100.0;
     Real strikeMin = 60.0, strikeRange = 100.0;
     Rate rRateMin = 0.0,  rRateRange = 0.18;
@@ -190,6 +192,8 @@ void OldPricerTest::testAmericanPricers() {
 
     BOOST_MESSAGE("Testing old-style American-type pricers...");
 
+    boost::progress_timer t;  // start timing
+
     Option::Type types[] = { Option::Call, Option::Put };
     Real underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
@@ -250,6 +254,8 @@ namespace {
 void OldPricerTest::testMcSingleFactorPricers() {
 
     BOOST_MESSAGE("Testing old-style Monte Carlo single-factor pricers...");
+
+    boost::progress_timer t;  // start timing
 
     BigNatural seed = 3456789;
 
@@ -582,6 +588,8 @@ namespace {
 void OldPricerTest::testMcMultiFactorPricers() {
 
     BOOST_MESSAGE("Testing old-style Monte Carlo multi-factor pricers...");
+
+    boost::progress_timer t;  // start timing
 
     Matrix correlation(4,4);
     correlation[0][0] = 1.00;

@@ -26,6 +26,7 @@
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <boost/progress.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -340,6 +341,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
     BOOST_MESSAGE("Testing three-asset basket options "
                   "against Barraquand's values...");
 
+    boost::progress_timer t;  // start timing
     /*
         Data from:
         "Numerical Valuation of High Dimensional American Securities"
@@ -548,6 +550,7 @@ void BasketOptionTest::testTavellaValues() {
     BOOST_MESSAGE("Testing three-asset American basket options "
                   "against Tavella's values...");
 
+    boost::progress_timer t;  // start timing
     /*
         Data from:
         "Quantitative Methods in Derivatives Pricing"
@@ -654,6 +657,8 @@ void BasketOptionTest::testTavellaValues() {
 void BasketOptionTest::testOneDAmericanValues() {
 
     BOOST_MESSAGE("Testing basket American options against 1-D case...");
+
+    boost::progress_timer t;  // start timing
 
     BasketOptionOneData values[] = {
         //        type, strike,   spot,    q,    r,    t,  vol,   value, tol

@@ -26,6 +26,7 @@
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -667,6 +668,8 @@ void DigitalOptionTest::testMCCashAtHit() {
 
     BOOST_MESSAGE("Testing Monte Carlo cash-(at-hit)-or-nothing "
                   "American engine...");
+
+    boost::progress_timer t;  // start timing
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol

@@ -26,6 +26,7 @@
 #include <ql/RandomNumbers/randomizedlds.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
+#include <boost/progress.hpp>
 
 //#define PRINT_ONLY
 #ifdef PRINT_ONLY
@@ -728,6 +729,8 @@ namespace {
                                   const Real * const discrepancy[8],
                                   const std::string& fileName,
                                   const std::string& arrayName) {
+
+        boost::progress_timer t;  // start timing
 
         #ifndef PRINT_ONLY
         Real tolerance = 1.0e-2;

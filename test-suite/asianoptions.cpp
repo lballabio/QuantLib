@@ -25,6 +25,7 @@
 #include <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
+#include <boost/progress.hpp>
 #include <map>
 
 using namespace QuantLib;
@@ -474,6 +475,8 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
     BOOST_MESSAGE("Testing Monte Carlo discrete arithmetic average-price "
                   "Asians...");
+
+    boost::progress_timer t;  // start timing
 
     // data from "Asian Option", Levy, 1997
     // in "Exotic Options: The State of the Art",
