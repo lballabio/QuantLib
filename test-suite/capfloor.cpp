@@ -33,7 +33,7 @@ namespace {
 
     Date today_, settlement_;
     std::vector<Real> nominals_;
-    RollingConvention rollingConvention_;
+    BusinessDayConvention rollingConvention_;
     Frequency frequency_;
     boost::shared_ptr<Xibor> index_;
     Calendar calendar_;
@@ -101,7 +101,7 @@ namespace {
                             new Euribor(12/frequency_,Months,termStructure_));
         calendar_ = index_->calendar();
         rollingConvention_ = ModifiedFollowing;
-        today_ = calendar_.roll(Date::todaysDate());
+        today_ = calendar_.adjust(Date::todaysDate());
         settlementDays_ = 2;
         fixingDays_ = 2;
         settlement_ = calendar_.advance(today_,settlementDays_,Days);

@@ -26,7 +26,7 @@ namespace QuantLib {
                          bool payFixedRate,
                          const Date& startDate, Integer n, TimeUnit units,
                          const Calendar& calendar,
-                         RollingConvention rollingConvention,
+                         BusinessDayConvention rollingConvention,
                          Real nominal,
                          Frequency fixedFrequency,
                          Rate fixedRate,
@@ -43,7 +43,7 @@ namespace QuantLib {
       payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
       nominal_(nominal) {
 
-        Date maturity = calendar.roll(startDate.plus(n,units),
+        Date maturity = calendar.adjust(startDate.plus(n,units),
                                       rollingConvention);
 
         Schedule fixedSchedule = 

@@ -35,13 +35,13 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();
-        RollingConvention rollingConvention =
+        BusinessDayConvention rollingConvention =
             schedule.rollingConvention();
         bool isAdjusted = schedule.isAdjusted();
 
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
-        Date paymentDate = calendar.roll(end,rollingConvention);
+        Date paymentDate = calendar.adjust(end,rollingConvention);
         Rate rate = couponRates[0];
         Real nominal = nominals[0];
         if (schedule.isRegular(1)) {
@@ -55,7 +55,7 @@ namespace QuantLib {
         } else {
             Date reference = end.plusMonths(-12/schedule.frequency());
             if (isAdjusted)
-                reference = calendar.roll(reference,rollingConvention);
+                reference = calendar.adjust(reference,rollingConvention);
             DayCounter dc = firstPeriodDayCount.isNull() ?
                             dayCount :
                             firstPeriodDayCount;
@@ -66,7 +66,7 @@ namespace QuantLib {
         // regular periods
         for (Size i=2; i<schedule.size()-1; i++) {
             start = end; end = schedule.date(i);
-            paymentDate = calendar.roll(end,rollingConvention);
+            paymentDate = calendar.adjust(end,rollingConvention);
             if ((i-1) < couponRates.size())
                 rate = couponRates[i-1];
             else
@@ -83,7 +83,7 @@ namespace QuantLib {
             // last period might be short or long
             Size N = schedule.size();
             start = end; end = schedule.date(N-1);
-            paymentDate = calendar.roll(end,rollingConvention);
+            paymentDate = calendar.adjust(end,rollingConvention);
             if ((N-2) < couponRates.size())
                 rate = couponRates[N-2];
             else
@@ -101,7 +101,7 @@ namespace QuantLib {
                 Date reference = 
                     start.plusMonths(12/schedule.frequency());
                 if (isAdjusted)
-                    reference = calendar.roll(reference,rollingConvention);
+                    reference = calendar.adjust(reference,rollingConvention);
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new FixedRateCoupon(nominal, paymentDate, 
                                         rate, dayCount, 
@@ -123,12 +123,12 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         Calendar calendar = schedule.calendar();
-        RollingConvention rollingConvention =
+        BusinessDayConvention rollingConvention =
             schedule.rollingConvention();
 
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
-        Date paymentDate = calendar.roll(end,rollingConvention);
+        Date paymentDate = calendar.adjust(end,rollingConvention);
         Spread spread;
         if (spreads.size() > 0)
             spread = spreads[0];
@@ -142,7 +142,7 @@ namespace QuantLib {
         } else {
             Date reference = end.plusMonths(-12/schedule.frequency());
             reference =
-                calendar.roll(reference,rollingConvention);
+                calendar.adjust(reference,rollingConvention);
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new ShortFloatingRateCoupon(nominal, paymentDate, 
                                             index, start, end, 
@@ -152,7 +152,7 @@ namespace QuantLib {
         // regular periods
         for (Size i=2; i<schedule.size()-1; i++) {
             start = end; end = schedule.date(i);
-            paymentDate = calendar.roll(end,rollingConvention);
+            paymentDate = calendar.adjust(end,rollingConvention);
             if ((i-1) < spreads.size())
                 spread = spreads[i-1];
             else if (spreads.size() > 0)
@@ -171,7 +171,7 @@ namespace QuantLib {
             // last period might be short or long
             Size N = schedule.size();
             start = end; end = schedule.date(N-1);
-            paymentDate = calendar.roll(end,rollingConvention);
+            paymentDate = calendar.adjust(end,rollingConvention);
             if ((N-2) < spreads.size())
                 spread = spreads[N-2];
             else if (spreads.size() > 0)
@@ -190,7 +190,7 @@ namespace QuantLib {
                 Date reference = 
                     start.plusMonths(12/schedule.frequency());
                 reference =
-                    calendar.roll(reference,rollingConvention);
+                    calendar.adjust(reference,rollingConvention);
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new ShortFloatingRateCoupon(nominal, paymentDate, 
                                                 index, start, end, 

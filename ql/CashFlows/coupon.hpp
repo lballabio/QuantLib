@@ -35,7 +35,7 @@ namespace QuantLib {
     */
     class Coupon : public CashFlow {
       public:
-        /*! \warning the coupon does not roll the payment date
+        /*! \warning the coupon does not adjust the payment date
           which must already be a business day.
         */
         Coupon(Real nominal,

@@ -33,12 +33,12 @@ namespace QuantLib {
       public:
         Schedule(const Calendar& calendar,
                  const Date& startDate, const Date& endDate,
-                 Frequency frequency, RollingConvention rollingConvention,
+                 Frequency frequency, BusinessDayConvention rollingConvention,
                  bool isAdjusted, const Date& stubDate = Date(),
                  bool startFromEnd = false, bool longFinal = false);
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar, 
-                 RollingConvention rollingConvention,
+                 BusinessDayConvention rollingConvention,
                  bool isAdjusted);
         //! \name Date access
         //@{
@@ -53,7 +53,7 @@ namespace QuantLib {
         const Date& startDate() const;
         const Date& endDate() const;
         Frequency frequency() const;
-        RollingConvention rollingConvention() const;
+        BusinessDayConvention rollingConvention() const;
         bool isAdjusted() const;
         //@}
         //! \name Iterators
@@ -65,7 +65,7 @@ namespace QuantLib {
       private:
         Calendar calendar_;
         Frequency frequency_;
-        RollingConvention rollingConvention_;
+        BusinessDayConvention rollingConvention_;
         bool isAdjusted_;
         Date stubDate_;
         bool startFromEnd_;
@@ -83,7 +83,7 @@ namespace QuantLib {
       public:
         MakeSchedule(const Calendar& calendar,
                      const Date& startDate, const Date& endDate,
-                     Frequency frequency, RollingConvention rollingConvention,
+                     Frequency frequency, BusinessDayConvention rollingConvention,
                      bool isAdjusted)
         : calendar_(calendar), startDate_(startDate), endDate_(endDate),
           frequency_(frequency), rollingConvention_(rollingConvention),
@@ -119,7 +119,7 @@ namespace QuantLib {
         Calendar calendar_;
         Date startDate_, endDate_;
         Frequency frequency_;
-        RollingConvention rollingConvention_;
+        BusinessDayConvention rollingConvention_;
         bool isAdjusted_;
         Date stubDate_;
         bool startFromEnd_;
@@ -132,7 +132,7 @@ namespace QuantLib {
 
     inline Schedule::Schedule(const std::vector<Date>& dates,
                               const Calendar& calendar, 
-                              RollingConvention rollingConvention,
+                              BusinessDayConvention rollingConvention,
                               bool isAdjusted)
     : calendar_(calendar), frequency_(Frequency(-1)), 
       rollingConvention_(rollingConvention),
@@ -173,7 +173,7 @@ namespace QuantLib {
         return frequency_;
     }
 
-    inline RollingConvention Schedule::rollingConvention() const {
+    inline BusinessDayConvention Schedule::rollingConvention() const {
         return rollingConvention_;
     }
 

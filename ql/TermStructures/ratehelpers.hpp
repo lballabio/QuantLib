@@ -84,13 +84,13 @@ namespace QuantLib {
                           Integer n, TimeUnit units,
                           Integer settlementDays,
                           const Calendar& calendar,
-                          RollingConvention convention,
+                          BusinessDayConvention convention,
                           const DayCounter& dayCounter);
         DepositRateHelper(Rate rate,
                           Integer n, TimeUnit units,
                           Integer settlementDays,
                           const Calendar& calendar,
-                          RollingConvention convention,
+                          BusinessDayConvention convention,
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
@@ -101,7 +101,7 @@ namespace QuantLib {
         TimeUnit units_;
         Integer settlementDays_;
         Calendar calendar_;
-        RollingConvention convention_;
+        BusinessDayConvention convention_;
         DayCounter dayCounter_;
         Date settlement_, maturity_;
         Time yearFraction_;
@@ -120,13 +120,13 @@ namespace QuantLib {
                       Integer monthsToStart, Integer monthsToEnd,
                       Integer settlementDays,
                       const Calendar& calendar,
-                      RollingConvention convention,
+                      BusinessDayConvention convention,
                       const DayCounter& dayCounter);
         FraRateHelper(Rate rate,
                       Integer monthsToStart, Integer monthsToEnd,
                       Integer settlementDays,
                       const Calendar& calendar,
-                      RollingConvention convention,
+                      BusinessDayConvention convention,
                       const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
@@ -136,7 +136,7 @@ namespace QuantLib {
         Integer monthsToStart_, monthsToEnd_;
         Integer settlementDays_;
         Calendar calendar_;
-        RollingConvention convention_;
+        BusinessDayConvention convention_;
         DayCounter dayCounter_;
         Date settlement_, start_, maturity_;
         Time yearFraction_;
@@ -153,19 +153,19 @@ namespace QuantLib {
                           const Date& ImmDate,
                           Integer nMonths,
                           const Calendar& calendar,
-                          RollingConvention convention,
+                          BusinessDayConvention convention,
                           const DayCounter& dayCounter);
 	    FuturesRateHelper(const RelinkableHandle<Quote>& price,
                           const Date& ImmDate,
                           const Date& MatDate,
                           const Calendar& calendar,
-                          RollingConvention convention,
+                          BusinessDayConvention convention,
                           const DayCounter& dayCounter);
         FuturesRateHelper(Real price,
                           const Date& ImmDate,
                           Integer nMonths,
                           const Calendar& calendar,
-                          RollingConvention convention,
+                          BusinessDayConvention convention,
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
@@ -174,7 +174,7 @@ namespace QuantLib {
         Date ImmDate_;
         Integer nMonths_;
         Calendar calendar_;
-        RollingConvention convention_;
+        BusinessDayConvention convention_;
         DayCounter dayCounter_;
         Date maturity_;
         Time yearFraction_;
@@ -191,7 +191,7 @@ namespace QuantLib {
                        Integer n, TimeUnit units,
                        Integer settlementDays,
                        const Calendar& calendar,
-                       RollingConvention convention,
+                       BusinessDayConvention convention,
                        // fixed leg
                        Frequency fixedFrequency,
                        bool fixedIsAdjusted,
@@ -202,7 +202,7 @@ namespace QuantLib {
                        Integer n, TimeUnit units,
                        Integer settlementDays,
                        const Calendar& calendar,
-                       RollingConvention convention,
+                       BusinessDayConvention convention,
                        // fixed leg
                        Frequency fixedFrequency,
                        bool fixedIsAdjusted,
@@ -219,7 +219,7 @@ namespace QuantLib {
         TimeUnit units_;
         Integer settlementDays_;
         Calendar calendar_;
-        RollingConvention convention_;
+        BusinessDayConvention convention_;
         Frequency fixedFrequency_, floatingFrequency_;
         bool fixedIsAdjusted_;
         DayCounter fixedDayCount_;

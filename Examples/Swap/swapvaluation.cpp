@@ -321,7 +321,7 @@ int main(int, char* [])
         // fixed leg
         Frequency fixedLegFrequency = Annual;
         bool fixedLegIsAdjusted = false;
-        RollingConvention roll = ModifiedFollowing;
+        BusinessDayConvention roll = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Integer fixingDays = 2;
         Rate fixedRate = 0.04;

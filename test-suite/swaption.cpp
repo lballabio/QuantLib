@@ -38,7 +38,7 @@ namespace {
     Date today_, settlement_;
     Real nominal_;
     Calendar calendar_;
-    RollingConvention rollingConvention_;
+    BusinessDayConvention rollingConvention_;
     Frequency fixedFrequency_, floatingFrequency_;
     DayCounter fixedDayCount_;
     bool fixedIsAdjusted_;

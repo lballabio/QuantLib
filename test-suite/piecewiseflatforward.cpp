@@ -66,9 +66,9 @@ namespace {
     Calendar calendar;
     Integer settlementDays, fixingDays;
     Date today, settlement;
-    RollingConvention depoRollingConvention;
+    BusinessDayConvention depoRollingConvention;
     DayCounter depoDayCounter;
-    RollingConvention swapRollingConvention;
+    BusinessDayConvention swapRollingConvention;
     Frequency fixedLegFrequency;
     bool fixedLegIsAdjusted;
     DayCounter fixedLegDayCounter;
@@ -84,7 +84,7 @@ namespace {
         calendar = TARGET();
         settlementDays = 2;
         fixingDays = 2;
-        today = calendar.roll(Date::todaysDate());
+        today = calendar.adjust(Date::todaysDate());
         settlement = calendar.advance(today,settlementDays,Days);
         depoRollingConvention = ModifiedFollowing;
         depoDayCounter = Actual360();

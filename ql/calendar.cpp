@@ -81,9 +81,9 @@ namespace QuantLib {
 
     #endif
 
-    Date Calendar::roll(const Date& d ,
-                        RollingConvention c,
-                        const Date& origin) const {
+    Date Calendar::adjust(const Date& d ,
+                          BusinessDayConvention c,
+                          const Date& origin) const {
         QL_REQUIRE(d!=Date(), "null date");
         Date d1 = d;
         if (c == Following || c == ModifiedFollowing ||
@@ -92,13 +92,13 @@ namespace QuantLib {
                 d1++;
             if (c == ModifiedFollowing || c == MonthEndReference) {
                 if (d1.month() != d.month()) {
-                    return roll(d,Preceding);
+                    return adjust(d,Preceding);
                 }
                 if (c == MonthEndReference && origin != Date()) {
                     if (isEndOfMonth(origin) &&
                         !isEndOfMonth(d1)) {
                         d1 = Date(d1.lastDayOfMonth(),d1.month(),d1.year());
-                        return roll(d1,Preceding);
+                        return adjust(d1,Preceding);
                     }
                 }
             }
@@ -106,7 +106,7 @@ namespace QuantLib {
             while (isHoliday(d1))
                 d1--;
             if (c == ModifiedPreceding && d1.month() != d.month()) {
-                return roll(d,Following);
+                return adjust(d,Following);
             }
         } else {
             QL_FAIL("unknown rolling convention");
@@ -115,10 +115,10 @@ namespace QuantLib {
     }
 
     Date Calendar::advance(const Date& d, Integer n, TimeUnit unit,
-                           RollingConvention c) const {
+                           BusinessDayConvention c) const {
         QL_REQUIRE(d!=Date(), "null date");
         if (n == 0) {
-            return roll(d,c);
+            return adjust(d,c);
         } else if (unit == Days) {
             Date d1 = d;
             if (n > 0) {
@@ -139,14 +139,14 @@ namespace QuantLib {
             return d1;
         } else {
             Date d1 = d.plus(n,unit);
-            return roll(d1,c,d);
+            return adjust(d1,c,d);
         }
         QL_DUMMY_RETURN(Date());
     }
 
     Date Calendar::advance(const Date & d,
                            const Period & p,
-                           RollingConvention c)const {
+                           BusinessDayConvention c)const {
         return advance(d,
                        p.length(),
                        p.units(),

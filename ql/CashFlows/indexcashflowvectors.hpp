@@ -42,9 +42,9 @@ namespace QuantLib {
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
         Calendar calendar = schedule.calendar();
-        RollingConvention rollingConvention = 
+        BusinessDayConvention rollingConvention = 
             schedule.rollingConvention();
-        Date paymentDate = calendar.roll(end,rollingConvention);
+        Date paymentDate = calendar.adjust(end,rollingConvention);
         Spread spread;
         if (spreads.size() > 0)
             spread = spreads[0];
@@ -58,7 +58,7 @@ namespace QuantLib {
                                       start, end, dayCounter)));
         } else {
             Date reference = end.plusMonths(-12/schedule.frequency());
-            reference = calendar.roll(reference,rollingConvention);
+            reference = calendar.adjust(reference,rollingConvention);
             typedef Short<IndexedCouponType> ShortIndexedCouponType;
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new ShortIndexedCouponType(nominal, paymentDate, index, 
@@ -68,7 +68,7 @@ namespace QuantLib {
         // regular periods
         for (Size i=2; i<schedule.size()-1; i++) {
             start = end; end = schedule.date(i);
-            paymentDate = calendar.roll(end,rollingConvention);
+            paymentDate = calendar.adjust(end,rollingConvention);
             if ((i-1) < spreads.size())
                 spread = spreads[i-1];
             else if (spreads.size() > 0)
@@ -88,7 +88,7 @@ namespace QuantLib {
             // last period might be short or long
             Size N = schedule.size();
             start = end; end = schedule.date(N-1);
-            paymentDate = calendar.roll(end,rollingConvention);
+            paymentDate = calendar.adjust(end,rollingConvention);
             if ((N-2) < spreads.size())
                 spread = spreads[N-2];
             else if (spreads.size() > 0)
@@ -107,7 +107,7 @@ namespace QuantLib {
             } else {
                 Date reference = 
                     start.plusMonths(12/schedule.frequency());
-                reference = calendar.roll(reference,rollingConvention);
+                reference = calendar.adjust(reference,rollingConvention);
                 typedef Short<IndexedCouponType> ShortIndexedCouponType;
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new ShortIndexedCouponType(nominal, paymentDate, index,

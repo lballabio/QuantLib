@@ -34,7 +34,7 @@ namespace QuantLib {
               Integer n, TimeUnit units, Integer settlementDays,
               Currency currency,
               const Calendar& calendar, bool isAdjusted,
-              RollingConvention rollingConvention,
+              BusinessDayConvention rollingConvention,
               const DayCounter& dayCounter, 
               const RelinkableHandle<TermStructure>& h)
         : familyName_(familyName), n_(n), units_(units),
@@ -62,7 +62,7 @@ namespace QuantLib {
         Currency currency() const;
         Calendar calendar() const;
         bool isAdjusted() const;
-        RollingConvention rollingConvention() const;
+        BusinessDayConvention rollingConvention() const;
         DayCounter dayCounter() const;
         boost::shared_ptr<TermStructure> termStructure() const;
         //@}
@@ -74,7 +74,7 @@ namespace QuantLib {
         Currency currency_;
         Calendar calendar_;
         bool isAdjusted_;
-        RollingConvention rollingConvention_;
+        BusinessDayConvention rollingConvention_;
         DayCounter dayCounter_;
         RelinkableHandle<TermStructure> termStructure_;
     };
@@ -106,7 +106,7 @@ namespace QuantLib {
         return isAdjusted_; 
     }
 
-    inline RollingConvention Xibor::rollingConvention() const {
+    inline BusinessDayConvention Xibor::rollingConvention() const {
         return rollingConvention_; 
     }
 

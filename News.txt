@@ -18,6 +18,8 @@ Changes since Release 0.3.6:
     - Added (old-style) calendars: Beijing, Hong Kong, Riyadh, Seoul, Singapore,
       Taiwan.
     - Milan, London, and NewYork calendars have been deprecated.
+    - RollingConvention has been renamed BusinessDayConvention, as in ISDA
+      definitions.
 
     Math
     - Added rounding algorythms.

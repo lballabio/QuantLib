@@ -34,7 +34,7 @@ namespace {
     bool payFixed_;
     Real nominal_;
     Calendar calendar_;
-    RollingConvention rollingConvention_;
+    BusinessDayConvention rollingConvention_;
     Frequency fixedFrequency_, floatingFrequency_;
     DayCounter fixedDayCount_;
     bool fixedIsAdjusted_;
@@ -68,7 +68,7 @@ namespace {
                                      new Euribor(12/floatingFrequency_,Months,
                                                  termStructure_));
         calendar_ = index_->calendar();
-        today_ = calendar_.roll(Date::todaysDate());
+        today_ = calendar_.adjust(Date::todaysDate());
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
         termStructure_.linkTo(
           boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,

@@ -25,10 +25,10 @@ namespace QuantLib {
                                  const std::vector<Date>& dates,
                                  const std::vector<DiscountFactor>& discounts,
                                  const Calendar& calendar,
-                                 const RollingConvention roll,
+                                 const BusinessDayConvention conv,
                                  const DayCounter& dayCounter)
     : DiscountCurve(todaysDate,dates,discounts,dayCounter),
-      calendar_(calendar), roll_(roll) {
+      calendar_(calendar), conv_(conv) {
         calibrateNodes();
     }
 
@@ -43,7 +43,7 @@ namespace QuantLib {
         for (i = 0, ci = 1; i < dates.size(); i++) {
             Date rateDate = dates[i];
             Date tmpDate = calendar_.advance(referenceDate_,
-                                             ci, Months, roll_);
+                                             ci, Months, conv_);
             while (rateDate > tmpDate) {
                 dates.insert(dates.begin() + i, tmpDate);
                 Time t = dayCounter_.yearFraction(referenceDate_,tmpDate);
@@ -52,7 +52,7 @@ namespace QuantLib {
                                  interpolation_(t,true));
                 i++;
                 tmpDate = calendar_.advance(referenceDate_,
-                                            ++ci, Months, roll_);
+                                            ++ci, Months, conv_);
             }
             if (tmpDate == rateDate)
                 ci++;
@@ -70,7 +70,7 @@ namespace QuantLib {
         std::vector<Rate> forwards;
         Date compoundDate = calendar_.advance(referenceDate_,
                                               12/compounding,
-                                              Months, roll_);
+                                              Months, conv_);
         Time compoundTime = dayCounter_.yearFraction(referenceDate_,
                                                      compoundDate);
         Real qFactor = 0.0;
@@ -88,7 +88,7 @@ namespace QuantLib {
             } else {
                 Date tmpDate = calendar_.advance(referenceDate_,
                                                  (12/compounding) * (ci+1),
-                                                 Months, roll_);
+                                                 Months, conv_);
                 Time tt = dayCounter_.yearFraction(compoundDate,
                                                    rateDate);
                 fwd = (1.0-df)/(qFactor+df*tt);
@@ -105,7 +105,7 @@ namespace QuantLib {
 
         return boost::shared_ptr<CompoundForward>(
                         new CompoundForward(todaysDate_, referenceDate_,
-                                            dates_, forwards, calendar_,roll_,
+                                            dates_, forwards, calendar_,conv_,
                                             compounding, dayCounter_));
     }
 

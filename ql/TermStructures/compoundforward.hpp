@@ -36,13 +36,18 @@ namespace QuantLib {
                         const std::vector<Date> &dates,
                         const std::vector<Rate> &forwards,
                         const Calendar & calendar,
-                        const RollingConvention roll,
+                        const BusinessDayConvention conv,
                         const Integer compounding,
                         const DayCounter & dayCounter);
         Date todaysDate() const { return todaysDate_; }
         Date referenceDate() const { return referenceDate_; };
         Calendar calendar() const { return calendar_; };
-        RollingConvention roll() const { return roll_; };
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use businessDayConvention() instead
+        BusinessDayConvention roll() const { return conv_; };
+        #endif
+        BusinessDayConvention businessDayConvention() const {
+            return conv_; };
         DayCounter dayCounter() const { return dayCounter_; };
         Integer compounding() const { return compounding_; };
         Date maxDate() const;
@@ -70,7 +75,7 @@ namespace QuantLib {
         Date referenceDate_;
         DayCounter dayCounter_;
         Calendar calendar_;
-        RollingConvention roll_;
+        BusinessDayConvention conv_;
         Integer compounding_;
         mutable bool needsBootstrap_;
         mutable std::vector<Date> dates_;

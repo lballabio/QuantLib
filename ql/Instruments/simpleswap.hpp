@@ -38,7 +38,7 @@ namespace QuantLib {
                    // dates
                    const Date& startDate, Integer n, TimeUnit units,
                    const Calendar& calendar,
-                   RollingConvention rollingConvention,
+                   BusinessDayConvention rollingConvention,
                    Real nominal,
                    // fixed leg
                    Frequency fixedFrequency,

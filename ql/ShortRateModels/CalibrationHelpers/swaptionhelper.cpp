@@ -53,7 +53,7 @@ namespace QuantLib {
                             0.0, termStructure));
         exerciseRate_ = fairFixedRate;
         engine_  = boost::shared_ptr<PricingEngine>();
-        Date exerciseDate = index->calendar().roll(
+        Date exerciseDate = index->calendar().adjust(
                                        startDate, index->rollingConvention());
 
         swaption_ = boost::shared_ptr<Swaption>(new Swaption(

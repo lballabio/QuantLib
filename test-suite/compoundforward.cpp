@@ -62,7 +62,7 @@ namespace {
     Calendar calendar;
     Integer settlementDays, fixingDays;
     Date today, settlement;
-    RollingConvention rollingConvention;
+    BusinessDayConvention rollingConvention;
     DayCounter dayCounter;
     Frequency frequency;
 
@@ -78,7 +78,7 @@ namespace {
         calendar = Johannesburg();
         settlementDays = 0;
         fixingDays = 0;
-        today = calendar.roll(Date::todaysDate());
+        today = calendar.adjust(Date::todaysDate());
         // just for fun
         settlement = calendar.advance(today,settlementDays,Days);
         rollingConvention = ModifiedFollowing;

@@ -40,10 +40,15 @@ namespace QuantLib {
                               const std::vector<Date> &dates,
                               const std::vector<DiscountFactor> &dfs,
                               const Calendar & calendar,
-                              const RollingConvention roll,
+                              const BusinessDayConvention conv,
                               const DayCounter & dayCounter = Actual365());
         Calendar calendar() const { return calendar_; };
-        RollingConvention roll() const { return roll_; };
+        #ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use businessDayConvention() instead
+        BusinessDayConvention roll() const { return conv_; };
+        #endif
+        BusinessDayConvention businessDayConvention() const {
+            return conv_; };
         //! \name Observer interface
         //@{
         void update();
@@ -55,7 +60,7 @@ namespace QuantLib {
         boost::shared_ptr<TermStructure> forwardCurve(Integer) const;
       private:
         Calendar calendar_;
-        RollingConvention roll_;
+        BusinessDayConvention conv_;
         mutable std::map<Integer,boost::shared_ptr<TermStructure> > 
                                                          forwardCurveMap_;
     };

@@ -28,13 +28,13 @@
 
 namespace QuantLib {
 
-    //! Rolling conventions
-    /*! These conventions specify the algorithm used to find the business day
-        which is "closest" to a given holiday.
-
+    //! Business Day conventions
+    /*! These conventions specify the algorithm used to adjust a date in case
+        it is not a valid business day.
+        
         \ingroup datetime
     */
-    enum RollingConvention {
+    enum BusinessDayConvention {
         Preceding,          /*!< Choose the first business day before
                                  the given holiday. */
         ModifiedPreceding,  /*!< Choose the first business day before
@@ -52,6 +52,11 @@ namespace QuantLib {
                                  on last business day of month result reverts
                                  to first business day before month-end */
     };
+
+#ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated use BusinessDayConvention instead
+    typedef BusinessDayConvention RollingConvention;
+#endif
 
     //! abstract base class for calendar implementations
     class CalendarImpl {
@@ -127,12 +132,27 @@ namespace QuantLib {
         */
         void load(const std::string& filename);
         #endif
+
+        #ifndef QL_DISABLE_DEPRECATED
         /*! Returns the next business day on the given market with respect to
             the given date and convention.
+    
+            \deprecated use the adjust method instead
         */
-        Date roll(const Date&,
-                  RollingConvention convention = Following,
-		          const Date& origin = Date()) const;
+        Date roll(const Date& d,
+                  BusinessDayConvention convention = Following,
+                  const Date& origin = Date()) const {
+                      return adjust(d, convention, origin);
+        }
+        #endif
+
+        /*! Adjusts a non-business day to the appropriate near business day
+            with respect to the given convention.
+    
+        */
+        Date adjust(const Date&,
+                    BusinessDayConvention convention = Following,
+                    const Date& origin = Date()) const;
         /*! Advances the given date of the given number of business days and
             returns the result.
             \note The input date is not modified.
@@ -140,14 +160,14 @@ namespace QuantLib {
         Date advance(const Date&,
                      Integer n,
                      TimeUnit unit,
-                     RollingConvention convention = Following) const;
+                     BusinessDayConvention convention = Following) const;
         /*! Advances the given date as specified by the given period and
             returns the result.
             \note The input date is not modified.
         */
         Date advance(const Date& date,
                      const Period& period, 
-                     RollingConvention convention) const;
+                     BusinessDayConvention convention) const;
         //@}
 
         //! partial calendar implementation
@@ -196,7 +216,7 @@ namespace QuantLib {
     }
 
     inline bool Calendar::isEndOfMonth(const Date& d) const {
-        return (d.month() != roll(d+1).month());
+        return (d.month() != adjust(d+1).month());
     }
 
     inline bool Calendar::isHoliday(const Date& d) const {

@@ -151,7 +151,7 @@ int main(int, char* [])
         // Define the ATM/OTM/ITM swaps
         Frequency fixedLegFrequency = Annual;
         bool fixedLegIsAdjusted = false;
-        RollingConvention roll = ModifiedFollowing;
+        BusinessDayConvention roll = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency floatingLegFrequency = Semiannual;
         bool payFixedRate = true;
