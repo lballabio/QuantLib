@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.6  2001/05/23 09:28:37  marmar
+    array.hpp included
+
     Revision 1.5  2001/04/09 14:13:33  nando
     all the *.hpp moved below the Include/ql level
 
@@ -53,7 +56,7 @@
 
 */
 
-#include "ql/Pricers/bsmnumericaloption.hpp"
+#include "ql/array.hpp"
 
 namespace QuantLib {
 
