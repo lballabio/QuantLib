@@ -20,8 +20,8 @@
     \brief base class for single-path pricers
 */
 
-#ifndef quantlib_montecarlo_path_pricer_h
-#define quantlib_montecarlo_path_pricer_h
+#ifndef quantlib_montecarlo_path_pricer_hpp
+#define quantlib_montecarlo_path_pricer_hpp
 
 #include <ql/option.hpp>
 #include <ql/types.hpp>
@@ -38,17 +38,9 @@ namespace QuantLib {
     template<class PathType, class ValueType=Real>
     class PathPricer : public std::unary_function<PathType, ValueType> {
       public:
-        explicit PathPricer(const Handle<TermStructure>& discountTS =
-                                                    Handle<TermStructure>());
         virtual ~PathPricer() {}
         virtual ValueType operator()(const PathType& path) const=0;
-      protected:
-        Handle<TermStructure> discountTS_;
     };
-
-    template<class P,class V>
-    PathPricer<P,V>::PathPricer(const Handle<TermStructure>& discountTS)
-    : discountTS_(discountTS) {}
 
 }
 

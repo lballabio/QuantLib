@@ -28,10 +28,9 @@ namespace QuantLib {
                       const Handle<TermStructure>& discountTS,
                       const boost::shared_ptr<StochasticProcess>& diffProcess,
                       const PseudoRandom::ursg_type& sequenceGen)
-    : PathPricer<Path>(discountTS),
-      payoff_(payoff), exercise_(exercise),
-      underlying_(underlying),
-      diffProcess_(diffProcess), sequenceGen_(sequenceGen) {
+    : payoff_(payoff), exercise_(exercise),
+      underlying_(underlying), diffProcess_(diffProcess),
+      sequenceGen_(sequenceGen), discountTS_(discountTS) {
         QL_REQUIRE(underlying>0.0,
                    "underlying less/equal zero not allowed");
     }
@@ -59,18 +58,18 @@ namespace QuantLib {
                 // vol = diffProcess_->diffusion(timeGrid[i+2],
                 //                               QL_EXP(log_asset_price+x));
                 dt = timeGrid.dt(i);
-                y = log_asset_price + 
+                y = log_asset_price +
                     0.5*(x + QL_SQRT(x*x-2*vol*vol*dt*QL_LOG((1-u[i]))));
                 // cross the strike
                 if (y >= log_strike) {
                     if (exercise_->payoffAtExpiry()) {
-                        return payoff_->cashPayoff() * 
+                        return payoff_->cashPayoff() *
                             discountTS_->discount(path.timeGrid().back());
                     } else {
-                        // the discount should be calculated at the exercise 
-                        // time between path.timeGrid()[i+1] and 
+                        // the discount should be calculated at the exercise
+                        // time between path.timeGrid()[i+1] and
                         // path.timeGrid()[i+2]
-                        return payoff_->cashPayoff() * 
+                        return payoff_->cashPayoff() *
                             discountTS_->discount(path.timeGrid()[i+1]);
                     }
                 }
@@ -80,22 +79,22 @@ namespace QuantLib {
           case Option::Put:
             for (i = 0; i < n; i++) {
                 x = path.drift()[i]+path.diffusion()[i];
-                // terminal or initial vol?                        
+                // terminal or initial vol?
                 // initial (timeGrid[i+1]) for the time being
                 vol = diffProcess_->diffusion(timeGrid[i+1],
                                               QL_EXP(log_asset_price));
                 // vol = diffProcess_->diffusion(timeGrid[i+2],
                 //                               QL_EXP(log_asset_price+x));
                 dt = timeGrid.dt(i);
-                y = log_asset_price + 
+                y = log_asset_price +
                     0.5*(x - QL_SQRT(x*x - 2*vol*vol*dt*QL_LOG(u[i])));
                 if (y <= log_strike) {
                     if (exercise_->payoffAtExpiry()) {
-                        return payoff_->cashPayoff() * 
+                        return payoff_->cashPayoff() *
                             discountTS_->discount(path.timeGrid().back());
                     } else {
-                        // the discount should be calculated at the exercise 
-                        // time between path.timeGrid()[i+1] and 
+                        // the discount should be calculated at the exercise
+                        // time between path.timeGrid()[i+1] and
                         // path.timeGrid()[i+2]
                         return payoff_->cashPayoff() *
                             discountTS_->discount(path.timeGrid()[i+1]);

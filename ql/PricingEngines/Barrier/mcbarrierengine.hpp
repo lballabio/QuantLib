@@ -38,7 +38,7 @@ namespace QuantLib {
         </i>
         and
         <i>
-        Simulating path-dependent options: A new approach - 
+        Simulating path-dependent options: A new approach -
         M. El Babsiri and G. Noel
         Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
         </i>
@@ -84,13 +84,13 @@ namespace QuantLib {
     class BarrierPathPricer : public PathPricer<Path> {
       public:
         BarrierPathPricer(
-                      Barrier::Type barrierType, 
-                      Real barrier, 
-                      Real rebate, 
+                      Barrier::Type barrierType,
+                      Real barrier,
+                      Real rebate,
                       Option::Type type,
                       Real underlying,
                       Real strike,
-                      const Handle<TermStructure>& discountTS,
+                      DiscountFactor discount,
                       const boost::shared_ptr<StochasticProcess>& diffProcess,
                       const PseudoRandom::ursg_type& sequenceGen);
         Real operator()(const Path& path) const;
@@ -102,18 +102,19 @@ namespace QuantLib {
         boost::shared_ptr<StochasticProcess> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         PlainVanillaPayoff payoff_;
+        DiscountFactor discount_;
     };
 
 
     class BiasedBarrierPathPricer : public PathPricer<Path> {
       public:
-        BiasedBarrierPathPricer(Barrier::Type barrierType, 
-                                Real barrier, 
-                                Real rebate, 
+        BiasedBarrierPathPricer(Barrier::Type barrierType,
+                                Real barrier,
+                                Real rebate,
                                 Option::Type type,
                                 Real underlying,
                                 Real strike,
-                                const Handle<TermStructure>& discountTS);
+                                DiscountFactor discount);
         Real operator()(const Path& path) const;
       private:
         Real underlying_;
@@ -121,6 +122,7 @@ namespace QuantLib {
         Real barrier_;
         Real rebate_;
         PlainVanillaPayoff payoff_;
+        DiscountFactor discount_;
     };
 
 
@@ -155,13 +157,13 @@ namespace QuantLib {
             RNG::make_sequence_generator(grid.size()-1,seed_);
         // BB here
         return boost::shared_ptr<path_generator_type>(new
-            path_generator_type(arguments_.blackScholesProcess, 
+            path_generator_type(arguments_.blackScholesProcess,
                                 grid, gen, true));
     }
 
 
     template <class RNG, class S>
-    inline 
+    inline
     boost::shared_ptr<QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>
     MCBarrierEngine<RNG,S>::pathPricer() const {
         boost::shared_ptr<PlainVanillaPayoff> payoff =
@@ -175,22 +177,18 @@ namespace QuantLib {
         if (isBiased_) {
             return boost::shared_ptr<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
-                             arguments_.barrierType,
-                             arguments_.barrier,
-                             arguments_.rebate,
-                             payoff->optionType(),
-                             payoff->strike(),
-                             process->stateVariable()->value(),
-                             Handle<TermStructure>(process->riskFreeRate())));
+                       arguments_.barrierType,
+                       arguments_.barrier,
+                       arguments_.rebate,
+                       payoff->optionType(),
+                       payoff->strike(),
+                       process->stateVariable()->value(),
+                       process->riskFreeRate()->discount(timeGrid().back())));
         } else {
             TimeGrid grid = timeGrid();
-            PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
+            PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                                 PseudoRandom::urng_type(5));
 
-            Handle<TermStructure> riskFree(process->riskFreeRate());
-            Handle<TermStructure> dividend(process->dividendYield());
-            Handle<BlackVolTermStructure> volatility(
-                                                  process->blackVolatility());
             return boost::shared_ptr<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
                     arguments_.barrierType,
@@ -199,7 +197,7 @@ namespace QuantLib {
                     payoff->optionType(),
                     payoff->strike(),
                     process->stateVariable()->value(),
-                    riskFree,
+                    process->riskFreeRate()->discount(grid.back()),
                     process,
                     sequenceGen));
         }
@@ -232,13 +230,13 @@ namespace QuantLib {
         //! Initialize the one-factor Monte Carlo
         if (controlVariate_) {
 
-            boost::shared_ptr<path_pricer_type> controlPP = 
+            boost::shared_ptr<path_pricer_type> controlPP =
                 controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control variation path pricer");
 
-            boost::shared_ptr<PricingEngine> controlPE = 
+            boost::shared_ptr<PricingEngine> controlPE =
                 controlPricingEngine();
 
             QL_REQUIRE(controlPE,

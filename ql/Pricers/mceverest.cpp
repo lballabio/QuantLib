@@ -23,8 +23,8 @@ namespace QuantLib {
 
         class EverestPathPricer : public PathPricer<MultiPath> {
           public:
-            EverestPathPricer(const Handle<TermStructure>& discountTS)
-            : PathPricer<MultiPath>(discountTS) {}
+            EverestPathPricer(DiscountFactor discount)
+            : discount_(discount) {}
 
             Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
@@ -37,13 +37,14 @@ namespace QuantLib {
                     log_variation = 0.0;
                     for( i = 0; i < numSteps; i++)
                         log_variation += multiPath[j][i];
-                    minPrice = QL_MIN(minPrice, 
+                    minPrice = QL_MIN(minPrice,
                                       QL_EXP(log_variation));
                 }
 
-                return discountTS_->discount(multiPath[0].timeGrid().back())
-                    * minPrice;
+                return discount_ * minPrice;
             }
+          private:
+            DiscountFactor discount_;
         };
 
     }
@@ -51,7 +52,7 @@ namespace QuantLib {
     McEverest::McEverest(
                   const std::vector<Handle<TermStructure> >& dividendYield,
                   const Handle<TermStructure>& riskFreeRate,
-                  const std::vector<Handle<BlackVolTermStructure> >& 
+                  const std::vector<Handle<BlackVolTermStructure> >&
                                                              volatilities,
                   const Matrix& correlation,
                   Time residualTime,
@@ -71,23 +72,24 @@ namespace QuantLib {
         Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
         for (Size i=0; i<n; i++)
             processes[i] = boost::shared_ptr<StochasticProcess>(
-                                    new BlackScholesProcess(u, 
+                                    new BlackScholesProcess(u,
                                                             dividendYield[i],
-                                                            riskFreeRate, 
+                                                            riskFreeRate,
                                                             volatilities[i]));
 
         TimeGrid grid(residualTime, 1);
-        PseudoRandom::rsg_type rsg = 
+        PseudoRandom::rsg_type rsg =
             PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
         typedef MultiAsset<PseudoRandom>::path_generator_type generator;
         boost::shared_ptr<generator> pathGenerator(
-                                  new generator(processes, correlation, grid, 
+                                  new generator(processes, correlation, grid,
                                                 rsg, false));
 
         // initialize the path pricer
+        DiscountFactor discount = riskFreeRate->discount(residualTime);
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-            new EverestPathPricer(riskFreeRate));
+                                             new EverestPathPricer(discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<

@@ -22,19 +22,20 @@
 namespace QuantLib {
 
     BarrierPathPricer::BarrierPathPricer(
-                       Barrier::Type barrierType, 
-                       Real barrier, 
-                       Real rebate, 
+                       Barrier::Type barrierType,
+                       Real barrier,
+                       Real rebate,
                        Option::Type type,
-                       Real underlying, 
+                       Real underlying,
                        Real strike,
-                       const Handle<TermStructure>& discountTS,
+                       DiscountFactor discount,
                        const boost::shared_ptr<StochasticProcess>& diffProcess,
                        const PseudoRandom::ursg_type& sequenceGen)
-    : PathPricer<Path>(discountTS), underlying_(underlying),
-      barrierType_(barrierType), barrier_(barrier), 
+    : underlying_(underlying),
+      barrierType_(barrierType), barrier_(barrier),
       rebate_(rebate), diffProcess_(diffProcess),
-      sequenceGen_(sequenceGen), payoff_(type, strike) {
+      sequenceGen_(sequenceGen), payoff_(type, strike),
+      discount_(discount) {
         QL_REQUIRE(underlying>0.0,
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
@@ -66,7 +67,7 @@ namespace QuantLib {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
                 new_asset_price = asset_price * QL_EXP(log_drift+log_random);
-                // terminal or initial vol?                        
+                // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
@@ -85,7 +86,7 @@ namespace QuantLib {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
                 new_asset_price = asset_price * QL_EXP(log_drift+log_random);
-                // terminal or initial vol?                        
+                // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
@@ -104,7 +105,7 @@ namespace QuantLib {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
                 new_asset_price = asset_price * QL_EXP(log_drift+log_random);
-                // terminal or initial vol?                        
+                // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
@@ -123,7 +124,7 @@ namespace QuantLib {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
                 new_asset_price = asset_price * QL_EXP(log_drift+log_random);
-                // terminal or initial vol?                        
+                // terminal or initial vol?
                 vol = diffProcess_->diffusion(timeGrid[i],asset_price);
                 dt = timeGrid.dt(i);
 
@@ -141,8 +142,7 @@ namespace QuantLib {
         }
 
         if (isOptionActive) {
-            return payoff_(asset_price) *
-                discountTS_->discount(path.timeGrid().back());
+            return payoff_(asset_price) * discount_;
         } else {
             return 0.0;
         }
@@ -150,16 +150,16 @@ namespace QuantLib {
 
 
     BiasedBarrierPathPricer::BiasedBarrierPathPricer(
-                                      Barrier::Type barrierType, 
-                                      Real barrier, 
-                                      Real rebate, 
+                                      Barrier::Type barrierType,
+                                      Real barrier,
+                                      Real rebate,
                                       Option::Type type,
-                                      Real underlying, 
+                                      Real underlying,
                                       Real strike,
-                                      const Handle<TermStructure>& discountTS)
-    : PathPricer<Path>(discountTS), underlying_(underlying),
-      barrierType_(barrierType), barrier_(barrier), 
-      rebate_(rebate), payoff_(type, strike) {
+                                      DiscountFactor discount)
+    : underlying_(underlying),
+      barrierType_(barrierType), barrier_(barrier),
+      rebate_(rebate), payoff_(type, strike), discount_(discount) {
         QL_REQUIRE(underlying>0.0,
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
@@ -228,8 +228,7 @@ namespace QuantLib {
         }
 
         if (isOptionActive) {
-            return payoff_(asset_price) *
-                discountTS_->discount(path.timeGrid().back());
+            return payoff_(asset_price) * discount_;
         } else {
             return 0.0;
         }

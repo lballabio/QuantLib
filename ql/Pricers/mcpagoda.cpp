@@ -25,9 +25,9 @@ namespace QuantLib {
           public:
             PagodaPathPricer(const std::vector<Real>& underlying,
                              Real roof, Real fraction,
-                             const Handle<TermStructure>& discountTS)
-            : PathPricer<MultiPath>(discountTS),
-              underlying_(underlying), roof_(roof), fraction_(fraction) {}
+                             DiscountFactor discount)
+            : underlying_(underlying), roof_(roof), fraction_(fraction),
+              discount_(discount) {}
 
             Real operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
@@ -44,14 +44,14 @@ namespace QuantLib {
                         averageGain += underlying_[j] *
                             (QL_EXP(multiPath[j][i]) -1.0);
                     }
-                return discountTS_->discount(multiPath[0].timeGrid().back())
-                    * fraction_ 
+                return discount_ * fraction_
                     * QL_MAX<Real>(0.0, QL_MIN(roof_, averageGain));
             }
 
           private:
             std::vector<Real> underlying_;
             Real roof_, fraction_;
+            DiscountFactor discount_;
         };
 
     }
@@ -62,7 +62,7 @@ namespace QuantLib {
                  Real roof,
                  const std::vector<Handle<TermStructure> >& dividendYield,
                  const Handle<TermStructure>& riskFreeRate,
-                 const std::vector<Handle<BlackVolTermStructure> >& 
+                 const std::vector<Handle<BlackVolTermStructure> >&
                                                              volatilities,
                  const Matrix& correlation,
                  const std::vector<Time>& times,
@@ -90,24 +90,25 @@ namespace QuantLib {
             Handle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
             processes[i] = boost::shared_ptr<StochasticProcess>(
-                                    new BlackScholesProcess(u, 
+                                    new BlackScholesProcess(u,
                                                             dividendYield[i],
-                                                            riskFreeRate, 
+                                                            riskFreeRate,
                                                             volatilities[i]));
         }
 
         TimeGrid grid(times.begin(), times.end());
-        PseudoRandom::rsg_type rsg = 
+        PseudoRandom::rsg_type rsg =
             PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
         typedef MultiAsset<PseudoRandom>::path_generator_type generator;
         boost::shared_ptr<generator> pathGenerator(
-                                  new generator(processes, correlation, grid, 
+                                  new generator(processes, correlation, grid,
                                                 rsg, false));
 
-        // initialize the pricer on the path pricer
+        // initialize the path pricer
+        DiscountFactor discount = riskFreeRate->discount(times.back());
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-            new PagodaPathPricer(underlying, roof, fraction, riskFreeRate));
+                  new PagodaPathPricer(underlying, roof, fraction, discount));
 
          // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<

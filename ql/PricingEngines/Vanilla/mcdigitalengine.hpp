@@ -42,7 +42,7 @@ namespace QuantLib {
         </i>
         and
         <i>
-        Simulating path-dependent options: A new approach - 
+        Simulating path-dependent options: A new approach -
         M. El Babsiri and G. Noel
         Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
         </i>
@@ -103,6 +103,7 @@ namespace QuantLib {
         Real underlying_;
         boost::shared_ptr<StochasticProcess> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
+        Handle<TermStructure> discountTS_;
     };
 
 
@@ -111,12 +112,12 @@ namespace QuantLib {
 
     template<class RNG, class S>
     MCDigitalEngine<RNG,S>::MCDigitalEngine(Size maxTimeStepsPerYear,
-                                          bool antitheticVariate,
-                                          bool controlVariate,
-                                          Size requiredSamples,
-                                          Real requiredTolerance,
-                                          Size maxSamples,
-                                          BigNatural seed)
+                                            bool antitheticVariate,
+                                            bool controlVariate,
+                                            Size requiredSamples,
+                                            Real requiredTolerance,
+                                            Size maxSamples,
+                                            BigNatural seed)
     : MCVanillaEngine<RNG,S>(maxTimeStepsPerYear,
                              antitheticVariate,
                              controlVariate,
@@ -161,7 +162,7 @@ namespace QuantLib {
         QL_REQUIRE(exercise, "wrong exercise given");
 
         TimeGrid grid = timeGrid();
-        PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
+        PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                             PseudoRandom::urng_type(76));
 
         return boost::shared_ptr<MCDigitalEngine<RNG,S>::path_pricer_type>(new
@@ -196,13 +197,13 @@ namespace QuantLib {
         //! Initialize the one-factor Monte Carlo
         if (controlVariate_) {
 
-            boost::shared_ptr<path_pricer_type> controlPP = 
+            boost::shared_ptr<path_pricer_type> controlPP =
                 controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control variation path pricer");
 
-            boost::shared_ptr<PricingEngine> controlPE = 
+            boost::shared_ptr<PricingEngine> controlPE =
                 controlPricingEngine();
             QL_REQUIRE(controlPE,
                        "engine does not provide "

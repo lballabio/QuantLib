@@ -24,9 +24,8 @@ namespace QuantLib {
         class MaxBasketPathPricer : public PathPricer<MultiPath> {
           public:
             MaxBasketPathPricer(const std::vector<Real>& underlying,
-                                const Handle<TermStructure>& discountTS)
-            : PathPricer<MultiPath>(discountTS),
-              underlying_(underlying) {
+                                DiscountFactor discount)
+            : underlying_(underlying), discount_(discount) {
                 for (Size i=0; i<underlying_.size(); i++) {
                     QL_REQUIRE(underlying_[i]>0.0,
                                "underlying less/equal zero not allowed");
@@ -38,7 +37,7 @@ namespace QuantLib {
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
                            "the multi-path must contain "
-                           + SizeFormatter::toString(underlying_.size()) + 
+                           + SizeFormatter::toString(underlying_.size()) +
                            " assets");
 
                 Real log_variation;
@@ -51,12 +50,12 @@ namespace QuantLib {
                     maxPrice = QL_MAX(maxPrice,
                                       underlying_[j]*QL_EXP(log_variation));
                 }
-                return discountTS_->discount(multiPath[0].timeGrid().back())
-                    * maxPrice;
+                return discount_ * maxPrice;
             }
 
           private:
             std::vector<Real> underlying_;
+            DiscountFactor discount_;
         };
 
     }
@@ -89,24 +88,25 @@ namespace QuantLib {
             Handle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
             processes[i] = boost::shared_ptr<StochasticProcess>(
-                                    new BlackScholesProcess(u, 
+                                    new BlackScholesProcess(u,
                                                             dividendYield[i],
                                                             riskFreeRate,
                                                             volatilities[i]));
         }
 
         TimeGrid grid(residualTime, 1);
-        PseudoRandom::rsg_type rsg = 
+        PseudoRandom::rsg_type rsg =
             PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
         typedef MultiAsset<PseudoRandom>::path_generator_type generator;
         boost::shared_ptr<generator> pathGenerator(
-                                  new generator(processes, correlation, grid, 
+                                  new generator(processes, correlation, grid,
                                                 rsg, false));
 
         // initialize the path pricer
+        DiscountFactor discount = riskFreeRate->discount(residualTime);
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-            new MaxBasketPathPricer(underlying, riskFreeRate));
+                               new MaxBasketPathPricer(underlying, discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<

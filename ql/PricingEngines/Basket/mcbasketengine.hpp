@@ -16,7 +16,7 @@
 */
 
 /*! \file mcbasketengine.hpp
-    \brief European Basket MC Engine    
+    \brief European basket MC Engine
 */
 
 #ifndef quantlib_mc_basket_engine_hpp
@@ -71,12 +71,13 @@ namespace QuantLib {
                                 Option::Type type,
                                 Real strike,
                                 Array underlying,
-                                const Handle<TermStructure>& discountTS);
+                                DiscountFactor discount);
         Real operator()(const MultiPath& multiPath) const;
       private:
         BasketOption::BasketType basketType_;
         Array underlying_;
         PlainVanillaPayoff payoff_;
+        DiscountFactor discount_;
     };
 
 
@@ -84,24 +85,24 @@ namespace QuantLib {
 
     template<class RNG, class S>
     inline MCBasketEngine<RNG,S>::MCBasketEngine(Size maxTimeStepsPerYear,
-                                                   bool antitheticVariate,
-                                                   bool controlVariate,
-                                                   Size requiredSamples,
-                                                   Real requiredTolerance,
-                                                   Size maxSamples,
-                                                   bool brownianBridge,
-                                                   BigNatural seed)
+                                                 bool antitheticVariate,
+                                                 bool controlVariate,
+                                                 Size requiredSamples,
+                                                 Real requiredTolerance,
+                                                 Size maxSamples,
+                                                 bool brownianBridge,
+                                                 BigNatural seed)
     : McSimulation<MultiAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
-      requiredSamples_(requiredSamples), 
+      requiredSamples_(requiredSamples),
       maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance), 
+      requiredTolerance_(requiredTolerance),
       brownianBridge_(brownianBridge),
       seed_(seed) {}
 
 
     template<class RNG, class S>
-    inline 
+    inline
     boost::shared_ptr<QL_TYPENAME MCBasketEngine<RNG,S>::path_generator_type>
     MCBasketEngine<RNG,S>::pathGenerator() const {
 
@@ -121,7 +122,7 @@ namespace QuantLib {
         }
 
         return boost::shared_ptr<path_generator_type>(new
-            path_generator_type(diffusionProcs, arguments_.correlation, 
+            path_generator_type(diffusionProcs, arguments_.correlation,
                                 grid, gen, brownianBridge_));
 
     }
@@ -149,8 +150,8 @@ namespace QuantLib {
                 payoff->optionType(),
                 payoff->strike(),
                 underlying,
-                Handle<TermStructure>(
-                       arguments_.blackScholesProcesses[0]->riskFreeRate())));
+                arguments_.blackScholesProcesses[0]->riskFreeRate()
+                                ->discount(arguments_.exercise->lastDate())));
     }
 
 
@@ -180,13 +181,13 @@ namespace QuantLib {
         //! Initialize the multi-factor Monte Carlo
         if (controlVariate_) {
 
-            boost::shared_ptr<path_pricer_type> controlPP = 
+            boost::shared_ptr<path_pricer_type> controlPP =
                 controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control variation path pricer");
 
-            boost::shared_ptr<PricingEngine> controlPE = 
+            boost::shared_ptr<PricingEngine> controlPE =
                 controlPricingEngine();
 
             QL_REQUIRE(controlPE,

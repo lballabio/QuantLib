@@ -27,9 +27,9 @@ namespace QuantLib {
             ArithmeticAPOPathPricer(Option::Type type,
                                     Real underlying,
                                     Real strike,
-                                    const Handle<TermStructure>& discountTS)
-            : PathPricer<Path>(discountTS),
-              underlying_(underlying), payoff_(type, strike) {
+                                    DiscountFactor discount)
+            : underlying_(underlying), payoff_(type, strike),
+              discount_(discount) {
                 QL_REQUIRE(underlying>0.0,
                            "underlying less/equal zero not allowed");
                 QL_REQUIRE(strike>=0.0,
@@ -56,13 +56,13 @@ namespace QuantLib {
                 }
                 averagePrice1 = averagePrice1/fixings;
 
-                return discountTS_->discount(path.timeGrid().back())
-                    * payoff_(averagePrice1);
+                return discount_ * payoff_(averagePrice1);
             }
 
           private:
             Real underlying_;
             PlainVanillaPayoff payoff_;
+            DiscountFactor discount_;
         };
 
         class GeometricAPOPathPricer : public PathPricer<Path> {
@@ -70,9 +70,9 @@ namespace QuantLib {
             GeometricAPOPathPricer(Option::Type type,
                                    Real underlying,
                                    Real strike,
-                                   const Handle<TermStructure>& discountTS)
-            : PathPricer<Path>(discountTS),
-              underlying_(underlying), payoff_(type, strike) {
+                                   DiscountFactor discount)
+            : underlying_(underlying), payoff_(type, strike),
+              discount_(discount) {
                 QL_REQUIRE(underlying>0.0,
                            "underlying less/equal zero not allowed");
                 QL_REQUIRE(strike>=0.0,
@@ -94,13 +94,13 @@ namespace QuantLib {
                 Real averagePrice1 = underlying_*
                     QL_EXP(geoLogVariation/fixings);
 
-                return discountTS_->discount(path.timeGrid().back())
-                    * payoff_(averagePrice1);
+                return discount_ * payoff_(averagePrice1);
             }
 
           private:
             Real underlying_;
             PlainVanillaPayoff payoff_;
+            DiscountFactor discount_;
         };
 
     }
@@ -123,9 +123,9 @@ namespace QuantLib {
         // initialize the path generator
         Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
         boost::shared_ptr<StochasticProcess> diffusion(
-                                     new BlackScholesProcess(u, 
+                                     new BlackScholesProcess(u,
                                                              dividendYield,
-                                                             riskFreeRate, 
+                                                             riskFreeRate,
                                                              volatility));
         TimeGrid grid(times.begin(), times.end());
         PseudoRandom::rsg_type rsg =
@@ -135,15 +135,16 @@ namespace QuantLib {
         boost::shared_ptr<generator> pathGenerator(
                                   new generator(diffusion, grid, rsg, false));
 
-        // initialize the Path Pricer
+        // initialize the path pricer
+        DiscountFactor discount = riskFreeRate->discount(times.back());
         boost::shared_ptr<PathPricer<Path> > spPricer(
-                           new ArithmeticAPOPathPricer(type, underlying, 
-                                                       strike, riskFreeRate));
+                           new ArithmeticAPOPathPricer(type, underlying,
+                                                       strike, discount));
 
         if (controlVariate) {
             boost::shared_ptr<PathPricer<Path> > controlVariateSpPricer(
-                            new GeometricAPOPathPricer(type, underlying, 
-                                                       strike, riskFreeRate));
+                            new GeometricAPOPathPricer(type, underlying,
+                                                       strike, discount));
 
             // Not sure whether this work when curves are not flat...
             Time exercise = times.back();

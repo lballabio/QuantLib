@@ -79,11 +79,12 @@ namespace QuantLib {
         EuropeanPathPricer(Option::Type type,
                            Real underlying,
                            Real strike,
-                           const Handle<TermStructure>& discountTS);
+                           DiscountFactor discount);
         Real operator()(const Path& path) const;
       private:
         Real underlying_;
         PlainVanillaPayoff payoff_;
+        DiscountFactor discount_;
     };
 
 
@@ -121,8 +122,8 @@ namespace QuantLib {
                 payoff->optionType(),
                 arguments_.blackScholesProcess->stateVariable()->value(),
                 payoff->strike(),
-                Handle<TermStructure>(
-                            arguments_.blackScholesProcess->riskFreeRate())));
+                arguments_.blackScholesProcess->riskFreeRate()
+                                              ->discount(timeGrid().back())));
     }
 
 
@@ -235,7 +236,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline
-    MakeMCEuropeanEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>() 
+    MakeMCEuropeanEngine<RNG,S>::operator boost::shared_ptr<PricingEngine>()
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>(),
                    "max number of steps per year not given");
@@ -251,9 +252,8 @@ namespace QuantLib {
     inline EuropeanPathPricer::EuropeanPathPricer(
                             Option::Type type,
                             Real underlying, Real strike,
-                            const Handle<TermStructure>& discountTS)
-    : PathPricer<Path>(discountTS), underlying_(underlying),
-      payoff_(type, strike) {
+                            DiscountFactor discount)
+    : underlying_(underlying), payoff_(type, strike), discount_(discount) {
         QL_REQUIRE(underlying>0.0,
                    "underlying less/equal zero not allowed");
         QL_REQUIRE(strike>=0.0,
@@ -268,8 +268,7 @@ namespace QuantLib {
         for (Size i = 0; i < n; i++)
             log_variation += path[i];
 
-        return payoff_(underlying_ * QL_EXP(log_variation)) *
-                       discountTS_->discount(path.timeGrid().back());
+        return payoff_(underlying_ * QL_EXP(log_variation)) * discount_;
     }
 
 }

@@ -25,10 +25,10 @@ namespace QuantLib {
                                       BasketOption::BasketType basketType,
                                       Option::Type type,
                                       Real strike,
-                                      Array underlying, 
-                                      const Handle<TermStructure>& discountTS)
-    : PathPricer<MultiPath>(discountTS), basketType_(basketType), 
-        underlying_(underlying), payoff_(type, strike) {
+                                      Array underlying,
+                                      DiscountFactor discount)
+    : basketType_(basketType), underlying_(underlying),
+      payoff_(type, strike), discount_(discount) {
 
         // check underlying is not zero
         for (Size i = 0; i < underlying.size(); i++) {
@@ -39,7 +39,7 @@ namespace QuantLib {
                    "strike less than zero not allowed");
     }
 
-    Real EuropeanMultiPathPricer::operator()(const MultiPath& multiPath) 
+    Real EuropeanMultiPathPricer::operator()(const MultiPath& multiPath)
                                                                       const {
 
         Size n = multiPath.pathSize();
@@ -61,11 +61,11 @@ namespace QuantLib {
         // calculate the final price of each asset
         Array finalPrice(numAssets, 0.0);
         for (j = 0; j < numAssets; j++) {
-            finalPrice[j] = underlying_[j] * 
+            finalPrice[j] = underlying_[j] *
                             QL_EXP(log_drift[j]+log_random[j]);
         }
 
-        // this should be a basket payoff        
+        // this should be a basket payoff
         Real basketPrice = finalPrice[0];
         switch (basketType_) {
           case BasketOption::Max:
@@ -85,8 +85,7 @@ namespace QuantLib {
         }
 
         // return the payoff
-        return payoff_(basketPrice) 
-            * discountTS_->discount(multiPath[0].timeGrid().back());
+        return payoff_(basketPrice) * discount_;
     }
 
 }

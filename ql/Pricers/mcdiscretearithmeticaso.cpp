@@ -26,9 +26,8 @@ namespace QuantLib {
           public:
             ArithmeticASOPathPricer(Option::Type type,
                                     Real underlying,
-                                    const Handle<TermStructure>& discountTS)
-            : PathPricer<Path>(discountTS), 
-              type_(type), underlying_(underlying) {
+                                    DiscountFactor discount)
+            : type_(type), underlying_(underlying), discount_(discount) {
                 QL_REQUIRE(underlying>0.0,
                            "underlying less/equal zero not allowed");
             }
@@ -53,22 +52,22 @@ namespace QuantLib {
                 }
                 averageStrike1 = averageStrike1/fixings;
 
-                return discountTS_->discount(path.timeGrid().back()) 
+                return discount_
                     * PlainVanillaPayoff(type_, averageStrike1)(price1);
             }
 
           private:
             Option::Type type_;
             Real underlying_;
+            DiscountFactor discount_;
         };
 
         class GeometricASOPathPricer : public PathPricer<Path> {
           public:
             GeometricASOPathPricer(Option::Type type,
                                    Real underlying,
-                                   const Handle<TermStructure>& discountTS)
-            : PathPricer<Path>(discountTS), 
-              type_(type), underlying_(underlying) {
+                                   DiscountFactor discount)
+            : type_(type), underlying_(underlying), discount_(discount) {
                 QL_REQUIRE(underlying>0.0,
                            "underlying less/equal zero not allowed");
             }
@@ -93,7 +92,7 @@ namespace QuantLib {
                 Real averageStrike1 = underlying_*
                     QL_EXP(geoLogVariation/fixings);
 
-                return discountTS_->discount(path.timeGrid().back())
+                return discount_
                     * PlainVanillaPayoff(type_, averageStrike1)
                     (underlying_ * QL_EXP(logVariation));
             }
@@ -101,6 +100,7 @@ namespace QuantLib {
           private:
             Option::Type type_;
             Real underlying_;
+            DiscountFactor discount_;
         };
 
     }
@@ -121,9 +121,9 @@ namespace QuantLib {
         // initialize the path generator
         Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
         boost::shared_ptr<StochasticProcess> diffusion(
-                                     new BlackScholesProcess(u, 
+                                     new BlackScholesProcess(u,
                                                              dividendYield,
-                                                             riskFreeRate, 
+                                                             riskFreeRate,
                                                              volatility));
         TimeGrid grid(times.begin(), times.end());
         PseudoRandom::rsg_type rsg =
@@ -133,13 +133,14 @@ namespace QuantLib {
         boost::shared_ptr<generator> pathGenerator(
                                   new generator(diffusion, grid, rsg, false));
 
-        // initialize the Path Pricer
+        // initialize the path pricer
+        DiscountFactor discount = riskFreeRate->discount(times.back());
         boost::shared_ptr<PathPricer<Path> > spPricer(
-                 new ArithmeticASOPathPricer(type, underlying, riskFreeRate));
+                     new ArithmeticASOPathPricer(type, underlying, discount));
 
         if (controlVariate) {
             boost::shared_ptr<PathPricer<Path> > controlVariateSpPricer(
-                  new GeometricASOPathPricer(type, underlying, riskFreeRate));
+                     new GeometricASOPathPricer(type, underlying, discount));
 
             // Not sure whether this work when curves are not flat...
             Time exercise = times.back();

@@ -26,9 +26,8 @@ namespace QuantLib {
           public:
             HimalayaPathPricer(const std::vector<Real>& underlying,
                                Real strike,
-                               const Handle<TermStructure>& discountTS)
-            : PathPricer<MultiPath>(discountTS),
-              underlying_(underlying), strike_(strike) {
+                               DiscountFactor discount)
+            : underlying_(underlying), strike_(strike), discount_(discount) {
                 for (Size j=0; j<underlying_.size(); j++) {
                     QL_REQUIRE(underlying_[j]>0.0,
                                "underlying less/equal zero not allowed");
@@ -42,7 +41,7 @@ namespace QuantLib {
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
                            "the multi-path must contain "
-                           + SizeFormatter::toString(underlying_.size()) + 
+                           + SizeFormatter::toString(underlying_.size()) +
                            " assets");
                 QL_REQUIRE(numAssets>0, "no asset given");
 
@@ -85,14 +84,13 @@ namespace QuantLib {
                 averagePrice /= QL_MIN(fixings, numAssets);
                 Real optPrice = QL_MAX<Real>(averagePrice - strike_, 0.0);
 
-                return discountTS_->discount(multiPath[0].timeGrid().back())
-                    * optPrice;
+                return discount_ * optPrice;
             }
 
           private:
-            Option::Type type_;
             std::vector<Real> underlying_;
             Real strike_;
+            DiscountFactor discount_;
         };
 
     }
@@ -125,24 +123,25 @@ namespace QuantLib {
             Handle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
             processes[i] = boost::shared_ptr<StochasticProcess>(
-                                    new BlackScholesProcess(u, 
+                                    new BlackScholesProcess(u,
                                                             dividendYield[i],
-                                                            riskFreeRate, 
+                                                            riskFreeRate,
                                                             volatilities[i]));
         }
 
         TimeGrid grid(times.begin(), times.end());
-        PseudoRandom::rsg_type rsg = 
+        PseudoRandom::rsg_type rsg =
             PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
         typedef MultiAsset<PseudoRandom>::path_generator_type generator;
         boost::shared_ptr<generator> pathGenerator(
-                                  new generator(processes, correlation, grid, 
+                                  new generator(processes, correlation, grid,
                                                 rsg, false));
 
         // initialize the path pricer
+        DiscountFactor discount = riskFreeRate->discount(times.back());
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-            new HimalayaPathPricer(underlying, strike, riskFreeRate));
+                        new HimalayaPathPricer(underlying, strike, discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<
