@@ -36,8 +36,8 @@ namespace QuantLib {
     namespace Functions {
 		double interpolate2D(Array& x_values, Array& y_values, Matrix& dataMatrix,
             double x, double y) {
-			return BilinearInterpolation<std::vector<double>::iterator,
-              std::vector<double>::iterator> (x_values.begin(), y_values.begin(), dataMatrix)(x,y);
+			return BilinearInterpolation<Array::iterator, Array::iterator>(
+                x_values.begin(), y_values.begin(), dataMatrix)(x,y);
 		}
 
 

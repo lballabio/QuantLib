@@ -51,6 +51,7 @@ namespace QuantLib {
             Interpolation2D(const RandomAccessIteratorX& xBegin,
                 const RandomAccessIteratorY& yBegin,
                 const Matrix& dataMatrix);
+            virtual ~Interpolation2D() {}
             /*! This operator must be overridden to provide an implementation
                 of the actual interpolation.
 
