@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/02/16 15:37:54  lballabio
+    renamed sqrt to matrixSqrt
+
     Revision 1.3  2001/02/06 17:07:17  marmar
     New constructor added
 
@@ -108,7 +111,7 @@ namespace QuantLib {
                 DoubleFormatter::toString(size_)+
                 ") too small");
 
-            sqrtCovariance_ = sqrt(covariance);
+            sqrtCovariance_ = Math::matrixSqrt(covariance);
         }
 
         template <class RP>
@@ -134,7 +137,7 @@ namespace QuantLib {
                 "does not match covariance matrix size("+
                 DoubleFormatter::toString(covariance.columns())+ ")");
 
-            sqrtCovariance_ = sqrt(covariance);
+            sqrtCovariance_ = Math::matrixSqrt(covariance);
         }
 
         template <class RP>
