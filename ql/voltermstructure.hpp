@@ -96,8 +96,6 @@ namespace QuantLib {
         virtual Date minDate() const = 0;
         //! the latest date for which the term structure can return vols
         virtual Date maxDate() const = 0;
-        //! the earliest time for which the term structure can return vols
-        Time minTime() const;
         //! the latest time for which the term structure can return vols
         Time maxTime() const;
         //@}
@@ -110,10 +108,6 @@ namespace QuantLib {
             bool extrapolate = false) const = 0;
     };
 
-
-    inline double VolTermStructure::minTime() const {
-        return dayCounter().yearFraction(referenceDate(), minDate());
-    }
 
     inline double VolTermStructure::maxTime() const {
         return dayCounter().yearFraction(referenceDate(), maxDate());
