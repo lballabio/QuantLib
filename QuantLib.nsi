@@ -1,11 +1,7 @@
 
-# to be used with NSIS 1.93 and up
-#
-# usage:
-#       makensis-bz2 /DLIGHT QuantLib.nsi
-# OR
-#       makensis-bz2 QuantLib.nsi
+# to be used with NSIS 2.0 and up
 
+SetCompressor lzma
 
 !define VER_NUMBER "0.3.5a1"
 
@@ -33,7 +29,7 @@ SilentInstall normal
 CRCCheck on
 LicenseText "You must agree with the following license before installing:"
 LicenseData License.txt
-DirShow show
+;DirShow show
 DirText "Please select a location to install QuantLib (or use the default):"
 InstallDir $PROGRAMFILES\QuantLib
 InstallDirRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir"
@@ -60,83 +56,10 @@ SectionIn 1 2 3
 
     SetOutPath  $INSTDIR\ql
     File /r "ql\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Calendars
-    File /r "ql\Calendars\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\CashFlows
-    File /r "ql\CashFlows\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\DayCounters
-    File /r "ql\DayCounters\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\FiniteDifferences
-    File /r "ql\FiniteDifferences\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\functions
-    File /r "ql\functions\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Indexes
-    File /r "ql\Indexes\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Instruments
-    File /r "ql\Instruments\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Lattices
-    File /r "ql\Lattices\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Math
-    File /r "ql\Math\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\MonteCarlo
-    File /r "ql\MonteCarlo\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Optimization
-    File /r "ql\Optimization\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Patterns
-    File /r "ql\Patterns\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Pricers
-    File /r "ql\Pricers\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\PricingEngines
-    File /r "ql\PricingEngines\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\RandomNumbers
-    File /r "ql\RandomNumbers\*.hpp"
-    File /r "ql\RandomNumbers\*.h"
-
-    SetOutPath  $INSTDIR\ql\ShortRateModels
-    File /r "ql\ShortRateModels\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\ShortRateModels\CalibrationHelpers
-    File /r "ql\ShortRateModels\CalibrationHelpers\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\ShortRateModels\OneFactorModels
-    File /r "ql\ShortRateModels\OneFactorModels\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\ShortRateModels\TwoFactorModels
-    File /r "ql\ShortRateModels\TwoFactorModels\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Solvers1D
-    File /r "ql\Solvers1D\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\TermStructures
-    File /r "ql\TermStructures\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Utilities
-    File /r "ql\Utilities\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\Volatilities
-    File /r "ql\Volatilities\*.hpp"
-
-    SetOutPath $INSTDIR\lib\Win32\VisualStudio
-    File "lib\Win32\VisualStudio\QuantLib.lib"
-    File "lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
-
-    SetOutPath $INSTDIR\lib\Win32\Borland
-    File "lib\Win32\Borland\QuantLib.lib"
+    File /r "ql\*.h"
+    File /r "ql\*.cpp"
+    File /r "ql\*.c"
+    File /r "ql\makefile.mak"
 
     WriteRegStr HKEY_LOCAL_MACHINE \
                 "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
@@ -160,6 +83,9 @@ SectionIn 1 2 3
     CreateShortCut "$SMPROGRAMS\QuantLib\What's new.lnk" \
                    "$INSTDIR\News.txt"
 
+    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
+                   "$INSTDIR\QuantLib.dsw"
+
     WriteUninstaller "QuantLibUninstall.exe"
 SectionEnd
 
@@ -167,155 +93,15 @@ SectionEnd
 
 !ifndef LIGHT
 
-#it doesn't work
-#Function .onInstSuccess
-#  MessageBox MB_YESNO|MB_ICONQUESTION \
-#             "Setup has completed. View Readme.txt now?" \
-#             IDNO NoReadme
-#    ExecShell open '$INSTDIR\Readme.txt'
-#  NoReadme:
-#FunctionEnd
-
-Section "Source Code"
-SectionIn 1
-  SetOutPath $INSTDIR
-  File ChangeLog.txt
-  File makefile.mak
-  File QuantLib.dsp
-  File QuantLib.dsw
-  File QuantLib.mak
-  File QuantLib.nsi
-
-  SetOutPath  $INSTDIR\ql
-  File /r "ql\*.cpp"
-  File /r "ql\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\Calendars
-  File /r "ql\Calendars\*.cpp"
-  File /r "ql\Calendars\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\CashFlows
-  File /r "ql\CashFlows\*.cpp"
-  File /r "ql\CashFlows\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\DayCounters
-  File /r "ql\DayCounters\*.cpp"
-  File /r "ql\DayCounters\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\FiniteDifferences
-  File /r "ql\FiniteDifferences\*.cpp"
-  File /r "ql\FiniteDifferences\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\functions
-  File /r "ql\functions\*.cpp"
-  File /r "ql\functions\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\Indexes
-  File /r "ql\Indexes\*.cpp"
-  File /r "ql\Indexes\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\Instruments
-  File /r "ql\Instruments\*.cpp"
-  File /r "ql\Instruments\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\Lattices
-  File /r "ql\Lattices\*.cpp"
-  File /r "ql\Lattices\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\Math
-  File /r "ql\Math\*.cpp"
-  File /r "ql\Math\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\MonteCarlo
-  File /r "ql\MonteCarlo\*.cpp"
-  File /r "ql\MonteCarlo\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\Optimization
-  File /r "ql\Optimization\*.cpp"
-  File /r "ql\Optimization\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\Pricers
-  File /r "ql\Pricers\*.cpp"
-  File /r "ql\Pricers\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\PricingEngines
-  File /r "ql\PricingEngines\*.cpp"
-  File /r "ql\PricingEngines\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\RandomNumbers
-  File /r "ql\RandomNumbers\*.cpp"
-  File /r "ql\RandomNumbers\*.c"
-  File /r "ql\RandomNumbers\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\ShortRateModels
-  File /r "ql\ShortRateModels\*.cpp"
-  File /r "ql\ShortRateModels\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\ShortRateModels\CalibrationHelpers
-  File /r "ql\ShortRateModels\CalibrationHelpers\*.cpp"
-  File /r "ql\ShortRateModels\CalibrationHelpers\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\ShortRateModels\OneFactorModels
-  File /r "ql\ShortRateModels\OneFactorModels\*.cpp"
-  File /r "ql\ShortRateModels\OneFactorModels\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\ShortRateModels\TwoFactorModels
-  File /r "ql\ShortRateModels\TwoFactorModels\*.cpp"
-  File /r "ql\ShortRateModels\TwoFactorModels\makefile.mak"
-
-#  SetOutPath  $INSTDIR\ql\Solvers1D
-#  File /r "ql\Solvers1D\*.cpp"
-#  File /r "ql\Solvers1D\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\TermStructures
-  File /r "ql\TermStructures\*.cpp"
-  File /r "ql\TermStructures\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\Volatilities
-  File /r "ql\Volatilities\*.cpp"
-  File /r "ql\Volatilities\makefile.mak"
-
-  CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
-                 "$INSTDIR\QuantLib.dsw"
-
-SectionEnd
 
 Section "Examples"
 SectionIn 1 2
     SetOutPath $INSTDIR\Examples
+    File /r "Examples\*.cpp"
+    File /r "Examples\*.dsp"
     File /r "Examples\*.txt"
     File /r "Examples\*.mak"
     File /r "Examples\*.dsw"
-
-    SetOutPath $INSTDIR\Examples\AmericanOption
-    File /r "Examples\AmericanOption\*.cpp"
-    File /r "Examples\AmericanOption\*.dsp"
-    File /r "Examples\AmericanOption\*.txt"
-    File /r "Examples\AmericanOption\*.mak"
-
-    SetOutPath $INSTDIR\Examples\BermudanSwaption
-    File /r "Examples\BermudanSwaption\*.cpp"
-    File /r "Examples\BermudanSwaption\*.dsp"
-    File /r "Examples\BermudanSwaption\*.txt"
-    File /r "Examples\BermudanSwaption\*.mak"
-
-    SetOutPath $INSTDIR\Examples\DiscreteHedging
-    File /r "Examples\DiscreteHedging\*.cpp"
-    File /r "Examples\DiscreteHedging\*.dsp"
-    File /r "Examples\DiscreteHedging\*.txt"
-    File /r "Examples\DiscreteHedging\*.mak"
-
-    SetOutPath $INSTDIR\Examples\EuropeanOption
-    File /r "Examples\EuropeanOption\*.cpp"
-    File /r "Examples\EuropeanOption\*.dsp"
-    File /r "Examples\EuropeanOption\*.txt"
-    File /r "Examples\EuropeanOption\*.mak"
-
-    SetOutPath $INSTDIR\Examples\Swap
-    File /r "Examples\Swap\*.cpp"
-    File /r "Examples\Swap\*.dsp"
-    File /r "Examples\Swap\*.txt"
-    File /r "Examples\Swap\*.mak"
 
     IfFileExists $SMPROGRAMS\QuantLib 0 NoSourceShortCuts
         CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
@@ -326,7 +112,7 @@ SectionEnd
 
 
 Section "test-suite"
-SectionIn 1 2
+SectionIn 1 2 3
     SetOutPath $INSTDIR\test-suite
     File /r "test-suite\*.txt"
     File /r "test-suite\*.mak"
@@ -337,27 +123,8 @@ SectionIn 1 2
 
 SectionEnd
 
-SectionDivider
-
-Section "HTML documentation"
-SectionIn 1 2
-  SetOutPath "$INSTDIR\Docs\html"
-  File "Docs\html\*.css"
-  File "Docs\html\*.hhc"
-  File "Docs\html\*.hhk"
-  File "Docs\html\*.hhp"
-  File "Docs\html\*.html"
-  File "Docs\html\*.jpg"
-  File "Docs\html\*.dot"
-  File "Docs\html\*.png"
-  File "Docs\html\*.repository"
-  CreateShortCut "$INSTDIR\Docs\refman.html.lnk" "$INSTDIR\Docs\html\index.html"
-  CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (HTML).lnk" \
-                 "$INSTDIR\Docs\html\index.html"
-SectionEnd
-
 Section "WinHelp documentation"
-SectionIn 1
+SectionIn 1 2
   SetOutPath "$INSTDIR\Docs"
   File "Docs\html\index.chm"
   CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (WinHelp).lnk" \
@@ -380,8 +147,6 @@ SectionIn 1
                  "$INSTDIR\Docs\refman.ps"
 SectionEnd
 
-SectionDivider
-
 Section "Start Menu Group"
 SectionIn 1 2 3
   SetOutPath $SMPROGRAMS\QuantLib
@@ -399,19 +164,14 @@ SectionEnd
 
 !endif
 
-
 Function .onInit
-
   SetOutPath $TEMP
   File /oname=spltmp.bmp "Docs\images\QL.bmp"
-  #the following line depends on NSIS being installed under C:\programs
-  #sorry, but no better solution available yet
-  IfFileExists "C:\Programs\NSIS\splash.exe" 0 NoSplashExecutable
-      File /oname=spltmp.exe "C:\programs\NSIS\splash.exe"
-      ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
-      Delete $TEMP\spltmp.exe
-      Delete $TEMP\spltmp.bmp
-  NoSplashExecutable:
+  splash::show 2000 $TEMP\spltmp
+  Pop $0 ; $0 has '1' if the user closed the splash screen early,
+         ;        '0' if everything closed normal,
+         ;        '-1' if some error occured.
+  Delete $TEMP\spltmp.bmp
 FunctionEnd
 
 UninstallText "This will uninstall QuantLib. Hit next to continue."
