@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/30 17:24:37  nando
+// clock substitued by time
+//
 // Revision 1.8  2001/08/30 16:51:08  nando
 // clock substitued by time
 //
@@ -69,7 +72,7 @@ namespace QuantLib {
         KnuthRandomGenerator::KnuthRandomGenerator(long seed)
         : ranf_arr_buf(QUALITY), ran_u(QUALITY) {
             ranf_arr_ptr = ranf_arr_sentinel = ranf_arr_buf.end();
-            ranf_start(seed != 0 ? seed : long(QL_CLOCK(0)));
+            ranf_start(seed != 0 ? seed : long(QL_TIME(0)));
         }
         
         void KnuthRandomGenerator::ranf_start(long seed) {

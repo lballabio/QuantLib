@@ -77,7 +77,7 @@ namespace QuantLib {
         };
 
         inline LecuyerRandomGenerator::LecuyerRandomGenerator(long seed) : buffer(LecuyerRandomGenerator::bufferSize) {
-            temp2 = temp1 = (seed != 0 ? seed : long(QL_CLOCK(0)));
+            temp2 = temp1 = (seed != 0 ? seed : long(QL_TIME(0)));
             for (int j=bufferSize+7; j>=0; j--) {
                 long k = temp1/q1;
                 temp1 = a1*(temp1-k*q1)-k*r1;
