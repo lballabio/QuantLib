@@ -168,7 +168,8 @@ namespace {
                                  double v,
                                  double expected,
                                  double calculated,
-                                 double tolerance = Null<double>()) {
+                                 double error,
+                                 double tolerance) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -197,9 +198,9 @@ namespace {
             "    calculated " + greekName + ": "
             + DoubleFormatter::toString(calculated) + "\n"
             "    error:            "
-            + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
-            + (tolerance==Null<double>() ? std::string("") :
-            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
+            + DoubleFormatter::toString(error) + "\n"
+            "    tolerance:        "
+            + DoubleFormatter::toString(tolerance));
     }
 
     struct VanillaOptionData {
@@ -310,10 +311,11 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
                              engine);
 
         double calculated = option.NPV();
-        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+        double error = QL_FABS(calculated-values[i].result);
+        if (error > values[i].tol) {
             vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
                 values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                values[i].tol);
+                error, values[i].tol);
         }
     }
 
@@ -366,10 +368,11 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
                              engine);
 
         double calculated = option.NPV();
-        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
+        double error = QL_FABS(calculated-values[i].result);
+        if (error > values[i].tol) {
             vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
                 values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                values[i].tol);
+                error, values[i].tol);
         }
     }
 
