@@ -46,52 +46,6 @@ namespace QuantLib {
         TimeGrid t_;
     };
 
-    //! Discretized asset class used by numerical methods
-    class DiscretizedAsset {
-      public:
-        DiscretizedAsset(const Handle<NumericalMethod>& method)
-        : method_(method) {}
-        virtual ~DiscretizedAsset() {}
-
-        virtual void reset(Size size) = 0;
-
-        Time time() const { return time_; }
-        Time& time() { return time_; }
-
-        const Array& values() const { return values_; }
-        Array& values() { return values_; }
-
-        const Handle<NumericalMethod>& method() const { return method_; }
-
-        virtual void adjustValues() {}
-        virtual void addTimesTo(std::list<Time>& times) const {}
-      protected:
-        bool isOnTime(Time t) const;
-
-        Time time_;
-        Array values_;
-
-      private:
-        Handle<NumericalMethod> method_;
-    };
-
-    //! Useful discretized discount bond asset
-    class DiscretizedDiscountBond : public DiscretizedAsset {
-      public:
-        DiscretizedDiscountBond(const Handle<NumericalMethod>& method)
-        : DiscretizedAsset(method) {}
-        void reset(Size size) {
-            values_ = Array(size, 1.0);
-        }
-    };
-
-    // inline methods
-    inline bool DiscretizedAsset::isOnTime(Time t) const {
-        const TimeGrid& grid = method()->timeGrid();
-        Time gridTime = grid[grid.findIndex(t)];
-        return (QL_FABS(gridTime - time()) < QL_EPSILON);
-    }
-
 }
 
 

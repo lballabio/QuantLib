@@ -24,6 +24,7 @@
 
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/exercise.hpp>
+#include <ql/discretizedasset.hpp>
 
 namespace QuantLib {
 

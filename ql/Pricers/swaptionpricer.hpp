@@ -24,6 +24,7 @@
 
 #include <ql/Instruments/swaption.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
+#include <ql/discretizedasset.hpp>
 
 namespace QuantLib {
 
@@ -65,43 +66,20 @@ namespace QuantLib {
             Instruments::SwaptionArguments arguments_;
         };
 
-        class DiscretizedSwaption : public DiscretizedAsset {
+        class DiscretizedSwaption : public DiscretizedOption {
           public:
             DiscretizedSwaption(
                 const Handle<NumericalMethod>& method,
                 const Instruments::SwaptionArguments& params)
-            : DiscretizedAsset(method), arguments_(params),
-              swap_(new DiscretizedSwap(method, params)) {
-                Time lastFixedPay = arguments_.fixedPayTimes.back();
-                Time lastFloatPay = arguments_.floatingPayTimes.back();
+            : DiscretizedOption(Handle<DiscretizedAsset>(
+                                    new DiscretizedSwap(method, params)),
+                                params.exerciseType,
+                                params.exerciseTimes) {
+                Time lastFixedPay = params.fixedPayTimes.back();
+                Time lastFloatPay = params.floatingPayTimes.back();
                 Time start = QL_MAX(lastFixedPay, lastFloatPay);
-                method->initialize(swap_,start);
+                method->initialize(underlying_,start);
             }
-
-            void reset(Size size) {
-                values_ = Array(size, 0.0);
-                adjustValues();
-            }
-
-            virtual void adjustValues();
-
-            void addTimesTo(std::list<Time>& times) const {
-                swap_->addTimesTo(times);
-                Time t;
-                for (Size i=0; i<arguments_.exerciseTimes.size(); i++) {
-                    t = arguments_.exerciseTimes[i];
-                    if (t >= 0.0)
-                        times.push_back(t);
-                }
-            }
-          private:
-            void applySpecificCondition() {
-                for (Size i=0; i<values_.size(); i++)
-                    values_[i] = QL_MAX(swap_->values()[i], values_[i]);
-            }
-
-            Instruments::SwaptionArguments arguments_;
-            Handle<DiscretizedSwap> swap_;
         };
 
         template<class ModelType>

@@ -69,21 +69,6 @@ namespace QuantLib {
             }
         }
 
-        void DiscretizedSwaption::adjustValues() {
-            method()->rollback(swap_, time());
-            
-            if (arguments_.exerciseType != Exercise::American) {
-                for (Size i=0; i<arguments_.exerciseTimes.size(); i++) {
-                    Time t = arguments_.exerciseTimes[i];
-                    if (t >= 0.0 && isOnTime(t)) {
-                        applySpecificCondition();
-                    }
-                }
-            } else if (time_ >= arguments_.exerciseTimes[0] &&
-                       time_ <= arguments_.exerciseTimes[1])
-                applySpecificCondition();
-        }
-
     }
     
 }

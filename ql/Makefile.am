@@ -44,6 +44,7 @@ include_HEADERS = \
 	dataparsers.hpp \
 	date.hpp \
 	daycounter.hpp \
+	discretizedasset.hpp \
 	diffusionprocess.hpp \
 	disposable.hpp \
 	errors.hpp \
@@ -108,6 +109,7 @@ libQuantLib_la_SOURCES = \
     dataparsers.cpp \
     date.cpp \
 	diffusionprocess.cpp \
+	discretizedasset.cpp \
 	exercise.cpp \
     grid.cpp \
     option.cpp \

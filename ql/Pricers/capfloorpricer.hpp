@@ -24,6 +24,7 @@
 
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
+#include <ql/discretizedasset.hpp>
 
 namespace QuantLib {
 

@@ -22,7 +22,7 @@
 #ifndef quantlib_discretized_vanilla_option_h
 #define quantlib_discretized_vanilla_option_h
 
-#include <ql/numericalmethod.hpp>
+#include <ql/discretizedasset.hpp>
 #include <ql/Lattices/bsmlattice.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>

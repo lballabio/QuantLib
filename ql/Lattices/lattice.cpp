@@ -19,7 +19,8 @@
     \brief Lattice class
 */
 
-#include "ql/Lattices/lattice.hpp"
+#include <ql/Lattices/lattice.hpp>
+#include <ql/discretizedasset.hpp>
 
 namespace QuantLib {
 
