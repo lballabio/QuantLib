@@ -14,6 +14,7 @@
  * LICENCE.TXT is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h
 
