@@ -1,3 +1,4 @@
+make unit tests out of examples
 cliquet move forward
 optimize PathPricer
 MultiPath and MultiPathPricer
