@@ -51,7 +51,7 @@ namespace QuantLib {
             std::vector<Date> resetDates;
         };
 
-        void CliquetOptionArguments::validate() const {
+        inline void CliquetOptionArguments::validate() const {
             VanillaOptionArguments::validate();
             QL_REQUIRE(moneyness != Null<double>(),
                        "CliquetOptionArguments::validate() : "
