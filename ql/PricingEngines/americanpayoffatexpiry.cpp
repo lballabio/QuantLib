@@ -122,6 +122,7 @@ namespace QuantLib {
                     DbetaDd2_  = 0.0;
                 }
                 break;
+            #ifndef QL_DISABLE_DEPRECATED
             case Option::Straddle:
                 // incorporating the linear effect of call + put
                 alpha_     = 1.0; //  N(-d2) + N(d2)
@@ -129,6 +130,7 @@ namespace QuantLib {
                 beta_      = 1.0; //  N(-d1) + N(d1)
                 DbetaDd2_  = 0.0; // -n( d1) + n(d1)
                 break;
+            #endif
             default:
                 QL_FAIL("invalid option type");
          }

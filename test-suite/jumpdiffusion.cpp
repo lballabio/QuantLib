@@ -387,7 +387,11 @@ void JumpDiffusionTest::testGreeks() {
     tolerance["divRho"] = 1.0e-4;
     tolerance["vega"]   = 1.0e-4;
 
-    Option::Type types[] = { Option::Put, Option::Call, Option::Straddle };
+    Option::Type types[] = { Option::Put, Option::Call
+        #ifndef QL_DISABLE_DEPRECATED
+        , Option::Straddle
+        #endif
+    };
     Real strikes[] = { 50.0, 100.0, 150.0 };
     Real underlyings[] = { 100.0 };
     Rate qRates[] = { -0.05, 0.0, 0.05 };

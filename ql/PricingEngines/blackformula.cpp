@@ -95,6 +95,7 @@ namespace QuantLib {
             beta_      =  1.0-cum_d2_;//  N(-d2)
             DbetaDd2_  =     -  n_d2; // -n( d2)
             break;
+          #ifndef QL_DISABLE_DEPRECATED
           case Option::Straddle:
             // incorporating the linear effect of call + put
             alpha_     = -1.0 + 2.0*cum_d1_;//  N(d1) - N(-d1)
@@ -102,6 +103,7 @@ namespace QuantLib {
             beta_      =  1.0 - 2.0*cum_d2_;// -N(d2) + N(-d2)
             DbetaDd2_  =      - 2.0*  n_d2; // -n(d2) - n( d2)
             break;
+          #endif
           default:
             QL_FAIL("invalid option type");
         }
@@ -137,11 +139,13 @@ namespace QuantLib {
                 beta_     = 1.0-cum_d2_;//  N(-d2)
                 DbetaDd2_ =    -  n_d2; // -n( d2)
                 break;
+              #ifndef QL_DISABLE_DEPRECATED
               case Option::Straddle:
                 // incorporating the linear effect of call + put
                 beta_     = 1.0; // N(d2) + N(-d2) = 1.0
                 DbetaDd2_ = 0.0; // n(d2) - n( d2) = 0.0
                 break;
+              #endif
               default:
                 QL_FAIL("invalid option type");
             }
@@ -162,11 +166,13 @@ namespace QuantLib {
                 alpha_     = 1.0-cum_d1_;//  N(-d1)
                 DalphaDd1_ =    -  n_d1; // -n( d1)
                 break;
+              #ifndef QL_DISABLE_DEPRECATED
               case Option::Straddle:
                 // incorporating the linear effect of call + put
                 alpha_     = 1.0; //  N(d1) + N(-d1) = 1.0
                 DalphaDd1_ = 0.0; //  n(d1) - n( d1) = 0.0
                 break;
+              #endif
               default:
                 QL_FAIL("invalid option type");
             }

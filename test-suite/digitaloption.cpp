@@ -516,7 +516,11 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     tolerance["divRho"] = 5.0e-5;
     tolerance["vega"]   = 5.0e-5;
 
-    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+    Option::Type types[] = { Option::Call, Option::Put
+        #ifndef QL_DISABLE_DEPRECATED
+        , Option::Straddle
+        #endif
+    };
     Real strikes[] = { 50.0, 99.5, 100.5, 150.0 };
     Real cashPayoff = 100.0;
     Real underlyings[] = { 100 };

@@ -32,7 +32,11 @@ namespace QuantLib {
     class Option : public Instrument {
       public:
         class arguments;
-        enum Type { Call, Put, Straddle };
+        enum Type { Call, Put
+            #ifndef QL_DISABLE_DEPRECATED
+            , Straddle
+            #endif
+        };
         Option(const boost::shared_ptr<Payoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
                const boost::shared_ptr<PricingEngine>& engine = 

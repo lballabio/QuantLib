@@ -89,6 +89,7 @@ namespace QuantLib {
                 break;
             }
             break;
+          #ifndef QL_DISABLE_DEPRECATED
           case Option::Straddle:
             switch (barrierType) {
               case Barrier::DownIn:
@@ -109,7 +110,7 @@ namespace QuantLib {
                 break;
               case Barrier::DownOut:
                 if (strike() >= barrier())
-                    results_.value = A(1) - C(1,1) + F(1) + A(-1) - 
+                   results_.value = A(1) - C(1,1) + F(1) + A(-1) - 
                         B(-1) + C(1,-1) - D(1,-1) + F(1);
                 else
                     results_.value = B(1) - D(1,1) + F(1) + F(1);
@@ -123,6 +124,7 @@ namespace QuantLib {
                 break;
             }
             break;
+          #endif
           default:
             QL_FAIL("unknown type");
         }

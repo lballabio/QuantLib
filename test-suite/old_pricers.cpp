@@ -205,7 +205,11 @@ void OldPricerTest::testFdEuropeanPricer() {
 
     PseudoRandom::urng_type rng(56789012);
 
-    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+    Option::Type types[] = { Option::Call, Option::Put
+        #ifndef QL_DISABLE_DEPRECATED
+        , Option::Straddle
+        #endif
+    };
 
     for (Size i=0; i<totCases; i++) {
 
@@ -343,7 +347,11 @@ void OldPricerTest::testAmericanPricers() {
 
     BOOST_MESSAGE("Testing old-style American-type pricers...");
 
-    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+    Option::Type types[] = { Option::Call, Option::Put
+        #ifndef QL_DISABLE_DEPRECATED
+        , Option::Straddle
+        #endif
+    };
     Real underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };

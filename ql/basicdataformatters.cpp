@@ -275,7 +275,9 @@ namespace QuantLib {
         switch (type) {
           case Option::Call:     return "call";
           case Option::Put:      return "put";
+          #ifndef QL_DISABLE_DEPRECATED
           case Option::Straddle: return "straddle";
+          #endif
           default:
             QL_FAIL("unknown option type");
         }
