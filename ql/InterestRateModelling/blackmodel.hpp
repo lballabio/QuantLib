@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file blackmodel.hpp
     \brief Abstract class for Black-type models (market models)
 
@@ -68,4 +70,6 @@ namespace QuantLib {
     }
 
 }
+
+
 #endif

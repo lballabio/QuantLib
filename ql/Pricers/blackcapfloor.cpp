@@ -35,7 +35,7 @@ namespace QuantLib {
 
         void BlackCapFloor::calculate() const {
             double value = 0.0;
-            Instruments::VanillaCapFloor::Type type = parameters_.type;
+            VanillaCapFloor::Type type = parameters_.type;
 
             for (Size i=0; i<parameters_.startTimes.size(); i++) {
                 Time start = parameters_.startTimes[i],
@@ -46,46 +46,24 @@ namespace QuantLib {
                     DiscountFactor q = model_->termStructure()->discount(end);
                     Rate forward = parameters_.forwards[i];
                     // try and factorize the code below
-                    if ((type == Instruments::VanillaCapFloor::Cap) ||
-                        (type == Instruments::VanillaCapFloor::Collar)) {
-                        if (start <= 0.0) {
-                            // the rate was fixed
-                            value += q * accrualTime * nominal * 
-                                QL_MAX(forward-parameters_.capRates[i],0.0);
-                        } else {
-                            // forecast
+                    if ((type == VanillaCapFloor::Cap) ||
+                        (type == VanillaCapFloor::Collar)) {
                             value += q * accrualTime * nominal *
-                                BlackModel::formula(
-                                    parameters_.capRates[i], forward, 
-                                    model_->volatility()*QL_SQRT(start), 1);
-                        }
+                                     capletValue(start,forward,
+                                                 parameters_.capRates[i],
+                                                 model_->volatility());
                     }
-                    if (type == Instruments::VanillaCapFloor::Floor) {
-                        if (start <= 0.0) {
-                            // the rate was fixed
-                            value += q * accrualTime * nominal * 
-                                QL_MAX(parameters_.floorRates[i]-forward,0.0);
-                        } else {
-                            // forecast
-                            value += q * accrualTime * nominal *
-                                BlackModel::formula(
-                                    parameters_.floorRates[i], forward, 
-                                    model_->volatility()*QL_SQRT(start), -1);
-                        }
-                    }
-                    // a collar is long a cap and short a floor
-                    if (type == Instruments::VanillaCapFloor::Collar) {
-                        if (start <= 0.0) {
-                            // the rate was fixed
-                            value -= q * accrualTime * nominal * 
-                                QL_MAX(parameters_.floorRates[i]-forward,0.0);
-                        } else {
-                            // forecast
-                            value -= q * accrualTime * nominal *
-                                BlackModel::formula(
-                                    parameters_.floorRates[i], forward, 
-                                    model_->volatility()*QL_SQRT(start), -1);
-                        }
+                    if ((type == VanillaCapFloor::Floor) ||
+                        (type == VanillaCapFloor::Collar)) {
+                            double temp = q * accrualTime * nominal *
+                                          floorletValue(start,forward,
+                                                 parameters_.floorRates[i],
+                                                 model_->volatility());
+                            if (type == VanillaCapFloor::Floor)
+                                value += temp;
+                            else
+                                // a collar is long a cap and short a floor
+                                value -= temp;
                     }
                 }
             }
@@ -93,6 +71,30 @@ namespace QuantLib {
 
         }
 
+        double BlackCapFloor::capletValue(Time start, Rate forward,
+                                          Rate strike, double vol) const {
+            if (start <= 0.0) {
+                // the rate was fixed
+                return QL_MAX(forward-strike,0.0);
+            } else {
+                // forecast
+                return BlackModel::formula(strike, forward, 
+                                           vol*QL_SQRT(start), 1);
+            }
+        }
+        
+        double BlackCapFloor::floorletValue(Time start, Rate forward,
+                                            Rate strike, double vol) const {
+            if (start <= 0.0) {
+                // the rate was fixed
+                return QL_MAX(strike-forward,0.0);
+            } else {
+                // forecast
+                return BlackModel::formula(strike, forward, 
+                                           vol*QL_SQRT(start), -1);
+            }
+        }
+        
     }
 
 }

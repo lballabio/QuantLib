@@ -41,6 +41,11 @@ namespace QuantLib {
             BlackCapFloor(const Handle<InterestRateModelling::BlackModel>& mod)
             : CapFloorPricingEngine<InterestRateModelling::BlackModel>(mod) {}
             void calculate() const;
+          private:
+            double capletValue(Time start, Rate forward,
+                               Rate strike, double vol) const;
+            double floorletValue(Time start, Rate forward,
+                                 Rate strike, double vol) const;
         };
 
     }
