@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/03/08 14:50:35  marmar
+    Revised form of test with random parameters
+
     Revision 1.1  2001/03/07 17:19:25  marmar
     Example of european option using finite differences
 
@@ -32,45 +35,57 @@
 # Make sure that Python path contains the directory of QuantLib and
 # that of this file
 
+from QuantLib import UniformRandomGenerator
 from QuantLib import BSMEuropeanOption
 from QuantLib import FiniteDifferenceEuropean
 from TestUnit import TestUnit
+import math
 
 class FDEuropeanOptionTest(TestUnit):
     def doTest(self):
-        rangeUnder = [100]
-        rangeStrike = [66, 99.5, 100, 100.5, 150]
-        rangeRrate = [0.01, 0.05, 0.15]
-        rangeQrate = [0.0, 0.01]
-        rangeResTime = [1.0, 2.0]
-        rangeVol = [0.05, 0.5, 1.2]
+        under = 100
+        strikeMin = 60
+        rangeStrike = 100
+        rangeRrate = 0.18
+        rangeQrate = 0.02
+        rangeVol = 1.2
+        timeMin = 0.5
+        rangeTime = 2
         
-        tollerance =6.69e-3
+        tollerance = 8.42e-3
         total_number_of_error = 0
         maxError = 0
-        
-        for under in rangeUnder:
-          for Qrate in rangeQrate:
-            for resTime in rangeResTime:
-              for Rrate in rangeRrate:
-                for strike in rangeStrike:
-                  for vol in rangeVol:
-                    for optType in ['Call', 'Put', 'Straddle']:
-                        anValue = BSMEuropeanOption(
-                                    optType, under, strike, Qrate,
-                                    Rrate, resTime, vol).value()
-                        numValue = FiniteDifferenceEuropean(
-                                    optType, under, strike, Qrate,
-                                    Rrate, resTime, vol, 100, 400).value()
-                        absErr = abs(anValue - numValue)
-                        if absErr > tollerance:
-                            self.printDetails("Error = %12.2e " % absErr)
-                            maxError = max(maxError, absErr)
-                            total_number_of_error = total_number_of_error + 1
+        L2err = 0
+
+        totCases = 200
+        rng = UniformRandomGenerator(56789012)
+        for ite in range(totCases):
+            strike = strikeMin + rangeStrike * rng.next()
+            Qrate =              rangeQrate * rng.next()
+            Rrate =              rangeRrate * rng.next()
+            vol =                rangeVol * rng.next()            
+            resTime = timeMin +  rangeTime * rng.next()
+            for optType in ['Call', 'Put', 'Straddle']:
+                anValue = BSMEuropeanOption(
+                           optType, under, strike, Qrate,
+                           Rrate, resTime, vol).value()
+                numValue = FiniteDifferenceEuropean(
+                           optType, under, strike, Qrate,
+                           Rrate, resTime, vol, 100, 400).value()
+                absErr = abs(anValue - numValue)
+                L2err = L2err + absErr*absErr
+                maxError = max(maxError, absErr)
+                if absErr > tollerance:
+                    self.printDetails(optType, under, strike, Qrate, Rrate, resTime, vol,
+                                      "Error = %12.2e " % absErr)
+                    total_number_of_error = total_number_of_error + 1
          
+        L2err = math.sqrt(L2err/totCases/3)
+        self.printDetails(
+           "total number of failures: %d/%d, maxError =%g, L2err =%g"
+                  % (total_number_of_error, totCases*3, maxError, L2err))
+
         if total_number_of_error >= 1:
-            self.printDetails("total number of failures: %d, maxError %g"
-                              % (total_number_of_error, maxError))
             return 1
         else:
             return 0
