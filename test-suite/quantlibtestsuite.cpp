@@ -65,7 +65,10 @@ int main() {
     runner.addTest(AmericanOptionTest::suite());
     runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());
+
+    //fails with Visual C++ 6 when _controlfp(_EM_INEXACT, _MCW_EM) is enabled
     runner.addTest(BasketOptionTest::suite());
+
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
     runner.addTest(CompoundForwardTest::suite());
@@ -91,6 +94,7 @@ int main() {
     runner.addTest(TermStructureTest::suite());
 
     // to be deprecated
+    //fails with Visual C++ 6 when _controlfp(_EM_INEXACT, _MCW_EM) is enabled
     runner.addTest(OldPricerTest::suite());
 
     // the following tests fail with Borland

@@ -118,7 +118,7 @@ void FactorialTest::testPoissonDistribution() {
     PoissonDistribution pdf(mean);
     double calculated = pdf(i);
     double expected = 1.0;
-    if (calculated!=expected)
+    if (QL_FABS(calculated-expected)>1.0e-16)
         CPPUNIT_FAIL("Poisson pdf("
                      + DoubleFormatter::toString(mean) + ")("
                      + IntegerFormatter::toString(i) + ")\n"

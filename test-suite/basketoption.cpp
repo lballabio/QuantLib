@@ -762,6 +762,7 @@ CppUnit::Test* BasketOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Basket option tests");
     
+    //fails with Visual C++ 6 when _controlfp(_EM_INEXACT, _MCW_EM) is enabled
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing basket options against correct values",
                     &BasketOptionTest::testValues));
