@@ -39,6 +39,9 @@ namespace QuantLib {
         Error(const std::string& file, long line,
               const std::string& function,
               const std::string& message = "");
+        /*! the automatically generated destructor would
+            not have the throw specifier.
+        */
         ~Error() throw() {}
         //! returns the error message.
         const char* what() const throw ();
