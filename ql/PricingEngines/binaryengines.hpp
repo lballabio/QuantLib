@@ -36,7 +36,7 @@
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/MonteCarlo/binarypathpricer.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
-#include <ql/Pricers/binaryoption.hpp>
+#include <ql/Pricers/binaryoptionpricer.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
 #include <ql/PricingEngines/mcengine.hpp>
 

@@ -16,20 +16,20 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 OBJS = \
     analyticalcapfloor.obj$(_D) \
     barrieroptionpricer.obj$(_D) \
+    binaryoptionpricer.obj$(_D) \
     blackcapfloor.obj$(_D) \
     blackswaption.obj$(_D) \
-    fdbermudanoption.obj$(_D) \
-    binaryoption.obj$(_D) \
     capfloorpricer.obj$(_D) \
     cliquetoption.obj$(_D) \
     discretegeometricapo.obj$(_D) \
     discretegeometricaso.obj$(_D) \
-    fddividendshoutoption.obj$(_D) \
     europeanoption.obj$(_D) \
+    fdbermudanoption.obj$(_D) \
     fdbsmoption.obj$(_D) \
     fddividendamericanoption.obj$(_D) \
     fddividendeuropeanoption.obj$(_D) \
     fddividendoption.obj$(_D) \
+    fddividendshoutoption.obj$(_D) \
     fdeuropean.obj$(_D) \
     fdmultiperiodoption.obj$(_D) \
     fdstepconditionoption.obj$(_D) \
@@ -63,7 +63,10 @@ CC_OPTS        = -vi- -q -c -tWM \
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
+!else
+CC_OPTS = $(CC_OPTS) -O2
 !endif
+
 !ifdef SAFE
 CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif

@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*!  \file binaryoption.hpp
-    \brief European style cash-or-nothing option.
+/*!  \file binaryoptionpricer.hpp
+    \brief European style cash-or-nothing option pricer
 */
 
-#ifndef quantlib_pricers_binaryoption_h
-#define quantlib_pricers_binaryoption_h
+#ifndef quantlib_pricers_binaryoptionpricer_h
+#define quantlib_pricers_binaryoptionpricer_h
 
 #include <ql/Pricers/singleassetoption.hpp>
 

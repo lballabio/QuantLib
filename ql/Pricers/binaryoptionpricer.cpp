@@ -15,11 +15,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file binaryoption.cpp
-    \brief European style cash-or-nothing option.
+/*! \file binaryoptionpricer.cpp
+    \brief European style cash-or-nothing option pricer
 */
 
-#include <ql/Pricers/binaryoption.hpp>
+#include <ql/Pricers/binaryoptionpricer.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib

@@ -1168,26 +1168,11 @@ SOURCE=.\ql\Pricers\barrieroptionpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\binaryoption.cpp
-
-!IF  "$(CFG)" == "QuantLib - Win32 Release"
-
-# PROP Intermediate_Dir "build\Release\old"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
-
-!ENDIF 
-
+SOURCE=.\ql\Pricers\binaryoptionpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\binaryoption.hpp
+SOURCE=.\ql\Pricers\binaryoptionpricer.hpp
 # End Source File
 # Begin Source File
 
