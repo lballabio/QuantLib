@@ -19,7 +19,9 @@
 # Primary target:
 # QuantLib Examples
 examples::
-    cd DiscreteHedging
+    cd BermudanSwaption
+    $(MAKE)
+    cd ..\DiscreteHedging
     $(MAKE)
     cd ..\EuropeanOption
     $(MAKE)
@@ -29,7 +31,9 @@ examples::
 
 # Check
 check::
-    cd DiscreteHedging
+    cd BermudanSwaption
+    $(MAKE) check
+    cd ..\DiscreteHedging
     $(MAKE) check
     cd ..\EuropeanOption
     $(MAKE) check
@@ -39,7 +43,9 @@ check::
 
 # Clean up
 clean::
-    cd DiscreteHedging
+    cd BermudanSwaption
+    $(MAKE) clean
+    cd ..\DiscreteHedging
     $(MAKE) clean
     cd ..\EuropeanOption
     $(MAKE) clean

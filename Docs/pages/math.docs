@@ -58,12 +58,36 @@
     
     \par The simplex method
 
-    see QuantLib::Optimization::Simplex .
+    This method, implemented in QuantLib::Optimization::Simplex, is rather raw 
+    and requires quite a lot of computing resources, but it has the advantage 
+    that it does not need any evaluation of the cost function's gradient, and 
+    that it is quite easily implemented. First, we must choose N+1 starting 
+    points, given here by a starting point \f$ \mathbf{P}_{0} \f$ and N points 
+    such that 
+    \f[ 
+        \mathbf{P}_{\mathbf{i}}=\mathbf{P}_{0}+\lambda \mathbf{e}_{\mathbf{i}},
+    \f]
+    where \f$ \lambda \f$ is the problem's characteristic length scale). These 
+    points will form a geometrical form called simplex.
+    The principle of the downhill simplex method is, at each iteration, to move 
+    the worst point (highest cost function value) through the opposite face to a 
+    better point. When the simplex seems to be constrained in a valley, it will 
+    be contracted downhill, keeping the best point unchanged.    
 
     \par The conjugate gradient method
-
+    We'll now continue with a bit more sophisticated method, implemented in
+    QuantLib::Optimization::ConjugateGradient . At each step, we minimize 
+    (using Armijo's line search algorithm, implemented in 
+    QuantLib::Optimization::ArmijoLineSearch ) the function along a line 
+    defined by 
+    \f[
+        \mathbf{d_i} = -\nabla f(\mathbf{x_i})+\frac{\left\Vert \nabla f(\mathbf{x_i})\right\Vert ^{2}}{\left\Vert \nabla f(\mathbf{x_{i-1}})\right\Vert ^{2}}\mathbf{d_{i-1}},
+    \f]
+    \f[
+        \mathbf{d}_{0} = -\nabla f(\mathbf{x}_{0}).
+    \f]
+    
+    As we can see, this optimization method requires the knowledge of the gradient of the cost function. 
     see QuantLib::Optimization::ConjugateGradient .
  
-*/
-
 */
