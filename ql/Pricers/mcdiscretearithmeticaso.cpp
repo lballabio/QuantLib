@@ -30,7 +30,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::GaussianStatistics;
+        using Math::Statistics;
         using MonteCarlo::Path;
         using MonteCarlo::GaussianPathGenerator_old;
         using MonteCarlo::PathPricer_old;
@@ -71,23 +71,23 @@ namespace QuantLib {
                     times, volatility).value();
 
                 //! Initialize the one-dimensional Monte Carlo
-                mcModel_ = Handle<MonteCarloModel<GaussianStatistics,
+                mcModel_ = Handle<MonteCarloModel<Statistics,
                     GaussianPathGenerator_old,
                     PathPricer_old<Path> > > (
-                    new MonteCarloModel<GaussianStatistics,
+                    new MonteCarloModel<Statistics,
                     GaussianPathGenerator_old,
                     PathPricer_old<Path> > (pathGenerator, spPricer,
-                    GaussianStatistics(), false,
+                    Statistics(), false,
                     controlVariateSpPricer, controlVariatePrice));
             } else {
                 //! Initialize the one-dimensional Monte Carlo
-                mcModel_ = Handle<MonteCarloModel<GaussianStatistics,
+                mcModel_ = Handle<MonteCarloModel<Statistics,
                     GaussianPathGenerator_old,
                     PathPricer_old<Path> > > (
-                    new MonteCarloModel<GaussianStatistics,
+                    new MonteCarloModel<Statistics,
                     GaussianPathGenerator_old,
                     PathPricer_old<Path> > (pathGenerator, spPricer,
-                    GaussianStatistics(), false));
+                    Statistics(), false));
             }
 
         }

@@ -24,19 +24,19 @@
 #ifndef quantlib_risk_statisticss_h
 #define quantlib_risk_statisticss_h
 
-#include <ql/Math/gaussianstatistics.hpp>
+#include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/riskmeasures.hpp>
 
 namespace QuantLib {
 
     //! Risk analysis tool
-    /*! It can accumulate a set of data and return risk quantities
-        as Value-At-Risk, Expected Shortfall,
-        Shortfall, Average Shortfall, plus gaussianstatistics
-        quantitities as mean, variance, std. deviation, skewness, kurtosis.
+    /*! It can accumulate a set of data and return statistics
+        as mean, variance, std. deviation, skewness, kurtosis,
+        plus risk quantities as Value-At-Risk, Expected Shortfall,
+        Shortfall, Average Shortfall, etc under gaussian assumption
 
-        \deprecated use GaussianStatistics instead (or even take a look at
-                    HStatisticss)
+        \deprecated use IncrementalGaussianStatistics instead (or even take
+                    a look at Statistics)
     */
     class RiskStatistics {
       public:
@@ -102,7 +102,7 @@ namespace QuantLib {
 
         //@}
       private:
-        Math::GaussianStatistics statistics_;
+        Math::IncrementalStatistics statistics_;
         Math::RiskMeasures riskMeasures_;
     };
 

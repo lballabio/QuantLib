@@ -1,7 +1,6 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +25,7 @@
 #define quantlib_sequence_statistics_hpp
 
 #include <ql/Math/statistics.hpp>
+#include <ql/Math/matrix.hpp>
 #include <algorithm>
 #include <iterator>
 #include <vector>
@@ -34,13 +34,13 @@ namespace QuantLib {
 
     namespace Math {
 
-        //! GaussianStatistics analysis of N-dimensional (sequence) data
-        /*! It provides 1-dimensional gaussianstatistics quantities as discrepancy plus
-            N-dimensional (sequence) gaussianstatistics quantities (e.g. mean,
+        //! Statistics analysis of N-dimensional (sequence) data
+        /*! It provides 1-dimensional statistics as discrepancy plus
+            N-dimensional (sequence) statistics (e.g. mean,
             variance, skewness, kurtosis, etc.) with one component for each
             dimension of the sample space.
 
-            For most of the gaussianstatistics quantities this class relies on
+            For most of the statistics this class relies on
             the StatisticsType underlying class to provide 1-D methods that
             will be iterated for all the components of the N-D data. These
             lifted methods are the union of all the methods that might be
@@ -54,12 +54,19 @@ namespace QuantLib {
             typedef StatisticsType statistics_type;
             // constructor
             SequenceStatistics(Size dimension);
-            //! \name 1-D inspectors lifted from underlying gaussianstatistics class
+            //! \name covariance and correlation
+            //@{
+            //! returns the covariance Matrix
+            Matrix covariance() const;
+            //! returns the correlation Matrix
+            Matrix correlation() const;
+            //@}
+            //! \name 1-D inspectors lifted from underlying statistics class
             //@{
             Size samples() const;
             double weightSum() const;
             //@}
-            //! \name N-D inspectors lifted from underlying gaussianstatistics class
+            //! \name N-D inspectors lifted from underlying statistics class
             //@{
             // void argument list
             std::vector<double> mean() const;
@@ -79,18 +86,23 @@ namespace QuantLib {
 
             std::vector<double> gaussianPotentialUpside(
                 double percentile) const;
+            std::vector<double> potentialUpside(double percentile) const;
 
             std::vector<double> gaussianValueAtRisk(
                 double percentile) const;
+            std::vector<double> valueAtRisk(double percentile) const;
 
             std::vector<double> gaussianExpectedShortfall(
                 double percentile) const;
+            std::vector<double> expectedShortfall(double percentile) const;
 
             std::vector<double> gaussianShortfall(
                 double target) const;
+            std::vector<double> shortfall(double target) const;
 
             std::vector<double> gaussianAverageShortfall(
                 double target) const;
+            std::vector<double> averageShortfall(double target) const;
 
             //@}
             //! \name Modifiers
@@ -181,6 +193,11 @@ namespace QuantLib {
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(gaussianAverageShortfall)
 
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(percentile)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(potentialUpside)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(valueAtRisk)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(expectedShortfall)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(shortfall)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(averageShortfall)
         #undef DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE
 
 
@@ -200,6 +217,57 @@ namespace QuantLib {
                 results_ = std::vector<double>(dimension);
             }
         }
+
+
+
+        template <class Stat>
+        Matrix SequenceStatistics<Stat>::covariance() const {
+            sampleWeight = weightSum();
+            QL_REQUIRE(sampleWeight > 0.0,
+                        "SequenceStatistics::covariance() : "
+                        "sampleWeight=0, unsufficient");
+            
+            sampleNumber = samples();
+            QL_REQUIRE(sampleNumber > 1,
+                        "SequenceStatistics::covariance() : "
+                        "sample number <=1, unsufficient");
+
+          double inv = 1.0/sampleWeight;
+
+          // to be implemented
+          return Matrix(dimension_, dimension_, 0.0);;
+        }
+
+
+        template <class Stat>
+        Matrix SequenceStatistics<Stat>::correlation() const {
+          Matrix correlation = covariance();
+          Array variances = correlation.diagonal();
+          for (Size i=0; i<dimension_; i++){
+              for (Size j=0; j<dimension_; j++){
+                  if (i==j) {
+                      if (variances[i]==0.0) {
+                          correlation[i][j] = 1.0;
+                      } else {
+                          correlation[i][j] *= 1.0/QL_SQRT(variances[i]*variances[j]);
+                      }
+                  } else {
+                      if (variances[i]==0.0 && variances[j]==0) {
+                          correlation[i][j] = 1.0;
+                      } else if (variances[i]==0.0 || variances[j]==0.0) {
+                          correlation[i][j] = 0.0;   
+                      } else {                            
+                          correlation[i][j] *= 1.0/QL_SQRT(variances[i]*variances[j]);   
+                      }
+                  }
+              } // j for
+          } // i for
+
+          return correlation;
+        }
+
+
+
 
     }
 

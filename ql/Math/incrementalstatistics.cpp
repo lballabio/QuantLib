@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -15,23 +16,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file gaussianstatistics.cpp
-    \brief statistics tool with gaussian risk measures
+/*! \file incrementalstatistics.cpp
+    \brief statistics tool based on incremental accumulation
 */
 
 // $Id$
 
-#include <ql/Math/gaussianstatistics.hpp>
+#include <ql/Math/incrementalstatistics.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
-        GaussianStatistics::GaussianStatistics() {
+        IncrementalStatistics::IncrementalStatistics() {
             reset();
         }
 
-        void GaussianStatistics::reset() {
+        void IncrementalStatistics::reset() {
             min_ = QL_MAX_DOUBLE;
             max_ = QL_MIN_DOUBLE;
             sampleNumber_ = 0;
@@ -44,16 +45,16 @@ namespace QuantLib {
         }
 
         /*! \pre weights must be positive or null */
-        void GaussianStatistics::add(double value, double weight) {
+        void IncrementalStatistics::add(double value, double weight) {
             QL_REQUIRE(weight>=0.0,
-                "GaussianStatistics::add : "
+                "IncrementalStatistics::add : "
                 "negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
 
             Size oldSamples = sampleNumber_;
             sampleNumber_++;
             QL_ENSURE(sampleNumber_ > oldSamples,
-                      "GaussianStatistics::add : "
+                      "IncrementalStatistics::add : "
                       "maximum number of samples reached");
 
             sampleWeight_ += weight;
@@ -72,12 +73,12 @@ namespace QuantLib {
         }
 
 
-        double GaussianStatistics::variance() const {
+        double IncrementalStatistics::variance() const {
             QL_REQUIRE(sampleWeight_>0.0,
-                       "GaussianStatistics::variance() : "
+                       "IncrementalStatistics::variance() : "
                        "sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
-                       "GaussianStatistics::variance() : "
+                       "IncrementalStatistics::variance() : "
                        "sample number <=1, unsufficient");
 
             double m = mean();
@@ -85,32 +86,30 @@ namespace QuantLib {
             v -= m*m;
             v *= sampleNumber_/(sampleNumber_-1.0);
 
-//            if (QL_FABS(v) <= 1.0e-6)
-//                v = 0.0;
 
             QL_ENSURE(v >= 0.0,
-                      "GaussianStatistics::variance :"
+                      "IncrementalStatistics::variance :"
                       "negative variance (" +
                       DoubleFormatter::toString(v,20) + ")");
 
             return v;
         }
 
-        double GaussianStatistics::downsideVariance() const {
+        double IncrementalStatistics::downsideVariance() const {
             QL_REQUIRE(sampleWeight_>0.0,
-                       "GaussianStatistics::downsideVariance() : "
+                       "IncrementalStatistics::downsideVariance() : "
                        "sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
-                       "GaussianStatistics::downsideVariance() : "
+                       "IncrementalStatistics::downsideVariance() : "
                        "sample number <=1, unsufficient");
 
             return (sampleNumber_/(sampleNumber_-1.0))*
                 (downsideQuadraticSum_ /sampleWeight_);
         }
 
-        double GaussianStatistics::skewness() const {
+        double IncrementalStatistics::skewness() const {
             QL_REQUIRE(sampleNumber_>2,
-                       "GaussianStatistics::skewness() : "
+                       "IncrementalStatistics::skewness() : "
                        "sample number <=2, unsufficient");
             double s = standardDeviation();
 
@@ -127,9 +126,9 @@ namespace QuantLib {
         }
 
 
-        double GaussianStatistics::kurtosis() const {
+        double IncrementalStatistics::kurtosis() const {
             QL_REQUIRE(sampleNumber_>3,
-                       "GaussianStatistics::kurtosis() : "
+                       "IncrementalStatistics::kurtosis() : "
                        "sample number <=3, unsufficient");
 
             double m = mean();

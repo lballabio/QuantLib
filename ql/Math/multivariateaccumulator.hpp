@@ -38,6 +38,8 @@ namespace QuantLib {
         /*! MultivariateAccumulator can accumulate vector-type samples and
             return the average vector, both in Array form and
             std::vector<double> form, and the covariance matrix
+
+            \deprecated use SequenceStatistics instead
         */
         class MultivariateAccumulator {
           public:

@@ -715,11 +715,23 @@ SOURCE=.\ql\Math\gammadistribution.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\gaussianstatistics.cpp
+SOURCE=.\ql\Math\gaussianstatistics.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\gaussianstatistics.hpp
+SOURCE=.\ql\Math\generalstatistics.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\generalstatistics.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\incrementalstatistics.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\incrementalstatistics.hpp
 # End Source File
 # Begin Source File
 
@@ -784,10 +796,6 @@ SOURCE=.\ql\Math\segmentintegral.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\sequencestatistics.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Math\statistics.cpp
 # End Source File
 # Begin Source File
 

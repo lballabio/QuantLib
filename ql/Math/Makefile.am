@@ -15,6 +15,8 @@ include_HEADERS = \
 	interpolation2D.hpp \
     gammadistribution.hpp \
 	gaussianstatistics.hpp \
+	generalstatistics.hpp \
+	incrementalstatistics.hpp \
 	lexicographicalview.hpp \
 	linearinterpolation.hpp \
 	loglinearinterpolation.hpp \
@@ -36,12 +38,12 @@ libMath_la_SOURCES = \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
     gammadistribution.cpp \
-	gaussianstatistics.cpp \
+	generalstatistics.cpp \
+	incrementalstatistics.cpp \
     matrix.cpp \
     multivariateaccumulator.cpp \
     normaldistribution.cpp \
 	primenumbers.cpp \
-    statistics.cpp \
     symmetricschurdecomposition.cpp
 
 noinst_LTLIBRARIES = libMath.la

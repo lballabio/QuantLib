@@ -33,7 +33,7 @@ namespace QuantLib {
 
     namespace Math {
 
-        //! Interface for gaussian risk functions
+        //! \deprecated use Statistics instead
         class RiskMeasures {
           public:
             RiskMeasures() {}
@@ -97,7 +97,7 @@ namespace QuantLib {
                 sampleWeight += k->second;
 
             QL_REQUIRE(sampleWeight>0.0,
-                       "Statistics::percentile() : "
+                       "RiskMeasures::percentile() : "
                        "empty sample (zero weight sum)");
 
 
@@ -169,10 +169,9 @@ namespace QuantLib {
 
             double result=percentile(y, begin, end);
 
-            // VAR must be a loss
-            // this means that it has to be MIN(dist(1.0-percentile), 0.0)
-            // VAR must also be a positive quantity, so -MIN(*)
-            return -QL_MIN(result, 0.0);
+            // PotenzialUpSide must be a gain
+            // this means that it has to be MAX(dist(percentile), 0.0)
+            return QL_MAX(result, 0.0);
         }
 
         /*! \pre percentile must be in range [90%-100%) */

@@ -29,22 +29,22 @@ void StatisticsTest::runTest() {
     double data[] = { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
     std::vector<double> weights(LENGTH(data),1.0);
 
-    GaussianStatistics s;
-    s.addSequence(data,data+LENGTH(data),weights.begin());
+    IncrementalGaussianStatistics igs;
+    igs.addSequence(data,data+LENGTH(data),weights.begin());
 
-    Statistics hs;
-    hs.addSequence(data,data+LENGTH(data),weights.begin());
+    Statistics s;
+    s.addSequence(data,data+LENGTH(data),weights.begin());
 
     unsigned long dimension = 5;
     std::vector<std::vector<double > > sequenceData(LENGTH(data));
-    SequenceStatistics<> ss(dimension);
-    SequenceStatistics<Statistics> hss(dimension);
+    SequenceStatistics<IncrementalGaussianStatistics> sigs(dimension);
+    SequenceStatistics<Statistics> ss(dimension);
 
     Size i;
     for (i = 0; i<LENGTH(data); i++) {
         std::vector<double> temp(dimension, data[i]);
+        sigs.add(temp, weights[i]);
         ss.add(temp, weights[i]);
-        hss.add(temp, weights[i]);
     }
 
     double calculated, expected;
@@ -55,36 +55,36 @@ void StatisticsTest::runTest() {
     
     
     
-    if (s.samples() != LENGTH(data))
+    if (igs.samples() != LENGTH(data))
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong number of samples\n"
             "    calculated: "
-            + IntegerFormatter::toString(s.samples()) + "\n"
+            + IntegerFormatter::toString(igs.samples()) + "\n"
             "    expected:   "
             + IntegerFormatter::toString(LENGTH(data)));
-    if (hs.samples() != LENGTH(data))
+    if (s.samples() != LENGTH(data))
         CPPUNIT_FAIL(
             "Statistics: "
             "wrong number of samples\n"
             "    calculated: "
-            + IntegerFormatter::toString(s.samples()) + "\n"
+            + IntegerFormatter::toString(igs.samples()) + "\n"
+            "    expected:   "
+            + IntegerFormatter::toString(LENGTH(data)));
+    if (sigs.samples() != LENGTH(data))
+        CPPUNIT_FAIL(
+            "SequenceStatistics<IncrementalGaussianStatistics>: "
+            "wrong number of samples\n"
+            "    calculated: "
+            + IntegerFormatter::toString(igs.samples()) + "\n"
             "    expected:   "
             + IntegerFormatter::toString(LENGTH(data)));
     if (ss.samples() != LENGTH(data))
         CPPUNIT_FAIL(
-            "SequenceStatistics<GaussianStatistics>: "
-            "wrong number of samples\n"
-            "    calculated: "
-            + IntegerFormatter::toString(s.samples()) + "\n"
-            "    expected:   "
-            + IntegerFormatter::toString(LENGTH(data)));
-    if (hss.samples() != LENGTH(data))
-        CPPUNIT_FAIL(
             "SequenceStatistics<Statistics>: "
             "wrong number of samples\n"
             "    calculated: "
-            + IntegerFormatter::toString(s.samples()) + "\n"
+            + IntegerFormatter::toString(igs.samples()) + "\n"
             "    expected:   "
             + IntegerFormatter::toString(LENGTH(data)));
 
@@ -94,16 +94,16 @@ void StatisticsTest::runTest() {
 
 
     expected = std::accumulate(weights.begin(),weights.end(),0.0);
-    calculated = s.weightSum();
+    calculated = igs.weightSum();
     if (calculated != expected)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong sum of weights\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.weightSum();
+    calculated = s.weightSum();
     if (calculated != expected)
         CPPUNIT_FAIL(
             "Statistics: "
@@ -112,16 +112,16 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = ss.weightSum();
+    calculated = sigs.weightSum();
     if (calculated != expected)
         CPPUNIT_FAIL(
-            "SequenceStatistics<GaussianStatistics>: "
+            "SequenceStatistics<IncrementalGaussianStatistics>: "
             "wrong sum of weights\n"
             "    calculated: "
             + DoubleFormatter::toString(calculatedSequence[i]) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hss.weightSum();
+    calculated = ss.weightSum();
     if (calculated != expected)
         CPPUNIT_FAIL(
             "SequenceStatistics<Statistics>: "
@@ -135,16 +135,16 @@ void StatisticsTest::runTest() {
 
 
     expected = *std::min_element(data,data+LENGTH(data));
-    calculated = s.min();
+    calculated = igs.min();
     if (calculated != expected)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong minimum value\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.min();
+    calculated = s.min();
     if (calculated != expected)
         CPPUNIT_FAIL(
             "Statistics: "
@@ -153,11 +153,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.min();
+    calculatedSequence = sigs.min();
     for (i=0; i<dimension; i++) {
         if (calculatedSequence[i] != expected)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong minimum value\n"
                 "    calculated: "
@@ -165,7 +165,7 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-    calculatedSequence = hss.min();
+    calculatedSequence = ss.min();
     for (i=0; i<dimension; i++) {
         if (calculatedSequence[i] != expected)
             CPPUNIT_FAIL(
@@ -182,16 +182,16 @@ void StatisticsTest::runTest() {
 
 
     expected = *std::max_element(data,data+LENGTH(data));
-    calculated = s.max();
+    calculated = igs.max();
     if (calculated != expected)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong maximum value\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.max();
+    calculated = s.max();
     if (calculated != expected)
         CPPUNIT_FAIL(
             "Statistics: "
@@ -200,11 +200,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.max();
+    calculatedSequence = sigs.max();
     for (i=0; i<dimension; i++) {
         if (calculatedSequence[i] != expected)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong maximun value\n"
                 "    calculated: "
@@ -212,7 +212,7 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-    calculatedSequence = hss.max();
+    calculatedSequence = ss.max();
     for (i=0; i<dimension; i++) {
         if (calculatedSequence[i] != expected)
             CPPUNIT_FAIL(
@@ -230,16 +230,16 @@ void StatisticsTest::runTest() {
 
     expected = 4.3;
     tolerance = 1.0e-9;
-    calculated = s.mean();
+    calculated = igs.mean();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong mean value\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.mean();
+    calculated = s.mean();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
             "Statistics: "
@@ -248,11 +248,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.mean();
+    calculatedSequence = sigs.mean();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong mean value\n"
                 "    calculated: "
@@ -260,7 +260,7 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-    calculatedSequence = hss.mean();
+    calculatedSequence = ss.mean();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
@@ -276,16 +276,16 @@ void StatisticsTest::runTest() {
 
     
     expected = 2.23333333333;
-    calculated = s.variance();
+    calculated = igs.variance();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong variance\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.variance();
+    calculated = s.variance();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
             "Statistics: "
@@ -294,11 +294,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.variance();
+    calculatedSequence = sigs.variance();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong variance\n"
                 "    calculated: "
@@ -306,7 +306,7 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-    calculatedSequence = hss.variance();
+    calculatedSequence = ss.variance();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
@@ -322,16 +322,16 @@ void StatisticsTest::runTest() {
 
     
     expected = 1.4944341181;
-    calculated = s.standardDeviation();
+    calculated = igs.standardDeviation();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong standard deviation\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.standardDeviation();
+    calculated = s.standardDeviation();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
             "Statistics: "
@@ -340,11 +340,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.standardDeviation();
+    calculatedSequence = sigs.standardDeviation();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong standard deviation\n"
                 "    calculated: "
@@ -352,7 +352,7 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-    calculatedSequence = hss.standardDeviation();
+    calculatedSequence = ss.standardDeviation();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
@@ -369,16 +369,16 @@ void StatisticsTest::runTest() {
     
     
     expected = 0.359543071407;
-    calculated = s.skewness();
+    calculated = igs.skewness();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong skewness\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.skewness();
+    calculated = s.skewness();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
             "Statistics: "
@@ -387,11 +387,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.skewness();
+    calculatedSequence = sigs.skewness();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong skewness\n"
                 "    calculated: "
@@ -399,7 +399,7 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-    calculatedSequence = hss.skewness();
+    calculatedSequence = ss.skewness();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
@@ -415,16 +415,16 @@ void StatisticsTest::runTest() {
 
 
     expected = -0.151799637209;
-    calculated = s.kurtosis();
+    calculated = igs.kurtosis();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong kurtosis\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculated = hs.kurtosis();
+    calculated = s.kurtosis();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
             "Statistics: "
@@ -433,11 +433,11 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.kurtosis();
+    calculatedSequence = sigs.kurtosis();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong kurtosis\n"
                 "    calculated: "
@@ -445,7 +445,7 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-    calculatedSequence = hss.kurtosis();
+    calculatedSequence = ss.kurtosis();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
@@ -462,42 +462,42 @@ void StatisticsTest::runTest() {
     
 
     
+    igs.reset();
     s.reset();
-    hs.reset();
+    sigs.reset();
     ss.reset();
-    hss.reset();
 
 
     
     std::vector<double> data2(LENGTH(data));
     std::transform(data,data+LENGTH(data),data2.begin(),
                    std::bind2nd(std::minus<double>(),3.0));
+    igs.addSequence(data2.begin(),data2.end(),weights.begin());
     s.addSequence(data2.begin(),data2.end(),weights.begin());
-    hs.addSequence(data2.begin(),data2.end(),weights.begin());
 
     for (i = 0; i<LENGTH(data); i++) {
         std::vector<double> temp(dimension, data2[i]);
+        sigs.add(temp, weights[i]);
         ss.add(temp, weights[i]);
-        hss.add(temp, weights[i]);
     }
 
 
 
     expected = 0.111111111;
-    calculated = s.downsideVariance();
+    calculated = igs.downsideVariance();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong downside variance\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.downsideVariance();
+    calculatedSequence = sigs.downsideVariance();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong downside variance\n"
                 "    calculated: "
@@ -513,20 +513,20 @@ void StatisticsTest::runTest() {
     
     
     expected = 0.333333333;
-    calculated = s.downsideDeviation();
+    calculated = igs.downsideDeviation();
     if (QL_FABS(calculated-expected) > tolerance)
         CPPUNIT_FAIL(
-            "GaussianStatistics: "
+            "IncrementalGaussianStatistics: "
             "wrong downside deviation\n"
             "    calculated: "
             + DoubleFormatter::toString(calculated) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-    calculatedSequence = ss.downsideDeviation();
+    calculatedSequence = sigs.downsideDeviation();
     for (i=0; i<dimension; i++) {
         if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
             CPPUNIT_FAIL(
-                "SequenceStatistics<GaussianStatistics>: "
+                "SequenceStatistics<IncrementalGaussianStatistics>: "
                 + IntegerFormatter::toOrdinal(i+1) + " dimension: "
                 "wrong downside deviation\n"
                 "    calculated: "

@@ -170,8 +170,8 @@ CLEAN :
 	-@erase "$(INTDIR)\g2.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
-	-@erase "$(INTDIR)\gaussianstatistics.obj"
-	-@erase "$(INTDIR)\gaussianstatistics.sbr"
+	-@erase "$(INTDIR)\generalstatistics.obj"
+	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\geometricapopathpricer.obj"
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
@@ -188,6 +188,8 @@ CLEAN :
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\incrementalstatistics.obj"
+	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
 	-@erase "$(INTDIR)\integralengines.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
@@ -294,8 +296,6 @@ CLEAN :
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
-	-@erase "$(INTDIR)\statistics.obj"
-	-@erase "$(INTDIR)\statistics.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -419,7 +419,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
-	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -520,7 +519,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\gaussianstatistics.sbr"
+	"$(INTDIR)\incrementalstatistics.sbr" \
+	"$(INTDIR)\generalstatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -584,7 +584,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
-	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -685,7 +684,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\gaussianstatistics.obj"
+	"$(INTDIR)\incrementalstatistics.obj" \
+	"$(INTDIR)\generalstatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -832,8 +832,8 @@ CLEAN :
 	-@erase "$(INTDIR)\g2.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
-	-@erase "$(INTDIR)\gaussianstatistics.obj"
-	-@erase "$(INTDIR)\gaussianstatistics.sbr"
+	-@erase "$(INTDIR)\generalstatistics.obj"
+	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\geometricapopathpricer.obj"
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
@@ -850,6 +850,8 @@ CLEAN :
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\incrementalstatistics.obj"
+	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
 	-@erase "$(INTDIR)\integralengines.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
@@ -956,8 +958,6 @@ CLEAN :
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
-	-@erase "$(INTDIR)\statistics.obj"
-	-@erase "$(INTDIR)\statistics.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -1082,7 +1082,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
-	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -1183,7 +1182,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\gaussianstatistics.sbr"
+	"$(INTDIR)\incrementalstatistics.sbr" \
+	"$(INTDIR)\generalstatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1247,7 +1247,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
-	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -1348,7 +1347,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\gaussianstatistics.obj"
+	"$(INTDIR)\incrementalstatistics.obj" \
+	"$(INTDIR)\generalstatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1495,8 +1495,8 @@ CLEAN :
 	-@erase "$(INTDIR)\g2.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
-	-@erase "$(INTDIR)\gaussianstatistics.obj"
-	-@erase "$(INTDIR)\gaussianstatistics.sbr"
+	-@erase "$(INTDIR)\generalstatistics.obj"
+	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\geometricapopathpricer.obj"
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
@@ -1513,6 +1513,8 @@ CLEAN :
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\incrementalstatistics.obj"
+	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
 	-@erase "$(INTDIR)\integralengines.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
@@ -1619,8 +1621,6 @@ CLEAN :
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
-	-@erase "$(INTDIR)\statistics.obj"
-	-@erase "$(INTDIR)\statistics.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -1744,7 +1744,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
-	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -1845,7 +1844,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\gaussianstatistics.sbr"
+	"$(INTDIR)\incrementalstatistics.sbr" \
+	"$(INTDIR)\generalstatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1909,7 +1909,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
-	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -2010,7 +2009,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\gaussianstatistics.obj"
+	"$(INTDIR)\incrementalstatistics.obj" \
+	"$(INTDIR)\generalstatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2157,8 +2157,8 @@ CLEAN :
 	-@erase "$(INTDIR)\g2.sbr"
 	-@erase "$(INTDIR)\gammadistribution.obj"
 	-@erase "$(INTDIR)\gammadistribution.sbr"
-	-@erase "$(INTDIR)\gaussianstatistics.obj"
-	-@erase "$(INTDIR)\gaussianstatistics.sbr"
+	-@erase "$(INTDIR)\generalstatistics.obj"
+	-@erase "$(INTDIR)\generalstatistics.sbr"
 	-@erase "$(INTDIR)\geometricapopathpricer.obj"
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
@@ -2175,6 +2175,8 @@ CLEAN :
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\hullwhite.sbr"
+	-@erase "$(INTDIR)\incrementalstatistics.obj"
+	-@erase "$(INTDIR)\incrementalstatistics.sbr"
 	-@erase "$(INTDIR)\integralengines.obj"
 	-@erase "$(INTDIR)\integralengines.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
@@ -2281,8 +2283,6 @@ CLEAN :
 	-@erase "$(INTDIR)\sobolrsg.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
-	-@erase "$(INTDIR)\statistics.obj"
-	-@erase "$(INTDIR)\statistics.sbr"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stock.obj"
@@ -2407,7 +2407,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
-	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -2508,7 +2507,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\gaussianstatistics.sbr"
+	"$(INTDIR)\incrementalstatistics.sbr" \
+	"$(INTDIR)\generalstatistics.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2572,7 +2572,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
-	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -2673,7 +2672,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\gaussianstatistics.obj"
+	"$(INTDIR)\incrementalstatistics.obj" \
+	"$(INTDIR)\generalstatistics.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3023,9 +3023,15 @@ SOURCE=.\ql\Math\gammadistribution.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Math\gaussianstatistics.cpp
+SOURCE=.\ql\Math\generalstatistics.cpp
 
-"$(INTDIR)\gaussianstatistics.obj"	"$(INTDIR)\gaussianstatistics.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\generalstatistics.obj"	"$(INTDIR)\generalstatistics.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Math\incrementalstatistics.cpp
+
+"$(INTDIR)\incrementalstatistics.obj"	"$(INTDIR)\incrementalstatistics.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3050,12 +3056,6 @@ SOURCE=.\ql\Math\normaldistribution.cpp
 SOURCE=.\ql\Math\primenumbers.cpp
 
 "$(INTDIR)\primenumbers.obj"	"$(INTDIR)\primenumbers.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Math\statistics.cpp
-
-"$(INTDIR)\statistics.obj"	"$(INTDIR)\statistics.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
