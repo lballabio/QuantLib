@@ -5,28 +5,25 @@ xx is the major number
 yy is the minor number
 zz is the minor-minor number
 l  can be a,b,f for alpha, beta, final respectively
-n  is an ordinal number
+n  is an ordinal number; 0 is only allowed when l equals f
 
 e.g. R000300a2 stands for Release 0.3.1a2
-e.g. R000301a0 stands for Release 0.3.1f0
+e.g. R000301f0 stands for Release 0.3.1f0
 
-The current version number is 0.3.1a0 - 000301a0
+The current version number is 0.3.2a1 - 000302a1
 This version number is in:
     QuantLib/dev_tools/version_number.txt,
     QuantLib/QuantLib.nsi,
     QuantLib/configure.in,
     QuantLib/Docs/quantlib.doxy,
-    QuantLib/Docs/configure.in,
     QuantLib/ql/qldefines.hpp,
 
-    QuantLib-Python/setup.py
-    QuantLib-Python/QuantLib/SWIG/ql.i
-
-    QuantLib-Ruby/SWIG/ql.i
-    QuantLib-Ruby/makedist.rb
-
-    QuantLib-MzScheme/SWIG/ql.i
-
+    QuantLib-SWIG/SWIG/ql.i
+    QuantLib-SWIG/Python/setup.py
+    QuantLib-SWIG/Ruby/setup.rb
+    QuantLib-SWIG/Scheme/MzScheme/setup.scm
+    QuantLib-SWIG/Scheme/Guile/setup.scm
+    
     QuantLib-Excel/QuantLibXL.nsi
     QuantLib-Excel/qlxl/qlxl.hpp
 
