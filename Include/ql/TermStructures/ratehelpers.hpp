@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/06/13 16:18:23  lballabio
+// Polished rate helper interfaces
+//
 // Revision 1.11  2001/06/12 13:43:04  lballabio
 // Today's date is back into term structures
 // Instruments are now constructed with settlement days instead of settlement date
@@ -39,15 +42,6 @@
 //
 // Revision 1.9  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
-//
-// Revision 1.8  2001/05/29 15:12:48  lballabio
-// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
-//
-// Revision 1.7  2001/05/28 14:54:25  lballabio
-// Deposit rates are always adjusted
-//
-// Revision 1.6  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
 //
 
 #ifndef quantlib_ratehelper_h
@@ -64,6 +58,16 @@ namespace QuantLib {
     namespace TermStructures {
 
         //! base class for rate helpers
+        /*! This class provides an abstraction for the instruments used to 
+            bootstrap a term structure. 
+            It is advised that a rate helper for an instrument contain an 
+            instance of the actual instrument class to ensure consistancy 
+            between the algorithms used during bootstrapping and later 
+            instrument pricing. This is not yet fully enforced in the available 
+            rate helpers, though - only SwapRateHelper contains a Swap 
+            instrument for the time being. 
+            
+            \todo Futures rate helper should be implemented. */
         class RateHelper {
           public:
             RateHelper() : termStructure_(0) {}
@@ -114,33 +118,41 @@ namespace QuantLib {
 
 
         //! Forward rate agreement
+        /*! \warning This class assumes that today's date does not change 
+            between calls of setTermStructure().
+        */
         class FraRateHelper : public RateHelper {
           public:
-            FraRateHelper(Rate rate, const Date& settlement,
-                int n, TimeUnit units, const Handle<Calendar>& calendar,
+            FraRateHelper(Rate rate, int settlementDays, 
+                int monthsToStart, int monthsToEnd, 
+                const Handle<Calendar>& calendar,
                 RollingConvention convention, 
                 const Handle<DayCounter>& dayCounter);
             double rateError() const;
             double discountGuess() const;
+            void setTermStructure(TermStructure*);
             Date maturity() const;
           private:
             Rate rate_;
-            Date settlement_;
-            int n_;
+            int settlementDays_;
+            int monthsToStart_, monthsToEnd_;
             TimeUnit units_;
             Handle<Calendar> calendar_;
             RollingConvention convention_;
             Handle<DayCounter> dayCounter_;
-            Date maturity_;
+            Date settlement_, start_, maturity_;
             double yearFraction_;
         };
 
 
         //! swap rate
+        /*! \warning This class assumes that today's date does not change 
+            between calls of setTermStructure().
+        */
         class SwapRateHelper : public RateHelper {
           public:
             SwapRateHelper(Rate rate, 
-                const Date& startDate, int n, TimeUnit units,
+                int settlementDays, int lengthInYears, 
                 const Handle<Calendar>& calendar, 
                 RollingConvention rollingConvention, 
                 // fixed leg
@@ -157,6 +169,15 @@ namespace QuantLib {
             void setTermStructure(TermStructure*);
           private:
             Rate rate_;
+            int settlementDays_;
+            int lengthInYears_;
+            Handle<Calendar> calendar_;
+            RollingConvention rollingConvention_;
+            int fixedFrequency_, floatingFrequency_;
+            bool fixedIsAdjusted_;
+            Handle<DayCounter> fixedDayCount_, floatingDayCount_;
+            Indexes::Xibor index_;
+            Date settlement_;
             Handle<Instruments::SimpleSwap> swap_;
             RelinkableHandle<TermStructure> termStructureHandle_;
         };

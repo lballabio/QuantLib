@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/06/13 16:18:23  lballabio
+// Polished rate helper interfaces
+//
 // Revision 1.13  2001/06/12 13:43:04  lballabio
 // Today's date is back into term structures
 // Instruments are now constructed with settlement days instead of settlement date
@@ -42,21 +45,6 @@
 //
 // Revision 1.10  2001/06/01 16:50:17  lballabio
 // Term structure on deposits and swaps
-//
-// Revision 1.9  2001/05/29 15:12:48  lballabio
-// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
-//
-// Revision 1.8  2001/05/28 14:54:25  lballabio
-// Deposit rates are always adjusted
-//
-// Revision 1.7  2001/05/28 12:52:58  lballabio
-// Simplified Instrument interface
-//
-// Revision 1.6  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.5  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
 //
 
 #include "ql/TermStructures/ratehelpers.hpp"
@@ -113,19 +101,18 @@ namespace QuantLib {
 
 
 
-        FraRateHelper::FraRateHelper(Rate rate, const Date& settlement,
-            int n, TimeUnit units, const Handle<Calendar>& calendar,
-            RollingConvention convention, const Handle<DayCounter>& dayCounter)
-        : rate_(rate), settlement_(settlement), n_(n), units_(units),
+        FraRateHelper::FraRateHelper(Rate rate, int settlementDays, 
+            int monthsToStart, int monthsToEnd, 
+            const Handle<Calendar>& calendar, RollingConvention convention, 
+            const Handle<DayCounter>& dayCounter)
+        : rate_(rate), settlementDays_(settlementDays), 
+          monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
           calendar_(calendar), convention_(convention), 
-          dayCounter_(dayCounter) {
-            maturity_ = calendar_->advance(settlement_,n_,units_,convention_);
-            yearFraction_ = dayCounter_->yearFraction(settlement_,maturity_);
-        }
+          dayCounter_(dayCounter) {}
 
         double FraRateHelper::rateError() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
-            Rate impliedRate = (termStructure_->discount(settlement_) / 
+            Rate impliedRate = (termStructure_->discount(start_) / 
                                 termStructure_->discount(maturity_)-1.0) /
                                yearFraction_;
             return rate_-impliedRate;
@@ -135,18 +122,31 @@ namespace QuantLib {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
             // extrapolation shouldn't be needed if the input makes sense
             // but we'll play it safe
-            return termStructure_->discount(settlement_,true) / 
+            return termStructure_->discount(start_,true) / 
                    (1.0+rate_*yearFraction_);
         }
 
+        void FraRateHelper::setTermStructure(TermStructure* t) {
+            RateHelper::setTermStructure(t);
+            QL_REQUIRE(termStructure_ != 0, "null term structure set");
+            settlement_ = calendar_->advance(
+                termStructure_->todaysDate(),settlementDays_,Days);
+            start_ = calendar_->advance(settlement_, monthsToStart_, Months, 
+                convention_);
+            maturity_ = calendar_->advance(settlement_, monthsToEnd_, Months, 
+                convention_);
+            yearFraction_ = dayCounter_->yearFraction(start_,maturity_);
+        }
+
         Date FraRateHelper::maturity() const {
+            QL_REQUIRE(termStructure_ != 0, "term structure not set");
             return maturity_;
         }
 
 
 
         SwapRateHelper::SwapRateHelper(Rate rate, 
-            const Date& startDate, int n, TimeUnit units,
+            int settlementDays, int lengthInYears, 
             const Handle<Calendar>& calendar, 
             RollingConvention rollingConvention, 
             int fixedFrequency, 
@@ -155,29 +155,39 @@ namespace QuantLib {
             int floatingFrequency, 
             const Indexes::Xibor& index, 
             const Handle<DayCounter>& floatingDayCount)
-        : rate_(rate) {
-            // we don't need to link the index to our own 
-            // relinkable term structure handle since it will be used
-            // for historical fixings only/
-            swap_ = Handle<SimpleSwap>(
-                new SimpleSwap(true,                // pay fixed rate
-                    startDate, n, units, calendar, rollingConvention, 
-                    std::vector<double>(1,100.0),   // nominal
-                    fixedFrequency, 
-                    std::vector<Rate>(1,0.0),       // coupon rate
-                    fixedIsAdjusted, fixedDayCount, 
-                    floatingFrequency, index, 
-                    std::vector<Spread>(),       // null spread
-                    floatingDayCount, 
-                    termStructureHandle_));
-        }
+        : rate_(rate), settlementDays_(settlementDays), 
+          lengthInYears_(lengthInYears), calendar_(calendar), 
+          rollingConvention_(rollingConvention), 
+          fixedFrequency_(fixedFrequency), 
+          floatingFrequency_(floatingFrequency), 
+          fixedIsAdjusted_(fixedIsAdjusted), fixedDayCount_(fixedDayCount), 
+          floatingDayCount_(floatingDayCount), index_(index) {}
         
         void SwapRateHelper::setTermStructure(TermStructure* t) {
             termStructureHandle_.linkTo(Handle<TermStructure>(t,false));
             RateHelper::setTermStructure(t);
+            QL_REQUIRE(termStructure_ != 0, "null term structure set");
+            settlement_ = calendar_->advance(
+                termStructure_->todaysDate(),settlementDays_,Days);
+            // we don't need to link the index to our own 
+            // relinkable term structure handle since it will be used
+            // for historical fixings only
+            swap_ = Handle<SimpleSwap>(
+                new SimpleSwap(true,                // pay fixed rate
+                    settlement_, lengthInYears_, Years, calendar_, 
+                    rollingConvention_, 
+                    std::vector<double>(1,100.0),   // nominal
+                    fixedFrequency_, 
+                    std::vector<Rate>(1,0.0),       // coupon rate
+                    fixedIsAdjusted_, fixedDayCount_, 
+                    floatingFrequency_, index_, 
+                    std::vector<Spread>(),       // null spread
+                    floatingDayCount_, 
+                    termStructureHandle_));
         }
         
         Date SwapRateHelper::maturity() const {
+            QL_REQUIRE(termStructure_ != 0, "null term structure set");
             return swap_->maturity();
         }
 

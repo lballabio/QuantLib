@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/06/13 16:18:23  lballabio
+// Polished rate helper interfaces
+//
 // Revision 1.11  2001/06/12 13:43:04  lballabio
 // Today's date is back into term structures
 // Instruments are now constructed with settlement days instead of settlement date
@@ -83,6 +86,8 @@ namespace QuantLib {
             nodes_.push_back(settlementDate_);
             times_.push_back(0.0);
 
+            // the choice of the solver determines whether the accuracy is on 
+            // the discount or the instrument rate
             Brent solver;
             // sort risk helpers
             std::vector<Handle<RateHelper> > sortedInstruments = instruments;

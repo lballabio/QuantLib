@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/13 16:18:23  lballabio
+// Polished rate helper interfaces
+//
 // Revision 1.6  2001/06/12 13:43:04  lballabio
 // Today's date is back into term structures
 // Instruments are now constructed with settlement days instead of settlement date
@@ -51,9 +54,25 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        /* derived directly from term structure since we are rewriting all of
-           forward, discount and zeroYield to take advantage of the internal
-           structure. */
+        //! Piecewise flat forward term structure
+        /*! This term structure is bootstrapped on a number of interest rate 
+            instruments which are passed as a vector of handles to RateHelper
+            instances. Their maturities mark the boundaries of the flat 
+            forward segments. 
+            
+            The values of the forward rates for each segment are determined 
+            sequentially starting from the earliest period to the latest.
+            
+            The value for each segment is chosen so that the instrument whose 
+            maturity marks the end of such segment is correctly repriced on the 
+            curve.
+            
+            \warning The bootstrapping algorithm will raise an exception if any 
+            two instruments have the same maturity date.
+        */
+        /* This class is derived directly from term structure since we are 
+           rewriting all of forward, discount and zeroYield to take advantage 
+           of its own internal structure. */
         class PiecewiseFlatForward : public TermStructure {
           public:
             // constructor
