@@ -68,32 +68,6 @@ namespace QuantLib {
                        const RelinkableHandle<TermStructure>& termStructure,
                        const std::string& isinCode = "",
                        const std::string& description = "");
-            /*! \deprecated use the constructor taking two Schedules */
-            SimpleSwap(bool payFixedRate,
-                       // dates
-                       const Date& startDate, const Date& maturity,
-                       const Calendar& calendar,
-                       RollingConvention rollingConvention,
-                       double nominal,
-                       // fixed leg
-                       int fixedFrequency,
-                       Rate fixedRate,
-                       bool fixedIsAdjusted,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       int floatingFrequency,
-                       const Handle<Indexes::Xibor>& index,
-                       int indexFixingDays,
-                       Spread spread,
-                       // hook to term structure
-                       const RelinkableHandle<TermStructure>& termStructure,
-                       const Date& fixedStubDate = Date(),
-                       bool fixedFromEnd = false, bool fixedLongFinal = false,
-                       const Date& floatStubDate = Date(),
-                       bool floatFromEnd = false, bool floatLongFinal = false,
-                       // description
-                       const std::string& isinCode = "",
-                       const std::string& description = "");
             // results
             Rate fairRate() const;
             Spread fairSpread() const;

@@ -121,32 +121,6 @@ namespace QuantLib {
             return leg;
 		}
 
-
-        //! helper function building a sequence of indexed coupons
-        /*! \deprecated use the version taking a Schedule instead */
-		template <class IndexedCouponType>
-		std::vector<Handle<CashFlow> > 
-        IndexedCouponVector(const std::vector<double>& nominals,
-                            const Date& startDate, const Date& endDate,
-                            int frequency, const Calendar& calendar,
-                            RollingConvention rollingConvention,
-                            const Handle<Indexes::Xibor>& index,
-                            int fixingDays,
-                            const std::vector<Spread>& spreads,
-                            #if defined(QL_PATCH_MICROSOFT)
-                            const Date& stubDate,
-                            #else
-                            const Date& stubDate = Date(),
-                            #endif
-                            const DayCounter& dayCounter = DayCounter()) {
-
-            Schedule schedule(calendar, startDate, endDate, frequency,
-                              rollingConvention, true, stubDate);
-            return IndexedCouponVector<IndexedCouponType>(
-                schedule, nominals, index, fixingDays, spreads,
-                dayCounter);
-        }
-
     }
 
 }

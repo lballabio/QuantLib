@@ -122,48 +122,6 @@ namespace QuantLib {
             return leg;
         }
 
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-          const std::vector<double>& nominals,
-          const std::vector<Rate>& couponRates,
-          const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
-          const Schedule& schedule) {
-
-            return FixedRateCouponVector(schedule,nominals,couponRates,
-                                         dayCount, firstPeriodDayCount);
-        }
-
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-          const std::vector<double>& nominals,
-          const std::vector<Rate>& couponRates,
-          const Date& startDate, const Date& endDate,
-          int frequency, const Calendar& calendar,
-          RollingConvention rollingConvention, bool isAdjusted,
-          const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
-          const Date& stubDate) {
-
-            Schedule schedule(calendar,startDate,endDate,
-                              frequency,rollingConvention,
-                              isAdjusted,stubDate);
-            return FixedRateCouponVector(schedule,nominals,couponRates,
-                                         dayCount,firstPeriodDayCount);
-        }
-
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-          const std::vector<double>& nominals,
-          const std::vector<Rate>& couponRates,
-          const std::vector<Date>& dates,
-          const Calendar& calendar,
-          RollingConvention roll,
-          const DayCounter& dayCounter) {
-            QL_REQUIRE(dates.size() > 1, "unspecified dates");
-
-            Schedule schedule(dates,calendar,roll,true);
-            return FixedRateCouponVector(schedule,nominals,
-                                         couponRates,dayCounter);
-        }
-
-
-
 
 
         std::vector<Handle<CashFlow> > 
@@ -254,49 +212,6 @@ namespace QuantLib {
                 }
             }
             return leg;
-        }
-
-
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-          const std::vector<double>& nominals,
-          const Handle<Xibor>& index, int fixingDays,
-          const std::vector<Spread>& spreads,
-          const Schedule& schedule) {
-
-            return FloatingRateCouponVector(schedule,nominals,
-                                            index,fixingDays,spreads);
-        }
-
-
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-          const std::vector<double>& nominals,
-          const Date& startDate, const Date& endDate,
-          int frequency, const Calendar& calendar,
-          RollingConvention rollingConvention,
-          const Handle<Xibor>& index, int fixingDays,
-          const std::vector<Spread>& spreads,
-          const Date& stubDate) {
-
-            Schedule schedule(calendar,startDate,endDate,
-                              frequency,rollingConvention,
-                              true,stubDate);
-            return FloatingRateCouponVector(schedule,nominals,index,
-                                            fixingDays,spreads);
-        }
-
-
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-          const std::vector<double>& nominals,
-          const std::vector<Spread>& spreads,
-          const std::vector<Date>& dates,
-          const Handle<Xibor>& index, int fixingDays,
-          const Calendar& calendar,
-          RollingConvention roll) {
-
-            QL_REQUIRE(dates.size() > 1, "unspecified dates");
-            Schedule schedule(dates,calendar,roll,true);
-            return FloatingRateCouponVector(schedule,nominals,index,
-                                            fixingDays,spreads);
         }
 
     }

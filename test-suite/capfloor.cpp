@@ -56,10 +56,9 @@ namespace {
                                            int length) {
         Date endDate = calendar_.advance(startDate,length,Years,
                                          rollingConvention_);
-        return FloatingRateCouponVector(nominals_,startDate,endDate,
-                                        frequency_,calendar_,
-                                        rollingConvention_, index_,
-                                        fixingDays_,std::vector<Spread>());
+        Schedule schedule(calendar_,startDate,endDate,frequency_,
+                          rollingConvention_,true);
+        return FloatingRateCouponVector(schedule,nominals_,index_,fixingDays_);
     }
 
     Handle<PricingEngine> makeEngine(double volatility) {

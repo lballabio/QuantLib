@@ -38,40 +38,6 @@ namespace QuantLib {
             const DayCounter& dayCount, 
             const DayCounter& firstPeriodDayCount = DayCounter());
 
-        //! helper function building a sequence of fixed rate coupons
-        /*! \deprecated use the version taking a Schedule as first
-                        argument instead */
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-            const std::vector<double>& nominals,
-            const std::vector<Rate>& couponRates,
-            const Date& startDate, const Date& endDate,
-            int frequency, const Calendar& calendar,
-            RollingConvention rollingConvention, bool isAdjusted,
-            const DayCounter& dayCount,
-            const DayCounter& firstPeriodDayCount,
-            const Date& stubDate = Date());
-
-        //! helper function building a sequence of fixed rate coupons
-        /*! \deprecated use the version taking a Schedule as first
-                        argument instead */
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-            const std::vector<double>& nominals,
-            const std::vector<Rate>& couponRates,
-            const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
-            const Schedule& schedule);
-
-        //! helper function building a sequence of fixed rate coupons
-        /*! \deprecated use the version taking a Schedule as first
-                        argument instead */
-        std::vector<Handle<CashFlow> > FixedRateCouponVector(
-            const std::vector<double>& nominals,
-            const std::vector<Rate>& couponRates,
-            const std::vector<Date>& dates,
-            const Calendar& calendar,
-            RollingConvention roll,
-            const DayCounter& dayCounter);
-
-
 
         //! helper function building a sequence of par coupons
         /*! \warning The passing of a non-null stub date - i.e., the creation
@@ -85,39 +51,6 @@ namespace QuantLib {
             const std::vector<double>& nominals,
             const Handle<Indexes::Xibor>& index, int fixingDays,
             const std::vector<Spread>& spreads = std::vector<Spread>());
-
-        //! helper function building a sequence of par coupons
-        /*! \deprecated use the version taking a Schedule as first
-                        argument instead */
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-            const std::vector<double>& nominals,
-            const Date& startDate, const Date& endDate,
-            int frequency, const Calendar& calendar,
-            RollingConvention rollingConvention,
-            const Handle<Indexes::Xibor>& index,
-            int fixingDays,
-            const std::vector<Spread>& spreads, 
-            const Date& stubDate = Date());
-
-        //! helper function building a sequence of par coupons
-        /*! \deprecated use the version taking a Schedule as first
-                        argument instead */
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-            const std::vector<double>& nominals,
-            const Handle<Indexes::Xibor>& index, int fixingDays,
-            const std::vector<Spread>& spreads,
-            const Schedule& schedule);
-
-        //! helper function building a sequence of par coupons
-        /*! \deprecated use the version taking a Schedule as first
-                        argument instead */
-        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-            const std::vector<double>& nominals,
-            const std::vector<Spread>& spreads,
-            const std::vector<Date>& dates,
-            const Handle<Indexes::Xibor>& index, int fixingDays,
-            const Calendar& calendar,
-            RollingConvention roll);
        
     }
 
