@@ -236,6 +236,67 @@ namespace {
             + DoubleFormatter::toString(tolerance));
     }
 
+    void basketOptionThreeTestFailed(std::string greekName,
+                                BasketOption::BasketType basketType,
+                                const Handle<StrikedTypePayoff>& payoff,
+                                const Handle<Exercise>& exercise,
+                                double s1,
+                                double s2,
+                                double s3,                                
+                                double r,
+                                Date today,
+                                DayCounter dc,
+                                double v1,
+                                double v2,
+                                double v3,
+                                double rho,
+                                double expected,
+                                double calculated,
+                                double error,
+                                double tolerance) {
+
+        Time t = dc.yearFraction(today, exercise->lastDate());
+
+        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+            + OptionTypeFormatter::toString(payoff->optionType()) +
+            " option on "
+            + basketTypeToString(basketType) +
+            " with "
+            + payoffTypeToString(payoff) + ":\n"
+            "1st underlying value: "
+            + DoubleFormatter::toString(s1) + "\n"
+            "2nd underlying value: "
+            + DoubleFormatter::toString(s2) + "\n"
+            "3rd underlying value: "
+            + DoubleFormatter::toString(s3) + "\n"
+            "              strike: "
+            + DoubleFormatter::toString(payoff->strike()) +"\n"            
+            "      risk-free rate: "
+            + DoubleFormatter::toString(r) + "\n"
+            "      reference date: "
+            + DateFormatter::toString(today) + "\n"
+            "            maturity: "
+            + DateFormatter::toString(exercise->lastDate()) + "\n"
+            "      time to expiry: "
+            + DoubleFormatter::toString(t) + "\n"
+            "1st asset volatility: "
+            + DoubleFormatter::toString(v1) + "\n"
+            "2nd asset volatility: "
+            + DoubleFormatter::toString(v2) + "\n"
+            "3rd asset volatility: "
+            + DoubleFormatter::toString(v3) + "\n"
+            "         correlation: "
+            + DoubleFormatter::toString(rho) + "\n\n"
+            "    expected   " + greekName + ": "
+            + DoubleFormatter::toString(expected) + "\n"
+            "    calculated " + greekName + ": "
+            + DoubleFormatter::toString(calculated) + "\n"
+            "    error:            "
+            + DoubleFormatter::toString(error) + "\n"
+            "    tolerance:        "
+            + DoubleFormatter::toString(tolerance));
+    }
+
     struct BasketOptionData {
         BasketOption::BasketType basketType;
         Option::Type type;
@@ -252,6 +313,23 @@ namespace {
         double result;
         double tol;
     };
+
+    struct BasketOptionBarraquandThreeData {
+        BasketOption::BasketType basketType;
+        Option::Type type;
+        double strike;
+        double s1;
+        double s2;
+        double s3;        
+        double r;
+        Time t; // months
+        double v1;
+        double v2;
+        double v3;
+        double rho;
+        double result;        
+    };
+
 
 }
 
@@ -376,9 +454,13 @@ void BasketOptionTest::testValues() {
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
 
+        Matrix correlationMatrix(2,2, values[i].rho);
+        for (int j=0; j < 2; j++) {
+            correlationMatrix[j][j] = 1.0;
+        }        
 
         BasketOption basketOption(values[i].basketType, procs, payoff, 
-                                  exercise, values[i].rho, engine);
+                                  exercise, correlationMatrix, engine);
 
         // analytic engine
         double calculated = basketOption.NPV();
@@ -407,12 +489,183 @@ void BasketOptionTest::testValues() {
     }
 }
 
+
+void BasketOptionTest::testBarraquandThreeValues() {
+
+    /*
+        Data from:
+        "Numerical Valuation of High Dimensional American Securities"
+        Barraquand, J. and Martineau, D.
+        Journal of Financial and Quantitative Analysis 1995 3(30) 383-405        
+    */    
+    BasketOptionBarraquandThreeData  values[] = {
+        // time in months is with 30 days to the month..
+        // basketType, optionType,       strike,    s1,    s2,   s3,    r,    t,   v1,   v2,  v3,  rho, result,         
+        // Table 2
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 8.59},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 3.84},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.89},
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 12.55},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 7.87},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 4.26},
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 15.29},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 10.72},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 6.96},        
+       
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 7.78},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 3.18},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.82},
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 10.97},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 6.69},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 3.70},
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 13.23},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 9.11},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 5.98},        
+       
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 6.53},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 2.38},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 0.74},
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 8.51},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 4.92},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 2.97},
+        {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 10.04},
+        {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 6.64},
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.61}/*,
+
+        // Table 3
+        // not working yet...
+        //{BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.00},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.13},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 2.26},
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 0.01},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 0.25},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 1.55},
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.03},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.31},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 1.41},        
+       
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.00},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.38},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 3.00},
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 0.07},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 0.72},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 2.65},
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 0.17},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 0.91},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 2.63},        
+       
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 0.01},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 0.84},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 4.18},
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 0.19},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 1.51},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 1.0, 4.49},
+        {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 0.41},
+        {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 1.87},
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 1.0, 4.70} 
+        */
+    };
+
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
+    Handle<SimpleQuote> spot2(new SimpleQuote(0.0));
+    Handle<SimpleQuote> spot3(new SimpleQuote(0.0));
+
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+
+    Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
+    Handle<SimpleQuote> vol2(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS2 = makeFlatVolatility(vol2, dc);
+    Handle<SimpleQuote> vol3(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS3 = makeFlatVolatility(vol3, dc);
+   
+    double mcRelativeErrorTolerance = 0.01;
+    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>         
+        (1, false, false, Null<int>(), 0.005, Null<int>(), 42));
+
+    Date today = Date::todaysDate();
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        Handle<PlainVanillaPayoff> payoff(new
+            PlainVanillaPayoff(values[i].type, values[i].strike));
+
+        Date exDate = today.plusDays(int(values[i].t*30+0.5));
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+
+        spot1 ->setValue(values[i].s1);
+        spot2 ->setValue(values[i].s2);
+        spot3 ->setValue(values[i].s3);
+        rRate ->setValue(values[i].r );
+        vol1  ->setValue(values[i].v1);
+        vol2  ->setValue(values[i].v2);
+        vol3  ->setValue(values[i].v3);
+
+        Handle<BlackScholesStochasticProcess> stochProcess1(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot1),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS1)));
+
+        Handle<BlackScholesStochasticProcess> stochProcess2(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot2),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS2)));
+
+        Handle<BlackScholesStochasticProcess> stochProcess3(new
+            BlackScholesStochasticProcess(
+                RelinkableHandle<Quote>(spot3),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS3)));
+
+        std::vector<Handle<BlackScholesStochasticProcess> > procs =
+            std::vector<Handle<BlackScholesStochasticProcess> >();
+        procs.push_back(stochProcess1);
+        procs.push_back(stochProcess2);
+        procs.push_back(stochProcess3);
+
+        Matrix correlation(3,3, values[i].rho);
+        for (int j=0; j < 3; j++) {
+            correlation[j][j] = 1.0;
+        }        
+
+        BasketOption basketOption(values[i].basketType, procs, payoff, 
+                                  exercise, correlation, mcEngine);
+
+        // mc engine
+        double calculated = basketOption.NPV();
+        double expected = values[i].result;
+        double relError = relativeError(calculated, expected, values[i].s1);
+        if (relError > mcRelativeErrorTolerance ) {
+            basketOptionThreeTestFailed("MC value",
+                values[i].basketType, payoff, exercise, 
+                values[i].s1, values[i].s2, values[i].s3, values[i].r,
+                today, dc, values[i].v1, values[i].v2, values[i].v3, values[i].rho,
+                values[i].result, calculated, relError, mcRelativeErrorTolerance);
+        }        
+
+    }
+}
+
+
 CppUnit::Test* BasketOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Basket option tests");
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing basket options against correct values",
                     &BasketOptionTest::testValues));
+    tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
+                   ("Testing basket options against Barraquand values",
+                    &BasketOptionTest::testBarraquandThreeValues));
 
     return tests;
 }
