@@ -248,11 +248,11 @@ int main(int argc, char* argv[])
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(QL_FABS(fairFixedRate-s5yQuote)<1e-8,
@@ -269,11 +269,11 @@ int main(int argc, char* argv[])
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
 
 
@@ -513,11 +513,11 @@ int main(int argc, char* argv[])
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(QL_FABS(fairFixedRate-s5yQuote)<1e-8,
@@ -534,11 +534,11 @@ int main(int argc, char* argv[])
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
 
 
@@ -557,11 +557,11 @@ int main(int argc, char* argv[])
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
@@ -578,11 +578,11 @@ int main(int argc, char* argv[])
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
 
 
@@ -615,11 +615,11 @@ int main(int argc, char* argv[])
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
@@ -635,11 +635,11 @@ int main(int argc, char* argv[])
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
 
 
@@ -657,11 +657,11 @@ int main(int argc, char* argv[])
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:          "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
         std::cout << "5Y fair fixed rate:             "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
         QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
@@ -677,11 +677,11 @@ int main(int argc, char* argv[])
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " fair spread:       "
-            << RateFormatter::toString(fairFloatingSpread,8)
+            << RateFormatter::toString(fairFloatingSpread,4)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
         std::cout << "1Yx5Y fair fixed rate:          "
-            << RateFormatter::toString(fairFixedRate,8)
+            << RateFormatter::toString(fairFixedRate,4)
             << std::endl;
 
 
