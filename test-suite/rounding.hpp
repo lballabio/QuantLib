@@ -22,6 +22,7 @@
 
 class RoundingTest {
   public:
+    static void testClosest();
     static void testUp();
     static void testDown();
     static void testFloor();

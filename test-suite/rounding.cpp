@@ -28,33 +28,55 @@ namespace {
     struct TestCase {
         Decimal x;
         Integer precision;
+        Decimal closest;
         Decimal up;
         Decimal down;
+        Decimal floor;
+        Decimal ceiling;
     };
 
     TestCase testData[] = {
-        {  0.86313513, 5,  0.86314,  0.86313 },
-        { -7.64555346, 1, -7.6,     -7.6     },
-        {  0.13961605, 2,  0.14,     0.13    },
-        {  0.14344179, 4,  0.1434,   0.1434  },
-        { -4.74315016, 2, -4.74,    -4.74    },
-        { -7.82772074, 5, -7.82772, -7.82772 },
-        {  2.74137947, 3,  2.741,    2.741   },
-        {  2.13056714, 1,  2.1,      2.1     },
-        { -1.06228670, 1, -1.1,     -1.0     },
-        {  8.29234094, 4,  8.2923,   8.2923  },
-        {  7.90185598, 2,  7.90,     7.90    },
-        { -0.26738058, 1, -0.3,     -0.2     },
-        {  1.78128713, 1,  1.8,      1.7     },
-        {  4.23537260, 1,  4.2,      4.2     },
-        {  3.64369953, 4,  3.6437,   3.6436  },
-        {  6.34542470, 2,  6.35,     6.34    },
-        { -0.84754962, 4, -0.8475,  -0.8475  },
-        {  4.60998652, 1,  4.6,      4.6     },
-        {  6.28794223, 3,  6.288,    6.287   },
-        {  7.89428221, 2,  7.89,     7.89    }
+        {  0.86313513, 5,  0.86314,  0.86314,  0.86313,  0.86314,  0.86313 },
+        { -7.64555346, 1, -7.6,     -7.7,     -7.6,     -7.6,     -7.6     },
+        {  0.13961605, 2,  0.14,     0.14,     0.13,     0.14,     0.13    },
+        {  0.14344179, 4,  0.1434,   0.1435,   0.1434,   0.1434,   0.1434  },
+        { -4.74315016, 2, -4.74,    -4.75,    -4.74,    -4.74,    -4.74    },
+        { -7.82772074, 5, -7.82772, -7.82773, -7.82772, -7.82772, -7.82772 },
+        {  2.74137947, 3,  2.741,    2.742,    2.741,    2.741,    2.741   },
+        {  2.13056714, 1,  2.1,      2.2,      2.1,      2.1,      2.1     },
+        { -1.06228670, 1, -1.1,     -1.1,     -1.0,     -1.0,     -1.1     },
+        {  8.29234094, 4,  8.2923,   8.2924,   8.2923,   8.2923,   8.2923  },
+        {  7.90185598, 2,  7.90,     7.91,     7.90,     7.90,     7.90    },
+        { -0.26738058, 1, -0.3,     -0.3,     -0.2,     -0.2,     -0.3     },
+        {  1.78128713, 1,  1.8,      1.8,      1.7,      1.8,      1.7     },
+        {  4.23537260, 1,  4.2,      4.3,      4.2,      4.2,      4.2     },
+        {  3.64369953, 4,  3.6437,   3.6437,   3.6436,   3.6437,   3.6436  },
+        {  6.34542470, 2,  6.35,     6.35,     6.34,     6.35,     6.34    },
+        { -0.84754962, 4, -0.8475,  -0.8476,  -0.8475,  -0.8475,  -0.8475  },
+        {  4.60998652, 1,  4.6,      4.7,      4.6,      4.6,      4.6     },
+        {  6.28794223, 3,  6.288,    6.288,    6.287,    6.288,    6.287   },
+        {  7.89428221, 2,  7.89,     7.90,     7.89,     7.89,     7.89    }
     };
 
+}
+
+void RoundingTest::testClosest() {
+
+    BOOST_MESSAGE("Testing closest decimal rounding...");
+
+    for (Size i=0; i<LENGTH(testData); i++) {
+        Integer digits = testData[i].precision;
+        Rounding closest(digits, Rounding::Closest);
+        Real calculated = closest(testData[i].x);
+        Real expected = testData[i].closest;
+        if (!close(calculated,expected,1))
+            BOOST_FAIL("Original number: " + 
+                       DecimalFormatter::toString(testData[i].x,8) + "\n"
+                       "Expected:        " +
+                       DecimalFormatter::toString(expected,digits) + "\n"
+                       "Calculated:      " +
+                       DecimalFormatter::toString(calculated,digits));
+    }
 }
 
 void RoundingTest::testUp() {
@@ -64,7 +86,7 @@ void RoundingTest::testUp() {
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
         Rounding up(digits, Rounding::Up);
-        Real calculated = up.round(testData[i].x);
+        Real calculated = up(testData[i].x);
         Real expected = testData[i].up;
         if (!close(calculated,expected,1))
             BOOST_FAIL("Original number: " + 
@@ -83,7 +105,7 @@ void RoundingTest::testDown() {
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
         Rounding down(digits, Rounding::Down);
-        Real calculated = down.round(testData[i].x);
+        Real calculated = down(testData[i].x);
         Real expected = testData[i].down;
         if (!close(calculated,expected,1))
             BOOST_FAIL("Original number: " + 
@@ -102,10 +124,8 @@ void RoundingTest::testFloor() {
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
         Rounding floor(digits, Rounding::Floor);
-        Real calculated = floor.round(testData[i].x);
-        Real expected = testData[i].x >= 0.0 ?
-                        testData[i].up :
-                        testData[i].down;
+        Real calculated = floor(testData[i].x);
+        Real expected = testData[i].floor;
         if (!close(calculated,expected,1))
             BOOST_FAIL("Original number: " + 
                        DecimalFormatter::toString(testData[i].x,8) + "\n"
@@ -123,10 +143,8 @@ void RoundingTest::testCeiling() {
     for (Size i=0; i<LENGTH(testData); i++) {
         Integer digits = testData[i].precision;
         Rounding ceiling(digits, Rounding::Ceiling);
-        Real calculated = ceiling.round(testData[i].x);
-        Real expected = testData[i].x >= 0.0 ?
-                        testData[i].down :
-                        testData[i].up;
+        Real calculated = ceiling(testData[i].x);
+        Real expected = testData[i].ceiling;
         if (!close(calculated,expected,1))
             BOOST_FAIL("Original number: " + 
                        DecimalFormatter::toString(testData[i].x,8) + "\n"
@@ -140,6 +158,7 @@ void RoundingTest::testCeiling() {
 
 test_suite* RoundingTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Rounding tests");
+    suite->add(BOOST_TEST_CASE(&RoundingTest::testClosest));
     suite->add(BOOST_TEST_CASE(&RoundingTest::testUp));
     suite->add(BOOST_TEST_CASE(&RoundingTest::testDown));
     suite->add(BOOST_TEST_CASE(&RoundingTest::testFloor));

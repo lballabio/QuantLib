@@ -39,19 +39,25 @@ namespace QuantLib {
         enum Type {
             None,    /*!< do not round: return the number unmodified */
             Up,      /*!< the first decimal place past the precision will be 
-                          rounded up if greater than the rounding digit */
+                          rounded up. This differs from the OMG rule which
+                          rounds up only if the decimal to be rounded is
+                          greater than the rounding digit */
             Down,    /*!< all decimal places past the precision will be 
                           truncated */
-	    Closest, /*!< numbers will be rounded either up or down depending
-		          on which is closest to the rounding digit */
+            Closest, /*!< the first decimal place past the precision will be 
+                          rounded up if greater than the rounding digit;
+                          this corresponds to the OMG round-up rule.
+                          When the rounding digit is 5, the result will be
+                          the one closest to the original number, hence
+                          the name. */
             Floor,   /*!< positive numbers will be rounded up and negative
-                          numbers will be rounded down using the round up
+                          numbers will be rounded down using the OMG round up
                           and round down rules */
             Ceiling  /*!< positive numbers will be rounded down and negative
-                          numbers will be rounded up using the round up
+                          numbers will be rounded up using the OMG round up
                           and round down rules */
         };
-	Rounding() {}
+        Rounding() {}
         Rounding(Integer precision,
                  Type type = Closest,
                  Integer digit = 5)
