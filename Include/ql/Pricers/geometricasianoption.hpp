@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/21 16:42:12  nando
+// european option optimization
+//
 // Revision 1.11  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -87,11 +90,11 @@ namespace QuantLib {
             volatility/QL_SQRT(3)){}
 
         inline double GeometricAsianOption::rho() const{
-            return EuropeanOption::rho()/2;
+            return EuropeanOption::rho()/2.0;
         }
 
         inline double GeometricAsianOption::vega() const{
-            return EuropeanOption::vega()/QL_SQRT(3)
+            return EuropeanOption::vega()/QL_SQRT(3.0)
                 -EuropeanOption::rho()*volatility_*volatility_/4;
         }
 

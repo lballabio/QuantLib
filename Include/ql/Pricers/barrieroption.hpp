@@ -31,6 +31,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.11  2001/08/21 16:42:12  nando
+// european option optimization
+//
 // Revision 1.10  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -100,7 +103,7 @@ namespace QuantLib {
             void initialize_() const;
             BarrierType barrType_;
             double barrier_, rebate_;
-            mutable double sigmaSqrtT_, mu_, muSigma_;
+            mutable double value_, sigmaSqrtT_, mu_, muSigma_;
             mutable double dividendDiscount_, riskFreeDiscount_;
             Math::CumulativeNormalDistribution f_;
             double A_(double eta, double phi) const;

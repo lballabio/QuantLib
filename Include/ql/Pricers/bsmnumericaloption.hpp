@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.16  2001/08/21 16:42:12  nando
+// european option optimization
+//
 // Revision 1.15  2001/08/13 15:06:17  nando
 // added dividendRho method
 //
@@ -92,7 +95,7 @@ namespace QuantLib {
             // input data
             int gridPoints_;
             // results
-            mutable double delta_, gamma_, theta_;
+            mutable double value_, delta_, gamma_, theta_;
 
             mutable Array grid_;
             mutable FiniteDifferences::BSMOperator finiteDifferenceOperator_;

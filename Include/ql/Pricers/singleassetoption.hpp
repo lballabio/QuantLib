@@ -31,6 +31,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.5  2001/08/21 16:42:12  nando
+// european option optimization
+//
 // Revision 1.4  2001/08/13 15:06:17  nando
 // added dividendRho method
 //
@@ -72,9 +75,9 @@ namespace QuantLib {
                 double volatility);
             virtual ~SingleAssetOption() {}    // just in case
             // modifiers
-            void setVolatility(double newVolatility) ;
-            void setRiskFreeRate(Rate newRate) ;
-            void setDividendYield(Rate newDividendYield) ;
+            virtual void setVolatility(double newVolatility) ;
+            virtual void setRiskFreeRate(Rate newRate) ;
+            virtual void setDividendYield(Rate newDividendYield) ;
             // accessors
             virtual double value() const = 0;
             virtual double delta() const = 0;
@@ -96,11 +99,10 @@ namespace QuantLib {
             Rate dividendYield_;
             Time residualTime_;
             mutable bool hasBeenCalculated_;
+            mutable double rho_, dividendRho_, vega_;
             mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_;
             double volatility_;
             Rate riskFreeRate_;
-            mutable double value_;
-            mutable double rho_, dividendRho_, vega_;
             const static double dVolMultiplier_;
             const static double dRMultiplier_;
           private:
