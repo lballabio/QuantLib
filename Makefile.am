@@ -60,4 +60,5 @@ dist-hook:
 	cp $(srcdir)/Docs/images/sfnetlogo.png $(distdir)/Docs/images/
 	mkdir $(distdir)/Docs/pages
 	cp $(srcdir)/Docs/pages/*.docs $(distdir)/Docs/pages/
+	cp $(srcdir)/Docs/pages/*.am $(distdir)/Docs/pages/
 
