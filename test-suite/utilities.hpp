@@ -39,7 +39,7 @@
    be put in between. */
 #define QL_TEST_BEGIN     try {
 #define QL_TEST_SETUP     setup();
-#define QL_TEST_TEARDOWN  } catch (...) { teardown(); throw; }
+#define QL_TEST_TEARDOWN  teardown(); } catch (...) { teardown(); throw; }
 #define QL_TEST_END       } catch (...) { throw; }
 
 
