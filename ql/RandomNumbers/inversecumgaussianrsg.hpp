@@ -66,7 +66,7 @@ namespace QuantLib {
             //! returns next sample from the Gaussian distribution
             const sample_type& nextSequence() const;
             const sample_type& lastSequence() const {
-                return sequence_;
+                return x;
             }
             Size dimension() const {return dimension_;}
           private:
