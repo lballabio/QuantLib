@@ -23,45 +23,16 @@
 */
 
 /*! \file boundarycondition.hpp
-
-    \fullpath
-    Include/ql/FiniteDifferences/%boundarycondition.hpp
     \brief boundary conditions for differential operators
 
+    \fullpath
+    ql/FiniteDifferences/%boundarycondition.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:00:08  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.10  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.9  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.8  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.7  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.6  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.5  2001/07/05 15:57:22  lballabio
-// Collected typedefs in a single file
-//
-// Revision 1.4  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.3  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
-#ifndef quantlib_boundary_condition
-#define quantlib_boundary_condition
+#ifndef quantlib_boundary_condition_h
+#define quantlib_boundary_condition_h
 
 #include "ql/null.hpp"
 #include "ql/errors.hpp"
@@ -71,7 +42,12 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         //! Boundary condition for finite difference problems
-        /*! \warning For Neumann conditions. the value passed must not be the
+        /*! Three possibilities are given for setting boundary conditions, 
+            namely, no boundary condition, Dirichlet boundary condition 
+            (i.e., constant value), and Neumann boundary condition (i.e., 
+            constant derivative).
+
+            \warning For Neumann conditions. the value passed must not be the
             value of the derivative. Instead, it must be comprehensive of the
             grid step between the first two points--i.e., it must be the
             difference between f[0] and f[1].

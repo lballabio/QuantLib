@@ -58,9 +58,11 @@
     \f$ O(h^2) \f$.
     
     The boundary condition for the above operators is by default linear 
-    extrapolation. Methods are currently provided for setting Dirichlet and 
-    Neumann conditions to a TridiagonalOperator which these operators 
-    inherit. This might change in the future as boundary conditions could be 
+    extrapolation. Methods are currently provided for setting other kinds 
+    of boundary conditions to a TridiagonalOperator which these operators 
+    inherit, namely, Dirichlet---i.e., constant value---and Neumann---i.e., 
+    constant derivative---boundary conditions. 
+    This might change in the future as boundary conditions could be 
     astracted and passed as an additional argument to the model.
 
     A programmer can also implement its own operator.
