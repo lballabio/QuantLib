@@ -89,6 +89,32 @@ typedef Handle<TermStructure> TermStructureHandle;
 	#endif
 }
 
+// implied term structure
+
+%{
+using QuantLib::ImpliedTermStructure;
+
+TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate) {
+	return Handle<TermStructure>(new ImpliedTermStructure(curve,evaluationDate));
+}
+%}
+
+%name(ImpliedTermStructure) TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate);
+
+
+// spreaded term structure
+
+%{
+using QuantLib::SpreadedTermStructure;
+
+TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread spread) {
+	return Handle<TermStructure>(new SpreadedTermStructure(curve,spread));
+}
+%}
+
+%name(SpreadedTermStructure) TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread spread);
+
+
 // piecewise constant forward curve on deposits
 
 %{
