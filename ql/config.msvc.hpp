@@ -65,8 +65,11 @@
 #define HAVE_LIMITS
 
 #define HAVE_CTIME
+#define QL_TIME_T   time_t
+#define QL_TM       tm
 #define QL_CLOCK    clock
 #define QL_TIME     time
+#define QL_GMTIME   gmtime
 
 #define HAVE_CCTYPE
 #define QL_STRLEN   strlen

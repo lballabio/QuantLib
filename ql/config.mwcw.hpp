@@ -39,8 +39,11 @@
 #define HAVE_LIMITS
 
 #define HAVE_CTIME
+#define QL_TIME_T   std::time_t
+#define QL_TM       std::tm
 #define QL_CLOCK    std::clock
 #define QL_TIME     std::time
+#define QL_GMTIME   std::gmtime
 
 #define HAVE_CCTYPE
 #define QL_STRLEN   std::strlen
