@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.29  2001/05/28 14:57:54  lballabio
+# Removed files removed from distribution list also
+#
 # Revision 1.28  2001/05/24 12:52:01  nando
 # smoothing #include xx.hpp
 #
@@ -20,8 +23,6 @@ EXTRA_DIST=Authors.txt \
 	QuantLib.dsw \
 	QuantLib.mak \
 	QuantLib.nsi \
-	QuantLib.prj \
-	QuantLib.prj.exp \
 	Readme.txt \
 	README-win.txt \
 	README-mac.txt \
