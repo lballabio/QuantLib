@@ -69,10 +69,8 @@ namespace QuantLib {
         : Interpolation<I1,I2>(xBegin,xEnd,yBegin), a_(xEnd-xBegin-1),
           b_(xEnd-xBegin-1), c_(xEnd-xBegin-1) {
             Size n = xEnd_-xBegin_;
-            #ifdef QL_DEBUG
-                QL_REQUIRE(n >= 4,
-                    "not enough points for cubic spline interpolation");
-            #endif
+            QL_REQUIRE(n >= 4,
+                "not enough points for cubic spline interpolation");
             FiniteDifferences::TridiagonalOperator L(n);
             Array tmp(n);
 
