@@ -31,13 +31,13 @@
 
 // $Id$
 
-#include <ql/Pricers/dividendeuropeanoption.hpp>
+#include <ql/Pricers/fddividendeuropeanoption.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        DividendEuropeanOption::DividendEuropeanOption(
+        FdDividendEuropeanOption::FdDividendEuropeanOption(
             Option::Type type, double underlying, double strike,
             Spread dividendYield, Rate riskFreeRate, Time residualTime,
             double volatility, const std::vector<double>& dividends,
@@ -65,11 +65,11 @@ namespace QuantLib {
 
             }
 
-        Handle<SingleAssetOption> DividendEuropeanOption::clone() const{
-            return Handle<SingleAssetOption>(new DividendEuropeanOption(*this));
+        Handle<SingleAssetOption> FdDividendEuropeanOption::clone() const{
+            return Handle<SingleAssetOption>(new FdDividendEuropeanOption(*this));
         }
 
-        double DividendEuropeanOption::theta() const{
+        double FdDividendEuropeanOption::theta() const{
 
             double tmp_theta = EuropeanOption::theta();
             double delta_theta = 0.0;
@@ -79,7 +79,7 @@ namespace QuantLib {
             return tmp_theta + delta_theta * EuropeanOption::delta();
         }
 
-        double DividendEuropeanOption::rho() const{
+        double FdDividendEuropeanOption::rho() const{
 
             double tmp_rho = EuropeanOption::rho();
             double delta_rho = 0.0;

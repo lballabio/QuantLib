@@ -166,22 +166,25 @@
 #include <ql/Patterns/observable.hpp>
 
 #include <ql/Pricers/americancondition.hpp>
-#include <ql/Pricers/americanoption.hpp>
 #include <ql/Pricers/barrieroption.hpp>
-#include <ql/Pricers/bermudanoption.hpp>
 #include <ql/Pricers/binaryoption.hpp>
-#include <ql/Pricers/bsmfdoption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
-#include <ql/Pricers/dividendamericanoption.hpp>
-#include <ql/Pricers/dividendeuropeanoption.hpp>
-#include <ql/Pricers/dividendoption.hpp>
-#include <ql/Pricers/dividendshoutoption.hpp>
 #include <ql/Pricers/europeanengine.hpp>
 #include <ql/Pricers/europeanoption.hpp>
-#include <ql/Pricers/finitedifferenceeuropean.hpp>
+#include <ql/Pricers/fdamericanoption.hpp>
+#include <ql/Pricers/fdbermudanoption.hpp>
+#include <ql/Pricers/fdbsmoption.hpp>
+#include <ql/Pricers/fddividendamericanoption.hpp>
+#include <ql/Pricers/fddividendeuropeanoption.hpp>
+#include <ql/Pricers/fddividendoption.hpp>
+#include <ql/Pricers/fddividendshoutoption.hpp>
+#include <ql/Pricers/fdeuropean.hpp>
+#include <ql/Pricers/fdmultiperiodoption.hpp>
+#include <ql/Pricers/fdshoutoption.hpp>
+#include <ql/Pricers/fdstepconditionoption.hpp>
 #include <ql/Pricers/mcbasket.hpp>
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
@@ -191,11 +194,8 @@
 #include <ql/Pricers/mcmaxbasket.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
 #include <ql/Pricers/mcpricer.hpp>
-#include <ql/Pricers/multiperiodoption.hpp>
 #include <ql/Pricers/shoutcondition.hpp>
-#include <ql/Pricers/shoutoption.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
-#include <ql/Pricers/stepconditionoption.hpp>
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>

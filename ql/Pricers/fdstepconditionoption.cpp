@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include <ql/Pricers/stepconditionoption.hpp>
+#include <ql/Pricers/fdstepconditionoption.hpp>
 #include <ql/Pricers/europeanoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
@@ -45,15 +45,15 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        StepConditionOption::StepConditionOption(Option::Type type,
+        FdStepConditionOption::FdStepConditionOption(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             int timeSteps, int gridPoints)
-        : BsmFdOption(type, underlying, strike, dividendYield,
+        : FdBsmOption(type, underlying, strike, dividendYield,
             riskFreeRate, residualTime, volatility, gridPoints),
             timeSteps_(timeSteps) {}
 
-        void StepConditionOption::calculate() const {
+        void FdStepConditionOption::calculate() const {
 
             setGridLimits(underlying_, residualTime_);
             initializeGrid();

@@ -42,9 +42,9 @@ namespace QuantLib {
     namespace Pricers {
 
         //! European option with dividends
-        class DividendEuropeanOption : public EuropeanOption    {
+        class FdDividendEuropeanOption : public EuropeanOption    {
           public:
-            DividendEuropeanOption(Option::Type type, double underlying,
+            FdDividendEuropeanOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility,
                 const std::vector<double>& dividends,
@@ -52,7 +52,7 @@ namespace QuantLib {
             double theta() const;
             double rho() const;
             double dividendRho() const {
-                throw Error("DividendEuropeanOption::dividendRho not"
+                throw Error("FdDividendEuropeanOption::dividendRho not"
                     "implemented yet");
             }
             Handle<SingleAssetOption> clone() const;
@@ -66,7 +66,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline double DividendEuropeanOption::riskless(Rate r,
+        inline double FdDividendEuropeanOption::riskless(Rate r,
             std::vector<double> divs, std::vector<Time> divDates) const{
 
             double tmp_riskless = 0.0;

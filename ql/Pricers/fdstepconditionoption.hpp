@@ -22,34 +22,39 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file dividendamericanoption.hpp
-    \brief american option with discrete deterministic dividends
+/*! \file stepconditionoption.hpp
+    \brief Option requiring additional code to be executed at each time step
 
     \fullpath
-    ql/Pricers/%dividendamericanoption.hpp
+    ql/Pricers/%stepconditionoption.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_dividend_american_option_pricer_h
-#define quantlib_dividend_american_option_pricer_h
+#ifndef quantlib_pricers_stepconditionoption_h
+#define quantlib_pricers_stepconditionoption_h
 
-#include <ql/Pricers/dividendoption.hpp>
+#include <ql/Pricers/fdbsmoption.hpp>
+#include <ql/FiniteDifferences/fdtypedefs.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        class DividendAmericanOption : public DividendOption {
-          public:
+        //! %option executing additional code at each time step
+        class FdStepConditionOption : public FdBsmOption {
+          protected:
             // constructor
-            DividendAmericanOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
-                const std::vector<double>& dividends = std::vector<double>(),
-                const std::vector<Time>& exdivdates = std::vector<Time>(),
-                int timeSteps = 100, int gridPoints = 100);
-            Handle<SingleAssetOption> clone() const;
+            FdStepConditionOption(Option::Type type, double underlying,
+                                double strike,
+                                Spread dividendYield, Rate riskFreeRate,
+                                Time residualTime, double volatility,
+                                int timeSteps, int gridPoints);
+            void calculate() const;
+            virtual void initializeStepCondition() const = 0;
+            mutable Handle<FiniteDifferences::StandardStepCondition >
+                                                            stepCondition_;
+            int timeSteps_;
         };
 
     }

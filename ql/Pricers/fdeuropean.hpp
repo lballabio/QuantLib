@@ -34,7 +34,7 @@
 #ifndef quantlib_pricers_finite_difference_european_option_h
 #define quantlib_pricers_finite_difference_european_option_h
 
-#include <ql/Pricers/bsmfdoption.hpp>
+#include <ql/Pricers/fdbsmoption.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 
 namespace QuantLib {
@@ -42,7 +42,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Example of European option calculated using finite differences
-        class FiniteDifferenceEuropean : public BsmFdOption {
+        class FiniteDifferenceEuropean : public FdBsmOption {
           public:
             FiniteDifferenceEuropean(Option::Type type,
                                      double underlying,

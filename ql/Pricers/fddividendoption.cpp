@@ -31,9 +31,9 @@
 
 // $Id$
 
-#include <ql/Pricers/dividendoption.hpp>
+#include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Math/cubicspline.hpp>
-#include <ql/Pricers/dividendeuropeanoption.hpp>
+#include <ql/Pricers/fddividendeuropeanoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 #include <iterator>
 
@@ -44,13 +44,13 @@ namespace QuantLib {
         using Math::CubicSpline;
         using FiniteDifferences::valueAtCenter;
 
-        DividendOption::DividendOption(Option::Type type, double underlying,
+        FdDividendOption::FdDividendOption(Option::Type type, double underlying,
             double strike, Spread dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility,
             const std::vector<double>& dividends,
             const std::vector<Time>& exdivdates,
             int timeSteps, int gridPoints)
-        : MultiPeriodOption(type, underlying - addElements(dividends),
+        : FdMultiPeriodOption(type, underlying - addElements(dividends),
           strike, dividendYield, riskFreeRate, residualTime, volatility,
           gridPoints, exdivdates, timeSteps), dividends_(dividends) {
 
@@ -69,9 +69,9 @@ namespace QuantLib {
                        ")");
         }
 
-        void DividendOption::initializeControlVariate() const{
+        void FdDividendOption::initializeControlVariate() const{
             analytic_ = Handle<SingleAssetOption> (new
-                            DividendEuropeanOption (type_,
+                            FdDividendEuropeanOption (type_,
                                 underlying_ + addElements(dividends_),
                                 strike_,
                                 dividendYield_,
@@ -82,7 +82,7 @@ namespace QuantLib {
                                 dates_));
         }
 
-        void DividendOption::executeIntermediateStep(int step) const{
+        void FdDividendOption::executeIntermediateStep(int step) const{
 
             double newSMin = sMin_ + dividends_[step];
             double newSMax = sMax_ + dividends_[step];
@@ -111,7 +111,7 @@ namespace QuantLib {
             stepCondition_ -> applyTo(prices_, dates_[step]);
            }
 
-        void DividendOption::movePricesBeforeExDiv(
+        void FdDividendOption::movePricesBeforeExDiv(
                 Array& prices, const Array& newGrid,
                                const Array& oldGrid) const {
 

@@ -31,30 +31,30 @@
 
 // $Id$
 
-#include <ql/Pricers/dividendshoutoption.hpp>
+#include <ql/Pricers/fddividendshoutoption.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        DividendShoutOption::DividendShoutOption(Option::Type type,
+        FdDividendFdShoutOption::FdDividendFdShoutOption(Option::Type type,
                 double underlying, double strike, Spread dividendYield,
                 Rate riskFreeRate, Time residualTime, double volatility,
                 const std::vector<double>& dividends,
                 const std::vector<Time>& exdivdates,
                 int timeSteps, int gridPoints)
-       : DividendOption(type, underlying, strike, dividendYield,
+       : FdDividendOption(type, underlying, strike, dividendYield,
                         riskFreeRate, residualTime, volatility,
                         dividends, exdivdates, timeSteps, gridPoints){}
 
-        void DividendShoutOption::initializeStepCondition() const {
+        void FdDividendFdShoutOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
                              new ShoutCondition(initialPrices_, residualTime_,
                                                 riskFreeRate_));
         }
 
-        Handle<SingleAssetOption> DividendShoutOption::clone() const {
-            return Handle<SingleAssetOption>(new DividendShoutOption(*this));
+        Handle<SingleAssetOption> FdDividendFdShoutOption::clone() const {
+            return Handle<SingleAssetOption>(new FdDividendFdShoutOption(*this));
         }
 
     }

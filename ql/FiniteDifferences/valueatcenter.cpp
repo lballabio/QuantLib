@@ -47,10 +47,10 @@ namespace QuantLib {
 
         double firstDerivativeAtCenter(const Array& a, const Array& g) {
             QL_REQUIRE(a.size()==g.size(),
-                "BsmFdOption::firstDerivativeAtCenter: "
+                "firstDerivativeAtCenter: "
                 "a and g must be of the same size");
             QL_REQUIRE(a.size()>=3,
-                "BsmFdOption::firstDerivativeAtCenter: "
+                "firstDerivativeAtCenter: "
                 "the size of the two vectors must be at least 3");
             size_t jmid = a.size()/2;
             if(a.size() % 2 == 1)
@@ -61,10 +61,10 @@ namespace QuantLib {
 
         double secondDerivativeAtCenter(const Array& a, const Array& g) {
             QL_REQUIRE(a.size()==g.size(),
-                "BsmFdOption::secondDerivativeAtCenter: "
+                "secondDerivativeAtCenter: "
                 "a and g must be of the same size");
             QL_REQUIRE(a.size()>=4,
-                "BsmFdOption::secondDerivativeAtCenter: "
+                "secondDerivativeAtCenter: "
                 "the size of the two vectors must be at least 4");
             size_t jmid = a.size()/2;
             if(a.size() % 2 == 1){

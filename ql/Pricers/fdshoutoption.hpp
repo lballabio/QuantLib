@@ -22,31 +22,29 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file americanoption.hpp
-    \brief american option
+/*! \file shoutoption.hpp
+    \brief shout option
 
     \fullpath
-    ql/Pricers/%americanoption.hpp
+    ql/Pricers/%shoutoption.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_american_option_h
-#define quantlib_pricers_american_option_h
+#ifndef quantlib_pricers_shout_option_h
+#define quantlib_pricers_shout_option_h
 
-#include <ql/Pricers/stepconditionoption.hpp>
-#include <ql/Pricers/americancondition.hpp>
+#include <ql/Pricers/fdstepconditionoption.hpp>
+#include <ql/Pricers/shoutcondition.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! American option
-        //! \todo make american call with no dividens = european
-        class AmericanOption : public StepConditionOption {
+        class FdShoutOption : public FdStepConditionOption {
           public:
             // constructor
-            AmericanOption(Option::Type type, double underlying, double strike,
+            FdShoutOption(Option::Type type, double underlying, double strike,
                            Spread dividendYield, Rate riskFreeRate,
                            Time residualTime, double volatility,
                            int timeSteps, int gridPoints);
@@ -54,24 +52,25 @@ namespace QuantLib {
 
             // This method must be implemented to imply volatilities
             Handle<SingleAssetOption> clone() const{
-                return Handle<SingleAssetOption>(new AmericanOption(*this));
+                return Handle<SingleAssetOption>(new FdShoutOption(*this));
             }
         };
 
 
         // inline definitions
 
-        inline AmericanOption::AmericanOption(Option::Type type,
-            double underlying, double strike, Spread dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility,
-            int timeSteps, int gridPoints)
-        : StepConditionOption(type, underlying, strike, dividendYield,
-            riskFreeRate, residualTime, volatility, timeSteps,
-            gridPoints) {}
+        inline FdShoutOption::FdShoutOption(Option::Type type, double underlying,
+            double strike, Spread dividendYield, Rate riskFreeRate,
+            Time residualTime, double volatility, int timeSteps,
+            int gridPoints)
+        : FdStepConditionOption(type, underlying, strike, dividendYield,
+                             riskFreeRate, residualTime, volatility,
+                             timeSteps, gridPoints){}
 
-        inline void AmericanOption::initializeStepCondition() const {
+        inline void FdShoutOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                new AmericanCondition(initialPrices_));
+                new ShoutCondition(initialPrices_, residualTime_,
+                    riskFreeRate_));
         }
 
     }

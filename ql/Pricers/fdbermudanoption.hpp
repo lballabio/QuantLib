@@ -22,39 +22,38 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file stepconditionoption.hpp
-    \brief Option requiring additional code to be executed at each time step
+/*! \file bermudanoption.hpp
+    \brief Finite-difference evaluation of Bermudan option
 
     \fullpath
-    ql/Pricers/%stepconditionoption.hpp
+    ql/Pricers/%bermudanoption.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_stepconditionoption_h
-#define quantlib_pricers_stepconditionoption_h
+#ifndef quantlib_bermudan_option_pricer_h
+#define quantlib_bermudan_option_pricer_h
 
-#include <ql/Pricers/bsmfdoption.hpp>
-#include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/Pricers/fdmultiperiodoption.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        //! %option executing additional code at each time step
-        class StepConditionOption : public BsmFdOption {
-          protected:
+        //! Bermudan option
+        class FdBermudanOption : public FdMultiPeriodOption {
+          public:
             // constructor
-            StepConditionOption(Option::Type type, double underlying,
-                                double strike,
-                                Spread dividendYield, Rate riskFreeRate,
-                                Time residualTime, double volatility,
-                                int timeSteps, int gridPoints);
-            void calculate() const;
-            virtual void initializeStepCondition() const = 0;
-            mutable Handle<FiniteDifferences::StandardStepCondition >
-                                                            stepCondition_;
-            int timeSteps_;
+            FdBermudanOption(Option::Type type, double underlying,
+                double strike, Spread dividendYield, Rate riskFreeRate,
+                Time residualTime, double volatility,
+                const std::vector<Time>& dates = std::vector<Time>(),
+                int timeSteps = 100, int gridPoints = 100);
+            Handle<SingleAssetOption> clone() const;
+          protected:
+            double extraTermInBermudan ;
+            void initializeStepCondition() const;
+            void executeIntermediateStep(int ) const;
         };
 
     }

@@ -22,34 +22,39 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file dividendamericanoption.cpp
+/*! \file dividendamericanoption.hpp
     \brief american option with discrete deterministic dividends
 
     \fullpath
-    ql/Pricers/%dividendamericanoption.cpp
+    ql/Pricers/%dividendamericanoption.hpp
 */
 
 // $Id$
 
-#include <ql/Pricers/dividendamericanoption.hpp>
+#ifndef quantlib_dividend_american_option_pricer_h
+#define quantlib_dividend_american_option_pricer_h
+
+#include <ql/Pricers/fddividendoption.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
-         DividendAmericanOption::DividendAmericanOption(Option::Type type,
-            double underlying, double strike, Spread dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility,
-            const std::vector<double>& dividends,
-            const std::vector<Time>& exdivdates,
-            int timeSteps, int gridPoints)
-         :DividendOption(type, underlying, strike, dividendYield,
-            riskFreeRate, residualTime, volatility, dividends,
-            exdivdates, timeSteps, gridPoints){}
 
-        Handle<SingleAssetOption> DividendAmericanOption::clone() const {
-            return Handle<SingleAssetOption>(new DividendAmericanOption(*this));
-        }
+        class FdDividendAmericanOption : public FdDividendOption {
+          public:
+            // constructor
+            FdDividendAmericanOption(Option::Type type, double underlying,
+                double strike, Spread dividendYield, Rate riskFreeRate,
+                Time residualTime, double volatility,
+                const std::vector<double>& dividends = std::vector<double>(),
+                const std::vector<Time>& exdivdates = std::vector<Time>(),
+                int timeSteps = 100, int gridPoints = 100);
+            Handle<SingleAssetOption> clone() const;
+        };
 
     }
 
 }
+
+
+#endif

@@ -17,21 +17,23 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 # Object files
 OBJS = \
        barrieroption.obj$(_D) \
-       bermudanoption.obj$(_D) \
+       fdbermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
-       bsmfdoption.obj$(_D) \
        cliquetoption.obj$(_D) \
        couponbondoption.obj$(_D) \
-       discretegeometricaso.obj$(_D) \
        discretegeometricapo.obj$(_D) \
-       dividendamericanoption.obj$(_D) \
-       dividendeuropeanoption.obj$(_D) \
-       dividendoption.obj$(_D) \
-       dividendshoutoption.obj$(_D) \
+       discretegeometricaso.obj$(_D) \
+       fddividendshoutoption.obj$(_D) \
        europeanengine.obj$(_D) \
        europeanoption.obj$(_D) \
+       fdbsmoption.obj$(_D) \
+       fddividendamericanoption.obj$(_D) \
+       fddividendeuropeanoption.obj$(_D) \
+       fddividendoption.obj$(_D) \
+       fdeuropean.obj$(_D) \
        fdeuropeanswaption.obj$(_D) \
-       finitedifferenceeuropean.obj$(_D) \
+       fdmultiperiodoption.obj$(_D) \
+       fdstepconditionoption.obj$(_D) \
        mcbasket.obj$(_D) \
        mcdiscretearithmeticapo.obj$(_D) \
        mcdiscretearithmeticaso.obj$(_D) \
@@ -40,9 +42,7 @@ OBJS = \
        mchimalaya.obj$(_D) \
        mcmaxbasket.obj$(_D) \
        mcpagoda.obj$(_D) \
-       multiperiodoption.obj$(_D) \
-       singleassetoption.obj$(_D) \
-       stepconditionoption.obj$(_D)
+       singleassetoption.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

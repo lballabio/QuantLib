@@ -34,7 +34,7 @@
 #ifndef quantlib_multi_period_option_pricer_h
 #define quantlib_multi_period_option_pricer_h
 
-#include <ql/Pricers/bsmfdoption.hpp>
+#include <ql/Pricers/fdbsmoption.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <vector>
 
@@ -42,12 +42,12 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        class MultiPeriodOption : public BsmFdOption {
+        class FdMultiPeriodOption : public FdBsmOption {
           public:
             double controlVariateCorrection() const;
           protected:
             // constructor
-            MultiPeriodOption(Option::Type type, double underlying,
+            FdMultiPeriodOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility, int gridPoints,
                 const std::vector<Time>& dates,

@@ -33,7 +33,7 @@
 
 #include <ql/Pricers/europeanoption.hpp>
 #include <ql/Pricers/americancondition.hpp>
-#include <ql/Pricers/multiperiodoption.hpp>
+#include <ql/Pricers/fdmultiperiodoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
@@ -43,12 +43,12 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        MultiPeriodOption::MultiPeriodOption(Option::Type type,
+        FdMultiPeriodOption::FdMultiPeriodOption(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             int gridPoints, const std::vector<Time>& dates,
             int timeSteps)
-        : BsmFdOption(type, underlying, strike,
+        : FdBsmOption(type, underlying, strike,
                              dividendYield, riskFreeRate,
                              residualTime, volatility,
                              gridPoints),
@@ -100,7 +100,7 @@ namespace QuantLib {
 
         }
 
-        void MultiPeriodOption::calculate() const {
+        void FdMultiPeriodOption::calculate() const {
 
             Time beginDate, endDate;
             initializeControlVariate();
@@ -184,7 +184,7 @@ namespace QuantLib {
             hasBeenCalculated_ = true;
         }
 
-        void MultiPeriodOption::initializeControlVariate() const{
+        void FdMultiPeriodOption::initializeControlVariate() const{
             analytic_ = Handle<SingleAssetOption> (new EuropeanOption (
                             type_, underlying_, strike_, dividendYield_,
                             riskFreeRate_, residualTime_, volatility_));
@@ -192,20 +192,20 @@ namespace QuantLib {
 
         using FiniteDifferences::StandardStepCondition;
 
-        void MultiPeriodOption::initializeStepCondition() const{
+        void FdMultiPeriodOption::initializeStepCondition() const{
             stepCondition_ = Handle<StandardStepCondition> (
                              new AmericanCondition(initialPrices_));
         }
 
         using FiniteDifferences::StandardFiniteDifferenceModel;
 
-        void MultiPeriodOption::initializeModel() const{
+        void FdMultiPeriodOption::initializeModel() const{
             model_ = Handle<StandardFiniteDifferenceModel> (
                      new StandardFiniteDifferenceModel
                             (finiteDifferenceOperator_));
         }
 
-        double MultiPeriodOption::controlVariateCorrection() const{
+        double FdMultiPeriodOption::controlVariateCorrection() const{
             if(!hasBeenCalculated_)
                 calculate();
             return controlVariateCorrection_;

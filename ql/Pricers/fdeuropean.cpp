@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include <ql/Pricers/finitedifferenceeuropean.hpp>
+#include <ql/Pricers/fdeuropean.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
@@ -46,7 +46,7 @@ namespace QuantLib {
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             size_t timeSteps, size_t gridPoints)
-            : BsmFdOption(type, underlying, strike, dividendYield,
+            : FdBsmOption(type, underlying, strike, dividendYield,
                                  riskFreeRate, residualTime, volatility,
                                  gridPoints),
             timeSteps_(timeSteps), euroPrices_(gridPoints_){}

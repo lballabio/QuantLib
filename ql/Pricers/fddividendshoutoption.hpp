@@ -34,7 +34,7 @@
 #ifndef quantlib_dividend_shout_option_pricer_h
 #define quantlib_dividend_shout_option_pricer_h
 
-#include <ql/Pricers/dividendoption.hpp>
+#include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Pricers/shoutcondition.hpp>
 
 namespace QuantLib {
@@ -42,10 +42,10 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Shout option with dividends
-        class DividendShoutOption : public DividendOption {
+        class FdDividendFdShoutOption : public FdDividendOption {
           public:
             // constructor
-            DividendShoutOption(Option::Type type, double underlying,
+            FdDividendFdShoutOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility,
                 const std::vector<double>& dividends = std::vector<double>(),
@@ -54,7 +54,7 @@ namespace QuantLib {
 
             Handle<SingleAssetOption> clone() const;
             double dividendRho() const {
-                throw Error("DividendOption::dividendRho not implemented yet");
+                throw Error("FdDividendOption::dividendRho not implemented yet");
             }
           protected:
             void initializeStepCondition() const;

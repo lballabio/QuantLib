@@ -42,9 +42,9 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Black-Scholes-Merton option priced numerically
-        class BsmFdOption : public SingleAssetOption {
+        class FdBsmOption : public SingleAssetOption {
           public:
-            BsmFdOption(Option::Type type, double underlying,
+            FdBsmOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility, size_t gridPoints);
             // accessors
@@ -86,7 +86,7 @@ namespace QuantLib {
 
         // The following is a safety check to be sure we have enough grid
         // points.
-        inline size_t BsmFdOption::safeGridPoints(
+        inline size_t FdBsmOption::safeGridPoints(
             size_t gridPoints, Time residualTime) {
             return QL_MAX(gridPoints, residualTime>1.0 ?
                 static_cast<size_t>(

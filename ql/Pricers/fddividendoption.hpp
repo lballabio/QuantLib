@@ -34,23 +34,23 @@
 #ifndef quantlib_dividend_option_pricer_h
 #define quantlib_dividend_option_pricer_h
 
-#include <ql/Pricers/multiperiodoption.hpp>
+#include <ql/Pricers/fdmultiperiodoption.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        class DividendOption : public MultiPeriodOption {
+        class FdDividendOption : public FdMultiPeriodOption {
           public:
             // constructor
-            DividendOption(Option::Type type, double underlying,
+            FdDividendOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility,
                 const std::vector<double>& dividends = std::vector<double>(),
                 const std::vector<Time>& exdivdates = std::vector<Time>(),
                 int timeSteps = 100, int gridPoints = 100);
             double dividendRho() const {
-                throw Error("DividendOption::dividendRho not implemented yet");
+                throw Error("FdDividendOption::dividendRho not implemented yet");
             }
             protected:
             void initializeControlVariate() const;

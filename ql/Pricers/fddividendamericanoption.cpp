@@ -22,43 +22,34 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file bermudanoption.hpp
-    \brief Finite-difference evaluation of Bermudan option
+/*! \file dividendamericanoption.cpp
+    \brief american option with discrete deterministic dividends
 
     \fullpath
-    ql/Pricers/%bermudanoption.hpp
+    ql/Pricers/%dividendamericanoption.cpp
 */
 
 // $Id$
 
-#ifndef quantlib_bermudan_option_pricer_h
-#define quantlib_bermudan_option_pricer_h
-
-#include <ql/Pricers/multiperiodoption.hpp>
+#include <ql/Pricers/fddividendamericanoption.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
+         FdDividendAmericanOption::FdDividendAmericanOption(Option::Type type,
+            double underlying, double strike, Spread dividendYield,
+            Rate riskFreeRate, Time residualTime, double volatility,
+            const std::vector<double>& dividends,
+            const std::vector<Time>& exdivdates,
+            int timeSteps, int gridPoints)
+         :FdDividendOption(type, underlying, strike, dividendYield,
+            riskFreeRate, residualTime, volatility, dividends,
+            exdivdates, timeSteps, gridPoints){}
 
-        //! Bermudan option
-        class BermudanOption : public MultiPeriodOption {
-          public:
-            // constructor
-            BermudanOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
-                const std::vector<Time>& dates = std::vector<Time>(),
-                int timeSteps = 100, int gridPoints = 100);
-            Handle<SingleAssetOption> clone() const;
-          protected:
-            double extraTermInBermudan ;
-            void initializeStepCondition() const;
-            void executeIntermediateStep(int ) const;
-        };
+        Handle<SingleAssetOption> FdDividendAmericanOption::clone() const {
+            return Handle<SingleAssetOption>(new FdDividendAmericanOption(*this));
+        }
 
     }
 
 }
-
-
-#endif
