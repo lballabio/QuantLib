@@ -80,7 +80,8 @@ namespace QuantLib {
         const_iterator result = std::find_if(begin(), end(), 
                                              CloseEnoughTo(t));
         if (result == end()) {
-            for (int i=0; i<size(); i++) {
+            int i;
+            for (i=0; i<size(); i++) {
                 if ((*this)[i] > t)
                     break;
             }
