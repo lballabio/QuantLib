@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file date.hpp
     \brief date- and time-related classes, typedefs and enumerations
 
@@ -73,6 +73,8 @@ namespace QuantLib {
     //! Time period described by a number of a given time unit
     class Period {
       public:
+        Period()
+        : length_(0), units_(Days) {}
         Period(int n, TimeUnit units)
         : length_(n), units_(units) {}
         int length() const { return length_; }
@@ -138,6 +140,7 @@ namespace QuantLib {
         Date plusMonths(int months) const;
         Date plusYears(int years) const;
         Date plus(int units, TimeUnit) const;
+        Date plus(const Period&) const;
         //@}
 
         //! \name static methods
@@ -176,6 +179,106 @@ namespace QuantLib {
     /*! \relates Date */
     std::ostream& operator<< (std::ostream& stream, const Date& result);
 
+
+    // inline definitions
+    
+    inline Weekday Date::weekday() const {
+        int w = serialNumber_ % 7;
+        return Weekday(w == 0 ? 7 : w);
+    }
+
+    inline Day Date::dayOfMonth() const {
+        return dayOfYear() - monthOffset(month(),isLeap(year()));
+    }
+
+    inline Day Date::dayOfYear() const {
+        return serialNumber_ - yearOffset(year());
+    }
+
+    inline int Date::serialNumber() const {
+        return serialNumber_;
+    }
+
+    inline Date& Date::operator+=(int days) {
+        serialNumber_ += days;
+        return *this;
+    }
+
+    inline Date& Date::operator-=(int days) {
+        serialNumber_ -= days;
+        return *this;
+    }
+
+    inline Date& Date::operator++() {
+        serialNumber_++;
+        return *this;
+    }
+
+    inline Date Date::operator++(int ) {
+        Date temp = *this;
+        serialNumber_++;
+        return temp;
+    }
+
+    inline Date& Date::operator--() {
+        serialNumber_--;
+        return *this;
+    }
+
+    inline Date Date::operator--(int ) {
+        Date temp = *this;
+        serialNumber_--;
+        return temp;
+    }
+
+    inline Date Date::operator+(int days) const {
+        return Date(serialNumber_+days);
+    }
+
+    inline Date Date::operator-(int days) const {
+        return Date(serialNumber_-days);
+    }
+
+    inline Date Date::plusDays(int days) const {
+        return Date(serialNumber_+days);
+    }
+
+    inline Date Date::plusWeeks(int weeks) const {
+        return Date(serialNumber_+weeks*7);
+    }
+
+    inline Date Date::plus(const Period& p) const {
+        return plus(p.length(),p.units());
+    }
+
+    inline int operator-(const Date& d1, const Date& d2) {
+        return d1.serialNumber()-d2.serialNumber();
+    }
+
+    inline bool operator==(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() == d2.serialNumber());
+    }
+
+    inline bool operator!=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() != d2.serialNumber());
+    }
+
+    inline bool operator<(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() < d2.serialNumber());
+    }
+
+    inline bool operator<=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() <= d2.serialNumber());
+    }
+
+    inline bool operator>(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() > d2.serialNumber());
+    }
+
+    inline bool operator>=(const Date& d1, const Date& d2) {
+        return (d1.serialNumber() >= d2.serialNumber());
+    }
+    
 }
 
 

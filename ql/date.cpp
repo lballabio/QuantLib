@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file date.cpp
     \brief date- and time-related classes, typedefs and enumerations
 
@@ -194,22 +194,6 @@ namespace QuantLib {
         #endif
     }
 
-    // 1 based, Sunday = 1
-    Weekday Date::weekday() const {
-        int w = serialNumber_ % 7;
-        return Weekday(w == 0 ? 7 : w);
-    }
-
-    // 1 based, February 1st = 1
-    Day Date::dayOfMonth() const {
-        return dayOfYear() - monthOffset(month(),isLeap(year()));
-    }
-
-    // 1 based, January 1st = 1
-    Day Date::dayOfYear() const {
-        return serialNumber_ - yearOffset(year());
-    }
-
     Month Date::month() const {
         Day d = dayOfYear(); // dayOfYear is 1 based
         int m = d/30 + 1;
@@ -227,60 +211,6 @@ namespace QuantLib {
         if (serialNumber_ <= int(yearOffset(y)))
             y--;
         return y;
-    }
-
-    int Date::serialNumber() const {
-        return serialNumber_;
-    }
-
-
-    // operators
-    Date& Date::operator+=(int days) {
-        serialNumber_ += days;
-        return *this;
-    }
-
-    Date& Date::operator-=(int days) {
-        serialNumber_ -= days;
-        return *this;
-    }
-
-    Date& Date::operator++() {
-        serialNumber_++;
-        return *this;
-    }
-
-    Date Date::operator++(int ) {
-        Date temp = *this;
-        serialNumber_++;
-        return temp;
-    }
-
-    Date& Date::operator--() {
-        serialNumber_--;
-        return *this;
-    }
-
-    Date Date::operator--(int ) {
-        Date temp = *this;
-        serialNumber_--;
-        return temp;
-    }
-
-    Date Date::operator+(int days) const {
-        return Date(serialNumber_+days);
-    }
-
-    Date Date::operator-(int days) const {
-        return Date(serialNumber_-days);
-    }
-
-    Date Date::plusDays(int days) const {
-        return Date(serialNumber_+days);
-    }
-
-    Date Date::plusWeeks(int weeks) const {
-        return Date(serialNumber_+weeks*7);
     }
 
     Date Date::plusMonths(int months) const {
@@ -363,35 +293,6 @@ namespace QuantLib {
 
     Size Date::yearOffset(Year y) {
         return YearOffset[y-1900];
-    }
-
-
-    int operator-(const Date& d1, const Date& d2) {
-        return d1.serialNumber()-d2.serialNumber();
-    }
-
-    bool operator==(const Date& d1, const Date& d2) {
-        return (d1.serialNumber() == d2.serialNumber());
-    }
-
-    bool operator!=(const Date& d1, const Date& d2) {
-        return (d1.serialNumber() != d2.serialNumber());
-    }
-
-    bool operator<(const Date& d1, const Date& d2) {
-        return (d1.serialNumber() < d2.serialNumber());
-    }
-
-    bool operator<=(const Date& d1, const Date& d2) {
-        return (d1.serialNumber() <= d2.serialNumber());
-    }
-
-    bool operator>(const Date& d1, const Date& d2) {
-        return (d1.serialNumber() > d2.serialNumber());
-    }
-
-    bool operator>=(const Date& d1, const Date& d2) {
-        return (d1.serialNumber() >= d2.serialNumber());
     }
 
     std::ostream& operator<< (std::ostream& stream, const Date& date) {

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file swaptionvolmatrix.hpp
     \brief Swaption volatility matrix
 
@@ -49,21 +50,22 @@ namespace QuantLib {
           public:
             SwaptionVolatilityMatrix(
                 const Date& todaysDate,
-                const DayCounter& dayCounter,
                 const std::vector<Date>& exerciseDates, 
-                const std::vector<Time>& lengths, 
-                const Math::Matrix& volatilities);
+                const std::vector<Period>& lengths, 
+                const Math::Matrix& volatilities,
+                const DayCounter& dayCounter = DayCounters::Thirty360());
             // inspectors
             Date todaysDate() const;
             DayCounter dayCounter() const;
             const std::vector<Date>& exerciseDates() const;
-            const std::vector<Time>& lengths() const;
+            const std::vector<Period>& lengths() const;
           private:
             Date todaysDate_;
             DayCounter dayCounter_;
             std::vector<Date> exerciseDates_;
             std::vector<Time> exerciseTimes_;
-            std::vector<Time> lengths_;
+            std::vector<Period> lengths_;
+            std::vector<Time> timeLengths_;
             Math::Matrix volatilities_;
             // interpolation
             typedef Math::BilinearInterpolation<
@@ -78,20 +80,30 @@ namespace QuantLib {
         // inline definitions
     
         inline SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-            const Date& today, const DayCounter& dayCounter, 
-            const std::vector<Date>& dates, 
-            const std::vector<Time>& lengths, const Math::Matrix& vols)
+            const Date& today, const std::vector<Date>& dates, 
+            const std::vector<Period>& lengths, const Math::Matrix& vols,
+            const DayCounter& dayCounter)
         : todaysDate_(today), dayCounter_(dayCounter), exerciseDates_(dates), 
           lengths_(lengths), volatilities_(vols) {
             exerciseTimes_.resize(exerciseDates_.size());
-            for (Size i=0; i<exerciseDates_.size(); i++)
+            timeLengths_.resize(lengths_.size());
+            Size i;
+            for (i=0; i<exerciseDates_.size(); i++) {
                 exerciseTimes_[i] = 
-                    dayCounter_.yearFraction(todaysDate_,exerciseDates_[i]);
+                    dayCounter_.yearFraction(todaysDate_,exerciseDates_[i],
+                                             todaysDate_,exerciseDates_[i]);
+            }
+            for (i=0; i<lengths_.size(); i++) {
+                Date startDate = exerciseDates_[0]; // as good as any
+                Date endDate = startDate.plus(lengths_[i]);
+                timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate,
+                                                           startDate,endDate);
+            }
             interpolation_ = Handle<VolInterpolation>(
                 new VolInterpolation(exerciseTimes_.begin(),
                                      exerciseTimes_.end(),
-                                     lengths_.begin(),
-                                     lengths_.end(),
+                                     timeLengths_.begin(),
+                                     timeLengths_.end(),
                                      volatilities_));
         }
 
@@ -108,7 +120,7 @@ namespace QuantLib {
             return exerciseDates_;
         }
         
-        inline const std::vector<Time>& 
+        inline const std::vector<Period>& 
         SwaptionVolatilityMatrix::lengths() const { 
             return lengths_;
         }

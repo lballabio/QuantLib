@@ -45,9 +45,12 @@ namespace QuantLib {
         //! returns the day counter used for internal date/time conversions
         virtual DayCounter dayCounter() const = 0;
         //! returns the volatility for a given starting date and length
-        double volatility(const Date& start, Time length) {
-            Time startTime = dayCounter().yearFraction(todaysDate(),start);
-            return volatilityImpl(startTime,length);
+        double volatility(const Date& start, const Period& length) {
+            Time startTime = dayCounter().yearFraction(todaysDate(),start,
+                                                       todaysDate(),start);
+            Date end = start.plus(length);
+            Time timeLength = dayCounter().yearFraction(start,end,start,end);
+            return volatilityImpl(startTime,timeLength);
         }
         //! returns the volatility for a given starting time and length
         double volatility(Time start, Time length) {
