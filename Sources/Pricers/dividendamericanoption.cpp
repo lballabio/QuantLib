@@ -35,7 +35,7 @@ namespace QuantLib {
 		   std::vector<double> dividends, std::vector<Time> exdivdates)
 			:theDividends(dividends),theExDivDates(exdivdates), theNumberOfDivs(dividends.size()),
 			BSMNumericalOption(type, underlying-addElements(dividends), strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
-			  (residualTime>1.0 ? (int)(100+(residualTime-1.0)*50) : 100)*4+1){
+			  (residualTime>1.0 ? (int)(100+(residualTime-1.0)*50) : 100)+1){
 
 			Require(theNumberOfDivs==theExDivDates.size(),"the number of dividends is diffrent from	that of	dates");
 			Require(theNumberOfDivs>=1,"the	number of dividends must be at least one");
@@ -72,10 +72,10 @@ namespace QuantLib {
 					else
 						endDate	= 0.0;
 					if(theOptionIsAmerican)
-						model.rollback(prices,beginDate,endDate,200,americanCondition);
+						model.rollback(prices,beginDate,endDate,theGridPoints-1,americanCondition);
 					else
-						model.rollback(prices,beginDate,endDate,200);
-					model.rollback(controlPrices,beginDate,endDate,200);
+						model.rollback(prices,beginDate,endDate,theGridPoints-1);
+					model.rollback(controlPrices,beginDate,endDate,theGridPoints-1);
 					beginDate = endDate;
 
 					if(j >=	0){
@@ -100,7 +100,7 @@ namespace QuantLib {
 				theValue = valueAtCenter(prices)-valueAtCenter(controlPrices)+analitic.value();
 				theDelta = firstDerivativeAtCenter(prices,theGrid)-firstDerivativeAtCenter(controlPrices,theGrid)+analitic.delta();
 				theGamma = secondDerivativeAtCenter(prices,theGrid)-secondDerivativeAtCenter(controlPrices,theGrid)+analitic.gamma();
-				theTheta = 0.0;	//!To be fixed,	eventually
+				theTheta = 0.0;	//!To be implementeded,	eventually
 				hasBeenCalculated = true;
 			}
 			return theValue;
