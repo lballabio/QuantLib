@@ -32,7 +32,7 @@ namespace QuantLib {
         Size i;
         switch (arguments_.exercise->type()) {
           case Exercise::American:
-            if (now <= arguments_.stoppingTimes[1] && 
+            if (now <= arguments_.stoppingTimes[1] &&
                 now >= arguments_.stoppingTimes[0])
                 applySpecificCondition();
             break;
@@ -52,16 +52,16 @@ namespace QuantLib {
     }
 
     void DiscretizedVanillaOption::applySpecificCondition() {
-        boost::shared_ptr<BlackScholesLattice> lattice = 
+        boost::shared_ptr<BlackScholesLattice> lattice =
             boost::dynamic_pointer_cast<BlackScholesLattice>(method());
         QL_REQUIRE(lattice, "non-Black-Scholes lattice given");
         boost::shared_ptr<Tree> tree(lattice->tree());
         Size i = method()->timeGrid().findIndex(time());
 
         for (Size j=0; j<values_.size(); j++) {
-            values_[j] = 
-                QL_MAX(values_[j],
-                       (*arguments_.payoff)(tree->underlying(i, j)));
+            values_[j] =
+                std::max(values_[j],
+                         (*arguments_.payoff)(tree->underlying(i, j)));
         }
     }
 

@@ -81,8 +81,8 @@ namespace QuantLib {
                     remainingAssets[removeAsset] = false;
                     averagePrice += bestPrice;
                 }
-                averagePrice /= QL_MIN(fixings, numAssets);
-                Real optPrice = QL_MAX<Real>(averagePrice - strike_, 0.0);
+                averagePrice /= std::min(fixings, numAssets);
+                Real optPrice = std::max<Real>(averagePrice - strike_, 0.0);
 
                 return discount_ * optPrice;
             }

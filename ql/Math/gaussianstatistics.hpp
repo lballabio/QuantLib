@@ -173,7 +173,7 @@ namespace QuantLib {
 
         Real result = gaussianPercentile(percentile);
         // potential upside must be a gain, i.e., floored at 0.0
-        return QL_MAX<Real>(result, 0.0);
+        return std::max<Real>(result, 0.0);
     }
 
 
@@ -191,7 +191,7 @@ namespace QuantLib {
         // VAR must be a loss
         // this means that it has to be MIN(dist(1.0-percentile), 0.0)
         // VAR must also be a positive quantity, so -MIN(*)
-        return -QL_MIN<Real>(result, 0.0);
+        return -std::min<Real>(result, 0.0);
     }
 
 
@@ -213,7 +213,7 @@ namespace QuantLib {
         // expectedShortfall must be a loss
         // this means that it has to be MIN(result, 0.0)
         // expectedShortfall must also be a positive quantity, so -MIN(*)
-        return -QL_MIN<Real>(result, 0.0);
+        return -std::min<Real>(result, 0.0);
     }
 
 

@@ -364,7 +364,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                 "    expected:         "
                 + DecimalFormatter::toString(cases5[l].result,10));
         Real tolerance = pricer.errorEstimate()/value;
-        tolerance = QL_MIN<Real>(tolerance/2.0, minimumTol);
+        tolerance = std::min<Real>(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
         Real accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
@@ -399,7 +399,7 @@ namespace {
                 + DecimalFormatter::toString(storedValue,10));
 
         tolerance = pricer.errorEstimate()/value;
-        tolerance = QL_MIN<Real>(tolerance/2.0, minimumTol);
+        tolerance = std::min<Real>(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
         Real accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)

@@ -89,7 +89,7 @@ namespace QuantLib {
         } else {
             return nominal() * rate() *
                 dayCounter().yearFraction(accrualStartDate_,
-                                          QL_MIN(d,accrualEndDate_),
+                                          std::min(d,accrualEndDate_),
                                           refPeriodStart_,
                                           refPeriodEnd_);
         }

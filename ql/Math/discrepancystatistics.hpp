@@ -66,7 +66,7 @@ namespace QuantLib {
                     r_ik = stats_[k].data()[m].first;
                     // fixed j=N
                     r_jk = *it;
-                    temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                    temp *= (1.0 - std::max(r_ik, r_jk));
                 }
                 adiscr_ += temp;
 
@@ -76,7 +76,7 @@ namespace QuantLib {
                     r_ik = *it;
                     // running j=1..(N-1)
                     r_jk = stats_[k].data()[m].first;
-                    temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                    temp *= (1.0 - std::max(r_ik, r_jk));
                 }
                 adiscr_ += temp;
             }
@@ -84,7 +84,7 @@ namespace QuantLib {
             for (k=0, it=begin; k<dimension_; ++it, ++k) {
                 // fixed i=N, j=N
                 r_ik = r_jk = *it;
-                temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                temp *= (1.0 - std::max(r_ik, r_jk));
             }
             adiscr_ += temp;
         }

@@ -264,8 +264,8 @@ namespace QuantLib {
                         if (i==0) {
                             if (tmp[i]*S[0]>0.0) {
                                 correction = tmp[i]/std::fabs(tmp[i]) *
-                                    QL_MIN<Real>(std::fabs(tmp[i]),
-                                                 std::fabs(3.0*S[0]));
+                                    std::min<Real>(std::fabs(tmp[i]),
+                                                   std::fabs(3.0*S[0]));
                             } else {
                                 correction = 0.0;
                             }
@@ -276,8 +276,8 @@ namespace QuantLib {
                         } else if (i==n_-1) {
                             if (tmp[i]*S[n_-2]>0.0) {
                                 correction = tmp[i]/std::fabs(tmp[i]) *
-                                    QL_MIN<Real>(std::fabs(tmp[i]),
-                                                 std::fabs(3.0*S[n_-2]));
+                                    std::min<Real>(std::fabs(tmp[i]),
+                                                   std::fabs(3.0*S[n_-2]));
                             } else {
                                 correction = 0.0;
                             }
@@ -288,16 +288,16 @@ namespace QuantLib {
                         } else {
                             pm=(S[i-1]*dx[i]+S[i]*dx[i-1])/
                                 (dx[i-1]+dx[i]);
-                            M = 3.0 * QL_MIN(QL_MIN(std::fabs(S[i-1]),
-                                                    std::fabs(S[i])),
-                                             std::fabs(pm));
+                            M = 3.0 * std::min(std::min(std::fabs(S[i-1]),
+                                                        std::fabs(S[i])),
+                                               std::fabs(pm));
                             if (i>1) {
                                 if ((S[i-1]-S[i-2])*(S[i]-S[i-1])>0.0) {
                                     pd=(S[i-1]*(2.0*dx[i-1]+dx[i-2])
                                         -S[i-2]*dx[i-1])/
                                         (dx[i-2]+dx[i-1]);
                                     if (pm*pd>0.0 && pm*(S[i-1]-S[i-2])>0.0) {
-                                        M = QL_MAX<Real>(M, 1.5*QL_MIN(
+                                        M = std::max<Real>(M, 1.5*std::min(
                                                 std::fabs(pm),std::fabs(pd)));
                                     }
                                 }
@@ -307,14 +307,14 @@ namespace QuantLib {
                                     pu=(S[i]*(2.0*dx[i]+dx[i+1])-S[i+1]*dx[i])/
                                         (dx[i]+dx[i+1]);
                                     if (pm*pu>0.0 && -pm*(S[i]-S[i-1])>0.0) {
-                                        M = QL_MAX<Real>(M, 1.5*QL_MIN(
+                                        M = std::max<Real>(M, 1.5*std::min(
                                                 std::fabs(pm),std::fabs(pu)));
                                     }
                                 }
                             }
                             if (tmp[i]*pm>0.0) {
                                 correction = tmp[i]/std::fabs(tmp[i]) *
-                                    QL_MIN(std::fabs(tmp[i]), M);
+                                    std::min(std::fabs(tmp[i]), M);
                             } else {
                                 correction = 0.0;
                             }

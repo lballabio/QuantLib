@@ -118,7 +118,7 @@ namespace QuantLib {
         Date d = calendar_.advance(Settings::instance().evaluationDate(),
                                    settlementDays_, Days);
         // ...but the bond won't be traded until the issue date.
-        return QL_MAX(d, issueDate_);
+        return std::max(d, issueDate_);
     }
 
     Real Bond::cleanPrice(Rate yield, Date settlement) const {

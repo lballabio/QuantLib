@@ -32,8 +32,5 @@
 #define HAVE_CTIME   1
 #define HAVE_CCTYPE  1
 
-#define QL_MIN       std::min
-#define QL_MAX       std::max
-
 
 #endif

@@ -79,10 +79,6 @@ QL_CHECK_CONSTANT([M_1_SQRTPI],[double],[$ql_math],
 QL_CHECK_HEADER([ctype])
 QL_CHECK_HEADER([time])
 
-AC_CHECK_HEADERS([algorithm],,[AC_MSG_WARN([<algorithm> not found])])
-QL_CHECK_FUNC([min],[1,2],[algorithm])
-QL_CHECK_FUNC([max],[1,2],[algorithm])
-
 # Check for Boost components
 QL_CHECK_BOOST
 AM_CONDITIONAL(BOOST_UNIT_TEST_FOUND, test "x${BOOST_UNIT_TEST_LIB}" != "x")

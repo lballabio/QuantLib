@@ -91,11 +91,11 @@ namespace QuantLib {
         registerWith(underlyingBlackVolTS_);
         registerWith(exchRateBlackVolTS_);
 
-        maxDate_ = QL_MIN(underlyingDividendTS_->maxDate(),
-                          riskFreeTS_->maxDate());
-        maxDate_ = QL_MIN(maxDate_, foreignRiskFreeTS_->maxDate());
-        maxDate_ = QL_MIN(maxDate_, underlyingBlackVolTS_->maxDate());
-        maxDate_ = QL_MIN(maxDate_, exchRateBlackVolTS_->maxDate());
+        maxDate_ = std::min(underlyingDividendTS_->maxDate(),
+                            riskFreeTS_->maxDate());
+        maxDate_ = std::min(maxDate_, foreignRiskFreeTS_->maxDate());
+        maxDate_ = std::min(maxDate_, underlyingBlackVolTS_->maxDate());
+        maxDate_ = std::min(maxDate_, exchRateBlackVolTS_->maxDate());
 
     }
 

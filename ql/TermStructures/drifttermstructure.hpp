@@ -71,9 +71,9 @@ namespace QuantLib {
         registerWith(dividendTS_);
         registerWith(blackVolTS_);
 
-        maxDate_ = QL_MIN(dividendTS_->maxDate(),
-                          riskFreeTS_->maxDate());
-        maxDate_ = QL_MIN(maxDate_, blackVolTS_->maxDate());
+        maxDate_ = std::min(dividendTS_->maxDate(),
+                            riskFreeTS_->maxDate());
+        maxDate_ = std::min(maxDate_, blackVolTS_->maxDate());
     }
 
     inline Calendar DriftTermStructure::calendar() const {

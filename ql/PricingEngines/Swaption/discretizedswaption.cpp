@@ -71,7 +71,7 @@ namespace QuantLib {
     void DiscretizedSwaption::reset(Size size) {
         Time lastFixedPay = arguments_.fixedPayTimes.back();
         Time lastFloatPay = arguments_.floatingPayTimes.back();
-        underlying_->initialize(method(),QL_MAX(lastFixedPay,lastFloatPay));
+        underlying_->initialize(method(),std::max(lastFixedPay,lastFloatPay));
         DiscretizedOption::reset(size);
     }
 

@@ -104,20 +104,21 @@ namespace QuantLib {
         while (error > tolerance) {
             QL_REQUIRE(sampleNumber<maxSamples,
                 "max number of samples ("
-                + IntegerFormatter::toString(maxSamples) + 
+                + IntegerFormatter::toString(maxSamples) +
                 ") reached, while error ("
-                + DecimalFormatter::toString(error) + 
+                + DecimalFormatter::toString(error) +
                 ") is still above tolerance ("
-                + DecimalFormatter::toString(tolerance) + 
+                + DecimalFormatter::toString(tolerance) +
                 ")");
 
             // conservative estimate of how many samples are needed
             order = error*error/tolerance/tolerance;
-            nextBatch = Size(QL_MAX<Real>(sampleNumber*order*0.8-sampleNumber,
-                                          minSample_));
+            nextBatch =
+                Size(std::max<Real>(sampleNumber*order*0.8-sampleNumber,
+                                    minSample_));
 
             // do not exceed maxSamples
-            nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
+            nextBatch = std::min(nextBatch, maxSamples-sampleNumber);
             sampleNumber += nextBatch;
             mcModel_->addSamples(nextBatch);
             error = mcModel_->sampleAccumulator().errorEstimate();

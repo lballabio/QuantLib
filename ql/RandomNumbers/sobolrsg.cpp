@@ -1312,7 +1312,7 @@ namespace QuantLib {
             case Jaeckel:
                 // maxTabulated=32
                 maxTabulated = sizeof(initializers)/sizeof(unsigned long *)+1;
-                for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
+                for (k=1; k<std::min(dimensionality_, maxTabulated); k++) {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (initializers[k-1][j] != 0UL) {
@@ -1325,7 +1325,7 @@ namespace QuantLib {
             case SobolLevitan:
                 // maxTabulated=40
                 maxTabulated = sizeof(SLinitializers)/sizeof(unsigned long *)+1;
-                for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
+                for (k=1; k<std::min(dimensionality_, maxTabulated); k++) {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (SLinitializers[k-1][j] != 0UL) {
@@ -1338,7 +1338,7 @@ namespace QuantLib {
             case SobolLevitanLemieux:
                 // maxTabulated=360
                 maxTabulated = sizeof(Linitializers)/sizeof(unsigned long *)+1;
-                for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
+                for (k=1; k<std::min(dimensionality_, maxTabulated); k++) {
                     j = 0;
                     // 0UL marks coefficients' end for a given dimension
                     while (Linitializers[k-1][j] != 0UL) {
@@ -1409,7 +1409,7 @@ namespace QuantLib {
         /* bool printDirectionIntegers = false;
            if (printDirectionIntegers) {
                std::ofstream outStream("directionIntegers.txt");
-               for (k=0; k<QL_MIN(32UL,dimensionality_); k++) {
+               for (k=0; k<std::min(32UL,dimensionality_); k++) {
                    outStream << std::endl << k+1       << "\t"
                                           << degree[k] << "\t"
                                           << ppmt[k]   << "\t";

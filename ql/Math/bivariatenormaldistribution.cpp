@@ -32,8 +32,8 @@ namespace QuantLib {
         CumulativeNormalDistribution cumNormalDist;
         Real CumNormDistA = cumNormalDist(a);
         Real CumNormDistB = cumNormalDist(b);
-        Real MaxCumNormDistAB = QL_MAX(CumNormDistA, CumNormDistB);
-        Real MinCumNormDistAB = QL_MIN(CumNormDistA, CumNormDistB);
+        Real MaxCumNormDistAB = std::max(CumNormDistA, CumNormDistB);
+        Real MinCumNormDistAB = std::min(CumNormDistA, CumNormDistB);
 
         if (1.0-MaxCumNormDistAB<1e-15)
             return MinCumNormDistAB;

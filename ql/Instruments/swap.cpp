@@ -37,9 +37,9 @@ namespace QuantLib {
         Date lastPayment = Date::minDate();
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
         for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
-            lastPayment = QL_MAX(lastPayment, (*i)->date());
+            lastPayment = std::max(lastPayment, (*i)->date());
         for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
-            lastPayment = QL_MAX(lastPayment, (*i)->date());
+            lastPayment = std::max(lastPayment, (*i)->date());
         #if QL_TODAYS_PAYMENTS
         return lastPayment < termStructure_->referenceDate();
         #else
@@ -96,13 +96,13 @@ namespace QuantLib {
             boost::shared_ptr<Coupon> c =
                 boost::dynamic_pointer_cast<Coupon>(firstLeg_[i]);
             if (c)
-                d = QL_MIN(d, c->accrualStartDate());
+                d = std::min(d, c->accrualStartDate());
         }
         for (i=0; i<secondLeg_.size(); i++) {
             boost::shared_ptr<Coupon> c =
                 boost::dynamic_pointer_cast<Coupon>(secondLeg_[i]);
             if (c)
-                d = QL_MIN(d, c->accrualStartDate());
+                d = std::min(d, c->accrualStartDate());
         }
         QL_REQUIRE(d != Date::maxDate(),
                    "not enough information available");
@@ -113,9 +113,9 @@ namespace QuantLib {
         Date d = Date::minDate();
         Size i;
         for (i=0; i<firstLeg_.size(); i++)
-            d = QL_MAX(d, firstLeg_[i]->date());
+            d = std::max(d, firstLeg_[i]->date());
         for (i=0; i<secondLeg_.size(); i++)
-            d = QL_MAX(d, secondLeg_[i]->date());
+            d = std::max(d, secondLeg_[i]->date());
         QL_REQUIRE(d != Date::minDate(), "empty swap");
         return d;
     }

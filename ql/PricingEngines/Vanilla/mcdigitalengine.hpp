@@ -162,7 +162,7 @@ namespace QuantLib {
 
         DayCounter rfdc = process->riskFreeRate()->dayCounter();
         Time t = rfdc.yearFraction(refDate, lastExerciseDate);
-        return TimeGrid(t, Size(QL_MAX<Real>(
+        return TimeGrid(t, Size(std::max<Real>(
             t * this->maxTimeStepsPerYear_, 1.0)));
     }
 

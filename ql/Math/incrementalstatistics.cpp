@@ -67,8 +67,8 @@ namespace QuantLib {
         if (oldSamples == 0) {
             min_ = max_ = value;
         } else {
-            min_=QL_MIN(value, min_);
-            max_=QL_MAX(value, max_);
+            min_ = std::min(value, min_);
+            max_ = std::max(value, max_);
         }
     }
 

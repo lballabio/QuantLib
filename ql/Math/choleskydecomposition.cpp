@@ -45,7 +45,7 @@ namespace QuantLib {
                                "input matrix is not positive definite");
                     // To handle positive semi-definite matrices take the
                     // square root of sum if positive, else zero.
-                    result[i][i] = std::sqrt(QL_MAX<Real>(sum, 0.0));
+                    result[i][i] = std::sqrt(std::max<Real>(sum, 0.0));
                 } else {
                     // With positive semi-definite matrices is possible
                     // to have result[i][i]==0.0

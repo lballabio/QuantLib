@@ -37,7 +37,7 @@ namespace QuantLib {
                     Real strike = 1.0/accrual;
                     for (Size j=0; j<values_.size(); j++)
                         values_[j] += arguments_.nominals[i]*accrual*
-                            QL_MAX<Real>(strike - bond.values()[j], 0.0);
+                            std::max<Real>(strike - bond.values()[j], 0.0);
                 }
 
                 if ( (type == CapFloor::Floor) ||
@@ -47,7 +47,7 @@ namespace QuantLib {
                     Real mult = (type == CapFloor::Floor)?1.0:-1.0;
                     for (Size j=0; j<values_.size(); j++)
                         values_[j] += arguments_.nominals[i]*accrual*mult*
-                            QL_MAX<Real>(bond.values()[j] - strike, 0.0);
+                            std::max<Real>(bond.values()[j] - strike, 0.0);
                 }
             }
         }
@@ -64,13 +64,13 @@ namespace QuantLib {
 
                     if (type == CapFloor::Cap || type == CapFloor::Collar) {
                         Rate cap = arguments_.capRates[i];
-                        Rate capletRate = QL_MAX(fixing-cap, 0.0);
+                        Rate capletRate = std::max(fixing-cap, 0.0);
                         values_ += capletRate*accrual*nominal;
                     }
 
                     if (type == CapFloor::Floor || type == CapFloor::Collar) {
                         Rate floor = arguments_.floorRates[i];
-                        Rate floorletRate = QL_MAX(floor-fixing, 0.0);
+                        Rate floorletRate = std::max(floor-fixing, 0.0);
                         if (type == CapFloor::Floor)
                             values_ += floorletRate*accrual*nominal;
                         else

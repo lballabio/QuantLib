@@ -79,10 +79,11 @@ namespace QuantLib {
             // conservative estimate of how many samples are needed
             order = accuracy*accuracy/tolerance/tolerance;
 
-            nextBatch = Size(QL_MAX<Real>(sampleNumber*order*0.8-sampleNumber,
-                                          minSample_));
+            nextBatch =
+                Size(std::max<Real>(sampleNumber*order*0.8-sampleNumber,
+                                    minSample_));
             // do not exceed maxSamples
-            nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
+            nextBatch = std::min(nextBatch, maxSamples-sampleNumber);
             QL_REQUIRE(nextBatch>0,
                        "max number of samples exceeded");
 

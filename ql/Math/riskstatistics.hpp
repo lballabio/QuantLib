@@ -172,7 +172,7 @@ namespace QuantLib {
                    ") out of range [0.9, 1.0)");
 
         // potential upside must be a gain, i.e., floored at 0.0
-        return QL_MAX<Real>(this->percentile(centile), 0.0);
+        return std::max<Real>(this->percentile(centile), 0.0);
     }
 
     /*! \pre percentile must be in range [90%-100%) */
@@ -185,7 +185,7 @@ namespace QuantLib {
                    ") out of range [0.9, 1.0)");
 
         // must be a loss, i.e., capped at 0.0 and negated
-        return -QL_MIN<Real>(this->percentile(1.0-centile), 0.0);
+        return -std::min<Real>(this->percentile(1.0-centile), 0.0);
     }
 
     /*! \pre percentile must be in range [90%-100%) */
@@ -206,7 +206,7 @@ namespace QuantLib {
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");
         // must be a loss, i.e., capped at 0.0 and negated
-        return -QL_MIN<Real>(x, 0.0);
+        return -std::min<Real>(x, 0.0);
     }
 
     template <class S>

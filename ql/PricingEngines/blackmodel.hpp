@@ -84,13 +84,13 @@ namespace QuantLib {
     */
     inline Real BlackModel::formula(Real f, Real k, Real v, Real w) {
         if (std::fabs(v) < QL_EPSILON)
-            return QL_MAX(f*w - k*w, Real(0.0));
+            return std::max(f*w - k*w, Real(0.0));
         Real d1 = std::log(f/k)/v + 0.5*v;
         Real d2 = d1 - v;
         CumulativeNormalDistribution phi;
         Real result = w*(f*phi(w*d1) - k*phi(w*d2));
         // numerical inaccuracies can yield a negative answer
-        return QL_MAX(Real(0.0), result);
+        return std::max(Real(0.0), result);
     }
 
     /*! Returns

@@ -308,7 +308,7 @@ namespace QuantLib {
         Date endValueDate = calendar_.advance(fixingValueDate,
                                               12/floatingFrequency_,Months,
                                               floatingConvention_);
-        latestDate_ = QL_MAX(latestDate_,endValueDate);
+        latestDate_ = std::max(latestDate_,endValueDate);
         #endif
     }
 

@@ -122,27 +122,27 @@ namespace QuantLib {
             lastContribution = std::fabs(baseResults->value /
                 (std::fabs(results_.value)>QL_EPSILON ? results_.value : 1.0));
 
-            lastContribution = QL_MAX<Real>(lastContribution,
+            lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->delta /
                (std::fabs(results_.delta)>QL_EPSILON ? results_.delta : 1.0)));
 
-            lastContribution = QL_MAX<Real>(lastContribution,
+            lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->gamma /
                (std::fabs(results_.gamma)>QL_EPSILON ? results_.gamma : 1.0)));
 /*
-            lastContribution = QL_MAX<Real>(lastContribution,
+            lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->theta /
                (std::fabs(results_.theta)>QL_EPSILON ? results_.theta : 1.0)));
 
-            lastContribution = QL_MAX<Real>(lastContribution,
+            lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->vega /
                (std::fabs(results_.vega)>QL_EPSILON ? results_.vega : 1.0)));
 */
-            lastContribution = QL_MAX<Real>(lastContribution,
+            lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->rho /
                (std::fabs(results_.rho)>QL_EPSILON ? results_.rho : 1.0)));
 
-            lastContribution = QL_MAX<Real>(lastContribution,
+            lastContribution = std::max<Real>(lastContribution,
                 std::fabs(baseResults->dividendRho /
                (std::fabs(results_.dividendRho)>QL_EPSILON ?
                                           results_.dividendRho : 1.0)));

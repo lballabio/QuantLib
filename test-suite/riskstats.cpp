@@ -55,8 +55,8 @@ void RiskStatisticsTest::testResults() {
             dataMax = QL_MIN_REAL;
             for (k=0; k<N; k++) {
                 data[k] = inverseCum(rng.nextSequence().value[0]);
-                dataMin = QL_MIN(dataMin, data[k]);
-                dataMax = QL_MAX(dataMax, data[k]);
+                dataMin = std::min(dataMin, data[k]);
+                dataMax = std::max(dataMax, data[k]);
                 weights[k]=1.0;
             }
 
@@ -389,7 +389,7 @@ void RiskStatisticsTest::testResults() {
                  lower_tail = averages[i]-2.0*sigmas[j];
             Real twoSigma = cumulative(upper_tail);
 
-            expected = QL_MAX<Real>(upper_tail,0.0);
+            expected = std::max<Real>(upper_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 :
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianPotentialUpside(twoSigma);
@@ -449,7 +449,7 @@ void RiskStatisticsTest::testResults() {
 
 
             // value-at-risk
-            expected = -QL_MIN<Real>(lower_tail,0.0);
+            expected = -std::min<Real>(lower_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 :
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianValueAtRisk(twoSigma);
@@ -511,10 +511,10 @@ void RiskStatisticsTest::testResults() {
 
 
             // expected shortfall
-            expected = -QL_MIN<Real>(averages[i]
-                                     - sigmas[j]*sigmas[j]
-                                     * normal(lower_tail)/(1.0-twoSigma),
-                                     0.0);
+            expected = -std::min<Real>(averages[i]
+                                       - sigmas[j]*sigmas[j]
+                                       * normal(lower_tail)/(1.0-twoSigma),
+                                       0.0);
             tolerance = (expected == 0.0 ? 1.0e-4
                                          : std::fabs(expected)*1.0e-2);
             calculated = igs.gaussianExpectedShortfall(twoSigma);

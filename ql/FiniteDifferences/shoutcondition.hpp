@@ -71,12 +71,12 @@ namespace QuantLib {
             QL_REQUIRE(intrinsicValues_.size() == a.size(),
                        "size mismatch");
             for (Size i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i],
-                              disc * intrinsicValues_[i] );
+                a[i] = std::max(a[i],
+                                disc * intrinsicValues_[i] );
         } else {
             for (Size i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i],
-                              (*payoff_)(a[i]) * disc);
+                a[i] = std::max(a[i],
+                                (*payoff_)(a[i]) * disc);
         }
     }
 

@@ -20,13 +20,13 @@
 namespace QuantLib {
 
     FdBermudanOption::FdBermudanOption(Option::Type type, Real underlying,
-                                       Real strike, Spread dividendYield, 
-                                       Rate riskFreeRate, Time residualTime, 
+                                       Real strike, Spread dividendYield,
+                                       Rate riskFreeRate, Time residualTime,
                                        Volatility volatility,
                                        const std::vector<Time>& dates,
                                        Size timeSteps, Size gridPoints)
     : FdMultiPeriodOption(type, underlying, strike, dividendYield,
-                          riskFreeRate, residualTime, volatility, 
+                          riskFreeRate, residualTime, volatility,
                           gridPoints, dates, timeSteps) {}
 
     void FdBermudanOption::initializeStepCondition() const{
@@ -37,13 +37,13 @@ namespace QuantLib {
 
         Size size = intrinsicValues_.size();
         for(Size j = 0; j < size; j++)
-            prices_[j] = QL_MAX(prices_[j], intrinsicValues_[j]);
+            prices_[j] = std::max(prices_[j], intrinsicValues_[j]);
     }
 
     boost::shared_ptr<SingleAssetOption> FdBermudanOption::clone() const {
         return boost::shared_ptr<SingleAssetOption>(new FdBermudanOption(
-                       payoff_.optionType(), underlying_, payoff_.strike(), 
-                       dividendYield_, riskFreeRate_, residualTime_, 
+                       payoff_.optionType(), underlying_, payoff_.strike(),
+                       dividendYield_, riskFreeRate_, residualTime_,
                        volatility_, dates_, timeStepPerPeriod_, gridPoints_));
     }
 

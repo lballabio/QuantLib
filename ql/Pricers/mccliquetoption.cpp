@@ -89,8 +89,8 @@ namespace QuantLib {
                             PlainVanillaPayoff(type_,
                                                moneyness_*lastFixing)
                             (underlying) / lastFixing;
-                        payoff = QL_MAX(payoff, localFloor_);
-                        payoff = QL_MIN(payoff, localCap_);
+                        payoff = std::max(payoff, localFloor_);
+                        payoff = std::min(payoff, localCap_);
                         if (redemptionOnly_)
                             result += payoff;
                         else
@@ -100,8 +100,8 @@ namespace QuantLib {
                     lastFixing = underlying;
                 }
                 if (redemptionOnly_) {
-                    result = QL_MAX(result, globalFloor_);
-                    result = QL_MIN(result, globalCap_);
+                    result = std::max(result, globalFloor_);
+                    result = std::min(result, globalCap_);
                 }
 
                 if (redemptionOnly_) {

@@ -282,8 +282,11 @@
 /*! \defgroup timeMacros Time functions
 
     Some compilers still define time functions in the global namespace.
-    For the code to be portable these macros should be used instead of
-    the actual functions.
+    For the code to be portable these macros had to be
+    used instead of the actual functions. However, Boost provides
+    the means of bypassing this limitation; therefore, all these
+    macros are now deprecated in favor of the actual functions in
+    namespace std.
 
     @{
 */
@@ -325,8 +328,11 @@
 /*! \defgroup charMacros Character functions
 
     Some compilers still define character functions in the global
-    namespace.  For the code to be portable these macros should be
-    used instead of the actual functions.
+    namespace.  For the code to be portable these macros had to be
+    used instead of the actual functions. However, Boost provides
+    the means of bypassing this limitation; therefore, all these
+    macros are now deprecated in favor of the actual functions in
+    namespace std.
 
     @{
 */
@@ -360,25 +366,25 @@
     Some compilers still do not define <code>std::min</code> and
     <code>std::max</code>. Moreover, Visual C++ 6 defines them but for
     unfathomable reasons garble their names.  For the code to be
-    portable these macros should be used instead of the actual
-    functions.
+    portable these macros had to be used instead of the actual
+    functions. However, Boost provides the means of bypassing this
+    limitation; therefore, all these macros are now deprecated in
+    favor of the actual functions in namespace std.
 
     @{
 */
-/*! \def QL_MIN \brief minimum between two elements */
-/*! \def QL_MAX \brief maximum between two elements */
 #include <algorithm>
-#if !defined(QL_MIN)
-    template <class T> inline const T& quantlib_min__(const T& x, const T& y) {
-        return x < y ? x : y;
-    }
-    #define QL_MIN  quantlib_min__
-#endif
-#if !defined(QL_MAX)
-    template <class T> inline const T& quantlib_max__(const T& x, const T& y) {
-        return x > y ? x : y;
-    }
-    #define QL_MAX  quantlib_max__
+#ifndef QL_DISABLE_DEPRECATED
+/*! \def QL_MIN
+    \brief minimum between two elements
+    \deprecated use std::min instead
+*/
+#define QL_MIN std::min
+/*! \def QL_MAX
+    \brief maximum between two elements
+    \deprecated use std::max instead
+*/
+#define QL_MAX std::max
 #endif
 /*! @} */
 

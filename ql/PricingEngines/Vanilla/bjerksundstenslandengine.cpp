@@ -49,8 +49,8 @@ namespace QuantLib {
                 std::sqrt(std::pow((bT/variance - 0.5), Real(2.0))
                           + 2.0 * rT/variance);
             Real BInfinity = Beta / (Beta - 1.0) * X;
-            // Real B0 = QL_MAX(X, std::log(rfD) / std::log(dD) * X);
-            Real B0 = QL_MAX(X, rT / (rT - bT) * X);
+            // Real B0 = std::max(X, std::log(rfD) / std::log(dD) * X);
+            Real B0 = std::max(X, rT / (rT - bT) * X);
             Real ht = -(bT + 2.0*std::sqrt(variance)) * B0 / (BInfinity - B0);
 
             // investigate what happen to I for dD->0.0

@@ -447,7 +447,7 @@ namespace QuantLib {
     }
 
     inline Disposable<Array> Matrix::diagonal(void) const{
-        Size arraySize = QL_MIN(rows(),columns());
+        Size arraySize = std::min(rows(),columns());
         Array tmp(arraySize);
         for(Size i = 0; i < arraySize; i++)
             tmp[i] = (*this)[i][i];

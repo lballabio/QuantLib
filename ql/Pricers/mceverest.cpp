@@ -37,8 +37,8 @@ namespace QuantLib {
                     log_variation = 0.0;
                     for( i = 0; i < numSteps; i++)
                         log_variation += multiPath[j][i];
-                    minPrice = QL_MIN(minPrice,
-                                      std::exp(log_variation));
+                    minPrice = std::min(minPrice,
+                                        std::exp(log_variation));
                 }
 
                 return discount_ * minPrice;

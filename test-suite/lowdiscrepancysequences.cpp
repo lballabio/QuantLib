@@ -752,7 +752,7 @@ namespace {
         BigNatural seed = 123456;
         Real discr;
         // more than 1 discrepancy measures take long time
-        Size sampleLoops = QL_MAX<Size>(1, discrepancyMeasuresNumber);
+        Size sampleLoops = std::max<Size>(1, discrepancyMeasuresNumber);
 
         #ifdef PRINT_ONLY
         std::ofstream outStream(fileName.c_str());

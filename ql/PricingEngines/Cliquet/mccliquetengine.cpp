@@ -89,8 +89,8 @@ namespace QuantLib {
                 if (lastFixing != Null<Real>()) {
                     payoff = PlainVanillaPayoff(type_,
                         moneyness_*lastFixing)(underlying) / lastFixing;
-                    payoff = QL_MAX(payoff, localFloor_);
-                    payoff = QL_MIN(payoff, localCap_);
+                    payoff = std::max(payoff, localFloor_);
+                    payoff = std::min(payoff, localCap_);
                     result += payoff;
                     if (result>=globalCap_) {
                         result = globalCap_;
@@ -100,7 +100,7 @@ namespace QuantLib {
                 // new fixing
                 lastFixing = underlying;
             } // end of for loop
-            result = QL_MAX(result, globalFloor_) *
+            result = std::max(result, globalFloor_) *
                 riskFreeTS_->discount(pathTimes.back());
             return result;
         } else {
@@ -116,9 +116,9 @@ namespace QuantLib {
                 if (lastFixing != Null<Real>()) {
                     payoff = PlainVanillaPayoff(type_,
                         moneyness_*lastFixing)(underlying) / lastFixing;
-                    payoff = QL_MAX(payoff, localFloor_);
-                    payoff = QL_MIN(payoff, localCap_);
-                    payoff = QL_MIN(payoff, globalCap_-couponNominal);
+                    payoff = std::max(payoff, localFloor_);
+                    payoff = std::min(payoff, localCap_);
+                    payoff = std::min(payoff, globalCap_-couponNominal);
                     couponNominal += payoff;
                     result += payoff * riskFreeTS_->discount(fixingTimes[i]);
                     if (couponNominal>=globalCap_) {

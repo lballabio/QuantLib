@@ -40,7 +40,7 @@ namespace QuantLib {
                 for (Size k=0; k<dimension_; k++) {
                     r_jk = stats_[k].sampleData()[j].first;
                     r_ik = stats_[k].sampleData()[i].first;
-                    temp *= (1.0 - QL_MAX(r_ik, r_jk));
+                    temp *= (1.0 - std::max(r_ik, r_jk));
                 }
                 adiscr += temp;
             }

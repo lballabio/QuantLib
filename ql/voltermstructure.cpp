@@ -48,7 +48,7 @@ namespace QuantLib {
                 Real var = blackVarianceImpl(epsilon, strike);
                 return std::sqrt(var/epsilon);
             } else {
-                Time epsilon = QL_MIN<Time>(1.0e-5, time1);
+                Time epsilon = std::min<Time>(1.0e-5, time1);
                 Real var1 = blackVarianceImpl(time1-epsilon, strike);
                 Real var2 = blackVarianceImpl(time1+epsilon, strike);
                 QL_ENSURE(var2>=var1,

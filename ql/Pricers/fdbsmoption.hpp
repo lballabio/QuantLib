@@ -72,13 +72,13 @@ namespace QuantLib {
 
     // The following is a safety check to be sure we have enough grid
     // points.
-    inline Size FdBsmOption::safeGridPoints(Size gridPoints, 
+    inline Size FdBsmOption::safeGridPoints(Size gridPoints,
                                             Time residualTime) {
-        return QL_MAX(gridPoints, residualTime>1.0 ?
-                      static_cast<Size>((QL_NUM_OPT_MIN_GRID_POINTS +
-                                         (residualTime-1.0) *
-                                         QL_NUM_OPT_GRID_POINTS_PER_YEAR))
-                      : QL_NUM_OPT_MIN_GRID_POINTS);
+        return std::max(gridPoints, residualTime>1.0 ?
+                        static_cast<Size>((QL_NUM_OPT_MIN_GRID_POINTS +
+                                           (residualTime-1.0) *
+                                           QL_NUM_OPT_GRID_POINTS_PER_YEAR))
+                        : QL_NUM_OPT_MIN_GRID_POINTS);
     }
 
 }

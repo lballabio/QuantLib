@@ -185,7 +185,7 @@ void CalendarTest::testUSSettlement() {
     Calendar c = UnitedStates(UnitedStates::Settlement);
     std::vector<Date> hol = holidayList(c, Date(1,January,2004),
                                            Date(31,December,2005));
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -220,7 +220,7 @@ void CalendarTest::testUSGovernmentBondMarket() {
     std::vector<Date> hol = holidayList(c, Date(1,January,2004),
                                            Date(31,December,2004));
 
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -272,7 +272,7 @@ void CalendarTest::testUSNewYorkStockExchange() {
     std::vector<Date> hol = holidayList(c, Date(1,January,2004),
                                            Date(31,December,2006));
 
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -341,7 +341,7 @@ void CalendarTest::testTARGET() {
     std::vector<Date> hol = holidayList(c, Date(1,January,1999),
                                            Date(31,December,2006));
 
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -380,7 +380,7 @@ void CalendarTest::testGermanyFrankfurt() {
     Calendar c = Germany(Germany::FrankfurtStockExchange);
     std::vector<Date> hol = holidayList(c, Date(1,January,2003),
                                            Date(31,December,2004));
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -418,7 +418,7 @@ void CalendarTest::testGermanyEurex() {
     Calendar c = Germany(Germany::Eurex);
     std::vector<Date> hol = holidayList(c, Date(1,January,2003),
                                            Date(31,December,2004));
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -456,7 +456,7 @@ void CalendarTest::testGermanyXetra() {
     Calendar c = Germany(Germany::Xetra);
     std::vector<Date> hol = holidayList(c, Date(1,January,2003),
                                            Date(31,December,2004));
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -515,7 +515,7 @@ void CalendarTest::testUKSettlement() {
     Calendar c = UnitedKingdom(UnitedKingdom::Settlement);
     std::vector<Date> hol = holidayList(c, Date(1,January,2004),
                                            Date(31,December,2007));
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -574,7 +574,7 @@ void CalendarTest::testUKExchange() {
     Calendar c = UnitedKingdom(UnitedKingdom::Exchange);
     std::vector<Date> hol = holidayList(c, Date(1,January,2004),
                                            Date(31,December,2007));
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -633,7 +633,7 @@ void CalendarTest::testUKMetals() {
     Calendar c = UnitedKingdom(UnitedKingdom::Metals);
     std::vector<Date> hol = holidayList(c, Date(1,January,2004),
                                            Date(31,December,2007));
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -682,7 +682,7 @@ void CalendarTest::testItalyExchange() {
     Calendar c = Italy(Italy::Exchange);
     std::vector<Date> hol = holidayList(c, Date(1,January,2002),
                                            Date(31,December,2004));
-    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +

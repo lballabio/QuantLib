@@ -97,9 +97,9 @@ namespace QuantLib {
         // Reduce A to bidiagonal form, storing the diagonal elements
         // in s and the super-diagonal elements in e.
 
-        Integer nct = QL_MIN(m_-1,n_);
-        Integer nrt = QL_MAX(0,n_-2);
-        for (k = 0; k < QL_MAX(nct,nrt); k++) {
+        Integer nct = std::min(m_-1,n_);
+        Integer nrt = std::max(0,n_-2);
+        for (k = 0; k < std::max(nct,nrt); k++) {
             if (k < nct) {
 
                 // Compute the transformation for the k-th column and
@@ -373,10 +373,10 @@ namespace QuantLib {
               case 3: {
 
                   // Calculate the shift.
-                  Real scale = QL_MAX(
-                                     QL_MAX(
-                                         QL_MAX(
-                                             QL_MAX(std::fabs(s_[p-1]),
+                  Real scale = std::max(
+                                     std::max(
+                                         std::max(
+                                             std::max(std::fabs(s_[p-1]),
                                                     std::fabs(s_[p-2])),
                                              std::fabs(e[p-2])),
                                          std::fabs(s_[k])),

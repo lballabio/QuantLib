@@ -57,7 +57,7 @@ namespace QuantLib {
             // negative eigenvalues set to zero
             for (i=0; i<size; i++)
                 diagonal[i][i] =
-                    std::sqrt(QL_MAX<Real>(jd.eigenvalues()[i], 0.0));
+                    std::sqrt(std::max<Real>(jd.eigenvalues()[i], 0.0));
 
             result = jd.eigenvectors() * diagonal;
             // row normalization
@@ -132,7 +132,7 @@ namespace QuantLib {
         // is retained
         Real enough = componentRetainedPercentage * size;
         Real components = 0.0;
-        for (i=0; i<QL_MIN(size, maxRank); i++) {
+        for (i=0; i<std::min(size, maxRank); i++) {
             diagonal[i][i] =
                 (components<enough ? std::sqrt(jd.eigenvalues()[i]) : 0.0);
             components += jd.eigenvalues()[i];

@@ -106,7 +106,7 @@ namespace QuantLib {
                     root_ = (xMax_+xMin_)/2.0;
                     // check whether we really want to pass epsilon
                     return this->impl().solveImpl(
-                        f, QL_MAX(std::fabs(accuracy), QL_EPSILON));
+                        f, std::max(std::fabs(accuracy), QL_EPSILON));
                 }
                 if (std::fabs(fxMin_) < std::fabs(fxMax_)) {
                     xMin_ = enforceBounds_(xMin_+growthFactor*(xMin_ - xMax_));
@@ -198,7 +198,7 @@ namespace QuantLib {
             root_ = guess;
 
             return this->impl().solveImpl(
-                f, QL_MAX(std::fabs(accuracy), QL_EPSILON));
+                f, std::max(std::fabs(accuracy), QL_EPSILON));
         }
 
         /*! This method sets the maximum number of function
