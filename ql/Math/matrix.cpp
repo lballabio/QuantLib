@@ -21,10 +21,10 @@
 */
 
 #include <ql/Math/symmetricschurdecomposition.hpp>
-#include <ql/Math/cholesky.hpp>
 #include <ql/dataformatters.hpp>
 
 namespace QuantLib {
+
 
     /*  see "The most general methodology to create a valid correlation matrix
         for risk management and option pricing purposes",
@@ -36,7 +36,7 @@ namespace QuantLib {
         by Peter Jäckel, Chapter 6
     */
     Disposable<Matrix> pseudoSqrt(const Matrix &realSymmetricMatrix,
-        SalvagingAlgorithm sa) {
+        SalvagingAlgorithm::Type sa) {
 
 
         // spectral (a.k.a Principal Component) analysis
@@ -47,14 +47,15 @@ namespace QuantLib {
 
         // salvaging algorithm
         Matrix result(size, size);
+        //Disposable<Matrix> result();
         switch (sa) {
-          case None:
+          case SalvagingAlgorithm::None:
             // eigenvalues are sorted in decreasing order
             QL_REQUIRE(jd.eigenvalues()[size-1]>=-1e-16,
                 "Matrix pseudoSqrt: negative eigenvalue(s) ("
                 + DoubleFormatter::toExponential(jd.eigenvalues()[size-1]) +
                 ")");
-            result = Cholesky(realSymmetricMatrix, true).decomposition();
+            result = CholeskyDecomposition(realSymmetricMatrix, true);
             break;
           default:
             // salvaging algorithm:
@@ -76,13 +77,13 @@ namespace QuantLib {
         }
 
         switch (sa) {
-            case None:
-            case Spectral:
+            case SalvagingAlgorithm::None:
+            case SalvagingAlgorithm::Spectral:
                 return result;
             // optimization step
-            case Hypersphere:
+            case SalvagingAlgorithm::Hypersphere:
                 result = result * transpose(result);
-                result = Cholesky(result, true).decomposition();
+                result = CholeskyDecomposition(result, true);
                 // will use spectral result as starting guess
 
                 // optimization (general or LMM specific)
@@ -97,7 +98,7 @@ namespace QuantLib {
     Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
                                        Size maxRank,
                                        double componentRetainedPercentage,
-                                       SalvagingAlgorithm sa) {
+                                       SalvagingAlgorithm::Type sa) {
 
         QL_REQUIRE(componentRetainedPercentage>0.0,
             "Matrix rankReducedSqrt: no eigenvalues retained");
@@ -144,11 +145,11 @@ namespace QuantLib {
         }
 
         switch (sa) {
-        case Spectral:
+        case SalvagingAlgorithm::Spectral:
             return result;
-        case Hypersphere:
+        case SalvagingAlgorithm::Hypersphere:
             result = result * transpose(result);
-            result = Cholesky(result, true).decomposition();
+            result = CholeskyDecomposition(result, true);
             // will use spectral result as starting guess
 
             // optimization (general or LMM specific)
@@ -159,6 +160,42 @@ namespace QuantLib {
 
     }
 
+
+    Disposable<Matrix> CholeskyDecomposition(const Matrix &S, bool flexible) {
+        Size i, j, size = S.rows();
+        // should check for simmetry too: the algorithm will only use
+        // the upper triangular part of S anyway...
+        QL_REQUIRE(size == S.columns(),
+            "CholeskyDecomposition : "
+            "input matrix is not a square matrix");
+
+        Matrix result(size, size, 0.0);
+        double sum;
+        for (i=0; i<size; i++) {
+            for (j=i; j<size; j++) {
+                sum = S[i][j];
+                for (int k=0; k<=int(i)-1; k++) {
+                    sum -= result[i][k]*result[j][k];
+                }
+                if (i == j) {
+                    QL_REQUIRE(flexible || sum > 0.0,
+                        "CholeskyDecomposition : "
+                        "input matrix is not positive definite");
+                    // To handle positive semi-definite matrices take the
+                    // square root of sum if positive, else zero.
+                    result[i][i] = QL_SQRT(QL_MAX(sum, 0.0));
+                } else {
+                    // With positive semi-definite matrices is possible
+                    // to have result[i][i]==0.0
+                    // In this case sum happens to be zero as well
+                    result[j][i] =
+                        (sum==0.0 ? 0.0 : sum/result[i][i]);
+                }
+            }
+        }
+
+        return result;
+    }
 
  
 }

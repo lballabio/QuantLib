@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -109,8 +112,6 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\chisquaredistribution.obj"
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
-	-@erase "$(INTDIR)\cholesky.obj"
-	-@erase "$(INTDIR)\cholesky.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
@@ -366,40 +367,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -456,7 +424,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
-	"$(INTDIR)\cholesky.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
@@ -625,7 +592,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
-	"$(INTDIR)\cholesky.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
@@ -823,8 +789,6 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\chisquaredistribution.obj"
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
-	-@erase "$(INTDIR)\cholesky.obj"
-	-@erase "$(INTDIR)\cholesky.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
@@ -1081,40 +1045,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1171,7 +1102,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
-	"$(INTDIR)\cholesky.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
@@ -1340,7 +1270,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
-	"$(INTDIR)\cholesky.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
@@ -1538,8 +1467,6 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\chisquaredistribution.obj"
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
-	-@erase "$(INTDIR)\cholesky.obj"
-	-@erase "$(INTDIR)\cholesky.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
@@ -1795,40 +1722,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1885,7 +1779,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
-	"$(INTDIR)\cholesky.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
@@ -2054,7 +1947,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
-	"$(INTDIR)\cholesky.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
@@ -2252,8 +2144,6 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\chisquaredistribution.obj"
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
-	-@erase "$(INTDIR)\cholesky.obj"
-	-@erase "$(INTDIR)\cholesky.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
 	-@erase "$(INTDIR)\cliquetoptionpathpricer.obj"
@@ -2510,40 +2400,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2600,7 +2457,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
-	"$(INTDIR)\cholesky.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
@@ -2769,7 +2625,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
-	"$(INTDIR)\cholesky.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
@@ -2886,6 +2741,36 @@ LIB32_OBJS= \
 SOURCE="$(InputPath)"
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -3213,12 +3098,6 @@ SOURCE=.\ql\Lattices\trinomialtree.cpp
 SOURCE=.\ql\Math\chisquaredistribution.cpp
 
 "$(INTDIR)\chisquaredistribution.obj"	"$(INTDIR)\chisquaredistribution.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Math\cholesky.cpp
-
-"$(INTDIR)\cholesky.obj"	"$(INTDIR)\cholesky.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

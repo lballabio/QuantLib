@@ -6,7 +6,6 @@ include_HEADERS = \
 	bilinearinterpolation.hpp \
 	bicubicsplineinterpolation.hpp \
 	chisquaredistribution.hpp \
-	cholesky.hpp \
 	cubicspline.hpp \
 	discrepancystatistics.hpp \
 	errorfunction.hpp \
@@ -39,7 +38,6 @@ EXTRA_DIST=makefile.mak
 
 libMath_la_SOURCES = \
 	chisquaredistribution.cpp \
-	cholesky.cpp \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
 	gammadistribution.cpp \

@@ -759,14 +759,6 @@ SOURCE=.\ql\Math\chisquaredistribution.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\cholesky.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Math\cholesky.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File

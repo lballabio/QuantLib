@@ -56,7 +56,7 @@ void CovarianceTest::testSalvagingCorrelation() {
     goodCorr[0][2] = goodCorr[2][0] = 0.696319066114392;
     goodCorr[1][2] = goodCorr[2][1] = 0.300969036104592;
 
-    Matrix b = pseudoSqrt(badCorr, Spectral);
+    Matrix b = pseudoSqrt(badCorr, SalvagingAlgorithm::Spectral);
 //    Matrix b = pseudoSqrt(badCorr, Hypersphere);
     Matrix calcCorr = b * transpose(b);
 

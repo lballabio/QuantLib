@@ -167,7 +167,9 @@ namespace QuantLib {
     Disposable<Matrix> outerProduct(Iterator1 v1begin, Iterator1 v1end,
                                     Iterator2 v2begin, Iterator2 v2end);
 
-    enum SalvagingAlgorithm {None, Spectral, Hypersphere};
+    struct SalvagingAlgorithm {
+        enum Type {None, Spectral, Hypersphere};
+    };
     //! returns the pseudo square root of a real symmetric matrix
     /*! returns the pseudo square root of a real symmetric matrix.
 
@@ -187,13 +189,15 @@ namespace QuantLib {
         \relates Matrix
     */
     Disposable<Matrix> pseudoSqrt(const Matrix& realSymmetricMatrix,
-                                  SalvagingAlgorithm sa);
+                                  SalvagingAlgorithm::Type sa);
 
     Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
                                        Size maxRank,
                                        double componentRetainedPercentage,
-                                       SalvagingAlgorithm sa);
+                                       SalvagingAlgorithm::Type sa);
 
+    Disposable<Matrix> CholeskyDecomposition(const Matrix& m,
+                                             bool flexible = false);
 
     // inline definitions
 
@@ -202,7 +206,7 @@ namespace QuantLib {
         use CholeskyDecompostion or pseudoSqrt instead
     */
     inline Disposable<Matrix> matrixSqrt(const Matrix& m) {
-        return pseudoSqrt(m, None);
+        return pseudoSqrt(m, SalvagingAlgorithm::None);
     }
 
     inline Matrix::Matrix()
