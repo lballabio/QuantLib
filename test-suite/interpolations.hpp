@@ -18,6 +18,7 @@
 #ifndef quantlib_test_interpolations_hpp
 #define quantlib_test_interpolations_hpp
 
+#include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
@@ -32,7 +33,9 @@ class InterpolationTest {
     static void testSplineOnRPN15AValues();
     static void testSplineOnGaussianValues();
     static void testSplineErrorOnGaussianValues();
+    #ifndef QL_PATCH_BORLAND
     static void testMultiSpline();
+    #endif
     static boost::unit_test_framework::test_suite* suite();
 };
 
