@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -53,7 +53,7 @@ namespace QuantLib {
             parameters->startTimes.clear();
             parameters->endTimes.clear();
             parameters->nominals.clear();
- 
+
             std::vector<Handle<CashFlow> > floatingLeg = swap_.floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
             begin = floatingLeg.begin();
@@ -82,7 +82,7 @@ namespace QuantLib {
 
         void CapFloorPricingEngine::validateParameters() const {
             QL_REQUIRE(
-                parameters_.endTimes.size() == parameters_.startTimes.size(), 
+                parameters_.endTimes.size() == parameters_.startTimes.size(),
                 "Invalid pricing parameters");
         }
 

@@ -1,7 +1,7 @@
 
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,17 +36,17 @@ namespace QuantLib {
 
         class JamshidianSwaption::rStarFinder : public ObjectiveFunction {
           public:
-            rStarFinder(const SwaptionParameters &params, 
+            rStarFinder(const SwaptionParameters &params,
                         const Handle<OneFactorModel>& model,
-                        const std::vector<double>& amounts) 
-            : strike_(params.nominals[0]), maturity_(params.exerciseTimes[0]), 
+                        const std::vector<double>& amounts)
+            : strike_(params.nominals[0]), maturity_(params.exerciseTimes[0]),
               times_(params.fixedPayTimes), amounts_(amounts), model_(model) {}
 
             double operator()(double x) const {
                 double value = strike_;
                 Size size = times_.size();
                 for (Size i=0; i<size; i++) {
-                    double dbValue = 
+                    double dbValue =
                         model_->discountBond(maturity_, times_[i], x);
                     value -= amounts_[i]*dbValue;
                 }
@@ -58,8 +58,8 @@ namespace QuantLib {
             const std::vector<Time>& times_;
             const std::vector<double>& amounts_;
             const Handle<OneFactorModel>& model_;
-        };      
-            
+        };
+
         void JamshidianSwaption::calculate() const {
             QL_REQUIRE(
                 parameters_.exerciseType == Exercise::European,
@@ -93,7 +93,7 @@ namespace QuantLib {
             Size size = parameters_.fixedCoupons.size();
             double value = 0.0;
             for (Size i=0; i<size; i++) {
-                double strike = model->discountBond(maturity, 
+                double strike = model->discountBond(maturity,
                     parameters_.fixedPayTimes[i], rStar);
                 double dboValue = model->discountBondOption(
                     type, strike, maturity, parameters_.fixedPayTimes[i]);

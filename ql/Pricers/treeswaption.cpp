@@ -1,7 +1,7 @@
 
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -161,7 +161,7 @@ namespace QuantLib {
             //FIXME: optimize for european and bermudan
             // do not rollback until 0 but until the first exercise date
             // sum with state prices...
-            
+
             tree->rollback(assets, times.back(), 0.0);
             results_.value = swaption->values()[0];
 

@@ -1,7 +1,7 @@
 
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,7 +38,7 @@ namespace QuantLib {
       public:
         enum Type { American, Bermudan, European };
 
-        Exercise(Type type, const std::vector<Date>& dates) 
+        Exercise(Type type, const std::vector<Date>& dates)
         : type_(type), dates_(dates) {}
 
         Type type() const { return type_; }
@@ -52,19 +52,19 @@ namespace QuantLib {
 
     class AmericanExercise : public Exercise {
       public:
-        AmericanExercise( Date date) 
+        AmericanExercise( Date date)
         : Exercise(American, std::vector<Date>(1,date)) {}
     };
 
     class BermudanExercise : public Exercise {
       public:
-        BermudanExercise(const std::vector<Date>& dates) 
+        BermudanExercise(const std::vector<Date>& dates)
         : Exercise(Bermudan, dates) {}
     };
 
     class EuropeanExercise : public Exercise {
       public:
-        EuropeanExercise(Date date) 
+        EuropeanExercise(Date date)
         : Exercise(European, std::vector<Date>(1,date)) {}
     };
 

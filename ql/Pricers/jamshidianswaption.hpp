@@ -1,7 +1,7 @@
 
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file jamshidianswaption.hpp
-    \brief Swaption pricer using Jamshidian's decomposition 
+    \brief Swaption pricer using Jamshidian's decomposition
 
     \fullpath
     ql/Pricers/%jamshidianswaption.hpp
@@ -38,7 +38,7 @@ namespace QuantLib {
         //! \todo it doesn't work
         class JamshidianSwaption : public SwaptionPricingEngine {
           public:
-            JamshidianSwaption() {} 
+            JamshidianSwaption() {}
             void calculate() const;
           private:
             class rStarFinder;

@@ -1,7 +1,7 @@
 
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,7 +33,7 @@ namespace QuantLib {
         void AnalyticalCapFloor::calculate() const {
             QL_REQUIRE(!model_.isNull(), "Cannot price without model!");
 
-            QL_REQUIRE(model_->hasDiscountBondOptionFormula(), 
+            QL_REQUIRE(model_->hasDiscountBondOptionFormula(),
                 "No analytical formula for discount bond options");
 
             Option::Type optionType;
@@ -57,7 +57,7 @@ namespace QuantLib {
                 Time tenor = bond - maturity;
                 double optionStrike = 1.0/(1.0+exerciseRate*tenor);
 
-                double optionValue = model_->discountBondOption( 
+                double optionValue = model_->discountBondOption(
                     optionType, optionStrike, maturity, bond);
 
                 double capletValue = parameters_.nominals[i]*

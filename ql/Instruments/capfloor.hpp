@@ -1,7 +1,7 @@
 
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,7 +45,7 @@ namespace QuantLib {
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
-            : Option(engine), type_(type), swap_(swap), 
+            : Option(engine), type_(type), swap_(swap),
               exerciseRates_(exerciseRates), termStructure_(termStructure) {}
             virtual ~VanillaCapFloor() {}
           protected:
@@ -70,9 +70,9 @@ namespace QuantLib {
           public:
             VanillaFloor(const SimpleSwap& swap,
                   const std::vector<Rate>& exerciseRates,
-                  const RelinkableHandle<TermStructure>& termStructure,  
+                  const RelinkableHandle<TermStructure>& termStructure,
                   const Handle<OptionPricingEngine>& engine)
-            : VanillaCapFloor(Floor, swap, exerciseRates, termStructure, engine) 
+            : VanillaCapFloor(Floor, swap, exerciseRates, termStructure, engine)
             {}
         };
 

@@ -1,7 +1,7 @@
 
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -67,7 +67,7 @@ namespace QuantLib {
             parameters->floatingResetTimes.clear();
             parameters->floatingPayTimes.clear();
             parameters->nominals.clear();
-            const std::vector<Handle<CashFlow> >& floatingLeg = 
+            const std::vector<Handle<CashFlow> >& floatingLeg =
                 swap_.floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
             begin = floatingLeg.begin();
@@ -103,7 +103,7 @@ namespace QuantLib {
 
         void SwaptionPricingEngine::validateParameters() const {
             QL_REQUIRE(
-                parameters_.fixedPayTimes.size() == 
+                parameters_.fixedPayTimes.size() ==
                 parameters_.fixedCoupons.size(), "Invalid pricing parameters");
         }
 
