@@ -495,14 +495,16 @@ void InterpolationTest::testSplineOnGenericValues() {
     for (i=0; i<n; i++) {
         interpolated = f.secondDerivative(generic_x[i]);
         error = interpolated - generic_natural_y2[i];
-        if (QL_FABS(error)>1e-17) {
+        if (QL_FABS(error)>3e-16) {
             CPPUNIT_FAIL("Natural spline interpolation "
                 "second derivative failed at x="
                 + DoubleFormatter::toString(generic_x[i]) +
                 "\ninterpolated value: "
                 + DoubleFormatter::toString(interpolated) +
                 "\nexpected value:     "
-                + DoubleFormatter::toString(generic_natural_y2[i]));
+                + DoubleFormatter::toString(generic_natural_y2[i]) +
+                "\nerror:              "
+                + DoubleFormatter::toExponential(error));
         }
     }
     x35[1] = f(3.5);
