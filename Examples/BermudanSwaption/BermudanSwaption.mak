@@ -1,22 +1,22 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on BermudanSwaption.dsp
 !IF "$(CFG)" == ""
-CFG=BermudanSwaption - Win32 OnTheEdgeDebug
-!MESSAGE No configuration specified. Defaulting to BermudanSwaption - Win32 OnTheEdgeDebug.
+CFG=BermudanSwaption - Win32 Debug DLL
+!MESSAGE No configuration specified. Defaulting to BermudanSwaption - Win32 Debug DLL.
 !ENDIF 
 
-!IF "$(CFG)" != "BermudanSwaption - Win32 Release" && "$(CFG)" != "BermudanSwaption - Win32 Debug" && "$(CFG)" != "BermudanSwaption - Win32 OnTheEdgeRelease" && "$(CFG)" != "BermudanSwaption - Win32 OnTheEdgeDebug"
+!IF "$(CFG)" != "BermudanSwaption - Win32 Release" && "$(CFG)" != "BermudanSwaption - Win32 Debug" && "$(CFG)" != "BermudanSwaption - Win32 Debug DLL" && "$(CFG)" != "BermudanSwaption - Win32 Release DLL"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "BermudanSwaption.mak" CFG="BermudanSwaption - Win32 OnTheEdgeDebug"
+!MESSAGE NMAKE /f "BermudanSwaption.mak" CFG="BermudanSwaption - Win32 Debug DLL"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "BermudanSwaption - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "BermudanSwaption - Win32 Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "BermudanSwaption - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Console Application")
-!MESSAGE "BermudanSwaption - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Console Application")
+!MESSAGE "BermudanSwaption - Win32 Debug DLL" (based on "Win32 (x86) Console Application")
+!MESSAGE "BermudanSwaption - Win32 Release DLL" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -62,7 +62,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I "$(QL_DIR)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\BermudanSwaption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\BermudanSwaption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\BermudanSwaption.bsc" 
 BSC32_SBRS= \
@@ -74,7 +74,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\BermudanSwaption.pdb" /machine:I386 /out:"$(OUTDIR)\BermudanSwaption.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\BermudanSwaption.pdb" /machine:I386 /out:"$(OUTDIR)\BermudanSwaption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\BermudanSwaption.obj" \
 	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
@@ -119,118 +119,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "$(QL_DIR)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\BermudanSwaption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\BermudanSwaption.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\BermudanSwaption.sbr"
-
-"$(OUTDIR)\BermudanSwaption.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\BermudanSwaption.pdb" /debug /machine:I386 /out:"$(OUTDIR)\BermudanSwaption.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\BermudanSwaption.obj" \
-	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
-
-"$(OUTDIR)\BermudanSwaption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 OnTheEdgeRelease"
-
-OUTDIR=.\build\OnTheEdgeRelease
-INTDIR=.\build\OnTheEdgeRelease
-# Begin Custom Macros
-OutDir=.\build\OnTheEdgeRelease
-# End Custom Macros
-
-!IF "$(RECURSE)" == "0" 
-
-ALL : "$(OUTDIR)\BermudanSwaption.exe" "$(OUTDIR)\BermudanSwaption.bsc"
-
-!ELSE 
-
-ALL : "QuantLib - Win32 OnTheEdgeRelease" "$(OUTDIR)\BermudanSwaption.exe" "$(OUTDIR)\BermudanSwaption.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN" 
-!ELSE 
-CLEAN :
-!ENDIF 
-	-@erase "$(INTDIR)\BermudanSwaption.obj"
-	-@erase "$(INTDIR)\BermudanSwaption.sbr"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(OUTDIR)\BermudanSwaption.bsc"
-	-@erase "$(OUTDIR)\BermudanSwaption.exe"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I "..\..\\" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\BermudanSwaption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\BermudanSwaption.bsc" 
-BSC32_SBRS= \
-	"$(INTDIR)\BermudanSwaption.sbr"
-
-"$(OUTDIR)\BermudanSwaption.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
-    $(BSC32) @<<
-  $(BSC32_FLAGS) $(BSC32_SBRS)
-<<
-
-LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"$(OUTDIR)\BermudanSwaption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\BermudanSwaption.obj" \
-	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
-
-"$(OUTDIR)\BermudanSwaption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 OnTheEdgeDebug"
-
-OUTDIR=.\build\OnTheEdgeDebug
-INTDIR=.\build\OnTheEdgeDebug
-# Begin Custom Macros
-OutDir=.\build\OnTheEdgeDebug
-# End Custom Macros
-
-!IF "$(RECURSE)" == "0" 
-
-ALL : "$(OUTDIR)\BermudanSwaption.exe" "$(OUTDIR)\BermudanSwaption.bsc"
-
-!ELSE 
-
-ALL : "QuantLib - Win32 OnTheEdgeDebug" "$(OUTDIR)\BermudanSwaption.exe" "$(OUTDIR)\BermudanSwaption.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN" 
-!ELSE 
-CLEAN :
-!ENDIF 
-	-@erase "$(INTDIR)\BermudanSwaption.obj"
-	-@erase "$(INTDIR)\BermudanSwaption.sbr"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(OUTDIR)\BermudanSwaption.bsc"
-	-@erase "$(OUTDIR)\BermudanSwaption.exe"
-	-@erase "$(OUTDIR)\BermudanSwaption.ilk"
-	-@erase "$(OUTDIR)\BermudanSwaption.pdb"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\..\\" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\BermudanSwaption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\BermudanSwaption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\BermudanSwaption.bsc" 
 BSC32_SBRS= \
@@ -246,6 +135,117 @@ LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi3
 LINK32_OBJS= \
 	"$(INTDIR)\BermudanSwaption.obj" \
 	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
+
+"$(OUTDIR)\BermudanSwaption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 Debug DLL"
+
+OUTDIR=.\build\Debug
+INTDIR=.\build\Debug
+# Begin Custom Macros
+OutDir=.\build\Debug
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "$(OUTDIR)\BermudanSwaption.exe" "$(OUTDIR)\BermudanSwaption.bsc"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Debug DLL" "$(OUTDIR)\BermudanSwaption.exe" "$(OUTDIR)\BermudanSwaption.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Debug DLLCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\BermudanSwaption.obj"
+	-@erase "$(INTDIR)\BermudanSwaption.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vc60.pdb"
+	-@erase "$(OUTDIR)\BermudanSwaption.bsc"
+	-@erase "$(OUTDIR)\BermudanSwaption.exe"
+	-@erase "$(OUTDIR)\BermudanSwaption.ilk"
+	-@erase "$(OUTDIR)\BermudanSwaption.pdb"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\BermudanSwaption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\BermudanSwaption.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\BermudanSwaption.sbr"
+
+"$(OUTDIR)\BermudanSwaption.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\BermudanSwaption.pdb" /debug /machine:I386 /out:"$(OUTDIR)\BermudanSwaption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\BermudanSwaption.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
+
+"$(OUTDIR)\BermudanSwaption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 Release DLL"
+
+OUTDIR=.\build\Release
+INTDIR=.\build\Release
+# Begin Custom Macros
+OutDir=.\build\Release
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "$(OUTDIR)\BermudanSwaption.exe" "$(OUTDIR)\BermudanSwaption.bsc"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Release DLL" "$(OUTDIR)\BermudanSwaption.exe" "$(OUTDIR)\BermudanSwaption.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Release DLLCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\BermudanSwaption.obj"
+	-@erase "$(INTDIR)\BermudanSwaption.sbr"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(OUTDIR)\BermudanSwaption.bsc"
+	-@erase "$(OUTDIR)\BermudanSwaption.exe"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /Ob2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\BermudanSwaption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\BermudanSwaption.bsc" 
+BSC32_SBRS= \
+	"$(INTDIR)\BermudanSwaption.sbr"
+
+"$(OUTDIR)\BermudanSwaption.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
+    $(BSC32) @<<
+  $(BSC32_FLAGS) $(BSC32_SBRS)
+<<
+
+LINK32=link.exe
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\BermudanSwaption.pdb" /machine:I386 /out:"$(OUTDIR)\BermudanSwaption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\BermudanSwaption.obj" \
+	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\BermudanSwaption.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -294,7 +294,7 @@ LINK32_OBJS= \
 !ENDIF 
 
 
-!IF "$(CFG)" == "BermudanSwaption - Win32 Release" || "$(CFG)" == "BermudanSwaption - Win32 Debug" || "$(CFG)" == "BermudanSwaption - Win32 OnTheEdgeRelease" || "$(CFG)" == "BermudanSwaption - Win32 OnTheEdgeDebug"
+!IF "$(CFG)" == "BermudanSwaption - Win32 Release" || "$(CFG)" == "BermudanSwaption - Win32 Debug" || "$(CFG)" == "BermudanSwaption - Win32 Debug DLL" || "$(CFG)" == "BermudanSwaption - Win32 Release DLL"
 SOURCE=.\BermudanSwaption.cpp
 
 "$(INTDIR)\BermudanSwaption.obj"	"$(INTDIR)\BermudanSwaption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -324,28 +324,28 @@ SOURCE=.\BermudanSwaption.cpp
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\Examples\BermudanSwaption"
 
-!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 OnTheEdgeRelease"
+!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 Debug DLL"
 
-"QuantLib - Win32 OnTheEdgeRelease" : 
+"QuantLib - Win32 Debug DLL" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug DLL" 
    cd ".\Examples\BermudanSwaption"
 
-"QuantLib - Win32 OnTheEdgeReleaseCLEAN" : 
+"QuantLib - Win32 Debug DLLCLEAN" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" RECURSE=1 CLEAN 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug DLL" RECURSE=1 CLEAN 
    cd ".\Examples\BermudanSwaption"
 
-!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 OnTheEdgeDebug"
+!ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 Release DLL"
 
-"QuantLib - Win32 OnTheEdgeDebug" : 
+"QuantLib - Win32 Release DLL" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release DLL" 
    cd ".\Examples\BermudanSwaption"
 
-"QuantLib - Win32 OnTheEdgeDebugCLEAN" : 
+"QuantLib - Win32 Release DLLCLEAN" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" RECURSE=1 CLEAN 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release DLL" RECURSE=1 CLEAN 
    cd ".\Examples\BermudanSwaption"
 
 !ENDIF 

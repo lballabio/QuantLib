@@ -1,22 +1,22 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on testsuite.dsp
 !IF "$(CFG)" == ""
-CFG=testsuite - Win32 OnTheEdgeDebug
-!MESSAGE No configuration specified. Defaulting to testsuite - Win32 OnTheEdgeDebug.
+CFG=testsuite - Win32 Debug DLL
+!MESSAGE No configuration specified. Defaulting to testsuite - Win32 Debug DLL.
 !ENDIF 
 
-!IF "$(CFG)" != "testsuite - Win32 Release" && "$(CFG)" != "testsuite - Win32 Debug" && "$(CFG)" != "testsuite - Win32 OnTheEdgeDebug" && "$(CFG)" != "testsuite - Win32 OnTheEdgeRelease"
+!IF "$(CFG)" != "testsuite - Win32 Release" && "$(CFG)" != "testsuite - Win32 Debug" && "$(CFG)" != "testsuite - Win32 Release DLL" && "$(CFG)" != "testsuite - Win32 Debug DLL"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "testsuite.mak" CFG="testsuite - Win32 OnTheEdgeDebug"
+!MESSAGE NMAKE /f "testsuite.mak" CFG="testsuite - Win32 Debug DLL"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "testsuite - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "testsuite - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Console Application")
-!MESSAGE "testsuite - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Console Application")
+!MESSAGE "testsuite - Win32 Release DLL" (based on "Win32 (x86) Console Application")
+!MESSAGE "testsuite - Win32 Debug DLL" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -86,13 +86,13 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I "$(QL_DIR)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\testsuite.pdb" /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\testsuite.pdb" /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -187,108 +187,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "$(QL_DIR)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
-BSC32_SBRS= \
-	
-LINK32=link.exe
-LINK32_FLAGS=cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
-LINK32_OBJS= \
-	"$(INTDIR)\barrieroption.obj" \
-	"$(INTDIR)\binaryoption.obj" \
-	"$(INTDIR)\calendars.obj" \
-	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\compoundforward.obj" \
-	"$(INTDIR)\covariance.obj" \
-	"$(INTDIR)\dates.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\distributions.obj" \
-	"$(INTDIR)\europeanoption.obj" \
-	"$(INTDIR)\instruments.obj" \
-	"$(INTDIR)\integrals.obj" \
-	"$(INTDIR)\lowdiscrepancysequences.obj" \
-	"$(INTDIR)\marketelements.obj" \
-	"$(INTDIR)\matrices.obj" \
-	"$(INTDIR)\mersennetwister.obj" \
-	"$(INTDIR)\old_pricers.obj" \
-	"$(INTDIR)\operators.obj" \
-	"$(INTDIR)\piecewiseflatforward.obj" \
-	"$(INTDIR)\qltestlistener.obj" \
-	"$(INTDIR)\quantlibtestsuite.obj" \
-	"$(INTDIR)\riskstats.obj" \
-	"$(INTDIR)\solvers.obj" \
-	"$(INTDIR)\stats.obj" \
-	"$(INTDIR)\swap.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\termstructures.obj" \
-	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
-
-"$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
-    $(LINK32) @<<
-  $(LINK32_FLAGS) $(LINK32_OBJS)
-<<
-
-!ELSEIF  "$(CFG)" == "testsuite - Win32 OnTheEdgeDebug"
-
-OUTDIR=.\build\OnTheEdgeDebug
-INTDIR=.\build\OnTheEdgeDebug
-# Begin Custom Macros
-OutDir=.\build\OnTheEdgeDebug
-# End Custom Macros
-
-!IF "$(RECURSE)" == "0" 
-
-ALL : "$(OUTDIR)\testsuite.exe"
-
-!ELSE 
-
-ALL : "QuantLib - Win32 OnTheEdgeDebug" "$(OUTDIR)\testsuite.exe"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN" 
-!ELSE 
-CLEAN :
-!ENDIF 
-	-@erase "$(INTDIR)\barrieroption.obj"
-	-@erase "$(INTDIR)\binaryoption.obj"
-	-@erase "$(INTDIR)\calendars.obj"
-	-@erase "$(INTDIR)\capfloor.obj"
-	-@erase "$(INTDIR)\compoundforward.obj"
-	-@erase "$(INTDIR)\covariance.obj"
-	-@erase "$(INTDIR)\dates.obj"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\distributions.obj"
-	-@erase "$(INTDIR)\europeanoption.obj"
-	-@erase "$(INTDIR)\instruments.obj"
-	-@erase "$(INTDIR)\integrals.obj"
-	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
-	-@erase "$(INTDIR)\marketelements.obj"
-	-@erase "$(INTDIR)\matrices.obj"
-	-@erase "$(INTDIR)\mersennetwister.obj"
-	-@erase "$(INTDIR)\old_pricers.obj"
-	-@erase "$(INTDIR)\operators.obj"
-	-@erase "$(INTDIR)\piecewiseflatforward.obj"
-	-@erase "$(INTDIR)\qltestlistener.obj"
-	-@erase "$(INTDIR)\quantlibtestsuite.obj"
-	-@erase "$(INTDIR)\riskstats.obj"
-	-@erase "$(INTDIR)\solvers.obj"
-	-@erase "$(INTDIR)\stats.obj"
-	-@erase "$(INTDIR)\swap.obj"
-	-@erase "$(INTDIR)\swaption.obj"
-	-@erase "$(INTDIR)\termstructures.obj"
-	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vc60.pdb"
-	-@erase "$(OUTDIR)\testsuite.exe"
-	-@erase "$(OUTDIR)\testsuite.ilk"
-	-@erase "$(OUTDIR)\testsuite.pdb"
-
-"$(OUTDIR)" :
-    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
-
-CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\\" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -330,12 +229,12 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-!ELSEIF  "$(CFG)" == "testsuite - Win32 OnTheEdgeRelease"
+!ELSEIF  "$(CFG)" == "testsuite - Win32 Release DLL"
 
-OUTDIR=.\build\OnTheEdgeRelease
-INTDIR=.\build\OnTheEdgeRelease
+OUTDIR=.\build\Release
+INTDIR=.\build\Release
 # Begin Custom Macros
-OutDir=.\build\OnTheEdgeRelease
+OutDir=.\build\Release
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -344,12 +243,12 @@ ALL : "$(OUTDIR)\testsuite.exe"
 
 !ELSE 
 
-ALL : "QuantLib - Win32 OnTheEdgeRelease" "$(OUTDIR)\testsuite.exe"
+ALL : "QuantLib - Win32 Release DLL" "$(OUTDIR)\testsuite.exe"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN" 
+CLEAN :"QuantLib - Win32 Release DLLCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -386,13 +285,13 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I "..\\" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"..\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\testsuite.pdb" /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -422,6 +321,107 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
+
+"$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+    $(LINK32) @<<
+  $(LINK32_FLAGS) $(LINK32_OBJS)
+<<
+
+!ELSEIF  "$(CFG)" == "testsuite - Win32 Debug DLL"
+
+OUTDIR=.\build\Debug
+INTDIR=.\build\Debug
+# Begin Custom Macros
+OutDir=.\build\Debug
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
+
+ALL : "$(OUTDIR)\testsuite.exe"
+
+!ELSE 
+
+ALL : "QuantLib - Win32 Debug DLL" "$(OUTDIR)\testsuite.exe"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 Debug DLLCLEAN" 
+!ELSE 
+CLEAN :
+!ENDIF 
+	-@erase "$(INTDIR)\barrieroption.obj"
+	-@erase "$(INTDIR)\binaryoption.obj"
+	-@erase "$(INTDIR)\calendars.obj"
+	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\compoundforward.obj"
+	-@erase "$(INTDIR)\covariance.obj"
+	-@erase "$(INTDIR)\dates.obj"
+	-@erase "$(INTDIR)\daycounters.obj"
+	-@erase "$(INTDIR)\distributions.obj"
+	-@erase "$(INTDIR)\europeanoption.obj"
+	-@erase "$(INTDIR)\instruments.obj"
+	-@erase "$(INTDIR)\integrals.obj"
+	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
+	-@erase "$(INTDIR)\marketelements.obj"
+	-@erase "$(INTDIR)\matrices.obj"
+	-@erase "$(INTDIR)\mersennetwister.obj"
+	-@erase "$(INTDIR)\old_pricers.obj"
+	-@erase "$(INTDIR)\operators.obj"
+	-@erase "$(INTDIR)\piecewiseflatforward.obj"
+	-@erase "$(INTDIR)\qltestlistener.obj"
+	-@erase "$(INTDIR)\quantlibtestsuite.obj"
+	-@erase "$(INTDIR)\riskstats.obj"
+	-@erase "$(INTDIR)\solvers.obj"
+	-@erase "$(INTDIR)\stats.obj"
+	-@erase "$(INTDIR)\swap.obj"
+	-@erase "$(INTDIR)\swaption.obj"
+	-@erase "$(INTDIR)\termstructures.obj"
+	-@erase "$(INTDIR)\vc60.idb"
+	-@erase "$(INTDIR)\vc60.pdb"
+	-@erase "$(OUTDIR)\testsuite.exe"
+	-@erase "$(OUTDIR)\testsuite.ilk"
+	-@erase "$(OUTDIR)\testsuite.pdb"
+
+"$(OUTDIR)" :
+    if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+BSC32=bscmake.exe
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
+BSC32_SBRS= \
+	
+LINK32=link.exe
+LINK32_FLAGS=cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\" 
+LINK32_OBJS= \
+	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\calendars.obj" \
+	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\covariance.obj" \
+	"$(INTDIR)\dates.obj" \
+	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\distributions.obj" \
+	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\instruments.obj" \
+	"$(INTDIR)\integrals.obj" \
+	"$(INTDIR)\lowdiscrepancysequences.obj" \
+	"$(INTDIR)\marketelements.obj" \
+	"$(INTDIR)\matrices.obj" \
+	"$(INTDIR)\mersennetwister.obj" \
+	"$(INTDIR)\old_pricers.obj" \
+	"$(INTDIR)\operators.obj" \
+	"$(INTDIR)\piecewiseflatforward.obj" \
+	"$(INTDIR)\qltestlistener.obj" \
+	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\solvers.obj" \
+	"$(INTDIR)\stats.obj" \
+	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\termstructures.obj" \
+	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -470,7 +470,7 @@ LINK32_OBJS= \
 !ENDIF 
 
 
-!IF "$(CFG)" == "testsuite - Win32 Release" || "$(CFG)" == "testsuite - Win32 Debug" || "$(CFG)" == "testsuite - Win32 OnTheEdgeDebug" || "$(CFG)" == "testsuite - Win32 OnTheEdgeRelease"
+!IF "$(CFG)" == "testsuite - Win32 Release" || "$(CFG)" == "testsuite - Win32 Debug" || "$(CFG)" == "testsuite - Win32 Release DLL" || "$(CFG)" == "testsuite - Win32 Debug DLL"
 SOURCE=.\barrieroption.cpp
 
 "$(INTDIR)\barrieroption.obj" : $(SOURCE) "$(INTDIR)"
@@ -630,28 +630,28 @@ SOURCE=.\termstructures.cpp
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
-!ELSEIF  "$(CFG)" == "testsuite - Win32 OnTheEdgeDebug"
+!ELSEIF  "$(CFG)" == "testsuite - Win32 Release DLL"
 
-"QuantLib - Win32 OnTheEdgeDebug" : 
+"QuantLib - Win32 Release DLL" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release DLL" 
    cd ".\test-suite"
 
-"QuantLib - Win32 OnTheEdgeDebugCLEAN" : 
+"QuantLib - Win32 Release DLLCLEAN" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" RECURSE=1 CLEAN 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release DLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
-!ELSEIF  "$(CFG)" == "testsuite - Win32 OnTheEdgeRelease"
+!ELSEIF  "$(CFG)" == "testsuite - Win32 Debug DLL"
 
-"QuantLib - Win32 OnTheEdgeRelease" : 
+"QuantLib - Win32 Debug DLL" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug DLL" 
    cd ".\test-suite"
 
-"QuantLib - Win32 OnTheEdgeReleaseCLEAN" : 
+"QuantLib - Win32 Debug DLLCLEAN" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" RECURSE=1 CLEAN 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug DLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ENDIF 

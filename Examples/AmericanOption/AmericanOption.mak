@@ -1,22 +1,22 @@
 # Microsoft Developer Studio Generated NMAKE File, Based on AmericanOption.dsp
 !IF "$(CFG)" == ""
-CFG=AmericanOption - Win32 OnTheEdgeDebug
-!MESSAGE No configuration specified. Defaulting to AmericanOption - Win32 OnTheEdgeDebug.
+CFG=AmericanOption - Win32 Debug DLL
+!MESSAGE No configuration specified. Defaulting to AmericanOption - Win32 Debug DLL.
 !ENDIF 
 
-!IF "$(CFG)" != "AmericanOption - Win32 Release" && "$(CFG)" != "AmericanOption - Win32 Debug" && "$(CFG)" != "AmericanOption - Win32 OnTheEdgeRelease" && "$(CFG)" != "AmericanOption - Win32 OnTheEdgeDebug"
+!IF "$(CFG)" != "AmericanOption - Win32 Release" && "$(CFG)" != "AmericanOption - Win32 Debug" && "$(CFG)" != "AmericanOption - Win32 Release DLL" && "$(CFG)" != "AmericanOption - Win32 Debug DLL"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "AmericanOption.mak" CFG="AmericanOption - Win32 OnTheEdgeDebug"
+!MESSAGE NMAKE /f "AmericanOption.mak" CFG="AmericanOption - Win32 Debug DLL"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "AmericanOption - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "AmericanOption - Win32 Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "AmericanOption - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Console Application")
-!MESSAGE "AmericanOption - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Console Application")
+!MESSAGE "AmericanOption - Win32 Release DLL" (based on "Win32 (x86) Console Application")
+!MESSAGE "AmericanOption - Win32 Debug DLL" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
@@ -26,6 +26,9 @@ NULL=
 !ELSE 
 NULL=nul
 !ENDIF 
+
+CPP=cl.exe
+RSC=rc.exe
 
 !IF  "$(CFG)" == "AmericanOption - Win32 Release"
 
@@ -59,40 +62,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I "$(QL_DIR)" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AmericanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AmericanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\AmericanOption.bsc" 
 BSC32_SBRS= \
@@ -104,7 +74,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\AmericanOption.pdb" /machine:I386 /out:"$(OUTDIR)\AmericanOption.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\AmericanOption.pdb" /machine:I386 /out:"$(OUTDIR)\AmericanOption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\AmericanOption.obj" \
 	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
@@ -149,40 +119,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "$(QL_DIR)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AmericanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AmericanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\AmericanOption.bsc" 
 BSC32_SBRS= \
@@ -194,7 +131,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\AmericanOption.pdb" /debug /machine:I386 /out:"$(OUTDIR)\AmericanOption.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\AmericanOption.pdb" /debug /machine:I386 /out:"$(OUTDIR)\AmericanOption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\AmericanOption.obj" \
 	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
@@ -204,12 +141,12 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-!ELSEIF  "$(CFG)" == "AmericanOption - Win32 OnTheEdgeRelease"
+!ELSEIF  "$(CFG)" == "AmericanOption - Win32 Release DLL"
 
-OUTDIR=.\build\OnTheEdgeRelease
-INTDIR=.\build\OnTheEdgeRelease
+OUTDIR=.\build\Release
+INTDIR=.\build\Release
 # Begin Custom Macros
-OutDir=.\build\OnTheEdgeRelease
+OutDir=.\build\Release
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -218,12 +155,12 @@ ALL : "$(OUTDIR)\AmericanOption.exe" "$(OUTDIR)\AmericanOption.bsc"
 
 !ELSE 
 
-ALL : "QuantLib - Win32 OnTheEdgeRelease" "$(OUTDIR)\AmericanOption.exe" "$(OUTDIR)\AmericanOption.bsc"
+ALL : "QuantLib - Win32 Release DLL" "$(OUTDIR)\AmericanOption.exe" "$(OUTDIR)\AmericanOption.bsc"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN" 
+CLEAN :"QuantLib - Win32 Release DLLCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -236,40 +173,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I "..\..\\" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AmericanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MD /W3 /GR /GX /O2 /Ob2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AmericanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\AmericanOption.bsc" 
 BSC32_SBRS= \
@@ -281,7 +185,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"$(OUTDIR)\AmericanOption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\AmericanOption.pdb" /machine:I386 /out:"$(OUTDIR)\AmericanOption.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\AmericanOption.obj" \
 	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
@@ -291,12 +195,12 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-!ELSEIF  "$(CFG)" == "AmericanOption - Win32 OnTheEdgeDebug"
+!ELSEIF  "$(CFG)" == "AmericanOption - Win32 Debug DLL"
 
-OUTDIR=.\build\OnTheEdgeDebug
-INTDIR=.\build\OnTheEdgeDebug
+OUTDIR=.\build\Debug
+INTDIR=.\build\Debug
 # Begin Custom Macros
-OutDir=.\build\OnTheEdgeDebug
+OutDir=.\build\Debug
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -305,12 +209,12 @@ ALL : "$(OUTDIR)\AmericanOption.exe" "$(OUTDIR)\AmericanOption.bsc"
 
 !ELSE 
 
-ALL : "QuantLib - Win32 OnTheEdgeDebug" "$(OUTDIR)\AmericanOption.exe" "$(OUTDIR)\AmericanOption.bsc"
+ALL : "QuantLib - Win32 Debug DLL" "$(OUTDIR)\AmericanOption.exe" "$(OUTDIR)\AmericanOption.bsc"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN" 
+CLEAN :"QuantLib - Win32 Debug DLLCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -326,40 +230,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
-CPP_PROJ=/nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\..\\" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AmericanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
+CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\AmericanOption.pch" /YX"quantlib.hpp" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\AmericanOption.bsc" 
 BSC32_SBRS= \
@@ -383,6 +254,36 @@ LINK32_OBJS= \
 
 !ENDIF 
 
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
 !IF EXISTS("AmericanOption.dep")
@@ -393,7 +294,7 @@ LINK32_OBJS= \
 !ENDIF 
 
 
-!IF "$(CFG)" == "AmericanOption - Win32 Release" || "$(CFG)" == "AmericanOption - Win32 Debug" || "$(CFG)" == "AmericanOption - Win32 OnTheEdgeRelease" || "$(CFG)" == "AmericanOption - Win32 OnTheEdgeDebug"
+!IF "$(CFG)" == "AmericanOption - Win32 Release" || "$(CFG)" == "AmericanOption - Win32 Debug" || "$(CFG)" == "AmericanOption - Win32 Release DLL" || "$(CFG)" == "AmericanOption - Win32 Debug DLL"
 SOURCE=.\AmericanOption.cpp
 
 "$(INTDIR)\AmericanOption.obj"	"$(INTDIR)\AmericanOption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -423,28 +324,28 @@ SOURCE=.\AmericanOption.cpp
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\Examples\AmericanOption"
 
-!ELSEIF  "$(CFG)" == "AmericanOption - Win32 OnTheEdgeRelease"
+!ELSEIF  "$(CFG)" == "AmericanOption - Win32 Release DLL"
 
-"QuantLib - Win32 OnTheEdgeRelease" : 
+"QuantLib - Win32 Release DLL" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release DLL" 
    cd ".\Examples\AmericanOption"
 
-"QuantLib - Win32 OnTheEdgeReleaseCLEAN" : 
+"QuantLib - Win32 Release DLLCLEAN" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" RECURSE=1 CLEAN 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release DLL" RECURSE=1 CLEAN 
    cd ".\Examples\AmericanOption"
 
-!ELSEIF  "$(CFG)" == "AmericanOption - Win32 OnTheEdgeDebug"
+!ELSEIF  "$(CFG)" == "AmericanOption - Win32 Debug DLL"
 
-"QuantLib - Win32 OnTheEdgeDebug" : 
+"QuantLib - Win32 Debug DLL" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug DLL" 
    cd ".\Examples\AmericanOption"
 
-"QuantLib - Win32 OnTheEdgeDebugCLEAN" : 
+"QuantLib - Win32 Debug DLLCLEAN" : 
    cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" RECURSE=1 CLEAN 
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug DLL" RECURSE=1 CLEAN 
    cd ".\Examples\AmericanOption"
 
 !ENDIF 

@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
-CFG=QuantLib - Win32 OnTheEdgeDebug
+CFG=QuantLib - Win32 Debug DLL
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,15 +13,15 @@ CFG=QuantLib - Win32 OnTheEdgeDebug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 OnTheEdgeDebug"
+!MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Debug DLL"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
-!MESSAGE "QuantLib - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Static Library")
-!MESSAGE "QuantLib - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Intel OnTheEdgeRelease" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLib - Win32 Release DLL" (based on "Win32 (x86) Static Library")
+!MESSAGE "QuantLib - Win32 Debug DLL" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -87,62 +87,6 @@ PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
 # End Special Build Tool
 
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "QuantLib___Win32_OnTheEdgeRelease0"
-# PROP BASE Intermediate_Dir "QuantLib___Win32_OnTheEdgeRelease0"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 0
-# PROP Output_Dir "build\OnTheEdgeRelease"
-# PROP Intermediate_Dir "build\OnTheEdgeRelease"
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr /YX /FD /c
-# ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
-# ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PreLink_Desc=Make build directory
-PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
-# End Special Build Tool
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "QuantLib___Win32_OnTheEdgeDebug0"
-# PROP BASE Intermediate_Dir "QuantLib___Win32_OnTheEdgeDebug0"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "build\OnTheEdgeDebug"
-# PROP Intermediate_Dir "build\OnTheEdgeDebug"
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
-# ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PreLink_Desc=Make build directory
-PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
-# End Special Build Tool
-
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
 
 # PROP BASE Use_MFC 0
@@ -171,15 +115,71 @@ PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
 # End Special Build Tool
 
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release DLL"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "QuantLib___Win32_Release_DLL"
+# PROP BASE Intermediate_Dir "QuantLib___Win32_Release_DLL"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "build\Release"
+# PROP Intermediate_Dir "build\Release"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr /YX /FD /Oi- /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr /YX /FD /Oi- /c
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:".\lib\Win32\VisualStudio\QuantLib.lib"
+# ADD LIB32 /nologo /out:".\lib\Win32\VisualStudio\QuantLib.lib"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Desc=Make build directory
+PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+# End Special Build Tool
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug DLL"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "QuantLib___Win32_Debug_DLL"
+# PROP BASE Intermediate_Dir "QuantLib___Win32_Debug_DLL"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "build\Debug"
+# PROP Intermediate_Dir "build\Debug"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr /YX /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
+# ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PreLink_Desc=Make build directory
+PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+# End Special Build Tool
+
 !ENDIF 
 
 # Begin Target
 
 # Name "QuantLib - Win32 Release"
 # Name "QuantLib - Win32 Debug"
-# Name "QuantLib - Win32 OnTheEdgeRelease"
-# Name "QuantLib - Win32 OnTheEdgeDebug"
 # Name "QuantLib - Win32 Intel OnTheEdgeRelease"
+# Name "QuantLib - Win32 Release DLL"
+# Name "QuantLib - Win32 Debug DLL"
 # Begin Group "Calendars"
 
 # PROP Default_Filter ""
@@ -1373,11 +1373,14 @@ SOURCE=.\ql\Pricers\mcbasket.cpp
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
-
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release DLL"
+
+# ADD BASE CPP /O2
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug DLL"
 
 !ENDIF 
 
