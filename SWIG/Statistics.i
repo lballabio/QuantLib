@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.16  2001/03/21 14:25:27  lballabio
+   Fixed %include (linux is case-sensitive, Nando)
+
    Revision 1.15  2001/03/19 17:28:50  nando
    added missing
    %include vectors.i
@@ -37,7 +40,7 @@
 #define quantlib_statistics_i
 
 %include QLArray.i
-%include vectors.i
+%include Vectors.i
 
 %{
 using QuantLib::Math::Statistics;
