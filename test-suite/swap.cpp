@@ -292,7 +292,7 @@ void SwapTest::testInArrears() {
         BOOST_FAIL("While setting up test:\n"
                    "    expected swap NPV: 0.0\n"
                    "    calculated:        "
-                   + DecimalFormatter::toExponential(swap.NPV()));
+                   + DecimalFormatter::toString(swap.NPV(),4));
 
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
