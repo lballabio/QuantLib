@@ -3,10 +3,10 @@ Many thanks to the QuantLib contributors:
 Christopher Baus - inspiration for custom iterators
 Thomas Becker - inspiration for custom iterators
 David Binderman
-Dirk Eddelbuettel - Debian packager
+Dirk Eddelbuettel - Debian maintainer
 Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
+Maxim Sokolov - examples
 Gilbert Peffer
-Sadruddin Rejeb (sad.rejeb@riskmap.it)
 Peter Schmitteckert
 Bernd Johannes Wuebben
 

@@ -50,7 +50,7 @@ namespace QuantLib {
         class Model {
           public:
             Model(unsigned nParams,
-                const RelinkableHandle<TermStructure>& termStructure)
+                  const RelinkableHandle<TermStructure>& termStructure)
             : nParams_(nParams), termStructure_(termStructure) {}
             virtual ~Model() {}
             virtual void setParameters(const Array& params) = 0;

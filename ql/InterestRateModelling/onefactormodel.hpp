@@ -45,14 +45,15 @@ namespace QuantLib {
 
         class OneFactorModel : public Model {
           public:
-            OneFactorModel(unsigned nParams, 
-                const RelinkableHandle<TermStructure>& termStructure) 
+            OneFactorModel(
+                unsigned nParams,
+                const RelinkableHandle<TermStructure>& termStructure)
             : Model(nParams, termStructure) {}
             virtual ~OneFactorModel() {}
             virtual double stateVariable(Rate r) const = 0;
             virtual Rate getRateFrom(double y) const = 0;
-            virtual double minStateVariable() const { return -1000000;}
-            virtual double maxStateVariable() const { return +1000000;}
+            virtual double minStateVariable() const { return -QL_MAX_DOUBLE;}
+            virtual double maxStateVariable() const { return QL_MAX_DOUBLE;}
 
             void fitToTermStructure(std::vector<double>& theta);
             const Handle<StochasticProcess>& process() const {

@@ -43,6 +43,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Coupon Bond Option
+        //! \todo it doesn't work
         class CouponBondOption {
           public:
             CouponBondOption( Time maturity, const std::vector<Time>& times,

@@ -34,7 +34,7 @@
 #ifndef quantlib_one_factor_models_hull_and_white_h
 #define quantlib_one_factor_models_hull_and_white_h
 
-#include "ql/InterestRateModelling/OneFactorModels/hoandlee.hpp"
+#include "ql/InterestRateModelling/onefactormodel.hpp"
 
 namespace QuantLib {
 
@@ -59,10 +59,14 @@ namespace QuantLib {
             virtual Rate getRateFrom(double y) const {
                 return y;
             }
-            virtual double discountBond(Time T, Time s, Rate r);
+            virtual double discountBond(Time T,
+                                        Time s,
+                                        Rate r);
 
-            virtual double discountBondOption(Option::Type type, double strike,
-                Time maturity, Time bondMaturity);
+            virtual double discountBondOption(Option::Type type,
+                                              double strike,
+                                              Time maturity,
+                                              Time bondMaturity);
 
           private:
             inline double B(Time t) const {

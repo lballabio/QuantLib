@@ -38,16 +38,18 @@
 #include "ql/InterestRateModelling/OneFactorModels/tree.hpp"
 
 namespace QuantLib {
-   
-    namespace InterestRateModelling { 
+
+    namespace InterestRateModelling {
 
         class BlackKarasinski : public OneFactorModel {
           public:
-            BlackKarasinski(const RelinkableHandle<TermStructure>& termStructure, unsigned int timeSteps = 1000);
+            BlackKarasinski(
+                const RelinkableHandle<TermStructure>& termStructure,
+                unsigned int timeSteps = 1000);
             virtual ~BlackKarasinski() {}
 
             virtual void setParameters(const Array& params) {
-                QL_REQUIRE(params.size()==2, 
+                QL_REQUIRE(params.size()==2,
                     "Incorrect number of parameters for BK calibration");
                 alpha_ = params[0];
                 sigma_ = params[1];
@@ -56,7 +58,10 @@ namespace QuantLib {
 
             virtual double discountBond(Time now, Time maturity, Rate r);
 
-            virtual double discountBondOption(Option::Type type, double strike, Time maturity, Time bondMaturity) {
+            virtual double discountBondOption(Option::Type type,
+                                              double strike,
+                                              Time maturity,
+                                              Time bondMaturity) {
                 throw("Not yet implemented");
                 QL_DUMMY_RETURN(0.0);
             }
