@@ -41,7 +41,10 @@ namespace QuantLib {
                                       const M& zData)
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
-                                                     zData) {}
+                                                     zData) {
+                calculate();
+            }
+            void calculate() {}
             Real value(Real x, Real y) const {
                 Size i = this->locateX(x), j = this->locateY(y);
 

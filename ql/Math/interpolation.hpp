@@ -32,6 +32,7 @@ namespace QuantLib {
     class InterpolationImpl {
       public:
         virtual ~InterpolationImpl() {}
+        virtual void calculate() = 0;
         virtual Real xMin() const = 0;
         virtual Real xMax() const = 0;
         virtual bool isInRange(Real) const = 0;
@@ -103,9 +104,18 @@ namespace QuantLib {
             checkRange(x,allowExtrapolation);
             return impl_->secondDerivative(x);
         }
-        Real xMin() const { return impl_->xMin(); }
-        Real xMax() const { return impl_->xMax(); }
-        bool isInRange(Real x) const { return impl_->isInRange(x); }
+        Real xMin() const {
+            return impl_->xMin();
+        }
+        Real xMax() const {
+            return impl_->xMax();
+        }
+        bool isInRange(Real x) const {
+            return impl_->isInRange(x);
+        }
+        void update() {
+            impl_->calculate();
+        }
       protected:
         void checkRange(Real x, bool allowExtrapolation) const {
             QL_REQUIRE(allowExtrapolation || impl_->isInRange(x),

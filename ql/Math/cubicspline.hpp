@@ -178,7 +178,14 @@ namespace QuantLib {
                             bool monotonicityConstraint)
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
               CoefficientHolder(xEnd-xBegin),
-              monotone_(false) {
+              monotone_(false), constrained_(monotonicityConstraint),
+              leftType_(leftCondition), rightType_(rightCondition),
+              leftValue_(leftConditionValue),
+              rightValue_(rightConditionValue) {
+                calculate();
+            }
+
+            void calculate() {
 
                 TridiagonalOperator L(n_);
                 Array tmp(n_);
@@ -198,7 +205,7 @@ namespace QuantLib {
                 /**** BOUNDARY CONDITIONS ****/
 
                 // left condition
-                switch (leftCondition) {
+                switch (leftType_) {
                   case CubicSpline::NotAKnot:
                     // ignoring end condition value
                     L.setFirstRow(dx[1]*(dx[1]+dx[0]),
@@ -208,11 +215,11 @@ namespace QuantLib {
                     break;
                   case CubicSpline::FirstDerivative:
                     L.setFirstRow(1.0, 0.0);
-                    tmp[0] = leftConditionValue;
+                    tmp[0] = leftValue_;
                     break;
                   case CubicSpline::SecondDerivative:
                     L.setFirstRow(2.0, 1.0);
-                    tmp[0] = 3.0*S[0] - leftConditionValue*dx[0]/2.0;
+                    tmp[0] = 3.0*S[0] - leftValue_*dx[0]/2.0;
                     break;
                   case CubicSpline::Periodic:
                   case CubicSpline::Lagrange:
@@ -223,7 +230,7 @@ namespace QuantLib {
                 }
 
                 // right condition
-                switch (rightCondition) {
+                switch (rightType_) {
                   case CubicSpline::NotAKnot:
                     // ignoring end condition value
                     L.setLastRow(-(dx[n_-2]+dx[n_-3])*(dx[n_-2]+dx[n_-3]),
@@ -233,11 +240,11 @@ namespace QuantLib {
                     break;
                   case CubicSpline::FirstDerivative:
                     L.setLastRow(0.0, 1.0);
-                    tmp[n_-1] = rightConditionValue;
+                    tmp[n_-1] = rightValue_;
                     break;
                   case CubicSpline::SecondDerivative:
                     L.setLastRow(1.0, 2.0);
-                    tmp[n_-1] = 3.0*S[n_-2] + rightConditionValue*dx[n_-2]/2.0;
+                    tmp[n_-1] = 3.0*S[n_-2] + rightValue_*dx[n_-2]/2.0;
                     break;
                   case CubicSpline::Periodic:
                   case CubicSpline::Lagrange:
@@ -250,7 +257,7 @@ namespace QuantLib {
                 // solve the system
                 tmp = L.solveFor(tmp);
 
-                if (monotonicityConstraint) {
+                if (constrained_) {
                     Real correction;
                     Real pm, pu, pd, M;
                     for (i=0; i<n_; i++) {
@@ -357,7 +364,9 @@ namespace QuantLib {
                 return 2.0*b_[j] + 6.0*c_[j]*dx;
             }
           private:
-            bool monotone_;
+            bool monotone_, constrained_;
+            CubicSpline::BoundaryCondition leftType_, rightType_;
+            Real leftValue_, rightValue_;
         };
 
     }

@@ -32,6 +32,7 @@ namespace QuantLib {
     class Interpolation2DImpl {
       public:
         virtual ~Interpolation2DImpl() {}
+        virtual void calculate() = 0;
         virtual Real xMin() const = 0;
         virtual Real xMax() const = 0;
         virtual Real yMin() const = 0;
@@ -114,12 +115,23 @@ namespace QuantLib {
             checkRange(x,y,allowExtrapolation);
             return impl_->value(x,y);
         }
-        Real xMin() const { return impl_->xMin(); }
-        Real xMax() const { return impl_->xMax(); }
-        Real yMin() const { return impl_->yMin(); }
-        Real yMax() const { return impl_->yMax(); }
+        Real xMin() const {
+            return impl_->xMin();
+        }
+        Real xMax() const {
+            return impl_->xMax();
+        }
+        Real yMin() const {
+            return impl_->yMin();
+        }
+        Real yMax() const {
+            return impl_->yMax();
+        }
         bool isInRange(Real x, Real y) const {
             return impl_->isInRange(x,y);
+        }
+        void update() {
+            impl_->calculate();
         }
       protected:
         void checkRange(Real x, Real y, bool allowExtrapolation) const {

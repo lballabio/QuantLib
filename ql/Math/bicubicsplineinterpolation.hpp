@@ -42,9 +42,13 @@ namespace QuantLib {
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
                                                      zData) {
+                calculate();
+            }
+            void calculate() {
                 for (Size i=0; i<(this->zData_.rows()); i++)
                     splines_.push_back(NaturalCubicSpline(
-                                    xBegin, xEnd, this->zData_.row_begin(i)));
+                                                  this->xBegin_, this->xEnd_,
+                                                  this->zData_.row_begin(i)));
             }
             Real value(Real x, Real y) const {
                 std::vector<Real> section(splines_.size());
