@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/Swaption/swaptionpricer.hpp>
+#include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
 
 namespace QuantLib {
 

@@ -17,7 +17,7 @@
 
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
-#include <ql/PricingEngines/Swaption/blackswaption.hpp>
+#include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
 #include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
@@ -90,7 +90,8 @@ namespace QuantLib {
         boost::shared_ptr<BlackModel> blackModel(
                          new BlackModel(RelinkableHandle<Quote>(vol), 
                                         termStructure_));
-        boost::shared_ptr<PricingEngine> black(new BlackSwaption(blackModel));
+        boost::shared_ptr<PricingEngine> black(
+                                        new BlackSwaptionEngine(blackModel));
         swaption_->setPricingEngine(black);
         Real value = swaption_->NPV();
         swaption_->setPricingEngine(engine_);

@@ -15,28 +15,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file treeswaption.hpp
-    \brief Swaption computed using a lattice
+/*! \file treeswaptionengine.hpp
+    \brief Numerical lattice engine for swaptions
 */
 
 #ifndef quantlib_pricers_tree_swaption_h
 #define quantlib_pricers_tree_swaption_h
 
-#include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 #include <ql/Instruments/swaption.hpp>
+#include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 
 namespace QuantLib {
 
-    //! %Swaption priced on a lattice
+    //! Numerical lattice engine for swaptions
     /*! \ingroup swaptionengines */
-    class TreeSwaption 
+    class TreeSwaptionEngine
     : public LatticeShortRateModelEngine<Swaption::arguments,
                                          Swaption::results> {
       public:
-        TreeSwaption(const boost::shared_ptr<ShortRateModel>& model, 
-                     Size timeSteps);
-        TreeSwaption(const boost::shared_ptr<ShortRateModel>& model, 
-                     const TimeGrid& timeGrid) ;
+        TreeSwaptionEngine(const boost::shared_ptr<ShortRateModel>& model, 
+                           Size timeSteps);
+        TreeSwaptionEngine(const boost::shared_ptr<ShortRateModel>& model, 
+                           const TimeGrid& timeGrid) ;
         void calculate() const;
     };
 

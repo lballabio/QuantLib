@@ -15,8 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaptionpricer.hpp
-    \brief Swaption pricer class
+/*! \file discretizedswaption.hpp
+    \brief Discretized swaption class
 */
 
 #ifndef quantlib_pricers_swaption_pricer_h

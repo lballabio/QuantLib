@@ -22,7 +22,7 @@
 #include <ql/Indexes/euribor.hpp>
 #include <ql/DayCounters/actual365.hpp>
 #include <ql/DayCounters/thirty360.hpp>
-#include <ql/PricingEngines/Swaption/blackswaption.hpp>
+#include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -68,7 +68,8 @@ namespace {
         RelinkableHandle<Quote> vol_rh(vol_me);
         boost::shared_ptr<BlackModel> model(
                                        new BlackModel(vol_rh,termStructure_));
-        boost::shared_ptr<PricingEngine> engine(new BlackSwaption(model));
+        boost::shared_ptr<PricingEngine> engine(
+                                              new BlackSwaptionEngine(model));
         return boost::shared_ptr<Swaption>(new Swaption(
                   swap,
                   boost::shared_ptr<Exercise>(new EuropeanExercise(exercise)),

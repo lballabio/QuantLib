@@ -15,22 +15,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/Swaption/treeswaption.hpp>
-#include <ql/PricingEngines/Swaption/swaptionpricer.hpp>
+#include <ql/PricingEngines/Swaption/treeswaptionengine.hpp>
+#include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
 
 namespace QuantLib {
 
-    TreeSwaption::TreeSwaption(const boost::shared_ptr<ShortRateModel>& model,
+    TreeSwaptionEngine::TreeSwaptionEngine(
+                               const boost::shared_ptr<ShortRateModel>& model,
                                Size timeSteps) 
     : LatticeShortRateModelEngine<Swaption::arguments, Swaption::results> 
     (model, timeSteps) {} 
 
-    TreeSwaption::TreeSwaption(const boost::shared_ptr<ShortRateModel>& model,
+    TreeSwaptionEngine::TreeSwaptionEngine(
+                               const boost::shared_ptr<ShortRateModel>& model,
                                const TimeGrid& timeGrid) 
     : LatticeShortRateModelEngine<Swaption::arguments, Swaption::results> 
     (model, timeGrid) {}
 
-    void TreeSwaption::calculate() const {
+    void TreeSwaptionEngine::calculate() const {
 
         QL_REQUIRE(model_, "no model specified");
         boost::shared_ptr<Lattice> lattice;

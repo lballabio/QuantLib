@@ -15,32 +15,38 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file blackswaption.hpp
-    \brief Swaption calculated using the Black formula
+/*! \file jamshidianswaptionengine.hpp
+    \brief Swaption engine using Jamshidian's decomposition
 */
 
-#ifndef quantlib_pricers_black_swaption_h
-#define quantlib_pricers_black_swaption_h
+#ifndef quantlib_pricers_jamshidian_swaption_h
+#define quantlib_pricers_jamshidian_swaption_h
 
-#include <ql/PricingEngines/blackmodel.hpp>
-#include <ql/PricingEngines/Swaption/swaptionpricer.hpp>
+#include <ql/Instruments/swaption.hpp>
+#include <ql/ShortRateModels/onefactormodel.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 
 namespace QuantLib {
 
-    //! %Swaption priced by means of the Black formula
+    //! Jamshidian swaption engine
     /*! \ingroup swaptionengines */
-    class BlackSwaption : public GenericModelEngine<BlackModel, 
-                                                    Swaption::arguments,
-                                                    Swaption::results> {
+    class JamshidianSwaptionEngine 
+        : public GenericModelEngine<OneFactorAffineModel,
+                                    Swaption::arguments,
+                                    Swaption::results > {
       public:
-        BlackSwaption(const boost::shared_ptr<BlackModel>& model)
-        : GenericModelEngine<BlackModel, 
+        JamshidianSwaptionEngine(
+                         const boost::shared_ptr<OneFactorAffineModel>& model)
+        : GenericModelEngine<OneFactorAffineModel,
                              Swaption::arguments,
-                             Swaption::results>(model) {}
+                             Swaption::results>(model) {} 
         void calculate() const;
+      private:
+        class rStarFinder;
+        friend class rStarFinder;
     };
 
 }
+
 
 #endif

@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/Swaption/jamshidianswaption.hpp>
+#include <ql/PricingEngines/Swaption/jamshidianswaptionengine.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
-    class JamshidianSwaption::rStarFinder {
+    class JamshidianSwaptionEngine::rStarFinder {
       public:
         rStarFinder(const Swaption::arguments &params,
                     const boost::shared_ptr<OneFactorAffineModel>& model,
@@ -47,7 +47,7 @@ namespace QuantLib {
         const boost::shared_ptr<OneFactorAffineModel>& model_;
     };
 
-    void JamshidianSwaption::calculate() const {
+    void JamshidianSwaptionEngine::calculate() const {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "cannot use the Jamshidian decomposition "
                    "on exotic swaptions");

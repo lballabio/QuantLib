@@ -4,17 +4,17 @@ includedir = $(prefix)/include/ql/PricingEngines/Swaption
 
 include_HEADERS = \
     all.hpp \
-    blackswaption.hpp \
-    jamshidianswaption.hpp \
-    swaptionpricer.hpp \
-    treeswaption.hpp
+    blackswaptionengine.hpp \
+    jamshidianswaptionengine.hpp \
+    discretizedswaption.hpp \
+    treeswaptionengine.hpp
 
 EXTRA_DIST=makefile.mak
 
 libSwaptionEngines_la_SOURCES = \
-    blackswaption.cpp \
-    jamshidianswaption.cpp \
-    swaptionpricer.cpp \
-    treeswaption.cpp
+    blackswaptionengine.cpp \
+    jamshidianswaptionengine.cpp \
+    discretizedswaption.cpp \
+    treeswaptionengine.cpp
 
 noinst_LTLIBRARIES = libSwaptionEngines.la

@@ -15,11 +15,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/PricingEngines/Swaption/blackswaption.hpp>
+#include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
 
 namespace QuantLib {
 
-    void BlackSwaption::calculate() const {
+    void BlackSwaptionEngine::calculate() const {
         Time exercise = arguments_.stoppingTimes[0];
         Real w = arguments_.payFixed ? 1.0 : -1.0;
         results_.value =  arguments_.fixedBPS * 
