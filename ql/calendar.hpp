@@ -98,7 +98,7 @@ namespace QuantLib {
         void addHoliday(const Date&);
         /*! Removes a date from the set of holidays for the given calendar. */
         void removeHoliday(const Date&);
-        #if !defined(QL_PATCH_MICROSOFT_SIX)
+        #if !defined(QL_PATCH_MICROSOFT)
         /*! Modifies the set of holidays as specified by a data file.
 
             Each line in the file must have the following format:

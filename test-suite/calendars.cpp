@@ -79,7 +79,7 @@ void CalendarTest::testModifiedCalendars() {
     if (c1.isHoliday(d2))
         BOOST_FAIL(DateFormatter::toString(d2) + " still a holiday");
 
-    #if !defined(QL_PATCH_MICROSOFT_SIX)
+    #if !defined(QL_PATCH_MICROSOFT)
 
     // repeat, loading from file
 
