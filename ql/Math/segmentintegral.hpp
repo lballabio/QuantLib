@@ -50,22 +50,7 @@ namespace QuantLib {
           public:
             SegmentIntegral(Size intervals);
             template <class F>
-            double operator()(const F& f, double a, double b) const;
-          private:
-            Size intervals_;
-        };
-
-
-        // inline and template definitions
-        
-        inline SegmentIntegral::SegmentIntegral(Size intervals)
-        : intervals_(intervals) {
-            QL_REQUIRE(intervals > 0, "at least 1 interval needed, 0 given");
-        }
-
-        template <class F>
-        double SegmentIntegral::operator()(
-            const F& f, double a, double b) const {
+            double operator()(const F& f, double a, double b) const {
                 QL_REQUIRE(a < b,
                            "to compute an integral on [a,b] it must be a<b; "
                            "a="+DoubleFormatter::toString(a)+", "
@@ -77,6 +62,17 @@ namespace QuantLib {
                 for (double x = a+dx; x < end; x += dx)
                     sum += f(x);
                 return sum*dx;
+        }
+          private:
+            Size intervals_;
+        };
+
+
+        // inline and template definitions
+        
+        inline SegmentIntegral::SegmentIntegral(Size intervals)
+        : intervals_(intervals) {
+            QL_REQUIRE(intervals > 0, "at least 1 interval needed, 0 given");
         }
 
     }
