@@ -226,6 +226,32 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
     QL_TEST_TEARDOWN
 }
 
+void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
+
+    BOOST_MESSAGE(
+        "Testing consistency of piecewise-log-linear zero-yield curve...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    testCurveConsistency(ZeroYield(), LogLinear());
+
+    QL_TEST_TEARDOWN
+}
+
+void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
+
+    BOOST_MESSAGE(
+        "Testing consistency of piecewise-linear zero-yield curve...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    testCurveConsistency(ZeroYield(), Linear());
+
+    QL_TEST_TEARDOWN
+}
+
 void PiecewiseYieldCurveTest::testObservability() {
 
     BOOST_MESSAGE("Testing observability of piecewise yield curve...");
@@ -262,6 +288,10 @@ test_suite* PiecewiseYieldCurveTest::suite() {
                  &PiecewiseYieldCurveTest::testLogLinearDiscountConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearDiscountConsistency));
+    suite->add(BOOST_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
+    suite->add(BOOST_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testLinearZeroConsistency));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     return suite;
 }

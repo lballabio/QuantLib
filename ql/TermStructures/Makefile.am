@@ -29,7 +29,6 @@ libTermStructures_la_SOURCES = \
     compoundforward.cpp \
     extendeddiscountcurve.cpp \
     piecewiseflatforward.cpp \
-    ratehelpers.cpp \
-    zerocurve.cpp
+    ratehelpers.cpp
 
 noinst_LTLIBRARIES = libTermStructures.la

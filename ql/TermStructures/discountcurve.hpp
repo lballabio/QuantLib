@@ -17,7 +17,7 @@
 */
 
 /*! \file discountcurve.hpp
-    \brief pre-bootstrapped discount factor structure
+    \brief interpolated discount factor structure
 */
 
 #ifndef quantlib_discount_curve_hpp
@@ -61,7 +61,6 @@ namespace QuantLib {
                                   const Interpolator& interpolator
                                                             = Interpolator());
         DiscountFactor discountImpl(Time) const;
-        Size referenceNode(Time) const;
         DayCounter dayCounter_;
         mutable std::vector<Date> dates_;
         mutable std::vector<Time> times_;
@@ -138,6 +137,12 @@ namespace QuantLib {
       interpolator_(interpolator) {}
 
 
+    template <class T>
+    inline DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t)
+                                                                       const {
+        return interpolation_(t, true);
+    }
+
     // template definitions
 
     template <class T>
@@ -161,47 +166,17 @@ namespace QuantLib {
 
         times_.resize(dates_.size());
         times_[0] = 0.0;
-        for(Size i = 1; i < dates_.size(); i++) {
+        for (Size i = 1; i < dates_.size(); i++) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
             QL_REQUIRE(data_[i] > 0.0, "negative discount");
             times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
         }
+
         interpolation_ = interpolator_.interpolate(times_.begin(),
                                                    times_.end(),
                                                    data_.begin());
-    }
-
-    template <class T>
-    DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t) const {
-        if (t == 0.0) {
-            return data_[0];
-        } else {
-            Size n = referenceNode(t);
-            if (t == times_[n]) {
-                return data_[n];
-            } else {
-                return interpolation_(t, true);
-            }
-        }
-        QL_DUMMY_RETURN(DiscountFactor());
-    }
-
-    template <class T>
-    Size InterpolatedDiscountCurve<T>::referenceNode(Time t) const {
-        if (t >= times_.back())
-            return times_.size()-1;
-        std::vector<Time>::const_iterator i=times_.begin(),
-            j=times_.end(), k;
-        while (j-i > 1) {
-            k = i+(j-i)/2;
-            if (t <= *k)
-                j = k;
-            else
-                i = k;
-        }
-        return (j-times_.begin());
     }
 
 }

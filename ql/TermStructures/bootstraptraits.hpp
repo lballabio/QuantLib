@@ -23,6 +23,7 @@
 #define ql_bootstrap_traits_hpp
 
 #include <ql/TermStructures/discountcurve.hpp>
+#include <ql/TermStructures/zerocurve.hpp>
 
 namespace QuantLib {
 
@@ -55,13 +56,47 @@ namespace QuantLib {
             #endif
         }
         // update with new guess
-        static void updateGuess(std::vector<Real>& data,
+        static void updateGuess(std::vector<DiscountFactor>& data,
                                 DiscountFactor discount,
                                 Size i) {
             data[i] = discount;
         }
     };
-   
+
+
+    //! Zero-curve traits
+    struct ZeroYield {
+        // interpolated curve type
+        template <class Interpolator>
+        struct curve {
+            typedef InterpolatedZeroCurve<Interpolator> type;
+        };
+        // (dummy) value at reference
+        static Rate initialValue() { return 0.02; }
+        // initial guess
+        static Rate initialGuess() { return 0.02; }
+        // further guesses
+        static Rate guess(const YieldTermStructure* curve,
+                          const Date& d) {
+            return curve->zeroRate(d,curve->dayCounter(),
+                                   Continuous,Annual,true);
+        }
+        // possible constraint based on previous values
+        static DiscountFactor maxValueAfter(Size i,
+                                            const std::vector<Real>& data) {
+            // no constraints.
+            // We choose as max a value very unlikely to be exceeded.
+            return 3.0;
+        }
+        // update with new guess
+        static void updateGuess(std::vector<Rate>& data,
+                                Rate rate,
+                                Size i) {
+            data[i] = rate;
+            if (i == 1)
+                data[0] = rate; // first point is updated as well
+        }
+    };
 
 }
 
