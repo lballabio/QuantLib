@@ -29,10 +29,9 @@
     Additional resources available from the above site include:
 
     - current news (http://sourceforge.net/news/?group_id=12740);
-    - the %QuantLib mailing lists (http://quantlib.org/mailinglists.html);
-    - the %QuantLib FAQ (http://quantlib.org/FAQ.html);
+    - the %QuantLib mailing lists (http://quantlib.org/mailinglists.shtml);
     - the %QuantLib programming style guidelines
-      (http://quantlib.org/style.html);
+      (http://quantlib.org/style.shtml);
     - a link to the %QuantLib project page on SourceForge.net
      (http://sourceforge.net/projects/quantlib);
     - links to pages for bug reports
@@ -41,7 +40,7 @@
       (http://sourceforge.net/tracker/?group_id=12740&atid=312740),
       and feature requests
       (http://sourceforge.net/tracker/?group_id=12740&atid=362740);
-    - a page (http://quantlib.org/extensions.html) about how to use %QuantLib
+    - a page (http://quantlib.org/extensions.shtml) about how to use %QuantLib
       in other languages/platforms;
     - %QuantLib web-site statistics
       (http://sourceforge.net/project/stats/?group_id=12740);
