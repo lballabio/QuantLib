@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.39  2001/04/11 11:06:16  lballabio
+    Rubified Array
+
     Revision 1.38  2001/04/10 07:54:33  lballabio
     Ruby histories (the Ruby way)
 
@@ -91,6 +94,7 @@ using QuantLib::IndexError;
 %include Distributions.i
 %include Financial.i
 %include History.i
+%include QLArray.i
 %include RandomGenerators.i
 %include Statistics.i
 %include Solvers1D.i
@@ -109,7 +113,6 @@ using QuantLib::IndexError;
 %include Operators.i
 %include Options.i
 %include Pricers.i
-%include QLArray.i
 %include RiskStatistics.i
 %include TermStructures.i
 #endif

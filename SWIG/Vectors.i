@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.26  2001/04/11 11:06:16  lballabio
+    Rubified Array
+
     Revision 1.25  2001/04/10 07:54:33  lballabio
     Ruby histories (the Ruby way)
 
@@ -214,7 +217,7 @@ class DoubleVector {
                     (*temp)[i] = NUM2DBL(o);
                 else
                     rb_raise(rb_eTypeError,
-                        "wrong argument type (expected integers)");
+                        "wrong argument type (expected numbers)");
             }
             return temp;
         } else {

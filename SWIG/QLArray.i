@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.11  2001/04/11 11:06:16  lballabio
+    Rubified Array
+
     Revision 1.10  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -39,25 +42,65 @@
 %{
 using QuantLib::Array;
 typedef QuantLib::Math::LexicographicalView<Array::iterator>
-    ArrayLexicographicalView;
+    LexicographicalView;
 typedef QuantLib::Math::LexicographicalView<Array::iterator>::y_iterator
-	ArrayLexicographicalViewColumn;
+    LexicographicalViewColumn;
 %}
 
 // array as python shadow class
 
 class Array {
+    %pragma(ruby) include = "Enumerable";
   public:
     ~Array();
 };
 
+%typemap(ruby,in) VALUE {
+    $target = $source;
+};
+
 %addmethods Array {
-    // constructor
+    #if defined(SWIGRUBY)
+    void crash() {}
+    Array(VALUE v) {
+        if (rb_obj_is_kind_of(v,rb_cArray)) {
+            int size = RARRAY(v)->len;
+            Array* temp = new Array(size);
+            for (int i=0; i<size; i++) {
+                VALUE o = RARRAY(v)->ptr[i];
+                if (o == Qnil)
+                    (*temp)[i] = Null<double>();
+                else if (FIXNUM_P(o))
+                    (*temp)[i] = double(FIX2INT(o));
+                else if (TYPE(o) == T_FLOAT)
+                    (*temp)[i] = NUM2DBL(o);
+                else
+                    rb_raise(rb_eTypeError,
+                        "wrong argument type (expected numbers)");
+            }
+            return temp;
+        } else {
+            rb_raise(rb_eTypeError,
+                "wrong argument type (expected array)");
+        }
+    }
+    #endif
+    #if defined(SWIGPYTHON)
     Array(const Array& a) {
         return new Array(a);
     }
-    #if defined(SWIGPYTHON)
-    // sequence methods
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    String __str__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+        	if (i != 0)
+        		s += ", ";
+        	s += QuantLib::DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
     int __len__() {
         return self->size();
     }
@@ -80,6 +123,8 @@ class Array {
             throw IndexError("Array index out of range");
         }
     }
+    #endif
+    #if defined(SWIGPYTHON)
     Array __getslice__(int i, int j) {
         if (i<0)
             i = self->size()+i;
@@ -101,18 +146,14 @@ class Array {
         QL_ENSURE(rhs.size() == j-i, "Arrays are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-    String __str__() {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-        	if (i != 0)
-        		s += ", ";
-        	s += QuantLib::DoubleFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
     int __nonzero__() {
         return (self->size() == 0 ? 0 : 1);
+    }
+    #endif
+    #if defined(SWIGRUBY)
+    void each() {
+        for (int i=0; i<self->size(); i++)
+            rb_yield(rb_float_new((*self)[i]));
     }
     #endif
 };
@@ -152,29 +193,27 @@ class Array {
 
 // 2-D view
 
-class ArrayLexicographicalView {
+class LexicographicalView {
   public:
-    ~ArrayLexicographicalView();
+    ~LexicographicalView();
     int xSize() const;
     int ySize() const;
 };
 
-%{
-    ArrayLexicographicalView CreateLexicographicView(Array& a, int xSize) {
-        return ArrayLexicographicalView(a.begin(),a.end(),xSize);
-    }
-%}
-
-%name(LexicographicalView) ArrayLexicographicalView CreateLexicographicView(Array& a, int xSize);
-
-class ArrayLexicographicalViewColumn {
+class LexicographicalViewColumn {
   public:
-    ~ArrayLexicographicalViewColumn();
+    ~LexicographicalViewColumn();
 };
 
-%addmethods ArrayLexicographicalView {
-    #if defined(SWIGPYTHON)
-    ArrayLexicographicalViewColumn __getitem__(int i) {
+%addmethods LexicographicalView {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    LexicographicalView(Array& a, int xSize) {
+        return new LexicographicalView(a.begin(),a.end(),xSize);
+    }
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    LexicographicalViewColumn __getitem__(int i) {
         return (*self)[i];
     }
     String __str__() {
@@ -193,8 +232,11 @@ class ArrayLexicographicalViewColumn {
     #endif
 };
 
-%addmethods ArrayLexicographicalViewColumn {
-    #if defined(SWIGPYTHON)
+%addmethods LexicographicalViewColumn {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     double __getitem__(int i) {
         return (*self)[i];
     }
