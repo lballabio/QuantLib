@@ -48,9 +48,6 @@ namespace QuantLib {
         typedef ICGaussianRng<LecuyerUniformRng,
             QuantLib::Math::InvCumulativeNormalDistribution>
 			InvCumulativeLecuyerGaussianRng;
-        typedef ICGaussianRng<LecuyerUniformRng,
-            QuantLib::Math::InvCumulativeNormalDistribution2>
-			InvCumulative2LecuyerGaussianRng;
 
         // Gaussian random number generators based on
         // Knuth uniform random number generator
@@ -61,9 +58,6 @@ namespace QuantLib {
         typedef ICGaussianRng<KnuthUniformRng,
             QuantLib::Math::InvCumulativeNormalDistribution>
 			InvCumulativeKnuthGaussianRng;
-        typedef ICGaussianRng<KnuthUniformRng,
-            QuantLib::Math::InvCumulativeNormalDistribution2>
-			InvCumulative2KnuthGaussianRng;
 
 /*      // looking forward to low-discrepancy sequences
 

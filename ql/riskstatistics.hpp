@@ -73,12 +73,12 @@ namespace QuantLib {
                 statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Shortfall (observations below target)
-        double shortfall( double target ) const {
+        double shortfall(double target) const {
             return riskMeasures_.shortfall(target,
                 statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Average Shortfall (averaged shortfallness)
-        double averageShortfall( double target ) const  {
+        double averageShortfall(double target) const  {
             return riskMeasures_.averageShortfall(target,
                 statistics_.mean(), statistics_.standardDeviation());
         }

@@ -122,9 +122,9 @@
     For the time being, the path generator is initialized with a constant
     drift and variance. This requirement will most likely be relaxed in
     the next release. The multi-path generator is initialized with an array
-    of constant drifts --- one for each single path --- and a covariance matrix
+    of constant drifts---one for each single asset---and a covariance matrix
     which encapsulates the relations between the diffusion components of
-    the single paths.
+    the single assets.
 
     The time discretization of the (multi)paths can be specified either as
     a given number of equal time steps over a given time span, or as a
