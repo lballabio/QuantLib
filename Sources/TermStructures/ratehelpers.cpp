@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.3  2001/05/17 15:33:30  lballabio
+    Deposit rate helpers now use conventions in Currency
+
     Revision 1.2  2001/05/16 15:45:56  lballabio
     Fixed typo in docs
 
@@ -42,10 +45,18 @@ namespace QuantLib {
     namespace TermStructures {
         
         void DepositRateHelper::setTermStructure(const TermStructure* t) {
+            QL_REQUIRE(t != 0, "null term structure given");
+            QL_REQUIRE(t->currency() == currency_,
+                "Mismatch between deposit currency (" +
+                currency_->name() +
+                ") and term structure currency (" +
+                t->currency()->name() + ")");
             RateHelper::setTermStructure(t);
-            maturity_ = termStructure_->calendar()->advance(
-                termStructure_->settlementDate(),n_,units_,modified_);
-            yearFraction_ = dayCounter_->yearFraction(
+            maturity_ = termStructure_->settlementDate().plus(n_,units_);
+            if (currency_->depositIsAdjusted())
+                maturity_ = currency_->settlementCalendar()->roll(
+                    maturity_,currency_->depositIsModified());
+            yearFraction_ = currency_->depositDayCounter()->yearFraction(
                 termStructure_->settlementDate(),maturity_);
         }
         

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/17 15:33:30  lballabio
+    Deposit rate helpers now use conventions in Currency
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -35,7 +38,7 @@
 #define quantlib_rate_helpers_i
 
 %include Date.i
-%include DayCounters.i
+%include Currencies.i
 %include Financial.i
 
 %{
@@ -66,10 +69,10 @@
 };
 
 %addmethods DepositRateHelperHandle {
-    DepositRateHelperHandle(int n, TimeUnit units, bool modified, 
-      Rate rate, DayCounterHandle dayCounter) {
+    DepositRateHelperHandle(CurrencyHandle currency, 
+      int n, TimeUnit units, Rate rate) {
         return new DepositRateHelperHandle(
-            new DepositRateHelper(n,units,modified,rate,dayCounter));
+            new DepositRateHelper(currency,n,units,rate));
     }
 }
 

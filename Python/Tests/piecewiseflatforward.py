@@ -25,6 +25,15 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/17 15:33:30  lballabio
+    Deposit rate helpers now use conventions in Currency
+
+    Revision 1.1.1.1  2001/05/17 12:57:59  ballabl
+    Renamed
+
+    Revision 1.1  2001/05/16 14:53:28  ametraf
+    no message
+
     Revision 1.2  2001/05/16 14:16:09  lballabio
     Using more meaningful rates
 
@@ -47,11 +56,10 @@ class PiecewiseFlatForwardTest(unittest.TestCase):
             ['week','month','months','months','months','months','year']
         self.rates = \
             [ 4.591,  4.593,   4.583,   4.572,   4.490,   4.455, 4.433]
-        self.modified = 1
-        self.dayCount = Actual360()
+        self.currency = EUR()
         self.instruments = map(
-            lambda n,unit,rate,mod=self.modified,dayCount=self.dayCount: 
-                DepositRateHelper(n,unit,mod,rate/100,dayCount),
+            lambda n,unit,rate,currency=self.currency: 
+                DepositRateHelper(currency,n,unit,rate/100),
             self.ns,
             self.units,
             self.rates)

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/05/17 15:33:30  lballabio
+    Deposit rate helpers now use conventions in Currency
+
     Revision 1.2  2001/05/16 15:43:38  lballabio
     Fixed typo in docs
 
@@ -40,7 +43,6 @@
 
 #include "ql/qldefines.hpp"
 #include "ql/termstructure.hpp"
-#include "ql/daycounter.hpp"
 
 namespace QuantLib {
 
@@ -74,10 +76,9 @@ namespace QuantLib {
         //! deposit rate
         class DepositRateHelper : public RateHelper {
           public:
-            DepositRateHelper(int n, TimeUnit units, bool modified, 
-                Rate rate, const Handle<DayCounter>& dayCounter)
-            : n_(n), units_(units), modified_(modified), rate_(rate), 
-              dayCounter_(dayCounter) {}
+            DepositRateHelper(const Handle<Currency>& currency, 
+                int n, TimeUnit units, Rate rate)
+            : currency_(currency), n_(n), units_(units), rate_(rate) {}
             double rateError() const;
             double discountGuess() const;
             void setTermStructure(const TermStructure*);
@@ -85,11 +86,10 @@ namespace QuantLib {
           private:
             int n_;
             TimeUnit units_;
-            bool modified_;
             Date maturity_;
             double yearFraction_;
             Rate rate_;
-            Handle<DayCounter> dayCounter_;
+            Handle<Currency> currency_;
         };
 
     }
