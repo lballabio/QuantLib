@@ -147,19 +147,19 @@ void MatricesTest::testSVD() {
         // tests
         Matrix U_Utranspose = transpose(U)*U;
         if (norm(U_Utranspose-I) > tol)
-            CPPUNIT_FAIL("U not orthogonal (norm of U*U^T-I = " +
+            CPPUNIT_FAIL("U not orthogonal (norm of U^T*U-I = " +
                          DoubleFormatter::toExponential(norm(U_Utranspose-I))
                          + ")");
 
         Matrix V_Vtranspose = transpose(V)*V;
         if (norm(V_Vtranspose-I) > tol)
-            CPPUNIT_FAIL("V not orthogonal (norm of V*V^T-I = " +
+            CPPUNIT_FAIL("V not orthogonal (norm of V^T*V-I = " +
                          DoubleFormatter::toExponential(norm(V_Vtranspose-I))
                          + ")");
 
         Matrix A_reconstructed = U * S * transpose(V);        
         if (norm(A_reconstructed-A) > tol)
-            CPPUNIT_FAIL("Product does not recover A: (norm of A'-A = " +
+            CPPUNIT_FAIL("Product does not recover A: (norm of U*S*V^T-A = " +
                          DoubleFormatter::toExponential(norm(A_reconstructed-A))
                          + ")");
     }
