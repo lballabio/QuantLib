@@ -62,12 +62,6 @@ SectionIn 1 2 3
     File "README.txt"
     File "TODO.txt"
 
-    SetOutPath $INSTDIR\lib\Win32\VisualStudio
-    File "lib\Win32\VisualStudio\QuantLib.lib"
-
-    SetOutPath $INSTDIR\lib\Win32\Borland
-    File "lib\Win32\Borland\QuantLib.lib"
-
     SetOutPath  $INSTDIR\ql
     File /r "ql\*.hpp"
 
@@ -124,6 +118,12 @@ SectionIn 1 2 3
 
     SetOutPath  $INSTDIR\ql\Utilities
     File /r "ql\Utilities\*.hpp"
+
+    SetOutPath $INSTDIR\lib\Win32\VisualStudio
+    File "lib\Win32\VisualStudio\QuantLib.lib"
+
+    SetOutPath $INSTDIR\lib\Win32\Borland
+    File "lib\Win32\Borland\QuantLib.lib"
 
     WriteRegStr HKEY_LOCAL_MACHINE \
                 "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
