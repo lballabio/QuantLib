@@ -35,7 +35,7 @@
 #define quantlib_simple_swap_h
 
 #include "ql/Instruments/swap.hpp"
-#include "ql/index.hpp"
+#include "ql/Indexes/xibor.hpp"
 
 namespace QuantLib {
 
@@ -49,23 +49,23 @@ namespace QuantLib {
                 const Date& startDate, int n, TimeUnit units,
                 const Handle<Calendar>& calendar, 
                 RollingConvention rollingConvention, 
-                /*! nominals (if the vector length is lower than the number
-                    of coupons, the last nominal will prevail for the remaining
-                    coupons)
+                /* nominals (if the vector length is lower than the number
+                   of coupons, the last nominal will prevail for the remaining
+                   coupons)
                 */
                 const std::vector<double>& nominals, 
                 // fixed leg
                 int fixedFrequency, 
-                /*! fixed coupon rates (if the vector length is lower than the number
-                    of coupons, the last rate will prevail for the remaining 
-                    coupons)
+                /* fixed coupon rates (if the vector length is lower than 
+                   the number of coupons, the last rate will prevail for 
+                   the remaining coupons)
                 */
                 const std::vector<Rate>& couponRates, 
                 bool fixedIsAdjusted, 
                 const Handle<DayCounter>& fixedDayCount, 
                 // floating leg
                 int floatingFrequency, 
-                const Handle<Index>& index, 
+                const Handle<Indexes::Xibor>& index, 
                 const std::vector<Spread>& spreads, 
                 // hook to term structure
                 const RelinkableHandle<TermStructure>& termStructure, 

@@ -32,10 +32,13 @@
 // $Id$
 
 #include "ql/TermStructures/ratehelpers.hpp"
+#include "ql/Indexes/euribor.hpp"
 
 namespace QuantLib {
 
     using Instruments::SimpleSwap;
+    using Indexes::Xibor;
+    using Indexes::Euribor;
     
     namespace TermStructures {
 
@@ -153,9 +156,10 @@ namespace QuantLib {
             QL_REQUIRE(termStructure_ != 0, "null term structure set");
             settlement_ = calendar_->advance(
                 termStructure_->todaysDate(),settlementDays_,Days);
-            // we don't need to link the index to our own 
-            // relinkable term structure handle since it will be used
-            // for historical fixings only
+            // any index would do and will give the same results - 
+            // it must be a concrete one, though
+            Handle<Xibor> dummyIndex(new Euribor(6,Months,
+                RelinkableHandle<TermStructure>()));
             swap_ = Handle<SimpleSwap>(
                 new SimpleSwap(true,                // pay fixed rate
                     settlement_, lengthInYears_, Years, calendar_, 
@@ -164,7 +168,7 @@ namespace QuantLib {
                     fixedFrequency_, 
                     std::vector<Rate>(1,0.0),       // coupon rate
                     fixedIsAdjusted_, fixedDayCount_, 
-                    floatingFrequency_, Handle<Index>(), 
+                    floatingFrequency_, dummyIndex, 
                     std::vector<Spread>(),       // null spread
                     termStructureHandle_));
         }

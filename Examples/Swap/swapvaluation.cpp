@@ -36,6 +36,7 @@ using Calendars::TARGET;
 using DayCounters::ActualActual;
 using DayCounters::Actual360;
 using DayCounters::Thirty360;
+using Indexes::Xibor;
 using Indexes::Euribor;
 using Instruments::SimpleSwap;
 using TermStructures::PiecewiseFlatForward;
@@ -146,7 +147,7 @@ int main(int argc, char* argv[])
 
         // floating leg
         int floatingLegFrequency = 2;
-        Handle<Index> euriborIndex(new Euribor(6, Months,
+        Handle<Xibor> euriborIndex(new Euribor(6, Months,
             rhTermStructure));
         std::vector<double> spreads;
         spreads.push_back(0.0);

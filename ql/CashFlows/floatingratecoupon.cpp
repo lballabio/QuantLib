@@ -42,30 +42,17 @@ namespace QuantLib {
     namespace CashFlows {
 
         FloatingRateCoupon::FloatingRateCoupon(double nominal,
+          const Handle<Xibor>& index, 
           const RelinkableHandle<TermStructure>& termStructure,
           const Date& startDate, const Date& endDate,
-          const Date& refPeriodStart, const Date& refPeriodEnd,
-          const Handle<Index>& index, Spread spread)
-        : nominal_(nominal), termStructure_(termStructure),
-          startDate_(startDate), endDate_(endDate),
-          refPeriodStart_(refPeriodStart),
-          refPeriodEnd_(refPeriodEnd), spread_(spread) {
-
+          Spread spread, 
+          const Date& refPeriodStart, const Date& refPeriodEnd)
+        : Coupon(index->calendar(),index->rollingConvention(),
+              index->dayCounter(), startDate, endDate,
+              refPeriodStart, refPeriodEnd), 
+          nominal_(nominal), termStructure_(termStructure),
+          index_(index), spread_(spread) {
             termStructure_.registerObserver(this);
-
-            if (!index.isNull()) {
-                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
-                const Xibor* ptr = index.downcast<Xibor>();
-                #else
-                const Xibor* ptr = dynamic_cast<const Xibor*>(index.pointer());
-                #endif
-                if (ptr != 0)
-                    index_ = Handle<Xibor>(new Xibor(*ptr));
-            }
-        }
-
-        FloatingRateCoupon::~FloatingRateCoupon() {
-            termStructure_.unregisterObserver(this);
         }
 
         double FloatingRateCoupon::amount() const {
@@ -74,8 +61,6 @@ namespace QuantLib {
             Date settlementDate = termStructure_->settlementDate();
             if (startDate_ < settlementDate) {
                 // must have been fixed
-                QL_REQUIRE(!index_.isNull(),
-                    "null or non-libor index given");
                 Rate pastFixing = XiborManager::getHistory(
                     index_->name())[startDate_];
                 QL_REQUIRE(pastFixing != Null<double>(),
@@ -86,8 +71,6 @@ namespace QuantLib {
             if (startDate_ == settlementDate) {
                 // might have been fixed
                 try {
-                    QL_REQUIRE(!index_.isNull(),
-                        "null or non-libor index given");
                     Rate pastFixing = XiborManager::getHistory(
                         index_->name())[startDate_];
                     if (pastFixing != Null<double>())
@@ -107,17 +90,6 @@ namespace QuantLib {
             else
                 return ((startDiscount/endDiscount-1.0) +
                     spread_*accrualPeriod()) * nominal_;
-        }
-
-        double FloatingRateCoupon::accrualPeriod() const {
-            QL_REQUIRE(!index_.isNull(),
-                "null or non-libor index given");
-            return index_->dayCounter()->yearFraction(
-                startDate_,endDate_,refPeriodStart_,refPeriodEnd_);
-        }
-
-        void FloatingRateCoupon::update() {
-            notifyObservers();
         }
 
     }

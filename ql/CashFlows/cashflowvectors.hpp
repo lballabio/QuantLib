@@ -35,8 +35,8 @@
 #define quantlib_cash_flow_vectors_hpp
 
 #include "ql/cashflow.hpp"
-#include "ql/index.hpp"
 #include "ql/termstructure.hpp"
+#include "ql/Indexes/xibor.hpp"
 
 namespace QuantLib {
 
@@ -74,7 +74,7 @@ namespace QuantLib {
                 int frequency, const Handle<Calendar>& calendar,
                 RollingConvention rollingConvention,
                 const RelinkableHandle<TermStructure>& termStructure,
-                const Handle<Index>& index = Handle<Index>(),
+                const Handle<Indexes::Xibor>& index,
                 const std::vector<Spread>& spreads = std::vector<Spread>(),
                 const Date& stubDate = Date());
         };

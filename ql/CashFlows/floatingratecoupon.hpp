@@ -34,8 +34,8 @@
 #ifndef quantlib_floating_rate_coupon_hpp
 #define quantlib_floating_rate_coupon_hpp
 
-#include "ql/cashflow.hpp"
 #include "ql/handle.hpp"
+#include "ql/CashFlows/coupon.hpp"
 #include "ql/Indexes/xibor.hpp"
 
 namespace QuantLib {
@@ -47,39 +47,61 @@ namespace QuantLib {
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
 	    */
-        class FloatingRateCoupon : public CashFlow,
+        class FloatingRateCoupon : public Coupon,
                                    public Patterns::Observer {
           public:
             FloatingRateCoupon(double nominal,
+                const Handle<Indexes::Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Date& startDate, const Date& endDate,
-                // the parameters below are not needed for a coupon at par 
-                // entirely in the future
-                const Date& refPeriodStart = Date(),    // the day counter 
-                const Date& refPeriodEnd = Date(),      // might need these
-                const Handle<Index>& index = Handle<Index>(),
-                Spread spread = 0.0);   // if a spread is added, the above 
-                                        // are also needed for accrual
-                                        // period calculation
+                Spread spread = 0.0,
+                const Date& refPeriodStart = Date(),
+                const Date& refPeriodEnd = Date());
             ~FloatingRateCoupon();
             //! \name CashFlow interface
             //@{
-            Date date() const { return endDate_; }
             double amount() const;
+            //@}
+            //! \name Inspectors
+            //@{
+            double nominal() const;
+            const Handle<Indexes::Xibor>& index() const;
+            Spread spread() const;
             //@}
             //! \name Observer interface
             //@{
             void update();
             //@}
           private:
-            double accrualPeriod() const;
             double nominal_;
             RelinkableHandle<TermStructure> termStructure_;
-            Date startDate_, endDate_;
-            Date refPeriodStart_, refPeriodEnd_;
             Handle<Indexes::Xibor> index_;
             Spread spread_;
         };
+
+
+        // inline definitions
+
+        inline FloatingRateCoupon::~FloatingRateCoupon() {
+            termStructure_.unregisterObserver(this);
+        }
+
+        inline double FloatingRateCoupon::nominal() const {
+            return nominal_;
+        }
+
+        inline const Handle<Indexes::Xibor>& 
+        FloatingRateCoupon::index() const {
+            return index_;
+        }
+
+        inline Spread FloatingRateCoupon::spread() const {
+            return spread_;
+        }
+
+        inline void FloatingRateCoupon::update() {
+            notifyObservers();
+        }
 
     }
 

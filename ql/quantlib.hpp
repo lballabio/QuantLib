@@ -64,8 +64,8 @@
 #include "ql/Calendars/westerncalendar.hpp"
 #include "ql/Calendars/zurich.hpp"
 
-#include "ql/CashFlows/accruingcoupon.hpp"
 #include "ql/CashFlows/cashflowvectors.hpp"
+#include "ql/CashFlows/coupon.hpp"
 #include "ql/CashFlows/fixedratecoupon.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/CashFlows/simplecashflow.hpp"

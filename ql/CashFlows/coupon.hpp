@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file accruingcoupon.hpp
+/*! \file coupon.hpp
     \brief Coupon accruing over a fixed period
 
     \fullpath
-    ql/CashFlows/%accruingcoupon.hpp
+    ql/CashFlows/%coupon.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_accruing_coupon_hpp
-#define quantlib_accruing_coupon_hpp
+#ifndef quantlib_coupon_hpp
+#define quantlib_coupon_hpp
 
 #include "ql/cashflow.hpp"
 #include "ql/calendar.hpp"
@@ -42,29 +42,19 @@ namespace QuantLib {
 
     namespace CashFlows {
 
-        /*! \class AccruingCoupon ql/CashFlows/accruingcoupon.hpp
-            \brief coupon accruing over a fixed period
-
-            This class implements part of the CashFlow interface but it
+        //! %coupon accruing over a fixed period
+        /*! This class implements part of the CashFlow interface but it
             is still abstract and provides derived classes with methods for
             accrual period calculations.
         */
-        class AccruingCoupon : public CashFlow {
+        class Coupon : public CashFlow {
           public:
-            AccruingCoupon(const Handle<Calendar>& calendar,
+            Coupon(const Handle<Calendar>& calendar,
                 RollingConvention rollingConvention,
                 const Handle<DayCounter>& dayCounter,
                 const Date& startDate, const Date& endDate,
                 const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date()) :
-                startDate_(startDate),
-                endDate_(endDate),
-                refPeriodStart_(refPeriodStart),
-                refPeriodEnd_(refPeriodEnd),
-                calendar_(calendar),
-                rollingConvention_(rollingConvention),
-                dayCounter_(dayCounter)
-                {}
+                const Date& refPeriodEnd = Date());
             //! \name Partial CashFlow interface
             //@{
             Date date() const;
@@ -72,9 +62,9 @@ namespace QuantLib {
             //! \name Inspectors
             //@{
             //! start of the accrual period
-            const Date& accrualStartDate() const { return startDate_; }
+            const Date& accrualStartDate() const;
             //! end of the accrual period
-            const Date& accrualEndDate() const { return endDate_; }
+            const Date& accrualEndDate() const;
             //! accrual period as fraction of year
             double accrualPeriod() const;
             //! accrual period in days
@@ -87,16 +77,39 @@ namespace QuantLib {
             Handle<DayCounter> dayCounter_;
         };
 
-        inline Date AccruingCoupon::date() const {
+
+        // inline definitions
+
+        inline Coupon::Coupon(const Handle<Calendar>& calendar,
+            RollingConvention rollingConvention,
+            const Handle<DayCounter>& dayCounter,
+            const Date& startDate, const Date& endDate,
+            const Date& refPeriodStart, const Date& refPeriodEnd)
+        : startDate_(startDate), endDate_(endDate),
+          refPeriodStart_(refPeriodStart),
+          refPeriodEnd_(refPeriodEnd),
+          calendar_(calendar),
+          rollingConvention_(rollingConvention),
+          dayCounter_(dayCounter) {}
+
+        inline Date Coupon::date() const {
             return calendar_->roll(endDate_,rollingConvention_);
         }
 
-        inline double AccruingCoupon::accrualPeriod() const {
+        inline const Date& Coupon::accrualStartDate() const { 
+            return startDate_; 
+        }
+
+        inline const Date& Coupon::accrualEndDate() const { 
+            return endDate_; 
+        }
+
+        inline double Coupon::accrualPeriod() const {
             return dayCounter_->yearFraction(startDate_,endDate_,
                 refPeriodStart_,refPeriodEnd_);
         }
 
-        inline int AccruingCoupon::accrualDays() const {
+        inline int Coupon::accrualDays() const {
             return dayCounter_->dayCount(startDate_,endDate_);
         }
 
