@@ -27,11 +27,9 @@
 #ifndef quantlib_sobol_ld_rsg_h
 #define quantlib_sobol_ld_rsg_h
 
-#include <PrimitivePolynomialsModuloTwoUpToDegree27.h>
 #include <ql/array.hpp>
-#include <ql/dataformatters.hpp>
 #include <ql/MonteCarlo/sample.hpp>
-#include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <vector>
 
 namespace QuantLib {
 

@@ -11,11 +11,11 @@
 
 # Directories
 INCLUDE_DIR      = ..\..
-PPMT_INCLUDE_DIR = "$(PPMT_DIR)"
 BCC_INCLUDE      = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
+    PrimitivePolynomialsModuloTwoUpToDegree27.obj$(_D) \
     haltonrsg.obj$(_D) \
     knuthuniformrng.obj$(_D) \
     lecuyeruniformrng.obj$(_D) \
@@ -30,7 +30,6 @@ TLIB      = tlib
 CC_OPTS        = -vi- -q -c -tWM -n$(OUTPUT_DIR) \
     -w-8026 -w-8027 -w-8012 \
     -I$(INCLUDE_DIR) \
-    -I$(PPMT_INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG

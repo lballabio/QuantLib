@@ -25,6 +25,9 @@
 // $Id$
 
 #include <ql/RandomNumbers/sobolrsg.hpp>
+#include <ql/dataformatters.hpp>
+#include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <ql/RandomNumbers/PrimitivePolynomialsModuloTwoUpToDegree27.h>
 
 namespace QuantLib {
 

@@ -16,11 +16,11 @@
 # QuantLib library
 quantlib::
     cd ql
-    $(MAKE) -DPPMT_DIR="..\..\..\PrimitivePolynomialsModuloTwo"
+    $(MAKE)
     #    cd ..\test-suite
-    #    $(MAKE) -DQL_DIR=".." -DPPMT_DIR="..\..\..\PrimitivePolynomialsModuloTwo"
+    #    $(MAKE) -DQL_DIR=".."
     cd ..\Examples
-    $(MAKE) -DQL_DIR="..\.." -DPPMT_DIR="..\..\..\PrimitivePolynomialsModuloTwo"
+    $(MAKE) -DQL_DIR="..\.."
     cd ..
 
 # the installation directive requires the QL_DIR environment variable to

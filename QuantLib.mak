@@ -264,6 +264,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
 	-@erase "$(INTDIR)\primenumbers.sbr"
+	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
+	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -355,7 +357,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /GR /GX /Od /Ob2 /I ".\\" /I "$(PPMT_DIR)" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -475,6 +477,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\sobolrsg.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -511,7 +514,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\sobolrsg.sbr"
+	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -637,6 +640,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\sobolrsg.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -673,7 +677,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\sobolrsg.obj"
+	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -914,6 +918,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
 	-@erase "$(INTDIR)\primenumbers.sbr"
+	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
+	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -1006,7 +1012,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /I "$(PPMT_DIR)" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+CPP_PROJ=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1126,6 +1132,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\sobolrsg.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -1162,7 +1169,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\sobolrsg.sbr"
+	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1288,6 +1295,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\sobolrsg.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -1324,7 +1332,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\sobolrsg.obj"
+	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1565,6 +1573,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
 	-@erase "$(INTDIR)\primenumbers.sbr"
+	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
+	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -1656,7 +1666,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MT /W3 /GR /GX /Od /Ob2 /I ".\\" /I "..\PrimitivePolynomialsModuloTwo" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MT /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1776,6 +1786,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\sobolrsg.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -1812,7 +1823,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\sobolrsg.sbr"
+	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1938,6 +1949,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\sobolrsg.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -1974,7 +1986,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\sobolrsg.obj"
+	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2215,6 +2227,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\primenumbers.obj"
 	-@erase "$(INTDIR)\primenumbers.sbr"
+	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
+	-@erase "$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.obj"
 	-@erase "$(INTDIR)\quantoforwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\quantovanillaoption.obj"
@@ -2307,7 +2321,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /I "..\PrimitivePolynomialsModuloTwo" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+CPP_PROJ=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2427,6 +2441,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\sobolrsg.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -2463,7 +2478,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\sobolrsg.sbr"
+	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2589,6 +2604,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\sobolrsg.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -2625,7 +2641,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\sobolrsg.obj"
+	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3368,6 +3384,12 @@ SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
 SOURCE=.\ql\RandomNumbers\mt19937uniformrng.cpp
 
 "$(INTDIR)\mt19937uniformrng.obj"	"$(INTDIR)\mt19937uniformrng.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\PrimitivePolynomialsModuloTwoUpToDegree27.c
+
+"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.obj"	"$(INTDIR)\PrimitivePolynomialsModuloTwoUpToDegree27.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

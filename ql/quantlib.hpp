@@ -266,6 +266,8 @@
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
+// needed for Sobol low discrepancy sequences
+#include <ql/RandomNumbers/PrimitivePolynomialsModuloTwoUpToDegree27.h>
 
 #include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
@@ -317,9 +319,6 @@
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
-
-// needed for Sobol low discrepancy sequences
-#include <PrimitivePolynomialsModuloTwoUpToDegree27.h>
 
 /*** shortcuts for the full namespaces ***/
 

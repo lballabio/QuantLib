@@ -9,10 +9,6 @@
     _D = _d
 !endif
 
-!ifdef PPMT_DIR
-    MAKE = $(MAKE) -DPPMT_DIR="$(PPMT_DIR)"
-!endif
-
 # Directories
 INCLUDE_DIR    = ..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
