@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/12 15:05:34  lballabio
+// Renamed Libor to GBPLibor and LiborManager to XiborManager
+//
 // Revision 1.6  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
 //
@@ -44,7 +47,7 @@
 //
 
 #include "ql/Indexes/xibor.hpp"
-#include "ql/Indexes/libormanager.hpp"
+#include "ql/Indexes/xibormanager.hpp"
 
 namespace QuantLib {
 
@@ -58,7 +61,7 @@ namespace QuantLib {
             if (fixingDate < settlementDate) {
                 // must have been fixed
                 Rate pastFixing =
-                    LiborManager::getHistory(name_,n,unit)[fixingDate];
+                    XiborManager::getHistory(name_,n,unit)[fixingDate];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + name_ + " fixing for " +
                         DateFormatter::toString(fixingDate));
@@ -68,7 +71,7 @@ namespace QuantLib {
                 // might have been fixed
                 try {
                     Rate pastFixing =
-                        LiborManager::getHistory(name_,n,unit)[fixingDate];
+                        XiborManager::getHistory(name_,n,unit)[fixingDate];
                     if (pastFixing != Null<double>())
                         return pastFixing;
                     else

@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/06/12 15:05:33  lballabio
+    Renamed Libor to GBPLibor and LiborManager to XiborManager
+
     Revision 1.2  2001/06/05 09:35:14  lballabio
     Updated docs to use Doxygen 1.2.8
 
@@ -38,11 +41,11 @@
 
 #include "ql/CashFlows/parcoupon.hpp"
 #include "ql/dataformatters.hpp"
-#include "ql/Indexes/libormanager.hpp"
+#include "ql/Indexes/xibormanager.hpp"
 
 namespace QuantLib {
 
-    using Indexes::LiborManager;
+    using Indexes::XiborManager;
     
     namespace CashFlows {
         
@@ -76,7 +79,7 @@ namespace QuantLib {
             Date settlementDate = termStructure_->settlementDate();
             if (startDate_ < settlementDate) {
                 // must have been fixed
-                Rate pastFixing = LiborManager::getHistory(
+                Rate pastFixing = XiborManager::getHistory(
                     index_.name(),n_,unit_)[startDate_];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + index_.name() + " fixing for " +
@@ -86,7 +89,7 @@ namespace QuantLib {
             if (startDate_ == settlementDate) {
                 // might have been fixed
                 try {
-                    Rate pastFixing = LiborManager::getHistory(
+                    Rate pastFixing = XiborManager::getHistory(
                         index_.name(),n_,unit_)[startDate_];
                     if (pastFixing != Null<double>())
                         return (pastFixing+spread_)*accrualPeriod()*nominal_;

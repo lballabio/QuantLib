@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.3  2001/06/12 15:05:34  lballabio
+# Renamed Libor to GBPLibor and LiborManager to XiborManager
+#
 # Revision 1.2  2001/05/24 12:52:02  nando
 # smoothing #include xx.hpp
 #
@@ -23,9 +26,9 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = libormanager.obj$(_D) \
-       xibor.obj$(_D)
-
+OBJS = xibor.obj$(_D) \
+       xibormanager.obj$(_D)
+       
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib

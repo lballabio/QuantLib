@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.6  2001/06/12 15:05:33  lballabio
+# Renamed Libor to GBPLibor and LiborManager to XiborManager
+#
 # Revision 1.5  2001/05/30 14:40:11  lballabio
 # Added missing file in distribution
 #
@@ -15,8 +18,8 @@
 includedir = $(prefix)/include/ql/Indexes
 include_HEADERS = \
     euribor.hpp \
-    libor.hpp \
-    libormanager.hpp \
+    gbplibor.hpp \
     usdlibor.hpp \
-    xibor.hpp
+    xibor.hpp \
+    xibormanager.hpp
 

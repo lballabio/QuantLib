@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/06/12 15:05:33  lballabio
+// Renamed Libor to GBPLibor and LiborManager to XiborManager
+//
 // Revision 1.14  2001/05/31 13:17:36  lballabio
 // Added SimpleSwap
 //
@@ -118,10 +121,10 @@
 #include "ql/FiniteDifferences/valueatcenter.hpp"
 
 #include "ql/Indexes/euribor.hpp"
-#include "ql/Indexes/libor.hpp"
-#include "ql/Indexes/libormanager.hpp"
-#include "ql/Indexes/xibor.hpp"
+#include "ql/Indexes/gbplibor.hpp"
 #include "ql/Indexes/usdlibor.hpp"
+#include "ql/Indexes/xibor.hpp"
+#include "ql/Indexes/xibormanager.hpp"
 
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/Instruments/stock.hpp"

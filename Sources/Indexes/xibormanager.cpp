@@ -22,39 +22,27 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file libormanager.cpp
-    \brief global repository for %Libor histories
+/*! \file xibormanager.cpp
+    \brief global repository for %Xibor histories
 
     $Id$
 */
 
 // $Source$
 // $Log$
-// Revision 1.8  2001/06/05 09:35:14  lballabio
-// Updated docs to use Doxygen 1.2.8
-//
-// Revision 1.7  2001/05/29 09:24:06  lballabio
-// Using relinkable handle to term structure
-//
-// Revision 1.6  2001/05/28 16:12:21  lballabio
-// *** empty log message ***
-//
-// Revision 1.4  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.3  2001/05/24 15:40:09  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.1  2001/06/12 15:05:34  lballabio
+// Renamed Libor to GBPLibor and LiborManager to XiborManager
 //
 
-#include "ql/Indexes/libormanager.hpp"
+#include "ql/Indexes/xibormanager.hpp"
 
 namespace QuantLib {
 
     namespace Indexes {
 
-        LiborManager::HistoryMap LiborManager::historyMap_;
+        XiborManager::HistoryMap XiborManager::historyMap_;
 
-        std::string LiborManager::tag(int n, TimeUnit unit) {
+        std::string XiborManager::tag(int n, TimeUnit unit) {
             switch (unit) {
               case Days:
                 return IntegerFormatter::toString(n)+"d";
@@ -70,14 +58,14 @@ namespace QuantLib {
             QL_DUMMY_RETURN(std::string())
         }
 
-        void LiborManager::setHistory(const std::string& name,
+        void XiborManager::setHistory(const std::string& name,
             int n, TimeUnit unit, const History& history) {
                 historyMap_[name+tag(n,unit)] = history;
         }
 
-        const History& LiborManager::getHistory(
+        const History& XiborManager::getHistory(
             const std::string& name, int n, TimeUnit unit) {
-                LiborManager::HistoryMap::const_iterator i =
+                XiborManager::HistoryMap::const_iterator i =
                     historyMap_.find(name+tag(n,unit));
                 QL_REQUIRE(i != historyMap_.end(),
                     name + " " +
@@ -85,7 +73,7 @@ namespace QuantLib {
                 return i->second;
         }
 
-        bool LiborManager::hasHistory(const std::string& name,
+        bool XiborManager::hasHistory(const std::string& name,
             int n, TimeUnit unit) {
                 return (historyMap_.find(name+tag(n,unit)) !=
                         historyMap_.end());

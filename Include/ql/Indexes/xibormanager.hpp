@@ -22,48 +22,43 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file libor.hpp
-    \brief %Libor index
+/*! \file xibormanager.hpp
+    \brief global repository for %Xibor histories
 
     $Id$
 */
 
 // $Source$
 // $Log$
-// Revision 1.8  2001/06/05 09:35:13  lballabio
-// Updated docs to use Doxygen 1.2.8
-//
-// Revision 1.7  2001/06/01 16:50:16  lballabio
-// Term structure on deposits and swaps
-//
-// Revision 1.6  2001/05/29 15:12:48  lballabio
-// Reintroduced RollingConventions (and redisabled default extrapolation on PFF curve)
-//
-// Revision 1.5  2001/05/29 09:24:06  lballabio
-// Using relinkable handle to term structure
-//
-// Revision 1.4  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.1  2001/06/12 15:05:33  lballabio
+// Renamed Libor to GBPLibor and LiborManager to XiborManager
 //
 
-#ifndef quantlib_libor_hpp
-#define quantlib_libor_hpp
+#ifndef quantlib_xibor_manager_hpp
+#define quantlib_xibor_manager_hpp
 
-#include "ql/Indexes/xibor.hpp"
-#include "ql/Calendars/london.hpp"
-#include "ql/DayCounters/actual365.hpp"
+#include "ql/history.hpp"
+#include "ql/termstructure.hpp"
+#include <map>
 
 namespace QuantLib {
 
     namespace Indexes {
 
-        //! %Libor index
-        class Libor : public Xibor {
+        //! global repository for libor histories
+        class XiborManager {
           public:
-            Libor(const RelinkableHandle<TermStructure>& h)
-            : Xibor("Libor", GBP, Handle<Calendar>(new Calendars::London),
-                    true, ModifiedFollowing, 
-                    Handle<DayCounter>(new DayCounters::Actual365), h) {}
+            // historical fixings
+            static void setHistory(const std::string& name, 
+                int n, TimeUnit unit, const History&);
+            static const History& getHistory(const std::string& name, 
+                int n, TimeUnit unit);
+            static bool hasHistory(const std::string& name, 
+                int n, TimeUnit unit);
+          private:
+            static std::string tag(int n, TimeUnit unit);
+            typedef std::map<std::string,History> HistoryMap;
+            static HistoryMap historyMap_;
         };
 
     }
