@@ -311,8 +311,6 @@ void LDSTest::testDiscrepancy() {
     unsigned long dim, dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
     unsigned long seed = 123456;
 
-//    std::cout << std::endl;
-
     for (int i = 0; i<8; i++) {
         dim = dimensionality[i];
         MersenneTwisterUniformRsg mer(dim, seed);
@@ -324,9 +322,9 @@ void LDSTest::testDiscrepancy() {
         DiscrepancyStatistics halStat(dim);
         DiscrepancyStatistics sobStat(dim);
         DiscrepancyStatistics unSStat(dim);
-//        std::cout << "dim " << dim << std::endl;
 
         Size k = 0;
+// too long
 //        for (int j=10; j<17; j++) {
         for (int j=10; j<11; j++) {
             Size points = Size(QL_POW(2.0, j))-1;

@@ -1078,7 +1078,8 @@ void OldPricerTest::testMcMultiFactorPricers() {
     volatilities[2] = 0.25;
     volatilities[3] = 0.20;
 
-    Matrix covariance = getCovariance(volatilities,cor);
+    Matrix covariance = getCovariance(volatilities.begin(),
+                                      volatilities.end(), cor);
 
     Array dividendYields(4);
     dividendYields[0] = 0.01;
@@ -1092,7 +1093,8 @@ void OldPricerTest::testMcMultiFactorPricers() {
     // degenerate portfolio
     Matrix perfectCorrelation(4,4,1.0);
     Array sameAssetVols(4,0.3);
-    Matrix sameAssetCovariance = getCovariance(sameAssetVols,
+    Matrix sameAssetCovariance = getCovariance(sameAssetVols.begin(),
+                                               sameAssetVols.end(),
                                                perfectCorrelation);
     Array sameAssetDividend(4,0.03);
 

@@ -887,10 +887,6 @@ SOURCE=.\ql\MonteCarlo\geometricasopathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\getcovariance.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\getcovariance.hpp
 # End Source File
 # Begin Source File

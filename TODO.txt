@@ -20,6 +20,9 @@ FINITE DIFFERENCE FRAMEWORK
 - check american with discrete dividends
 - merge rollback scheme with tree rollback scheme
 
+LATTICE FRAMEWORK
+- turn 'void stepBack' into 'Disposable<Array> stepBack'
+
 MONTE CARLO FRAMEWORK
 -*revise multidimensional MonteCarlo
 -*revise extrapolation in diffusion process

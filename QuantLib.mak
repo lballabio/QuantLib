@@ -176,8 +176,6 @@ CLEAN :
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
 	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
-	-@erase "$(INTDIR)\getcovariance.obj"
-	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -430,7 +428,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
 	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -595,7 +592,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
 	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -838,8 +834,6 @@ CLEAN :
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
 	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
-	-@erase "$(INTDIR)\getcovariance.obj"
-	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -1093,7 +1087,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
 	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -1258,7 +1251,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
 	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -1501,8 +1493,6 @@ CLEAN :
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
 	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
-	-@erase "$(INTDIR)\getcovariance.obj"
-	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -1755,7 +1745,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
 	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -1920,7 +1909,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
 	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -2163,8 +2151,6 @@ CLEAN :
 	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
 	-@erase "$(INTDIR)\geometricasopathpricer.obj"
 	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
-	-@erase "$(INTDIR)\getcovariance.obj"
-	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -2418,7 +2404,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\everestpathpricer.sbr" \
 	"$(INTDIR)\geometricapopathpricer.sbr" \
 	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -2583,7 +2568,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\everestpathpricer.obj" \
 	"$(INTDIR)\geometricapopathpricer.obj" \
 	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -3110,12 +3094,6 @@ SOURCE=.\ql\MonteCarlo\geometricapopathpricer.cpp
 SOURCE=.\ql\MonteCarlo\geometricasopathpricer.cpp
 
 "$(INTDIR)\geometricasopathpricer.obj"	"$(INTDIR)\geometricasopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\getcovariance.cpp
-
-"$(INTDIR)\getcovariance.obj"	"$(INTDIR)\getcovariance.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -47,11 +47,30 @@ namespace QuantLib {
     //! Formats arrays for output
     class ArrayFormatter {
       public:
-        static std::string toString(const Array& x, int precision = 6,
+        template<class DataIterator>
+        static std::string toString(DataIterator begin,
+                                    DataIterator end,
+                                    int precision = 6,
                                     int digits = 0, 
-                                    Size elementsPerRow = QL_MAX_INT);
+                                    Size elementsPerRow = QL_MAX_INT) {
+            std::string s = "[ ";
+            DataIterator i;
+            Size n;
+            for (i=begin, n=0; i!=end; i++, n++) {
+                if (n == elementsPerRow) {
+                    s += "\n  ";
+                    n = 0;
+                }
+                if (i!=begin)
+                    s += " ; ";
+                s += DoubleFormatter::toString(*i, precision, digits);
+            }
+            s += " ]";
+            return s;
+        }
     };
 
+    
     /*! \relates Array */
     std::ostream& operator<< (std::ostream&, const Array&);
     

@@ -55,24 +55,8 @@ namespace QuantLib {
         return std::string(s);
     }
 
-    std::string ArrayFormatter::toString(const Array& a, int precision, 
-                                         int digits, Size perRow) {
-        std::string s = "[ ";
-        for (Size i=0, n=0; i<a.size(); i++,n++) {
-            if (n == perRow) {
-                s += "\n  ";
-                n = 0;
-            }
-            if (i>0)
-                s += " ; ";
-            s += DoubleFormatter::toString(a[i],precision,digits);
-        }
-        s += " ]";
-        return s;
-    }
-
     std::ostream& operator<< (std::ostream& stream, const Array& a) {
-        return stream << ArrayFormatter::toString(a);
+        return stream << ArrayFormatter::toString(a.begin(), a.end());
     }
 
     std::string EuroFormatter::toString(double amount) {
