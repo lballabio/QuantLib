@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/22 13:23:04  marmar
+    Method controlVariateCorrection added
+
     Revision 1.2  2001/04/26 16:04:52  marmar
     underlying_ not mutable anymore
 
@@ -117,7 +120,7 @@ namespace QuantLib {
 
           protected:
             // methods
-            virtual void setGridLimits(double center) const;
+            virtual void setGridLimits(double center, double timeDelay) const;
             virtual void initializeGrid() const;
             virtual void initializeInitialCondition() const;
             virtual void initializeOperator() const;
@@ -130,7 +133,7 @@ namespace QuantLib {
             mutable FiniteDifferences::BSMOperator finiteDifferenceOperator_;
             mutable Array initialPrices_;
             // temporaries
-            mutable double sMin_, sMax_;
+            mutable double sMin_, center_, sMax_;
           private:
             // temporaries
             mutable double gridLogSpacing_;

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/05/22 13:22:33  marmar
+    Method controlVariateCorrection added
+
     Revision 1.2  2001/04/12 09:07:14  marmar
     Last and first date are handled more precisely
 
@@ -81,6 +84,8 @@ namespace QuantLib {
     namespace Pricers {
 
         class MultiPeriodOption : public BSMNumericalOption {
+          public:
+            double controlVariateCorrection() const;
           protected:
             // constructor
             MultiPeriodOption(Type type, double underlying,
@@ -107,6 +112,8 @@ namespace QuantLib {
             virtual void initializeModel() const;
             virtual void initializeStepCondition() const;
             virtual void executeIntermediateStep(int step) const = 0;
+          private:
+            mutable double controlVariateCorrection_;
         };
 
     }
