@@ -217,8 +217,6 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\greatbritain.obj"
-	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -281,8 +279,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milanstockexchange.obj"
-	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
@@ -385,10 +381,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
-	-@erase "$(INTDIR)\usexchange.obj"
-	-@erase "$(INTDIR)\usexchange.sbr"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
+	-@erase "$(INTDIR)\unitedkingdom.obj"
+	-@erase "$(INTDIR)\unitedkingdom.sbr"
+	-@erase "$(INTDIR)\unitedstates.obj"
+	-@erase "$(INTDIR)\unitedstates.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -428,6 +424,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\italy.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\oslo.sbr" \
@@ -442,6 +439,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
+	"$(INTDIR)\xetra.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -594,12 +592,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\usexchange.sbr" \
-	"$(INTDIR)\italy.sbr" \
-	"$(INTDIR)\milanstockexchange.sbr" \
-	"$(INTDIR)\usgovernmentbondmarket.sbr" \
-	"$(INTDIR)\xetra.sbr" \
-	"$(INTDIR)\greatbritain.sbr"
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -615,6 +609,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\italy.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\oslo.obj" \
@@ -629,6 +624,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
+	"$(INTDIR)\xetra.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -781,12 +777,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\usexchange.obj" \
-	"$(INTDIR)\italy.obj" \
-	"$(INTDIR)\milanstockexchange.obj" \
-	"$(INTDIR)\usgovernmentbondmarket.obj" \
-	"$(INTDIR)\xetra.obj" \
-	"$(INTDIR)\greatbritain.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -982,8 +974,6 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\greatbritain.obj"
-	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -1046,8 +1036,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milanstockexchange.obj"
-	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
@@ -1150,10 +1138,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
-	-@erase "$(INTDIR)\usexchange.obj"
-	-@erase "$(INTDIR)\usexchange.sbr"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
+	-@erase "$(INTDIR)\unitedkingdom.obj"
+	-@erase "$(INTDIR)\unitedkingdom.sbr"
+	-@erase "$(INTDIR)\unitedstates.obj"
+	-@erase "$(INTDIR)\unitedstates.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -1194,6 +1182,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\italy.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\oslo.sbr" \
@@ -1208,6 +1197,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
+	"$(INTDIR)\xetra.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -1360,12 +1350,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\usexchange.sbr" \
-	"$(INTDIR)\italy.sbr" \
-	"$(INTDIR)\milanstockexchange.sbr" \
-	"$(INTDIR)\usgovernmentbondmarket.sbr" \
-	"$(INTDIR)\xetra.sbr" \
-	"$(INTDIR)\greatbritain.sbr"
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1381,6 +1367,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\italy.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\oslo.obj" \
@@ -1395,6 +1382,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
+	"$(INTDIR)\xetra.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -1547,12 +1535,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\usexchange.obj" \
-	"$(INTDIR)\italy.obj" \
-	"$(INTDIR)\milanstockexchange.obj" \
-	"$(INTDIR)\usgovernmentbondmarket.obj" \
-	"$(INTDIR)\xetra.obj" \
-	"$(INTDIR)\greatbritain.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1748,8 +1732,6 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\greatbritain.obj"
-	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -1812,8 +1794,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milanstockexchange.obj"
-	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
@@ -1916,10 +1896,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
-	-@erase "$(INTDIR)\usexchange.obj"
-	-@erase "$(INTDIR)\usexchange.sbr"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
+	-@erase "$(INTDIR)\unitedkingdom.obj"
+	-@erase "$(INTDIR)\unitedkingdom.sbr"
+	-@erase "$(INTDIR)\unitedstates.obj"
+	-@erase "$(INTDIR)\unitedstates.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -1959,6 +1939,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\italy.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\oslo.sbr" \
@@ -1973,6 +1954,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
+	"$(INTDIR)\xetra.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -2125,12 +2107,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\usexchange.sbr" \
-	"$(INTDIR)\italy.sbr" \
-	"$(INTDIR)\milanstockexchange.sbr" \
-	"$(INTDIR)\usgovernmentbondmarket.sbr" \
-	"$(INTDIR)\xetra.sbr" \
-	"$(INTDIR)\greatbritain.sbr"
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2146,6 +2124,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\italy.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\oslo.obj" \
@@ -2160,6 +2139,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
+	"$(INTDIR)\xetra.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -2312,12 +2292,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\usexchange.obj" \
-	"$(INTDIR)\italy.obj" \
-	"$(INTDIR)\milanstockexchange.obj" \
-	"$(INTDIR)\usgovernmentbondmarket.obj" \
-	"$(INTDIR)\xetra.obj" \
-	"$(INTDIR)\greatbritain.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2513,8 +2489,6 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\greatbritain.obj"
-	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -2577,8 +2551,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milanstockexchange.obj"
-	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
@@ -2681,10 +2653,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
-	-@erase "$(INTDIR)\usexchange.obj"
-	-@erase "$(INTDIR)\usexchange.sbr"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
+	-@erase "$(INTDIR)\unitedkingdom.obj"
+	-@erase "$(INTDIR)\unitedkingdom.sbr"
+	-@erase "$(INTDIR)\unitedstates.obj"
+	-@erase "$(INTDIR)\unitedstates.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -2725,6 +2697,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\italy.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\oslo.sbr" \
@@ -2739,6 +2712,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
+	"$(INTDIR)\xetra.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -2891,12 +2865,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\usexchange.sbr" \
-	"$(INTDIR)\italy.sbr" \
-	"$(INTDIR)\milanstockexchange.sbr" \
-	"$(INTDIR)\usgovernmentbondmarket.sbr" \
-	"$(INTDIR)\xetra.sbr" \
-	"$(INTDIR)\greatbritain.sbr"
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2912,6 +2882,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\italy.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\oslo.obj" \
@@ -2926,6 +2897,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
+	"$(INTDIR)\xetra.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -3078,12 +3050,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\usexchange.obj" \
-	"$(INTDIR)\italy.obj" \
-	"$(INTDIR)\milanstockexchange.obj" \
-	"$(INTDIR)\usgovernmentbondmarket.obj" \
-	"$(INTDIR)\xetra.obj" \
-	"$(INTDIR)\greatbritain.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3279,8 +3247,6 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\greatbritain.obj"
-	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -3343,8 +3309,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milanstockexchange.obj"
-	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
@@ -3447,10 +3411,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
-	-@erase "$(INTDIR)\usexchange.obj"
-	-@erase "$(INTDIR)\usexchange.sbr"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
+	-@erase "$(INTDIR)\unitedkingdom.obj"
+	-@erase "$(INTDIR)\unitedkingdom.sbr"
+	-@erase "$(INTDIR)\unitedstates.obj"
+	-@erase "$(INTDIR)\unitedstates.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -3490,6 +3454,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\italy.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\oslo.sbr" \
@@ -3504,6 +3469,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
+	"$(INTDIR)\xetra.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -3656,12 +3622,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\usexchange.sbr" \
-	"$(INTDIR)\italy.sbr" \
-	"$(INTDIR)\milanstockexchange.sbr" \
-	"$(INTDIR)\usgovernmentbondmarket.sbr" \
-	"$(INTDIR)\xetra.sbr" \
-	"$(INTDIR)\greatbritain.sbr"
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3677,6 +3639,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\italy.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\oslo.obj" \
@@ -3691,6 +3654,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
+	"$(INTDIR)\xetra.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -3843,12 +3807,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\usexchange.obj" \
-	"$(INTDIR)\italy.obj" \
-	"$(INTDIR)\milanstockexchange.obj" \
-	"$(INTDIR)\usgovernmentbondmarket.obj" \
-	"$(INTDIR)\xetra.obj" \
-	"$(INTDIR)\greatbritain.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4044,8 +4004,6 @@ CLEAN :
 	-@erase "$(INTDIR)\gammadistribution.sbr"
 	-@erase "$(INTDIR)\generalstatistics.obj"
 	-@erase "$(INTDIR)\generalstatistics.sbr"
-	-@erase "$(INTDIR)\greatbritain.obj"
-	-@erase "$(INTDIR)\greatbritain.sbr"
 	-@erase "$(INTDIR)\grid.obj"
 	-@erase "$(INTDIR)\grid.sbr"
 	-@erase "$(INTDIR)\haltonrsg.obj"
@@ -4108,8 +4066,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
-	-@erase "$(INTDIR)\milanstockexchange.obj"
-	-@erase "$(INTDIR)\milanstockexchange.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
@@ -4212,10 +4168,10 @@ CLEAN :
 	-@erase "$(INTDIR)\trinomialtree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
-	-@erase "$(INTDIR)\usexchange.obj"
-	-@erase "$(INTDIR)\usexchange.sbr"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.obj"
-	-@erase "$(INTDIR)\usgovernmentbondmarket.sbr"
+	-@erase "$(INTDIR)\unitedkingdom.obj"
+	-@erase "$(INTDIR)\unitedkingdom.sbr"
+	-@erase "$(INTDIR)\unitedstates.obj"
+	-@erase "$(INTDIR)\unitedstates.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
 	-@erase "$(INTDIR)\vanillaoption.obj"
@@ -4256,6 +4212,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\hongkong.sbr" \
+	"$(INTDIR)\italy.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\oslo.sbr" \
@@ -4270,6 +4227,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
+	"$(INTDIR)\xetra.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -4422,12 +4380,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\usexchange.sbr" \
-	"$(INTDIR)\italy.sbr" \
-	"$(INTDIR)\milanstockexchange.sbr" \
-	"$(INTDIR)\usgovernmentbondmarket.sbr" \
-	"$(INTDIR)\xetra.sbr" \
-	"$(INTDIR)\greatbritain.sbr"
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4443,6 +4397,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\hongkong.obj" \
+	"$(INTDIR)\italy.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\oslo.obj" \
@@ -4457,6 +4412,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
+	"$(INTDIR)\xetra.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -4609,12 +4565,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\usexchange.obj" \
-	"$(INTDIR)\italy.obj" \
-	"$(INTDIR)\milanstockexchange.obj" \
-	"$(INTDIR)\usgovernmentbondmarket.obj" \
-	"$(INTDIR)\xetra.obj" \
-	"$(INTDIR)\greatbritain.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4692,12 +4644,6 @@ SOURCE=.\ql\Calendars\frankfurt.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Calendars\greatbritain.cpp
-
-"$(INTDIR)\greatbritain.obj"	"$(INTDIR)\greatbritain.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Calendars\helsinki.cpp
 
 "$(INTDIR)\helsinki.obj"	"$(INTDIR)\helsinki.sbr" : $(SOURCE) "$(INTDIR)"
@@ -4725,12 +4671,6 @@ SOURCE=.\ql\Calendars\johannesburg.cpp
 SOURCE=.\ql\Calendars\jointcalendar.cpp
 
 "$(INTDIR)\jointcalendar.obj"	"$(INTDIR)\jointcalendar.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Calendars\milanstockexchange.cpp
-
-"$(INTDIR)\milanstockexchange.obj"	"$(INTDIR)\milanstockexchange.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4794,15 +4734,15 @@ SOURCE=.\ql\Calendars\toronto.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Calendars\usexchange.cpp
+SOURCE=.\ql\Calendars\unitedkingdom.cpp
 
-"$(INTDIR)\usexchange.obj"	"$(INTDIR)\usexchange.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\unitedkingdom.obj"	"$(INTDIR)\unitedkingdom.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Calendars\usgovernmentbondmarket.cpp
+SOURCE=.\ql\Calendars\unitedstates.cpp
 
-"$(INTDIR)\usgovernmentbondmarket.obj"	"$(INTDIR)\usgovernmentbondmarket.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\unitedstates.obj"	"$(INTDIR)\unitedstates.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

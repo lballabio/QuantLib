@@ -27,13 +27,11 @@ OBJS = \
     "budapest.obj$(_mt)$(_D)" \
     "copenhagen.obj$(_mt)$(_D)" \
     "frankfurt.obj$(_mt)$(_D)" \
-    "greatbritain.obj$(_mt)$(_D)" \
     "helsinki.obj$(_mt)$(_D)" \
     "hongkong.obj$(_mt)$(_D)" \
     "italy.obj$(_mt)$(_D)" \
     "johannesburg.obj$(_mt)$(_D)" \
     "jointcalendar.obj$(_mt)$(_D)" \
-    "milanstockexchange.obj$(_mt)$(_D)" \
     "oslo.obj$(_mt)$(_D)" \
     "riyadh.obj$(_mt)$(_D)" \
     "seoul.obj$(_mt)$(_D)" \
@@ -44,9 +42,9 @@ OBJS = \
     "target.obj$(_mt)$(_D)" \
     "tokyo.obj$(_mt)$(_D)" \
     "toronto.obj$(_mt)$(_D)" \
-    "usexchange.obj$(_mt)$(_D)" \
-    "usgovernmentbondmarket.obj$(_mt)$(_D)" \
     "xetra.obj$(_mt)$(_D)" \
+    "unitedkingdom.obj$(_mt)$(_D)" \
+    "unitedstates.obj$(_mt)$(_D)" \
     "warsaw.obj$(_mt)$(_D)" \
     "wellington.obj$(_mt)$(_D)" \
     "zurich.obj$(_mt)$(_D)"

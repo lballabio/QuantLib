@@ -251,14 +251,6 @@ SOURCE=.\ql\Calendars\frankfurt.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\greatbritain.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\greatbritain.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Calendars\helsinki.cpp
 # End Source File
 # Begin Source File
@@ -304,14 +296,6 @@ SOURCE=.\ql\Calendars\london.hpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\milan.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\milanstockexchange.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\milanstockexchange.hpp
 # End Source File
 # Begin Source File
 
@@ -403,19 +387,19 @@ SOURCE=.\ql\Calendars\toronto.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\usexchange.cpp
+SOURCE=.\ql\Calendars\unitedkingdom.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\usexchange.hpp
+SOURCE=.\ql\Calendars\unitedkingdom.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\usgovernmentbondmarket.cpp
+SOURCE=.\ql\Calendars\unitedstates.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\usgovernmentbondmarket.hpp
+SOURCE=.\ql\Calendars\unitedstates.hpp
 # End Source File
 # Begin Source File
 
