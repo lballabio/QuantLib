@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/04/24 08:56:31  marmar
+    QL_MIN_POSITIVE_DOUBLE added
+
     Revision 1.1  2001/04/09 14:03:54  nando
     all the *.hpp moved below the Include/ql level
 
@@ -177,23 +180,26 @@
     #define QL_MIN_DOUBLE  -std::numeric_limits<double>::max()
     #define QL_MAX_DOUBLE   std::numeric_limits<double>::max()
     #define QL_EPSILON      std::numeric_limits<double>::epsilon()
+    #define QL_MIN_POSITIVE_DOUBLE  std::numeric_limits<double>::min()
 #elif defined HAVE_FLOAT_H
     #if defined HAVE_CLIMITS
         #include <climits>
         #include <float.h>
-        #define QL_MIN_INT        INT_MIN
-        #define QL_MAX_INT        INT_MAX
-        #define QL_MIN_DOUBLE    -DBL_MAX
-        #define QL_MAX_DOUBLE     DBL_MAX
-        #define QL_EPSILON        DBL_EPSILON
+        #define QL_MIN_INT              INT_MIN
+        #define QL_MAX_INT              INT_MAX
+        #define QL_MIN_DOUBLE          -DBL_MAX
+        #define QL_MAX_DOUBLE           DBL_MAX
+        #define QL_EPSILON              DBL_EPSILON
+        #define QL_MIN_POSITIVE_DOUBLE  DBL_EPSILON
     #elif defined HAVE_LIMITS_H
         #include <limits.h>
         #include <float.h>
-        #define QL_MIN_INT        INT_MIN
-        #define QL_MAX_INT        INT_MAX
-        #define QL_MIN_DOUBLE    -DBL_MAX
-        #define QL_MAX_DOUBLE     DBL_MAX
-        #define QL_EPSILON        DBL_EPSILON
+        #define QL_MIN_INT              INT_MIN
+        #define QL_MAX_INT              INT_MAX
+        #define QL_MIN_DOUBLE          -DBL_MAX
+        #define QL_MAX_DOUBLE           DBL_MAX
+        #define QL_EPSILON              DBL_EPSILON
+        #define QL_MIN_POSITIVE_DOUBLE  DBL_EPSILON
     #endif
 #else
     #error Neither <limits>, <climits> nor <limits.h> found
