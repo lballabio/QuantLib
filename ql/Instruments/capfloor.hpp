@@ -23,7 +23,7 @@
 */
 
 /*! \file capfloor.hpp
-    \brief European Cap and Floor class
+    \brief  Cap and Floor class
 
     \fullpath
     ql/Instruments/%capfloor.hpp
@@ -37,6 +37,9 @@
 #include "ql/instrument.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/InterestRateModelling/model.hpp"
+
+#include <list>
+#include <vector>
 
 namespace QuantLib {
 
@@ -65,6 +68,7 @@ namespace QuantLib {
             std::vector<Time> endTimes_;
             std::vector<Time> tenors_;
             std::vector<Time> nominals_;
+            std::list<Time> times_;
         };
 
         class EuropeanCap : public EuropeanCapFloor {

@@ -34,12 +34,18 @@
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/Math/normaldistribution.hpp"
 
+#include "ql/InterestRateModelling/onefactormodel.hpp"
+#include "ql/Lattices/tree.hpp"
+
 
 namespace QuantLib {
 
     namespace Instruments {
 
         using CashFlows::FloatingRateCoupon;
+        using InterestRateModelling::OneFactorModel;
+        using Lattices::TimeGrid;
+        using Lattices::Tree;
 
         EuropeanCapFloor::EuropeanCapFloor( Type type, 
           const Handle<SimpleSwap>& swap, 
@@ -66,21 +72,46 @@ namespace QuantLib {
                 tenors_.resize(i+1);
                 startTimes_[i] = counter.yearFraction(today, beginDate);
                 endTimes_[i] = counter.yearFraction(today, endDate);
+
+                times_.push_back(startTimes_[i]);
+                times_.push_back(endTimes_[i]);
+                                                         
                 nominals_[i] = coupon->nominal();
                 tenors_[i] = counter.yearFraction(beginDate, endDate);
                 i++;
             }
+            times_.unique();
+            times_.sort();
             nPeriods_ = i;
         }
 
         void EuropeanCapFloor::performCalculations() const {
             QL_REQUIRE(!model_.isNull(), "Cannot price without model!");
+
+            double temp = 
+                model_->discountBondOption(Option::Call, 0.9, 1.0, 2.0);
+
+            bool hasAnalyticalFormula;
+            Handle<Tree> tree;
+            if (temp==Null<double>()) {
+                QL_REQUIRE(
+                    model_->type() == InterestRateModelling::Model::OneFactor,
+                    "Analytical formulas required for n-factor models n>1");
+                Handle<OneFactorModel> model(model_);
+                TimeGrid timeGrid(times_, 100);
+                tree = model->tree(timeGrid);
+                hasAnalyticalFormula = false;
+            } else
+                hasAnalyticalFormula = true;
+
             Option::Type optionType;
             if (type_==Cap)
                 optionType = Option::Put;
             else
                 optionType = Option::Call;
+
             NPV_ = 0.0;
+
             for (unsigned i=0; i<nPeriods_; i++) {
                 Rate exerciseRate;
                 if (i<exerciseRates_.size())
@@ -88,9 +119,38 @@ namespace QuantLib {
                 else
                     exerciseRate = exerciseRates_.back();
                 double optionStrike = 1.0/(1.0+exerciseRate*tenors_[i]);
-                double optionValue = model_->discountBondOption(
-                  optionType, optionStrike, startTimes_[i], endTimes_[i]);
-                double capletValue = nominals_[i]*(1.0+exerciseRate*tenors_[i])*optionValue;
+                double optionValue = 0.0;
+
+                Time maturity = startTimes_[i];
+                Time bond = endTimes_[i];
+
+                if (hasAnalyticalFormula)
+                    optionValue = model_->discountBondOption( optionType, 
+                        optionStrike, maturity, bond);
+                else {
+                    unsigned int iMid = tree->timeGrid().findIndex(maturity);
+                    unsigned int iEnd = tree->timeGrid().findIndex(bond);
+
+                    int j;
+                    for (j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++)
+                        tree->node(iEnd, j).setValue(1.0);
+                    tree->rollback(iEnd, iMid);
+                    for (j=tree->jMin(iMid); j<=tree->jMax(iMid); j++) {
+                        double value = tree->node(iMid, j).value();
+                        switch(optionType) {
+                          case Option::Call:
+                              value = QL_MAX(value - optionStrike, 0.0);
+                              break;
+                          case Option::Put:
+                              value = QL_MAX(optionStrike - value, 0.0);
+                              break;
+                        }
+                        optionValue += value*tree->node(iMid, j).statePrice();
+                    }
+                }
+
+                double capletValue = nominals_[i]*
+                    (1.0+exerciseRate*tenors_[i])*optionValue;
                 NPV_ += capletValue;
             }
         }
