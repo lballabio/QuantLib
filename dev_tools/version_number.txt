@@ -28,3 +28,4 @@ It's also in some script used by RiskMap for automatic building:
     release-job.sh
     release-job.bat
     night-job.bat
+    night-job2.bat
