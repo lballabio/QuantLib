@@ -18,7 +18,6 @@
 #ifndef quantlib_test_interpolations_hpp
 #define quantlib_test_interpolations_hpp
 
-#include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
 
 /* remember to document new and/or updated tests in the Doxygen
