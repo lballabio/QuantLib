@@ -34,6 +34,10 @@ namespace QuantLib {
     Disposable<Array> BoundedGrid(double xMin, double xMax, Size steps);
 
     //! time grid class
+    /*! \todo What was the rationale for limiting the grid to
+              positive times? Investigate and see whether we
+              can use it for negative ones as well.
+    */
     class TimeGrid : public std::vector<Time> {
       public:
         TimeGrid() {}
@@ -53,6 +57,11 @@ namespace QuantLib {
                 mandatoryTimes_.push_back(*(begin++));
         #endif
             std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
+            // We seem to assume that the grid begins at 0.
+            // Let's enforce the assumption for the time being
+            // (even though I'm not sure that I agree.)
+            QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
+                       "TimeGrid: negative times not allowed");
             std::vector<Time>::iterator e = 
                 std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
@@ -83,6 +92,11 @@ namespace QuantLib {
                 mandatoryTimes_.push_back(*(begin++));
         #endif
             std::sort(mandatoryTimes_.begin(),mandatoryTimes_.end());
+            // We seem to assume that the grid begins at 0.
+            // Let's enforce the assumption for the time being
+            // (even though I'm not sure that I agree.)
+            QL_REQUIRE(mandatoryTimes_.front() >= 0.0,
+                       "TimeGrid: negative times not allowed");
             std::vector<Time>::iterator e = 
                 std::unique(mandatoryTimes_.begin(),mandatoryTimes_.end());
             mandatoryTimes_.resize(e - mandatoryTimes_.begin());
@@ -126,7 +140,9 @@ namespace QuantLib {
                                      std::back_inserter(dt_));
         }
         Size findIndex(Time t) const;
-        const std::vector<Time>& mandatoryTimes() const { return mandatoryTimes_; }
+        const std::vector<Time>& mandatoryTimes() const { 
+            return mandatoryTimes_; 
+        }
         Time dt(Size i) const;
       private:
         std::vector<Time> dt_;
@@ -154,6 +170,11 @@ namespace QuantLib {
 
 
     inline TimeGrid::TimeGrid(Time end, Size steps) {
+        // We seem to assume that the grid begins at 0.
+        // Let's enforce the assumption for the time being
+        // (even though I'm not sure that I agree.)
+        QL_REQUIRE(end > 0.0,
+                   "TimeGrid: negative times not allowed");
         Time dt = end/steps;
         for (Size i=0; i<=steps; i++)
             push_back(dt*i);

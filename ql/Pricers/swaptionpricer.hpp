@@ -43,15 +43,24 @@ namespace QuantLib {
             void adjustValues();
 
             void addTimes(std::list<Time>& times) const {
+                Time t;
                 Size i;
-                for (i=0; i<arguments_.fixedPayTimes.size(); i++)
-                    times.push_back(arguments_.fixedPayTimes[i]);
-                for (i=0; i<arguments_.floatingResetTimes.size(); i++)
-                    times.push_back(arguments_.floatingResetTimes[i]);
-                for (i=0; i<arguments_.floatingPayTimes.size(); i++)
-                    times.push_back(arguments_.floatingPayTimes[i]);
+                for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
+                    t = arguments_.fixedPayTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
+                for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
+                    t = arguments_.floatingResetTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
+                for (i=0; i<arguments_.floatingPayTimes.size(); i++) {
+                    t = arguments_.floatingPayTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
             }
-
           private:
             Instruments::SwaptionArguments arguments_;
         };
@@ -78,15 +87,17 @@ namespace QuantLib {
 
             void addTimes(std::list<Time>& times) const {
                 swap_->addTimes(times);
-                for (Size i=0; i<arguments_.exerciseTimes.size(); i++)
-                    times.push_back(arguments_.exerciseTimes[i]);
+                Time t;
+                for (Size i=0; i<arguments_.exerciseTimes.size(); i++) {
+                    t = arguments_.exerciseTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
             }
           private:
             void applySpecificCondition() {
-//                std::cout << "Before: " << values_ << std::endl;
                 for (Size i=0; i<values_.size(); i++)
                     values_[i] = QL_MAX(swap_->values()[i], values_[i]);
-////                std::cout << "After:  " << values_ << std::endl;
             }
 
             Instruments::SwaptionArguments arguments_;

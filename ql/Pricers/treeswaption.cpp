@@ -45,26 +45,39 @@ namespace QuantLib {
 
         void TreeSwaption::calculate() const {
 
-            QL_REQUIRE(!model_.isNull(), "TreeSwaption: No model was specified");
+            QL_REQUIRE(!model_.isNull(), 
+                       "TreeSwaption: No model was specified");
             Handle<Lattice> lattice;
 
             if (lattice_.isNull()) {
-                std::list<Time> times(0);
+                std::list<Time> times;
+                Time t;
                 Size i;
-                for (i=0; i<arguments_.exerciseTimes.size(); i++)
-                    times.push_back(arguments_.exerciseTimes[i]);
-
-                for (i=0; i<arguments_.fixedResetTimes.size(); i++)
-                    times.push_back(arguments_.fixedResetTimes[i]);
-
-                for (i=0; i<arguments_.fixedPayTimes.size(); i++)
-                    times.push_back(arguments_.fixedPayTimes[i]);
-
-                for (i=0; i<arguments_.floatingResetTimes.size(); i++)
-                    times.push_back(arguments_.floatingResetTimes[i]);
-
-                for (i=0; i<arguments_.floatingPayTimes.size(); i++)
-                    times.push_back(arguments_.floatingPayTimes[i]);
+                for (i=0; i<arguments_.exerciseTimes.size(); i++) {
+                    t = arguments_.exerciseTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
+                for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
+                    t = arguments_.fixedResetTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
+                for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
+                    t = arguments_.fixedPayTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
+                for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
+                    t = arguments_.floatingResetTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
+                for (i=0; i<arguments_.floatingPayTimes.size(); i++) {
+                    t = arguments_.floatingPayTimes[i];
+                    if (t >= 0.0)
+                        times.push_back(t);
+                }
 
                 TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
                 lattice = model_->tree(timeGrid);
@@ -76,7 +89,11 @@ namespace QuantLib {
                 new DiscretizedSwaption(lattice,arguments_));
 
             lattice->initialize(swaption, arguments_.exerciseTimes.back());
-            lattice->rollback(swaption, arguments_.exerciseTimes.front());
+            Time nextExercise = 
+                *std::find_if(arguments_.exerciseTimes.begin(), 
+                              arguments_.exerciseTimes.end(),
+                              std::bind2nd(std::greater_equal<Time>(), 0.0));
+            lattice->rollback(swaption, nextExercise);
 
             results_.value = lattice->presentValue(swaption);
         }

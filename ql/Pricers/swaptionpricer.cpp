@@ -29,7 +29,8 @@ namespace QuantLib {
             Size i;
 
             for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
-                if (isOnTime(arguments_.fixedResetTimes[i])) {
+                Time t = arguments_.fixedResetTimes[i];
+                if (t >= 0.0 && isOnTime(t)) {
                     Handle<DiscretizedAsset> bond(new
                         DiscretizedDiscountBond(method()));
                     method()->initialize(bond,
@@ -48,7 +49,8 @@ namespace QuantLib {
             }
 
             for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
-                if (isOnTime(arguments_.floatingResetTimes[i])) {
+                Time t = arguments_.floatingResetTimes[i];
+                if (t >= 0.0 && isOnTime(t)) {
                     Handle<DiscretizedAsset> bond(new 
                         DiscretizedDiscountBond(method()));
                     method()->initialize(bond, 
@@ -69,22 +71,19 @@ namespace QuantLib {
 
         void DiscretizedSwaption::adjustValues() {
             method()->rollback(swap_, time());
-
+            
             if (arguments_.exerciseType != Exercise::American) {
                 for (Size i=0; i<arguments_.exerciseTimes.size(); i++) {
-                    if (isOnTime(arguments_.exerciseTimes[i])) {
+                    Time t = arguments_.exerciseTimes[i];
+                    if (t >= 0.0 && isOnTime(t)) {
                         applySpecificCondition();
                     }
                 }
-            } else {
-                if (
-                  (time_ >= arguments_.exerciseTimes[0]) &&
-                  (time_ <= arguments_.exerciseTimes[1]))
-                    applySpecificCondition();
-            }
+            } else if (time_ >= arguments_.exerciseTimes[0] &&
+                       time_ <= arguments_.exerciseTimes[1])
+                applySpecificCondition();
         }
 
-
     }
-
+    
 }
