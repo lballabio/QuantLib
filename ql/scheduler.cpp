@@ -25,9 +25,12 @@
 namespace QuantLib {
 
     Scheduler::Scheduler(const Calendar& calendar,
-      const Date& startDate, const Date& endDate, int frequency,
-      RollingConvention rollingConvention, bool isAdjusted,
-      const Date& stubDate, bool startFromEnd, bool longFinal)
+                         const Date& startDate, const Date& endDate, 
+                         int frequency,
+                         RollingConvention rollingConvention, 
+                         bool isAdjusted,
+                         const Date& stubDate, bool startFromEnd, 
+                         bool longFinal)
     : calendar_(calendar), startDate_(startDate), endDate_(endDate),
       frequency_(frequency), rollingConvention_(rollingConvention),
       isAdjusted_(isAdjusted), stubDate_(stubDate),
@@ -37,135 +40,137 @@ namespace QuantLib {
         QL_REQUIRE(startDate_ != Date(), "null start date");
         QL_REQUIRE(endDate_ != Date(),   "null end date");
         QL_REQUIRE(startDate_ < endDate_,
-            "start date (" +
-                DateFormatter::toString(startDate_) +
-                ") later than end date (" +
-                DateFormatter::toString(endDate_) +
-                ")");
+                   "start date (" +
+                   DateFormatter::toString(startDate_) +
+                   ") later than end date (" +
+                   DateFormatter::toString(endDate_) +
+                   ")");
         if (stubDate_ != Date()) {
             QL_REQUIRE((stubDate_ > startDate_ && stubDate_ < endDate_),
-		       "stub date (" +
-		       DateFormatter::toString(stubDate_) +
-		       ") out of range (start date (" +
-		       DateFormatter::toString(startDate_) +
-		       "), end date (" +
-		       DateFormatter::toString(endDate_) + "))");
+                       "stub date (" +
+                       DateFormatter::toString(stubDate_) +
+                       ") out of range (start date (" +
+                       DateFormatter::toString(startDate_) +
+                       "), end date (" +
+                       DateFormatter::toString(endDate_) + "))");
         }
         QL_REQUIRE(12 % frequency_ == 0,
-            "frequency (" +
-            IntegerFormatter::toString(frequency_) +
-            " per year) does not correspond to a whole number of months");
+                   "frequency (" +
+                   IntegerFormatter::toString(frequency_) +
+                   " per year) does not correspond to "
+                   "a whole number of months");
 
-	if (startFromEnd_) {
-	   // calculations
-	   Date seed = endDate_;
-	   Date first = (isAdjusted_ ?
-			calendar_.roll(startDate_,rollingConvention_) :
-			startDate_);
-	   // add end date
-	   dates_.push_back(endDate_);
+        if (startFromEnd_) {
+            // calculations
+            Date seed = endDate_;
+            Date first = (isAdjusted_ ?
+                          calendar_.roll(startDate_,rollingConvention_) :
+                          startDate_);
+            // add end date
+            dates_.push_back(endDate_);
 	   
-	   // add stub date if given
-	   if (stubDate_ != Date()) {
-	      seed = stubDate_;
-	      dates_.insert(dates_.begin(),
-                        isAdjusted_ ? calendar_.roll(stubDate_) : stubDate_);
-	   }
+            // add stub date if given
+            if (stubDate_ != Date()) {
+                seed = stubDate_;
+                dates_.insert(dates_.begin(),
+                              isAdjusted_ ? 
+                              calendar_.roll(stubDate_) : 
+                              stubDate_);
+            }
 	   
-	   // add subsequent dates
-	   int periods = 1, months = 12/frequency_;
-	   while (true) {
-	      Date temp = seed.plus(-periods*months,Months);
-	      if (isAdjusted_)
-		 temp = calendar_.roll(temp,rollingConvention_);
-	      dates_.insert(dates_.begin(),temp);
-	      // check exit condition
-	      if (temp <= first)
-		 break;
-	      else
-		 periods++;
-	   }
+            // add subsequent dates
+            int periods = 1, months = 12/frequency_;
+            while (true) {
+                Date temp = seed.plus(-periods*months,Months);
+                if (isAdjusted_)
+                    temp = calendar_.roll(temp,rollingConvention_);
+                dates_.insert(dates_.begin(),temp);
+                // check exit condition
+                if (temp <= first)
+                    break;
+                else
+                    periods++;
+            }
 	   
-	   // possibly correct first inserted date
-	   if (dates_[0] < first) {
-	      dates_[0] = first;
-	      if (longFinal_)
-		 dates_.erase(dates_.begin()+1);
-	      finalIsRegular_ = false;
-	   }
+            // possibly correct first inserted date
+            if (dates_[0] < first) {
+                dates_[0] = first;
+                if (longFinal_)
+                    dates_.erase(dates_.begin()+1);
+                finalIsRegular_ = false;
+            }
 
-	   // possibly collapse first two dates
-	   if (calendar_.roll(dates_[0],rollingConvention_) ==
-	       calendar_.roll(dates_[1],rollingConvention_)) {
-	      dates_[1] = dates_[0];
-	      dates_.erase(dates_.begin());
-	      finalIsRegular_ = true;
-	   }
-	} else {
-	   // calculations
-	   Date seed = startDate_;
-	   Date last = (isAdjusted_ ?
-			calendar_.roll(endDate_,rollingConvention_) :
-			endDate_);
-	   // add start date
-	   dates_.push_back(startDate_);
+            // possibly collapse first two dates
+            if (calendar_.roll(dates_[0],rollingConvention_) ==
+                calendar_.roll(dates_[1],rollingConvention_)) {
+                dates_[1] = dates_[0];
+                dates_.erase(dates_.begin());
+                finalIsRegular_ = true;
+            }
+        } else {
+            // calculations
+            Date seed = startDate_;
+            Date last = (isAdjusted_ ?
+                         calendar_.roll(endDate_,rollingConvention_) :
+                         endDate_);
+            // add start date
+            dates_.push_back(startDate_);
 	   
-	   // add stub date if given
-	   if (stubDate_ != Date()) {
-	      seed = stubDate_;
-	      dates_.push_back(isAdjusted_ ?
-			       calendar_.roll(stubDate_) :
-			       stubDate_);
-	   }
+            // add stub date if given
+            if (stubDate_ != Date()) {
+                seed = stubDate_;
+                dates_.push_back(isAdjusted_ ?
+                                 calendar_.roll(stubDate_) :
+                                 stubDate_);
+            }
 	   
-	   // add subsequent dates
-	   int periods = 1, months = 12/frequency_;
-	   while (true) {
-	      Date temp = seed.plus(periods*months,Months);
-	      if (isAdjusted_)
-		 temp = calendar_.roll(temp,rollingConvention_);
-	      dates_.push_back(temp);
-	      // check exit condition
-	      if (temp >= last)
-		 break;
-	      else
-		 periods++;
-	   }
+            // add subsequent dates
+            int periods = 1, months = 12/frequency_;
+            while (true) {
+                Date temp = seed.plus(periods*months,Months);
+                if (isAdjusted_)
+                    temp = calendar_.roll(temp,rollingConvention_);
+                dates_.push_back(temp);
+                // check exit condition
+                if (temp >= last)
+                    break;
+                else
+                    periods++;
+            }
 	   
-	   // possibly correct last inserted date
-	   if (dates_.back() > last) {
-	      if (longFinal_)
-		 dates_.pop_back();
-	      dates_.back() = last;
-	      finalIsRegular_ = false;
-	   }
+            // possibly correct last inserted date
+            if (dates_.back() > last) {
+                if (longFinal_)
+                    dates_.pop_back();
+                dates_.back() = last;
+                finalIsRegular_ = false;
+            }
 
-	   // possibly collapse last two dates
-	   int N = dates_.size();
-	   if (calendar_.roll(dates_[N-2],rollingConvention_) ==
-	       calendar_.roll(dates_[N-1],rollingConvention_)) {
-	      dates_[N-2] = dates_[N-1];
-	      dates_.pop_back();
-	      finalIsRegular_ = true;
-	   }
-	}
-
-        // done
+            // possibly collapse last two dates
+            int N = dates_.size();
+            if (calendar_.roll(dates_[N-2],rollingConvention_) ==
+                calendar_.roll(dates_[N-1],rollingConvention_)) {
+                dates_[N-2] = dates_[N-1];
+                dates_.pop_back();
+                finalIsRegular_ = true;
+            }
+        }
     }
+
 
     bool Scheduler::isRegular(Size i) const {
         if (startFromEnd_) {
-	   if (i == 1)
-	      return finalIsRegular_;
-	   else if (i == size()-1)
-	      return (stubDate_ == Date());;
-	} else {
-	   if (i == 1)
-	      return (stubDate_ == Date());
-	   else if (i == size()-1)
-	      return finalIsRegular_;
-	}
-	return true;
+            if (i == 1)
+                return finalIsRegular_;
+            else if (i == size()-1)
+                return (stubDate_ == Date());;
+        } else {
+            if (i == 1)
+                return (stubDate_ == Date());
+            else if (i == size()-1)
+                return finalIsRegular_;
+        }
+        return true;
     }
 
 }
