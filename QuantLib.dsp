@@ -1884,6 +1884,10 @@ SOURCE=.\ql\diffusionprocess.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\disposable.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\errors.hpp
 # End Source File
 # Begin Source File
@@ -1893,10 +1897,6 @@ SOURCE=.\ql\exercise.cpp
 # Begin Source File
 
 SOURCE=.\ql\exercise.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\expressiontemplates.hpp
 # End Source File
 # Begin Source File
 

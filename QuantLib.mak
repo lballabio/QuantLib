@@ -415,6 +415,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\generalstatistics.sbr" \
+	"$(INTDIR)\incrementalstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -518,9 +520,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\incrementalstatistics.sbr" \
-	"$(INTDIR)\generalstatistics.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -580,6 +580,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\generalstatistics.obj" \
+	"$(INTDIR)\incrementalstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -683,9 +685,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\incrementalstatistics.obj" \
-	"$(INTDIR)\generalstatistics.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1078,6 +1078,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\generalstatistics.sbr" \
+	"$(INTDIR)\incrementalstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -1181,9 +1183,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\incrementalstatistics.sbr" \
-	"$(INTDIR)\generalstatistics.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1243,6 +1243,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\generalstatistics.obj" \
+	"$(INTDIR)\incrementalstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -1346,9 +1348,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\incrementalstatistics.obj" \
-	"$(INTDIR)\generalstatistics.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1740,6 +1740,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\generalstatistics.sbr" \
+	"$(INTDIR)\incrementalstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -1843,9 +1845,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\incrementalstatistics.sbr" \
-	"$(INTDIR)\generalstatistics.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1905,6 +1905,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\generalstatistics.obj" \
+	"$(INTDIR)\incrementalstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -2008,9 +2010,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\incrementalstatistics.obj" \
-	"$(INTDIR)\generalstatistics.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2403,6 +2403,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
+	"$(INTDIR)\generalstatistics.sbr" \
+	"$(INTDIR)\incrementalstatistics.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -2506,9 +2508,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\incrementalstatistics.sbr" \
-	"$(INTDIR)\generalstatistics.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2568,6 +2568,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
+	"$(INTDIR)\generalstatistics.obj" \
+	"$(INTDIR)\incrementalstatistics.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -2671,9 +2673,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\incrementalstatistics.obj" \
-	"$(INTDIR)\generalstatistics.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
