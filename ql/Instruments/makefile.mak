@@ -17,10 +17,12 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
-OBJS = plainoption.obj$(_D) \
-       swap.obj$(_D) \
+OBJS = capfloor.obj$(_D) \
+       europeanoption.obj$(_D) \
+       plainoption.obj$(_D) \
        simpleswap.obj$(_D) \
-       stock.obj$(_D)
+       stock.obj$(_D) \
+       swap.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

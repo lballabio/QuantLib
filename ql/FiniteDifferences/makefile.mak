@@ -16,6 +16,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = bsmoperator.obj$(_D) \
+       onefactoroperator.obj$(_D) \
        tridiagonaloperator.obj$(_D) \
        valueatcenter.obj$(_D)
 

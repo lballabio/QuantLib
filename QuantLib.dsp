@@ -307,6 +307,14 @@ SOURCE=.\ql\FiniteDifferences\impliciteuler.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\onefactoroperator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\onefactoroperator.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\stepcondition.hpp
 # End Source File
 # Begin Source File
@@ -982,6 +990,146 @@ SOURCE=.\ql\Utilities\processingiterator.hpp
 SOURCE=.\ql\Utilities\steppingiterator.hpp
 # End Source File
 # End Group
+# Begin Group "InterestRateModellling"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackdermanandtoy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackdermanandtoy.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\cap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\cap.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\grid.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\hoandlee.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\hoandlee.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullandwhite.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullandwhite.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\model.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\model.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\node.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\onefactormodel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\onefactormodel.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\swapfuturevalue.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\swapfuturevalue.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\tree.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\tree.hpp
+# End Source File
+# End Group
+# Begin Group "Optimization"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Optimization\armijo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\armijo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\conjugategradient.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\conjugategradient.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\costfunction.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\criteria.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\leastsquare.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\linesearch.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\optimizer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\steepestdescent.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Optimization\steepestdescent.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp
@@ -1021,6 +1169,10 @@ SOURCE=.\ql\config.msvc.hpp
 # Begin Source File
 
 SOURCE=.\ql\config.mwcw.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\constraint.hpp
 # End Source File
 # Begin Source File
 
@@ -1080,6 +1232,10 @@ SOURCE=.\ql\marketelement.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\minimizer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\null.hpp
 # End Source File
 # Begin Source File
@@ -1121,6 +1277,10 @@ SOURCE=.\ql\solver1d.cpp
 # Begin Source File
 
 SOURCE=.\ql\solver1d.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\stochasticprocess.hpp
 # End Source File
 # Begin Source File
 

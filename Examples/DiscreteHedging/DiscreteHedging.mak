@@ -35,21 +35,10 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\DiscreteHedging.exe" "$(OUTDIR)\DiscreteHedging.bsc"
 
-!ELSE 
 
-ALL : "QuantLib - Win32 Release" "$(OUTDIR)\DiscreteHedging.exe" "$(OUTDIR)\DiscreteHedging.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 ReleaseCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\DiscreteHedging.obj"
 	-@erase "$(INTDIR)\DiscreteHedging.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -106,8 +95,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\DiscreteHedging.pdb" /machine:I386 /out:"$(OUTDIR)\DiscreteHedging.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
-	"$(INTDIR)\DiscreteHedging.obj" \
-	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
+	"$(INTDIR)\DiscreteHedging.obj"
 
 "$(OUTDIR)\DiscreteHedging.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -122,21 +110,10 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\DiscreteHedging.exe" "$(OUTDIR)\DiscreteHedging.bsc"
 
-!ELSE 
 
-ALL : "QuantLib - Win32 Debug" "$(OUTDIR)\DiscreteHedging.exe" "$(OUTDIR)\DiscreteHedging.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 DebugCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\DiscreteHedging.obj"
 	-@erase "$(INTDIR)\DiscreteHedging.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -196,8 +173,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\DiscreteHedging.pdb" /debug /machine:I386 /out:"$(OUTDIR)\DiscreteHedging.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
-	"$(INTDIR)\DiscreteHedging.obj" \
-	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
+	"$(INTDIR)\DiscreteHedging.obj"
 
 "$(OUTDIR)\DiscreteHedging.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -212,21 +188,10 @@ INTDIR=.\build\OnTheEdgeRelease
 OutDir=.\build\OnTheEdgeRelease
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\DiscreteHedging.exe" "$(OUTDIR)\DiscreteHedging.bsc"
 
-!ELSE 
 
-ALL : "QuantLib - Win32 OnTheEdgeRelease" "$(OUTDIR)\DiscreteHedging.exe" "$(OUTDIR)\DiscreteHedging.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\DiscreteHedging.obj"
 	-@erase "$(INTDIR)\DiscreteHedging.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -283,8 +248,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\DiscreteHedging.pdb" /machine:I386 /out:"$(OUTDIR)\DiscreteHedging.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
-	"$(INTDIR)\DiscreteHedging.obj" \
-	"..\..\lib\Win32\VisualStudio\QuantLib.lib"
+	"$(INTDIR)\DiscreteHedging.obj"
 
 "$(OUTDIR)\DiscreteHedging.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -299,21 +263,10 @@ INTDIR=.\build\OnTheEdgeDebug
 OutDir=.\build\OnTheEdgeDebug
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : "$(OUTDIR)\DiscreteHedging.exe" "$(OUTDIR)\DiscreteHedging.bsc"
 
-!ELSE 
 
-ALL : "QuantLib - Win32 OnTheEdgeDebug" "$(OUTDIR)\DiscreteHedging.exe" "$(OUTDIR)\DiscreteHedging.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\DiscreteHedging.obj"
 	-@erase "$(INTDIR)\DiscreteHedging.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -373,8 +326,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\DiscreteHedging.pdb" /debug /machine:I386 /out:"$(OUTDIR)\DiscreteHedging.exe" /libpath:"..\..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
-	"$(INTDIR)\DiscreteHedging.obj" \
-	"..\..\lib\Win32\VisualStudio\QuantLib_d.lib"
+	"$(INTDIR)\DiscreteHedging.obj"
 
 "$(OUTDIR)\DiscreteHedging.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -398,56 +350,6 @@ SOURCE=.\DiscreteHedging.cpp
 
 "$(INTDIR)\DiscreteHedging.obj"	"$(INTDIR)\DiscreteHedging.sbr" : $(SOURCE) "$(INTDIR)"
 
-
-!IF  "$(CFG)" == "DiscreteHedging - Win32 Release"
-
-"QuantLib - Win32 Release" : 
-   cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
-   cd ".\Examples\DiscreteHedging"
-
-"QuantLib - Win32 ReleaseCLEAN" : 
-   cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
-   cd ".\Examples\DiscreteHedging"
-
-!ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 Debug"
-
-"QuantLib - Win32 Debug" : 
-   cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
-   cd ".\Examples\DiscreteHedging"
-
-"QuantLib - Win32 DebugCLEAN" : 
-   cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
-   cd ".\Examples\DiscreteHedging"
-
-!ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 OnTheEdgeRelease"
-
-"QuantLib - Win32 OnTheEdgeRelease" : 
-   cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" 
-   cd ".\Examples\DiscreteHedging"
-
-"QuantLib - Win32 OnTheEdgeReleaseCLEAN" : 
-   cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" RECURSE=1 CLEAN 
-   cd ".\Examples\DiscreteHedging"
-
-!ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 OnTheEdgeDebug"
-
-"QuantLib - Win32 OnTheEdgeDebug" : 
-   cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" 
-   cd ".\Examples\DiscreteHedging"
-
-"QuantLib - Win32 OnTheEdgeDebugCLEAN" : 
-   cd "\Projects\QuantLib"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" RECURSE=1 CLEAN 
-   cd ".\Examples\DiscreteHedging"
-
-!ENDIF 
 
 
 !ENDIF 

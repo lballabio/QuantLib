@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -45,6 +48,8 @@ CLEAN :
 	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
+	-@erase "$(INTDIR)\armijo.obj"
+	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -55,6 +60,10 @@ CLEAN :
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
+	-@erase "$(INTDIR)\blackdermanandtoy.obj"
+	-@erase "$(INTDIR)\blackdermanandtoy.sbr"
+	-@erase "$(INTDIR)\blackkarasinski.obj"
+	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmnumericaloption.obj"
@@ -63,10 +72,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calendar.sbr"
+	-@erase "$(INTDIR)\cap.obj"
+	-@erase "$(INTDIR)\cap.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\conjugategradient.obj"
+	-@erase "$(INTDIR)\conjugategradient.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -109,6 +122,10 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
+	-@erase "$(INTDIR)\hoandlee.obj"
+	-@erase "$(INTDIR)\hoandlee.sbr"
+	-@erase "$(INTDIR)\hullandwhite.obj"
+	-@erase "$(INTDIR)\hullandwhite.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
@@ -137,6 +154,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\model.obj"
+	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\multiperiodoption.obj"
 	-@erase "$(INTDIR)\multiperiodoption.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
@@ -149,6 +168,10 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\onefactormodel.obj"
+	-@erase "$(INTDIR)\onefactormodel.sbr"
+	-@erase "$(INTDIR)\onefactoroperator.obj"
+	-@erase "$(INTDIR)\onefactoroperator.sbr"
 	-@erase "$(INTDIR)\option.obj"
 	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -175,18 +198,26 @@ CLEAN :
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\statistics.sbr"
+	-@erase "$(INTDIR)\steepestdescent.obj"
+	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stepconditionoption.obj"
 	-@erase "$(INTDIR)\stepconditionoption.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
+	-@erase "$(INTDIR)\swapfuturevalue.obj"
+	-@erase "$(INTDIR)\swapfuturevalue.sbr"
+	-@erase "$(INTDIR)\swaption.obj"
+	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\tree.obj"
+	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -206,40 +237,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -322,7 +320,21 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
+	"$(INTDIR)\swapfuturevalue.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\hoandlee.sbr" \
+	"$(INTDIR)\hullandwhite.sbr" \
+	"$(INTDIR)\blackdermanandtoy.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\cap.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\armijo.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -411,7 +423,21 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
+	"$(INTDIR)\swapfuturevalue.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\hoandlee.obj" \
+	"$(INTDIR)\hullandwhite.obj" \
+	"$(INTDIR)\blackdermanandtoy.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\cap.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\armijo.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -436,6 +462,8 @@ CLEAN :
 	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
+	-@erase "$(INTDIR)\armijo.obj"
+	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -446,6 +474,10 @@ CLEAN :
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
+	-@erase "$(INTDIR)\blackdermanandtoy.obj"
+	-@erase "$(INTDIR)\blackdermanandtoy.sbr"
+	-@erase "$(INTDIR)\blackkarasinski.obj"
+	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmnumericaloption.obj"
@@ -454,10 +486,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calendar.sbr"
+	-@erase "$(INTDIR)\cap.obj"
+	-@erase "$(INTDIR)\cap.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\conjugategradient.obj"
+	-@erase "$(INTDIR)\conjugategradient.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -500,6 +536,10 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
+	-@erase "$(INTDIR)\hoandlee.obj"
+	-@erase "$(INTDIR)\hoandlee.sbr"
+	-@erase "$(INTDIR)\hullandwhite.obj"
+	-@erase "$(INTDIR)\hullandwhite.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
@@ -528,6 +568,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\model.obj"
+	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\multiperiodoption.obj"
 	-@erase "$(INTDIR)\multiperiodoption.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
@@ -540,6 +582,10 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\onefactormodel.obj"
+	-@erase "$(INTDIR)\onefactormodel.sbr"
+	-@erase "$(INTDIR)\onefactoroperator.obj"
+	-@erase "$(INTDIR)\onefactoroperator.sbr"
 	-@erase "$(INTDIR)\option.obj"
 	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -566,18 +612,26 @@ CLEAN :
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\statistics.sbr"
+	-@erase "$(INTDIR)\steepestdescent.obj"
+	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stepconditionoption.obj"
 	-@erase "$(INTDIR)\stepconditionoption.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
+	-@erase "$(INTDIR)\swapfuturevalue.obj"
+	-@erase "$(INTDIR)\swapfuturevalue.sbr"
+	-@erase "$(INTDIR)\swaption.obj"
+	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\tree.obj"
+	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -598,40 +652,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -714,7 +735,21 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
+	"$(INTDIR)\swapfuturevalue.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\hoandlee.sbr" \
+	"$(INTDIR)\hullandwhite.sbr" \
+	"$(INTDIR)\blackdermanandtoy.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\cap.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\armijo.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -803,7 +838,21 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
+	"$(INTDIR)\swapfuturevalue.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\hoandlee.obj" \
+	"$(INTDIR)\hullandwhite.obj" \
+	"$(INTDIR)\blackdermanandtoy.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\cap.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\armijo.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -828,6 +877,8 @@ CLEAN :
 	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
+	-@erase "$(INTDIR)\armijo.obj"
+	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -838,6 +889,10 @@ CLEAN :
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
+	-@erase "$(INTDIR)\blackdermanandtoy.obj"
+	-@erase "$(INTDIR)\blackdermanandtoy.sbr"
+	-@erase "$(INTDIR)\blackkarasinski.obj"
+	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmnumericaloption.obj"
@@ -846,10 +901,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calendar.sbr"
+	-@erase "$(INTDIR)\cap.obj"
+	-@erase "$(INTDIR)\cap.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\conjugategradient.obj"
+	-@erase "$(INTDIR)\conjugategradient.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -892,6 +951,10 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
+	-@erase "$(INTDIR)\hoandlee.obj"
+	-@erase "$(INTDIR)\hoandlee.sbr"
+	-@erase "$(INTDIR)\hullandwhite.obj"
+	-@erase "$(INTDIR)\hullandwhite.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
@@ -920,6 +983,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\model.obj"
+	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\multiperiodoption.obj"
 	-@erase "$(INTDIR)\multiperiodoption.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
@@ -932,6 +997,10 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\onefactormodel.obj"
+	-@erase "$(INTDIR)\onefactormodel.sbr"
+	-@erase "$(INTDIR)\onefactoroperator.obj"
+	-@erase "$(INTDIR)\onefactoroperator.sbr"
 	-@erase "$(INTDIR)\option.obj"
 	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -958,18 +1027,26 @@ CLEAN :
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\statistics.sbr"
+	-@erase "$(INTDIR)\steepestdescent.obj"
+	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stepconditionoption.obj"
 	-@erase "$(INTDIR)\stepconditionoption.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
+	-@erase "$(INTDIR)\swapfuturevalue.obj"
+	-@erase "$(INTDIR)\swapfuturevalue.sbr"
+	-@erase "$(INTDIR)\swaption.obj"
+	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\tree.obj"
+	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -989,40 +1066,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1105,7 +1149,21 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
+	"$(INTDIR)\swapfuturevalue.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\hoandlee.sbr" \
+	"$(INTDIR)\hullandwhite.sbr" \
+	"$(INTDIR)\blackdermanandtoy.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\cap.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\armijo.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1194,7 +1252,21 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
+	"$(INTDIR)\swapfuturevalue.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\hoandlee.obj" \
+	"$(INTDIR)\hullandwhite.obj" \
+	"$(INTDIR)\blackdermanandtoy.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\cap.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\armijo.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1219,6 +1291,8 @@ CLEAN :
 	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
+	-@erase "$(INTDIR)\armijo.obj"
+	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -1229,6 +1303,10 @@ CLEAN :
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
+	-@erase "$(INTDIR)\blackdermanandtoy.obj"
+	-@erase "$(INTDIR)\blackdermanandtoy.sbr"
+	-@erase "$(INTDIR)\blackkarasinski.obj"
+	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmnumericaloption.obj"
@@ -1237,10 +1315,14 @@ CLEAN :
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calendar.sbr"
+	-@erase "$(INTDIR)\cap.obj"
+	-@erase "$(INTDIR)\cap.sbr"
 	-@erase "$(INTDIR)\cashflowvectors.obj"
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\conjugategradient.obj"
+	-@erase "$(INTDIR)\conjugategradient.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -1283,6 +1365,10 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.sbr"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.sbr"
+	-@erase "$(INTDIR)\hoandlee.obj"
+	-@erase "$(INTDIR)\hoandlee.sbr"
+	-@erase "$(INTDIR)\hullandwhite.obj"
+	-@erase "$(INTDIR)\hullandwhite.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
@@ -1311,6 +1397,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
+	-@erase "$(INTDIR)\model.obj"
+	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\multiperiodoption.obj"
 	-@erase "$(INTDIR)\multiperiodoption.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
@@ -1323,6 +1411,10 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\onefactormodel.obj"
+	-@erase "$(INTDIR)\onefactormodel.sbr"
+	-@erase "$(INTDIR)\onefactoroperator.obj"
+	-@erase "$(INTDIR)\onefactoroperator.sbr"
 	-@erase "$(INTDIR)\option.obj"
 	-@erase "$(INTDIR)\option.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
@@ -1349,18 +1441,26 @@ CLEAN :
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\statistics.sbr"
+	-@erase "$(INTDIR)\steepestdescent.obj"
+	-@erase "$(INTDIR)\steepestdescent.sbr"
 	-@erase "$(INTDIR)\stepconditionoption.obj"
 	-@erase "$(INTDIR)\stepconditionoption.sbr"
 	-@erase "$(INTDIR)\stock.obj"
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swap.sbr"
+	-@erase "$(INTDIR)\swapfuturevalue.obj"
+	-@erase "$(INTDIR)\swapfuturevalue.sbr"
+	-@erase "$(INTDIR)\swaption.obj"
+	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
 	-@erase "$(INTDIR)\target.obj"
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
+	-@erase "$(INTDIR)\tree.obj"
+	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -1381,40 +1481,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1497,7 +1564,21 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\onefactoroperator.sbr" \
+	"$(INTDIR)\swapfuturevalue.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
+	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\hoandlee.sbr" \
+	"$(INTDIR)\hullandwhite.sbr" \
+	"$(INTDIR)\blackdermanandtoy.sbr" \
+	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\cap.sbr" \
+	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\armijo.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1586,7 +1667,21 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\onefactoroperator.obj" \
+	"$(INTDIR)\swapfuturevalue.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
+	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\hoandlee.obj" \
+	"$(INTDIR)\hullandwhite.obj" \
+	"$(INTDIR)\blackdermanandtoy.obj" \
+	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\cap.obj" \
+	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\armijo.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1594,6 +1689,36 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1681,6 +1806,12 @@ SOURCE=.\ql\DayCounters\thirty360.cpp
 SOURCE=.\ql\FiniteDifferences\bsmoperator.cpp
 
 "$(INTDIR)\bsmoperator.obj"	"$(INTDIR)\bsmoperator.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\FiniteDifferences\onefactoroperator.cpp
+
+"$(INTDIR)\onefactoroperator.obj"	"$(INTDIR)\onefactoroperator.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2047,6 +2178,84 @@ SOURCE=.\ql\TermStructures\piecewiseflatforward.cpp
 SOURCE=.\ql\TermStructures\ratehelpers.cpp
 
 "$(INTDIR)\ratehelpers.obj"	"$(INTDIR)\ratehelpers.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackdermanandtoy.cpp
+
+"$(INTDIR)\blackdermanandtoy.obj"	"$(INTDIR)\blackdermanandtoy.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\blackkarasinski.cpp
+
+"$(INTDIR)\blackkarasinski.obj"	"$(INTDIR)\blackkarasinski.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\cap.cpp
+
+"$(INTDIR)\cap.obj"	"$(INTDIR)\cap.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\hoandlee.cpp
+
+"$(INTDIR)\hoandlee.obj"	"$(INTDIR)\hoandlee.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\hullandwhite.cpp
+
+"$(INTDIR)\hullandwhite.obj"	"$(INTDIR)\hullandwhite.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\model.cpp
+
+"$(INTDIR)\model.obj"	"$(INTDIR)\model.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\onefactormodel.cpp
+
+"$(INTDIR)\onefactormodel.obj"	"$(INTDIR)\onefactormodel.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\swapfuturevalue.cpp
+
+"$(INTDIR)\swapfuturevalue.obj"	"$(INTDIR)\swapfuturevalue.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\CalibrationHelpers\swaption.cpp
+
+"$(INTDIR)\swaption.obj"	"$(INTDIR)\swaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\InterestRateModelling\OneFactorModels\tree.cpp
+
+"$(INTDIR)\tree.obj"	"$(INTDIR)\tree.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Optimization\armijo.cpp
+
+"$(INTDIR)\armijo.obj"	"$(INTDIR)\armijo.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Optimization\conjugategradient.cpp
+
+"$(INTDIR)\conjugategradient.obj"	"$(INTDIR)\conjugategradient.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Optimization\steepestdescent.cpp
+
+"$(INTDIR)\steepestdescent.obj"	"$(INTDIR)\steepestdescent.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
