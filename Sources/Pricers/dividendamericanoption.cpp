@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.18  2001/03/01 13:53:39  marmar
+    Standard step condition and finite-difference model introduced
+
     Revision 1.17  2001/02/19 12:19:29  marmar
     Added trailing _ to protected and private members
 
@@ -64,19 +67,17 @@
 
 #include "dividendamericanoption.h"
 #include "dividendeuropeanoption.h"
-#include "finitedifferencemodel.h"
-#include "cranknicolson.h"
 #include "cubicspline.h"
+#include "standardfdmodel.h"
+#include "standardstepcondition.h"
 
 namespace QuantLib {
 
     namespace Pricers {
     
-    using Math::CubicSpline;
-    using FiniteDifferences::FiniteDifferenceModel;
-    using FiniteDifferences::CrankNicolson;
-    using FiniteDifferences::StepCondition;
-    using FiniteDifferences::TridiagonalOperator;
+        using Math::CubicSpline;
+        using FiniteDifferences::StandardStepCondition;
+        using FiniteDifferences::StandardFiniteDifferenceModel;
 
         DividendAmericanOption::DividendAmericanOption(
         DividendAmericanOption::Type type, double underlying, double strike,
@@ -126,10 +127,9 @@ namespace QuantLib {
                 Time beginDate = residualTime_;
                 int j=theNumberOfDivs-1;
                 do {
-                    Handle<StepCondition<Array> > americanCondition(
+                    Handle<StandardStepCondition> americanCondition(
                         new BSMAmericanCondition(theInitialPrices));
-                    FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> >
-                        model(theOperator);
+                    StandardFiniteDifferenceModel model(theOperator);
                     Time endDate;
                     if (j >= 0)
                         endDate = theExDivDates[j];

@@ -4,11 +4,13 @@ include_HEADERS = backwardeuler.h \
 	bsmoperator.h \
 	cranknicolson.h \
 	finitedifferencemodel.h \
+	standardfdmodel.h \
 	forwardeuler.h \
 	identity.h \
 	operator.h \
 	operatortraits.h \
 	stepcondition.h \
+	standardstepcondition.h \
 	tridiagonaloperator.h \
 	dminus.h \
 	dplus.h \

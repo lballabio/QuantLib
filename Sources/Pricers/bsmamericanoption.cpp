@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -18,7 +17,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file bsmamericanoption.cpp
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.22  2001/03/01 13:53:40  marmar
+    Standard step condition and finite-difference model introduced
+
     Revision 1.21  2001/02/19 12:19:29  marmar
     Added trailing _ to protected and private members
 
@@ -51,17 +54,15 @@
 
 #include "bsmamericanoption.h"
 #include "bsmeuropeanoption.h"
-#include "finitedifferencemodel.h"
-#include "cranknicolson.h"
+#include "standardfdmodel.h"
+#include "standardstepcondition.h"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        using FiniteDifferences::FiniteDifferenceModel;
-        using FiniteDifferences::CrankNicolson;
-        using FiniteDifferences::StepCondition;
-        using FiniteDifferences::TridiagonalOperator;
+        using FiniteDifferences::StandardStepCondition;
+        using FiniteDifferences::StandardFiniteDifferenceModel;
 
         double BSMAmericanOption::value() const {
             if (!hasBeenCalculated_) {
@@ -71,9 +72,8 @@ namespace QuantLib {
                 initializeOperator();
                 /* model used for calculation: it could have been
                    BackwardEuler or ForwardEuler instead of CrankNicolson */
-                FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> >
-                        model(theOperator);
-                double dt = residualTime_/theTimeSteps;
+                StandardFiniteDifferenceModel model(theOperator);
+                double dt = residualTime_/timeSteps_;
                 // Control-variate variance reduction:
 
                 // 1) calculate value/greeks of the European option analytically
@@ -88,7 +88,7 @@ namespace QuantLib {
                 // 2) calculate value/greeks of the European option numerically
                 Array theEuroPrices = theInitialPrices;
                 // rollback until dt
-                model.rollback(theEuroPrices,residualTime_,dt,theTimeSteps-1);
+                model.rollback(theEuroPrices,residualTime_,dt,timeSteps_-1);
                 double numericEuroValuePlus = valueAtCenter(theEuroPrices);
                 // complete rollback
                 model.rollback(theEuroPrices,dt,0.0,1);
@@ -105,14 +105,14 @@ namespace QuantLib {
 
                 // 3) greeks of the American option numerically on the same grid
                 Array thePrices = theInitialPrices;
-                Handle<StepCondition<Array> >
+                Handle<StandardStepCondition >
                   americanCondition(new BSMAmericanCondition(theInitialPrices));
                 // rollback until dt
-                model.rollback(thePrices, residualTime_, dt, theTimeSteps -1,
+                model.rollback(thePrices, residualTime_, dt, timeSteps_ -1,
                                                             americanCondition);
                 double numericAmericanValuePlus = valueAtCenter(thePrices);
                 // complete rollback
-                model.rollback(thePrices,dt,0.0,1,americanCondition);
+                model.rollback(thePrices, dt, 0.0, 1,americanCondition);
                 double numericAmericanValue = valueAtCenter(thePrices);
                 double numericAmericanDelta = firstDerivativeAtCenter(thePrices,
                                                                        theGrid);
