@@ -152,7 +152,7 @@ namespace QuantLib {
                    "number of floating payment times");
         QL_REQUIRE(currentFloatingCoupon != Null<Real>() || // unless...
                    floatingResetTimes.empty() ||
-                   floatingResetTimes[0] > 0.0,
+                   floatingResetTimes[0] >= 0.0,
                    "current floating coupon null or not set");
     }
 
