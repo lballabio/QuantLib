@@ -18,11 +18,21 @@
 #include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
 
+/* auto_link was not available in Boost version 1.30.x.  Therefore, we
+   require Boost 1.31 under Visual C++ and Borland (for the test
+   suite, not the whole library! 1.30.x is fine for the latter) while
+   we just skip the inclusion for Unixen since it's not needed.
+*/
+#if defined(__BORLANDC__) || defined(_MSC_VER)
+#if BOOST_VERSION < 103100
+    #error Boost 1.31 or later is required for the test suite.
+#endif
 #define BOOST_LIB_DIAGNOSTIC
 #define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
 #undef BOOST_LIB_NAME
 #undef BOOST_LIB_DIAGNOSTIC
+#endif
 
 #include "americanoption.hpp"
 #include "asianoptions.hpp"
