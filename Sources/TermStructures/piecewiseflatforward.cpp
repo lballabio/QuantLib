@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/06/04 08:32:31  lballabio
+// Set extrapolated discount as next guess
+//
 // Revision 1.9  2001/06/01 16:50:17  lballabio
 // Term structure on deposits and swaps
 //
@@ -91,8 +94,12 @@ namespace QuantLib {
                 Handle<RateHelper> instrument = sortedInstruments[i-1];
                 instrument->setTermStructure(this);
                 double guess = instrument->discountGuess();
-                if (guess == Null<double>())
-                    guess = discounts_[i-1]*0.9;
+                if (guess == Null<double>()) {
+                    if (i > 1)  // we can extrapolate
+                        guess = this->discount(instrument->maturity(),true);
+                    else        // any guess will do
+                        guess = 0.9;
+                }
                 // bracket
                 double min = accuracy_, max = discounts_[i-1];
                 solver.solve(FFObjFunction(this,instrument,i),
