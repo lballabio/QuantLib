@@ -30,6 +30,7 @@
 #include <ql/PricingEngines/Vanilla/fdbermudanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
+#include <ql/PricingEngines/Vanilla/fddividendeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendshoutengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>

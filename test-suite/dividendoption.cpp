@@ -19,7 +19,7 @@
 #include "utilities.hpp"
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/dividendvanillaoption.hpp>
-#include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
+#include <ql/PricingEngines/Vanilla/fddividendeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fddividendamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
@@ -322,7 +322,7 @@ void DividendOptionTest::testFdEuropeanGreeks() {
     Settings::instance().setEvaluationDate(today);
     Integer lengths[] = { 1, 2 };
 
-    boost::shared_ptr<PricingEngine> engine(new FDDividendEngine);
+    boost::shared_ptr<PricingEngine> engine(new FDDividendEuropeanEngine);
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         Date exDate = today + lengths[i]*Years;
@@ -417,7 +417,8 @@ void DividendOptionTest::testFdEuropeanDegenerate() {
     Size timeSteps = 40;
     Size gridPoints = 300;
 
-    boost::shared_ptr<PricingEngine> engine(new FDDividendEngine(timeSteps,
+    boost::shared_ptr<PricingEngine> engine(
+                                    new FDDividendEuropeanEngine(timeSteps,
                                                                  gridPoints));
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 

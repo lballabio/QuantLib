@@ -18,6 +18,7 @@ include_HEADERS = \
     fdbermudanengine.hpp \
     fddividendamericanengine.hpp \
     fddividendengine.hpp \
+    fddividendeuropeanengine.hpp \
     fddividendshoutengine.hpp \
     fdeuropeanengine.hpp \
     fdmultiperiodengine.hpp \

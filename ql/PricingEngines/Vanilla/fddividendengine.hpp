@@ -26,15 +26,8 @@
 
 namespace QuantLib {
 
-    //! Finite-differences pricing engine for dividend European options
-    /*! \ingroup vanillaengines
-
-        \test
-        - the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
-        - the invariance of the results upon addition of null
-          dividends is tested.
-    */
+    //! Base finite-differences pricing engine for dividend options
+    /*! \ingroup vanillaengines */
     class FDDividendEngine : public FDMultiPeriodEngine {
       public:
         FDDividendEngine(Size timeSteps = 100,
