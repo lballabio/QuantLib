@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.41  2001/04/12 15:52:33  lballabio
+    Rubified interpolation (and reworked it in Python too)
+
     Revision 1.40  2001/04/11 17:04:34  lballabio
     Rubified RiskStatistics
 
@@ -97,6 +100,7 @@ using QuantLib::IndexError;
 %include Distributions.i
 %include Financial.i
 %include History.i
+%include Interpolation.i
 %include QLArray.i
 %include RandomGenerators.i
 %include RiskStatistics.i
@@ -110,7 +114,6 @@ using QuantLib::IndexError;
 %include Barrier.i
 %include BoundaryConditions.i
 %include Instruments.i
-%include Interpolation.i
 %include Matrix.i
 %include MontecarloPricers.i
 %include MontecarloTools.i
