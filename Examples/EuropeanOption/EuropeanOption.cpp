@@ -69,17 +69,17 @@ int main(int argc, char* argv[])
         // our option
         double underlying = 102;
         double strike = 100;
-        Spread dividendYield = 0.1;
+        Spread dividendYield = 0.05;
         Rate riskFreeRate = 0.05;
 
         Date todaysDate(15, May, 1998);
         Date settlementDate(17, May, 1998);
-        Date exerciseDate(17, May, 1999); // 1 year
+        Date exerciseDate(17, May, 1999);
         DayCounter rateDayCounter = DayCounters::Actual365();
         Time maturity = rateDayCounter.yearFraction(settlementDate,
             exerciseDate);
 
-        double volatility = 0.20; // 20%
+        double volatility = 0.10;
         std::cout << "Time to maturity = "        << maturity
                   << std::endl;
         std::cout << "Underlying price = "        << underlying
@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
         method ="MC (crude)";
         bool antitheticVariance = false;
         McEuropean mcEur(Option::Call, underlying, strike, dividendYield,
-            riskFreeRate, maturity, volatility, antitheticVariance);
+            riskFreeRate, maturity, volatility, antitheticVariance, 123456);
         // let's require a tolerance of 0.002%
         value = mcEur.value(0.02);
         estimatedError = mcEur.errorEstimate();
@@ -295,6 +295,8 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
+
+
         // Binomial Method (CRR)
         method = "Binomial (CRR)";
         option.setPricingEngine(Handle<PricingEngine>(
@@ -369,11 +371,14 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
         
+
         // Monte Carlo Method
-        method = "Monte Carlo";
+        method = "MC (crude)";
+        Handle<RandomNumbers::GaussianRandomGenerator> rng(new
+            RandomNumbers::GaussianRandomGenerator(123456));
         option.setPricingEngine(Handle<PricingEngine>(
-            new MCEuropeanVanillaEngine<Statistics, GaussianPathGenerator,
-                PathPricer<Path> >(true, false)));
+            new MCEuropeanVanillaEngine<Statistics, GaussianPathGenerator2,
+                PathPricer<Path> >(false, false, rng)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -384,6 +389,8 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
         
+        
+
         Handle<AnalyticalVanillaEngine> baseEngine(new
             AnalyticalVanillaEngine);
 
