@@ -62,15 +62,21 @@ namespace QuantLib {
 
         QL_REQUIRE(forward>0.0,
             "BlackFormula::BlackFormula : "
-            "positive forward value required");
+            "positive forward value required: " +
+            DoubleFormatter::toString(forward) +
+            " not allowed");
 
         QL_REQUIRE(discount>0.0,
             "BlackFormula::BlackFormula : "
-            "positive discount required");
+            "positive discount required " +
+            DoubleFormatter::toString(discount) +
+            " not allowed");
 
         QL_REQUIRE(variance>=0.0,
             "BlackFormula::BlackFormula : "
-            "negative variance not allowed");
+            "non-negative variance required " +
+            DoubleFormatter::toString(variance) +
+            " not allowed");
 
         stdDev_ = QL_SQRT(variance);
         strike_ = payoff->strike();
@@ -235,7 +241,7 @@ namespace QuantLib {
 
 
 
-    
+
     inline double BlackFormula::value() const {
         return discount_ * (forward_ * alpha_ + X_ * beta_);
     }
