@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.18  2001/08/23 08:42:57  lballabio
+# A few fixes for making docs on Linux
+#
 # Revision 1.17  2001/08/22 17:54:35  lballabio
 # Documentation revamped
 #
@@ -40,6 +43,7 @@ EXTRA_DIST = makefile.mak \
              quantlibheader.tex \
              README.txt
 
+docs-all: docs-pdf
 docs-html:
 	$(DOXYGEN) quantlib.linux.doxy
 	cp images/*.jpg html
@@ -48,9 +52,6 @@ docs-html:
 docs-ps: tex-files
 	$(MAKE) -C latex ps
 docs-pdf: tex-files
-	mv latex/refman.tex oldrefman.tex
-	sed $(SED_CMDS) oldrefman.tex > latex/refman.tex
-	rm -f oldrefman.tex
 	$(MAKE) -C latex pdf
 docs-man: docs-html
 docs-clean:
@@ -60,22 +61,23 @@ docs-clean:
 
 tex-files: docs-html
 	mv latex/refman.tex oldrefman.tex
-	sed -e "/Page Index/d" \
-        -e "/input{pages}/d" \
-        -e "/Page Documentation/d" \
-        -e "/input{index}/d" \
-        -e "/include{install}/d" \
-        -e "/include{license}/d" \
-        -e "/include{platforms}/d" \
-        -e "/include{usage}/d" \
-        -e "/include{where}/d" \
-        -e "/include{todo}/d" \
-        -e "s/i_ndex/index/" \
-        -e "s/w_here/where/" \
-        -e "s/i_nstall/install/" \
-        -e "s/u_sage/usage/" \
-        -e "s/p_latforms/platforms/" \
-        -e "s/t_odo/todo/" \
-        -e "s/l_icense/license/" \
-        oldrefman.tex > latex/refman.tex
+	$(SED) -e "/Page Index/d" \
+	-e "/input{pages}/d" \
+	-e "/Page Documentation/d" \
+	-e "/input{index}/d" \
+	-e "/include{install}/d" \
+	-e "/include{license}/d" \
+	-e "/include{platforms}/d" \
+	-e "/include{usage}/d" \
+	-e "/include{where}/d" \
+	-e "/include{todo}/d" \
+	-e "s/i_ndex/index/" \
+	-e "s/w_here/where/" \
+	-e "s/i_nstall/install/" \
+	-e "s/u_sage/usage/" \
+	-e "s/p_latforms/platforms/" \
+	-e "s/t_odo/todo/" \
+	-e "s/l_icense/license/" \
+	oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex
+

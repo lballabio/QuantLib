@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.37  2001/08/23 08:42:57  lballabio
+# A few fixes for making docs on Linux
+#
 # Revision 1.36  2001/07/25 07:42:29  nando
 # updated
 #
@@ -47,6 +50,8 @@ dist-hook:
 	cp $(srcdir)/Docs/images/QL-largish.pdf $(distdir)/Docs/images/
 
 if DOXYGEN_FOUND
+docs-all:
+	$(MAKE) -C Docs docs-all
 docs-html:
 	$(MAKE) -C Docs docs-html
 docs-ps:
@@ -56,6 +61,8 @@ docs-pdf:
 docs-man:
 	$(MAKE) -C Docs docs-man
 else
+docs-all:
+	echo You need to install doxygen in order to generate documentation.
 docs-html:
 	echo You need to install doxygen in order to generate documentation.
 docs-ps:
