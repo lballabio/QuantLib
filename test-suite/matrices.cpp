@@ -99,9 +99,14 @@ void MatricesTest::testEigenvectors() {
             if (norm(a-b) > 1.0e-15)
                 BOOST_FAIL("Eigenvector definition not satisfied");
             // check decreasing ordering
-            if (eigenValues[i] >= minHolder)
-                BOOST_FAIL("Eigenvalues not ordered");
-            else
+            if (eigenValues[i] >= minHolder) {
+                #ifndef QL_PATCH_MSVC6
+                BOOST_FAIL("Eigenvalues nor ordered: "
+                    + ArrayFormatter::toString(eigenValues)):
+                #else
+                BOOST_FAIL("Eigenvalues nor ordered: ");
+                #endif
+            } else
                 minHolder = eigenValues[i];
         }
 
@@ -123,7 +128,21 @@ void MatricesTest::testSqrt() {
     Real error = norm(temp - M1);
     Real tolerance = 1.0e-12;
     if (error>tolerance) {
-        BOOST_FAIL("Matrix square root calculation failed");
+        #ifndef QL_PATCH_MSVC6
+        BOOST_FAIL("Matrix square root calculation failed"
+                   "\noriginal matrix:\n"
+                   + MatrixFormatter::toString(M1) +
+                   "\npseudoSqrt:\n"
+                   + MatrixFormatter::toString(m) +
+                   "\npseudoSqrt*pseudoSqrt:\n"
+                   + MatrixFormatter::toString(temp) +
+                   "\nerror:     " + DecimalFormatter::toString(error) +
+                   "\ntolerance: " + DecimalFormatter::toString(tolerance));
+        #else
+        BOOST_FAIL("Matrix square root calculation failed"
+                   "\nerror:     " + DecimalFormatter::toString(error) +
+                   "\ntolerance: " + DecimalFormatter::toString(tolerance));
+        #endif
     }
 
 }
