@@ -60,6 +60,7 @@
 %include Interpolation.i
 %include Matrix.i
 %include MontecarloPricers.i
+%include MontecarloTools.i
 %include Operators.i
 %include Options.i
 %include Pricers.i

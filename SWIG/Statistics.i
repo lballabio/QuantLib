@@ -1,24 +1,24 @@
-
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 #ifndef quantlib_statistics_i
@@ -73,5 +73,23 @@ class Statistics {
 	  self->addSequence(values.begin(), values.end(), weights.begin());
 	}
 }
+
+%include Matrix.i
+
+%{
+using QuantLib::Math::MultivariateAccumulator;
+%}
+
+class MultivariateAccumulator {
+public:
+    MultivariateAccumulator();
+    int size() const;
+    double samples() const;
+    PyArray mean() const;
+    Matrix covariance() const;
+    void add(const PyArray &arr, double weight = 1.0);
+    void reset();
+};
+
 
 #endif

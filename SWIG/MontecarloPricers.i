@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -17,23 +17,27 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 /*! \file MontecarloPricers.i
 	
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2001/02/02 10:58:39  marmar
+	MonteCarloTools.i added
+
 	Revision 1.2  2001/01/15 13:43:20  lballabio
 	Using PyArray typemap
-
+	
 	Revision 1.1  2001/01/04 17:31:23  marmar
 	Alpha version of the Monte Carlo tools.
 	
 */
 
-#ifndef shaft_Montecarlo_i
-#define shaft_Montecarlo_i
+#ifndef quantlib_Montecarlo_Pricers_i
+#define quantlib_Montecarlo_Pricers_i
 
 %module MontecarloPricers
 
@@ -94,6 +98,24 @@ class McAsianPricer{
 	McAsianPricer(OptionType type, double underlying, double strike, 
 		 Rate underlyingGrowthRate,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
+	double value() const;
+	double errorEstimate() const;
+};
+
+%{
+#include "plainbasketoption.h"
+using QuantLib::Pricers::PlainBasketOption;
+%}
+
+%include Vectors.i
+%include Matrix.i
+
+class PlainBasketOption{
+    public:
+    PlainBasketOption(const PyArray &underlying, 
+        const PyArray &underlyingGrowthRate, const Matrix &covariance, 
+        Rate riskFreeRate,  double residualTime, 
+        int timesteps, long samples, long seed = 0);
 	double value() const;
 	double errorEstimate() const;
 };
