@@ -151,7 +151,13 @@ $(PYTHON_DIR)\QuantLibc.dll::   $(OUTPUT_DIR) \
                                 $(OUTPUT_DIR)\quantlib_wrap.obj \
                                 $(PYTHON_BCC_LIB)
     echo Linking Python module...
-    $(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj $(WIN_OBJS),$(PYTHON_DIR)\QuantLibc.dll,, $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), QuantLibc.def
+    $(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj \
+                              $(WIN_OBJS), \
+                              $(PYTHON_DIR)\QuantLibc.dll,, \
+                              $(OUTPUT_DIR)\QuantLib.lib \
+                              $(PYTHON_BCC_LIB) \
+                              $(WIN_LIBS), \
+                              QuantLibc.def
     del $(PYTHON_DIR)\QuantLibc.ilc
     del $(PYTHON_DIR)\QuantLibc.ild
     del $(PYTHON_DIR)\QuantLibc.ilf
@@ -184,6 +190,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\Financial.i \
     $(SWIG_DIR)\History.i \
     $(SWIG_DIR)\Instruments.i \
+    $(SWIG_DIR)\Interpolation.i \
     $(SWIG_DIR)\Matrix.i \
     $(SWIG_DIR)\MontecarloPricers.i \
     $(SWIG_DIR)\Operators.i \
@@ -197,7 +204,8 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\TermStructures.i \
     $(SWIG_DIR)\Vectors.i
     echo Generating wrappers...
-    $(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
+    $(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) \
+            -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
     copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
     del .\QuantLib.py
 
@@ -340,7 +348,6 @@ alldocs::
 
 # Install PyQuantLib
 install::
-#    if exist $(PYTHON_HOME)\QuantLib.pyc      del "$(PYTHON_HOME)"\QuantLib.pyc
     copy $(PYTHON_DIR)\QuantLib.py "$(PYTHON_HOME)"\QuantLib.py
     copy $(PYTHON_DIR)\QuantLibc.dll "$(PYTHON_HOME)"\QuantLibc.dll
 
