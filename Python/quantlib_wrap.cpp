@@ -578,11 +578,7 @@ using QuantLib::Following;
 using QuantLib::ModifiedFollowing;
 using QuantLib::IsNull;
 
-#include "target.h"
-#include "newyork.h"
-#include "london.h"
-#include "frankfurt.h"
-#include "milan.h"
+#include "calendars.h"
 
 using QuantLib::Calendars::TARGET;
 using QuantLib::Calendars::NewYork;
@@ -597,16 +593,12 @@ CalendarHandle NewFrankfurt() { return CalendarHandle(new Frankfurt); }
 CalendarHandle NewMilan()     { return CalendarHandle(new Milan); }
 
 #include "daycounter.h"
-#include "actual360.h"
-#include "actual365.h"
-#include "actualactual.h"
-#include "thirty360.h"
-#include "thirty360european.h"
-#include "thirty360italian.h"
 
 using QuantLib::DayCounter;
 using QuantLib::Handle;
 typedef Handle<DayCounter> DayCounterHandle;
+
+#include "daycounters.h"
 
 using QuantLib::DayCounters::Actual360;
 using QuantLib::DayCounters::Actual365;
@@ -621,15 +613,12 @@ DayCounterHandle NewThirty360European()	{ return DayCounterHandle(new Thirty360E
 DayCounterHandle NewThirty360Italian()	{ return DayCounterHandle(new Thirty360Italian); }
 
 #include "currency.h"
-#include "eur.h"
-#include "usd.h"
-#include "gbp.h"
-#include "dem.h"
-#include "itl.h"
 
 using QuantLib::Currency;
 using QuantLib::Handle;
 typedef Handle<Currency> CurrencyHandle;
+
+#include "currencies.h"
 
 using QuantLib::Currencies::EUR;
 using QuantLib::Currencies::USD;
@@ -721,28 +710,21 @@ typedef std::vector<double> DoubleVector;
 #include "array.h"
 using QuantLib::Array;
 
-#include "boundarycondition.h"
-using QuantLib::PDE::BoundaryCondition;
+#include "finitedifferences.h"
+using QuantLib::FiniteDifferences::BoundaryCondition;
 typedef BoundaryCondition::Type BoundaryConditionType;
 
 #include "dataformatters.h"
 using QuantLib::StringFormatter;
 
-#include "tridiagonaloperator.h"
-using QuantLib::Operators::TridiagonalOperator;
+#include "finitedifferences.h"
+using QuantLib::FiniteDifferences::TridiagonalOperator;
 
-#include "bsmeuropeanoption.h"
-#include "bsmamericanoption.h"
+#include "pricers.h"
 using QuantLib::Pricers::BSMEuropeanOption;
 using QuantLib::Pricers::BSMAmericanOption;
 
-#include "bisection.h"
-#include "brent.h"
-#include "falseposition.h"
-#include "newton.h"
-#include "newtonsafe.h"
-#include "ridder.h"
-#include "secant.h"
+#include "solvers1d.h"
 
 using QuantLib::ObjectiveFunction;
 
