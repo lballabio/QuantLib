@@ -104,6 +104,11 @@
     keep in mind that integrating such a contribution will require
     more work and therefore will take longer.
 
+    Finally, contributions should be accompanied by one or more test
+    cases checking the functionality of the new code. While this is
+    not a strict requirement, complying with it will buy from the
+    developers a lot more sympathy for to your contribution.
+
 
     \section faq_build Building QuantLib
 
