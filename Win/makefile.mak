@@ -28,10 +28,12 @@ CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj \
 
 CALENDAR_OBJS    = $(OUTPUT_DIR)\westerncalendar.obj \
                    $(OUTPUT_DIR)\frankfurt.obj \
+                   $(OUTPUT_DIR)\helsinki.obj \
                    $(OUTPUT_DIR)\london.obj \
                    $(OUTPUT_DIR)\milan.obj \
                    $(OUTPUT_DIR)\newyork.obj \
                    $(OUTPUT_DIR)\target.obj \
+                   $(OUTPUT_DIR)\wellington.obj \
                    $(OUTPUT_DIR)\zurich.obj
 
 DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj \
@@ -176,10 +178,12 @@ $(OUTPUT_DIR)\solver1d.obj: $(SOURCES_DIR)\solver1d.cpp
 Calendars: $(OUTPUT_DIR) $(CALENDAR_OBJS)
 $(OUTPUT_DIR)\westerncalendar.obj: $(SOURCES_DIR)\Calendars\westerncalendar.cpp
 $(OUTPUT_DIR)\frankfurt.obj: $(SOURCES_DIR)\Calendars\frankfurt.cpp
+$(OUTPUT_DIR)\helsinki.obj: $(SOURCES_DIR)\Calendars\helsinki.cpp
 $(OUTPUT_DIR)\london.obj: $(SOURCES_DIR)\Calendars\london.cpp
 $(OUTPUT_DIR)\milan.obj: $(SOURCES_DIR)\Calendars\milan.cpp
 $(OUTPUT_DIR)\newyork.obj: $(SOURCES_DIR)\Calendars\newyork.cpp
 $(OUTPUT_DIR)\target.obj: $(SOURCES_DIR)\Calendars\target.cpp
+$(OUTPUT_DIR)\wellington.obj: $(SOURCES_DIR)\Calendars\wellington.cpp
 $(OUTPUT_DIR)\zurich.obj: $(SOURCES_DIR)\Calendars\zurich.cpp
 
 

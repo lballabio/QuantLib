@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.33  2001/03/26 09:59:33  lballabio
+    Added Helsinki and Wellington calendars
+
     Revision 1.32  2001/03/22 12:24:27  marmar
     Introducing pagoda options
 
@@ -121,10 +124,12 @@
 #include "calendar.h"
 #include "westerncalendar.h"
 #include "frankfurt.h"
+#include "helsinki.h"
 #include "london.h"
 #include "milan.h"
 #include "newyork.h"
 #include "target.h"
+#include "wellington.h"
 #include "zurich.h"
 
 
