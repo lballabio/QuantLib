@@ -70,7 +70,8 @@ namespace QuantLib {
                 const Date& todaysDate,
                 const Calendar& calendar,
                 int settlementDays,
-                const std::vector<Handle<RateHelper> >& instruments);
+                const std::vector<Handle<RateHelper> >& instruments,
+                double accuracy=1.0e-9);
             ~PiecewiseFlatForward();
             //! \name TermStructure interface
             //@{
@@ -131,7 +132,7 @@ namespace QuantLib {
             mutable std::vector<Time> times_;
             mutable std::vector<DiscountFactor> discounts_;
             mutable std::vector<Rate> forwards_, zeroYields_;
-            static const double accuracy_;
+            double accuracy_;
         };
 
         // inline definitions
