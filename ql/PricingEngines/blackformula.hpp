@@ -29,43 +29,36 @@ namespace QuantLib {
 
     class BlackFormula {
     public:
-        BlackFormula(double spot,
-                     double forward,
+        BlackFormula(double forward,
                      double discount,
                      double variance,
-                     Handle<StrikedTypePayoff> payoff);
+                     const Handle<StrikedTypePayoff>& payoff);
         double value() const;
-        double delta() const;
+        double delta(double spot) const;
         double deltaForward() const;
-        double elasticity() const;
-        double gamma() const;
-        double theta(double maturity) const;
-        double thetaPerDay(double maturity) const;
+        double elasticity(double spot) const;
+        double gamma(double spot) const;
+        double theta(double spot, double maturity) const;
+        double thetaPerDay(double spot, double maturity) const;
         double vega(double maturity) const;
         double rho(double maturity) const;
         double dividendRho(double maturity) const;
         double itmProbability() const;
         double strikeSensitivity() const;
     private:
-        double spot_, forward_, discount_, variance_;
+        double forward_, discount_, variance_;
         Handle<StrikedTypePayoff> payoff_;
 
-        double stdDev_, strike_, dividendDiscount_;
-        double fD1_, fD2_;
-        double alpha_, beta_, NID1_, NID2_;
-        bool cashOrNothing_;
+        double stdDev_, strike_;
+        double D1_, D2_, fderD1_, fderD2_, alpha_, beta_;
+        double X_, DXDs_, DXDstrike_;
     };
 
 
-    inline BlackFormula::BlackFormula(double spot, double forward,
-        double discount, double variance, Handle<StrikedTypePayoff> payoff)
-    : spot_(spot), forward_(forward), discount_(discount),
-      variance_(variance), payoff_(payoff),
-      cashOrNothing_(false) {
-
-        QL_REQUIRE(spot>0.0,
-            "BlackFormula::BlackFormula : "
-            "positive spot value required");
+    inline BlackFormula::BlackFormula(double forward, double discount,
+        double variance, const Handle<StrikedTypePayoff>& payoff)
+    : forward_(forward), discount_(discount), variance_(variance),
+      payoff_(payoff) {
 
         QL_REQUIRE(forward>0.0,
             "BlackFormula::BlackFormula : "
@@ -81,64 +74,69 @@ namespace QuantLib {
 
         stdDev_ = QL_SQRT(variance);
         strike_ = payoff->strike();
-        dividendDiscount_ = forward / spot * discount;
 
 
-        double fderD1, fderD2;
+        double fD1, fD2;
         if (variance>=QL_EPSILON) {
             if (strike_==0.0) {
-                fderD1 = 0.0;
-                fderD2 = 0.0;
-                fD1_ = 1.0;
-                fD2_ = 1.0;
+                fderD1_ = 0.0;
+                fderD2_ = 0.0;
+                fD1 = 1.0;
+                fD2 = 1.0;
             } else {
                 CumulativeNormalDistribution f;
-                double D1 = (QL_LOG(forward/strike_) +
+                D1_ = (QL_LOG(forward/strike_) +
                              0.5 * variance) / stdDev_;
-                double D2 = D1-stdDev_;
-                fD1_ = f(D1);
-                fD2_ = f(D2);
-                fderD1 = f.derivative(D1);
-                fderD2 = f.derivative(D2);
+                D2_ = D1_-stdDev_;
+                fD1 = f(D1_);
+                fD2 = f(D2_);
+                fderD1_ = f.derivative(D1_);
+                fderD2_ = f.derivative(D2_);
             }
         } else {
-            fderD1 = 0.0;
-            fderD2 = 0.0;
+            fderD1_ = 0.0;
+            fderD2_ = 0.0;
             if (forward>strike_) {
-                fD1_ = 1.0;
-                fD2_ = 1.0;
+                fD1 = 1.0;
+                fD2 = 1.0;
             } else {
-                fD1_ = 0.0;
-                fD2_ = 0.0;
+                fD1 = 0.0;
+                fD2 = 0.0;
             }
         }
 
-
-
         switch (payoff->optionType()) {
           case Option::Call:
-            alpha_ = fD1_;
-            beta_  = fD2_;
-            NID1_  = fderD1;
-            NID2_  = fderD2;
+            alpha_ = fD1;
+            beta_  = fD2;
             break;
           case Option::Put:
-            alpha_ = fD1_-1.0;
-            beta_  = fD2_-1.0;
-            NID1_  = fderD1;
-            NID2_  = fderD2;
+            alpha_ = fD1-1.0;
+            beta_  = fD2-1.0;
             break;
           case Option::Straddle:
-            alpha_ = 2.0*fD1_-1.0;
-            beta_  = 2.0*fD2_-1.0;
-            NID1_  = 2.0*fderD1;
-            NID2_  = 2.0*fderD2;
+            // incorporating the linear effect of call + put
+            // for the value equation
+            alpha_ = 2.0*fD1-1.0;
+            beta_  = 2.0*fD2-1.0;
+            // and for all the greek equations
+            fderD1_ *= 2.0;
+            fderD2_ *= 2.0;
             break;
           default:
             throw IllegalArgumentError("BlackFormula::BlackFormula : "
                                        "invalid option type");
         }
 
+
+
+
+        X_ = strike_;
+        DXDstrike_ = 1.0;
+
+        // the following one will probably disappear as soon as
+        // super-share will be properly handled
+        DXDs_ = 0.0;
 
         // Binary Cash-Or-Nothing payoff?
         Handle<CashOrNothingPayoff> coo;
@@ -151,9 +149,11 @@ namespace QuantLib {
         #endif
         if (!IsNull(coo)) {
             // ok, the payoff is Binary Cash-Or-Nothing
-            alpha_ = 0.0;
-            strike_ = - coo->cashPayoff();
-            cashOrNothing_ = true;
+            alpha_  = 0.0;
+            fderD1_ = 0.0;
+
+            X_ = - coo->cashPayoff();
+            DXDstrike_ = 0.0;
         }
 
         // Binary Asset-Or-Nothing payoff?
@@ -168,6 +168,7 @@ namespace QuantLib {
         if (!IsNull(aoo)) {
             // ok, the payoff is Binary Asset-Or-Nothing
             beta_ = 0.0;
+            fderD2_ = 0.0;
         }
 
         // Binary Super-Share payoff?
@@ -182,51 +183,83 @@ namespace QuantLib {
         if (!IsNull(ss)) {
             // ok, the payoff is Binary Super-Share
             throw Error("Binary Super-Share payoff not handled yet");
-
         }
-
     }
 
+
+
+    
     inline double BlackFormula::value() const {
-        return discount_ * (forward_ * alpha_ - strike_ * beta_);
+        return discount_ * (forward_ * alpha_ - X_ * beta_);
     }
 
-    inline double BlackFormula::delta() const {
-        return dividendDiscount_ * alpha_;
+    inline double BlackFormula::delta(double spot) const {
+
+        QL_REQUIRE(spot>0.0,
+            "BlackFormula::delta : "
+            "positive spot value required");
+
+        double DforwardDs = forward_ / spot;
+
+        double temp = stdDev_*spot;
+        double DalphaDs = fderD1_/temp;
+        double DbetaDs  = fderD2_/temp;
+        double temp2 = DalphaDs * forward_ + alpha_ * DforwardDs
+                      -DbetaDs  * X_       - beta_  * DXDs_;
+
+        return discount_ * temp2;
     }
 
     inline double BlackFormula::deltaForward() const {
+        // ???
         return discount_ * alpha_;
     }
 
     //! Sensitivity in percent to a percent movement in the underlying price
-    inline double BlackFormula::elasticity() const {
-        return delta()/value()*spot_;
+    inline double BlackFormula::elasticity(double spot) const {
+        return delta(spot)/value()*spot;
     }
 
-    inline double BlackFormula::gamma() const {
-        return (NID1_==0.0 ? 0.0 : NID1_* dividendDiscount_ / (spot_ * stdDev_));
+    inline double BlackFormula::gamma(double spot) const {
+
+        QL_REQUIRE(spot>0.0,
+            "BlackFormula::gamma : "
+            "positive spot value required");
+
+        double DforwardDs = forward_ / spot;
+
+        double temp = stdDev_*spot;
+        double DalphaDs = fderD1_/temp;
+        double DbetaDs  = fderD2_/temp;
+
+        double D2alphaDs2 = - DalphaDs/spot*(1+D1_/stdDev_);
+        double D2betaDs2  = - DbetaDs /spot*(1+D2_/stdDev_);
+
+        double temp2 = D2alphaDs2 * forward_ + 2.0 * DalphaDs * DforwardDs
+                      -D2betaDs2  * X_       - 2.0 * DbetaDs  * DXDs_;
+
+        return  discount_ * temp2;
     }
 
-    inline double BlackFormula::theta(double maturity) const {
+    inline double BlackFormula::theta(double spot, double maturity) const {
 
         QL_REQUIRE(maturity>=0.0,
             "BlackFormula::theta : "
             "negative maturity not allowed");
 
         double rate = -QL_LOG(discount_)/maturity;
-        double dividendRate = -QL_LOG(dividendDiscount_)/maturity;
+        double dividendRate = -QL_LOG(forward_ / spot * discount_)/maturity;
 
         double vol;
-        if (variance_>0.0) vol = QL_SQRT(variance_/maturity);
-        else               vol = 0.0;
+        if (stdDev_>0.0) vol = stdDev_ / QL_SQRT(maturity);
+        else             vol = 0.0;
 
-        return rate*value() - (rate-dividendRate)*spot_*delta()
-            - 0.5*vol*vol*spot_*spot_*gamma();
+        return rate*value() - (rate-dividendRate)*spot*delta(spot)
+            - 0.5*vol*vol*spot*spot*gamma(spot);
     }
 
-    inline double BlackFormula::thetaPerDay(double maturity) const {
-        return theta(maturity)/365.0;
+    inline double BlackFormula::thetaPerDay(double spot, double maturity) const {
+        return theta(spot, maturity)/365.0;
     }
 
     inline double BlackFormula::rho(double maturity) const {
@@ -234,42 +267,55 @@ namespace QuantLib {
             "BlackFormula::rho : "
             "negative maturity not allowed");
 
-        return maturity * discount_ * strike_ * beta_;
+        // actually DalphaDr / T
+        double DalphaDr = fderD1_/stdDev_;
+        double DbetaDr  = fderD2_/stdDev_;
+        double temp = DalphaDr * forward_ + alpha_ * forward_ - DbetaDr * X_;
+
+        return maturity * (discount_ * temp - value());
     }
 
     inline double BlackFormula::dividendRho(double maturity) const {
         QL_REQUIRE(maturity>=0.0,
             "BlackFormula::dividendRho : "
             "negative maturity not allowed");
-        return - maturity * discount_ * forward_ * alpha_;
+
+        // actually DalphaDq / T
+        double DalphaDq = -fderD1_/stdDev_;
+        double DbetaDq  = -fderD2_/stdDev_;
+
+        double temp = DalphaDq * forward_ - alpha_ * forward_ - DbetaDq * X_;
+
+        return maturity * discount_ * temp;
+            ;
     }
 
     inline double BlackFormula::vega(double maturity) const {
         QL_REQUIRE(maturity>=0.0,
             "BlackFormula::vega : "
             "negative maturity not allowed");
-        return NID1_ * discount_ * forward_ * QL_SQRT(maturity);
+
+        double temp = QL_LOG(strike_/forward_)/variance_;
+        // actually DalphaDsigma / SQRT(T)
+        double DalphaDsigma = fderD1_*(temp+0.5);
+        double DbetaDsigma  = fderD2_*(temp-0.5);
+
+        double temp2 = DalphaDsigma * forward_ - DbetaDsigma * X_;
+
+        return discount_ * QL_SQRT(maturity) * temp2;
+
     }
 
     inline double BlackFormula::strikeSensitivity() const {
 
-        if (cashOrNothing_) {
-            // to be checked!!!!!!!!!!
-            double strike = payoff_->strike();
-            QL_REQUIRE(strike!=0.0,
-                "BlackFormula::strikeSensitivity() : "
-                "cannot be calculated for a cash-or-nothing with null strike");
-            if (stdDev_>0.0) {
-                return - discount_ * NID2_; // * payoff_->cashPayoff() / (stdDev_ * strike);
-            } else {
-                if (spot_!=strike)
-                    return 0.0;
-                else // should return infinity. what to do?
-                    return 0.0;
-            }
-        } else {
-            return - discount_ * beta_;
-        }
+        double temp = stdDev_*strike_;
+        double DalphaDstrike = -fderD1_/temp;
+        double DbetaDstrike  = -fderD2_/temp;
+
+        double temp2 =
+            DalphaDstrike * forward_ - DbetaDstrike * X_ - beta_ * DXDstrike_;
+
+        return discount_ * temp2;
     }
 
     inline double BlackFormula::itmProbability() const {
