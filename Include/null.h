@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/16 15:11:24  lballabio
+    Hidden a few classes from Doxygen
+
     Revision 1.7  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -53,6 +56,7 @@ namespace QuantLib {
         operator Type() const { return Type(); }
     };
 
+    #if !defined(__DOXYGEN__)
     template <>
     class Null<int> {
       public:
@@ -66,14 +70,15 @@ namespace QuantLib {
         Null() {}
         operator double() const { return QL_MAX_DOUBLE; }
     };
-
+    #endif
 
     template <class Type> bool IsNull(const Type&);
     // specializations shouldn't be necessary.
     // However, the dumb VC++ compiler gets stuck on Type(Null<Type>()).
+    #if !defined(__DOXYGEN__)
     bool IsNull(int);
     bool IsNull(double);
-
+    #endif
 
     // inline definitions
 
@@ -82,6 +87,7 @@ namespace QuantLib {
         return (x == Type());
     }
 
+    #if !defined(__DOXYGEN__)
     inline bool IsNull(int x) {
         return (x == Null<int>());
     }
@@ -89,6 +95,7 @@ namespace QuantLib {
     inline bool IsNull(double x) {
         return (x == Null<double>());
     }
+    #endif
 
 }
 

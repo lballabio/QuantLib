@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/16 15:11:50  lballabio
+    Hidden a few classes from Doxygen
+
     Revision 1.1  2001/02/14 18:43:07  lballabio
     Added coupling iterators
 
@@ -42,9 +45,16 @@ namespace QuantLib {
 
     namespace Utilities {
 
+        /*! Specializations of this struct define a typedef iterator_category 
+            which corresponds to the more generic of the two input categories, 
+            e.g., lowest_category_iterator<std::random_access_iterator_tag,
+            std::forward_iterator_tag>::iterator_category corresponds to 
+            std::forward_iterator_tag.
+        */
         template <class Category1, class Category2>
         struct lowest_category_iterator {};
         
+        #if !defined(__DOXYGEN__)
         template <>
         struct lowest_category_iterator<
             std::random_access_iterator_tag,
@@ -223,6 +233,7 @@ namespace QuantLib {
             std::output_iterator_tag> {
                 typedef std::output_iterator_tag iterator_category;
         };
+        #endif
 
     }
 
