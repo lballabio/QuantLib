@@ -40,7 +40,7 @@ namespace QuantLib {
         BGLCurrency() {
             static boost::shared_ptr<Data> bglData(
                                          new Data("Bulgarian lev", "BGL", 100,
-                                                  "", "", 100,
+                                                  "lv", "", 100,
                                                   Rounding(),
                                                   "%1$.2f %3%"));
             data_ = bglData;
@@ -238,7 +238,7 @@ namespace QuantLib {
         LTLCurrency() {
             static boost::shared_ptr<Data> ltlData(
                                       new Data("Lithuanian litas", "LTL", 440,
-                                               "", "", 100,
+                                               "Lt", "", 100,
                                                Rounding(),
                                                "%1$.2f %3%"));
             data_ = ltlData;

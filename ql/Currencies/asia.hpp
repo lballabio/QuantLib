@@ -40,7 +40,7 @@ namespace QuantLib {
         BDTCurrency() {
             static boost::shared_ptr<Data> bdtData(
                                         new Data("Bangladesh taka", "BDT", 50,
-                                                 "", "", 100,
+                                                 "Bt", "", 100,
                                                  Rounding(),
                                                  "%3% %1$.2f"));
             data_ = bdtData;
