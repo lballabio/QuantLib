@@ -10,6 +10,11 @@ COMPILING
     Borland projects
 
 LIBRARY
+    move mcpricer under the pricers folder
+    Monte Carlo:
+        asian options: separate observation times and path discretization
+        fix everest path pricer
+        remove fraction from PagodaOptionPricer
     Nicolas spline contribution
     Maxim integral
     introduce size_t where appropriate
