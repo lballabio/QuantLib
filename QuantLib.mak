@@ -73,6 +73,7 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\himalaya.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
+	-@erase "$(INTDIR)\knuthrandomgenerator.obj"
 	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\matrix.obj"
@@ -189,6 +190,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
 	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
@@ -283,6 +285,7 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\himalaya.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
+	-@erase "$(INTDIR)\knuthrandomgenerator.obj"
 	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\matrix.obj"
@@ -400,6 +403,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
 	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
@@ -494,6 +498,7 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\himalaya.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
+	-@erase "$(INTDIR)\knuthrandomgenerator.obj"
 	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\matrix.obj"
@@ -611,6 +616,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
 	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
@@ -705,6 +711,7 @@ CLEAN :
 	-@erase "$(INTDIR)\helsinki.obj"
 	-@erase "$(INTDIR)\himalaya.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
+	-@erase "$(INTDIR)\knuthrandomgenerator.obj"
 	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\matrix.obj"
@@ -821,6 +828,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
 	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
@@ -1071,6 +1079,12 @@ SOURCE=.\Sources\MonteCarlo\getcovariance.cpp
 SOURCE=.\Sources\MonteCarlo\himalayapathpricer.cpp
 
 "$(INTDIR)\himalayapathpricer.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\MonteCarlo\knuthrandomgenerator.cpp
+
+"$(INTDIR)\knuthrandomgenerator.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.6  2001/07/03 13:19:38  lballabio
+# Added Knuth random generator after doubts were casted on the NR one
+#
 # Revision 1.5  2001/05/24 12:52:02  nando
 # smoothing #include xx.hpp
 #
@@ -32,6 +35,7 @@ OBJS = avgpriceasianpathpricer.obj$(_D) \
        geometricasianpathpricer.obj$(_D) \
        getcovariance.obj$(_D) \
        himalayapathpricer.obj$(_D) \
+       knuthrandomgenerator.obj$(_D) \
        lecuyerrandomgenerator.obj$(_D) \
        pagodapathpricer.obj$(_D)
 

@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.4  2001/07/03 13:19:38  lballabio
+# Added Knuth random generator after doubts were casted on the NR one
+#
 # Revision 1.3  2001/05/24 11:34:07  nando
 # smoothing #include xx.hpp
 #
@@ -22,6 +25,7 @@ include_HEADERS = \
 	geometricasianpathpricer.hpp \
 	getcovariance.hpp \
 	himalayapathpricer.hpp \
+	knuthrandomgenerator.hpp \
 	lecuyerrandomgenerator.hpp \
 	mcoptionsample.hpp \
 	mcpricer.hpp \

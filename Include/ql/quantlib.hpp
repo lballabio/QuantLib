@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.19  2001/07/03 13:19:38  lballabio
+// Added Knuth random generator after doubts were casted on the NR one
+//
 // Revision 1.18  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -152,6 +155,7 @@
 #include "ql/MonteCarlo/geometricasianpathpricer.hpp"
 #include "ql/MonteCarlo/getcovariance.hpp"
 #include "ql/MonteCarlo/himalayapathpricer.hpp"
+#include "ql/MonteCarlo/knuthrandomgenerator.hpp"
 #include "ql/MonteCarlo/lecuyerrandomgenerator.hpp"
 #include "ql/MonteCarlo/mcoptionsample.hpp"
 #include "ql/MonteCarlo/mcpricer.hpp"

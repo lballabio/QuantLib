@@ -531,6 +531,14 @@ SOURCE=.\Include\ql\MonteCarlo\himalayapathpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Sources\MonteCarlo\knuthrandomgenerator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\MonteCarlo\knuthrandomgenerator.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\MonteCarlo\lecuyerrandomgenerator.cpp
 # End Source File
 # Begin Source File

@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.15  2001/07/03 13:19:38  lballabio
+# Added Knuth random generator after doubts were casted on the NR one
+#
 # Revision 1.14  2001/05/24 12:52:02  nando
 # smoothing #include xx.hpp
 #
@@ -18,8 +21,9 @@ libMonteCarlo_la_SOURCES = \
 	geometricasianpathpricer.cpp \
 	getcovariance.cpp \
 	himalayapathpricer.cpp \
-	pagodapathpricer.cpp \
-	lecuyerrandomgenerator.cpp
+	knuthrandomgenerator.cpp \
+	lecuyerrandomgenerator.cpp \
+	pagodapathpricer.cpp
 
 
 noinst_LTLIBRARIES = libMonteCarlo.la
