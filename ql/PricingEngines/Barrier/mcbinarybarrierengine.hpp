@@ -107,7 +107,7 @@ namespace QuantLib {
             RNG::make_sequence_generator(grid.size()-1, seed_);
         // BB here
         return Handle<path_generator_type>(new
-            path_generator_type(bs, grid, gen, false));
+            path_generator_type(bs, grid, gen, true));
 
     }
 
