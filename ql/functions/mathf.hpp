@@ -27,13 +27,20 @@
 #ifndef quantlib_functions_math_h
 #define quantlib_functions_math_h
 
-#include <ql/Math/bilinearinterpolation.hpp>
+#include <ql/Math/matrix.hpp>
+#include <vector>
 
 namespace QuantLib {
 
     namespace Functions {
-        double interpolate2D(Array& x_values, Array& y_values, Math::Matrix& dataMatrix,
-            double x, double y);
+        double interpolate2D(std::vector<double>& x_values,
+            std::vector<double>& y_values,
+            Math::Matrix& dataMatrix,
+            double x,
+            double y);
+        double interpolate(std::vector<double>& x_values,
+            std::vector<double>& y_values,
+            double x);
     }
 
 }

@@ -25,20 +25,29 @@
 // $Id$
 
 #include <ql/functions/mathf.hpp>
-#include <vector>
+#include <ql/Math/bilinearinterpolation.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 
 using QuantLib::Array;
 using QuantLib::Math::Matrix;
 using QuantLib::Math::BilinearInterpolation;
+using QuantLib::Math::LinearInterpolation;
 
 namespace QuantLib {
 
     namespace Functions {
-		double interpolate2D(Array& x_values, Array& y_values, Matrix& dataMatrix,
+		double interpolate2D(std::vector<double>& x_values,
+            std::vector<double>& y_values, Matrix& dataMatrix,
             double x, double y) {
-			return BilinearInterpolation<Array::iterator, Array::iterator>(
+			return BilinearInterpolation<std::vector<double>::iterator, std::vector<double>::iterator>(
                 x_values.begin(), y_values.begin(), dataMatrix)(x,y);
-		}
+        }
+
+		double interpolate(std::vector<double>& x_values,
+            std::vector<double>& y_values, double x) {
+			return LinearInterpolation<std::vector<double>::iterator, std::vector<double>::iterator>(
+                x_values.begin(), x_values.end(), y_values.begin())(x);
+        }
 
 
     }

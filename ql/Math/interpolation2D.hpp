@@ -73,8 +73,8 @@ namespace QuantLib {
             const I2& yBegin, const Matrix& dataMatrix)
         : xBegin_(xBegin), yBegin_(yBegin), dataMatrix_(dataMatrix) {
             #ifdef QL_DEBUG
-                QL_REQUIRE(dataMatrix_.cols() >= 2,
-                    "not enough cols to interpolate");
+                QL_REQUIRE(dataMatrix_.columns() >= 2,
+                    "not enough columns to interpolate");
                 QL_REQUIRE(dataMatrix_.rows() >= 2,
                     "not enough rows to interpolate");
             #endif
