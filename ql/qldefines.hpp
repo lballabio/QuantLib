@@ -66,7 +66,10 @@
 #if defined(HAVE_BOOST)
     #include <boost/version.hpp>
     #if BOOST_VERSION < 103002
-        #error using an old version of boost, please update to BOOST_VERSION
+        #error using an old version of Boost, please update.
+    #endif
+    #if !defined(BOOST_ENABLE_ASSERT_HANDLER)
+    #define BOOST_ENABLE_ASSERT_HANDLER
     #endif
 #endif
 

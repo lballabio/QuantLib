@@ -25,6 +25,9 @@
 #include <ql/qldefines.hpp>
 #include <exception>
 #include <string>
+#if defined(HAVE_BOOST)
+#include <boost/assert.hpp>
+#endif
 
 namespace QuantLib {
 
@@ -36,10 +39,10 @@ namespace QuantLib {
         //! returns the error message.
         const char* what() const throw () { return message_.c_str(); }
         // formats file and line information
-        static std::string where(const char* file, int line) {
+        static std::string where(const char* file, long line) {
             #if QL_ERROR_LINES
             char s[100];
-            QL_SPRINTF(s,"%s:%d: ",file,line);
+            QL_SPRINTF(s,"%s:%ld: ",file,line);
             return std::string(s);
             #else
             return std::string();

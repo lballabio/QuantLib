@@ -112,6 +112,7 @@ libQuantLib_la_SOURCES = \
     date.cpp \
 	diffusionprocess.cpp \
 	discretizedasset.cpp \
+	errors.cpp \
 	exercise.cpp \
     grid.cpp \
     scheduler.cpp \
