@@ -74,9 +74,6 @@ namespace QuantLib {
         std::vector<Date> dates_;
     };
 
-    /*! \deprecated use Schedule instead */
-    typedef Schedule Scheduler;
-
 
     //! helper class
     /*! This class provides a more comfortable interface to the
@@ -128,9 +125,6 @@ namespace QuantLib {
         bool startFromEnd_;
         bool longFinal_;
     };
-    
-    /*! \deprecated use MakeSchedule instead */
-    typedef MakeSchedule MakeScheduler;
 
 
 

@@ -125,18 +125,6 @@ namespace QuantLib {
                        termStructure, engine) {}
         };
 
-        /*! \deprecated use CapFloor instead */
-        typedef CapFloor VanillaCapFloor;
-
-        /*! \deprecated use Cap instead */
-        typedef Cap VanillaCap;
-
-        /*! \deprecated use Floor instead */
-        typedef Floor VanillaFloor;
-
-        /*! \deprecated use Collar instead */
-        typedef Collar VanillaCollar;
-
 
         //! arguments for cap/floor calculation
         class CapFloor::arguments : public virtual Arguments {
