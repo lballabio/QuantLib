@@ -92,11 +92,9 @@ namespace QuantLib {
             int xSize)
         : begin_(begin), end_(end), xSize_(xSize),
           ySize_((end-begin)/xSize) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE((end_-begin_) % xSize_ == 0,
-                    "The x size of the view is not an exact divisor"
-                    "of the size of the underlying sequence");
-            #endif
+            QL_REQUIRE((end_-begin_) % xSize_ == 0,
+                       "The x size of the view is not an exact divisor"
+                       "of the size of the underlying sequence");
         }
 
         template <class RandomAccessIterator>

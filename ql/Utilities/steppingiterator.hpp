@@ -190,12 +190,10 @@ namespace QuantLib {
         inline typename stepping_iterator<RandomAccessIterator>::difference_type
         stepping_iterator<RandomAccessIterator>::operator-(
           const stepping_iterator<RandomAccessIterator>& i) {
-            #ifdef QL_DEBUG
-                QL_REQUIRE((it_-i.it_)%dn_ == 0,
-                    "stepping_iterator::difference_type : "
-                    "Cannot subtract stepping iterators not reachable "
-                    "from each other");
-            #endif
+            QL_REQUIRE((it_-i.it_)%dn_ == 0,
+                       "stepping_iterator::difference_type : "
+                       "Cannot subtract stepping iterators "
+                       "not reachable from each other");
             return (it_-i.it_)/dn_;
         }
 

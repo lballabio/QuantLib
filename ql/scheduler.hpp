@@ -56,10 +56,8 @@ namespace QuantLib {
 
 
     inline const Date& Scheduler::date(int i) const {
-        #if defined(QL_DEBUG)
-            QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
-                "date index out of bounds");
-        #endif
+        QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
+                   "date index out of bounds");
         return dates_[i];
     }
 
