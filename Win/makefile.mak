@@ -17,7 +17,7 @@ SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
-PYTHON_ROOT     = "C:\Program Files\Python20"
+PYTHON_ROOT     = "C:\Program Files\Python"
 PYTHON_INCLUDE	= $(PYTHON_ROOT)\include
 PYTHON_LIBS		= $(PYTHON_ROOT)\libs
 
@@ -35,7 +35,7 @@ WIN_OBJS		= c0d32.obj
 
 # Libraries
 WIN_LIBS 		= import32.lib cw32mt.lib
-PYTHON_LIB		= $(PYTHON_LIBS)\python20.lib
+PYTHON_LIB		= $(PYTHON_LIBS)\python15.lib
 PYTHON_BCC_LIB	= bccpython.lib
 
 # Tools to be used
@@ -57,7 +57,7 @@ MAKEEXE		= make
 !endif
 
 # Options
-CC_BASE_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
+CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
 	-I$(INCLUDE_DIR) \
 	-I$(INCLUDE_DIR)\Calendars \
 	-I$(INCLUDE_DIR)\Currencies \
@@ -73,8 +73,6 @@ CC_BASE_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
 	-I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_BASE_OPTS) -v
-!else
-CC_OPTS = $(CC_BASE_OPTS)
 !endif
 
 LINK_OPTS	= -q -x -L$(BCC_LIBS)
