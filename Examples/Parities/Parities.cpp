@@ -28,6 +28,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/08 17:24:08  marmar
+// intermediate commit
+//
 // Revision 1.11  2001/08/08 16:02:33  nando
 // refactoring .... not finished yet
 //
@@ -103,6 +106,37 @@ double optionSurplusIntegral(Time maturity_,
     return sum;
 }
 
+// helper function for option payoff: MAX((stike-underlying),0), etc.
+using QuantLib::Pricers::ExercisePayoff;
+
+
+
+
+class Payoff : public QL::ObjectiveFunction{
+    public:
+        Payoff(Time maturity,
+               double strike,
+               double s0,
+               double sigma,
+               Rate r)
+        : maturity_(maturity), 
+        strike_(strike),
+        s0_(s0),
+        sigma_(sigma),r_(r){}
+        
+        double operator()(double x) const {
+            double nuT = (r_-0.5*sigma_*sigma_)*maturity_;
+           return QL_EXP(-r_*maturity_)
+               *ExercisePayoff(Option::Call, s0_*QL_EXP(x), strike_)               
+               *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))/QL_SQRT(2.0*3.141592*sigma_*sigma_*maturity_);
+        }
+private:
+    Time maturity_;
+    double strike_;
+    double s0_;
+	double sigma_;
+    Rate r_;
+};
 
 
 int main(int argc, char* argv[])
@@ -185,7 +219,7 @@ int main(int argc, char* argv[])
 
 
 
-    // third method: MonteCarlo  
+    // fourth method: MonteCarlo  
     method ="MonteCarlo";
     // for plain vanilla european option the number of steps is not significant
     // let's go for the fastest way: just one step
@@ -219,6 +253,31 @@ int main(int argc, char* argv[])
          << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
          << DoubleFormatter::toString(discrepancy, 6) << "\t"
          << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+
+
+
+    using QuantLib::Math::SegmentIntegral;
+    // fifth method: Integral
+    method ="Integral";
+
+    Payoff po(maturity, strike, underlying, volatility, riskFreeRate);
+    SegmentIntegral integrator(100000);
+
+    double nuT = (riskFreeRate - 0.5*volatility*volatility)*maturity;
+    double deltaS = 5.0*volatility*volatility*maturity;
+
+//    value = integrator(po,nuT-deltaS,nuT+deltaS);
+    value = integrator(po, -5, 5);
+    estimatedError = 0.0;
+    discrepancy = value-rightValue;
+    relativeDiscrepancy = discrepancy/rightValue;
+    cout << method << "\t" 
+         << DoubleFormatter::toString(value, 4) << "\t"
+         << "N/A\t\t"
+         << DoubleFormatter::toString(discrepancy, 6) << "\t"
+         << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+
+
 
 
 
