@@ -532,7 +532,7 @@ namespace QuantLib {
         for (Year i=1; i<=tenor; i++)
             sum += discountImpl(t0+i);
         Real result = discountImpl(t0)-discountImpl(t0+tenor);
-        result *=  freq/sum;
+        result *=  Real(freq)/sum;
         return result;
     }
 
