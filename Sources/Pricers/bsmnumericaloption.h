@@ -31,7 +31,6 @@ namespace QuantLib {
 		
 		  protected:
 			// methods
-			Handle<BSMOption> clone() const=0;
 			double valueAtCenter(const Array& a) const;
 			double firstDerivativeAtCenter(const Array& a, const Array& g) const;
 			double secondDerivativeAtCenter(const Array& a, const Array& g) const;
