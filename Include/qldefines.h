@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.33  2001/02/19 11:04:40  lballabio
+    Refined a few macros
+
     Revision 1.32  2001/02/16 15:18:23  lballabio
     Added QL_ITERATOR_TRAITS and QL_DECLARE_TEMPLATE_SPECIFICATIONS macros
 
@@ -380,20 +383,22 @@
         typedef typename Iterator::reference            reference;
         typedef typename Iterator::iterator_category    iterator_category;
     };
-    // generic specializations
-    #define QL_DECLARE_TRAITS_PTR_SPECIALIZATION(T) \
+    #define QL_ITERATOR_TRAITS  __quantlib_iterator_traits
+    /*! \def QL_SPECIALIZE_ITERATOR_TRAITS
+        This macro can be used to specialize QL_ITERATOR_TRAITS for a pointer to 
+        a user-defined type.
+    */
+    #define QL_SPECIALIZE_ITERATOR_TRAITS(T) \
     template<> \
-    struct __quantlib_iterator_traits<T*> { \
+    struct QL_ITERATOR_TRAITS<T*> { \
         typedef T           value_type; \
         typedef ptrdiff_t   difference_type; \
         typedef T*          pointer; \
         typedef T&          reference; \
         typedef std::random_access_iterator_tag  iterator_category; \
-    };
-    #if !defined(__DOXYGEN__)
-    #define QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(T) \
+    }; \
     template<> \
-    struct __quantlib_iterator_traits<const T*> { \
+    struct QL_ITERATOR_TRAITS<const T*> { \
         typedef T           value_type; \
         typedef ptrdiff_t   difference_type; \
         typedef const T*          pointer; \
@@ -401,25 +406,18 @@
         typedef std::random_access_iterator_tag  iterator_category; \
     };
     // actual specializations
-    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(bool)
-    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(char)
-    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(short)
-    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(int)
-    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(long)
-    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(float)
-    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(double)
-    QL_DECLARE_TRAITS_PTR_SPECIALIZATION(long double)
-
-    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(bool)
-    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(char)
-    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(short)
-    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(int)
-    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(long)
-    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(float)
-    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(double)
-    QL_DECLARE_TRAITS_CONST_PTR_SPECIALIZATION(long double)
+    #if !defined(__DOXYGEN__)
+    QL_SPECIALIZE_ITERATOR_TRAITS(bool)
+    QL_SPECIALIZE_ITERATOR_TRAITS(char)
+    QL_SPECIALIZE_ITERATOR_TRAITS(short)
+    QL_SPECIALIZE_ITERATOR_TRAITS(int)
+    QL_SPECIALIZE_ITERATOR_TRAITS(long)
+    QL_SPECIALIZE_ITERATOR_TRAITS(float)
+    QL_SPECIALIZE_ITERATOR_TRAITS(double)
+    QL_SPECIALIZE_ITERATOR_TRAITS(long double)
     #endif
-    #define QL_ITERATOR_TRAITS  __quantlib_iterator_traits
+#else
+    #define QL_SPECIALIZE_ITERATOR_TRAITS(T)
 #endif
 
 /*! \def QL_REVERSE_ITERATOR
@@ -437,6 +435,18 @@
     #define QL_REVERSE_ITERATOR(iterator,type) \
         std::reverse_iterator< iterator >
 #endif
+
+/*! \def QL_ITERATOR 
+    Some compilers (most notably, Visual C++) still do not fully support 
+    iterators in their STL implementation.
+    This macro can be used to select between alternate implementations of 
+    blocks of code, namely, one that takes advantage of full iterator support 
+    and a less efficient one which is compatible with all compilers.
+*/
+#if !defined(HAVE_INCOMPLETE_ITERATOR_SUPPORT)
+    #define QL_FULL_ITERATOR_SUPPORT
+#endif
+
 /*! @}  */
 
 /*! @}  */
