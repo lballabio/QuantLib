@@ -40,9 +40,11 @@ namespace QuantLib {
         double elasticity() const;
         double gamma() const;
         double theta(double maturity) const;
+        double thetaPerDay(double maturity) const;
         double vega(double maturity) const;
         double rho(double maturity) const;
         double dividendRho(double maturity) const;
+        double itmProbability() const;
         double strikeSensitivity() const;
     private:
         double spot_, forward_, discount_, variance_;
@@ -83,7 +85,7 @@ namespace QuantLib {
 
 
         double fderD1, fderD2;
-        if (variance>0.0) {
+        if (variance>=QL_EPSILON) {
             if (strike_==0.0) {
                 fderD1 = 0.0;
                 fderD2 = 0.0;
@@ -223,6 +225,10 @@ namespace QuantLib {
             - 0.5*vol*vol*spot_*spot_*gamma();
     }
 
+    inline double BlackFormula::thetaPerDay(double maturity) const {
+        return theta(maturity)/365.0;
+    }
+
     inline double BlackFormula::rho(double maturity) const {
         QL_REQUIRE(maturity>=0.0,
             "BlackFormula::rho : "
@@ -264,6 +270,10 @@ namespace QuantLib {
         } else {
             return - discount_ * beta_;
         }
+    }
+
+    inline double BlackFormula::itmProbability() const {
+        return beta_;
     }
 
 }
