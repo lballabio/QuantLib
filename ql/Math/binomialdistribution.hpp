@@ -156,13 +156,14 @@ namespace QuantLib {
 
 
 
-    /*! return p such that:
+    /*! it returns p such that:
         1 - CumulativeBinomialDistribution((n-1)/2, n, p) =
                                CumulativeNormalDistribution(z)
 
         \pre n must be odd
     */
     inline double PeizerPrattMethod2Inversion(double z, unsigned long nn) {
+
         // n must be odd
         double n = nn + ((nn+1)%2);
 
