@@ -20,7 +20,7 @@
  * QuantLib license is also available at:
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
-"""
+Ã"""
 #
 # $Id$
 #
@@ -120,13 +120,30 @@ class test(Command):
 
 # class test
 
-# the directory where QL headers has been installed
-predir = "/usr/local/include"
+
+from distutils import sysconfig
+
+# the directory where QL headers have been installed
+import sys
+
+library_dirs = None
+include_dirs = None
+
+if sys.platform == 'win32':
+    import win32api
+    quantLibInstallDirectory = win32api.GetEnvironmentVariable('QL_DIR')
+    if len(quantLibInstallDirectory) > 0:
+        include_dirs = [quantLibInstallDirectory + "\\Include"]
+        library_dirs = [quantLibInstallDirectory + '\\lib\\win32\\VisualStudio']
+    else:
+        raise('Please set environment variable "QL_DIR" to installation directory of QuantLib')
+    
+else:
+    include_dirs = ["/usr/local/include"]
 
 cmdclass = {'test': test}
 
 # changes the compiler from gcc to g++
-from distutils import sysconfig
 save_init_posix = sysconfig._init_posix
 def my_init_posix():
     print 'my_init_posix: changing gcc to g++'
@@ -137,20 +154,21 @@ def my_init_posix():
 sysconfig._init_posix = my_init_posix
 
 
-setup ( cmdclass = cmdclass, \
-        name = "pyQuantLib", \
-	version = "0.1.1", \
-	maintainer = "Enrico Sirola", \
-	maintainer_email = "enri@users.sourceforge.net", \
-	url = "http://quantlib.sourceforge.net", \
-	py_modules = ["QuantLib"],
-	ext_modules = [ \
-		Extension ( "QuantLibc", \
-                            ["quantlib_wrap.cpp"], \
-                            libraries = ["QuantLib"], \
-                            include_dirs = [predir] \
-                            ) \
-                ] \
+setup ( cmdclass = cmdclass, 
+        name = "pyQuantLib",
+        version = "0.1.1",
+        maintainer = "Enrico Sirola",
+        maintainer_email = "enri@users.sourceforge.net",
+        url = "http://quantlib.sourceforge.net",
+        py_modules = ["QuantLib"],
+        ext_modules = [
+            Extension ( "QuantLibc", 
+                            ["quantlib_wrap.cpp"], 
+                            libraries = ["QuantLib"],
+                            include_dirs = include_dirs, 
+                            library_dirs = library_dirs
+                        ) 
+                ] 
         )
 
 
