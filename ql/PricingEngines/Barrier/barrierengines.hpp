@@ -200,7 +200,7 @@ namespace QuantLib {
             arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
             arguments_.exercise->lastDate());
 
-        return TimeGrid(t, Size(t * maxTimeStepsPerYear_));
+        return TimeGrid(t, Size(QL_MAX(t * maxTimeStepsPerYear_, 1.0)));
     }
 
 
