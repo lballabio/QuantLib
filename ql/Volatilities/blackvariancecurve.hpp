@@ -49,15 +49,11 @@ namespace QuantLib {
             BlackVarianceCurve(const Date& referenceDate,
                                const DayCounter& dayCounter,
                                const std::vector<Date>& dates,
-                               const std::vector<double>& blackVolCurve,
-                               const std::string& underlying = "");
+                               const std::vector<double>& blackVolCurve);
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date minDate() const { return referenceDate_; }
             Date maxDate() const { return maxDate_; }
-            Time minTime() const { return 0.0; }
-            Time maxTime() const { return times_.back(); }
-            std::string underlying() const { return underlying_; }
             // Observer interface
             void update();
           protected:
@@ -67,7 +63,6 @@ namespace QuantLib {
             Date referenceDate_;
             DayCounter dayCounter_;
             Date maxDate_;
-            std::string underlying_;
             std::vector<Time> times_;
             std::vector<double> variances_;
             Handle < Interpolator1D> varianceSurface_;
@@ -79,10 +74,9 @@ namespace QuantLib {
             const Date& referenceDate,
             const DayCounter& dayCounter,
             const std::vector<Date>& dates,
-            const std::vector<double>& blackVolCurve,
-            const std::string& underlying)
+            const std::vector<double>& blackVolCurve)
         : referenceDate_(referenceDate), dayCounter_(dayCounter),
-          maxDate_(dates.back()), underlying_(underlying) {
+          maxDate_(dates.back()) {
 
             QL_REQUIRE(dates.size()==blackVolCurve.size(),
                 "mismatch between date vector and black vol vector");

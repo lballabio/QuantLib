@@ -48,15 +48,11 @@ namespace QuantLib {
                                  const DayCounter& dayCounter,
                                  const std::vector<Date>& dates,
                                  const std::vector<double>& strikes,
-                                 const QuantLib::Math::Matrix& blackVolMatrix,
-                                 const std::string& underlying = "");
+                                 const QuantLib::Math::Matrix& blackVolMatrix);
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date minDate() const { return referenceDate_; }
             Date maxDate() const { return maxDate_; }
-            Time minTime() const { return 0.0; }
-            Time maxTime() const { return times_.back(); }
-            std::string underlying() const { return underlying_; }
             // Observer interface
             void update();
           protected:
@@ -67,7 +63,6 @@ namespace QuantLib {
             DayCounter dayCounter_;
             Date maxDate_;
             std::vector<double> strikes_;
-            std::string underlying_;
             std::vector<Time> times_;
             QuantLib::Math::Matrix variances_;
             Handle < Interpolator2D> varianceSurface_;
@@ -80,11 +75,9 @@ namespace QuantLib {
             const DayCounter& dayCounter,
             const std::vector<Date>& dates,
             const std::vector<double>& strikes,
-            const QuantLib::Math::Matrix& blackVolMatrix,
-            const std::string& underlying)
+            const QuantLib::Math::Matrix& blackVolMatrix)
         : referenceDate_(referenceDate), dayCounter_(dayCounter),
-          maxDate_(dates.back()), strikes_(strikes),
-          underlying_(underlying) {
+          maxDate_(dates.back()), strikes_(strikes) {
 
             QL_REQUIRE(dates.size()==blackVolMatrix.columns(),
                 "mismatch between date vector and vol matrix colums");
