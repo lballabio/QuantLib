@@ -77,11 +77,11 @@ namespace QuantLib {
         return initialValue_;
     }
 
-    Real GeometricBrownianMotionProcess::drift(Time t, Real x) const {
+    Real GeometricBrownianMotionProcess::drift(Time, Real x) const {
         return mue_ * x;
     }
 
-    Real GeometricBrownianMotionProcess::diffusion(Time t, Real x) const {
+    Real GeometricBrownianMotionProcess::diffusion(Time, Real x) const {
         return sigma_ * x;
     }
 
