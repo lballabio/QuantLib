@@ -426,7 +426,6 @@ int main(int argc, char* argv[])
 
         // Monte Carlo Method
         timeSteps = 365;
-        TimeGrid timeGrid(maturity, timeSteps);
 
         method = "MC (crude)";
         Size mcSeed = 42;
