@@ -23,19 +23,9 @@
 #define quantlib_forward_vanilla_option_h
 
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/PricingEngines/Forward/forwardengine.hpp>
 
 namespace QuantLib {
-
-    //! %Arguments for forward (strike-resetting) option calculation
-    template <class ArgumentsType> 
-    class ForwardOptionArguments : public ArgumentsType {
-      public:
-        ForwardOptionArguments() : moneyness(Null<double>()),
-                                   resetDate(Null<Date>()) {}
-        void validate() const;
-        double moneyness;
-        Date resetDate;
-    };
 
     //! Forward version of a vanilla option
     /*! \ingroup instruments */
@@ -43,6 +33,8 @@ namespace QuantLib {
       public:
         typedef ForwardOptionArguments<VanillaOption::arguments> arguments;
         typedef VanillaOption::results results;
+        typedef ForwardEngine<VanillaOption::arguments,
+                              VanillaOption::results> engine;
         ForwardVanillaOption(
             double moneyness,
             Date resetDate,
@@ -58,28 +50,6 @@ namespace QuantLib {
         double moneyness_;
         Date resetDate_;
     };
-
-
-
-    template <class ArgumentsType> 
-    void ForwardOptionArguments<ArgumentsType>::validate() const {
-        ArgumentsType::validate();
-        QL_REQUIRE(moneyness != Null<double>(),
-                   "null moneyness given");
-        QL_REQUIRE(moneyness > 0.0,
-                   "negative or zero moneyness given");
-        QL_REQUIRE(resetDate != Null<Date>(),
-                   "null reset date given");
-
-        Time resetTime =
-            blackScholesProcess->riskFreeRate()->dayCounter().yearFraction(
-                blackScholesProcess->riskFreeRate()->referenceDate(), resetDate);
-
-        QL_REQUIRE(resetTime >=0,
-                   "negative reset time given");
-        QL_REQUIRE(exercise->lastDate() >= resetDate,
-                   "reset time greater than maturity");
-    }
 
 }
 

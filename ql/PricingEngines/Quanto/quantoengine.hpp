@@ -22,12 +22,41 @@
 #ifndef quantlib_quanto_engine_hpp
 #define quantlib_quanto_engine_hpp
 
-#include <ql/Instruments/quantovanillaoption.hpp>
 #include <ql/TermStructures/quantotermstructure.hpp>
 
 namespace QuantLib {
 
+
+    //! %Arguments for quanto option calculation
+    template<class ArgumentsType>
+    class QuantoOptionArguments : public ArgumentsType {
+      public:
+        QuantoOptionArguments() : correlation(Null<double>()) {}
+        void validate() const;
+        double correlation;
+        RelinkableHandle<TermStructure> foreignRiskFreeTS;
+        RelinkableHandle<BlackVolTermStructure> exchRateVolTS;
+    };
+
+    //! %Results from quanto option calculation
+    template<class ResultsType>
+    class QuantoOptionResults : public ResultsType {
+      public:
+        QuantoOptionResults() { reset() ;}
+        void reset() { 
+            ResultsType::reset();
+            qvega = qrho = qlambda = Null<double>();
+        }
+        double qvega;
+        double qrho;
+        double qlambda;
+    };
+
+
     //! Quanto engine base class
+    /*! \warning for the time being, this engine will only work with
+                 simple Black-Scholes processes (i.e., no Merton.)
+    */
     template<class ArgumentsType, class ResultsType>
     class QuantoEngine
         : public GenericEngine<QuantoOptionArguments<ArgumentsType>,
@@ -36,6 +65,12 @@ namespace QuantLib {
         QuantoEngine(const boost::shared_ptr<GenericEngine<ArgumentsType,
                                                            ResultsType> >&);
         void calculate() const;
+        /*! Access to the arguments of the underlying engine is needed as
+            this engine is not able to set them completely. When necessary,
+            it must be done by the instrument: see QuantoForwardVanillaOption
+            for an example.
+        */
+        ArgumentsType* underlyingArgs() const { return originalArguments_; }
       protected:
         boost::shared_ptr<GenericEngine<ArgumentsType, 
                                         ResultsType> > originalEngine_;
@@ -45,6 +80,18 @@ namespace QuantLib {
 
 
     // template definitions
+
+    template<class ArgumentsType>
+    void QuantoOptionArguments<ArgumentsType>::validate() const {
+        ArgumentsType::validate();
+        QL_REQUIRE(!foreignRiskFreeTS.isNull(),
+                   "null foreign risk free term structure");
+        QL_REQUIRE(!exchRateVolTS.isNull(),
+                   "null exchange rate vol term structure");
+        QL_REQUIRE(correlation != Null<double>(),
+                   "null correlation given");
+    }
+
 
     template<class ArgumentsType, class ResultsType>
     QuantoEngine<ArgumentsType, ResultsType>::QuantoEngine(
@@ -74,23 +121,30 @@ namespace QuantLib {
 
         originalArguments_->payoff = arguments_.payoff;
 
-//        originalArguments_->underlying    = arguments_.blackScholesProcess->stateVariable->value();
-//        originalArguments_->riskFreeTS    = arguments_.riskFreeTS;
-//        originalArguments_->volTS         = arguments_.blackScholesProcess->volTS;
-        originalArguments_->blackScholesProcess=arguments_.blackScholesProcess;
-        // dividendTS needs modification
-        originalArguments_->blackScholesProcess->dividendTS =
-            RelinkableHandle<TermStructure>(
-                boost::shared_ptr<TermStructure>(new
-                    QuantoTermStructure(
-                        arguments_.blackScholesProcess->dividendTS,
-                        arguments_.blackScholesProcess->riskFreeTS,
-                        arguments_.foreignRiskFreeTS,
-                        arguments_.blackScholesProcess->volTS, strike,
-                        arguments_.exchRateVolTS, exchangeRateATMlevel,
-                        arguments_.correlation)));
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            arguments_.blackScholesProcess;
 
-        originalArguments_->exercise      = arguments_.exercise;
+        RelinkableHandle<Quote> spot(process->stateVariable());
+        RelinkableHandle<TermStructure> riskFreeRate(process->riskFreeRate());
+        // dividendTS needs modification
+        RelinkableHandle<TermStructure> dividendYield(
+            boost::shared_ptr<TermStructure>(
+                new QuantoTermStructure(
+                    RelinkableHandle<TermStructure>(process->dividendYield()),
+                    RelinkableHandle<TermStructure>(process->riskFreeRate()),
+                    arguments_.foreignRiskFreeTS,
+                    RelinkableHandle<BlackVolTermStructure>(
+                                                  process->blackVolatility()),
+                    strike, arguments_.exchRateVolTS, exchangeRateATMlevel,
+                    arguments_.correlation)));
+        RelinkableHandle<BlackVolTermStructure> blackVol(
+                                                  process->blackVolatility());
+        originalArguments_->blackScholesProcess = 
+            boost::shared_ptr<BlackScholesProcess>(
+                             new BlackScholesProcess(spot, dividendYield, 
+                                                     riskFreeRate, blackVol));
+
+        originalArguments_->exercise = arguments_.exercise;
 
         originalArguments_->validate();
         originalEngine_->calculate();
@@ -110,15 +164,13 @@ namespace QuantLib {
             originalResults_->dividendRho;
 
 
-        double volatility =
-            arguments_.blackScholesProcess->volTS->blackVol(
-                arguments_.exercise->lastDate(),
-                arguments_.blackScholesProcess->stateVariable->value());
+        double volatility = process->blackVolatility()->blackVol(
+                                           arguments_.exercise->lastDate(),
+                                           process->stateVariable()->value());
         results_.qvega = + arguments_.correlation
-            * arguments_.blackScholesProcess->volTS
-                ->blackVol(
-                    arguments_.exercise->lastDate(),
-                    arguments_.blackScholesProcess->stateVariable->value()) *
+            * process->blackVolatility()->blackVol(
+                                          arguments_.exercise->lastDate(),
+                                          process->stateVariable()->value()) *
             originalResults_->dividendRho;
         results_.qrho = - originalResults_->dividendRho;
         results_.qlambda = exchangeRateFlatVol *

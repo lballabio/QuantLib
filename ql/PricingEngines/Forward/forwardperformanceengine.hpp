@@ -60,26 +60,27 @@ namespace QuantLib {
     void ForwardPerformanceEngine<ArgumentsType, ResultsType>::
     getOriginalResults() const {
 
-        Time resetTime = arguments_.blackScholesProcess->riskFreeTS
-            ->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(), 
-                arguments_.resetDate);
-        double discR = arguments_.blackScholesProcess->riskFreeTS
-            ->discount(arguments_.resetDate);
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            arguments_.blackScholesProcess;
+
+        Time resetTime = process->riskFreeRate()->dayCounter().yearFraction(
+                                    process->riskFreeRate()->referenceDate(), 
+                                    arguments_.resetDate);
+        double discR = process->riskFreeRate()->discount(arguments_.resetDate);
         // it's a performance option
-        discR /= arguments_.blackScholesProcess->stateVariable->value();
+        discR /= process->stateVariable()->value();
 
         double temp = originalResults_->value;
         results_.value = discR * temp;
         results_.delta = 0.0;
         results_.gamma = 0.0;
-        results_.theta = arguments_.blackScholesProcess->riskFreeTS->zeroYield(
-                arguments_.resetDate) * results_.value;
+        results_.theta = process->riskFreeRate()->zeroYield(
+                                                        arguments_.resetDate) 
+            * results_.value;
         results_.vega = discR * originalResults_->vega;
         results_.rho = - resetTime * results_.value +
             discR * originalResults_->rho;
         results_.dividendRho = discR * originalResults_->dividendRho;
-
     }
 
 }

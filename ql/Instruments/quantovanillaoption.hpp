@@ -23,33 +23,9 @@
 #define quantlib_quanto_vanilla_option_h
 
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/PricingEngines/Quanto/quantoengine.hpp>
 
 namespace QuantLib {
-
-    //! %Arguments for quanto option calculation
-    template<class ArgumentsType>
-    class QuantoOptionArguments : public ArgumentsType {
-      public:
-        QuantoOptionArguments() : correlation(Null<double>()) {}
-        void validate() const;
-        double correlation;
-        RelinkableHandle<TermStructure> foreignRiskFreeTS;
-        RelinkableHandle<BlackVolTermStructure> exchRateVolTS;
-    };
-
-    //! %Results from quanto option calculation
-    template<class ResultsType>
-    class QuantoOptionResults : public ResultsType {
-      public:
-        QuantoOptionResults() { reset() ;}
-        void reset() { 
-            ResultsType::reset();
-            qvega = qrho = qlambda = Null<double>();
-        }
-        double qvega;
-        double qrho;
-        double qlambda;
-    };
 
     //! quanto version of a vanilla option
     /*! \ingroup instruments */
@@ -57,6 +33,8 @@ namespace QuantLib {
       public:
         typedef QuantoOptionArguments<VanillaOption::arguments> arguments;
         typedef QuantoOptionResults<VanillaOption::results> results;
+        typedef QuantoEngine<VanillaOption::arguments,
+                             VanillaOption::results> engine;
         QuantoVanillaOption(
             const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
             const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
@@ -82,20 +60,6 @@ namespace QuantLib {
         // results
         mutable double qvega_, qrho_, qlambda_;
     };
-
-
-    // template definitions
-
-    template<class ArgumentsType>
-    void QuantoOptionArguments<ArgumentsType>::validate() const {
-        ArgumentsType::validate();
-        QL_REQUIRE(!foreignRiskFreeTS.isNull(),
-                   "null foreign risk free term structure");
-        QL_REQUIRE(!exchRateVolTS.isNull(),
-                   "null exchange rate vol term structure");
-        QL_REQUIRE(correlation != Null<double>(),
-                   "null correlation given");
-    }
 
 }
 

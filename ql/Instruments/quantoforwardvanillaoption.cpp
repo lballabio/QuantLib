@@ -35,8 +35,7 @@ namespace QuantLib {
         QL_REQUIRE(engine, "null engine or wrong engine type");
     }
 
-    void QuantoForwardVanillaOption::setupArguments(Arguments* args)
-        const {
+    void QuantoForwardVanillaOption::setupArguments(Arguments* args) const {
         VanillaOption::setupArguments(args);
         QuantoForwardVanillaOption::arguments* arguments =
             dynamic_cast<QuantoForwardVanillaOption::arguments*>(args);
@@ -50,7 +49,24 @@ namespace QuantLib {
 
         arguments->moneyness = moneyness_;
         arguments->resetDate = resetDate_;
+    }
 
+    void QuantoForwardVanillaOption::performCalculations() const {
+
+        /* we must set the arguments of the underlying engine
+           (which cannot be done by QuantoEngine.) */
+        typedef QuantoEngine<ForwardVanillaOption::arguments,
+                             ForwardVanillaOption::results> engine_type;
+        boost::shared_ptr<engine_type> qengine =
+            boost::dynamic_pointer_cast<engine_type>(engine_);
+        QL_REQUIRE(qengine, "wrong engine given");
+        ForwardVanillaOption::arguments* args = qengine->underlyingArgs();
+        VanillaOption::setupArguments(args);
+        args->moneyness = moneyness_;
+        args->resetDate = resetDate_;
+
+        // now go on with the show as originally scheduled
+        QuantoVanillaOption::performCalculations();
     }
 
 }

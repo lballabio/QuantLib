@@ -56,6 +56,7 @@
 #include "dividendeuropeanoption.hpp"
 #include "europeanoption.hpp"
 #include "factorial.hpp"
+#include "forwardoption.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "interpolations.hpp"
@@ -65,6 +66,7 @@
 #include "mersennetwister.hpp"
 #include "operators.hpp"
 #include "piecewiseflatforward.hpp"
+#include "quantooption.hpp"
 #include "quotes.hpp"
 #include "riskstats.hpp"
 #include "solvers.hpp"
@@ -103,6 +105,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DividendEuropeanOptionTest::suite());
     test->add(EuropeanOptionTest::suite());
     test->add(FactorialTest::suite());
+    test->add(ForwardOptionTest::suite());
     test->add(InstrumentTest::suite());
     test->add(IntegralTest::suite());
     test->add(InterpolationTest::suite());
@@ -112,6 +115,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(MersenneTwisterTest::suite());
     test->add(OperatorTest::suite());
     test->add(PiecewiseFlatForwardTest::suite());
+    test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
     test->add(RiskStatisticsTest::suite());
     test->add(Solver1DTest::suite());

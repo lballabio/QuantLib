@@ -22,11 +22,22 @@
 #ifndef quantlib_forward_engine_hpp
 #define quantlib_forward_engine_hpp
 
-#include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Volatilities/impliedvoltermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 
 namespace QuantLib {
+
+    //! %Arguments for forward (strike-resetting) option calculation
+    template <class ArgumentsType> 
+    class ForwardOptionArguments : public ArgumentsType {
+      public:
+        ForwardOptionArguments() : moneyness(Null<double>()),
+                                   resetDate(Null<Date>()) {}
+        void validate() const;
+        double moneyness;
+        Date resetDate;
+    };
+
 
     //! Forward engine base class
     template<class ArgumentsType, class ResultsType>
@@ -49,6 +60,24 @@ namespace QuantLib {
 
     // template definitions
 
+    template <class ArgumentsType> 
+    void ForwardOptionArguments<ArgumentsType>::validate() const {
+        ArgumentsType::validate();
+
+        QL_REQUIRE(moneyness != Null<double>(),
+                   "null moneyness given");
+        QL_REQUIRE(moneyness > 0.0,
+                   "negative or zero moneyness given");
+
+        QL_REQUIRE(resetDate != Null<Date>(), "null reset date given");
+        QL_REQUIRE(resetDate >= blackScholesProcess->riskFreeRate()
+                                                          ->referenceDate(),
+                   "reset date later than settlement");
+        QL_REQUIRE(exercise->lastDate() > resetDate,
+                   "reset date later or equal to maturity");
+    }
+
+
     template<class ArgumentsType, class ResultsType>
     ForwardEngine<ArgumentsType, ResultsType>::ForwardEngine(
         const boost::shared_ptr<GenericEngine<ArgumentsType, ResultsType> >&
@@ -70,42 +99,47 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
-        argumentsPayoff->setStrike(arguments_.moneyness*
-            arguments_.blackScholesProcess->stateVariable->value());
-        originalArguments_->payoff = argumentsPayoff;
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            arguments_.blackScholesProcess;
 
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                   new PlainVanillaPayoff(argumentsPayoff->optionType(),
+                                          arguments_.moneyness * 
+                                          process->stateVariable()->value()));
+        originalArguments_->payoff = payoff;
 
         // maybe the forward value is "better", in some fashion
         // the right level is needed in order to interpolate
         // the vol
-        originalArguments_->blackScholesProcess->stateVariable = 
-            arguments_.blackScholesProcess->stateVariable;
-        originalArguments_->blackScholesProcess->dividendTS = 
-            RelinkableHandle<TermStructure>(
-                boost::shared_ptr<TermStructure>(
-                    new ImpliedTermStructure(
-                        arguments_.blackScholesProcess->dividendTS, 
-                        arguments_.resetDate,
-                        arguments_.resetDate)));
-        originalArguments_->blackScholesProcess->riskFreeTS = 
-            RelinkableHandle<TermStructure>(
-                boost::shared_ptr<TermStructure>(
-                    new ImpliedTermStructure(
-                        arguments_.blackScholesProcess->riskFreeTS, 
-                        arguments_.resetDate,
-                        arguments_.resetDate)));
-
+        RelinkableHandle<Quote> spot(process->stateVariable());
+        RelinkableHandle<TermStructure> dividendYield(
+            boost::shared_ptr<TermStructure>(
+               new ImpliedTermStructure(
+                   RelinkableHandle<TermStructure>(process->dividendYield()), 
+                   arguments_.resetDate,
+                   arguments_.resetDate)));
+        RelinkableHandle<TermStructure> riskFreeRate(
+            boost::shared_ptr<TermStructure>(
+               new ImpliedTermStructure(
+                   RelinkableHandle<TermStructure>(process->riskFreeRate()), 
+                   arguments_.resetDate,
+                   arguments_.resetDate)));
         // The following approach is ok if the vol is at most
         // time dependant. It is plain wrong if it is asset dependant.
         // In the latter case the right solution would be stochastic
         // volatility or at least local volatility (which unfortunately
         // implies an unrealistic time-decreasing smile)
-        originalArguments_->blackScholesProcess->volTS =
-            RelinkableHandle<BlackVolTermStructure>(
-                boost::shared_ptr<BlackVolTermStructure>(
-                    new ImpliedVolTermStructure(
-                        arguments_.blackScholesProcess->volTS,
-                        arguments_.resetDate)));
+        RelinkableHandle<BlackVolTermStructure> blackVolatility(
+            boost::shared_ptr<BlackVolTermStructure>(
+               new ImpliedVolTermStructure(
+                                  RelinkableHandle<BlackVolTermStructure>(
+                                                  process->blackVolatility()),
+                                  arguments_.resetDate)));
+
+        originalArguments_->blackScholesProcess =
+            boost::shared_ptr<BlackScholesProcess>(
+                      new BlackScholesProcess(spot, dividendYield,
+                                              riskFreeRate, blackVolatility));
 
         originalArguments_->exercise = arguments_.exercise;
 
@@ -124,25 +158,27 @@ namespace QuantLib {
     void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults()
                                                                       const {
 
-        Time resetTime = arguments_.blackScholesProcess->riskFreeTS
-            ->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(), 
-                arguments_.resetDate);
-        double discQ = arguments_.blackScholesProcess->dividendTS
-            ->discount(arguments_.resetDate);
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            arguments_.blackScholesProcess;
+
+        Time resetTime = process->riskFreeRate()->dayCounter().yearFraction(
+                                    process->riskFreeRate()->referenceDate(), 
+                                    arguments_.resetDate);
+        double discQ = process->dividendYield()->discount(
+                                                        arguments_.resetDate);
 
         results_.value = discQ * originalResults_->value;
         // I need the strike derivative here ...
         results_.delta = discQ * (originalResults_->delta +
                   arguments_.moneyness * originalResults_->strikeSensitivity);
         results_.gamma = 0.0;
-        results_.theta = arguments_.blackScholesProcess->dividendTS->zeroYield(
-                                       arguments_.resetDate) * results_.value;
+        results_.theta = process->dividendYield()->zeroYield(
+                                                        arguments_.resetDate) 
+            * results_.value;
         results_.vega  = discQ * originalResults_->vega;
         results_.rho   = discQ *  originalResults_->rho;
         results_.dividendRho = - resetTime * results_.value
             + discQ * originalResults_->dividendRho;
-
     }
 
 }

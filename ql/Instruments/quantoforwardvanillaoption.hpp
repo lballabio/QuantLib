@@ -32,9 +32,11 @@ namespace QuantLib {
     class QuantoForwardVanillaOption : public QuantoVanillaOption {
       public:
         typedef QuantoOptionArguments<ForwardVanillaOption::arguments>
-        arguments;
-        typedef QuantoOptionResults<ForwardVanillaOption::arguments>
-        results;
+                                                                 arguments;
+        typedef QuantoOptionResults<ForwardVanillaOption::results>
+                                                                 results;
+        typedef QuantoEngine<ForwardVanillaOption::arguments,
+                             ForwardVanillaOption::results> engine;
         QuantoForwardVanillaOption(
                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
                  const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
@@ -47,6 +49,7 @@ namespace QuantLib {
                  const boost::shared_ptr<PricingEngine>& engine);
         void setupArguments(Arguments*) const;
       private:
+        void performCalculations() const;
         // arguments
         double moneyness_;
         Date resetDate_;

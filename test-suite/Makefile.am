@@ -17,6 +17,7 @@ QL_TESTS = \
 	dividendeuropeanoption.hpp dividendeuropeanoption.cpp \
 	europeanoption.hpp europeanoption.cpp \
 	factorial.hpp factorial.cpp \
+	forwardoption.hpp forwardoption.cpp \
 	instruments.hpp instruments.cpp \
 	integrals.hpp integrals.cpp \
 	interpolations.hpp interpolations.cpp \
@@ -26,6 +27,7 @@ QL_TESTS = \
 	mersennetwister.hpp mersennetwister.cpp \
 	operators.hpp operators.cpp \
 	piecewiseflatforward.hpp piecewiseflatforward.cpp \
+	quantooption.hpp quantooption.cpp \
 	quotes.hpp quotes.cpp \
 	riskstats.hpp riskstats.cpp \
 	solvers.hpp solvers.cpp \
