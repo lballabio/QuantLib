@@ -39,7 +39,7 @@
     <tr>
     <td><em><a href="http://www.ametrano.net/">Ferdinando
     Ametrano</a></em></td>
-    <td>&#102;&#101;&#114;&#100;&#105;&#110;&#97;&#110;&#100;&#111;&#64;&#97;&#109;&#101;&#116;&#114;&#97;&#110;&#111;&#46;&#110;&#101;&#116;</td>
+    <td>nando@NOSPAMametrano.net</td>
     <td>project manager</td>
     <td><a href="http://sourceforge.net/users/nando/">nando</a></td>
     </tr>
@@ -68,10 +68,26 @@
     </tr>
 
     <tr>
+    <td><em>Neil Firth</em></td>
+    <td> </td>
+    <td>Monte Carlo: Longstaff-Schwartz American option, Barrier option</td>
+    <td><a href="http://sourceforge.net/users/neilfirth/">neilfirth</a></td>
+    </tr>
+
+    <tr>
     <td><em>Marco Marchioro</em></td>
     <td>&#109;&#97;&#114;&#99;&#111;&#46;&#109;&#97;&#114;&#99;&#104;&#105;&#111;&#114;&#111;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#110;&#101;&#116;&#32;</td>
     <td> </td>
     <td><a href="http://sourceforge.net/users/marmar/">marmar</a></td>
+    </tr>
+
+    <tr>
+    <td><em><a href="http://www.nielses.dk/">Niels Elken
+     Sønderby</a></em></td>
+    <td>mail@nielses.dk</td>
+    <td>Gauss-Kronrod integration, option with
+        stochastic vol and jumps</td>
+    <td><a href="http://sourceforge.net/users/nielses/">nielses</a></td>
     </tr>
 
     <tr>
@@ -93,14 +109,19 @@
 
     \latexonly
     \begin{itemize}
-        \item Ferdinando Ametrano (ferdinando@ametrano.net),
+        \item Ferdinando Ametrano (nando@NOSPAMametrano.net),
               project manager
         \item Luigi Ballabio (luigi.ballabio@riskmap.net), library designer
         \item Nicolas Di C\'esar\'e, spline and optimizer
         \item Dirk Eddelbuettel: Debian maintainer, RQuantLib
+        \item Neil Firth: Monte Carlo: Longstaff-Schwartz American option,
+              Barrier option
         \item Marco Marchioro (marco.marchioro@riskmap.net)
         \item Sadruddin Rejeb (sad.rejeb@riskmap.it), interest
               rate models
+        \item Niels Elken S{\o}nderby: Gauss-Kronrod integration, option with
+              stochastic vol and jumps
+        \item Liguo Song: RPM maintainer
     \end{itemize}
     \endlatexonly
 
@@ -201,12 +222,6 @@
     <td><a href="http://sourceforge.net/users/dzuki/">dzuki</a></td>
     </tr>
 
-    <tr>
-    <td><em><a href="http://www.nielses.dk/">Niels Elken Sønderby</a></em></td>
-    <td>Gauss-Kronrod integration</td>
-    <td>mail@nielses.dk</td>
-    <td><a href="http://sourceforge.net/users/nielses/">nielses</a></td>
-    </tr>
 
     <tr>
     <td><em>Bernd Johannes Wuebben</em></td>
@@ -219,22 +234,22 @@
     <tr>
     <td><em>Jon Davidson</em></td>
     <td> </td>
-    <td> </td>
     <td>UK bank holidays fix</td>
+    <td> </td>
     </tr>
 
     <tr>
     <td><em>Tomoya Kawanishi</em></td>
     <td> </td>
-    <td> </td>
     <td>Japan holidays fix</td>
+    <td> </td>
     </tr>
 
     <tr>
     <td><em>David Schwartz</em></td>
     <td> </td>
-    <td> </td>
     <td>fixes for VC7</td>
+    <td> </td>
     </tr>
 
     </table>
@@ -255,7 +270,6 @@
         \item Peter Schmitteckert (quantlib@schmitteckert.com)
         \item Enrico Sirola (enrico.sirola@riskmap.net)
         \item Maxim Sokolov (maxim\_sokolov@rambler.ru): examples
-        \item Niels Elken Sønderby: Gauss-Kronrod integration
         \item Tomoya Kawanishi: Japan holidays fix
         \item David Schwartz: fixes for VC7
         \item Bernd Johannes Wuebben
