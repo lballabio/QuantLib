@@ -31,6 +31,12 @@ Changes since release 0.3.7:
 
 - Added Faure low-discrepancy sequence; tests provided
 
+- Added randomized (shifted) low discrepancy sequences that will be used for
+  randomized quasi Monte Carlo
+
+- Added SeedGenerator class, for random generation of seeds when they are not
+  given by the user.
+
 - Added the implementation of Sobol sequences using the coefficients
   of the free direction integers as provided by Bratley and Fox, who
   credited unpublished work of Sobol' and Levitan.
