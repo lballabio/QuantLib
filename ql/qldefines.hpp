@@ -46,13 +46,13 @@
 
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000302a2
+#define QL_HEX_VERSION 0x000303a1
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.3.2a2-cvs-debug"
+    #define QL_VERSION "0.3.3a1-cvs-debug"
 #else
-    #define QL_VERSION "0.3.2a2-cvs"
+    #define QL_VERSION "0.3.3a1-cvs"
 #endif
 
 //! global trace level (may be superseded locally by a greater value)
