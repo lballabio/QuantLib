@@ -5,25 +5,39 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
-#ifndef BSM_european_option_pricer_h
-#define BSM_european_option_pricer_h
+#ifndef BSM_american_option_pricer_h
+#define BSM_american_option_pricer_h
 
 #include "qldefines.h"
 #include "bsmnumericaloption.h"
+#include "stepcondition.h"
+#include <algorithm>
+#include <functional>
 
 QL_BEGIN_NAMESPACE(QuantLib)
 
 QL_BEGIN_NAMESPACE(Pricers)
 
-class BSMEuropeanOption : public BSMNumericalOption {
+class BSMAmericanOption : public BSMNumericalOption {
   public:
 	// constructor
-	BSMEuropeanOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
+	BSMAmericanOption(Option::Type type, double underlying, double strike, Yield underlyingGrowthRate, 
 	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
 	: BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
 	  timeSteps,gridPoints) {}
 	// accessors
 	double value() const;
+};
+
+class BMSAmericanCondition : public QL_ADD_NAMESPACE(PDE,StepCondition)<Array> {
+  public:
+	BMSAmericanCondition(const Array& initialPrices) : initialPrices(initialPrices) {}
+	void applyTo(Array& a, Time t) const {
+		for (int i=0; i<a.size(); i++)
+			a[i] = QL_MAX(a[i],initialPrices[i]);
+	}
+  private:
+	Array initialPrices;
 };
 
 
