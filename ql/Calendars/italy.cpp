@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,13 +19,27 @@
 
 namespace QuantLib {
 
-    Italy::Italy() {
-        // all calendar instances share the same implementation instance
-        static boost::shared_ptr<Calendar::Impl> impl(new Italy::Impl);
-        impl_ = impl;
+    Italy::Italy(Italy::Market market) {
+        // all calendar instances on the same market share the same
+        // implementation instance
+        static boost::shared_ptr<Calendar::Impl> settlementImpl(
+                                                   new Italy::SettlementImpl);
+        static boost::shared_ptr<Calendar::Impl> exchangeImpl(
+                                                   new Italy::ExchangeImpl);
+        switch (market) {
+          case Settlement:
+            impl_ = settlementImpl;
+            break;
+          case Exchange:
+            impl_ = exchangeImpl;
+            break;
+          default:
+            QL_FAIL("unknown market");
+        }
     }
 
-    bool Italy::Impl::isBusinessDay(const Date& date) const {
+
+    bool Italy::SettlementImpl::isBusinessDay(const Date& date) const {
         Weekday w = date.weekday();
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
@@ -56,6 +70,36 @@ namespace QuantLib {
             || (d == 26 && m == December)
             // December 31st, 1999 only
             || (d == 31 && m == December && y == 1999))
+            return false;
+        return true;
+    }
+
+
+    bool Italy::ExchangeImpl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Month m = date.month();
+        Year y = date.year();
+        Day em = easterMonday(y);
+        if ((w == Saturday || w == Sunday)
+            // New Year's Day
+            || (d == 1 && m == January)
+            // Good Friday
+            || (dd == em-3)
+            // Easter Monday
+            || (dd == em)
+            // Labour Day
+            || (d == 1 && m == May)
+            // Assumption
+            || (d == 15 && m == August)
+            // Christmas' Eve
+            || (d == 24 && m == December)
+            // Christmas
+            || (d == 25 && m == December)
+            // St. Stephen
+            || (d == 26 && m == December)
+            // New Year's Eve
+            || (d == 31 && m == December))
             return false;
         return true;
     }

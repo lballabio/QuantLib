@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,8 +27,11 @@
 namespace QuantLib {
 
     #if !defined(QL_DISABLE_DEPRECATED)
-    //! \deprecated renamed to Italy
-    typedef Italy Milan;
+    //! \deprecated use Italy with the Exchange market
+    class Milan : public Italy {
+      public:
+        Milan() : Italy(Italy::Exchange) {}
+    };
     #endif
 
 }

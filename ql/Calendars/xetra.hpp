@@ -47,7 +47,7 @@ namespace QuantLib {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "MilanStockExchange"; }
+            std::string name() const { return "Xetra"; }
             bool isBusinessDay(const Date&) const;
         };
       public:

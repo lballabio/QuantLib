@@ -17,18 +17,18 @@
 */
 
 /*! \file italy.hpp
-    \brief Italy settlement calendar
+    \brief Italian calendars
 */
 
-#ifndef quantlib_italy_calendar_h
-#define quantlib_italy_calendar_h
+#ifndef quantlib_italy_calendar_hpp
+#define quantlib_italy_calendar_hpp
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %Italy settlement calendar
-    /*! Holidays:
+    //! Italian calendars
+    /*! Public holidays:
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -45,17 +45,41 @@ namespace QuantLib {
         <li>St. Stephen's Day, December 26th</li>
         </ul>
 
+        Holidays for the stock exchange (data from http://www.borsaitalia.it):
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>Labour Day, May 1st</li>
+        <li>Assumption, August 15th</li>
+        <li>Christmas' Eve, December 24th</li>
+        <li>Christmas, December 25th</li>
+        <li>St. Stephen, December 26th</li>
+        <li>New Year's Eve, December 31st</li>
+        </ul>
+
         \ingroup calendars
     */
     class Italy : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class SettlementImpl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "Italy"; }
+            std::string name() const { return "Italian settlement"; }
+            bool isBusinessDay(const Date&) const;
+        };
+        class ExchangeImpl : public Calendar::WesternImpl {
+          public:
+            std::string name() const { return "Milan stock exchange"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        Italy();
+        //! Italian calendars
+        enum Market { Settlement,     //!< generic settlement calendar
+                      Exchange        //!< Milan stock-exchange calendar
+        };
+        Italy(Market market = Settlement);
     };
 
 }

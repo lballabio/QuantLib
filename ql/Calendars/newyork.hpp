@@ -23,13 +23,16 @@
 #ifndef quantlib_newyork_calendar_h
 #define quantlib_newyork_calendar_h
 
-#include <ql/Calendars/usexchange.hpp>
+#include <ql/Calendars/unitedstates.hpp>
 
 namespace QuantLib {
 
     #if !defined(QL_DISABLE_DEPRECATED)
-    //! \deprecated renamed to USExchange
-    typedef USExchange NewYork;
+    //! \deprecated use UnitedStates with the Exchange market
+    class NewYork : public UnitedStates {
+      public:
+        NewYork() : UnitedStates(UnitedStates::Exchange) {}
+    };
     #endif
 
 }

@@ -43,8 +43,8 @@ namespace QuantLib {
                       const std::vector<DiscountFactor> &dfs,
                       const DayCounter & dayCounter = Actual365());
         Date todaysDate() const { return todaysDate_; }
-        Date referenceDate() const { return referenceDate_; };
-        DayCounter dayCounter() const { return dayCounter_; };
+        Date referenceDate() const { return referenceDate_; }
+        DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const;
         Time maxTime() const;
         const std::vector<Time>& times() const;

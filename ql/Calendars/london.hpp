@@ -23,15 +23,19 @@
 #ifndef quantlib_london_calendar_h
 #define quantlib_london_calendar_h
 
-#include <ql/Calendars/greatbritain.hpp>
+#include <ql/Calendars/unitedkingdom.hpp>
 
 namespace QuantLib {
 
     #if !defined(QL_DISABLE_DEPRECATED)
-    //! \deprecated renamed to GreatBritain
-    typedef GreatBritain London;
+    //! \deprecated use UnitedKingdom with the Exchange market
+    class London : public UnitedKingdom {
+      public:
+        London() : UnitedKingdom(UnitedKingdom::Exchange) {}
+    };
     #endif
 
 }
+
 
 #endif

@@ -24,7 +24,6 @@
 #include <ql/Calendars/budapest.hpp>
 #include <ql/Calendars/copenhagen.hpp>
 #include <ql/Calendars/frankfurt.hpp>
-#include <ql/Calendars/greatbritain.hpp>
 #include <ql/Calendars/helsinki.hpp>
 #include <ql/Calendars/hongkong.hpp>
 #include <ql/Calendars/italy.hpp>
@@ -32,7 +31,6 @@
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Calendars/london.hpp>
 #include <ql/Calendars/milan.hpp>
-#include <ql/Calendars/milanstockexchange.hpp>
 #include <ql/Calendars/newyork.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Calendars/riyadh.hpp>
@@ -45,8 +43,8 @@
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/toronto.hpp>
-#include <ql/Calendars/usexchange.hpp>
-#include <ql/Calendars/usgovernmentbondmarket.hpp>
+#include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/Calendars/unitedstates.hpp>
 #include <ql/Calendars/xetra.hpp>
 #include <ql/Calendars/warsaw.hpp>
 #include <ql/Calendars/wellington.hpp>
