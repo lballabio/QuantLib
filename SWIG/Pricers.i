@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.30  2001/04/12 09:31:09  marmar
+    Destructor added in interface of BarrierOption
+
     Revision 1.29  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -241,6 +244,7 @@ class BarrierOption {
         double strike, Rate dividendYield, Rate riskFreeRate,
         Time residualTime, double volatility, double barrier,
         double rebate = 0.0);
+    ~BarrierOption();
 	double delta() const;
 	double gamma() const;
 	double theta() const;
