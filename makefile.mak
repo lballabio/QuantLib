@@ -21,7 +21,7 @@ quantlib::
     cd ..
 
 # Python module
-python:: quantlib
+python::
     cd Python
     $(MAKE) Python
     cd ..
