@@ -23,45 +23,13 @@
 */
 
 /*! \file tridiagonaloperator.hpp
-
-    \fullpath
-    Include/ql/FiniteDifferences/%tridiagonaloperator.hpp
     \brief tridiagonal operator
 
+    \fullpath
+    ql/FiniteDifferences/%tridiagonaloperator.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 14:00:08  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.11  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.10  2001/08/28 17:23:30  nando
-// unsigned int instead of int
-//
-// Revision 1.9  2001/08/28 13:37:35  nando
-// unsigned int instead of int
-//
-// Revision 1.8  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.7  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.6  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.5  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.4  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.3  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_tridiagonal_operator_h
 #define quantlib_tridiagonal_operator_h
@@ -95,9 +63,7 @@ namespace QuantLib {
             void setMidRow(unsigned int, double, double, double);
             void setMidRows(double, double, double);
             void setLastRow(double, double);
-            #if !(QL_TEMPLATE_METAPROGRAMMING_WORKS)
-                void setTime(Time t) {}
-            #endif
+            void setTime(Time t) {}
           protected:
             Array diagonal_, belowDiagonal_, aboveDiagonal_;
             BoundaryCondition lowerBC_, higherBC_;
