@@ -98,7 +98,6 @@ namespace QuantLib {
         #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
-        double strike = payoff->strike();
 
         Size numAssets = arguments_.blackScholesProcesses.size();
 
