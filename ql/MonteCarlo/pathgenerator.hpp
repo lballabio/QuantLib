@@ -234,7 +234,7 @@ namespace QuantLib {
         //@{
         const sample_type& next() const;
         const sample_type& antithetic() const {
-            throw Error("old framework doesn't support antithetic here");}
+            QL_FAIL("old framework doesn't support antithetic here");}
         Size size() const { return next_.value.size(); }
         //@}
       private:

@@ -147,7 +147,7 @@ namespace QuantLib {
             }
             break;
           default:
-            throw Error("BarrierPathPricer: unknown BarrierType");
+            QL_FAIL("BarrierPathPricer: unknown BarrierType");
         }
 
         if (isOptionActive) {

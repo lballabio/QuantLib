@@ -41,7 +41,7 @@ namespace QuantLib {
 
         Handle<SingleAssetOption> clone() const;
         double dividendRho() const {
-            throw Error("FdDividendOption::dividendRho not implemented yet");
+            QL_FAIL("FdDividendOption::dividendRho not implemented yet");
         }
       protected:
         void initializeStepCondition() const;

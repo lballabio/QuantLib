@@ -24,40 +24,40 @@
 namespace QuantLib {
 
     Date Calendar::roll(const Date& d ,
-			RollingConvention c,
-			const Date& origin) const {
+                        RollingConvention c,
+                        const Date& origin) const {
         QL_REQUIRE(d!=Date(), "Calendar::roll : null date");
         Date d1 = d;
         if (c == Following || c == ModifiedFollowing ||
-	    c == MonthEndReference) {
+            c == MonthEndReference) {
             while (isHoliday(d1))
                 d1++;
             if (c == ModifiedFollowing || c == MonthEndReference) {
-	       if (d1.month() != d.month()) {
-		  return roll(d,Preceding);
-	       }
-	       if (c == MonthEndReference && origin != Date()) {
-		  if (isEndOfMonth(origin) &&
-		      !isEndOfMonth(d1)) {
-		     d1 = Date(d1.lastDayOfMonth(),d1.month(),d1.year());
-		     return roll(d1,Preceding);
-		  }
-	       }
-	    }
+                if (d1.month() != d.month()) {
+                    return roll(d,Preceding);
+                }
+                if (c == MonthEndReference && origin != Date()) {
+                    if (isEndOfMonth(origin) &&
+                        !isEndOfMonth(d1)) {
+                        d1 = Date(d1.lastDayOfMonth(),d1.month(),d1.year());
+                        return roll(d1,Preceding);
+                    }
+                }
+            }
         } else if (c == Preceding || c == ModifiedPreceding) {
-	    while (isHoliday(d1))
-	       d1--;
-	    if (c == ModifiedPreceding && d1.month() != d.month()) {
-	       return roll(d,Following);
-	    }
+            while (isHoliday(d1))
+                d1--;
+            if (c == ModifiedPreceding && d1.month() != d.month()) {
+                return roll(d,Following);
+            }
         } else {
-	    throw Error("Unknown rolling convention");
+            QL_FAIL("Unknown rolling convention");
         }
-	return d1;
+        return d1;
     }
 
     Date Calendar::advance(const Date& d, int n, TimeUnit unit,
-      RollingConvention c) const {
+                           RollingConvention c) const {
         QL_REQUIRE(d!=Date(), "Calendar::roll : null date");
         if (n == 0) {
             return roll(d,c);

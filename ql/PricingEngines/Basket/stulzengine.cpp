@@ -173,7 +173,9 @@ namespace QuantLib {
                                               variance1, variance2, rho);
                 break;
               case Option::Straddle:
-                throw Error("BasketOption: unsupported option type");
+                QL_FAIL("BasketOption: unsupported option type");
+              default:
+                QL_FAIL("BasketOption: unknown option type");
             }
             break;
           case BasketOption::Min:
@@ -196,11 +198,13 @@ namespace QuantLib {
                                               variance1, variance2, rho);
                 break;
               case Option::Straddle:
-                throw Error("BasketOption: unsupported option type");
+                QL_FAIL("BasketOption: unsupported option type");
+              default:
+                QL_FAIL("BasketOption: unknown option type");
             }
             break;
           default:
-            throw Error("BasketOption: unknown type");
+            QL_FAIL("BasketOption: unknown type");
         }
 
     }

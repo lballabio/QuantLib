@@ -47,8 +47,8 @@ namespace QuantLib {
         do {
             // Linesearch
             t = (*lineSearch_)(P, t);
-            if (!lineSearch_->succeed())
-                throw Error("Conjugate gradient: line-search failed!");
+            QL_REQUIRE(lineSearch_->succeed(),
+                       "Conjugate gradient: line-search failed!");
 
             // Updates
             d = SearchDirection;

@@ -37,7 +37,7 @@ namespace QuantLib {
           case Euro:
             return Handle<DayCounter::Impl>(new AFB_Impl);
           default:
-            throw Error("Unknown act/act convention");
+            QL_FAIL("Unknown act/act convention");
         }
     }
 

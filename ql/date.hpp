@@ -101,48 +101,6 @@ namespace QuantLib {
     /*! \relates Period */
     bool operator>=(const Period&, const Period&);
 
-    inline bool operator<(const Period& p1, const Period& p2) {
-        if (p1.units() == p2.units())
-            return (p1.length() < p2.length());
-        if (p1.units() == Days) {
-            if (p2.units() == Weeks)
-                return (p1.length() < p2.length() * 7);
-            else if (p2.units() == Years)
-                return (p1.length() < p2.length() * 365);
-            else if (p2.units() == Months)
-                throw Error("undecidable comparison between days and months");
-            else
-                throw Error("unknown units");
-        } else if (p1.units() == Weeks) {
-            if (p2.units() == Days)
-                return (p1.length() * 7 < p2.length());
-            else if (p2.units() == Months || p2.units() == Years)
-                throw Error("undecidable comparison between "
-                            "weeks and months/years");
-            else
-                throw Error("unknown units");
-        } else if (p1.units() == Months) {
-            if (p2.units() == Years)
-                return (p1.length() < p2.length() * 12);
-            else if (p2.units() == Days || p2.units() == Weeks)
-                throw Error("undecidable comparison between "
-                            "months and days/weeks");
-            else
-                throw Error("unknown units");
-        } else if (p1.units() == Years) {
-            if (p2.units() == Days)
-                return (p1.length() * 365 < p2.length());
-            else if (p2.units() == Months)
-                return (p1.length() * 12 < p2.length());
-            else if (p2.units() == Weeks)
-                throw Error("undecidable outcome comparing years and weeks");
-            else
-                throw Error("unknown units");
-        } else {
-            throw Error("unknown units");
-        }
-    }
-
     inline bool operator==(const Period& p1, const Period& p2) {
         return !(p1 < p2 || p2 < p1);
     }

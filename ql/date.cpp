@@ -23,6 +23,49 @@
 
 namespace QuantLib {
 
+    bool operator<(const Period& p1, const Period& p2) {
+        if (p1.units() == p2.units())
+            return (p1.length() < p2.length());
+        if (p1.units() == Days) {
+            if (p2.units() == Weeks)
+                return (p1.length() < p2.length() * 7);
+            else if (p2.units() == Years)
+                return (p1.length() < p2.length() * 365);
+            else if (p2.units() == Months)
+                QL_FAIL("undecidable comparison between days and months");
+            else
+                QL_FAIL("unknown units");
+        } else if (p1.units() == Weeks) {
+            if (p2.units() == Days)
+                return (p1.length() * 7 < p2.length());
+            else if (p2.units() == Months || p2.units() == Years)
+                QL_FAIL("undecidable comparison between "
+                        "weeks and months/years");
+            else
+                QL_FAIL("unknown units");
+        } else if (p1.units() == Months) {
+            if (p2.units() == Years)
+                return (p1.length() < p2.length() * 12);
+            else if (p2.units() == Days || p2.units() == Weeks)
+                QL_FAIL("undecidable comparison between "
+                            "months and days/weeks");
+            else
+                QL_FAIL("unknown units");
+        } else if (p1.units() == Years) {
+            if (p2.units() == Days)
+                return (p1.length() * 365 < p2.length());
+            else if (p2.units() == Months)
+                return (p1.length() * 12 < p2.length());
+            else if (p2.units() == Weeks)
+                QL_FAIL("undecidable outcome comparing years and weeks");
+            else
+                QL_FAIL("unknown units");
+        } else {
+            QL_FAIL("unknown units");
+        }
+    }
+
+
     // constructors
     Date::Date()
     : serialNumber_(0L) {}
@@ -115,20 +158,20 @@ namespace QuantLib {
     Date Date::plus(int units, TimeUnit theUnit) const {
         Date d;
         switch (theUnit) {
-        case Days:
+          case Days:
             d = plusDays(units);
             break;
-        case Weeks:
+          case Weeks:
             d = plusWeeks(units);
             break;
-        case Months:
+          case Months:
             d = plusMonths(units);
             break;
-        case Years:
+          case Years:
             d = plusYears(units);
             break;
-        default:
-            throw IllegalArgumentError("Date::plus : undefined time units");
+          default:
+            QL_FAIL("Date::plus : undefined time units");
         }
         return d;
     }

@@ -104,7 +104,7 @@ namespace {
             #endif
             break;
           default:
-            throw Error("Unknown engine type");
+            QL_FAIL("Unknown engine type");
         }
 
 
@@ -140,7 +140,7 @@ namespace {
           case QuasiMonteCarlo:
             return "Quasi-MonteCarlo";
           default:
-            throw Error("unknown engine type");
+            QL_FAIL("unknown engine type");
         }
     }
 

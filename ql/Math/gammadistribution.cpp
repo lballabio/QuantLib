@@ -58,7 +58,7 @@ namespace QuantLib {
                     return h*QL_EXP(-x + a_*QL_LOG(x) - gln);
             }
         }
-        throw Error("Too few iterations in GammaDistribution");
+        QL_FAIL("Too few iterations in GammaDistribution");
     }
 
     const double GammaFunction::c1_ = 76.18009172947146;

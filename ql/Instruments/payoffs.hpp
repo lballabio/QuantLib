@@ -75,7 +75,7 @@ namespace QuantLib {
           case Option::Straddle:
             return QL_FABS(strike_-price);
           default:
-            throw Error("Unknown/Illegal option type");
+            QL_FAIL("Unknown/Illegal option type");
         }
     }
 
@@ -101,7 +101,7 @@ namespace QuantLib {
           case Option::Straddle:
             return price*QL_FABS(strike_-1.0);
           default:
-            throw Error("Unknown/Illegal option type");
+            QL_FAIL("Unknown/Illegal option type");
         }
     }
 
@@ -121,13 +121,13 @@ namespace QuantLib {
     inline double CashOrNothingPayoff::operator()(double price) const {
         switch (type_) {
           case Option::Call:
-              return (price-strike_ > 0.0 ? cashPayoff_ : 0.0);
+            return (price-strike_ > 0.0 ? cashPayoff_ : 0.0);
           case Option::Put:
-              return (strike_-price > 0.0 ? cashPayoff_ : 0.0);
+            return (strike_-price > 0.0 ? cashPayoff_ : 0.0);
           case Option::Straddle:
-              return cashPayoff_;
+            return cashPayoff_;
           default:
-            throw Error("Unknown/Illegal option type");
+            QL_FAIL("Unknown/Illegal option type");
         }
     }
 
@@ -144,13 +144,13 @@ namespace QuantLib {
     inline double AssetOrNothingPayoff::operator()(double price) const {
         switch (type_) {
           case Option::Call:
-              return (price-strike_ > 0.0 ? price : 0.0);
+            return (price-strike_ > 0.0 ? price : 0.0);
           case Option::Put:
-              return (strike_-price > 0.0 ? price : 0.0);
+            return (strike_-price > 0.0 ? price : 0.0);
           case Option::Straddle:
-              return price;
+            return price;
           default:
-              throw Error("Unknown/Illegal option type");
+            QL_FAIL("Unknown/Illegal option type");
         }
     }
 
@@ -171,13 +171,13 @@ namespace QuantLib {
     inline double GapPayoff::operator()(double price) const {
         switch (type_) {
           case Option::Call:
-              return (price-strike_ > 0.0 ? price-strikePayoff_ : 0.0);
+            return (price-strike_ > 0.0 ? price-strikePayoff_ : 0.0);
           case Option::Put:
-              return (strike_-price > 0.0 ? strikePayoff_-price : 0.0);
+            return (strike_-price > 0.0 ? strikePayoff_-price : 0.0);
           case Option::Straddle:
-              return 0.0;
+            return 0.0;
           default:
-              throw Error("Unknown/Illegal option type");
+            QL_FAIL("Unknown/Illegal option type");
         }
     }
 
@@ -197,17 +197,17 @@ namespace QuantLib {
     inline double SuperSharePayoff::operator()(double price) const {
         switch (type_) {
           case Option::Call:
-              return ((price-strike_                  > 0.0 ? 1.0 : 0.0)
-                     -(price-strike_-strikeIncrement_ > 0.0 ? 1.0 : 0.0))
-                                                        / strikeIncrement_;
+            return ((price-strike_                  > 0.0 ? 1.0 : 0.0)
+                   -(price-strike_-strikeIncrement_ > 0.0 ? 1.0 : 0.0))
+                / strikeIncrement_;
           case Option::Put:
-              return ((strike_                 -price > 0.0 ? 1.0 : 0.0)
-                     -(strike_+strikeIncrement_-price > 0.0 ? 1.0 : 0.0))
-                                                        / strikeIncrement_;
+            return ((strike_                 -price > 0.0 ? 1.0 : 0.0)
+                   -(strike_+strikeIncrement_-price > 0.0 ? 1.0 : 0.0))
+                / strikeIncrement_;
           case Option::Straddle:
-              return -1.0;
+            return -1.0;
           default:
-            throw Error("Unknown/Illegal option type");
+            QL_FAIL("Unknown/Illegal option type");
         }
     }
 

@@ -59,7 +59,7 @@ namespace QuantLib {
         if (v1 != 0)
             v1->visit(*this);
         else
-            throw Error("Not a CashFlow visitor");
+            QL_FAIL("Not a CashFlow visitor");
     }
 
 }

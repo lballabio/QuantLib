@@ -96,8 +96,8 @@ namespace QuantLib {
             inTheMoneyProbability = 1.0;
             break;
           default:
-            throw Error("AnalyticEuropeanBinaryBarrierEngine: "
-                        "invalid option type");
+            QL_FAIL("AnalyticEuropeanBinaryBarrierEngine: "
+                    "invalid option type");
         }
 
         results_.value = cashPayoff * discount * inTheMoneyProbability;

@@ -93,10 +93,10 @@ namespace QuantLib {
                     xh=root_;
             }
 
-            throw Error("NewtonSafe::solveImpl "
-                        "maximum number of function evaluations (" +
-                        IntegerFormatter::toString(maxEvaluations_) +
-                        ") exceeded");
+            QL_FAIL("NewtonSafe::solveImpl "
+                    "maximum number of function evaluations (" +
+                    IntegerFormatter::toString(maxEvaluations_) +
+                    ") exceeded");
 
             QL_DUMMY_RETURN(0.0);
         }

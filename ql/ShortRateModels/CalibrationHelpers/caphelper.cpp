@@ -41,8 +41,9 @@ namespace QuantLib {
         } else if (indexTenor.units() == Years) {
             QL_REQUIRE(indexTenor.length()==1, "Invalid index tenor");
             frequency=1;
-        } else
-            throw Error("Invalid index tenor");
+        } else {
+            QL_FAIL("Invalid index tenor");
+        }
         Rate fixedRate = 0.04;//dummy value
         Date startDate = termStructure->referenceDate().
             plus(indexTenor.length(), indexTenor.units());

@@ -40,7 +40,7 @@ namespace QuantLib {
                         double a = 0.1, double sigma = 0.1);
 
         Handle<ShortRateDynamics> dynamics() const {
-            throw Error("No defined process for Black-Karasinski");
+            QL_FAIL("No defined process for Black-Karasinski");
         }
 
         Handle<Lattice> tree(const TimeGrid& grid) const;

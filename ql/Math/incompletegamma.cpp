@@ -72,8 +72,8 @@ namespace QuantLib {
                 return sum*QL_EXP(-x+a*QL_LOG(x)-gln);
             }
         }
-        throw Error("incompleteGammaFunctionSeriesRepr : "
-            "accuracy not reached with maxIteration.");
+        QL_FAIL("incompleteGammaFunctionSeriesRepr : "
+                "accuracy not reached with maxIteration.");
     }
 
     double incompleteGammaFunctionContinuedFractionRepr(double a, double x,
@@ -101,8 +101,8 @@ namespace QuantLib {
             }
         }
 
-        throw Error("incompleteGammaFunctionContinuedFractionRepr : "
-            "accuracy not reached with maxIteration.");
+        QL_FAIL("incompleteGammaFunctionContinuedFractionRepr : "
+                "accuracy not reached with maxIteration.");
     }
 
 

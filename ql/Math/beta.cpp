@@ -62,13 +62,14 @@ namespace QuantLib {
     		if (QL_FABS(del-1.0) < accuracy)
             	return result;
     	}
-    	throw Error("betaContinuedFraction : "
-    	    "a or b too big, or maxIteration too small in betacf");
+    	QL_FAIL("betaContinuedFraction : "
+                "a or b too big, or maxIteration too small in betacf");
     }
 
 
-    double incompleteBetaFunction(double a, double b, double x, double accuracy,
-        int maxIteration) {
+    double incompleteBetaFunction(double a, double b, 
+                                  double x, double accuracy,
+                                  int maxIteration) {
 
     	QL_REQUIRE(a > 0.0,
     	    "betaIncompleteFunction : "

@@ -33,7 +33,7 @@ namespace QuantLib {
           case Italian:
             return Handle<DayCounter::Impl>(new IT_Impl);
           default:
-            throw Error("Unknown 30/360 convention");
+            QL_FAIL("Unknown 30/360 convention");
         }
     }
 

@@ -109,7 +109,7 @@ namespace QuantLib {
             }
             break;
           default:
-            throw Error("BinaryBarrierPathPricer: unknown option type");
+            QL_FAIL("BinaryBarrierPathPricer: unknown option type");
         }
 
         return 0.0;

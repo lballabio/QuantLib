@@ -73,7 +73,7 @@ namespace {
                 new Floor(leg, std::vector<Rate>(1, strike),
                           termStructure_, makeEngine(volatility)));
           default:
-            throw Error("unknown cap/floor type");
+            QL_FAIL("unknown cap/floor type");
         }
     }
 
@@ -86,7 +86,7 @@ namespace {
           case CapFloor::Collar:
             return "collar";
           default:
-            throw Error("unknown cap/floor type");
+            QL_FAIL("unknown cap/floor type");
         }
     }
 

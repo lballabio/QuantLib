@@ -155,9 +155,9 @@ namespace QuantLib {
                         1.0/dividendDiscount, variance);
                     break;
                 default:
-                    throw Error("BaroneAdesiWhaleyApproximationEngine::"
-                        "calculate() :"
-                        "unknown option type");
+                    QL_FAIL("BjerksundStenslandApproximationEngine::"
+                            "calculate() :"
+                            "unknown option type");
             }
         } // end of "early exercise can be optimal"
 

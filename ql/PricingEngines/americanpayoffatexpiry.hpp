@@ -180,9 +180,8 @@ namespace QuantLib {
                 DbetaDd2_  = 0.0; // -n( d1) + n(d1)
                 break;
             default:
-                throw IllegalArgumentError(
-                    "AnalyticAmericanEngine::calculate() :"
-                    "invalid option type");
+                QL_FAIL("AnalyticAmericanEngine::calculate() :"
+                        "invalid option type");
          }
 
 

@@ -51,11 +51,11 @@ namespace QuantLib {
             its fixing for future dates, either.
         */
         double amount() const {
-            throw Error("short/long indexed coupons not supported yet"
-                        " (start = " +
-                        DateFormatter::toString(accrualStartDate_) +
-                        ", end = " +
-                        DateFormatter::toString(accrualEndDate_) + ")");
+            QL_FAIL("short/long indexed coupons not supported yet"
+                    " (start = " +
+                    DateFormatter::toString(accrualStartDate_) +
+                    ", end = " +
+                    DateFormatter::toString(accrualEndDate_) + ")");
         }
     };
 

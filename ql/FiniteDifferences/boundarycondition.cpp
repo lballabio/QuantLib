@@ -35,7 +35,7 @@ namespace QuantLib {
             L.setLastRow(-1.0,1.0);
             break;
           default:
-            throw Error("Unknown side for Neumann boundary condition");
+            QL_FAIL("Unknown side for Neumann boundary condition");
         }
     }
 
@@ -48,7 +48,7 @@ namespace QuantLib {
             u[u.size()-1] = u[u.size()-2] + value_;
             break;
           default:
-            throw Error("Unknown side for Neumann boundary condition");
+            QL_FAIL("Unknown side for Neumann boundary condition");
         }
     }
 
@@ -64,7 +64,7 @@ namespace QuantLib {
             rhs[rhs.size()-1] = value_;
             break;
           default:
-            throw Error("Unknown side for Neumann boundary condition");
+            QL_FAIL("Unknown side for Neumann boundary condition");
         }
     }
 
@@ -84,7 +84,7 @@ namespace QuantLib {
             L.setLastRow(0.0,1.0);
             break;
           default:
-            throw Error("Unknown side for Neumann boundary condition");
+            QL_FAIL("Unknown side for Neumann boundary condition");
         }
     }
 
@@ -97,7 +97,7 @@ namespace QuantLib {
             u[u.size()-1] = value_;
             break;
           default:
-            throw Error("Unknown side for Neumann boundary condition");
+            QL_FAIL("Unknown side for Neumann boundary condition");
         }
     }
 
@@ -113,7 +113,7 @@ namespace QuantLib {
             rhs[rhs.size()-1] = value_;
             break;
           default:
-            throw Error("Unknown side for Neumann boundary condition");
+            QL_FAIL("Unknown side for Neumann boundary condition");
         }
     }
 

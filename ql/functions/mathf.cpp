@@ -59,8 +59,7 @@ namespace QuantLib {
                     y_values.begin())(x, allowExtrapolation);
             break;
           default:
-            throw IllegalArgumentError(
-                        "interpolate: invalid interpolation type");
+            QL_FAIL("interpolate: invalid interpolation type");
         }
 
         return result;
@@ -92,8 +91,7 @@ namespace QuantLib {
                         allowExtrapolation);
             break;
           default:
-            throw IllegalArgumentError(
-                        "interpolate2D: invalid interpolation type");
+            QL_FAIL("interpolate2D: invalid interpolation type");
         }
 
         return result;

@@ -123,13 +123,13 @@ namespace QuantLib {
                 evaluationNumber_++;
             }
 
-            throw Error("unable to bracket root in " +
-                        IntegerFormatter::toString(maxEvaluations_) +
-                        " function evaluations (last bracket attempt: f[" +
-                        DoubleFormatter::toString(xMin_) + "," + 
-                        DoubleFormatter::toString(xMax_) + "] -> [" +
-                        DoubleFormatter::toExponential(fxMin_) + "," +
-                        DoubleFormatter::toExponential(fxMax_) + "])");
+            QL_FAIL("unable to bracket root in " +
+                    IntegerFormatter::toString(maxEvaluations_) +
+                    " function evaluations (last bracket attempt: f[" +
+                    DoubleFormatter::toString(xMin_) + "," + 
+                    DoubleFormatter::toString(xMax_) + "] -> [" +
+                    DoubleFormatter::toExponential(fxMin_) + "," +
+                    DoubleFormatter::toExponential(fxMax_) + "])");
         }
         /*! This method returns the zero of the function \f$ f \f$,
             determined with the given accuracy (i.e., \f$ x \f$ is

@@ -50,27 +50,27 @@ namespace QuantLib {
                     break;
             }
             if (i == 0) {
-                throw Error("Using inadequate TimeGrid: all nodes "
-                            "are later than the required time t = "
-                            + DoubleFormatter::toString(t,12) +
-                            " (earliest node is t1 = "
-                            + DoubleFormatter::toString((*this)[0],12) +
-                            ")");
+                QL_FAIL("Using inadequate TimeGrid: all nodes "
+                        "are later than the required time t = "
+                        + DoubleFormatter::toString(t,12) +
+                        " (earliest node is t1 = "
+                        + DoubleFormatter::toString((*this)[0],12) +
+                        ")");
             } else if (i == int(size())) {
-                throw Error("Using inadequate TimeGrid: all nodes "
-                            "are earlier than the required time t = "
-                            + DoubleFormatter::toString(t,12) +
-                            " (latest node is t1 = "
-                            + DoubleFormatter::toString((*this)[size()-1],12) +
-                            ")");
+                QL_FAIL("Using inadequate TimeGrid: all nodes "
+                        "are earlier than the required time t = "
+                        + DoubleFormatter::toString(t,12) +
+                        " (latest node is t1 = "
+                        + DoubleFormatter::toString((*this)[size()-1],12) +
+                        ")");
             } else {
-                throw Error("Using inadequate TimeGrid: the nodes closest "
-                            "to the required time t = "
-                            + DoubleFormatter::toString(t,12) +
-                            " are t1 = " 
-                            + DoubleFormatter::toString((*this)[i-1],12) +
-                            " and t2 = "
-                            + DoubleFormatter::toString((*this)[i],12));
+                QL_FAIL("Using inadequate TimeGrid: the nodes closest "
+                        "to the required time t = "
+                        + DoubleFormatter::toString(t,12) +
+                        " are t1 = " 
+                        + DoubleFormatter::toString((*this)[i-1],12) +
+                        " and t2 = "
+                        + DoubleFormatter::toString((*this)[i],12));
             }
         }
         return result - begin();

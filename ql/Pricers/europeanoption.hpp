@@ -84,8 +84,8 @@ namespace QuantLib {
                 alpha_ = 2.0*f_(D1())-1.0;
                 break;
               default:
-                throw IllegalArgumentError("EuropeanOption: "
-                                           "invalid option type");
+                QL_FAIL("EuropeanOption: "
+                        "invalid option type");
             }
         }
         return alpha_;
@@ -104,8 +104,8 @@ namespace QuantLib {
                 beta_ = 2.0*f_(D2())-1.0;
                 break;
               default:
-                throw IllegalArgumentError("EuropeanOption: "
-                                           "invalid option type");
+                QL_FAIL("EuropeanOption: "
+                        "invalid option type");
             }
         }
         return beta_;
@@ -143,8 +143,8 @@ namespace QuantLib {
                 NID1_ = 2.0*f_.derivative(D1());
                 break;
               default:
-                throw IllegalArgumentError("EuropeanOption: "
-                                           "invalid option type");
+                QL_FAIL("EuropeanOption: "
+                        "invalid option type");
             }
         }
         return NID1_;

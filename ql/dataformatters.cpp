@@ -174,7 +174,7 @@ namespace QuantLib {
                          IntegerFormatter::toString(dd);
                 break;
               default:
-                throw Error("unknown date format");
+                QL_FAIL("unknown date format");
             }
         }
         return output;
@@ -264,7 +264,7 @@ namespace QuantLib {
           case Option::Put:      return "put";
           case Option::Straddle: return "straddle";
           default:
-            throw Error("unknown option type");
+            QL_FAIL("unknown option type");
         }
     }
 

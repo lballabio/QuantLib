@@ -60,18 +60,22 @@ namespace QuantLib {
                 x = path.drift()[i] + path.diffusion()[i];
                 // terminal or initial vol?
                 // initial (timeGrid[i+1]) for the time being
-                vol = diffProcess_->diffusion(timeGrid[i+1],QL_EXP(log_asset_price));
-                // vol = diffProcess_->diffusion(timeGrid[i+2],QL_EXP(log_asset_price+x));
+                vol = diffProcess_->diffusion(timeGrid[i+1],
+                                              QL_EXP(log_asset_price));
+                // vol = diffProcess_->diffusion(timeGrid[i+2],
+                //                               QL_EXP(log_asset_price+x));
                 dt = timeGrid.dt(i);
-                y = log_asset_price + 0.5*(x + QL_SQRT (x*x-2*vol*vol*dt*QL_LOG((1-u[i]))));
+                y = log_asset_price + 
+                    0.5*(x + QL_SQRT(x*x-2*vol*vol*dt*QL_LOG((1-u[i]))));
                 // cross the strike
                 if (y >= log_strike) {
                     if (exercise_->payoffAtExpiry()) {
                         return payoff_->cashPayoff() * 
                             riskFreeTS_->discount(path.timeGrid().back());
                     } else {
-                        // the discount should be calculated at the exercise time
-                        // between path.timeGrid()[i+1] and path.timeGrid()[i+2]
+                        // the discount should be calculated at the exercise 
+                        // time between path.timeGrid()[i+1] and 
+                        // path.timeGrid()[i+2]
                         return payoff_->cashPayoff() * 
                             riskFreeTS_->discount(path.timeGrid()[i+1]);
                     }
@@ -84,17 +88,21 @@ namespace QuantLib {
                 x = path.drift()[i]+path.diffusion()[i];
                 // terminal or initial vol?                        
                 // initial (timeGrid[i+1]) for the time being
-                vol = diffProcess_->diffusion(timeGrid[i+1],QL_EXP(log_asset_price));
-                // vol = diffProcess_->diffusion(timeGrid[i+2],QL_EXP(log_asset_price+x));
+                vol = diffProcess_->diffusion(timeGrid[i+1],
+                                              QL_EXP(log_asset_price));
+                // vol = diffProcess_->diffusion(timeGrid[i+2],
+                //                               QL_EXP(log_asset_price+x));
                 dt = timeGrid.dt(i);
-                y = log_asset_price + 0.5*(x - QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG(u[i])));
+                y = log_asset_price + 
+                    0.5*(x - QL_SQRT(x*x - 2*vol*vol*dt*QL_LOG(u[i])));
                 if (y <= log_strike) {
                     if (exercise_->payoffAtExpiry()) {
                         return payoff_->cashPayoff() * 
                             riskFreeTS_->discount(path.timeGrid().back());
                     } else {
-                        // the discount should be calculated at the exercise time
-                        // between path.timeGrid()[i+1] and path.timeGrid()[i+2]
+                        // the discount should be calculated at the exercise 
+                        // time between path.timeGrid()[i+1] and 
+                        // path.timeGrid()[i+2]
                         return payoff_->cashPayoff() *
                             riskFreeTS_->discount(path.timeGrid()[i+1]);
                     }
@@ -103,7 +111,7 @@ namespace QuantLib {
             }
             break;
           default:
-            throw Error("DigitalPathPricer: unknown option type");
+            QL_FAIL("DigitalPathPricer: unknown option type");
         }
 
         return 0.0;

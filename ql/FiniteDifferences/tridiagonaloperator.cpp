@@ -35,8 +35,8 @@ namespace QuantLib {
             lowerDiagonal_ = Array(0);
             upperDiagonal_ = Array(0);
         } else {
-            throw Error("invalid size for tridiagonal operator "
-                        "(must be null or >= 3)");
+            QL_FAIL("invalid size for tridiagonal operator "
+                    "(must be null or >= 3)");
         }
     }
 

@@ -188,7 +188,7 @@ namespace QuantLib {
                                long seed=0);
         const sample_type& next() const;
         const sample_type& antithetic() const {
-            throw Error("old framework doesn't support antithetic here");}
+            QL_FAIL("old framework doesn't support antithetic here");}
       private:
         Size numAssets_;
         RAG rndArrayGen_;

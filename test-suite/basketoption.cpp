@@ -41,7 +41,7 @@ namespace {
             return "Basket::Max";
         }
 
-        throw Error("basketTypeToString : unknown basket option type");
+        QL_FAIL("basketTypeToString : unknown basket option type");
     }
 
     void basketOptionTestFailed(std::string greekName,

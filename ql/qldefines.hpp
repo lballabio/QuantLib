@@ -82,7 +82,7 @@
     if (condition)
         return validResult;
     else
-        throw HideousError();
+        QL_FAIL("whatever the reason");
     \endcode
     On the other hand, other compilers will issue a warning if it is present
     because it cannot be reached.

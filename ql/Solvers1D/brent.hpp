@@ -106,10 +106,10 @@ namespace QuantLib {
                 froot=f(root_);
                 evaluationNumber_++;
             }
-            throw Error("Brent::solveImpl: "
-                        " maximum number of function evaluations ("
-                        + IntegerFormatter::toString(maxEvaluations_) 
-                        + ") exceeded");
+            QL_FAIL("Brent::solveImpl: "
+                    " maximum number of function evaluations ("
+                    + IntegerFormatter::toString(maxEvaluations_) 
+                    + ") exceeded");
             QL_DUMMY_RETURN(0.0);
         }
       private:

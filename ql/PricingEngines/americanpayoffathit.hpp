@@ -91,8 +91,8 @@ namespace QuantLib {
                 mu_     = - 0.5;
                 lambda_ = 0.5;
             } else if (discount_==0.0) {
-                throw Error("AmericanPayoffAtHit::AmericanPayoffAtHit : "
-                    "null discount not handled yet");
+                QL_FAIL("AmericanPayoffAtHit::AmericanPayoffAtHit : "
+                        "null discount not handled yet");
             } else {
                 mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
                 lambda_ = QL_SQRT(mu_*mu_-2.0*QL_LOG(discount_)/variance_);
@@ -159,9 +159,8 @@ namespace QuantLib {
                 DbetaDd2_  = 0.0; // -n( d2) + n(d2)
                 break;
             default:
-                throw IllegalArgumentError(
-                    "AnalyticAmericanEngine::calculate() :"
-                    "invalid option type");
+                QL_FAIL("AnalyticAmericanEngine::calculate() :"
+                        "invalid option type");
          }
 
 

@@ -77,7 +77,7 @@ namespace QuantLib {
             switch(type) {
               case Option::Call: return QL_MAX(discountS - strike, 0.0);
               case Option::Put:  return QL_MAX(strike - discountS, 0.0);
-              default: throw Error("unsupported option type");
+              default: QL_FAIL("unsupported option type");
             }
         }
 

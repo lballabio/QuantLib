@@ -40,7 +40,7 @@ namespace QuantLib {
             tenor = IntegerFormatter::toString(n_)+"y";
             break;
           default:
-            throw Error("invalid time unit");
+            QL_FAIL("invalid time unit");
         }
         return familyName_+tenor+" "+dayCounter_.name();
     }
@@ -54,7 +54,7 @@ namespace QuantLib {
             QL_REQUIRE(n_ == 1, "undefined frequency");
             return n_;
           default:
-            throw Error("undefined frequency");
+            QL_FAIL("undefined frequency");
         }
         QL_DUMMY_RETURN(0)
     }

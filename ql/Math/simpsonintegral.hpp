@@ -60,8 +60,8 @@ namespace QuantLib {
                 adjI = newAdjI;
                 i++;
             } while (i < maxIterations_);
-            throw Error("SimpsonIntegral: "
-                        "max number of iterations reached");
+            QL_FAIL("SimpsonIntegral: "
+                    "max number of iterations reached");
         }
       private:
         // inhibited

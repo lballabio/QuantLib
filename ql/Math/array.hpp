@@ -355,7 +355,7 @@ namespace QuantLib {
                 }
                 if (pointer_ == 0) {
                     n_ = bufferSize_ = 0;
-                    throw OutOfMemoryError("Array");
+                    QL_FAIL("out of memory");
                 }
             }
         }

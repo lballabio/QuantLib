@@ -37,7 +37,7 @@ namespace {
         else if (averageType == Average::Arithmetic)
             return "Arithmetic Averaging";
         else
-            throw Error("unknown averaging");
+            QL_FAIL("unknown averaging");
     }
 
     void asianOptionTestFailed(std::string greekName,

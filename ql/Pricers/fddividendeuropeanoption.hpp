@@ -38,8 +38,8 @@ namespace QuantLib {
         double theta() const;
         double rho() const;
         double dividendRho() const {
-            throw Error("FdDividendEuropeanOption::dividendRho not"
-                        "implemented yet");
+            QL_FAIL("FdDividendEuropeanOption::dividendRho not"
+                    "implemented yet");
         }
         Handle<SingleAssetOption> clone() const;
         double riskless(Rate r, std::vector<double> divs,

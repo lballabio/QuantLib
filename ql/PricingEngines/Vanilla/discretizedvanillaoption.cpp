@@ -50,9 +50,8 @@ namespace QuantLib {
             }
             break;
           default:
-            throw IllegalArgumentError(
-                           "DiscretizedVanillaOption::postAdjustValues() : "
-                           "invalid option type");
+            QL_FAIL("DiscretizedVanillaOption::postAdjustValues() : "
+                    "invalid option type");
         }
     }
 

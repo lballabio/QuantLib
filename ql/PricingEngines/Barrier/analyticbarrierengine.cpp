@@ -135,7 +135,7 @@ namespace QuantLib {
             }
             break;
           default:
-            throw Error("Option: unknown type");
+            QL_FAIL("Option: unknown type");
         }
     }
 

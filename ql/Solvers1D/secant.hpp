@@ -63,10 +63,10 @@ namespace QuantLib {
                 if (QL_FABS(dx) < xAccuracy || froot == 0.0)
                     return root_;
             }
-            throw Error("Secant::solveImpl: "
-                        "maximum number of function evaluations (" +
-                        IntegerFormatter::toString(maxEvaluations_) +
-                        ") exceeded");
+            QL_FAIL("Secant::solveImpl: "
+                    "maximum number of function evaluations (" +
+                    IntegerFormatter::toString(maxEvaluations_) +
+                    ") exceeded");
             QL_DUMMY_RETURN(0.0);
         }
     };

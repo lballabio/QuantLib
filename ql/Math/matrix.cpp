@@ -77,19 +77,19 @@ namespace QuantLib {
         }
 
         switch (sa) {
-            case SalvagingAlgorithm::None:
-            case SalvagingAlgorithm::Spectral:
-                return result;
+          case SalvagingAlgorithm::None:
+          case SalvagingAlgorithm::Spectral:
+            return result;
             // optimization step
-            case SalvagingAlgorithm::Hypersphere:
-                result = result * transpose(result);
-                result = CholeskyDecomposition(result, true);
-                // will use spectral result as starting guess
+          case SalvagingAlgorithm::Hypersphere:
+            result = result * transpose(result);
+            result = CholeskyDecomposition(result, true);
+            // will use spectral result as starting guess
 
-                // optimization (general or LMM specific)
-                throw Error("not implemented yet");
-            default:
-                throw Error("unknown salvaging algorithm");
+            // optimization (general or LMM specific)
+            QL_FAIL("not implemented yet");
+          default:
+            QL_FAIL("unknown salvaging algorithm");
         }
 
     }
@@ -144,17 +144,17 @@ namespace QuantLib {
         }
 
         switch (sa) {
-        case SalvagingAlgorithm::Spectral:
+          case SalvagingAlgorithm::Spectral:
             return result;
-        case SalvagingAlgorithm::Hypersphere:
+          case SalvagingAlgorithm::Hypersphere:
             result = result * transpose(result);
             result = CholeskyDecomposition(result, true);
             // will use spectral result as starting guess
 
             // optimization (general or LMM specific)
-            throw Error("rankReducedSqrt: not implemented yet");
-        default:
-            throw Error("unknown salvaging algorithm");
+            QL_FAIL("rankReducedSqrt: not implemented yet");
+          default:
+            QL_FAIL("unknown salvaging algorithm");
         }
 
     }

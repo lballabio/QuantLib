@@ -34,6 +34,9 @@ namespace QuantLib {
     //! Base error class
     class Error : public std::exception {
       public:
+        /*! The explicit use of this constructor is not advised.
+            Use the QL_FAIL macro instead.
+        */
         explicit Error(const std::string& what = "") : message_(what) {}
         ~Error() throw() {}
         //! returns the error message.
@@ -118,6 +121,14 @@ namespace QuantLib {
     };
 
 }
+
+/*! \def QL_FAIL
+    \brief throw an error (possibly with file and line information)
+*/
+#define QL_FAIL(message) \
+throw QuantLib::Error(\
+    QuantLib::Error::where(__FILE__,__LINE__) +  message)
+
 
 /*! \def QL_ASSERT
     \brief throw an error if the given condition is not verified

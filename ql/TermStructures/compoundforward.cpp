@@ -139,8 +139,8 @@ namespace QuantLib {
             // signal incomplete state
             needsBootstrap_ = true;
             // rethrow
-            throw Error("Could not bootstrap curve." +
-                        std::string(e.what()));
+            QL_FAIL("Could not bootstrap curve." +
+                    std::string(e.what()));
         }
         return discountCurve_;
     }

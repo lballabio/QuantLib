@@ -31,7 +31,7 @@ namespace QuantLib {
         QL_REQUIRE(str.length()>1, "Argument needs length of at least 2");
         Size iPos = str.find_first_of("DdWwMmYy");
         if (iPos != str.length()-1)
-            throw Error("Unknown units, input: '"+str+"'");
+            QL_FAIL("Unknown units, input: '"+str+"'");
         char abbr = QL_TOUPPER(str[iPos]);
         if (abbr == 'D')      units = Days;
         else if (abbr == 'W') units = Weeks;

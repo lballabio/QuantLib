@@ -83,7 +83,8 @@ namespace QuantLib {
           case Barrier::DownIn:
             QL_REQUIRE(blackScholesProcess->stateVariable->value() >= barrier,
                 "underlying (" +
-                DoubleFormatter::toString(blackScholesProcess->stateVariable->value()) +
+                DoubleFormatter::toString(blackScholesProcess
+                                          ->stateVariable->value()) +
                 ") < barrier (" +
                 DoubleFormatter::toString(barrier) +
                 "): down-and-in barrier undefined");
@@ -91,7 +92,8 @@ namespace QuantLib {
           case Barrier::UpIn:
             QL_REQUIRE(blackScholesProcess->stateVariable->value() <= barrier,
                 "underlying ("+
-                DoubleFormatter::toString(blackScholesProcess->stateVariable->value()) +
+                DoubleFormatter::toString(blackScholesProcess
+                                          ->stateVariable->value()) +
                 ") > barrier ("+
                 DoubleFormatter::toString(barrier) +
                 "): up-and-in barrier undefined");
@@ -99,7 +101,8 @@ namespace QuantLib {
           case Barrier::DownOut:
             QL_REQUIRE(blackScholesProcess->stateVariable->value() >= barrier,
                 "underlying ("+
-                DoubleFormatter::toString(blackScholesProcess->stateVariable->value()) +
+                DoubleFormatter::toString(blackScholesProcess
+                                          ->stateVariable->value()) +
                 ") < barrier ("+ 
                 DoubleFormatter::toString(barrier) +
                 "): down-and-out barrier undefined");
@@ -107,13 +110,14 @@ namespace QuantLib {
           case Barrier::UpOut:
             QL_REQUIRE(blackScholesProcess->stateVariable->value() <= barrier,
                 "underlying ("+
-                DoubleFormatter::toString(blackScholesProcess->stateVariable->value()) +
+                DoubleFormatter::toString(blackScholesProcess
+                                          ->stateVariable->value()) +
                 ") > barrier ("+
                 DoubleFormatter::toString(barrier) +
                 "): up-and-out barrier undefined");
             break;
           default:
-            throw Error("Barrier Option: unknown type");
+            QL_FAIL("Barrier Option: unknown type");
         }
     }
 

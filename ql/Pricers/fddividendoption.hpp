@@ -37,7 +37,7 @@ namespace QuantLib {
                  const std::vector<Time>& exdivdates = std::vector<Time>(),
                  int timeSteps = 100, int gridPoints = 100);
         double dividendRho() const {
-            throw Error("FdDividendOption::dividendRho not implemented yet");
+            QL_FAIL("FdDividendOption::dividendRho not implemented yet");
         }
       protected:
         void initializeControlVariate() const;

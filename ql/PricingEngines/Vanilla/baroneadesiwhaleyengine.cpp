@@ -39,20 +39,20 @@ namespace QuantLib {
 
             double qu, Su, h, Si;
             switch (payoff->optionType()) {
-                case Option::Call:
-                    qu = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
-                    Su = payoff->strike() / (1.0 - 1.0/qu);
-                    h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() / (Su - payoff->strike());
-                    Si = payoff->strike() + (Su - payoff->strike()) * (1.0 - QL_EXP(h));
-                    break;
-                case Option::Put:
-                    qu = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
-                    Su = payoff->strike() / (1.0 - 1.0/qu);
-                    h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() / (payoff->strike() - Su);
-                    Si = Su + (payoff->strike() - Su) * QL_EXP(h);
-                    break;
-                default:
-                    throw Error("BaroneAdesiWhaleyApproximationEngine::"
+              case Option::Call:
+                qu = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
+                Su = payoff->strike() / (1.0 - 1.0/qu);
+                h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() / (Su - payoff->strike());
+                Si = payoff->strike() + (Su - payoff->strike()) * (1.0 - QL_EXP(h));
+                break;
+              case Option::Put:
+                qu = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
+                Su = payoff->strike() / (1.0 - 1.0/qu);
+                h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() / (payoff->strike() - Su);
+                Si = Su + (payoff->strike() - Su) * QL_EXP(h);
+                break;
+              default:
+                QL_FAIL("BaroneAdesiWhaleyApproximationEngine::"
                         "calculate() :"
                         "unknown option type");
             }
@@ -114,9 +114,9 @@ namespace QuantLib {
                     }
                     break;
                 default:
-                    throw Error("BaroneAdesiWhaleyApproximationEngine::"
-                        "calculate() :"
-                        "unknown option type");
+                    QL_FAIL("BaroneAdesiWhaleyApproximationEngine::"
+                            "calculate() :"
+                            "unknown option type");
             }
 
             return Si;
@@ -224,9 +224,9 @@ namespace QuantLib {
                     }
                     break;
                 default:
-                    throw Error("BaroneAdesiWhaleyApproximationEngine::"
-                        "calculate() :"
-                        "unknown option type");
+                  QL_FAIL("BaroneAdesiWhaleyApproximationEngine::"
+                          "calculate() :"
+                          "unknown option type");
             }
         } // end of "early exercise can be optimal"
 

@@ -83,7 +83,7 @@ namespace QuantLib {
             }
         }
     L_End:
-        if (bound > errmax) throw Error("Didn't converge");
+        if (bound > errmax) QL_FAIL("Didn't converge");
         return (ans);
 
     }

@@ -43,8 +43,9 @@ namespace QuantLib {
         } else if (indexTenor.units() == Years) {
             QL_REQUIRE(indexTenor.length()==1, "Invalid index tenor");
             frequency=1;
-        } else
-            throw Error("index tenor not valid!");
+        } else {
+            QL_FAIL("index tenor not valid!");
+        }
         Date startDate = index->calendar().advance(
                                                    termStructure->referenceDate(),
                                                    maturity.length(), maturity.units());

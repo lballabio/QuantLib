@@ -76,7 +76,7 @@ namespace QuantLib {
         int icount = 0;
         while (!valid) {
             if (icount > 200)
-                throw Error("Can't update linesearch");
+                QL_FAIL("Can't update linesearch");
             diff *= 0.5;
             icount ++;
 

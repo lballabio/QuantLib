@@ -139,8 +139,8 @@ namespace QuantLib {
                 DbetaDd2_  =      - 2.0*  n_d2; // -n(d2) - n( d2)
                 break;
             default:
-                throw IllegalArgumentError("BlackFormula::BlackFormula : "
-                                       "invalid option type");
+                QL_FAIL("BlackFormula::BlackFormula : "
+                        "invalid option type");
         }
 
         // Binary Cash-Or-Nothing payoff?
@@ -172,8 +172,8 @@ namespace QuantLib {
                     DbetaDd2_ = 0.0; // n(d2) - n( d2) = 0.0
                     break;
                 default:
-                    throw IllegalArgumentError("BlackFormula::BlackFormula : "
-                                           "invalid option type");
+                    QL_FAIL("BlackFormula::BlackFormula : "
+                            "invalid option type");
             }
         }
 
@@ -204,8 +204,8 @@ namespace QuantLib {
                     DalphaDd1_ = 0.0; //  n(d1) - n( d1) = 0.0
                     break;
                 default:
-                    throw IllegalArgumentError("BlackFormula::BlackFormula : "
-                                           "invalid option type");
+                    QL_FAIL("BlackFormula::BlackFormula : "
+                            "invalid option type");
             }
         }
 
@@ -235,7 +235,7 @@ namespace QuantLib {
         #endif
         if (!IsNull(ss)) {
             // ok, the payoff is Binary Super-Share
-            throw Error("Binary Super-Share payoff not handled yet");
+            QL_FAIL("Binary Super-Share payoff not handled yet");
         }
     }
 
@@ -334,11 +334,11 @@ namespace QuantLib {
         } else if (maturity==0.0) {
             // should be r*value(), where r is the short rate
             // but the term structure is not available here
-            throw Error("BlackFormula::theta : "
-                "null maturity not handled");
+            QL_FAIL("BlackFormula::theta : "
+                    "null maturity not handled");
         } else {
-            throw Error("BlackFormula::theta : "
-                "negative maturity not allowed");
+            QL_FAIL("BlackFormula::theta : "
+                    "negative maturity not allowed");
         }
 
 
