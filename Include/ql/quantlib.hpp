@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.23  2001/07/18 12:46:12  marmar
+// Added shortcut for QuantLib::CashFlows namespace
+//
 // Revision 1.22  2001/07/09 16:29:27  lballabio
 // Some documentation and market element
 //
@@ -221,6 +224,7 @@
 /*** shortcuts for the full namespaces ***/
 namespace QL    = QuantLib;
 namespace QLCAL = QuantLib::Calendars;
+namespace QLCFL = QuantLib::CashFlows;
 namespace QLDCO = QuantLib::DayCounters;
 namespace QLIDX = QuantLib::Indexes;
 namespace QLINS = QuantLib::Instruments;
