@@ -28,9 +28,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2001/01/11 11:02:08  nando
+	added public
+
 	Revision 1.3  2001/01/09 17:45:26  lballabio
 	Typedefs changed
-
+	
 	Revision 1.2  2001/01/09 14:35:17  lballabio
 	Fixed typo in (so far) not instantiated method
 	
@@ -50,11 +53,13 @@ namespace QuantLib {
 
         template <class IteratorTag>
         class FilteringTag {
+          public:
             typedef IteratorTag iterator_category;
         };
         
         template <>
         class FilteringTag<std::random_access_iterator_tag> {
+          public:
             typedef std::bidirectional_iterator_tag iterator_category;
         };
         	
