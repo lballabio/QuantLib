@@ -43,16 +43,18 @@ namespace QuantLib {
             double stdDev = QL_SQRT(variance);
             double vol = arguments_.volTS->blackVol(
                 exerciseDate, arguments_.strike);
-            Time residualTime = variance/(vol*vol);
+            Time residualTime = arguments_.volTS->dayCounter().yearFraction(
+                arguments_.volTS->referenceDate(), exerciseDate);
 
             DiscountFactor dividendDiscount =
                 arguments_.dividendTS->discount(exerciseDate);
-            Rate dividendRate = -QL_LOG(dividendDiscount)/residualTime;
+            Rate dividendRate =
+                arguments_.dividendTS->zeroYield(exerciseDate);
 
             DiscountFactor riskFreeDiscount =
                 arguments_.riskFreeTS->discount(exerciseDate);
-            Rate riskFreeRate = -QL_LOG(riskFreeDiscount)/residualTime;
-
+            Rate riskFreeRate =
+                arguments_.riskFreeTS->zeroYield(exerciseDate);
             double forwardPrice = arguments_.underlying *
                 dividendDiscount / riskFreeDiscount;
 
@@ -66,6 +68,7 @@ namespace QuantLib {
                 fD2 = f(D2);
                 fderD1 = f.derivative(D1);
             } else {
+                stdDev = QL_EPSILON;
                 fderD1 = 0.0;
                 if (forwardPrice>arguments_.strike) {
                     fD1 = 1.0;
