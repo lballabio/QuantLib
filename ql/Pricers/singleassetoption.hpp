@@ -28,6 +28,7 @@
 
 #include <ql/option.hpp>
 #include <ql/solver1d.hpp>
+#include <ql/exercise.hpp>
 
 #define QL_MIN_VOLATILITY 1.0e-4
 #define QL_MIN_DIVYIELD 1.0e-7
@@ -39,8 +40,6 @@ namespace QuantLib {
     //! Pricing models for options
     /*! See sect. \ref pricers */
     namespace Pricers {
-
-        double ExercisePayoff(Option::Type type, double price, double strike);
 
         //! Black-Scholes-Merton option
         class SingleAssetOption {

@@ -30,21 +30,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        double ExercisePayoff(Option::Type type, double price,
-            double strike) {
-
-            switch (type) {
-              case Option::Call:
-                return QL_MAX(price-strike,0.0);
-              case Option::Put:
-                return QL_MAX(strike-price,0.0);
-              case Option::Straddle:
-                return QL_FABS(strike-price);
-            }
-            throw Error("Unknown option type");
-        }
-
-
         const double SingleAssetOption::dVolMultiplier_ = 0.0001;
         const double SingleAssetOption::dRMultiplier_   = 0.0001;
 //        const double SingleAssetOption::dSMultiplier_   = 0.0001;
