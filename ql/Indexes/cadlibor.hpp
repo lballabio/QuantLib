@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file cadlibor.hpp
     \brief %CAD %Libor index (Also known as CDOR, check settlement days)
 
@@ -27,7 +29,6 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/toronto.hpp>
-#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
@@ -39,8 +40,8 @@ namespace QuantLib {
             CADLibor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
             : Xibor("CADLibor", n, units, 2, CAD,
-                Calendar(Calendars::Toronto()), true, ModifiedFollowing,
-                DayCounter(DayCounters::Actual365()), h) {}
+                Calendar(Calendars::Toronto()), true, 
+                ModifiedFollowing, h) {}
         };
 
     }

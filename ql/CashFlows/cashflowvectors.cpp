@@ -125,7 +125,6 @@ namespace QuantLib {
           const Date& startDate, const Date& endDate,
           int frequency, const Calendar& calendar,
           RollingConvention rollingConvention,
-          const RelinkableHandle<TermStructure>& termStructure,
           const Handle<Xibor>& index, int fixingDays,
           const std::vector<Spread>& spreads,
           const Date& stubDate) {
@@ -144,15 +143,16 @@ namespace QuantLib {
             double nominal = nominals[0];
             if (scheduler.isRegular(1)) {
                 leg.push_back(Handle<CashFlow>(
-                    new FloatingRateCoupon(nominal, index, termStructure,
-                        start, end, fixingDays, spread, start, end)));
+                    new FloatingRateCoupon(nominal, index, start, end, 
+                                           fixingDays, spread, start, end)));
             } else {
                 Date reference = end.plusMonths(-12/frequency);
                 reference =
                     calendar.roll(reference,rollingConvention);
                 leg.push_back(Handle<CashFlow>(
-                    new ShortFloatingRateCoupon(nominal, index, termStructure,
-                        start, end, fixingDays, spread, reference, end)));
+                    new ShortFloatingRateCoupon(nominal, index, start, end, 
+                                                fixingDays, spread, 
+                                                reference, end)));
             }
             // regular periods
             for (Size i=2; i<scheduler.size()-1; i++) {
@@ -168,8 +168,8 @@ namespace QuantLib {
                 else
                     nominal = nominals.back();
                 leg.push_back(Handle<CashFlow>(
-                    new FloatingRateCoupon(nominal, index, termStructure,
-                        start, end, fixingDays, spread, start, end)));
+                    new FloatingRateCoupon(nominal, index, start, end, 
+                                           fixingDays, spread, start, end)));
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
@@ -187,16 +187,17 @@ namespace QuantLib {
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
                     leg.push_back(Handle<CashFlow>(
-                        new FloatingRateCoupon(nominal, index, termStructure,
-                            start, end, fixingDays, spread, start, end)));
+                        new FloatingRateCoupon(nominal, index, start, end, 
+                                               fixingDays, spread, 
+                                               start, end)));
                 } else {
                     Date reference = start.plusMonths(12/frequency);
                     reference =
                         calendar.roll(reference,rollingConvention);
                     leg.push_back(Handle<CashFlow>(
-                        new ShortFloatingRateCoupon(nominal, index, 
-                            termStructure, start, end, fixingDays, spread, 
-                            start, reference)));
+                        new ShortFloatingRateCoupon(nominal, index, start, end, 
+                                                    fixingDays, spread, 
+                                                    start, reference)));
                 }
             }
             return leg;

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,8 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file xibor.hpp
-    \brief purely virtual base class for libor indexes
+    \brief base class for libor indexes
 
     \fullpath
     ql/Indexes/%xibor.hpp
@@ -35,36 +35,41 @@ namespace QuantLib {
     namespace Indexes {
 
         //! base class for libor indexes
-        class Xibor : public Index {
+        class Xibor : public Index,
+                      public Patterns::Observable,
+                      public Patterns::Observer {
           public:
             Xibor(const std::string& familyName,
                 int n, TimeUnit units, int settlementDays,
                 Currency currency,
                 const Calendar& calendar, bool isAdjusted,
                 RollingConvention rollingConvention,
-                const DayCounter& dayCounter,
                 const RelinkableHandle<TermStructure>& h)
             : familyName_(familyName), n_(n), units_(units),
               settlementDays_(settlementDays),
               currency_(currency), calendar_(calendar),
               isAdjusted_(isAdjusted),
               rollingConvention_(rollingConvention),
-              dayCounter_(dayCounter), termStructure_(h) {}
+              termStructure_(h) {}
             //! \name Index interface
             //@{
             Rate fixing(const Date& fixingDate) const;
             //@}
+            //! \name Observer interface
+            //@{
+            void update();
+            //@}
             //! \name Inspectors
             //@{
             std::string name() const;
-            Period tenor() const { return Period(n_,units_); }
-            int settlementDays() const { return settlementDays_; }
-            Currency currency() const { return currency_; }
-            Calendar calendar() const { return calendar_; }
-            bool isAdjusted() const { return isAdjusted_; }
-            RollingConvention rollingConvention() const {
-                return rollingConvention_; }
-            DayCounter dayCounter() const { return dayCounter_; }
+            Period tenor() const;
+            int settlementDays() const;
+            Currency currency() const;
+            Calendar calendar() const;
+            bool isAdjusted() const;
+            RollingConvention rollingConvention() const;
+            DayCounter dayCounter() const;
+            Handle<TermStructure> termStructure() const;
             //@}
           private:
             std::string familyName_;
@@ -75,10 +80,48 @@ namespace QuantLib {
             Calendar calendar_;
             bool isAdjusted_;
             RollingConvention rollingConvention_;
-            DayCounter dayCounter_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 
+
+        // inline definitions
+
+        void Xibor::update() {
+            notifyObservers();
+        }
+        
+        Period Xibor::tenor() const { 
+            return Period(n_,units_); 
+        }
+        
+        int Xibor::settlementDays() const { 
+            return settlementDays_; 
+        }
+        
+        Currency Xibor::currency() const { 
+            return currency_; 
+        }
+        
+        Calendar Xibor::calendar() const { 
+            return calendar_; 
+        }
+        
+        bool Xibor::isAdjusted() const { 
+            return isAdjusted_; 
+        }
+        
+        RollingConvention Xibor::rollingConvention() const {
+            return rollingConvention_; 
+        }
+        
+        DayCounter Xibor::dayCounter() const { 
+            return termStructure_->dayCounter(); 
+        }
+        
+        Handle<TermStructure> Xibor::termStructure() const {
+            return (*termStructure_).currentLink();
+        }
+        
     }
 
 }

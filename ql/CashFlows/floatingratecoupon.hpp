@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file floatingratecoupon.hpp
     \brief Coupon at par on a term structure
 
@@ -44,7 +44,6 @@ namespace QuantLib {
           public:
             FloatingRateCoupon(double nominal,
                 const Handle<Indexes::Xibor>& index,
-                const RelinkableHandle<TermStructure>& termStructure,
                 const Date& startDate, const Date& endDate,
                 int fixingDays,
                 Spread spread = 0.0,
@@ -56,6 +55,7 @@ namespace QuantLib {
             //@}
             //! \name Coupon interface
             //@{
+            DayCounter dayCounter() const;
             double accruedAmount(const Date&) const;
             //@}
             //! \name Inspectors
@@ -70,7 +70,6 @@ namespace QuantLib {
             void update();
             //@}
           private:
-            RelinkableHandle<TermStructure> termStructure_;
             Handle<Indexes::Xibor> index_;
             int fixingDays_;
             Spread spread_;
@@ -79,7 +78,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline const Handle<Indexes::Xibor>&
+        inline const Handle<Indexes::Xibor>& 
         FloatingRateCoupon::index() const {
             return index_;
         }
@@ -100,12 +99,16 @@ namespace QuantLib {
             notifyObservers();
         }
 
+        inline DayCounter FloatingRateCoupon::dayCounter() const {
+            return index_->dayCounter();
+        }
+
         inline double FloatingRateCoupon::accruedAmount(const Date& d) const {
             if (d <= startDate_ || d >= endDate_) {
                 return 0.0;
             } else {
                 return nominal()*fixing()*
-                    dayCounter_.yearFraction(startDate_,d,
+                    dayCounter().yearFraction(startDate_,d,
                         refPeriodStart_,refPeriodEnd_);
             }
         }

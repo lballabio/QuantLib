@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file cashflowvectors.hpp
     \brief Cash flow vector builders
 
@@ -57,7 +57,6 @@ namespace QuantLib {
             const Date& startDate, const Date& endDate,
             int frequency, const Calendar& calendar,
             RollingConvention rollingConvention,
-            const RelinkableHandle<TermStructure>& termStructure,
             const Handle<Indexes::Xibor>& index,
             int fixingDays,
             const std::vector<Spread>& spreads, 

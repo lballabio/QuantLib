@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file euribor.hpp
     \brief %Euribor index
 
@@ -29,7 +29,6 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/target.hpp>
-#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -41,8 +40,8 @@ namespace QuantLib {
             Euribor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
             : Xibor("Euribor", n, units, 2, EUR,
-                Calendar(Calendars::TARGET()), true, ModifiedFollowing,
-                DayCounter(DayCounters::Actual360()), h) {}
+                Calendar(Calendars::TARGET()), true, 
+                ModifiedFollowing, h) {}
         };
 
     }

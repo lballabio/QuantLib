@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file gbplibor.hpp
     \brief %GBP %Libor index
 
@@ -29,7 +29,6 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/london.hpp>
-#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
@@ -41,8 +40,8 @@ namespace QuantLib {
             GBPLibor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
             : Xibor("GBPLibor", n, units, 0, GBP,
-                Calendar(Calendars::London()), true, ModifiedFollowing,
-                DayCounter(DayCounters::Actual365()), h) {}
+                Calendar(Calendars::London()), true, 
+                ModifiedFollowing, h) {}
         };
 
     }

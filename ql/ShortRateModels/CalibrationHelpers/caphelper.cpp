@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file caphelper.cpp
     \brief Cap calibration helper
 
@@ -40,11 +42,12 @@ namespace QuantLib {
             using Instruments::VanillaCap;
             using Instruments::CapFloorParameters;
             using Instruments::Swap;
+            using Indexes::Xibor;
 
             CapHelper::CapHelper(
                 const Period& length,
                 const RelinkableHandle<MarketElement>& volatility,
-                const Handle<Indexes::Xibor>& index,
+                const Handle<Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure)
             : CalibrationHelper(volatility), termStructure_(termStructure) {
 
@@ -65,11 +68,19 @@ namespace QuantLib {
                 Date maturity = termStructure->settlementDate().
                     plus(length.length(), length.units());
 
+                Handle<Xibor> dummyIndex(new Xibor("dummy",
+                    indexTenor.length(),indexTenor.units(),
+                    index->settlementDays(),
+                    index->currency(),
+                    index->calendar(),index->isAdjusted(),
+                    index->rollingConvention(),
+                    termStructure));
+
                 std::vector<double> nominals(1,1.0);
                 std::vector<Handle<CashFlow> > floatingLeg = 
                     FloatingRateCouponVector(nominals, startDate, maturity, 
                         frequency, index->calendar(), 
-                        index->rollingConvention(), termStructure, index, 0, 
+                        index->rollingConvention(), index, 0, 
                         std::vector<double>(1, 0.0));
                 std::vector<Handle<CashFlow> > fixedLeg = 
                     FixedRateCouponVector(nominals, 

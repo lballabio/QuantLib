@@ -35,28 +35,26 @@ namespace QuantLib {
 
         FloatingRateCoupon::FloatingRateCoupon(double nominal,
           const Handle<Xibor>& index,
-          const RelinkableHandle<TermStructure>& termStructure,
           const Date& startDate, const Date& endDate,
           int fixingDays, Spread spread,
           const Date& refPeriodStart, const Date& refPeriodEnd)
         : Coupon(nominal, index->calendar(),index->rollingConvention(),
-              index->dayCounter(), startDate, endDate,
-              refPeriodStart, refPeriodEnd),
-          termStructure_(termStructure), index_(index),
-          fixingDays_(fixingDays), spread_(spread) {
-            registerWith(termStructure_);
+                 startDate, endDate, refPeriodStart, refPeriodEnd),
+          index_(index), fixingDays_(fixingDays), spread_(spread) {
+            registerWith(index_);
         }
 
         double FloatingRateCoupon::amount() const {
-            QL_REQUIRE(!termStructure_.isNull(),
-                "null term structure set to par coupon");
-            Date settlementDate = termStructure_->settlementDate();
+            Handle<TermStructure> termStructure = index_->termStructure();
+            QL_REQUIRE(!termStructure.isNull(),
+                       "null term structure set to par coupon");
+            Date settlementDate = termStructure->settlementDate();
             Date fixingDate = index_->calendar().advance(
                 startDate_, -fixingDays_, Days,
-                index_->rollingConvention());
+                Preceding);
             Date fixingValueDate = index_->calendar().advance(
                 fixingDate, index_->settlementDays(), Days,
-                index_->rollingConvention());
+                Following);
             if (fixingValueDate < settlementDate) {
                 // must have been fixed
                 Rate pastFixing = XiborManager::getHistory(
@@ -81,12 +79,13 @@ namespace QuantLib {
                 }
             }
             DiscountFactor startDiscount =
-                termStructure_->discount(fixingValueDate);
+                termStructure->discount(fixingValueDate);
+            Date temp = index_->calendar().advance(endDate_,
+                            -fixingDays_, Days, Preceding);
             DiscountFactor endDiscount =
-                termStructure_->discount(
-                    index_->calendar().advance(endDate_,
-                        index_->settlementDays()-fixingDays_, Days,
-                        index_->rollingConvention()));
+                termStructure->discount(
+                    index_->calendar().advance(temp,
+                        index_->settlementDays(), Days, Following));
             return ((startDiscount/endDiscount-1.0) +
                 spread_*accrualPeriod()) * nominal();
         }

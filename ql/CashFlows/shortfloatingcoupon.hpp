@@ -26,8 +26,7 @@
 #ifndef quantlib_short_floating_rate_coupon_hpp
 #define quantlib_short_floating_rate_coupon_hpp
 
-#include <ql/CashFlows/coupon.hpp>
-#include <ql/Indexes/xibor.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
 
 namespace QuantLib {
 
@@ -38,73 +37,19 @@ namespace QuantLib {
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
         */
-        class ShortFloatingRateCoupon : public Coupon,
-                                        public Patterns::Observer {
+        class ShortFloatingRateCoupon : public FloatingRateCoupon {
           public:
             ShortFloatingRateCoupon(double nominal,
                 const Handle<Indexes::Xibor>& index,
-                const RelinkableHandle<TermStructure>& termStructure,
                 const Date& startDate, const Date& endDate,
                 int fixingDays,
                 Spread spread = 0.0,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date());
-            //! \name CashFlow interface
-            //@{
+            //! throws when an interpolated fixing is needed
             double amount() const;
-            //@}
-            //! \name Coupon interface
-            //@{
-            double accruedAmount(const Date&) const;
-            //@}
-            //! \name Inspectors
-            //@{
-            const Handle<Indexes::Xibor>& index() const;
-            Rate fixing() const;
-            Spread spread() const;
-            //@}
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
-          private:
-            RelinkableHandle<TermStructure> termStructure_;
-            Handle<Indexes::Xibor> index_;
-            int fixingDays_;
-            Spread spread_;
         };
 
-
-        // inline definitions
-
-        inline const Handle<Indexes::Xibor>&
-        ShortFloatingRateCoupon::index() const {
-            return index_;
-        }
-
-        inline Rate ShortFloatingRateCoupon::fixing() const {
-            return amount()/(nominal()*accrualPeriod());
-        }
-
-        inline Spread ShortFloatingRateCoupon::spread() const {
-            return spread_;
-        }
-
-        inline void ShortFloatingRateCoupon::update() {
-            notifyObservers();
-        }
-
-        inline 
-        double ShortFloatingRateCoupon::accruedAmount(const Date& d) const {
-            if (d <= startDate_ || d >= endDate_) {
-                return 0.0;
-            } else {
-                return nominal()*fixing()*
-                    dayCounter_.yearFraction(startDate_,d,
-                        refPeriodStart_,refPeriodEnd_);
-            }
-        }
-        
     }
 
 }

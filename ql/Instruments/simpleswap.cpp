@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file simpleswap.cpp
     \brief Simple fixed-rate vs Libor swap
 
@@ -57,6 +58,7 @@ namespace QuantLib {
                         
             maturity_ = calendar.advance(startDate,n,units,rollingConvention);
             
+            std::vector<Handle<CashFlow> >::const_iterator i;
             if (payFixedRate_) {
                 firstLeg_ = FixedRateCouponVector(
                     std::vector<double>(1,nominal), 
@@ -66,27 +68,24 @@ namespace QuantLib {
                 secondLeg_ = FloatingRateCouponVector(
                     std::vector<double>(1,nominal), startDate, maturity_, 
                     floatingFrequency, calendar, rollingConvention, 
-                    termStructure, index, indexFixingDays, 
-                    std::vector<Spread>(1,spread));
+                    index, indexFixingDays, std::vector<Spread>(1,spread));
+                for (i = secondLeg_.begin(); i < secondLeg_.end(); ++i)
+                    registerWith(*i);
             } else {
                 // I know I'm duplicating the initializations, but the 
-                // alternative is duplicating data
+                // alternative is to duplicate data
                 firstLeg_ = FloatingRateCouponVector(
                     std::vector<double>(1,nominal), startDate, maturity_, 
                     floatingFrequency, calendar, rollingConvention, 
-                    termStructure, index, indexFixingDays, 
-                    std::vector<Spread>(1,spread));
+                    index, indexFixingDays, std::vector<Spread>(1,spread));
                 secondLeg_ = FixedRateCouponVector(
                     std::vector<double>(1,nominal), 
                     std::vector<Rate>(1,fixedRate), startDate, maturity_, 
                     fixedFrequency, calendar, rollingConvention, 
                     fixedIsAdjusted, fixedDayCount, fixedDayCount);
+                for (i = firstLeg_.begin(); i < firstLeg_.end(); ++i)
+                    registerWith(*i);
             }
-            // we should register as observer with the cash flows. However,
-            // the base Swap class already registers as observer with
-            // the term structure, which is also the same passed to floating
-            // rate coupons; the index is only used for past fixings; and
-            // fixed rate coupons are not modifiable.
         }
 
     }

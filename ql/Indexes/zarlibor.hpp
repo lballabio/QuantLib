@@ -1,3 +1,4 @@
+
 /*
 Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -13,6 +14,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file zarlibor.hpp
     \brief %ZAR %Libor index (also known as JIBAR, check settlement days)
 
@@ -27,8 +29,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/johannesburg.hpp>
-#include <ql/DayCounters/actual365.hpp>
-
 
 namespace QuantLib {
 
@@ -40,8 +40,8 @@ namespace QuantLib {
             ZARLibor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
             : Xibor("ZARLibor", n, units, 0, ZAR,
-                Calendar(Calendars::Johannesburg()), true, ModifiedFollowing,
-                DayCounter(DayCounters::Actual365()), h) {}
+                Calendar(Calendars::Johannesburg()), true, 
+                ModifiedFollowing, h) {}
         };
 
     }

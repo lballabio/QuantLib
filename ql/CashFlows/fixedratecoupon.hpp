@@ -42,15 +42,16 @@ namespace QuantLib {
                 const Date& startDate, const Date& endDate,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date())
-            : Coupon(nominal, calendar, rollingConvention, dayCounter,
-              startDate, endDate, refPeriodStart, refPeriodEnd),
-              rate_(rate) {}
+            : Coupon(nominal, calendar, rollingConvention, 
+                     startDate, endDate, refPeriodStart, refPeriodEnd),
+              rate_(rate), dayCounter_(dayCounter) {}
             //! \name CashFlow interface
             //@{
             double amount() const;
             //@}
             //! \name Coupon interface
             //@{
+            DayCounter dayCounter() const;
             double accruedAmount(const Date&) const;
             //@}
             //! \name Inspectors
@@ -59,6 +60,7 @@ namespace QuantLib {
             //@}
           private:
             Rate rate_;
+            DayCounter dayCounter_;
         };
 
 
@@ -70,6 +72,10 @@ namespace QuantLib {
 
         inline Rate FixedRateCoupon::rate() const {
             return rate_;
+        }
+
+        inline DayCounter FixedRateCoupon::dayCounter() const {
+            return dayCounter_;
         }
 
         inline double FixedRateCoupon::accruedAmount(const Date& d) const {

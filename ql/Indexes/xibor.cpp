@@ -81,7 +81,7 @@ namespace QuantLib {
             DiscountFactor endDiscount =
                 termStructure_->discount(endDate);
             double fixingPeriod =
-                dayCounter_.yearFraction(fixingDate, endDate);
+                dayCounter().yearFraction(fixingDate, endDate);
             return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
         }
 

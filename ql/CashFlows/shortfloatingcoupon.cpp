@@ -34,53 +34,29 @@ namespace QuantLib {
 
         ShortFloatingRateCoupon::ShortFloatingRateCoupon(double nominal,
           const Handle<Xibor>& index,
-          const RelinkableHandle<TermStructure>& termStructure,
           const Date& startDate, const Date& endDate,
           int fixingDays, Spread spread,
           const Date& refPeriodStart, const Date& refPeriodEnd)
-        : Coupon(nominal, index->calendar(),index->rollingConvention(),
-              index->dayCounter(), startDate, endDate,
-              refPeriodStart, refPeriodEnd),
-          termStructure_(termStructure), index_(index),
-          fixingDays_(fixingDays), spread_(spread) {
-            registerWith(termStructure_);
-        }
+        : FloatingRateCoupon(nominal,index,startDate,endDate,fixingDays,
+                             spread,refPeriodStart,refPeriodEnd) {}
 
         double ShortFloatingRateCoupon::amount() const {
-            QL_REQUIRE(!termStructure_.isNull(),
+            QL_REQUIRE(!index()->termStructure().isNull(),
                 "null term structure set to par coupon");
-            Date settlementDate = termStructure_->settlementDate();
-            Date fixingDate = index_->calendar().advance(
-                startDate_, -fixingDays_, Days,
-                index_->rollingConvention());
-            Date fixingValueDate = index_->calendar().advance(
-                fixingDate, index_->settlementDays(), Days,
-                index_->rollingConvention());
-            if (fixingValueDate < settlementDate) {
-                // must have been fixed
-                // but we have no way to interpolate the fixing yet
-                throw Error("short/long floating coupons not supported yet"
-                    " (start = " + DateFormatter::toString(startDate_) +
-                    ", end = " + DateFormatter::toString(endDate_) + ")");
-            }
-            if (fixingValueDate == settlementDate) {
-                // might have been fixed
-                // but we have no way to interpolate the fixing yet
-                try {
-                    ;   // fall through and forecast
-                } catch (Error&) {
-                    ;       // fall through and forecast
-                }
-            }
-            DiscountFactor startDiscount =
-                termStructure_->discount(fixingValueDate);
-            DiscountFactor endDiscount =
-                termStructure_->discount(
-                    index_->calendar().advance(endDate_,
-                        index_->settlementDays()-fixingDays_, Days,
-                        index_->rollingConvention()));
-            return ((startDiscount/endDiscount-1.0) +
-                spread_*accrualPeriod()) * nominal();
+            Date settlementDate = index()->termStructure()->settlementDate();
+            Date fixingDate = index()->calendar().advance(
+                startDate_, -fixingDays(), Days,
+                Preceding);
+            Date fixingValueDate = index()->calendar().advance(
+                fixingDate, index()->settlementDays(), Days,
+                Following);
+            QL_REQUIRE(fixingValueDate > settlementDate,
+                       // must have been fixed
+                       // but we have no way to interpolate the fixing yet
+                       "short/long floating coupons not supported yet"
+                       " (start = " + DateFormatter::toString(startDate_) +
+                       ", end = " + DateFormatter::toString(endDate_) + ")");
+            return FloatingRateCoupon::amount();
         }
 
     }

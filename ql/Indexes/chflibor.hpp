@@ -1,3 +1,4 @@
+
 /*
 Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -13,6 +14,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file chflibor.hpp
     \brief %CHF %Libor index (Also known as ZIBOR, check settlement days and day-count)
 
@@ -27,7 +29,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/zurich.hpp>
-#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -39,8 +40,8 @@ namespace QuantLib {
             CHFLibor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
             : Xibor("CHFLibor", n, units, 2, CHF,
-                Calendar(Calendars::Zurich()), true, ModifiedFollowing,
-                DayCounter(DayCounters::Actual360()), h) {}
+                Calendar(Calendars::Zurich()), true, 
+                ModifiedFollowing, h) {}
         };
 
     }

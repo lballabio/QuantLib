@@ -24,13 +24,11 @@
 // $Id$
 
 #include <ql/TermStructures/ratehelpers.hpp>
-#include <ql/Indexes/euribor.hpp>
 
 namespace QuantLib {
 
     using Instruments::SimpleSwap;
     using Indexes::Xibor;
-    using Indexes::Euribor;
 
     namespace TermStructures {
 
@@ -243,7 +241,7 @@ namespace QuantLib {
                 12/floatingFrequency_,Months,settlementDays_,
                 EUR, // any would do
                 calendar_,true,convention_,
-                t->dayCounter(), RelinkableHandle<TermStructure>()));
+                termStructureHandle_));
             swap_ = Handle<SimpleSwap>(
                 new SimpleSwap(true,                // pay fixed rate
                     settlement_, lengthInYears_, Years, calendar_,
