@@ -53,6 +53,7 @@ CLEAN :"QuantLib - Win32 ReleaseCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\compoundforward.obj"
@@ -94,6 +95,7 @@ LINK32_FLAGS=cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32
 LINK32_OBJS= \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
 	"$(INTDIR)\daycounters.obj" \
@@ -116,7 +118,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -147,6 +149,7 @@ CLEAN :"QuantLib - Win32 DebugCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\compoundforward.obj"
@@ -191,6 +194,7 @@ LINK32_FLAGS=cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg3
 LINK32_OBJS= \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
 	"$(INTDIR)\daycounters.obj" \
@@ -213,7 +217,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -244,6 +248,7 @@ CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\compoundforward.obj"
@@ -288,6 +293,7 @@ LINK32_FLAGS=cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg3
 LINK32_OBJS= \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
 	"$(INTDIR)\daycounters.obj" \
@@ -310,7 +316,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -341,6 +347,7 @@ CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\compoundforward.obj"
@@ -382,6 +389,7 @@ LINK32_FLAGS=cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32
 LINK32_OBJS= \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
 	"$(INTDIR)\daycounters.obj" \
@@ -404,7 +412,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\barrieroption.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -455,6 +463,11 @@ LINK32_OBJS= \
 
 
 !IF "$(CFG)" == "testsuite - Win32 Release" || "$(CFG)" == "testsuite - Win32 Debug" || "$(CFG)" == "testsuite - Win32 OnTheEdgeDebug" || "$(CFG)" == "testsuite - Win32 OnTheEdgeRelease"
+SOURCE=.\barrieroption.cpp
+
+"$(INTDIR)\barrieroption.obj" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=.\calendars.cpp
 
 "$(INTDIR)\calendars.obj" : $(SOURCE) "$(INTDIR)"
