@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/DayCounters
 include_HEADERS = actual360.hpp \
 	actual365.hpp \

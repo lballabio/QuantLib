@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/FiniteDifferences
 include_HEADERS = backwardeuler.hpp \
 	boundarycondition.hpp \

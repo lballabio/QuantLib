@@ -1,4 +1,8 @@
 
+# $Id$
+# $Source$
+
+
 EXTRA_DIST=QuantLibSuite.py \
 	american_option.py barrier_option.py binary_option.py \
 	cliquet_option.py date.py distributions.py european_option.py \

@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 AUTOMAKE_OPTIONS=foreign
 
 SUBDIRS=Sources Include Docs SWIG Python Ruby Examples

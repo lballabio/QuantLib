@@ -1,4 +1,7 @@
 
+# $Id$
+# $Source$
+
 EXTRA_DIST=makefile.mak
 
 libCalendars_la_SOURCES = frankfurt.cpp \

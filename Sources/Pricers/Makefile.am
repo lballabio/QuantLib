@@ -1,4 +1,7 @@
 
+# $Id$
+# $Source$
+
 EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \

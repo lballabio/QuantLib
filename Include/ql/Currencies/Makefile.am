@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/Currencies
 include_HEADERS = aud.hpp \
 	cad.hpp \

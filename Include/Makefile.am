@@ -1,3 +1,7 @@
 
+# $Id$
+# $Source$
+
+
 SUBDIRS=ql
 

@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/Math
 include_HEADERS = \
 	matrix.hpp \

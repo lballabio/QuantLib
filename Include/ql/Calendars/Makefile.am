@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/Calendars
 include_HEADERS = frankfurt.hpp \
 	helsinki.hpp \

@@ -1,6 +1,15 @@
 
-SUBDIRS = FiniteDifferences Calendars Solvers1D TermStructures \
-	DayCounters Math Pricers MonteCarlo
+# $Id$
+# $Source$
+
+SUBDIRS = Calendars \
+	DayCounters \
+    FiniteDifferences \
+	Math \
+	MonteCarlo
+	Pricers \
+    Solvers1D \
+    TermStructures
 
 EXTRA_DIST=makefile.mak
 
@@ -14,7 +23,10 @@ libQuantLib_la_LIBADD = ./Calendars/libCalendars.la \
 	TermStructures/libTermStructures.la
 
 
-libQuantLib_la_SOURCES = calendar.cpp dataformatters.cpp date.cpp \
-    ratehelper.cpp solver1d.cpp
+libQuantLib_la_SOURCES = calendar.cpp \
+    dataformatters.cpp \
+    date.cpp \
+    ratehelper.cpp \
+    solver1d.cpp
 
 lib_LTLIBRARIES = libQuantLib.la

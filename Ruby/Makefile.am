@@ -1,4 +1,8 @@
 
+# $Id$
+# $Source$
+
+
 SUBDIRS=Tests
 
 EXTRA_DIST=README.txt extconf.rb quantlib_wrap.cpp

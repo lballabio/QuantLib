@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/SWIG
 
 EXTRA_DIST = README.txt

@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 SUBDIRS = Calendars Currencies DayCounters FiniteDifferences Instruments \
 	Math Patterns Pricers Solvers1D TermStructures MonteCarlo \
 	Utilities

@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/MonteCarlo
 include_HEADERS = \
 	avgpriceasianpathpricer.hpp \

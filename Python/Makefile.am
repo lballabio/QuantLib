@@ -1,4 +1,7 @@
 
+# $Id$
+# $Source$
+
 SUBDIRS=Tests COM
 
 EXTRA_DIST=	makefile.mak \

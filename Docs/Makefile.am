@@ -1,4 +1,8 @@
 
+# $Id$
+# $Source$
+
+
 EXTRA_DIST = README.txt quantlib.doxy quantlibfooter.html makefile.mak
 
 docs-html:

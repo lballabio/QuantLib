@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/Utilities
 include_HEADERS = steppingiterator.hpp   \
                   filteringiterator.hpp  \

@@ -1,4 +1,7 @@
 
+# $Id$
+# $Source$
+
 EXTRA_DIST=makefile.mak
 
 libMonteCarlo_la_SOURCES = \

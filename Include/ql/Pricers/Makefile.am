@@ -1,3 +1,7 @@
+
+# $Id$
+# $Source$
+
 includedir = $(prefix)/include/ql/Pricers
 include_HEADERS = americancondition.hpp \
     averagepriceasian.hpp \
