@@ -38,7 +38,7 @@ void RiskStatisticsTest::runTest() {
     double averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };
     double sigmas[] = { 0.1, 1.0, 100.0 };
 //    Size N = Size(QL_POW(2,18))-1;
-    Size N = Size(QL_POW(2,14)), numberOfSigma = 15;
+    Size N = Size(QL_POW(2.0,14)), numberOfSigma = 15;
 
     for (Size i=0; i<LENGTH(averages); i++) {
         for (Size j=0; j<LENGTH(sigmas); j++) {
