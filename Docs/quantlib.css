@@ -75,9 +75,10 @@ pre {
 .recom { }
 .rationale { FONT-SIZE: 0.95em }
 
+
 H1 {
 	text-align: center;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
 }
 H2 {
 	font-family: Geneva, Arial, Helvetica, sans-serif;
@@ -90,6 +91,7 @@ DIV.qindex {
 	text-align: center;
 	margin: 2px;
 	padding: 2px;
+	line-height: 120%;
 }
 A.qindex {
        text-decoration: none;
@@ -113,9 +115,9 @@ A.qindexHL {
 	font-weight: bold;
 	background-color: #6666cc;
 	color: #ffffff;
-	padding: 2 6px;
+	padding: 2px 6px;
 	border: 1px double #9295C2;
-           }
+}
 A.qindexHL:hover {
 	text-decoration: none;
 	background-color: #6666cc;
@@ -150,7 +152,13 @@ DIV.ah { background-color: black; font-weight: bold; color: #ffffff; margin-bott
 TD.md { background-color: #F4F4FB; font-weight: bold; }
 TD.mdname1 { background-color: #F4F4FB; font-weight: bold; color: #602020; }
 TD.mdname { background-color: #F4F4FB; font-weight: bold; color: #602020; width: 600px; }
-DIV.groupHeader { margin-left: 16px; margin-top: 12px; margin-bottom: 6px; font-weight: bold }
+DIV.groupHeader {
+       margin-left: 16px;
+       margin-top: 12px;
+       margin-bottom: 6px;
+       font-weight: bold;
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+}
 DIV.groupText { margin-left: 16px; font-style: italic; font-size: smaller }
 BODY {
 	background: white;
@@ -206,7 +214,7 @@ SPAN.charliteral   { color: #008080 }
 }
 .mdescLeft {
 	font-size: smaller;
-	font-family: Arial, Helvetica, sans-serif;
+	font-style: italic;
 	background-color: #FAFAFA;
 	padding-left: 8px;
 	border-top: 1px none #E0E0E0;
@@ -217,7 +225,6 @@ SPAN.charliteral   { color: #008080 }
 }
 .mdescRight {
 	font-size: smaller;
-	font-family: Arial, Helvetica, sans-serif;
 	font-style: italic;
 	background-color: #FAFAFA;
 	padding-left: 4px;

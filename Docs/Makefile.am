@@ -11,8 +11,6 @@ EXTRA_DIST = \
              quantlibheader.tex \
              README.txt
 
-TEX_PARAMETERS = buf_size=500000 pool_size=768000 extra_mem_top=512000 extra_mem_bot=512000 max_strings=45000 hash_extra=10000 save_size=8000
-
 docs-all: docs-ps docs-pdf
 docs-html: docs-html-offline
 docs-html-offline:
@@ -33,17 +31,17 @@ docs-html-online:
 	$(DOXYGEN) .quantlib.doxy
 	rm .quantlib.doxy
 	cp images/*.jpg html
-	cp images/*.png html
+	cp images/*.png html6
 	cp images/*.eps latex
 	cp images/*.pdf latex
 docs-pdf: tex-files
-	cd latex && $(TEX_PARAMETERS) $(PDFLATEX) refman
+	cd latex && $(PDFLATEX) refman
 	cd latex && $(MAKEINDEX) refman
-	cd latex && $(TEX_PARAMETERS) $(PDFLATEX) refman
+	cd latex && $(PDFLATEX) refman
 docs-ps: tex-files
-	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
+	cd latex && $(LATEX) refman
 	cd latex && $(MAKEINDEX) refman
-	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
+	cd latex && $(LATEX) refman
 	cd latex && $(DVIPS) -o refman.ps refman
 docs-man: docs-html
 docs-clean:
