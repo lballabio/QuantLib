@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/03/09 12:51:09  marmar
+    Now python can handle COM call to _value_
+
     Revision 1.1  2001/03/06 13:52:35  marmar
     Export the QuantLib functionalities to the COM world
 
@@ -134,19 +137,33 @@ class QuitePermissivePolicy(DynamicPolicy):
         except KeyError:
           raise COMException(scode = winerror.DISP_E_MEMBERNOTFOUND,
                              desc="Member not found")
-            
+         
+        args = FixArguments(args)
         if name not in dir(self._obj_):
             # VB sometimes screws up names of methods
             name = FixVisualBasicName(name)
+
+#        print '---> _invokeex_ ---> self._obj_', self._obj_
+#        print '---> _invokeex_ ---> name', name
+#        print '---> _invokeex_ ---> args', args
             
         if wFlags & pythoncom.DISPATCH_METHOD:
+            if name == '_value_':
+                if hasattr(self._obj_, '__call__'):
+                    return PrepareForReturn(apply(self._obj_,args))                
+                elif len(args) == 1: 
+                    return PrepareForReturn(self._obj_[args[0]])
+                elif len(args) == 2:
+                    return PrepareForReturn(self._obj_[args[0]][args[1]])
+                elif len(args) == 3:
+                    return PrepareForReturn(self._obj_[args[0]][args[1]][args[2]])
+               
             try:
                 qlMethod = getattr(self._obj_, name)
             except AttributeError:
                 raise COMException(
                     "Attribute '%s' not found for object '%s'" % (
                     name, self._obj_), winerror.ERROR_INVALID_ACCESS)
-            args = FixArguments(args)
             initializedObject = apply(qlMethod, args)
             return PrepareForReturn(initializedObject)
                     
@@ -156,8 +173,19 @@ class QuitePermissivePolicy(DynamicPolicy):
             
         if wFlags & (pythoncom.DISPATCH_PROPERTYPUT |
                      pythoncom.DISPATCH_PROPERTYPUTREF):
-            setattr(self._obj_, name, args)
-            return
+            if len(args) == 1:
+                setattr(self._obj_, name, args)
+            elif len(args) == 2:
+                self._obj_[args[0]] = args[1]
+            elif len(args) == 3:
+                self._obj_[args[0]][args[1]] = args[2]
+            elif len(args) == 4:
+                self._obj_[args[0]][args[1]][args[2]] = args[3]
+            else:
+                raise COMException(
+                   "DISPATCH_PROPERTYPUT called with too many arguments",
+                   winerror.E_INVALIDARG)
+        return
             
         raise COMException(scode=winerror.E_INVALIDARG, desc="invalid wFlags")
 
@@ -179,7 +207,7 @@ class ComImportLibrary:
         try :
             exec ('import ' + name)
             exec ('factory = PrepareForReturn(%s)' % (name,))
-            print "Exporting python module %s, as %s" % (name, factory)
+#            print "Exporting python module %s, as %s" % (name, factory)
             return factory 
         except:
             raise COMException("Python module '%s' not found" % (name,),
