@@ -1,3 +1,258 @@
+2002-04-08 07:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Math/normaldistribution.cpp (1.6),
+	Math/normaldistribution.hpp (1.7),
+	RandomNumbers/inversecumgaussianrng.hpp (1.2),
+	RandomNumbers/rngtypedefs.hpp (1.9): added Moro's inverse
+	cumulative normal distribution approximation
+
+2002-04-04 09:53  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: config.msvc.hpp (1.12), qldefines.hpp (1.36),
+	CashFlows/floatingratecoupon.hpp (1.19), Indexes/audlibor.hpp
+	(1.4), Indexes/cadlibor.hpp (1.5), Indexes/chflibor.hpp (1.3),
+	Indexes/euribor.hpp (1.9), Indexes/gbplibor.hpp (1.9),
+	Indexes/jpylibor.hpp (1.4), Indexes/usdlibor.hpp (1.9),
+	Indexes/xibor.cpp (1.8), Indexes/xibor.hpp (1.10),
+	Indexes/zarlibor.hpp (1.3),
+	ShortRateModels/CalibrationHelpers/caphelper.cpp (1.4),
+	TermStructures/ratehelpers.cpp (1.21): Added optional day count to
+	libor indexes
+
+2002-04-03 11:15  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.88), QuantLib.mak (1.79),
+	ql/TermStructures/makefile.mak (1.7): MS VS and Borland: added
+	missing files
+
+2002-04-03 10:40  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/RandomNumbers/: knuthuniformrng.cpp (1.5), knuthuniformrng.hpp
+	(1.8): Added sentinel at 100
+
+2002-04-03 09:07  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Indexes/xibor.hpp (1.9): missing inline added
+
+2002-04-03 06:59  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/Swap/Makefile.am (1.4): lowered optimization level in
+	order to compile it under cygwin/gcc
+
+2002-04-02 23:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: grid.hpp (1.4), Instruments/swaption.cpp (1.16),
+	Instruments/swaption.hpp (1.18), Math/chisquaredistribution.cpp
+	(1.2), Optimization/armijo.hpp (1.12), Optimization/constraint.hpp
+	(1.4), Optimization/leastsquare.hpp (1.17),
+	Optimization/linesearch.hpp (1.11), Optimization/method.hpp (1.2),
+	Optimization/problem.hpp (1.2), Optimization/simplex.hpp (1.7),
+	Optimization/steepestdescent.hpp (1.12),
+	Pricers/analyticalcapfloor.cpp (1.13), Pricers/capfloorpricer.cpp
+	(1.2), ShortRateModels/calibrationhelper.hpp (1.3),
+	ShortRateModels/model.cpp (1.6), ShortRateModels/model.hpp (1.6),
+	ShortRateModels/onefactormodel.hpp (1.4),
+	ShortRateModels/OneFactorModels/coxingersollross.cpp (1.7),
+	ShortRateModels/OneFactorModels/coxingersollross.hpp (1.6),
+	ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp (1.3),
+	ShortRateModels/OneFactorModels/vasicek.cpp (1.3),
+	ShortRateModels/OneFactorModels/vasicek.hpp (1.4),
+	ShortRateModels/TwoFactorModels/g2.hpp (1.3),
+	TermStructures/Makefile.am (1.6),
+	TermStructures/affinetermstructure.cpp (1.1),
+	TermStructures/affinetermstructure.hpp (1.1): Bugfixes, plus new
+	TermStructure class based on affine model.
+
+2002-04-02 16:24  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: CashFlows/cashflowvectors.cpp (1.13),
+	CashFlows/cashflowvectors.hpp (1.12), CashFlows/coupon.hpp (1.9),
+	CashFlows/fixedratecoupon.hpp (1.11),
+	CashFlows/floatingratecoupon.cpp (1.12),
+	CashFlows/floatingratecoupon.hpp (1.18),
+	CashFlows/shortfloatingcoupon.cpp (1.4),
+	CashFlows/shortfloatingcoupon.hpp (1.4), Indexes/audlibor.hpp
+	(1.3), Indexes/cadlibor.hpp (1.4), Indexes/chflibor.hpp (1.2),
+	Indexes/euribor.hpp (1.8), Indexes/gbplibor.hpp (1.8),
+	Indexes/jpylibor.hpp (1.3), Indexes/usdlibor.hpp (1.8),
+	Indexes/xibor.cpp (1.7), Indexes/xibor.hpp (1.8),
+	Indexes/zarlibor.hpp (1.2), Instruments/simpleswap.cpp (1.18),
+	ShortRateModels/CalibrationHelpers/caphelper.cpp (1.3),
+	TermStructures/ratehelpers.cpp (1.20): Removed some redundancy from
+	Xibor/FloatingCoupon/TermStructure interaction
+
+2002-03-31 21:08  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.14):
+	formatting, fixing typos and requesting comments
+
+2002-03-31 21:02  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: exercise.hpp (1.14), grid.hpp (1.3), riskstatistics.hpp
+	(1.8), Lattices/tree.hpp (1.13): formatting, fixing typos and
+	requesting comments
+
+2002-03-28 17:06  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/Swap/: Swap.dsp (1.3), Swap.mak (1.20): added browsing
+	info to MS VC projects
+
+2002-03-28 12:20  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.78),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.13),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.3),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.23),
+	Examples/EuropeanOption/EuropeanOption.mak (1.18),
+	Examples/Swap/Swap.mak (1.19): updating MS VC makefiles
+
+2002-03-28 10:25  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* configure.in (1.78): No comment.
+
+2002-03-28 10:09  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* configure.in (1.77),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.12),
+	ql/Optimization/armijo.cpp (1.11),
+	ql/ShortRateModels/onefactormodel.cpp (1.4),
+	ql/ShortRateModels/onefactormodel.hpp (1.3),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.cpp (1.6),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.hpp (1.5),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
+	(1.2),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.4), ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.2),
+	ql/ShortRateModels/OneFactorModels/hullwhite.hpp (1.4),
+	ql/ShortRateModels/OneFactorModels/vasicek.cpp (1.2),
+	ql/ShortRateModels/OneFactorModels/vasicek.hpp (1.3),
+	ql/ShortRateModels/TwoFactorModels/g2.hpp (1.2): Solved X-File
+	365478: missing inline method implementations (CIR) are back.  A
+	few fixes and clean-ups.
+
+2002-03-28 09:18  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/CashFlows/cashflowvectors.hpp (1.11): VC++ couldn't digest the
+	default argument
+
+2002-03-28 08:26  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.11),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.3): commented out methods without implementation 1)
+	ShortRateModels::ExtendedCoxIngersollRoss::generateParameters() 2)
+	ShortRateModels::ExtendedCoxIngersollRoss::dynamics()
+
+2002-03-27 23:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* Docs/pages/fixedincome.docs (1.5), ql/blackmodel.hpp (1.5),
+	ql/diffusionprocess.hpp (1.11), ql/exercise.hpp (1.13),
+	ql/Instruments/capfloor.hpp (1.26), ql/Instruments/swaption.hpp
+	(1.17), ql/Lattices/column.hpp (1.2), ql/Lattices/tree.hpp (1.12),
+	ql/Lattices/trinomialtree.hpp (1.5), ql/Optimization/constraint.hpp
+	(1.3), ql/ShortRateModels/calibrationhelper.hpp (1.2),
+	ql/ShortRateModels/model.cpp (1.5), ql/ShortRateModels/model.hpp
+	(1.5), ql/ShortRateModels/onefactormodel.cpp (1.3),
+	ql/ShortRateModels/onefactormodel.hpp (1.2),
+	ql/ShortRateModels/parameter.hpp (1.2),
+	ql/ShortRateModels/twofactormodel.hpp (1.2),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp (1.2),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.hpp (1.4),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.2), ql/ShortRateModels/OneFactorModels/hullwhite.hpp (1.3),
+	ql/ShortRateModels/OneFactorModels/vasicek.hpp (1.2): Updated
+	documentation (1st pass)
+
+2002-03-27 17:10  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: CashFlows/cashflowvectors.cpp (1.12),
+	CashFlows/cashflowvectors.hpp (1.10),
+	ShortRateModels/CalibrationHelpers/caphelper.cpp (1.2): Made cash
+	flow vector builders into functions
+
+2002-03-27 11:31  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/Swap/swapvaluation.cpp (1.24): rates formatted with 4
+	digits
+
+2002-03-27 11:26  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/TermStructures/ratehelpers.cpp (1.19): switched to fairRate()
+
+2002-03-27 10:45  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.10),
+	Examples/Swap/swapvaluation.cpp (1.23),
+	ql/Instruments/simpleswap.hpp (1.23): added fairSpread() to
+	simpleSwap
+
+2002-03-27 09:55  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/: BermudanSwaption/BermudanSwaption.cpp (1.9),
+	Swap/swapvaluation.cpp (1.22): switched to fairRate()
+
+2002-03-27 09:54  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Instruments/simpleswap.hpp (1.22): moved spread)( under
+	inspectors, since it is an inspector method and it does not provide
+	a result
+
+2002-03-27 09:48  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.8): ITM
+	swaption value is now higher than an ATM one.
+
+2002-03-27 09:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.7): fixed ATM
+	swaption so that it is really ATM added ITM swaption: there is a
+	problem here
+
+2002-03-27 09:03  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.6): added HW
+	numerical calibration
+
+2002-03-26 14:24  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* makefile.mak (1.31): check and inst targets dependent on the
+	primary target (quantlib)
+
+2002-03-26 10:05  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.5),
+	ql/array.hpp (1.10), ql/dataformatters.cpp (1.9),
+	ql/dataformatters.hpp (1.6), ql/date.cpp (1.16), ql/date.hpp
+	(1.14): Added ArrayFormatter and moved a couple of operator<<
+
+2002-03-26 10:04  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Optimization/: conjugategradient.cpp (1.12), costfunction.hpp
+	(1.11): Removed output
+
+2002-03-26 09:32  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: calendar.cpp (1.8), dataformatters.cpp (1.8), date.cpp
+	(1.15), date.hpp (1.13), option.cpp (1.10), solver1d.cpp (1.7),
+	Pricers/europeanengine.cpp (1.6),
+	ShortRateModels/OneFactorModels/coxingersollross.cpp (1.5): The
+	hunt for global variables
+
+2002-03-26 09:06  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/MonteCarlo/pagodapathpricer.cpp (1.12): Leftover #include
+	removed
+
+2002-03-26 08:56  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/: BermudanSwaption/Makefile.am (1.2),
+	DiscreteHedging/Makefile.am (1.9), EuropeanOption/Makefile.am
+	(1.3), Swap/Makefile.am (1.3): [no log message]
+
+2002-03-25 18:45  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.20): updated
+
 2002-03-25 18:18  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* QuantLib.nsi (1.70): Borland and MS VC++ catching up with the
