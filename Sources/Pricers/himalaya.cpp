@@ -23,13 +23,18 @@
 */
 
 /*! \file himalaya.cpp
-    \fullpath Sources/Pricers/%himalaya.cpp
+
+    \fullpath
+    Sources/Pricers/%himalaya.cpp
     \brief Himalayan-type option pricer
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.20  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.19  2001/08/28 13:37:36  nando
 // unsigned int instead of int
 //

@@ -24,13 +24,18 @@
 
 
 /*! \file standardfdmodel.hpp
-    \fullpath Include/ql/FiniteDifferences/%standardfdmodel.hpp
+
+    \fullpath
+    Include/ql/FiniteDifferences/%standardfdmodel.hpp
     \brief Defines the standard finite-differences model
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.7  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.6  2001/08/09 14:59:46  sigmud
 // header modification
 //

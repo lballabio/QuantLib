@@ -23,12 +23,17 @@
 */
 
 /*! \file europeanoption.hpp
-    \fullpath Include/ql/Pricers/%europeanoption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%europeanoption.hpp
     \brief european option
 
 */
 
 // $Log$
+// Revision 1.7  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.6  2001/08/21 16:42:12  nando
 // european option optimization
 //

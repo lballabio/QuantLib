@@ -23,13 +23,18 @@
 */
 
 /*! \file combiningiterator.hpp
-    \fullpath Include/ql/Utilities/%combiningiterator.hpp
+
+    \fullpath
+    Include/ql/Utilities/%combiningiterator.hpp
     \brief Iterator mapping a function to a set of underlying sequences
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.8  2001/08/28 12:34:04  nando
 // nothing relevant (spaces added)
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file array.hpp
-    \fullpath Include/ql/%array.hpp
+
+    \fullpath
+    Include/ql/%array.hpp
     \brief 1-D array used in linear algebra.
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.16  2001/08/31 15:23:44  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.15  2001/08/28 12:16:38  nando
 // unsigned int size() instead of int size()
 //

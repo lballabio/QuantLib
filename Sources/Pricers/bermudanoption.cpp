@@ -25,11 +25,16 @@
 /*! \file bermudanoption.cpp
     \brief Finite-difference evaluation of Bermudan option
 
-    \fullpath Sources/Pricers/%bermudanoption.cpp
+
+    \fullpath
+    Sources/Pricers/%bermudanoption.cpp
 */
 
 // $Id$
 // $Log$
+// Revision 1.21  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.20  2001/08/28 12:14:41  nando
 // nothing relevant (spaces added)
 //

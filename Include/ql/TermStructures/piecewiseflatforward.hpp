@@ -23,13 +23,18 @@
 */
 
 /*! \file piecewiseflatforward.hpp
-    \fullpath Include/ql/TermStructures/%piecewiseflatforward.hpp
+
+    \fullpath
+    Include/ql/TermStructures/%piecewiseflatforward.hpp
     \brief piecewise flat forward term structure
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.11  2001/08/09 14:59:47  sigmud
 // header modification
 //

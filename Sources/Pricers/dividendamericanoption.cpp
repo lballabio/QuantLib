@@ -23,13 +23,18 @@
 */
 
 /*! \file dividendamericanoption.cpp
-    \fullpath Sources/Pricers/%dividendamericanoption.cpp
+
+    \fullpath
+    Sources/Pricers/%dividendamericanoption.cpp
     \brief american option with discrete deterministic dividends
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.34  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.33  2001/08/09 14:59:48  sigmud
 // header modification
 //

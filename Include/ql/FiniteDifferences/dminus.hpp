@@ -23,13 +23,18 @@
 */
 
 /*! \file dminus.hpp
-    \fullpath Include/ql/FiniteDifferences/%dminus.hpp
+
+    \fullpath
+    Include/ql/FiniteDifferences/%dminus.hpp
     \brief \f$ D_{-} \f$ matricial representation
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.8  2001/08/28 13:37:35  nando
 // unsigned int instead of int
 //

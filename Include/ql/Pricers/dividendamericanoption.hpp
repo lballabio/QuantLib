@@ -23,13 +23,18 @@
 */
 
 /*! \file dividendamericanoption.hpp
-    \fullpath Include/ql/Pricers/%dividendamericanoption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%dividendamericanoption.hpp
     \brief american option with discrete deterministic dividends
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.14  2001/08/21 10:47:26  nando
 // "dividendRho not implemented yet" moved up in the class hierarchy
 //

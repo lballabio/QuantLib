@@ -23,13 +23,18 @@
 */
 
 /*! \file riskstatistics.hpp
-    \fullpath Include/ql/%riskstatistics.hpp
+
+    \fullpath
+    Include/ql/%riskstatistics.hpp
     \brief Normal distribution risk analysis tool: VAR, (average) shortfall
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.13  2001/08/09 14:59:45  sigmud
 // header modification
 //

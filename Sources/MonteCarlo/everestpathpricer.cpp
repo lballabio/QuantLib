@@ -23,13 +23,18 @@
 */
 
 /*! \file everestpathpricer.cpp
-    \fullpath Sources/MonteCarlo/%everestpathpricer.cpp
+
+    \fullpath
+    Sources/MonteCarlo/%everestpathpricer.cpp
     \brief path pricer for European-type Everest option
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.14  2001/08/09 14:59:48  sigmud
 // header modification
 //

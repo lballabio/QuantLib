@@ -23,13 +23,18 @@
 */
 
 /*! \file pagodapathpricer.cpp
-    \fullpath Sources/MonteCarlo/%pagodapathpricer.cpp
+
+    \fullpath
+    Sources/MonteCarlo/%pagodapathpricer.cpp
     \brief path pricer for pagoda options
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.14  2001/08/28 13:37:36  nando
 // unsigned int instead of int
 //

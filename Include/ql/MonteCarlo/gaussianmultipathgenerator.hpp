@@ -22,13 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file gaussianmultipathgenerator.hpp
-    \fullpath Include/ql/MonteCarlo/%gaussianmultipathgenerator.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%gaussianmultipathgenerator.hpp
     \brief Generates multi paths from random points
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.5  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.4  2001/08/22 10:57:10  nando
 // removed useless gaussianarraygenerator.hpp
 // It was a clone of gaussianpathgenerator.hpp

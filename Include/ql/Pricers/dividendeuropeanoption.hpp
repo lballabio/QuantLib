@@ -23,13 +23,18 @@
 */
 
 /*! \file dividendeuropeanoption.hpp
-    \fullpath Include/ql/Pricers/%dividendeuropeanoption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%dividendeuropeanoption.hpp
     \brief european option with discrete deterministic dividends
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.17  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.16  2001/08/28 12:31:33  nando
 // unsigned int instead of int
 //

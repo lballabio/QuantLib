@@ -23,13 +23,18 @@
 */
 
 /*! \file actual360.hpp
-    \fullpath Include/ql/DayCounters/%actual360.hpp
+
+    \fullpath
+    Include/ql/DayCounters/%actual360.hpp
     \brief act/360 day counter
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.9  2001/08/29 15:18:04  nando
 // _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
 //

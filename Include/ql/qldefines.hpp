@@ -23,13 +23,18 @@
 */
 
 /*! \file qldefines.hpp
-    \fullpath Include/ql/%qldefines.hpp
+
+    \fullpath
+    Include/ql/%qldefines.hpp
     \brief Global definitions and compiler switches.
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.17  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.16  2001/08/30 17:04:24  nando
 // clock substitued by time
 //

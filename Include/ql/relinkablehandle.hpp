@@ -23,13 +23,18 @@
 */
 
 /*! \file relinkablehandle.hpp
-    \fullpath Include/ql/%relinkablehandle.hpp
+
+    \fullpath
+    Include/ql/%relinkablehandle.hpp
     \brief Globally accessible relinkable pointer
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.9  2001/08/09 14:59:45  sigmud
 // header modification
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file newtonsafe.cpp
-    \fullpath Sources/Solvers1D/%newtonsafe.cpp
+
+    \fullpath
+    Sources/Solvers1D/%newtonsafe.cpp
     \brief safe Newton 1-D solver
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.31  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.30  2001/08/09 14:59:48  sigmud
 // header modification
 //

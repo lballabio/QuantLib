@@ -22,13 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file path.hpp
-    \fullpath Include/ql/MonteCarlo/%path.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%path.hpp
     \brief Monte Carlo path
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.9  2001/08/09 14:59:46  sigmud
 // header modification
 //

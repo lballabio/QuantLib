@@ -23,13 +23,18 @@
 */
 
 /*! \file everestoption.cpp
-    \fullpath Sources/Pricers/%everestoption.cpp
+
+    \fullpath
+    Sources/Pricers/%everestoption.cpp
     \brief Everest-type option pricer
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.18  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.17  2001/08/28 13:37:36  nando
 // unsigned int instead of int
 //

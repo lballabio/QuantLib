@@ -23,13 +23,18 @@
 */
 
 /*! \file multiperiodoption.hpp
-    \fullpath Include/ql/Pricers/%multiperiodoption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%multiperiodoption.hpp
     \brief base class for option with events happening at different periods
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.19  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.18  2001/08/09 14:59:47  sigmud
 // header modification
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file multivariateaccumulator.cpp
-    \fullpath Sources/Math/%multivariateaccumulator.cpp
+
+    \fullpath
+    Sources/Math/%multivariateaccumulator.cpp
     \brief A simple accumulator for vector-type samples
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.19  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.18  2001/08/28 13:37:35  nando
 // unsigned int instead of int
 //

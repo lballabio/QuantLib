@@ -23,13 +23,18 @@
 */
 
 /*! \file ratehelpers.hpp
-    \fullpath Include/ql/TermStructures/%ratehelpers.hpp
+
+    \fullpath
+    Include/ql/TermStructures/%ratehelpers.hpp
     \brief rate helpers
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.20  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.19  2001/08/09 14:59:47  sigmud
 // header modification
 //

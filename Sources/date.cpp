@@ -23,13 +23,18 @@
 */
 
 /*! \file date.cpp
-    \fullpath Sources/%date.cpp
+
+    \fullpath
+    Sources/%date.cpp
     \brief date- and time-related classes, typedefs and enumerations
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.28  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.27  2001/08/28 12:14:41  nando
 // nothing relevant (spaces added)
 //

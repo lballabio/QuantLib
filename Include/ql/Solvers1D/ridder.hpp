@@ -23,13 +23,18 @@
 */
 
 /*! \file ridder.hpp
-    \fullpath Include/ql/Solvers1D/%ridder.hpp
+
+    \fullpath
+    Include/ql/Solvers1D/%ridder.hpp
     \brief Ridder 1-D solver
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.11  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.10  2001/08/09 14:59:47  sigmud
 // header modification
 //

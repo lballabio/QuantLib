@@ -23,13 +23,18 @@
 */
 
 /*! \file forwardvolsurface.hpp
-    \fullpath Include/ql/%forwardvolsurface.hpp
+
+    \fullpath
+    Include/ql/%forwardvolsurface.hpp
     \brief Forward volatility surface
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/31 15:23:44  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.11  2001/08/09 14:59:45  sigmud
 // header modification
 //

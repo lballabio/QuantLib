@@ -23,13 +23,18 @@
 */
 
 /*! \file marketelement.hpp
-    \fullpath Include/ql/%marketelement.hpp
+
+    \fullpath
+    Include/ql/%marketelement.hpp
     \brief purely virtual base class for market observables
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.7  2001/08/31 15:23:44  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.6  2001/08/09 14:59:45  sigmud
 // header modification
 //

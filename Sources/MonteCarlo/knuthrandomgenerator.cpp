@@ -23,13 +23,18 @@
 */
 
 /*! \file knuthrandomgenerator.cpp
-    \fullpath Sources/MonteCarlo/%knuthrandomgenerator.cpp
+
+    \fullpath
+    Sources/MonteCarlo/%knuthrandomgenerator.cpp
     \brief Knuth uniform random number generator
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.9  2001/08/30 17:24:37  nando
 // clock substitued by time
 //

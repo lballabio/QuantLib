@@ -23,13 +23,18 @@
 */
 
 /*! \file bsmnumericaloption.hpp
-    \fullpath Include/ql/Pricers/%bsmnumericaloption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%bsmnumericaloption.hpp
     \brief common code for numerical option evaluation
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.18  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.17  2001/08/28 14:47:46  nando
 // unsigned int instead of int
 //

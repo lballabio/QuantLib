@@ -23,13 +23,18 @@
 */
 
 /*! \file statistics.hpp
-    \fullpath Include/ql/Math/%statistics.hpp
+
+    \fullpath
+    Include/ql/Math/%statistics.hpp
     \brief statistic tools
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.11  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.10  2001/08/09 14:59:46  sigmud
 // header modification
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file couplingiterator.hpp
-    \fullpath Include/ql/Utilities/%couplingiterator.hpp
+
+    \fullpath
+    Include/ql/Utilities/%couplingiterator.hpp
     \brief Iterator mapping a function to a pair of underlying sequences
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.11  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.10  2001/08/28 12:34:04  nando
 // nothing relevant (spaces added)
 //

@@ -25,11 +25,16 @@
 /*! \file milan.cpp
   	\brief Milan calendar
 
-    \fullpath Sources/Calendars/%milan.cpp
+
+    \fullpath
+    Sources/Calendars/%milan.cpp
 */
 
 // $Id$
 // $Log$
+// Revision 1.22  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.21  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //

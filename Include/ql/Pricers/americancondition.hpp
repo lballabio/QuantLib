@@ -23,13 +23,18 @@
 */
 
 /*! \file americancondition.hpp
-    \fullpath Include/ql/Pricers/%americancondition.hpp
+
+    \fullpath
+    Include/ql/Pricers/%americancondition.hpp
     \brief american option exercise condition
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.11  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.10  2001/08/28 13:37:35  nando
 // unsigned int instead of int
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file geometricasianpathpricer.cpp
-    \fullpath Sources/MonteCarlo/%geometricasianpathpricer.cpp
+
+    \fullpath
+    Sources/MonteCarlo/%geometricasianpathpricer.cpp
     \brief path pricer for geometric Asian options
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.19  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.18  2001/08/21 14:21:23  nando
 // removed default constructors and useless isInitialized_ private member
 //

@@ -25,11 +25,16 @@
 /*! \file bsmnumericaloption.cpp
     \brief common code for numerical option evaluation
 
-    \fullpath Sources/Pricers/%bsmnumericaloption.cpp
+
+    \fullpath
+    Sources/Pricers/%bsmnumericaloption.cpp
 */
 
 // $Id$
 // $Log$
+// Revision 1.51  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.50  2001/08/28 14:47:46  nando
 // unsigned int instead of int
 //

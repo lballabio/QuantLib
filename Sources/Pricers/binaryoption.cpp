@@ -23,13 +23,18 @@
 */
 
 /*!  \file binaryoption.cpp
-    \fullpath Sources/Pricers/%binaryoption.cpp
+
+    \fullpath
+    Sources/Pricers/%binaryoption.cpp
    \brief European style cash-or-nothing option.
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.13  2001/08/13 15:06:17  nando
 // added dividendRho method
 //

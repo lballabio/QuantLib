@@ -23,13 +23,18 @@
 */
 
 /*! \file cranknicolson.hpp
-    \fullpath Include/ql/FiniteDifferences/%cranknicolson.hpp
+
+    \fullpath
+    Include/ql/FiniteDifferences/%cranknicolson.hpp
     \brief Crank-Nicolson scheme for finite difference methods
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.11  2001/08/28 17:23:30  nando
 // unsigned int instead of int
 //

@@ -22,13 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file montecarlomodel.hpp
-    \fullpath Include/ql/MonteCarlo/%montecarlomodel.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%montecarlomodel.hpp
     \brief Create a sample generator from a path generator and a path pricer
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.4  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.3  2001/08/09 14:59:46  sigmud
 // header modification
 //

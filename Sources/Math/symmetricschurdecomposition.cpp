@@ -23,13 +23,18 @@
 */
 
 /*! \file symmetricschurdecomposition.cpp
-    \fullpath Sources/Math/%symmetricschurdecomposition.cpp
+
+    \fullpath
+    Sources/Math/%symmetricschurdecomposition.cpp
     \brief Eigenvalues / eigenvectors of a real symmetric matrix
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.16  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.15  2001/08/09 14:59:48  sigmud
 // header modification
 //

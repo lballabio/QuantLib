@@ -23,13 +23,18 @@
 */
 
 /*! \file filteringiterator.hpp
-    \fullpath Include/ql/Utilities/%filteringiterator.hpp
+
+    \fullpath
+    Include/ql/Utilities/%filteringiterator.hpp
     \brief Iterator filtering undesired data
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.11  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.10  2001/08/28 12:33:41  nando
 // nothing relevant (spaces added)
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file inversecumulativegaussian.hpp
-    \fullpath Include/ql/MonteCarlo/%inversecumulativegaussian.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%inversecumulativegaussian.hpp
     \brief Inverse Cumulative Gaussian random-number generator
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.4  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.3  2001/08/09 14:59:46  sigmud
 // header modification
 //

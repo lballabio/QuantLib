@@ -23,13 +23,18 @@
 */
 
 /*! \file shoutcondition.hpp
-    \fullpath Include/ql/Pricers/%shoutcondition.hpp
+
+    \fullpath
+    Include/ql/Pricers/%shoutcondition.hpp
     \brief shout option exercise condition
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.12  2001/08/28 13:37:35  nando
 // unsigned int instead of int
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file matrix.cpp
-    \fullpath Sources/Math/%matrix.cpp
+
+    \fullpath
+    Sources/Math/%matrix.cpp
     \brief matrix used in linear algebra.
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.16  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.15  2001/08/28 12:30:51  nando
 // unsigned int instead of int
 //

@@ -22,13 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file himalaya.hpp
-    \fullpath Include/ql/Pricers/%himalaya.hpp
+
+    \fullpath
+    Include/ql/Pricers/%himalaya.hpp
     \brief Himalayan-type option pricer
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.13  2001/08/09 14:59:47  sigmud
 // header modification
 //

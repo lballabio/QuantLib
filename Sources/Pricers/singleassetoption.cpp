@@ -23,13 +23,18 @@
 */
 
 /*! \file singleassetoption.cpp
-    \fullpath Sources/Pricers/%singleassetoption.cpp
+
+    \fullpath
+    Sources/Pricers/%singleassetoption.cpp
     \brief common code for option evaluation
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.8  2001/08/28 14:47:46  nando
 // unsigned int instead of int
 //

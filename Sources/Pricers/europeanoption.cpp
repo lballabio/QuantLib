@@ -23,13 +23,18 @@
 */
 
 /*! \file europeanoption.cpp
-    \fullpath Sources/Pricers/%europeanoption.cpp
+
+    \fullpath
+    Sources/Pricers/%europeanoption.cpp
     \brief european option
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.7  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.6  2001/08/21 16:42:12  nando
 // european option optimization
 //

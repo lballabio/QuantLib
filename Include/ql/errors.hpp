@@ -23,13 +23,18 @@
 */
 
 /*! \file errors.hpp
-    \fullpath Include/ql/%errors.hpp
+
+    \fullpath
+    Include/ql/%errors.hpp
     \brief Classes and functions for error handling.
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.6  2001/08/31 15:23:44  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.5  2001/08/09 14:59:45  sigmud
 // header modification
 //

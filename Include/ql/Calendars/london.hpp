@@ -23,13 +23,18 @@
 */
 
 /*! \file london.hpp
-    \fullpath Include/ql/Calendars/%london.hpp
+
+    \fullpath
+    Include/ql/Calendars/%london.hpp
     \brief London calendar
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.8  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.7  2001/08/09 14:59:46  sigmud
 // header modification
 //

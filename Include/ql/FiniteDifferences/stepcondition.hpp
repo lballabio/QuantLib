@@ -23,13 +23,18 @@
 */
 
 /*! \file stepcondition.hpp
-    \fullpath Include/ql/FiniteDifferences/%stepcondition.hpp
+
+    \fullpath
+    Include/ql/FiniteDifferences/%stepcondition.hpp
     \brief conditions to be applied at every time step
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.8  2001/08/09 14:59:46  sigmud
 // header modification
 //

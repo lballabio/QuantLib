@@ -23,13 +23,18 @@
 */
 
 /*! \file steppingiterator.hpp
-    \fullpath Include/ql/Utilities/%steppingiterator.hpp
+
+    \fullpath
+    Include/ql/Utilities/%steppingiterator.hpp
     \brief Iterator advancing in constant steps
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.8  2001/08/28 12:32:17  nando
 // nothing relevant (spaces added)
 //

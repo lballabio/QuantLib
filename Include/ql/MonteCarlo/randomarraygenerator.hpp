@@ -22,13 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file randomarraygenerator.hpp
-    \fullpath Include/ql/MonteCarlo/%randomarraygenerator.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%randomarraygenerator.hpp
     \brief Generates random arrays from a random number generator
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.20  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.19  2001/08/22 11:18:06  nando
 // removed unused default constructor
 // added a few typedef for argument type and value type

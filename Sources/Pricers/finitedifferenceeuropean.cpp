@@ -23,13 +23,18 @@
 */
 
 /*! \file finitedifferenceeuropean.cpp
-    \fullpath Sources/Pricers/%finitedifferenceeuropean.cpp
+
+    \fullpath
+    Sources/Pricers/%finitedifferenceeuropean.cpp
     \brief Example of European option calculated using finite differences
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.20  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.19  2001/08/28 14:47:46  nando
 // unsigned int instead of int
 //

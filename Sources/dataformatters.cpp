@@ -25,11 +25,16 @@
 /*! \file dataformatters.cpp
     \brief classes used to format data for output
 
-    \fullpath Sources/%dataformatters.cpp
+
+    \fullpath
+    Sources/%dataformatters.cpp
 */
 
 // $Id$
 // $Log$
+// Revision 1.26  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.25  2001/08/09 14:59:47  sigmud
 // header modification
 //

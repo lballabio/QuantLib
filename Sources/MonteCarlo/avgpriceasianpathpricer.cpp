@@ -23,13 +23,18 @@
 */
 
 /*! \file avgpriceasianpathpricer.cpp
-    \fullpath Sources/MonteCarlo/%avgpriceasianpathpricer.cpp
+
+    \fullpath
+    Sources/MonteCarlo/%avgpriceasianpathpricer.cpp
     \brief path pricer for average price Asian option
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.17  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.16  2001/08/21 14:21:23  nando
 // removed default constructors and useless isInitialized_ private member
 //

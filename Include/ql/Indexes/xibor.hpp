@@ -23,13 +23,18 @@
 */
 
 /*! \file xibor.hpp
-    \fullpath Include/ql/Indexes/%xibor.hpp
+
+    \fullpath
+    Include/ql/Indexes/%xibor.hpp
     \brief purely virtual base class for libor indexes
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.12  2001/08/09 14:59:46  sigmud
 // header modification
 //

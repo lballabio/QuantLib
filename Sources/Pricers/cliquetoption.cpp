@@ -23,13 +23,18 @@
 */
 
 /*!  \file cliquetoption.cpp
-    \fullpath Sources/Pricers/%cliquetoption.cpp
+
+    \fullpath
+    Sources/Pricers/%cliquetoption.cpp
    \brief Textbook example of european-style multi-period option.
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.12  2001/08/09 14:59:48  sigmud
 // header modification
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file segmentintegral.cpp
-    \fullpath Sources/Math/%segmentintegral.cpp
+
+    \fullpath
+    Sources/Math/%segmentintegral.cpp
     \brief Integral of a function over a segment
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.3  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.2  2001/08/09 14:59:48  sigmud
 // header modification
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file dividendoption.hpp
-    \fullpath Include/ql/Pricers/%dividendoption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%dividendoption.hpp
     \brief base class for option with dividends
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.12  2001/08/21 10:47:26  nando
 // "dividendRho not implemented yet" moved up in the class hierarchy
 //

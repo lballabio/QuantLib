@@ -23,13 +23,18 @@
 */
 
 /*! \file bermudanoption.hpp
-    \fullpath Include/ql/Pricers/%bermudanoption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%bermudanoption.hpp
     \brief Finite-difference evaluation of Bermudan option
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.14  2001/08/28 12:31:45  nando
 // nothing relevant (spaces added)
 //

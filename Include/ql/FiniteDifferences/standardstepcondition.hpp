@@ -24,13 +24,18 @@
 
 
 /*! \file standardstepcondition.hpp
-    \fullpath Include/ql/FiniteDifferences/%standardstepcondition.hpp
+
+    \fullpath
+    Include/ql/FiniteDifferences/%standardstepcondition.hpp
     \brief Defines the standard step condition
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.8  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.7  2001/08/09 14:59:46  sigmud
 // header modification
 //

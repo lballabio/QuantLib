@@ -23,13 +23,18 @@
 */
 
 /*! \file cashflow.hpp
-    \fullpath Include/ql/%cashflow.hpp
+
+    \fullpath
+    Include/ql/%cashflow.hpp
     \brief Base class for cash flows
 
 */
 
 // $Id$
 //  $Log$
+//  Revision 1.9  2001/08/31 15:23:44  sigmud
+//  refining fullpath entries for doxygen documentation
+//
 //  Revision 1.8  2001/08/09 14:59:45  sigmud
 //  header modification
 //

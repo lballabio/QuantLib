@@ -23,13 +23,18 @@
 */
 
 /*! \file valueatcenter.cpp
-    \fullpath Sources/FiniteDifferences/%valueatcenter.cpp
+
+    \fullpath
+    Sources/FiniteDifferences/%valueatcenter.cpp
     \brief compute value, first, and second derivatives at grid center
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.13  2001/08/28 13:37:35  nando
 // unsigned int instead of int
 //

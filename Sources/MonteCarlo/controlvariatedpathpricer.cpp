@@ -23,13 +23,18 @@
 */
 
 /*! \file controlvariatedpathpricer.cpp
-    \fullpath Sources/MonteCarlo/%controlvariatedpathpricer.cpp
+
+    \fullpath
+    Sources/MonteCarlo/%controlvariatedpathpricer.cpp
     \brief generic control variated path pricer
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.14  2001/08/21 14:21:23  nando
 // removed default constructors and useless isInitialized_ private member
 //

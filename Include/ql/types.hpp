@@ -23,13 +23,18 @@
 */
 
 /*! \file types.hpp
-    \fullpath Include/ql/%types.hpp
+
+    \fullpath
+    Include/ql/%types.hpp
     \brief Custom types
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.7  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.6  2001/08/09 14:59:45  sigmud
 // header modification
 //

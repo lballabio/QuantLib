@@ -23,13 +23,18 @@
 */
 
 /*! \file gaussianrandomgenerator.hpp
-    \fullpath Include/ql/MonteCarlo/%gaussianrandomgenerator.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%gaussianrandomgenerator.hpp
     \brief Default choice for Gaussian random number generator
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.13  2001/08/28 14:23:00  aleppo
 // removed redundant inclusion
 //

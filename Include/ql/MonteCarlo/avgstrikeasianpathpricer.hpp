@@ -23,13 +23,18 @@
 */
 
 /*! \file avgstrikeasianpathpricer.hpp
-    \fullpath Include/ql/MonteCarlo/%avgstrikeasianpathpricer.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%avgstrikeasianpathpricer.hpp
     \brief path pricer for average strike Asian options
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.12  2001/08/21 14:21:22  nando
 // removed default constructors and useless isInitialized_ private member
 //

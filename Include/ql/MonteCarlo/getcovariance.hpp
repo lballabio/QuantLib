@@ -22,13 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file getcovariance.hpp
-    \fullpath Include/ql/MonteCarlo/%getcovariance.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%getcovariance.hpp
     \brief Covariance matrix calculation
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.11  2001/08/09 14:59:46  sigmud
 // header modification
 //

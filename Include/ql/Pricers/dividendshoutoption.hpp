@@ -23,13 +23,18 @@
 */
 
 /*! \file dividendshoutoption.hpp
-    \fullpath Include/ql/Pricers/%dividendshoutoption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%dividendshoutoption.hpp
     \brief base class for shout option with dividends
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.12  2001/08/13 15:06:17  nando
 // added dividendRho method
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file stepconditionoption.cpp
-    \fullpath Sources/Pricers/%stepconditionoption.cpp
+
+    \fullpath
+    Sources/Pricers/%stepconditionoption.cpp
     \brief Option requiring additional code to be executed at each time step
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.21  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.20  2001/08/09 14:59:48  sigmud
 // header modification
 //

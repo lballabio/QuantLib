@@ -23,13 +23,18 @@
 */
 
 /*! \file mcpricer.hpp
-    \fullpath Include/ql/MonteCarlo/%mcpricer.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%mcpricer.hpp
     \brief base class for one-factor Monte Carlo pricers
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.17  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.16  2001/08/09 14:59:46  sigmud
 // header modification
 //

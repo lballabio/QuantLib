@@ -22,13 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file multipath.hpp
-    \fullpath Include/ql/MonteCarlo/%multipath.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%multipath.hpp
     \brief Multiple paths evolving at the same time
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.11  2001/08/09 14:59:46  sigmud
 // header modification
 //

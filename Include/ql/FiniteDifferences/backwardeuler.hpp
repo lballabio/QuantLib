@@ -23,13 +23,18 @@
 */
 
 /*! \file backwardeuler.hpp
-    \fullpath Include/ql/FiniteDifferences/%backwardeuler.hpp
+
+    \fullpath
+    Include/ql/FiniteDifferences/%backwardeuler.hpp
     \brief backward Euler scheme for finite differemce methods
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.12  2001/08/09 14:59:46  sigmud
 // header modification
 //

@@ -23,13 +23,18 @@
 */
 
 /*! \file geometricasianoption.hpp
-    \fullpath Include/ql/Pricers/%geometricasianoption.hpp
+
+    \fullpath
+    Include/ql/Pricers/%geometricasianoption.hpp
     \brief geometric Asian option
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.12  2001/08/21 16:42:12  nando
 // european option optimization
 //

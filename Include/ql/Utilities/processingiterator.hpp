@@ -23,13 +23,18 @@
 */
 
 /*! \file processingiterator.hpp
-    \fullpath Include/ql/Utilities/%processingiterator.hpp
+
+    \fullpath
+    Include/ql/Utilities/%processingiterator.hpp
     \brief Iterator mapping a unary function to an underlying sequence
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.8  2001/08/28 12:33:18  nando
 // nothing relevant (spaces added)
 //

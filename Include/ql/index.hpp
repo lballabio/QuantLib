@@ -23,13 +23,18 @@
 */
 
 /*! \file index.hpp
-    \fullpath Include/ql/%index.hpp
+
+    \fullpath
+    Include/ql/%index.hpp
     \brief purely virtual base class for indexes
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/31 15:23:44  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.13  2001/08/09 14:59:45  sigmud
 // header modification
 //

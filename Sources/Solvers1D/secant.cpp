@@ -23,13 +23,18 @@
 */
 
 /*! \file secant.cpp
-    \fullpath Sources/Solvers1D/%secant.cpp
+
+    \fullpath
+    Sources/Solvers1D/%secant.cpp
     \brief secant 1-D solver
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.28  2001/08/31 15:23:47  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.27  2001/08/09 14:59:48  sigmud
 // header modification
 //

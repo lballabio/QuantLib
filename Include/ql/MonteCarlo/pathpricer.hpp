@@ -23,13 +23,18 @@
 */
 
 /*! \file pathpricer.hpp
-    \fullpath Include/ql/MonteCarlo/%pathpricer.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%pathpricer.hpp
     \brief base class for single-path pricers
     
 */
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/31 15:23:46  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.14  2001/08/22 11:18:06  nando
 // removed unused default constructor
 // added a few typedef for argument type and value type

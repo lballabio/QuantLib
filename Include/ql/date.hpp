@@ -23,13 +23,18 @@
 */
 
 /*! \file date.hpp
-    \fullpath Include/ql/%date.hpp
+
+    \fullpath
+    Include/ql/%date.hpp
     \brief date- and time-related classes, typedefs and enumerations
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/31 15:23:44  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.11  2001/08/28 12:17:01  nando
 // nothing relevant (spaces added)
 //

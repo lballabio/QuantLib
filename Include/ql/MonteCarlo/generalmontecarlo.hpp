@@ -22,13 +22,18 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file generalmontecarlo.hpp
-    \fullpath Include/ql/MonteCarlo/%generalmontecarlo.hpp
+
+    \fullpath
+    Include/ql/MonteCarlo/%generalmontecarlo.hpp
     \brief Generic model for Monte Carlo simulations
 
 */
 
 // $Id$
 // $Log$
+// Revision 1.19  2001/08/31 15:23:45  sigmud
+// refining fullpath entries for doxygen documentation
+//
 // Revision 1.18  2001/08/22 15:28:20  nando
 // added AntitheticPathGenerator
 //

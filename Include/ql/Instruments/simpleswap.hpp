@@ -23,7 +23,9 @@
 */
 
 /*! \file simpleswap.hpp
-    \fullpath Include/ql/Instruments/%simpleswap.hpp
+
+    \fullpath
+    Include/ql/Instruments/%simpleswap.hpp
     \brief Simple fixed-rate vs Libor swap
 
 */
