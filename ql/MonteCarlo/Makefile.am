@@ -35,7 +35,6 @@ libMonteCarlo_la_SOURCES = \
     arithmeticapopathpricer.cpp \
     arithmeticasopathpricer.cpp \
 	basketpathpricer.cpp    \
-	brownianbridge.cpp    \
     cliquetoptionpathpricer.cpp \
 	europeanpathpricer.cpp \
 	everestpathpricer.cpp \

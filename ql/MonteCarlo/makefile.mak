@@ -18,7 +18,6 @@ OBJS = \
     arithmeticapopathpricer.obj$(_D) \
     arithmeticasopathpricer.obj$(_D) \
     basketpathpricer.obj$(_D) \
-    brownianbridge.obj$(_D) \
     cliquetoptionpathpricer.obj$(_D) \
     europeanpathpricer.obj$(_D) \
     everestpathpricer.obj$(_D) \

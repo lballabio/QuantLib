@@ -33,8 +33,6 @@
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/Math/normaldistribution.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
-#include <ql/MonteCarlo/europeanpathpricer.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
 
 namespace QuantLib {

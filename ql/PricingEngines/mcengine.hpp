@@ -31,6 +31,8 @@
 #include <ql/dataformatters.hpp>
 #include <ql/grid.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/MonteCarlo/europeanpathpricer.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
@@ -176,7 +178,7 @@ namespace QuantLib {
           protected:
             MCVanillaEngine(bool antitheticVariance,
                             bool controlVariate,
-                            const Handle<TimeGrid>& timeGrid,
+                            const TimeGrid& timeGrid,
                             SG sequenceGenerator) 
             : antitheticVariance_(antitheticVariance),
               controlVariate_(controlVariate), timeGrid_(timeGrid),
@@ -184,7 +186,7 @@ namespace QuantLib {
             Handle<PG> pathGenerator() const;
             bool antitheticVariance_, controlVariate_;
           private:
-            Handle<TimeGrid> timeGrid_;
+            TimeGrid timeGrid_;
             SG sequenceGenerator_;
         };
 
@@ -265,7 +267,7 @@ namespace QuantLib {
             MCEuropeanEngine(
                 bool antitheticVariance,
                 bool controlVariate,
-                const Handle<TimeGrid>& timeGrid,
+                const TimeGrid timeGrid,
                 SG sequenceGenerator) 
             : MCVanillaEngine<S, SG, PG, PP>(antitheticVariance,
               controlVariate, timeGrid, sequenceGenerator) {}

@@ -21,10 +21,10 @@
 #ifndef quantlib_montecarlo_path_generator_h
 #define quantlib_montecarlo_path_generator_h
 
-#include <ql/MonteCarlo/path.hpp>
-#include <ql/RandomNumbers/randomarraygenerator.hpp>
 #include <ql/diffusionprocess.hpp>
 #include <ql/grid.hpp>
+#include <ql/MonteCarlo/path.hpp>
+#include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {
 
@@ -46,30 +46,30 @@ namespace QuantLib {
                           Size timeSteps,
                           SG generator);
             PathGenerator(const Handle<DiffusionProcess>& diffProcess,
-                          const Handle<TimeGrid>& times,
+                          const TimeGrid& times,
                           SG generator);
             //! \name inspectors
             //@{
             const sample_type& next() const;
             const sample_type& antithetic() const;
-            Size size() const { return next_.size(); }
+            Size size() const { return dimension_; }
             //@}
           private:
+            SG generator_;
+            Size dimension_;
             mutable Sample<Path> next_;
             mutable double asset_;
             Handle<DiffusionProcess> diffProcess_;
-            SG generator_;
-            Size dimension_;
-            Handle<TimeGrid> timeGrid_;
+            TimeGrid timeGrid_;
         };
 
         template <class SG>
         PathGenerator<SG>::PathGenerator(
             const Handle<DiffusionProcess>& diffProcess,
             Time length, Size timeSteps, SG generator)
-        : next_(Path(timeSteps),1.0),
-          diffProcess_(diffProcess), generator_(generator),
-          dimension_(generator_.dimension()) {
+        : generator_(generator), dimension_(generator_.dimension()),
+          next_(Path(dimension_),1.0), diffProcess_(diffProcess),
+          timeGrid_(length, timeSteps) {
             QL_REQUIRE(dimension_==timeSteps,
                 "PathGenerator::PathGenerator :"
                 "sequence generator dimensionality ("
@@ -77,22 +77,21 @@ namespace QuantLib {
                 ") != timeSteps ("
                 + IntegerFormatter::toString(timeSteps) +
                 ")");
-            timeGrid_ = Handle<TimeGrid>(new TimeGrid(length, timeSteps));
         }
 
         template <class SG>
         PathGenerator<SG>::PathGenerator(
             const Handle<DiffusionProcess>& diffProcess,
-            const Handle<TimeGrid>& timeGrid, SG generator)
-        : next_(Path(timeGrid->size()-1),1.0),
-          diffProcess_(diffProcess), generator_(generator),
-          dimension_(generator_.dimension()), timeGrid_(timeGrid) {
-            QL_REQUIRE(dimension_==timeGrid_->size()-1,
+            const TimeGrid& timeGrid, SG generator)
+        : generator_(generator), dimension_(generator_.dimension()),
+          next_(Path(dimension_),1.0), diffProcess_(diffProcess),
+          timeGrid_(timeGrid) {
+            QL_REQUIRE(dimension_==timeGrid_.size()-1,
                 "PathGenerator::PathGenerator :"
                 "sequence generator dimensionality ("
                 + IntegerFormatter::toString(dimension_) +
                 ") != timeSteps ("
-                + IntegerFormatter::toString(timeGrid_->size()-1) +
+                + IntegerFormatter::toString(timeGrid_.size()-1) +
                 ")");
         }
     
@@ -110,8 +109,8 @@ namespace QuantLib {
             double dt;
             Time t;
             for (Size i=0; i<next_.value.size(); i++) {
-                t = (*timeGrid_)[i+1];
-                dt = timeGrid_->dt(i);
+                t = timeGrid_[i+1];
+                dt = timeGrid_.dt(i);
                 next_.value.drift()[i] = dt;
                 next_.value.drift()[i] *= 
                     diffProcess_->drift(t, asset_);
@@ -133,8 +132,8 @@ namespace QuantLib {
             double dt;
             Time t;
             for (Size i=0; i<next_.value.size(); i++) {
-                t = (*timeGrid_)[i+1];
-                dt = timeGrid_->dt(i);
+                t = timeGrid_[i+1];
+                dt = timeGrid_.dt(i);
                 next_.value.drift()[i] = dt;
                 next_.value.drift()[i] *= 
                     diffProcess_->drift(t, asset_);

@@ -98,7 +98,7 @@ namespace QuantLib {
           public:
             MCCliquetEngine(bool antitheticVariance,
                             bool controlVariate,
-                            const Handle<TimeGrid>& timeGrid,
+                            const TimeGrid& timeGrid,
                             SG sequenceGenerator)
             : antitheticVariance_(antitheticVariance),
               controlVariate_(controlVariate), timeGrid_(timeGrid),
@@ -109,7 +109,7 @@ namespace QuantLib {
             Handle<PP> pathPricer() const;
             bool antitheticVariance_, controlVariate_;
           private:
-            Handle<TimeGrid> timeGrid_;
+            TimeGrid timeGrid_;
             SG sequenceGenerator_;
         };
 

@@ -402,7 +402,7 @@ int main(int argc, char* argv[])
 
         // Monte Carlo Method
         timeSteps = 365;
-        Handle<TimeGrid> timeGrid(new TimeGrid(maturity, timeSteps));
+        TimeGrid timeGrid(maturity, timeSteps);
         method = "MC (crude)";
         UniformRandomGenerator rng(mcSeed);
 

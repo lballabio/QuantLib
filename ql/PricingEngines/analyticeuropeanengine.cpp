@@ -25,7 +25,6 @@
 // $Id$
 
 #include <ql/PricingEngines/vanillaengines.hpp>
-#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 

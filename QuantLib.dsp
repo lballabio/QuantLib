@@ -815,10 +815,6 @@ SOURCE=.\ql\MonteCarlo\basketpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\brownianbridge.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\brownianbridge.hpp
 # End Source File
 # Begin Source File
