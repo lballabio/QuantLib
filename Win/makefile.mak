@@ -13,7 +13,7 @@ SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
-PYTHON_ROOT     = "C:\Program Files\Python20"
+PYTHON_ROOT     = "C:\Python20"
 PYTHON_INCLUDE	= $(PYTHON_ROOT)\include
 PYTHON_LIBS		= $(PYTHON_ROOT)\libs
 
