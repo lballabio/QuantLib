@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
         std::string method;
 
         double value, discrepancy, rightValue, relativeDiscrepancy;
-        rightValue = (type == Option::Put ? 4.4867 : 2.1737);
+        rightValue = (type == Option::Put ? 4.4866 : 2.17372645);
 
         std::cout << std::endl ;
 
@@ -135,10 +135,10 @@ int main(int argc, char* argv[])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
+             << DoubleFormatter::toString(value, 8) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 4) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 4)
+             << "N/A\t\t"
+             << "N/A\t\t"
              << std::endl;
 
         // American option
@@ -151,8 +151,8 @@ int main(int argc, char* argv[])
             amExercise,
             flatVolTS);
 
-        Size timeSteps = 801;
-
+        Size timeSteps = 512001;
+#ifdef AMETRANO
         // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
@@ -161,10 +161,10 @@ int main(int argc, char* argv[])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
+             << DoubleFormatter::toString(value, 6) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 4) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 4)
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
 
@@ -176,10 +176,10 @@ int main(int argc, char* argv[])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
+             << DoubleFormatter::toString(value, 6) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 4) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 4)
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Equal Probability Additive Binomial Tree (EQP)
@@ -190,10 +190,10 @@ int main(int argc, char* argv[])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
+             << DoubleFormatter::toString(value, 6) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 4) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 4)
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
@@ -204,12 +204,12 @@ int main(int argc, char* argv[])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
+             << DoubleFormatter::toString(value, 6) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 4) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 4)
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
-
+#endif
         // Tian Binomial Tree (third moment matching)
         method = "Binomial Tian";
         option.setPricingEngine(Handle<PricingEngine>(
@@ -218,10 +218,10 @@ int main(int argc, char* argv[])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
+             << DoubleFormatter::toString(value, 8) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 4) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 4)
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Leisen-Reimer Binomial Tree
@@ -232,10 +232,10 @@ int main(int argc, char* argv[])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
+             << DoubleFormatter::toString(value, 8) << "\t"
              << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 4) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 4)
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Least Squares Monte Carlo: Longstaff Schwartz
@@ -249,10 +249,10 @@ int main(int argc, char* argv[])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
-            << DoubleFormatter::toString(value, 4) << "\t"
+            << DoubleFormatter::toString(value, 6) << "\t"
             << "N/A\t\t"
-            << DoubleFormatter::toString(discrepancy, 4) << "\t"
-            << DoubleFormatter::toString(relativeDiscrepancy, 4)
+            << DoubleFormatter::toString(discrepancy, 6) << "\t"
+            << DoubleFormatter::toString(relativeDiscrepancy, 6)
             << std::endl;
 
         return 0;

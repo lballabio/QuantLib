@@ -1,8 +1,6 @@
 
 /*
- Copyright (C) 2003 Neil Firth
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,31 +15,21 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file barrieroption.hpp
-    \brief Barrier option on a single asset
+/*! \file vanillaoption.hpp
+    \brief Vanilla option on a single asset
 */
 
-#ifndef quantlib_barrier_option_h
-#define quantlib_barrier_option_h
+#ifndef quantlib_asian_option_h
+#define quantlib_asian_option_h
 
 #include <ql/Instruments/oneassetstrikedoption.hpp>
 
 namespace QuantLib {
 
-    //! placeholder for enumerated barrier types
-    struct Barrier {
-        enum Type { DownIn, UpIn, DownOut, UpOut };
-    };
-
-    //! Barrier option on a single asset.
-    /*! The analytic pricing engine will be used if none if passed. */
-    class BarrierOption : public OneAssetStrikedOption {
+    //! Asian option
+    class AsianOption : public OneAssetStrikedOption {
       public:
-        class arguments;
-        BarrierOption(Barrier::Type barrierType,
-                      double barrier,
-                      double rebate,
-                      Option::Type type,
+        AsianOption(Option::Type type,
                       const RelinkableHandle<Quote>& underlying,
                       double strike,
                       const RelinkableHandle<TermStructure>& dividendTS,
@@ -52,25 +40,13 @@ namespace QuantLib {
                       Handle<PricingEngine>(),
                       const std::string& isinCode = "",
                       const std::string& description = "");
-        void setupArguments(Arguments*) const;
       protected:
+        // enforce in this class any check on engine/payoff
         void performCalculations() const;
-        // arguments
-        Barrier::Type barrierType_;
-        double barrier_;
-        double rebate_;
-    };
-
-    //! %arguments for barrier option calculation
-    class BarrierOption::arguments : public OneAssetStrikedOption::arguments {
-      public:
-        Barrier::Type barrierType;
-        double barrier;
-        double rebate;
-        void validate() const;
     };
 
 }
 
 
 #endif
+

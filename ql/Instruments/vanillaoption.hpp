@@ -1,7 +1,6 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,14 +22,12 @@
 #ifndef quantlib_vanilla_option_h
 #define quantlib_vanilla_option_h
 
-#include <ql/option.hpp>
-#include <ql/termstructure.hpp>
-#include <ql/voltermstructure.hpp>
+#include <ql/Instruments/oneassetstrikedoption.hpp>
 
 namespace QuantLib {
 
     //! Vanilla option (no discrete dividends, no barriers) on a single asset
-    class VanillaOption : public Option {
+    class VanillaOption : public OneAssetStrikedOption {
       public:
         VanillaOption(Option::Type type,
                       const RelinkableHandle<Quote>& underlying,
@@ -43,81 +40,9 @@ namespace QuantLib {
                       Handle<PricingEngine>(),
                       const std::string& isinCode = "",
                       const std::string& description = "");
-        //! \name Instrument interface
-        //@{
-        class arguments;
-        class results;
-        bool isExpired() const;
-        //@}
-        //! \name greeks
-        //@{
-        double delta() const;
-        double gamma() const;
-        double theta() const;
-        double vega() const;
-        double rho() const;
-        double dividendRho() const;
-        double strikeSensitivity() const;
-        //@}
-        /*! \warning Options with a gamma that changes sign have
-                     values that are <b>not</b> monotonic in the
-                     volatility, e.g binary options. In these cases
-                     impliedVolatility can fail and in any case it is
-                     almost meaningless.  Another possible source of
-                     failure is to have a targetValue that is not
-                     attainable with any volatility, e.g.  a
-                     targetValue lower than the intrinsic value in the
-                     case of American options. */
-        double impliedVolatility(double price,
-                                 double accuracy = 1.0e-4,
-                                 Size maxEvaluations = 100,
-                                 double minVol = QL_MIN_VOLATILITY,
-                                 double maxVol = QL_MAX_VOLATILITY) const;
-        void setupArguments(Arguments*) const;
       protected:
-        void setupExpired() const;
+        // enforce in this class any check on engine/payoff
         void performCalculations() const;
-        // results
-        mutable double delta_, gamma_, theta_,
-                       vega_, rho_, dividendRho_, strikeSensitivity_;
-        // arguments
-        Handle<Payoff> payoff_;
-        RelinkableHandle<Quote> underlying_;
-        Exercise exercise_;
-        RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
-        RelinkableHandle<BlackVolTermStructure> volTS_;
-      private:
-        // helper class for implied volatility calculation
-        class ImpliedVolHelper {
-          public:
-            ImpliedVolHelper(const Handle<PricingEngine>& engine,
-                             double targetValue);
-            double operator()(double x) const;
-          private:
-            Handle<PricingEngine> engine_;
-            double targetValue_;
-            Handle<SimpleQuote> vol_;
-            const Value* results_;
-        };
-    };
-
-    //! arguments for vanilla option calculation
-    class VanillaOption::arguments : public Option::arguments {
-      public:
-        arguments() : underlying(Null<double>()) {}
-        void validate() const;
-        double underlying;
-        RelinkableHandle<TermStructure> riskFreeTS, dividendTS;
-        RelinkableHandle<BlackVolTermStructure> volTS;
-    };
-
-    //! %results from vanilla option calculation
-    class VanillaOption::results : public Value, public Greeks {
-      public:
-        void reset() {
-            Value::reset();
-            Greeks::reset();
-        }
     };
 
 }

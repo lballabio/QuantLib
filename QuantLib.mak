@@ -64,6 +64,8 @@ CLEAN :
 	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
+	-@erase "$(INTDIR)\asianoption.obj"
+	-@erase "$(INTDIR)\asianoption.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
@@ -264,6 +266,10 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\oneassetoption.obj"
+	-@erase "$(INTDIR)\oneassetoption.sbr"
+	-@erase "$(INTDIR)\oneassetstrikedoption.obj"
+	-@erase "$(INTDIR)\oneassetstrikedoption.sbr"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -413,10 +419,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\oneassetoption.sbr" \
+	"$(INTDIR)\oneassetstrikedoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
 	"$(INTDIR)\quantovanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
@@ -584,10 +593,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\oneassetoption.obj" \
+	"$(INTDIR)\oneassetstrikedoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
 	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
@@ -753,6 +765,8 @@ CLEAN :
 	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
+	-@erase "$(INTDIR)\asianoption.obj"
+	-@erase "$(INTDIR)\asianoption.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
@@ -953,6 +967,10 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\oneassetoption.obj"
+	-@erase "$(INTDIR)\oneassetoption.sbr"
+	-@erase "$(INTDIR)\oneassetstrikedoption.obj"
+	-@erase "$(INTDIR)\oneassetstrikedoption.sbr"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -1103,10 +1121,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\oneassetoption.sbr" \
+	"$(INTDIR)\oneassetstrikedoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
 	"$(INTDIR)\quantovanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
@@ -1274,10 +1295,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\oneassetoption.obj" \
+	"$(INTDIR)\oneassetstrikedoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
 	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
@@ -1443,6 +1467,8 @@ CLEAN :
 	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
+	-@erase "$(INTDIR)\asianoption.obj"
+	-@erase "$(INTDIR)\asianoption.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
@@ -1643,6 +1669,10 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\oneassetoption.obj"
+	-@erase "$(INTDIR)\oneassetoption.sbr"
+	-@erase "$(INTDIR)\oneassetstrikedoption.obj"
+	-@erase "$(INTDIR)\oneassetstrikedoption.sbr"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -1792,10 +1822,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\oneassetoption.sbr" \
+	"$(INTDIR)\oneassetstrikedoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
 	"$(INTDIR)\quantovanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
@@ -1963,10 +1996,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\oneassetoption.obj" \
+	"$(INTDIR)\oneassetstrikedoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
 	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
@@ -2132,6 +2168,8 @@ CLEAN :
 	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
 	-@erase "$(INTDIR)\armijo.sbr"
+	-@erase "$(INTDIR)\asianoption.obj"
+	-@erase "$(INTDIR)\asianoption.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
@@ -2332,6 +2370,10 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\oneassetoption.obj"
+	-@erase "$(INTDIR)\oneassetoption.sbr"
+	-@erase "$(INTDIR)\oneassetstrikedoption.obj"
+	-@erase "$(INTDIR)\oneassetstrikedoption.sbr"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -2482,10 +2524,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
+	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\oneassetoption.sbr" \
+	"$(INTDIR)\oneassetstrikedoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
 	"$(INTDIR)\quantovanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
@@ -2653,10 +2698,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
+	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\oneassetoption.obj" \
+	"$(INTDIR)\oneassetstrikedoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
 	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
@@ -3047,6 +3095,12 @@ SOURCE=.\ql\Indexes\xibormanager.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Instruments\asianoption.cpp
+
+"$(INTDIR)\asianoption.obj"	"$(INTDIR)\asianoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Instruments\barrieroption.cpp
 
 "$(INTDIR)\barrieroption.obj"	"$(INTDIR)\barrieroption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3068,6 +3122,18 @@ SOURCE=.\ql\Instruments\capfloor.cpp
 SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 
 "$(INTDIR)\forwardvanillaoption.obj"	"$(INTDIR)\forwardvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\oneassetoption.cpp
+
+"$(INTDIR)\oneassetoption.obj"	"$(INTDIR)\oneassetoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\oneassetstrikedoption.cpp
+
+"$(INTDIR)\oneassetstrikedoption.obj"	"$(INTDIR)\oneassetstrikedoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -1,7 +1,6 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,15 +15,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vanillaoption.cpp
-    \brief Vanilla option on a single asset
+/*! \file asianoption.cpp
+    \brief Asian option (average rate) on a single asset
 */
 
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/asianoption.hpp>
 
 namespace QuantLib {
 
-    VanillaOption::VanillaOption(
+    AsianOption::AsianOption(
                          Option::Type type,
                          const RelinkableHandle<Quote>& underlying,
                          double strike,
@@ -38,10 +37,11 @@ namespace QuantLib {
     : OneAssetStrikedOption(type, underlying, strike, dividendTS, riskFreeTS,
       exercise, volTS, engine, isinCode, description) {}
 
-    void VanillaOption::performCalculations() const {
+    void AsianOption::performCalculations() const {
         // enforce in this class any check on engine/payoff
         OneAssetStrikedOption::performCalculations();
     }
+
 
 }
 

@@ -1,3 +1,9 @@
+add stochastic process
+set stochastic process to pricing engines
+factor out common code of Instruments
+do not pass pricing engine to the Instrument constructors
+add BET
+add CDS
 
 do not distribute html docs with the Win32 installer (chm is already included)
 support doc generation from Win32 distribution

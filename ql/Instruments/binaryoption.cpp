@@ -194,7 +194,6 @@ namespace QuantLib {
         vega_        = results->vega;
         rho_         = results->rho;
         dividendRho_ = results->dividendRho;
-        strikeSensitivity_ = results->strikeSensitivity;
 
         QL_ENSURE(NPV_ != Null<double>(),
                   "BinaryOption::performCalculations : "

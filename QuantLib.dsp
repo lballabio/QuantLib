@@ -599,6 +599,14 @@ SOURCE=.\ql\Indexes\zarlibor.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Instruments\asianoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\asianoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\barrieroption.cpp
 # End Source File
 # Begin Source File
@@ -632,6 +640,22 @@ SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\forwardvanillaoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\oneassetoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\oneassetoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\oneassetstrikedoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\oneassetstrikedoption.hpp
 # End Source File
 # Begin Source File
 

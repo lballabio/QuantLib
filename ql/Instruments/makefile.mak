@@ -15,10 +15,13 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
+    asianoption.obj$(_D) \
     barrieroption.obj$(_D) \
     binaryoption.obj$(_D) \
     capfloor.obj$(_D) \
     forwardvanillaoption.obj$(_D) \
+    oneassetoption.obj$(_D) \
+    oneassetstrikedoption.obj$(_D) \
     quantoforwardvanillaoption.obj$(_D) \
     quantovanillaoption.obj$(_D) \
     simpleswap.obj$(_D) \

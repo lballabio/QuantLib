@@ -73,12 +73,22 @@ namespace QuantLib {
         Greeks() { reset(); }
         void reset() {
             delta =  gamma = theta = vega =
-                rho = dividendRho = strikeSensitivity = Null<double>();
+                rho = dividendRho = Null<double>();
         }
         double delta, gamma;
         double theta;
         double vega;
         double rho, dividendRho;
+    };
+
+    //! more additional %option results
+    // add here vomma, ect.
+    class MoreGreeks : public virtual Results {
+      public:
+        MoreGreeks() { reset(); }
+        void reset() {
+            strikeSensitivity = Null<double>();
+        }
         double strikeSensitivity;
     };
 

@@ -41,12 +41,9 @@ namespace QuantLib {
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode, 
                          const std::string& description)
-    : Option(engine, isinCode, description),
-      barrierType_(barrierType), barrier_(barrier), rebate_(rebate),
-      payoff_(new PlainVanillaPayoff(type,strike)), underlying_(underlying),
-      exercise_(exercise), 
-      riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
-      volTS_(volTS) {
+    : OneAssetStrikedOption(type, underlying, strike, dividendTS, riskFreeTS,
+      exercise, volTS, engine, isinCode, description),
+      barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {
 
         if (IsNull(engine))
             setPricingEngine(Handle<PricingEngine>(new AnalyticBarrierEngine));
@@ -57,134 +54,37 @@ namespace QuantLib {
         registerWith(volTS_);
     }
 
-    double BarrierOption::delta() const {
-        calculate();
-        QL_REQUIRE(delta_ != Null<double>(),
-                   "BarrierOption: delta not provided");
-        return delta_;
-    }
-
-    double BarrierOption::gamma() const {
-        calculate();
-        QL_REQUIRE(gamma_ != Null<double>(),
-                   "BarrierOption: gamma not provided");
-        return gamma_;
-    }
-
-    double BarrierOption::theta() const {
-        calculate();
-        QL_REQUIRE(theta_ != Null<double>(),
-                   "BarrierOption: theta not provided");
-        return theta_;
-    }
-
-    double BarrierOption::vega() const {
-        calculate();
-        QL_REQUIRE(vega_ != Null<double>(),
-                   "BarrierOption: vega not provided");
-        return vega_;
-    }
-
-    double BarrierOption::rho() const {
-        calculate();
-        QL_REQUIRE(rho_ != Null<double>(),
-                   "BarrierOption: rho not provided");
-        return rho_;
-    }
-
-    double BarrierOption::dividendRho() const {
-        calculate();
-        QL_REQUIRE(dividendRho_ != Null<double>(),
-                   "BarrierOption: dividend rho not provided");
-        return dividendRho_;
-    }
-
-    double BarrierOption::strikeSensitivity() const {
-        calculate();
-        QL_REQUIRE(strikeSensitivity_ != Null<double>(),
-                   "BarrierOption: strike sensitivity not provided");
-        return strikeSensitivity_;
-    }
-
-    bool BarrierOption::isExpired() const {
-        return exercise_.lastDate() < riskFreeTS_->referenceDate();
-    }
-
-    void BarrierOption::setupExpired() const {
-        NPV_ = delta_ = gamma_ = theta_ =
-            vega_ = rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
-    }
-
     void BarrierOption::setupArguments(Arguments* args) const {
-        BarrierOption::arguments* arguments =
+
+        BarrierOption::arguments* moreArgs =
             dynamic_cast<BarrierOption::arguments*>(args);
+        QL_REQUIRE(moreArgs != 0,
+                   "BarrierOption::setupArguments : "
+                   "wrong argument type");
+        moreArgs->barrierType = barrierType_;
+        moreArgs->barrier = barrier_;
+        moreArgs->rebate = rebate_;
+
+        OneAssetStrikedOption::arguments* arguments =
+            dynamic_cast<OneAssetStrikedOption::arguments*>(args);
         QL_REQUIRE(arguments != 0,
                    "BarrierOption::setupArguments : "
                    "wrong argument type");
+        OneAssetStrikedOption::setupArguments(arguments);
 
-        arguments->payoff = payoff_;
-
-        arguments->barrierType = barrierType_;
-        arguments->barrier = barrier_;
-        arguments->rebate = rebate_;
-
-        QL_REQUIRE(!IsNull(underlying_),
-                   "BarrierOption::setupArguments : "
-                   "null underlying price given");
-        arguments->underlying = underlying_->value();
-
-        // should I require !IsNull(TS) ???
-        arguments->dividendTS = dividendTS_;
-        arguments->riskFreeTS = riskFreeTS_;
-
-        arguments->maturity = riskFreeTS_->dayCounter().yearFraction(
-                          riskFreeTS_->referenceDate(), exercise_.lastDate());
-        arguments->exerciseType = exercise_.type();
-        arguments->stoppingTimes = 
-            std::vector<Time>(exercise_.dates().size());
-        for (Size i=0; i<exercise_.dates().size(); i++) {
-            arguments->stoppingTimes[i] = 
-                riskFreeTS_->dayCounter().yearFraction(
-                             riskFreeTS_->referenceDate(), exercise_.date(i));
-        }
-
-        arguments->volTS = volTS_;
     }
 
     void BarrierOption::performCalculations() const {
-        Option::performCalculations();
-        const Greeks* results =
-            dynamic_cast<const Greeks*>(engine_->results());
-        QL_ENSURE(results != 0,
-                  "BarrierOption::performCalculations : "
-                  "no greeks returned from pricing engine");
-        /* no check on null values - just copy.
-           this allows:
-           a) to decide in derived options what to do when null 
-           results are returned (throw? numerical calculation?)
-           b) to implement slim engines which only calculate the
-           value---of course care must be taken not to call
-           the greeks methods when using these.
-        */
-        delta_       = results->delta;
-        gamma_       = results->gamma;
-        theta_       = results->theta;
-        vega_        = results->vega;
-        rho_         = results->rho;
-        dividendRho_ = results->dividendRho;
-        strikeSensitivity_ = results->strikeSensitivity;
-
-        QL_ENSURE(NPV_ != Null<double>(),
-                  "BarrierOption::performCalculations : "
-                  "null value returned from option pricer");
+        // enforce in this class any check on engine/payoff
+        OneAssetStrikedOption::performCalculations();
     }
 
     void BarrierOption::arguments::validate() const {
         #if defined(QL_PATCH_MICROSOFT)
-        VanillaOption::arguments copy = *this;
+        OneAssetStrikedOption::arguments copy = *this;
         copy.validate();
         #else
-        VanillaOption::arguments::validate();
+        OneAssetStrikedOption::arguments::validate();
         #endif
 
         switch (barrierType) {
