@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/06/08 13:34:46  lballabio
+// Typedef DepositRateHelper to FraRateHelper
+//
 // Revision 1.9  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
 //
@@ -100,6 +103,9 @@ namespace QuantLib {
             Date maturity_;
             double yearFraction_;
         };
+
+        //! FRA
+        typedef DepositRateHelper FraRateHelper;
 
         //! swap rate
         class SwapRateHelper : public RateHelper {
