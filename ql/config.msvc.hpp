@@ -149,8 +149,8 @@
 #  define QL_LIB_TOOLSET "vc7"
 #  define QL_ITERATOR         std::iterator
 #  define QL_ITERATOR_TRAITS  std::iterator_traits
-#  define SPECIALIZE_MS_ITERATOR_TRAITS  // always new ways to surprise us...
-#elif (_MSC_VER = 1310)
+#  define SPECIALIZE_MS_ITERATOR_TRAITS // always new ways to surprise us...
+#elif (_MSC_VER == 1310)
 // move inside here configs specific to VC++ .Net 2003
 #  define QL_LIB_TOOLSET "vc71"
 #else
