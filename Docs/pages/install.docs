@@ -25,7 +25,7 @@
 
     \section linux Linux/Unix/Mac OS X/Cygwin
     A tarball of the source distribution is available from <br>
-    http://quantlib.org/download.html
+    http://quantlib.org/download.shtml
 
     After uncompressing the sources:
     -# `cd' to the %QuantLib directory and type `./configure' to
@@ -37,7 +37,7 @@
 
     \section win32 Win32
     An installer for the source distribution is available at <br>
-    http://quantlib.org/download.html
+    http://quantlib.org/download.shtml
 
     Before compiling the library, you might want to edit the file
     "ql/userconfig.hpp"; see the \ref config section for details.
