@@ -46,8 +46,8 @@ namespace QuantLib {
                   const RelinkableHandle<TermStructure>& underlyingDividendTS,
                   const RelinkableHandle<TermStructure>& riskFreeTS,
                   const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-                  const RelinkableHandle<BlackVolTermStructure>& underlyingLocalVolTS,
-                  const RelinkableHandle<BlackVolTermStructure>& exchRateLocalVolTS,
+                  const RelinkableHandle<BlackVolTermStructure>& underlyingBlackVolTS,
+                  const RelinkableHandle<BlackVolTermStructure>& exchRateBlackVolTS,
                   double underlyingExchRateCorrelation);
             //! \name TermStructure interface
             //@{
@@ -61,7 +61,7 @@ namespace QuantLib {
             void update();
             //@}
           protected:
-            //! returns the discount factor as seen from the evaluation date
+            //! returns the zero yield as seen from the evaluation date
             Rate zeroYieldImpl(Time, bool extrapolate = false) const;
           private:
             RelinkableHandle<TermStructure> underlyingDividendTS_, riskFreeTS_,
@@ -122,6 +122,8 @@ namespace QuantLib {
             // warning: here it is assumed that all TS have the same daycount.
             //          It should be QL_REQUIREd, or maybe even enforced in the
             //          whole QuantLib
+            // warning: the underlyingLevel_ used in underlyingBlackVolTS_ is ambigous
+            // warning: the underlyingLevel_ used in exchRateBlackVolTS_ is wrong
                 return underlyingDividendTS_->zeroYield(t, extrapolate)
                     +            riskFreeTS_->zeroYield(t, extrapolate)
                     -     foreignRiskFreeTS_->zeroYield(t, extrapolate)
