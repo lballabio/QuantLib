@@ -21,21 +21,7 @@
 
 #include <ql/Instruments/swap.hpp>
 #include <ql/CashFlows/coupon.hpp>
-
-/* The following checks whether the user wants coupon payments with
-   date corresponding to the evaluation date to be included in the NPV.
-*/
-#if defined(QL_EARLY_SWAP_PAYMENTS)
-    #define QL_INCLUDE_TODAYS_COUPON 0
-#elif defined(QL_LATE_SWAP_PAYMENTS)
-    #define QL_INCLUDE_TODAYS_COUPON 1
-#elif defined(QL_EARLY_PAYMENTS)
-    #define QL_INCLUDE_TODAYS_COUPON 0
-#elif defined(QL_LATE_PAYMENTS)
-    #define QL_INCLUDE_TODAYS_COUPON 1
-#else
-    #define QL_INCLUDE_TODAYS_COUPON 0
-#endif
+#include <ql/CashFlows/basispointsensitivity.hpp>
 
 namespace QuantLib {
 
@@ -64,7 +50,7 @@ namespace QuantLib {
                 lastPayment = QL_MAX(lastPayment, (*i)->date());
             for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
                 lastPayment = QL_MAX(lastPayment, (*i)->date());
-            #if QL_INCLUDE_TODAYS_COUPON
+            #if QL_TODAYS_PAYMENTS
             return lastPayment < termStructure_->referenceDate();
             #else
             return lastPayment <= termStructure_->referenceDate();
@@ -73,7 +59,6 @@ namespace QuantLib {
 
         void Swap::setupExpired() const {
             NPV_ = firstLegBPS_= secondLegBPS_ = 0.0;
-            sensitivity_ = Handle<TimeBasket>();
         }
 
         void Swap::performCalculations() const {
@@ -82,47 +67,38 @@ namespace QuantLib {
                 "on null term structure");
             Date settlement = termStructure_->referenceDate();
             NPV_ = 0.0;
-            firstLegBPS_ = 0.0;
-            secondLegBPS_ = 0.0;
             double firstLegNPV_ = 0.0;
             double secondLegNPV_ = 0.0;
 
-            BPSBasketCalculator basketbps(termStructure_,2);
-            // subtract first leg cash flows and BPS
-            BPSCalculator bps1(termStructure_);
+            // subtract first leg cash flows
             for (Size i=0; i<firstLeg_.size(); i++) {
                 Date cashFlowDate = firstLeg_[i]->date();
-                #if QL_INCLUDE_TODAYS_COUPON
+                #if QL_TODAYS_PAYMENTS
                 if (cashFlowDate >= settlement) {
                 #else
                 if (cashFlowDate > settlement) {
                 #endif
                     firstLegNPV_ -= firstLeg_[i]->amount() *
                         termStructure_->discount(cashFlowDate);
-                    firstLeg_[i]->accept(bps1);
-                    firstLeg_[i]->accept(basketbps);
                 }
             }
-            firstLegBPS_ = -bps1.result();
+            firstLegBPS_ = - BasisPointSensitivity(firstLeg_, termStructure_);
 
-            // add second leg cash flows and BPS
-            BPSCalculator bps2(termStructure_);
+            // add second leg cash flows
             for (Size j=0; j<secondLeg_.size(); j++) {
                 Date cashFlowDate = secondLeg_[j]->date();
-                #if QL_INCLUDE_TODAYS_COUPON
+                #if QL_TODAYS_PAYMENTS
                 if (cashFlowDate >= settlement) {
                 #else
                 if (cashFlowDate > settlement) {
                 #endif
                     secondLegNPV_ += secondLeg_[j]->amount() *
                         termStructure_->discount(cashFlowDate);
-                    secondLeg_[j]->accept(bps2);
-                    secondLeg_[j]->accept(basketbps);
                 }
             }
+            secondLegBPS_ = BasisPointSensitivity(secondLeg_, termStructure_);
+
             NPV_ = firstLegNPV_ + secondLegNPV_;
-            secondLegBPS_ = bps2.result();
-            sensitivity_ = basketbps.result();
         }
 
         Date Swap::startDate() const {
@@ -159,6 +135,27 @@ namespace QuantLib {
             QL_REQUIRE(d != Date::minDate(),
                        "Swap::maturity : empty swap");
             return d;
+        }
+
+        double Swap::firstLegBPS() const {
+            calculate();
+            return firstLegBPS_;
+        }
+
+        double Swap::secondLegBPS() const {
+            calculate();
+            return secondLegBPS_;
+        }
+
+        TimeBasket Swap::sensitivity(int basis) const {
+            calculate();
+            TimeBasket basket = BasisPointSensitivityBasket(firstLeg_,
+                                                            termStructure_,
+                                                            basis);
+            basket += BasisPointSensitivityBasket(secondLeg_,
+                                                  termStructure_,
+                                                  basis);
+            return basket;
         }
 
     }

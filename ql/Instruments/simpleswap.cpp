@@ -21,6 +21,8 @@
 
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/CashFlows/fixedratecoupon.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
 
 namespace QuantLib {
 

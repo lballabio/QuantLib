@@ -23,8 +23,9 @@
 #define quantlib_swap_h
 
 #include <ql/instrument.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
-#include <ql/CashFlows/basispointsensitivity.hpp>
+#include <ql/termstructure.hpp>
+#include <ql/cashflow.hpp>
+#include <ql/CashFlows/timebasket.hpp>
 
 namespace QuantLib {
 
@@ -50,7 +51,7 @@ namespace QuantLib {
             Date maturity() const;
             double firstLegBPS() const;
             double secondLegBPS() const;
-            const Handle<CashFlows::TimeBasket>& sensitivity() const;
+            CashFlows::TimeBasket sensitivity(int basis = 2) const;
             //@}
           protected:
             // methods
@@ -60,25 +61,7 @@ namespace QuantLib {
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
             RelinkableHandle<TermStructure> termStructure_;
             mutable double firstLegBPS_, secondLegBPS_;
-            mutable Handle<CashFlows::TimeBasket> sensitivity_;
         };
-
-        // inline definitions
-
-        inline double Swap::firstLegBPS() const {
-            calculate();
-            return firstLegBPS_;
-        }
-
-        inline double Swap::secondLegBPS() const {
-            calculate();
-            return secondLegBPS_;
-        }
-
-        inline const Handle<CashFlows::TimeBasket>& Swap::sensitivity() const {
-            calculate();
-            return sensitivity_;
-        }
 
     }
 
