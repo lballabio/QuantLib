@@ -53,7 +53,7 @@ using QuantLib::IsNull;
 // export Handle<Calendar>
 %name(Calendar) class CalendarHandle {
   public:
-	// abstract class - forbid explicit construction
+	// no constructor - forbid explicit construction
 	~CalendarHandle();
 };
 

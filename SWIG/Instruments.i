@@ -61,7 +61,7 @@ std::string Representation(const Handle<Instrument>& i) {
 // Export Handle<Instrument>
 %name(Instrument) class InstrumentHandle {
   public:
-	// abstract class - forbid explicit construction
+	// no constructor - forbid explicit construction
 	~InstrumentHandle();
 };
 

@@ -50,7 +50,7 @@ typedef Handle<Currency> CurrencyHandle;
 // export Handle<Currency>
 %name(Currency) class CurrencyHandle {
   public:
-	// abstract class - forbid explicit construction
+	// no constructor - forbid explicit construction
 	~CurrencyHandle();
 };
 

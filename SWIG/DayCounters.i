@@ -49,7 +49,7 @@ typedef Handle<DayCounter> DayCounterHandle;
 // export Handle<DayCounter>
 %name(DayCounter) class DayCounterHandle {
   public:
-	// abstract class - forbid explicit construction
+	// no constructor - forbid explicit construction
 	~DayCounterHandle();
 };
 

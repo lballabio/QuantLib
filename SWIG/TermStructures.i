@@ -53,7 +53,7 @@ typedef Handle<TermStructure> TermStructureHandle;
 // export Handle<TermStructure>
 %name(TermStructure) class TermStructureHandle {
   public:
-	// abstract class - forbid explicit construction
+	// no constructor - forbid explicit construction
 	~TermStructureHandle();
 };
 
