@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.18  2001/01/24 16:02:56  marmar
+    math files added
+
     Revision 1.17  2001/01/23 18:12:50  lballabio
     Added matrix.h to Include/Math
 
@@ -150,6 +153,12 @@
 
 #include "array.h"
 #include "matrix.h"
+#include "matrixsqrt.h"
+#include "jacobidecomposition.h"
+#include "multivariateaccumulator.h"
+#include "outerproduct.h"
+
+
 
 // math tools
 #include "normaldistribution.h"
