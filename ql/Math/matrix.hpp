@@ -171,11 +171,6 @@ namespace QuantLib {
         static std::string toString(const Matrix& m,
                                     Integer precision = 6,
                                     Integer digits = 0) {
-            #ifndef QL_PATCH_MSVC6
-            return SequenceFormatter::toString(m.begin(),m.end(),
-                                               precision,digits,
-                                               m.columns());
-            #else
             std::ostringstream s;
             s << "[ ";
             Matrix::const_iterator begin = m.begin(), end = m.end();
@@ -191,7 +186,6 @@ namespace QuantLib {
             }
             s << " ]";
             return s.str();
-            #endif
         }
     };
 

@@ -40,10 +40,8 @@ using namespace boost::unit_test_framework;
                << "    strike:           " << payoff->strike() <<"\n" \
                << "    dividend yield:   " << io::rate(q) << "\n" \
                << "    risk-free rate:   " << io::rate(r) << "\n" \
-               << "    reference date:   " \
-               << DateFormatter::toString(today) << "\n" \
-               << "    maturity:         " \
-               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    reference date:   " << today << "\n" \
+               << "    maturity:         " << exercise->lastDate() << "\n" \
                << "    volatility:       " << io::volatility(v) << "\n\n" \
                << "    intensity:        " << intensity << "\n" \
                << "    mean log-jump:    " << meanLogJump << "\n" \
@@ -64,10 +62,8 @@ using namespace boost::unit_test_framework;
                << "    strike:           " << payoff->strike() <<"\n" \
                << "    dividend yield:   " << io::rate(q) << "\n" \
                << "    risk-free rate:   " << io::rate(r) << "\n" \
-               << "    reference date:   " \
-               << DateFormatter::toString(today) << "\n" \
-               << "    maturity:         " \
-               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    reference date:   " << today << "\n" \
+               << "    maturity:         " << exercise->lastDate() << "\n" \
                << "    volatility:       " << io::volatility(v) << "\n" \
                << "    intensity:        " << intensity << "\n" \
                << "    gamma:            " << gamma << "\n\n" \

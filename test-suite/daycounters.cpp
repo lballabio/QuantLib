@@ -146,16 +146,12 @@ void DayCounterTest::testActualActual() {
         Time calculated = dayCounter.yearFraction(d1,d2,rd1,rd2);
 
         if (std::fabs(calculated-testCases[i].result) > 1.0e-10) {
-            std::string period, refPeriod;
-            period = "period: "
-                + DateFormatter::toString(d1) + " to "
-                + DateFormatter::toString(d2) + "\n" ;
+            std::ostringstream period, refPeriod;
+            period << "period: " << d1 << " to " << d2;
             if (testCases[i].convention == ActualActual::ISMA)
-                refPeriod = "referencePeriod: "
-                    + DateFormatter::toString(rd1) + " to "
-                    + DateFormatter::toString(rd2) + "\n";
+                refPeriod << "referencePeriod: " << rd1 << " to " << rd2;
             BOOST_FAIL(dayCounter.name() << ":\n"
-                       << period << refPeriod
+                       << period.str() << "\n" << refPeriod.str() << "\n"
                        << std::setprecision(10)
                        << "    calculated: " << calculated << "\n"
                        << "    expected:   " << testCases[i].result);
@@ -181,8 +177,7 @@ void DayCounterTest::testSimple() {
             Date end = start + p[i];
             Time calculated = dayCounter.yearFraction(start,end);
             if (std::fabs(calculated-expected[i]) > 1.0e-12) {
-                BOOST_FAIL("from " << DateFormatter::toString(start)
-                           << " to " << DateFormatter::toString(end) << ":\n"
+                BOOST_FAIL("from " << start << " to " << end << ":\n"
                            << std::setprecision(12)
                            << "    calculated: " << calculated << "\n"
                            << "    expected:   " << expected[i]);
@@ -208,8 +203,7 @@ void DayCounterTest::testOne() {
             Date end = start + p[i];
             Time calculated = dayCounter.yearFraction(start,end);
             if (std::fabs(calculated-expected[i]) > 1.0e-12) {
-                BOOST_FAIL("from " << DateFormatter::toString(start)
-                           << " to " << DateFormatter::toString(end) << ":\n"
+                BOOST_FAIL("from " << start << " to " << end << ":\n"
                            << std::setprecision(12)
                            << "    calculated: " << calculated << "\n"
                            << "    expected:   " << expected[i]);

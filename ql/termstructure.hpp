@@ -273,10 +273,7 @@ namespace QuantLib {
             return InterestRate::impliedRate(compound, t2-t1,
                                              dayCounter, comp, freq);
         }
-        QL_REQUIRE(d1 < d2,
-                   DateFormatter::toString(d1) +
-                   " later than " +
-                   DateFormatter::toString(d2));
+        QL_REQUIRE(d1 < d2,  d1 << " later than " << d2);
         Real compound = discount(d1, extrapolate)/discount(d2, extrapolate);
         return InterestRate::impliedRate(compound,
                                          d1, d2, dayCounter,

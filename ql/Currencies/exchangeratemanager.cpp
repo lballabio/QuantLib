@@ -124,8 +124,8 @@ namespace QuantLib {
             return *rate;
         else
             QL_FAIL("no direct conversion available from "
-                    + source.code() + " to " + target.code()
-                    + " for " + DateFormatter::toString(date));
+                    << source.code() << " to " << target.code()
+                    << " for " << date);
     }
 
     ExchangeRate ExchangeRateManager::smartLookup(
@@ -170,8 +170,8 @@ namespace QuantLib {
         }
         // if the loop completed, we have no way to return the requested rate.
         QL_FAIL("no conversion available from "
-                + source.code() + " to " + target.code()
-                + " for " + DateFormatter::toString(date));
+                << source.code() << " to " << target.code()
+                << " for " << date);
     }
 
     const ExchangeRate* ExchangeRateManager::fetch(const Currency& source,

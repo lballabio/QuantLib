@@ -26,9 +26,7 @@ namespace QuantLib {
                                                       Real strike,
                                                       bool extrapolate) const {
         QL_REQUIRE(date1 <= date2,
-                   DateFormatter::toString(date1) +
-                   " later than " +
-                   DateFormatter::toString(date2));
+                   date1 << " later than " << date2);
         Time time1 = timeFromReference(date1);
         Time time2 = timeFromReference(date2);
         return blackForwardVol(time1, time2, strike, extrapolate);
@@ -68,9 +66,7 @@ namespace QuantLib {
                                                      bool extrapolate)
                                                                       const {
         QL_REQUIRE(date1 <= date2,
-                   DateFormatter::toString(date1) +
-                   " later than " +
-                   DateFormatter::toString(date2));
+                   date1 << " later than " << date2);
         Time time1 = timeFromReference(date1);
         Time time2 = timeFromReference(date2);
         return blackForwardVariance(time1, time2, strike, extrapolate);

@@ -131,6 +131,7 @@ namespace QuantLib {
     }
     #endif
 
+    #ifndef QL_DISABLE_DEPRECATED
     std::string StringFormatter::toLowercase(const std::string& s) {
         std::string output = s;
         for (std::string::iterator i=output.begin(); i!=output.end(); i++)
@@ -144,6 +145,7 @@ namespace QuantLib {
             *i = std::toupper(*i);
         return output;
     }
+    #endif
 
     #ifndef QL_DISABLE_DEPRECATED
     std::string RateFormatter::toString(Rate rate, Integer precision) {

@@ -16,7 +16,7 @@
 */
 
 #include <ql/dataparsers.hpp>
-#include <ql/basicdataformatters.hpp>
+#include <ql/Utilities/strings.hpp>
 #include <ql/null.hpp>
 
 namespace QuantLib {
@@ -62,11 +62,11 @@ namespace QuantLib {
         Size i;
         for (i=0;i<flist.size();i++) {
             std::string sub = flist[i];
-            if (StringFormatter::toLowercase(sub) == "dd")
+            if (lowercase(sub) == "dd")
                 d = std::atoi(slist[i].c_str());
-            else if (StringFormatter::toLowercase(sub) == "mm")
+            else if (lowercase(sub) == "mm")
                 m = std::atoi(slist[i].c_str());
-            else if (StringFormatter::toLowercase(sub) == "yyyy") {
+            else if (lowercase(sub) == "yyyy") {
                 y = std::atoi(slist[i].c_str());
                 if (y < 100)
                     y += 2000;

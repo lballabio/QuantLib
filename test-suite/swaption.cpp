@@ -143,8 +143,7 @@ void SwaptionTest::testStrikeDependency() {
                         BOOST_FAIL(
                             "NPV is increasing with the strike "
                             << "in a payer swaption: \n"
-                            << "    exercise date: "
-                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    exercise date: " << exerciseDate << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    value:  " << values[n]
                             << " at strike: " << io::rate(strikes[n]) << "\n"
@@ -160,8 +159,7 @@ void SwaptionTest::testStrikeDependency() {
                         BOOST_FAIL(
                             "NPV is decreasing with the strike "
                             << "in a receiver swaption: \n"
-                            << "    exercise date: "
-                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    exercise date: " << exerciseDate << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    value:  " << values[n]
                             << " at strike: " << io::rate(strikes[n]) << "\n"
@@ -212,8 +210,7 @@ void SwaptionTest::testSpreadDependency() {
                         BOOST_FAIL(
                             "NPV is decreasing with the spread "
                             << "in a payer swaption: \n"
-                            << "    exercise date: "
-                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    exercise date: " << exerciseDate << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    value:  " << values[n]
                             << " for spread: " << io::rate(spreads[n]) << "\n"
@@ -229,8 +226,7 @@ void SwaptionTest::testSpreadDependency() {
                         BOOST_FAIL(
                             "NPV is increasing with the spread "
                             << "in a receiver swaption: \n"
-                            << "    exercise date: "
-                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    exercise date: " << exerciseDate << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    value:  " << values[n]
                             << " for spread: " << io::rate(spreads[n]) << "\n"
@@ -278,8 +274,7 @@ void SwaptionTest::testSpreadTreatment() {
                     if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-10)
                         BOOST_FAIL(
                             "wrong spread treatment: \n"
-                            << "    exercise date: "
-                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    exercise date: " << exerciseDate << "\n"
                             << "    length: " << lengths[j] << " years\n"
                             << "    pay " << (payFixed[k] ? "fixed\n"
                                                           : "floating\n")

@@ -6,6 +6,7 @@ include_HEADERS = \
     all.hpp \
     dataformatters.hpp \
     steppingiterator.hpp \
+    strings.hpp \
     tracing.hpp
 
 EXTRA_DIST=makefile.mak

@@ -43,10 +43,8 @@ using namespace boost::unit_test_framework;
                << "    strike:           " << payoff->strike() << "\n" \
                << "    dividend yield:   " << io::rate(q) << "\n" \
                << "    risk-free rate:   " << io::rate(r) << "\n" \
-               << "    reference date:   " \
-               << DateFormatter::toString(today) << "\n" \
-               << "    maturity:         " \
-               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    reference date:   " << today << "\n" \
+               << "    maturity:         " << exercise->lastDate() << "\n" \
                << "    volatility:       " << io::volatility(v) << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\
@@ -786,8 +784,7 @@ void EuropeanOptionTest::testImpliedVol() {
                               << "    strike:         " << strikes[j] << "\n"
                               << "    dividend yield: " << io::rate(q) << "\n"
                               << "    risk-free rate: " << io::rate(r) << "\n"
-                              << "    maturity:       "
-                              << DateFormatter::toString(exDate) << "\n"
+                              << "    maturity:       " << exDate << "\n"
                               << "    volatility:     " << io::volatility(v)
                               << "\n\n"
                               << e.what());
@@ -809,7 +806,7 @@ void EuropeanOptionTest::testImpliedVol() {
                                   << "    risk-free rate:      "
                                   << io::rate(r) << "\n"
                                   << "    maturity:            "
-                                  << DateFormatter::toString(exDate) << "\n\n"
+                                  << exDate << "\n\n"
                                   << "    original volatility: "
                                   << io::volatility(v) << "\n"
                                   << "    price:               "
@@ -986,10 +983,8 @@ namespace {
                                   << io::rate(q) << "\n"
                                   << "    risk-free rate:   "
                                   << io::rate(r) << "\n"
-                                  << "    reference date:   "
-                                  << DateFormatter::toString(today) << "\n"
-                                  << "    maturity:         "
-                                  << DateFormatter::toString(exDate) << "\n"
+                                  << "    reference date:   " << today << "\n"
+                                  << "    maturity:         " << exDate << "\n"
                                   << "    volatility:       "
                                   << io::volatility(v) << "\n\n"
                                   << "    analytic value: "

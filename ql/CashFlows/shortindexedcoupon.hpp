@@ -52,10 +52,8 @@ namespace QuantLib {
         */
         Real amount() const {
             QL_FAIL("short/long indexed coupons not supported yet"
-                    " (start = " +
-                    DateFormatter::toString(this->accrualStartDate_) +
-                    ", end = " +
-                    DateFormatter::toString(this->accrualEndDate_) + ")");
+                    << " (start = " << this->accrualStartDate_
+                    << ", end = " << this->accrualEndDate_ << ")");
         }
     };
 

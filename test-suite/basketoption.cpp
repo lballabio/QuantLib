@@ -47,10 +47,8 @@ using namespace boost::unit_test_framework;
                << "  1st dividend yield: " << io::rate(q1) << "\n" \
                << "  2nd dividend yield: " << io::rate(q2) << "\n" \
                << "      risk-free rate: " << io::rate(r) << "\n" \
-               << "      reference date: " \
-               << DateFormatter::toString(today) << "\n" \
-               << "            maturity: " \
-               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "      reference date: " << today << "\n" \
+               << "            maturity: " << exercise->lastDate() << "\n" \
                << "1st asset volatility: " << io::volatility(v1) << "\n" \
                << "2nd asset volatility: " << io::volatility(v2) << "\n" \
                << "         correlation: " << rho << "\n\n" \
@@ -73,10 +71,8 @@ using namespace boost::unit_test_framework;
                << "3rd underlying value: " << s3 << "\n" \
                << "              strike: " << payoff->strike() <<"\n" \
                << "      risk-free rate: " << io::rate(r) << "\n" \
-               << "      reference date: " \
-               << DateFormatter::toString(today) << "\n" \
-               << "            maturity: " \
-               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "      reference date: " << today << "\n" \
+               << "            maturity: " << exercise->lastDate() << "\n" \
                << "1st asset volatility: " << io::volatility(v1) << "\n" \
                << "2nd asset volatility: " << io::volatility(v2) << "\n" \
                << "3rd asset volatility: " << io::volatility(v3) << "\n" \

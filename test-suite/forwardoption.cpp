@@ -42,12 +42,9 @@ using namespace boost::unit_test_framework;
                << "    moneyness:         " << moneyness << "\n" \
                << "    dividend yield:    " << io::rate(q) << "\n" \
                << "    risk-free rate:    " << io::rate(r) << "\n" \
-               << "    reference date:    " \
-               << DateFormatter::toString(today) << "\n" \
-               << "    reset date:        " \
-               << DateFormatter::toString(reset) << "\n" \
-               << "    maturity:          " \
-               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    reference date:    " << today << "\n" \
+               << "    reset date:        " << reset << "\n" \
+               << "    maturity:          " << exercise->lastDate() << "\n" \
                << "    volatility:        " << io::volatility(v) << "\n\n" \
                << "    expected   " << greekName << ": " << expected << "\n" \
                << "    calculated " << greekName << ": " << calculated << "\n"\

@@ -46,8 +46,8 @@ namespace QuantLib {
             Rate pastFixing = IndexManager::instance().getHistory(
                                                  index_->name())[fixing_date];
             QL_REQUIRE(pastFixing != Null<Real>(),
-                       "Missing " + index_->name() + " fixing for " +
-                       DateFormatter::toString(fixing_date));
+                       "Missing " << index_->name()
+                       << " fixing for " << fixing_date);
             return (pastFixing+spread_)*accrualPeriod()*nominal();
         }
         if (fixing_date == today) {

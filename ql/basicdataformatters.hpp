@@ -68,13 +68,17 @@ namespace QuantLib {
     };
     #endif
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! Formats strings as lower- or uppercase
+    /*! \deprecated use the lowercase() and uppercase() functions */
     class StringFormatter {
       public:
         static std::string toLowercase(const std::string& s);
         static std::string toUppercase(const std::string& s);
     };
+    #endif
 
+    #ifndef QL_DISABLE_DEPRECATED
     #ifndef QL_PATCH_MSVC6
     //! Formats numeric sequences for output
     class SequenceFormatter {
@@ -101,6 +105,7 @@ namespace QuantLib {
             return s.str();
         }
     };
+    #endif
     #endif
 
     #ifndef QL_DISABLE_DEPRECATED

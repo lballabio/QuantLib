@@ -296,12 +296,10 @@ namespace QuantLib {
             Date d = dates[i];
             Real x = values[i];
             QL_REQUIRE(d>=lastDate_,
-                       "unsorted date after " +
-                       DateFormatter::toString(lastDate_));
+                       "unsorted date after " << lastDate_);
             if (d == lastDate_) {
                 QL_REQUIRE(x==lastValue,
-                           "different values in history for " +
-                           DateFormatter::toString(lastDate_));
+                           "different values in history for " << lastDate_);
             } else {
                 while (d > lastDate_ + 1) {
                     ++lastDate_;

@@ -120,10 +120,10 @@ namespace QuantLib {
             switch (freq) {
               case NoFrequency:
               case Once:
-                QL_FAIL(FrequencyFormatter::toString(freq) <<
-                        " frequency not allowed for this interest rate");
+                QL_FAIL(freq << " frequency not allowed "
+                        "for this interest rate");
               default:
-                out << FrequencyFormatter::toString(freq) <<" compounding";
+                out << freq <<" compounding";
             }
             break;
           case Continuous:
@@ -133,12 +133,12 @@ namespace QuantLib {
             switch (freq) {
               case NoFrequency:
               case Once:
-                QL_FAIL(FrequencyFormatter::toString(freq) <<
-                        " frequency not allowed for this interest rate");
+                QL_FAIL(freq << " frequency not allowed "
+                        "for this interest rate");
               default:
                 out << "simple compounding up to "
                     << Integer(12/freq) << " months, then "
-                    << FrequencyFormatter::toString(freq) << " compounding";
+                    << freq << " compounding";
             }
             break;
           default:

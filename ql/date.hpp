@@ -27,6 +27,7 @@
 #include <ql/types.hpp>
 #include <utility>
 #include <functional>
+#include <ostream>
 
 namespace QuantLib {
 
@@ -54,6 +55,40 @@ namespace QuantLib {
                    Fri = 6,
                    Sat = 7
     };
+
+    /*! \relates Weekday */
+    std::ostream& operator<<(std::ostream&, const Weekday&);
+
+    namespace detail {
+
+        struct long_weekday_holder { Weekday d; };
+        std::ostream& operator<<(std::ostream&, const long_weekday_holder&);
+
+        struct short_weekday_holder { Weekday d; };
+        std::ostream& operator<<(std::ostream&, const short_weekday_holder&);
+
+        struct shortest_weekday_holder { Weekday d; };
+        std::ostream& operator<<(std::ostream&,
+                                 const shortest_weekday_holder&);
+
+    }
+
+    namespace io {
+
+        //! output weekdays in long format
+        /*! \ingroup manips */
+        detail::long_weekday_holder long_weekday(Weekday);
+
+        //! output weekdays in short format (three letters)
+        /*! \ingroup manips */
+        detail::short_weekday_holder short_weekday(Weekday);
+
+        //! output weekdays in shortest format (two letters)
+        /*! \ingroup manips */
+        detail::shortest_weekday_holder shortest_weekday(Weekday);
+
+    }
+
 
     //! Month names
     /*! \ingroup datetime */
@@ -105,6 +140,9 @@ namespace QuantLib {
                      Bimonthly = 6,        //!< every second month
                      Monthly = 12          //!< once a month
     };
+
+    /*! \relates Frequency */
+    std::ostream& operator<<(std::ostream&, Frequency);
 
     //! Units used to describe time periods
     /*! \ingroup datetime */
@@ -275,11 +313,42 @@ namespace QuantLib {
     bool operator>(const Date&, const Date&);
     /*! \relates Date */
     bool operator>=(const Date&, const Date&);
+    /*! \relates Date */
+    std::ostream& operator<<(std::ostream&, const Date&);
 
+    namespace detail {
+
+        struct short_date_holder { Date d; };
+        std::ostream& operator<<(std::ostream&, const short_date_holder&);
+
+        struct long_date_holder { Date d; };
+        std::ostream& operator<<(std::ostream&, const long_date_holder&);
+
+        struct iso_date_holder { Date d; };
+        std::ostream& operator<<(std::ostream&, const iso_date_holder&);
+
+    }
+
+    namespace io {
+
+        //! output dates in short format (mm/dd/yyyy)
+        /*! \ingroup manips */
+        detail::short_date_holder short_date(const Date&);
+
+        //! output dates in long format (Month ddth, yyyy)
+        /*! \ingroup manips */
+        detail::long_date_holder long_date(const Date&);
+
+        //! output dates in ISO format (yyyy-mm-dd)
+        /*! \ingroup manips */
+        detail::iso_date_holder iso_date(const Date&);
+
+    }
+
+
+    #ifndef QL_DISABLE_DEPRECATED
     //! Formats dates for output
-    /*! Formatting can be in short (mm/dd/yyyy)
-        or long (Month ddth, yyyy) form.
-    */
+    /*! \deprecated use streams and manipulators for proper formatting */
     class DateFormatter {
       public:
         enum Format { Long, Short, ISO };
@@ -287,11 +356,8 @@ namespace QuantLib {
                                     Format f = Long);
     };
 
-
     //! Formats weekday for output
-    /*! Formatting can be in Long (full name), Short (three letters),
-        of Shortest (two letters) form.
-    */
+    /*! \deprecated use streams and manipulators for proper formatting */
     class WeekdayFormatter {
       public:
         enum Format { Long, Short, Shortest };
@@ -300,10 +366,13 @@ namespace QuantLib {
     };
 
     //! Formats frequency for output
+    /*! \deprecated use streams and manipulators for proper formatting */
     class FrequencyFormatter {
       public:
         static std::string toString(Frequency f);
     };
+    #endif
+
 
     // inline definitions
 

@@ -35,19 +35,13 @@ namespace QuantLib {
         QL_REQUIRE(startDate != Date(), "null start date");
         QL_REQUIRE(endDate != Date(),   "null end date");
         QL_REQUIRE(startDate < endDate,
-                   "start date (" +
-                   DateFormatter::toString(startDate) +
-                   ") later than end date (" +
-                   DateFormatter::toString(endDate) +
-                   ")");
+                   "start date (" << startDate
+                   << ") later than end date (" << endDate << ")");
         if (stubDate != Date()) {
             QL_REQUIRE((stubDate > startDate && stubDate < endDate),
-                       "stub date (" +
-                       DateFormatter::toString(stubDate) +
-                       ") out of range (start date (" +
-                       DateFormatter::toString(startDate) +
-                       "), end date (" +
-                       DateFormatter::toString(endDate) + "))");
+                       "stub date (" << stubDate
+                       << ") out of range (start date (" << startDate
+                       << "), end date (" << endDate << "))");
         }
         QL_REQUIRE(frequency == 0 || 12 % frequency == 0,
                    "frequency (" << Integer(frequency)

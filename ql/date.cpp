@@ -17,8 +17,9 @@
 */
 
 #include <ql/date.hpp>
-#include <ql/basicdataformatters.hpp>
+#include <ql/Utilities/dataformatters.hpp>
 #include <sstream>
+#include <iomanip>
 
 namespace QuantLib {
 
@@ -74,8 +75,7 @@ namespace QuantLib {
         QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
                    serialNumber <= maximumSerialNumber(),
                    "Date " << serialNumber << " outside allowed range ["
-                   << DateFormatter::toString(minDate()) << "-"
-                   << DateFormatter::toString(maxDate()) << "]");
+                   << minDate() << "-" << maxDate() << "]");
     }
 
     Date::Date(Day d, Month m, Year y) {
@@ -118,8 +118,7 @@ namespace QuantLib {
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " << serial << "outside allowed range ["
-                   << DateFormatter::toString(minDate()) << "-"
-                   << DateFormatter::toString(maxDate()) << "]");
+                   << minDate() << "-" << maxDate() << "]");
         serialNumber_ = serial;
         return *this;
     }
@@ -134,8 +133,7 @@ namespace QuantLib {
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " << serial << "outside allowed range ["
-                   << DateFormatter::toString(minDate()) << "-"
-                   << DateFormatter::toString(maxDate()) << "]");
+                   << minDate() << "-" << maxDate() << "]");
         serialNumber_ = serial;
         return *this;
     }
@@ -150,8 +148,7 @@ namespace QuantLib {
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " << serial << "outside allowed range ["
-                   << DateFormatter::toString(minDate()) << "-"
-                   << DateFormatter::toString(maxDate()) << "]");
+                   << minDate() << "-" << maxDate() << "]");
         serialNumber_ = serial;
         return *this;
     }
@@ -162,8 +159,7 @@ namespace QuantLib {
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " << serial << "outside allowed range ["
-                   << DateFormatter::toString(minDate()) << "-"
-                   << DateFormatter::toString(maxDate()) << "]");
+                   << minDate() << "-" << maxDate() << "]");
         serialNumber_ = serial;
         return temp;
     }
@@ -173,8 +169,7 @@ namespace QuantLib {
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " << serial << "outside allowed range ["
-                   << DateFormatter::toString(minDate()) << "-"
-                   << DateFormatter::toString(maxDate()) << "]");
+                   << minDate() << "-" << maxDate() << "]");
         serialNumber_ = serial;
         return *this;
     }
@@ -185,8 +180,7 @@ namespace QuantLib {
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
                    "Date " << serial << "outside allowed range ["
-                   << DateFormatter::toString(minDate()) << "-"
-                   << DateFormatter::toString(maxDate()) << "]");
+                   << minDate() << "-" << maxDate() << "]");
         serialNumber_ = serial;
         return temp;
     }
@@ -438,6 +432,206 @@ namespace QuantLib {
     }
 
 
+    // weekday formatting
+
+    std::ostream& operator<<(std::ostream& out, const Weekday& w) {
+        return out << io::long_weekday(w);
+    }
+
+    namespace detail {
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const long_weekday_holder& holder) {
+            switch (holder.d) {
+              case Sunday:
+                return out << "Sunday";
+              case Monday:
+                return out << "Monday";
+              case Tuesday:
+                return out << "Tuesday";
+              case Wednesday:
+                return out << "Wednesday";
+              case Thursday:
+                return out << "Thursday";
+              case Friday:
+                return out << "Friday";
+              case Saturday:
+                return out << "Saturday";
+              default:
+                QL_FAIL("unknown weekday");
+            }
+        }
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const short_weekday_holder& holder) {
+            switch (holder.d) {
+              case Sunday:
+                return out << "Sun";
+              case Monday:
+                return out << "Mon";
+              case Tuesday:
+                return out << "Tue";
+              case Wednesday:
+                return out << "Wed";
+              case Thursday:
+                return out << "Thu";
+              case Friday:
+                return out << "Fri";
+              case Saturday:
+                return out << "Sat";
+              default:
+                QL_FAIL("unknown weekday");
+            }
+        }
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const shortest_weekday_holder& holder) {
+            switch (holder.d) {
+              case Sunday:
+                return out << "Su";
+              case Monday:
+                return out << "Mo";
+              case Tuesday:
+                return out << "Tu";
+              case Wednesday:
+                return out << "We";
+              case Thursday:
+                return out << "Th";
+              case Friday:
+                return out << "Fr";
+              case Saturday:
+                return out << "Sa";
+              default:
+                QL_FAIL("unknown weekday");
+            }
+        }
+
+    }
+
+    namespace io {
+
+        detail::long_weekday_holder long_weekday(Weekday d) {
+            detail::long_weekday_holder holder = { d };
+            return holder;
+        }
+
+        detail::short_weekday_holder short_weekday(Weekday d) {
+            detail::short_weekday_holder holder = { d };
+            return holder;
+        }
+
+        detail::shortest_weekday_holder shortest_weekday(Weekday d) {
+            detail::shortest_weekday_holder holder = { d };
+            return holder;
+        }
+
+    }
+
+
+    // frequency formatting
+
+    std::ostream& operator<<(std::ostream& out, Frequency f) {
+        switch (f) {
+          case NoFrequency:
+            return out << "no frequency";
+          case Once:
+            return out << "once";
+          case Annual:
+            return out << "annual";
+          case Semiannual:
+            return out << "semiannual";
+          case EveryFourthMonth:
+            return out << "every-fourth-month";
+          case Quarterly:
+            return out << "quarterly";
+          case Bimonthly:
+            return out << "bimonthly";
+          case Monthly:
+            return out << "monthly";
+          default:
+            QL_FAIL("unknown frequency (" << Integer(f) << ")");
+        }
+    }
+
+
+    // date formatting
+
+    std::ostream& operator<<(std::ostream& out, const Date& d) {
+        return out << io::long_date(d);
+    }
+
+    namespace detail {
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const short_date_holder& holder) {
+            const Date& d = holder.d;
+            if (d == Date()) {
+                out << "null date";
+            } else {
+                Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
+                        yyyy = d.year();
+                char filler = out.fill();
+                out << std::setw(2) << std::setfill('0') << mm << "/";
+                out << std::setw(2) << std::setfill('0') << dd << "/";
+                out << "/" << yyyy;
+                out.fill(filler);
+            }
+            return out;
+        }
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const long_date_holder& holder) {
+            const Date& d = holder.d;
+            if (d == Date()) {
+                out << "null date";
+            } else {
+                out << d.month() << " ";
+                out << io::ordinal(d.dayOfMonth()) << ", ";
+                out << d.year();
+            }
+            return out;
+        }
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const iso_date_holder& holder) {
+            const Date& d = holder.d;
+            if (d == Date()) {
+                out << "null date";
+            } else {
+                Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
+                        yyyy = d.year();
+                char filler = out.fill();
+                out << yyyy << "-";
+                out << std::setw(2) << std::setfill('0') << mm << "-";
+                out << std::setw(2) << std::setfill('0') << dd;
+                out.fill(filler);
+            }
+            return out;
+        }
+    }
+
+    namespace io {
+
+        detail::short_date_holder short_date(const Date& d) {
+            detail::short_date_holder holder = { d };
+            return holder;
+        }
+
+        detail::long_date_holder long_date(const Date& d) {
+            detail::long_date_holder holder = { d };
+            return holder;
+        }
+
+        detail::iso_date_holder iso_date(const Date& d) {
+            detail::iso_date_holder holder = { d };
+            return holder;
+        }
+
+    }
+
+
+
+    #ifndef QL_DISABLE_DEPRECATED
     std::string DateFormatter::toString(const Date& d,
                                         DateFormatter::Format f) {
         static const std::string monthName[] = {
@@ -521,7 +715,6 @@ namespace QuantLib {
     }
 
     std::string FrequencyFormatter::toString(Frequency freq) {
-
         switch (freq) {
           case NoFrequency:
             return std::string("no frequency");
@@ -543,5 +736,6 @@ namespace QuantLib {
             QL_FAIL("unknown frequency (" << Integer(freq) << ")");
         }
     }
+    #endif
 
 }

@@ -53,35 +53,31 @@ void CalendarTest::testModifiedCalendars() {
 
     // test
     if (c1.isHoliday(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) +
-                   " still a holiday for original TARGET instance");
+        BOOST_FAIL(d1 << " still a holiday for original TARGET instance");
     if (c1.isBusinessDay(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) +
-                   " still a business day for original TARGET instance");
+        BOOST_FAIL(d2 << " still a business day for original TARGET instance");
 
     // any instance of TARGET should be modified...
     Calendar c3 = TARGET();
     if (c3.isHoliday(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) +
-                   " still a holiday for generic TARGET instance");
+        BOOST_FAIL(d1 << " still a holiday for generic TARGET instance");
     if (c3.isBusinessDay(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) +
-                   " still a business day for generic TARGET instance");
+        BOOST_FAIL(d2 << " still a business day for generic TARGET instance");
 
     // ...but not other calendars
     if (c2.isBusinessDay(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) + " business day for New York");
+        BOOST_FAIL(d1 << " business day for New York");
     if (c2.isHoliday(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) + " holiday for New York");
+        BOOST_FAIL(d2 << " holiday for New York");
 
     // restore original holiday set---test the other way around
     c3.addHoliday(d1);
     c3.removeHoliday(d2);
 
     if (c1.isBusinessDay(d1))
-        BOOST_FAIL(DateFormatter::toString(d1) + " still a business day");
+        BOOST_FAIL(d1 << " still a business day");
     if (c1.isHoliday(d2))
-        BOOST_FAIL(DateFormatter::toString(d2) + " still a holiday");
+        BOOST_FAIL(d2 << " still a holiday");
 }
 
 
@@ -113,46 +109,40 @@ void CalendarTest::testJointCalendars() {
              b4 = c4.isBusinessDay(d);
 
         if ((b1 && b2) != c12h.isBusinessDay(d))
-            BOOST_FAIL(
-                "At date " + DateFormatter::toString(d) + ":\n"
-                "    inconsistency between joint calendar "
-                + c12h.name() + " (joining holidays)\n"
-                "    and its components");
+            BOOST_FAIL("At date " << d << ":\n"
+                       << "    inconsistency between joint calendar "
+                       << c12h.name() << " (joining holidays)\n"
+                       << "    and its components");
 
         if ((b1 || b2) != c12b.isBusinessDay(d))
-            BOOST_FAIL(
-                "At date " + DateFormatter::toString(d) + ":\n"
-                "    inconsistency between joint calendar "
-                + c12b.name() + " (joining business days)\n"
-                "    and its components");
+            BOOST_FAIL("At date " << d << ":\n"
+                       << "    inconsistency between joint calendar "
+                       << c12b.name() << " (joining business days)\n"
+                       << "    and its components");
 
         if ((b1 && b2 && b3) != c123h.isBusinessDay(d))
-            BOOST_FAIL(
-                "At date " + DateFormatter::toString(d) + ":\n"
-                "    inconsistency between joint calendar "
-                + c123h.name() + " (joining holidays)\n"
-                "    and its components");
+            BOOST_FAIL("At date " << d << ":\n"
+                       << "    inconsistency between joint calendar "
+                       << c123h.name() << " (joining holidays)\n"
+                       << "    and its components");
 
         if ((b1 || b2 || b3) != c123b.isBusinessDay(d))
-            BOOST_FAIL(
-                "At date " + DateFormatter::toString(d) + ":\n"
-                "    inconsistency between joint calendar "
-                + c123b.name() + " (joining business days)\n"
-                "    and its components");
+            BOOST_FAIL("At date " << d << ":\n"
+                       << "    inconsistency between joint calendar "
+                       << c123b.name() << " (joining business days)\n"
+                       << "    and its components");
 
         if ((b1 && b2 && b3 && b4) != c1234h.isBusinessDay(d))
-            BOOST_FAIL(
-                "At date " + DateFormatter::toString(d) + ":\n"
-                "    inconsistency between joint calendar "
-                + c1234h.name() + " (joining holidays)\n"
-                "    and its components");
+            BOOST_FAIL("At date " << d << ":\n"
+                       << "    inconsistency between joint calendar "
+                       << c1234h.name() << " (joining holidays)\n"
+                       << "    and its components");
 
         if ((b1 || b2 || b3 || b4) != c1234b.isBusinessDay(d))
-            BOOST_FAIL(
-                "At date " + DateFormatter::toString(d) + ":\n"
-                "    inconsistency between joint calendar "
-                + c1234b.name() + " (joining business days)\n"
-                "    and its components");
+            BOOST_FAIL("At date " << d << ":\n"
+                       << "    inconsistency between joint calendar "
+                       << c1234b.name() << " (joining business days)\n"
+                       << "    and its components");
 
     }
 }
@@ -188,10 +178,8 @@ void CalendarTest::testUSSettlement() {
                                            Date(31,December,2005));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -221,10 +209,8 @@ void CalendarTest::testUSGovernmentBondMarket() {
 
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -273,10 +259,8 @@ void CalendarTest::testUSNewYorkStockExchange() {
     Size i;
     for (i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -317,8 +301,8 @@ void CalendarTest::testUSNewYorkStockExchange() {
     histClose.push_back(Date(3,Nov,1964));
     for (i=0; i<histClose.size(); i++) {
         if (!c.isHoliday(histClose[i]))
-            BOOST_FAIL(DateFormatter::toString(histClose[i]) +
-                       " should be holiday (historical close)");
+            BOOST_FAIL(histClose[i]
+                       << " should be holiday (historical close)");
     }
 
 
@@ -379,10 +363,8 @@ void CalendarTest::testTARGET() {
 
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -416,10 +398,8 @@ void CalendarTest::testGermanyFrankfurt() {
                                            Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -452,10 +432,8 @@ void CalendarTest::testGermanyEurex() {
                                            Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -488,10 +466,8 @@ void CalendarTest::testGermanyXetra() {
                                            Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -545,10 +521,8 @@ void CalendarTest::testUKSettlement() {
                                            Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -602,10 +576,8 @@ void CalendarTest::testUKExchange() {
                                            Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -659,10 +631,8 @@ void CalendarTest::testUKMetals() {
                                            Date(31,December,2007));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()
@@ -706,10 +676,8 @@ void CalendarTest::testItalyExchange() {
                                            Date(31,December,2004));
     for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
-            BOOST_FAIL("expected holiday was "
-                       + DateFormatter::toString(expectedHol[i]) +
-                       " while calculated holiday is "
-                       + DateFormatter::toString(hol[i]));
+            BOOST_FAIL("expected holiday was " << expectedHol[i]
+                       << " while calculated holiday is " << hol[i]);
     }
     if (hol.size()!=expectedHol.size())
         BOOST_FAIL("there were " << expectedHol.size()

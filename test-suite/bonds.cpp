@@ -96,14 +96,10 @@ void BondTest::testYield() {
                   if (std::fabs(price-price2)/price > tolerance) {
                       BOOST_FAIL(
                           "yield recalculation failed:\n"
-                          << "    issue:     "
-                          << DateFormatter::toString(issue) << "\n"
-                          << "    maturity:  "
-                          << DateFormatter::toString(maturity) << "\n"
+                          << "    issue:     " << issue << "\n"
+                          << "    maturity:  " << maturity << "\n"
                           << "    coupon:    " << io::rate(coupons[k]) << "\n"
-                          << "    frequency: "
-                          << FrequencyFormatter::toString(frequencies[l])
-                          << "\n\n"
+                          << "    frequency: " << frequencies[l] << "\n\n"
                           << "    yield:  " << io::rate(yields[m]) << "\n"
                           << std::setprecision(7)
                           << "    price:  " << price << "\n"

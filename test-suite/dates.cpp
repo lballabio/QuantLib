@@ -35,27 +35,21 @@ void DateTest::immDates() {
         // check that imm is greater than or equal to counter
         if (imm<counter)
             BOOST_FAIL("\n  "
-                       << WeekdayFormatter::toString(imm.weekday()) << " "
-                       << DateFormatter::toString(imm)
+                       << imm.weekday() << " " << imm
                        << " is not greater than or equal to "
-                       << WeekdayFormatter::toString(counter.weekday()) << " "
-                       << DateFormatter::toString(counter));
+                       << counter.weekday() << " " << counter);
         // check that imm is an IMM date
         if (!Date::isIMMdate(imm))
             BOOST_FAIL("\n  "
-                       << WeekdayFormatter::toString(imm.weekday()) << " "
-                       << DateFormatter::toString(imm)
+                       << imm.weekday() << " " << imm
                        << " is not an IMM date (calculated from "
-                       << WeekdayFormatter::toString(counter.weekday()) << " "
-                       << DateFormatter::toString(counter) << ")");
+                       << counter.weekday() << " " << counter << ")");
         // check that if counter is an IMM date, then imm==counter
         if (Date::isIMMdate(counter) && (imm!=counter))
             BOOST_FAIL("\n  "
-                       << WeekdayFormatter::toString(counter.weekday()) << " "
-                       << DateFormatter::toString(counter)
+                       << counter.weekday() << " " << counter
                        << " is already an IMM date, while nextIMM() returns "
-                       << WeekdayFormatter::toString(imm.weekday()) << " "
-                       << DateFormatter::toString(imm));
+                       << imm.weekday() << " " << imm);
 
         counter = counter + 1;
     }
@@ -80,11 +74,10 @@ void DateTest::testConsistency() {
 
         // check serial number consistency
         if (serial != i)
-            BOOST_FAIL(
-                "inconsistent serial number:\n"
-                << "    original:      " << i << "\n"
-                << "    date:          " << DateFormatter::toString(t) << "\n"
-                << "    serial number: " << serial);
+            BOOST_FAIL("inconsistent serial number:\n"
+                       << "    original:      " << i << "\n"
+                       << "    date:          " << t << "\n"
+                       << "    serial number: " << serial);
 
         Integer dy = t.dayOfYear(),
                 d  = t.dayOfMonth(),
@@ -96,38 +89,34 @@ void DateTest::testConsistency() {
         if (!((dy == dyold+1) ||
               (dy == 1 && dyold == 365 && !Date::isLeap(yold)) ||
               (dy == 1 && dyold == 366 && Date::isLeap(yold))))
-            BOOST_FAIL(
-                "wrong day of year increment: \n"
-                << "    date: " << DateFormatter::toString(t) << "\n"
-                << "    day of year: " << dy << "\n"
-                << "    previous:    " << dyold);
+            BOOST_FAIL("wrong day of year increment: \n"
+                       << "    date: " << t << "\n"
+                       << "    day of year: " << dy << "\n"
+                       << "    previous:    " << dyold);
         dyold = dy;
 
         if (!((d == dold+1 && m == mold   && y == yold) ||
               (d == 1      && m == mold+1 && y == yold) ||
               (d == 1      && m == 1      && y == yold+1)))
-            BOOST_FAIL(
-                "wrong day,month,year increment: \n"
-                << "    date: " << DateFormatter::toString(t) << "\n"
-                << "    day,month,year: "
-                << d << "," << Integer(m) << "," << y << "\n"
-                << "    previous:       "
-                << dold<< "," << Integer(mold) << "," << yold);
+            BOOST_FAIL("wrong day,month,year increment: \n"
+                       << "    date: " << t << "\n"
+                       << "    day,month,year: "
+                       << d << "," << Integer(m) << "," << y << "\n"
+                       << "    previous:       "
+                       << dold<< "," << Integer(mold) << "," << yold);
         dold = d; mold = m; yold = y;
 
         // check month definition
         if (m < 1 || m > 12)
-            BOOST_FAIL(
-                "invalid month: \n"
-                << "    date:  " << DateFormatter::toString(t) << "\n"
-                << "    month: " << Integer(m));
+            BOOST_FAIL("invalid month: \n"
+                       << "    date:  " << t << "\n"
+                       << "    month: " << Integer(m));
 
         // check day definition
         if (d < 1)
-            BOOST_FAIL(
-                "invalid day of month: \n"
-                << "    date:  " << DateFormatter::toString(t) << "\n"
-                << "    day: " << d);
+            BOOST_FAIL("invalid day of month: \n"
+                       << "    date:  " << t << "\n"
+                       << "    day: " << d);
         if (!((m == 1  && d <= 31) ||
               (m == 2  && d <= 28) ||
               (m == 2  && d == 29 && Date::isLeap(y)) ||
@@ -141,19 +130,17 @@ void DateTest::testConsistency() {
               (m == 10 && d <= 31) ||
               (m == 11 && d <= 30) ||
               (m == 12 && d <= 31)))
-            BOOST_FAIL(
-                "invalid day of month: \n"
-                << "    date:  " << DateFormatter::toString(t) << "\n"
-                << "    day: " << d);
+            BOOST_FAIL("invalid day of month: \n"
+                       << "    date:  " << t << "\n"
+                       << "    day: " << d);
 
         // check weekday definition
         if (!((Integer(wd) == Integer(wdold+1)) ||
               (Integer(wd) == 1 && Integer(wdold) == 7)))
-            BOOST_FAIL(
-                "invalid weekday: \n"
-                << "    date:  " << DateFormatter::toString(t) << "\n"
-                << "    weekday:  " << Integer(wd) << "\n"
-                << "    previous: " << Integer(wdold));
+            BOOST_FAIL("invalid weekday: \n"
+                       << "    date:  " << t << "\n"
+                       << "    weekday:  " << Integer(wd) << "\n"
+                       << "    previous: " << Integer(wdold));
         wdold = wd;
 
         // create the same date with a different constructor
@@ -161,12 +148,11 @@ void DateTest::testConsistency() {
         // check serial number consistency
         serial = s.serialNumber();
         if (serial != i)
-            BOOST_FAIL(
-                "inconsistent serial number:\n"
-                << "    date:          " << DateFormatter::toString(t) << "\n"
-                << "    serial number: " << i << "\n"
-                << "    cloned date:   " <<  DateFormatter::toString(s) << "\n"
-                << "    serial number: " << serial);
+            BOOST_FAIL("inconsistent serial number:\n"
+                       << "    date:          " << t << "\n"
+                       << "    serial number: " << i << "\n"
+                       << "    cloned date:   " <<  s << "\n"
+                       << "    serial number: " << serial);
     }
 
 }

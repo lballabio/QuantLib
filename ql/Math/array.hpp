@@ -173,11 +173,6 @@ namespace QuantLib {
                                     Integer precision = 6,
                                     Integer digits = 0,
                                     Size elementsPerRow = QL_MAX_INTEGER) {
-            #ifndef QL_PATCH_MSVC6
-            return SequenceFormatter::toString(a.begin(),a.end(),
-                                               precision,digits,
-                                               elementsPerRow);
-            #else
             std::ostringstream s;
             s << "[ ";
             for (Size n=0; n<a.size(); ++n) {
@@ -192,7 +187,6 @@ namespace QuantLib {
             }
             s << " ]";
             return s.str();
-            #endif
         }
     };
 

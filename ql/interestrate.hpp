@@ -128,9 +128,8 @@ namespace QuantLib {
                                         Compounding comp,
                                         Frequency freq = Annual) {
             QL_REQUIRE(d2>d1,
-                       "d1 (" + DateFormatter::toString(d1) + ") "
-                       "later than or equal to d2 "
-                       "(" + DateFormatter::toString(d2) + ")");
+                       "d1 (" << d1 << ") "
+                       "later than or equal to d2 (" << d2 << ")");
             Time t = resultDC.yearFraction(d1, d2);
             return impliedRate(compound, t, resultDC, comp, freq);
         }
@@ -162,9 +161,8 @@ namespace QuantLib {
                                     Compounding comp,
                                     Frequency freq = Annual) const {
             QL_REQUIRE(d2>d1,
-                       "d1 (" + DateFormatter::toString(d1) + ") "
-                       "later than or equal to d2 "
-                       "(" + DateFormatter::toString(d2) + ")");
+                       "d1 (" << d1 << ") "
+                       "later than or equal to d2 (" << d2 << ")");
             Time t1 = dc_.yearFraction(d1, d2);
             Time t2 = resultDC.yearFraction(d1, d2);
             return impliedRate(compoundFactor(t1), t2, resultDC, comp, freq);

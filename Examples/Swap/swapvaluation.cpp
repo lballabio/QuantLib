@@ -50,15 +50,11 @@ int main(int, char* [])
 
 
         todaysDate = Settings::instance().evaluationDate();
-        std::cout << "Today: "
-            << WeekdayFormatter::toString(todaysDate.weekday())
-            << ", " + DateFormatter::toString(todaysDate)
-            << std::endl;
+        std::cout << "Today: " << todaysDate.weekday()
+                  << ", " << todaysDate << std::endl;
 
-        std::cout << "Settlement date: "
-            << WeekdayFormatter::toString(settlementDate.weekday())
-            << ", " + DateFormatter::toString(settlementDate)
-            << std::endl;
+        std::cout << "Settlement date: " << settlementDate.weekday()
+                  << ", " << settlementDate << std::endl;
 
         // deposits
         Rate d1wQuote=0.0382;

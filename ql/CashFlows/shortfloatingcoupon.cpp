@@ -37,10 +37,8 @@ namespace QuantLib {
                    // must have been fixed
                    // but we have no way to interpolate the fixing yet
                    "short/long floating coupons not supported yet"
-                   " (start = " +
-                   DateFormatter::toString(accrualStartDate_) +
-                   ", end = " +
-                   DateFormatter::toString(accrualEndDate_) + ")");
+                   << " (start = " << accrualStartDate_
+                   << ", end = " << accrualEndDate_ << ")");
         return ParCoupon::amount();
     }
 

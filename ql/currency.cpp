@@ -16,20 +16,24 @@
 */
 
 #include <ql/currency.hpp>
-#include <ql/Currencies/africa.hpp>
-#include <ql/Currencies/america.hpp>
-#include <ql/Currencies/asia.hpp>
-#include <ql/Currencies/europe.hpp>
-#include <ql/Currencies/oceania.hpp>
 
 namespace QuantLib {
 
+    std::ostream& operator<<(std::ostream& out, const Currency& c) {
+        if (c.isValid())
+            return out << c.code() << " currency (" << c.name() << ")";
+        else
+            return out << "null currency";
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
     std::string CurrencyFormatter::toString(const Currency& c) {
         if (c.isValid())
             return c.code() + " currency (" + c.name() + ")";
         else
             return "null currency";
     }
+    #endif
 
 }
 

@@ -59,9 +59,9 @@ namespace QuantLib {
         for (Size i = 0; i < dividends.size(); i++) {
             QL_REQUIRE(dividendDates[i] <= exerciseDate,
                        "the " << io::ordinal(i) << " dividend date ("
-                       << DateFormatter::toString(dividendDates[i])
+                       << dividendDates[i]
                        << ") is later than the exercise date ("
-                       << DateFormatter::toString(exerciseDate) << ")");
+                       << exerciseDate << ")");
         }
     }
 

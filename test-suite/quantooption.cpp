@@ -44,10 +44,8 @@ using namespace boost::unit_test_framework;
                << "    dividend yield:    " << io::rate(q) << "\n" \
                << "    risk-free rate:    " << io::rate(r) << "\n" \
                << "    fx risk-free rate: " << io::rate(fxr) << "\n" \
-               << "    reference date:    " \
-               << DateFormatter::toString(today) << "\n" \
-               << "    maturity:          " \
-               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    reference date:    " << today << "\n" \
+               << "    maturity:          " << exercise->lastDate() << "\n" \
                << "    volatility:        " << io::volatility(v) << "\n" \
                << "    fx volatility:     " << io::volatility(fxv) << "\n" \
                << "    correlation:       " << corr << "\n\n" \
@@ -70,12 +68,9 @@ using namespace boost::unit_test_framework;
                << "    dividend yield:    " << io::rate(q) << "\n" \
                << "    risk-free rate:    " << io::rate(r) << "\n" \
                << "    fx risk-free rate: " << io::rate(fxr) << "\n" \
-               << "    reference date:    " \
-               << DateFormatter::toString(today) << "\n" \
-               << "    reset date:        " \
-               << DateFormatter::toString(reset) << "\n" \
-               << "    maturity:          " \
-               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    reference date:    " << today << "\n" \
+               << "    reset date:        " << reset << "\n" \
+               << "    maturity:          " << exercise->lastDate() << "\n" \
                << "    volatility:        " << io::volatility(v) << "\n" \
                << "    fx volatility:     " << io::volatility(fxv) << "\n" \
                << "    correlation:       " << corr << "\n\n" \

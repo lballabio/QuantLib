@@ -39,9 +39,8 @@ namespace QuantLib {
         times_[0] = 0.0;
         for(Size i = 1; i < dates_.size(); i++) {
             QL_REQUIRE(dates_[i] > dates_[i-1],
-                       "invalid date ("+
-                       DateFormatter::toString(dates_[i])+", vs "+
-                       DateFormatter::toString(dates_[i-1])+")");
+                       "invalid date (" << dates_[i] << ", vs "
+                       << dates_[i-1] << ")");
             QL_REQUIRE(discounts_[i] > 0.0, "negative discount");
             times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
         }

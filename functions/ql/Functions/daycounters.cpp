@@ -17,13 +17,13 @@
 
 #include <ql/Functions/daycounters.hpp>
 #include <ql/DayCounters/all.hpp>
-#include <ql/basicdataformatters.hpp>
+#include <ql/Utilities/strings.hpp>
 
 namespace QuantLib {
 
     DayCounter dayCounterFromString(std::string inputString) {
 
-        std::string s = StringFormatter::toLowercase(inputString);
+        std::string s = lowercase(inputString);
 
         if (        s == "1/1"          // ISDA
                  || s == "one")
@@ -32,9 +32,9 @@ namespace QuantLib {
         else if (   s == "actual/365"    // ISDA
                  || s == "act/365"       // ISDA
                  || s == "a/365"         // ISDA
-                 || s == "actual365" 
-                 || s == "act365" 
-                 || s == "a365" 
+                 || s == "actual365"
+                 || s == "act365"
+                 || s == "a365"
 
                  || s == "actual/actual" // ISDA
                  || s == "act/actual"
@@ -90,20 +90,20 @@ namespace QuantLib {
         else if (   s == "actual/365 (fixed)" // ISDA
                  || s == "act/365 (fixed)"    // ISDA
                  || s == "a/365 (fixed)"      // ISDA
-                 || s == "actual365 (fixed)" 
-                 || s == "act365 (fixed)" 
+                 || s == "actual365 (fixed)"
+                 || s == "act365 (fixed)"
                  || s == "a365 (fixed)"
                  || s == "actual/365 (f)"
-                 || s == "act/365 (f)"  
-                 || s == "a/365 (f)"   
-                 || s == "actual365 (f)" 
-                 || s == "act365 (f)" 
+                 || s == "act/365 (f)"
+                 || s == "a/365 (f)"
+                 || s == "actual365 (f)"
+                 || s == "act365 (f)"
                  || s == "a365 (f)"
                  || s == "actual/365f"
-                 || s == "act/365f"  
+                 || s == "act/365f"
                  || s == "a/365f"             // ISDA
-                 || s == "actual365f" 
-                 || s == "act365f" 
+                 || s == "actual365f"
+                 || s == "act365f"
                  || s == "a365f")
             return Actual365Fixed();
 
@@ -126,7 +126,7 @@ namespace QuantLib {
                  || s == "360/360us"
                  || s == "360360us")
             return Thirty360(Thirty360::BondBasis);
-        
+
         else if (   s == "30e/360"     // ISDA
                  || s == "30e360"
                  || s == "360e/360"
@@ -138,7 +138,7 @@ namespace QuantLib {
                  || s == "360/360eu"
                  || s == "360360eu")
             return Thirty360(Thirty360::BondBasis);
-        
+
         /************* Non ISDA daycounters ****************/
 
         else if (   s == "simple"
@@ -163,7 +163,7 @@ namespace QuantLib {
                  || s == "360360it"
                  )
             return Thirty360(Thirty360::Italian);
-        
+
         else if (   s == "actual/actual (isma)"
                  || s == "act/actual (isma)"
                  || s == "a/actual (isma)"

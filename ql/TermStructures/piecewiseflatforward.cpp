@@ -106,8 +106,8 @@ namespace QuantLib {
             Date m1 = instruments_[i-1]->latestDate(),
                  m2 = instruments_[i]->latestDate();
             QL_REQUIRE(m1 != m2,
-                       "two instruments have the same maturity (" +
-                       DateFormatter::toString(m1) + ")");
+                       "two instruments have the same maturity ("
+                       << m1 << ")");
         }
         for (i=0; i<instruments_.size(); i++)
             registerWith(instruments_[i]);
