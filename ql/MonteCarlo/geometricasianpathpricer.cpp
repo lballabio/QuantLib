@@ -46,7 +46,7 @@ namespace QuantLib {
         GeometricAsianPathPricer::GeometricAsianPathPricer(Option::Type type,
             double underlying, double strike, double discount,
             bool antitheticVariance)
-        : EuropeanPathPricer(type, underlying, strike, discount,
+        : SingleAssetPathPricer(type, underlying, strike, discount,
           antitheticVariance) {}
 
         double GeometricAsianPathPricer::operator()(const Path & path) const {

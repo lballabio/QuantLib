@@ -44,9 +44,9 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         AverageStrikeAsianPathPricer::AverageStrikeAsianPathPricer(
-          Option::Type type, double underlying, double strike, double discount,
-          bool antitheticVariance) : EuropeanPathPricer(type, underlying,
-          strike, discount, antitheticVariance) {}
+          Option::Type type, double underlying, double discount,
+          bool antitheticVariance) : SingleAssetPathPricer(type, underlying,
+          underlying, discount, antitheticVariance) {}
 
         double AverageStrikeAsianPathPricer::operator()(const Path & path) const {
 

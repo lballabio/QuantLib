@@ -48,7 +48,8 @@ namespace QuantLib {
         class BasketPathPricer : public MultiPathPricer {
           public:
             BasketPathPricer() {}
-            BasketPathPricer(const Array& underlying, double discount);
+            BasketPathPricer(const Array& underlying,
+                             double discount);
             double operator()(const MultiPath& path) const;
           protected:
             Array underlying_;

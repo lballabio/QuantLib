@@ -48,15 +48,8 @@ namespace QuantLib {
         EuropeanPathPricer::EuropeanPathPricer(Option::Type type,
           double underlying, double strike, double discount,
           bool antitheticVariance)
-        : type_(type),underlying_(underlying), strike_(strike),
-          discount_(discount), antitheticVariance_(antitheticVariance) {
-            QL_REQUIRE(strike_ > 0.0,
-                "SinglePathEuropeanPricer: strike must be positive");
-            QL_REQUIRE(underlying_ > 0.0,
-                "SinglePathEuropeanPricer: underlying must be positive");
-            QL_REQUIRE(discount_ > 0.0,
-                "SinglePathEuropeanPricer: discount must be positive");
-        }
+        : SingleAssetPathPricer(type, underlying, strike, discount,
+          antitheticVariance) {}
 
         double EuropeanPathPricer::operator()(const Path & path) const {
             unsigned int n = path.size();

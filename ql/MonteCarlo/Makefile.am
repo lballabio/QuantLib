@@ -30,7 +30,8 @@ include_HEADERS = \
 	path.hpp \
 	pathgenerator.hpp \
 	pathpricer.hpp \
-	randomarraygenerator.hpp
+	randomarraygenerator.hpp \
+	singleassetpathpricer.hpp
 
 EXTRA_DIST=makefile.mak
 
@@ -46,6 +47,7 @@ libMonteCarlo_la_SOURCES = \
 	himalayapathpricer.cpp \
 	knuthrandomgenerator.cpp \
 	lecuyerrandomgenerator.cpp \
-	pagodapathpricer.cpp
+	pagodapathpricer.cpp \
+	singleassetpathpricer.cpp
 
 noinst_LTLIBRARIES = libMonteCarlo.la

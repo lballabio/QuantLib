@@ -34,24 +34,21 @@
 #ifndef quantlib_montecarlo_european_path_pricer_h
 #define quantlib_montecarlo_european_path_pricer_h
 
-#include "ql/MonteCarlo/pathpricer.hpp"
-#include "ql/option.hpp"
+#include "ql/MonteCarlo/singleassetpathpricer.hpp"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
         //! %path pricer for European options
-        class EuropeanPathPricer : public PathPricer {
+        class EuropeanPathPricer : public SingleAssetPathPricer {
           public:
-            EuropeanPathPricer(Option::Type type, double underlying,
-                double strike, double discount,
-                bool antitheticVariance);
+            EuropeanPathPricer(Option::Type type,
+                               double underlying,
+                               double strike,
+                               double discount,
+                               bool antitheticVariance);
             double operator()(const Path &path) const;
-          protected:
-            mutable Option::Type type_;
-            mutable double underlying_, strike_, discount_;
-            bool antitheticVariance_;
         };
 
     }

@@ -166,6 +166,8 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
+	-@erase "$(INTDIR)\singleassetpathpricer.obj"
+	-@erase "$(INTDIR)\singleassetpathpricer.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -243,6 +245,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthrandomgenerator.sbr" \
 	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -329,6 +332,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthrandomgenerator.obj" \
 	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -512,6 +516,8 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
+	-@erase "$(INTDIR)\singleassetpathpricer.obj"
+	-@erase "$(INTDIR)\singleassetpathpricer.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -590,6 +596,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthrandomgenerator.sbr" \
 	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -676,6 +683,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthrandomgenerator.obj" \
 	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -859,6 +867,8 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
+	-@erase "$(INTDIR)\singleassetpathpricer.obj"
+	-@erase "$(INTDIR)\singleassetpathpricer.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -936,6 +946,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthrandomgenerator.sbr" \
 	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -1022,6 +1033,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthrandomgenerator.obj" \
 	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -1205,6 +1217,8 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
+	-@erase "$(INTDIR)\singleassetpathpricer.obj"
+	-@erase "$(INTDIR)\singleassetpathpricer.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -1283,6 +1297,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthrandomgenerator.sbr" \
 	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -1369,6 +1384,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthrandomgenerator.obj" \
 	"$(INTDIR)\lecuyerrandomgenerator.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -1672,6 +1688,12 @@ SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.cpp
 SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
 
 "$(INTDIR)\pagodapathpricer.obj"	"$(INTDIR)\pagodapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\MonteCarlo\singleassetpathpricer.cpp
+
+"$(INTDIR)\singleassetpathpricer.obj"	"$(INTDIR)\singleassetpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

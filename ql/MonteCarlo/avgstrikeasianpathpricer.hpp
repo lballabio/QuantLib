@@ -34,19 +34,19 @@
 #ifndef quantlib_montecarlo_average_strike_asian_path_pricer_h
 #define quantlib_montecarlo_average_strike_asian_path_pricer_h
 
-#include "ql/MonteCarlo/europeanpathpricer.hpp"
+#include "ql/MonteCarlo/singleassetpathpricer.hpp"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
         //! %path pricer for average strike Asian options
-        class AverageStrikeAsianPathPricer 
-        : public EuropeanPathPricer {
+        class AverageStrikeAsianPathPricer : public SingleAssetPathPricer {
           public:
             AverageStrikeAsianPathPricer(Option::Type type,
-                double underlying, double strike, double discount,
-                bool antitheticVariance);
+                                         double underlying,
+                                         double discount,
+                                         bool antitheticVariance);
             virtual double operator()(const Path &path) const;
         };
 

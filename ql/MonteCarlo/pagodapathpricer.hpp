@@ -44,7 +44,8 @@ namespace QuantLib {
         class PagodaPathPricer : public MultiPathPricer {
           public:
             PagodaPathPricer() {}
-            PagodaPathPricer(const Array &underlying, double roof,
+            PagodaPathPricer(const Array &underlying,
+                             double roof,
                              double discount);
             double operator()(const MultiPath &path) const;
           protected:

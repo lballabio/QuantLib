@@ -531,22 +531,6 @@ SOURCE=.\ql\MonteCarlo\everestpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\gaussianmultipathgenerator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\gaussianpathgenerator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\gaussianrandomgenerator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\generalmontecarlo.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\geometricasianpathpricer.cpp
 # End Source File
 # Begin Source File
@@ -652,6 +636,14 @@ SOURCE=.\ql\MonteCarlo\pathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\randomarraygenerator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\singleassetpathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\singleassetpathpricer.hpp
 # End Source File
 # Begin Source File
 

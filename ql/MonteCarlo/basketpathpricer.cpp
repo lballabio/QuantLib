@@ -42,7 +42,7 @@ namespace QuantLib {
         BasketPathPricer::BasketPathPricer(const Array &underlying,
             double discount) : underlying_(underlying), discount_(discount) {
             QL_REQUIRE(discount_ > 0.0,
-                "SinglePathEuropeanPricer: discount must be positive");
+                "BasketPathPricer: discount must be positive");
             isInitialized_ = true;
         }
 
@@ -55,11 +55,13 @@ namespace QuantLib {
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
             double maxPrice = -QL_MAX_DOUBLE;
-            for(unsigned int i = 0; i < numAssets; i++){
-                double price = underlying_[i];
-                for(unsigned int j = 0; j < numSteps; j++)
-                    price *= QL_EXP(path[i][j]);
-                maxPrice = QL_MAX(maxPrice, price);
+            double growth = 0.0;
+//            double log_drift = 0.0, log_random = 0.0;
+            for(unsigned int j = 0; j < numAssets; j++){
+                growth = 0.0;
+                for(unsigned int i = 0; i < numSteps; i++)
+                    growth += path[j][i];
+                maxPrice = QL_MAX(maxPrice, underlying_[j]*QL_EXP(growth));
             }
             return discount_*maxPrice;  //This is the GOOD one!!
         }

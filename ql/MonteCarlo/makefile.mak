@@ -26,7 +26,8 @@ OBJS = avgpriceasianpathpricer.obj$(_D) \
        himalayapathpricer.obj$(_D) \
        knuthrandomgenerator.obj$(_D) \
        lecuyerrandomgenerator.obj$(_D) \
-       pagodapathpricer.obj$(_D)
+       pagodapathpricer.obj$(_D) \
+       singleassetpathpricer.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

@@ -10,11 +10,13 @@ COMPILING
     Borland projects
 
 LIBRARY
+    Payoff class from EuropeanOption into QuantLib
     timer class
     switch false/true antithetic variate
     add futures (and convexity adjustment) to the bootstrapping method
     have RateHelpers take a MarketElement instead of a Rate
     make PiecewiseFlatForward an observer of its RateHelpers
+
     allow for negative dividendYield (that is cost of carry)
     cash flow stream for IRR, duration
     Currency as class with methods returning related info
@@ -41,4 +43,3 @@ DOCUMENTATION ***
     enforce fulpath&classesinclude DoxyGen requirements
     add/update DoxyGen TODO with CVS TODO.txt file
     insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
-
