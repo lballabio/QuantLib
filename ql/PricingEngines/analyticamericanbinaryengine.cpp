@@ -41,7 +41,7 @@ namespace QuantLib {
 
             Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
 
-            Binary::Type binaryType = arguments_.binaryType;
+//            Binary::Type binaryType = arguments_.binaryType;
             double barrier = arguments_.barrier;
             double cashPayoff = arguments_.cashPayoff;
 
@@ -83,7 +83,7 @@ namespace QuantLib {
                 double mod_exp_z2 = QL_EXP(-z*z/2);
                 double mod_exp_zbar2 = QL_EXP(-zbar*zbar/2); 
                 double denom_delta = underlying * root_tau * vol * root_two_pi;
-                double denom_temp = underlying * root_tau * vol * root_two_pi;
+//                double denom_temp = underlying * root_tau * vol * root_two_pi;
                 double denom_rho = lambda*vol*root_two_pi;
 
                 results_.value = cashPayoff*(pow_plus *f_minus_z 

@@ -100,21 +100,10 @@ namespace {
 void BinaryOptionTest::testValues() {
 
     double maxErrorAllowed = 1.0e-4;
-    double maxMCErrorAllowed = 1.0e-1;
-    double maxStraddleErrorAllowed = 5.0e-2;
-
     double underlyingPrice = 100.0;
-    double rebate = 3.0;
     Rate r = QL_LOG(1.09);
     Rate q = QL_LOG(1.03);
 
-    Size timeSteps = 1;
-    bool antitheticVariate = false;
-    bool controlVariate = false;
-    Size requiredSamples = 10000;
-    double requiredTolerance = 0.02;
-    Size maxSamples = 1000000; 
-    bool isBiased = false;
 
     BinaryOptionData values[] = {
         { Binary::CashAtExpiry, Option::Call, 1, 
@@ -182,17 +171,9 @@ void BinaryOptionTest::testAmericanValues() {
     double maxErrorAllowed = 1.0e-4;
 
     double underlyingPrice = 100.0;
-    double rebate = 100.0;
     Rate r = 0.01;
     Rate q = 0.04;
 
-    Size timeSteps = 1;
-    bool antitheticVariate = false;
-    bool controlVariate = false;
-    Size requiredSamples = 10000;
-    double requiredTolerance = 0.02;
-    Size maxSamples = 1000000; 
-    bool isBiased = false;
 
     // BinaryOptionData contains:
     // type, optionType, volatility;        
@@ -358,10 +339,10 @@ void BinaryOptionTest::testSelfConsistency() {
 
                   // increments
                   double dS = u*1.0e-4;
-                  Time dT = T*1.0e-4;
-                  double dV = v*1.0e-4;
+//                  Time dT = T*1.0e-4;
+//                  double dV = v*1.0e-4;
                   Spread dR = r*1.0e-4;
-                  Spread dQ = q*1.0e-4;
+//                  Spread dQ = q*1.0e-4;
 
                   // reference option
                   Instruments::BinaryOption opt(
@@ -388,12 +369,12 @@ void BinaryOptionTest::testSelfConsistency() {
                       // bump u up
                       underlyingH_SME->setValue(u+dS);
                       double optPsValue = opt.NPV();
-                      double optPsDelta = opt.delta();
+//                      double optPsDelta = opt.delta();
 
                       // bump u down
                       underlyingH_SME->setValue(u-dS);
                       double optMsValue = opt.NPV();
-                      double optMsDelta = opt.delta();
+//                      double optMsDelta = opt.delta();
                       underlyingH_SME->setValue(u);
 
                       // NOTE - Theta is more tricky
@@ -412,22 +393,22 @@ void BinaryOptionTest::testSelfConsistency() {
                       rH_SME->setValue(r);
 
                       // bump q up
-                      rH_SME->setValue(q+dQ);
-                      double optPqValue = opt.NPV();
+//                      rH_SME->setValue(q+dQ);
+//                      double optPqValue = opt.NPV();
 
                       // bump q down
-                      rH_SME->setValue(q-dQ);
-                      double optMqValue = opt.NPV();
-                      rH_SME->setValue(q);
+//                      rH_SME->setValue(q-dQ);
+//                      double optMqValue = opt.NPV();
+//                      rH_SME->setValue(q);
 
                       // bump v up
-                      volatilityH_SME->setValue(v+dV);
-                      double optPvValue = opt.NPV();
+//                      volatilityH_SME->setValue(v+dV);
+//                      double optPvValue = opt.NPV();
 
                       // bump v down
-                      volatilityH_SME->setValue(v-dV);
-                      double optMvValue = opt.NPV();
-                      volatilityH_SME->setValue(v);
+//                      volatilityH_SME->setValue(v-dV);
+//                      double optMvValue = opt.NPV();
+//                      volatilityH_SME->setValue(v);
 
                       expected["delta"]  =  (optPsValue-optMsValue)/(2*dS);
                       //expected["gamma"]  =  (optPsDelta-optMsDelta)/(2*dS);
