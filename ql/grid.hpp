@@ -29,6 +29,7 @@
 
 #include <ql/array.hpp>
 #include <ql/dataformatters.hpp>
+#include <iterator>
 #include <list>
 #include <vector>
 
@@ -47,13 +48,16 @@ namespace QuantLib {
         //! Regularly spaced time-grid
         TimeGrid(Time end, Size steps);
         //! Time grid with mandatory time-points (regularly spaced between them)
-        TimeGrid(const std::list<Time>& times, Size steps);
+        template <class Iterator>
+        TimeGrid(Iterator begin, Iterator end, Size steps);
+//        TimeGrid(const std::list<Time>& times, Size steps);
 
         Size findIndex(Time t) const;
 
         Time dt(Size i) const;
       private:
           std::vector<Size> mandatoryTimeIndex_;
+          std::vector<Time> mandatoryTimes_;
     };
 
     //Inline definitions

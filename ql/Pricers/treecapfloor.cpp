@@ -60,10 +60,8 @@ namespace QuantLib {
                     times.push_back(arguments_.startTimes[i]);
                     times.push_back(arguments_.endTimes[i]);
                 }
-                times.sort();
-                times.unique();
 
-                TimeGrid timeGrid(times, timeSteps_);
+                TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
                 lattice = model_->tree(timeGrid);
             } else {
                 lattice = lattice_;

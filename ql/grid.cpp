@@ -43,7 +43,55 @@ namespace {
 
 namespace QuantLib {
 
-    TimeGrid::TimeGrid(const std::list<Time>& times, Size steps)
+
+    template <class Iterator>
+    TimeGrid::TimeGrid(Iterator begin, Iterator end, Size steps)
+    : mandatoryTimeIndex_(1, 0)
+      #if defined(QL_FULL_ITERATOR_SUPPORT)
+      , mandatoryTimes_(begin, end) {
+      #else
+      {
+        while (begin != end)
+            mandatoryTimes_.push_back(*(begin++));
+      #endif
+        mandatoryTimes_.sort();
+        mandatoryTimes_.unique();
+        Time last = mandatoryTimes_.back();
+        Time dtMax;
+        // The resulting timegrid have points at times listed in the input
+        // list. Between these points, there are inner-points which are
+        // regularly spaced.
+        if (steps == 0) {
+            std::vector<Time> diff;
+            std::back_insert_iterator<std::vector<Time> > ii(diff);
+            std::adjacent_difference(mandatoryTimes_.begin(),
+                                     mandatoryTimes_.end(), ii);
+            if (diff.front()==0.0)
+                diff.erase(diff.begin());
+            dtMax = *(std::min_element(diff.begin(), diff.end()));
+        } else {
+            dtMax = last/steps;
+        }
+
+        Time periodBegin = 0.0;
+        std::vector<Time>::const_iterator t;
+        for (t=mandatoryTimes_.begin(); t<mandatoryTimes_.end(); t++) {
+            // mandatory time's position (index) in the time grid
+            mandatoryTimeIndex_.push_back(size());
+            Time periodEnd = *t;
+            if (periodBegin >= periodEnd) // Should we use a QL_REQUIRE?
+                continue;
+            Size nSteps = (Size)((periodEnd - periodBegin)/dtMax + 1.0);
+            double dt = (periodEnd - periodBegin)/nSteps;
+            for (Size n=0; n<nSteps; n++)
+                push_back(periodBegin + n*dt);
+            periodBegin = periodEnd;
+        }
+        mandatoryTimeIndex_.push_back(size());
+        push_back(periodBegin); // Note periodBegin = periodEnd
+    }
+
+/*    TimeGrid::TimeGrid(const std::list<Time>& times, Size steps)
     : std::vector<Time>(0), mandatoryTimeIndex_(1, 0) {
         Time last = times.back();
         Time dtMax;
@@ -77,7 +125,7 @@ namespace QuantLib {
         mandatoryTimeIndex_.push_back(size());
         push_back(periodBegin); // Note periodBegin = periodEnd
     }
-
+*/
     Size TimeGrid::findIndex(Time t) const {
         const_iterator result = std::find_if(begin(), end(), 
                                              CloseEnoughTo(t));

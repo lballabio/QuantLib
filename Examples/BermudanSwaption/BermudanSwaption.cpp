@@ -20,23 +20,16 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
+using namespace QuantLib::DayCounters;
+using namespace QuantLib::Indexes;
 using namespace QuantLib::Instruments;
-using namespace QuantLib::ShortRateModels;
 using namespace QuantLib::Pricers;
+using namespace QuantLib::ShortRateModels;
+using namespace QuantLib::TermStructures;
 
 using CalibrationHelpers::CapHelper;
 using CalibrationHelpers::SwaptionHelper;
 
-using DayCounters::ActualActual;
-using DayCounters::Actual360;
-using DayCounters::Thirty360;
-using Indexes::Xibor;
-using Indexes::Euribor;
-
-using TermStructures::PiecewiseFlatForward;
-using TermStructures::RateHelper;
-using TermStructures::DepositRateHelper;
-using TermStructures::SwapRateHelper;
 
 //Number of swaptions to be calibrated to...
 
@@ -235,13 +228,8 @@ int main(int argc, char* argv[])
         const std::vector<Time> termTimes = myTermStructure->times();
         for (i=0; i<termTimes.size(); i++)
             times.push_back(termTimes[i]);
-		// please add a comment here
-		// wouldn't be safer to have the sort/unique in 
-        // the TimeGrid constructor?
-        times.sort();
-        times.unique();
-        //Building time-grid
-        TimeGrid grid(times, 30);
+        // Building time-grid
+        TimeGrid<std::list<Time>::iterator> grid(times.begin(), times.end(), 30);
 
         Handle<Model> modelHW(new HullWhite(rhTermStructure));
         Handle<Model> modelHW2(new HullWhite(rhTermStructure));

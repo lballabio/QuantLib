@@ -71,10 +71,7 @@ namespace QuantLib {
                 for (i=0; i<arguments_.floatingPayTimes.size(); i++)
                     times.push_back(arguments_.floatingPayTimes[i]);
 
-                times.sort();
-                times.unique();
-
-                TimeGrid timeGrid(times, timeSteps_);
+                TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
                 lattice = model_->tree(timeGrid);
             } else {
                 lattice = lattice_;
