@@ -38,12 +38,6 @@
 
 %{
 #include "daycounter.h"
-#include "actual360.h"
-#include "actual365.h"
-#include "actualactual.h"
-#include "thirty360.h"
-#include "thirty360european.h"
-#include "thirty360italian.h"
 
 using QuantLib::DayCounter;
 using QuantLib::Handle;
@@ -88,6 +82,8 @@ typedef Handle<DayCounter> DayCounterHandle;
 // actual day counters
 
 %{
+#include "daycounters.h"
+
 using QuantLib::DayCounters::Actual360;
 using QuantLib::DayCounters::Actual365;
 using QuantLib::DayCounters::Thirty360;

@@ -35,13 +35,7 @@
 #endif
 
 %{
-#include "bisection.h"
-#include "brent.h"
-#include "falseposition.h"
-#include "newton.h"
-#include "newtonsafe.h"
-#include "ridder.h"
-#include "secant.h"
+#include "solvers1d.h"
 %}
 
 // Function to find root of

@@ -21,8 +21,8 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "bsmoption.h"
-#include "brent.h"
+#include "pricers.h"
+#include "solvers1d.h"
 #include "qlerrors.h"
 
 namespace QuantLib {

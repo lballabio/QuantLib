@@ -21,7 +21,7 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "frankfurt.h"
+#include "calendars.h"
 
 namespace QuantLib {
 

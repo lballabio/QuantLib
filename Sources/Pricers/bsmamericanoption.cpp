@@ -21,20 +21,17 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "bsmamericanoption.h"
-#include "americancondition.h"
-#include "bsmeuropeanoption.h"
-#include "finitedifferencemodel.h"
-#include "cranknicolson.h"
+#include "pricers.h"
+#include "finitedifferences.h"
 
 namespace QuantLib {
 
 	namespace Pricers {
 	
-		using PDE::FiniteDifferenceModel;
-		using PDE::CrankNicolson;
-		using PDE::StepCondition;
-		using Operators::TridiagonalOperator;
+		using FiniteDifferences::FiniteDifferenceModel;
+		using FiniteDifferences::CrankNicolson;
+		using FiniteDifferences::StepCondition;
+		using FiniteDifferences::TridiagonalOperator;
 		
 		double BSMAmericanOption::value() const {
 			if (!hasBeenCalculated) {

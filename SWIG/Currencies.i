@@ -39,11 +39,6 @@
 
 %{
 #include "currency.h"
-#include "eur.h"
-#include "usd.h"
-#include "gbp.h"
-#include "dem.h"
-#include "itl.h"
 
 using QuantLib::Currency;
 using QuantLib::Handle;
@@ -91,6 +86,8 @@ typedef Handle<Currency> CurrencyHandle;
 // actual currencies
 
 %{
+#include "currencies.h"
+
 using QuantLib::Currencies::EUR;
 using QuantLib::Currencies::USD;
 using QuantLib::Currencies::GBP;

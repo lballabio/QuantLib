@@ -39,8 +39,7 @@
 %include Financial.i
 
 %{
-#include "bsmeuropeanoption.h"
-#include "bsmamericanoption.h"
+#include "pricers.h"
 using QuantLib::Pricers::BSMEuropeanOption;
 using QuantLib::Pricers::BSMAmericanOption;
 %}

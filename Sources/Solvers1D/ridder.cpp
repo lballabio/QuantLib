@@ -25,7 +25,7 @@
 // "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
 // Chapter 9
 
-#include "ridder.h"
+#include "solvers1d.h"
 #include <limits>
 
 namespace QuantLib {

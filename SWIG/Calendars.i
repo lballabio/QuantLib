@@ -92,11 +92,7 @@ using QuantLib::IsNull;
 // actual calendars
 
 %{
-#include "target.h"
-#include "newyork.h"
-#include "london.h"
-#include "frankfurt.h"
-#include "milan.h"
+#include "calendars.h"
 
 using QuantLib::Calendars::TARGET;
 using QuantLib::Calendars::NewYork;

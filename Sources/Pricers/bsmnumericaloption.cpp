@@ -21,15 +21,15 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "bsmnumericaloption.h"
+#include "pricers.h"
 #include "qlerrors.h"
 
 namespace QuantLib {
 
 	namespace Pricers {
 	
-		using PDE::BoundaryCondition;
-		using Operators::BSMOperator;
+		using FiniteDifferences::BoundaryCondition;
+		using FiniteDifferences::BSMOperator;
 
 		double BSMNumericalOption::dVolMultiplier=0.0001; 
 		double BSMNumericalOption::dRMultiplier=0.0001; 

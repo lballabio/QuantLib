@@ -21,7 +21,7 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "thirty360.h"
+#include "daycounters.h"
 
 namespace QuantLib {
 

@@ -38,8 +38,8 @@
 %include BoundaryConditions.i
 
 %{
-#include "tridiagonaloperator.h"
-using QuantLib::Operators::TridiagonalOperator;
+#include "finitedifferences.h"
+using QuantLib::FiniteDifferences::TridiagonalOperator;
 %}
 
 class TridiagonalOperator {

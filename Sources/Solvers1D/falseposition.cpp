@@ -25,7 +25,7 @@
 // "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
 // Chapter 9
 
-#include "falseposition.h"
+#include "solvers1d.h"
 
 namespace QuantLib {
 

@@ -35,8 +35,8 @@
 #endif
 
 %{
-#include "boundarycondition.h"
-using QuantLib::PDE::BoundaryCondition;
+#include "finitedifferences.h"
+using QuantLib::FiniteDifferences::BoundaryCondition;
 typedef BoundaryCondition::Type BoundaryConditionType;
 
 #include "dataformatters.h"
