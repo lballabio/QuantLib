@@ -35,7 +35,7 @@ namespace QuantLib {
     template<class Stat>
     class GaussianStatistics : public Stat {
       public:
-        GaussianStatistics() : Stat() {}
+        GaussianStatistics() {}
         GaussianStatistics(const Stat& s) : Stat(s) {}
         //! \name Gaussian risk measures
         //@{
