@@ -1091,6 +1091,10 @@ SOURCE=.\ql\Math\riskstatistics.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\rounding.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\rounding.hpp
 # End Source File
 # Begin Source File
@@ -1798,7 +1802,15 @@ SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.hpp
 # End Group
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\americanpayoffatexpiry.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\americanpayoffatexpiry.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\americanpayoffathit.cpp
 # End Source File
 # Begin Source File
 

@@ -40,14 +40,29 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : "QuantLibFunctions - Win32 Release" ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 ReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.obj"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
+	-@erase "$(INTDIR)\americanpayoffathit.obj"
+	-@erase "$(INTDIR)\americanpayoffathit.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -306,6 +321,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\riyadh.obj"
 	-@erase "$(INTDIR)\riyadh.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
@@ -532,6 +549,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -573,7 +591,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr"
+	"$(INTDIR)\rounding.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -714,6 +734,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\mccliquetengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -755,7 +776,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mccliquetengine.obj"
+	"$(INTDIR)\rounding.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -773,14 +797,29 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : "QuantLibFunctions - Win32 Debug" ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 DebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.obj"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
+	-@erase "$(INTDIR)\americanpayoffathit.obj"
+	-@erase "$(INTDIR)\americanpayoffathit.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -1039,6 +1078,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\riyadh.obj"
 	-@erase "$(INTDIR)\riyadh.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
@@ -1266,6 +1307,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -1307,7 +1349,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr"
+	"$(INTDIR)\rounding.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1448,6 +1492,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\mccliquetengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -1489,7 +1534,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mccliquetengine.obj"
+	"$(INTDIR)\rounding.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1507,14 +1555,29 @@ INTDIR=.\build\ReleaseMTDLL
 OutDir=.\build\ReleaseMTDLL
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\QuantLib-vc6-mt-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : "QuantLibFunctions - Win32 Release MTDLL" ".\lib\QuantLib-vc6-mt-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 Release MTDLLCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.obj"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
+	-@erase "$(INTDIR)\americanpayoffathit.obj"
+	-@erase "$(INTDIR)\americanpayoffathit.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -1773,6 +1836,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\riyadh.obj"
 	-@erase "$(INTDIR)\riyadh.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
@@ -1999,6 +2064,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2040,7 +2106,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr"
+	"$(INTDIR)\rounding.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2181,6 +2249,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\mccliquetengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -2222,7 +2291,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mccliquetengine.obj"
+	"$(INTDIR)\rounding.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2240,14 +2312,29 @@ INTDIR=.\build\DebugMTDLL
 OutDir=.\build\DebugMTDLL
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : "QuantLibFunctions - Win32 Debug MTDLL" ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 Debug MTDLLCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.obj"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
+	-@erase "$(INTDIR)\americanpayoffathit.obj"
+	-@erase "$(INTDIR)\americanpayoffathit.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -2506,6 +2593,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\riyadh.obj"
 	-@erase "$(INTDIR)\riyadh.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
@@ -2733,6 +2822,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2774,7 +2864,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr"
+	"$(INTDIR)\rounding.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2915,6 +3007,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\mccliquetengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -2956,7 +3049,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mccliquetengine.obj"
+	"$(INTDIR)\rounding.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2974,14 +3070,29 @@ INTDIR=.\build\ReleaseST
 OutDir=.\build\ReleaseST
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\QuantLib-vc6-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : "QuantLibFunctions - Win32 Release SingleThread" ".\lib\QuantLib-vc6-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 Release SingleThreadCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.obj"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
+	-@erase "$(INTDIR)\americanpayoffathit.obj"
+	-@erase "$(INTDIR)\americanpayoffathit.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -3240,6 +3351,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\riyadh.obj"
 	-@erase "$(INTDIR)\riyadh.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
@@ -3466,6 +3579,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -3507,7 +3621,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr"
+	"$(INTDIR)\rounding.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3648,6 +3764,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\mccliquetengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -3689,7 +3806,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mccliquetengine.obj"
+	"$(INTDIR)\rounding.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3707,14 +3827,29 @@ INTDIR=.\build\DebugST
 OutDir=.\build\DebugST
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\QuantLib-vc6-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : "QuantLibFunctions - Win32 Debug SingleThread" ".\lib\QuantLib-vc6-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibFunctions - Win32 Debug SingleThreadCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.obj"
+	-@erase "$(INTDIR)\americanpayoffatexpiry.sbr"
+	-@erase "$(INTDIR)\americanpayoffathit.obj"
+	-@erase "$(INTDIR)\americanpayoffathit.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -3973,6 +4108,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\riyadh.obj"
 	-@erase "$(INTDIR)\riyadh.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\scheduler.obj"
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\seoul.obj"
@@ -4200,6 +4337,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -4241,7 +4379,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr"
+	"$(INTDIR)\rounding.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4382,6 +4522,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
+	"$(INTDIR)\mccliquetengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -4423,7 +4564,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mccliquetengine.obj"
+	"$(INTDIR)\rounding.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4932,6 +5076,12 @@ SOURCE=.\ql\Math\pseudosqrt.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Math\rounding.cpp
+
+"$(INTDIR)\rounding.obj"	"$(INTDIR)\rounding.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Math\svd.cpp
 
 "$(INTDIR)\svd.obj"	"$(INTDIR)\svd.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5326,6 +5476,18 @@ SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\PricingEngines\americanpayoffatexpiry.cpp
+
+"$(INTDIR)\americanpayoffatexpiry.obj"	"$(INTDIR)\americanpayoffatexpiry.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\americanpayoffathit.cpp
+
+"$(INTDIR)\americanpayoffathit.obj"	"$(INTDIR)\americanpayoffathit.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\PricingEngines\blackformula.cpp
 
 "$(INTDIR)\blackformula.obj"	"$(INTDIR)\blackformula.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5499,6 +5661,80 @@ SOURCE=.\ql\Volatilities\localvolsurface.cpp
 "$(INTDIR)\localvolsurface.obj"	"$(INTDIR)\localvolsurface.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+"QuantLibFunctions - Win32 Release" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 ReleaseCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+"QuantLibFunctions - Win32 Debug" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 DebugCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release MTDLL"
+
+"QuantLibFunctions - Win32 Release MTDLL" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release MTDLL" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 Release MTDLLCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release MTDLL" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
+
+"QuantLibFunctions - Win32 Debug MTDLL" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug MTDLL" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 Debug MTDLLCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug MTDLL" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release SingleThread"
+
+"QuantLibFunctions - Win32 Release SingleThread" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release SingleThread" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 Release SingleThreadCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release SingleThread" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
+
+"QuantLibFunctions - Win32 Debug SingleThread" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug SingleThread" 
+   cd "..\..\.."
+
+"QuantLibFunctions - Win32 Debug SingleThreadCLEAN" : 
+   cd ".\FUNCTIONS\QL\FUNCTIONS"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug SingleThread" RECURSE=1 CLEAN 
+   cd "..\..\.."
+
+!ENDIF 
 
 SOURCE=.\ql\basicdataformatters.cpp
 

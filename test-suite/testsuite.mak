@@ -117,6 +117,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
 	-@erase "$(INTDIR)\riskstats.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\solvers.obj"
 	-@erase "$(INTDIR)\solvers.sbr"
 	-@erase "$(INTDIR)\stats.obj"
@@ -156,6 +158,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\interpolations.sbr" \
@@ -167,6 +170,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
@@ -175,8 +179,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\forwardoption.sbr" \
-	"$(INTDIR)\quantooption.sbr"
+	"$(INTDIR)\rounding.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -202,6 +205,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\interpolations.obj" \
@@ -213,6 +217,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
@@ -221,8 +226,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\forwardoption.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-mt-s-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -331,6 +335,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
 	-@erase "$(INTDIR)\riskstats.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\solvers.obj"
 	-@erase "$(INTDIR)\solvers.sbr"
 	-@erase "$(INTDIR)\stats.obj"
@@ -373,6 +379,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\interpolations.sbr" \
@@ -384,6 +391,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
@@ -392,8 +400,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\forwardoption.sbr" \
-	"$(INTDIR)\quantooption.sbr"
+	"$(INTDIR)\rounding.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -419,6 +426,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\interpolations.obj" \
@@ -430,6 +438,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
@@ -438,8 +447,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\forwardoption.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-mt-sgd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -548,6 +556,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
 	-@erase "$(INTDIR)\riskstats.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\solvers.obj"
 	-@erase "$(INTDIR)\solvers.sbr"
 	-@erase "$(INTDIR)\stats.obj"
@@ -589,6 +599,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\interpolations.sbr" \
@@ -600,6 +611,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
@@ -608,8 +620,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\forwardoption.sbr" \
-	"$(INTDIR)\quantooption.sbr"
+	"$(INTDIR)\rounding.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -635,6 +646,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\interpolations.obj" \
@@ -646,6 +658,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
@@ -654,8 +667,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\forwardoption.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-mt-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -764,6 +776,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
 	-@erase "$(INTDIR)\riskstats.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\solvers.obj"
 	-@erase "$(INTDIR)\solvers.sbr"
 	-@erase "$(INTDIR)\stats.obj"
@@ -806,6 +820,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\interpolations.sbr" \
@@ -817,6 +832,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
@@ -825,8 +841,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\forwardoption.sbr" \
-	"$(INTDIR)\quantooption.sbr"
+	"$(INTDIR)\rounding.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -852,6 +867,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\interpolations.obj" \
@@ -863,6 +879,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
@@ -871,8 +888,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\forwardoption.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-mt-gd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -981,6 +997,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
 	-@erase "$(INTDIR)\riskstats.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\solvers.obj"
 	-@erase "$(INTDIR)\solvers.sbr"
 	-@erase "$(INTDIR)\stats.obj"
@@ -1020,6 +1038,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\interpolations.sbr" \
@@ -1031,6 +1050,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
@@ -1039,8 +1059,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\forwardoption.sbr" \
-	"$(INTDIR)\quantooption.sbr"
+	"$(INTDIR)\rounding.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1066,6 +1085,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\interpolations.obj" \
@@ -1077,6 +1097,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
@@ -1085,8 +1106,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\forwardoption.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-s-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1195,6 +1215,8 @@ CLEAN :
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
 	-@erase "$(INTDIR)\riskstats.sbr"
+	-@erase "$(INTDIR)\rounding.obj"
+	-@erase "$(INTDIR)\rounding.sbr"
 	-@erase "$(INTDIR)\solvers.obj"
 	-@erase "$(INTDIR)\solvers.sbr"
 	-@erase "$(INTDIR)\stats.obj"
@@ -1237,6 +1259,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
+	"$(INTDIR)\forwardoption.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\interpolations.sbr" \
@@ -1248,6 +1271,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
@@ -1256,8 +1280,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\forwardoption.sbr" \
-	"$(INTDIR)\quantooption.sbr"
+	"$(INTDIR)\rounding.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1283,6 +1306,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
+	"$(INTDIR)\forwardoption.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\interpolations.obj" \
@@ -1294,6 +1318,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
@@ -1302,8 +1327,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\forwardoption.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-sgd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1523,6 +1547,11 @@ SOURCE=.\quotes.cpp
 SOURCE=.\riskstats.cpp
 
 "$(INTDIR)\riskstats.obj"	"$(INTDIR)\riskstats.sbr" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\rounding.cpp
+
+"$(INTDIR)\rounding.obj"	"$(INTDIR)\rounding.sbr" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\solvers.cpp

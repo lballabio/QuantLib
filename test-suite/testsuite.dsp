@@ -361,6 +361,10 @@ SOURCE=.\riskstats.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\rounding.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\solvers.cpp
 # End Source File
 # Begin Source File
@@ -506,6 +510,10 @@ SOURCE=.\quotes.hpp
 # Begin Source File
 
 SOURCE=.\riskstats.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\rounding.hpp
 # End Source File
 # Begin Source File
 
