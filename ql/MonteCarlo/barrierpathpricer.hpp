@@ -66,7 +66,6 @@ namespace QuantLib {
         double rebate_;
         Handle<DiffusionProcess> diffProcess_;
         UniformRandomSequenceGenerator sequenceGen_;
-
         // it would be easy to generalize to more exotic payoffs
         PlainVanillaPayoff payoff_;
     };

@@ -27,7 +27,6 @@
 
 namespace QuantLib {
 
-    /*    \deprecated use VanillaOption instead. */
     BinaryBarrierOption::BinaryBarrierOption(
         const Handle<BlackScholesStochasticProcess>& stochProc,
         const Handle<CashOrNothingPayoff>& payoff,
@@ -35,22 +34,24 @@ namespace QuantLib {
         const Handle<PricingEngine>& engine,
         const std::string& isinCode, 
         const std::string& description)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine, isinCode,
-      description) {
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine, 
+                            isinCode, description) {
 
         if (IsNull(engine)) {
             switch (exercise->type()) {
-                case Exercise::European:
-                    setPricingEngine(Handle<PricingEngine>(new
-                        AnalyticEuropeanBinaryBarrierEngine));
-                    break;
-                case Exercise::American:
-                    setPricingEngine(Handle<PricingEngine>(new
-                        AnalyticAmericanBinaryBarrierEngine));
+              case Exercise::European:
+                setPricingEngine(Handle<PricingEngine>(
+                                    new AnalyticEuropeanBinaryBarrierEngine));
+                break;
+              case Exercise::American:
+                setPricingEngine(Handle<PricingEngine>(
+                                    new AnalyticAmericanBinaryBarrierEngine));
+                break;
+              default:
+                // no default engine selected for Bermudan
                 break;
             }
         }
-
     }
 
     void BinaryBarrierOption::performCalculations() const {

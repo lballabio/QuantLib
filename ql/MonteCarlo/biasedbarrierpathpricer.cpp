@@ -35,8 +35,8 @@ namespace QuantLib {
                             double strike,
                             const RelinkableHandle<TermStructure>& riskFreeTS)
     : PathPricer<Path>(riskFreeTS), underlying_(underlying),
-      payoff_(type, strike), barrierType_(barrierType),
-      barrier_(barrier), rebate_(rebate) {
+      barrierType_(barrierType), barrier_(barrier), 
+      rebate_(rebate), payoff_(type, strike) {
         QL_REQUIRE(underlying>0.0,
                    "BiasedBarrierPathPricer: "
                    "underlying less/equal zero not allowed");

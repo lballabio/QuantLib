@@ -45,7 +45,7 @@ namespace QuantLib {
          403291461126605635584000000.0,       10888869450418352160768000000.0
         };
 
-        const int tabulated = 
+        const unsigned int tabulated = 
             sizeof(firstFactorials)/sizeof(firstFactorials[0])-1;
 
     }

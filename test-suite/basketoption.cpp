@@ -41,15 +41,13 @@ namespace {
             FlatForward(today, today, RelinkableHandle<Quote>(forward), dc));
     }
 
-    Handle<BlackVolTermStructure> makeFlatVolatility(const Handle<Quote>& vol,
-                                                     DayCounter dc = SimpleDayCounter()) {
+    Handle<BlackVolTermStructure> 
+    makeFlatVolatility(const Handle<Quote>& vol,
+                       DayCounter dc = SimpleDayCounter()) {
         Date today = Date::todaysDate();
         return Handle<BlackVolTermStructure>(new
             BlackConstantVol(today, RelinkableHandle<Quote>(vol), dc));
     }
-    
-    
-    
 
     std::string exerciseTypeToString(const Handle<Exercise>& exercise) {
 
@@ -93,9 +91,9 @@ namespace {
         }
 
         throw Error("exerciseTypeToString : unknown exercise type");
-    }    
-    
-    struct BasketOptionData {        
+    }
+
+    struct BasketOptionData {
         Option::Type type;
         BasketOption::BasketType basketType;
         double s1_0;
@@ -106,29 +104,29 @@ namespace {
         double strike;
         double intRate;
         int expiry; // months
-        double value;        
+        double value;
     };
-    
+
 }
 
 void BasketOptionTest::testValues() {
 
-    double maxErrorAllowed = 1.0e-3;    
+    double maxErrorAllowed = 1.0e-3;
 
-    double underlyingPrice = 100.0;    
-    Rate r = 0.05;    
+    double underlyingPrice = 100.0;
+    Rate r = 0.05;
     // cannot handle dividends....
-    Rate q = 0.00;    
+    Rate q = 0.00;
 
     /*
-        Data from Excel spreadsheet
-        http://www.maths.ox.ac.uk/~firth/computing/excel.shtml
-            {option type, basket type, s1_0, s2_0, rho, vol_S1, vol_S2, 
-                    strike, intRate, expiry, value}        
-        */
+      Data from Excel spreadsheet
+      http://www.maths.ox.ac.uk/~firth/computing/excel.shtml
+        {option type, basket type, s1_0, s2_0, rho, vol_S1, vol_S2, 
+         strike, intRate, expiry, value}        
+    */
     BasketOptionData values[] = {
         // call on the min            
-        {Option::Call, BasketOption::Min, 100.0, 100.0, 0.9, 0.3, 0.3, 100, 0.05, 12, 10.89772},        
+        {Option::Call, BasketOption::Min, 100.0, 100.0, 0.9, 0.3, 0.3, 100, 0.05, 12, 10.89772},
         {Option::Call, BasketOption::Min, 100.0, 100.0, 0.7, 0.3, 0.3, 100, 0.05, 12, 8.482995},
         {Option::Call, BasketOption::Min, 100.0, 100.0, 0.5, 0.3, 0.3, 100, 0.05, 12, 6.843896},
         {Option::Call, BasketOption::Min, 100.0, 100.0, 0.3, 0.3, 0.3, 100, 0.05, 12, 5.530978},
@@ -138,7 +136,7 @@ void BasketOptionTest::testValues() {
         {Option::Call, BasketOption::Min, 100.0, 100.0, 0.0, 0.5, 0.1, 100, 0.05, 12, 2.597341},
         {Option::Call, BasketOption::Min, 100.0, 100.0, 0.5, 0.5, 0.1, 100, 0.05, 12, 4.029683},
         // call on the max
-        {Option::Call, BasketOption::Max, 100.0, 100.0, 0.9, 0.3, 0.3, 100, 0.05, 12, 17.56477},        
+        {Option::Call, BasketOption::Max, 100.0, 100.0, 0.9, 0.3, 0.3, 100, 0.05, 12, 17.56477},
         {Option::Call, BasketOption::Max, 100.0, 100.0, 0.7, 0.3, 0.3, 100, 0.05, 12, 19.97949},
         {Option::Call, BasketOption::Max, 100.0, 100.0, 0.5, 0.3, 0.3, 100, 0.05, 12, 21.61859},
         {Option::Call, BasketOption::Max, 100.0, 100.0, 0.3, 0.3, 0.3, 100, 0.05, 12, 22.93151},
@@ -181,7 +179,7 @@ void BasketOptionTest::testValues() {
 
 
     Handle<PricingEngine> engine(new StulzEngine);
-    
+
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
 
@@ -197,7 +195,7 @@ void BasketOptionTest::testValues() {
         volatility1->setValue(values[i].vol_S1);
         volatility2->setValue(values[i].vol_S2);
 
-        Handle<StrikedTypePayoff> payoff(new
+        Handle<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         BasketOption::BasketType basketType = values[i].basketType;
@@ -224,15 +222,9 @@ void BasketOptionTest::testValues() {
         double rho = values[i].rho;
 
         // analytic
-        BasketOption basketOption(
-            basketType,
-            procs,
-            payoff,
-            exercise,
-            rho,
-            engine
-            );
-                
+        BasketOption basketOption(basketType, procs, payoff, 
+                                  exercise, rho, engine);
+
         double calculated = basketOption.NPV();
         double expected = values[i].value;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
@@ -244,7 +236,7 @@ void BasketOptionTest::testValues() {
                     "    expected: " +
                     DoubleFormatter::toString(expected));
         }
-        
+
     }
 }
 
@@ -254,7 +246,7 @@ CppUnit::Test* BasketOptionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing basket options against correct values",
                     &BasketOptionTest::testValues));
-    
+
     return tests;
 }
 

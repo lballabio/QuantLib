@@ -37,9 +37,9 @@ namespace QuantLib {
                             const Handle<DiffusionProcess>& diffProcess,
                             UniformRandomSequenceGenerator sequenceGen)
     : PathPricer<Path>(riskFreeTS), underlying_(underlying),
-      payoff_(type, strike), barrierType_(barrierType),
-      barrier_(barrier), rebate_(rebate), diffProcess_(diffProcess),
-      sequenceGen_(sequenceGen) {
+      barrierType_(barrierType), barrier_(barrier), 
+      rebate_(rebate), diffProcess_(diffProcess),
+      sequenceGen_(sequenceGen), payoff_(type, strike) {
         QL_REQUIRE(underlying>0.0,
                    "BarrierPathPricer: "
                    "underlying less/equal zero not allowed");

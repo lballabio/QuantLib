@@ -97,6 +97,7 @@ libQuantLib_la_LIBADD = \
     Pricers/libPricers.la \
     PricingEngines/Asian/libAsianEngines.la \
     PricingEngines/Barrier/libBarrierEngines.la \
+    PricingEngines/Basket/libBasketEngines.la \
     PricingEngines/Vanilla/libVanillaEngines.la \
     RandomNumbers/libRandomNumbers.la \
     ShortRateModels/libShortRateModels.la \

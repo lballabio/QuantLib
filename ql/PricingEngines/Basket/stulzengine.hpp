@@ -33,13 +33,11 @@ namespace QuantLib {
 
     //! Pricing engine for 2D European Baskets
     /*! This class implements formulae from 
-        "Options on the Minimum or the Maximum of Two Risky Assets" 
-            Rene Stulz 
+        "Options on the Minimum or the Maximum of Two Risky Assets", 
+            Rene Stulz, 
             Journal of Financial Ecomomics (1982) 10, 161-185.
-
     */
-    class StulzEngine 
-        : public BasketEngine {
+    class StulzEngine : public BasketEngine {
       public:
         void calculate() const;
     };
