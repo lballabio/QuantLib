@@ -23,6 +23,10 @@
 
 /* $Source$
    $Log$
+   Revision 1.24  2001/03/19 17:30:28  nando
+   refactored *.i files inclusion.
+   The files are sorted by SWIG debug problem
+
    Revision 1.23  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -66,14 +70,27 @@ using QuantLib::IndexError;
     }
 }
 
+// PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE
+// the following files have no problem with SWIG in debug mode
 %include Barrier.i
+%include Financial.i
+%include Options.i
+%include RandomGenerators.i
+%include String.i
+
+// PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE
+// the following files break SWIG in debug mode
 %include BoundaryConditions.i
+%include Distributions.i
+%include Date.i
+%include QLArray.i
+%include Vectors.i
+
+// PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE
+// the following files depends on files that break SWIG in debug mode
 %include Calendars.i
 %include Currencies.i
-%include Date.i
 %include DayCounters.i
-%include Distributions.i
-%include Financial.i
 %include History.i
 %include Instruments.i
 %include Interpolation.i
@@ -81,13 +98,10 @@ using QuantLib::IndexError;
 %include MontecarloPricers.i
 %include MontecarloTools.i
 %include Operators.i
-%include Options.i
 %include Pricers.i
-%include QLArray.i
-%include RandomGenerators.i
 %include RiskStatistics.i
 %include Solvers1D.i
 %include Statistics.i
-%include String.i
 %include TermStructures.i
-%include Vectors.i
+
+// PLEASE ADD ANY NEW *.i FILE HERE
