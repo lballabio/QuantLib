@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/24 08:49:32  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.8  2001/07/19 16:40:11  lballabio
 // Improved docs a bit
 //
@@ -48,7 +51,6 @@
 #ifndef quantlib_pricers_everest_option_h
 #define quantlib_pricers_everest_option_h
 
-#include "ql/types.hpp"
 #include "ql/date.hpp"
 #include "ql/MonteCarlo/multifactorpricer.hpp"
 

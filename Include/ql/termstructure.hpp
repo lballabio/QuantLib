@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/07/24 08:49:32  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.13  2001/07/19 16:40:10  lballabio
 // Improved docs a bit
 //
@@ -60,7 +63,6 @@
 #define quantlib_term_structure_h
 
 #include "ql/calendar.hpp"
-#include "ql/types.hpp"
 #include "ql/currency.hpp"
 #include "ql/relinkablehandle.hpp"
 #include <vector>

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/07/24 08:49:32  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.5  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
@@ -45,7 +48,6 @@
 
 #include "ql/daycounter.hpp"
 #include "ql/calendar.hpp"
-#include "ql/types.hpp"
 
 namespace QuantLib {
 

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/07/24 08:49:32  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.14  2001/07/02 12:36:18  sigmud
 // pruned redundant header inclusions
 //
@@ -53,7 +56,6 @@
 #ifndef quantlib_ratehelper_h
 #define quantlib_ratehelper_h
 
-#include "ql/termstructure.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 
 namespace QuantLib {

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/07/24 08:49:32  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.1  2001/07/09 16:29:27  lballabio
 // Some documentation and market element
 //
@@ -37,7 +40,6 @@
 #ifndef quantlib_market_element_hpp
 #define quantlib_market_element_hpp
 
-#include "ql/Patterns/observable.hpp"
 #include "ql/relinkablehandle.hpp"
 
 namespace QuantLib {

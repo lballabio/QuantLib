@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/24 08:49:32  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.6  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
@@ -44,7 +47,6 @@
 #define quantlib_swaption_volatility_surface_h
 
 #include "ql/date.hpp"
-#include "ql/types.hpp"
 #include "ql/handle.hpp"
 
 namespace QuantLib {
