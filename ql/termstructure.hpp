@@ -114,8 +114,13 @@ namespace QuantLib {
       public:
         virtual ~ZeroYieldStructure() {}
         // unhide non-virtual methods in base class
-        using TermStructure::discount;
-        using TermStructure::forward;
+        DiscountFactor discount(const Date& d, 
+                                bool extrapolate = false) const {
+            return TermStructure::discount(d,extrapolate);
+        }
+        Rate forward(const Date& d, bool extrapolate = false) const {
+            return TermStructure::forward(d,extrapolate);
+        }
         /*! Returns the discount factor for the given date calculating it 
             from the zero yield.
         */
@@ -135,8 +140,12 @@ namespace QuantLib {
       public:
         virtual ~DiscountStructure() {}
         // unhide non-virtual methods in base class
-        using TermStructure::zeroYield;
-        using TermStructure::forward;
+        Rate zeroYield(const Date& d, bool extrapolate = false) const {
+            return TermStructure::zeroYield(d,extrapolate);
+        }
+        Rate forward(const Date& d, bool extrapolate = false) const {
+            return TermStructure::forward(d,extrapolate);
+        }
         /*! Returns the zero yield rate for the given date calculating it 
             from the discount.
         */
@@ -156,8 +165,13 @@ namespace QuantLib {
       public:
         virtual ~ForwardRateStructure() {}
         // unhide non-virtual methods in base class
-        using TermStructure::zeroYield;
-        using TermStructure::discount;
+        Rate zeroYield(const Date& d, bool extrapolate = false) const {
+            return TermStructure::zeroYield(d,extrapolate);
+        }
+        DiscountFactor discount(const Date& d, 
+                                bool extrapolate = false) const {
+            return TermStructure::discount(d,extrapolate);
+        }
         /*! Returns the zero yield rate for the given date calculating it 
             from the instantaneous forward rate.
             \warning This is just a default, highly inefficient 
@@ -197,7 +211,10 @@ namespace QuantLib {
         Time minTime() const;
 
         // unhide non-virtual methods in base class
-        using DiscountStructure::discount;
+        DiscountFactor discount(const Date& d, 
+                                bool extrapolate = false) const {
+            return DiscountStructure::discount(d,extrapolate);
+        }
         //! returns the discount factor as seen from the evaluation date
         DiscountFactor discount(Time, bool extrapolate = false) const;
         //@}
@@ -235,7 +252,9 @@ namespace QuantLib {
         Time maxTime() const;
         Time minTime() const;
         // unhide non-virtual methods in base class
-        using ZeroYieldStructure::discount;
+        Rate zeroYield(const Date& d, bool extrapolate = false) const {
+            return ZeroYieldStructure::zeroYield(d,extrapolate);
+        }
         //! returns the spreaded zero yield rate
         Rate zeroYield(Time, bool extrapolate = false) const;
         //@}

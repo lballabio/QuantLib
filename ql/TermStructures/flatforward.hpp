@@ -60,9 +60,17 @@ namespace QuantLib {
             Time maxTime() const;
             Time minTime() const;
             // unhide non-virtual methods in base class
-            using TermStructure::zeroYield;
-            using TermStructure::discount;
-            using TermStructure::forward;
+            Rate zeroYield(const Date& d, bool extrapolate = false) const {
+                return TermStructure::zeroYield(d,extrapolate);
+            }
+            DiscountFactor discount(const Date& d, 
+                                    bool extrapolate = false) const {
+                return TermStructure::discount(d,extrapolate);
+            }
+            Rate forward(const Date& d, bool extrapolate = false) const {
+                return TermStructure::forward(d,extrapolate);
+            }
+            // implementations
             Rate zeroYield(Time, bool extrapolate = false) const;
             DiscountFactor discount(Time, bool extrapolate = false) const;
             Rate forward(Time, bool extrapolate = false) const;

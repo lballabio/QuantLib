@@ -149,7 +149,7 @@ namespace QuantLib {
             Array drift(numAssets_);
             Array diffusion(numAssets_);
             weight_ = 1.0;
-            for(int i = 0; i < timeDimension_; i++){
+            for (unsigned int i = 0; i < timeDimension_; i++) {
 /*
                 nextArray = average_ * timeDelays_[i]
                             + rndArray_.next()* QL_SQRT(timeDelays_[i]);
