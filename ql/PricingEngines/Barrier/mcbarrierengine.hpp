@@ -61,13 +61,13 @@ namespace QuantLib {
         // constructor
         MCBarrierEngine(Size maxTimeStepsPerYear,
                         bool brownianBridge,
-                        bool antitheticVariate = false,
-                        bool controlVariate = false,
-                        Size requiredSamples = Null<Size>(),
-                        Real requiredTolerance = Null<Real>(),
-                        Size maxSamples = Null<Size>(),
-                        bool isBiased = false,
-                        BigNatural seed = 0);
+                        bool antitheticVariate,
+                        bool controlVariate,
+                        Size requiredSamples,
+                        Real requiredTolerance,
+                        Size maxSamples,
+                        bool isBiased,
+                        BigNatural seed);
         void calculate() const {
             McSimulation<SingleAsset<RNG>,S>::calculate(requiredTolerance_,
                                                         requiredSamples_,
