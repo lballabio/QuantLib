@@ -2,7 +2,8 @@ AUTOMAKE_OPTIONS=foreign
 
 #INCLUDES = -I$(top_srcdir)/Include -I$(top_srcdir)/Include/FiniteDifferences
 INCLUDES = -I$(top_srcdir)/Include \
-	-I$(top_srcdir)/Include/FiniteDifferences
+	-I$(top_srcdir)/Include/FiniteDifferences \
+	-I$(top_srcdir)/Include/Pricers
 
 libFiniteDifferences_la_SOURCES = bsmoperator.cpp \
         tridiagonaloperator.cpp \
