@@ -81,9 +81,9 @@ void BondTest::testYield() {
               Date maturity = calendar.advance(issue, lengths[j], Years);
 
               FixedCouponBond bond(issue, dated, maturity, settlementDays,
-                                   coupons[k], frequencies[l],
-                                   bondDayCount, calendar,
-                                   convention, redemption);
+                                   std::vector<Rate>(1, coupons[k]),
+                                   frequencies[l], bondDayCount,
+                                   calendar, convention, redemption);
 
               for (Size m=0; m<LENGTH(yields); m++) {
 
@@ -155,9 +155,9 @@ void BondTest::testTheoretical() {
                                                               bondDayCount));
 
             FixedCouponBond bond(issue, dated, maturity, settlementDays,
-                                 coupons[k], frequencies[l],
-                                 bondDayCount, calendar,
-                                 convention, redemption,
+                                 std::vector<Rate>(1, coupons[k]),
+                                 frequencies[l], bondDayCount,
+                                 calendar, convention, redemption,
                                  discountCurve);
 
             for (Size m=0; m<LENGTH(yields); m++) {
@@ -228,7 +228,8 @@ void BondTest::testCached() {
                           Date(31,October,2004),
                           Date(31,October,2006),
                           settlementDays,
-                          0.025, Semiannual,
+                          std::vector<Rate>(1, 0.025),
+                          Semiannual,
                           bondDayCount, bondCalendar,
                           Unadjusted, 100.0,
                           discountCurve);
@@ -240,7 +241,8 @@ void BondTest::testCached() {
                           Date(15,November,2004),
                           Date(15,November,2009),
                           settlementDays,
-                          0.035, Semiannual,
+                          std::vector<Rate>(1, 0.035),
+                          Semiannual,
                           bondDayCount, bondCalendar,
                           Unadjusted, 100.0,
                           discountCurve);
@@ -357,7 +359,8 @@ void BondTest::testCached() {
                           Date(30,November,2004),
                           Date(30,November,2006),
                           settlementDays,
-                          0.02875, Semiannual,
+                          std::vector<Rate>(1, 0.02875),
+                          Semiannual,
                           ActualActual(ActualActual::ISMA),
                           UnitedStates(UnitedStates::Exchange),
                           Unadjusted, 100.0);

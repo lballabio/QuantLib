@@ -21,6 +21,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     FixedCouponBond::FixedCouponBond(
                               const Date& issueDate,
                               const Date& datedDate,
@@ -51,6 +52,39 @@ namespace QuantLib {
                                            std::vector<Real>(1, 100.0),
                                            std::vector<Rate>(1, coupon),
                                            dayCounter);
+    }
+    #endif
+
+    FixedCouponBond::FixedCouponBond(
+                             const Date& issueDate,
+                             const Date& datedDate,
+                             const Date& maturityDate,
+                             Integer settlementDays,
+                             const std::vector<Rate>& coupons,
+                             Frequency couponFrequency,
+                             const DayCounter& dayCounter,
+                             const Calendar& calendar,
+                             BusinessDayConvention convention,
+                             Real redemption,
+                             const Handle<YieldTermStructure>& discountCurve,
+                             const Date& stub)
+    : Bond(dayCounter, calendar, convention, settlementDays, discountCurve) {
+
+        issueDate_ = issueDate;
+        datedDate_ = datedDate;
+        maturityDate_ = maturityDate;
+        frequency_ = couponFrequency;
+
+        redemption_ = boost::shared_ptr<CashFlow>(
+                                 new SimpleCashFlow(redemption,maturityDate));
+
+        Schedule schedule(calendar, datedDate, maturityDate,
+                          couponFrequency, convention,
+                          stub, true);
+
+        cashFlows_ = FixedRateCouponVector(schedule, convention,
+                                           std::vector<Real>(1, 100.0),
+                                           coupons, dayCounter);
     }
 
 };
