@@ -10,7 +10,7 @@ n  is an ordinal number; 0 is only allowed when l equals f
 e.g. R000300a2 stands for Release 0.3.1a2
 e.g. R000301f0 stands for Release 0.3.1
 
-The current version number is 0.3.3a1 - 000303a1
+The current version number is 0.3.3 - 000303f0
 
 This version number is in:
     QuantLib/dev_tools/version_number.txt,
@@ -27,15 +27,5 @@ This version number is in:
 
     QuantLib-Excel/QuantLibXL.nsi
     QuantLib-Excel/qlxl/qlxl.hpp
-
-It's also in some script used by RiskMap for automatic building:
-    night-job.bat
-    night-job2.bat
-
-A few RiskMap automatic building scripts have the previous release number
-0.3.0a4 - 000300a4:
-    release-job.sh
-    release-job.bat
-    release-job2.bat
 
 interested extensions: *.cpp;*.hpp;*.h;*.inl;*.txt;*.nsi;*.in;*.doxy;*.py;*.i;*.rb;*.bat;*.sh;*.TXT;*.scm;*.ac
