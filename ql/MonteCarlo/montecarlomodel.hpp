@@ -66,6 +66,7 @@ namespace QuantLib {
             MonteCarloModel(const Handle<PG>& pathGenerator,
                             const Handle<PP>& pathPricer,
                             const S& sampleAccumulator,
+                            bool antitheticVariate,
                             const Handle<PP>& cvPathPricer = Handle<PP>(),
                             result_type cvOptionValue = result_type());
             void addSamples(Size samples);
@@ -74,6 +75,7 @@ namespace QuantLib {
             Handle<PG> pathGenerator_;
             Handle<PP> pathPricer_;
             S sampleAccumulator_;
+            bool isAntitheticVariate_;
             Handle<PP> cvPathPricer_;
             result_type cvOptionValue_;
             bool isControlVariate_;
@@ -84,11 +86,13 @@ namespace QuantLib {
         inline MonteCarloModel<S, PG, PP>::MonteCarloModel(
 	    const Handle<PG>& pathGenerator,
 	    const Handle<PP>& pathPricer, const S& sampleAccumulator,
+        bool antitheticVariate,
 	    const Handle<PP>& cvPathPricer, 
 	    MonteCarloModel<S, PG, PP>::result_type cvOptionValue)
         : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
-          sampleAccumulator_(sampleAccumulator), cvPathPricer_(cvPathPricer),
-          cvOptionValue_(cvOptionValue) {
+          sampleAccumulator_(sampleAccumulator),
+          isAntitheticVariate_(antitheticVariate),
+          cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue) {
             if (cvPathPricer_.isNull())
                 isControlVariate_=false;
             else
@@ -98,11 +102,22 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         inline void MonteCarloModel<S, PG, PP>::addSamples(Size samples) {
             for(Size j = 1; j <= samples; j++) {
+
                 sample_type path = pathGenerator_->next();
                 result_type price = (*pathPricer_)(path.value);
+
                 if (isControlVariate_)
                     price += cvOptionValue_-(*cvPathPricer_)(path.value);
-                sampleAccumulator_.add(price, path.weight);
+
+                if (isAntitheticVariate_) {
+                    path = pathGenerator_->antithetic();
+                    result_type price2 = (*pathPricer_)(path.value);
+                    if (isControlVariate_)
+                        price2 += cvOptionValue_-(*cvPathPricer_)(path.value);
+                    sampleAccumulator_.add((price+price2)/2.0, path.weight);
+                } else {
+                    sampleAccumulator_.add(price, path.weight);
+                }
             }
         }
 
