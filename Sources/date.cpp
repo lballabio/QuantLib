@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/02/09 19:16:46  lballabio
+    removed QL_PTR_CONST macro
+
     Revision 1.11  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -70,10 +73,10 @@ namespace QuantLib {
                                    31, 29, 31, 30, 31, 30,
                                    31, 31, 30, 31, 30, 31 };
 
-    const Day QL_PTR_CONST Date::monthOffset      = Date::monthOffsetStorage-1;
-    const Day QL_PTR_CONST Date::monthLeapOffset  = Date::monthLeapOffsetStorage-1;
-    const Day QL_PTR_CONST Date::monthLength      = Date::monthLengthStorage-1;
-    const Day QL_PTR_CONST Date::monthLeapLength  = Date::monthLeapLengthStorage-1;
+    const Day* Date::monthOffset      = Date::monthOffsetStorage-1;
+    const Day* Date::monthLeapOffset  = Date::monthLeapOffsetStorage-1;
+    const Day* Date::monthLength      = Date::monthLengthStorage-1;
+    const Day* Date::monthLeapLength  = Date::monthLeapLengthStorage-1;
 
 
     // yearOffset and yearIsLeap enforce the 1900-2100 limit

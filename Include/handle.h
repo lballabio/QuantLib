@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file handle.h
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/02/09 19:16:21  lballabio
+    removed QL_PTR_CONST macro
+
     Revision 1.6  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -47,27 +51,29 @@ namespace QuantLib {
 
     //! Reference-counted pointer
     /*! This class acts as a proxy to a pointer contained in it. Such pointer is
-        owned by the handle, i.e., the handle will be responsible for its deletion.
+        owned by the handle, i.e., the handle will be responsible for its 
+        deletion.
         A count of the references to the contained pointer is incremented every
-        time a handle is copied, and decremented every time a handle is deleted or
-        goes out of scope. This mechanism ensures on one hand, that the pointer will
-        not be deallocated as long as a handle refers to it, and on the other hand, that
-        it will be deallocated when no more handles do.
+        time a handle is copied, and decremented every time a handle is deleted 
+        or goes out of scope. This mechanism ensures on one hand, that the 
+        pointer will not be deallocated as long as a handle refers to it, and on 
+        the other hand, that it will be deallocated when no more handles do.
 
         \note The implementation of this class was originally taken from
-        "The C++ Programming Language", 3rd ed., B.Stroustrup, Addison-Wesley, 1997.
+        "The C++ Programming Language", 3rd ed., B.Stroustrup, Addison-Wesley, 
+        1997.
 
-        \warning This mechanism will broke and result in untimely deallocation of the
-        pointer (and very possible death of your executable) if two handles are explicitly
-        initialized with the same pointer, as in
+        \warning This mechanism will broke and result in untimely deallocation 
+        of the pointer (and very possible death of your executable) if two 
+        handles are explicitly initialized with the same pointer, as in
         \code
         SomeObj* so = new SomeObj;
         Handle<SomeObj> h1(so);
         Handle<SomeObj> h2 = h1;    // this is safe.
         Handle<SomeObj> h3(so);        // this is definitely not.
         \endcode
-        It is good practice to create the pointer and immediately pass it to the handle,
-        as in
+        It is good practice to create the pointer and immediately pass it to the 
+        handle, as in
         \code
         Handle<SomeObj> h1(new SomeObj);    // this is as safe as can be.
         \endcode
@@ -100,7 +106,7 @@ namespace QuantLib {
         // \name Pointer access
         //@{
         //! Read-only access
-        const Type QL_PTR_CONST pointer() const;
+        const Type * pointer() const;
         //! Read-write access - <b>use with care</b>.
         Type * pointer();
         //@}
@@ -113,7 +119,8 @@ namespace QuantLib {
         class HandleCopier {
           public:
             HandleCopier() {}
-            template <class Type1, class Type2> void copy(Handle<Type1>& to, Handle<Type2> from) const {
+            template <class Type1, class Type2> void copy(Handle<Type1>& to, 
+              Handle<Type2> from) const {
                 if (to.ptr != from.ptr) {
                     if (--(*(to.n)) == 0) {
                         if (to.ptr != 0)
@@ -128,8 +135,11 @@ namespace QuantLib {
         };
     };
 
-    template <class Type> bool operator==(const Handle<Type>&, const Handle<Type>&);
-    template <class Type> bool operator!=(const Handle<Type>&, const Handle<Type>&);
+    template <class Type>
+    bool operator==(const Handle<Type>&, const Handle<Type>&);
+    
+    template <class Type>
+    bool operator!=(const Handle<Type>&, const Handle<Type>&);
 
 
     // inline definitions
@@ -169,7 +179,7 @@ namespace QuantLib {
     }
 
     template <class Type>
-    inline const Type QL_PTR_CONST Handle<Type>::pointer() const {
+    inline const Type * Handle<Type>::pointer() const {
         return ptr;
     }
 

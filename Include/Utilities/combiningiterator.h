@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/09 19:15:52  lballabio
+    removed QL_PTR_CONST macro
+
     Revision 1.2  2001/01/25 15:11:54  lballabio
     Added helper functions to make iterators
 
@@ -64,7 +67,7 @@ namespace QuantLib {
             typedef typename Function::result_type value_type;
             typedef typename std::iterator_traits<Iterator>::difference_type
                 difference_type;
-            typedef const value_type QL_PTR_CONST pointer;
+            typedef const value_type* pointer;
             typedef const value_type& reference;
             // construct a combining iterator from a collection of iterators
             template <class IteratorCollectionIterator>
@@ -180,11 +183,10 @@ namespace QuantLib {
         }
 
         template <class Iterator, class Function>
-        inline const combining_iterator<Iterator,Function>::value_type 
-            QL_PTR_CONST combining_iterator<Iterator,Function>::operator->() 
-            const {
-                x_ = f_(iteratorVector_.begin(), iteratorVector_.end());
-                return &x_;
+        inline const combining_iterator<Iterator,Function>::value_type* 
+        combining_iterator<Iterator,Function>::operator->() const {
+            x_ = f_(iteratorVector_.begin(), iteratorVector_.end());
+            return &x_;
         }
 
         template <class Iterator, class Function>

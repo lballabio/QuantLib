@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.10  2001/02/09 19:16:21  lballabio
+    removed QL_PTR_CONST macro
+
     Revision 1.9  2001/01/23 11:08:51  lballabio
     Renamed iterators in Include\Utilities and related files
 
@@ -163,15 +166,15 @@ namespace QuantLib {
         class const_iterator {
             friend class History;
           public:
-        typedef std::random_access_iterator_tag iterator_category;
-        typedef Entry value_type;
-        typedef int difference_type;
-        typedef const Entry QL_PTR_CONST pointer;
-        typedef const Entry& reference;
+            typedef std::random_access_iterator_tag iterator_category;
+            typedef Entry value_type;
+            typedef int difference_type;
+            typedef const Entry* pointer;
+            typedef const Entry& reference;
             //! \name Dereferencing
             //@{
             const Entry& operator*() const { return theEntry; }
-            const Entry QL_PTR_CONST operator->() const { return &theEntry; }
+            const Entry* operator->() const { return &theEntry; }
             //@}
             //! \name Random access
             //@{

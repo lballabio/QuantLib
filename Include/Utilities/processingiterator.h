@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/09 19:15:52  lballabio
+    removed QL_PTR_CONST macro
+
     Revision 1.2  2001/01/25 15:11:55  lballabio
     Added helper functions to make iterators
 
@@ -64,7 +67,7 @@ namespace QuantLib {
                 value_type;
             typedef typename std::iterator_traits<Iterator>::difference_type
                 difference_type;
-            typedef const value_type QL_PTR_CONST pointer;
+            typedef const value_type* pointer;
             typedef const value_type& reference;
             // constructor
             processing_iterator(const Iterator&, const UnaryFunction&);
@@ -178,11 +181,9 @@ namespace QuantLib {
         }
 
         template <class Iterator, class UnaryFunction>
-        inline const processing_iterator<Iterator,UnaryFunction>::value_type
-            QL_PTR_CONST 
-            processing_iterator<Iterator,UnaryFunction>::operator->() 
-            const {
-                return &x_;
+        inline const processing_iterator<Iterator,UnaryFunction>::value_type*
+        processing_iterator<Iterator,UnaryFunction>::operator->() const {
+            return &x_;
         }
 
         template <class Iterator, class UnaryFunction>

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/09 19:16:21  lballabio
+    removed QL_PTR_CONST macro
+
     Revision 1.7  2001/01/05 15:58:27  lballabio
     Fixed Doxygen documentation
 
@@ -153,14 +156,14 @@ namespace QuantLib {
         int serialNumber_;
         static const int minimumSerialNumber, maximumSerialNumber;
         static const Date MinimumDate, MaximumDate;
-        static const Day monthOffsetStorage[];
-        static const Day monthLeapOffsetStorage[];
-        static const Day monthLengthStorage[];
-        static const Day monthLeapLengthStorage[];
-        static const Day QL_PTR_CONST monthOffset;
-        static const Day QL_PTR_CONST monthLeapOffset;
-        static const Day QL_PTR_CONST monthLength;
-        static const Day QL_PTR_CONST monthLeapLength;
+        static const Day  monthOffsetStorage[];
+        static const Day  monthLeapOffsetStorage[];
+        static const Day  monthLengthStorage[];
+        static const Day  monthLeapLengthStorage[];
+        static const Day* monthOffset;
+        static const Day* monthLeapOffset;
+        static const Day* monthLength;
+        static const Day* monthLeapLength;
     };
     
     /*! \relates Date
