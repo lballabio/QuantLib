@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/05/28 13:09:55  nando
+// R019-branch-merge3 merged into trunk
+//
 // Revision 1.3  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -38,7 +41,8 @@
 #define quantlib_riskstatistics_h
 
 #include "ql/Math/statistics.hpp"
-#include "ql/Math/vartool.hpp"
+#include "ql/Math/riskmeasures.hpp"
+#include <iostream>
 
 namespace QuantLib {
 
@@ -66,28 +70,28 @@ namespace QuantLib {
         double min() const {return statistics_.min(); }
         double max() const {return statistics_.max(); }
 
-        // VarTool proxy methods
+        // RiskMeasures proxy methods
         //! returns the Value-At-Risk at a given percentile
         double valueAtRisk(double percentile) const {
-            return varTool_.valueAtRisk(percentile,
+            return riskMeasures_.valueAtRisk(percentile,
                                         statistics_.mean(),
                                         statistics_.standardDeviation());
         }
         //! returns the Expected Shortfall at a given percentile
         double expectedShortfall(double percentile) const {
-            return varTool_.expectedShortfall(percentile,
+            return riskMeasures_.expectedShortfall(percentile,
                                               statistics_.mean(),
                                               statistics_.standardDeviation());
         }
         //! returns the Shortfall (observations below target)
         double shortfall( double target ) const {
-            return varTool_.shortfall(target,
+            return riskMeasures_.shortfall(target,
                                       statistics_.mean(),
                                       statistics_.standardDeviation());
         }
         //! returns the Average Shortfall (averaged shortfallness)
         double averageShortfall( double target ) const  {
-            return varTool_.averageShortfall(
+            return riskMeasures_.averageShortfall(
                                          target,
                                          statistics_.mean(),
                                          statistics_.standardDeviation());
@@ -113,7 +117,7 @@ namespace QuantLib {
         //@}
       private:
         Math::Statistics statistics_;
-        Math::VarTool varTool_;
+        Math::RiskMeasures riskMeasures_;
     };
 
     // inline definitions

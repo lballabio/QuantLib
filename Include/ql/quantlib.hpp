@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/05/28 13:09:55  nando
+// R019-branch-merge3 merged into trunk
+//
 // Revision 1.10  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -114,7 +117,7 @@
 #include "ql/Math/statistics.hpp"
 #include "ql/Math/symmetriceigenvalues.hpp"
 #include "ql/Math/symmetricschurdecomposition.hpp"
-#include "ql/Math/vartool.hpp"
+#include "ql/Math/riskmeasures.hpp"
 
 #include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
 #include "ql/MonteCarlo/avgstrikeasianpathpricer.hpp"

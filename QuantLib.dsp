@@ -337,6 +337,14 @@ SOURCE=.\Include\ql\Math\normaldistribution.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\ql\Math\riskmeasure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Math\riskmeasures.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\Math\statistics.cpp
 # End Source File
 # Begin Source File
@@ -354,10 +362,6 @@ SOURCE=.\Sources\Math\symmetricschurdecomposition.cpp
 # Begin Source File
 
 SOURCE=.\Include\ql\Math\symmetricschurdecomposition.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Math\vartool.hpp
 # End Source File
 # End Group
 # Begin Group "MonteCarlo"

@@ -4,17 +4,14 @@
 # $Id$
 # $Source$
 # $Log$
-# Revision 1.18  2001/05/25 16:33:58  nando
-# improved install directive
+# Revision 1.19  2001/05/28 13:09:55  nando
+# R019-branch-merge3 merged into trunk
 #
-# Revision 1.17  2001/05/24 16:06:17  nando
-# commented out QL_DIR requirement
 #
 
 
 .autodepend
 .silent
-
 
 # Options
 !ifdef DEBUG

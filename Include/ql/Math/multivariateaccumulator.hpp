@@ -30,11 +30,8 @@
 
 // $Source$
 // $Log$
-// Revision 1.4  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.3  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.5  2001/05/28 13:09:55  nando
+// R019-branch-merge3 merged into trunk
 //
 
 #ifndef quantlib_math_multivariate_accumulator_h
