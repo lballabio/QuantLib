@@ -51,6 +51,24 @@
     immediate care of it.
 
 
+    <strong>
+    Thanks for this project. How can I give back to it?
+    </strong>
+
+    In true open-source fashion, you can contribute code to the project;
+    see the section '\ref faq_contributing' below. This is by far the
+    preferred contribution, closely followed by using the library
+    intensively and reporting any bugs you might find---and possibly
+    patches for fixing them.
+
+    However, if you made money by using QuantLib and feel that, as
+    Christmas is getting near, you want to give us a token of your
+    gratitude---well, who am I to discourage you? (for instance,
+    Luigi's wish list on Amazon UK is at
+    <http://www.amazon.co.uk/exec/obidos/registry/2PC411P4U28CG/ref=wl_em_to>,
+    and I'm sure that Nando's will soon appear on this FAQ.)
+
+
     \section faq_contributing Contributing to the project
 
     <strong>
@@ -66,6 +84,25 @@
     Asking the administrators to choose a task for you is appreciated,
     but it increases the odds that the chosen task will bore you or
     otherwise discourage you from completing it.
+
+    <strong>
+    How do I contribute code to the project?
+    </strong>
+
+    First of all, make sure that contributing code on your part cannot
+    result in litigation about intellectual property. If you work at
+    some financial institution, ask for permission before contributing
+    any code---and possibly get a statement in print.
+
+    As for the mechanics of contribution, the preferred format is a diff
+    file as created by the 'patch' utility.  If possible, send
+    differences against the CVS repository; diff files based on the
+    latest release might not apply to the latest sources.
+
+    If 'patch' is not available on your system or you are not familiar
+    with it, send the modified files as a compressed archive. However,
+    keep in mind that integrating such a contribution will require
+    more work and therefore will take longer.
 
 
     \section faq_build Building QuantLib
