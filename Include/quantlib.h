@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.35  2001/04/04 09:51:47  marmar
+    introducing cliquet option
+
     Revision 1.34  2001/03/28 07:37:20  marmar
     file added
 
@@ -251,6 +254,7 @@
 #include "bermudanoption.h"
 #include "bsmeuropeanoption.h"
 #include "bsmnumericaloption.h"
+#include "cliquetoption.h"
 #include "dividendoption.h"
 #include "dividendshoutoption.h"
 #include "dividendeuropeanoption.h"

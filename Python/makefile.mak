@@ -166,6 +166,7 @@ test::
     python american_option.py -b
     python barrier_option.py -b
     python binary_option.py -b
+    python cliquet_option.py -b
     python date.py -b
     python distributions.py -b
     python everest_option.py -b

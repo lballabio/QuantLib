@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.27  2001/04/04 09:51:18  marmar
+   introducing cliquet option
+
    Revision 1.26  2001/03/22 16:37:15  marmar
    Barrier option greeks included
 
@@ -54,6 +57,7 @@ using QuantLib::Pricers::AmericanOption;
 using QuantLib::Pricers::BinaryOption;
 using QuantLib::Pricers::BermudanOption;
 using QuantLib::Pricers::BSMEuropeanOption;
+using QuantLib::Pricers::CliquetOption;
 using QuantLib::Pricers::FiniteDifferenceEuropean;
 using QuantLib::Pricers::DividendAmericanOption;
 using QuantLib::Pricers::DividendEuropeanOption;
@@ -75,6 +79,27 @@ class BSMEuropeanOption {
 	double rho() const;
 	double impliedVolatility(double targetValue, double accuracy = 1e-4, 
 	  int maxEvaluations = 100) const ;
+};
+
+
+class CliquetOption {
+  public:
+	CliquetOption(OptionType type, 
+                  double underlying, 
+                  Rate dividendYield, 
+                  Rate riskFreeRate, 
+                  const DoubleVector &dates, 
+                  double volatility);
+	~CliquetOption();
+	double value() const;
+	double delta() const;
+	double gamma() const;
+	double theta() const;
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, 
+	                         double accuracy = 1e-4, 
+	                         int maxEvaluations = 100) const ;
 };
 
 class FiniteDifferenceEuropean {

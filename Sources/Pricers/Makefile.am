@@ -18,6 +18,7 @@ libPricers_la_SOURCES = \
     bsmeuropeanoption.cpp \
     bsmnumericaloption.cpp \
     bsmoption.cpp \
+    cliquetoption.cpp \
     dividendoption.cpp \
     dividendshoutoption.cpp \
     dividendamericanoption.cpp \

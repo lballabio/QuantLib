@@ -9,6 +9,7 @@ include_HEADERS = americancondition.h \
     bsmeuropeanoption.h \
     bsmnumericaloption.h \
     bsmoption.h \
+    cliquetoption.h \
     dividendoption.h \
     dividendamericanoption.h \
     dividendeuropeanoption.h \
