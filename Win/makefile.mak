@@ -3,6 +3,7 @@
 #
 
 .autodepend
+.silent
 
 # Directories
 OUTPUT_DIR		= .\Release
@@ -38,7 +39,8 @@ LINK		= ilink32
 COFF2OMF	= coff2omf
 SWIG		= swig1.3a5
 DOXYGEN		= doxygen
-LATEX		= pdflatex
+LATEX		= latex
+PDFLATEX	= pdflatex
 MAKEINDEX	= makeindex
 
 # Options
@@ -60,7 +62,7 @@ LINK_OPTS	= -q -x -L$(BCC_LIBS)
 
 # Generic rules
 .cpp.obj:
-    @$(CC) $(CC_OPTS) $<
+    $(CC) $(CC_OPTS) $<
 
 # Primary target:
 # QuantLib library
@@ -70,40 +72,40 @@ QuantLib: $(OUTPUT_DIR)\QuantLib.lib
 Python: $(PYTHON_DIR)\QuantLibc.dll
 
 $(PYTHON_DIR)\QuantLibc.dll:: $(OUTPUT_DIR) $(OUTPUT_DIR)\quantlib_wrap.obj $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB)
-	@echo Linking Python module...
-	@$(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj $(WIN_OBJS),$(PYTHON_DIR)\QuantLibc.dll,, $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), QuantLibc.def
-	@del $(PYTHON_DIR)\QuantLibc.ilc
-	@del $(PYTHON_DIR)\QuantLibc.ild
-	@del $(PYTHON_DIR)\QuantLibc.ilf
-	@del $(PYTHON_DIR)\QuantLibc.ils
-	@del $(PYTHON_DIR)\QuantLibc.tds
-	@echo Build completed
+	echo Linking Python module...
+	$(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj $(WIN_OBJS),$(PYTHON_DIR)\QuantLibc.dll,, $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), QuantLibc.def
+	del $(PYTHON_DIR)\QuantLibc.ilc
+	del $(PYTHON_DIR)\QuantLibc.ild
+	del $(PYTHON_DIR)\QuantLibc.ilf
+	del $(PYTHON_DIR)\QuantLibc.ils
+	del $(PYTHON_DIR)\QuantLibc.tds
+	echo Build completed
 
 # make sure the output directory exists
 $(OUTPUT_DIR):
-	@if not exist $(OUTPUT_DIR) md $(OUTPUT_DIR)
+	if not exist $(OUTPUT_DIR) md $(OUTPUT_DIR)
 
 # Python lib in OMF format
 $(PYTHON_BCC_LIB):
-	@$(COFF2OMF) -q $(PYTHON_LIB) $(PYTHON_BCC_LIB)
+	$(COFF2OMF) -q $(PYTHON_LIB) $(PYTHON_BCC_LIB)
 
 # Wrapper functions
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
-	@echo Compiling wrappers...
-	@$(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT $(PYTHON_DIR)\quantlib_wrap.cpp
+	echo Compiling wrappers...
+	$(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT $(PYTHON_DIR)\quantlib_wrap.cpp
 $(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i \
   $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Currencies.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Options.i \
   $(SWIG_DIR)\Instruments.i $(SWIG_DIR)\Operators.i $(SWIG_DIR)\Pricers.i $(SWIG_DIR)\Solvers1D.i \
   $(SWIG_DIR)\TermStructures.i $(SWIG_DIR)\Vectors.i $(SWIG_DIR)\BoundaryConditions.i $(SWIG_DIR)\Statistics.i
-	@echo Generating wrappers...
-	@$(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
-	@copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
-	@del .\QuantLib.py
+	echo Generating wrappers...
+	$(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_DIR) -o $(PYTHON_DIR)\quantlib_wrap.cpp $(SWIG_DIR)\QuantLib.i
+	copy .\QuantLib.py $(PYTHON_DIR)\QuantLib.py
+	del .\QuantLib.py
 
 # QuantLib library
 $(OUTPUT_DIR)\QuantLib.lib:: Core Calendars DayCounters FiniteDifferences Math Pricers Solvers1D TermStructures
-	@if exist $(OUTPUT_DIR)\QuantLib.lib del $(OUTPUT_DIR)\QuantLib.lib
-	@tlib $(OUTPUT_DIR)\QuantLib.lib /a $(QUANTLIB_OBJS)
+	if exist $(OUTPUT_DIR)\QuantLib.lib del $(OUTPUT_DIR)\QuantLib.lib
+	tlib $(OUTPUT_DIR)\QuantLib.lib /a $(QUANTLIB_OBJS)
 
 # Core
 Core: $(OUTPUT_DIR) $(CORE_OBJS)
@@ -171,19 +173,47 @@ $(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\TermStructures\piece
 
 # Clean up
 clean::
-	@if exist $(PYTHON_DIR)\QuantLib.py       del $(PYTHON_DIR)\QuantLib.py
-	@if exist $(PYTHON_DIR)\QuantLib.pyc      del $(PYTHON_DIR)\QuantLib.pyc
-	@if exist $(PYTHON_DIR)\QuantLibc.dll     del $(PYTHON_DIR)\QuantLibc.dll
-	@if exist $(PYTHON_DIR)\quantlib_wrap.cpp del $(PYTHON_DIR)\quantlib_wrap.cpp
-	@if exist $(OUTPUT_DIR) rd /s /q $(OUTPUT_DIR)
+	if exist $(PYTHON_DIR)\QuantLib.py       del $(PYTHON_DIR)\QuantLib.py
+	if exist $(PYTHON_DIR)\QuantLib.pyc      del $(PYTHON_DIR)\QuantLib.pyc
+	if exist $(PYTHON_DIR)\QuantLibc.dll     del $(PYTHON_DIR)\QuantLibc.dll
+	if exist $(PYTHON_DIR)\quantlib_wrap.cpp del $(PYTHON_DIR)\quantlib_wrap.cpp
+	if exist $(OUTPUT_DIR) rd /s /q $(OUTPUT_DIR)
 
 
 # Documentation
-Docs::
-	@cd ..\Docs
-	@$(DOXYGEN) doxygen.cfg
-	@cd latex
-	@$(LATEX) refman
-	@$(MAKEINDEX) refman.idx
-	@$(LATEX) refman
-	@cd ..\..\Win
+HTML::
+	cd ..\Docs
+	$(DOXYGEN) doxygen.cfg
+	cd ..\Win
+
+PDF::
+	cd ..\Docs
+	$(DOXYGEN) doxygen.cfg
+	cd latex
+	$(PDFLATEX) refman
+	$(MAKEINDEX) refman.idx
+	$(PDFLATEX) refman
+	cd ..\..\Win
+
+PS::
+	cd ..\Docs
+	$(DOXYGEN) doxygen.cfg
+	cd latex
+	$(LATEX) refman
+	$(MAKEINDEX) refman.idx
+	$(LATEX) refman
+	$(DVIPS) refman
+	cd ..\..\Win
+
+alldocs::
+	cd ..\Docs
+	$(DOXYGEN) doxygen.cfg
+	cd latex
+	$(PDFLATEX) refman
+	$(MAKEINDEX) refman.idx
+	$(PDFLATEX) refman
+	$(LATEX) refman
+	$(MAKEINDEX) refman.idx
+	$(LATEX) refman
+	$(DVIPS) refman
+	cd ..\..\Win

@@ -24,7 +24,7 @@
 /*! \mainpage
 
     \section copyright Copyright
-    Copyright (C) 2000 --- The QuantLib Group
+    Copyright (C) 2000 --- The %QuantLib Group
 
     \section introduction Introduction
     %QuantLib is a C++ open source library for financial quantitative
@@ -32,7 +32,7 @@
 
     %QuantLib is free software and you are allowed to use, copy, modify, merge,
     publish, distribute, and/or sell copies of it under the conditions stated 
-    in the QuantLib License available at http://quantlib.sourceforge.net/LICENSE.TXT
+    in the %QuantLib License available at http://quantlib.sourceforge.net/LICENSE.TXT
 
     %QuantLib and its documentation are distributed in the hope that they will be useful, but 
     WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
@@ -54,10 +54,10 @@
 */
 
 /*! \namespace QuantLib
-	\brief a.k.a. the QuantLib Foundation
+	\brief a.k.a. the %QuantLib Foundation
 	
-	The root namespace <tt>QuantLib</tt> contains what can be considered
-	the <b>QuantLib foundation</b>, i.e., the core of abstract classes upon
+	The root namespace <tt>%QuantLib</tt> contains what can be considered
+	the <b>%QuantLib foundation</b>, i.e., the core of abstract classes upon
 	which the rest of the library is built.
 */
 
