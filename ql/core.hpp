@@ -25,6 +25,7 @@
 #include <ql/currency.hpp>
 #include <ql/date.hpp>
 #include <ql/daycounter.hpp>
+#include <ql/diffusionprocess.hpp>
 #include <ql/discretizedasset.hpp>
 #include <ql/errors.hpp>
 #include <ql/handle.hpp>

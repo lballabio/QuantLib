@@ -26,7 +26,6 @@
 #include <ql/capvolstructures.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/dataparsers.hpp>
-#include <ql/diffusionprocess.hpp>
 #include <ql/disposable.hpp>
 #include <ql/exercise.hpp>
 #include <ql/grid.hpp>
