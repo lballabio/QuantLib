@@ -4,7 +4,7 @@
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = QuantLib
-PROJECT_NUMBER         = 0.3.0b1-cvs
+PROJECT_NUMBER         = 0.3.0c0-cvs
 OUTPUT_DIRECTORY       = 
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = NO

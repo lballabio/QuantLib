@@ -10,7 +10,7 @@ n  is an ordinal number
 e.g. R000300a2 stands for Release 0.3.1a2
 e.g. R000300f0 stands for Release 0.3.1f0
 
-The current version number is 0.3.0b1 - 000300b1
+The current version number is 0.3.0c0 - 000300c0
 This version number is in:
     QuantLib/dev_tools/version_number.txt,
     QuantLib/QuantLib.nsi,
