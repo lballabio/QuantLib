@@ -42,6 +42,8 @@
 #include "pricers.h"
 using QuantLib::Pricers::BSMEuropeanOption;
 using QuantLib::Pricers::BSMAmericanOption;
+using QuantLib::Pricers::DividendAmericanOption;
+using QuantLib::Pricers::DividendEuropeanOption;
 %}
 
 class BSMEuropeanOption {
@@ -74,6 +76,30 @@ class BSMAmericanOption {
 	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
 };
 
+class DividendAmericanOption{
+  public:
+	DividendAmericanOption(OptionType type, double underlying, double strike, 
+	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility,
+	  DoubleVector dividends, DoubleVector exdivdates);
+	double value() const;
+	double delta() const;
+	double gamma() const;
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
+};
+
+class DividendEuropeanOption{
+  public:
+	DividendEuropeanOption(OptionType type, double underlying, double strike, 
+	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility,
+	  DoubleVector dividends, DoubleVector exdivdates);
+	double value() const;
+	double delta() const;
+	double gamma() const;
+	double vega() const;
+	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
+};
 
 #endif
 
