@@ -1,6 +1,6 @@
 
 /*!
- Copyright (C) 2003 Neil Firth 
+ Copyright (C) 2003 Neil Firth
  Adapted from EuropeanOption.cpp
 
  This file is part of QuantLib, a free-software/open-source library
@@ -43,6 +43,8 @@ int main(int argc, char* argv[])
         Time maturity = rateDayCounter.yearFraction(settlementDate,
                                                     exerciseDate);
 
+        std::cout << "option type = "  << OptionTypeFormatter::toString(type)
+                  << std::endl;
         std::cout << "Time to maturity = "        << maturity
                   << std::endl;
         std::cout << "Underlying price = "        << underlying
@@ -60,7 +62,7 @@ int main(int argc, char* argv[])
         std::string method;
 
         double value, discrepancy, rightValue, relativeDiscrepancy;
-        rightValue = (type == Option::Put ? 4.4866 : 2.17372645);
+        rightValue = (type == Option::Put ? 4.486674 : 2.17372645);
 
         std::cout << std::endl ;
 
@@ -73,9 +75,10 @@ int main(int argc, char* argv[])
         exDates[0]=midlifeDate;
         exDates[1]=exerciseDate;
 
-        EuropeanExercise exercise(exerciseDate);
-        AmericanExercise amExercise(settlementDate, exerciseDate);
-        BermudanExercise berExercise(exDates);
+        Handle<Exercise> exercise(new EuropeanExercise(exerciseDate));
+        Handle<Exercise> amExercise(new AmericanExercise(settlementDate,
+                                                         exerciseDate));
+        Handle<Exercise> berExercise(new BermudanExercise(exDates));
 
 
         RelinkableHandle<Quote> underlyingH(
@@ -106,13 +109,13 @@ int main(int argc, char* argv[])
         strikes[3] = underlying*1.2;
 
         Matrix vols(4,4);
-        vols[0][0] = volatility*1.1; vols[0][1] = volatility; 
+        vols[0][0] = volatility*1.1; vols[0][1] = volatility;
             vols[0][2] = volatility*0.9; vols[0][3] = volatility*0.8;
-        vols[1][0] = volatility*1.1; vols[1][1] = volatility; 
+        vols[1][0] = volatility*1.1; vols[1][1] = volatility;
             vols[1][2] = volatility*0.9; vols[1][3] = volatility*0.8;
-        vols[2][0] = volatility*1.1; vols[2][1] = volatility; 
+        vols[2][0] = volatility*1.1; vols[2][1] = volatility;
             vols[2][2] = volatility*0.9; vols[2][3] = volatility*0.8;
-        vols[3][0] = volatility*1.1; vols[3][1] = volatility; 
+        vols[3][0] = volatility*1.1; vols[3][1] = volatility;
             vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
         RelinkableHandle<BlackVolTermStructure> blackSurface(
             Handle<BlackVolTermStructure>(
@@ -152,7 +155,9 @@ int main(int argc, char* argv[])
             amExercise,
             flatVolTS);
 
+//        Size timeSteps = 512001;
         Size timeSteps = 801;
+
         // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
@@ -209,6 +214,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
+
         // Tian Binomial Tree (third moment matching)
         method = "Binomial Tian";
         option.setPricingEngine(Handle<PricingEngine>(

@@ -29,7 +29,7 @@ namespace QuantLib {
 
     //! Quanto engine base class
     template<class ArgumentsType, class ResultsType>
-    class QuantoEngine 
+    class QuantoEngine
         : public GenericEngine<QuantoOptionArguments<ArgumentsType>,
                                QuantoOptionResults<ResultsType> > {
       public:
@@ -65,7 +65,7 @@ namespace QuantLib {
 
         // determine strike from payoff
         #if defined(HAVE_BOOST)
-        Handle<StrikedTypePayoff> payoff = 
+        Handle<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "QuantoEngine: non-striked payoff given");
@@ -76,21 +76,19 @@ namespace QuantLib {
 
         originalArguments_->payoff = arguments_.payoff;
         originalArguments_->underlying    = arguments_.underlying;
-        originalArguments_->dividendTS    = 
+        originalArguments_->dividendTS    =
             RelinkableHandle<TermStructure>(
                 Handle<TermStructure>(
                     new QuantoTermStructure(arguments_.dividendTS,
-                                            arguments_.riskFreeTS, 
+                                            arguments_.riskFreeTS,
                                             arguments_.foreignRiskFreeTS,
                                             arguments_.volTS, strike,
-                                            arguments_.exchRateVolTS, 
+                                            arguments_.exchRateVolTS,
                                             exchangeRateATMlevel,
                                             arguments_.correlation)));
         originalArguments_->riskFreeTS    = arguments_.riskFreeTS;
         originalArguments_->volTS         = arguments_.volTS;
-        originalArguments_->maturity      = arguments_.maturity;
-        originalArguments_->stoppingTimes = arguments_.stoppingTimes;
-        originalArguments_->exerciseType  = arguments_.exerciseType;
+        originalArguments_->exercise      = arguments_.exercise;
 
         originalArguments_->validate();
         originalEngine_->calculate();
@@ -102,19 +100,19 @@ namespace QuantLib {
         results_.rho = originalResults_->rho +
             originalResults_->dividendRho;
         results_.dividendRho = originalResults_->dividendRho;
-        double exchangeRateFlatVol = 
-            arguments_.exchRateVolTS->blackVol(arguments_.maturity, 
-                                               exchangeRateATMlevel);
+        double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
+            arguments_.exercise->lastDate(),
+            exchangeRateATMlevel);
         results_.vega = originalResults_->vega +
             arguments_.correlation * exchangeRateFlatVol *
             originalResults_->dividendRho;
 
 
-        double volatility = 
-            arguments_.volTS->blackVol(arguments_.maturity, 
-                                       arguments_.underlying);
+        double volatility = arguments_.volTS->blackVol(
+            arguments_.exercise->lastDate(),
+            arguments_.underlying);
         results_.qvega = + arguments_.correlation
-            * arguments_.volTS->blackVol(arguments_.maturity,
+            * arguments_.volTS->blackVol(arguments_.exercise->lastDate(),
                                          arguments_.underlying) *
             originalResults_->dividendRho;
         results_.qrho = - originalResults_->dividendRho;

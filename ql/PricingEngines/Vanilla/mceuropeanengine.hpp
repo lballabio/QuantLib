@@ -78,7 +78,7 @@ namespace QuantLib {
     // inline definitions
 
     template <class RNG, class S>
-    inline 
+    inline
     MCEuropeanEngine<RNG,S>::MCEuropeanEngine(Size maxTimeStepPerYear,
                                               bool antitheticVariate,
                                               bool controlVariate,
@@ -88,7 +88,7 @@ namespace QuantLib {
                                               long seed)
     : MCVanillaEngine<RNG,S>(maxTimeStepPerYear,
                              antitheticVariate,
-                             controlVariate, 
+                             controlVariate,
                              requiredSamples,
                              requiredTolerance,
                              maxSamples,
@@ -96,12 +96,12 @@ namespace QuantLib {
 
 
     template <class RNG, class S>
-    inline 
+    inline
     Handle<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
     MCEuropeanEngine<RNG,S>::pathPricer() const {
 
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> payoff = 
+        Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticAmericanBinaryEngine: non-plain payoff given");
@@ -111,7 +111,7 @@ namespace QuantLib {
 
         return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(
             new EuropeanPathPricer(payoff->optionType(),
-                                   arguments_.underlying, 
+                                   arguments_.underlying,
                                    payoff->strike(),
                                    arguments_.riskFreeTS));
     }
@@ -148,10 +148,14 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
-        TimeGridCalculator calc(arguments_.maturity,
-                                maxTimeStepsPerYear_);
+
+        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
+            arguments_.riskFreeTS->referenceDate(),
+            arguments_.exercise->lastDate());
+
+        TimeGridCalculator calc(t, maxTimeStepsPerYear_);
         arguments_.volTS->accept(calc);
-        return TimeGrid(arguments_.maturity, calc.size());
+        return TimeGrid(t, calc.size());
     }
 
 
@@ -223,15 +227,15 @@ namespace QuantLib {
     }
 
     template <class RNG, class S>
-    inline 
+    inline
     MakeMCEuropeanEngine<RNG,S>::operator Handle<PricingEngine>() const {
         QL_REQUIRE(steps_ != Size(Null<int>()),
                    "MakeMCEuropeanEngine<RNG,S>: "
                    "max number of steps per year not given");
         return Handle<PricingEngine>(
-                             new MCEuropeanEngine<RNG,S>(steps_, antithetic_, 
-                                                         controlVariate_, 
-                                                         samples_, tolerance_, 
+                             new MCEuropeanEngine<RNG,S>(steps_, antithetic_,
+                                                         controlVariate_,
+                                                         samples_, tolerance_,
                                                          maxSamples_, seed_));
     }
 

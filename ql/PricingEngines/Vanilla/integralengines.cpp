@@ -47,7 +47,7 @@ namespace QuantLib {
 
     void IntegralEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "IntegralEuropeanEngine::calculate() : "
                    "not an European Option");
 
@@ -61,14 +61,13 @@ namespace QuantLib {
         #endif
 
         double variance = arguments_.volTS->blackVariance(
-                                       arguments_.maturity, payoff->strike());
+                                       arguments_.exercise->lastDate(), payoff->strike());
 
-        Rate dividendRate =
-            arguments_.dividendTS->zeroYield(arguments_.maturity);
-        Rate riskFreeRate =
-            arguments_.riskFreeTS->zeroYield(arguments_.maturity);
-        double drift = (riskFreeRate - dividendRate) * arguments_.maturity
-            - 0.5 * variance;
+        double dividendDiscount = arguments_.dividendTS->discount(
+            arguments_.exercise->lastDate());
+        double riskFreeDiscount = arguments_.riskFreeTS->discount(
+            arguments_.exercise->lastDate());
+        double drift = QL_LOG(dividendDiscount/riskFreeDiscount) - 0.5*variance;
 
         Integrand f(arguments_.payoff, arguments_.underlying, 
                     drift, variance);
@@ -76,7 +75,7 @@ namespace QuantLib {
 
         double infinity = 10.0*QL_SQRT(variance);
         results_.value =
-            arguments_.riskFreeTS->discount(arguments_.maturity) /
+            arguments_.riskFreeTS->discount(arguments_.exercise->lastDate()) /
             QL_SQRT(2.0*M_PI*variance) *
             integrator(f, drift-infinity, drift+infinity);
     }

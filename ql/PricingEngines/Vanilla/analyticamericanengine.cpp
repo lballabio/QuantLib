@@ -15,48 +15,57 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticamericanbinarybarrierengine.cpp
+/*! \file analyticamericanengine.cpp
     \brief American binary barrier option engine using analytic formulas
 */
 
-#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
+#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 
 namespace QuantLib {
-
-    void AnalyticAmericanBinaryBarrierEngine::calculate() const {
+/*
+    void AnalyticAmericanEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
-                   "AnalyticAmericanBinaryBarrierEngine::calculate() : "
+                   "AnalyticAmericanEngine::calculate() : "
                    "not an American Option");
 
-        QL_REQUIRE(arguments_.binaryBarrierType == BinaryBarrier::CashAtHit,
-                   "AnalyticAmericanBinaryBarrierEngine::calculate() : "
-                   "not a CashAtHit Option");
+        #if defined(HAVE_BOOST)
+        Handle<AmericanExercise> ex = 
+            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        QL_REQUIRE(ex,
+                   "AnalyticAmericanEngine: non-American exercise given");
+        #else
+        Handle<AmericanExercise> ex = arguments_.exercise;
+        #endif
+        QL_REQUIRE(!ex->payoffAtExpiry(),
+                   "AnalyticAmericanEngine::calculate() : "
+                   "payoff at expiry not handled yet");
 
         #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "AnalyticAmericanBinaryBarrierEngine: non-plain payoff given");
+                   "AnalyticAmericanEngine: non-plain payoff given");
         #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        // BinaryBarrier::Type binaryBarrierType = arguments_.binaryBarrierType;
+        // ::Type Type = arguments_.Type;
         double barrier = arguments_.barrier;
         double cashPayoff = arguments_.cashPayoff;
 
         double underlying = arguments_.underlying;
+//        Time maturity = arguments_.maturity;
 
         double strike = payoff->strike();
-        double vol = arguments_.volTS->blackVol(
-            arguments_.exercise->lastDate(), strike);
+        double vol = arguments_.volTS->blackVol(arguments_.exercise->lastDate(),
+            strike);
 
-        Rate dividendRate =
-            arguments_.dividendTS->zeroYield(arguments_.exercise->lastDate());
+        Rate dividendRate = arguments_.dividendTS->zeroYield(
+            arguments_.exercise->lastDate());
 
-        Rate riskFreeRate =
-            arguments_.riskFreeTS->zeroYield(arguments_.exercise->lastDate());
+        Rate riskFreeRate = arguments_.riskFreeTS->zeroYield(
+            arguments_.exercise->lastDate());
 
         double vol2 = vol*vol;
         double b_temp = riskFreeRate - dividendRate - 0.5*vol2;
@@ -66,9 +75,6 @@ namespace QuantLib {
         double lambda = QL_SQRT(mu*mu+2*(riskFreeRate-dividendRate)/vol2);
         double l_plus = mu + lambda;
         double l_minus = mu - lambda;
-        Time maturity = arguments_.riskFreeTS->dayCounter().yearFraction(
-            arguments_.riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
         double root_tau = QL_SQRT (maturity);
         double root_two_pi = M_SQRT2 * M_SQRTPI;
         double log_H_S = QL_LOG (barrier/underlying);
@@ -134,6 +140,6 @@ namespace QuantLib {
                                            * f_zbar / vol2))); 
         }
     }
-
+*/
 }
 

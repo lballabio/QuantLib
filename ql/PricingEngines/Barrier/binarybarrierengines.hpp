@@ -65,7 +65,6 @@ namespace QuantLib {
                        Size requiredSamples = Null<int>(),
                        double requiredTolerance = Null<double>(),
                        Size maxSamples = Null<int>(),
-                       bool isBiased = false,
                        long seed = 0);
 
         void calculate() const;
@@ -87,7 +86,7 @@ namespace QuantLib {
         TimeGrid timeGrid() const;
         Handle<path_pricer_type> pathPricer() const;
 
-        // data members            
+        // data members
         //my_sequence_type uniformGenerator_;
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
@@ -103,11 +102,10 @@ namespace QuantLib {
                                           Size requiredSamples,
                                           double requiredTolerance,
                                           Size maxSamples,
-                                          bool isBiased,
                                           long seed)
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate,
                                        controlVariate),
-      maxTimeStepsPerYear_(maxTimeStepsPerYear), 
+      maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples),
       maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
@@ -115,13 +113,13 @@ namespace QuantLib {
 
 
     template<class RNG, class S>
-    Handle<QL_TYPENAME MCBinaryBarrierEngine<RNG,S>::path_generator_type> 
+    Handle<QL_TYPENAME MCBinaryBarrierEngine<RNG,S>::path_generator_type>
     MCBinaryBarrierEngine<RNG,S>::pathGenerator() const {
 
         Handle<DiffusionProcess> bs(new
-            BlackScholesProcess(arguments_.riskFreeTS, 
+            BlackScholesProcess(arguments_.riskFreeTS,
                                 arguments_.dividendTS,
-                                arguments_.volTS, 
+                                arguments_.volTS,
                                 arguments_.underlying));
 
         TimeGrid grid = timeGrid();
@@ -140,7 +138,7 @@ namespace QuantLib {
     MCBinaryBarrierEngine<RNG,S>::pathPricer() const {
 
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> payoff = 
+        Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCBinaryBarrierEngine: non-plain payoff given");
@@ -149,18 +147,18 @@ namespace QuantLib {
         #endif
 
         TimeGrid grid = timeGrid();
-        UniformRandomSequenceGenerator 
+        UniformRandomSequenceGenerator
             sequenceGen(grid.size()-1, UniformRandomGenerator(76));
 
         return Handle<MCBinaryBarrierEngine<RNG,S>::path_pricer_type>(
             new BinaryBarrierPathPricer(
-                    arguments_.binaryBarrierType, arguments_.barrier, 
-                    arguments_.cashPayoff, payoff->optionType(), 
+                    arguments_.binaryBarrierType, arguments_.barrier,
+                    arguments_.cashPayoff, payoff->optionType(),
                     arguments_.underlying, arguments_.riskFreeTS,
                     Handle<DiffusionProcess> (new BlackScholesProcess(
-                                    arguments_.riskFreeTS, 
+                                    arguments_.riskFreeTS,
                                     arguments_.dividendTS,
-                                    arguments_.volTS, 
+                                    arguments_.volTS,
                                     arguments_.underlying)),
                     sequenceGen));
 //        }
@@ -171,8 +169,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     TimeGrid MCBinaryBarrierEngine<RNG,S>::timeGrid() const {
-        return TimeGrid(arguments_.maturity, 
-                        Size(arguments_.maturity * maxTimeStepsPerYear_));
+        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
+            arguments_.riskFreeTS->referenceDate(),
+            arguments_.exercise->lastDate());
+        return TimeGrid(t, Size(t * maxTimeStepsPerYear_));
     }
 
     template<class RNG, class S>
@@ -199,10 +199,10 @@ namespace QuantLib {
                        "engine does not provide "
                        "control variation pricing engine");
         } else {
-            mcModel_ = 
+            mcModel_ =
                 Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
-                        pathGenerator(), pathPricer(), S(), 
+                        pathGenerator(), pathPricer(), S(),
                         antitheticVariate_));
         }
 
@@ -217,7 +217,7 @@ namespace QuantLib {
 
         results_.value = mcModel_->sampleAccumulator().mean();
         if (RNG::allowsErrorEstimate)
-            results_.errorEstimate = 
+            results_.errorEstimate =
                 mcModel_->sampleAccumulator().errorEstimate();
     }
 

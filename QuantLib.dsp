@@ -1614,6 +1614,10 @@ SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp
 # End Source File
 # Begin Source File

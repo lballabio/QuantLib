@@ -86,7 +86,7 @@ void BinaryBarrierOptionTest::testValues() {
 
 
     BinaryBarrierOptionData values[] = {
-        { BinaryBarrier::CashAtExpiry, Option::Call, 1, 
+        { BinaryBarrier::CashAtExpiry, Option::Call, 1,
           0.2, 0.05, 0.02, 110, 100.0, 35.283179 }
     };
 
@@ -108,17 +108,17 @@ void BinaryBarrierOptionTest::testValues() {
         volatilityH_SME->setValue(values[i].volatility);
 
         Date exDate = calendar.advance(today,values[i].years,Years);
-        EuropeanExercise exercise(exDate);
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
         BinaryBarrierOption binaryBarrierOption(
-                values[i].type, 
-                values[i].barrier, 
-                values[i].rebate, 
-                Option::Call, 
+                values[i].type,
+                values[i].barrier,
+                values[i].rebate,
+                Option::Call,
                 RelinkableHandle<Quote>(underlyingH),
-                RelinkableHandle<TermStructure>(qTS), 
+                RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
-                exercise, 
+                exercise,
                 RelinkableHandle<BlackVolTermStructure>(volTS));
 
         double calculated = binaryBarrierOption.NPV();
@@ -145,29 +145,29 @@ void BinaryBarrierOptionTest::testAmericanValues() {
 
 
     BinaryBarrierOptionData values[] = {
-        { BinaryBarrier::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1,
           0.11, 0.01, 0.04, 100.5, 100, 94.8825 },
-        { BinaryBarrier::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1,
           0.11, 0.01, 0.00, 100.5, 100, 96.5042 },
-        { BinaryBarrier::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1,
           0.11, 0.01, 0.04, 120,   100, 5.5676 },
-        { BinaryBarrier::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1,
           0.2,  0.01, 0.04, 100.5, 100, 97.3989 },
-        { BinaryBarrier::CashAtHit, Option::Call, 1, 
+        { BinaryBarrier::CashAtHit, Option::Call, 1,
           0.11, 0.1,  0.04, 100.5, 100, 97.9405 },
-        { BinaryBarrier::CashAtHit, Option::Call, 2, 
+        { BinaryBarrier::CashAtHit, Option::Call, 2,
           0.11, 0.01, 0.04, 100.5, 100, 95.8913 },
-        { BinaryBarrier::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1,
           0.11, 0.01, 0.04, 99.5,  100, 97.7331 },
-        { BinaryBarrier::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1,
           0.11, 0.01, 0.00, 99.5,  100, 96.1715 },
-        { BinaryBarrier::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1,
           0.11, 0.01, 0.04, 80,    100, 8.1172 },
-        { BinaryBarrier::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1,
           0.20, 0.01, 0.04, 99.5,  100, 98.6140 },
-        { BinaryBarrier::CashAtHit, Option::Put,  1, 
+        { BinaryBarrier::CashAtHit, Option::Put,  1,
           0.11, 0.10, 0.04, 99.5,  100, 93.6491 },
-        { BinaryBarrier::CashAtHit, Option::Put,  2, 
+        { BinaryBarrier::CashAtHit, Option::Put,  2,
           0.11, 0.01, 0.04, 99.5,  100, 98.7776 }
     };
 
@@ -191,17 +191,17 @@ void BinaryBarrierOptionTest::testAmericanValues() {
         qH_SME->setValue(values[i].dividendYield);
 
         Date exDate = calendar.advance(today,values[i].years,Years);
-        AmericanExercise amExercise(today, exDate);
+        Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
 
         BinaryBarrierOption binaryBarrierOption(
-                values[i].type, 
-                values[i].barrier, 
-                values[i].rebate, 
-                values[i].optionType, 
+                values[i].type,
+                values[i].barrier,
+                values[i].rebate,
+                values[i].optionType,
                 RelinkableHandle<Quote>(underlyingH),
-                RelinkableHandle<TermStructure>(qTS), 
+                RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
-                amExercise, 
+                amExercise,
                 RelinkableHandle<BlackVolTermStructure>(volTS));
 
         double calculated = binaryBarrierOption.NPV();
@@ -252,9 +252,9 @@ void BinaryBarrierOptionTest::testSelfConsistency() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
-    EuropeanExercise exercise(exDate);
-    AmericanExercise amExercise(today, exDate);
-    Exercise exercises[] = { exercise, amExercise };
+    Handle<Exercise> exercise(new EuropeanExercise(exDate));
+    Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+    Handle<Exercise> exercises[] = { exercise, amExercise };
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
         new AnalyticEuropeanBinaryBarrierEngine());
@@ -295,15 +295,15 @@ void BinaryBarrierOptionTest::testSelfConsistency() {
 
                   // reference option
                   BinaryBarrierOption opt(
-                      binaryBarrierTypes[j], 
-                      k, 
-                      rebate, 
-                      type, 
+                      binaryBarrierTypes[j],
+                      k,
+                      rebate,
+                      type,
                       RelinkableHandle<Quote>(underlyingH),
-                      RelinkableHandle<TermStructure>(qTS), 
+                      RelinkableHandle<TermStructure>(qTS),
                       RelinkableHandle<TermStructure>(rTS),
-                      exercises[j], 
-                      RelinkableHandle<BlackVolTermStructure>(volTS), 
+                      exercises[j],
+                      RelinkableHandle<BlackVolTermStructure>(volTS),
                       engines[j]);
                   if (opt.NPV() > 1.0e-6) {
                       // greeks
@@ -418,7 +418,7 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
     Size requiredSamples = 1023;
     double requiredTolerance = 0.05;
     Size maxSamples = 1000000;
-    bool isBiased = false;
+    // bool isBiased = false;
     long seed = 1;
 
     double cashPayoff = 100.0;
@@ -449,10 +449,10 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
-    EuropeanExercise exercise(exDate);
-    AmericanExercise amExercise(today, exDate);
-    //Exercise exercises[] = {exercise, amExercise};
-    Exercise exercises[] = {amExercise};
+    Handle<Exercise> exercise(new EuropeanExercise(exDate));
+    Handle<Exercise> amExercise(new AmericanExercise(today, exDate));
+    // Handle<Exercise> exercises[] = { exercise, amExercise };
+    Handle<Exercise> exercises[] = {amExercise};
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
         new AnalyticEuropeanBinaryBarrierEngine());
@@ -464,7 +464,7 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
         new MCBinaryBarrierEngine<PseudoRandom, Statistics>
                   (maxTimeStepsPerYear, antitheticVariate, controlVariate,
                   requiredSamples, requiredTolerance,
-                  maxSamples, isBiased, seed));
+                  maxSamples, seed));
 
     //Handle<PricingEngine> engines[] = {euroEngine, amEngine};
     Handle<PricingEngine> engines[] = {amEngine};
@@ -493,15 +493,15 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
 
                   // reference option
                   BinaryBarrierOption opt(
-                      binaryBarrierTypes[j], 
-                      barrier, 
-                      cashPayoff, 
-                      type, 
+                      binaryBarrierTypes[j],
+                      barrier,
+                      cashPayoff,
+                      type,
                       RelinkableHandle<Quote>(underlyingH),
-                      RelinkableHandle<TermStructure>(qTS), 
+                      RelinkableHandle<TermStructure>(qTS),
                       RelinkableHandle<TermStructure>(rTS),
-                      exercises[j], 
-                      RelinkableHandle<BlackVolTermStructure>(volTS), 
+                      exercises[j],
+                      RelinkableHandle<BlackVolTermStructure>(volTS),
                       engines[j]);
                   calcAnalytic = opt.NPV();
 
@@ -509,11 +509,11 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
                   calcMC = opt.NPV();
 
                   //std::cout << "\nAnalytic: " +
-                  //    DoubleFormatter::toString(calcAnalytic) + 
-                  //    "   MC: " + DoubleFormatter::toString(calcMC) 
-                  //    << std::endl; 
+                  //    DoubleFormatter::toString(calcAnalytic) +
+                  //    "   MC: " + DoubleFormatter::toString(calcMC)
+                  //    << std::endl;
 
-                  // check                
+                  // check
                   if (relError(calcAnalytic,calcMC,u) > tolerance) {
                       CPPUNIT_FAIL(
                           "Option details: \n"

@@ -44,7 +44,7 @@ namespace QuantLib {
                     std::vector<Date> fixingDates,
                     const RelinkableHandle<TermStructure>& dividendTS,
                     const RelinkableHandle<TermStructure>& riskFreeTS,
-                    const Exercise& exercise,
+                    const Handle<Exercise>& exercise,
                     const RelinkableHandle<BlackVolTermStructure>& volTS,
                     const Handle<PricingEngine>& engine =
                     Handle<PricingEngine>(),

@@ -157,7 +157,9 @@ namespace QuantLib {
     }
 
     Time AnalyticBarrierEngine::residualTime() const {
-        return arguments_.maturity;
+        return arguments_.riskFreeTS->dayCounter().yearFraction(
+            arguments_.riskFreeTS->referenceDate(),
+            arguments_.exercise->lastDate());
     }
 
     double AnalyticBarrierEngine::volatility() const {

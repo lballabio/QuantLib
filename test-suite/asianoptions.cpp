@@ -67,7 +67,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     Handle<PricingEngine> engine(new AnalyticDiscreteAveragingAsianEngine);
             
     Date exDate = reference+360;
-    EuropeanExercise exercise(exDate);
+    Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
     Handle<SimpleQuote> volatility(new SimpleQuote(  0.2));
     Handle<BlackVolTermStructure> volCurve(new BlackConstantVol(reference,

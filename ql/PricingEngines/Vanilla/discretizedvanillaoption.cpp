@@ -33,7 +33,7 @@ namespace QuantLib {
 
         Time now = time();
         Size i;
-        switch(arguments_.exerciseType) {
+        switch(arguments_.exercise->type()) {
           case Exercise::American:
             if (now <= arguments_.stoppingTimes[1] && 
                 now >= arguments_.stoppingTimes[0])

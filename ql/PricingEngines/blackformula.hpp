@@ -33,33 +33,31 @@ namespace QuantLib {
                      double forward,
                      double discount,
                      double variance,
-                     double maturity,
                      Handle<StrikedTypePayoff> payoff);
         double value() const;
         double delta() const;
         double deltaForward() const;
         double gamma() const;
-        double theta() const;
-        double vega() const;
-        double rho() const;
-        double dividendRho() const;
+        double theta(double maturity) const;
+        double vega(double maturity) const;
+        double rho(double maturity) const;
+        double dividendRho(double maturity) const;
         double strikeSensitivity() const;
     private:
-        double spot_, forward_, discount_, variance_, maturity_;
+        double spot_, forward_, discount_, variance_;
         Handle<StrikedTypePayoff> payoff_;
 
-        double stdDev_, strike_, rate_, dividendDiscount_, dividendRate_;
-        double fD1_, fD2_, vol_;
+        double stdDev_, strike_, dividendDiscount_;
+        double fD1_, fD2_;
         double alpha_, beta_, NID1_, NID2_;
         bool cashOrNothing_;
     };
 
 
     inline BlackFormula::BlackFormula(double spot, double forward,
-        double discount, double variance, double maturity,
-        Handle<StrikedTypePayoff> payoff)
+        double discount, double variance, Handle<StrikedTypePayoff> payoff)
     : spot_(spot), forward_(forward), discount_(discount),
-      variance_(variance), maturity_(maturity), payoff_(payoff),
+      variance_(variance), payoff_(payoff),
       cashOrNothing_(false) {
 
         QL_REQUIRE(spot>0.0,
@@ -78,20 +76,13 @@ namespace QuantLib {
             "BlackFormula::BlackFormula : "
             "negative variance not allowed");
 
-        QL_REQUIRE(maturity>=0.0,
-            "BlackFormula::BlackFormula : "
-            "negative maturity not allowed");
-
         stdDev_ = QL_SQRT(variance);
         strike_ = payoff->strike();
-        rate_ = -QL_LOG(discount)/maturity;
         dividendDiscount_ = forward / spot * discount;
-        dividendRate_ = -QL_LOG(dividendDiscount_)/maturity;
 
 
         double fderD1, fderD2;
         if (variance>0.0) {
-            vol_ = QL_SQRT(variance/maturity);
             if (strike_==0.0) {
                 fderD1 = 0.0;
                 fderD2 = 0.0;
@@ -108,7 +99,6 @@ namespace QuantLib {
                 fderD2 = f.derivative(D2);
             }
         } else {
-            vol_ = 0.0;
             fderD1 = 0.0;
             fderD2 = 0.0;
             if (forward>strike_) {
@@ -210,21 +200,43 @@ namespace QuantLib {
         return (NID1_==0.0 ? 0.0 : NID1_* dividendDiscount_ / (spot_ * stdDev_));
     }
 
-    inline double BlackFormula::theta() const {
-        return rate_*value() - (rate_-dividendRate_)*spot_*delta()
-            - 0.5*vol_*vol_*spot_*spot_*gamma();
+    inline double BlackFormula::theta(double maturity) const {
+
+        QL_REQUIRE(maturity>=0.0,
+            "BlackFormula::theta : "
+            "negative maturity not allowed");
+
+        double rate = -QL_LOG(discount_)/maturity;
+        double dividendRate = -QL_LOG(dividendDiscount_)/maturity;
+
+        double vol;
+        if (variance_>0.0) vol = QL_SQRT(variance_/maturity);
+        else               vol = 0.0;
+
+        return rate*value() - (rate-dividendRate)*spot_*delta()
+            - 0.5*vol*vol*spot_*spot_*gamma();
     }
 
-    inline double BlackFormula::rho() const {
-        return maturity_ * discount_ * strike_ * beta_;
+    inline double BlackFormula::rho(double maturity) const {
+        QL_REQUIRE(maturity>=0.0,
+            "BlackFormula::rho : "
+            "negative maturity not allowed");
+
+        return maturity * discount_ * strike_ * beta_;
     }
 
-    inline double BlackFormula::dividendRho() const {
-        return - maturity_ * discount_ * forward_ * alpha_;
+    inline double BlackFormula::dividendRho(double maturity) const {
+        QL_REQUIRE(maturity>=0.0,
+            "BlackFormula::dividendRho : "
+            "negative maturity not allowed");
+        return - maturity * discount_ * forward_ * alpha_;
     }
 
-    inline double BlackFormula::vega() const {
-        return NID1_ * discount_ * forward_ * QL_SQRT(maturity_);
+    inline double BlackFormula::vega(double maturity) const {
+        QL_REQUIRE(maturity>=0.0,
+            "BlackFormula::vega : "
+            "negative maturity not allowed");
+        return NID1_ * discount_ * forward_ * QL_SQRT(maturity);
     }
 
     inline double BlackFormula::strikeSensitivity() const {

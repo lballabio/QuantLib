@@ -26,32 +26,39 @@
 
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Lattices/binomialtree.hpp>
-#include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <ql/Math/normaldistribution.hpp>
+#include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 
 namespace QuantLib {
 
-    //! Vanilla engine base class
+    //! Vanilla option engine base class
     class VanillaEngine : public GenericEngine<VanillaOption::arguments,
                                                VanillaOption::results> {};
 
-    //! Pricing engine for European options using analytical formulae
+    //! Pricing engine for European vanilla options using analytical formulae
     class AnalyticEuropeanEngine : public VanillaEngine {
       public:
         void calculate() const;
     };
 
+    /*! Pricing engine for American vanilla options with digital payoff
+        using analytic formulae
+    */
+    class AnalyticAmericanEngine : public VanillaEngine {
+      public:
+        void calculate() const;
+    };
 
-    //! Pricing engine for Vanilla options using integral approach
+    //! Pricing engine for European vanilla options using integral approach
     class IntegralEngine : public VanillaEngine {
       public:
         void calculate() const;
     };
 
 
-    //! Pricing engine for Vanilla options using binomial trees
+    //! Pricing engine for vanilla options using binomial trees
     template <class TreeType>
     class BinomialVanillaEngine : public VanillaEngine {
       public:
@@ -69,9 +76,11 @@ namespace QuantLib {
     void BinomialVanillaEngine<T>::calculate() const {
 
         double s0 = arguments_.underlying;
-        double v = arguments_.volTS->blackVol(arguments_.maturity, s0);
-        Rate r = arguments_.riskFreeTS->zeroYield(arguments_.maturity);
-        Rate q = arguments_.dividendTS->zeroYield(arguments_.maturity);
+        double v = arguments_.volTS->blackVol(
+            arguments_.exercise->lastDate(), s0);
+        Date maturityDate = arguments_.exercise->lastDate();
+        Rate r = arguments_.riskFreeTS->zeroYield(maturityDate);
+        Rate q = arguments_.dividendTS->zeroYield(maturityDate);
         Date referenceDate = arguments_.riskFreeTS->referenceDate();
         Date todaysDate    = arguments_.riskFreeTS->todaysDate();
         DayCounter dc      = arguments_.riskFreeTS->dayCounter();
@@ -96,18 +105,21 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
+        Time maturity = arguments_.riskFreeTS->dayCounter().yearFraction(
+            referenceDate, maturityDate);;
+
         Handle<DiffusionProcess> bs(
             new BlackScholesProcess(flatRiskFree, flatDividends, flatVol,s0));
-        Handle<Tree> tree(new T(bs, arguments_.maturity, timeSteps_,
+        Handle<Tree> tree(new T(bs, maturity, timeSteps_,
                                 payoff->strike()));
 
         Handle<Lattice> lattice(
-            new BlackScholesLattice(tree, r, arguments_.maturity, timeSteps_));
+            new BlackScholesLattice(tree, r, maturity, timeSteps_));
 
         Handle<DiscretizedAsset> option(
-            new DiscretizedVanillaOption(lattice,arguments_));
+            new DiscretizedVanillaOption(lattice, arguments_));
 
-        lattice->initialize(option, arguments_.maturity);
+        lattice->initialize(option, maturity);
         lattice->rollback(option, 0.0);
         results_.value = lattice->presentValue(option);
     }

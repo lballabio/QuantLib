@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! Forward engine base class
     template<class ArgumentsType, class ResultsType>
-    class ForwardEngine 
+    class ForwardEngine
         : public GenericEngine<ForwardOptionArguments<ArgumentsType>,
                                ResultsType> {
       public:
@@ -66,7 +66,7 @@ namespace QuantLib {
 
 /*
         #if defined(HAVE_BOOST)
-        Handle<TypePayoff> argumentsPayoff = 
+        Handle<TypePayoff> argumentsPayoff =
             boost::dynamic_pointer_cast<TypePayoff>(arguments_.payoff);
         QL_REQUIRE(argumentsPayoff,
                    "ForwardEngine: wrong payoff given");
@@ -81,7 +81,7 @@ namespace QuantLib {
 */
 
         #if defined(HAVE_BOOST)
-        Handle<StrikedTypePayoff> argumentsPayoff = 
+        Handle<StrikedTypePayoff> argumentsPayoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(argumentsPayoff,
                    "ForwardEngine: wrong payoff given");
@@ -95,7 +95,7 @@ namespace QuantLib {
 
         // maybe the forward value is "better", in some fashion
         // the right level is needed in order to interpolate
-        // the vol 
+        // the vol
         originalArguments_->underlying = arguments_.underlying;
         originalArguments_->dividendTS = RelinkableHandle<TermStructure>(
             Handle<TermStructure>(new
@@ -116,13 +116,10 @@ namespace QuantLib {
         originalArguments_->volTS =
             RelinkableHandle<BlackVolTermStructure>(
                 Handle<BlackVolTermStructure>(new
-                    ImpliedVolTermStructure(arguments_.volTS, 
+                    ImpliedVolTermStructure(arguments_.volTS,
                                             arguments_.resetDate)));
 
-        originalArguments_->exerciseType  = arguments_.exerciseType;
-        originalArguments_->stoppingTimes = arguments_.stoppingTimes;
-        originalArguments_->maturity      = arguments_.maturity;
-
+        originalArguments_->exercise  = arguments_.exercise;
 
         originalArguments_->validate();
     }
@@ -138,7 +135,7 @@ namespace QuantLib {
     }
 
     template<class ArgumentsType, class ResultsType>
-    void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults() 
+    void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults()
                                                                       const {
 
         Time resetTime = arguments_.riskFreeTS->dayCounter().yearFraction(
@@ -164,7 +161,7 @@ namespace QuantLib {
 
     //! Forward Performance engine base class
     template<class ArgumentsType, class ResultsType>
-    class ForwardPerformanceEngine 
+    class ForwardPerformanceEngine
         : public ForwardEngine<ArgumentsType, ResultsType> {
       public:
         ForwardPerformanceEngine(

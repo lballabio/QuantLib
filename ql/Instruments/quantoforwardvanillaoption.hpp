@@ -39,7 +39,7 @@ namespace QuantLib {
                  const RelinkableHandle<Quote>& underlying,
                  const RelinkableHandle<TermStructure>& dividendTS,
                  const RelinkableHandle<TermStructure>& riskFreeTS,
-                 const Exercise& exercise,
+                 const Handle<Exercise>& exercise,
                  const RelinkableHandle<BlackVolTermStructure>& volTS,
                  const Handle<PricingEngine>& engine,
                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,

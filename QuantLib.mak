@@ -52,6 +52,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.obj"
 	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticamericanengine.obj"
+	-@erase "$(INTDIR)\analyticamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -550,7 +552,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\analyticamericanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -725,7 +728,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\analyticamericanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -757,6 +761,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.obj"
 	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticamericanengine.obj"
+	-@erase "$(INTDIR)\analyticamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -1256,7 +1262,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\analyticamericanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1431,7 +1438,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\analyticamericanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1463,6 +1471,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.obj"
 	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticamericanengine.obj"
+	-@erase "$(INTDIR)\analyticamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -1961,7 +1971,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\analyticamericanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2136,7 +2147,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\analyticamericanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2168,6 +2180,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
 	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.obj"
 	-@erase "$(INTDIR)\analyticamericanbinarybarrierengine.sbr"
+	-@erase "$(INTDIR)\analyticamericanengine.obj"
+	-@erase "$(INTDIR)\analyticamericanengine.sbr"
 	-@erase "$(INTDIR)\analyticasianengine.obj"
 	-@erase "$(INTDIR)\analyticasianengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
@@ -2667,7 +2681,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\analyticamericanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2842,7 +2857,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\analyticamericanengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -3680,6 +3696,12 @@ SOURCE=.\ql\PricingEngines\Barrier\analyticeuropeanbinarybarrierengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.cpp
 
 "$(INTDIR)\americanmcengines.obj"	"$(INTDIR)\americanmcengines.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.cpp
+
+"$(INTDIR)\analyticamericanengine.obj"	"$(INTDIR)\analyticamericanengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

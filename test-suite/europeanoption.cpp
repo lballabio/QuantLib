@@ -20,7 +20,6 @@
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/Calendars/nullcalendar.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 #include <map>
@@ -34,7 +33,7 @@ namespace {
 
     // utilities
 
-    enum EngineType { Analytic, 
+    enum EngineType { Analytic,
                       JR, CRR, EQP, TGEO, TIAN, LR,
                       PseudoMonteCarlo, QuasiMonteCarlo };
 
@@ -45,7 +44,7 @@ namespace {
             return 1.0e+10;
     }
 
-    Handle<VanillaOption> 
+    Handle<VanillaOption>
     makeEuropeanOption(Option::Type type,
                        const Handle<Quote>& u,
                        double k,
@@ -100,8 +99,8 @@ namespace {
             #if defined(QL_PATCH_MICROSOFT)
             engine = Handle<PricingEngine>(
                         new MCEuropeanEngine<LowDiscrepancy>(1, false, false,
-                                                             1023, 
-                                                             Null<double>(), 
+                                                             1023,
+                                                             Null<double>(),
                                                              Null<int>()));
             #else
             engine = MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(1)
@@ -116,19 +115,20 @@ namespace {
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(type, k));
 
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
+
         return Handle<VanillaOption>(
             new VanillaOption(payoff, RelinkableHandle<Quote>(u),
                               RelinkableHandle<TermStructure>(q),
                               RelinkableHandle<TermStructure>(r),
-                              EuropeanExercise(exDate),
+                              exercise,
                               RelinkableHandle<BlackVolTermStructure>(vol),
                               engine));
     }
 
     Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward) {
         Date today = Date::todaysDate();
-        Calendar calendar = NullCalendar();
-        Date reference = calendar.advance(today,2,Days);
+        Date reference = today;
         return Handle<TermStructure>(
             new FlatForward(today,reference,
                             RelinkableHandle<Quote>(forward),
@@ -138,8 +138,7 @@ namespace {
     Handle<BlackVolTermStructure> makeFlatVolatility(
                                      const Handle<Quote>& volatility) {
         Date today = Date::todaysDate();
-        Calendar calendar = NullCalendar();
-        Date reference = calendar.advance(today,2,Days);
+        Date reference = today;
         return Handle<BlackVolTermStructure>(
             new BlackConstantVol(reference,
                                  RelinkableHandle<Quote>(volatility),
@@ -209,19 +208,18 @@ void EuropeanOptionTest::testGreeks() {
     Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
 
     Date today = Date::todaysDate();
-    Calendar calendar = NullCalendar();
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
         for (Size k=0; k<LENGTH(lengths); k++) {
           // option to check
-          Date exDate = calendar.advance(today,lengths[k],Years);
+          Date exDate = today.plusDays(lengths[k]*365);
           Handle<VanillaOption> option =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve);
           // time-shifted exercise dates and options
-          Date exDateP = calendar.advance(exDate,1,Days),
-               exDateM = calendar.advance(exDate,-1,Days);
+          Date exDateP = exDate.plusDays(1),
+               exDateM = exDate.plusDays(-1);
           Time dT = (exDateP-exDateM)/365.0;
           Handle<VanillaOption> optionP =
               makeEuropeanOption(types[i],underlying,strikes[j],
@@ -466,7 +464,7 @@ namespace {
 
         Handle<SimpleQuote> underlying(new SimpleQuote(0.0));
         Handle<SimpleQuote> volatility(new SimpleQuote(0.0));
-        Handle<BlackVolTermStructure> volCurve = 
+        Handle<BlackVolTermStructure> volCurve =
             makeFlatVolatility(volatility);
         Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
         Handle<TermStructure> divCurve = makeFlatCurve(qRate);
@@ -474,12 +472,11 @@ namespace {
         Handle<TermStructure> rfCurve = makeFlatCurve(rRate);
 
         Date today = Date::todaysDate();
-        Calendar calendar = NullCalendar();
 
         for (Size i=0; i<LENGTH(types); i++) {
           for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(lengths); k++) {
-              Date exDate = calendar.advance(today,lengths[k],Years);
+              Date exDate = today.plusDays(lengths[k]*365);
               // reference option
               Handle<VanillaOption> refOption =
                   makeEuropeanOption(types[i],underlying,strikes[j],
@@ -510,9 +507,9 @@ namespace {
                       for (Size ii=0; ii<N; ii++) {
                           double value = options[engines[ii]]->NPV();
                           if (relativeError(value,refValue,u) > tolerance) {
-                              CPPUNIT_FAIL(
-                                  OptionTypeFormatter::toString(types[i])
-                                  + " option :\n"
+                              CPPUNIT_FAIL("European "
+                                  + OptionTypeFormatter::toString(types[i]) +
+                                  " option :\n"
                                   "    underlying value: "
                                   + DoubleFormatter::toString(u) + "\n"
                                   "    strike:           "
@@ -521,7 +518,7 @@ namespace {
                                   + DoubleFormatter::toString(q) + "\n"
                                   "    risk-free rate:   "
                                   + DoubleFormatter::toString(r) + "\n"
-                                  "    today:         "
+                                  "    reference date:   "
                                   + DateFormatter::toString(today) + "\n"
                                   "    maturity:         "
                                   + DateFormatter::toString(exDate) + "\n"
@@ -529,7 +526,7 @@ namespace {
                                   + DoubleFormatter::toString(v) + "\n\n"
                                   "    analytic value: "
                                   + DoubleFormatter::toString(refValue) + "\n"
-                                  "    " 
+                                  "    "
                                   + engineTypeToString(engines[ii]) + ":  "
                                   + DoubleFormatter::toString(value));
                           }
@@ -559,25 +556,25 @@ void EuropeanOptionTest::testMcEngines() {
 CppUnit::Test* EuropeanOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("European option tests");
+/*
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
-                   ("Testing Vanilla option values",
+                   ("Testing European option values",
                     &EuropeanOptionTest::testValues));
-    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
-                   ("Testing European option greeks",
-                    &EuropeanOptionTest::testGreeks));
+*/
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing binomial European engines "
                     "against analytic results",
                     &EuropeanOptionTest::testBinomialEngines));
-/*
+    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
+                   ("Testing European option greeks",
+                    &EuropeanOptionTest::testGreeks));
+    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
+                   ("Testing European option implied volatility",
+                    &EuropeanOptionTest::testImpliedVol));
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing Monte Carlo European engines "
                     "against analytic results",
                     &EuropeanOptionTest::testMcEngines));
-    tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
-                   ("Testing European option implied volatility",
-                    &EuropeanOptionTest::testImpliedVol));
-*/
     return tests;
 }
 

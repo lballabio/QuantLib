@@ -85,11 +85,10 @@ namespace QuantLib {
                    "no reset dates given");
         // sort resetDates here ???
         for (Size i = 0; i < resetDates.size(); i++) {
-            Time resetTime = riskFreeTS->dayCounter().yearFraction(
-                                  riskFreeTS->referenceDate(), resetDates[i]);
-            QL_REQUIRE(maturity >= resetTime,
+
+            QL_REQUIRE(exercise->lastDate() >= resetDates[i],
                        "CliquetOption::arguments::validate() : "
-                       "reset time greater than maturity");
+                       "reset date greater than exercise last date");
         }
     }
 

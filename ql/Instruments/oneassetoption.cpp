@@ -30,7 +30,7 @@ namespace QuantLib {
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const Exercise& exercise,
+                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode,
@@ -45,7 +45,7 @@ namespace QuantLib {
     }
 
     bool OneAssetOption::isExpired() const {
-        return exercise_.lastDate() < riskFreeTS_->referenceDate();
+        return exercise_->lastDate() < riskFreeTS_->referenceDate();
     }
 
     double OneAssetOption::delta() const {
@@ -100,7 +100,7 @@ namespace QuantLib {
                    "OneAssetOption::impliedVolatility : "
                    "option expired");
 
-        double guess = volTS_->blackVol(exercise_.lastDate(),
+        double guess = volTS_->blackVol(exercise_->lastDate(),
                                         underlying_->value());
 
         ImpliedVolHelper f(engine_,targetValue);
@@ -130,16 +130,19 @@ namespace QuantLib {
         arguments->dividendTS = dividendTS_;
         arguments->riskFreeTS = riskFreeTS_;
 
-        arguments->maturity = riskFreeTS_->dayCounter().yearFraction(
-                          riskFreeTS_->referenceDate(), exercise_.lastDate());
-        arguments->exerciseType = exercise_.type();
+        arguments->exercise = exercise_;
+
+
+        // shouldn't be here
+        // it should be moved elsewhere
         arguments->stoppingTimes =
-            std::vector<Time>(exercise_.dates().size());
-        for (Size i=0; i<exercise_.dates().size(); i++) {
+            std::vector<Time>(exercise_->dates().size());
+        for (Size i=0; i<exercise_->dates().size(); i++) {
             arguments->stoppingTimes[i] =
                 riskFreeTS_->dayCounter().yearFraction(
-                             riskFreeTS_->referenceDate(), exercise_.date(i));
+                             riskFreeTS_->referenceDate(), exercise_->date(i));
         }
+
 
         arguments->volTS = volTS_;
     }

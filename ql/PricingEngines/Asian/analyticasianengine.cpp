@@ -30,7 +30,7 @@ namespace QuantLib {
                    "AnalyticDiscreteAveragingAsianEngine::calculate() : "
                    "not a geometric average option");
 
-        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "AnalyticDiscreteAveragingAsianEngine::calculate() : "
                    "not an European Option");
 
@@ -68,7 +68,8 @@ namespace QuantLib {
             fixingTimes.end(), 0.0);
 
 
-        double vola = arguments_.volTS->blackVol(arguments_.maturity,
+        double vola = arguments_.volTS->blackVol(
+            arguments_.exercise->lastDate(),
             payoff->strike());
         double temp = 0.0;
         for (i=pastFixings+1; i<N; i++)
@@ -78,9 +79,9 @@ namespace QuantLib {
 
 
         Rate dividendRate =
-            arguments_.dividendTS->zeroYield(arguments_.maturity);
+            arguments_.dividendTS->zeroYield(arguments_.exercise->lastDate());
         Rate riskFreeRate =
-            arguments_.riskFreeTS->zeroYield(arguments_.maturity);
+            arguments_.riskFreeTS->zeroYield(arguments_.exercise->lastDate());
         double nu = riskFreeRate - dividendRate - 0.5*vola*vola;
         double runningLog = QL_LOG(arguments_.runningProduct);
         double muG = pastWeight * runningLog +
@@ -90,19 +91,32 @@ namespace QuantLib {
 
 
         DiscountFactor riskFreeDiscount =
-            arguments_.riskFreeTS->discount(arguments_.maturity);
+            arguments_.riskFreeTS->discount(arguments_.exercise->lastDate());
 
         BlackFormula black(arguments_.underlying, forwardPrice, riskFreeDiscount,
-            variance, arguments_.maturity, payoff);
+            variance, payoff);
 
         results_.value = black.value();
         results_.delta = black.delta();
         // results_.deltaForward = black.value();
         results_.gamma = black.gamma();
-        results_.theta = black.theta();
-        results_.rho = black.rho();
-        results_.dividendRho = black.dividendRho();
-        results_.vega = black.vega();
+
+        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
+            arguments_.riskFreeTS->referenceDate(),
+            arguments_.exercise->lastDate());
+        results_.rho = black.rho(t);
+
+        t = arguments_.dividendTS->dayCounter().yearFraction(
+            arguments_.dividendTS->referenceDate(),
+            arguments_.exercise->lastDate());
+        results_.dividendRho = black.dividendRho(t);
+
+        t = arguments_.volTS->dayCounter().yearFraction(
+            arguments_.volTS->referenceDate(),
+            arguments_.exercise->lastDate());
+        results_.vega = black.vega(t);
+        results_.theta = black.theta(t);
+
         results_.strikeSensitivity = black.strikeSensitivity();
 
     }

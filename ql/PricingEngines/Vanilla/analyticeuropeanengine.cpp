@@ -26,7 +26,7 @@ namespace QuantLib {
 
     void AnalyticEuropeanEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "AnalyticEuropeanEngine::calculate() : "
                    "not an European Option");
 
@@ -39,27 +39,40 @@ namespace QuantLib {
         Handle<StrikedTypePayoff> payoff = arguments_.payoff;
         #endif
 
-        double variance = arguments_.volTS->blackVariance(arguments_.maturity,
+        double variance = arguments_.volTS->blackVariance(arguments_.exercise->lastDate(),
                                                           payoff->strike());
         DiscountFactor dividendDiscount =
-            arguments_.dividendTS->discount(arguments_.maturity);
+            arguments_.dividendTS->discount(arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
-            arguments_.riskFreeTS->discount(arguments_.maturity);
+            arguments_.riskFreeTS->discount(arguments_.exercise->lastDate());
         double forwardPrice = arguments_.underlying *
             dividendDiscount / riskFreeDiscount;
 
         BlackFormula black(arguments_.underlying, forwardPrice, riskFreeDiscount,
-            variance, arguments_.maturity, payoff);
+            variance, payoff);
 
 
         results_.value = black.value();
         results_.delta = black.delta();
         // results_.deltaForward = black.value();
         results_.gamma = black.gamma();
-        results_.theta = black.theta();
-        results_.rho = black.rho();
-        results_.dividendRho = black.dividendRho();
-        results_.vega = black.vega();
+
+        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
+            arguments_.riskFreeTS->referenceDate(),
+            arguments_.exercise->lastDate());
+        results_.rho = black.rho(t);
+
+        t = arguments_.dividendTS->dayCounter().yearFraction(
+            arguments_.dividendTS->referenceDate(),
+            arguments_.exercise->lastDate());
+        results_.dividendRho = black.dividendRho(t);
+
+        t = arguments_.volTS->dayCounter().yearFraction(
+            arguments_.volTS->referenceDate(),
+            arguments_.exercise->lastDate());
+        results_.vega = black.vega(t);
+        results_.theta = black.theta(t);
+
         results_.strikeSensitivity = black.strikeSensitivity();
     }
 

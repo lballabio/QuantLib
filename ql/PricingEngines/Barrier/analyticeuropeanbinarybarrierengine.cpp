@@ -28,7 +28,7 @@ namespace QuantLib {
 
     void AnalyticEuropeanBinaryBarrierEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "AnalyticBinaryBarrierEngine::calculate() : "
                    "not an European Option");
 
@@ -47,16 +47,20 @@ namespace QuantLib {
         double u = arguments_.underlying;
         double k = arguments_.barrier;
 
-        Time T = arguments_.maturity;
+        double vol = arguments_.volTS->blackVol(
+            arguments_.exercise->lastDate(), k);
 
-        double vol = arguments_.volTS->blackVol(T, k);
+        DiscountFactor discount = arguments_.riskFreeTS->discount(
+            arguments_.exercise->lastDate());
+        Rate r = arguments_.riskFreeTS->zeroYield(
+            arguments_.exercise->lastDate());
+        Rate q = arguments_.dividendTS->zeroYield(
+            arguments_.exercise->lastDate());
 
-        DiscountFactor discount =
-            arguments_.riskFreeTS->discount(T);
-        Rate r = arguments_.riskFreeTS->zeroYield(T);
-        Rate q = arguments_.dividendTS->zeroYield(T);
+        double volSqrtT = QL_SQRT(arguments_.volTS->blackVariance(
+            arguments_.exercise->lastDate(), k));
 
-        double volSqrtT = vol * QL_SQRT(T);
+        double T = volSqrtT*volSqrtT/(vol*vol);
 
         CumulativeNormalDistribution f;
 

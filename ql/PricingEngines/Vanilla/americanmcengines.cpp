@@ -34,13 +34,18 @@ namespace QuantLib {
         #else
         Handle<PlainVanillaPayoff> arg_payoff = arguments_.payoff;
         #endif
-        Option::Type    type    = arg_payoff->optionType();
-        double          s0      = arguments_.underlying;
-        double          strike  = arg_payoff->strike();
-        Time            T       = arguments_.maturity;
-        // double          vol     = arguments_.volTS->blackVol(T, s0);
-        Rate            r       = arguments_.riskFreeTS->zeroYield(T);
-        // Rate            q       = arguments_.dividendTS->zeroYield(T);
+
+        Option::Type type = arg_payoff->optionType();
+        double s0 = arguments_.underlying;
+        double strike  = arg_payoff->strike();
+
+        // double          vol     = arguments_.volTS->blackVol(
+        //     arguments_.exercise->lastDate(), s0);
+        Rate r = arguments_.riskFreeTS->zeroYield(
+            arguments_.exercise->lastDate());
+        // Rate q = arguments_.dividendTS->zeroYield(
+        //     arguments_.exercise->lastDate());
+
         // unsigned long   seed    = 1000L;
         PlainVanillaPayoff payoff(type, strike);
 
@@ -70,6 +75,9 @@ namespace QuantLib {
                                                         arguments_.volTS, 
                                                         s0));
 
+        Time T = arguments_.riskFreeTS->dayCounter().yearFraction(
+            arguments_.riskFreeTS->referenceDate(),
+            arguments_.exercise->lastDate());
         // Exercise dates
         TimeGrid grid(T, timeSteps_);
 

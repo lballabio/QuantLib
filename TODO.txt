@@ -1,3 +1,7 @@
+remove std::vector<Time> stoppingTimes form Option::arguments
+
+forbid and handle the case of Bermudan Exercise with a single date
+
 add _controlfp(_EM_INEXACT, _MCW_EM ) ;
 http://www.wilmott.com/messageview.cfm?catid=10&threadid=9481
 

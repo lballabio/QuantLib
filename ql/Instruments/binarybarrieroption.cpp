@@ -35,7 +35,7 @@ namespace QuantLib {
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const Exercise& exercise,
+                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode, 
@@ -46,7 +46,7 @@ namespace QuantLib {
       type_(type) {
 
         if (IsNull(engine)) {
-            switch (exercise.type()) {
+            switch (exercise->type()) {
               case Exercise::European:
                 setPricingEngine(Handle<PricingEngine>(
                                            new AnalyticEuropeanBinaryBarrierEngine));
@@ -61,7 +61,7 @@ namespace QuantLib {
     }
 
     bool BinaryBarrierOption::isExpired() const {
-        return exercise_.lastDate() < riskFreeTS_->referenceDate();
+        return exercise_->lastDate() < riskFreeTS_->referenceDate();
     }
 
     void BinaryBarrierOption::setupArguments(Arguments* args) const {

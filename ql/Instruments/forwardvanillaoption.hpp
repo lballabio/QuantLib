@@ -47,7 +47,7 @@ namespace QuantLib {
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const Exercise& exercise,
+                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
                          double moneyness,
@@ -82,7 +82,7 @@ namespace QuantLib {
         QL_REQUIRE(resetTime >=0,
                    "ForwardOption::arguments::validate() : "
                    "negative reset time given");
-        QL_REQUIRE(maturity >= resetTime,
+        QL_REQUIRE(exercise->lastDate() >= resetDate,
                    "ForwardOption::arguments::validate() : "
                    "reset time greater than maturity");
     }

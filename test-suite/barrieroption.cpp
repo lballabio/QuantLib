@@ -137,7 +137,7 @@ void BarrierOptionTest::testHaugValues() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,6,Months);
-    EuropeanExercise exercise(exDate);
+    Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
@@ -277,7 +277,7 @@ void BarrierOptionTest::testBabsiriValues() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
-    EuropeanExercise exercise(exDate);
+    Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
@@ -374,7 +374,7 @@ void BarrierOptionTest::testBeagleholeValues() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
-    EuropeanExercise exercise(exDate);
+    Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);

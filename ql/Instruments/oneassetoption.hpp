@@ -35,7 +35,7 @@ namespace QuantLib {
         OneAssetOption(const RelinkableHandle<Quote>& underlying,
                        const RelinkableHandle<TermStructure>& dividendTS,
                        const RelinkableHandle<TermStructure>& riskFreeTS,
-                       const Exercise& exercise,
+                       const Handle<Exercise>& exercise,
                        const RelinkableHandle<BlackVolTermStructure>& volTS,
                        const Handle<PricingEngine>& engine =
                                             Handle<PricingEngine>(),
@@ -79,7 +79,7 @@ namespace QuantLib {
                        vega_, rho_, dividendRho_;
         // arguments
         RelinkableHandle<Quote> underlying_;
-        Exercise exercise_;
+        Handle<Exercise> exercise_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
         RelinkableHandle<BlackVolTermStructure> volTS_;
       private:

@@ -102,7 +102,7 @@ namespace QuantLib {
                    "MCVanillaEngine::calculate: "
                    "neither tolerance nor number of samples set");
 
-        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "MCVanillaEngine::calculate() : "
                    "not an European Option");
 

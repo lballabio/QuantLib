@@ -37,7 +37,7 @@ namespace QuantLib {
                                                BarrierOption::results> {};
 
     //! Pricing engine for Barrier options using analytical formulae
-    /*! The formulas are taken from "Option pricing formulas", 
+    /*! The formulas are taken from "Option pricing formulas",
          E.G. Haug, McGraw-Hill, p.69 and following.
     */
     class AnalyticBarrierEngine : public BarrierEngine {
@@ -117,7 +117,7 @@ namespace QuantLib {
                                                    long seed)
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate,
                                        controlVariate),
-      maxTimeStepsPerYear_(maxTimeStepsPerYear), 
+      maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples),
       maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
@@ -127,17 +127,17 @@ namespace QuantLib {
 
     template<class RNG, class S>
     inline
-    Handle<QL_TYPENAME MCBarrierEngine<RNG,S>::path_generator_type> 
+    Handle<QL_TYPENAME MCBarrierEngine<RNG,S>::path_generator_type>
     MCBarrierEngine<RNG,S>::pathGenerator() const
     {
         Handle<DiffusionProcess> bs(
-                              new BlackScholesProcess(arguments_.riskFreeTS, 
+                              new BlackScholesProcess(arguments_.riskFreeTS,
                                                       arguments_.dividendTS,
-                                                      arguments_.volTS, 
+                                                      arguments_.volTS,
                                                       arguments_.underlying));
 
         TimeGrid grid = timeGrid();
-        typename RNG::rsg_type gen = 
+        typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
         return Handle<path_generator_type>(
                                       new path_generator_type(bs, grid, gen));
@@ -148,7 +148,7 @@ namespace QuantLib {
     inline Handle<QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>
     MCBarrierEngine<RNG,S>::pathPricer() const {
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> payoff = 
+        Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCBarrierEngine: non-plain payoff given");
@@ -160,25 +160,25 @@ namespace QuantLib {
         if (isBiased_) {
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
-                    arguments_.barrierType, arguments_.barrier, 
-                    arguments_.rebate, payoff->optionType(), 
-                    payoff->strike(), arguments_.underlying, 
+                    arguments_.barrierType, arguments_.barrier,
+                    arguments_.rebate, payoff->optionType(),
+                    payoff->strike(), arguments_.underlying,
                     arguments_.riskFreeTS));
         } else {
             TimeGrid grid = timeGrid();
-            UniformRandomSequenceGenerator 
+            UniformRandomSequenceGenerator
                 sequenceGen(grid.size()-1, UniformRandomGenerator(5));
 
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
-                    arguments_.barrierType, arguments_.barrier, 
-                    arguments_.rebate, payoff->optionType(), 
-                    payoff->strike(), arguments_.underlying, 
+                    arguments_.barrierType, arguments_.barrier,
+                    arguments_.rebate, payoff->optionType(),
+                    payoff->strike(), arguments_.underlying,
                     arguments_.riskFreeTS,
                     Handle<DiffusionProcess> (new BlackScholesProcess(
-                                    arguments_.riskFreeTS, 
+                                    arguments_.riskFreeTS,
                                     arguments_.dividendTS,
-                                    arguments_.volTS, 
+                                    arguments_.volTS,
                                     arguments_.underlying)),
                     sequenceGen));
         }
@@ -187,8 +187,12 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
-        return TimeGrid(arguments_.maturity, 
-                        Size(arguments_.maturity * maxTimeStepsPerYear_));
+
+        Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
+            arguments_.riskFreeTS->referenceDate(),
+            arguments_.exercise->lastDate());
+
+        return TimeGrid(t, Size(t * maxTimeStepsPerYear_));
     }
 
 
@@ -201,7 +205,7 @@ namespace QuantLib {
                    "neither tolerance nor number of samples set");
 
         // what exercise type is a barrier option?
-        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "MCBarrierEngine::calculate() : "
                    "not an European Option");
 
@@ -232,18 +236,18 @@ namespace QuantLib {
                     controlPE->results());
             double controlVariateValue = controlResults->value;
 
-            mcModel_ = 
+            mcModel_ =
                 Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
-                        pathGenerator(), pathPricer(), stats_type(), 
-                        antitheticVariate_, controlPP, 
+                        pathGenerator(), pathPricer(), stats_type(),
+                        antitheticVariate_, controlPP,
                         controlVariateValue));
             */
         } else {
-            mcModel_ = 
+            mcModel_ =
                 Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
-                        pathGenerator(), pathPricer(), S(), 
+                        pathGenerator(), pathPricer(), S(),
                         antitheticVariate_));
         }
 
@@ -258,7 +262,7 @@ namespace QuantLib {
 
         results_.value = mcModel_->sampleAccumulator().mean();
         if (RNG::allowsErrorEstimate)
-            results_.errorEstimate = 
+            results_.errorEstimate =
                 mcModel_->sampleAccumulator().errorEstimate();
     }
 

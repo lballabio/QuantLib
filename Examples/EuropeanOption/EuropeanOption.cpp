@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
         method ="Call-Put parity";
         Option::Type reverseType =
             (type==Option::Call ? Option::Put : Option::Call);
-        double coefficient = 
+        double coefficient =
             (type==Option::Call ? 1.0 : -1.0);
         value = EuropeanOption(reverseType, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility).value()
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 
         // third method: Integral
         method ="Integral";
-        WeightedPayoff po(type, maturity, strike, underlying, 
+        WeightedPayoff po(type, maturity, strike, underlying,
                           volatility, riskFreeRate, dividendYield);
         SegmentIntegral integrator(5000);
 
@@ -192,9 +192,10 @@ int main(int argc, char* argv[])
         exDates[0]=midlifeDate;
         exDates[1]=exerciseDate;
 
-        EuropeanExercise exercise(exerciseDate);
-        AmericanExercise amExercise(settlementDate, exerciseDate);
-        BermudanExercise berExercise(exDates);
+        Handle<Exercise> exercise(new EuropeanExercise(exerciseDate));
+        Handle<Exercise> amExercise(new AmericanExercise(settlementDate,
+                                                         exerciseDate));
+        Handle<Exercise> berExercise(new BermudanExercise(exDates));
 
 
         RelinkableHandle<Quote> underlyingH(
@@ -225,26 +226,26 @@ int main(int argc, char* argv[])
         strikes[3] = underlying*1.2;
 
         Matrix vols(4,4);
-        vols[0][0] = volatility*1.1; 
-                     vols[0][1] = volatility; 
-                                  vols[0][2] = volatility*0.9; 
+        vols[0][0] = volatility*1.1;
+                     vols[0][1] = volatility;
+                                  vols[0][2] = volatility*0.9;
                                                vols[0][3] = volatility*0.8;
-        vols[1][0] = volatility*1.1; 
-                     vols[1][1] = volatility; 
-                                  vols[1][2] = volatility*0.9; 
+        vols[1][0] = volatility*1.1;
+                     vols[1][1] = volatility;
+                                  vols[1][2] = volatility*0.9;
                                                vols[1][3] = volatility*0.8;
-        vols[2][0] = volatility*1.1; 
-                     vols[2][1] = volatility; 
-                                  vols[2][2] = volatility*0.9; 
+        vols[2][0] = volatility*1.1;
+                     vols[2][1] = volatility;
+                                  vols[2][2] = volatility*0.9;
                                                vols[2][3] = volatility*0.8;
-        vols[3][0] = volatility*1.1; 
-                     vols[3][1] = volatility; 
-                                  vols[3][2] = volatility*0.9; 
+        vols[3][0] = volatility*1.1;
+                     vols[3][1] = volatility;
+                                  vols[3][2] = volatility*0.9;
                                                vols[3][3] = volatility*0.8;
 
         RelinkableHandle<BlackVolTermStructure> blackSurface(
             Handle<BlackVolTermStructure>(
-                new BlackVarianceSurface(settlementDate, dates, 
+                new BlackVarianceSurface(settlementDate, dates,
                                          strikes, vols)));
 
 
@@ -319,7 +320,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
-        
+
 */
         Size timeSteps = 801;
 
@@ -433,8 +434,8 @@ int main(int argc, char* argv[])
 
         #if defined(QL_PATCH_MICROSOFT)
         Handle<PricingEngine> mcengine1(
-            new MCEuropeanEngine<PseudoRandom>(timeSteps, false, false, 
-                                               Null<int>(), 0.02, 
+            new MCEuropeanEngine<PseudoRandom>(timeSteps, false, false,
+                                               Null<int>(), 0.02,
                                                Null<int>(), mcSeed));
         #else
         Handle<PricingEngine> mcengine1 =
@@ -460,11 +461,11 @@ int main(int argc, char* argv[])
 
         #if defined(QL_PATCH_MICROSOFT)
         Handle<PricingEngine> mcengine2(
-            new MCEuropeanEngine<LowDiscrepancy>(timeSteps, false, false, 
+            new MCEuropeanEngine<LowDiscrepancy>(timeSteps, false, false,
                                                  nSamples, Null<double>(),
                                                  Null<int>()));
         #else
-        Handle<PricingEngine> mcengine2 = 
+        Handle<PricingEngine> mcengine2 =
             MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
                                                   .withSamples(nSamples);
         #endif
