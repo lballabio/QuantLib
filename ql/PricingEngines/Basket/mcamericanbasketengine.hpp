@@ -59,6 +59,11 @@ namespace QuantLib {
     // put all the asset prices into a vector.
     // s0 is not included in the vector
     std::vector<double> getAssetSequence(double s0, const Path& path);
+    
+    // put all the antithetic asset prices into a vector.
+    // s0 is not included in the vector
+    std::vector<double> getAntiAssetSequence(double s0, const Path& path);
+
 
 }
 
