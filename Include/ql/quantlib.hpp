@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.28  2001/08/08 15:47:10  marmar
+// Class SegmentIntegral computes the integral of a function over an interval
+//
 // Revision 1.27  2001/08/07 17:33:03  nando
 // 1) StandardPathGenerator now is GaussianPathGenerator;
 // 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
@@ -154,6 +157,7 @@
 #include "ql/Math/matrix.hpp"
 #include "ql/Math/multivariateaccumulator.hpp"
 #include "ql/Math/normaldistribution.hpp"
+#include "ql/Math/segmentintegral.hpp"
 #include "ql/Math/statistics.hpp"
 #include "ql/Math/symmetriceigenvalues.hpp"
 #include "ql/Math/symmetricschurdecomposition.hpp"

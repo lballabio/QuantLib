@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.5  2001/08/08 15:47:11  marmar
+# Class SegmentIntegral computes the integral of a function over an interval
+#
 # Revision 1.4  2001/05/28 13:09:55  nando
 # R019-branch-merge3 merged into trunk
 #
@@ -20,5 +23,6 @@ include_HEADERS = \
 	linearinterpolation.hpp \
 	lexicographicalview.hpp \
 	multivariateaccumulator.hpp \
+	segmentintegral.hpp \
 	symmetriceigenvalues.hpp \
 	symmetricschurdecomposition.hpp

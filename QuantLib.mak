@@ -156,6 +156,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\secant.sbr"
+	-@erase "$(INTDIR)\segmentintegral.obj"
+	-@erase "$(INTDIR)\segmentintegral.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
@@ -277,7 +279,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\segmentintegral.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -361,7 +364,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\segmentintegral.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -494,6 +498,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\secant.sbr"
+	-@erase "$(INTDIR)\segmentintegral.obj"
+	-@erase "$(INTDIR)\segmentintegral.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
@@ -616,7 +622,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\segmentintegral.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -700,7 +707,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\segmentintegral.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -833,6 +841,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\secant.sbr"
+	-@erase "$(INTDIR)\segmentintegral.obj"
+	-@erase "$(INTDIR)\segmentintegral.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
@@ -955,7 +965,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\segmentintegral.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1039,7 +1050,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\segmentintegral.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1172,6 +1184,8 @@ CLEAN :
 	-@erase "$(INTDIR)\scheduler.sbr"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\secant.sbr"
+	-@erase "$(INTDIR)\segmentintegral.obj"
+	-@erase "$(INTDIR)\segmentintegral.sbr"
 	-@erase "$(INTDIR)\simpleswap.obj"
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
@@ -1293,7 +1307,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\segmentintegral.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1377,7 +1392,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\segmentintegral.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1550,6 +1566,12 @@ SOURCE=.\Sources\Math\multivariateaccumulator.cpp
 SOURCE=.\Sources\Math\normaldistribution.cpp
 
 "$(INTDIR)\normaldistribution.obj"	"$(INTDIR)\normaldistribution.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\Math\segmentintegral.cpp
+
+"$(INTDIR)\segmentintegral.obj"	"$(INTDIR)\segmentintegral.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

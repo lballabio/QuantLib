@@ -415,6 +415,14 @@ SOURCE=.\Include\ql\Math\riskmeasures.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Sources\Math\segmentintegral.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Math\segmentintegral.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\Math\statistics.cpp
 # End Source File
 # Begin Source File

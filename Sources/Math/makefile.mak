@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.6  2001/08/08 15:47:11  marmar
+# Class SegmentIntegral computes the integral of a function over an interval
+#
 # Revision 1.5  2001/05/24 12:52:02  nando
 # smoothing #include xx.hpp
 #
@@ -26,6 +29,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 OBJS = matrix.obj$(_D) \
        multivariateaccumulator.obj$(_D) \
        normaldistribution.obj$(_D) \
+       segmentintegral.obj$(_D) \
        statistics.obj$(_D) \
        symmetricschurdecomposition.obj$(_D)
 
