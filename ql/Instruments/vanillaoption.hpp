@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
@@ -16,6 +15,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file vanillaoption.hpp
     \brief Vanilla (no discrete dividends, no barriers) option on a single asset
 
@@ -94,7 +94,7 @@ namespace QuantLib {
               private:
                 Handle<PricingEngine> engine_;
                 double targetValue_;
-                PricingEngines::VanillaOptionArguments* arguments_;
+                Handle<SimpleMarketElement> vol_;
                 const OptionValue* results_;
             };
         };

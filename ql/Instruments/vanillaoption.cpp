@@ -30,7 +30,7 @@
 #include <ql/Solvers1D/brent.hpp>
 
 using QuantLib::VolTermStructures::BlackConstantVol;
-
+using QuantLib::PricingEngines::VanillaOptionArguments;
 
 namespace QuantLib {
 
@@ -110,11 +110,11 @@ namespace QuantLib {
           double accuracy, Size maxEvaluations,
           double minVol, double maxVol) const {
             QL_REQUIRE(!isExpired_,
-                "VanillaOption::impliedVolatility : "
-                "option expired");
+                       "VanillaOption::impliedVolatility : "
+                       "option expired");
 
             double guess = volTS_->blackVol(exercise_.lastDate(),
-                underlying_->value());
+                                            underlying_->value());
 
             ImpliedVolHelper f(engine_,targetValue);
             Solvers1D::Brent solver;
@@ -123,18 +123,18 @@ namespace QuantLib {
         }
 
         void VanillaOption::setupEngine() const {
-            PricingEngines::VanillaOptionArguments* arguments =
-                dynamic_cast<PricingEngines::VanillaOptionArguments*>(
+            VanillaOptionArguments* arguments =
+                dynamic_cast<VanillaOptionArguments*>(
                     engine_->arguments());
             QL_REQUIRE(arguments != 0,
-                "VanillaOption::setupEngine : "
-                "pricing engine does not supply needed arguments");
+                       "VanillaOption::setupEngine : "
+                       "pricing engine does not supply needed arguments");
 
             arguments->type = type_;
 
             QL_REQUIRE(!underlying_.isNull(),
-                "VanillaOption::setupEngine : "
-                "null underlying price given");
+                       "VanillaOption::setupEngine : "
+                       "null underlying price given");
             arguments->underlying = underlying_->value();
 
             arguments->strike = strike_;
@@ -160,8 +160,8 @@ namespace QuantLib {
                 const OptionGreeks* results =
                     dynamic_cast<const OptionGreeks*>(engine_->results());
                 QL_ENSURE(results != 0,
-                    "VanillaOption::performCalculations : "
-                    "no greeks returned from pricing engine");
+                          "VanillaOption::performCalculations : "
+                          "no greeks returned from pricing engine");
                 /* no check on null values - just copy.
                    this allows:
                    a) to decide in derived options what to do when null 
@@ -186,11 +186,17 @@ namespace QuantLib {
         VanillaOption::ImpliedVolHelper::ImpliedVolHelper(
             const Handle<PricingEngine>& engine, double targetValue)
         : engine_(engine), targetValue_(targetValue) {
-            arguments_ = dynamic_cast<PricingEngines::VanillaOptionArguments*>(
-                engine_->arguments());
+            VanillaOptionArguments* arguments_ = 
+                dynamic_cast<VanillaOptionArguments*>(engine_->arguments());
             QL_REQUIRE(arguments_ != 0,
                 "VanillaOption::ImpliedVolHelper::ImpliedVolHelper : "
                 "pricing engine does not supply needed arguments");
+            vol_ = Handle<SimpleMarketElement>(new SimpleMarketElement(0.0));
+            arguments_->volTS = RelinkableHandle<BlackVolTermStructure>(
+                Handle<BlackVolTermStructure>(
+                    new BlackConstantVol(
+                        arguments_->volTS->referenceDate(), 
+                        RelinkableHandle<MarketElement>(vol_))));
             results_ = dynamic_cast<const OptionValue*>(
                 engine_->results());
             QL_REQUIRE(results_ != 0,
@@ -199,14 +205,12 @@ namespace QuantLib {
         }
 
         double VanillaOption::ImpliedVolHelper::operator()(double x) const {
-            arguments_->volTS = Handle<BlackVolTermStructure>(new
-                BlackConstantVol(arguments_->volTS->referenceDate(), x));
+            vol_->setValue(x);
             engine_->calculate();
             return results_->value-targetValue_;
         }
 
     }
-
 
 }
 
