@@ -34,6 +34,8 @@
 
 #include <ql/qldefines.hpp>
 
+#include <list>
+
 namespace QuantLib {
 
     namespace Lattices {

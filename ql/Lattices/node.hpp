@@ -36,7 +36,6 @@
 #include <ql/termstructure.hpp>
 
 #include <iostream>
-#include <list>
 #include <vector>
 
 namespace QuantLib {

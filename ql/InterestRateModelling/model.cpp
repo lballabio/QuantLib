@@ -63,6 +63,7 @@ namespace QuantLib {
             virtual void targetAndValue(const Array& params, Array& target,
                 Array& fct2fit) {
                 target = prices_;
+                std::cout << "volatility set to " << params[1] << std::endl;
                 model_->setParams(params);
                 for (signed i=0; i<size(); i++) {
                     fct2fit[i] = instruments_[i]->modelValue(model_);
@@ -73,6 +74,7 @@ namespace QuantLib {
             virtual void targetValueAndGradient(const Array& params,
                 Matrix& grad_fct2fit, Array& target, Array& fct2fit) {
                 target = prices_;
+                std::cout << "volatility set to " << params[1] << std::endl;
                 model_->setParams(params);
                 Array newParams(params);
                 int i;

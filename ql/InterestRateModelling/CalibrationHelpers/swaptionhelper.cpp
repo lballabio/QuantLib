@@ -108,7 +108,7 @@ namespace QuantLib {
                 exerciseRate_ = fairFixedRate;
 
                 engine_ = Handle<SwaptionPricingEngine>(new
-                    TreeSwaption(100));
+                    TreeSwaption(50));
 
                 swaption_ = Handle<Swaption>(new
                     Swaption(*swap_, EuropeanExercise(startDate), termStructure,
@@ -123,7 +123,7 @@ namespace QuantLib {
                         JamshidianSwaption());
                 else*/
                 engine_ = Handle<SwaptionPricingEngine>(new
-                    TreeSwaption(100));
+                    TreeSwaption(50));
                 engine_->setModel(model);
                 swaption_->setPricingEngine(engine_);
                 swaption_->recalculate();

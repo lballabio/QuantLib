@@ -55,13 +55,12 @@ namespace QuantLib {
             Size i;
             for (i=0; i<(dx_.size()-1); i++) {
                 //The diffusion term must be r-independant
-                double v = process->diffusion(t_[i], 0.0)*QL_SQRT(dt(i));
+                double v = QL_FABS(process->diffusion(t_[i], 0.0))*
+                    QL_SQRT(dt(i));
                 dx_[i+1] = v*QL_SQRT(3);
             }
 
             Size nTimeSteps = t_.size() - 1;
-
-            std::cout << nTimeSteps << std::endl;
             for (i=0; i<nTimeSteps; i++) {
 
                 //Determine branching
@@ -80,6 +79,7 @@ namespace QuantLib {
                     double pUp  = (1.0 + e2/v2 + e*QL_SQRT(3)/v)/6.0;
                     double pMid  = (2.0 - e2/v2)/3.0;
                     double pDown = (1.0 + e2/v2 - e*QL_SQRT(3)/v)/6.0;
+//                    std::cout << pUp << "+" << pMid << "+" << pDown << "=" << (pUp + pMid + pDown) << " " << k.back() << " " << m << " " << dx(i+1) << std::endl;
 
                     node(i,j).setProbability(pUp, 2);
                     node(i,j).setProbability(pMid, 1);
@@ -110,11 +110,12 @@ namespace QuantLib {
                 nodes_[i-1][l]->setDescendant(node(i, k[l] - 1), 0);
                 nodes_[i-1][l]->setDescendant(node(i, k[l]    ), 1);
                 nodes_[i-1][l]->setDescendant(node(i, k[l] + 1), 2);
-                for (Size n=0; n<n_; n++)
+                for (Size n=0; n<n_; n++) {
                     nodes_[i-1][l]->descendant(n).statePrice() +=
                         nodes_[i-1][l]->statePrice()*
                         nodes_[i-1][l]->probability(n)*
                         nodes_[i-1][l]->discount();
+                }
             }
         }
 
