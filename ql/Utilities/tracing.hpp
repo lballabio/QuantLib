@@ -22,6 +22,7 @@
 #ifndef quantlib_tracing_hpp
 #define quantlib_tracing_hpp
 
+#include <ql/types.hpp>
 #include <ql/Patterns/singleton.hpp>
 #include <boost/current_function.hpp>
 #include <iosfwd>
@@ -33,20 +34,22 @@ namespace QuantLib {
         the flow of program execution. When compiler under gcc 3.3 and
         run, the following program will output the following trace:
         \code
-        Entering int main()
-        Entering int Foo::bar(int)
-        i = 21
-        Currently at line 16 in tracing_example.cpp
-        Wrong answer
-        i = 42
-        Exiting int Foo::bar(int)
-        Entering int Foo::bar(int)
-        i = 42
-        Currently at line 13 in tracing_example.cpp
-        Right answer, but no question
-        i = 42
-        Exiting int Foo::bar(int)
-        Exiting int main()
+        trace[1]: Entering int main()
+        trace[2]: Entering int foo(int)
+        trace[3]: Entering int Foo::bar(int)
+        trace[3]: i = 21
+        trace[3]: At line 16 in tracing_example.cpp
+        trace[3]: Wrong answer
+        trace[3]: i = 42
+        trace[3]: Exiting int Foo::bar(int)
+        trace[3]: Entering int Foo::bar(int)
+        trace[3]: i = 42
+        trace[3]: At line 13 in tracing_example.cpp
+        trace[3]: Right answer, but no question
+        trace[3]: i = 42
+        trace[3]: Exiting int Foo::bar(int)
+        trace[2]: Exiting int foo(int)
+        trace[1]: Exiting int main()
         \endcode
         Of course, a word of warning must be added: adding so much
         tracing to your code might degrade its readability, at least
@@ -54,50 +57,34 @@ namespace QuantLib {
         couple of keystrokes.
     */
 
-    //! %tracing class
-    /*! <b>Example: </b>
-        \link tracing_example.cpp
-        tracing code execution
-        \endlink
+    namespace detail {
 
-        \test the facility is tested by comparing actual output
-              against expected traces.
-    */
-    class Tracing : public Singleton<Tracing> {
-        friend class Singleton<Tracing>;
-      private:
-        Tracing();
-      public:
-        //! trace level
-        enum Level { Severe,   //!< Trace a possible error
-                     Warning,  //!< Trace something fishy
-                     Info,     //!< Generic tracing information
-                     Fine,     //!< Detailed tracing information
-                     Finer,    //!< Detailed tracing information
-                     Finest,   //!< Detailed tracing information
-                     All       //!< Trace everything
+        class Tracing : public Singleton<Tracing> {
+            friend class Singleton<Tracing>;
+        private:
+            Tracing();
+        public:
+            void enable() {
+                #if defined(QL_ENABLE_TRACING)
+                enabled_ = true;
+                #else
+                QL_FAIL("tracing support not available");
+                #endif
+            }
+            void disable() { enabled_ = false; }
+            void setStream(std::ostream& stream) { out_ = &stream; }
+            bool enabled() const { return enabled_; }
+            std::ostream& stream() { return *out_; }
+            Integer depth() const { return depth_; }
+            void down() { depth_++; }
+            void up() { depth_--; }
+        private:
+            std::ostream* out_;
+            bool enabled_;
+            Integer depth_;
         };
-        //! \name Modifiers
-        //@{
-        void enable() { enabled_ = true; }
-        void disable() { enabled_ = false; }
-        void setLevel(Level level) { level_ = level; }
-        void setStream(std::ostream& stream) { out_ = &stream; }
-        //@}
-        /*! \name Inspectors
-            \warning Do not use these methods directly; use the
-                     provided QL_TRACE* macros instead
-        */
-        //@{
-        bool enabled() const { return enabled_; }
-        Level level() const { return level_; }
-        std::ostream& stream() { return *out_; }
-        //@}
-      private:
-        std::ostream* out_;
-        Level level_;
-        bool enabled_;
-    };
+
+    }
 
 }
 
@@ -113,12 +100,46 @@ namespace QuantLib {
     @{
 */
 
+/*! \def QL_TRACE_ENABLE
+    \brief enable tracing
+
+    The statement
+    \code
+    QL_TRACE_ENABLE;
+    \endcode
+    can be used to enable tracing. Such statement might be
+    ignored; refer to QL_TRACE for details.
+*/
+
+/*! \def QL_TRACE_DISABLE
+    \brief disable tracing
+
+    The statement
+    \code
+    QL_TRACE_DISABLE;
+    \endcode
+    can be used to disable tracing. Such statement might be
+    ignored; refer to QL_TRACE for details.
+*/
+
+/*! \def QL_TRACE_ON
+    \brief set tracing stream
+
+    The statement
+    \code
+    QL_TRACE_ON(stream);
+    \endcode
+    can be used to set the stream where tracing messages are
+    output. Such statement might be ignored; refer to QL_TRACE for
+    details.
+*/
+
 /*! \def QL_TRACE
     \brief output tracing information
 
     The statement
     \code
-    QL_TRACE(level, message);
+    QL_TRACE(message);
     \endcode
     can be used to output a trace of the code being executed. If
     tracing was disabled during configuration, such statements are
@@ -132,11 +153,11 @@ namespace QuantLib {
 
     The statement
     \code
-    QL_TRACE_ENTER_FUNCTION(level);
+    QL_TRACE_ENTER_FUNCTION;
     \endcode
     can be used at the beginning of a function to trace the fact that
     the program execution is entering such function. It should be
-    paired with a corresponding QL_TRACE_EXIT_FUNCTION call. Such
+    paired with a corresponding QL_TRACE_EXIT_FUNCTION macro. Such
     statement might be ignored; refer to QL_TRACE for details. Also,
     function information might not be available depending on the
     compiler.
@@ -147,11 +168,11 @@ namespace QuantLib {
 
     The statement
     \code
-    QL_TRACE_EXIT_FUNCTION(level);
+    QL_TRACE_EXIT_FUNCTION;
     \endcode
     can be used before returning from a function to trace the fact
     that the program execution is exiting such function. It should be
-    paired with a corresponding QL_TRACE_ENTER_FUNCTION call. Such
+    paired with a corresponding QL_TRACE_ENTER_FUNCTION macro. Such
     statement might be ignored; refer to QL_TRACE for details. Also,
     function information might not be available depending on the
     compiler.
@@ -162,7 +183,7 @@ namespace QuantLib {
 
     The statement
     \code
-    QL_TRACE_LOCATION(level);
+    QL_TRACE_LOCATION;
     \endcode
     can be used to trace the current file and line. Such statement
     might be ignored; refer to QL_TRACE for details.
@@ -173,7 +194,7 @@ namespace QuantLib {
 
     The statement
     \code
-    QL_TRACE_VARIABLE(level, variable);
+    QL_TRACE_VARIABLE(variable);
     \endcode
     can be used to trace the current value of a variable. Such
     statement might be ignored; refer to QL_TRACE for details. Also,
@@ -186,35 +207,64 @@ namespace QuantLib {
 
 #if defined(QL_ENABLE_TRACING)
 
-#define QL_DEFAULT_TRACER   QuantLib::Tracing::instance()
+#define QL_DEFAULT_TRACER   QuantLib::detail::Tracing::instance()
 
-#define QL_TRACE(traceLevel,message) \
-if (QL_DEFAULT_TRACER.enabled() && traceLevel <= QL_DEFAULT_TRACER.level()) \
+#define QL_TRACE_ENABLE \
+QL_DEFAULT_TRACER.enable()
+
+#define QL_TRACE_DISABLE \
+QL_DEFAULT_TRACER.disable()
+
+#define QL_TRACE_ON(out) \
+QL_DEFAULT_TRACER.setStream(out)
+
+#define QL_TRACE(message) \
+if (QL_DEFAULT_TRACER.enabled()) \
     try { \
-        QL_DEFAULT_TRACER.stream() << message << std::endl; \
+        QL_DEFAULT_TRACER.stream() << "trace[" << QL_DEFAULT_TRACER.depth() \
+                                   << "]: " << message << std::endl; \
     } catch (...) {} \
 else
 
-#define QL_TRACE_ENTER_FUNCTION(traceLevel) \
-QL_TRACE(traceLevel, "Entering " << BOOST_CURRENT_FUNCTION)
+#define QL_TRACE_ENTER_FUNCTION \
+if (QL_DEFAULT_TRACER.enabled()) \
+    try { \
+        QL_DEFAULT_TRACER.down(); \
+        QL_DEFAULT_TRACER.stream() << "trace[" << QL_DEFAULT_TRACER.depth() \
+                                   << "]: " \
+                                   << "Entering " << BOOST_CURRENT_FUNCTION \
+                                   << std::endl; \
+    } catch (...) {} \
+else
 
-#define QL_TRACE_EXIT_FUNCTION(traceLevel) \
-QL_TRACE(traceLevel, "Exiting " << BOOST_CURRENT_FUNCTION)
+#define QL_TRACE_EXIT_FUNCTION \
+if (QL_DEFAULT_TRACER.enabled()) \
+    try { \
+        QL_DEFAULT_TRACER.stream() << "trace[" << QL_DEFAULT_TRACER.depth() \
+                                   << "]: " \
+                                   << "Exiting " << BOOST_CURRENT_FUNCTION \
+                                   << std::endl; \
+        QL_DEFAULT_TRACER.up(); \
+    } catch (...) { QL_DEFAULT_TRACER.up(); } \
+else
 
-#define QL_TRACE_LOCATION(traceLevel) \
-QL_TRACE(traceLevel, "Currently at line " << __LINE__ << " in " << __FILE__)
+#define QL_TRACE_LOCATION \
+QL_TRACE("At line " << __LINE__ << " in " << __FILE__)
 
-#define QL_TRACE_VARIABLE(traceLevel, variable) \
-QL_TRACE(traceLevel, #variable << " = " << variable)
+#define QL_TRACE_VARIABLE(variable) \
+QL_TRACE(#variable << " = " << variable)
 
 #else
 
 #define QL_DEFAULT_TRACER
-#define QL_TRACE(traceLevel,message)
-#define QL_TRACE_ENTER_FUNCTION(traceLevel)
-#define QL_TRACE_EXIT_FUNCTION(traceLevel)
-#define QL_TRACE_LOCATION(traceLevel)
-#define QL_TRACE_VARIABLE(traceLevel,variable)
+#define QL_TRACE_ENABLE
+#define QL_TRACE_DISABLE
+#define QL_TRACE_ON(out)
+#define QL_TRACE(message)
+#define QL_TRACE_ENTER_FUNCTION
+#define QL_TRACE_EXIT_FUNCTION
+#define QL_TRACE_LOCATION
+#define QL_TRACE_VARIABLE(variable)
 
 #endif
 

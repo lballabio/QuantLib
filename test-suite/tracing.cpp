@@ -19,34 +19,27 @@
 #include "utilities.hpp"
 #include <ql/Utilities/tracing.hpp>
 #include <sstream>
+#include <iostream>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
 
 namespace {
 
-    std::ostream* original;
-
-    void setup() {
-        original = &(Tracing::instance().stream());
-    }
-
     void teardown() {
-        Tracing::instance().setStream(*original);
+        QL_TRACE_ON(std::cerr);
     }
 
-    void testTraceOutput(bool enable, Tracing::Level level,
+    void testTraceOutput(bool enable,
                          const std::string& result) {
         std::ostringstream output;
         if (enable)
-            Tracing::instance().enable();
+            QL_TRACE_ENABLE;
         else
-            Tracing::instance().disable();
-        Tracing::instance().setLevel(level);
-        Tracing::instance().setStream(output);
-        QL_TRACE(Tracing::Warning, "W");
-        QL_TRACE(Tracing::Info,    "I");
-        QL_TRACE(Tracing::Finest,  "F");
+            QL_TRACE_DISABLE;
+        QL_TRACE_ON(output);
+        int i = 42;
+        QL_TRACE_VARIABLE(i);
 
         #if defined(QL_ENABLE_TRACING)
         std::string expected = result;
@@ -71,14 +64,9 @@ void TracingTest::testOutput() {
     BOOST_MESSAGE("Testing tracing...");
 
     QL_TEST_BEGIN
-    QL_TEST_SETUP
 
-    testTraceOutput(false, Tracing::Warning, "");
-    testTraceOutput(false, Tracing::Fine,    "");
-    testTraceOutput(false, Tracing::All,     "");
-    testTraceOutput(true,  Tracing::Warning, "W\n");
-    testTraceOutput(true,  Tracing::Fine,    "W\nI\n");
-    testTraceOutput(true,  Tracing::All,     "W\nI\nF\n");
+    testTraceOutput(false, "");
+    testTraceOutput(true,  "trace[0]: i = 42\n");
 
     QL_TEST_TEARDOWN
 }

@@ -22,8 +22,12 @@ namespace QuantLib {
 
     // defined here in order not to include the full <iostream> in the header
 
-    Tracing::Tracing()
-    : out_(&std::cerr), level_(Tracing::Info), enabled_(false) {}
+    namespace detail {
+
+        Tracing::Tracing()
+        : out_(&std::cerr), enabled_(false), depth_(0) {}
+
+    }
 
 }
 

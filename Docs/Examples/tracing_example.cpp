@@ -6,37 +6,45 @@ using namespace QuantLib;
 namespace Foo {
 
     int bar(int i) {
-        QL_TRACE_ENTER_FUNCTION(Tracing::Info);
-        QL_TRACE_VARIABLE(Tracing::Info, i);
+        QL_TRACE_ENTER_FUNCTION;
+        QL_TRACE_VARIABLE(i);
 
         if (i == 42) {
-            QL_TRACE_LOCATION(Tracing::Info);
-            QL_TRACE(Tracing::Info, "Right answer, but no question");
+            QL_TRACE_LOCATION;
+            QL_TRACE("Right answer, but no question");
         } else {
-            QL_TRACE_LOCATION(Tracing::Info);
-            QL_TRACE(Tracing::Info, "Wrong answer");
+            QL_TRACE_LOCATION;
+            QL_TRACE("Wrong answer");
             i *= 2;
         }
 
-        QL_TRACE_VARIABLE(Tracing::Info, i);
-        QL_TRACE_EXIT_FUNCTION(Tracing::Info);
+        QL_TRACE_VARIABLE(i);
+        QL_TRACE_EXIT_FUNCTION;
         return i;
     }
 
 }
 
-int main() {
-
+int foo(int i) {
     using namespace Foo;
-    Tracing::instance().enable();
+    QL_TRACE_ENTER_FUNCTION;
 
-    QL_TRACE_ENTER_FUNCTION(Tracing::Info);
-
-    int i = 21;
     int j = bar(i);
     int k = bar(j);
 
-    QL_TRACE_EXIT_FUNCTION(Tracing::Info);
+    QL_TRACE_EXIT_FUNCTION;
+    return k;
+}
+
+int main() {
+
+    QL_TRACE_ENABLE;
+
+    QL_TRACE_ENTER_FUNCTION;
+
+    int i = foo(21);
+
+    QL_TRACE_EXIT_FUNCTION;
     return 0;
 }
 
