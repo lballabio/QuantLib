@@ -56,7 +56,7 @@ namespace QuantLib {
            rewriting all of forward, discount and zeroYield to take advantage
            of its own internal structure. */
         class PiecewiseFlatForward : public TermStructure,
-                                     public Patterns::Observer {
+                                     public Patterns::LazyObject {
           public:
             // constructor
             PiecewiseFlatForward(
@@ -87,10 +87,6 @@ namespace QuantLib {
             const std::vector<Time>& times() const;
             Time maxTime() const;
             //@}
-            //! \name Observer interface
-            //@{
-            void update();
-            //@}
           protected:
             Rate zeroYieldImpl(Time, bool extrapolate = false) const;
             DiscountFactor discountImpl(Time,
@@ -119,12 +115,11 @@ namespace QuantLib {
             };
             // methods
             int referenceNode(Time t, bool extrapolate) const;
-            void bootstrap() const;
+            void performCalculations() const;
             // data members
             DayCounter dayCounter_;
             Date todaysDate_, referenceDate_;
             std::vector<Handle<RateHelper> > instruments_;
-            mutable bool needsBootstrap_;
             mutable std::vector<Time> times_;
             mutable std::vector<Date> dates_;
             mutable std::vector<DiscountFactor> discounts_;
@@ -143,28 +138,23 @@ namespace QuantLib {
         }
 
         inline const std::vector<Date>& PiecewiseFlatForward::dates() const {
-            if (needsBootstrap_) bootstrap();
+            calculate();
             return dates_;
         }
 
         inline Date PiecewiseFlatForward::maxDate() const {
-            if (needsBootstrap_) bootstrap();
+            calculate();
             return dates_.back();
         }
 
         inline const std::vector<Time>& PiecewiseFlatForward::times() const {
-            if (needsBootstrap_) bootstrap();
+            calculate();
             return times_;
         }
 
         inline Time PiecewiseFlatForward::maxTime() const {
-            if (needsBootstrap_) bootstrap();
+            calculate();
             return times_.back();
-        }
-
-        inline void PiecewiseFlatForward::update() {
-            needsBootstrap_ = true;
-            notifyObservers();
         }
 
     }

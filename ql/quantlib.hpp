@@ -196,6 +196,7 @@
 #include <ql/Optimization/steepestdescent.hpp>
 
 #include <ql/Patterns/bridge.hpp>
+#include <ql/Patterns/lazyobject.hpp>
 #include <ql/Patterns/observable.hpp>
 #include <ql/Patterns/visitor.hpp>
 
