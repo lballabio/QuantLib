@@ -12,5 +12,5 @@ include_HEADERS = americancondition.h \
     geometricasianoption.h \
     himalaya.h  \
     mceuropeanpricer.h  \
-    plainbasketoption.h
-	
+    plainbasketoption.h \
+    binaryoption.h

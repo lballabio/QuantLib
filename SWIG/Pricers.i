@@ -29,6 +29,7 @@
 
 %{
 #include "quantlib.h"
+/* #include "binaryoption.h" */
 %}
 
 #if !defined(SWIGPYTHON)
@@ -50,6 +51,7 @@ using QuantLib::Pricers::BSMEuropeanOption;
 using QuantLib::Pricers::BSMAmericanOption;
 using QuantLib::Pricers::DividendAmericanOption;
 using QuantLib::Pricers::DividendEuropeanOption;
+using QuantLib::Pricers::BinaryOption;
 %}
 
 class BSMEuropeanOption {
@@ -58,6 +60,24 @@ class BSMEuropeanOption {
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
 	  double volatility);
 	~BSMEuropeanOption();
+	void setVolatility(double newVolatility) ;
+	void setRiskFreeRate(Rate newRate) ;
+	double value() const;
+	double delta() const;
+	double gamma() const;
+	double theta() const;
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4, 
+	  int maxEvaluations = 100) const ;
+};
+
+class BinaryOption {
+  public:
+	BinaryOption(OptionType type, double underlying, double strike, 
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+	  double volatility, double cashPayoff = 1);
+	~BinaryOption();
 	void setVolatility(double newVolatility) ;
 	void setRiskFreeRate(Rate newRate) ;
 	double value() const;

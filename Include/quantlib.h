@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.23  2001/03/01 12:57:37  enri
+    class BinaryOption added, test it with binary_option.py
+
     Revision 1.22  2001/02/20 11:11:37  marmar
     BarrierOption implements the analytical barrier option
 
@@ -193,6 +196,7 @@
 #include "bsmamericanoption.h"
 #include "dividendeuropeanoption.h"
 #include "dividendamericanoption.h"
+#include "binaryoption.h"
 
 
 /*** utilities ***/

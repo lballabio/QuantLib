@@ -18,6 +18,7 @@ libPricers_la_SOURCES = \
     dividendeuropeanoption.cpp \
     himalaya.cpp \
     mceuropeanpricer.cpp \
-    plainbasketoption.cpp
+    plainbasketoption.cpp \
+    binaryoption.cpp
 
 noinst_LTLIBRARIES = libPricers.la
