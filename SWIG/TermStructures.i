@@ -194,7 +194,7 @@ typedef std::vector<Deposit> DepositList;
 			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
-				PyErr_SetString(PyExc_TypeError,"tuple must contain deposits");
+				PyErr_SetString(PyExc_TypeError,"list must contain deposits");
 				delete $target;
 				return NULL;
 			}
