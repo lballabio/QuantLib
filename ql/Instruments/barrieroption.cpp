@@ -32,16 +32,16 @@ namespace QuantLib {
                          double barrier,
                          double rebate,
                          const Handle<StrikedTypePayoff>& payoff,
+                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode, 
                          const std::string& description)
-    : OneAssetStrikedOption(payoff, underlying, dividendTS, riskFreeTS,
-      exercise, volTS, engine, isinCode, description),
+    : OneAssetStrikedOption(payoff, exercise, underlying, dividendTS,
+      riskFreeTS, volTS, engine, isinCode, description),
       barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {
 
         if (IsNull(engine))

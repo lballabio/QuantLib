@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
         Date todaysDate(15, February, 2002);
         Calendar calendar = TARGET();
 
-        // Date settlementDate = calendar.advance(todaysDate, 
+        // Date settlementDate = calendar.advance(todaysDate,
         //                                        settlementDays, Days);
         Date settlementDate(19, February, 2002);
 
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
             Handle<Quote> swapRate(new SimpleQuote(swapRates[i]*0.01));
             Handle<RateHelper> swapHelper(new SwapRateHelper(
                 RelinkableHandle<Quote>(swapRate),
-                swapYears[i], Years, settlementDays, 
+                swapYears[i], Years, settlementDays,
                 calendar, ModifiedFollowing,
                 swFixedLegFrequency,
                 swFixedLegIsAdjusted, swFixedLegDayCounter,
@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
 
         // bootstrapping the yield curve
         Handle<PiecewiseFlatForward> myTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate, instruments, 
+            PiecewiseFlatForward(todaysDate, settlementDate, instruments,
                                  depositDayCounter));
 
         RelinkableHandle<TermStructure> rhTermStructure;
@@ -259,7 +259,7 @@ int main(int argc, char* argv[])
         const std::vector<Handle<CashFlow> >& leg = swap->floatingLeg();
         for (i=0; i<leg.size(); i++) {
             #if defined(HAVE_BOOST)
-            Handle<Coupon> coupon = 
+            Handle<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(leg[i]);
             #else
             Handle<Coupon> coupon = leg[i];
@@ -267,8 +267,13 @@ int main(int argc, char* argv[])
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 
+        Handle<Exercise> bermudaExercise(new BermudanExercise(
+            bermudanDates));
+
         Swaption bermudanSwaption(atmSwap,
-            BermudanExercise(bermudanDates), rhTermStructure,
+            Handle<Payoff>(),
+            bermudaExercise,
+            rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model
@@ -287,7 +292,9 @@ int main(int argc, char* argv[])
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
 
         Swaption otmBermudanSwaption(otmSwap,
-            BermudanExercise(bermudanDates), rhTermStructure,
+            Handle<Payoff>(),
+            bermudaExercise,
+            rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model
@@ -306,7 +313,9 @@ int main(int argc, char* argv[])
         std::cout << "Pricing an ITM bermudan swaption" << std::endl;
 
         Swaption itmBermudanSwaption(itmSwap,
-            BermudanExercise(bermudanDates), rhTermStructure,
+            Handle<Payoff>(),
+            bermudaExercise,
+            rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
         //Do the pricing for each model

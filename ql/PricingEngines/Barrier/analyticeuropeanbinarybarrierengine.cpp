@@ -33,19 +33,20 @@ namespace QuantLib {
                    "not an European Option");
 
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> plainPayoff = 
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
-        QL_REQUIRE(plainPayoff,
-                   "AnalyticEuropeanBinaryBarrierEngine: non-plain payoff given");
+        Handle<CashOrNothingPayoff> payoff = 
+            boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff,
+                   "AnalyticEuropeanBinaryBarrierEngine: wrong payoff given");
         #else
-        Handle<PlainVanillaPayoff> plainPayoff = arguments_.payoff;
+        Handle<CashOrNothingPayoff> payoff = arguments_.payoff;
         #endif
 
-        Option::Type type = plainPayoff->optionType();
-        double payoff = arguments_.cashPayoff;
+        Option::Type type = payoff->optionType();
+        double cashPayoff = payoff->cashPayoff();
 
         double u = arguments_.underlying;
-        double k = arguments_.barrier;
+        double k = payoff->strike();
+
 
         double vol = arguments_.volTS->blackVol(
             arguments_.exercise->lastDate(), k);
@@ -97,38 +98,38 @@ namespace QuantLib {
                         "invalid option type");
         }
 
-        results_.value = payoff * discount * inTheMoneyProbability;
+        results_.value = cashPayoff * discount * inTheMoneyProbability;
 
-        results_.delta = sign * payoff * discount * NID2/(u*volSqrtT);
+        results_.delta = sign * cashPayoff * discount * NID2/(u*volSqrtT);
 
-        results_.gamma = - payoff * discount * sign * NID2 *
+        results_.gamma = - cashPayoff * discount * sign * NID2 *
             (1.0 + D2/volSqrtT) / (u*u*volSqrtT);
 
         if (type == Option::Straddle) {
-            results_.theta = payoff * discount * r;
+            results_.theta = cashPayoff * discount * r;
         } else {
             double temp = (- QL_LOG(u/k) / volSqrtT 
                            + (r-q)*T/volSqrtT
                            - volSqrtT/2.0) / (2.0*T);
-            results_.theta = - payoff * discount * sign *
+            results_.theta = - cashPayoff * discount * sign *
                 ( temp * NID2 - r * beta);
         }
 
         if (type == Option::Straddle) {
-            results_.rho = - payoff * T * discount;
+            results_.rho = - cashPayoff * T * discount;
         } else {
             double temp = T/volSqrtT;
-            results_.rho = payoff * discount * sign * (temp*NID2-T*beta);
+            results_.rho = cashPayoff * discount * sign * (temp*NID2-T*beta);
         }
 
         if (type == Option::Straddle) {
             results_.dividendRho = 0.0;
         } else {
             double temp = T/volSqrtT;
-            results_.dividendRho = -payoff * discount * sign * temp * NID2;
+            results_.dividendRho = -cashPayoff * discount * sign * temp * NID2;
         }
 
-        results_.vega = - sign * payoff * discount * NID2 * D1 / vol;
+        results_.vega = - sign * cashPayoff * discount * NID2 * D1 / vol;
     }
 
 }

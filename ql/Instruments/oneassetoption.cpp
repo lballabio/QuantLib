@@ -26,17 +26,17 @@
 
 namespace QuantLib {
 
-    OneAssetOption::OneAssetOption(
+    OneAssetOption::OneAssetOption(const Handle<Payoff>& payoff,
+                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode,
                          const std::string& description)
-    : Option(engine, isinCode, description), underlying_(underlying),
-      exercise_(exercise), riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
+    : Option(payoff, exercise, engine, isinCode, description), underlying_(underlying),
+      riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
       volTS_(volTS) {
         registerWith(underlying_);
         registerWith(dividendTS_);
@@ -55,6 +55,20 @@ namespace QuantLib {
         return delta_;
     }
 
+    double OneAssetOption::deltaForward() const {
+        calculate();
+        QL_REQUIRE(deltaForward_ != Null<double>(),
+                   "OneAssetOption: deltaForward not provided");
+        return deltaForward_;
+    }
+
+    double OneAssetOption::elasticity() const {
+        calculate();
+        QL_REQUIRE(elasticity_ != Null<double>(),
+                   "OneAssetOption: elasticity not provided");
+        return elasticity_;
+    }
+
     double OneAssetOption::gamma() const {
         calculate();
         QL_REQUIRE(gamma_ != Null<double>(),
@@ -67,6 +81,13 @@ namespace QuantLib {
         QL_REQUIRE(theta_ != Null<double>(),
                    "OneAssetOption: theta not provided");
         return theta_;
+    }
+
+    double OneAssetOption::thetaPerDay() const {
+        calculate();
+        QL_REQUIRE(thetaPerDay_ != Null<double>(),
+                   "OneAssetOption: thetaPerDay not provided");
+        return thetaPerDay_;
     }
 
     double OneAssetOption::vega() const {
@@ -90,6 +111,13 @@ namespace QuantLib {
         return dividendRho_;
     }
 
+    double OneAssetOption::itmProbability() const {
+        calculate();
+        QL_REQUIRE(itmProbability_ != Null<double>(),
+                   "OneAssetOption: in-the-money probability not provided");
+        return itmProbability_;
+    }
+
     double OneAssetOption::impliedVolatility(double targetValue,
                                             double accuracy,
                                             Size maxEvaluations,
@@ -110,8 +138,8 @@ namespace QuantLib {
     }
 
     void OneAssetOption::setupExpired() const {
-        NPV_ = delta_ = gamma_ = theta_ =
-            vega_ = rho_ = dividendRho_ = 0.0;
+        NPV_ = delta_ = deltaForward_ = elasticity_ = gamma_ = theta_ =
+            thetaPerDay_ = vega_ = rho_ = dividendRho_ = itmProbability_ = 0.0;
     }
 
     void OneAssetOption::setupArguments(Arguments* args) const {
@@ -135,12 +163,11 @@ namespace QuantLib {
 
         // shouldn't be here
         // it should be moved elsewhere
-        arguments->stoppingTimes =
-            std::vector<Time>(exercise_->dates().size());
+        arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
-            arguments->stoppingTimes[i] =
-                riskFreeTS_->dayCounter().yearFraction(
-                             riskFreeTS_->referenceDate(), exercise_->date(i));
+            Time time = riskFreeTS_->dayCounter().yearFraction(
+                riskFreeTS_->referenceDate(), exercise_->date(i));
+            arguments->stoppingTimes.push_back(time);
         }
 
 
@@ -162,12 +189,30 @@ namespace QuantLib {
            value---of course care must be taken not to call
            the greeks methods when using these.
         */
-        delta_       = results->delta;
-        gamma_       = results->gamma;
-        theta_       = results->theta;
-        vega_        = results->vega;
-        rho_         = results->rho;
-        dividendRho_ = results->dividendRho;
+        delta_          = results->delta;
+        gamma_          = results->gamma;
+        theta_          = results->theta;
+        vega_           = results->vega;
+        rho_            = results->rho;
+        dividendRho_    = results->dividendRho;
+
+        const MoreGreeks* moreResults =
+            dynamic_cast<const MoreGreeks*>(engine_->results());
+        QL_ENSURE(moreResults != 0,
+                  "OneAssetOption::performCalculations : "
+                  "no more greeks returned from pricing engine");
+        /* no check on null values - just copy.
+           this allows:
+           a) to decide in derived options what to do when null
+           results are returned (throw? numerical calculation?)
+           b) to implement slim engines which only calculate the
+           value---of course care must be taken not to call
+           the greeks methods when using these.
+        */
+        deltaForward_   = moreResults->deltaForward;
+        elasticity_     = moreResults->elasticity;
+        thetaPerDay_    = moreResults->thetaPerDay;
+        itmProbability_ = moreResults->itmProbability;
 
         QL_ENSURE(NPV_ != Null<double>(),
                   "OneAssetOption::performCalculations : "

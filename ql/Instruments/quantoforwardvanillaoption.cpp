@@ -24,11 +24,11 @@
 namespace QuantLib {
 
     QuantoForwardVanillaOption::QuantoForwardVanillaOption(
-                 Handle<StrikedTypePayoff> payoff,
+                 const Handle<Payoff>& payoff,
+                 const Handle<Exercise>& exercise,
                  const RelinkableHandle<Quote>& underlying,
                  const RelinkableHandle<TermStructure>& dividendTS,
                  const RelinkableHandle<TermStructure>& riskFreeTS,
-                 const Handle<Exercise>& exercise,
                  const RelinkableHandle<BlackVolTermStructure>& volTS,
                  const Handle<PricingEngine>& engine,
                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
@@ -38,8 +38,8 @@ namespace QuantLib {
                  Date resetDate,
                  const std::string& isinCode,
                  const std::string& description)
-    : QuantoVanillaOption(payoff, underlying, dividendTS, riskFreeTS,
-                          exercise, volTS, engine, foreignRiskFreeTS, 
+    : QuantoVanillaOption(payoff, exercise, underlying, dividendTS, riskFreeTS,
+                          volTS, engine, foreignRiskFreeTS, 
                           exchRateVolTS, correlation, isinCode, description), 
       moneyness_(moneyness), resetDate_(resetDate) {
         QL_REQUIRE(!IsNull(engine),

@@ -22,6 +22,7 @@
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
 #include <ql/Pricers/blackswaption.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 
@@ -78,9 +79,12 @@ namespace QuantLib {
         Date exerciseDate = index->calendar().roll(
                                        startDate, index->rollingConvention());
 
-        swaption_ = Handle<Swaption>(
-                          new Swaption(swap_, EuropeanExercise(exerciseDate), 
-                                       termStructure, engine_));
+        swaption_ = Handle<Swaption>(new Swaption(
+            swap_,
+            Handle<Payoff>(),
+            Handle<Exercise>(new EuropeanExercise(exerciseDate)),
+            termStructure,
+            engine_));
         marketValue_ = blackPrice(volatility_->value());
     }
 
@@ -89,8 +93,8 @@ namespace QuantLib {
             dynamic_cast<Swaption::arguments*>(engine_->arguments());
         swaption_->setupArguments(params);
         Size i;
-        for (i=0; i<params->exerciseTimes.size(); i++)
-            times.push_back(params->exerciseTimes[i]);
+        for (i=0; i<params->stoppingTimes.size(); i++)
+            times.push_back(params->stoppingTimes[i]);
         for (i=0; i<params->fixedResetTimes.size(); i++)
             times.push_back(params->fixedResetTimes[i]);
         for (i=0; i<params->fixedPayTimes.size(); i++)

@@ -138,12 +138,12 @@ namespace QuantLib {
     MCBinaryBarrierEngine<RNG,S>::pathPricer() const {
 
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        Handle<CashOrNothingPayoff> payoff =
+            boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "MCBinaryBarrierEngine: non-plain payoff given");
+                   "MCBinaryBarrierEngine: wrong payoff given");
         #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        Handle<CashOrNothingPayoff> payoff = arguments_.payoff;
         #endif
 
         TimeGrid grid = timeGrid();
@@ -152,9 +152,10 @@ namespace QuantLib {
 
         return Handle<MCBinaryBarrierEngine<RNG,S>::path_pricer_type>(
             new BinaryBarrierPathPricer(
-                    arguments_.binaryBarrierType, arguments_.barrier,
-                    arguments_.cashPayoff, payoff->optionType(),
-                    arguments_.underlying, arguments_.riskFreeTS,
+                    arguments_.payoff,
+                    arguments_.exercise,
+                    arguments_.underlying,
+                    arguments_.riskFreeTS,
                     Handle<DiffusionProcess> (new BlackScholesProcess(
                                     arguments_.riskFreeTS,
                                     arguments_.dividendTS,

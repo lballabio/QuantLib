@@ -58,10 +58,10 @@ namespace QuantLib {
         typedef QuantoOptionResults<VanillaOption::results> results;
         QuantoVanillaOption(
                  const Handle<StrikedTypePayoff>& payoff,
+                 const Handle<Exercise>& exercise,
                  const RelinkableHandle<Quote>& underlying,
                  const RelinkableHandle<TermStructure>& dividendTS,
                  const RelinkableHandle<TermStructure>& riskFreeTS,
-                 const Handle<Exercise>& exercise,
                  const RelinkableHandle<BlackVolTermStructure>& volTS,
                  const Handle<PricingEngine>& engine,
                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,

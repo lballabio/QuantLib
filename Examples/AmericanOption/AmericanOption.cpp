@@ -127,18 +127,16 @@ int main(int argc, char* argv[])
         // European option
         VanillaOption euroOption(
             payoff,
+            exercise,
             underlyingH,
             flatDividendTS,
             flatTermStructure,
-            exercise,
             flatVolTS,
             Handle<PricingEngine>(new AnalyticEuropeanEngine()));
 
         // method: Black Scholes Engine
         method = "european ";
         value = euroOption.NPV();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 8) << "\t"
              << "N/A\t\t"
@@ -149,10 +147,10 @@ int main(int argc, char* argv[])
         // American option
         VanillaOption option(
             payoff,
+            amExercise,
             underlyingH,
             flatDividendTS,
             flatTermStructure,
-            amExercise,
             flatVolTS);
 
 //        Size timeSteps = 512001;

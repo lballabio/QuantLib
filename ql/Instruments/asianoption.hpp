@@ -38,13 +38,13 @@ namespace QuantLib {
           DiscreteAveragingAsianOption(
                     Average::Type averageType,
                     const Handle<StrikedTypePayoff>& payoff,
+                    const Handle<Exercise>& exercise,
                     const RelinkableHandle<Quote>& underlying,
                     double runningProduct,
                     Size pastFixings,
                     std::vector<Date> fixingDates,
                     const RelinkableHandle<TermStructure>& dividendTS,
                     const RelinkableHandle<TermStructure>& riskFreeTS,
-                    const Handle<Exercise>& exercise,
                     const RelinkableHandle<BlackVolTermStructure>& volTS,
                     const Handle<PricingEngine>& engine =
                     Handle<PricingEngine>(),

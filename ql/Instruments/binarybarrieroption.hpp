@@ -24,57 +24,32 @@
 #ifndef quantlib_binarybarrier_option_h
 #define quantlib_binarybarrier_option_h
 
-#include <ql/Instruments/oneassetoption.hpp>
+#include <ql/Instruments/oneassetstrikedoption.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
-
-    //! placeholder for enumerated binary barrier types
-    struct BinaryBarrier {
-        enum Type { CashAtHit, CashAtExpiry };
-    };
 
     //! Binary barrier option on a single asset.
     /*! Depending on the exercise type, either the European or American
         analytic pricing engine will be used if none is given.
     */
-    class BinaryBarrierOption : public OneAssetOption {
+    class BinaryBarrierOption : public OneAssetStrikedOption {
       public:
-        class arguments;
         class results;
-        BinaryBarrierOption(BinaryBarrier::Type binaryBarrierType,
-                     double barrier,
-                     double cashPayoff,
-                     Option::Type type,
+        BinaryBarrierOption(
+                     const Handle<CashOrNothingPayoff>& payoff,
+                     const Handle<Exercise>& exercise,
                      const RelinkableHandle<Quote>& underlying,
                      const RelinkableHandle<TermStructure>& dividendTS,
                      const RelinkableHandle<TermStructure>& riskFreeTS,
-                     const Handle<Exercise>& exercise,
                      const RelinkableHandle<BlackVolTermStructure>& volTS,
                      const Handle<PricingEngine>& engine =
                      Handle<PricingEngine>(),
                      const std::string& isinCode = "",
                      const std::string& description = "");
-        bool isExpired() const;
-        void setupArguments(Arguments*) const;
       protected:
         void performCalculations() const;
         // results
-        // arguments
-        BinaryBarrier::Type binaryBarrierType_;
-        double barrier_;
-        double cashPayoff_;
-        Option::Type type_;
-    };
-
-    //! %arguments for binary barrier option calculation
-    class BinaryBarrierOption::arguments : public OneAssetOption::arguments {
-      public:
-        arguments() : barrier(Null<double>()), 
-                      cashPayoff(Null<double>()) {}
-        BinaryBarrier::Type binaryBarrierType;
-        double barrier;
-        double cashPayoff;
-        void validate() const;
     };
 
     //! %results from binary barrier option calculation

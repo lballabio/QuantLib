@@ -44,8 +44,8 @@ namespace QuantLib {
             std::list<Time> times;
             Time t;
             Size i;
-            for (i=0; i<arguments_.exerciseTimes.size(); i++) {
-                t = arguments_.exerciseTimes[i];
+            for (i=0; i<arguments_.stoppingTimes.size(); i++) {
+                t = arguments_.stoppingTimes[i];
                 if (t >= 0.0)
                     times.push_back(t);
             }
@@ -85,11 +85,11 @@ namespace QuantLib {
 
         Handle<DiscretizedAsset> swaption(
                                    new DiscretizedSwaption(swap, arguments_));
-        lattice->initialize(swaption, arguments_.exerciseTimes.back());
+        lattice->initialize(swaption, arguments_.stoppingTimes.back());
 
         Time nextExercise = 
-            *std::find_if(arguments_.exerciseTimes.begin(), 
-                          arguments_.exerciseTimes.end(),
+            *std::find_if(arguments_.stoppingTimes.begin(), 
+                          arguments_.stoppingTimes.end(),
                           std::bind2nd(std::greater_equal<Time>(), 0.0));
         lattice->rollback(swaption, nextExercise);
 

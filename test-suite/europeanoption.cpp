@@ -1029,7 +1029,6 @@ CppUnit::Test* EuropeanOptionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing European option greek values",
                     &EuropeanOptionTest::testGreekValues));
-/*
     tests->addTest(new CppUnit::TestCaller<EuropeanOptionTest>
                    ("Testing binomial European engines "
                     "against analytic results",
@@ -1044,7 +1043,6 @@ CppUnit::Test* EuropeanOptionTest::suite() {
                    ("Testing Monte Carlo European engines "
                     "against analytic results",
                     &EuropeanOptionTest::testMcEngines));
-*/
     return tests;
 }
 

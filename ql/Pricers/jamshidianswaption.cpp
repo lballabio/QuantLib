@@ -29,7 +29,7 @@ namespace QuantLib {
         rStarFinder(const Swaption::arguments &params,
                     const Handle<OneFactorAffineModel>& model,
                     const std::vector<double>& amounts)
-        : strike_(params.nominal), maturity_(params.exerciseTimes[0]),
+        : strike_(params.nominal), maturity_(params.stoppingTimes[0]),
           times_(params.fixedPayTimes), amounts_(amounts), model_(model) {
         }
 
@@ -52,10 +52,10 @@ namespace QuantLib {
     };
 
     void JamshidianSwaption::calculate() const {
-        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "Cannot use the Jamshidian decomposition "
                    "on exotic swaptions");
-        Time maturity = arguments_.exerciseTimes[0];
+        Time maturity = arguments_.stoppingTimes[0];
         QL_REQUIRE(maturity==arguments_.floatingResetTimes[0],
                    "Maturity must be equal to first reset date");
 

@@ -16,7 +16,7 @@
 */
 
 /*! \file analyticamericanbinarybarrierengine.cpp
-    \brief American binary barrier option engine using analytic formulas
+    \brief American binary strike option engine using analytic formulas
 */
 
 #include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
@@ -25,26 +25,33 @@ namespace QuantLib {
 
     void AnalyticAmericanBinaryBarrierEngine::calculate() const {
 
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
+        #if defined(HAVE_BOOST)
+        Handle<AmericanExercise> exercise = 
+            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        QL_REQUIRE(payoff,
+                   "AnalyticAmericanBinaryBarrierEngine: wrong exercise given");
+        #else
+        Handle<AmericanExercise> exercise = arguments_.exercise;
+        #endif
+
+        QL_REQUIRE(exercise->type() == Exercise::American,
                    "AnalyticAmericanBinaryBarrierEngine::calculate() : "
                    "not an American Option");
 
-        QL_REQUIRE(arguments_.binaryBarrierType == BinaryBarrier::CashAtHit,
+        QL_REQUIRE(!exercise->payoffAtExpiry(),
                    "AnalyticAmericanBinaryBarrierEngine::calculate() : "
-                   "not a CashAtHit Option");
+                   "payoff at expiry not handled");
 
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> payoff = 
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        Handle<CashOrNothingPayoff> payoff = 
+            boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "AnalyticAmericanBinaryBarrierEngine: non-plain payoff given");
+                   "AnalyticAmericanBinaryBarrierEngine: wrong payoff given");
         #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        Handle<CashOrNothingPayoff> payoff = arguments_.payoff;
         #endif
 
-        // BinaryBarrier::Type binaryBarrierType = arguments_.binaryBarrierType;
-        double barrier = arguments_.barrier;
-        double cashPayoff = arguments_.cashPayoff;
+        double cashPayoff = payoff->cashPayoff();
 
         double underlying = arguments_.underlying;
 
@@ -71,18 +78,18 @@ namespace QuantLib {
             arguments_.exercise->lastDate());
         double root_tau = QL_SQRT (maturity);
         double root_two_pi = M_SQRT2 * M_SQRTPI;
-        double log_H_S = QL_LOG (barrier/underlying);
+        double log_H_S = QL_LOG (strike/underlying);
         double z_temp = lambda*vol*root_tau;
         double z = (log_H_S/(vol*root_tau)) + z_temp;
         double zbar = z - 2*z_temp; 
 
-        double pow_plus = QL_POW (barrier/underlying, l_plus);
-        double pow_minus = QL_POW (barrier/underlying, l_minus);
+        double pow_plus = QL_POW (strike/underlying, l_plus);
+        double pow_minus = QL_POW (strike/underlying, l_minus);
 
         CumulativeNormalDistribution f;
 
         // up option, or call
-        if (arguments_.underlying < arguments_.barrier) {
+        if (arguments_.underlying < strike) {
             double f_minus_z = f(-z);
             double f_minus_zbar = f(-zbar);
             double mod_exp_z2 = QL_EXP(-z*z/2);

@@ -25,25 +25,19 @@
 namespace QuantLib {
 
     BinaryBarrierPathPricer::BinaryBarrierPathPricer(
-                            BinaryBarrier::Type binaryBarrierType, 
-                            double barrier, 
-                            double cashPayoff, 
-                            Option::Type type,
-                            double underlying,
-                            const RelinkableHandle<TermStructure>& riskFreeTS,
-                            const Handle<DiffusionProcess>& diffProcess,
-                            UniformRandomSequenceGenerator sequenceGen)
+        const Handle<CashOrNothingPayoff>& payoff,
+        const Handle<AmericanExercise>& exercise,
+        double underlying,
+        const RelinkableHandle<TermStructure>& riskFreeTS,
+        const Handle<DiffusionProcess>& diffProcess,
+        UniformRandomSequenceGenerator sequenceGen)
     : PathPricer<Path>(riskFreeTS), 
-      binaryBarrierType_(binaryBarrierType),
-      barrier_(barrier), cashPayoff_(cashPayoff), 
-      type_(type), underlying_(underlying),
+      payoff_(payoff), exercise_(exercise),
+      underlying_(underlying),
       diffProcess_(diffProcess), sequenceGen_(sequenceGen) {
         QL_REQUIRE(underlying>0.0,
                    "BinaryBarrierPathPricer: "
                    "underlying less/equal zero not allowed");
-        QL_REQUIRE(barrier>0.0,
-                   "BinaryBarrierPathPricer: "
-                   "barrier less/equal zero not allowed");
     }
 
     double BinaryBarrierPathPricer::operator()(const Path& path) const {
@@ -60,7 +54,7 @@ namespace QuantLib {
         double log_drift, log_random;
         Array u = sequenceGen_.nextSequence().value;
 
-        switch (type_) {
+        switch (payoff_->optionType()) {
           case Option::Call:
             for (i = 0; i < n; i++) {
                 log_drift = path.drift()[i];
@@ -75,18 +69,14 @@ namespace QuantLib {
                 y = 0.5*(x + QL_SQRT (x*x-2*vol*vol*dt*QL_LOG((1-u[i]))));
                 y = asset_price * QL_EXP (y);
                 // cross the barrier
-                if (y >= barrier_) {
-                    if (binaryBarrierType_ == BinaryBarrier::CashAtExpiry) {
-                        return cashPayoff_ * 
+                if (y >= payoff_->strike()) {
+                    if (exercise_->payoffAtExpiry()) {
+                        return payoff_->cashPayoff() * 
                             riskFreeTS_->discount(path.timeGrid().back());
 
-                    } else if (binaryBarrierType_ == BinaryBarrier::CashAtHit) {
-                        return cashPayoff_ * 
-                            riskFreeTS_->discount(path.timeGrid()[i]);
-
                     } else {
-                        throw Error("BinaryBarrierPathPricer: "
-                                    "unknown binaryBarrier type");
+                        return payoff_->cashPayoff() * 
+                            riskFreeTS_->discount(path.timeGrid()[i]);
                     }
                 }
                 asset_price = new_asset_price;
@@ -105,18 +95,14 @@ namespace QuantLib {
                 x = QL_LOG (new_asset_price / asset_price);
                 y = 0.5*(x - QL_SQRT (x*x - 2*vol*vol*dt*QL_LOG(u[i])));
                 y = asset_price * QL_EXP (y);
-                if (y <= barrier_) {
-                    if (binaryBarrierType_ == BinaryBarrier::CashAtExpiry) {
-                        return cashPayoff_ * 
+                if (y <= payoff_->strike()) {
+                    if (exercise_->payoffAtExpiry()) {
+                        return payoff_->cashPayoff() * 
                             riskFreeTS_->discount(path.timeGrid().back());
 
-                    } else if (binaryBarrierType_ == BinaryBarrier::CashAtHit) {
-                        return cashPayoff_ 
-                            * riskFreeTS_->discount(path.timeGrid()[i]);
-
                     } else {
-                        throw Error("BinaryBarrierPathPricer: "
-                                    "unknown binaryBarrier type");
+                        return payoff_->cashPayoff() 
+                            * riskFreeTS_->discount(path.timeGrid()[i]);
                     }
                 }
                 asset_price = new_asset_price;

@@ -27,17 +27,18 @@
 namespace QuantLib {
 
     Swaption::Swaption(const Handle<SimpleSwap>& swap, 
-                       const Exercise& exercise,
+                       const Handle<Payoff>& payoff,
+                       const Handle<Exercise>& exercise,
                        const RelinkableHandle<TermStructure>& termStructure,
                        const Handle<PricingEngine>& engine)
-    : Option(engine), swap_(swap), exercise_(exercise),
+    : Option(payoff, exercise, engine), swap_(swap),
       termStructure_(termStructure) {
         registerWith(swap_);
         registerWith(termStructure_);
     }
 
     bool Swaption::isExpired() const {
-        return exercise_.dates().back() < termStructure_->referenceDate();
+        return exercise_->dates().back() < termStructure_->referenceDate();
     }
 
     void Swaption::setupArguments(Arguments* args) const {
@@ -67,12 +68,13 @@ namespace QuantLib {
         // this is passed explicitly for precision
         arguments->fixedBPS = QL_FABS(swap_->fixedLegBPS());
 
-        arguments->exerciseType = exercise_.type();
-        arguments->exerciseTimes.clear();
-        const std::vector<Date> dates = exercise_.dates();
-        for (Size i=0; i<dates.size(); i++) {
-            Time time = counter.yearFraction(settlement, dates[i]);
-            arguments->exerciseTimes.push_back(time);
+        arguments->exercise = exercise_;
+        arguments->stoppingTimes.clear();
+//        const std::vector<Date> dates = exercise_->dates();
+        for (Size i=0; i<exercise_->dates().size(); i++) {
+            Time time = counter.yearFraction(settlement,
+                exercise_->dates()[i]);
+            arguments->stoppingTimes.push_back(time);
         }
     }
 

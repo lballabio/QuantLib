@@ -27,16 +27,16 @@ namespace QuantLib {
 
     OneAssetStrikedOption::OneAssetStrikedOption(
                          const Handle<StrikedTypePayoff>& payoff,
+                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode,
                          const std::string& description)
-    : OneAssetOption(underlying, dividendTS, riskFreeTS, exercise, volTS,
-      engine, isinCode, description), payoff_(payoff) {}
+    : OneAssetOption(payoff, exercise, underlying, dividendTS, riskFreeTS,
+      volTS, engine, isinCode, description) {}
 
 
     double OneAssetStrikedOption::strikeSensitivity() const {

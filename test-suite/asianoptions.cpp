@@ -76,11 +76,11 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
         PlainVanillaPayoff(type, strike));
 
     DiscreteAveragingAsianOption pricer(averageType, payoff,
-        RelinkableHandle<Quote>(underlying),
+        exercise, RelinkableHandle<Quote>(underlying),
         runningProduct, pastFixings, fixingDates,
         RelinkableHandle<TermStructure>(divCurve),
         RelinkableHandle<TermStructure>(rfCurve),
-        exercise, RelinkableHandle<BlackVolTermStructure>(volCurve),
+        RelinkableHandle<BlackVolTermStructure>(volCurve),
         engine);
 
     double storedValue = 5.3425606635;

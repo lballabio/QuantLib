@@ -30,10 +30,10 @@ namespace QuantLib {
     class VanillaOption : public OneAssetStrikedOption {
       public:
         VanillaOption(const Handle<StrikedTypePayoff>& payoff,
+                      const Handle<Exercise>& exercise,
                       const RelinkableHandle<Quote>& underlying,
                       const RelinkableHandle<TermStructure>& dividendTS,
                       const RelinkableHandle<TermStructure>& riskFreeTS,
-                      const Handle<Exercise>& exercise,
                       const RelinkableHandle<BlackVolTermStructure>& volTS,
                       const Handle<PricingEngine>& engine =
                           Handle<PricingEngine>(),

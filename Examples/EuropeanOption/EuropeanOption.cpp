@@ -254,10 +254,10 @@ int main(int argc, char* argv[])
 
         VanillaOption option(
             payoff,
+            exercise,
             underlyingH,
             flatDividendTS,
             flatTermStructure,
-            exercise,
             flatVolTS,
             //  blackSurface,
             Handle<PricingEngine>(new AnalyticEuropeanEngine()));
@@ -496,10 +496,10 @@ int main(int argc, char* argv[])
         double correlation = 0.0;
         QuantoVanillaOption quantoOption(
             payoff,
+            exercise,
             underlyingH,
             flatDividendTS,
             flatTermStructure,
-            exercise,
             flatVolTS,
             quantoEngine,
             flatTermStructure,
@@ -556,10 +556,10 @@ int main(int argc, char* argv[])
 
         ForwardVanillaOption forwardOption(
             payoff,
+            exercise,
             underlyingH,
             flatDividendTS,
             flatTermStructure,
-            exercise,
             flatVolTS,
             forwardEngine,
             1.1, // moneyness
@@ -644,10 +644,10 @@ int main(int argc, char* argv[])
 
         QuantoForwardVanillaOption quantoForwardOption(
             payoff,
+            exercise,
             underlyingH,
             flatDividendTS,
             flatTermStructure,
-            exercise,
             flatVolTS,
             quantoForwardEngine,
             flatTermStructure,

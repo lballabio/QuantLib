@@ -22,7 +22,6 @@
 #ifndef quantlib_instruments_swaption_h
 #define quantlib_instruments_swaption_h
 
-#include <ql/exercise.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/Instruments/simpleswap.hpp>
@@ -35,7 +34,8 @@ namespace QuantLib {
         class arguments;
         class results;
         Swaption(const Handle<SimpleSwap>& swap,
-                 const Exercise& exercise,
+                 const Handle<Payoff>& payoff,
+                 const Handle<Exercise>& exercise,
                  const RelinkableHandle<TermStructure>& termStructure,
                  const Handle<PricingEngine>& engine);
         bool isExpired() const;
@@ -45,22 +45,23 @@ namespace QuantLib {
       private:
         // arguments
         Handle<SimpleSwap> swap_;
-        Exercise exercise_;
         const RelinkableHandle<TermStructure>& termStructure_;
     };
 
     //! arguments for swaption calculation
-    class Swaption::arguments : public SimpleSwap::arguments {
+    class Swaption::arguments : public SimpleSwap::arguments,
+                                public Option::arguments {
       public:
         arguments() : fairRate(Null<double>()),
                       fixedRate(Null<double>()),
-                      fixedBPS(Null<double>()),
-                      exerciseType(Exercise::Type(-1)) {}
+                      fixedBPS(Null<double>())
+//                      , exerciseType(Exercise::Type(-1))
+        {}
         Rate fairRate;
         Rate fixedRate;
         double fixedBPS;
-        Exercise::Type exerciseType;
-        std::vector<Time> exerciseTimes;
+//        Exercise::Type exerciseType;
+//        std::vector<Time> exerciseTimes;
         void validate() const;
     };
 

@@ -25,18 +25,18 @@ namespace QuantLib {
 
     ForwardVanillaOption::ForwardVanillaOption(
                          const Handle<StrikedTypePayoff>& payoff,
+                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
                          double moneyness,
                          Date resetDate,
                          const std::string& isinCode,
                          const std::string& description)
-    : VanillaOption(payoff, underlying, dividendTS, riskFreeTS,
-                    exercise, volTS, engine, isinCode, description),
+    : VanillaOption(payoff, exercise, underlying, dividendTS, riskFreeTS,
+                    volTS, engine, isinCode, description),
       moneyness_(moneyness), resetDate_(resetDate) {}
 
     void ForwardVanillaOption::setupArguments(Arguments* args) const {

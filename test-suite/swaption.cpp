@@ -69,8 +69,11 @@ namespace {
         RelinkableHandle<Quote> vol_rh(vol_me);
         Handle<BlackModel> model(new BlackModel(vol_rh,termStructure_));
         Handle<PricingEngine> engine(new BlackSwaption(model));
-        return Handle<Swaption>(new Swaption(swap,EuropeanExercise(exercise),
-                                             termStructure_,engine));
+        return Handle<Swaption>(new Swaption(
+            swap,
+            Handle<Payoff>(),
+            Handle<Exercise>(new EuropeanExercise(exercise)),
+            termStructure_,engine));
     }
 
 }

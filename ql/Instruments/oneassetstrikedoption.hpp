@@ -32,10 +32,10 @@ namespace QuantLib {
     class OneAssetStrikedOption : public OneAssetOption {
       public:
         OneAssetStrikedOption(const Handle<StrikedTypePayoff>& payoff,
+                              const Handle<Exercise>& exercise,
                               const RelinkableHandle<Quote>& underlying,
                               const RelinkableHandle<TermStructure>& dividendTS,
                               const RelinkableHandle<TermStructure>& riskFreeTS,
-                              const Handle<Exercise>& exercise,
                               const RelinkableHandle<BlackVolTermStructure>& volTS,
                               const Handle<PricingEngine>& engine =
                               Handle<PricingEngine>(),
@@ -54,8 +54,6 @@ namespace QuantLib {
         void performCalculations() const;
         // results
         mutable double strikeSensitivity_;
-        // arguments
-        Handle<StrikedTypePayoff> payoff_;
     };
 
 
@@ -63,12 +61,10 @@ namespace QuantLib {
     class OneAssetStrikedOption::arguments : public OneAssetOption::arguments {
       public:
         void validate() const;
-        Handle<Payoff> payoff_;
     };
 
     //! %results from single asset sriked option calculation
-    class OneAssetStrikedOption::results : public OneAssetOption::results,
-                                           public MoreGreeks {
+    class OneAssetStrikedOption::results : public OneAssetOption::results {
       public:
         void reset() {
 

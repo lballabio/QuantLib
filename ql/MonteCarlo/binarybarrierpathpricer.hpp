@@ -48,20 +48,17 @@ namespace QuantLib {
     */
     class BinaryBarrierPathPricer : public PathPricer<Path> {
       public:
-        BinaryBarrierPathPricer(BinaryBarrier::Type binaryBarrierType, 
-                         double barrier,
-                         double cashPayoff,
-                         Option::Type type,
+        BinaryBarrierPathPricer(
+                         const Handle<CashOrNothingPayoff>& payoff,
+                         const Handle<AmericanExercise>& exercise,
                          double underlying,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const Handle<DiffusionProcess>& diffProcess,
                          UniformRandomSequenceGenerator sequenceGen);
         double operator()(const Path& path) const;
       private:
-        BinaryBarrier::Type binaryBarrierType_;
-        double barrier_;
-        double cashPayoff_;
-        Option::Type type_;
+        Handle<CashOrNothingPayoff> payoff_;
+        Handle<AmericanExercise> exercise_;
         double underlying_;
         Handle<DiffusionProcess> diffProcess_;
         UniformRandomSequenceGenerator sequenceGen_;

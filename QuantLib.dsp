@@ -803,6 +803,14 @@ SOURCE=.\ql\Math\binomialdistribution.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\bivariatenormaldistribution.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\bivariatenormaldistribution.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\chisquaredistribution.cpp
 # End Source File
 # Begin Source File
@@ -1619,6 +1627,10 @@ SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp
 # End Source File
 # Begin Source File
 

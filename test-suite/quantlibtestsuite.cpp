@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -25,6 +26,7 @@
 
 #include "qltestlistener.hpp"
 
+#include "americanoption.hpp"
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "binarybarrieroption.hpp"
@@ -58,6 +60,7 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+//    runner.addTest(AmericanOptionTest::suite());
     runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());
     runner.addTest(BinaryBarrierOptionTest::suite());
@@ -67,7 +70,7 @@ int main() {
     runner.addTest(CovarianceTest::suite());
     runner.addTest(new DateTest);
     runner.addTest(DayCounterTest::suite());
-    runner.addTest(new DistributionTest);
+    runner.addTest(DistributionTest::suite());
     runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(FactorialTest::suite());
     runner.addTest(InstrumentTest::suite());

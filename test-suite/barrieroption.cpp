@@ -150,10 +150,10 @@ void BarrierOptionTest::testHaugValues() {
                 values[i].barrier, 
                 rebate, 
                 callPayoff, 
+                exercise, 
                 RelinkableHandle<Quote>(underlying), 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
-                exercise, 
                 RelinkableHandle<BlackVolTermStructure>(volTS));
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;
@@ -175,10 +175,10 @@ void BarrierOptionTest::testHaugValues() {
                 values[i].barrier, 
                 rebate, 
                 putPayoff, 
+                exercise, 
                 RelinkableHandle<Quote>(underlying), 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
-                exercise, 
                 RelinkableHandle<BlackVolTermStructure>(volTS));
         calculated = barrierPutOption.NPV();
         expected = values[i].putValue;
@@ -200,10 +200,10 @@ void BarrierOptionTest::testHaugValues() {
                 values[i].barrier, 
                 rebate, 
                 straddlePayoff, 
+                exercise, 
                 RelinkableHandle<Quote>(underlying), 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
-                exercise, 
                 RelinkableHandle<BlackVolTermStructure>(volTS));
         calculated = barrierStraddleOption.NPV();
         expected = values[i].callValue+values[i].putValue;
@@ -291,10 +291,10 @@ void BarrierOptionTest::testBabsiriValues() {
                 values[i].barrier, 
                 rebate, 
                 callPayoff, 
+                exercise, 
                 RelinkableHandle<Quote>(underlying), 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
-                exercise, 
                 RelinkableHandle<BlackVolTermStructure>(volTS), 
                 engine);
         double calculated = barrierCallOption.NPV();
@@ -388,10 +388,10 @@ void BarrierOptionTest::testBeagleholeValues() {
                 values[i].barrier, 
                 rebate, 
                 callPayoff, 
+                exercise, 
                 RelinkableHandle<Quote>(underlying), 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
-                exercise, 
                 RelinkableHandle<BlackVolTermStructure>(volTS), 
                 engine);
         double calculated = barrierCallOption.NPV();

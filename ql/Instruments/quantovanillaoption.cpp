@@ -25,10 +25,10 @@ namespace QuantLib {
 
     QuantoVanillaOption::QuantoVanillaOption(
                  const Handle<StrikedTypePayoff>& payoff,
+                 const Handle<Exercise>& exercise,
                  const RelinkableHandle<Quote>& underlying,
                  const RelinkableHandle<TermStructure>& dividendTS,
                  const RelinkableHandle<TermStructure>& riskFreeTS,
-                 const Handle<Exercise>& exercise,
                  const RelinkableHandle<BlackVolTermStructure>& volTS,
                  const Handle<PricingEngine>& engine,
                  const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
@@ -36,8 +36,8 @@ namespace QuantLib {
                  const RelinkableHandle<Quote>& correlation,
                  const std::string& isinCode,
                  const std::string& description)
-    : VanillaOption(payoff, underlying, dividendTS, riskFreeTS,
-                    exercise, volTS, engine, isinCode, description),
+    : VanillaOption(payoff, exercise, underlying, dividendTS, riskFreeTS,
+                    volTS, engine, isinCode, description),
       foreignRiskFreeTS_(foreignRiskFreeTS),
       exchRateVolTS_(exchRateVolTS),
       correlation_(correlation) {

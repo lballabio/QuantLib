@@ -32,10 +32,11 @@ namespace QuantLib {
     //! Base class for options on a single asset
     class OneAssetOption : public Option {
       public:
-        OneAssetOption(const RelinkableHandle<Quote>& underlying,
+        OneAssetOption(const Handle<Payoff>& payoff,
+                       const Handle<Exercise>& exercise,
+                       const RelinkableHandle<Quote>& underlying,
                        const RelinkableHandle<TermStructure>& dividendTS,
                        const RelinkableHandle<TermStructure>& riskFreeTS,
-                       const Handle<Exercise>& exercise,
                        const RelinkableHandle<BlackVolTermStructure>& volTS,
                        const Handle<PricingEngine>& engine =
                                             Handle<PricingEngine>(),
@@ -50,11 +51,15 @@ namespace QuantLib {
         //! \name greeks
         //@{
         double delta() const;
+        double deltaForward() const;
+        double elasticity() const;
         double gamma() const;
         double theta() const;
+        double thetaPerDay() const;
         double vega() const;
         double rho() const;
         double dividendRho() const;
+        double itmProbability() const;
         //@}
         /*! \warning Options with a gamma that changes sign have
                      values that are <b>not</b> monotonic in the
@@ -75,11 +80,10 @@ namespace QuantLib {
         void setupExpired() const;
         void performCalculations() const;
         // results
-        mutable double delta_, gamma_, theta_,
-                       vega_, rho_, dividendRho_;
+        mutable double delta_, deltaForward_, elasticity_, gamma_, theta_,
+            thetaPerDay_, vega_, rho_, dividendRho_, itmProbability_;
         // arguments
         RelinkableHandle<Quote> underlying_;
-        Handle<Exercise> exercise_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
         RelinkableHandle<BlackVolTermStructure> volTS_;
       private:
@@ -108,11 +112,14 @@ namespace QuantLib {
     };
 
     //! %results from single asset option calculation
-    class OneAssetOption::results : public Value, public Greeks {
+    class OneAssetOption::results : public Value,
+                                    public Greeks,
+                                    public MoreGreeks {
       public:
         void reset() {
             Value::reset();
             Greeks::reset();
+            MoreGreeks::reset();
         }
     };
 

@@ -26,19 +26,19 @@ namespace QuantLib {
     DiscreteAveragingAsianOption::DiscreteAveragingAsianOption(
                          Average::Type averageType,
                          const Handle<StrikedTypePayoff>& payoff,
+                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<Quote>& underlying,
                          double runningProduct,
                          Size pastFixings,
                          std::vector<Date> fixingDates,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                         const Handle<Exercise>& exercise,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode,
                          const std::string& description)
-    : OneAssetStrikedOption(payoff, underlying, dividendTS, riskFreeTS,
-      exercise, volTS, engine, isinCode, description),
+    : OneAssetStrikedOption(payoff, exercise, underlying, dividendTS, riskFreeTS,
+      volTS, engine, isinCode, description),
       averageType_(averageType), 
       runningProduct_(runningProduct), pastFixings_(pastFixings),
       fixingDates_(fixingDates) {

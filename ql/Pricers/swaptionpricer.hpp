@@ -69,8 +69,8 @@ namespace QuantLib {
                             const Handle<DiscretizedSwap>& swap,
                             const Swaption::arguments& params)
         : DiscretizedOption(swap,
-                            params.exerciseType,
-                            params.exerciseTimes) {}
+                            params.exercise->type(),
+                            params.stoppingTimes) {}
     };
 
 }

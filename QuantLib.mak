@@ -70,6 +70,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
 	-@erase "$(INTDIR)\asianoption.sbr"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.obj"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
@@ -88,6 +90,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binarybarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -443,6 +447,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\beta.sbr" \
+	"$(INTDIR)\bivariatenormaldistribution.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
@@ -512,6 +517,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
+	"$(INTDIR)\analyticamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
@@ -553,7 +559,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticamericanengine.sbr"
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -619,6 +625,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\beta.obj" \
+	"$(INTDIR)\bivariatenormaldistribution.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
@@ -688,6 +695,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
+	"$(INTDIR)\analyticamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
@@ -729,7 +737,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticamericanengine.obj"
+	"$(INTDIR)\baroneadesiwhaleyengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -779,6 +787,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
 	-@erase "$(INTDIR)\asianoption.sbr"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.obj"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
@@ -797,6 +807,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binarybarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -1153,6 +1165,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\beta.sbr" \
+	"$(INTDIR)\bivariatenormaldistribution.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
@@ -1222,6 +1235,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
+	"$(INTDIR)\analyticamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
@@ -1263,7 +1277,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticamericanengine.sbr"
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1329,6 +1343,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\beta.obj" \
+	"$(INTDIR)\bivariatenormaldistribution.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
@@ -1398,6 +1413,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
+	"$(INTDIR)\analyticamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
@@ -1439,7 +1455,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticamericanengine.obj"
+	"$(INTDIR)\baroneadesiwhaleyengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1489,6 +1505,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
 	-@erase "$(INTDIR)\asianoption.sbr"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.obj"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
@@ -1507,6 +1525,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binarybarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -1862,6 +1882,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\beta.sbr" \
+	"$(INTDIR)\bivariatenormaldistribution.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
@@ -1931,6 +1952,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
+	"$(INTDIR)\analyticamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
@@ -1972,7 +1994,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticamericanengine.sbr"
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2038,6 +2060,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\beta.obj" \
+	"$(INTDIR)\bivariatenormaldistribution.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
@@ -2107,6 +2130,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
+	"$(INTDIR)\analyticamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
@@ -2148,7 +2172,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticamericanengine.obj"
+	"$(INTDIR)\baroneadesiwhaleyengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2198,6 +2222,8 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\asianoption.obj"
 	-@erase "$(INTDIR)\asianoption.sbr"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.obj"
+	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
@@ -2216,6 +2242,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binarybarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
+	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -2572,6 +2600,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\beta.sbr" \
+	"$(INTDIR)\bivariatenormaldistribution.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
@@ -2641,6 +2670,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\analyticeuropeanbinarybarrierengine.sbr" \
 	"$(INTDIR)\americanmcengines.sbr" \
+	"$(INTDIR)\analyticamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
@@ -2682,7 +2712,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticamericanengine.sbr"
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2748,6 +2778,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\beta.obj" \
+	"$(INTDIR)\bivariatenormaldistribution.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
@@ -2817,6 +2848,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\analyticeuropeanbinarybarrierengine.obj" \
 	"$(INTDIR)\americanmcengines.obj" \
+	"$(INTDIR)\analyticamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
@@ -2858,7 +2890,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticamericanengine.obj"
+	"$(INTDIR)\baroneadesiwhaleyengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -3244,6 +3276,12 @@ SOURCE=.\ql\Lattices\trinomialtree.cpp
 SOURCE=.\ql\Math\beta.cpp
 
 "$(INTDIR)\beta.obj"	"$(INTDIR)\beta.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Math\bivariatenormaldistribution.cpp
+
+"$(INTDIR)\bivariatenormaldistribution.obj"	"$(INTDIR)\bivariatenormaldistribution.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3708,6 +3746,12 @@ SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp
 
 "$(INTDIR)\analyticeuropeanengine.obj"	"$(INTDIR)\analyticeuropeanengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp
+
+"$(INTDIR)\baroneadesiwhaleyengine.obj"	"$(INTDIR)\baroneadesiwhaleyengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

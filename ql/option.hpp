@@ -33,13 +33,20 @@ namespace QuantLib {
       public:
         class arguments;
         enum Type { Call, Put, Straddle };
-        Option(const Handle<PricingEngine>& engine = Handle<PricingEngine>(),
+        Option(const Handle<Payoff>& payoff,
+               const Handle<Exercise>& exercise,
+               const Handle<PricingEngine>& engine = Handle<PricingEngine>(),
                const std::string& isinCode = "",
                const std::string& description = "")
-        : Instrument(isinCode, description) {
+        : Instrument(isinCode, description), payoff_(payoff),
+          exercise_(exercise) {
             if (!IsNull(engine))
                 setPricingEngine(engine);
         }
+      protected:
+        // arguments
+        Handle<Payoff> payoff_;
+        Handle<Exercise> exercise_;
     };
 
 
@@ -79,9 +86,11 @@ namespace QuantLib {
       public:
         MoreGreeks() { reset(); }
         void reset() {
-            strikeSensitivity = Null<double>();
+            itmProbability = deltaForward = elasticity = thetaPerDay =
+                strikeSensitivity = Null<double>();
         }
-        double strikeSensitivity;
+        double itmProbability, deltaForward, elasticity, thetaPerDay,
+            strikeSensitivity;
     };
 
 }
