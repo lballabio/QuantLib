@@ -759,6 +759,10 @@ SOURCE=.\ql\MonteCarlo\sample.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Patterns\bridge.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Patterns\observable.hpp
 # End Source File
 # End Group

@@ -112,7 +112,7 @@ namespace QuantLib {
 
         /*! partial implementation providing the means of
             determining the Easter Monday for a given year. */
-        class WesternImpl : public Calendar::Impl {
+       class WesternImpl : public CalendarImpl {
           protected:
             //! expressed relative to first day of year
             static Day easterMonday(Year y);
@@ -120,7 +120,7 @@ namespace QuantLib {
       protected:
         /*! this protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
-        Calendar(const Handle<Calendar::Impl>& impl) 
+          Calendar(const Handle<CalendarImpl>& impl) 
         : Patterns::Bridge<Calendar,CalendarImpl>(impl) {}
     };
 

@@ -75,7 +75,7 @@ namespace QuantLib {
         //@}
 
       protected:
-        DayCounter(const Handle<DayCounter::Impl>& impl) 
+        DayCounter(const Handle<DayCounterImpl>& impl) 
         : Patterns::Bridge<DayCounter,DayCounterImpl>(impl) {}
     };
 

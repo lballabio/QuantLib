@@ -208,6 +208,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
+	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
@@ -327,8 +328,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\boundarycondition.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -514,6 +514,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
+	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
@@ -633,8 +634,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\boundarycondition.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -819,6 +819,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
+	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
@@ -938,8 +939,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\boundarycondition.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1125,6 +1125,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
+	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
@@ -1244,8 +1245,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\boundarycondition.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
