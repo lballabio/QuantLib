@@ -10,7 +10,7 @@ n  is an ordinal number
 e.g. R000300a2 stands for Release 0.3.1a2
 e.g. R000300f0 stands for Release 0.3.1f0
 
-The current version number is 0.3.0a6 - 000300a5
+The current version number is 0.3.0a6 - 000300a6
 This version number is in:
     QuantLib/QuantLib.nsi,
     QuantLib/configure.in,
@@ -25,6 +25,9 @@ This version number is in:
     QuantLib-Ruby/makedist.rb
 
     QuantLib-MzScheme/SWIG/ql.i
+
+    QuantLib-Excel/QuantLibXL.nsi
+    QuantLib-Excel/qlxl/qlxl.hpp
 
 It's also in some script used by RiskMap for automatic building:
     night-job.bat
