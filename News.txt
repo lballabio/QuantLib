@@ -25,3 +25,5 @@ Changes since release 0.3.8:
 
 - FlatForward can now take rates with compounding other than continuous
 
+- Added backward- and forward-flat interpolations
+

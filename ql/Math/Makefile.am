@@ -6,6 +6,7 @@ include_HEADERS = \
 	all.hpp \
 	core.hpp \
 	array.hpp \
+	backwardflatinterpolation.hpp \
 	beta.hpp \
 	bicubicsplineinterpolation.hpp \
 	bilinearinterpolation.hpp \
@@ -19,6 +20,7 @@ include_HEADERS = \
 	errorfunction.hpp \
 	extrapolation.hpp \
 	factorial.hpp \
+	forwardflatinterpolation.hpp \
 	functional.hpp \
 	gammadistribution.hpp \
 	gaussianstatistics.hpp \

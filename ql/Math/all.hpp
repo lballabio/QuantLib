@@ -21,6 +21,7 @@
 #include <ql/qldefines.hpp>
 #include <ql/Math/core.hpp>
 
+#include <ql/Math/backwardflatinterpolation.hpp>
 #include <ql/Math/beta.hpp>
 #include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
@@ -31,8 +32,9 @@
 #include <ql/Math/discrepancystatistics.hpp>
 #include <ql/Math/errorfunction.hpp>
 #include <ql/Math/extrapolation.hpp>
-#include <ql/Math/functional.hpp>
 #include <ql/Math/factorial.hpp>
+#include <ql/Math/forwardflatinterpolation.hpp>
+#include <ql/Math/functional.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/Math/gaussianstatistics.hpp>
 #include <ql/Math/generalstatistics.hpp>
