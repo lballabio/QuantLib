@@ -11,6 +11,8 @@ include_HEADERS = \
 	haltonrsg.hpp \
 	inversecumgaussianrng.hpp \
 	inversecumgaussianrsg.hpp \
+	inversecumulativerng.hpp \
+	inversecumulativersg.hpp \
 	knuthuniformrng.hpp \
 	lecuyeruniformrng.hpp \
 	mt19937uniformrng.hpp \

@@ -2143,6 +2143,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\rngtraits.cpp">
+			</File>
+			<File
 				RelativePath=".\rounding.cpp">
 			</File>
 			<File
@@ -2607,6 +2610,9 @@
 			</File>
 			<File
 				RelativePath="riskstats.hpp">
+			</File>
+			<File
+				RelativePath=".\rngtraits.hpp">
 			</File>
 			<File
 				RelativePath=".\rounding.hpp">

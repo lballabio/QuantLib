@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -17,23 +17,22 @@
 */
 
 /*! \file inversecumgaussianrsg.hpp
-    \brief Inverse cumulative Gaussian random sequence generator
+    \brief Inverse cumulative random sequence generator
 */
 
-#ifndef quantlib_inversecumulative_gaussian_rsg_h
-#define quantlib_inversecumulative_gaussian_rsg_h
+#ifndef quantlib_inversecumulative_rsg_h
+#define quantlib_inversecumulative_rsg_h
 
 #include <ql/Math/array.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {
 
-    //! Inverse cumulative Gaussian random sequence generator
+    //! Inverse cumulative random sequence generator
     /*! It uses a sequence of uniform deviate in (0, 1) as the
-        source of cumulative normal distribution values.
-        Then an inverse cumulative normal distribution is used as it is
-        approximately a Gaussian deviate with average 0.0 and standard
-        deviation 1.0.
+        source of cumulative distribution values.
+        Then an inverse cumulative distribution is used to calculate
+        the distribution deviate.
 
         The uniform deviate sequence is supplied by USG.
 
@@ -43,24 +42,21 @@ namespace QuantLib {
             Size USG::dimension() const;
         \endcode
 
-        The inverse cumulative normal distribution is supplied by I.
+        The inverse cumulative distribution is supplied by IC.
 
-        Class I must implement the following interface:
+        Class IC must implement the following interface:
         \code
-            I::I();
-            Real I::operator() const;
+            IC::IC();
+            Real IC::operator() const;
         \endcode
-
-        \deprecated use InverseCumulativeRsg instead
-
     */
-    template <class USG, class I>
-    class ICGaussianRsg {
+    template <class USG, class IC>
+    class InverseCumulativeRsg {
       public:
         typedef Sample<Array> sample_type;
-        explicit ICGaussianRsg(const USG& uniformSequenceGenerator);
-        ICGaussianRsg(const USG& uniformSequenceGenerator,
-                      const I& inverseCumulative);
+        explicit InverseCumulativeRsg(const USG& uniformSequenceGenerator);
+        InverseCumulativeRsg(const USG& uniformSequenceGenerator,
+                             const IC& inverseCumulative);
         //! returns next sample from the Gaussian distribution
         const sample_type& nextSequence() const;
         const sample_type& lastSequence() const { return x_; }
@@ -69,31 +65,31 @@ namespace QuantLib {
         USG uniformSequenceGenerator_;
         Size dimension_;
         mutable sample_type x_;
-        I ICND_;
+        IC ICD_;
     };
 
-    template <class USG, class I>
-    ICGaussianRsg<USG, I>::ICGaussianRsg(const USG& uniformSequenceGenerator)
-    : uniformSequenceGenerator_(uniformSequenceGenerator),
+    template <class USG, class IC>
+    InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(const USG& usg)
+    : uniformSequenceGenerator_(usg),
       dimension_(uniformSequenceGenerator_.dimension()),
       x_(Array(dimension_), 1.0) {}
 
-    template <class USG, class I>
-    ICGaussianRsg<USG, I>::ICGaussianRsg(const USG& uniformSequenceGenerator,
-                                         const I& inverseCumulative) :
-        uniformSequenceGenerator_(uniformSequenceGenerator),
-        dimension_(uniformSequenceGenerator_.dimension()),
-        x_(Array(dimension_), 1.0),
-        ICND_(inverseCumulative) {}
+    template <class USG, class IC>
+    InverseCumulativeRsg<USG, IC>::InverseCumulativeRsg(const USG& usg,
+                                                        const IC& inverseCum)
+    : uniformSequenceGenerator_(usg),
+      dimension_(uniformSequenceGenerator_.dimension()),
+      x_(Array(dimension_), 1.0),
+      ICD_(inverseCum) {}
 
-    template <class USG, class I>
-    inline const typename ICGaussianRsg<USG, I>::sample_type&
-    ICGaussianRsg<USG, I>::nextSequence() const {
+    template <class USG, class IC>
+    inline const typename InverseCumulativeRsg<USG, IC>::sample_type&
+    InverseCumulativeRsg<USG, IC>::nextSequence() const {
         typename USG::sample_type sample =
             uniformSequenceGenerator_.nextSequence();
         x_.weight = sample.weight;
         for (Size i = 0; i < dimension_; i++) {
-            x_.value[i] = ICND_(sample.value[i]);
+            x_.value[i] = ICD_(sample.value[i]);
         }
         return x_;
     }

@@ -42,6 +42,8 @@ namespace QuantLib {
 
         \test the correctness of the returned value is tested by
               reproducing results available in literature.
+
+        \bug test fails for Borland compiler
     */
     class JuQuadraticApproximationEngine
         : public VanillaOption::engine {

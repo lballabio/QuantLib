@@ -7753,6 +7753,12 @@
 				RelativePath="ql\RandomNumbers\inversecumgaussianrsg.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\RandomNumbers\inversecumulativerng.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\RandomNumbers\inversecumulativersg.hpp">
+			</File>
+			<File
 				RelativePath="ql\RandomNumbers\knuthuniformrng.cpp">
 				<FileConfiguration
 					Name="Debug MTDLL|Win32">

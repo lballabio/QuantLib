@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2004 Walter Penschke
 
@@ -25,10 +26,10 @@
 
 #include <ql/MonteCarlo/pathgenerator.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
-#include <ql/RandomNumbers/inversecumgaussianrng.hpp>
+#include <ql/RandomNumbers/inversecumulativerng.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
-#include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
+#include <ql/RandomNumbers/inversecumulativersg.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/poissondistribution.hpp>
 
@@ -40,9 +41,9 @@ namespace QuantLib {
     struct GenericPseudoRandom {
         // typedefs
         typedef URNG urng_type;
-        typedef ICGaussianRng<urng_type,IC> rng_type;
+        typedef InverseCumulativeRng<urng_type,IC> rng_type;
         typedef RandomSequenceGenerator<urng_type> ursg_type;
-        typedef ICGaussianRsg<ursg_type,IC> rsg_type;
+        typedef InverseCumulativeRsg<ursg_type,IC> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 1 };
         // factory
@@ -75,24 +76,31 @@ namespace QuantLib {
                                 InverseCumulativePoisson> PoissonPseudoRandom;
 
 
-    template <class URSG>
+    template <class URSG, class IC>
     struct GenericLowDiscrepancy {
         // typedefs
         typedef URSG ursg_type;
-        typedef InverseCumulativeNormal ic_type;
-        typedef ICGaussianRsg<ursg_type,ic_type> rsg_type;
+        typedef InverseCumulativeRsg<ursg_type,IC> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 0 };
         // factory
         static rsg_type make_sequence_generator(Size dimension,
                                                 BigNatural seed) {
             ursg_type g(dimension, seed);
-            return rsg_type(g);
+            return (icInstance ? rsg_type(g, *icInstance) : rsg_type(g));
         }
+        // data
+        static boost::shared_ptr<IC> icInstance;
     };
 
+    // static member initialization
+    template<class URSG, class IC>
+    boost::shared_ptr<IC> GenericLowDiscrepancy<URSG, IC>::icInstance;
+
+
     //! default traits for low-discrepancy sequence generation
-    typedef GenericLowDiscrepancy<SobolRsg> LowDiscrepancy;
+    typedef GenericLowDiscrepancy<SobolRsg,
+                                  InverseCumulativeNormal> LowDiscrepancy;
 
 }
 

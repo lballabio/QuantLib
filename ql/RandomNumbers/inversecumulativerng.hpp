@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -20,19 +20,18 @@
     \brief Inverse cumulative Gaussian random-number generator
 */
 
-#ifndef quantlib_inversecumulative_gaussian_rng_h
-#define quantlib_inversecumulative_gaussian_rng_h
+#ifndef quantlib_inversecumulative_rng_h
+#define quantlib_inversecumulative_rng_h
 
 #include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {
 
-    //! Inverse cumulative Gaussian random number generator
+    //! Inverse cumulative random number generator
     /*! It uses a uniform deviate in (0, 1) as the source of cumulative
-        normal distribution values.
-        Then an inverse cumulative normal distribution is used as it is
-        approximately a Gaussian deviate with average 0.0 and standard
-        deviation 1.0.
+        distribution values.
+        Then an inverse cumulative distribution is used to calculate
+        the distribution deviate.
 
         The uniform deviate is supplied by RNG.
 
@@ -41,37 +40,34 @@ namespace QuantLib {
             RNG::sample_type RNG::next() const;
         \endcode
 
-        The inverse cumulative normal distribution is supplied by I.
+        The inverse cumulative distribution is supplied by IC.
 
-        Class I must implement the following interface:
+        Class IC must implement the following interface:
         \code
-            I::I();
-            Real I::operator() const;
+            IC::IC();
+            Real IC::operator() const;
         \endcode
-
-        \deprecated use InverseCumulativeRng instead
-
     */
-    template <class RNG, class I>
-    class ICGaussianRng {
+    template <class RNG, class IC>
+    class InverseCumulativeRng {
       public:
         typedef Sample<Real> sample_type;
         typedef RNG urng_type;
-        explicit ICGaussianRng(const RNG& uniformGenerator);
+        explicit InverseCumulativeRng(const RNG& uniformGenerator);
         //! returns a sample from a Gaussian distribution
         sample_type next() const;
       private:
         RNG uniformGenerator_;
-        I ICND_;
+        IC ICND_;
     };
 
-    template <class RNG, class I>
-    ICGaussianRng<RNG, I>::ICGaussianRng(const RNG& uniformGenerator)
-    : uniformGenerator_(uniformGenerator) {}
+    template <class RNG, class IC>
+    InverseCumulativeRng<RNG, IC>::InverseCumulativeRng(const RNG& ug)
+    : uniformGenerator_(ug) {}
 
-    template <class RNG, class I>
-    inline typename ICGaussianRng<RNG, I>::sample_type
-    ICGaussianRng<RNG, I>::next() const {
+    template <class RNG, class IC>
+    inline typename InverseCumulativeRng<RNG, IC>::sample_type
+    InverseCumulativeRng<RNG, IC>::next() const {
         typename RNG::sample_type sample = uniformGenerator_.next();
         return sample_type(ICND_(sample.value),sample.weight);
     }
