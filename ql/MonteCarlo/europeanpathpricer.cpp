@@ -23,59 +23,14 @@
 */
 
 /*! \file europeanpathpricer.cpp
+    \brief path pricer for European options
 
     \fullpath
-    Sources/MonteCarlo/%europeanpathpricer.cpp
-    \brief path pricer for European options
+    ql/MonteCarlo/%europeanpathpricer.cpp
 
 */
 
 // $Id$
-// $Log$
-// Revision 1.3  2001/09/11 13:22:38  sadrejeb
-// Monte Carlo modifications, cleaning up the merge of MonteCarloModel, and
-// changed styleguide of typenames in pathpricer.
-//
-// Revision 1.2  2001/09/10 10:24:27  lballabio
-// Path revamped
-//
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.19  2001/08/31 15:23:47  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.18  2001/08/21 14:21:23  nando
-// removed default constructors and useless isInitialized_ private member
-//
-// [also enabled MS Visual C++ profiling]
-//
-// Revision 1.17  2001/08/09 14:59:48  sigmud
-// header modification
-//
-// Revision 1.16  2001/08/08 11:07:50  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.15  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.14  2001/08/06 16:49:17  nando
-// 1) BSMFunction now is VolatilityFunction
-// 2) Introduced ExercisePayoff (to be reworked later)
-//
-// Revision 1.13  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.12  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.11  2001/07/19 16:40:11  lballabio
-// Improved docs a bit
-//
-// Revision 1.10  2001/07/05 13:51:05  nando
-// Maxim "Ronin" contribution on efficiency and style
-//
 
 #include "ql/MonteCarlo/europeanpathpricer.hpp"
 #include "ql/Pricers/singleassetoption.hpp"
@@ -104,7 +59,7 @@ namespace QuantLib {
         }
 
         double EuropeanPathPricer::operator()(const Path & path) const {
-            int n = path.size();
+            unsigned int n = path.size();
             QL_REQUIRE(n>0,
                 "SinglePathEuropeanPricer: the path cannot be empty");
 
