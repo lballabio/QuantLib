@@ -22,16 +22,12 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 %include TermStructures.i
 
 %{
-	#include "instrument.h"
-	#include <cstdlib>
+#include <cstdlib>
+#include "instrument.h"
+using QuantLib::Instrument;
+using QuantLib::Handle;
+typedef Handle<Instrument> InstrumentHandle;
 
-	QL_USING(QuantLib,Instrument)
-	QL_USING(QuantLib,Handle)
-
-	typedef Handle<Instrument> InstrumentHandle;
-%}
-
-%{
 std::string Representation(const Handle<Instrument>& i) {
 	std::string isin = i->isinCode();
 	if (isin == "")
@@ -103,7 +99,7 @@ std::string Representation(const Handle<Instrument>& i) {
 
 %{
 #include "stock.h"
-QL_USING(QuantLib::Instruments,Stock)
+using QuantLib::Instruments::Stock;
 
 InstrumentHandle NewStock(char* isinCode, char* description) {
 	return InstrumentHandle(new Stock(isinCode,description));

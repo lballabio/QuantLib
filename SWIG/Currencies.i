@@ -29,8 +29,8 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "dem.h"
 #include "itl.h"
 
-QL_USING(QuantLib,Currency)
-QL_USING(QuantLib,Handle)
+using QuantLib::Currency;
+using QuantLib::Handle;
 typedef Handle<Currency> CurrencyHandle;
 %}
 
@@ -75,11 +75,11 @@ typedef Handle<Currency> CurrencyHandle;
 // actual currencies
 
 %{
-QL_USING(QuantLib::Currencies,EUR)
-QL_USING(QuantLib::Currencies,USD)
-QL_USING(QuantLib::Currencies,GBP)
-QL_USING(QuantLib::Currencies,DEM)
-QL_USING(QuantLib::Currencies,ITL)
+using QuantLib::Currencies::EUR;
+using QuantLib::Currencies::USD;
+using QuantLib::Currencies::GBP;
+using QuantLib::Currencies::DEM;
+using QuantLib::Currencies::ITL;
 
 CurrencyHandle NewEUR()		{ return CurrencyHandle(new EUR); }
 CurrencyHandle NewUSD()		{ return CurrencyHandle(new USD); }

@@ -14,43 +14,39 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "handle.h"
 #include <string>
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-class Currency {
-  public:
-	virtual std::string name() const = 0;	// used for output and comparisons - not for switch-on-type coding!
-	// settlement conventions
-	virtual Handle<Calendar> settlementCalendar() const = 0;
-	virtual int settlementDays() const = 0;
-	Date settlementDate(const Date&) const;
-	// conventions for deposits or any other rates can be added
-};
+	class Currency {
+	  public:
+		virtual std::string name() const = 0;	// used for output and comparisons - not for switch-on-type coding!
+		// settlement conventions
+		virtual Handle<Calendar> settlementCalendar() const = 0;
+		virtual int settlementDays() const = 0;
+		Date settlementDate(const Date&) const;
+		// conventions for deposits or any other rates can be added
+	};
+	
+	// comparison based on name
+	
+	bool operator==(const Handle<Currency>&, const Handle<Currency>&);
+	bool operator!=(const Handle<Currency>&, const Handle<Currency>&);
+	
+	
+	// inline definitions
+	
+	inline Date Currency::settlementDate(const Date& d) const {
+		return settlementCalendar()->advance(d,settlementDays());
+	}
+	
+	inline bool operator==(const Handle<Currency>& c1, const Handle<Currency>& c2) {
+		return (c1->name() == c2->name());
+	}
+	
+	inline bool operator!=(const Handle<Currency>& c1, const Handle<Currency>& c2) {
+		return (c1->name() != c2->name());
+	}
 
-// comparison based on name
-
-QL_DECLARE_TEMPLATE_SPECIALIZATION(bool operator==(const Handle<Currency>&, const Handle<Currency>&))
-QL_DECLARE_TEMPLATE_SPECIALIZATION(bool operator!=(const Handle<Currency>&, const Handle<Currency>&))
-
-
-// inline definitions
-
-inline Date Currency::settlementDate(const Date& d) const {
-	return settlementCalendar()->advance(d,settlementDays());
 }
-
-
-QL_DEFINE_TEMPLATE_SPECIALIZATION
-inline bool operator==(const Handle<Currency>& c1, const Handle<Currency>& c2) {
-	return (c1->name() == c2->name());
-}
-
-QL_DEFINE_TEMPLATE_SPECIALIZATION
-inline bool operator!=(const Handle<Currency>& c1, const Handle<Currency>& c2) {
-	return (c1->name() != c2->name());
-}
-
-
-QL_END_NAMESPACE(QuantLib)
 
 
 #endif

@@ -20,8 +20,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	// set switches
 	#define QL_CMATH_IN_STD						0
 	#define QL_CCHAR_IN_STD						0
-	#define QL_SUPPORTS_NAMESPACES				1
-	#define QL_TEMPLATE_SPECIALIZATION_WORKS	0
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_REQUIRES_DUMMY_RETURN			1
@@ -33,8 +31,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	// set switches
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCHAR_IN_STD						1
-	#define QL_SUPPORTS_NAMESPACES				1
-	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
 	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -46,8 +42,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	// set switches
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCHAR_IN_STD						1
-	#define QL_SUPPORTS_NAMESPACES				1
-	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			1
@@ -59,8 +53,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	// set switches
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCHAR_IN_STD						1
-	#define QL_SUPPORTS_NAMESPACES				1
-	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -103,30 +95,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_STRLEN	strlen
 	#define QL_TOLOWER	tolower
 	#define QL_TOUPPER	toupper
-#endif
-
-// Are namespaces supported?
-#if QL_SUPPORTS_NAMESPACES
-	#define QL_BEGIN_NAMESPACE(nspace)		namespace nspace {
-	#define QL_END_NAMESPACE(nspace)		}
-	#define QL_USING_NAMESPACE(nspace)		using namespace nspace;
-	#define QL_USING(nspace,type)			using nspace::type;
-	#define QL_ADD_NAMESPACE(nspace,type)	nspace::type
-#else
-	#define QL_BEGIN_NAMESPACE(nspace)
-	#define QL_END_NAMESPACE(nspace)
-	#define QL_USING_NAMESPACE(nspace)
-	#define QL_USING(type,nspace)
-	#define QL_ADD_NAMESPACE(nspace,type)
-#endif
-
-// Does template specialization work as required?
-#if QL_TEMPLATE_SPECIALIZATION_WORKS
-	#define QL_DECLARE_TEMPLATE_SPECIALIZATION(declaration) template<> declaration;
-	#define QL_DEFINE_TEMPLATE_SPECIALIZATION				template<>
-#else
-	#define QL_DECLARE_TEMPLATE_SPECIALIZATION(declaration)
-	#define QL_DEFINE_TEMPLATE_SPECIALIZATION
 #endif
 
 // Is a return statement required at the end of a function even though it can never be reached?

@@ -22,15 +22,11 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include <cstdlib>
 #include <string>
 #include "date.h"
-QL_USING(QuantLib,Date)
-%}
+using QuantLib::Date;
 
-// typedefs
-
-%{
-QL_USING(QuantLib,Day)
-QL_USING(QuantLib,Year)
-QL_USING(QuantLib,Time)
+using QuantLib::Day;
+using QuantLib::Year;
+using QuantLib::Time;
 %}
 
 typedef int Day;
@@ -40,17 +36,17 @@ typedef double Time;
 // typemap weekdays to corresponding strings
 
 %{
-QL_USING(QuantLib,Weekday)
-QL_USING(QuantLib,Sunday)
-QL_USING(QuantLib,Monday)
-QL_USING(QuantLib,Tuesday)
-QL_USING(QuantLib,Wednesday)
-QL_USING(QuantLib,Thursday)
-QL_USING(QuantLib,Friday)
-QL_USING(QuantLib,Saturday)
+using QuantLib::Weekday;
+using QuantLib::Sunday;
+using QuantLib::Monday;
+using QuantLib::Tuesday;
+using QuantLib::Wednesday;
+using QuantLib::Thursday;
+using QuantLib::Friday;
+using QuantLib::Saturday;
 
 #include "stringconverters.h"
-QL_USING(QuantLib,ConvertToLowercase)
+using QuantLib::ConvertToLowercase;
 %}
 
 %typemap(python,in) Weekday, Weekday * {
@@ -98,19 +94,19 @@ QL_USING(QuantLib,ConvertToLowercase)
 // typemap months to corresponding strings or numbers
 
 %{
-QL_USING(QuantLib,Month)
-QL_USING(QuantLib,January)
-QL_USING(QuantLib,February)
-QL_USING(QuantLib,March)
-QL_USING(QuantLib,April)
-QL_USING(QuantLib,May)
-QL_USING(QuantLib,June)
-QL_USING(QuantLib,July)
-QL_USING(QuantLib,August)
-QL_USING(QuantLib,September)
-QL_USING(QuantLib,October)
-QL_USING(QuantLib,November)
-QL_USING(QuantLib,December)
+using QuantLib::Month;
+using QuantLib::January;
+using QuantLib::February;
+using QuantLib::March;
+using QuantLib::April;
+using QuantLib::May;
+using QuantLib::June;
+using QuantLib::July;
+using QuantLib::August;
+using QuantLib::September;
+using QuantLib::October;
+using QuantLib::November;
+using QuantLib::December;
 %}
 
 %typemap(python,in) Month, Month * {
@@ -176,11 +172,11 @@ QL_USING(QuantLib,December)
 // typemap time units to corresponding strings
 
 %{
-	QL_USING(QuantLib,TimeUnit)
-	QL_USING(QuantLib,Days)
-	QL_USING(QuantLib,Weeks)
-	QL_USING(QuantLib,Months)
-	QL_USING(QuantLib,Years)
+using QuantLib::TimeUnit;
+using QuantLib::Days;
+using QuantLib::Weeks;
+using QuantLib::Months;
+using QuantLib::Years;
 %}
 
 %typemap(python,in) TimeUnit, TimeUnit * {
@@ -253,7 +249,7 @@ class Date {
 
 %{
 #include "formats.h"
-QL_USING(QuantLib,DateFormat)
+using QuantLib::DateFormat;
 %}
 
 %addmethods Date {

@@ -12,36 +12,35 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "bsmoption.h"
 #include "discountfactor.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Pricers)
+	namespace Pricers {
+	
+		class BSMEuropeanOption : public BSMOption {
+		  public:
+			  // constructor
+			  BSMEuropeanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
+			    Rate riskFreeRate, Time residualTime, double volatility)
+			    : BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility) {}
+			  // accessors
+			  double value() const;
+			  double delta() const;
+			  double gamma() const;
+			  double theta() const;
+			  double vega() const;
+			  double rho() const;
+		    Handle<BSMOption> clone() const {	return Handle<BSMOption>(new BSMEuropeanOption(*this)); }
+		  private:
+		    // declared as mutable to preserve
+		    // the logical constness (does this word exist?) of value()
+		    mutable DiscountFactor growthDiscount, riskFreeDiscount;
+		    mutable double standardDeviation;
+		    mutable double alpha, beta, NID1;
+		};
 
-class BSMEuropeanOption : public BSMOption {
-  public:
-	  // constructor
-	  BSMEuropeanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
-	    Rate riskFreeRate, Time residualTime, double volatility)
-	    : BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility) {}
-	  // accessors
-	  double value() const;
-	  double delta() const;
-	  double gamma() const;
-	  double theta() const;
-	  double vega() const;
-	  double rho() const;
-    Handle<BSMOption> clone() const {	return Handle<BSMOption>(new BSMEuropeanOption(*this)); }
-  private:
-    // declared as mutable to preserve
-    // the logical constness (does this word exist?) of value()
-    mutable DiscountFactor growthDiscount, riskFreeDiscount;
-    mutable double standardDeviation;
-    mutable double alpha, beta, NID1;
-};
+	}
 
-
-QL_END_NAMESPACE(Pricers)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

@@ -14,70 +14,70 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "handle.h"
 #include "observable.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-class SwaptionVolatilitySurface : public Observable {
-  public:
-	// constructors
-	SwaptionVolatilitySurface() {};
-	// copy of this surface with no observers registered
-	virtual Handle<SwaptionVolatilitySurface> clone() const = 0;
-	// volatility
-	virtual Rate vol(const Date& start, Time length) const = 0;
-};
+	class SwaptionVolatilitySurface : public Observable {
+	  public:
+		// constructors
+		SwaptionVolatilitySurface() {};
+		// copy of this surface with no observers registered
+		virtual Handle<SwaptionVolatilitySurface> clone() const = 0;
+		// volatility
+		virtual Rate vol(const Date& start, Time length) const = 0;
+	};
+	
+	// spreaded surface 
+	
+	class SpreadedSwaptionVolatilitySurface : public SwaptionVolatilitySurface {
+	  public:
+		// constructor
+		SpreadedSwaptionVolatilitySurface(const Handle<SwaptionVolatilitySurface>&, Spread spread);
+		// clone
+		Handle<SwaptionVolatilitySurface> clone() const;
+		// volatility
+		Rate vol(const Date& start, Time length) const;
+		// observers of this curve are also observers of the original curve
+		void registerObserver(Observer*);
+		void unregisterObserver(Observer*);
+		void unregisterAll();
+	  private:
+		Handle<SwaptionVolatilitySurface> theOriginalSurface;
+		Spread theSpread;
+	};
+	
+	
+	// inline definitions
+	
+	inline SpreadedSwaptionVolatilitySurface::SpreadedSwaptionVolatilitySurface(
+		const Handle<SwaptionVolatilitySurface>& h, Spread spread)
+	: theOriginalSurface(h), theSpread(spread) {}
+	
+	inline Handle<SwaptionVolatilitySurface> SpreadedSwaptionVolatilitySurface::clone() const {
+		return Handle<SwaptionVolatilitySurface>(new SpreadedSwaptionVolatilitySurface(
+			theOriginalSurface->clone(),theSpread));
+	}
+	
+	inline Rate SpreadedSwaptionVolatilitySurface::vol(const Date& start, Time length) const {
+		return theOriginalSurface->vol(start,length)+theSpread;
+	}
+	
+	inline void SpreadedSwaptionVolatilitySurface::registerObserver(Observer* o) {
+		SwaptionVolatilitySurface::registerObserver(o);
+		theOriginalSurface->registerObserver(o);
+	}
+	
+	inline void SpreadedSwaptionVolatilitySurface::unregisterObserver(Observer* o) {
+		SwaptionVolatilitySurface::unregisterObserver(o);
+		theOriginalSurface->unregisterObserver(o);
+	}
+	
+	inline void SpreadedSwaptionVolatilitySurface::unregisterAll() {
+		for (std::set<Observer*>::iterator i = observers().begin(); i!=observers().end(); ++i)
+			theOriginalSurface->unregisterObserver(*i);
+		SwaptionVolatilitySurface::unregisterAll();
+	}
 
-// spreaded surface 
-
-class SpreadedSwaptionVolatilitySurface : public SwaptionVolatilitySurface {
-  public:
-	// constructor
-	SpreadedSwaptionVolatilitySurface(const Handle<SwaptionVolatilitySurface>&, Spread spread);
-	// clone
-	Handle<SwaptionVolatilitySurface> clone() const;
-	// volatility
-	Rate vol(const Date& start, Time length) const;
-	// observers of this curve are also observers of the original curve
-	void registerObserver(Observer*);
-	void unregisterObserver(Observer*);
-	void unregisterAll();
-  private:
-	Handle<SwaptionVolatilitySurface> theOriginalSurface;
-	Spread theSpread;
-};
-
-
-// inline definitions
-
-inline SpreadedSwaptionVolatilitySurface::SpreadedSwaptionVolatilitySurface(
-	const Handle<SwaptionVolatilitySurface>& h, Spread spread)
-: theOriginalSurface(h), theSpread(spread) {}
-
-inline Handle<SwaptionVolatilitySurface> SpreadedSwaptionVolatilitySurface::clone() const {
-	return Handle<SwaptionVolatilitySurface>(new SpreadedSwaptionVolatilitySurface(
-		theOriginalSurface->clone(),theSpread));
 }
-
-inline Rate SpreadedSwaptionVolatilitySurface::vol(const Date& start, Time length) const {
-	return theOriginalSurface->vol(start,length)+theSpread;
-}
-
-inline void SpreadedSwaptionVolatilitySurface::registerObserver(Observer* o) {
-	SwaptionVolatilitySurface::registerObserver(o);
-	theOriginalSurface->registerObserver(o);
-}
-
-inline void SpreadedSwaptionVolatilitySurface::unregisterObserver(Observer* o) {
-	SwaptionVolatilitySurface::unregisterObserver(o);
-	theOriginalSurface->unregisterObserver(o);
-}
-
-inline void SpreadedSwaptionVolatilitySurface::unregisterAll() {
-	for (std::set<Observer*>::iterator i = observers().begin(); i!=observers().end(); ++i)
-		theOriginalSurface->unregisterObserver(*i);
-	SwaptionVolatilitySurface::unregisterAll();
-}
-
-QL_END_NAMESPACE(QuantLib)
 
 
 #endif

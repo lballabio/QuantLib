@@ -31,7 +31,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 // Function to find root of
 
 %{
-QL_USING(QuantLib,Function)
+using QuantLib::Function;
 %}
 
 class Function {
@@ -48,7 +48,7 @@ class Function {
 }
 
 %{
-QL_USING(QuantLib,Ensure)
+using QuantLib::Ensure;
 
 // its C++ container
 class PyFunction : public Function {
@@ -77,7 +77,7 @@ class PyFunction : public Function {
 // 1D Solver interface
 
 %{
-QL_USING(QuantLib,Solver1D)
+using QuantLib::Solver1D;
 %}
 
 class Solver1D {
@@ -103,13 +103,13 @@ class Solver1D {
 // Actual solvers
 
 %{
-QL_USING(QuantLib::Solvers1D,Bisection)
-QL_USING(QuantLib::Solvers1D,Brent)
-QL_USING(QuantLib::Solvers1D,FalsePosition)
-QL_USING(QuantLib::Solvers1D,Newton)
-QL_USING(QuantLib::Solvers1D,NewtonSafe)
-QL_USING(QuantLib::Solvers1D,Ridder)
-QL_USING(QuantLib::Solvers1D,Secant)
+using QuantLib::Solvers1D::Bisection;
+using QuantLib::Solvers1D::Brent;
+using QuantLib::Solvers1D::FalsePosition;
+using QuantLib::Solvers1D::Newton;
+using QuantLib::Solvers1D::NewtonSafe;
+using QuantLib::Solvers1D::Ridder;
+using QuantLib::Solvers1D::Secant;
 %}
 
 class Bisection : public Solver1D {

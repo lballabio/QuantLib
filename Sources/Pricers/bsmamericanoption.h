@@ -15,29 +15,29 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include <algorithm>
 #include <functional>
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Pricers)
+	namespace Pricers {
+	
+		class BSMAmericanOption : public BSMNumericalOption {
+		  public:
+			// constructor
+			BSMAmericanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
+			  Rate riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
+			: BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
+			  gridPoints), theTimeSteps(timeSteps) {}
+			// accessors
+			double value() const;
+			Handle<BSMOption> clone() const{	// This method must be implemented to calculate implied volatility
+				return Handle<BSMOption>(new BSMAmericanOption(*this));
+			}
+		  private:
+			int theTimeSteps;
+		};
 
-class BSMAmericanOption : public BSMNumericalOption {
-  public:
-	// constructor
-	BSMAmericanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
-	  Rate riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
-	: BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
-	  gridPoints), theTimeSteps(timeSteps) {}
-	// accessors
-	double value() const;
-	Handle<BSMOption> clone() const{	// This method must be implemented to calculate implied volatility
-		return Handle<BSMOption>(new BSMAmericanOption(*this));
 	}
-  private:
-	int theTimeSteps;
-};
 
-QL_END_NAMESPACE(Pricers)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

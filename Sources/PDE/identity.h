@@ -10,20 +10,20 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 #include "qldefines.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(PDE)
+	namespace PDE {
+	
+		template <class arrayType>
+		class Identity {
+		  public:
+			arrayType applyTo(const arrayType& a) { return a; }
+			arrayType solveFor(const arrayType& a) { return a; }
+		};
+	
+	}
 
-template <class arrayType>
-class Identity {
-  public:
-	arrayType applyTo(const arrayType& a) { return a; }
-	arrayType solveFor(const arrayType& a) { return a; }
-};
-
-QL_END_NAMESPACE(PDE)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

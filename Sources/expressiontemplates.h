@@ -9,7 +9,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #define quantlib_expression_templates_h
 
 #include "qldefines.h"
-#include "array.h"
 
 /* The concepts implemented here are from 
    T. L. Veldhuizen, "Expression templates", C++ Report, 7(5):26-31, June 1995

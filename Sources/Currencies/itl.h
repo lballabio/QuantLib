@@ -12,22 +12,22 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "currency.h"
 #include "target.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Currencies)
+	namespace Currencies {
+	
+		class ITL : public Currency {
+		  public:
+			ITL() {}
+			std::string name() const { return std::string("ITL"); }
+			Handle<Calendar> settlementCalendar() const { 
+				return Handle<Calendar>(new Calendars::TARGET); }
+			int settlementDays() const { return 2; }
+		};
+	
+	}
 
-class ITL : public Currency {
-  public:
-	ITL() {}
-	std::string name() const { return std::string("ITL"); }
-	Handle<Calendar> settlementCalendar() const { 
-		return Handle<Calendar>(new QL_ADD_NAMESPACE(Calendars,TARGET)); }
-	int settlementDays() const { return 2; }
-};
-
-QL_END_NAMESPACE(Currencies)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

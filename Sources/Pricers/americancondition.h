@@ -13,23 +13,23 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include <algorithm>
 #include <functional>
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Pricers)
-
-class BSMAmericanCondition : public QL_ADD_NAMESPACE(PDE,StepCondition)<Array> {
-  public:
-	BSMAmericanCondition(const Array& initialPrices) : initialPrices(initialPrices) {}
-	void applyTo(Array& a, Time t) const {
-		for (int i=0; i<a.size(); i++)
-			a[i] = QL_MAX(a[i],initialPrices[i]);
+	namespace Pricers {
+	
+		class BSMAmericanCondition : public PDE::StepCondition<Array> {
+		  public:
+			BSMAmericanCondition(const Array& initialPrices) : initialPrices(initialPrices) {}
+			void applyTo(Array& a, Time t) const {
+				for (int i=0; i<a.size(); i++)
+					a[i] = QL_MAX(a[i],initialPrices[i]);
+			}
+		  private:
+			Array initialPrices;
+		};
+	
 	}
-  private:
-	Array initialPrices;
-};
 
-QL_END_NAMESPACE(Pricers)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 #endif

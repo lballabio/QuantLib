@@ -13,58 +13,58 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "formats.h"
 #include <sstream>
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-#ifdef QL_DEBUG
+	#ifdef QL_DEBUG
+	
+		class Spread {
+			friend Spread operator+(Spread s1, Spread s2) { return Spread(s1.spread+s2.spread); }
+			friend double operator+(Spread s, double x) { return s.spread+x; }
+			friend double operator+(double x, Spread s) { return x+s.spread; }
+			friend Spread operator-(Spread s1, Spread s2) { return Spread(s1.spread-s2.spread); }
+			friend double operator-(Spread s, double x) { return s.spread-x; }
+			friend double operator-(double x, Spread s) { return x-s.spread; }
+			friend double operator*(Spread s, double x) { return s.spread*x; }
+			friend double operator*(double x, Spread s) { return s.spread*x; }
+			friend double operator/(Spread s, double x) { return s.spread/x; }
+		  public:
+			// constructor
+			Spread(double s = 0.0);
+			// assignment
+			Spread& operator=(double s);
+			// cast
+			operator double() const { return spread; }
+			// computed assignment
+			Spread& operator+=(Spread s) { return (*this = Spread(spread+s.spread)); }
+			Spread& operator-=(Spread s) { return (*this = Spread(spread-s.spread)); }
+			Spread& operator*=(double x) { return (*this = Spread(spread*x)); }
+			Spread& operator/=(double x) { return (*this = Spread(spread/x)); }
+		  private:
+			double spread;
+		};
+	
+		// inline definitions
+	
+		inline Spread::Spread(double s) {
+			Require(s >= -1.0 && s <= 1.0,
+				"invalid spread value ("+RateFormat(s)+"). Absolute value must be between 0 and 1");
+			spread = s;
+		}
+	
+		inline Spread& Spread::operator=(double s) {
+			Require(s >= -1.0 && s <= 1.0,
+				"invalid spread value ("+RateFormat(s)+"). Absolute value must be between 0 and 1");
+			spread = s;
+			return *this;
+		}
+	
+	#else
+	
+		typedef double Spread;
+	
+	#endif
 
-	class Spread {
-		friend Spread operator+(Spread s1, Spread s2) { return Spread(s1.spread+s2.spread); }
-		friend double operator+(Spread s, double x) { return s.spread+x; }
-		friend double operator+(double x, Spread s) { return x+s.spread; }
-		friend Spread operator-(Spread s1, Spread s2) { return Spread(s1.spread-s2.spread); }
-		friend double operator-(Spread s, double x) { return s.spread-x; }
-		friend double operator-(double x, Spread s) { return x-s.spread; }
-		friend double operator*(Spread s, double x) { return s.spread*x; }
-		friend double operator*(double x, Spread s) { return s.spread*x; }
-		friend double operator/(Spread s, double x) { return s.spread/x; }
-	  public:
-		// constructor
-		Spread(double s = 0.0);
-		// assignment
-		Spread& operator=(double s);
-		// cast
-		operator double() const { return spread; }
-		// computed assignment
-		Spread& operator+=(Spread s) { return (*this = Spread(spread+s.spread)); }
-		Spread& operator-=(Spread s) { return (*this = Spread(spread-s.spread)); }
-		Spread& operator*=(double x) { return (*this = Spread(spread*x)); }
-		Spread& operator/=(double x) { return (*this = Spread(spread/x)); }
-	  private:
-		double spread;
-	};
-
-	// inline definitions
-
-	inline Spread::Spread(double s) {
-		Require(s >= -1.0 && s <= 1.0,
-			"invalid spread value ("+RateFormat(s)+"). Absolute value must be between 0 and 1");
-		spread = s;
-	}
-
-	inline Spread& Spread::operator=(double s) {
-		Require(s >= -1.0 && s <= 1.0,
-			"invalid spread value ("+RateFormat(s)+"). Absolute value must be between 0 and 1");
-		spread = s;
-		return *this;
-	}
-
-#else
-
-	typedef double Spread;
-
-#endif
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 

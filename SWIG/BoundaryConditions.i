@@ -20,11 +20,11 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 %{
 #include "boundarycondition.h"
-QL_USING(QuantLib::PDE,BoundaryCondition)
+using QuantLib::PDE::BoundaryCondition;
 typedef BoundaryCondition::Type BoundaryConditionType;
 
 #include "stringconverters.h"
-QL_USING(QuantLib,ConvertToLowercase)
+using QuantLib::ConvertToLowercase;
 %}
 
 // typemap boundary condition type to the corresponding strings

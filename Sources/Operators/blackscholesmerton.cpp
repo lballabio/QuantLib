@@ -7,21 +7,20 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 #include "blackscholesmerton.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Operators)
+	namespace Operators {
+	
+		BSMOperator::BSMOperator(int size, double dx, double r, double q, double sigma)
+		: TridiagonalOperator(size) {
+			double sigma2 = sigma*sigma;
+			double nu = r-q-sigma2/2;
+			double pd = -(sigma2/dx-nu)/(2*dx);
+			double pu = -(sigma2/dx+nu)/(2*dx);
+			double pm = sigma2/(dx*dx)+r;
+			setMidRows(pd,pm,pu);
+		}
+	
+	}
 
-BSMOperator::BSMOperator(int size, double dx, double r, double q, double sigma)
-: TridiagonalOperator(size) {
-	double sigma2 = sigma*sigma;
-	double nu = r-q-sigma2/2;
-	double pd = -(sigma2/dx-nu)/(2*dx);
-	double pu = -(sigma2/dx+nu)/(2*dx);
-	double pm = sigma2/(dx*dx)+r;
-	setMidRows(pd,pm,pu);
 }
-
-
-QL_END_NAMESPACE(Operators)
-
-QL_END_NAMESPACE(QuantLib)

@@ -23,7 +23,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 %{
 #include "tridiagonaloperator.h"
-QL_USING(QuantLib::Operators,TridiagonalOperator)
+using QuantLib::Operators::TridiagonalOperator;
 %}
 
 class TridiagonalOperator {

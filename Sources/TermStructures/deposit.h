@@ -14,23 +14,23 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "calendar.h"
 #include "yield.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-class Deposit {
-  public:
-	Deposit() {}
-	Deposit(const Date& maturity, Rate rate, const Handle<DayCounter>& dayCounter)
-	: theMaturity(maturity), theRate(rate), theDayCounter(dayCounter) {}
-	Date maturity() const { return theMaturity; }
-	Rate rate() const { return theRate; }
-	Handle<DayCounter> dayCounter() const { return theDayCounter; }
-  private:
-	Date theMaturity;
-	Rate theRate;
-	Handle<DayCounter> theDayCounter;
-};
+	class Deposit {
+	  public:
+		Deposit() {}
+		Deposit(const Date& maturity, Rate rate, const Handle<DayCounter>& dayCounter)
+		: theMaturity(maturity), theRate(rate), theDayCounter(dayCounter) {}
+		Date maturity() const { return theMaturity; }
+		Rate rate() const { return theRate; }
+		Handle<DayCounter> dayCounter() const { return theDayCounter; }
+	  private:
+		Date theMaturity;
+		Rate theRate;
+		Handle<DayCounter> theDayCounter;
+	};
 
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

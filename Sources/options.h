@@ -10,14 +10,14 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 #include "qldefines.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-class Option {
-  public:
-	enum Type { Call, Put, Straddle };
-};
+	class Option {
+	  public:
+		enum Type { Call, Put, Straddle };
+	};
 
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

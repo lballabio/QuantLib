@@ -11,20 +11,20 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "qldefines.h"
 #include "calendar.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Calendars)
+	namespace Calendars {
+	
+		class WesternCalendar : public Calendar {
+		  public:
+			WesternCalendar() {}
+		  protected:
+			static const Day easterMonday[];			// relative to first day of year
+		};
+	
+	}
 
-class WesternCalendar : public Calendar {
-  public:
-	WesternCalendar() {}
-  protected:
-	static const Day easterMonday[];			// relative to first day of year
-};
-
-QL_END_NAMESPACE(Calendars)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

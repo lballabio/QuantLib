@@ -8,8 +8,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #ifndef quantlib_evolver_h
 #define quantlib_evolver_h
 
-#include "qldefines.h"
-
 /*	Evolvers do not need to inherit from any base class.
 	However, they must implement the following interface:
 

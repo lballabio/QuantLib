@@ -11,30 +11,30 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "qldefines.h"
 #include "instrument.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Instruments)
+	namespace Instruments {
+	
+		class Stock : public PricedInstrument {
+		  public:
+			Stock() {}
+			Stock(const std::string& isinCode, const std::string& description)
+			: PricedInstrument(isinCode,description) {}
+			// modifiers
+			void setPrice(double price) { PricedInstrument::setPrice(price); theNPV = price; }
+			// inspectors
+			bool useTermStructure() const { return false; }
+			bool useSwaptionVolatility() const { return false; }
+			bool useForwardVolatility() const { return false; }
+		  private:
+			// methods
+			bool needsFinalCalculations() const { return true; }
+			void performFinalCalculations() const { Require(priceIsSet,"stock price not set"); }
+		};
+	
+	}
 
-class Stock : public PricedInstrument {
-  public:
-	Stock() {}
-	Stock(const std::string& isinCode, const std::string& description)
-	: PricedInstrument(isinCode,description) {}
-	// modifiers
-	void setPrice(double price) { PricedInstrument::setPrice(price); theNPV = price; }
-	// inspectors
-	bool useTermStructure() const { return false; }
-	bool useSwaptionVolatility() const { return false; }
-	bool useForwardVolatility() const { return false; }
-  private:
-	// methods
-	bool needsFinalCalculations() const { return true; }
-	void performFinalCalculations() const { Require(priceIsSet,"stock price not set"); }
-};
-
-QL_END_NAMESPACE(Instruments)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

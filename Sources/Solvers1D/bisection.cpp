@@ -11,40 +11,37 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 #include "bisection.h"
 
-QL_USING(QuantLib, Error)
-QL_USING(QuantLib, IntegerFormat)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(QuantLib)
-
-QL_BEGIN_NAMESPACE(Solvers1D)
-
-double Bisection::_solve(const Function& f, double xAccuracy) const {
-	double dx,xMid,fMid;
-
-	if (fxMin < 0.0) { // Orient the search so that f>0
-		dx = xMax-xMin;  // lies at root+dx.
-		root = xMin;
-	} else {
-		dx = xMin-xMax;
-		root = xMax;
-	}
-
-	while (evaluationNumber<=maxEvaluations) {
-		dx /= 2.0;
-		xMid=root+dx;
-		fMid=f.value(xMid);
-		evaluationNumber++;
-			if (fMid <= 0.0) 
-			root=xMid;
-			if (QL_FABS(dx) < xAccuracy || fMid == 0.0) {
-			return root;
+	namespace Solvers1D {
+	
+		double Bisection::_solve(const Function& f, double xAccuracy) const {
+			double dx,xMid,fMid;
+		
+			if (fxMin < 0.0) { // Orient the search so that f>0
+				dx = xMax-xMin;  // lies at root+dx.
+				root = xMin;
+			} else {
+				dx = xMin-xMax;
+				root = xMax;
+			}
+		
+			while (evaluationNumber<=maxEvaluations) {
+				dx /= 2.0;
+				xMid=root+dx;
+				fMid=f.value(xMid);
+				evaluationNumber++;
+					if (fMid <= 0.0) 
+					root=xMid;
+					if (QL_FABS(dx) < xAccuracy || fMid == 0.0) {
+					return root;
+				}
+			}
+			throw Error("Bisection: maximum number of function evaluations ("
+			  + IntegerFormat(maxEvaluations) + ") exceeded");
+			QL_DUMMY_RETURN(0.0);
 		}
+	
 	}
-	throw Error("Bisection: maximum number of function evaluations ("
-	  + IntegerFormat(maxEvaluations) + ") exceeded");
-	QL_DUMMY_RETURN(0.0);
+
 }
-
-QL_END_NAMESPACE(Solvers1D)
-
-QL_END_NAMESPACE(QuantLib)

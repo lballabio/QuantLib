@@ -22,7 +22,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 %{
 #include "statistics.h"
-QL_USING(QuantLib,Statistics)
+using QuantLib::Statistics;
 %}
 
 class Statistics {

@@ -28,8 +28,8 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "termstructure.h"
 #include "handle.h"
 
-QL_USING(QuantLib,TermStructure)
-QL_USING(QuantLib,Handle)
+using QuantLib::TermStructure;
+using QuantLib::Handle;
 typedef Handle<TermStructure> TermStructureHandle;
 %}
 
@@ -94,8 +94,8 @@ typedef Handle<TermStructure> TermStructureHandle;
 %{
 #include "piecewiseconstantforwards.h"
 
-QL_USING(QuantLib::TermStructures,PiecewiseConstantForwards)
-QL_USING(QuantLib,Deposit)
+using QuantLib::TermStructures::PiecewiseConstantForwards;
+using QuantLib::Deposit;
 %}
 
 // deposit
@@ -112,7 +112,7 @@ class Deposit {
 // typemap Python list of deposits to std::vector<Deposit>
 
 %{
-	typedef std::vector<Deposit> DepositList;
+typedef std::vector<Deposit> DepositList;
 %}
 
 %typemap(python,in) DepositList, DepositList * {

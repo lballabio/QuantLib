@@ -10,23 +10,23 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 #include "qldefines.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(PDE)
+	namespace PDE {
+	
+		class TimeConstantOperator {
+		  public:
+			enum { isTimeDependent = 0 };
+		};
+		
+		class TimeDependentOperator {
+		  public:
+			enum { isTimeDependent = 1 };
+		};
+	
+	}
 
-class TimeConstantOperator {
-  public:
-	enum { isTimeDependent = 0 };
-};
-
-class TimeDependentOperator {
-  public:
-	enum { isTimeDependent = 1 };
-};
-
-QL_END_NAMESPACE(PDE)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

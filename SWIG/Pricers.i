@@ -25,8 +25,8 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 %{
 #include "bsmeuropeanoption.h"
 #include "bsmamericanoption.h"
-QL_USING(QuantLib::Pricers,BSMEuropeanOption)
-QL_USING(QuantLib::Pricers,BSMAmericanOption)
+using QuantLib::Pricers::BSMEuropeanOption;
+using QuantLib::Pricers::BSMAmericanOption;
 %}
 
 class BSMEuropeanOption {

@@ -11,20 +11,19 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "qldefines.h"
 #include "tridiagonaloperator.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Operators)
+	namespace Operators {
+	
+		class BSMOperator : public TridiagonalOperator {
+		  public:
+			BSMOperator() : TridiagonalOperator() {}
+			BSMOperator(int size, double dx, double r, double q, double sigma);
+		};
+	
+	}
 
-class BSMOperator : public TridiagonalOperator {
-  public:
-	BSMOperator() : TridiagonalOperator() {}
-	BSMOperator(int size, double dx, double r, double q, double sigma);
-};
-
-
-QL_END_NAMESPACE(Operators)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

@@ -11,19 +11,19 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "qldefines.h"
 #include "array.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(PDE)
+	namespace PDE {
+	
+		template<class Operator>
+		class OperatorTraits {
+		  public:
+			typedef Array arrayType;
+		};
+	
+	}
 
-template<class Operator>
-class OperatorTraits {
-  public:
-	typedef Array arrayType;
-};
-
-QL_END_NAMESPACE(PDE)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

@@ -9,21 +9,21 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include <limits>
 
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-Statistics::Statistics() {
-  reset();
+	Statistics::Statistics() {
+	  reset();
+	}
+	
+	void Statistics::reset() {
+	  theMin = std::numeric_limits<double>::max();
+	  theMax = std::numeric_limits<double>::min();
+	  theSampleNumber = 0;
+	  theSampleWeight = 0.0;
+	  theSum = 0.0;
+	  theQuadraticSum = 0.0;
+	  theCubicSum = 0.0;
+	  theFourthPowerSum = 0.0;
+	}
+
 }
-
-void Statistics::reset() {
-  theMin = std::numeric_limits<double>::max();
-  theMax = std::numeric_limits<double>::min();
-  theSampleNumber = 0;
-  theSampleWeight = 0.0;
-  theSum = 0.0;
-  theQuadraticSum = 0.0;
-  theCubicSum = 0.0;
-  theFourthPowerSum = 0.0;
-}
-
-QL_END_NAMESPACE(QuantLib)

@@ -23,13 +23,13 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 %{
 #include "calendar.h"
 
-QL_USING(QuantLib,Handle)
-QL_USING(QuantLib,Calendar)
+using QuantLib::Handle;
+using QuantLib::Calendar;
 typedef Handle<Calendar> CalendarHandle;
 
-QL_USING(QuantLib,Following)
-QL_USING(QuantLib,ModifiedFollowing)
-QL_USING(QuantLib,IsNull)
+using QuantLib::Following;
+using QuantLib::ModifiedFollowing;
+using QuantLib::IsNull;
 %}
 
 // export Handle<Calendar>
@@ -82,11 +82,11 @@ QL_USING(QuantLib,IsNull)
 #include "frankfurt.h"
 #include "milan.h"
 
-QL_USING(QuantLib::Calendars,TARGET)
-QL_USING(QuantLib::Calendars,NewYork)
-QL_USING(QuantLib::Calendars,London)
-QL_USING(QuantLib::Calendars,Milan)
-QL_USING(QuantLib::Calendars,Frankfurt)
+using QuantLib::Calendars::TARGET;
+using QuantLib::Calendars::NewYork;
+using QuantLib::Calendars::London;
+using QuantLib::Calendars::Milan;
+using QuantLib::Calendars::Frankfurt;
 
 CalendarHandle NewTARGET()    { return CalendarHandle(new TARGET); }
 CalendarHandle NewNewYork()   { return CalendarHandle(new NewYork); }

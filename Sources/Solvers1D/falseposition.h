@@ -8,21 +8,22 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #ifndef quantlib_solver1d_falseposition_h
 #define quantlib_solver1d_falseposition_h
 
+#include "qldefines.h"
 #include "solver1d.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(Solvers1D)
+	namespace Solvers1D {
+	
+		class FalsePosition : public Solver1D {
+		  public:
+			FalsePosition() : Solver1D() {}
+		  private:
+			double _solve(const Function& f, double xAccuracy) const;
+		};
+	
+	}
 
-class FalsePosition : public Solver1D {
-	public:
-	FalsePosition() : Solver1D() {}
-	private:
-	double _solve(const Function& f, double xAccuracy) const;
-};
-
-QL_END_NAMESPACE(Solvers1D)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 #endif

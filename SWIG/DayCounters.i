@@ -29,8 +29,8 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "thirty360european.h"
 #include "thirty360italian.h"
 
-QL_USING(QuantLib,Handle)
-QL_USING(QuantLib,DayCounter)
+using QuantLib::DayCounter;
+using QuantLib::Handle;
 typedef Handle<DayCounter> DayCounterHandle;
 %}
 
@@ -72,11 +72,11 @@ typedef Handle<DayCounter> DayCounterHandle;
 // actual day counters
 
 %{
-QL_USING(QuantLib::DayCounters,Actual360)
-QL_USING(QuantLib::DayCounters,Actual365)
-QL_USING(QuantLib::DayCounters,Thirty360)
-QL_USING(QuantLib::DayCounters,Thirty360European)
-QL_USING(QuantLib::DayCounters,Thirty360Italian)
+using QuantLib::DayCounters::Actual360;
+using QuantLib::DayCounters::Actual365;
+using QuantLib::DayCounters::Thirty360;
+using QuantLib::DayCounters::Thirty360European;
+using QuantLib::DayCounters::Thirty360Italian;
 
 DayCounterHandle NewActual360()			{ return DayCounterHandle(new Actual360); }
 DayCounterHandle NewActual365()			{ return DayCounterHandle(new Actual365); }

@@ -11,20 +11,19 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "qldefines.h"
 #include "date.h"
 
-QL_BEGIN_NAMESPACE(QuantLib)
+namespace QuantLib {
 
-QL_BEGIN_NAMESPACE(PDE)
+	namespace PDE {
+	
+		template <class arrayType>
+		class StepCondition {
+		  public:
+			virtual void applyTo(arrayType& a, Time t) const = 0;
+		};
+	
+	}
 
-template <class arrayType>
-class StepCondition {
-  public:
-	virtual void applyTo(arrayType& a, Time t) const = 0;
-};
-
-
-QL_END_NAMESPACE(PDE)
-
-QL_END_NAMESPACE(QuantLib)
+}
 
 
 #endif

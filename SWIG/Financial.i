@@ -23,9 +23,9 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "spread.h"
 #include "discountfactor.h"
 
-QL_USING(QuantLib,Rate)
-QL_USING(QuantLib,Spread)
-QL_USING(QuantLib,DiscountFactor)
+using QuantLib::Rate;
+using QuantLib::Spread;
+using QuantLib::DiscountFactor;
 %}
 
 typedef double Rate;

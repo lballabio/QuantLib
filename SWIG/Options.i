@@ -20,16 +20,11 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 %{
 #include "options.h"
+using QuantLib::Option;
+typedef Option::Type OptionType;
+
 #include "stringconverters.h"
-%}
-
-%{
-	QL_USING(QuantLib,Option)
-	QL_USING(QuantLib,ConvertToLowercase)
-%}
-
-%{
-	typedef Option::Type OptionType;
+using QuantLib::ConvertToLowercase;
 %}
 
 %typemap(python,in) OptionType, OptionType * {

@@ -26,7 +26,7 @@ typedef std::vector<double> DoubleVector;
 
 // array
 #include "array.h"
-QL_USING(QuantLib,Array)
+using QuantLib::Array;
 %}
 
 %typemap(python,in) IntVector, IntVector * {
