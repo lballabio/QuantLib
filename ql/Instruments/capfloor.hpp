@@ -39,7 +39,7 @@ namespace QuantLib {
           public:
             enum Type { Cap, Floor, Collar };
             VanillaCapFloor(Type type,
-                const CashFlows::FloatingRateCouponVector& floatingLeg,
+                const std::vector<Handle<CashFlow> >& floatingLeg,
                 const std::vector<Rate>& capRates,
                 const std::vector<Rate>& floorRates,
                 const RelinkableHandle<TermStructure>& termStructure,
@@ -53,7 +53,7 @@ namespace QuantLib {
             void setupEngine() const;
           private:
             Type type_;
-            CashFlows::FloatingRateCouponVector floatingLeg_;
+            std::vector<Handle<CashFlow> > floatingLeg_;
             std::vector<Rate> capRates_;
             std::vector<Rate> floorRates_;
             RelinkableHandle<TermStructure> termStructure_;

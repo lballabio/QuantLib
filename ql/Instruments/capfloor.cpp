@@ -57,7 +57,7 @@ namespace QuantLib {
             for (; begin != floatingLeg_.end(); ++begin) {
                 Handle<FloatingRateCoupon> coupon = *begin;
                 QL_ENSURE(!coupon.isNull(), 
-                          "VanillaCapFloor::setupEngine floating rate coupon is Null");
+                          "VanillaCapFloor::setupEngine Not a floating rate coupon");
                 Date beginDate = coupon->accrualStartDate();
                 Time time = counter.yearFraction(settlement, beginDate);
                 parameters->startTimes.push_back(time);
