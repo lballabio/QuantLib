@@ -106,8 +106,6 @@ namespace QuantLib {
         /*! The resulting rate is calculated implicitly assuming
             the same day-counting rule used for the time t measure.
 
-            \warning Time must be measured using the InterestRate's
-                     own day-counter.
         */
         static Rate impliedRate(Real compound,
                                 Time t,
@@ -115,18 +113,18 @@ namespace QuantLib {
                                 Frequency freq = Annual);
 
         //! implied interest rate for a given t-time compound factor.
-        /*! The resulting InterestRate shares the same implicit
-            day-counting rule of the original InterestRate instance.
+        /*! The resulting InterestRate has the day-counter provided as input.
 
-            \warning Time must be measured using the InterestRate
-                     instance own day-counter.
+            \warning Time must be measured using the day-counter provided
+                     as input.
         */
-        InterestRate impliedInterestRate(Real compound,
-                                         Time t,
-                                         Compounding comp,
-                                         Frequency freq = Annual) {
+        static InterestRate impliedInterestRate(Real compound,
+                                                Time t,
+                                                const DayCounter& resultDC,
+                                                Compounding comp,
+                                                Frequency freq = Annual) {
             Real r = impliedRate(compound, t, comp, freq);
-            return InterestRate(r, dc_, comp, freq);
+            return InterestRate(r, resultDC, comp, freq);
         }
 
         //! implied rate for a given compound factor between two dates.
@@ -144,8 +142,7 @@ namespace QuantLib {
         }
 
         //! implied interest rate for a given compound factor between two dates.
-        /*! The resulting InterestRate has the required day-counting
-            rule.
+        /*! The resulting InterestRate has the day-counter provided as input.
         */
         static InterestRate impliedInterestRate(Real compound,
                                                 Date d1,
