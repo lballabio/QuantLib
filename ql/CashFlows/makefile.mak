@@ -16,7 +16,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = cashflowvectors.obj$(_D) \
-       floatingratecoupon.obj$(_D) \
+       parcoupon.obj$(_D) \
        shortfloatingcoupon.obj$(_D)
 
 # Tools to be used

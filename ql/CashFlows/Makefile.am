@@ -10,6 +10,7 @@ include_HEADERS = \
         cashflowvectors.hpp \
         fixedratecoupon.hpp \
         floatingratecoupon.hpp \
+        parcoupon.hpp \
         shortfloatingcoupon.hpp \
         simplecashflow.hpp
 
@@ -17,7 +18,7 @@ EXTRA_DIST=makefile.mak
 
 libCashFlows_la_SOURCES = \
     cashflowvectors.cpp \
-    floatingratecoupon.cpp \
+    parcoupon.cpp \
     shortfloatingcoupon.cpp
 
 noinst_LTLIBRARIES = libCashFlows.la

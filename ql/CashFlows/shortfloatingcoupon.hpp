@@ -27,7 +27,7 @@
 #ifndef quantlib_short_floating_rate_coupon_hpp
 #define quantlib_short_floating_rate_coupon_hpp
 
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/parcoupon.hpp>
 
 namespace QuantLib {
 
@@ -38,7 +38,7 @@ namespace QuantLib {
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
         */
-        class ShortFloatingRateCoupon : public FloatingRateCoupon {
+        class ShortFloatingRateCoupon : public ParCoupon {
           public:
             ShortFloatingRateCoupon(double nominal,
                 const Date& paymentDate,
@@ -69,7 +69,7 @@ namespace QuantLib {
             if (v1 != 0)
                 v1->visit(*this);
             else
-                FloatingRateCoupon::accept(v);
+                ParCoupon::accept(v);
         }
 
     }

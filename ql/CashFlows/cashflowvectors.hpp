@@ -45,7 +45,7 @@ namespace QuantLib {
             const DayCounter& firstPeriodDayCount,
             const Date& stubDate = Date());
 
-        //! helper function building a sequence of floating rate coupons
+        //! helper function building a sequence of par coupons
         /*! \warning The passing of a non-null stub date - i.e., the creation
             of a short/long first coupon - is currently disabled.
             \todo A suitable algorithm should be implemented for the

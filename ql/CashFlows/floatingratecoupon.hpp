@@ -28,7 +28,6 @@
 #define quantlib_floating_rate_coupon_hpp
 
 #include <ql/CashFlows/coupon.hpp>
-#include <ql/Indexes/xibor.hpp>
 
 namespace QuantLib {
 
@@ -39,36 +38,23 @@ namespace QuantLib {
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
         */
-        class FloatingRateCoupon : public Coupon,
-                                   public Patterns::Observer {
+        class FloatingRateCoupon : public Coupon {
           public:
-            FloatingRateCoupon(double nominal,
-                const Date& paymentDate,
-                const Handle<Indexes::Xibor>& index,
-                const Date& startDate, const Date& endDate,
-                int fixingDays,
-                Spread spread = 0.0,
-                const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date());
-            //! \name CashFlow interface
-            //@{
-            double amount() const;
-            //@}
+            FloatingRateCoupon(double nominal, const Date& paymentDate,
+                               const Date& startDate, const Date& endDate,
+                               int fixingDays, Spread spread = 0.0,
+                               const Date& refPeriodStart = Date(),
+                               const Date& refPeriodEnd = Date());
             //! \name Coupon interface
             //@{
-            DayCounter dayCounter() const;
             double accruedAmount(const Date&) const;
             //@}
             //! \name Inspectors
             //@{
-            const Handle<Indexes::Xibor>& index() const;
             int fixingDays() const;
-            virtual Rate fixing() const;
-            Spread spread() const;
-            //@}
-            //! \name Observer interface
-            //@{
-            void update();
+            virtual Spread spread() const;
+            virtual Rate fixing() const = 0;
+            virtual Date fixingDate() const = 0;
             //@}
             //! \name Visitability
             //@{
@@ -78,8 +64,7 @@ namespace QuantLib {
                 virtual void visit(FloatingRateCoupon&) = 0;
             };
             //@}
-          private:
-            Handle<Indexes::Xibor> index_;
+          protected:
             int fixingDays_;
             Spread spread_;
         };
@@ -87,29 +72,21 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline const Handle<Indexes::Xibor>& 
-        FloatingRateCoupon::index() const {
-            return index_;
-        }
+        inline FloatingRateCoupon::FloatingRateCoupon(
+            double nominal, const Date& paymentDate,
+            const Date& startDate, const Date& endDate,
+            int fixingDays, Spread spread,
+            const Date& refPeriodStart, const Date& refPeriodEnd)
+        : Coupon(nominal, paymentDate, 
+                 startDate, endDate, refPeriodStart, refPeriodEnd),
+          fixingDays_(fixingDays), spread_(spread) {}
 
         inline int FloatingRateCoupon::fixingDays() const {
             return fixingDays_;
         }
 
-        inline Rate FloatingRateCoupon::fixing() const {
-            return amount()/(nominal()*accrualPeriod());
-        }
-
         inline Spread FloatingRateCoupon::spread() const {
             return spread_;
-        }
-
-        inline void FloatingRateCoupon::update() {
-            notifyObservers();
-        }
-
-        inline DayCounter FloatingRateCoupon::dayCounter() const {
-            return index_->termStructure()->dayCounter();
         }
 
         inline double FloatingRateCoupon::accruedAmount(const Date& d) const {

@@ -39,17 +39,16 @@ namespace QuantLib {
           const Date& startDate, const Date& endDate,
           int fixingDays, Spread spread,
           const Date& refPeriodStart, const Date& refPeriodEnd)
-        : FloatingRateCoupon(nominal,paymentDate,index,
-                             startDate,endDate,fixingDays,
-                             spread,refPeriodStart,refPeriodEnd) {}
+        : ParCoupon(nominal,paymentDate,index,
+                    startDate,endDate,fixingDays,
+                    spread,refPeriodStart,refPeriodEnd) {}
 
         double ShortFloatingRateCoupon::amount() const {
             QL_REQUIRE(!index()->termStructure().isNull(),
                 "null term structure set to par coupon");
             Date today = index()->termStructure()->todaysDate();
-            Date fixingDate = index()->calendar().advance(
-                accrualStartDate_, -fixingDays(), Days, Preceding);
-            QL_REQUIRE(fixingDate >= today,
+            Date fixing_date = fixingDate();
+            QL_REQUIRE(fixing_date >= today,
                        // must have been fixed
                        // but we have no way to interpolate the fixing yet
                        "short/long floating coupons not supported yet"
@@ -57,7 +56,7 @@ namespace QuantLib {
                        DateFormatter::toString(accrualStartDate_) +
                        ", end = " + 
                        DateFormatter::toString(accrualEndDate_) + ")");
-            return FloatingRateCoupon::amount();
+            return ParCoupon::amount();
         }
 
     }

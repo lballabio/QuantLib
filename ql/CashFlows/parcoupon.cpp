@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,16 +15,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file floatingratecoupon.cpp
+/*! \file parcoupon.cpp
     \brief Coupon at par on a term structure
 
     \fullpath
-    ql/CashFlows/%floatingratecoupon.cpp
+    ql/CashFlows/%parcoupon.cpp
 */
 
 // $Id$
 
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/parcoupon.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
@@ -34,39 +34,38 @@ namespace QuantLib {
 
     namespace CashFlows {
 
-        FloatingRateCoupon::FloatingRateCoupon(double nominal,
-          const Date& paymentDate,
-          const Handle<Xibor>& index,
-          const Date& startDate, const Date& endDate,
-          int fixingDays, Spread spread,
-          const Date& refPeriodStart, const Date& refPeriodEnd)
-        : Coupon(nominal, paymentDate, 
-                 startDate, endDate, refPeriodStart, refPeriodEnd),
-          index_(index), fixingDays_(fixingDays), spread_(spread) {
+        ParCoupon::ParCoupon(double nominal, const Date& paymentDate,
+                             const Handle<Xibor>& index,
+                             const Date& startDate, const Date& endDate,
+                             int fixingDays, Spread spread,
+                             const Date& refPeriodStart, 
+                             const Date& refPeriodEnd)
+        : FloatingRateCoupon(nominal, paymentDate, startDate, endDate, 
+                             fixingDays, spread, refPeriodStart, refPeriodEnd),
+          index_(index) {
             registerWith(index_);
         }
 
-        double FloatingRateCoupon::amount() const {
+        double ParCoupon::amount() const {
             Handle<TermStructure> termStructure = index_->termStructure();
             QL_REQUIRE(!termStructure.isNull(),
                        "null term structure set to par coupon");
             Date today = termStructure->todaysDate();
-            Date fixingDate = index_->calendar().advance(
-                accrualStartDate_, -fixingDays_, Days, Preceding);
-            if (fixingDate < today) {
+            Date fixing_date = fixingDate();
+            if (fixing_date < today) {
                 // must have been fixed
                 Rate pastFixing = XiborManager::getHistory(
-                    index_->name())[fixingDate];
+                    index_->name())[fixing_date];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + index_->name() + " fixing for " +
-                        DateFormatter::toString(fixingDate));
+                        DateFormatter::toString(fixing_date));
                 return (pastFixing+spread_)*accrualPeriod()*nominal();
             }
-            if (fixingDate == today) {
+            if (fixing_date == today) {
                 // might have been fixed
                 try {
                     Rate pastFixing = XiborManager::getHistory(
-                        index_->name())[fixingDate];
+                        index_->name())[fixing_date];
                     if (pastFixing != Null<double>())
                         return (pastFixing+spread_) *
                             accrualPeriod() * nominal();
@@ -77,7 +76,7 @@ namespace QuantLib {
                 }
             }
             Date fixingValueDate = index_->calendar().advance(
-                fixingDate, index_->settlementDays(), Days);
+                fixing_date, index_->settlementDays(), Days);
             DiscountFactor startDiscount =
                 termStructure->discount(fixingValueDate);
             Date temp = index_->calendar().advance(accrualEndDate_,

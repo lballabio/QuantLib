@@ -44,9 +44,11 @@ namespace QuantLib {
           const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
           const Date& stubDate) {
             QL_REQUIRE(couponRates.size() != 0, 
-                       "FixedRateCouponVector: unspecified coupon rates(size=0)");
+                       "FixedRateCouponVector: "
+                       "unspecified coupon rates (size=0)");
             QL_REQUIRE(nominals.size() != 0, 
-                       "FixedRateCouponVector: unspecified nominals()size=0");
+                       "FixedRateCouponVector: "
+                       "unspecified nominals (size=0)");
 
             std::vector<Handle<CashFlow> > leg;
             Scheduler scheduler(calendar, startDate, endDate, frequency,
@@ -103,16 +105,18 @@ namespace QuantLib {
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
                     leg.push_back(Handle<CashFlow>(
-                        new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
-                            start, end, start, end)));
+                        new FixedRateCoupon(nominal, paymentDate, 
+                                            rate, dayCount, 
+                                            start, end, start, end)));
                 } else {
                     Date reference = start.plusMonths(12/frequency);
                     if (isAdjusted)
                         reference =
                             calendar.roll(reference,rollingConvention);
                     leg.push_back(Handle<CashFlow>(
-                        new FixedRateCoupon(nominal, paymentDate, rate, dayCount, 
-                            start, end, start, reference)));
+                        new FixedRateCoupon(nominal, paymentDate, 
+                                            rate, dayCount, 
+                                            start, end, start, reference)));
                 }
             }
             return leg;
@@ -143,14 +147,15 @@ namespace QuantLib {
             double nominal = nominals[0];
             if (scheduler.isRegular(1)) {
                 leg.push_back(Handle<CashFlow>(
-                    new FloatingRateCoupon(nominal, paymentDate, index, start, end, 
-                                           fixingDays, spread, start, end)));
+                    new ParCoupon(nominal, paymentDate, index, start, end, 
+                                  fixingDays, spread, start, end)));
             } else {
                 Date reference = end.plusMonths(-12/frequency);
                 reference =
                     calendar.roll(reference,rollingConvention);
                 leg.push_back(Handle<CashFlow>(
-                    new ShortFloatingRateCoupon(nominal, paymentDate, index, start, end, 
+                    new ShortFloatingRateCoupon(nominal, paymentDate, 
+                                                index, start, end, 
                                                 fixingDays, spread, 
                                                 reference, end)));
             }
@@ -169,8 +174,8 @@ namespace QuantLib {
                 else
                     nominal = nominals.back();
                 leg.push_back(Handle<CashFlow>(
-                    new FloatingRateCoupon(nominal, paymentDate, index, start, end, 
-                                           fixingDays, spread, start, end)));
+                    new ParCoupon(nominal, paymentDate, index, start, end, 
+                                  fixingDays, spread, start, end)));
             }
             if (scheduler.size() > 2) {
                 // last period might be short or long
@@ -189,15 +194,15 @@ namespace QuantLib {
                     nominal = nominals.back();
                 if (scheduler.isRegular(N-1)) {
                     leg.push_back(Handle<CashFlow>(
-                        new FloatingRateCoupon(nominal, paymentDate, index, start, end, 
-                                               fixingDays, spread, 
-                                               start, end)));
+                        new ParCoupon(nominal, paymentDate, index, start, end, 
+                                      fixingDays, spread, start, end)));
                 } else {
                     Date reference = start.plusMonths(12/frequency);
                     reference =
                         calendar.roll(reference,rollingConvention);
                     leg.push_back(Handle<CashFlow>(
-                        new ShortFloatingRateCoupon(nominal, paymentDate, index, start, end, 
+                        new ShortFloatingRateCoupon(nominal, paymentDate, 
+                                                    index, start, end, 
                                                     fixingDays, spread, 
                                                     start, reference)));
                 }

@@ -26,15 +26,15 @@
 
 #include <ql/Instruments/swaption.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/parcoupon.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
+        using CashFlows::Coupon;
         using CashFlows::FixedRateCoupon;
-        using CashFlows::FloatingRateCoupon;
 
         Swaption::Swaption(
             const Handle<SimpleSwap>& swap, const Exercise& exercise,
@@ -101,16 +101,17 @@ namespace QuantLib {
             end   = floatingLeg.end();
 
             for (; begin != end; ++begin) {
-                Handle<FloatingRateCoupon> coupon = *begin;
-                const Handle<Indexes::Xibor>& index = coupon->index();
+                Handle<Coupon> coupon = *begin;
+                // const Handle<Indexes::Xibor>& index = coupon->index();
 /*                Date fixingDate = index->calendar().advance(
                     coupon->accrualStartDate(), -coupon->fixingDays(), Days,
                     index->rollingConvention());
                 Date fixingValueDate = index->calendar().advance(
                     fixingDate, index->settlementDays(), Days,
                     index->rollingConvention());*/
-                Date resetDate =  index->calendar().roll(
-                    coupon->accrualStartDate(), index->rollingConvention());
+                Date resetDate = coupon->accrualStartDate(); // already rolled
+                //index->calendar().roll(
+                //    coupon->accrualStartDate(), index->rollingConvention());
 
                 Time time = counter.yearFraction(settlement, resetDate);
 
