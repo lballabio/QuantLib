@@ -51,8 +51,8 @@ COFF2OMF  = coff2omf
 SWIG      = swig
 
 # Options
-CC_OPTS        = -q -c -tWM \
-    -vi- -w-8057 -w-8004 -w-8060 \
+CC_OPTS        = -q -c -tWM -vi- \
+    -w-8057 -w-8004 -w-8060 \
     -w-8026 -w-8027 -w-8012 \
     -D__WIN32__ -DMSC_CORE_BC_EXT \
     -I$(INCLUDE_DIR) \
@@ -91,8 +91,7 @@ python: $(QUANTLIB_DLL)
 $(QUANTLIB_DLL):: $(WRAPPER_OBJ) $(QUANTLIB_LIB) $(PYTHON_BCC_LIB)
     echo Linking Python module...
     $(LINK) $(LINK_OPTS) \
-        $(WRAPPER_OBJ) \
-        $(WIN_OBJS), \
+        $(WRAPPER_OBJ) $(WIN_OBJS), \
         $(QUANTLIB_DLL),, \
         $(QUANTLIB_LIB) $(PYTHON_BCC_LIB) $(WIN_LIBS), \
         QuantLibc.def

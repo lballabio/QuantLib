@@ -38,11 +38,36 @@ python-test::
     $(MAKE) test
     cd ..
 
+# Documentation
+docs-all:
+    cd Docs
+    $(MAKE) all
+    cd ..
+
+docs-html:
+    cd Docs
+    $(MAKE) html
+    cd ..
+
+docs-pdf:
+    cd Docs
+    $(MAKE) pdf
+    cd ..
+
+docs-ps:
+    cd Docs
+    $(MAKE) ps
+    cd ..
+
+
 # Clean up
 clean::
     cd Win
     $(MAKE) clean
     cd ..
     cd Python
+    $(MAKE) clean
+    cd ..
+    cd Docs
     $(MAKE) clean
     cd ..

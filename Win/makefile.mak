@@ -114,11 +114,6 @@ WIN_LIBS         = import32.lib cw32mt.lib
 CC        = bcc32
 TLIB      = tlib
 COFF2OMF  = coff2omf
-DOXYGEN   = doxygen
-LATEX     = latex
-PDFLATEX  = pdflatex
-MAKEINDEX = makeindex
-DVIPS     = dvips
 
 # Options
 CC_OPTS        = -q -c -tWM -n$(OUTPUT_DIR) \
@@ -145,8 +140,6 @@ TLIB_OPTS    = /P32
 !ifdef DEBUG
 TLIB_OPTS    = /P128
 !endif
-
-TEX_OPTS     = --quiet --pool-size=1000000 
 
 # Generic rules
 .cpp.obj:
@@ -310,42 +303,4 @@ clean::
     if exist .\Debug    rd /s /q .\Debug
     if exist .\Release  rd /s /q .\Release
 
-
-# Documentation
-HTML::
-    cd ..\Docs
-    $(DOXYGEN) quantlib.doxy
-    cd ..\Win
-
-PDF::
-    cd ..\Docs
-    $(DOXYGEN) quantlib.doxy
-    cd latex
-    $(PDFLATEX) $(TEX_OPTS) refman
-    $(MAKEINDEX) refman.idx
-    $(PDFLATEX) $(TEX_OPTS) refman
-    cd ..\..\Win
-
-PS::
-    cd ..\Docs
-    $(DOXYGEN) quantlib.doxy
-    cd latex
-    $(LATEX) $(TEX_OPTS) refman
-    $(MAKEINDEX) refman.idx
-    $(LATEX) $(TEX_OPTS) refman
-    $(DVIPS) refman
-    cd ..\..\Win
-
-alldocs::
-    cd ..\Docs
-    $(DOXYGEN) quantlib.doxy
-    cd latex
-    $(PDFLATEX) $(TEX_OPTS) refman
-    $(MAKEINDEX) refman.idx
-    $(PDFLATEX) $(TEX_OPTS) refman
-    $(LATEX) $(TEX_OPTS) refman
-    $(MAKEINDEX) refman.idx
-    $(LATEX) $(TEX_OPTS) refman
-    $(DVIPS) refman
-    cd ..\..\Win
 
