@@ -102,7 +102,7 @@ namespace QuantLib {
         }
 
         inline Rate IndexedCoupon::fixing() const {
-            return index_->fixing( fixingDate() );
+            return index_->fixing(fixingDate()) + spread();
         }
 
         inline DayCounter IndexedCoupon::dayCounter() const {
@@ -110,7 +110,7 @@ namespace QuantLib {
         }
 
 		inline double IndexedCoupon::amount() const {
-			return ( fixing() + spread() ) * accrualPeriod() * nominal();
+			return fixing() * accrualPeriod() * nominal();
 		}
 
         inline void IndexedCoupon::update() {
