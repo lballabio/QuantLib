@@ -107,6 +107,15 @@ namespace QuantLib {
             return volatility_->value();
         }
 
+        //! overload base class method in order to avoid numerical round-off
+        inline double BlackConstantVol::blackForwardVol(Time t1, Time t2,
+            double, bool) const {
+            QL_REQUIRE(time2>=time1,
+                "BlackConstantVol::blackForwardVol : "
+                "time2<time1");
+            return volatility_->value();
+        }
+
     }
 
 }
