@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/04/06 07:36:05  marmar
+    Code simplified and cleand
+
     Revision 1.3  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -64,6 +67,10 @@ namespace QuantLib {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
                              new ShoutCondition(initialPrices_, residualTime_,
                                                 riskFreeRate_));   
+        }
+        
+        Handle<BSMOption> DividendShoutOption::clone() const { 
+            return Handle<BSMOption>(new DividendShoutOption(*this));
         }
 
     }

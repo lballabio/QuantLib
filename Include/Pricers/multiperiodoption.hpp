@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 07:35:43  marmar
+    Code simplified and cleand
+
     Revision 1.2  2001/04/04 12:13:23  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -66,14 +69,14 @@ namespace QuantLib {
     namespace Pricers {
 
         class MultiPeriodOption : public BSMNumericalOption {
-          public:
+          protected:
             // constructor
             MultiPeriodOption(Type type, double underlying, 
                 double strike, Rate dividendYield, Rate riskFreeRate, 
                 Time residualTime, double volatility, 
                 const std::vector<Time>& dates, 
-                int timeSteps, int gridPoints);
-            protected:
+                int timeSteps, int gridPoints);   
+            // Protected attributes         
             int timeStepPerPeriod_, dateNumber_;
             std::vector<Time> dates_;
             Handle<BSMOption> analitic_;
@@ -82,6 +85,7 @@ namespace QuantLib {
                                                             stepCondition_;
             mutable Handle<FiniteDifferences::StandardFiniteDifferenceModel> 
                                                             model_;
+            // Methods
             void calculate() const;
             virtual void initializeModel() const;
             virtual void initializeStepCondition() const;
@@ -89,7 +93,6 @@ namespace QuantLib {
         };
 
     }
+
 }
-
-
 #endif

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.6  2001/04/06 07:36:05  marmar
+    Code simplified and cleand
+
     Revision 1.5  2001/04/05 07:57:46  marmar
     One bug fixed in bermudan option, theta, rho, and vega  still not working
 
@@ -84,6 +87,10 @@ namespace QuantLib {
             int size = initialPrices_.size();
             for(int j = 0; j < size; j++)
                 prices_[j] = QL_MAX(prices_[j], initialPrices_[j]);            
+        }
+
+        Handle<BSMOption> BermudanOption::clone() const { 
+            return Handle<BSMOption>(new BermudanOption(*this));
         }
 
     }

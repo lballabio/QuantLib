@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/04/06 07:35:43  marmar
+    Code simplified and cleand
+
     Revision 1.1  2001/04/04 11:07:23  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -55,15 +58,14 @@ namespace QuantLib {
                 Time residualTime, double volatility, 
                 const std::vector<Time>& dates = std::vector<Time>(), 
                 int timeSteps = 100, int gridPoints = 100);
-            Handle<BSMOption> clone() const { 
-                return Handle<BSMOption>(new BermudanOption(*this));
-            }
+            Handle<BSMOption> clone() const;            
           protected:
             void initializeStepCondition() const;
             void executeIntermediateStep(int) const;
         };
 
     }
+
 }
 
 #endif

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.8  2001/04/06 07:36:04  marmar
+    Code simplified and cleand
+
     Revision 1.7  2001/04/05 07:57:46  marmar
     One bug fixed in bermudan option, theta, rho, and vega  still not working
 
@@ -91,7 +94,6 @@ namespace QuantLib {
                         QL_REQUIRE(dates_[j-1] < dates_[j],
                             "Dates must be in increasing order");
                 }
-
             }
 
         }
@@ -106,13 +108,11 @@ namespace QuantLib {
             prices_ = initialPrices_;
             controlPrices_ = initialPrices_;
 
-            double dt = 0.01;
-/*            if (dateNumber_ > 0)                
-                dt = residualTime_/(timeStepPerPeriod_*dateNumber_*10);
+            double dt;// = 0.0001;
+            if (dateNumber_ > 0)                
+                dt = residualTime_/(timeStepPerPeriod_*dateNumber_*100);
             else
-                dt = residualTime_/(timeStepPerPeriod_*10);*/
-                
-            
+                dt = residualTime_/(timeStepPerPeriod_*100);
             
             int j = dateNumber_ - 1;
             do{
@@ -130,43 +130,42 @@ namespace QuantLib {
                     endDate = dt;
 
                 model_ -> rollback(prices_, beginDate, endDate,
-                                  timeStepPerPeriod_, stepCondition_);
+                                   timeStepPerPeriod_, stepCondition_);
 
                 model_ -> rollback(controlPrices_, beginDate, endDate,
-                                  timeStepPerPeriod_);
+                                   timeStepPerPeriod_);
 
                 if (j >= 0)
                     executeIntermediateStep(j);
             } while (--j >= -1);
 
-            double valuePlus = valueAtCenter(prices_) -
-                               valueAtCenter(controlPrices_) +
-                               analitic_ -> value();
+            double pricePlusDt = valueAtCenter(prices_);
+            double controlPlusDt = valueAtCenter(controlPrices_);
 
-            model_ -> rollback(controlPrices_, dt, 0, 1);
             model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
+            model_ -> rollback(controlPrices_, dt, 0, 1);
 
             // Option price and greeks are computed
-            value_ = valueAtCenter(prices_) -
-                     valueAtCenter(controlPrices_) + analitic_ -> value();
+            value_ =   valueAtCenter(prices_) 
+                     - valueAtCenter(controlPrices_) 
+                     + analitic_ -> value();
 
-            delta_ = firstDerivativeAtCenter(prices_, grid_) -
-                     firstDerivativeAtCenter(controlPrices_, grid_) +
-                     analitic_ -> delta();
+            delta_ =   firstDerivativeAtCenter(prices_, grid_) 
+                     - firstDerivativeAtCenter(controlPrices_, grid_) 
+                     + analitic_ -> delta();
 
-            gamma_ = secondDerivativeAtCenter(prices_, grid_) -
-                     secondDerivativeAtCenter(controlPrices_, grid_) +
-                     analitic_ -> gamma();
+            gamma_ =   secondDerivativeAtCenter(prices_, grid_) 
+                     - secondDerivativeAtCenter(controlPrices_, grid_) 
+                     + analitic_ -> gamma();
 
             // calculating theta_
-            model_ -> rollback(controlPrices_, 0, -dt, 1);
             model_ -> rollback(prices_,        0, -dt, 1, stepCondition_);
+            model_ -> rollback(controlPrices_, 0, -dt, 1);
 
-            double valueMinus = valueAtCenter(prices_) -
-                                valueAtCenter(controlPrices_) +
-                                analitic_ -> value();
+            theta_=  (pricePlusDt - valueAtCenter(prices_))/(2.0*dt)
+                    -(controlPlusDt - valueAtCenter(controlPrices_))/(2.0*dt)
+                    + analitic_ -> theta();
 
-            theta_ = (valuePlus - valueMinus)/(2.0*dt);
             hasBeenCalculated_ = true;
         }
 
