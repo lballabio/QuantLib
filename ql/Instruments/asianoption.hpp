@@ -78,7 +78,7 @@ namespace QuantLib {
         std::vector<Date> fixingDates_;
     };
 
-    //! Extra arguments for single-asset Asian option calculation
+    //! Extra arguments for single-asset discrete-average Asian option
     class DiscreteAveragingAsianOption::arguments 
         : public OneAssetStrikedOption::arguments {
       public:
@@ -92,7 +92,7 @@ namespace QuantLib {
         std::vector<Date> fixingDates;
     };
 
-    //! Extra arguments for single-asset Asian option calculation
+    //! Extra arguments for single-asset continuous-average Asian option
     class ContinuousAveragingAsianOption::arguments 
         : public OneAssetStrikedOption::arguments {
       public:
