@@ -89,7 +89,7 @@ TLIB_OPTS    = /P512
 # Generic rules
 .cpp.obj:
     $(CC) $(CC_OPTS) $<
-.cpp.obj_d:
+.cpp.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
@@ -178,6 +178,6 @@ clean::
     $(MAKE) clean
     cd ..
     if exist *.obj      del /q *.obj
-    if exist *.obj_d    del /q *.obj
+    if exist *.obj$(_D)    del /q *.obj
     if exist $(OUTPUT_DIR)\*.lib  del /q $(OUTPUT_DIR)\*.lib
 
