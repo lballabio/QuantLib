@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.10  2001/05/22 14:43:19  nando
+# comment added
+#
 # Revision 1.9  2001/05/22 13:43:23  nando
 # 80 columns enforced
 #
@@ -15,7 +18,8 @@
 
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"
-OutFile "..\QuantLib-200105221249-inst.exe"
+#do not change the name below
+OutFile "..\QuantLib-inst.exe"
 SilentInstall normal
 CRCCheck on
 UninstallText "This will uninstall QuantLib. Hit next to continue."
