@@ -121,7 +121,7 @@ namespace QuantLib {
 
     namespace {
 
-        // not appropriate for path and american dependant option
+        // not appropriate for path-dependent and American options
         class TimeGridCalculator : public AcyclicVisitor,
                                    public Visitor<BlackVolTermStructure>,
                                    public Visitor<BlackConstantVol>,
@@ -137,11 +137,9 @@ namespace QuantLib {
             // specializations
             void visit(BlackConstantVol&) {
                 result_ = 1;
-//                result_ = Size(QL_MAX(maturity_ * stepsPerYear_, 1.0));
             }
             void visit(BlackVarianceCurve&) {
                 result_ = 1;
-//                result_ = Size(QL_MAX(maturity_ * stepsPerYear_, 1.0));
             }
           private:
             Time maturity_;
@@ -154,9 +152,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
+        Time t = arguments_.blackScholesProcess->riskFreeTS
+            ->dayCounter().yearFraction(
+                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+                arguments_.exercise->lastDate());
 
         TimeGridCalculator calc(t, maxTimeStepsPerYear_);
         arguments_.blackScholesProcess->volTS->accept(calc);

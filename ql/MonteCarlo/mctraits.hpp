@@ -41,8 +41,7 @@ namespace QuantLib {
         // typedefs
         typedef RNG urng_type;
         typedef ICGaussianRng<urng_type,IC> rng_type;
-        typedef RandomSequenceGenerator<urng_type> 
-        ursg_type;
+        typedef RandomSequenceGenerator<urng_type> ursg_type;
         typedef ICGaussianRsg<ursg_type,IC> rsg_type;
         // more traits
         enum { allowsErrorEstimate = 1 };
